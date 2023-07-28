@@ -76,6 +76,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
 
     // Enable experimental settings that allow us to skip the half-expanded state.
     override fun shouldSkipHalfExpandedStateWhenDragging() = true
+
     override fun shouldExpandOnUpwardDrag(dragDurationMillis: Long, yPositionPercentage: Float) =
         true
 

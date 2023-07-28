@@ -90,10 +90,19 @@
     <string name="lbl_artist_details">കലാകാരനിലേക്ക് പോകുക</string>
     <string name="lbl_song_detail">സവിശേഷതകൾ കാണുക</string>
     <string name="lbl_state_saved">സ്ഥിതി സംരക്ഷിച്ചു</string>
-    <string name="lbl_sort_dec">അവരോഹണം</string>
+    <string name="lbl_sort_dsc">അവരോഹണം</string>
     <string name="lbl_state_restored">സ്ഥിതി പുനഃസ്ഥാപിച്ചു</string>
     <string name="lbl_wiki">വിക്കി</string>
     <string name="lbl_state_wiped">സ്ഥിതി മായ്ച്ചു</string>
     <string name="lbl_live_group">തത്സമയം</string>
     <string name="lbl_compilation_live">തത്സമയ സമാഹാരം</string>
+    <string name="lbl_song">ഗീതം</string>
+    <string name="lbl_delete">ഇല്ലാതാക്കുക</string>
+    <string name="lbl_rename">പേരുമാറ്റുക</string>
+    <string name="lbl_edit">തിരുത്തുക</string>
+    <string name="set_theme_auto">സ്വയമേവ</string>
+    <string name="set_personalize">വ്യക്തിപരമാക്കുക</string>
+    <string name="lbl_parent_detail">കാണുക</string>
+    <string name="lbl_share">പങ്കിടുക</string>
+    <string name="lbl_appears_on">ദൃശ്യമാകുന്നു</string>
 </resources>

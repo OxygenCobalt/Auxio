@@ -20,8 +20,6 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -40,8 +38,7 @@ import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.list.Menu
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
@@ -54,11 +51,9 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
-import org.oxycblt.auxio.util.share
-import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -99,9 +94,12 @@ class GenreDetailFragment :
 
         // --- UI SETUP ---
         binding.detailNormalToolbar.apply {
-            inflateMenu(R.menu.toolbar_parent)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@GenreDetailFragment)
+            overrideOnOverflowMenuClick {
+                listModel.openMenu(
+                    R.menu.item_detail_parent, unlikelyToBeNull(detailModel.currentGenre.value))
+            }
         }
 
         binding.detailRecycler.apply {
@@ -109,7 +107,7 @@ class GenreDetailFragment :
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
                     val item =
-                        detailModel.genreList.value.getOrElse(it - 1) {
+                        detailModel.genreSongList.value.getOrElse(it - 1) {
                             return@setFullWidthLookup false
                         }
                     item is Divider || item is Header
@@ -123,7 +121,7 @@ class GenreDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setGenre(args.genreUid)
         collectImmediately(detailModel.currentGenre, ::updatePlaylist)
-        collectImmediately(detailModel.genreList, ::updateList)
+        collectImmediately(detailModel.genreSongList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -139,63 +137,21 @@ class GenreDetailFragment :
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
-        detailModel.genreInstructions.consume()
-    }
-
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if (super.onMenuItemClick(item)) {
-            return true
-        }
-
-        val currentGenre = unlikelyToBeNull(detailModel.currentGenre.value)
-        return when (item.itemId) {
-            R.id.action_play_next -> {
-                playbackModel.playNext(currentGenre)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_queue_add -> {
-                playbackModel.addToQueue(currentGenre)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_playlist_add -> {
-                musicModel.addToPlaylist(currentGenre)
-                true
-            }
-            R.id.action_share -> {
-                requireContext().share(currentGenre)
-                true
-            }
-            else -> {
-                logW("Unexpected menu item selected")
-                false
-            }
-        }
+        detailModel.genreSongInstructions.consume()
     }
 
     override fun onRealClick(item: Music) {
         when (item) {
             is Artist -> detailModel.showArtist(item)
-            is Song -> {
-                val playbackMode = detailModel.playbackMode
-                if (playbackMode != null) {
-                    playbackModel.playFrom(item, playbackMode)
-                } else {
-                    // When configured to play from the selected item, we already have an Genre
-                    // to play from.
-                    playbackModel.playFromGenre(
-                        item, unlikelyToBeNull(detailModel.currentGenre.value))
-                }
-            }
+            is Song -> playbackModel.play(item, detailModel.playInGenreWith)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
-    override fun onOpenMenu(item: Music, anchor: View) {
+    override fun onOpenMenu(item: Music) {
         when (item) {
             is Artist -> listModel.openMenu(R.menu.item_parent, item)
-            is Song -> listModel.openMenu(R.menu.item_song, item)
+            is Song -> listModel.openMenu(R.menu.item_song, item, detailModel.playInGenreWith)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
@@ -208,31 +164,8 @@ class GenreDetailFragment :
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
     }
 
-    override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.sort_genre) {
-            // Select the corresponding sort mode option
-            val sort = detailModel.genreSongSort
-            unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            // Select the corresponding sort direction option
-            val directionItemId =
-                when (sort.direction) {
-                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
-                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
-                }
-            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
-            setOnMenuItemClickListener { item ->
-                item.isChecked = !item.isChecked
-                detailModel.genreSongSort =
-                    when (item.itemId) {
-                        // Sort direction options
-                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
-                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
-                        // Any other option is a sort mode
-                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
-                    }
-                true
-            }
-        }
+    override fun onOpenSortMenu() {
+        findNavController().navigateSafe(GenreDetailFragmentDirections.sort())
     }
 
     private fun updatePlaylist(genre: Genre?) {
@@ -246,7 +179,7 @@ class GenreDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        genreListAdapter.update(list, detailModel.genreInstructions.consume())
+        genreListAdapter.update(list, detailModel.genreSongInstructions.consume())
     }
 
     private fun handleShow(show: Show?) {
@@ -304,12 +237,10 @@ class GenreDetailFragment :
         if (menu == null) return
         val directions =
             when (menu) {
-                is Menu.ForSong ->
-                    GenreDetailFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForArtist ->
-                    GenreDetailFragmentDirections.openArtistMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForSong -> GenreDetailFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForArtist -> GenreDetailFragmentDirections.openArtistMenu(menu.parcel)
+                is Menu.ForGenre -> GenreDetailFragmentDirections.openGenreMenu(menu.parcel)
                 is Menu.ForAlbum,
-                is Menu.ForGenre,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")
             }
         findNavController().navigateSafe(directions)

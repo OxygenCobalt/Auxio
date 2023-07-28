@@ -63,7 +63,7 @@
     <string name="lbl_play_next">अगला चलाएं</string>
     <string name="lbl_file_name">फ़ाइल का नाम</string>
     <string name="set_lib_tabs">लायब्रेरी टैब्स</string>
-    <string name="set_playback_mode_album">एल्बम से चलाएं</string>
+    <string name="set_play_song_from_album">एल्बम से चलाएं</string>
     <string name="set_content">सामग्री</string>
     <string name="fmt_selected">%d चयनित</string>
     <string name="lbl_format">प्रारूप</string>
@@ -85,8 +85,8 @@
     <string name="clr_dynamic">गतिशील</string>
     <string name="set_ui">लुक और फील</string>
     <string name="set_round_mode_desc">अतिरिक्त UI तत्वों पर गोल कोनों को सक्षम करें (एल्बम कवर को गोल करने की आवश्यकता है)</string>
-    <string name="set_playback_mode_none">दिखाए गए आइटम से चलाएँ</string>
-    <string name="set_library_song_playback_mode">लाइब्रेरी से चलाते समय</string>
+    <string name="set_play_song_none">दिखाए गए आइटम से चलाएँ</string>
+    <string name="set_play_in_list_with">लाइब्रेरी से चलाते समय</string>
     <string name="set_observing_desc">संगीत लाइब्रेरी को फिर से लोड करें जब भी यह बदलता है (स्थाई नोटीफिकेशन की आवश्यकता होती है)</string>
     <string name="set_exclude_non_music_desc">ऑडियो फ़ाइलों को अनदेखा करें जो संगीत नहीं हैं, जैसे कि पॉडकास्ट</string>
     <string name="lbl_compilation_live">लाइव संकलन</string>
@@ -96,10 +96,10 @@
     <string name="lbl_playlist">प्लेलिस्ट</string>
     <string name="lbl_playlists">प्लेलिस्टें</string>
     <string name="set_round_mode">गोल मोड</string>
-    <string name="set_playback_mode_songs">सभी गीतों से चलाएं</string>
+    <string name="set_play_song_from_all">सभी गीतों से चलाएं</string>
     <string name="fmt_deletion_info">%s हटाएँ\? इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="fmt_lib_song_count">लोड किए गए गाने: %d</string>
-    <string name="lbl_sort_dec">अवरोही</string>
+    <string name="lbl_sort_dsc">अवरोही</string>
     <string name="lbl_play_selected">चयनित चलाएँ</string>
     <string name="lbl_shuffle_selected">फेरबदल का चयन किया गया</string>
     <string name="lbl_state_wiped">स्थिति साफ की गई</string>
@@ -109,7 +109,7 @@
     <string name="set_personalize_desc">UI नियंत्रण और व्यवहार अनुकूलित करें</string>
     <string name="fmt_lib_artist_count">कलाकार लोड किए गए: %d</string>
     <string name="set_bar_action">कस्टम प्लेबैक बार एक्शन</string>
-    <string name="set_detail_song_playback_mode">आइटम विवरण से चलाते समय</string>
+    <string name="set_play_in_parent_with">आइटम विवरण से चलाते समय</string>
     <string name="lbl_album_live">लाइव एल्बम</string>
     <string name="lbl_album_remix">रीमिक्स एल्बम</string>
     <string name="lbl_ep_live">लाइव EP</string>
@@ -165,14 +165,14 @@
     <string name="lbl_props">गीत के गुणधर्म</string>
     <string name="set_display">डिस्पले</string>
     <string name="set_notif_action">कस्टम नोटीफिकेशन एक्शन</string>
-    <string name="set_playback_mode_artist">कलाकार से चलाएं</string>
-    <string name="set_playback_mode_genre">शैली से चलाएं</string>
+    <string name="set_play_song_from_artist">कलाकार से चलाएं</string>
+    <string name="set_play_song_from_genre">शैली से चलाएं</string>
     <string name="set_keep_shuffle">फेरबदल याद रखें</string>
     <string name="set_keep_shuffle_desc">नया गाना बजाते समय फेरबदल करते रहें</string>
     <string name="set_separators">मल्टी-मूल्य विभाजक</string>
     <string name="fmt_lib_genre_count">लोड की गई शैलियाँ: %d</string>
     <string name="fmt_lib_album_count">लोड किए गए एल्बम: %d</string>
-    <string name="fmt_indexing">आपकी संगीत लाइब्रेरी लोड कर रहे हैं... (%1$d/%2$d)</string>
+    <string name="fmt_indexing">आपकी संगीत लाइब्रेरी लोड कर रहे हैं… (%1$d/%2$d)</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="lng_indexing">आपकी संगीत लाइब्रेरी लोड कर रहे हैं…</string>
     <string name="lng_playlist_created">प्लेलिस्ट बनाई गई</string>
@@ -187,7 +187,7 @@
     <string name="set_separators_slash">स्लैश (/)</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_editing">संपादन %s</string>
-    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_separators_plus">पलॅस (+)</string>
     <string name="set_separators_and">ऐंपरसैंड (&amp;)</string>
     <string name="set_dirs_mode">मोड</string>
     <string name="desc_no_cover">एल्बम कवर</string>
@@ -298,4 +298,5 @@
     <string name="clr_pink">गुलाबी</string>
     <string name="set_intelligent_sorting">बुद्धिमान छंटाई</string>
     <string name="set_intelligent_sorting_desc">संख्याओं या \"the\" जैसे शब्दों से शुरू होने वाले नामों को सही ढंग से क्रमबद्ध करें (अंग्रेजी भाषा के संगीत के साथ सबसे अच्छा काम करता है)</string>
+    <string name="set_play_song_by_itself">इसी गीत को चलाएं</string>
 </resources>

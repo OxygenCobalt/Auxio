@@ -29,10 +29,13 @@ import org.oxycblt.auxio.music.Song
 open class FakeDeviceLibrary : DeviceLibrary {
     override val songs: List<Song>
         get() = throw NotImplementedError()
+
     override val albums: List<Album>
         get() = throw NotImplementedError()
+
     override val artists: List<Artist>
         get() = throw NotImplementedError()
+
     override val genres: List<Genre>
         get() = throw NotImplementedError()
 

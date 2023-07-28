@@ -20,13 +20,13 @@ package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.extractor.CoverUri
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
@@ -54,8 +54,8 @@ import org.oxycblt.auxio.util.update
 class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-        rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicMode.SONGS, it) }
-            ?: Music.UID.auxio(MusicMode.SONGS) {
+        rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
+            ?: Music.UID.auxio(MusicType.SONGS) {
                 // Song UIDs are based on the raw data without parsing so that they remain
                 // consistent across music setting changes. Parents are not held up to the
                 // same standard since grouping is already inherently linked to settings.
@@ -102,8 +102,10 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
     private val hashCode = 31 * uid.hashCode() + rawSong.hashCode()
 
     override fun hashCode() = hashCode
+
     override fun equals(other: Any?) =
         other is SongImpl && uid == other.uid && rawSong == other.rawSong
+
     override fun toString() = "Song(uid=$uid, name=$name)"
 
     private val artistMusicBrainzIds = rawSong.artistMusicBrainzIds.parseMultiValue(musicSettings)
@@ -251,8 +253,8 @@ class AlbumImpl(
 
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-        rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
-            ?: Music.UID.auxio(MusicMode.ALBUMS) {
+        rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ALBUMS, it) }
+            ?: Music.UID.auxio(MusicType.ALBUMS) {
                 // Hash based on only names despite the presence of a date to increase stability.
                 // I don't know if there is any situation where an artist will have two albums with
                 // the exact same name, but if there is, I would love to know.
@@ -313,8 +315,10 @@ class AlbumImpl(
     }
 
     override fun hashCode() = hashCode
+
     override fun equals(other: Any?) =
         other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
+
     override fun toString() = "Album(uid=$uid, name=$name)"
 
     /**
@@ -366,8 +370,8 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
 
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-        rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
-            ?: Music.UID.auxio(MusicMode.ARTISTS) { update(rawArtist.name) }
+        rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ARTISTS, it) }
+            ?: Music.UID.auxio(MusicType.ARTISTS) { update(rawArtist.name) }
     override val name =
         rawArtist.name?.let { Name.Known.from(it, rawArtist.sortName, musicSettings) }
             ?: Name.Unknown(R.string.def_artist)
@@ -461,7 +465,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
 class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSettings) : Genre {
     private val rawGenre = grouping.raw.inner
 
-    override val uid = Music.UID.auxio(MusicMode.GENRES) { update(rawGenre.name) }
+    override val uid = Music.UID.auxio(MusicType.GENRES) { update(rawGenre.name) }
     override val name =
         rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
             ?: Name.Unknown(R.string.def_genre)

@@ -18,14 +18,9 @@
  
 package org.oxycblt.auxio.list
 
-import android.view.View
-import androidx.annotation.MenuRes
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.MenuCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.util.logD
 
 /**
  * A Fragment containing a selectable list.
@@ -34,14 +29,6 @@ import org.oxycblt.auxio.util.logD
  */
 abstract class ListFragment<in T : Music, VB : ViewBinding> :
     SelectionFragment<VB>(), SelectableListListener<T> {
-    private var currentMenu: PopupMenu? = null
-
-    override fun onDestroyBinding(binding: VB) {
-        super.onDestroyBinding(binding)
-        currentMenu?.dismiss()
-        currentMenu = null
-    }
-
     /**
      * Called when [onClick] is called, but does not result in the item being selected. This more or
      * less corresponds to an [onClick] implementation in a non-[ListFragment].
@@ -62,31 +49,5 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
 
     final override fun onSelect(item: T) {
         listModel.select(item)
-    }
-
-    /**
-     * Open a menu. This menu will be managed by the Fragment and closed when the view is destroyed.
-     * If a menu is already opened, this call is ignored.
-     *
-     * @param anchor The [View] to anchor the menu to.
-     * @param menuRes The resource of the menu to load.
-     * @param block A block that is ran within [PopupMenu] that allows further configuration.
-     */
-    protected fun openMenu(anchor: View, @MenuRes menuRes: Int, block: PopupMenu.() -> Unit) {
-        if (currentMenu != null) {
-            logD("Menu already present, not launching")
-            return
-        }
-
-        logD("Opening popup menu menu")
-
-        currentMenu =
-            PopupMenu(requireContext(), anchor).apply {
-                inflate(menuRes)
-                MenuCompat.setGroupDividerEnabled(menu, true)
-                block()
-                setOnDismissListener { currentMenu = null }
-                show()
-            }
     }
 }

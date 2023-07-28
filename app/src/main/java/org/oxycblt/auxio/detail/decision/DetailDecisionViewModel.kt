@@ -106,16 +106,16 @@ sealed interface ArtistShowChoices {
     class FromSong(val song: Song) : ArtistShowChoices {
         override val uid = song.uid
         override val choices = song.artists
+
         override fun sanitize(newLibrary: DeviceLibrary) =
             newLibrary.findSong(uid)?.let { FromSong(it) }
     }
 
-    /**
-     * Backing implementation of [ArtistShowChoices] that is based on an [AlbumArtistShowChoices].
-     */
+    /** Backing implementation of [ArtistShowChoices] that is based on an [Album]. */
     data class FromAlbum(val album: Album) : ArtistShowChoices {
         override val uid = album.uid
         override val choices = album.artists
+
         override fun sanitize(newLibrary: DeviceLibrary) =
             newLibrary.findAlbum(uid)?.let { FromAlbum(it) }
     }

@@ -19,8 +19,8 @@
 package org.oxycblt.auxio.music.user
 
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
@@ -42,7 +42,9 @@ private constructor(
 
     override fun equals(other: Any?) =
         other is PlaylistImpl && uid == other.uid && name == other.name && songs == other.songs
+
     override fun hashCode() = hashCode
+
     override fun toString() = "Playlist(uid=$uid, name=$name)"
 
     /**
@@ -78,7 +80,7 @@ private constructor(
          */
         fun from(name: String, songs: List<Song>, musicSettings: MusicSettings) =
             PlaylistImpl(
-                Music.UID.auxio(MusicMode.PLAYLISTS),
+                Music.UID.auxio(MusicType.PLAYLISTS),
                 Name.Known.from(name, null, musicSettings),
                 songs)
 

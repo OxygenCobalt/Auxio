@@ -92,9 +92,9 @@
     <string name="set_pre_amp_without">Etiketsiz ayarla</string>
     <string name="set_pre_amp_with">Etiket ile ayarla</string>
     <string name="set_pre_amp_warning">Uyarı: Ön amfinin yüksek bir pozitif değere değiştirilmesi bazı ses parçalarında pik yapmaya neden olabilir.</string>
-    <string name="set_playback_mode_none">Gösterilen öğeden çal</string>
-    <string name="set_playback_mode_songs">Tüm şarkılardan çal</string>
-    <string name="set_playback_mode_album">Albümden çal</string>
+    <string name="set_play_song_none">Gösterilen öğeden çal</string>
+    <string name="set_play_song_from_all">Tüm şarkılardan çal</string>
+    <string name="set_play_song_from_album">Albümden çal</string>
     <string name="set_dirs">Müzik klasörleri</string>
     <string name="set_dirs_mode_include_desc">Müzik <b>yalnızca</b> eklediğiniz klasörlerden yüklenecektir.</string>
     <string name="desc_album_cover">%s Albümünün kapağı</string>
@@ -112,9 +112,9 @@
     <string name="clr_lime">Kireç</string>
     <string name="clr_yellow">Sarı</string>
     <string name="clr_orange">Turuncu</string>
-    <string name="set_library_song_playback_mode">Kitaplıktan çalarken</string>
-    <string name="set_detail_song_playback_mode">Öğe ayrıntılarından çalarken</string>
-    <string name="set_playback_mode_artist">Sanatçıdan çal</string>
+    <string name="set_play_in_list_with">Kitaplıktan çalarken</string>
+    <string name="set_play_in_parent_with">Öğe ayrıntılarından çalarken</string>
+    <string name="set_play_song_from_artist">Sanatçıdan çal</string>
     <string name="fmt_lib_artist_count">Yüklenen sanatçılar: %d</string>
     <string name="fmt_lib_genre_count">Yüklenen türler: %d</string>
     <string name="fmt_sample_rate">%d Hz</string>
@@ -248,7 +248,7 @@
     <string name="set_separators_slash">Eğik çizgi (/)</string>
     <string name="desc_queue_bar">Kuyruğu aç</string>
     <string name="set_action_mode_repeat">Tekrar kipi</string>
-    <string name="set_playback_mode_genre">Türden çal</string>
+    <string name="set_play_song_from_genre">Türden çal</string>
     <string name="set_exclude_non_music_desc">Podcast\'ler gibi müzik olmayan ses dosyalarını yok say</string>
     <string name="set_separators_warning">Uyarı: Bu ayarın kullanılması bazı etiketlerin yanlışlıkla birden fazla değere sahip olarak yorumlanmasına neden olabilir. Bunu, istenmeyen ayırıcı karakterlerin önüne ters eğik çizgi (\\) koyarak çözebilirsiniz.</string>
     <string name="set_exclude_non_music">Müzik olmayanları hariç tut</string>
@@ -263,7 +263,7 @@
     <string name="set_playback">Oynatma</string>
     <string name="set_library">Kütüphane</string>
     <string name="set_state">Kalıcılık</string>
-    <string name="lbl_sort_dec">Azalan</string>
+    <string name="lbl_sort_dsc">Azalan</string>
     <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
     <string name="set_dirs_list">Klasörler</string>
     <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>

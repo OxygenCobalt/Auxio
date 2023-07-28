@@ -39,8 +39,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.detail.Show
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.pager.PlaybackPageListener
 import org.oxycblt.auxio.playback.pager.PlaybackPagerAdapter
@@ -52,7 +52,7 @@ import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -71,9 +71,9 @@ class PlaybackPanelFragment :
     StyledSeekBar.Listener,
     PlaybackPageListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val queueModel: QueueViewModel by activityViewModels()
+    private val listModel: ListViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
     private var coverAdapter: PlaybackPagerAdapter? = null
 
@@ -103,6 +103,13 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { playbackModel.openMain() }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
+            overrideOnOverflowMenuClick {
+                playbackModel.song.value?.let {
+                    // No playback options are actually available in the menu, so use a junk
+                    // PlaySong option.
+                    listModel.openMenu(R.menu.item_playback_song, it, PlaySong.ByItself)
+                }
+            }
         }
 
         // cover carousel adapter
@@ -142,52 +149,29 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.setOnMenuItemClickListener(null)
     }
 
-    override fun onMenuItemClick(item: MenuItem) =
-        when (item.itemId) {
-            R.id.action_open_equalizer -> {
-                // Launch the system equalizer app, if possible.
-                logD("Launching equalizer")
-                val equalizerIntent =
-                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                        // Provide audio session ID so the equalizer can show options for this app
-                        // in particular.
-                        .putExtra(
-                            AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
-                        // Signal music type so that the equalizer settings are appropriate for
-                        // music playback.
-                        .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                try {
-                    requireNotNull(equalizerLauncher) {
-                            "Equalizer panel launcher was not available"
-                        }
-                        .launch(equalizerIntent)
-                } catch (e: ActivityNotFoundException) {
-                    requireContext().showToast(R.string.err_no_app)
-                }
-                true
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_open_equalizer) {
+            // Launch the system equalizer app, if possible.
+            logD("Launching equalizer")
+            val equalizerIntent =
+                Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                    // Provide audio session ID so the equalizer can show options for this app
+                    // in particular.
+                    .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
+                    // Signal music type so that the equalizer settings are appropriate for
+                    // music playback.
+                    .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            try {
+                requireNotNull(equalizerLauncher) { "Equalizer panel launcher was not available" }
+                    .launch(equalizerIntent)
+            } catch (e: ActivityNotFoundException) {
+                requireContext().showToast(R.string.err_no_app)
             }
-            R.id.action_artist_details -> {
-                navigateToCurrentArtist()
-                true
-            }
-            R.id.action_album_details -> {
-                navigateToCurrentAlbum()
-                true
-            }
-            R.id.action_playlist_add -> {
-                playbackModel.song.value?.let(musicModel::addToPlaylist)
-                true
-            }
-            R.id.action_detail -> {
-                playbackModel.song.value?.let(detailModel::showSong)
-                true
-            }
-            R.id.action_share -> {
-                playbackModel.song.value?.let { requireContext().share(it) }
-                true
-            }
-            else -> false
+            return true
         }
+
+        return false
+    }
 
     override fun onSeekConfirmed(positionDs: Long) {
         playbackModel.seekTo(positionDs)

@@ -23,9 +23,9 @@
     <string name="lbl_playback">Сейчас играет</string>
     <string name="lbl_play">Играть</string>
     <string name="lbl_shuffle">Перемешать</string>
-    <string name="set_playback_mode_songs">Играть все композиции</string>
-    <string name="set_playback_mode_album">Играть альбом</string>
-    <string name="set_playback_mode_artist">Играть исполнителя</string>
+    <string name="set_play_song_from_all">Играть все композиции</string>
+    <string name="set_play_song_from_album">Играть альбом</string>
+    <string name="set_play_song_from_artist">Играть исполнителя</string>
     <string name="lbl_queue">Очередь</string>
     <string name="lbl_play_next">Играть далее</string>
     <string name="lbl_queue_add">Добавить в очередь</string>
@@ -65,7 +65,7 @@
     <string name="set_replay_gain_mode_album">По альбому</string>
     <string name="set_replay_gain_mode_dynamic">Предпочитать по альбому, если он воспроизводится</string>
     <string name="set_personalize">Поведение</string>
-    <string name="set_library_song_playback_mode">При воспроизведении из библиотеки</string>
+    <string name="set_play_in_list_with">При воспроизведении из библиотеки</string>
     <string name="set_keep_shuffle">Запоминать перемешивание</string>
     <string name="set_keep_shuffle_desc">Запоминать режим перемешивания для новых треков</string>
     <string name="set_rewind_prev">Сначала перемотать трек</string>
@@ -146,8 +146,8 @@
     <string name="lbl_shuffle_shortcut_short">Перемешать</string>
     <string name="lbl_shuffle_shortcut_long">Перемешать всё</string>
     <string name="lbl_ok">ОК</string>
-    <string name="set_detail_song_playback_mode">При воспроизведении из сведений</string>
-    <string name="set_playback_mode_none">Воспроизведение с показанного элемента</string>
+    <string name="set_play_in_parent_with">При воспроизведении из сведений</string>
+    <string name="set_play_song_none">Воспроизведение с показанного элемента</string>
     <string name="lbl_song_count">Номер песни</string>
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_disc">Диск</string>
@@ -264,7 +264,7 @@
     <string name="lbl_wiki">Вики</string>
     <string name="lbl_reset">Сбросить</string>
     <string name="fmt_list">%1$s,%2$s</string>
-    <string name="set_playback_mode_genre">Играть жанр</string>
+    <string name="set_play_song_from_genre">Играть жанр</string>
     <string name="set_behavior">Поведение</string>
     <string name="set_replay_gain">Выравнивание громкости ReplayGain</string>
     <string name="set_music">Музыка</string>
@@ -277,7 +277,7 @@
     <string name="set_playback">Воспроизведение</string>
     <string name="set_dirs_list">Папки</string>
     <string name="set_state">Состояние воспроизведения</string>
-    <string name="lbl_sort_dec">По убыванию</string>
+    <string name="lbl_sort_dsc">По убыванию</string>
     <string name="lbl_playlist">Плейлист</string>
     <string name="lbl_playlists">Плейлисты</string>
     <string name="desc_playlist_image">Обложка плейлиста для %s</string>
@@ -305,4 +305,6 @@
     <string name="set_square_covers">Использовать квадратные обложки альбомов</string>
     <string name="set_square_covers_desc">Обрезать все обложки альбомов до соотношения сторон 1:1</string>
     <string name="lbl_song">Песня</string>
+    <string name="lbl_parent_detail">Вид</string>
+    <string name="set_play_song_by_itself">Воспроизвести трек отдельно</string>
 </resources>

@@ -22,7 +22,7 @@ import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.Player
 import androidx.media3.common.audio.AudioProcessor
-import androidx.media3.exoplayer.audio.BaseAudioProcessor
+import androidx.media3.common.audio.BaseAudioProcessor
 import java.nio.ByteBuffer
 import javax.inject.Inject
 import kotlin.math.pow
@@ -81,6 +81,7 @@ constructor(
             applyReplayGain(queue.currentSong)
         }
     }
+
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
         logD("New playback started, updating playback information")
         applyReplayGain(queue.currentSong)

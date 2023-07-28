@@ -22,7 +22,7 @@ import android.content.Context
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 
 /**
  * A [TabLayoutMediator.TabConfigurationStrategy] that uses larger/smaller tab configurations
@@ -32,7 +32,7 @@ import org.oxycblt.auxio.music.MusicMode
  * @param tabs Current tab configuration from settings
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicMode>) :
+class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicType>) :
     TabLayoutMediator.TabConfigurationStrategy {
     private val width = context.resources.configuration.smallestScreenWidthDp
 
@@ -41,23 +41,23 @@ class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicMode>) :
         val string: Int
 
         when (tabs[position]) {
-            MusicMode.SONGS -> {
+            MusicType.SONGS -> {
                 icon = R.drawable.ic_song_24
                 string = R.string.lbl_songs
             }
-            MusicMode.ALBUMS -> {
+            MusicType.ALBUMS -> {
                 icon = R.drawable.ic_album_24
                 string = R.string.lbl_albums
             }
-            MusicMode.ARTISTS -> {
+            MusicType.ARTISTS -> {
                 icon = R.drawable.ic_artist_24
                 string = R.string.lbl_artists
             }
-            MusicMode.GENRES -> {
+            MusicType.GENRES -> {
                 icon = R.drawable.ic_genre_24
                 string = R.string.lbl_genres
             }
-            MusicMode.PLAYLISTS -> {
+            MusicType.PLAYLISTS -> {
                 icon = R.drawable.ic_playlist_24
                 string = R.string.lbl_playlists
             }

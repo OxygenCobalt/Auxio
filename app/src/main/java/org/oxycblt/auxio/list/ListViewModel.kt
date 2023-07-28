@@ -24,15 +24,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -46,10 +47,8 @@ import org.oxycblt.auxio.util.logW
 @HiltViewModel
 class ListViewModel
 @Inject
-constructor(
-    private val musicRepository: MusicRepository,
-    private val musicSettings: MusicSettings
-) : ViewModel(), MusicRepository.UpdateListener {
+constructor(private val listSettings: ListSettings, private val musicRepository: MusicRepository) :
+    ViewModel(), MusicRepository.UpdateListener {
     private val _selected = MutableStateFlow(listOf<Music>())
     /** The currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>
@@ -121,9 +120,9 @@ constructor(
             .flatMap {
                 when (it) {
                     is Song -> listOf(it)
-                    is Album -> musicSettings.albumSongSort.songs(it.songs)
-                    is Artist -> musicSettings.artistSongSort.songs(it.songs)
-                    is Genre -> musicSettings.genreSongSort.songs(it.songs)
+                    is Album -> listSettings.albumSongSort.songs(it.songs)
+                    is Artist -> listSettings.artistSongSort.songs(it.songs)
+                    is Genre -> listSettings.genreSongSort.songs(it.songs)
                     is Playlist -> it.songs
                 }
             }
@@ -146,10 +145,12 @@ constructor(
      *
      * @param menuRes The resource of the menu to use.
      * @param song The [Song] to show.
+     * @param playWith A [PlaySong] command to give context to what "Play" and "Shuffle" actions
+     *   should do.
      */
-    fun openMenu(@MenuRes menuRes: Int, song: Song) {
+    fun openMenu(@MenuRes menuRes: Int, song: Song, playWith: PlaySong) {
         logD("Opening menu for $song")
-        openImpl(Menu.ForSong(menuRes, song))
+        openImpl(Menu.ForSong(menuRes, song, playWith))
     }
 
     /**
@@ -208,27 +209,4 @@ constructor(
         }
         _menu.put(menu)
     }
-}
-
-/**
- * Command to navigate to a specific menu dialog configuration.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-sealed interface Menu {
-    /** The android resource ID of the menu options to display in the dialog. */
-    val menuRes: Int
-    /** The [Music] that the menu should act on. */
-    val music: Music
-
-    /** Navigate to a [Song] menu dialog. */
-    class ForSong(@MenuRes override val menuRes: Int, override val music: Song) : Menu
-    /** Navigate to a [Album] menu dialog. */
-    class ForAlbum(@MenuRes override val menuRes: Int, override val music: Album) : Menu
-    /** Navigate to a [Artist] menu dialog. */
-    class ForArtist(@MenuRes override val menuRes: Int, override val music: Artist) : Menu
-    /** Navigate to a [Genre] menu dialog. */
-    class ForGenre(@MenuRes override val menuRes: Int, override val music: Genre) : Menu
-    /** Navigate to a [Playlist] menu dialog. */
-    class ForPlaylist(@MenuRes override val menuRes: Int, override val music: Playlist) : Menu
 }

@@ -115,9 +115,8 @@ interface SelectableListListener<in T> : ClickableListListener<T> {
      * Called when an item in the list requests that a menu related to it should be opened.
      *
      * @param item The [T] item to open a menu for.
-     * @param anchor The [View] to anchor the menu to.
      */
-    fun onOpenMenu(item: T, anchor: View)
+    fun onOpenMenu(item: T)
 
     /**
      * Called when an item in the list requests that it be selected.
@@ -148,6 +147,6 @@ interface SelectableListListener<in T> : ClickableListListener<T> {
             true
         }
         // Map the menu button to the menu opening listener.
-        menuButton.setOnClickListener { onOpenMenu(item, it) }
+        menuButton.setOnClickListener { onOpenMenu(item) }
     }
 }

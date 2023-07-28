@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<!--    <item-->
-<!--        android:id="@+id/action_play"-->
-<!--        android:title="@string/lbl_play"-->
-<!--        android:icon="@drawable/ic_play_24" />-->
-<!--    <item-->
-<!--        android:id="@+id/action_shuffle"-->
-<!--        android:title="@string/lbl_shuffle"-->
-<!--        android:icon="@drawable/ic_shuffle_off_24"/>-->
+    <item
+        android:id="@+id/action_play"
+        android:title="@string/lbl_play"
+        android:icon="@drawable/ic_play_24" />
+    <item
+        android:id="@+id/action_shuffle"
+        android:title="@string/lbl_shuffle"
+        android:icon="@drawable/ic_shuffle_off_24"/>
     <item
         android:id="@+id/action_play_next"
         android:title="@string/lbl_play_next"

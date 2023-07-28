@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Auxio Project
+ * Copyright (c) 2023 Auxio Project
  * Sort.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list
+package org.oxycblt.auxio.list.sort
 
-import androidx.annotation.IdRes
 import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -26,7 +25,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Date
@@ -42,22 +40,6 @@ import org.oxycblt.auxio.music.info.Disc
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class Sort(val mode: Mode, val direction: Direction) {
-    /**
-     * Create a new [Sort] with the same [mode], but a different [Direction].
-     *
-     * @param direction The new [Direction] to sort in.
-     * @return A new sort with the same mode, but with the new [Direction] value applied.
-     */
-    fun withDirection(direction: Direction) = Sort(mode, direction)
-
-    /**
-     * Create a new [Sort] with the same [direction] value, but different [mode] value.
-     *
-     * @param mode Tbe new mode to use for the Sort.
-     * @return A new sort with the same [direction] value, but with the new [mode] applied.
-     */
-    fun withMode(mode: Mode) = Sort(mode, direction)
-
     /**
      * Sort a list of [Song]s.
      *
@@ -163,8 +145,8 @@ data class Sort(val mode: Mode, val direction: Direction) {
     sealed interface Mode {
         /** The integer representation of this sort mode. */
         val intCode: Int
-        /** The item ID of this sort mode in menu resources. */
-        val itemId: Int
+        /** The string resource of the human-readable name of this sort mode. */
+        val stringRes: Int
 
         /**
          * Get a [Comparator] that sorts [Song]s according to this [Mode].
@@ -216,12 +198,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Music.name
          */
-        object ByName : Mode {
+        data object ByName : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_NAME
 
-            override val itemId: Int
-                get() = R.id.option_sort_name
+            override val stringRes: Int
+                get() = R.string.lbl_name
 
             override fun getSongComparator(direction: Direction) =
                 compareByDynamic(direction, BasicComparator.SONG)
@@ -244,12 +226,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Album.name
          */
-        object ByAlbum : Mode {
+        data object ByAlbum : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ALBUM
 
-            override val itemId: Int
-                get() = R.id.option_sort_album
+            override val stringRes: Int
+                get() = R.string.lbl_album
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -264,12 +246,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Artist.name
          */
-        object ByArtist : Mode {
+        data object ByArtist : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ARTIST
 
-            override val itemId: Int
-                get() = R.id.option_sort_artist
+            override val stringRes: Int
+                get() = R.string.lbl_artist
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -293,12 +275,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
          * @see Song.date
          * @see Album.dates
          */
-        object ByDate : Mode {
+        data object ByDate : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_YEAR
 
-            override val itemId: Int
-                get() = R.id.option_sort_year
+            override val stringRes: Int
+                get() = R.string.lbl_date
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -315,12 +297,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
         }
 
         /** Sort by the duration of an item. */
-        object ByDuration : Mode {
+        data object ByDuration : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DURATION
 
-            override val itemId: Int
-                get() = R.id.option_sort_duration
+            override val stringRes: Int
+                get() = R.string.lbl_duration
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -345,17 +327,13 @@ data class Sort(val mode: Mode, val direction: Direction) {
                     compareBy(BasicComparator.PLAYLIST))
         }
 
-        /**
-         * Sort by the amount of songs an item contains. Only available for [MusicParent]s.
-         *
-         * @see MusicParent.songs
-         */
-        object ByCount : Mode {
+        /** Sort by the amount of songs an item contains. Only available for MusicParents. */
+        data object ByCount : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_COUNT
 
-            override val itemId: Int
-                get() = R.id.option_sort_count
+            override val stringRes: Int
+                get() = R.string.lbl_song_count
 
             override fun getAlbumComparator(direction: Direction): Comparator<Album> =
                 MultiComparator(
@@ -381,12 +359,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Song.disc
          */
-        object ByDisc : Mode {
+        data object ByDisc : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DISC
 
-            override val itemId: Int
-                get() = R.id.option_sort_disc
+            override val stringRes: Int
+                get() = R.string.lbl_disc
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -400,12 +378,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Song.track
          */
-        object ByTrack : Mode {
+        data object ByTrack : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_TRACK
 
-            override val itemId: Int
-                get() = R.id.option_sort_track
+            override val stringRes: Int
+                get() = R.string.lbl_track
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -420,12 +398,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
          * @see Song.dateAdded
          * @see Album.dates
          */
-        object ByDateAdded : Mode {
+        data object ByDateAdded : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DATE_ADDED
 
-            override val itemId: Int
-                get() = R.id.option_sort_date_added
+            override val stringRes: Int
+                get() = R.string.lbl_date_added
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -456,27 +434,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
                     ByDisc.intCode -> ByDisc
                     ByTrack.intCode -> ByTrack
                     ByDateAdded.intCode -> ByDateAdded
-                    else -> null
-                }
-
-            /**
-             * Convert a menu item ID into a [Mode].
-             *
-             * @param itemId The menu resource ID to convert
-             * @return A [Mode] corresponding to the given ID, or null if the ID is invalid.
-             * @see itemId
-             */
-            fun fromItemId(@IdRes itemId: Int) =
-                when (itemId) {
-                    ByName.itemId -> ByName
-                    ByAlbum.itemId -> ByAlbum
-                    ByArtist.itemId -> ByArtist
-                    ByDate.itemId -> ByDate
-                    ByDuration.itemId -> ByDuration
-                    ByCount.itemId -> ByCount
-                    ByDisc.itemId -> ByDisc
-                    ByTrack.itemId -> ByTrack
-                    ByDateAdded.itemId -> ByDateAdded
                     else -> null
                 }
         }

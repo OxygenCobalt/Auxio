@@ -5,23 +5,9 @@
         android:id="@+id/action_open_equalizer"
         android:icon="@drawable/ic_config_24"
         android:title="@string/lbl_equalizer"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
-        android:id="@+id/action_artist_details"
-        android:title="@string/lbl_artist_details"
+        android:id="@+id/placeholder"
+        android:title=""
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_album_details"
-        android:title="@string/lbl_album_details"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_playlist_add"
-        android:title="@string/lbl_playlist_add" />
-    <item
-        android:id="@+id/action_detail"
-        android:title="@string/lbl_song_detail"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_share"
-        android:title="@string/lbl_share" />
 </menu>

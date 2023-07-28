@@ -50,7 +50,13 @@
     </style>
 
     <style name="Widget.Auxio.BottomSheet.Dialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
-    <item name="bottomSheetStyle">@style/Widget.Auxio.BottomSheet.Modal</item>
+        <item name="bottomSheetStyle">@style/Widget.Auxio.BottomSheet.Modal</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Auxio.BottomSheet.Dialog</item>
+    </style>
+
+    <style name="Animation.Auxio.BottomSheet.Dialog" parent="Animation.Material3.BottomSheetDialog">
+        <item name="android:windowEnterAnimation">@anim/bottom_sheet_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/bottom_sheet_slide_out</item>
     </style>
 
     <style name="Widget.Auxio.Image.Small" parent="">

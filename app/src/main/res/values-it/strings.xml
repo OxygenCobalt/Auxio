@@ -5,12 +5,12 @@
     <string name="lng_widget">Vedi e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
-    <string name="lbl_grant">Permetti</string>
+    <string name="lbl_grant">Autorizza</string>
     <string name="lbl_genres">Generi</string>
     <string name="lbl_artists">Artisti</string>
     <string name="lbl_albums">Album</string>
-    <string name="lbl_songs">Canzoni</string>
-    <string name="lbl_all_songs">Tutte le canzoni</string>
+    <string name="lbl_songs">Brani</string>
+    <string name="lbl_all_songs">Tutte i brani</string>
     <string name="lbl_search">Cerca</string>
     <string name="lbl_filter">Filtro</string>
     <string name="lbl_filter_all">Tutto</string>
@@ -23,9 +23,9 @@
     <string name="lbl_playback">Ora in riproduzione</string>
     <string name="lbl_play">Riproduci</string>
     <string name="lbl_shuffle">Mescola</string>
-    <string name="set_playback_mode_songs">Riproduci da tutte le canzoni</string>
-    <string name="set_playback_mode_album">Riproduci dall\'album</string>
-    <string name="set_playback_mode_artist">Riproduci dall\'artista</string>
+    <string name="set_play_song_from_all">Riproduci da tutti i brani</string>
+    <string name="set_play_song_from_album">Riproduci dall\'album</string>
+    <string name="set_play_song_from_artist">Riproduci dall\'artista</string>
     <string name="lbl_queue">Coda</string>
     <string name="lbl_play_next">Riproduci successivo</string>
     <string name="lbl_queue_add">Accoda</string>
@@ -66,13 +66,13 @@
     <string name="set_replay_gain_mode_album">Preferisci album</string>
     <string name="set_replay_gain_mode_dynamic">Preferisci l\'album se in riproduzione</string>
     <string name="set_personalize">Comportamento</string>
-    <string name="set_library_song_playback_mode">Quando in riproduzione dalla libreria</string>
+    <string name="set_play_in_list_with">Quando in riproduzione dalla libreria</string>
     <string name="set_keep_shuffle">Mantieni mescolamento</string>
-    <string name="set_keep_shuffle_desc">Mantiene il mescolamento anche se una nuova canzone è selezionata</string>
+    <string name="set_keep_shuffle_desc">Mantiene il mescolamento anche se un nuovo brano è selezionato</string>
     <string name="set_rewind_prev">Riavvolgi prima di saltare indietro</string>
-    <string name="set_rewind_prev_desc">Riavvolge prima di saltare alla traccia precedente</string>
+    <string name="set_rewind_prev_desc">Riavvolge prima di saltare al brano precedente</string>
     <string name="set_repeat_pause">Pausa alla ripetizione</string>
-    <string name="set_repeat_pause_desc">Pausa quando una canzone si ripete</string>
+    <string name="set_repeat_pause_desc">Pausa quando un brano si ripete</string>
     <string name="set_content">Contenuti</string>
     <string name="set_save_state">Salva stato riproduzione</string>
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
@@ -89,13 +89,13 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Canzone %d</string>
     <string name="desc_play_pause">Riproduci o pausa</string>
-    <string name="desc_skip_next">Salta alla canzone successiva</string>
-    <string name="desc_skip_prev">Salta alla canzone precedente</string>
+    <string name="desc_skip_next">Salta a brano successivo</string>
+    <string name="desc_skip_prev">Salta a ultimo brano</string>
     <string name="desc_change_repeat">Cambia modalità ripetizione</string>
     <string name="desc_shuffle">Attiva o disattiva mescolamento</string>
-    <string name="desc_shuffle_all">Mescola tutte le canzoni</string>
-    <string name="desc_remove_song">Rimuove questa canzone della coda</string>
-    <string name="desc_song_handle">Muove questa canzone della coda</string>
+    <string name="desc_shuffle_all">Mescola tutti i brani</string>
+    <string name="desc_remove_song">Rimuovi questo brano</string>
+    <string name="desc_song_handle">Sposta questo brano</string>
     <string name="desc_tab_handle">Muove questa scheda</string>
     <string name="desc_clear_search">Cancella la query di ricerca</string>
     <string name="desc_music_dir_delete">Rimuovi cartella</string>
@@ -128,15 +128,15 @@
     <string name="clr_brown">Marrone</string>
     <string name="clr_grey">Grigio</string>
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count">Canzoni trovate: %d</string>
+    <string name="fmt_lib_song_count">Brani trovati: %d</string>
     <string name="fmt_lib_album_count">Album trovati: %d</string>
     <string name="fmt_lib_artist_count">Artisti trovati: %d</string>
     <string name="fmt_lib_genre_count">Generi trovati: %d</string>
     <string name="fmt_lib_total_duration">Durata totale: %s</string>
     <plurals name="fmt_song_count">
-        <item quantity="one">%d canzone</item>
-        <item quantity="many">%d canzoni</item>
-        <item quantity="other">%d canzoni</item>
+        <item quantity="one">%d brano</item>
+        <item quantity="many">%d brani</item>
+        <item quantity="other">%d brani</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d album</item>
@@ -154,14 +154,14 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Caricamento libreria musicale… (%1$d/%2$d)</string>
-    <string name="set_detail_song_playback_mode">Quando in riproduzione dai dettagli dell\'elemento</string>
+    <string name="set_play_in_parent_with">Quando in riproduzione dai dettagli dell\'elemento</string>
     <string name="set_pre_amp_warning">Attenzione: impostare valore positivi alti può provocare distorsioni su alcune tracce.</string>
     <string name="set_pre_amp_without">Regolazione senza tag</string>
     <string name="lbl_shuffle_shortcut_short">Mescola</string>
     <string name="lbl_shuffle_shortcut_long">Mescola tutto</string>
     <string name="set_pre_amp_with">Regolazione con tag</string>
     <string name="set_pre_amp_desc">Il pre-amp è applicato alla regolazione esistente durante la riproduzione</string>
-    <string name="set_playback_mode_none">Riproduci dall\'elemento mostrato</string>
+    <string name="set_play_song_none">Riproduci dall\'elemento mostrato</string>
     <string name="set_dirs_desc">Gestisci le cartelle da dove caricare la musica</string>
     <string name="set_dirs">Cartelle musica</string>
     <string name="set_dirs_mode_exclude">Escludi</string>
@@ -174,13 +174,13 @@
     <string name="lbl_indexer">Caricamento musica</string>
     <string name="lng_indexing">Caricamento libreria musicale…</string>
     <string name="lbl_duration">Durata</string>
-    <string name="lbl_song_count">Numero canzoni</string>
+    <string name="lbl_song_count">Numero brani</string>
     <string name="lbl_disc">Disco</string>
     <string name="lbl_track">Traccia</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_sample_rate">Frequenza di campionamento</string>
     <string name="lbl_song_detail">Vedi proprietà</string>
-    <string name="lbl_props">Proprietà canzone</string>
+    <string name="lbl_props">Proprietà brano</string>
     <string name="lbl_file_name">Nome file</string>
     <string name="lbl_relative_path">Directory superiore</string>
     <string name="lbl_format">Formato</string>
@@ -239,7 +239,7 @@
     <string name="set_separators_warning">Attenzione: potrebbero verificarsi degli errori nella interpretazione di alcuni tag con valori multipli. Puoi risolvere aggiungendo come prefisso la barra rovesciata (\\) ai separatori indesiderati.</string>
     <string name="set_separators_and">E commerciale (&amp;)</string>
     <string name="lbl_compilation_live">Raccolte live</string>
-    <string name="lbl_compilation_remix">Raccolta di remix</string>
+    <string name="lbl_compilation_remix">Raccolta remix</string>
     <string name="lbl_mixes">Mix DJ</string>
     <string name="lbl_mix">Mix DJ</string>
     <string name="set_cover_mode_quality">Alta qualità</string>
@@ -258,7 +258,7 @@
     <string name="lbl_shuffle_selected">Mescola selezionati</string>
     <string name="lbl_play_selected">Riproduci selezionati</string>
     <string name="fmt_selected">%d selezionati</string>
-    <string name="set_playback_mode_genre">Riproduci dal genere</string>
+    <string name="set_play_song_from_genre">Riproduci dal genere</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Ripristina</string>
@@ -274,7 +274,7 @@
     <string name="set_state">Persistenza</string>
     <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
     <string name="set_audio_desc">Configura comportamento di suono e riproduzione</string>
-    <string name="lbl_sort_dec">Discendente</string>
+    <string name="lbl_sort_dsc">Discendente</string>
     <string name="lbl_playlist">Playlist</string>
     <string name="lbl_playlists">Playlist</string>
     <string name="set_intelligent_sorting">Ordinazione intelligente</string>
@@ -284,8 +284,8 @@
     <string name="lbl_new_playlist">Nuova playlist</string>
     <string name="lbl_playlist_add">Aggiungi a playlist</string>
     <string name="lng_playlist_created">Playlist creata</string>
-    <string name="lng_playlist_added">Aggiunto alla playlist</string>
-    <string name="def_song_count">Niente canzoni</string>
+    <string name="lng_playlist_added">Aggiunto a playlist</string>
+    <string name="def_song_count">Nessun brano</string>
     <string name="fmt_def_playlist">Playlist %d</string>
     <string name="lbl_delete">Elimina</string>
     <string name="lbl_confirm_delete_playlist">Eliminare la playlist\?</string>
@@ -301,6 +301,7 @@
     <string name="fmt_editing">Modifica di %s</string>
     <string name="set_square_covers">Forza copertine album quadrate</string>
     <string name="set_square_covers_desc">Adatta tutte le copertine degli album ad una visualizzazione 1:1</string>
-    <string name="lbl_song">Canzone</string>
+    <string name="lbl_song">Brano</string>
     <string name="lbl_parent_detail">Visualizza</string>
+    <string name="set_play_song_by_itself">Riproduci brano da solo</string>
 </resources>

@@ -143,14 +143,14 @@
     <string name="set_action_mode_repeat">Режим повторення</string>
     <string name="set_dirs_mode">Режим</string>
     <string name="set_pre_amp">Попередній підсилювач ReplayGain</string>
-    <string name="set_playback_mode_album">Відтворити альбом</string>
-    <string name="set_library_song_playback_mode">При відтворенні з бібліотеки</string>
+    <string name="set_play_song_from_album">Відтворити альбом</string>
+    <string name="set_play_in_list_with">При відтворенні з бібліотеки</string>
     <string name="set_replay_gain_mode_dynamic">Віддавати перевагу альбому, якщо він відтворюється</string>
     <string name="lbl_state_wiped">Стан відтворення очищено</string>
     <string name="set_black_mode_desc">Використовувати повністю чорну тему</string>
     <string name="set_hide_collaborators_desc">Показувати лише тих виконавців, які безпосередньо зазначені в альбомі (найкраще працює в добре позначених бібліотеках)</string>
     <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до спотворення звуку в деяких піснях.</string>
-    <string name="set_detail_song_playback_mode">При відтворенні з деталей предмета</string>
+    <string name="set_play_in_parent_with">При відтворенні з деталей предмета</string>
     <string name="set_rescan_desc">Очистити кеш тегів і повністю перезавантажити музичну бібліотеку (повільніше, але ефективніше)</string>
     <string name="set_observing">Автоматичне перезавантаження</string>
     <string name="set_observing_desc">Перезавантажувати бібліотеку при виявленні змін (потрібне постійне сповіщення)</string>
@@ -164,10 +164,10 @@
     <string name="lng_observing">Відстеження змін в музичній бібліотеці…</string>
     <string name="set_bar_action">Власна дія для панелі відтворення</string>
     <string name="set_pre_amp_without">Регулювання без тегів</string>
-    <string name="set_playback_mode_none">Відтворення з показаного елемента</string>
+    <string name="set_play_song_none">Відтворення з показаного елемента</string>
     <string name="set_keep_shuffle_desc">Продовжити перемішування після вибору нової пісні</string>
-    <string name="set_playback_mode_artist">Відтворити виконавця</string>
-    <string name="set_playback_mode_genre">Відтворити жанр</string>
+    <string name="set_play_song_from_artist">Відтворити виконавця</string>
+    <string name="set_play_song_from_genre">Відтворити жанр</string>
     <string name="set_rewind_prev">Перемотати назад перед відтворенням попередньої пісні</string>
     <string name="set_save_desc">Зберегти поточний стан відтворення</string>
     <string name="set_rescan">Пересканувати музику</string>
@@ -187,7 +187,7 @@
     <string name="set_rewind_prev_desc">Перемотайте на початок пісні перед відтворенням попередньої</string>
     <string name="set_round_mode_desc">Увімкнути заокруглені кути на додаткових елементах інтерфейсу (потрібно заокруглення обкладинок альбомів)</string>
     <string name="set_pre_amp_desc">Попередній підсилювач застосовується до наявних налаштувань під час відтворення</string>
-    <string name="set_playback_mode_songs">Відтворити всі пісні</string>
+    <string name="set_play_song_from_all">Відтворити всі пісні</string>
     <string name="set_reindex_desc">Перезавантажити музичну бібліотеку, використовуючи кешовані теги, коли це можливо</string>
     <string name="set_separators_slash">Скісна риска (/)</string>
     <string name="set_separators_plus">Плюс (+)</string>
@@ -274,7 +274,7 @@
     <string name="set_state">Стан відтворення</string>
     <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
-    <string name="lbl_sort_dec">За спаданням</string>
+    <string name="lbl_sort_dsc">За спаданням</string>
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
     <string name="lbl_playlist">Список відтворення</string>
     <string name="lbl_playlists">Списки відтворення</string>
@@ -303,4 +303,5 @@
     <string name="set_square_covers">Примусові квадратні обкладинки</string>
     <string name="lbl_song">Пісня</string>
     <string name="lbl_parent_detail">Переглянути</string>
+    <string name="set_play_song_by_itself">Відтворити пісню окремо</string>
 </resources>

@@ -204,14 +204,14 @@ private fun String.parseId3v1Genre(): String? {
                 "RX" -> "Remix"
                 else -> null
             }
-    return GENRE_TABLE.getOrNull(numeric)
+    return genreTable.getOrNull(numeric)
 }
 
 /**
  * A [Regex] that implements parsing for ID3v2's genre format. Derived from mutagen:
  * https://github.com/quodlibet/mutagen
  */
-private val ID3V2_GENRE_RE by lazy { Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?") }
+private val id3v2GenreRe by lazy { Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?") }
 
 /**
  * Parse an ID3v2 integer genre field, which has support for multiple genre values and combined
@@ -220,7 +220,7 @@ private val ID3V2_GENRE_RE by lazy { Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?") }
  * @return A list of one or more genres, or null if the field is not a valid ID3v2 integer genre.
  */
 private fun String.parseId3v2Genre(): List<String>? {
-    val groups = (ID3V2_GENRE_RE.matchEntire(this) ?: return null).groupValues
+    val groups = (id3v2GenreRe.matchEntire(this) ?: return null).groupValues
     val genres = mutableSetOf<String>()
 
     // ID3v2.3 genres are far more complex and require string grokking to properly implement.
@@ -260,7 +260,7 @@ private fun String.parseId3v2Genre(): List<String>? {
  * A table of the "conventional" mapping between ID3v1 integer genres and their named counterparts.
  * Includes non-standard extensions.
  */
-private val GENRE_TABLE =
+private val genreTable =
     arrayOf(
         // ID3 Standard
         "Blues",

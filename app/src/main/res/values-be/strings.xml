@@ -12,7 +12,7 @@
     <string name="lng_queue_added">Дададзены ў чаргу</string>
     <string name="lng_author">Распрацавана Аляксандрам Кейпхартам</string>
     <string name="set_bar_action">Карыстальніцкае дзеянне панэлі прайгравання</string>
-    <string name="set_playback_mode_album">Прайграць з альбома</string>
+    <string name="set_play_song_from_album">Прайграць з альбома</string>
     <string name="set_separators_comma">Коска (,)</string>
     <string name="set_separators_plus">Плюс (+)</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
@@ -77,7 +77,7 @@
     <string name="lbl_shuffle_shortcut_short">Ператасаваць</string>
     <string name="lbl_cancel">Адмяніць</string>
     <string name="lbl_sort_asc">Па ўзрастанні</string>
-    <string name="lbl_sort_dec">Па змяншэнні</string>
+    <string name="lbl_sort_dsc">Па змяншэнні</string>
     <string name="lbl_play_next">Гуляць далей</string>
     <string name="lbl_queue_add">Дадаць у чаргу</string>
     <string name="lbl_equalizer">Эквалайзер</string>
@@ -234,15 +234,15 @@
     <string name="set_action_mode_next">Перайсці да наступнага</string>
     <string name="set_action_mode_repeat">Рэжым паўтору</string>
     <string name="set_behavior">Паводзіны</string>
-    <string name="set_library_song_playback_mode">Пры прайграванні з бібліятэкі</string>
-    <string name="set_playback_mode_songs">Прайграць усе песні</string>
+    <string name="set_play_in_list_with">Пры прайграванні з бібліятэкі</string>
+    <string name="set_play_song_from_all">Прайграць усе песні</string>
     <string name="set_content_desc">Кіруйце загрузкай музыкі і малюнкаў</string>
     <string name="set_notif_action">Карыстальніцкае дзеянне апавяшчэння</string>
-    <string name="set_detail_song_playback_mode">Пры прайграванні з дэталяў прадмета</string>
-    <string name="set_playback_mode_none">Гуляць з паказанага прадмета</string>
+    <string name="set_play_in_parent_with">Пры прайграванні з дэталяў прадмета</string>
+    <string name="set_play_song_none">Гуляць з паказанага прадмета</string>
     <string name="set_exclude_non_music_desc">Ігнаруйце аўдыяфайлы, якія не з\'яўляюцца музыкай, напрыклад, падкасты</string>
-    <string name="set_playback_mode_artist">Гуляць ад выканаўцы</string>
-    <string name="set_playback_mode_genre">Гуляць з жанру</string>
+    <string name="set_play_song_from_artist">Гуляць ад выканаўцы</string>
+    <string name="set_play_song_from_genre">Гуляць з жанру</string>
     <string name="set_keep_shuffle">Запамінаць перамешванне</string>
     <string name="set_keep_shuffle_desc">Уключайце перамешванне падчас прайгравання новай песні</string>
     <string name="set_content">Кантэнт</string>
@@ -296,4 +296,6 @@
     <string name="set_square_covers">Выкарыстоўваць квадратныя вокладкі альбомаў</string>
     <string name="set_square_covers_desc">Абрэзаць усе вокладкі альбомаў да суадносін бакоў 1:1</string>
     <string name="lbl_song">Песня</string>
+    <string name="set_play_song_by_itself">Прайграць песню самастойна</string>
+    <string name="lbl_parent_detail">Выгляд</string>
 </resources>

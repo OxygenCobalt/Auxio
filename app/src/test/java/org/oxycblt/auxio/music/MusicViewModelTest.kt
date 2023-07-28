@@ -77,6 +77,7 @@ class MusicViewModelTest {
                 updateListener?.onMusicChanges(
                     MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
             }
+
         override var indexingState: IndexingState? = null
             set(value) {
                 field = value
@@ -114,10 +115,13 @@ class MusicViewModelTest {
     private class TestDeviceLibrary : FakeDeviceLibrary() {
         override val songs: List<Song>
             get() = listOf(TestSong(), TestSong())
+
         override val albums: List<Album>
             get() = listOf(FakeAlbum(), FakeAlbum(), FakeAlbum())
+
         override val artists: List<Artist>
             get() = listOf(FakeArtist(), FakeArtist(), FakeArtist(), FakeArtist())
+
         override val genres: List<Genre>
             get() = listOf(FakeGenre())
     }

@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
@@ -260,9 +260,9 @@ sealed interface ChosenName {
     /** The current name already exists. */
     data class AlreadyExists(val prior: String) : ChosenName
     /** The current name is empty. */
-    object Empty : ChosenName
+    data object Empty : ChosenName
     /** The current name only consists of whitespace. */
-    object Blank : ChosenName
+    data object Blank : ChosenName
 }
 
 /**

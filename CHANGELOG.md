@@ -3,12 +3,17 @@
 ## dev
 
 #### What's New
-- Menus have been refreshed with a cleaner look
+- Item and sort menus have been refreshed with a cleaner look
+- Added ability to sort playlists
+- Added option to play song by itself in library/item details
 
 #### What's Improved
 - Made "Add to Playlist" action more prominent in selection toolbar
 - Fixed notification album covers not updating after changing the cover
 aspect ratio setting 
+
+#### What's Fixed
+- Playlist detail view now respects playback settings
 
 #### Dev/Meta
 - Unified navigation graph

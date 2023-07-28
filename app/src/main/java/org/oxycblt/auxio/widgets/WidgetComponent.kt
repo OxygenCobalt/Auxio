@@ -137,13 +137,18 @@ constructor(
 
     // Respond to all major song or player changes that will affect the widget
     override fun onIndexMoved(queue: Queue) = update()
+
     override fun onQueueReordered(queue: Queue) = update()
+
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) = update()
+
     override fun onStateChanged(state: InternalPlayer.State) = update()
+
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
 
     // Respond to settings changes that will affect the widget
     override fun onRoundModeChanged() = update()
+
     override fun onImageSettingsChanged() = update()
 
     /**

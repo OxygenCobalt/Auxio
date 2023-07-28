@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/spacing_tiny"
+    android:paddingBottom="@dimen/spacing_tiny">
+
+    <com.google.android.material.radiobutton.MaterialRadioButton
+        android:id="@+id/sort_radio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_mid_medium"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:clickable="false"
+        android:focusable="false"
+        android:drawableTint="?attr/colorControlNormal"
+        android:paddingStart="@dimen/spacing_medium"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+        tools:ignore="RtlSymmetry,contentDescription"
+        tools:text="Name" />
+
+</FrameLayout>

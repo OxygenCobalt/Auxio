@@ -6,7 +6,8 @@ plugins {
     id "kotlin-parcelize"
     id "dagger.hilt.android.plugin"
     id "kotlin-kapt"
-    id 'org.jetbrains.kotlin.android'
+    id "com.google.devtools.ksp"
+    id "org.jetbrains.kotlin.android"
 }
 
 android {
@@ -77,7 +78,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    def coroutines_version = '1.7.1'
+    def coroutines_version = '1.7.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$coroutines_version"
 
@@ -118,7 +119,9 @@ dependencies {
     // Database
     def room_version = '2.6.0-alpha02'
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    // I have no clue why, but using KSP breaks the playlist database definition.
+    //noinspection KaptUsageInsteadOfKsp
+    ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
     // --- THIRD PARTY ---
@@ -142,7 +145,7 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Testing
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

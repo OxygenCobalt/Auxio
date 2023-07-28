@@ -111,7 +111,7 @@ sealed interface ReleaseType {
      * A soundtrack. Similar to a [Compilation], but created for a specific piece of (usually
      * visual) media.
      */
-    object Soundtrack : ReleaseType {
+    data object Soundtrack : ReleaseType {
         override val refinement: Refinement?
             get() = null
 
@@ -123,7 +123,7 @@ sealed interface ReleaseType {
      * A (DJ) Mix. These are usually one large track consisting of the artist playing several
      * sub-tracks with smooth transitions between them.
      */
-    object Mix : ReleaseType {
+    data object Mix : ReleaseType {
         override val refinement: Refinement?
             get() = null
 
@@ -135,7 +135,7 @@ sealed interface ReleaseType {
      * A Mix-tape. These are usually [EP]-sized releases of music made to promote an Artist or a
      * future release.
      */
-    object Mixtape : ReleaseType {
+    data object Mixtape : ReleaseType {
         override val refinement: Refinement?
             get() = null
 

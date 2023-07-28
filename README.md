@@ -21,7 +21,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of [ExoPlayer](https://exoplayer.dev/), Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
+Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
@@ -42,7 +42,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## Features
 
-- [ExoPlayer](https://exoplayer.dev/)-based playback
+- Playback based on [Media3 ExoPlayer](https://developer.android.com/guide/topics/media/exoplayer)
 - Snappy UI derived from the latest Material Design guidelines
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
@@ -69,12 +69,11 @@ precise/original dates, sort tags, and more
 
 ## Building
 
-Auxio relies on a custom version of ExoPlayer that enables some extra features. This adds some caveats to
-the build process:
+Auxio relies on a custom version of Media3 that enables some extra features. This adds some caveats to the build process:
 1. `cmake` and `ninja-build` must be installed before building the project.
 2. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
 download the external code.
-3. You are **unable** to build this project on windows, as the custom ExoPlayer build runs shell scripts that
+3. You are **unable** to build this project on windows, as the custom Media3 build runs shell scripts that
 will only work on unix-based systems.
 
 ## Contributing

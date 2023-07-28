@@ -171,7 +171,9 @@ private class UserLibraryImpl(
     private val musicSettings: MusicSettings
 ) : MutableUserLibrary {
     override fun hashCode() = playlistMap.hashCode()
+
     override fun equals(other: Any?) = other is UserLibraryImpl && other.playlistMap == playlistMap
+
     override fun toString() = "UserLibrary(playlists=${playlists.size})"
 
     override val playlists: Collection<Playlist>

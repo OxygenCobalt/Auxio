@@ -24,6 +24,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                app:menu="@menu/toolbar_detail"
                 app:navigationIcon="@drawable/ic_back_24" />
 
             <com.google.android.material.appbar.MaterialToolbar

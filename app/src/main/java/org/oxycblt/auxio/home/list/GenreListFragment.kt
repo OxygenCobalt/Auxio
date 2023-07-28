@@ -20,7 +20,6 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,12 +31,11 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
@@ -75,7 +73,7 @@ class GenreListFragment :
             listener = this@GenreListFragment
         }
 
-        collectImmediately(homeModel.genresList, ::updateGenres)
+        collectImmediately(homeModel.genreList, ::updateGenres)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -91,9 +89,9 @@ class GenreListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val genre = homeModel.genresList.value[pos]
+        val genre = homeModel.genreList.value[pos]
         // Change how we display the popup depending on the current sort mode.
-        return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
+        return when (homeModel.genreSort.mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> genre.name.thumb
 
@@ -116,12 +114,12 @@ class GenreListFragment :
         detailModel.showGenre(item)
     }
 
-    override fun onOpenMenu(item: Genre, anchor: View) {
+    override fun onOpenMenu(item: Genre) {
         listModel.openMenu(R.menu.item_parent, item)
     }
 
     private fun updateGenres(genres: List<Genre>) {
-        genreAdapter.update(genres, homeModel.genresInstructions.consume())
+        genreAdapter.update(genres, homeModel.genreInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {

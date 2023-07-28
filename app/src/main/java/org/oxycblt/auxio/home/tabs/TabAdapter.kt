@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemTabBinding
 import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 
@@ -42,7 +42,9 @@ class TabAdapter(private val listener: EditClickListListener<Tab>) :
         private set
 
     override fun getItemCount() = tabs.size
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.from(parent)
+
     override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
         holder.bind(tabs[position], listener)
     }
@@ -107,14 +109,14 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     fun bind(tab: Tab, listener: EditClickListListener<Tab>) {
         listener.bind(tab, this, dragHandle = binding.tabDragHandle)
         binding.tabCheckBox.apply {
-            // Update the CheckBox name to align with the mode
+            // Update the CheckBox name to align with the type
             setText(
-                when (tab.mode) {
-                    MusicMode.SONGS -> R.string.lbl_songs
-                    MusicMode.ALBUMS -> R.string.lbl_albums
-                    MusicMode.ARTISTS -> R.string.lbl_artists
-                    MusicMode.GENRES -> R.string.lbl_genres
-                    MusicMode.PLAYLISTS -> R.string.lbl_playlists
+                when (tab.type) {
+                    MusicType.SONGS -> R.string.lbl_songs
+                    MusicType.ALBUMS -> R.string.lbl_albums
+                    MusicType.ARTISTS -> R.string.lbl_artists
+                    MusicType.GENRES -> R.string.lbl_genres
+                    MusicType.PLAYLISTS -> R.string.lbl_playlists
                 })
 
             // Unlike in other adapters, we update the checked state alongside

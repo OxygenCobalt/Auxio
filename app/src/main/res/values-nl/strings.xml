@@ -17,9 +17,9 @@
     <string name="lbl_sort_asc">Oplopend</string>
     <string name="lbl_play">Afspelen</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="set_playback_mode_songs">Speel van alle nummers </string>
-    <string name="set_playback_mode_album">Speel af van album </string>
-    <string name="set_playback_mode_artist">Speel van artiest </string>
+    <string name="set_play_song_from_all">Speel van alle nummers </string>
+    <string name="set_play_song_from_album">Speel af van album </string>
+    <string name="set_play_song_from_artist">Speel van artiest </string>
     <string name="lbl_playback">Nu afspelen</string>
     <string name="lbl_queue">Wachtrij</string>
     <string name="lbl_play_next">Afspelen als volgende</string>
@@ -48,7 +48,7 @@
     <string name="set_notif_action">Gebruikt een afternatief notification action</string>
     <string name="set_audio">Audio</string>
     <string name="set_personalize">Gedrag</string>
-    <string name="set_library_song_playback_mode">Bij het afspelen vanuit de bibliotheek</string>
+    <string name="set_play_in_list_with">Bij het afspelen vanuit de bibliotheek</string>
     <string name="set_keep_shuffle">Onthoud shuffle</string>
     <string name="set_keep_shuffle_desc">Houd shuffle aan bij het afspelen van een nieuw nummer</string>
     <string name="set_rewind_prev">Terugspoelen voordat je terugspoelt</string>
@@ -149,7 +149,7 @@
     <string name="set_pre_amp_with">Aanpassing met tags</string>
     <string name="set_pre_amp_without">Aanpassing zonder tags</string>
     <string name="def_playback">Er speelt geen muziek</string>
-    <string name="set_detail_song_playback_mode">Bij het afspelen van item details</string>
+    <string name="set_play_in_parent_with">Bij het afspelen van item details</string>
     <string name="set_round_mode">Ronde modus</string>
     <string name="set_round_mode_desc">Afgeronde hoeken inschakelen voor extra UI-elementen (vereist dat albumhoezen zijn afgerond)</string>
     <string name="lbl_state_restored">Staat gerestaureerd</string>
@@ -158,7 +158,7 @@
     <string name="set_headset_autoplay">Headset automatisch afspelen</string>
     <string name="set_replay_gain_mode">ReplayGain</string>
     <string name="set_pre_amp_warning">Waarschuwing: Als u de voorversterker op een hoge positieve waarde zet, kan dit bij sommige audiotracks tot pieken leiden.</string>
-    <string name="set_playback_mode_none">Afspelen vanaf getoond item</string>
+    <string name="set_play_song_none">Afspelen vanaf getoond item</string>
     <string name="set_restore_state">Afspeelstatus herstellen</string>
     <string name="set_restore_desc">Herstel de eerder opgeslagen afspeelstatus (indien aanwezig)</string>
     <string name="err_did_not_restore">Kan status niet herstellen</string>
@@ -246,7 +246,7 @@
     <string name="lbl_genre">Genre</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="lbl_edit">Bewerken</string>
-    <string name="lbl_sort_dec">Aflopend</string>
+    <string name="lbl_sort_dsc">Aflopend</string>
     <string name="err_did_not_wipe">Kan status niet wissen</string>
     <string name="desc_playlist_image">Afspeellijst-afbeelding voor %s</string>
     <string name="def_song_count">Geen nummers</string>
@@ -271,7 +271,7 @@
     <string name="lbl_delete">Verwijderen</string>
     <string name="set_separators">Scheiders met meerdere waarden</string>
     <string name="set_hide_collaborators">Verberg bijdragers</string>
-    <string name="set_playback_mode_genre">Speel vanuit genre</string>
+    <string name="set_play_song_from_genre">Speel vanuit genre</string>
     <string name="lbl_date_added">Datum toegevoegd</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="fmt_def_playlist">Afspeellijst %d</string>

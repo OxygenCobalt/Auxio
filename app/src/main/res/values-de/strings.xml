@@ -15,8 +15,8 @@
     <string name="lbl_sort_asc">Aufsteigend</string>
     <string name="lbl_play">Abspielen</string>
     <string name="lbl_shuffle">Zufällig</string>
-    <string name="set_playback_mode_songs">Von allen Lieder abspielen</string>
-    <string name="set_playback_mode_album">Von Album abspielen</string>
+    <string name="set_play_song_from_all">Von allen Lieder abspielen</string>
+    <string name="set_play_song_from_album">Von Album abspielen</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_play_next">Als Nächstes abspielen</string>
@@ -56,7 +56,7 @@
     <string name="set_replay_gain_mode_track">Titel bevorzugen</string>
     <string name="set_replay_gain_mode_album">Album bevorzugen</string>
     <string name="set_personalize">Personalisieren</string>
-    <string name="set_library_song_playback_mode">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
+    <string name="set_play_in_list_with">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
     <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
@@ -153,8 +153,8 @@
     <string name="fmt_lib_total_duration">Gesamtdauer: %s</string>
     <string name="lbl_cancel">Abbrechen</string>
     <string name="set_pre_amp_warning">Warnung: Das Erhöhen der Vorverstärkung zu einem hohen positiven Wert könnte zu einer Übersteuerung bei einigen Audiospuren führen.</string>
-    <string name="set_detail_song_playback_mode">Wenn ein Lied aus den Elementdetails abgespielt wird</string>
-    <string name="set_playback_mode_none">Vom dargestellten Element abspielen</string>
+    <string name="set_play_in_parent_with">Wenn ein Lied aus den Elementdetails abgespielt wird</string>
+    <string name="set_play_song_none">Vom dargestellten Element abspielen</string>
     <string name="set_dirs">Musikordner</string>
     <string name="set_dirs_desc">Verwalten, von wo die Musik geladen werden soll</string>
     <string name="set_dirs_mode">Modus</string>
@@ -233,7 +233,7 @@
     <string name="set_separators_comma">Komma (,)</string>
     <string name="set_separators_slash">Schrägstrich (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
-    <string name="set_playback_mode_artist">Vom Künstler abspielen</string>
+    <string name="set_play_song_from_artist">Vom Künstler abspielen</string>
     <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte. Das kann gelöst werden, in dem vor ungewollte Trenner ein Backslash (\\) eingefügt wird.</string>
     <string name="set_exclude_non_music">Nicht-Musik ausschließen</string>
     <string name="set_exclude_non_music_desc">Audio-Dateien, die keine Musik sind (wie Podcasts), ignorieren</string>
@@ -254,7 +254,7 @@
     <string name="lbl_play_selected">Ausgewählte abspielen</string>
     <string name="lbl_shuffle_selected">Ausgewählte zufällig abspielen</string>
     <string name="fmt_selected">%d ausgewählt</string>
-    <string name="set_playback_mode_genre">Vom Genre abspielen</string>
+    <string name="set_play_song_from_genre">Vom Genre abspielen</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Zurücksetzen</string>
@@ -270,7 +270,7 @@
     <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
     <string name="set_state">Persistenz</string>
     <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
-    <string name="lbl_sort_dec">Absteigend</string>
+    <string name="lbl_sort_dsc">Absteigend</string>
     <string name="desc_playlist_image">Wiedergabelistenbild für %s</string>
     <string name="lbl_playlist">Wiedergabeliste</string>
     <string name="lbl_playlists">Wiedergabelisten</string>

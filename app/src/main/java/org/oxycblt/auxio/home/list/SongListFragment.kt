@@ -21,7 +21,6 @@ package org.oxycblt.auxio.home.list
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,11 +32,10 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
@@ -78,7 +76,7 @@ class SongListFragment :
             listener = this@SongListFragment
         }
 
-        collectImmediately(homeModel.songsList, ::updateSongs)
+        collectImmediately(homeModel.songList, ::updateSongs)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -94,11 +92,11 @@ class SongListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val song = homeModel.songsList.value[pos]
+        val song = homeModel.songList.value[pos]
         // Change how we display the popup depending on the current sort mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
-        return when (homeModel.getSortForTab(MusicMode.SONGS).mode) {
+        return when (homeModel.songSort.mode) {
             // Name -> Use name
             is Sort.Mode.ByName -> song.name.thumb
 
@@ -137,15 +135,15 @@ class SongListFragment :
     }
 
     override fun onRealClick(item: Song) {
-        playbackModel.playFrom(item, homeModel.playbackMode)
+        playbackModel.play(item, homeModel.playWith)
     }
 
-    override fun onOpenMenu(item: Song, anchor: View) {
-        listModel.openMenu(R.menu.item_song, item)
+    override fun onOpenMenu(item: Song) {
+        listModel.openMenu(R.menu.item_song, item, homeModel.playWith)
     }
 
     private fun updateSongs(songs: List<Song>) {
-        songAdapter.update(songs, homeModel.songsInstructions.consume())
+        songAdapter.update(songs, homeModel.songInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {

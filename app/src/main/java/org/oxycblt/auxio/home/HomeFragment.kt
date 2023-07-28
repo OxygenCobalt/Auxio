@@ -26,7 +26,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuCompat
 import androidx.core.view.isVisible
-import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -38,7 +37,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
@@ -56,13 +54,12 @@ import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.list.SelectionFragment
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.NoAudioPermissionException
 import org.oxycblt.auxio.music.NoMusicException
@@ -77,7 +74,6 @@ import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
@@ -102,10 +98,9 @@ class HomeFragment :
             // Orientation change will wipe whatever transition we were using prior, which will
             // result in no transition when the user navigates back. Make sure we re-initialize
             // our transitions.
-            when (val id = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -2)) {
-                -2 -> {}
-                -1 -> applyFadeTransition()
-                else -> applyAxisTransition(id)
+            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -1)
+            if (axis > -1) {
+                applyAxisTransition(axis)
             }
         }
     }
@@ -173,8 +168,8 @@ class HomeFragment :
 
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
-        collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
-        collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
+        collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
@@ -183,9 +178,9 @@ class HomeFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        when (val transition = enterTransition) {
-            is MaterialFadeThrough -> outState.putInt(KEY_LAST_TRANSITION_ID, -1)
-            is MaterialSharedAxis -> outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
+        val transition = enterTransition
+        if (transition is MaterialSharedAxis) {
+            outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
         }
 
         super.onSaveInstanceState(outState)
@@ -224,63 +219,42 @@ class HomeFragment :
             }
             R.id.action_settings -> {
                 logD("Navigating to preferences")
-                applyFadeTransition()
-                findNavController().navigateSafe(HomeFragmentDirections.preferences())
+                homeModel.showSettings()
                 true
             }
             R.id.action_about -> {
                 logD("Navigating to about")
-                applyFadeTransition()
-                findNavController().navigateSafe(HomeFragmentDirections.about())
+                homeModel.showAbout()
                 true
             }
 
             // Handle sort menu
-            R.id.submenu_sorting -> {
+            R.id.action_sort -> {
                 // Junk click event when opening the menu
-                true
-            }
-            R.id.option_sort_asc -> {
-                logD("Switching to ascending sorting")
-                item.isChecked = true
-                homeModel.setSortForCurrentTab(
-                    homeModel
-                        .getSortForTab(homeModel.currentTabMode.value)
-                        .withDirection(Sort.Direction.ASCENDING))
-                true
-            }
-            R.id.option_sort_dec -> {
-                logD("Switching to descending sorting")
-                item.isChecked = true
-                homeModel.setSortForCurrentTab(
-                    homeModel
-                        .getSortForTab(homeModel.currentTabMode.value)
-                        .withDirection(Sort.Direction.DESCENDING))
+                val directions =
+                    when (homeModel.currentTabType.value) {
+                        MusicType.SONGS -> HomeFragmentDirections.sortSongs()
+                        MusicType.ALBUMS -> HomeFragmentDirections.sortAlbums()
+                        MusicType.ARTISTS -> HomeFragmentDirections.sortArtists()
+                        MusicType.GENRES -> HomeFragmentDirections.sortGenres()
+                        MusicType.PLAYLISTS -> HomeFragmentDirections.sortPlaylists()
+                    }
+                findNavController().navigateSafe(directions)
                 true
             }
             else -> {
-                val newMode = Sort.Mode.fromItemId(item.itemId)
-                if (newMode != null) {
-                    // Sorting option was selected, mark it as selected and update the mode
-                    logD("Updating sort mode")
-                    item.isChecked = true
-                    homeModel.setSortForCurrentTab(
-                        homeModel.getSortForTab(homeModel.currentTabMode.value).withMode(newMode))
-                    true
-                } else {
-                    logW("Unexpected menu item selected")
-                    false
-                }
+                logW("Unexpected menu item selected")
+                false
             }
         }
     }
 
     private fun setupPager(binding: FragmentHomeBinding) {
         binding.homePager.adapter =
-            HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
+            HomePagerAdapter(homeModel.currentTabTypes, childFragmentManager, viewLifecycleOwner)
 
         val toolbarParams = binding.homeToolbar.layoutParams as AppBarLayout.LayoutParams
-        if (homeModel.currentTabModes.size == 1) {
+        if (homeModel.currentTabTypes.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
             logD("Single tab shown, disabling TabLayout")
@@ -298,81 +272,26 @@ class HomeFragment :
         TabLayoutMediator(
                 binding.homeTabs,
                 binding.homePager,
-                AdaptiveTabStrategy(requireContext(), homeModel.currentTabModes))
+                AdaptiveTabStrategy(requireContext(), homeModel.currentTabTypes))
             .attach()
     }
 
-    private fun updateCurrentTab(tabMode: MusicMode) {
+    private fun updateCurrentTab(tabType: MusicType) {
         val binding = requireBinding()
-        // Update the sort options to align with those allowed by the tab
-        val isVisible: (Int) -> Boolean =
-            when (tabMode) {
-                // Disallow sorting by count for songs
-                MusicMode.SONGS -> {
-                    logD("Using song-specific menu options")
-                    ({ id -> id != R.id.option_sort_count })
-                }
-                // Disallow sorting by album for albums
-                MusicMode.ALBUMS -> {
-                    logD("Using album-specific menu options")
-                    ({ id -> id != R.id.option_sort_album })
-                }
-                // Only allow sorting by name, count, and duration for parents
-                else -> {
-                    logD("Using parent-specific menu options")
-                    ({ id ->
-                        id == R.id.option_sort_asc ||
-                            id == R.id.option_sort_dec ||
-                            id == R.id.option_sort_name ||
-                            id == R.id.option_sort_count ||
-                            id == R.id.option_sort_duration
-                    })
-                }
-            }
-
-        val sortMenu =
-            unlikelyToBeNull(binding.homeNormalToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
-        val toHighlight = homeModel.getSortForTab(tabMode)
-
-        for (option in sortMenu) {
-            val isCurrentMode = option.itemId == toHighlight.mode.itemId
-            val isCurrentlyAscending =
-                option.itemId == R.id.option_sort_asc &&
-                    toHighlight.direction == Sort.Direction.ASCENDING
-            val isCurrentlyDescending =
-                option.itemId == R.id.option_sort_dec &&
-                    toHighlight.direction == Sort.Direction.DESCENDING
-            // Check the corresponding direction and mode sort options to align with
-            // the current sort of the tab.
-            if (isCurrentMode || isCurrentlyAscending || isCurrentlyDescending) {
-                logD(
-                    "Checking $option option [mode: $isCurrentMode asc: $isCurrentlyAscending dec: $isCurrentlyDescending]")
-                // Note: We cannot inline this boolean assignment since it unchecks all other radio
-                // buttons (even when setting it to false), which would result in nothing being
-                // selected.
-                option.isChecked = true
-            }
-
-            // Disable options that are not allowed by the isVisible lambda
-            option.isVisible = isVisible(option.itemId)
-            if (!option.isVisible) {
-                logD("Hiding $option option")
-            }
-        }
 
         // Update the scrolling view in AppBarLayout to align with the current tab's
         // scrolling state. This prevents the lift state from being confused as one
         // goes between different tabs.
         binding.homeAppbar.liftOnScrollTargetViewId =
-            when (tabMode) {
-                MusicMode.SONGS -> R.id.home_song_recycler
-                MusicMode.ALBUMS -> R.id.home_album_recycler
-                MusicMode.ARTISTS -> R.id.home_artist_recycler
-                MusicMode.GENRES -> R.id.home_genre_recycler
-                MusicMode.PLAYLISTS -> R.id.home_playlist_recycler
+            when (tabType) {
+                MusicType.SONGS -> R.id.home_song_recycler
+                MusicType.ALBUMS -> R.id.home_album_recycler
+                MusicType.ARTISTS -> R.id.home_artist_recycler
+                MusicType.GENRES -> R.id.home_genre_recycler
+                MusicType.PLAYLISTS -> R.id.home_playlist_recycler
             }
 
-        if (tabMode != MusicMode.PLAYLISTS) {
+        if (tabType != MusicType.PLAYLISTS) {
             logD("Flipping to shuffle button")
             binding.homeFab.flipTo(R.drawable.ic_shuffle_off_24, R.string.desc_shuffle_all) {
                 playbackModel.shuffleAll()
@@ -577,15 +496,11 @@ class HomeFragment :
         if (menu == null) return
         val directions =
             when (menu) {
-                is Menu.ForSong -> HomeFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForAlbum ->
-                    HomeFragmentDirections.openAlbumMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForArtist ->
-                    HomeFragmentDirections.openArtistMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForGenre ->
-                    HomeFragmentDirections.openGenreMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForPlaylist ->
-                    HomeFragmentDirections.openPlaylistMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForSong -> HomeFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForAlbum -> HomeFragmentDirections.openAlbumMenu(menu.parcel)
+                is Menu.ForArtist -> HomeFragmentDirections.openArtistMenu(menu.parcel)
+                is Menu.ForGenre -> HomeFragmentDirections.openGenreMenu(menu.parcel)
+                is Menu.ForPlaylist -> HomeFragmentDirections.openPlaylistMenu(menu.parcel)
             }
         findNavController().navigateSafe(directions)
     }
@@ -616,13 +531,6 @@ class HomeFragment :
         reenterTransition = MaterialSharedAxis(axis, false)
     }
 
-    private fun applyFadeTransition() {
-        enterTransition = MaterialFadeThrough()
-        returnTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-        reenterTransition = MaterialFadeThrough()
-    }
-
     /**
      * [FragmentStateAdapter] implementation for the [HomeFragment]'s [ViewPager2] instance.
      *
@@ -632,18 +540,19 @@ class HomeFragment :
      *   [FragmentStateAdapter].
      */
     private class HomePagerAdapter(
-        private val tabs: List<MusicMode>,
+        private val tabs: List<MusicType>,
         fragmentManager: FragmentManager,
         lifecycleOwner: LifecycleOwner
     ) : FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle) {
         override fun getItemCount() = tabs.size
+
         override fun createFragment(position: Int): Fragment =
             when (tabs[position]) {
-                MusicMode.SONGS -> SongListFragment()
-                MusicMode.ALBUMS -> AlbumListFragment()
-                MusicMode.ARTISTS -> ArtistListFragment()
-                MusicMode.GENRES -> GenreListFragment()
-                MusicMode.PLAYLISTS -> PlaylistListFragment()
+                MusicType.SONGS -> SongListFragment()
+                MusicType.ALBUMS -> AlbumListFragment()
+                MusicType.ARTISTS -> ArtistListFragment()
+                MusicType.GENRES -> GenreListFragment()
+                MusicType.PLAYLISTS -> PlaylistListFragment()
             }
     }
 

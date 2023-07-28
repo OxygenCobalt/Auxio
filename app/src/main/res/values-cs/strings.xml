@@ -29,9 +29,9 @@
     <string name="lbl_playback">Právě hraje</string>
     <string name="lbl_play">Přehrát</string>
     <string name="lbl_shuffle">Náhodně</string>
-    <string name="set_playback_mode_songs">Přehrát ze všech skladeb</string>
-    <string name="set_playback_mode_album">Přehrát z alba</string>
-    <string name="set_playback_mode_artist">Přehrát od umělce</string>
+    <string name="set_play_song_from_all">Přehrát ze všech skladeb</string>
+    <string name="set_play_song_from_album">Přehrát z alba</string>
+    <string name="set_play_song_from_artist">Přehrát od umělce</string>
     <string name="lbl_queue">Fronta</string>
     <string name="lbl_play_next">Přehrát další</string>
     <string name="lbl_queue_add">Přidat do fronty</string>
@@ -80,7 +80,7 @@
     <string name="set_pre_amp_without">Přizpůsobení bez štítků</string>
     <string name="set_pre_amp_warning">Varování: Změna předzesilovače na vysokou kladnou hodnotu může u některých zvukových stop vést k příliš vysokým hlasitostem.</string>
     <string name="set_personalize">Chování</string>
-    <string name="set_library_song_playback_mode">Při přehrávání z knihovny</string>
+    <string name="set_play_in_list_with">Při přehrávání z knihovny</string>
     <string name="set_keep_shuffle">Zapamatovat si náhodné přehrávání</string>
     <string name="set_keep_shuffle_desc">Ponechat náhodné přehrávání při přehrávání nové skladby</string>
     <string name="set_rewind_prev">Přetočit před přeskočením zpět</string>
@@ -180,9 +180,9 @@
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="set_detail_song_playback_mode">Při přehrávání z podrobností o položce</string>
+    <string name="set_play_in_parent_with">Při přehrávání z podrobností o položce</string>
     <string name="set_dirs_desc">Spravovat, odkud by měla být načítána hudba</string>
-    <string name="set_playback_mode_none">Přehrát ze zobrazené položky</string>
+    <string name="set_play_song_none">Přehrát ze zobrazené položky</string>
     <string name="lbl_song_detail">Zobrazit vlastnosti</string>
     <string name="lbl_props">Vlastnosti skladby</string>
     <string name="lbl_file_name">Název souboru</string>
@@ -263,7 +263,7 @@
     <string name="lbl_play_selected">Přehrát vybrané</string>
     <string name="fmt_selected">Vybráno %d</string>
     <string name="lbl_shuffle_selected">Náhodně přehrát vybrané</string>
-    <string name="set_playback_mode_genre">Přehrát z žánru</string>
+    <string name="set_play_song_from_genre">Přehrát z žánru</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Obnovit</string>
@@ -279,7 +279,7 @@
     <string name="set_playback">Přehrávání</string>
     <string name="set_library">Knihovna</string>
     <string name="set_state">Perzistence</string>
-    <string name="lbl_sort_dec">Sestupně</string>
+    <string name="lbl_sort_dsc">Sestupně</string>
     <string name="lbl_playlists">Seznamy skladeb</string>
     <string name="desc_playlist_image">Obrázek seznamu skladeb pro %s</string>
     <string name="lbl_playlist">Seznam skladeb</string>
@@ -308,4 +308,5 @@
     <string name="set_square_covers_desc">Oříznout všechny covery alb na poměr stran 1:1</string>
     <string name="lbl_song">Skladba</string>
     <string name="lbl_parent_detail">Zobrazit</string>
+    <string name="set_play_song_by_itself">Přehrát skladbu samostatně</string>
 </resources>

@@ -18,13 +18,16 @@
  
 package org.oxycblt.auxio.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.StyleRes
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -39,13 +42,8 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
     BottomSheetDialogFragment() {
     private var _binding: VB? = null
 
-    /**
-     * Configure the [AlertDialog.Builder] during [onCreateDialog].
-     *
-     * @param builder The [AlertDialog.Builder] to configure.
-     * @see onCreateDialog
-     */
-    protected open fun onConfigDialog(builder: AlertDialog.Builder) {}
+    override fun onCreateDialog(savedInstanceState: Bundle?): BottomSheetDialog =
+        TweakedBottomSheetDialog(requireContext(), theme)
 
     /**
      * Inflate the [ViewBinding] during [onCreateView].
@@ -107,5 +105,23 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
         // Clear binding
         _binding = null
         logD("Fragment destroyed")
+    }
+
+    private inner class TweakedBottomSheetDialog
+    @JvmOverloads
+    constructor(context: Context, @StyleRes theme: Int = 0) : BottomSheetDialog(context, theme) {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            // Collapsed state is bugged in phone landscape mode and shows only 10% of the dialog.
+            // Just disable it and go directly from expanded -> hidden.
+            behavior.skipCollapsed = true
+        }
+
+        override fun onStart() {
+            super.onStart()
+            // Manually trigger an expanded transition to make window insets actually apply to
+            // the dialog on the first layout pass. I don't know why this works.
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 }

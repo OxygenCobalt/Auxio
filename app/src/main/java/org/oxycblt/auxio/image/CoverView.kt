@@ -76,7 +76,7 @@ import org.oxycblt.auxio.util.getInteger
 class CoverView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    FrameLayout(context, attrs, defStyleAttr), ImageSettings.Listener, UISettings.Listener {
+    FrameLayout(context, attrs, defStyleAttr) {
     @Inject lateinit var imageLoader: ImageLoader
     @Inject lateinit var uiSettings: UISettings
     @Inject lateinit var imageSettings: ImageSettings
@@ -88,6 +88,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val playingDrawable: AnimationDrawable,
         val pausedDrawable: Drawable
     )
+
     private val playbackIndicator: PlaybackIndicator?
     private val selectionBadge: ImageView?
 
@@ -105,6 +106,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val desc: String,
         @DrawableRes val errorRes: Int
     )
+
     private var currentCover: Cover? = null
 
     init {
@@ -152,9 +154,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             } else {
                 null
             }
-
-        imageSettings.registerListener(this)
-        uiSettings.registerListener(this)
     }
 
     override fun onFinishInflate() {
@@ -183,24 +182,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     updateMarginsRelative(bottom = spacing, end = spacing)
                 })
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        imageSettings.unregisterListener(this)
-    }
-
-    override fun onImageSettingsChanged() {
-        val cover = currentCover ?: return
-        bind(cover.songs, cover.desc, cover.errorRes)
-    }
-
-    override fun onRoundModeChanged() {
-        // TODO: Make this a recreate as soon as you can make the bottom sheet stop freaking out
-        cornerRadiusRes = getCornerRadiusRes()
-        applyBackgroundsToChildren()
-        val cover = currentCover ?: return
-        bind(cover.songs, cover.desc, cover.errorRes)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -274,7 +255,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun getCornerRadiusRes() =
-        if (uiSettings.roundMode) {
+        if (!isInEditMode && uiSettings.roundMode) {
             SIZING_CORNER_RADII[sizing]
         } else {
             null

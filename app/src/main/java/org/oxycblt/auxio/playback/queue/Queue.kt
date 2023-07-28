@@ -114,12 +114,14 @@ class MutableQueue : Queue {
     @Volatile
     override var index = -1
         private set
+
     override val currentSong: Song?
         get() =
             shuffledMapping
                 .ifEmpty { orderedMapping.ifEmpty { null } }
                 ?.getOrNull(index)
                 ?.let(heap::get)
+
     override val isShuffled: Boolean
         get() = shuffledMapping.isNotEmpty()
 

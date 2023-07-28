@@ -20,7 +20,6 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
@@ -31,11 +30,10 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.PlaylistViewHolder
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
@@ -73,7 +71,7 @@ class PlaylistListFragment :
             listener = this@PlaylistListFragment
         }
 
-        collectImmediately(homeModel.playlistsList, ::updatePlaylists)
+        collectImmediately(homeModel.playlistList, ::updatePlaylists)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -89,9 +87,9 @@ class PlaylistListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val playlist = homeModel.playlistsList.value[pos]
+        val playlist = homeModel.playlistList.value[pos]
         // Change how we display the popup depending on the current sort mode.
-        return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
+        return when (homeModel.playlistSort.mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> playlist.name.thumb
 
@@ -114,12 +112,12 @@ class PlaylistListFragment :
         detailModel.showPlaylist(item)
     }
 
-    override fun onOpenMenu(item: Playlist, anchor: View) {
+    override fun onOpenMenu(item: Playlist) {
         listModel.openMenu(R.menu.item_playlist, item)
     }
 
     private fun updatePlaylists(playlists: List<Playlist>) {
-        playlistAdapter.update(playlists, homeModel.playlistsInstructions.consume())
+        playlistAdapter.update(playlists, homeModel.playlistInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
