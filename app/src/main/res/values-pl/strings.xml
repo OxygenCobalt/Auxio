@@ -305,4 +305,6 @@
     <string name="lbl_song">Piosenka</string>
     <string name="set_play_song_by_itself">Odtwarzanie utworu samodzielnie</string>
     <string name="lbl_parent_detail">Widok</string>
+    <string name="lbl_sort_mode">Sortuj według</string>
+    <string name="lbl_sort_direction">Kierunek</string>
 </resources>
