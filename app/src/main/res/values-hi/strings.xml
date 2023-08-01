@@ -299,4 +299,6 @@
     <string name="set_intelligent_sorting">बुद्धिमान छंटाई</string>
     <string name="set_intelligent_sorting_desc">संख्याओं या \"the\" जैसे शब्दों से शुरू होने वाले नामों को सही ढंग से क्रमबद्ध करें (अंग्रेजी भाषा के संगीत के साथ सबसे अच्छा काम करता है)</string>
     <string name="set_play_song_by_itself">इसी गीत को चलाएं</string>
+    <string name="lbl_sort_direction">दिशा</string>
+    <string name="lbl_sort_mode">के अनुसार क्रमबद्ध करें</string>
 </resources>
