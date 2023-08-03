@@ -114,19 +114,25 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      *
      * @return A list of [Song]s collated from each item selected.
      */
+    fun peekSelection() =
+        _selected.value.flatMap {
+            when (it) {
+                is Song -> listOf(it)
+                is Album -> listSettings.albumSongSort.songs(it.songs)
+                is Artist -> listSettings.artistSongSort.songs(it.songs)
+                is Genre -> listSettings.genreSongSort.songs(it.songs)
+                is Playlist -> it.songs
+            }
+        }
+
+    /**
+     * Clear the current selection and return it.
+     *
+     * @return A list of [Song]s collated from each item selected.
+     */
     fun takeSelection(): List<Song> {
         logD("Taking selection")
-        return _selected.value
-            .flatMap {
-                when (it) {
-                    is Song -> listOf(it)
-                    is Album -> listSettings.albumSongSort.songs(it.songs)
-                    is Artist -> listSettings.artistSongSort.songs(it.songs)
-                    is Genre -> listSettings.genreSongSort.songs(it.songs)
-                    is Playlist -> it.songs
-                }
-            }
-            .also { _selected.value = listOf() }
+        return peekSelection().also { _selected.value = listOf() }
     }
 
     /**

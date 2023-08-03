@@ -49,7 +49,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
             setNavigationOnClickListener { listModel.dropSelection() }
             setOnMenuItemClickListener(this@SelectionFragment)
             overrideOnOverflowMenuClick {
-                listModel.openMenu(R.menu.selection, listModel.takeSelection())
+                listModel.openMenu(R.menu.selection, listModel.peekSelection())
             }
         }
     }

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/main_fragment"
         android:name="org.oxycblt.auxio.MainFragment"
-        android:label="fragment_main"
+        android:label="main_fragment"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/preferences"
@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/root_preferences_fragment"
         android:name="org.oxycblt.auxio.settings.RootPreferenceFragment"
-        android:label="fragment_settings">
+        android:label="settings_fragment">
         <action
             android:id="@+id/ui_preferences"
             app:destination="@id/ui_preferences_fragment" />
@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/ui_preferences_fragment"
         android:name="org.oxycblt.auxio.settings.categories.UIPreferenceFragment"
-        android:label="fragment_ui_preferences">
+        android:label="ui_preferences_fragment">
         <action
             android:id="@+id/accent_settings"
             app:destination="@id/accent_dialog" />
@@ -50,7 +50,7 @@
     <fragment
         android:id="@+id/personalize_preferences_fragment"
         android:name="org.oxycblt.auxio.settings.categories.PersonalizePreferenceFragment"
-        android:label="fragment_personalize_preferences">
+        android:label="personalize_preferences_fragment">
         <action
             android:id="@+id/tab_settings"
             app:destination="@id/tab_dialog" />
@@ -59,7 +59,7 @@
     <fragment
         android:id="@+id/music_preferences_fragment"
         android:name="org.oxycblt.auxio.settings.categories.MusicPreferenceFragment"
-        android:label="fragment_personalize_preferences">
+        android:label="personalize_preferences_fragment">
         <action
             android:id="@+id/separators_settings"
             app:destination="@id/separators_dialog" />
@@ -68,7 +68,7 @@
     <fragment
         android:id="@+id/audio_preferences_fragment"
         android:name="org.oxycblt.auxio.settings.categories.AudioPreferenceFragment"
-        android:label="fragment_personalize_preferences">
+        android:label="personalize_preferences_fragment">
         <action
             android:id="@+id/pre_amp_settings"
             app:destination="@id/pre_amp_dialog" />

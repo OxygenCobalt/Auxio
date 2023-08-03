@@ -79,10 +79,10 @@ class SongMenuDialogFragment : MenuDialogFragment<Menu.ForSong>() {
                 playbackModel.addToQueue(menu.song)
                 requireContext().showToast(R.string.lng_queue_added)
             }
+            R.id.action_playlist_add -> musicModel.addToPlaylist(menu.song)
             R.id.action_artist_details -> detailModel.showArtist(menu.song)
             R.id.action_album_details -> detailModel.showAlbum(menu.song.album)
             R.id.action_share -> requireContext().share(menu.song)
-            R.id.action_playlist_add -> musicModel.addToPlaylist(menu.song)
             R.id.action_detail -> detailModel.showSong(menu.song)
             else -> error("Unexpected menu item selected $item")
         }
@@ -352,6 +352,7 @@ class SelectionMenuDialogFragment : MenuDialogFragment<Menu.ForSelection>() {
     }
 
     override fun onClick(item: MenuItem, menu: Menu.ForSelection) {
+        listModel.dropSelection()
         when (item.itemId) {
             R.id.action_play -> playbackModel.play(menu.songs)
             R.id.action_shuffle -> playbackModel.shuffle(menu.songs)
@@ -363,8 +364,8 @@ class SelectionMenuDialogFragment : MenuDialogFragment<Menu.ForSelection>() {
                 playbackModel.addToQueue(menu.songs)
                 requireContext().showToast(R.string.lng_queue_added)
             }
-            R.id.action_share -> requireContext().share(menu.songs)
             R.id.action_playlist_add -> musicModel.addToPlaylist(menu.songs)
+            R.id.action_share -> requireContext().share(menu.songs)
             else -> error("Unexpected menu item selected $item")
         }
     }
