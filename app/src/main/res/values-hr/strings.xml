@@ -297,4 +297,6 @@
     <string name="lbl_sort_mode">Razvrstaj po</string>
     <string name="set_play_song_by_itself">Reproduciraj pjesmu zasebno</string>
     <string name="lbl_sort_direction">Smjer</string>
+    <string name="desc_selection_image">Slika odabira</string>
+    <string name="lbl_selection">Odabir</string>
 </resources>
