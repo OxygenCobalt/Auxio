@@ -101,7 +101,7 @@ class AlbumDetailFragment :
             setNavigationOnClickListener { findNavController().navigateUp() }
             overrideOnOverflowMenuClick {
                 listModel.openMenu(
-                    R.menu.item_detail_album, unlikelyToBeNull(detailModel.currentAlbum.value))
+                    R.menu.detail_album, unlikelyToBeNull(detailModel.currentAlbum.value))
             }
         }
 
@@ -145,7 +145,7 @@ class AlbumDetailFragment :
     }
 
     override fun onOpenMenu(item: Song) {
-        listModel.openMenu(R.menu.item_album_song, item, detailModel.playInAlbumWith)
+        listModel.openMenu(R.menu.album_song, item, detailModel.playInAlbumWith)
     }
 
     override fun onPlay() {
@@ -243,6 +243,7 @@ class AlbumDetailFragment :
             when (menu) {
                 is Menu.ForSong -> AlbumDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForAlbum -> AlbumDetailFragmentDirections.openAlbumMenu(menu.parcel)
+                is Menu.ForSelection -> AlbumDetailFragmentDirections.openSelectionMenu(menu.parcel)
                 is Menu.ForArtist,
                 is Menu.ForGenre,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")

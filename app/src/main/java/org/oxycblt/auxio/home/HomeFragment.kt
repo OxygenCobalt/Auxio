@@ -501,6 +501,7 @@ class HomeFragment :
                 is Menu.ForArtist -> HomeFragmentDirections.openArtistMenu(menu.parcel)
                 is Menu.ForGenre -> HomeFragmentDirections.openGenreMenu(menu.parcel)
                 is Menu.ForPlaylist -> HomeFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForSelection -> HomeFragmentDirections.openSelectionMenu(menu.parcel)
             }
         findNavController().navigateSafe(directions)
     }

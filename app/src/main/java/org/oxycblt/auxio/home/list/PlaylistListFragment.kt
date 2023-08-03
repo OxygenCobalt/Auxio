@@ -113,7 +113,7 @@ class PlaylistListFragment :
     }
 
     override fun onOpenMenu(item: Playlist) {
-        listModel.openMenu(R.menu.item_playlist, item)
+        listModel.openMenu(R.menu.playlist, item)
     }
 
     private fun updatePlaylists(playlists: List<Playlist>) {

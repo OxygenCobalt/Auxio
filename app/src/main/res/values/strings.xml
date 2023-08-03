@@ -122,7 +122,6 @@
 
     <string name="lbl_playlist_add">Add to playlist</string>
 
-
     <string name="lbl_artist_details">Go to artist</string>
     <string name="lbl_album_details">Go to album</string>
     <string name="lbl_song_detail">View properties</string>
@@ -166,6 +165,8 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_licenses">Licenses</string>
     <string name="lbl_library_counts">Library statistics</string>
+
+    <string name="lbl_selection">Selection</string>
 
     <!-- Long Namespace | Longer Descriptions -->
     <eat-comment />
@@ -335,6 +336,7 @@
     <string name="desc_artist_image">Artist image for %s</string>
     <string name="desc_genre_image">Genre image for %s</string>
     <string name="desc_playlist_image">Playlist image for %s</string>
+    <string name="desc_selection_image">Selection image</string>
 
     <!-- Default Namespace | Placeholder values -->
     <eat-comment />

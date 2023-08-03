@@ -104,8 +104,7 @@ class PlaylistDetailFragment :
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
             overrideOnOverflowMenuClick {
                 listModel.openMenu(
-                    R.menu.item_detail_playlist,
-                    unlikelyToBeNull(detailModel.currentPlaylist.value))
+                    R.menu.detail_playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
             }
         }
 
@@ -200,7 +199,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenMenu(item: Song) {
-        listModel.openMenu(R.menu.item_playlist_song, item, detailModel.playInPlaylistWith)
+        listModel.openMenu(R.menu.playlist_song, item, detailModel.playInPlaylistWith)
     }
 
     override fun onPlay() {
@@ -302,6 +301,8 @@ class PlaylistDetailFragment :
                 is Menu.ForSong -> PlaylistDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForPlaylist ->
                     PlaylistDetailFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForSelection ->
+                    PlaylistDetailFragmentDirections.openSelectionMenu(menu.parcel)
                 is Menu.ForArtist,
                 is Menu.ForAlbum,
                 is Menu.ForGenre -> error("Unexpected menu $menu")

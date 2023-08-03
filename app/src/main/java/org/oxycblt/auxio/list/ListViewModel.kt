@@ -201,6 +201,18 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
         openImpl(Menu.ForPlaylist(menuRes, playlist))
     }
 
+    /**
+     * Open a menu for a [Song] selection. This is not a popup menu, instead actually a dialog of
+     * menu options with additional information.
+     *
+     * @param menuRes The resource of the menu to use.
+     * @param songs The [Song] selection to show.
+     */
+    fun openMenu(@MenuRes menuRes: Int, songs: List<Song>) {
+        logD("Opening menu for ${songs.size} songs")
+        openImpl(Menu.ForSelection(menuRes, songs))
+    }
+
     private fun openImpl(menu: Menu) {
         val existing = _menu.flow.value
         if (existing != null) {

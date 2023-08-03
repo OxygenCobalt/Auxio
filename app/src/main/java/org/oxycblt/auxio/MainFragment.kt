@@ -298,7 +298,11 @@ class MainFragment :
             initialNavDestinationChange = true
             return
         }
-        listModel.dropSelection()
+        if (destination.id != R.id.selection_menu_dialog) {
+            // Drop any pending playlist edits when navigating away. This could actually happen
+            // if the user is quick enough.
+            listModel.dropSelection()
+        }
     }
 
     private fun handleShowOuter(outer: Outer?) {

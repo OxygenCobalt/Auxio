@@ -140,7 +140,7 @@ class AlbumListFragment :
     }
 
     override fun onOpenMenu(item: Album) {
-        listModel.openMenu(R.menu.item_album, item)
+        listModel.openMenu(R.menu.album, item)
     }
 
     private fun updateAlbums(albums: List<Album>) {

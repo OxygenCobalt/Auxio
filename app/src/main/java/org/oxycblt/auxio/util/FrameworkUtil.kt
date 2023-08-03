@@ -28,6 +28,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.graphics.Insets
@@ -111,7 +112,7 @@ val ViewBinding.context: Context
  * Override the behavior of a [MaterialToolbar]'s overflow menu to do something else. This is
  * extremely dumb, but required to hook overflow menus to bottom sheet menus.
  */
-fun MaterialToolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
+fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
     for (toolbarChild in children) {
         if (toolbarChild is ActionMenuView) {
             for (menuChild in toolbarChild.children) {

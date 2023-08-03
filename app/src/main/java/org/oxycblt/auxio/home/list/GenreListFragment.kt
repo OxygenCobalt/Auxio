@@ -115,7 +115,7 @@ class GenreListFragment :
     }
 
     override fun onOpenMenu(item: Genre) {
-        listModel.openMenu(R.menu.item_parent, item)
+        listModel.openMenu(R.menu.parent, item)
     }
 
     private fun updateGenres(genres: List<Genre>) {

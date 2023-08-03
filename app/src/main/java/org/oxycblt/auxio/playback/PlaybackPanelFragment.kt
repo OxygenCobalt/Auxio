@@ -96,7 +96,7 @@ class PlaybackPanelFragment :
                 playbackModel.song.value?.let {
                     // No playback options are actually available in the menu, so use a junk
                     // PlaySong option.
-                    listModel.openMenu(R.menu.item_playback_song, it, PlaySong.ByItself)
+                    listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
                 }
             }
         }
