@@ -302,4 +302,6 @@
     <string name="set_play_song_by_itself">노래 따로 재생</string>
     <string name="lbl_sort_direction">방향</string>
     <string name="lbl_sort_mode">정렬 기준</string>
+    <string name="desc_selection_image">선택 이미지</string>
+    <string name="lbl_selection">선택</string>
 </resources>
