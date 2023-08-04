@@ -306,4 +306,6 @@
     <string name="set_play_song_by_itself">Reproducir la canción por tí mismo</string>
     <string name="lbl_sort_mode">Ordenar por</string>
     <string name="lbl_sort_direction">Dirección</string>
+    <string name="desc_selection_image">Selección de imágenes</string>
+    <string name="lbl_selection">Selección</string>
 </resources>
