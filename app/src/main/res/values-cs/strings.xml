@@ -311,4 +311,6 @@
     <string name="set_play_song_by_itself">Přehrát skladbu samostatně</string>
     <string name="lbl_sort_direction">Směr</string>
     <string name="lbl_sort_mode">Seřadit podle</string>
+    <string name="desc_selection_image">Výběr obrázku</string>
+    <string name="lbl_selection">Výběr</string>
 </resources>
