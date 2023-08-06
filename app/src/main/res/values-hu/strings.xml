@@ -299,4 +299,8 @@
     <string name="lbl_song">Dal</string>
     <string name="lbl_parent_detail">Megnéz</string>
     <string name="set_play_song_by_itself">Dal lejátszása önmagában</string>
+    <string name="lbl_sort_direction">Irány</string>
+    <string name="lbl_sort_mode">Rendezés</string>
+    <string name="lbl_selection">Kiválasztás</string>
+    <string name="desc_selection_image">Kép kiválasztás</string>
 </resources>
