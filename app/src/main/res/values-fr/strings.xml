@@ -300,4 +300,8 @@
     <string name="lbl_song">Chanson</string>
     <string name="lbl_parent_detail">Voir</string>
     <string name="set_play_song_by_itself">Jouer la chanson par elle-même</string>
+    <string name="desc_selection_image">Image de sélection</string>
+    <string name="lbl_sort_mode">Trier par</string>
+    <string name="lbl_sort_direction">Direction</string>
+    <string name="lbl_selection">Sélection</string>
 </resources>
