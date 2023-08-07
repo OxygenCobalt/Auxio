@@ -298,4 +298,8 @@
     <string name="lbl_song">Песня</string>
     <string name="set_play_song_by_itself">Прайграць песню самастойна</string>
     <string name="lbl_parent_detail">Выгляд</string>
+    <string name="lbl_sort_mode">Сартаваць па</string>
+    <string name="lbl_sort_direction">Напрамак</string>
+    <string name="desc_selection_image">Абярыце малюнак</string>
+    <string name="lbl_selection">Абярыце</string>
 </resources>

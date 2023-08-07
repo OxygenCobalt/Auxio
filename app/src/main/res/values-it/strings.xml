@@ -304,4 +304,5 @@
     <string name="lbl_song">Brano</string>
     <string name="lbl_parent_detail">Visualizza</string>
     <string name="set_play_song_by_itself">Riproduci brano da solo</string>
+    <string name="lbl_sort_mode">Ordina per</string>
 </resources>
