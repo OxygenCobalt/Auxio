@@ -82,8 +82,10 @@ fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {
  * @param clazz The [KClass] to reflect into.
  * @param method The name of the method to obtain.
  */
-fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
-    clazz.java.getDeclaredMethod(method).also { it.isAccessible = true }
+fun lazyReflectedMethod(clazz: KClass<*>, method: String, vararg params: KClass<*>) = lazy {
+    clazz.java.getDeclaredMethod(method, *params.map { it.java }.toTypedArray()).also {
+        it.isAccessible = true
+    }
 }
 
 /**
