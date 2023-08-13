@@ -299,4 +299,6 @@
     <string name="set_play_song_by_itself">इसी गीत को चलाएं</string>
     <string name="lbl_sort_direction">दिशा</string>
     <string name="lbl_sort_mode">के अनुसार क्रमबद्ध करें</string>
+    <string name="lbl_selection">संग्रह</string>
+    <string name="desc_selection_image">चयन छवि</string>
 </resources>
