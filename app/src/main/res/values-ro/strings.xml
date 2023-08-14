@@ -189,4 +189,6 @@
     <string name="lng_playlist_renamed">Listă de redare redenumită</string>
     <string name="lng_playlist_deleted">Listă de redare ștearsă</string>
     <string name="set_cover_mode">Coperți de album</string>
+    <string name="lbl_playlist_add">Adaugă către listă de redare</string>
+    <string name="lbl_sort_direction">Direcție</string>
 </resources>
