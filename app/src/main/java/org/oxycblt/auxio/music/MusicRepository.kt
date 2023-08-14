@@ -371,6 +371,7 @@ constructor(
         // parallel.
         logD("Starting MediaStore query")
         emitIndexingProgress(IndexingProgress.Indeterminate)
+
         val mediaStoreQueryJob =
             worker.scope.async {
                 val query =

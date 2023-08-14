@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/spacing_medium"
+    android:paddingEnd="@dimen/spacing_large"
+    android:paddingStart="@dimen/spacing_large"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/error_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/Widget.Material3.CardView.Filled"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <TextView
+                        android:id="@+id/error_stack_trace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/spacing_medium"
+                        android:paddingStart="@dimen/spacing_medium"
+                        android:paddingBottom="@dimen/spacing_medium"
+                        android:paddingEnd="@dimen/size_copy_button"
+                        android:breakStrategy="simple"
+                        android:hyphenationFrequency="none"
+                        android:typeface="monospace"
+                        tools:text="Stack trace here" />
+
+                </HorizontalScrollView>
+
+            </ScrollView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/error_copy"
+                style="@style/Widget.Auxio.Button.Icon.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                app:icon="@drawable/ic_copy_24"
+                android:layout_margin="@dimen/spacing_small"
+                app:backgroundTint="?attr/colorPrimaryContainer"
+                android:src="@drawable/ic_code_24" />
+
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

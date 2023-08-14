@@ -330,11 +330,12 @@ class HomeFragment :
         }
     }
 
-    private fun setupCompleteState(binding: FragmentHomeBinding, error: Throwable?) {
+    private fun setupCompleteState(binding: FragmentHomeBinding, error: Exception?) {
         if (error == null) {
             logD("Received ok response")
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
+            binding.homeIndexingError.visibility = View.INVISIBLE
             return
         }
 
@@ -357,6 +358,7 @@ class HomeFragment :
                             .launch(PERMISSION_READ_AUDIO)
                     }
                 }
+                binding.homeIndexingError.visibility = View.INVISIBLE
             }
             is NoMusicException -> {
                 logD("Showing no music error")
@@ -367,6 +369,7 @@ class HomeFragment :
                     text = context.getString(R.string.lbl_retry)
                     setOnClickListener { musicModel.refresh() }
                 }
+                binding.homeIndexingError.visibility = View.INVISIBLE
             }
             else -> {
                 logD("Showing generic error")
@@ -376,6 +379,12 @@ class HomeFragment :
                     visibility = View.VISIBLE
                     text = context.getString(R.string.lbl_retry)
                     setOnClickListener { musicModel.rescan() }
+                }
+                binding.homeIndexingError.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        findNavController().navigateSafe(HomeFragmentDirections.reportError(error))
+                    }
                 }
             }
         }

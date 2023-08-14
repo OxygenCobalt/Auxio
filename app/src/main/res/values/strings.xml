@@ -16,6 +16,8 @@
     <string name="lbl_observing">Monitoring music library</string>
     <!-- As in to retry loading music -->
     <string name="lbl_retry">Retry</string>
+    <!-- As in to show additional information about a music loading error -->
+    <string name="lbl_show_error_info">More</string>
     <!-- As in grant permission -->
     <string name="lbl_grant">Grant</string>
 
@@ -167,6 +169,12 @@
     <string name="lbl_library_counts">Library statistics</string>
 
     <string name="lbl_selection">Selection</string>
+
+    <string name="lbl_error_info">Error information</string>
+    <!-- As in copied to the system clipboard -->
+    <string name="lbl_copied">Copied</string>
+    <!-- As in to report an error -->
+    <string name="lbl_report">Report</string>
 
     <!-- Long Namespace | Longer Descriptions -->
     <eat-comment />

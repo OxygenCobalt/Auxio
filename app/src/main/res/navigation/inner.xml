@@ -81,7 +81,20 @@
         <action
             android:id="@+id/play_from_genre"
             app:destination="@id/play_from_genre_dialog" />
+        <action
+            android:id="@+id/report_error"
+            app:destination="@id/error_details_dialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/error_details_dialog"
+        android:name="org.oxycblt.auxio.home.ErrorDetailsDialog"
+        android:label="error_details_dialog"
+        tools:layout="@layout/dialog_error_details">
+        <argument
+            android:name="error"
+            app:argType="java.lang.Exception" />
+    </dialog>
 
     <dialog
         android:id="@+id/song_sort_dialog"

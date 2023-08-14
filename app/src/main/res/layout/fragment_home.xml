@@ -108,15 +108,32 @@
 
                     <org.oxycblt.auxio.ui.RippleFixMaterialButton
                         android:id="@+id/home_indexing_action"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_medium"
-                        android:layout_marginEnd="@dimen/spacing_medium"
+                        android:layout_marginEnd="@dimen/spacing_small"
                         android:layout_marginBottom="@dimen/spacing_medium"
                         android:text="@string/lbl_retry"
+                        style="@style/Widget.Auxio.Button.Secondary"
                         android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/home_indexing_error"
                         app:layout_constraintTop_toBottomOf="@+id/home_indexing_status" />
+
+                    <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                        android:id="@+id/home_indexing_error"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_small"
+                        android:layout_marginEnd="@dimen/spacing_medium"
+                        android:text="@string/lbl_show_error_info"
+                        style="@style/Widget.Auxio.Button.Primary"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="@+id/home_indexing_action"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/home_indexing_action"
+                        app:layout_constraintTop_toTopOf="@+id/home_indexing_action" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
