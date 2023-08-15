@@ -301,4 +301,8 @@
     <string name="lbl_sort_mode">के अनुसार क्रमबद्ध करें</string>
     <string name="lbl_selection">संग्रह</string>
     <string name="desc_selection_image">चयन छवि</string>
+    <string name="lbl_error_info">त्रुटि की जानकारी</string>
+    <string name="lbl_report">रिपोर्ट करें</string>
+    <string name="lbl_copied">कापी किया गया</string>
+    <string name="lbl_show_error_info">और</string>
 </resources>
