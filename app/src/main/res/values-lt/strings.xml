@@ -297,4 +297,10 @@
     <string name="set_play_song_by_itself">Groti dainą pačią</string>
     <string name="lbl_sort_mode">Rūšiuoti pagal</string>
     <string name="lbl_sort_direction">Kryptis</string>
+    <string name="desc_selection_image">Pasirinkimo vaizdas</string>
+    <string name="lbl_selection">Pasirinkimas</string>
+    <string name="lbl_error_info">Klaidos informacija</string>
+    <string name="lbl_copied">Nukopijuota</string>
+    <string name="lbl_show_error_info">Daugiau</string>
+    <string name="lbl_report">Pranešti</string>
 </resources>
