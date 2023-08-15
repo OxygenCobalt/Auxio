@@ -300,4 +300,8 @@
     <string name="lbl_sort_direction">说明</string>
     <string name="lbl_selection">选择</string>
     <string name="desc_selection_image">选择图片</string>
+    <string name="lbl_report">报告</string>
+    <string name="lbl_show_error_info">更多</string>
+    <string name="lbl_copied">已复制</string>
+    <string name="lbl_error_info">错误信息</string>
 </resources>
