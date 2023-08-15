@@ -24,7 +24,10 @@ import androidx.navigation.NavDestination
 
 /**
  * A [NavController.OnDestinationChangedListener] that will call [callback] when moving between
- * fragments only (not between dialogs or anything similar)
+ * fragments only (not between dialogs or anything similar).
+ *
+ * Note: This only works because of special naming used in Auxio's navigation graphs. Keep this in
+ * mind when porting to other projects.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -74,6 +77,5 @@ class DialogAwareNavigationListener(private val callback: () -> Unit) :
         }
     }
 
-    /** This relies on special label naming used in-app. */
     private fun NavDestination.isDialog() = label?.endsWith("dialog") == true
 }
