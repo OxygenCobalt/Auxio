@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "3.1.4"
+        versionName "3.1.0"
         versionCode 34
 
         minSdk 24
@@ -88,7 +88,7 @@ dependencies {
     implementation "androidx.core:core-ktx:1.10.1"
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.activity:activity-ktx:1.7.2"
-    implementation "androidx.fragment:fragment-ktx:1.6.0"
+    implementation "androidx.fragment:fragment-ktx:1.6.1"
 
     // Components
     // Deliberately kept on 1.2.1 to prevent a bug where the queue sheet will not collapse on
@@ -114,13 +114,11 @@ dependencies {
     implementation "androidx.media:media:1.6.0"
 
     // Preferences
-    implementation "androidx.preference:preference-ktx:1.2.0"
+    implementation "androidx.preference:preference-ktx:1.2.1"
 
     // Database
-    def room_version = '2.6.0-alpha02'
+    def room_version = '2.6.0-alpha03'
     implementation "androidx.room:room-runtime:$room_version"
-    // I have no clue why, but using KSP breaks the playlist database definition.
-    //noinspection KaptUsageInsteadOfKsp
     ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
@@ -136,7 +134,7 @@ dependencies {
     // Material
     // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
     //  PR a fix.
-    implementation "com.google.android.material:material:1.10.0-alpha05"
+    implementation "com.google.android.material:material:1.10.0-alpha06"
 
     // Dependency Injection
     implementation "com.google.dagger:dagger:$hilt_version"
