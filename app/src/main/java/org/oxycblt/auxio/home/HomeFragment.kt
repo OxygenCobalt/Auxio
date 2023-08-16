@@ -335,7 +335,6 @@ class HomeFragment :
             logD("Received ok response")
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
-            binding.homeIndexingError.visibility = View.INVISIBLE
             return
         }
 
@@ -343,13 +342,13 @@ class HomeFragment :
         val context = requireContext()
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.INVISIBLE
+        binding.homeIndexingActions.visibility = View.VISIBLE
         when (error) {
             is NoAudioPermissionException -> {
                 logD("Showing permission prompt")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
                 // Configure the action to act as a permission launcher.
-                binding.homeIndexingAction.apply {
-                    visibility = View.VISIBLE
+                binding.homeIndexingTry.apply {
                     text = context.getString(R.string.lbl_grant)
                     setOnClickListener {
                         requireNotNull(storagePermissionLauncher) {
@@ -358,29 +357,29 @@ class HomeFragment :
                             .launch(PERMISSION_READ_AUDIO)
                     }
                 }
-                binding.homeIndexingError.visibility = View.INVISIBLE
+                binding.homeIndexingMore.visibility = View.GONE
             }
             is NoMusicException -> {
                 logD("Showing no music error")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
                 // Configure the action to act as a reload trigger.
-                binding.homeIndexingAction.apply {
+                binding.homeIndexingTry.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.lbl_retry)
                     setOnClickListener { musicModel.refresh() }
                 }
-                binding.homeIndexingError.visibility = View.INVISIBLE
+                binding.homeIndexingMore.visibility = View.GONE
             }
             else -> {
                 logD("Showing generic error")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
                 // Configure the action to act as a reload trigger.
-                binding.homeIndexingAction.apply {
+                binding.homeIndexingTry.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.lbl_retry)
                     setOnClickListener { musicModel.rescan() }
                 }
-                binding.homeIndexingError.apply {
+                binding.homeIndexingMore.apply {
                     visibility = View.VISIBLE
                     setOnClickListener {
                         findNavController().navigateSafe(HomeFragmentDirections.reportError(error))
@@ -394,7 +393,7 @@ class HomeFragment :
         // Remove all content except for the progress indicator.
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.VISIBLE
-        binding.homeIndexingAction.visibility = View.INVISIBLE
+        binding.homeIndexingActions.visibility = View.INVISIBLE
 
         when (progress) {
             is IndexingProgress.Indeterminate -> {
