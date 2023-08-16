@@ -1752,7 +1752,10 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
             Insets mandatoryGestureInsets =
                 insets.getInsets(WindowInsetsCompat.Type.mandatorySystemGestures());
 
-            insetTop = systemBarInsets.top;
+            // MODIFICATION: Fix second order change of edge-to-edge fix where dialogs will not
+            // use the nice-looking inset animation and instead blindly shift themselves downwards.
+            // insetTop = systemBarInsets.top;
+
             // MODIFICATION: Fix awful assumption that clients handling edge-to-edge by themselves
             // don't need peek height adjustments (Despite the fact that they still likely padding
             // the view, just without clipping anything)

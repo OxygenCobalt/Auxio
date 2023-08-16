@@ -53,8 +53,6 @@ import com.google.android.material.internal.EdgeToEdgeUtils;
 import com.google.android.material.motion.MaterialBackOrchestrator;
 import com.google.android.material.shape.MaterialShapeDrawable;
 
-import org.checkerframework.common.subtyping.qual.Bottom;
-
 /**
  * Base class for {@link android.app.Dialog}s styled as a bottom sheet.
  *
