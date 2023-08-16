@@ -20,25 +20,18 @@ package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.annotation.StyleRes
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
+import com.google.android.material.bottomsheet.BackportBottomSheetDialog
+import com.google.android.material.bottomsheet.BackportBottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.lang.reflect.Field
-import java.lang.reflect.Method
-import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getDimenPixels
-import org.oxycblt.auxio.util.lazyReflectedField
-import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -48,10 +41,10 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
-    BottomSheetDialogFragment() {
+    BackportBottomSheetDialogFragment() {
     private var _binding: VB? = null
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): BottomSheetDialog =
+    override fun onCreateDialog(savedInstanceState: Bundle?): BackportBottomSheetDialog =
         TweakedBottomSheetDialog(requireContext(), theme)
 
     /**
@@ -100,10 +93,7 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val root = onCreateBinding(inflater).also { _binding = it }.root
-        return EdgeToEdgeFixWrapperLayout(root.context).apply { addView(root) }
-    }
+    ) = onCreateBinding(inflater).also { _binding = it }.root
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -121,7 +111,8 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
 
     private inner class TweakedBottomSheetDialog
     @JvmOverloads
-    constructor(context: Context, @StyleRes theme: Int = 0) : BottomSheetDialog(context, theme) {
+    constructor(context: Context, @StyleRes theme: Int = 0) :
+        BackportBottomSheetDialog(context, theme) {
         private var avoidUnusableCollapsedState = false
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,47 +132,8 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
             super.onStart()
             if (avoidUnusableCollapsedState) {
                 // skipCollapsed isn't enough, also need to immediately snap to expanded state.
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
             }
-        }
-    }
-
-    private class EdgeToEdgeFixWrapperLayout
-    @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        FrameLayout(context, attrs, defStyleAttr) {
-        override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-            super.onLayout(changed, left, top, right, bottom)
-            // BottomSheetBehavior's normal window inset behavior is awful. It doesn't
-            // follow true edge-to-edge and instead just blindly pads the bottom part of
-            // the view, causing visual clipping. We can turn it off, but that throws
-            // of the peek height calculation and results in a collapsed state that only
-            // expands a few pixels (specifically the size of the bottom inset) into an
-            // expanded state. So, ideally we would just vendor and eliminate the padding
-            // changes entirely, but due to layout dependencies that requires vendoring
-            // both BottomSheetDialog and BottomSheetDialogFragment, which I generally
-            // don't want to do. Instead, we deliberately clobber the window insets listener
-            // of our bottom sheet and only re-implement the update of the cached inset
-            // variables and the peek height update. This way, the peek height calculation
-            // remains consistent and the top inset animation continues to work correctly
-            // without the other absurd edge-to-edge behaviors.
-            // TODO: Do a fix for this upstream
-            (parent as View).setOnApplyWindowInsetsListener { v, insets ->
-                val bsb = v.coordinatorLayoutBehavior as BottomSheetBehavior
-                BSB_INSET_TOP_FIELD.set(bsb, insets.systemBarInsetsCompat.top)
-                BSB_INSET_BOTTOM_FIELD.set(bsb, insets.systemBarInsetsCompat.bottom)
-                BSB_UPDATE_PEEK_HEIGHT_METHOD.invoke(bsb, false)
-                insets
-            }
-        }
-
-        private companion object {
-            val BSB_INSET_TOP_FIELD: Field by
-                lazyReflectedField(BottomSheetBehavior::class, "insetTop")
-            val BSB_INSET_BOTTOM_FIELD: Field by
-                lazyReflectedField(BottomSheetBehavior::class, "insetBottom")
-            val BSB_UPDATE_PEEK_HEIGHT_METHOD: Method by
-                lazyReflectedMethod(BottomSheetBehavior::class, "updatePeekHeight", Boolean::class)
         }
     }
 }
