@@ -183,8 +183,6 @@
     <string name="set_observing">Muat ulang otomatis</string>
     <string name="set_observing_desc">Selalu muat ulang pustaka musik saat terjadi perubahan (membutuhkan notifikasi tetap)</string>
     <string name="set_behavior">Perilaku</string>
-    <string name="lbl_play_selected">Putar yang dipilih</string>
-    <string name="lbl_shuffle_selected">Acak yang dipilih</string>
     <string name="set_round_mode">Mode bundar</string>
     <string name="set_round_mode_desc">Aktifkan sudut yang bundar pada elemen UI tambahan (mewajibkan sampul album bersudut bundar)</string>
     <string name="set_separators_comma">Koma (,)</string>

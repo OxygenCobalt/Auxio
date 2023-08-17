@@ -260,9 +260,7 @@
     <string name="err_did_not_wipe">Nepodařilo se vymazat stav</string>
     <string name="set_rescan">Znovu najít hudbu</string>
     <string name="set_rescan_desc">Vymazat mezipaměť značek a znovu úplně znovu načíst hudební knihovnu (pomalejší, ale úplnější)</string>
-    <string name="lbl_play_selected">Přehrát vybrané</string>
     <string name="fmt_selected">Vybráno %d</string>
-    <string name="lbl_shuffle_selected">Náhodně přehrát vybrané</string>
     <string name="set_play_song_from_genre">Přehrát z žánru</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>

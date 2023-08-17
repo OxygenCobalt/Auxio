@@ -40,9 +40,7 @@
     <string name="lbl_playback">מושמע כעת</string>
     <string name="lbl_equalizer">איקוולייזר</string>
     <string name="lbl_play">ניגון</string>
-    <string name="lbl_play_selected">ניגון נבחרים</string>
     <string name="lbl_shuffle">ערבוב</string>
-    <string name="lbl_shuffle_selected">ערבוב נבחרים</string>
     <string name="lbl_play_next">ניגון הבא</string>
     <string name="lbl_queue_add">הוספה לתור</string>
     <string name="lbl_album_details">מעבר לאלבום</string>

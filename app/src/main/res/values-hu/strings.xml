@@ -75,7 +75,6 @@
     <string name="lbl_name">Név</string>
     <string name="lbl_date">Dátum</string>
     <string name="lbl_sort_dsc">Csökkenő</string>
-    <string name="lbl_play_selected">Kiválasztott lejátszása</string>
     <string name="lbl_new_playlist">Új lejátszólista</string>
     <string name="def_genre">Ismeretlen műfaj</string>
     <string name="desc_skip_next">Ugrás a következő dalra</string>
@@ -142,7 +141,6 @@
     <string name="desc_song_handle">Helyezze át ezt a dalt</string>
     <string name="desc_artist_image">%s előadó fotója</string>
     <string name="fmt_lib_total_duration">Teljes időtartam: %s</string>
-    <string name="lbl_shuffle_selected">Kiválasztottak keverése</string>
     <string name="set_personalize_desc">UI vezérlők és viselkedés testreszabása</string>
     <string name="set_lib_tabs_desc">A könyvtárfülek láthatóságának és sorrendjének módosítása</string>
     <string name="set_play_in_parent_with">A tétel részleteiből történő lejátszáskor</string>

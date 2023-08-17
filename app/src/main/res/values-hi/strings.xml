@@ -100,8 +100,6 @@
     <string name="fmt_deletion_info">%s हटाएँ\? इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="fmt_lib_song_count">लोड किए गए गाने: %d</string>
     <string name="lbl_sort_dsc">अवरोही</string>
-    <string name="lbl_play_selected">चयनित चलाएँ</string>
-    <string name="lbl_shuffle_selected">फेरबदल का चयन किया गया</string>
     <string name="lbl_state_wiped">स्थिति साफ की गई</string>
     <string name="lbl_state_saved">स्थिति सहेजी गई</string>
     <string name="set_lib_tabs_desc">लायब्रेरी टैब की दृश्यता और क्रम बदलें</string>

@@ -43,7 +43,6 @@
     <string name="lbl_song_count">Sporantall</string>
     <string name="lbl_queue">Kø</string>
     <string name="lbl_play_next">Spill neste</string>
-    <string name="lbl_shuffle_selected">Omstokking valgt</string>
     <string name="set_library">Bibliotek</string>
     <string name="err_did_not_save">Kunne ikke lagre tilstand</string>
     <plurals name="fmt_artist_count">
@@ -275,7 +274,6 @@
     <string name="lbl_equalizer">Tonekontroll</string>
     <string name="desc_change_repeat">Endre gjentagelsesmodus</string>
     <string name="lbl_play">Spill</string>
-    <string name="lbl_play_selected">Spill valgte</string>
     <string name="lbl_save">Lagre</string>
     <string name="lng_indexing">Laster inn musikkbiblioteket ditt …</string>
     <string name="set_play_in_list_with">Ved avspilling fra bibliotek</string>

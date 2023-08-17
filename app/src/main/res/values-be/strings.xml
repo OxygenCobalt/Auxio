@@ -72,7 +72,6 @@
     <string name="lbl_playback">Зараз іграе</string>
     <string name="lbl_play">Гуляць</string>
     <string name="lbl_shuffle">Ператасаваць</string>
-    <string name="lbl_shuffle_selected">Выбрана перамешванне</string>
     <string name="lbl_size">Памер</string>
     <string name="lbl_shuffle_shortcut_short">Ператасаваць</string>
     <string name="lbl_cancel">Адмяніць</string>
@@ -81,7 +80,6 @@
     <string name="lbl_play_next">Гуляць далей</string>
     <string name="lbl_queue_add">Дадаць у чаргу</string>
     <string name="lbl_equalizer">Эквалайзер</string>
-    <string name="lbl_play_selected">Гуляць выбрана</string>
     <string name="lbl_queue">Чарга</string>
     <string name="lbl_album_details">Перайсці да альбома</string>
     <string name="lbl_artist_details">Перайсці да выканаўцы</string>

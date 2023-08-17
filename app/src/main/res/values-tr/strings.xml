@@ -196,8 +196,6 @@
     <string name="lbl_singles">Tekliler</string>
     <string name="lbl_single">Tekli</string>
     <string name="lbl_mixtape">Karışık kaset</string>
-    <string name="lbl_play_selected">Seçileni çal</string>
-    <string name="lbl_shuffle_selected">Karışık seçildi</string>
     <string name="lbl_compilation_live">Canlı derleme</string>
     <string name="lbl_compilation_remix">Remiks derlemeler</string>
     <string name="lbl_equalizer">Ekolayzır</string>

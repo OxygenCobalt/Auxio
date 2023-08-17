@@ -134,8 +134,6 @@
     <string name="def_genre">Genre inconnu</string>
     <string name="clr_dynamic">Dynamique</string>
     <string name="clr_cyan">Cyan</string>
-    <string name="lbl_shuffle_selected">Lecture aléatoire sélectionnée</string>
-    <string name="lbl_play_selected">Réinitialiser</string>
     <string name="err_no_dirs">Aucun dossier</string>
     <string name="desc_music_dir_delete">Supprimer le dossier</string>
     <string name="def_artist">Artiste inconnu</string>

@@ -14,7 +14,6 @@
     <string name="lbl_confirm_delete_playlist">حذف قائمة التشغيل؟</string>
     <string name="lbl_search">بحث</string>
     <string name="lbl_filter">تصفية</string>
-    <string name="lbl_play_selected">تشغيل المختارة</string>
     <string name="lbl_play_next">تشغيل التالي</string>
     <string name="lbl_queue_add">إضافة للطابور</string>
     <string name="lbl_playlist_add">إضافة لقائمة التشغيل</string>
@@ -28,7 +27,6 @@
     <string name="lbl_new_playlist">قائمة تشغيل جديدة</string>
     <string name="lbl_rename_playlist">إعادة تسمية قائمة التشغيل</string>
     <string name="lbl_edit">تعديل</string>
-    <string name="lbl_shuffle_selected">خلط المختارة</string>
     <string name="lbl_queue">طابور</string>
     <string name="lbl_shuffle">خلط</string>
     <string name="lbl_artist_details">اذهب للفنان</string>

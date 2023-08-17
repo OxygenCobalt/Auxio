@@ -255,8 +255,6 @@
     <string name="err_did_not_save">Impossibile salvare</string>
     <string name="set_rescan_desc">Svuota la cache dei tag e ricarica completamente la libreria musicale (più lento, ma più completo)</string>
     <string name="err_did_not_wipe">Impossibile svuotare</string>
-    <string name="lbl_shuffle_selected">Mescola selezionati</string>
-    <string name="lbl_play_selected">Riproduci selezionati</string>
     <string name="fmt_selected">%d selezionati</string>
     <string name="set_play_song_from_genre">Riproduci dal genere</string>
     <string name="lbl_wiki">Wiki</string>

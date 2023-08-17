@@ -114,9 +114,7 @@
     <string name="lbl_playback">Now playing</string>
     <string name="lbl_equalizer">Equalizer</string>
     <string name="lbl_play">Play</string>
-    <string name="lbl_play_selected">Play selected</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="lbl_shuffle_selected">Shuffle selected</string>
 
     <string name="lbl_queue">Queue</string>
     <string name="lbl_play_next">Play next</string>

@@ -249,8 +249,6 @@
     <string name="err_did_not_wipe">无法清除状态</string>
     <string name="set_rescan">重新扫描音乐</string>
     <string name="set_rescan_desc">清除标签缓存并完全重新加载音乐库（更慢，但更完整）</string>
-    <string name="lbl_shuffle_selected">随机播放所选</string>
-    <string name="lbl_play_selected">播放所选</string>
     <string name="fmt_selected">选中了 %d 首</string>
     <string name="set_play_song_from_genre">按流派播放</string>
     <string name="lbl_wiki">Wiki</string>

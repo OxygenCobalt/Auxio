@@ -145,8 +145,6 @@
     <string name="lbl_size">الحجم</string>
     <string name="lbl_relative_path">المسار</string>
     <string name="lbl_library_counts">إحصائيات المكتبة</string>
-    <string name="lbl_shuffle_selected">تشغي الاغاني المحددة بترتيب عشوائي</string>
-    <string name="lbl_play_selected">تشغيل الموسيقى المحددة</string>
     <string name="lbl_bitrate">معدل البت</string>
     <string name="lbl_file_name">اسم الملف</string>
     <string name="lbl_compilation_live">تجميع مباشر</string>

@@ -63,7 +63,6 @@
     <string name="lbl_sort_dsc">降順</string>
     <string name="lbl_play">再生</string>
     <string name="lbl_shuffle">シャフル</string>
-    <string name="lbl_shuffle_selected">選択曲をシャフル</string>
     <string name="lbl_play_next">次に再生</string>
     <string name="lbl_queue_add">再生待ちに追加</string>
     <string name="lbl_format">オーディオ形式</string>
@@ -178,7 +177,6 @@
     <string name="lbl_ep_remix">リミックスEP</string>
     <string name="lbl_remix_group">リミックス</string>
     <string name="lbl_genre">ジャンル</string>
-    <string name="lbl_play_selected">選択曲を再生</string>
     <string name="lbl_song_detail">プロパティを見る</string>
     <string name="lbl_queue">再生待ち</string>
     <string name="lbl_library_counts">ライブラリ統計</string>

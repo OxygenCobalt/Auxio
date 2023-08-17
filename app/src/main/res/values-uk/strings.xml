@@ -54,7 +54,6 @@
         <item quantity="many">%d альбомів</item>
         <item quantity="other">%d альбомів</item>
     </plurals>
-    <string name="lbl_shuffle_selected">Перемішати вибране</string>
     <string name="lbl_file_name">Ім\'я файлу</string>
     <string name="lbl_format">Формат</string>
     <string name="lbl_ok">Добре</string>
@@ -83,7 +82,6 @@
     <string name="lbl_relative_path">Шлях до каталогу</string>
     <string name="set_display">Екран</string>
     <string name="lbl_date">Рік</string>
-    <string name="lbl_play_selected">Відтворити вибране</string>
     <string name="set_cover_mode">Обкладинки альбомів</string>
     <string name="set_hide_collaborators">Приховати співавторів</string>
     <string name="set_cover_mode_off">Вимкнено</string>

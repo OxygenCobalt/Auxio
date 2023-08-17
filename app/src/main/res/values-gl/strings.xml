@@ -49,7 +49,6 @@
     <string name="lbl_play">Reproducir</string>
     <string name="lbl_shuffle">Mezcla</string>
     <string name="lbl_play_next">Reproducir seguinte</string>
-    <string name="lbl_play_selected">Reproducir a selección</string>
     <string name="lbl_queue">Cola</string>
     <string name="lbl_queue_add">Engadir á cola</string>
     <string name="set_exclude_non_music">Excluir o que non é música</string>
@@ -126,7 +125,6 @@
     <string name="lbl_sort_asc">Ascendente</string>
     <string name="lbl_sort_dsc">Descendente</string>
     <string name="lbl_equalizer">Ecualizador</string>
-    <string name="lbl_shuffle_selected">Aleatorio seleccionado</string>
     <string name="lbl_sample_rate">Frecuencia de mostraxe</string>
     <string name="lbl_about">Acerca de</string>
     <string name="lng_observing">Monitorizando cambios na túa biblioteca…</string>

@@ -49,7 +49,6 @@
     <string name="lbl_equalizer">ਇਕੋਲਾਈਜ਼ਰ</string>
     <string name="lbl_play">ਚਲਾਓ</string>
     <string name="lbl_shuffle">ਸ਼ਫਲ</string>
-    <string name="lbl_shuffle_selected">ਸ਼ਫਲ ਚੁਣਿਆ ਗਿਆ</string>
     <string name="lbl_queue">ਕਤਾਰ</string>
     <string name="lbl_play_next">ਅਗਲਾ ਚਲਾਓ</string>
     <string name="lbl_queue_add">ਕਤਾਰ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕਰੋ</string>
@@ -76,7 +75,6 @@
     <string name="lbl_search">ਖੋਜੋ</string>
     <string name="lbl_song_count">ਗੀਤ ਦੀ ਗਿਣਤੀ</string>
     <string name="lbl_sort_dsc">ਘਟਦੇ ਹੋਏ</string>
-    <string name="lbl_play_selected">ਚੁਣਿਆ ਹੋਇਆ ਚਲਾਓ</string>
     <string name="lbl_artist_details">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>
     <string name="lbl_file_name">ਫਾਈਲ ਦਾ ਨਾਮ</string>
     <string name="lbl_bitrate">ਬਿੱਟ ਰੇਟ</string>

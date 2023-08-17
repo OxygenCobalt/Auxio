@@ -251,8 +251,6 @@
         <item quantity="other">%d 아티스트</item>
     </plurals>
     <string name="set_rescan_desc">태그 정보를 지우고 음악 라이브러리를 재생성함(느림, 더 완전함)</string>
-    <string name="lbl_play_selected">선택한 재생</string>
-    <string name="lbl_shuffle_selected">선택한 셔플</string>
     <string name="fmt_selected">%d 선택됨</string>
     <string name="lbl_reset">재설정</string>
     <string name="lbl_wiki">위키</string>

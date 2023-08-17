@@ -151,9 +151,7 @@ class MainFragment :
         // Workaround for a bug where fast navigation ends up desynchronizing the current
         // destination in the main navigation graph.
         findNavController().apply {
-            findDestination(R.id.main_fragment)?.let {
-                currentBackStackEntry?.destination = it
-            }
+            findDestination(R.id.main_fragment)?.let { currentBackStackEntry?.destination = it }
         }
 
         // --- VIEWMODEL SETUP ---

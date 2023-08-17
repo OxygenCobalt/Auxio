@@ -249,8 +249,6 @@
     <string name="set_rescan">Perskenuoti muziką</string>
     <string name="set_rescan_desc">Išvalyti žymių talpyklą ir pilnai perkrauti muzikos biblioteką (lėčiau, bet labiau išbaigta)</string>
     <string name="fmt_selected">%d pasirinkta</string>
-    <string name="lbl_play_selected">Pasirinktas grojimas</string>
-    <string name="lbl_shuffle_selected">Pasirinktas maišymas</string>
     <string name="set_play_song_from_genre">Groti iš žanro</string>
     <string name="lbl_wiki">Viki</string>
     <string name="fmt_list">%1$s, %2$s</string>

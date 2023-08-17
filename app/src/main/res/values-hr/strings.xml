@@ -247,8 +247,6 @@
     <string name="set_rescan">Ponovo pretraži glazbu</string>
     <string name="set_rescan_desc">Izbriši predmemoriju oznaka i ponovo potpuno učitaj glazbenu biblioteku (sporije, ali potpunije)</string>
     <string name="fmt_selected">Odabrano: %d</string>
-    <string name="lbl_shuffle_selected">Promiješaj odabrane</string>
-    <string name="lbl_play_selected">Reproduciraj odabrane</string>
     <string name="set_play_song_from_genre">Reproduciraj iz žanra</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
