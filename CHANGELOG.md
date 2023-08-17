@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.2.0
 
 #### What's New
 - Item and sort menus have been refreshed with a cleaner look
@@ -15,9 +15,6 @@ aspect ratio setting
 
 #### What's Fixed
 - Playlist detail view now respects playback settings
-
-#### Dev/Meta
-- Unified navigation graph
 
 ## 3.1.4
 
