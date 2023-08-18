@@ -8,5 +8,5 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
     app:defaultNavHost="true"
-    app:navGraph="@navigation/nav_main"
+    app:navGraph="@navigation/outer"
     tools:layout="@layout/fragment_main" />

@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -39,8 +40,8 @@ import org.oxycblt.auxio.util.logD
 class MusicViewModel
 @Inject
 constructor(
+    private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
-    private val musicSettings: MusicSettings
 ) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
 
     private val _indexingState = MutableStateFlow<IndexingState?>(null)
@@ -52,23 +53,13 @@ constructor(
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
-    private val _newPlaylistSongs = MutableEvent<List<Song>>()
-    /** Flag for opening a dialog to create a playlist of the given [Song]s. */
-    val newPlaylistSongs: Event<List<Song>> = _newPlaylistSongs
-
-    private val _playlistToRename = MutableEvent<Playlist?>()
-    /** Flag for opening a dialog to rename the given [Playlist]. */
-    val playlistToRename: Event<Playlist?>
-        get() = _playlistToRename
-
-    private val _playlistToDelete = MutableEvent<Playlist>()
-    /** Flag for opening a dialog to confirm deletion of the given [Playlist]. */
-    val playlistToDelete: Event<Playlist>
-        get() = _playlistToDelete
-
-    private val _songsToAdd = MutableEvent<List<Song>>()
-    /** Flag for opening a dialog to add the given [Song]s to a playlist. */
-    val songsToAdd: Event<List<Song>> = _songsToAdd
+    private val _playlistDecision = MutableEvent<PlaylistDecision>()
+    /**
+     * A [PlaylistDecision] command that is awaiting a view capable of responding to it. Null if
+     * none currently.
+     */
+    val playlistDecision: Event<PlaylistDecision>
+        get() = _playlistDecision
 
     init {
         musicRepository.addUpdateListener(this)
@@ -121,7 +112,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.createPlaylist(name, songs) }
         } else {
             logD("Launching creation dialog for ${songs.size} songs")
-            _newPlaylistSongs.put(songs)
+            _playlistDecision.put(PlaylistDecision.New(songs))
         }
     }
 
@@ -137,7 +128,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.renamePlaylist(playlist, name) }
         } else {
             logD("Launching rename dialog for $playlist")
-            _playlistToRename.put(playlist)
+            _playlistDecision.put(PlaylistDecision.Rename(playlist))
         }
     }
 
@@ -154,7 +145,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.deletePlaylist(playlist) }
         } else {
             logD("Launching deletion dialog for $playlist")
-            _playlistToDelete.put(playlist)
+            _playlistDecision.put(PlaylistDecision.Delete(playlist))
         }
     }
 
@@ -177,7 +168,7 @@ constructor(
      */
     fun addToPlaylist(album: Album, playlist: Playlist? = null) {
         logD("Adding $album to playlist")
-        addToPlaylist(musicSettings.albumSongSort.songs(album.songs), playlist)
+        addToPlaylist(listSettings.albumSongSort.songs(album.songs), playlist)
     }
 
     /**
@@ -188,7 +179,7 @@ constructor(
      */
     fun addToPlaylist(artist: Artist, playlist: Playlist? = null) {
         logD("Adding $artist to playlist")
-        addToPlaylist(musicSettings.artistSongSort.songs(artist.songs), playlist)
+        addToPlaylist(listSettings.artistSongSort.songs(artist.songs), playlist)
     }
 
     /**
@@ -199,7 +190,7 @@ constructor(
      */
     fun addToPlaylist(genre: Genre, playlist: Playlist? = null) {
         logD("Adding $genre to playlist")
-        addToPlaylist(musicSettings.genreSongSort.songs(genre.songs), playlist)
+        addToPlaylist(listSettings.genreSongSort.songs(genre.songs), playlist)
     }
 
     /**
@@ -214,7 +205,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.addToPlaylist(songs, playlist) }
         } else {
             logD("Launching addition dialog for songs=${songs.size}")
-            _songsToAdd.put(songs)
+            _playlistDecision.put(PlaylistDecision.Add(songs))
         }
     }
 
@@ -234,4 +225,39 @@ constructor(
         val genres: Int,
         val durationMs: Long
     )
+}
+
+/**
+ * Navigation command for when a [Playlist] must have some operation performed on it by the user.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+sealed interface PlaylistDecision {
+    /**
+     * Navigate to a dialog that allows a user to pick a name for a new [Playlist].
+     *
+     * @param songs The [Song]s to contain in the new [Playlist].
+     */
+    data class New(val songs: List<Song>) : PlaylistDecision
+
+    /**
+     * Navigate to a dialog that allows a user to rename an existing [Playlist].
+     *
+     * @param playlist The playlist to act on.
+     */
+    data class Rename(val playlist: Playlist) : PlaylistDecision
+
+    /**
+     * Navigate to a dialog that confirms the deletion of an existing [Playlist].
+     *
+     * @param playlist The playlist to act on.
+     */
+    data class Delete(val playlist: Playlist) : PlaylistDecision
+
+    /**
+     * Navigate to a dialog that allows the user to add [Song]s to a [Playlist].
+     *
+     * @param songs The [Song]s to add to the chosen [Playlist].
+     */
+    data class Add(val songs: List<Song>) : PlaylistDecision
 }

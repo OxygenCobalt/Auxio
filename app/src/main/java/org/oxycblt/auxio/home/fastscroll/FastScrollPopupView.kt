@@ -123,8 +123,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         }
 
         override fun isAutoMirrored(): Boolean = true
+
         override fun setAlpha(alpha: Int) {}
+
         override fun setColorFilter(colorFilter: ColorFilter?) {}
+
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
         private fun updatePath() {

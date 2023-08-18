@@ -6,7 +6,8 @@ plugins {
     id "kotlin-parcelize"
     id "dagger.hilt.android.plugin"
     id "kotlin-kapt"
-    id 'org.jetbrains.kotlin.android'
+    id "com.google.devtools.ksp"
+    id "org.jetbrains.kotlin.android"
 }
 
 android {
@@ -20,8 +21,8 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "3.1.4"
-        versionCode 34
+        versionName "3.2.0"
+        versionCode 35
 
         minSdk 24
         targetSdk 34
@@ -77,7 +78,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    def coroutines_version = '1.7.1'
+    def coroutines_version = '1.7.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$coroutines_version"
 
@@ -87,7 +88,7 @@ dependencies {
     implementation "androidx.core:core-ktx:1.10.1"
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.activity:activity-ktx:1.7.2"
-    implementation "androidx.fragment:fragment-ktx:1.6.0"
+    implementation "androidx.fragment:fragment-ktx:1.6.1"
 
     // Components
     // Deliberately kept on 1.2.1 to prevent a bug where the queue sheet will not collapse on
@@ -113,12 +114,12 @@ dependencies {
     implementation "androidx.media:media:1.6.0"
 
     // Preferences
-    implementation "androidx.preference:preference-ktx:1.2.0"
+    implementation "androidx.preference:preference-ktx:1.2.1"
 
     // Database
-    def room_version = '2.6.0-alpha01'
+    def room_version = '2.6.0-alpha03'
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
     // --- THIRD PARTY ---
@@ -133,7 +134,7 @@ dependencies {
     // Material
     // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
     //  PR a fix.
-    implementation "com.google.android.material:material:1.10.0-alpha04"
+    implementation "com.google.android.material:material:1.10.0-alpha06"
 
     // Dependency Injection
     implementation "com.google.dagger:dagger:$hilt_version"
@@ -142,7 +143,7 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Testing
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

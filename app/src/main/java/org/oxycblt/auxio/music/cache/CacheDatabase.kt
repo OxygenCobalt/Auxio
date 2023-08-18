@@ -40,7 +40,9 @@ abstract class CacheDatabase : RoomDatabase() {
 @Dao
 interface CachedSongsDao {
     @Query("SELECT * FROM CachedSong") suspend fun readSongs(): List<CachedSong>
+
     @Query("DELETE FROM CachedSong") suspend fun nukeSongs()
+
     @Insert suspend fun insertSongs(songs: List<CachedSong>)
 }
 

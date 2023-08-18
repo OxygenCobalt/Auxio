@@ -29,18 +29,18 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.ui.UISettings
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A [ViewBindingDialogFragment] that allows the user to configure the current [Accent].
+ * A [ViewBindingMaterialDialogFragment] that allows the user to configure the current [Accent].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
 class AccentCustomizeDialog :
-    ViewBindingDialogFragment<DialogAccentBinding>(), ClickableListListener<Accent> {
+    ViewBindingMaterialDialogFragment<DialogAccentBinding>(), ClickableListListener<Accent> {
     private var accentAdapter = AccentAdapter(this)
     @Inject lateinit var uiSettings: UISettings
 

@@ -55,7 +55,7 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_music_dirs)) {
-            findNavController().navigate(RootPreferenceFragmentDirections.goToMusicDirsDialog())
+            findNavController().navigateSafe(RootPreferenceFragmentDirections.musicDirsSettings())
         }
     }
 
@@ -66,23 +66,21 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         when (preference.key) {
             getString(R.string.set_key_ui) -> {
                 logD("Navigating to UI preferences")
-                findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.goToUiPreferences())
+                findNavController().navigateSafe(RootPreferenceFragmentDirections.uiPreferences())
             }
             getString(R.string.set_key_personalize) -> {
                 logD("Navigating to personalization preferences")
                 findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.goToPersonalizePreferences())
+                    .navigateSafe(RootPreferenceFragmentDirections.personalizePreferences())
             }
             getString(R.string.set_key_music) -> {
                 logD("Navigating to music preferences")
                 findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.goToMusicPreferences())
+                    .navigateSafe(RootPreferenceFragmentDirections.musicPreferences())
             }
             getString(R.string.set_key_audio) -> {
                 logD("Navigating to audio preferences")
-                findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.goToAudioPreferences())
+                findNavController().navigateSafe(RootPreferenceFragmentDirections.audioPeferences())
             }
             getString(R.string.set_key_reindex) -> musicModel.refresh()
             getString(R.string.set_key_rescan) -> musicModel.rescan()

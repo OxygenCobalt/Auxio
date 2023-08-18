@@ -29,19 +29,19 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.logW
 
 /**
- * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
- * split tags with multiple values.
+ * A [ViewBindingMaterialDialogFragment] that allows the user to configure the separator characters
+ * used to split tags with multiple values.
  *
  * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Replace with unsplit names dialog
  */
 @AndroidEntryPoint
-class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
+class SeparatorsDialog : ViewBindingMaterialDialogFragment<DialogSeparatorsBinding>() {
     @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =

@@ -82,7 +82,7 @@ abstract class DetailListAdapter(
          * Called when the button in a [SortHeader] item is pressed, requesting that the sort menu
          * should be opened.
          */
-        fun onOpenSortMenu(anchor: View)
+        fun onOpenSortMenu()
     }
 
     protected companion object {
@@ -132,7 +132,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
             // Add a Tooltip based on the content description so that the purpose of this
             // button can be clear.
             TooltipCompat.setTooltipText(this, contentDescription)
-            setOnClickListener(listener::onOpenSortMenu)
+            setOnClickListener { listener.onOpenSortMenu() }
         }
     }
 

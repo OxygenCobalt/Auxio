@@ -49,11 +49,10 @@
     <string name="lbl_equalizer">ਇਕੋਲਾਈਜ਼ਰ</string>
     <string name="lbl_play">ਚਲਾਓ</string>
     <string name="lbl_shuffle">ਸ਼ਫਲ</string>
-    <string name="lbl_shuffle_selected">ਸ਼ਫਲ ਚੁਣਿਆ ਗਿਆ</string>
     <string name="lbl_queue">ਕਤਾਰ</string>
     <string name="lbl_play_next">ਅਗਲਾ ਚਲਾਓ</string>
     <string name="lbl_queue_add">ਕਤਾਰ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕਰੋ</string>
-    <string name="lbl_go_album">ਐਲਬਮ \'ਤੇ ਜਾਓ</string>
+    <string name="lbl_album_details">ਐਲਬਮ \'ਤੇ ਜਾਓ</string>
     <string name="lbl_song_detail">ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਵੇਖੋ</string>
     <string name="lbl_props">ਗੀਤ ਦੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ</string>
     <string name="lbl_relative_path">ਪੇਰੈਂਟ ਮਾਰਗ</string>
@@ -75,9 +74,8 @@
     <string name="info_app_desc">ਐਂਡਰੌਇਡ ਲਈ ਇੱਕ ਸਰਲ, ਤਰਕਸੰਗਤ ਸੰਗੀਤ ਪਲੇਅਰ।</string>
     <string name="lbl_search">ਖੋਜੋ</string>
     <string name="lbl_song_count">ਗੀਤ ਦੀ ਗਿਣਤੀ</string>
-    <string name="lbl_sort_dec">ਘਟਦੇ ਹੋਏ</string>
-    <string name="lbl_play_selected">ਚੁਣਿਆ ਹੋਇਆ ਚਲਾਓ</string>
-    <string name="lbl_go_artist">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>
+    <string name="lbl_sort_dsc">ਘਟਦੇ ਹੋਏ</string>
+    <string name="lbl_artist_details">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>
     <string name="lbl_file_name">ਫਾਈਲ ਦਾ ਨਾਮ</string>
     <string name="lbl_bitrate">ਬਿੱਟ ਰੇਟ</string>
     <string name="lbl_sample_rate">ਸੈਂਪਲ ਰੇਟ</string>
@@ -112,13 +110,13 @@
     <string name="set_action_mode_next">ਅਗਲੇ \'ਤੇ ਜਾਓ</string>
     <string name="set_action_mode_repeat">ਦੁਹਰਾਓ ਮੋਡ</string>
     <string name="set_behavior">ਵਿਵਹਾਰ</string>
-    <string name="set_library_song_playback_mode">ਜਦੋਂ ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ ਚਲਾਉਂਦੇ ਹਾਂ</string>
-    <string name="set_detail_song_playback_mode">ਜਦੋਂ ਆਈਟਮ ਦੇ ਵੇਰਵਿਆਂ ਤੋਂ ਚਲਾਉਂਦੇ ਹਾਂ</string>
-    <string name="set_playback_mode_none">ਦਿਖਾਈ ਗਈ ਆਈਟਮ ਤੋਂ ਚਲਾਓ</string>
-    <string name="set_playback_mode_songs">ਸਾਰੇ ਗੀਤਾਂ ਤੋਂ ਚਲਾਓ</string>
-    <string name="set_playback_mode_album">ਐਲਬਮ ਤੋਂ ਚਲਾਓ</string>
-    <string name="set_playback_mode_artist">ਕਲਾਕਾਰ ਤੋਂ ਖੇਡੋ</string>
-    <string name="set_playback_mode_genre">ਸ਼ੈਲੀ ਤੋਂ ਖੇਡੋ</string>
+    <string name="set_play_in_list_with">ਜਦੋਂ ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ ਚਲਾਉਂਦੇ ਹਾਂ</string>
+    <string name="set_play_in_parent_with">ਜਦੋਂ ਆਈਟਮ ਦੇ ਵੇਰਵਿਆਂ ਤੋਂ ਚਲਾਉਂਦੇ ਹਾਂ</string>
+    <string name="set_play_song_none">ਦਿਖਾਈ ਗਈ ਆਈਟਮ ਤੋਂ ਚਲਾਓ</string>
+    <string name="set_play_song_from_all">ਸਾਰੇ ਗੀਤਾਂ ਤੋਂ ਚਲਾਓ</string>
+    <string name="set_play_song_from_album">ਐਲਬਮ ਤੋਂ ਚਲਾਓ</string>
+    <string name="set_play_song_from_artist">ਕਲਾਕਾਰ ਤੋਂ ਖੇਡੋ</string>
+    <string name="set_play_song_from_genre">ਸ਼ੈਲੀ ਤੋਂ ਖੇਡੋ</string>
     <string name="set_keep_shuffle">ਸ਼ਫਲ ਯਾਦ ਰੱਖੋ</string>
     <string name="set_repeat_pause_desc">ਗੀਤ ਦੁਹਰਾਉਣ ਤੇ ਰੋਕੋ</string>
     <string name="set_replay_gain">ਰੀਪਲੇਅ-ਗੇਨ</string>
@@ -289,4 +287,9 @@
     <string name="fmt_indexing">ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬਰੇਰੀ ਲੋਡ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ… (%1$d/%2$d)</string>
     <string name="set_square_covers">ਵਰਗੀਕ੍ਰਿਤ ਐਲਬਮ ਕਵਰ ਫੋਰਸ ਕਰੋ</string>
     <string name="set_square_covers_desc">ਸਾਰੇ ਐਲਬਮ ਕਵਰਾਂ ਨੂੰ 1:1 ਦੇ ਆਕਾਰ ਅਨੁਪਾਤ ਤੱਕ ਕਾਂਟ-ਛਾਂਟ ਕਰੋ</string>
+    <string name="lbl_song">ਗੀਤ</string>
+    <string name="lbl_parent_detail">ਵੇਖੋ</string>
+    <string name="set_play_song_by_itself">ਇਸੇ ਗੀਤ ਨੂੰ ਚਲਾਓ</string>
+    <string name="lbl_sort_mode">ਸੌਰਟ ਕਰੋ</string>
+    <string name="lbl_sort_direction">ਦਿਸ਼ਾ</string>
 </resources>

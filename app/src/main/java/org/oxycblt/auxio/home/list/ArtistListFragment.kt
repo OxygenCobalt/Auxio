@@ -20,31 +20,29 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.nonZeroOrNull
+import org.oxycblt.auxio.util.positiveOrNull
 
 /**
  * A [ListFragment] that shows a list of [Artist]s.
@@ -57,10 +55,10 @@ class ArtistListFragment :
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
-    override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     private val artistAdapter = ArtistAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -76,8 +74,8 @@ class ArtistListFragment :
             listener = this@ArtistListFragment
         }
 
-        collectImmediately(homeModel.artistsList, ::updateArtists)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collectImmediately(homeModel.artistList, ::updateArtists)
+        collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -92,9 +90,9 @@ class ArtistListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val artist = homeModel.artistsList.value[pos]
+        val artist = homeModel.artistList.value[pos]
         // Change how we display the popup depending on the current sort mode.
-        return when (homeModel.getSortForTab(MusicMode.ARTISTS).mode) {
+        return when (homeModel.artistSort.mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> artist.name.thumb
 
@@ -102,7 +100,7 @@ class ArtistListFragment :
             is Sort.Mode.ByDuration -> artist.durationMs?.formatDurationMs(false)
 
             // Count -> Use song count
-            is Sort.Mode.ByCount -> artist.songs.size.nonZeroOrNull()?.toString()
+            is Sort.Mode.ByCount -> artist.songs.size.positiveOrNull()?.toString()
 
             // Unsupported sort, error gracefully
             else -> null
@@ -114,15 +112,15 @@ class ArtistListFragment :
     }
 
     override fun onRealClick(item: Artist) {
-        navModel.exploreNavigateTo(item)
+        detailModel.showArtist(item)
     }
 
-    override fun onOpenMenu(item: Artist, anchor: View) {
-        openMusicMenu(anchor, R.menu.menu_parent_actions, item)
+    override fun onOpenMenu(item: Artist) {
+        listModel.openMenu(R.menu.parent, item)
     }
 
     private fun updateArtists(artists: List<Artist>) {
-        artistAdapter.update(artists, homeModel.artistsInstructions.consume())
+        artistAdapter.update(artists, homeModel.artistInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {

@@ -35,7 +35,7 @@ class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_pre_amp)) {
             logD("Navigating to pre-amp dialog")
-            findNavController().navigateSafe(AudioPreferenceFragmentDirections.goToPreAmpDialog())
+            findNavController().navigateSafe(AudioPreferenceFragmentDirections.preAmpSettings())
         }
     }
 }

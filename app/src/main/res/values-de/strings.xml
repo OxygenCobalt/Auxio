@@ -15,15 +15,15 @@
     <string name="lbl_sort_asc">Aufsteigend</string>
     <string name="lbl_play">Abspielen</string>
     <string name="lbl_shuffle">Zufällig</string>
-    <string name="set_playback_mode_songs">Von allen Lieder abspielen</string>
-    <string name="set_playback_mode_album">Von Album abspielen</string>
+    <string name="set_play_song_from_all">Von allen Lieder abspielen</string>
+    <string name="set_play_song_from_album">Von Album abspielen</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_play_next">Als Nächstes abspielen</string>
     <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>
     <string name="lng_queue_added">Der Warteschlange hinzugefügt</string>
-    <string name="lbl_go_artist">Zum Künstler gehen</string>
-    <string name="lbl_go_album">Zum Album gehen</string>
+    <string name="lbl_artist_details">Zum Künstler gehen</string>
+    <string name="lbl_album_details">Zum Album gehen</string>
     <string name="lbl_state_saved">Wiedergabezustand gespeichert</string>
     <string name="lbl_add">Hinzufügen</string>
     <string name="lbl_save">Speichern</string>
@@ -56,11 +56,11 @@
     <string name="set_replay_gain_mode_track">Titel bevorzugen</string>
     <string name="set_replay_gain_mode_album">Album bevorzugen</string>
     <string name="set_personalize">Personalisieren</string>
-    <string name="set_library_song_playback_mode">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
+    <string name="set_play_in_list_with">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
     <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
-    <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied gewechselt wird</string>
+    <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorherigen Lied gewechselt wird</string>
     <string name="set_content">Inhalt</string>
     <string name="set_save_state">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
@@ -153,8 +153,8 @@
     <string name="fmt_lib_total_duration">Gesamtdauer: %s</string>
     <string name="lbl_cancel">Abbrechen</string>
     <string name="set_pre_amp_warning">Warnung: Das Erhöhen der Vorverstärkung zu einem hohen positiven Wert könnte zu einer Übersteuerung bei einigen Audiospuren führen.</string>
-    <string name="set_detail_song_playback_mode">Wenn ein Lied aus den Elementdetails abgespielt wird</string>
-    <string name="set_playback_mode_none">Vom dargestellten Element abspielen</string>
+    <string name="set_play_in_parent_with">Wenn ein Lied aus den Elementdetails abgespielt wird</string>
+    <string name="set_play_song_none">Vom dargestellten Element abspielen</string>
     <string name="set_dirs">Musikordner</string>
     <string name="set_dirs_desc">Verwalten, von wo die Musik geladen werden soll</string>
     <string name="set_dirs_mode">Modus</string>
@@ -233,7 +233,7 @@
     <string name="set_separators_comma">Komma (,)</string>
     <string name="set_separators_slash">Schrägstrich (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
-    <string name="set_playback_mode_artist">Vom Künstler abspielen</string>
+    <string name="set_play_song_from_artist">Vom Künstler abspielen</string>
     <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte. Das kann gelöst werden, in dem vor ungewollte Trenner ein Backslash (\\) eingefügt wird.</string>
     <string name="set_exclude_non_music">Nicht-Musik ausschließen</string>
     <string name="set_exclude_non_music_desc">Audio-Dateien, die keine Musik sind (wie Podcasts), ignorieren</string>
@@ -251,10 +251,8 @@
     <string name="err_did_not_save">Zustand konnte nicht gespeichert werden</string>
     <string name="set_rescan">Music neu scannen</string>
     <string name="set_rescan_desc">Tag-Cache leeren und die Musik-Bibliothek vollständig neu laden (langsamer, aber vollständiger)</string>
-    <string name="lbl_play_selected">Ausgewählte abspielen</string>
-    <string name="lbl_shuffle_selected">Ausgewählte zufällig abspielen</string>
     <string name="fmt_selected">%d ausgewählt</string>
-    <string name="set_playback_mode_genre">Vom Genre abspielen</string>
+    <string name="set_play_song_from_genre">Vom Genre abspielen</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Zurücksetzen</string>
@@ -270,7 +268,7 @@
     <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
     <string name="set_state">Persistenz</string>
     <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
-    <string name="lbl_sort_dec">Absteigend</string>
+    <string name="lbl_sort_dsc">Absteigend</string>
     <string name="desc_playlist_image">Wiedergabelistenbild für %s</string>
     <string name="lbl_playlist">Wiedergabeliste</string>
     <string name="lbl_playlists">Wiedergabelisten</string>
@@ -297,4 +295,9 @@
     <string name="fmt_editing">%s bearbeiten</string>
     <string name="set_square_covers">Quadratische Album-Cover erzwingen</string>
     <string name="set_square_covers_desc">Alle Album-Cover auf ein Seitenverhältnis von 1:1 zuschneiden</string>
+    <string name="lbl_song">Lied</string>
+    <string name="lbl_parent_detail">Ansehen</string>
+    <string name="set_play_song_by_itself">Lied selbst spielen</string>
+    <string name="lbl_sort_direction">Richtung</string>
+    <string name="lbl_sort_mode">Sortieren nach</string>
 </resources>

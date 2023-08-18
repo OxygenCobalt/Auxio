@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="org.oxycblt.auxio.ui.BottomSheetContentBehavior"
-        app:navGraph="@navigation/nav_explore"
+        app:navGraph="@navigation/inner"
+        app:defaultNavHost="true"
         tools:layout="@layout/fragment_home" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -55,6 +56,7 @@
                     android:id="@+id/queue_handle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/spacing_medium"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView

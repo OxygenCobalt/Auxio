@@ -35,7 +35,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -47,7 +47,7 @@ import org.oxycblt.auxio.util.showToast
  */
 @AndroidEntryPoint
 class MusicDirsDialog :
-    ViewBindingDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
+    ViewBindingMaterialDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
     private val dirAdapter = DirectoryAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
     private var storageManager: StorageManager? = null

@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:id="@+id/home_fragment"
+        android:name="org.oxycblt.auxio.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/search"
+            app:destination="@id/search_fragment" />
+        <action
+            android:id="@+id/sort_songs"
+            app:destination="@+id/song_sort_dialog" />
+        <action
+            android:id="@+id/sort_albums"
+            app:destination="@+id/album_sort_dialog" />
+        <action
+            android:id="@+id/sort_artists"
+            app:destination="@+id/artist_sort_dialog" />
+        <action
+            android:id="@+id/sort_genres"
+            app:destination="@+id/genre_sort_dialog" />
+        <action
+            android:id="@+id/sort_playlists"
+            app:destination="@+id/playlist_sort_dialog" />
+        <action
+            android:id="@+id/show_song"
+            app:destination="@id/song_detail_dialog" />
+        <action
+            android:id="@+id/show_album"
+            app:destination="@id/album_detail_fragment" />
+        <action
+            android:id="@+id/show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/show_genre"
+            app:destination="@id/genre_detail_fragment" />
+        <action
+            android:id="@+id/show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
+        <action
+            android:id="@+id/open_song_menu"
+            app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_album_menu"
+            app:destination="@id/album_menu_dialog" />
+        <action
+            android:id="@+id/open_artist_menu"
+            app:destination="@id/artist_menu_dialog" />
+        <action
+            android:id="@+id/open_genre_menu"
+            app:destination="@id/genre_menu_dialog" />
+        <action
+            android:id="@+id/open_playlist_menu"
+            app:destination="@id/playlist_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
+            android:id="@+id/new_playlist"
+            app:destination="@id/new_playlist_dialog" />
+        <action
+            android:id="@+id/rename_playlist"
+            app:destination="@id/rename_playlist_dialog" />
+        <action
+            android:id="@+id/delete_playlist"
+            app:destination="@id/delete_playlist_dialog" />
+        <action
+            android:id="@+id/add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/play_from_artist"
+            app:destination="@id/play_from_artist_dialog" />
+        <action
+            android:id="@+id/play_from_genre"
+            app:destination="@id/play_from_genre_dialog" />
+        <action
+            android:id="@+id/report_error"
+            app:destination="@id/error_details_dialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/error_details_dialog"
+        android:name="org.oxycblt.auxio.home.ErrorDetailsDialog"
+        android:label="error_details_dialog"
+        tools:layout="@layout/dialog_error_details">
+        <argument
+            android:name="error"
+            app:argType="java.lang.Exception" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/song_sort_dialog"
+        android:name="org.oxycblt.auxio.home.sort.SongSortDialog"
+        android:label="song_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
+        android:id="@+id/album_sort_dialog"
+        android:name="org.oxycblt.auxio.home.sort.AlbumSortDialog"
+        android:label="album_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
+        android:id="@+id/artist_sort_dialog"
+        android:name="org.oxycblt.auxio.home.sort.ArtistSortDialog"
+        android:label="artist_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
+        android:id="@+id/genre_sort_dialog"
+        android:name="org.oxycblt.auxio.home.sort.GenreSortDialog"
+        android:label="genre_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
+        android:id="@+id/playlist_sort_dialog"
+        android:name="org.oxycblt.auxio.home.sort.PlaylistSortDialog"
+        android:label="playlist_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
+        android:id="@+id/song_detail_dialog"
+        android:name="org.oxycblt.auxio.detail.SongDetailDialog"
+        android:label="song_detail_dialog"
+        tools:layout="@layout/dialog_song_detail">
+        <argument
+            android:name="songUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="org.oxycblt.auxio.search.SearchFragment"
+        android:label="search_fragment"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/show_song"
+            app:destination="@id/song_detail_dialog" />
+        <action
+            android:id="@+id/show_album"
+            app:destination="@id/album_detail_fragment" />
+        <action
+            android:id="@+id/show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/show_genre"
+            app:destination="@id/genre_detail_fragment" />
+        <action
+            android:id="@+id/show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
+        <action
+            android:id="@+id/open_song_menu"
+            app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_album_menu"
+            app:destination="@id/album_menu_dialog" />
+        <action
+            android:id="@+id/open_artist_menu"
+            app:destination="@id/artist_menu_dialog" />
+        <action
+            android:id="@+id/open_genre_menu"
+            app:destination="@id/genre_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
+            android:id="@+id/open_playlist_menu"
+            app:destination="@id/playlist_menu_dialog" />
+        <action
+            android:id="@+id/rename_playlist"
+            app:destination="@id/rename_playlist_dialog" />
+        <action
+            android:id="@+id/delete_playlist"
+            app:destination="@id/delete_playlist_dialog" />
+        <action
+            android:id="@+id/add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/play_from_artist"
+            app:destination="@id/play_from_artist_dialog" />
+        <action
+            android:id="@+id/play_from_genre"
+            app:destination="@id/play_from_genre_dialog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/album_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.AlbumDetailFragment"
+        android:label="album_detail_fragment"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="albumUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@+id/album_song_sort_dialog" />
+        <action
+            android:id="@+id/show_song"
+            app:destination="@id/song_detail_dialog" />
+        <action
+            android:id="@+id/show_album"
+            app:destination="@id/album_detail_fragment" />
+        <action
+            android:id="@+id/show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/open_song_menu"
+            app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_album_menu"
+            app:destination="@id/album_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
+            android:id="@+id/add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
+            android:id="@+id/play_from_artist"
+            app:destination="@id/play_from_artist_dialog" />
+        <action
+            android:id="@+id/play_from_genre"
+            app:destination="@id/play_from_genre_dialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/album_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.AlbumSongSortDialog"
+        android:label="album_song_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <fragment
+        android:id="@+id/artist_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.ArtistDetailFragment"
+        android:label="artist_detail_fragment"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="artistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@+id/artist_song_sort_dialog" />
+        <action
+            android:id="@+id/show_song"
+            app:destination="@id/song_detail_dialog" />
+        <action
+            android:id="@+id/show_album"
+            app:destination="@id/album_detail_fragment" />
+        <action
+            android:id="@+id/show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/open_song_menu"
+            app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_album_menu"
+            app:destination="@id/album_menu_dialog" />
+        <action
+            android:id="@+id/open_artist_menu"
+            app:destination="@id/artist_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
+            android:id="@+id/add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
+            android:id="@+id/play_from_genre"
+            app:destination="@id/play_from_genre_dialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/artist_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.ArtistSongSortDialog"
+        android:label="artist_song_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <fragment
+        android:id="@+id/genre_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.GenreDetailFragment"
+        android:label="genre_detail_fragment"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="genreUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@+id/genre_song_sort_dialog" />
+        <action
+            android:id="@+id/show_song"
+            app:destination="@id/song_detail_dialog" />
+        <action
+            android:id="@+id/show_album"
+            app:destination="@id/album_detail_fragment" />
+        <action
+            android:id="@+id/show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/open_song_menu"
+            app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_artist_menu"
+            app:destination="@id/artist_menu_dialog" />
+        <action
+            android:id="@+id/open_genre_menu"
+            app:destination="@id/genre_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
+            android:id="@+id/add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
+            android:id="@+id/play_from_artist"
+            app:destination="@id/play_from_artist_dialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/genre_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.GenreSongSortDialog"
+        android:label="genre_song_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <fragment
+        android:id="@+id/playlist_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.PlaylistDetailFragment"
+        android:label="playlist_detail_fragment"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@+id/playlist_song_sort_dialog" />
+        <action
+            android:id="@+id/show_song"
+            app:destination="@id/song_detail_dialog" />
+        <action
+            android:id="@+id/show_album"
+            app:destination="@id/album_detail_fragment" />
+        <action
+            android:id="@+id/show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/open_song_menu"
+            app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_playlist_menu"
+            app:destination="@id/playlist_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
+            android:id="@+id/rename_playlist"
+            app:destination="@id/rename_playlist_dialog" />
+        <action
+            android:id="@+id/delete_playlist"
+            app:destination="@id/delete_playlist_dialog" />
+        <action
+            android:id="@+id/play_from_artist"
+            app:destination="@id/play_from_artist_dialog" />
+        <action
+            android:id="@+id/play_from_genre"
+            app:destination="@id/play_from_genre_dialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/playlist_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.PlaylistSongSortDialog"
+        android:label="playlist_song_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
+        android:id="@+id/new_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.decision.NewPlaylistDialog"
+        android:label="new_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="songUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/rename_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.decision.RenamePlaylistDialog"
+        android:label="rename_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/delete_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.decision.DeletePlaylistDialog"
+        android:label="delete_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/add_to_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.decision.AddToPlaylistDialog"
+        android:label="new_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="songUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <action
+            android:id="@+id/new_playlist"
+            app:destination="@id/new_playlist_dialog" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/show_artist_choices_dialog"
+        android:name="org.oxycblt.auxio.detail.decision.ShowArtistDialog"
+        android:label="show_artist_choices_dialog"
+        tools:layout="@layout/dialog_music_choices">
+        <argument
+            android:name="itemUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/play_from_artist_dialog"
+        android:name="org.oxycblt.auxio.playback.decision.PlayFromArtistDialog"
+        android:label="play_from_artist_dialog"
+        tools:layout="@layout/dialog_music_choices">
+        <argument
+            android:name="artistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/play_from_genre_dialog"
+        android:name="org.oxycblt.auxio.playback.decision.PlayFromGenreDialog"
+        android:label="play_from_genre_dialog"
+        tools:layout="@layout/dialog_music_choices">
+        <argument
+            android:name="genreUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/song_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.SongMenuDialogFragment"
+        android:label="song_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForSong$Parcel" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/album_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.AlbumMenuDialogFragment"
+        android:label="album_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForAlbum$Parcel" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/artist_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.ArtistMenuDialogFragment"
+        android:label="artist_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForArtist$Parcel" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/genre_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.GenreMenuDialogFragment"
+        android:label="genre_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForGenre$Parcel" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/playlist_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.PlaylistMenuDialogFragment"
+        android:label="playlist_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForPlaylist$Parcel" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/selection_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.SelectionMenuDialogFragment"
+        android:label="selection_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForSelection$Parcel" />
+    </dialog>
+</navigation>

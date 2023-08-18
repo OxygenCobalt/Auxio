@@ -25,10 +25,9 @@ import com.google.android.material.R as MR
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -44,7 +43,7 @@ import org.oxycblt.auxio.util.logD
 @AndroidEntryPoint
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackBarBinding.inflate(inflater)
@@ -58,9 +57,9 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // --- UI SETUP ---
         binding.root.apply {
-            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.OpenPlaybackPanel) }
+            setOnClickListener { playbackModel.openPlayback() }
             setOnLongClickListener {
-                playbackModel.song.value?.let(navModel::exploreNavigateTo)
+                playbackModel.song.value?.let(detailModel::showAlbum)
                 true
             }
         }
@@ -71,7 +70,6 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // Set up actions
         binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
-        setupSecondaryActions(binding, playbackModel.currentBarAction)
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources.
@@ -82,6 +80,11 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.positionDs, ::updatePosition)
+        collectImmediately(
+            playbackModel.currentBarAction,
+            playbackModel.repeatMode,
+            playbackModel.isShuffled,
+            ::updateBarAction)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
@@ -89,39 +92,6 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         // Marquee elements leak if they are not disabled when the views are destroyed.
         binding.playbackSong.isSelected = false
         binding.playbackInfo.isSelected = false
-    }
-
-    private fun setupSecondaryActions(binding: FragmentPlaybackBarBinding, actionMode: ActionMode) {
-        when (actionMode) {
-            ActionMode.NEXT -> {
-                logD("Setting up skip next action")
-                binding.playbackSecondaryAction.apply {
-                    setIconResource(R.drawable.ic_skip_next_24)
-                    contentDescription = getString(R.string.desc_skip_next)
-                    iconTint = context.getAttrColorCompat(MR.attr.colorOnSurfaceVariant)
-                    setOnClickListener { playbackModel.next() }
-                }
-            }
-            ActionMode.REPEAT -> {
-                logD("Setting up repeat mode action")
-                binding.playbackSecondaryAction.apply {
-                    contentDescription = getString(R.string.desc_change_repeat)
-                    iconTint = context.getColorCompat(R.color.sel_activatable_icon)
-                    setOnClickListener { playbackModel.toggleRepeatMode() }
-                    collectImmediately(playbackModel.repeatMode, ::updateRepeat)
-                }
-            }
-            ActionMode.SHUFFLE -> {
-                logD("Setting up shuffle action")
-                binding.playbackSecondaryAction.apply {
-                    setIconResource(R.drawable.sel_shuffle_state_24)
-                    contentDescription = getString(R.string.desc_shuffle)
-                    iconTint = context.getColorCompat(R.color.sel_activatable_icon)
-                    setOnClickListener { playbackModel.toggleShuffled() }
-                    collectImmediately(playbackModel.isShuffled, ::updateShuffled)
-                }
-            }
-        }
     }
 
     private fun updateSong(song: Song?) {
@@ -142,19 +112,55 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         requireBinding().playbackPlayPause.isActivated = isPlaying
     }
 
-    private fun updateRepeat(repeatMode: RepeatMode) {
-        requireBinding().playbackSecondaryAction.apply {
-            setIconResource(repeatMode.icon)
-            // Icon tinting is controlled through isActivated, so update that flag as well.
-            isActivated = repeatMode != RepeatMode.NONE
-        }
-    }
-
-    private fun updateShuffled(isShuffled: Boolean) {
-        requireBinding().playbackSecondaryAction.isActivated = isShuffled
-    }
-
     private fun updatePosition(positionDs: Long) {
         requireBinding().playbackProgressBar.progress = positionDs.toInt()
+    }
+
+    private fun updateBarAction(
+        actionMode: ActionMode,
+        repeatMode: RepeatMode,
+        isShuffled: Boolean
+    ) {
+        val binding = requireBinding()
+        when (actionMode) {
+            ActionMode.NEXT -> {
+                logD("Using skip next action")
+                binding.playbackSecondaryAction.apply {
+                    if (tag != actionMode) {
+                        setIconResource(R.drawable.ic_skip_next_24)
+                        contentDescription = getString(R.string.desc_skip_next)
+                        iconTint = context.getAttrColorCompat(MR.attr.colorOnSurfaceVariant)
+                        setOnClickListener { playbackModel.next() }
+                        tag = actionMode
+                    }
+                }
+            }
+            ActionMode.REPEAT -> {
+                logD("Using repeat mode action")
+                binding.playbackSecondaryAction.apply {
+                    if (tag != actionMode) {
+                        contentDescription = getString(R.string.desc_change_repeat)
+                        iconTint = context.getColorCompat(R.color.sel_activatable_icon)
+                        setOnClickListener { playbackModel.toggleRepeatMode() }
+                        tag = actionMode
+                    }
+                    setIconResource(repeatMode.icon)
+                    isActivated = repeatMode != RepeatMode.NONE
+                }
+            }
+            ActionMode.SHUFFLE -> {
+                logD("Using shuffle action")
+                binding.playbackSecondaryAction.apply {
+                    if (tag != actionMode) {
+                        setIconResource(R.drawable.sel_shuffle_state_24)
+                        contentDescription = getString(R.string.desc_shuffle)
+                        iconTint = context.getColorCompat(R.color.sel_activatable_icon)
+                        setOnClickListener { playbackModel.toggleShuffled() }
+                        tag = actionMode
+                    }
+                    isActivated = isShuffled
+                }
+            }
+        }
     }
 }

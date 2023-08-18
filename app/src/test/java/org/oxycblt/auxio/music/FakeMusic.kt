@@ -29,30 +29,43 @@ import org.oxycblt.auxio.music.info.ReleaseType
 open class FakeSong : Song {
     override val name: Name
         get() = throw NotImplementedError()
+
     override val date: Date?
         get() = throw NotImplementedError()
+
     override val dateAdded: Long
         get() = throw NotImplementedError()
+
     override val disc: Disc?
         get() = throw NotImplementedError()
+
     override val genres: List<Genre>
         get() = throw NotImplementedError()
+
     override val mimeType: MimeType
         get() = throw NotImplementedError()
+
     override val track: Int?
         get() = throw NotImplementedError()
+
     override val path: Path
         get() = throw NotImplementedError()
+
     override val size: Long
         get() = throw NotImplementedError()
+
     override val uri: Uri
         get() = throw NotImplementedError()
+
     override val album: Album
         get() = throw NotImplementedError()
+
     override val artists: List<Artist>
         get() = throw NotImplementedError()
+
     override val durationMs: Long
         get() = throw NotImplementedError()
+
     override val uid: Music.UID
         get() = throw NotImplementedError()
 }
@@ -60,20 +73,28 @@ open class FakeSong : Song {
 open class FakeAlbum : Album {
     override val name: Name
         get() = throw NotImplementedError()
+
     override val coverUri: Uri
         get() = throw NotImplementedError()
+
     override val dateAdded: Long
         get() = throw NotImplementedError()
+
     override val dates: Date.Range?
         get() = throw NotImplementedError()
+
     override val releaseType: ReleaseType
         get() = throw NotImplementedError()
+
     override val artists: List<Artist>
         get() = throw NotImplementedError()
+
     override val durationMs: Long
         get() = throw NotImplementedError()
+
     override val songs: List<Song>
         get() = throw NotImplementedError()
+
     override val uid: Music.UID
         get() = throw NotImplementedError()
 }
@@ -81,18 +102,25 @@ open class FakeAlbum : Album {
 open class FakeArtist : Artist {
     override val name: Name
         get() = throw NotImplementedError()
+
     override val albums: List<Album>
         get() = throw NotImplementedError()
+
     override val explicitAlbums: List<Album>
         get() = throw NotImplementedError()
+
     override val implicitAlbums: List<Album>
         get() = throw NotImplementedError()
+
     override val genres: List<Genre>
         get() = throw NotImplementedError()
+
     override val durationMs: Long
         get() = throw NotImplementedError()
+
     override val songs: List<Song>
         get() = throw NotImplementedError()
+
     override val uid: Music.UID
         get() = throw NotImplementedError()
 }
@@ -100,12 +128,16 @@ open class FakeArtist : Artist {
 open class FakeGenre : Genre {
     override val name: Name
         get() = throw NotImplementedError()
+
     override val artists: List<Artist>
         get() = throw NotImplementedError()
+
     override val durationMs: Long
         get() = throw NotImplementedError()
+
     override val songs: List<Song>
         get() = throw NotImplementedError()
+
     override val uid: Music.UID
         get() = throw NotImplementedError()
 }

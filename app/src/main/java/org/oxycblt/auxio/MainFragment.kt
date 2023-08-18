@@ -26,10 +26,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.R as MR
@@ -41,16 +38,17 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.detail.Show
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.home.Outer
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
+import org.oxycblt.auxio.playback.OpenPanel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
+import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -64,30 +62,23 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A wrapper around the home fragment that shows the playback fragment and controls the more
- * high-level navigation features.
+ * A wrapper around the home fragment that shows the playback fragment and high-level navigation.
  *
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Break up the god navigation setup going on here
  */
 @AndroidEntryPoint
 class MainFragment :
-    ViewBindingFragment<FragmentMainBinding>(),
-    ViewTreeObserver.OnPreDrawListener,
-    NavController.OnDestinationChangedListener {
-    private val navModel: NavigationViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val selectionModel: SelectionViewModel by activityViewModels()
+    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {
     private val detailModel: DetailViewModel by activityViewModels()
+    private val homeModel: HomeViewModel by activityViewModels()
+    private val listModel: ListViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private var sheetBackCallback: SheetBackPressedCallback? = null
     private var detailBackCallback: DetailBackPressedCallback? = null
     private var selectionBackCallback: SelectionBackPressedCallback? = null
-    private var exploreBackCallback: ExploreBackPressedCallback? = null
+    private var selectionNavigationListener: DialogAwareNavigationListener? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
-    private var initialNavDestinationChange = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,28 +101,19 @@ class MainFragment :
         // Currently all back press callbacks are handled in MainFragment, as it's not guaranteed
         // that instantiating these callbacks in their respective fragments would result in the
         // correct order.
-        val sheetBackCallback =
+        sheetBackCallback =
             SheetBackPressedCallback(
-                    playbackSheetBehavior = playbackSheetBehavior,
-                    queueSheetBehavior = queueSheetBehavior)
-                .also { sheetBackCallback = it }
+                playbackSheetBehavior = playbackSheetBehavior,
+                queueSheetBehavior = queueSheetBehavior)
         val detailBackCallback =
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
-            SelectionBackPressedCallback(selectionModel).also { selectionBackCallback = it }
-        val exploreBackCallback =
-            ExploreBackPressedCallback(binding.exploreNavHost).also { exploreBackCallback = it }
+            SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
+
+        selectionNavigationListener = DialogAwareNavigationListener(listModel::dropSelection)
 
         // --- UI SETUP ---
         val context = requireActivity()
-        // Override the back pressed listener so we can map back navigation to collapsing
-        // navigation, navigation out of detail views, etc.
-        context.onBackPressedDispatcher.apply {
-            addCallback(viewLifecycleOwner, exploreBackCallback)
-            addCallback(viewLifecycleOwner, selectionBackCallback)
-            addCallback(viewLifecycleOwner, detailBackCallback)
-            addCallback(viewLifecycleOwner, sheetBackCallback)
-        }
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             lastInsets = insets
@@ -148,11 +130,7 @@ class MainFragment :
             // In portrait mode, set up click listeners on the stacked sheets.
             logD("Configuring stacked bottom sheets")
             unlikelyToBeNull(binding.queueHandleWrapper).setOnClickListener {
-                if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
-                    queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
-                    // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
-                    queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
-                }
+                playbackModel.openQueue()
             }
         } else {
             // Dual-pane mode, manually style the static queue sheet.
@@ -173,18 +151,16 @@ class MainFragment :
         }
 
         // --- VIEWMODEL SETUP ---
+        // This has to be done here instead of the playback panel to make sure that it's prioritized
+        // by StateFlow over any detail fragment.
+        // FIXME: This is a consequence of sharing events across several consumers. There has to be
+        //  a better way of doing this.
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
-        collectImmediately(selectionModel.selected, selectionBackCallback::invalidateEnabled)
-        collect(musicModel.newPlaylistSongs.flow, ::handleNewPlaylist)
-        collect(musicModel.playlistToRename.flow, ::handleRenamePlaylist)
-        collect(musicModel.playlistToDelete.flow, ::handleDeletePlaylist)
-        collect(musicModel.songsToAdd.flow, ::handleAddToPlaylist)
-        collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
-        collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
-        collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
+        collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
+        collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
-        collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
-        collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
+        collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
     }
 
     override fun onStart() {
@@ -192,17 +168,30 @@ class MainFragment :
         val binding = requireBinding()
         // Once we add the destination change callback, we will receive another initialization call,
         // so handle that by resetting the flag.
-        initialNavDestinationChange = false
-        binding.exploreNavHost.findNavController().addOnDestinationChangedListener(this)
+        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+            .attach(binding.exploreNavHost.findNavController())
         // Listener could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
         binding.playbackSheet.viewTreeObserver.addOnPreDrawListener(this@MainFragment)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Override the back pressed listener so we can map back navigation to collapsing
+        // navigation, navigation out of detail views, etc. We have to do this here in
+        // onResume or otherwise the FragmentManager will have precedence.
+        requireActivity().onBackPressedDispatcher.apply {
+            addCallback(viewLifecycleOwner, requireNotNull(selectionBackCallback))
+            addCallback(viewLifecycleOwner, requireNotNull(detailBackCallback))
+            addCallback(viewLifecycleOwner, requireNotNull(sheetBackCallback))
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         val binding = requireBinding()
-        binding.exploreNavHost.findNavController().removeOnDestinationChangedListener(this)
+        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+            .release(binding.exploreNavHost.findNavController())
         binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
     }
 
@@ -211,7 +200,7 @@ class MainFragment :
         sheetBackCallback = null
         detailBackCallback = null
         selectionBackCallback = null
-        exploreBackCallback = null
+        selectionNavigationListener = null
     }
 
     override fun onPreDraw(): Boolean {
@@ -305,48 +294,29 @@ class MainFragment :
         return true
     }
 
-    override fun onDestinationChanged(
-        controller: NavController,
-        destination: NavDestination,
-        arguments: Bundle?
-    ) {
-        // Drop the initial call by NavController that simply provides us with the current
-        // destination. This would cause the selection state to be lost every time the device
-        // rotates.
-        requireNotNull(exploreBackCallback) { "ExploreBackPressedCallback was not available" }
-            .invalidateEnabled()
-        if (!initialNavDestinationChange) {
-            initialNavDestinationChange = true
-            return
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongAlbumDetails,
+            is Show.ArtistDetails,
+            is Show.AlbumDetails -> playbackModel.openMain()
+            is Show.SongDetails,
+            is Show.SongArtistDecision,
+            is Show.AlbumArtistDecision,
+            is Show.GenreDetails,
+            is Show.PlaylistDetails,
+            null -> {}
         }
-        selectionModel.drop()
     }
 
-    private fun handleMainNavigation(action: MainNavigationAction?) {
-        if (action != null) {
-            when (action) {
-                is MainNavigationAction.OpenPlaybackPanel -> tryOpenPlaybackPanel()
-                is MainNavigationAction.ClosePlaybackPanel -> tryClosePlaybackPanel()
-                is MainNavigationAction.Directions ->
-                    findNavController().navigateSafe(action.directions)
+    private fun handleShowOuter(outer: Outer?) {
+        val directions =
+            when (outer) {
+                is Outer.Settings -> MainFragmentDirections.preferences()
+                is Outer.About -> MainFragmentDirections.about()
+                null -> return
             }
-            navModel.mainNavigationAction.consume()
-        }
-    }
-
-    private fun handleExploreNavigation(item: Music?) {
-        if (item != null) {
-            tryClosePlaybackPanel()
-        }
-    }
-
-    private fun handleArtistNavigationPicker(item: Music?) {
-        if (item != null) {
-            navModel.mainNavigateTo(
-                MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickNavigationArtist(item.uid)))
-            navModel.exploreArtistNavigationItem.consume()
-        }
+        findNavController().navigateSafe(directions)
+        homeModel.showOuter.consume()
     }
 
     private fun updateSong(song: Song?) {
@@ -357,56 +327,15 @@ class MainFragment :
         }
     }
 
-    private fun handleNewPlaylist(songs: List<Song>?) {
-        if (songs != null) {
-            findNavController()
-                .navigateSafe(
-                    MainFragmentDirections.actionNewPlaylist(songs.map { it.uid }.toTypedArray()))
-            musicModel.newPlaylistSongs.consume()
+    private fun handlePanel(panel: OpenPanel?) {
+        if (panel == null) return
+        logD("Trying to update panel to $panel")
+        when (panel) {
+            OpenPanel.MAIN -> tryClosePlaybackPanel()
+            OpenPanel.PLAYBACK -> tryOpenPlaybackPanel()
+            OpenPanel.QUEUE -> tryOpenQueuePanel()
         }
-    }
-
-    private fun handleRenamePlaylist(playlist: Playlist?) {
-        if (playlist != null) {
-            findNavController()
-                .navigateSafe(MainFragmentDirections.actionRenamePlaylist(playlist.uid))
-            musicModel.playlistToRename.consume()
-        }
-    }
-
-    private fun handleDeletePlaylist(playlist: Playlist?) {
-        if (playlist != null) {
-            findNavController()
-                .navigateSafe(MainFragmentDirections.actionDeletePlaylist(playlist.uid))
-            musicModel.playlistToDelete.consume()
-        }
-    }
-
-    private fun handleAddToPlaylist(songs: List<Song>?) {
-        if (songs != null) {
-            findNavController()
-                .navigateSafe(
-                    MainFragmentDirections.actionAddToPlaylist(songs.map { it.uid }.toTypedArray()))
-            musicModel.songsToAdd.consume()
-        }
-    }
-
-    private fun handlePlaybackArtistPicker(song: Song?) {
-        if (song != null) {
-            navModel.mainNavigateTo(
-                MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickPlaybackArtist(song.uid)))
-            playbackModel.artistPickerSong.consume()
-        }
-    }
-
-    private fun handlePlaybackGenrePicker(song: Song?) {
-        if (song != null) {
-            navModel.mainNavigateTo(
-                MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickPlaybackGenre(song.uid)))
-            playbackModel.genrePickerSong.consume()
-        }
+        playbackModel.openPanel.consume()
     }
 
     private fun tryOpenPlaybackPanel() {
@@ -443,6 +372,19 @@ class MainFragment :
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
             queueSheetBehavior?.state = BackportBottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
+
+    private fun tryOpenQueuePanel() {
+        val binding = requireBinding()
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
+        val queueSheetBehavior =
+            (binding.queueSheet.coordinatorLayoutBehavior ?: return) as QueueBottomSheetBehavior
+        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+            queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
+            // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
+            queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
         }
     }
 
@@ -535,36 +477,16 @@ class MainFragment :
         }
     }
 
-    private inner class SelectionBackPressedCallback(
-        private val selectionModel: SelectionViewModel
-    ) : OnBackPressedCallback(false) {
+    private inner class SelectionBackPressedCallback(private val listModel: ListViewModel) :
+        OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            if (selectionModel.drop()) {
+            if (listModel.dropSelection()) {
                 logD("Dropped selection")
             }
         }
 
         fun invalidateEnabled(selection: List<Music>) {
             isEnabled = selection.isNotEmpty()
-        }
-    }
-
-    private inner class ExploreBackPressedCallback(
-        private val exploreNavHost: FragmentContainerView
-    ) : OnBackPressedCallback(false) {
-        // Note: We cannot cache the NavController in a variable since it's current destination
-        // value goes stale for some reason.
-
-        override fun handleOnBackPressed() {
-            exploreNavHost.findNavController().navigateUp()
-            logD("Forwarded back navigation to explore nav host")
-        }
-
-        fun invalidateEnabled() {
-            val exploreNavController = exploreNavHost.findNavController()
-            isEnabled =
-                exploreNavController.currentDestination?.id !=
-                    exploreNavController.graph.startDestinationId
         }
     }
 }

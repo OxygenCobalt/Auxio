@@ -30,21 +30,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
+import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -62,8 +60,8 @@ class PlaybackPanelFragment :
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
+    private val listModel: ListViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -90,17 +88,22 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackToolbar.apply {
-            setNavigationOnClickListener {
-                navModel.mainNavigateTo(MainNavigationAction.ClosePlaybackPanel)
-            }
+            setNavigationOnClickListener { playbackModel.openMain() }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
+            overrideOnOverflowMenuClick {
+                playbackModel.song.value?.let {
+                    // No playback options are actually available in the menu, so use a junk
+                    // PlaySong option.
+                    listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
+                }
+            }
         }
 
         // Set up marquee on song information, alongside click handlers that navigate to each
         // respective item.
         binding.playbackSong.apply {
             isSelected = true
-            setOnClickListener { playbackModel.song.value?.let(navModel::exploreNavigateTo) }
+            setOnClickListener { playbackModel.song.value?.let(detailModel::showAlbum) }
         }
         binding.playbackArtist.apply {
             isSelected = true
@@ -139,56 +142,29 @@ class PlaybackPanelFragment :
         binding.playbackAlbum.isSelected = false
     }
 
-    override fun onMenuItemClick(item: MenuItem) =
-        when (item.itemId) {
-            R.id.action_open_equalizer -> {
-                // Launch the system equalizer app, if possible.
-                logD("Launching equalizer")
-                val equalizerIntent =
-                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                        // Provide audio session ID so the equalizer can show options for this app
-                        // in particular.
-                        .putExtra(
-                            AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
-                        // Signal music type so that the equalizer settings are appropriate for
-                        // music playback.
-                        .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                try {
-                    requireNotNull(equalizerLauncher) {
-                            "Equalizer panel launcher was not available"
-                        }
-                        .launch(equalizerIntent)
-                } catch (e: ActivityNotFoundException) {
-                    requireContext().showToast(R.string.err_no_app)
-                }
-                true
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_open_equalizer) {
+            // Launch the system equalizer app, if possible.
+            logD("Launching equalizer")
+            val equalizerIntent =
+                Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                    // Provide audio session ID so the equalizer can show options for this app
+                    // in particular.
+                    .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
+                    // Signal music type so that the equalizer settings are appropriate for
+                    // music playback.
+                    .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            try {
+                requireNotNull(equalizerLauncher) { "Equalizer panel launcher was not available" }
+                    .launch(equalizerIntent)
+            } catch (e: ActivityNotFoundException) {
+                requireContext().showToast(R.string.err_no_app)
             }
-            R.id.action_go_artist -> {
-                navigateToCurrentArtist()
-                true
-            }
-            R.id.action_go_album -> {
-                navigateToCurrentAlbum()
-                true
-            }
-            R.id.action_playlist_add -> {
-                playbackModel.song.value?.let(musicModel::addToPlaylist)
-                true
-            }
-            R.id.action_song_detail -> {
-                playbackModel.song.value?.let { song ->
-                    navModel.mainNavigateTo(
-                        MainNavigationAction.Directions(
-                            MainFragmentDirections.actionShowDetails(song.uid)))
-                }
-                true
-            }
-            R.id.action_share -> {
-                playbackModel.song.value?.let { requireContext().share(it) }
-                true
-            }
-            else -> false
+            return true
         }
+
+        return false
+    }
 
     override fun onSeekConfirmed(positionDs: Long) {
         playbackModel.seekTo(positionDs)
@@ -237,12 +213,10 @@ class PlaybackPanelFragment :
     }
 
     private fun navigateToCurrentArtist() {
-        val song = playbackModel.song.value ?: return
-        navModel.exploreNavigateToParentArtist(song)
+        playbackModel.song.value?.let(detailModel::showArtist)
     }
 
     private fun navigateToCurrentAlbum() {
-        val song = playbackModel.song.value ?: return
-        navModel.exploreNavigateTo(song.album)
+        playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">مشغل موسيقى بسيط ومعقول لنظام الاندرويد.</string>
+    <string name="info_app_desc">مشغل موسيقى بسيط ومعقول للأندرويد</string>
     <string name="lng_widget">عرض وتحكم بشتغيل الموسيقى</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">إعادة المحاولة</string>
@@ -23,15 +23,15 @@
     <string name="lbl_playback">يتم التشغيل الان</string>
     <string name="lbl_play">تشغيل</string>
     <string name="lbl_shuffle">عشوائي</string>
-    <string name="set_playback_mode_songs">تشغيل من جميع الاغاني</string>
-    <string name="set_playback_mode_album">تشغيل من البوم</string>
-    <string name="set_playback_mode_artist">تشغيل من فنان</string>
+    <string name="set_play_song_from_all">تشغيل من جميع الاغاني</string>
+    <string name="set_play_song_from_album">تشغيل من البوم</string>
+    <string name="set_play_song_from_artist">تشغيل من فنان</string>
     <string name="lbl_queue">طابور</string>
     <string name="lbl_play_next">شغل الاغنية التالية</string>
     <string name="lbl_queue_add">أضف إلى الطابور</string>
     <string name="lng_queue_added">تمت الإضافة إلى الطابور</string>
-    <string name="lbl_go_artist">أذهب إلى الفنان</string>
-    <string name="lbl_go_album">أذهب إلى الالبوم</string>
+    <string name="lbl_artist_details">أذهب إلى الفنان</string>
+    <string name="lbl_album_details">أذهب إلى الالبوم</string>
     <string name="lbl_state_saved">تم حفظ الحالة</string>
     <string name="lbl_add">أضف</string>
     <string name="lbl_save">حفظ</string>
@@ -63,7 +63,7 @@
     <string name="set_replay_gain_mode_album">تفضيل الالبوم</string>
     <string name="set_replay_gain_mode_dynamic">ديناميكي</string>
     <string name="set_personalize">سلوك</string>
-    <string name="set_library_song_playback_mode">عند اختيار اغنية</string>
+    <string name="set_play_in_list_with">عند اختيار اغنية</string>
     <string name="set_keep_shuffle">تذكر الخلط</string>
     <string name="set_keep_shuffle_desc">إبقاء وضع الخلط عند تشغيل اغنية جديدة</string>
     <string name="set_rewind_prev">تشجيع قبل التخطي للخلف</string>
@@ -145,8 +145,6 @@
     <string name="lbl_size">الحجم</string>
     <string name="lbl_relative_path">المسار</string>
     <string name="lbl_library_counts">إحصائيات المكتبة</string>
-    <string name="lbl_shuffle_selected">تشغي الاغاني المحددة بترتيب عشوائي</string>
-    <string name="lbl_play_selected">تشغيل الموسيقى المحددة</string>
     <string name="lbl_bitrate">معدل البت</string>
     <string name="lbl_file_name">اسم الملف</string>
     <string name="lbl_compilation_live">تجميع مباشر</string>
@@ -157,7 +155,7 @@
     <string name="lbl_shuffle_shortcut_long">تشغيل كل الاغاني بشكل عشوائي</string>
     <string name="lbl_ok">حسنا</string>
     <string name="lbl_state_restored">اعادة الحالة</string>
-    <string name="lbl_sort_dec">تنازلي</string>
+    <string name="lbl_sort_dsc">تنازلي</string>
     <string name="lbl_song_detail">عرض الخصائص</string>
     <string name="lbl_state_wiped">مسح الحالة</string>
     <string name="lbl_live_group">مباشر</string>
@@ -193,4 +191,5 @@
     <string name="lbl_compilation">التحويل البرمجي</string>
     <string name="lbl_mixes">مزيج</string>
     <string name="lbl_wiki">Wiki</string>
+    <string name="lbl_song">أغنية</string>
 </resources>

@@ -27,13 +27,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
@@ -59,15 +58,16 @@ constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
     private val persistenceRepository: PersistenceRepository,
+    private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
-    private val musicSettings: MusicSettings
-) : ViewModel(), PlaybackStateManager.Listener {
+) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)
     /** The currently playing song. */
     val song: StateFlow<Song?>
         get() = _song
+
     private val _parent = MutableStateFlow<MusicParent?>(null)
     /** The [MusicParent] currently being played. Null if playback is occurring from all songs. */
     val parent: StateFlow<MusicParent?> = _parent
@@ -75,6 +75,7 @@ constructor(
     /** Whether playback is ongoing or paused. */
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
+
     private val _positionDs = MutableStateFlow(0L)
     /** The current position, in deci-seconds (1/10th of a second). */
     val positionDs: StateFlow<Long>
@@ -84,32 +85,32 @@ constructor(
     /** The current [RepeatMode]. */
     val repeatMode: StateFlow<RepeatMode>
         get() = _repeatMode
+
     private val _isShuffled = MutableStateFlow(false)
     /** Whether the queue is shuffled or not. */
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
-    private val _artistPlaybackPickerSong = MutableEvent<Song>()
-    /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
-     * [Song] from one of it's [Artist]s.
-     *
-     * @see playFromArtist
-     */
-    val artistPickerSong: Event<Song>
-        get() = _artistPlaybackPickerSong
+    private val _currentBarAction = MutableStateFlow(playbackSettings.barAction)
+    /** The current secondary action to show alongside the play button in the playback bar. */
+    val currentBarAction: StateFlow<ActionMode>
+        get() = _currentBarAction
 
-    private val _genrePlaybackPickerSong = MutableEvent<Song>()
+    private val _openPanel = MutableEvent<OpenPanel>()
     /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
-     * [Song] from one of it's [Genre]s.
+     * A [OpenPanel] command that is awaiting a view capable of responding to it. Null if none
+     * currently.
      */
-    val genrePickerSong: Event<Song>
-        get() = _genrePlaybackPickerSong
+    val openPanel: Event<OpenPanel>
+        get() = _openPanel
 
-    /** The current action to show on the playback bar. */
-    val currentBarAction: ActionMode
-        get() = playbackSettings.barAction
+    private val _playbackDecision = MutableEvent<PlaybackDecision>()
+    /**
+     * A [PlaybackDecision] command that is awaiting a view capable of responding to it. Null if
+     * none currently.
+     */
+    val playbackDecision: Event<PlaybackDecision>
+        get() = _playbackDecision
 
     /**
      * The current audio session ID of the internal player. Null if no [InternalPlayer] is
@@ -120,10 +121,12 @@ constructor(
 
     init {
         playbackManager.addListener(this)
+        playbackSettings.registerListener(this)
     }
 
     override fun onCleared() {
         playbackManager.removeListener(this)
+        playbackSettings.unregisterListener(this)
     }
 
     override fun onIndexMoved(queue: Queue) {
@@ -173,34 +176,29 @@ constructor(
         _repeatMode.value = repeatMode
     }
 
+    override fun onBarActionChanged() {
+        _currentBarAction.value = playbackSettings.barAction
+    }
+
     // --- PLAYING FUNCTIONS ---
+
+    fun play(song: Song, with: PlaySong) {
+        logD("Playing $song with $with")
+        playWithImpl(song, with, isImplicitlyShuffled())
+    }
+
+    fun playExplicit(song: Song, with: PlaySong) {
+        playWithImpl(song, with, false)
+    }
+
+    fun shuffleExplicit(song: Song, with: PlaySong) {
+        playWithImpl(song, with, true)
+    }
 
     /** Shuffle all songs in the music library. */
     fun shuffleAll() {
         logD("Shuffling all songs")
-        playImpl(null, null, true)
-    }
-
-    /**
-     * Play a [Song] from the [MusicParent] outlined by the given [MusicMode].
-     * - If [MusicMode.SONGS], the [Song] is played from all songs.
-     * - If [MusicMode.ALBUMS], the [Song] is played from it's [Album].
-     * - If [MusicMode.ARTISTS], the [Song] is played from one of it's [Artist]s.
-     * - If [MusicMode.GENRES], the [Song] is played from one of it's [Genre]s.
-     *   [MusicMode.PLAYLISTS] is disallowed here.
-     *
-     * @param song The [Song] to play.
-     * @param playbackMode The [MusicMode] to play from.
-     */
-    fun playFrom(song: Song, playbackMode: MusicMode) {
-        logD("Playing $song from $playbackMode")
-        when (playbackMode) {
-            MusicMode.SONGS -> playImpl(song, null)
-            MusicMode.ALBUMS -> playImpl(song, song.album)
-            MusicMode.ARTISTS -> playFromArtist(song)
-            MusicMode.GENRES -> playFromGenre(song)
-            MusicMode.PLAYLISTS -> error("Playing from a playlist is not supported.")
-        }
+        playFromAllImpl(null, true)
     }
 
     /**
@@ -211,16 +209,7 @@ constructor(
      *   be prompted on what artist to play. Defaults to null.
      */
     fun playFromArtist(song: Song, artist: Artist? = null) {
-        if (artist != null) {
-            logD("Playing $song from $artist")
-            playImpl(song, artist)
-        } else if (song.artists.size == 1) {
-            logD("$song has one artist, playing from it")
-            playImpl(song, song.artists[0])
-        } else {
-            logD("$song has multiple artists, showing choice dialog")
-            _artistPlaybackPickerSong.put(song)
-        }
+        playFromArtistImpl(song, artist, isImplicitlyShuffled())
     }
 
     /**
@@ -231,27 +220,73 @@ constructor(
      *   be prompted on what artist to play. Defaults to null.
      */
     fun playFromGenre(song: Song, genre: Genre? = null) {
-        if (genre != null) {
-            logD("Playing $song from $genre")
-            playImpl(song, genre)
-        } else if (song.genres.size == 1) {
-            logD("$song has one genre, playing from it")
-            playImpl(song, song.genres[0])
-        } else {
-            logD("$song has multiple genres, showing choice dialog")
-            _genrePlaybackPickerSong.put(song)
+        playFromGenreImpl(song, genre, isImplicitlyShuffled())
+    }
+
+    private fun isImplicitlyShuffled() =
+        playbackManager.queue.isShuffled && playbackSettings.keepShuffle
+
+    private fun playWithImpl(song: Song, with: PlaySong, shuffled: Boolean) {
+        when (with) {
+            is PlaySong.FromAll -> playFromAllImpl(song, shuffled)
+            is PlaySong.FromAlbum -> playFromAlbumImpl(song, shuffled)
+            is PlaySong.FromArtist -> playFromArtistImpl(song, with.which, shuffled)
+            is PlaySong.FromGenre -> playFromGenreImpl(song, with.which, shuffled)
+            is PlaySong.FromPlaylist -> playFromPlaylistImpl(song, with.which, shuffled)
+            is PlaySong.ByItself -> playItselfImpl(song, shuffled)
         }
     }
 
-    /**
-     * PLay a [Song] from one of it's [Playlist]s.
-     *
-     * @param song The [Song] to play.
-     * @param playlist The [Playlist] to play from. Must be linked to the [Song].
-     */
-    fun playFromPlaylist(song: Song, playlist: Playlist) {
+    private fun playFromAllImpl(song: Song?, shuffled: Boolean) {
+        playImpl(song, null, shuffled)
+    }
+
+    private fun playFromAlbumImpl(song: Song, shuffled: Boolean) {
+        playImpl(song, song.album, shuffled)
+    }
+
+    private fun playFromArtistImpl(song: Song, artist: Artist?, shuffled: Boolean) {
+        if (artist != null) {
+            logD("Playing $song from $artist")
+            playImpl(song, artist, shuffled)
+        } else if (song.artists.size == 1) {
+            logD("$song has one artist, playing from it")
+            playImpl(song, song.artists[0], shuffled)
+        } else {
+            logD("$song has multiple artists, showing choice dialog")
+            startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
+        }
+    }
+
+    private fun playFromGenreImpl(song: Song, genre: Genre?, shuffled: Boolean) {
+        if (genre != null) {
+            logD("Playing $song from $genre")
+            playImpl(song, genre, shuffled)
+        } else if (song.genres.size == 1) {
+            logD("$song has one genre, playing from it")
+            playImpl(song, song.genres[0], shuffled)
+        } else {
+            logD("$song has multiple genres, showing choice dialog")
+            startPlaybackDecision(PlaybackDecision.PlayFromGenre(song))
+        }
+    }
+
+    private fun playFromPlaylistImpl(song: Song, playlist: Playlist, shuffled: Boolean) {
         logD("Playing $song from $playlist")
-        playImpl(song, playlist)
+        playImpl(song, playlist, shuffled)
+    }
+
+    private fun playItselfImpl(song: Song, shuffled: Boolean) {
+        playImpl(song, listOf(song), shuffled)
+    }
+
+    private fun startPlaybackDecision(decision: PlaybackDecision) {
+        val existing = _playbackDecision.flow.value
+        if (existing != null) {
+            logD("Already handling decision $existing, ignoring $decision")
+            return
+        }
+        _playbackDecision.put(decision)
     }
 
     /**
@@ -265,46 +300,6 @@ constructor(
     }
 
     /**
-     * Play an [Artist].
-     *
-     * @param artist The [Artist] to play.
-     */
-    fun play(artist: Artist) {
-        logD("Playing $artist")
-        playImpl(null, artist, false)
-    }
-
-    /**
-     * Play a [Genre].
-     *
-     * @param genre The [Genre] to play.
-     */
-    fun play(genre: Genre) {
-        logD("Playing $genre")
-        playImpl(null, genre, false)
-    }
-
-    /**
-     * Play a [Playlist].
-     *
-     * @param playlist The [Playlist] to play.
-     */
-    fun play(playlist: Playlist) {
-        logD("Playing $playlist")
-        playImpl(null, playlist, false)
-    }
-
-    /**
-     * Play a list of [Song]s.
-     *
-     * @param songs The [Song]s to play.
-     */
-    fun play(songs: List<Song>) {
-        logD("Playing ${songs.size} songs")
-        playbackManager.play(null, null, songs, false)
-    }
-
-    /**
      * Shuffle an [Album].
      *
      * @param album The [Album] to shuffle.
@@ -312,6 +307,16 @@ constructor(
     fun shuffle(album: Album) {
         logD("Shuffling $album")
         playImpl(null, album, true)
+    }
+
+    /**
+     * Play an [Artist].
+     *
+     * @param artist The [Artist] to play.
+     */
+    fun play(artist: Artist) {
+        logD("Playing $artist")
+        playImpl(null, artist, false)
     }
 
     /**
@@ -325,6 +330,16 @@ constructor(
     }
 
     /**
+     * Play a [Genre].
+     *
+     * @param genre The [Genre] to play.
+     */
+    fun play(genre: Genre) {
+        logD("Playing $genre")
+        playImpl(null, genre, false)
+    }
+
+    /**
      * Shuffle a [Genre].
      *
      * @param genre The [Genre] to shuffle.
@@ -332,6 +347,16 @@ constructor(
     fun shuffle(genre: Genre) {
         logD("Shuffling $genre")
         playImpl(null, genre, true)
+    }
+
+    /**
+     * Play a [Playlist].
+     *
+     * @param playlist The [Playlist] to play.
+     */
+    fun play(playlist: Playlist) {
+        logD("Playing $playlist")
+        playImpl(null, playlist, false)
     }
 
     /**
@@ -345,6 +370,16 @@ constructor(
     }
 
     /**
+     * Play a list of [Song]s.
+     *
+     * @param songs The [Song]s to play.
+     */
+    fun play(songs: List<Song>) {
+        logD("Playing ${songs.size} songs")
+        playbackManager.play(null, null, songs, false)
+    }
+
+    /**
      * Shuffle a list of [Song]s.
      *
      * @param songs The [Song]s to shuffle.
@@ -354,22 +389,23 @@ constructor(
         playbackManager.play(null, null, songs, true)
     }
 
-    private fun playImpl(
-        song: Song?,
-        parent: MusicParent?,
-        shuffled: Boolean = playbackManager.queue.isShuffled && playbackSettings.keepShuffle
-    ) {
+    private fun playImpl(song: Song?, queue: List<Song>, shuffled: Boolean) {
+        check(song == null || queue.contains(song)) { "Song to play not in queue" }
+        playbackManager.play(song, null, queue, shuffled)
+    }
+
+    private fun playImpl(song: Song?, parent: MusicParent?, shuffled: Boolean) {
         check(song == null || parent == null || parent.songs.contains(song)) {
             "Song to play not in parent"
         }
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val queue =
             when (parent) {
-                is Genre -> musicSettings.genreSongSort.songs(parent.songs)
-                is Artist -> musicSettings.artistSongSort.songs(parent.songs)
-                is Album -> musicSettings.albumSongSort.songs(parent.songs)
+                is Genre -> listSettings.genreSongSort.songs(parent.songs)
+                is Artist -> listSettings.artistSongSort.songs(parent.songs)
+                is Album -> listSettings.albumSongSort.songs(parent.songs)
                 is Playlist -> parent.songs
-                null -> musicSettings.songSort.songs(deviceLibrary.songs)
+                null -> listSettings.songSort.songs(deviceLibrary.songs)
             }
         playbackManager.play(song, parent, queue, shuffled)
     }
@@ -428,7 +464,7 @@ constructor(
      */
     fun playNext(album: Album) {
         logD("Playing $album next")
-        playbackManager.playNext(musicSettings.albumSongSort.songs(album.songs))
+        playbackManager.playNext(listSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -438,7 +474,7 @@ constructor(
      */
     fun playNext(artist: Artist) {
         logD("Playing $artist next")
-        playbackManager.playNext(musicSettings.artistSongSort.songs(artist.songs))
+        playbackManager.playNext(listSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -448,7 +484,7 @@ constructor(
      */
     fun playNext(genre: Genre) {
         logD("Playing $genre next")
-        playbackManager.playNext(musicSettings.genreSongSort.songs(genre.songs))
+        playbackManager.playNext(listSettings.genreSongSort.songs(genre.songs))
     }
 
     /**
@@ -488,7 +524,7 @@ constructor(
      */
     fun addToQueue(album: Album) {
         logD("Adding $album to queue")
-        playbackManager.addToQueue(musicSettings.albumSongSort.songs(album.songs))
+        playbackManager.addToQueue(listSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -498,7 +534,7 @@ constructor(
      */
     fun addToQueue(artist: Artist) {
         logD("Adding $artist to queue")
-        playbackManager.addToQueue(musicSettings.artistSongSort.songs(artist.songs))
+        playbackManager.addToQueue(listSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -508,7 +544,7 @@ constructor(
      */
     fun addToQueue(genre: Genre) {
         logD("Adding $genre to queue")
-        playbackManager.addToQueue(musicSettings.genreSongSort.songs(genre.songs))
+        playbackManager.addToQueue(listSettings.genreSongSort.songs(genre.songs))
     }
 
     /**
@@ -555,6 +591,29 @@ constructor(
         playbackManager.repeatMode = playbackManager.repeatMode.increment()
     }
 
+    // --- UI CONTROL ---
+
+    /** Open the main panel, closing all other panels. */
+    fun openMain() = openImpl(OpenPanel.MAIN)
+
+    /** Open the playback panel, closing the queue panel if needed. */
+    fun openPlayback() = openImpl(OpenPanel.PLAYBACK)
+
+    /**
+     * Open the queue panel, assuming that it exists in the current layout, is collapsed, and with
+     * the playback panel already being expanded.
+     */
+    fun openQueue() = openImpl(OpenPanel.QUEUE)
+
+    private fun openImpl(panel: OpenPanel) {
+        val existing = openPanel.flow.value
+        if (existing != null) {
+            logD("Already opening $existing, ignoring opening $panel")
+            return
+        }
+        _openPanel.put(panel)
+    }
+
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /**
@@ -597,4 +656,35 @@ constructor(
             onDone(false)
         }
     }
+}
+
+/**
+ * Command for controlling the main playback panel UI.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+enum class OpenPanel {
+    /** Open the main view, collapsing all other panels. */
+    MAIN,
+    /** Open the playback panel, collapsing the queue panel if applicable. */
+    PLAYBACK,
+    /**
+     * Open the queue panel, assuming that it exists in the current layout, is collapsed, and with
+     * the playback panel already being expanded. Do nothing if these conditions are not met.
+     */
+    QUEUE
+}
+
+/**
+ * Command for opening decision dialogs when playback from a [Song] is ambiguous.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+sealed interface PlaybackDecision {
+    /** The [Song] currently attempting to be played from. */
+    val song: Song
+    /** Navigate to a dialog to determine which [Artist] a [Song] should be played from. */
+    class PlayFromArtist(override val song: Song) : PlaybackDecision
+    /** Navigate to a dialog to determine which [Genre] a [Song] should be played from. */
+    class PlayFromGenre(override val song: Song) : PlaybackDecision
 }

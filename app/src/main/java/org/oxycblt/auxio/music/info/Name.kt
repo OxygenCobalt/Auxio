@@ -132,7 +132,9 @@ sealed interface Name : Comparable<Name> {
      */
     data class Unknown(@StringRes val stringRes: Int) : Name {
         override val thumb = "?"
+
         override fun resolve(context: Context) = context.getString(stringRes)
+
         override fun compareTo(other: Name) =
             when (other) {
                 // Unknown names do not need any direct comparison right now.
@@ -143,8 +145,8 @@ sealed interface Name : Comparable<Name> {
     }
 }
 
-private val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
-private val PUNCT_REGEX by lazy { Regex("[\\p{Punct}+]") }
+private val collator: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
+private val punctRegex by lazy { Regex("[\\p{Punct}+]") }
 
 /**
  * Plain [Name.Known] implementation that is internationalization-safe.
@@ -157,8 +159,8 @@ private data class SimpleKnownName(override val raw: String, override val sort: 
 
     private fun parseToken(name: String): SortToken {
         // Remove excess punctuation from the string, as those usually aren't considered in sorting.
-        val stripped = name.replace(PUNCT_REGEX, "").ifEmpty { name }
-        val collationKey = COLLATOR.getCollationKey(stripped)
+        val stripped = name.replace(punctRegex, "").ifEmpty { name }
+        val collationKey = collator.getCollationKey(stripped)
         // Always use lexicographic mode since we aren't parsing any numeric components
         return SortToken(collationKey, SortToken.Type.LEXICOGRAPHIC)
     }
@@ -179,7 +181,7 @@ private data class IntelligentKnownName(override val raw: String, override val s
         val stripped =
             name
                 // Remove excess punctuation from the string, as those u
-                .replace(PUNCT_REGEX, "")
+                .replace(punctRegex, "")
                 .ifEmpty { name }
                 .run {
                     // Strip any english articles like "the" or "an" from the start, as music
@@ -206,10 +208,10 @@ private data class IntelligentKnownName(override val raw: String, override val s
                 val digits =
                     token.trimStart { Character.getNumericValue(it) == 0 }.ifEmpty { token }
                 // Other languages have other types of digit strings, still use collation keys
-                collationKey = COLLATOR.getCollationKey(digits)
+                collationKey = collator.getCollationKey(digits)
                 type = SortToken.Type.NUMERIC
             } else {
-                collationKey = COLLATOR.getCollationKey(token)
+                collationKey = collator.getCollationKey(token)
                 type = SortToken.Type.LEXICOGRAPHIC
             }
             SortToken(collationKey, type)

@@ -43,7 +43,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
             logD("Navigating to accent dialog")
-            findNavController().navigateSafe(UIPreferenceFragmentDirections.goToAccentDialog())
+            findNavController().navigateSafe(UIPreferenceFragmentDirections.accentSettings())
         }
     }
 

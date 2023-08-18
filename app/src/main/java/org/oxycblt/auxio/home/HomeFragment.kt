@@ -26,7 +26,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuCompat
 import androidx.core.view.isVisible
-import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -43,9 +42,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import kotlin.math.abs
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
+import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
@@ -53,24 +53,19 @@ import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.selection.SelectionFragment
-import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.NoAudioPermissionException
 import org.oxycblt.auxio.music.NoMusicException
 import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
-import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -79,7 +74,6 @@ import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
@@ -90,11 +84,11 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 @AndroidEntryPoint
 class HomeFragment :
     SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,9 +98,9 @@ class HomeFragment :
             // Orientation change will wipe whatever transition we were using prior, which will
             // result in no transition when the user navigates back. Make sure we re-initialize
             // our transitions.
-            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_AXIS, -1)
+            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -1)
             if (axis > -1) {
-                setupAxisTransitions(axis)
+                applyAxisTransition(axis)
             }
         }
     }
@@ -174,17 +168,19 @@ class HomeFragment :
 
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
-        collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
-        collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
+        collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
+        collect(listModel.menu.flow, ::handleMenu)
+        collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
-        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collect(detailModel.toShow.flow, ::handleShow)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        val enter = enterTransition
-        if (enter is MaterialSharedAxis) {
-            outState.putInt(KEY_LAST_TRANSITION_AXIS, enter.axis)
+        val transition = enterTransition
+        if (transition is MaterialSharedAxis) {
+            outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
         }
 
         super.onSaveInstanceState(outState)
@@ -217,69 +213,48 @@ class HomeFragment :
             // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
                 logD("Navigating to search")
-                setupAxisTransitions(MaterialSharedAxis.Z)
-                findNavController().navigateSafe(HomeFragmentDirections.actionShowSearch())
+                applyAxisTransition(MaterialSharedAxis.Z)
+                findNavController().navigateSafe(HomeFragmentDirections.search())
                 true
             }
             R.id.action_settings -> {
-                logD("Navigating to settings")
-                navModel.mainNavigateTo(
-                    MainNavigationAction.Directions(MainFragmentDirections.actionShowSettings()))
+                logD("Navigating to preferences")
+                homeModel.showSettings()
                 true
             }
             R.id.action_about -> {
                 logD("Navigating to about")
-                navModel.mainNavigateTo(
-                    MainNavigationAction.Directions(MainFragmentDirections.actionShowAbout()))
+                homeModel.showAbout()
                 true
             }
 
             // Handle sort menu
-            R.id.submenu_sorting -> {
+            R.id.action_sort -> {
                 // Junk click event when opening the menu
-                true
-            }
-            R.id.option_sort_asc -> {
-                logD("Switching to ascending sorting")
-                item.isChecked = true
-                homeModel.setSortForCurrentTab(
-                    homeModel
-                        .getSortForTab(homeModel.currentTabMode.value)
-                        .withDirection(Sort.Direction.ASCENDING))
-                true
-            }
-            R.id.option_sort_dec -> {
-                logD("Switching to descending sorting")
-                item.isChecked = true
-                homeModel.setSortForCurrentTab(
-                    homeModel
-                        .getSortForTab(homeModel.currentTabMode.value)
-                        .withDirection(Sort.Direction.DESCENDING))
+                val directions =
+                    when (homeModel.currentTabType.value) {
+                        MusicType.SONGS -> HomeFragmentDirections.sortSongs()
+                        MusicType.ALBUMS -> HomeFragmentDirections.sortAlbums()
+                        MusicType.ARTISTS -> HomeFragmentDirections.sortArtists()
+                        MusicType.GENRES -> HomeFragmentDirections.sortGenres()
+                        MusicType.PLAYLISTS -> HomeFragmentDirections.sortPlaylists()
+                    }
+                findNavController().navigateSafe(directions)
                 true
             }
             else -> {
-                val newMode = Sort.Mode.fromItemId(item.itemId)
-                if (newMode != null) {
-                    // Sorting option was selected, mark it as selected and update the mode
-                    logD("Updating sort mode")
-                    item.isChecked = true
-                    homeModel.setSortForCurrentTab(
-                        homeModel.getSortForTab(homeModel.currentTabMode.value).withMode(newMode))
-                    true
-                } else {
-                    logW("Unexpected menu item selected")
-                    false
-                }
+                logW("Unexpected menu item selected")
+                false
             }
         }
     }
 
     private fun setupPager(binding: FragmentHomeBinding) {
         binding.homePager.adapter =
-            HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
+            HomePagerAdapter(homeModel.currentTabTypes, childFragmentManager, viewLifecycleOwner)
 
         val toolbarParams = binding.homeToolbar.layoutParams as AppBarLayout.LayoutParams
-        if (homeModel.currentTabModes.size == 1) {
+        if (homeModel.currentTabTypes.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
             logD("Single tab shown, disabling TabLayout")
@@ -297,81 +272,26 @@ class HomeFragment :
         TabLayoutMediator(
                 binding.homeTabs,
                 binding.homePager,
-                AdaptiveTabStrategy(requireContext(), homeModel.currentTabModes))
+                AdaptiveTabStrategy(requireContext(), homeModel.currentTabTypes))
             .attach()
     }
 
-    private fun updateCurrentTab(tabMode: MusicMode) {
+    private fun updateCurrentTab(tabType: MusicType) {
         val binding = requireBinding()
-        // Update the sort options to align with those allowed by the tab
-        val isVisible: (Int) -> Boolean =
-            when (tabMode) {
-                // Disallow sorting by count for songs
-                MusicMode.SONGS -> {
-                    logD("Using song-specific menu options")
-                    ({ id -> id != R.id.option_sort_count })
-                }
-                // Disallow sorting by album for albums
-                MusicMode.ALBUMS -> {
-                    logD("Using album-specific menu options")
-                    ({ id -> id != R.id.option_sort_album })
-                }
-                // Only allow sorting by name, count, and duration for parents
-                else -> {
-                    logD("Using parent-specific menu options")
-                    ({ id ->
-                        id == R.id.option_sort_asc ||
-                            id == R.id.option_sort_dec ||
-                            id == R.id.option_sort_name ||
-                            id == R.id.option_sort_count ||
-                            id == R.id.option_sort_duration
-                    })
-                }
-            }
-
-        val sortMenu =
-            unlikelyToBeNull(binding.homeNormalToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
-        val toHighlight = homeModel.getSortForTab(tabMode)
-
-        for (option in sortMenu) {
-            val isCurrentMode = option.itemId == toHighlight.mode.itemId
-            val isCurrentlyAscending =
-                option.itemId == R.id.option_sort_asc &&
-                    toHighlight.direction == Sort.Direction.ASCENDING
-            val isCurrentlyDescending =
-                option.itemId == R.id.option_sort_dec &&
-                    toHighlight.direction == Sort.Direction.DESCENDING
-            // Check the corresponding direction and mode sort options to align with
-            // the current sort of the tab.
-            if (isCurrentMode || isCurrentlyAscending || isCurrentlyDescending) {
-                logD(
-                    "Checking $option option [mode: $isCurrentMode asc: $isCurrentlyAscending dec: $isCurrentlyDescending]")
-                // Note: We cannot inline this boolean assignment since it unchecks all other radio
-                // buttons (even when setting it to false), which would result in nothing being
-                // selected.
-                option.isChecked = true
-            }
-
-            // Disable options that are not allowed by the isVisible lambda
-            option.isVisible = isVisible(option.itemId)
-            if (!option.isVisible) {
-                logD("Hiding $option option")
-            }
-        }
 
         // Update the scrolling view in AppBarLayout to align with the current tab's
         // scrolling state. This prevents the lift state from being confused as one
         // goes between different tabs.
         binding.homeAppbar.liftOnScrollTargetViewId =
-            when (tabMode) {
-                MusicMode.SONGS -> R.id.home_song_recycler
-                MusicMode.ALBUMS -> R.id.home_album_recycler
-                MusicMode.ARTISTS -> R.id.home_artist_recycler
-                MusicMode.GENRES -> R.id.home_genre_recycler
-                MusicMode.PLAYLISTS -> R.id.home_playlist_recycler
+            when (tabType) {
+                MusicType.SONGS -> R.id.home_song_recycler
+                MusicType.ALBUMS -> R.id.home_album_recycler
+                MusicType.ARTISTS -> R.id.home_artist_recycler
+                MusicType.GENRES -> R.id.home_genre_recycler
+                MusicType.PLAYLISTS -> R.id.home_playlist_recycler
             }
 
-        if (tabMode != MusicMode.PLAYLISTS) {
+        if (tabType != MusicType.PLAYLISTS) {
             logD("Flipping to shuffle button")
             binding.homeFab.flipTo(R.drawable.ic_shuffle_off_24, R.string.desc_shuffle_all) {
                 playbackModel.shuffleAll()
@@ -410,7 +330,7 @@ class HomeFragment :
         }
     }
 
-    private fun setupCompleteState(binding: FragmentHomeBinding, error: Throwable?) {
+    private fun setupCompleteState(binding: FragmentHomeBinding, error: Exception?) {
         if (error == null) {
             logD("Received ok response")
             binding.homeFab.show()
@@ -422,13 +342,13 @@ class HomeFragment :
         val context = requireContext()
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.INVISIBLE
+        binding.homeIndexingActions.visibility = View.VISIBLE
         when (error) {
             is NoAudioPermissionException -> {
                 logD("Showing permission prompt")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
                 // Configure the action to act as a permission launcher.
-                binding.homeIndexingAction.apply {
-                    visibility = View.VISIBLE
+                binding.homeIndexingTry.apply {
                     text = context.getString(R.string.lbl_grant)
                     setOnClickListener {
                         requireNotNull(storagePermissionLauncher) {
@@ -437,25 +357,33 @@ class HomeFragment :
                             .launch(PERMISSION_READ_AUDIO)
                     }
                 }
+                binding.homeIndexingMore.visibility = View.GONE
             }
             is NoMusicException -> {
                 logD("Showing no music error")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
                 // Configure the action to act as a reload trigger.
-                binding.homeIndexingAction.apply {
+                binding.homeIndexingTry.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.lbl_retry)
                     setOnClickListener { musicModel.refresh() }
                 }
+                binding.homeIndexingMore.visibility = View.GONE
             }
             else -> {
                 logD("Showing generic error")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
                 // Configure the action to act as a reload trigger.
-                binding.homeIndexingAction.apply {
+                binding.homeIndexingTry.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.lbl_retry)
                     setOnClickListener { musicModel.rescan() }
+                }
+                binding.homeIndexingMore.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        findNavController().navigateSafe(HomeFragmentDirections.reportError(error))
+                    }
                 }
             }
         }
@@ -465,7 +393,7 @@ class HomeFragment :
         // Remove all content except for the progress indicator.
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.VISIBLE
-        binding.homeIndexingAction.visibility = View.INVISIBLE
+        binding.homeIndexingActions.visibility = View.INVISIBLE
 
         when (progress) {
             is IndexingProgress.Indeterminate -> {
@@ -486,6 +414,31 @@ class HomeFragment :
         }
     }
 
+    private fun handleDecision(decision: PlaylistDecision?) {
+        if (decision == null) return
+        val directions =
+            when (decision) {
+                is PlaylistDecision.New -> {
+                    logD("Creating new playlist")
+                    HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray())
+                }
+                is PlaylistDecision.Rename -> {
+                    logD("Renaming ${decision.playlist}")
+                    HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Delete -> {
+                    logD("Deleting ${decision.playlist}")
+                    HomeFragmentDirections.deletePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Add -> {
+                    logD("Adding ${decision.songs.size} to a playlist")
+                    HomeFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                }
+            }
+        findNavController().navigateSafe(directions)
+    }
+
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
         val binding = requireBinding()
         // If there are no songs, it's likely that the library has not been loaded, so
@@ -500,19 +453,65 @@ class HomeFragment :
         }
     }
 
-    private fun handleNavigation(item: Music?) {
-        val action =
-            when (item) {
-                is Song -> HomeFragmentDirections.actionShowAlbum(item.album.uid)
-                is Album -> HomeFragmentDirections.actionShowAlbum(item.uid)
-                is Artist -> HomeFragmentDirections.actionShowArtist(item.uid)
-                is Genre -> HomeFragmentDirections.actionShowGenre(item.uid)
-                is Playlist -> HomeFragmentDirections.actionShowPlaylist(item.uid)
-                null -> return
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongDetails -> {
+                logD("Navigating to ${show.song}")
+                findNavController().navigateSafe(HomeFragmentDirections.showSong(show.song.uid))
             }
+            is Show.SongAlbumDetails -> {
+                logD("Navigating to the album of ${show.song}")
+                applyAxisTransition(MaterialSharedAxis.X)
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showAlbum(show.song.album.uid))
+            }
+            is Show.AlbumDetails -> {
+                logD("Navigating to ${show.album}")
+                applyAxisTransition(MaterialSharedAxis.X)
+                findNavController().navigateSafe(HomeFragmentDirections.showAlbum(show.album.uid))
+            }
+            is Show.ArtistDetails -> {
+                logD("Navigating to ${show.artist}")
+                applyAxisTransition(MaterialSharedAxis.X)
+                findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.artist.uid))
+            }
+            is Show.SongArtistDecision -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showArtistChoices(show.song.uid))
+            }
+            is Show.AlbumArtistDecision -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showArtistChoices(show.album.uid))
+            }
+            is Show.GenreDetails -> {
+                logD("Navigating to ${show.genre}")
+                applyAxisTransition(MaterialSharedAxis.X)
+                findNavController().navigateSafe(HomeFragmentDirections.showGenre(show.genre.uid))
+            }
+            is Show.PlaylistDetails -> {
+                logD("Navigating to ${show.playlist}")
+                applyAxisTransition(MaterialSharedAxis.X)
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showPlaylist(show.playlist.uid))
+            }
+            null -> {}
+        }
+    }
 
-        setupAxisTransitions(MaterialSharedAxis.X)
-        findNavController().navigateSafe(action)
+    private fun handleMenu(menu: Menu?) {
+        if (menu == null) return
+        val directions =
+            when (menu) {
+                is Menu.ForSong -> HomeFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForAlbum -> HomeFragmentDirections.openAlbumMenu(menu.parcel)
+                is Menu.ForArtist -> HomeFragmentDirections.openArtistMenu(menu.parcel)
+                is Menu.ForGenre -> HomeFragmentDirections.openGenreMenu(menu.parcel)
+                is Menu.ForPlaylist -> HomeFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForSelection -> HomeFragmentDirections.openSelectionMenu(menu.parcel)
+            }
+        findNavController().navigateSafe(directions)
     }
 
     private fun updateSelection(selected: List<Music>) {
@@ -529,7 +528,7 @@ class HomeFragment :
         }
     }
 
-    private fun setupAxisTransitions(axis: Int) {
+    private fun applyAxisTransition(axis: Int) {
         // Sanity check to avoid in-correct axis transitions
         check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
             "Not expecting Y axis transition"
@@ -550,25 +549,25 @@ class HomeFragment :
      *   [FragmentStateAdapter].
      */
     private class HomePagerAdapter(
-        private val tabs: List<MusicMode>,
+        private val tabs: List<MusicType>,
         fragmentManager: FragmentManager,
         lifecycleOwner: LifecycleOwner
     ) : FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle) {
         override fun getItemCount() = tabs.size
+
         override fun createFragment(position: Int): Fragment =
             when (tabs[position]) {
-                MusicMode.SONGS -> SongListFragment()
-                MusicMode.ALBUMS -> AlbumListFragment()
-                MusicMode.ARTISTS -> ArtistListFragment()
-                MusicMode.GENRES -> GenreListFragment()
-                MusicMode.PLAYLISTS -> PlaylistListFragment()
+                MusicType.SONGS -> SongListFragment()
+                MusicType.ALBUMS -> AlbumListFragment()
+                MusicType.ARTISTS -> ArtistListFragment()
+                MusicType.GENRES -> GenreListFragment()
+                MusicType.PLAYLISTS -> PlaylistListFragment()
             }
     }
 
     private companion object {
         val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
         val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
-        const val KEY_LAST_TRANSITION_AXIS =
-            BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
+        const val KEY_LAST_TRANSITION_ID = BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--
+    Required to use a LinearLayout here for space allocation to stop the BottomSheetDialog
+    from flipping out and not allowing the RecyclerView to scroll fully.
+    -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/menu_handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <org.oxycblt.auxio.image.CoverView
+            android:id="@+id/menu_cover"
+            style="@style/Widget.Auxio.Image.Full"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/menu_handle" />
+
+        <TextView
+            android:id="@+id/menu_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
+            android:textColor="?attr/colorSecondary"
+            app:layout_constraintBottom_toTopOf="@+id/menu_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/menu_cover"
+            app:layout_constraintTop_toTopOf="@+id/menu_cover"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Type" />
+
+        <TextView
+            android:id="@+id/menu_name"
+            style="@style/Widget.Auxio.TextView.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/menu_info"
+            app:layout_constraintEnd_toEndOf="@+id/menu_type"
+            app:layout_constraintStart_toStartOf="@+id/menu_type"
+            app:layout_constraintTop_toBottomOf="@+id/menu_type"
+            tools:text="Name" />
+
+        <TextView
+            android:id="@+id/menu_info"
+            style="@style/Widget.Auxio.TextView.Secondary.Marquee"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintBottom_toBottomOf="@+id/menu_cover"
+            app:layout_constraintEnd_toEndOf="@+id/menu_type"
+            app:layout_constraintStart_toStartOf="@+id/menu_name"
+            app:layout_constraintTop_toBottomOf="@+id/menu_name"
+            tools:text="Info A" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/menu_mode_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:layout_constraintTop_toBottomOf="@+id/menu_cover" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
+        android:id="@+id/menu_option_recycler"
+        style="@style/Widget.Auxio.RecyclerView.Linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menu_mode_group"
+        tools:listitem="@layout/item_menu_option" />
+</LinearLayout>
