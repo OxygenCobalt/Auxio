@@ -27,7 +27,7 @@ import org.oxycblt.auxio.music.MusicSettings
 
 class NameTest {
     private fun mockIntelligentSorting(enabled: Boolean) =
-        mockk<MusicSettings>().apply { every { intelligentSorting } returns enabled }
+        mockk<MusicSettings>() { every { intelligentSorting } returns enabled }
 
     @Test
     fun name_from_simple_withoutPunct() {

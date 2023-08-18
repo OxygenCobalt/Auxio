@@ -32,6 +32,7 @@ import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
+import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -118,6 +119,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         rawSongs: Channel<RawSong>,
         processedSongs: Channel<RawSong>
     ): DeviceLibraryImpl {
+        val separators = Separators.from(musicSettings.separators)
+
         val songGrouping = mutableMapOf<Music.UID, SongImpl>()
         val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl>>()
         val artistGrouping = mutableMapOf<RawArtist.Key, Grouping<RawArtist, Music>>()
@@ -127,7 +130,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // All music information is grouped as it is indexed by other components.
         for (rawSong in rawSongs) {
-            val song = SongImpl(rawSong, musicSettings)
+            val song = SongImpl(rawSong, musicSettings, separators)
             // At times the indexer produces duplicate songs, try to filter these. Comparing by
             // UID is sufficient for something like this, and also prevents collisions from
             // causing severe issues elsewhere.

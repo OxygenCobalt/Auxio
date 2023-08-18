@@ -18,26 +18,9 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.util.positiveOrNull
 
 /// --- GENERIC PARSING ---
-
-/**
- * Parse a multi-value tag based on the user configuration. If the value is already composed of more
- * than one value, nothing is done. Otherwise, this function will attempt to split it based on the
- * user's separator preferences.
- *
- * @param settings [MusicSettings] required to obtain user separator configuration.
- * @return A new list of one or more [String]s.
- */
-fun List<String>.parseMultiValue(settings: MusicSettings) =
-    if (size == 1) {
-        first().maybeParseBySeparators(settings)
-    } else {
-        // Nothing to do.
-        this
-    }
 
 // TODO: Remove the escaping checks, it's too expensive to do this for every single tag.
 
@@ -101,17 +84,6 @@ fun String.correctWhitespace() = trim().ifBlank { null }
  */
 fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
 
-/**
- * Attempt to parse a string by the user's separator preferences.
- *
- * @param settings [MusicSettings] required to obtain user separator configuration.
- * @return A list of one or more [String]s that were split up by the user-defined separators.
- */
-private fun String.maybeParseBySeparators(settings: MusicSettings): List<String> {
-    if (settings.multiValueSeparators.isEmpty()) return listOf(this)
-    return splitEscaped { settings.multiValueSeparators.contains(it) }.correctWhitespace()
-}
-
 /// --- ID3v2 PARSING ---
 
 /**
@@ -165,12 +137,12 @@ fun transformPositionField(pos: Int?, total: Int?) =
  * representations of genre fields into their named counterparts, and split up singular ID3v2-style
  * integer genre fields into one or more genres.
  *
- * @param settings [MusicSettings] required to obtain user separator configuration.
- * @return A list of one or more genre names..
+ * @return A list of one or more genre names, or null if this multi-value list has no valid
+ *   formatting.
  */
-fun List<String>.parseId3GenreNames(settings: MusicSettings) =
+fun List<String>.parseId3GenreNames() =
     if (size == 1) {
-        first().parseId3MultiValueGenre(settings)
+        first().parseId3MultiValueGenre()
     } else {
         // Nothing to split, just map any ID3v1 genres to their name counterparts.
         map { it.parseId3v1Genre() ?: it }
@@ -179,11 +151,10 @@ fun List<String>.parseId3GenreNames(settings: MusicSettings) =
 /**
  * Parse a single ID3v1/ID3v2 integer genre field into their named representations.
  *
- * @param settings [MusicSettings] required to obtain user separator configuration.
- * @return A list of one or more genre names.
+ * @return list of one or more genre names, or null if this is not in ID3v2 format.
  */
-private fun String.parseId3MultiValueGenre(settings: MusicSettings) =
-    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: maybeParseBySeparators(settings)
+private fun String.parseId3MultiValueGenre() =
+    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre()
 
 /**
  * Parse an ID3v1 integer genre field.
