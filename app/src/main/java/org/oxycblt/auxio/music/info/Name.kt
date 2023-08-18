@@ -57,36 +57,6 @@ sealed interface Name : Comparable<Name> {
         /** A tokenized version of the name that will be compared. */
         @VisibleForTesting(VisibleForTesting.PROTECTED) abstract val sortTokens: List<SortToken>
 
-        /** An individual part of a name string that can be compared intelligently. */
-        @VisibleForTesting(VisibleForTesting.PROTECTED)
-        data class SortToken(val collationKey: CollationKey, val type: Type) :
-            Comparable<SortToken> {
-            override fun compareTo(other: SortToken): Int {
-                // Numeric tokens should always be lower than lexicographic tokens.
-                val modeComp = type.compareTo(other.type)
-                if (modeComp != 0) {
-                    return modeComp
-                }
-
-                // Numeric strings must be ordered by magnitude, thus immediately short-circuit
-                // the comparison if the lengths do not match.
-                if (type == Type.NUMERIC &&
-                    collationKey.sourceString.length != other.collationKey.sourceString.length) {
-                    return collationKey.sourceString.length - other.collationKey.sourceString.length
-                }
-
-                return collationKey.compareTo(other.collationKey)
-            }
-
-            /** Denotes the type of comparison to be performed with this token. */
-            enum class Type {
-                /** Compare as a digit string, like "65". */
-                NUMERIC,
-                /** Compare as a standard alphanumeric string, like "65daysofstatic" */
-                LEXICOGRAPHIC
-            }
-        }
-
         final override val thumb: String
             get() =
                 // TODO: Remove these safety checks once you have real unit testing
@@ -110,20 +80,30 @@ sealed interface Name : Comparable<Name> {
                 is Unknown -> 1
             }
 
-        companion object {
+        interface Factory {
             /**
              * Create a new instance of [Name.Known]
              *
              * @param raw The raw name obtained from the music item
              * @param sort The raw sort name obtained from the music item
-             * @param musicSettings [MusicSettings] required for name configuration.
              */
-            fun from(raw: String, sort: String?, musicSettings: MusicSettings): Known =
-                if (musicSettings.intelligentSorting) {
-                    IntelligentKnownName(raw, sort)
-                } else {
-                    SimpleKnownName(raw, sort)
-                }
+            fun parse(raw: String, sort: String?): Known
+
+            companion object {
+                /**
+                 * Creates a new instance from the **current state** of the given [MusicSettings]'s
+                 * user-defined name configuration.
+                 *
+                 * @param settings The [MusicSettings] to use.
+                 * @return A new [Factory] instance reflecting the configuration state.
+                 */
+                fun from(settings: MusicSettings) =
+                    if (settings.intelligentSorting) {
+                        IntelligentKnownName.Factory()
+                    } else {
+                        SimpleKnownName.Factory()
+                    }
+            }
         }
     }
 
@@ -157,8 +137,8 @@ private val punctRegex by lazy { Regex("[\\p{Punct}+]") }
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-private data class SimpleKnownName(override val raw: String, override val sort: String?) :
-    Name.Known() {
+@VisibleForTesting
+data class SimpleKnownName(override val raw: String, override val sort: String?) : Name.Known() {
     override val sortTokens = listOf(parseToken(sort ?: raw))
 
     private fun parseToken(name: String): SortToken {
@@ -168,6 +148,10 @@ private data class SimpleKnownName(override val raw: String, override val sort: 
         // Always use lexicographic mode since we aren't parsing any numeric components
         return SortToken(collationKey, SortToken.Type.LEXICOGRAPHIC)
     }
+
+    class Factory : Name.Known.Factory {
+        override fun parse(raw: String, sort: String?) = SimpleKnownName(raw, sort)
+    }
 }
 
 /**
@@ -175,7 +159,8 @@ private data class SimpleKnownName(override val raw: String, override val sort: 
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-private data class IntelligentKnownName(override val raw: String, override val sort: String?) :
+@VisibleForTesting
+data class IntelligentKnownName(override val raw: String, override val sort: String?) :
     Name.Known() {
     override val sortTokens = parseTokens(sort ?: raw)
 
@@ -223,7 +208,40 @@ private data class IntelligentKnownName(override val raw: String, override val s
         }
     }
 
+    class Factory : Name.Known.Factory {
+        override fun parse(raw: String, sort: String?) = IntelligentKnownName(raw, sort)
+    }
+
     companion object {
         private val TOKEN_REGEX by lazy { Regex("(\\d+)|(\\D+)") }
+    }
+}
+
+/** An individual part of a name string that can be compared intelligently. */
+@VisibleForTesting(VisibleForTesting.PROTECTED)
+data class SortToken(val collationKey: CollationKey, val type: Type) : Comparable<SortToken> {
+    override fun compareTo(other: SortToken): Int {
+        // Numeric tokens should always be lower than lexicographic tokens.
+        val modeComp = type.compareTo(other.type)
+        if (modeComp != 0) {
+            return modeComp
+        }
+
+        // Numeric strings must be ordered by magnitude, thus immediately short-circuit
+        // the comparison if the lengths do not match.
+        if (type == Type.NUMERIC &&
+            collationKey.sourceString.length != other.collationKey.sourceString.length) {
+            return collationKey.sourceString.length - other.collationKey.sourceString.length
+        }
+
+        return collationKey.compareTo(other.collationKey)
+    }
+
+    /** Denotes the type of comparison to be performed with this token. */
+    enum class Type {
+        /** Compare as a digit string, like "65". */
+        NUMERIC,
+        /** Compare as a standard alphanumeric string, like "65daysofstatic" */
+        LEXICOGRAPHIC
     }
 }

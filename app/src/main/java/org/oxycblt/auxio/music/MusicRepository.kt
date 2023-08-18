@@ -223,7 +223,8 @@ constructor(
     private val mediaStoreExtractor: MediaStoreExtractor,
     private val tagExtractor: TagExtractor,
     private val deviceLibraryFactory: DeviceLibrary.Factory,
-    private val userLibraryFactory: UserLibrary.Factory
+    private val userLibraryFactory: UserLibrary.Factory,
+    private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()

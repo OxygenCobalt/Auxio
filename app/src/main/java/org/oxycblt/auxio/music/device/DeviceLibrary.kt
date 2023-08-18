@@ -32,6 +32,7 @@ import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
+import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -108,7 +109,7 @@ interface DeviceLibrary {
          */
         suspend fun create(
             rawSongs: Channel<RawSong>,
-            processedSongs: Channel<RawSong>
+            processedSongs: Channel<RawSong>,
         ): DeviceLibraryImpl
     }
 }
@@ -119,7 +120,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         rawSongs: Channel<RawSong>,
         processedSongs: Channel<RawSong>
     ): DeviceLibraryImpl {
-        val separators = Separators.from(musicSettings.separators)
+        val nameFactory = Name.Known.Factory.from(musicSettings)
+        val separators = Separators.from(musicSettings)
 
         val songGrouping = mutableMapOf<Music.UID, SongImpl>()
         val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl>>()
@@ -130,7 +132,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // All music information is grouped as it is indexed by other components.
         for (rawSong in rawSongs) {
-            val song = SongImpl(rawSong, musicSettings, separators)
+            val song = SongImpl(rawSong, nameFactory, separators)
             // At times the indexer produces duplicate songs, try to filter these. Comparing by
             // UID is sufficient for something like this, and also prevents collisions from
             // causing severe issues elsewhere.
@@ -210,7 +212,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        val albums = albumGrouping.values.mapTo(mutableSetOf()) { AlbumImpl(it, musicSettings) }
+        val albums = albumGrouping.values.mapTo(mutableSetOf()) { AlbumImpl(it, nameFactory) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
                 val key = RawArtist.Key(rawArtist)
@@ -246,8 +248,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         }
 
         // Artists and genres do not need to be grouped and can be processed immediately.
-        val artists = artistGrouping.values.mapTo(mutableSetOf()) { ArtistImpl(it, musicSettings) }
-        val genres = genreGrouping.values.mapTo(mutableSetOf()) { GenreImpl(it, musicSettings) }
+        val artists = artistGrouping.values.mapTo(mutableSetOf()) { ArtistImpl(it, nameFactory) }
+        val genres = genreGrouping.values.mapTo(mutableSetOf()) { GenreImpl(it, nameFactory) }
 
         return DeviceLibraryImpl(songGrouping.values.toSet(), albums, artists, genres)
     }

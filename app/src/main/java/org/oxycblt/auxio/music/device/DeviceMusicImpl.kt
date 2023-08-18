@@ -25,7 +25,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
@@ -48,12 +47,15 @@ import org.oxycblt.auxio.util.update
  * Library-backed implementation of [Song].
  *
  * @param rawSong The [RawSong] to derive the member data from.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @param separators The [Separators] to parse multi-value tags with.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings, separators: Separators) :
-    Song {
+class SongImpl(
+    private val rawSong: RawSong,
+    nameFactory: Name.Known.Factory,
+    separators: Separators
+) : Song {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
@@ -72,10 +74,8 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings, separ
                 update(rawSong.albumArtistNames)
             }
     override val name =
-        Name.Known.from(
-            requireNotNull(rawSong.name) { "Invalid raw: No title" },
-            rawSong.sortName,
-            musicSettings)
+        nameFactory.parse(
+            requireNotNull(rawSong.name) { "Invalid raw: No title" }, rawSong.sortName)
 
     override val track = rawSong.track
     override val disc = rawSong.disc?.let { Disc(it, rawSong.subtitle) }
@@ -256,13 +256,10 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings, separ
  * Library-backed implementation of [Album].
  *
  * @param grouping [Grouping] to derive the member data from.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumImpl(
-    grouping: Grouping<RawAlbum, SongImpl>,
-    musicSettings: MusicSettings,
-) : Album {
+class AlbumImpl(grouping: Grouping<RawAlbum, SongImpl>, nameFactory: Name.Known.Factory) : Album {
     private val rawAlbum = grouping.raw.inner
 
     override val uid =
@@ -275,7 +272,7 @@ class AlbumImpl(
                 update(rawAlbum.name)
                 update(rawAlbum.rawArtists.map { it.name })
             }
-    override val name = Name.Known.from(rawAlbum.name, rawAlbum.sortName, musicSettings)
+    override val name = nameFactory.parse(rawAlbum.name, rawAlbum.sortName)
     override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
     override val coverUri = CoverUri(rawAlbum.mediaStoreId.toCoverUri(), grouping.raw.src.uri)
@@ -376,10 +373,10 @@ class AlbumImpl(
  * Library-backed implementation of [Artist].
  *
  * @param grouping [Grouping] to derive the member data from.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSettings) : Artist {
+class ArtistImpl(grouping: Grouping<RawArtist, Music>, nameFactory: Name.Known.Factory) : Artist {
     private val rawArtist = grouping.raw.inner
 
     override val uid =
@@ -387,7 +384,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
         rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ARTISTS, it) }
             ?: Music.UID.auxio(MusicType.ARTISTS) { update(rawArtist.name) }
     override val name =
-        rawArtist.name?.let { Name.Known.from(it, rawArtist.sortName, musicSettings) }
+        rawArtist.name?.let { nameFactory.parse(it, rawArtist.sortName) }
             ?: Name.Unknown(R.string.def_artist)
 
     override val songs: Set<Song>
@@ -473,15 +470,15 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
  * Library-backed implementation of [Genre].
  *
  * @param grouping [Grouping] to derive the member data from.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSettings) : Genre {
+class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, nameFactory: Name.Known.Factory) : Genre {
     private val rawGenre = grouping.raw.inner
 
     override val uid = Music.UID.auxio(MusicType.GENRES) { update(rawGenre.name) }
     override val name =
-        rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
+        rawGenre.name?.let { nameFactory.parse(it, rawGenre.name) }
             ?: Name.Unknown(R.string.def_genre)
 
     override val songs: Set<Song>
