@@ -1,5 +1,11 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Fixed app restart being required when changing intelligent sorting
+or music separator settings
+
 ## 3.2.0
 
 #### What's New

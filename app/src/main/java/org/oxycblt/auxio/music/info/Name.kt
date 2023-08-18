@@ -95,13 +95,13 @@ sealed interface Name : Comparable<Name> {
                  * user-defined name configuration.
                  *
                  * @param settings The [MusicSettings] to use.
-                 * @return A new [Factory] instance reflecting the configuration state.
+                 * @return A [Factory] instance reflecting the configuration state.
                  */
                 fun from(settings: MusicSettings) =
                     if (settings.intelligentSorting) {
-                        IntelligentKnownName.Factory()
+                        IntelligentKnownName.Factory
                     } else {
-                        SimpleKnownName.Factory()
+                        SimpleKnownName.Factory
                     }
             }
         }
@@ -149,7 +149,7 @@ data class SimpleKnownName(override val raw: String, override val sort: String?)
         return SortToken(collationKey, SortToken.Type.LEXICOGRAPHIC)
     }
 
-    class Factory : Name.Known.Factory {
+    data object Factory : Name.Known.Factory {
         override fun parse(raw: String, sort: String?) = SimpleKnownName(raw, sort)
     }
 }
@@ -208,7 +208,7 @@ data class IntelligentKnownName(override val raw: String, override val sort: Str
         }
     }
 
-    class Factory : Name.Known.Factory {
+    data object Factory : Name.Known.Factory {
         override fun parse(raw: String, sort: String?) = IntelligentKnownName(raw, sort)
     }
 

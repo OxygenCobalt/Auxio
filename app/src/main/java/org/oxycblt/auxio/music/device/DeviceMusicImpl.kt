@@ -53,8 +53,8 @@ import org.oxycblt.auxio.util.update
  */
 class SongImpl(
     private val rawSong: RawSong,
-    nameFactory: Name.Known.Factory,
-    separators: Separators
+    private val nameFactory: Name.Known.Factory,
+    private val separators: Separators
 ) : Song {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
@@ -110,17 +110,6 @@ class SongImpl(
     override val genres: List<Genre>
         get() = _genres
 
-    private val hashCode = 31 * uid.hashCode() + rawSong.hashCode()
-
-    override fun hashCode() = hashCode
-
-    // TODO: I cant compare by raw information actually, as it also means that any settings
-    //  configuration will be lost as well.
-    override fun equals(other: Any?) =
-        other is SongImpl && uid == other.uid && rawSong == other.rawSong
-
-    override fun toString() = "Song(uid=$uid, name=$name)"
-
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
      * [Album].
@@ -139,6 +128,8 @@ class SongImpl(
      * [Genre]. ID3v2 Genre names are automatically converted to their resolved names.
      */
     val rawGenres: List<RawGenre>
+
+    private var hashCode: Int = uid.hashCode()
 
     init {
         val artistMusicBrainzIds = separators.split(rawSong.artistMusicBrainzIds)
@@ -190,7 +181,23 @@ class SongImpl(
                 .mapTo(mutableSetOf()) { RawGenre(it) }
                 .toList()
                 .ifEmpty { listOf(RawGenre()) }
+
+        hashCode = 31 * rawSong.hashCode()
+        hashCode = 31 * nameFactory.hashCode()
     }
+
+    override fun hashCode() = hashCode
+
+    // Since equality on public-facing music models is not identical to the tag equality,
+    // we just compare raw instances and how they are interpreted.
+    override fun equals(other: Any?) =
+        other is SongImpl &&
+            uid == other.uid &&
+            nameFactory == other.nameFactory &&
+            separators == other.separators &&
+            rawSong == other.rawSong
+
+    override fun toString() = "Song(uid=$uid, name=$name)"
 
     /**
      * Links this [Song] with a parent [Album].
@@ -259,7 +266,10 @@ class SongImpl(
  * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumImpl(grouping: Grouping<RawAlbum, SongImpl>, nameFactory: Name.Known.Factory) : Album {
+class AlbumImpl(
+    grouping: Grouping<RawAlbum, SongImpl>,
+    private val nameFactory: Name.Known.Factory
+) : Album {
     private val rawAlbum = grouping.raw.inner
 
     override val uid =
@@ -322,13 +332,20 @@ class AlbumImpl(grouping: Grouping<RawAlbum, SongImpl>, nameFactory: Name.Known.
         dateAdded = earliestDateAdded
 
         hashCode = 31 * hashCode + rawAlbum.hashCode()
+        hashCode = 31 * nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
     override fun hashCode() = hashCode
 
+    // Since equality on public-facing music models is not identical to the tag equality,
+    // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
-        other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
+        other is AlbumImpl &&
+            uid == other.uid &&
+            rawAlbum == other.rawAlbum &&
+            nameFactory == other.nameFactory &&
+            songs == other.songs
 
     override fun toString() = "Album(uid=$uid, name=$name)"
 
@@ -376,7 +393,10 @@ class AlbumImpl(grouping: Grouping<RawAlbum, SongImpl>, nameFactory: Name.Known.
  * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistImpl(grouping: Grouping<RawArtist, Music>, nameFactory: Name.Known.Factory) : Artist {
+class ArtistImpl(
+    grouping: Grouping<RawArtist, Music>,
+    private val nameFactory: Name.Known.Factory
+) : Artist {
     private val rawArtist = grouping.raw.inner
 
     override val uid =
@@ -425,6 +445,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, nameFactory: Name.Known.F
         durationMs = songs.sumOf { it.durationMs }.positiveOrNull()
 
         hashCode = 31 * hashCode + rawArtist.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
@@ -432,10 +453,13 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, nameFactory: Name.Known.F
     // the same UID but different songs are not equal.
     override fun hashCode() = hashCode
 
+    // Since equality on public-facing music models is not identical to the tag equality,
+    // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
         other is ArtistImpl &&
             uid == other.uid &&
             rawArtist == other.rawArtist &&
+            nameFactory == other.nameFactory &&
             songs == other.songs
 
     override fun toString() = "Artist(uid=$uid, name=$name)"
@@ -473,7 +497,10 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, nameFactory: Name.Known.F
  * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, nameFactory: Name.Known.Factory) : Genre {
+class GenreImpl(
+    grouping: Grouping<RawGenre, SongImpl>,
+    private val nameFactory: Name.Known.Factory
+) : Genre {
     private val rawGenre = grouping.raw.inner
 
     override val uid = Music.UID.auxio(MusicType.GENRES) { update(rawGenre.name) }
@@ -502,13 +529,18 @@ class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, nameFactory: Name.Known.
         durationMs = totalDuration
 
         hashCode = 31 * hashCode + rawGenre.hashCode()
+        hashCode = 31 * nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
     override fun hashCode() = hashCode
 
     override fun equals(other: Any?) =
-        other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
+        other is GenreImpl &&
+            uid == other.uid &&
+            rawGenre == other.rawGenre &&
+            nameFactory == other.nameFactory &&
+            songs == other.songs
 
     override fun toString() = "Genre(uid=$uid, name=$name)"
 
