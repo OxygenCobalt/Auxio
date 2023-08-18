@@ -33,7 +33,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -41,7 +40,6 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
@@ -105,12 +103,7 @@ class PlaybackPanelFragment :
         // respective item.
         binding.playbackSong.apply {
             isSelected = true
-            setOnClickListener {
-                playbackModel.song.value?.let {
-                    detailModel.showAlbum(it)
-                    playbackModel.openMain()
-                }
-            }
+            setOnClickListener { playbackModel.song.value?.let(detailModel::showAlbum) }
         }
         binding.playbackArtist.apply {
             isSelected = true
@@ -138,7 +131,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
-        collect(detailModel.toShow.flow, ::handleShow)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
@@ -218,20 +210,6 @@ class PlaybackPanelFragment :
 
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffled
-    }
-
-    private fun handleShow(show: Show?) {
-        when (show) {
-            is Show.SongAlbumDetails,
-            is Show.ArtistDetails,
-            is Show.AlbumDetails -> playbackModel.openMain()
-            is Show.SongDetails,
-            is Show.SongArtistDecision,
-            is Show.AlbumArtistDecision,
-            is Show.GenreDetails,
-            is Show.PlaylistDetails,
-            null -> {}
-        }
     }
 
     private fun navigateToCurrentArtist() {

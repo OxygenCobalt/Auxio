@@ -38,6 +38,7 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.Outer
 import org.oxycblt.auxio.list.ListViewModel
@@ -49,6 +50,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
 import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
@@ -149,6 +151,11 @@ class MainFragment :
         }
 
         // --- VIEWMODEL SETUP ---
+        // This has to be done here instead of the playback panel to make sure that it's prioritized
+        // by StateFlow over any detail fragment.
+        // FIXME: This is a consequence of sharing events across several consumers. There has to be
+        //  a better way of doing this.
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
         collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
         collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
@@ -285,6 +292,20 @@ class MainFragment :
             .invalidateEnabled()
 
         return true
+    }
+
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongAlbumDetails,
+            is Show.ArtistDetails,
+            is Show.AlbumDetails -> playbackModel.openMain()
+            is Show.SongDetails,
+            is Show.SongArtistDecision,
+            is Show.AlbumArtistDecision,
+            is Show.GenreDetails,
+            is Show.PlaylistDetails,
+            null -> {}
+        }
     }
 
     private fun handleShowOuter(outer: Outer?) {
