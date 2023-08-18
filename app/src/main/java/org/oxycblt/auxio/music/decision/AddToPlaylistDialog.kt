@@ -32,10 +32,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
-import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
@@ -93,26 +91,16 @@ class AddToPlaylistDialog :
     }
 
     override fun onNewPlaylist() {
-        musicModel.createPlaylist(songs = pickerModel.currentSongsToAdd.value ?: return)
-    }
-
-    private fun handleDecision(decision: PlaylistDecision?) {
-        when (decision) {
-            is PlaylistDecision.Add -> {
-                logD("Navigated to playlist add dialog")
-                musicModel.playlistDecision.consume()
-            }
-            is PlaylistDecision.New -> {
-                logD("Navigating to new playlist dialog")
-                findNavController()
-                    .navigateSafe(
-                        AddToPlaylistDialogDirections.newPlaylist(
-                            decision.songs.map { it.uid }.toTypedArray()))
-            }
-            is PlaylistDecision.Rename,
-            is PlaylistDecision.Delete -> error("Unexpected decision $decision")
-            null -> {}
-        }
+        // TODO: This is a temporary fix. Eventually I want to make this navigate away and
+        //  instead have primary fragments launch navigation to the new playlist dialog.
+        //  This should be better design (dialog layering is uh... probably not good) and
+        //  preserves the existing navigation system.
+        //  I could also roll some kind of new playlist textbox into the dialog, but that's
+        //  a lot harder.
+        val songs = pickerModel.currentSongsToAdd.value ?: return
+        findNavController()
+            .navigateSafe(
+                AddToPlaylistDialogDirections.newPlaylist(songs.map { it.uid }.toTypedArray()))
     }
 
     private fun updatePendingSongs(songs: List<Song>?) {
