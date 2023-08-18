@@ -148,6 +148,8 @@ sealed interface Name : Comparable<Name> {
 private val collator: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
 private val punctRegex by lazy { Regex("[\\p{Punct}+]") }
 
+// TODO: Consider how you want to handle whitespace and "gaps" in names.
+
 /**
  * Plain [Name.Known] implementation that is internationalization-safe.
  *
@@ -159,7 +161,7 @@ private data class SimpleKnownName(override val raw: String, override val sort: 
 
     private fun parseToken(name: String): SortToken {
         // Remove excess punctuation from the string, as those usually aren't considered in sorting.
-        val stripped = name.replace(punctRegex, "").ifEmpty { name }
+        val stripped = name.replace(punctRegex, "").trim().ifEmpty { name }
         val collationKey = collator.getCollationKey(stripped)
         // Always use lexicographic mode since we aren't parsing any numeric components
         return SortToken(collationKey, SortToken.Type.LEXICOGRAPHIC)
@@ -180,7 +182,8 @@ private data class IntelligentKnownName(override val raw: String, override val s
         //  optimize it
         val stripped =
             name
-                // Remove excess punctuation from the string, as those u
+                // Remove excess punctuation from the string, as those usually aren't
+                // considered in sorting.
                 .replace(punctRegex, "")
                 .ifEmpty { name }
                 .run {
