@@ -142,13 +142,15 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
+    // Logging
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     testImplementation "junit:junit:4.13.2"
     testImplementation "io.mockk:mockk:1.13.7"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
 }
 
 spotless {

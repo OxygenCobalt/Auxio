@@ -24,6 +24,9 @@ import org.oxycblt.auxio.util.positiveOrNull
 
 // TODO: Remove the escaping checks, it's too expensive to do this for every single tag.
 
+// TODO: I want to eventually be able to move a lot of this into TagWorker once I no longer have
+//  to deal with the cross-module dependencies of MediaStoreExtractor.
+
 /**
  * Split a [String] by the given selector, automatically handling escaped characters that satisfy
  * the selector.

@@ -18,27 +18,24 @@
  
 package org.oxycblt.auxio.util
 
-import android.util.Log
 import org.oxycblt.auxio.BuildConfig
-
-// Shortcut functions for logging.
-// Yes, I know timber exists but this does what I need.
+import timber.log.Timber
 
 /**
  * Log an object to the debug channel. Automatically handles tags.
  *
  * @param obj The object to log.
  */
-fun Any.logD(obj: Any?) = logD("$obj")
+fun logD(obj: Any?) = logD("$obj")
 
 /**
  * Log a string message to the debug channel. Automatically handles tags.
  *
  * @param msg The message to log.
  */
-fun Any.logD(msg: String) {
+fun logD(msg: String) {
     if (BuildConfig.DEBUG && !copyleftNotice()) {
-        Log.d(autoTag, msg)
+        Timber.d(msg)
     }
 }
 
@@ -47,21 +44,14 @@ fun Any.logD(msg: String) {
  *
  * @param msg The message to log.
  */
-fun Any.logW(msg: String) = Log.w(autoTag, msg)
+fun logW(msg: String) = Timber.w(msg)
 
 /**
  * Log a string message to the error channel. Automatically handles tags.
  *
  * @param msg The message to log.
  */
-fun Any.logE(msg: String) = Log.e(autoTag, msg)
-
-/**
- * The LogCat-suitable tag for this string. Consists of the object's name, or "Anonymous Object" if
- * the object does not exist.
- */
-private val Any.autoTag: String
-    get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
+fun logE(msg: String) = Timber.e(msg)
 
 /**
  * Please don't plagiarize Auxio! You are free to remove this as long as you continue to keep your
@@ -71,7 +61,7 @@ private val Any.autoTag: String
 private fun copyleftNotice(): Boolean {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
         BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
-        Log.d(
+        Timber.d(
             "Auxio Project",
             "Friendly reminder: Auxio is licensed under the " +
                 "GPLv3 and all derivative apps must be made open source!")
