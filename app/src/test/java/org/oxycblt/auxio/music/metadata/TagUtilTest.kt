@@ -18,27 +18,32 @@
  
 package org.oxycblt.auxio.music.metadata
 
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.oxycblt.auxio.music.FakeMusicSettings
+import org.oxycblt.auxio.music.MusicSettings
 
 class TagUtilTest {
+    private fun mockSeparators(separators: String) =
+        mockk<MusicSettings>().apply { every { multiValueSeparators } returns separators }
+
     @Test
     fun parseMultiValue_single() {
-        assertEquals(listOf("a", "b", "c"), listOf("a,b,c").parseMultiValue(TestMusicSettings(",")))
+        assertEquals(listOf("a", "b", "c"), listOf("a,b,c").parseMultiValue(mockSeparators(",")))
     }
 
     @Test
     fun parseMultiValue_many() {
         assertEquals(
-            listOf("a", "b", "c"), listOf("a", "b", "c").parseMultiValue(TestMusicSettings(",")))
+            listOf("a", "b", "c"), listOf("a", "b", "c").parseMultiValue(mockSeparators(",")))
     }
 
     @Test
     fun parseMultiValue_several() {
         assertEquals(
             listOf("a", "b", "c", "d", "e", "f"),
-            listOf("a,b;c/d+e&f").parseMultiValue(TestMusicSettings(",;/+&")))
+            listOf("a,b;c/d+e&f").parseMultiValue(mockSeparators(",;/+&")))
     }
 
     @Test
@@ -131,43 +136,37 @@ class TagUtilTest {
     fun parseId3v2Genre_multi() {
         assertEquals(
             listOf("Post-Rock", "Shoegaze", "Glitch"),
-            listOf("Post-Rock", "Shoegaze", "Glitch").parseId3GenreNames(TestMusicSettings(",")))
+            listOf("Post-Rock", "Shoegaze", "Glitch").parseId3GenreNames(mockSeparators(",")))
     }
 
     @Test
     fun parseId3v2Genre_multiId3v1() {
         assertEquals(
             listOf("Post-Rock", "Shoegaze", "Glitch"),
-            listOf("176", "178", "Glitch").parseId3GenreNames(TestMusicSettings(",")))
+            listOf("176", "178", "Glitch").parseId3GenreNames(mockSeparators(",")))
     }
 
     @Test
     fun parseId3v2Genre_wackId3() {
-        assertEquals(listOf("2941"), listOf("2941").parseId3GenreNames(TestMusicSettings(",")))
+        assertEquals(listOf("2941"), listOf("2941").parseId3GenreNames(mockSeparators(",")))
     }
 
     @Test
     fun parseId3v2Genre_singleId3v23() {
         assertEquals(
             listOf("Post-Rock", "Shoegaze", "Remix", "Cover", "Glitch"),
-            listOf("(176)(178)(RX)(CR)Glitch").parseId3GenreNames(TestMusicSettings(",")))
+            listOf("(176)(178)(RX)(CR)Glitch").parseId3GenreNames(mockSeparators(",")))
     }
 
     @Test
     fun parseId3v2Genre_singleSeparated() {
         assertEquals(
             listOf("Post-Rock", "Shoegaze", "Glitch"),
-            listOf("Post-Rock, Shoegaze, Glitch").parseId3GenreNames(TestMusicSettings(",")))
+            listOf("Post-Rock, Shoegaze, Glitch").parseId3GenreNames(mockSeparators(",")))
     }
 
     @Test
     fun parsId3v2Genre_singleId3v1() {
-        assertEquals(listOf("Post-Rock"), listOf("176").parseId3GenreNames(TestMusicSettings(",")))
-    }
-
-    class TestMusicSettings(private val separators: String) : FakeMusicSettings() {
-        override var multiValueSeparators: String
-            get() = separators
-            set(_) = throw NotImplementedError()
+        assertEquals(listOf("Post-Rock"), listOf("176").parseId3GenreNames(mockSeparators(",")))
     }
 }

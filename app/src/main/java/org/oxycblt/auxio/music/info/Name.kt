@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.info
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import java.text.CollationKey
 import java.text.Collator
 import org.oxycblt.auxio.music.MusicSettings
@@ -54,10 +55,11 @@ sealed interface Name : Comparable<Name> {
         abstract val sort: String?
 
         /** A tokenized version of the name that will be compared. */
-        protected abstract val sortTokens: List<SortToken>
+        @VisibleForTesting(VisibleForTesting.PROTECTED) abstract val sortTokens: List<SortToken>
 
         /** An individual part of a name string that can be compared intelligently. */
-        protected data class SortToken(val collationKey: CollationKey, val type: Type) :
+        @VisibleForTesting(VisibleForTesting.PROTECTED)
+        data class SortToken(val collationKey: CollationKey, val type: Type) :
             Comparable<SortToken> {
             override fun compareTo(other: SortToken): Int {
                 // Numeric tokens should always be lower than lexicographic tokens.
