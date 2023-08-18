@@ -264,6 +264,9 @@
             android:id="@+id/show_artist"
             app:destination="@id/artist_detail_fragment" />
         <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
         <action

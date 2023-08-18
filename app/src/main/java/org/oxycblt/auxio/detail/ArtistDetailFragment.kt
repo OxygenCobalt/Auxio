@@ -221,8 +221,16 @@ class ArtistDetailFragment :
                         .navigateSafe(ArtistDetailFragmentDirections.showArtist(show.artist.uid))
                 }
             }
-            is Show.SongArtistDecision,
-            is Show.AlbumArtistDecision,
+            is Show.SongArtistDecision -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController()
+                    .navigateSafe(ArtistDetailFragmentDirections.showArtistChoices(show.song.uid))
+            }
+            is Show.AlbumArtistDecision -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController()
+                    .navigateSafe(ArtistDetailFragmentDirections.showArtistChoices(show.album.uid))
+            }
             is Show.GenreDetails,
             is Show.PlaylistDetails -> {
                 error("Unexpected show command $show")
