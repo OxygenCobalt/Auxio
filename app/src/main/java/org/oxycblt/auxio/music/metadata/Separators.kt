@@ -43,6 +43,7 @@ interface Separators {
         const val SLASH = '/'
         const val PLUS = '+'
         const val AND = '&'
+
         /**
          * Creates a new instance from the **current state** of the given [MusicSettings]'s
          * user-defined separator configuration.
