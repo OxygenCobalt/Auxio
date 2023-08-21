@@ -63,9 +63,9 @@ data class CachedSong(
     /** @see RawSong */
     var durationMs: Long,
     /** @see RawSong.replayGainTrackAdjustment */
-    val replayGainTrackAdjustment: Float?,
+    val replayGainTrackAdjustment: Float? = null,
     /** @see RawSong.replayGainAlbumAdjustment */
-    val replayGainAlbumAdjustment: Float?,
+    val replayGainAlbumAdjustment: Float? = null,
     /** @see RawSong.musicBrainzId */
     var musicBrainzId: String? = null,
     /** @see RawSong.name */

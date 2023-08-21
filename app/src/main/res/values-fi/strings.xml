@@ -37,7 +37,6 @@
     <string name="lbl_playback">Nyt toistetaan</string>
     <string name="lbl_equalizer">Taajuuskorjain</string>
     <string name="lbl_play">Toista</string>
-    <string name="lbl_play_selected">Toisto valittu</string>
     <string name="lbl_shuffle">Sekoita</string>
     <string name="lbl_queue">Jono</string>
     <string name="lbl_queue_add">Lisää jonoon</string>
@@ -219,7 +218,6 @@
     <string name="set_replay_gain">ReplayGain</string>
     <string name="set_replay_gain_mode_album">Suosi albumia</string>
     <string name="set_replay_gain_mode">ReplayGain-strategia</string>
-    <string name="lbl_shuffle_selected">Sekoitus valittu</string>
     <string name="set_observing">Automaattinen uudelleenlataus</string>
     <string name="set_headset_autoplay">Automaattitoisto kuulokkeilla</string>
     <string name="set_headset_autoplay_desc">Aloita aina toisto, kun kuulokkeet yhdistetään (ei välttämättä toimi kaikilla laitteilla)</string>

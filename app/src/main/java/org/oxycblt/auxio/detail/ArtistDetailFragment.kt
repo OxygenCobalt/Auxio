@@ -100,7 +100,7 @@ class ArtistDetailFragment :
             setOnMenuItemClickListener(this@ArtistDetailFragment)
             overrideOnOverflowMenuClick {
                 listModel.openMenu(
-                    R.menu.item_detail_parent, unlikelyToBeNull(detailModel.currentArtist.value))
+                    R.menu.detail_parent, unlikelyToBeNull(detailModel.currentArtist.value))
             }
         }
 
@@ -152,9 +152,8 @@ class ArtistDetailFragment :
 
     override fun onOpenMenu(item: Music) {
         when (item) {
-            is Song ->
-                listModel.openMenu(R.menu.item_artist_song, item, detailModel.playInArtistWith)
-            is Album -> listModel.openMenu(R.menu.item_artist_album, item)
+            is Song -> listModel.openMenu(R.menu.artist_song, item, detailModel.playInArtistWith)
+            is Album -> listModel.openMenu(R.menu.artist_album, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
@@ -222,8 +221,16 @@ class ArtistDetailFragment :
                         .navigateSafe(ArtistDetailFragmentDirections.showArtist(show.artist.uid))
                 }
             }
-            is Show.SongArtistDecision,
-            is Show.AlbumArtistDecision,
+            is Show.SongArtistDecision -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController()
+                    .navigateSafe(ArtistDetailFragmentDirections.showArtistChoices(show.song.uid))
+            }
+            is Show.AlbumArtistDecision -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController()
+                    .navigateSafe(ArtistDetailFragmentDirections.showArtistChoices(show.album.uid))
+            }
             is Show.GenreDetails,
             is Show.PlaylistDetails -> {
                 error("Unexpected show command $show")
@@ -239,6 +246,8 @@ class ArtistDetailFragment :
                 is Menu.ForSong -> ArtistDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForAlbum -> ArtistDetailFragmentDirections.openAlbumMenu(menu.parcel)
                 is Menu.ForArtist -> ArtistDetailFragmentDirections.openArtistMenu(menu.parcel)
+                is Menu.ForSelection ->
+                    ArtistDetailFragmentDirections.openSelectionMenu(menu.parcel)
                 is Menu.ForGenre,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")
             }

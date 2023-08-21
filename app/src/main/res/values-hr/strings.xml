@@ -25,7 +25,7 @@
     <string name="lbl_artist">Izvođač</string>
     <string name="lbl_artists">Izvođači</string>
     <string name="lbl_genres">Žanrovi</string>
-    <string name="lbl_sort">Sortiraj</string>
+    <string name="lbl_sort">Razvrstaj</string>
     <string name="lbl_name">Naziv</string>
     <string name="lbl_date">Godina</string>
     <string name="lbl_duration">Trajanje</string>
@@ -178,7 +178,7 @@
     <string name="lbl_filter_all">Sve</string>
     <string name="lbl_queue_add">Dodaj u popis pjesama</string>
     <string name="lng_queue_added">Dodano u popis pjesama</string>
-    <string name="lbl_song_detail">Prikaži svojstva</string>
+    <string name="lbl_song_detail">Pogledaj svojstva</string>
     <string name="lbl_artist_details">Idi na izvođača</string>
     <string name="lbl_album_details">Idi na album</string>
     <string name="set_keep_shuffle_desc">Ostavi miješanje omogućeno kada se druga pjesma reproducira</string>
@@ -212,7 +212,7 @@
     <string name="desc_queue_bar">Otvori popis pjesama</string>
     <string name="lbl_genre">Žanr</string>
     <string name="set_separators_comma">Zarez (,)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">Znak i (&amp;)</string>
     <string name="lbl_compilation_live">Kompilacija uživo</string>
     <string name="lbl_compilation_remix">Kompilacija remiksa</string>
     <string name="lbl_mixes">DJ kompilacije</string>
@@ -247,15 +247,13 @@
     <string name="set_rescan">Ponovo pretraži glazbu</string>
     <string name="set_rescan_desc">Izbriši predmemoriju oznaka i ponovo potpuno učitaj glazbenu biblioteku (sporije, ali potpunije)</string>
     <string name="fmt_selected">Odabrano: %d</string>
-    <string name="lbl_shuffle_selected">Promiješaj odabrane</string>
-    <string name="lbl_play_selected">Reproduciraj odabrane</string>
     <string name="set_play_song_from_genre">Reproduciraj iz žanra</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Resetiraj</string>
     <string name="set_replay_gain">ReplayGain izjednačavanje glasnoće</string>
     <string name="set_dirs_list">Mape</string>
-    <string name="lbl_sort_dsc">Silazni</string>
+    <string name="lbl_sort_dsc">Silazno</string>
     <string name="set_ui_desc">Promijenite temu i boje aplikacije</string>
     <string name="set_personalize_desc">Prilagodite kontrole i ponašanje korisničkog sučelja</string>
     <string name="set_content_desc">Upravljajte učitavanjem glazbe i slika</string>
@@ -292,4 +290,11 @@
     <string name="def_disc">Nema diska</string>
     <string name="set_square_covers">Prisili kvadratične omote albuma</string>
     <string name="set_square_covers_desc">Odreži sve omote albuma na omjer 1:1</string>
+    <string name="lbl_song">Pjesma</string>
+    <string name="lbl_parent_detail">Pogledaj</string>
+    <string name="lbl_sort_mode">Razvrstaj po</string>
+    <string name="set_play_song_by_itself">Reproduciraj pjesmu zasebno</string>
+    <string name="lbl_sort_direction">Smjer</string>
+    <string name="desc_selection_image">Slika odabira</string>
+    <string name="lbl_selection">Odabir</string>
 </resources>

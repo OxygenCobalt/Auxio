@@ -1737,16 +1737,10 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
     final boolean shouldHandleGestureInsets =
         VERSION.SDK_INT >= VERSION_CODES.Q && !isGestureInsetBottomIgnored() && !peekHeightAuto;
 
-    // If were not handling insets at all, don't apply the listener.
-    if (!paddingBottomSystemWindowInsets
-        && !paddingLeftSystemWindowInsets
-        && !paddingRightSystemWindowInsets
-        && !marginLeftSystemWindowInsets
-        && !marginRightSystemWindowInsets
-        && !marginTopSystemWindowInsets
-        && !shouldHandleGestureInsets) {
-      return;
-    }
+    // MODIFICATION: Fix awful assumption that clients handling edge-to-edge by themselves
+    // don't need peek height adjustments (Despite the fact that they still likely padding
+    // the view, just without clipping anything)
+
     ViewUtils.doOnApplyWindowInsets(
         child,
         new ViewUtils.OnApplyWindowInsetsListener() {
@@ -1758,7 +1752,16 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
             Insets mandatoryGestureInsets =
                 insets.getInsets(WindowInsetsCompat.Type.mandatorySystemGestures());
 
-            insetTop = systemBarInsets.top;
+            // MODIFICATION: Fix second order change of edge-to-edge fix where dialogs will not
+            // use the nice-looking inset animation and instead blindly shift themselves downwards.
+            // insetTop = systemBarInsets.top;
+
+            // MODIFICATION: Fix awful assumption that clients handling edge-to-edge by themselves
+            // don't need peek height adjustments (Despite the fact that they still likely padding
+            // the view, just without clipping anything)
+            // Intentionally uses getSystemWindowInsetBottom to apply padding properly when
+            // adjustResize is used as the windowSoftInputMode.
+            insetBottom = insets.getSystemWindowInsetBottom();
 
             boolean isRtl = ViewUtils.isLayoutRtl(view);
 
@@ -1767,9 +1770,6 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
             int rightPadding = view.getPaddingRight();
 
             if (paddingBottomSystemWindowInsets) {
-              // Intentionally uses getSystemWindowInsetBottom to apply padding properly when
-              // adjustResize is used as the windowSoftInputMode.
-              insetBottom = insets.getSystemWindowInsetBottom();
               bottomPadding = initialPadding.bottom + insetBottom;
             }
 
@@ -1810,11 +1810,10 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
               gestureInsetBottom = mandatoryGestureInsets.bottom;
             }
 
-            // Don't update the peek height to be above the navigation bar or gestures if these
-            // flags are off. It means the client is already handling it.
-            if (paddingBottomSystemWindowInsets || shouldHandleGestureInsets) {
-              updatePeekHeight(/* animate= */ false);
-            }
+            // MODIFICATION: Fix awful assumption that clients handling edge-to-edge by themselves
+            // don't need peek height adjustments (Despite the fact that they still likely padding
+            // the view, just without clipping anything)
+            updatePeekHeight(/* animate= */ false);
             return insets;
           }
         });

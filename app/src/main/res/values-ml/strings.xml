@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lbl_play_selected">തിരഞ്ഞെടുത്തു കളിക്കുക</string>
     <string name="lbl_save">രക്ഷിക്കുക</string>
     <string name="set_behavior">പെരുമാറ്റം</string>
     <string name="set_content">ഉള്ളടക്കം</string>

@@ -26,9 +26,11 @@ import android.view.ViewGroup
 import androidx.annotation.StyleRes
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
+import com.google.android.material.bottomsheet.BackportBottomSheetDialog
+import com.google.android.material.bottomsheet.BackportBottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -39,10 +41,10 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
-    BottomSheetDialogFragment() {
+    BackportBottomSheetDialogFragment() {
     private var _binding: VB? = null
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): BottomSheetDialog =
+    override fun onCreateDialog(savedInstanceState: Bundle?): BackportBottomSheetDialog =
         TweakedBottomSheetDialog(requireContext(), theme)
 
     /**
@@ -109,19 +111,29 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
 
     private inner class TweakedBottomSheetDialog
     @JvmOverloads
-    constructor(context: Context, @StyleRes theme: Int = 0) : BottomSheetDialog(context, theme) {
+    constructor(context: Context, @StyleRes theme: Int = 0) :
+        BackportBottomSheetDialog(context, theme) {
+        private var avoidUnusableCollapsedState = false
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            // Collapsed state is bugged in phone landscape mode and shows only 10% of the dialog.
-            // Just disable it and go directly from expanded -> hidden.
-            behavior.skipCollapsed = true
+            // Automatic peek height calculations are bugged in phone landscape mode and show only
+            // 10% of the dialog. Just disable it in that case and go directly from expanded ->
+            // hidden.
+            val metrics = context.resources.displayMetrics
+            avoidUnusableCollapsedState =
+                metrics.heightPixels - metrics.widthPixels <
+                    context.getDimenPixels(
+                        com.google.android.material.R.dimen.design_bottom_sheet_peek_height_min)
+            behavior.skipCollapsed = avoidUnusableCollapsedState
         }
 
         override fun onStart() {
             super.onStart()
-            // Manually trigger an expanded transition to make window insets actually apply to
-            // the dialog on the first layout pass. I don't know why this works.
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            if (avoidUnusableCollapsedState) {
+                // skipCollapsed isn't enough, also need to immediately snap to expanded state.
+                behavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ sealed interface IndexingState {
      * @param error If music loading has failed, the error that occurred will be here. Otherwise, it
      *   will be null.
      */
-    data class Completed(val error: Throwable?) : IndexingState
+    data class Completed(val error: Exception?) : IndexingState
 }
 
 /**

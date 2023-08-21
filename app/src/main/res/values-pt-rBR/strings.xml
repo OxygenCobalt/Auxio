@@ -253,8 +253,6 @@
     <string name="err_did_not_save">Não foi possível salvar a lista</string>
     <string name="set_hide_collaborators">Ocultar artistas colaboradores</string>
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
-    <string name="lbl_play_selected">Tocar selecionada(s)</string>
-    <string name="lbl_shuffle_selected">Aleatorizar selecionadas</string>
     <string name="fmt_selected">%d Selecionadas</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_reset">Redefinir</string>

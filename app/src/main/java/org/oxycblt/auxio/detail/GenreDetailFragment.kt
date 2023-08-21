@@ -98,7 +98,7 @@ class GenreDetailFragment :
             setOnMenuItemClickListener(this@GenreDetailFragment)
             overrideOnOverflowMenuClick {
                 listModel.openMenu(
-                    R.menu.item_detail_parent, unlikelyToBeNull(detailModel.currentGenre.value))
+                    R.menu.detail_parent, unlikelyToBeNull(detailModel.currentGenre.value))
             }
         }
 
@@ -150,8 +150,8 @@ class GenreDetailFragment :
 
     override fun onOpenMenu(item: Music) {
         when (item) {
-            is Artist -> listModel.openMenu(R.menu.item_parent, item)
-            is Song -> listModel.openMenu(R.menu.item_song, item, detailModel.playInGenreWith)
+            is Artist -> listModel.openMenu(R.menu.parent, item)
+            is Song -> listModel.openMenu(R.menu.song, item, detailModel.playInGenreWith)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
@@ -240,6 +240,7 @@ class GenreDetailFragment :
                 is Menu.ForSong -> GenreDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForArtist -> GenreDetailFragmentDirections.openArtistMenu(menu.parcel)
                 is Menu.ForGenre -> GenreDetailFragmentDirections.openGenreMenu(menu.parcel)
+                is Menu.ForSelection -> GenreDetailFragmentDirections.openSelectionMenu(menu.parcel)
                 is Menu.ForAlbum,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")
             }

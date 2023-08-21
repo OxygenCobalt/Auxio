@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -144,7 +145,9 @@ constructor(private val playlistDao: PlaylistDao, private val musicSettings: Mus
     UserLibrary.Factory {
     override suspend fun query() =
         try {
-            playlistDao.readRawPlaylists()
+            val rawPlaylists = playlistDao.readRawPlaylists()
+            logD("Successfully read ${rawPlaylists.size} playlists")
+            rawPlaylists
         } catch (e: Exception) {
             logE("Unable to read playlists: $e")
             listOf()
@@ -154,11 +157,10 @@ constructor(private val playlistDao: PlaylistDao, private val musicSettings: Mus
         rawPlaylists: List<RawPlaylist>,
         deviceLibrary: DeviceLibrary
     ): MutableUserLibrary {
-        logD("Successfully read ${rawPlaylists.size} playlists")
-        // Convert the database playlist information to actual usable playlists.
+        val nameFactory = Name.Known.Factory.from(musicSettings)
         val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
         for (rawPlaylist in rawPlaylists) {
-            val playlistImpl = PlaylistImpl.fromRaw(rawPlaylist, deviceLibrary, musicSettings)
+            val playlistImpl = PlaylistImpl.fromRaw(rawPlaylist, deviceLibrary, nameFactory)
             playlistMap[playlistImpl.uid] = playlistImpl
         }
         return UserLibraryImpl(playlistDao, playlistMap, musicSettings)
@@ -184,7 +186,7 @@ private class UserLibraryImpl(
     override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>): Playlist? {
-        val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
+        val playlistImpl = PlaylistImpl.from(name, songs, Name.Known.Factory.from(musicSettings))
         synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
         val rawPlaylist =
             RawPlaylist(
@@ -207,7 +209,9 @@ private class UserLibraryImpl(
         val playlistImpl =
             synchronized(this) {
                 requireNotNull(playlistMap[playlist.uid]) { "Cannot rename invalid playlist" }
-                    .also { playlistMap[it.uid] = it.edit(name, musicSettings) }
+                    .also {
+                        playlistMap[it.uid] = it.edit(name, Name.Known.Factory.from(musicSettings))
+                    }
             }
 
         return try {

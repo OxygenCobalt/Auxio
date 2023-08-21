@@ -135,8 +135,6 @@
     <string name="lbl_compilation_live">Σύνθεση ζωντανών κομματιών</string>
     <string name="lbl_compilation_remix">Σύνθεση ρεμίξ</string>
     <string name="lbl_equalizer">Ισοσταθμιστής</string>
-    <string name="lbl_play_selected">Αναπαραγωγή επιλεγμένου</string>
-    <string name="lbl_shuffle_selected">Τυχαία αναπαραγωγή επιλεγμένων</string>
     <string name="lbl_single">Ενιαία κυκλοφορία</string>
     <string name="lbl_singles">Σινγκλ</string>
 </resources>

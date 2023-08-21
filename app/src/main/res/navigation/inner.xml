@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/home_fragment"
         android:name="org.oxycblt.auxio.home.HomeFragment"
-        android:label="fragment_home"
+        android:label="home_fragment"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/search"
@@ -58,6 +58,9 @@
             android:id="@+id/open_playlist_menu"
             app:destination="@id/playlist_menu_dialog" />
         <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
             android:id="@+id/new_playlist"
             app:destination="@id/new_playlist_dialog" />
         <action
@@ -78,7 +81,20 @@
         <action
             android:id="@+id/play_from_genre"
             app:destination="@id/play_from_genre_dialog" />
+        <action
+            android:id="@+id/report_error"
+            app:destination="@id/error_details_dialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/error_details_dialog"
+        android:name="org.oxycblt.auxio.home.ErrorDetailsDialog"
+        android:label="error_details_dialog"
+        tools:layout="@layout/dialog_error_details">
+        <argument
+            android:name="error"
+            app:argType="java.lang.Exception" />
+    </dialog>
 
     <dialog
         android:id="@+id/song_sort_dialog"
@@ -89,25 +105,25 @@
     <dialog
         android:id="@+id/album_sort_dialog"
         android:name="org.oxycblt.auxio.home.sort.AlbumSortDialog"
-        android:label="song_sort_dialog"
+        android:label="album_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <dialog
         android:id="@+id/artist_sort_dialog"
         android:name="org.oxycblt.auxio.home.sort.ArtistSortDialog"
-        android:label="song_sort_dialog"
+        android:label="artist_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <dialog
         android:id="@+id/genre_sort_dialog"
         android:name="org.oxycblt.auxio.home.sort.GenreSortDialog"
-        android:label="song_sort_dialog"
+        android:label="genre_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <dialog
         android:id="@+id/playlist_sort_dialog"
         android:name="org.oxycblt.auxio.home.sort.PlaylistSortDialog"
-        android:label="song_sort_dialog"
+        android:label="playlist_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <dialog
@@ -123,7 +139,7 @@
     <fragment
         android:id="@+id/search_fragment"
         android:name="org.oxycblt.auxio.search.SearchFragment"
-        android:label="SearchFragment"
+        android:label="search_fragment"
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/show_song"
@@ -153,6 +169,9 @@
             android:id="@+id/open_genre_menu"
             app:destination="@id/genre_menu_dialog" />
         <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
             android:id="@+id/open_playlist_menu"
             app:destination="@id/playlist_menu_dialog" />
         <action
@@ -178,7 +197,7 @@
     <fragment
         android:id="@+id/album_detail_fragment"
         android:name="org.oxycblt.auxio.detail.AlbumDetailFragment"
-        android:label="AlbumDetailFragment"
+        android:label="album_detail_fragment"
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="albumUid"
@@ -205,6 +224,9 @@
             android:id="@+id/open_album_menu"
             app:destination="@id/album_menu_dialog" />
         <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
             android:id="@+id/add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
         <action
@@ -218,13 +240,13 @@
     <dialog
         android:id="@+id/album_song_sort_dialog"
         android:name="org.oxycblt.auxio.detail.sort.AlbumSongSortDialog"
-        android:label="AlbumSongSortDialog"
+        android:label="album_song_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <fragment
         android:id="@+id/artist_detail_fragment"
         android:name="org.oxycblt.auxio.detail.ArtistDetailFragment"
-        android:label="ArtistDetailFragment"
+        android:label="artist_detail_fragment"
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="artistUid"
@@ -242,6 +264,9 @@
             android:id="@+id/show_artist"
             app:destination="@id/artist_detail_fragment" />
         <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
         <action
@@ -250,6 +275,9 @@
         <action
             android:id="@+id/open_artist_menu"
             app:destination="@id/artist_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
         <action
             android:id="@+id/add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
@@ -261,13 +289,13 @@
     <dialog
         android:id="@+id/artist_song_sort_dialog"
         android:name="org.oxycblt.auxio.detail.sort.ArtistSongSortDialog"
-        android:label="ArtistSongSortDialog"
+        android:label="artist_song_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <fragment
         android:id="@+id/genre_detail_fragment"
         android:name="org.oxycblt.auxio.detail.GenreDetailFragment"
-        android:label="GenreDetailFragment"
+        android:label="genre_detail_fragment"
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="genreUid"
@@ -297,6 +325,9 @@
             android:id="@+id/open_genre_menu"
             app:destination="@id/genre_menu_dialog" />
         <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
             android:id="@+id/add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
         <action
@@ -307,13 +338,13 @@
     <dialog
         android:id="@+id/genre_song_sort_dialog"
         android:name="org.oxycblt.auxio.detail.sort.GenreSongSortDialog"
-        android:label="GenreSongSortDialog"
+        android:label="genre_song_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <fragment
         android:id="@+id/playlist_detail_fragment"
         android:name="org.oxycblt.auxio.detail.PlaylistDetailFragment"
-        android:label="PlaylistDetailFragment"
+        android:label="playlist_detail_fragment"
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="playlistUid"
@@ -340,6 +371,9 @@
             android:id="@+id/open_playlist_menu"
             app:destination="@id/playlist_menu_dialog" />
         <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
             android:id="@+id/rename_playlist"
             app:destination="@id/rename_playlist_dialog" />
         <action
@@ -356,7 +390,7 @@
     <dialog
         android:id="@+id/playlist_song_sort_dialog"
         android:name="org.oxycblt.auxio.detail.sort.PlaylistSongSortDialog"
-        android:label="PlaylistSongSortDialog"
+        android:label="playlist_song_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <dialog
@@ -480,5 +514,15 @@
         <argument
             android:name="parcel"
             app:argType="org.oxycblt.auxio.list.menu.Menu$ForPlaylist$Parcel" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/selection_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.SelectionMenuDialogFragment"
+        android:label="selection_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForSelection$Parcel" />
     </dialog>
 </navigation>

@@ -100,8 +100,6 @@
     <string name="fmt_deletion_info">%s हटाएँ\? इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="fmt_lib_song_count">लोड किए गए गाने: %d</string>
     <string name="lbl_sort_dsc">अवरोही</string>
-    <string name="lbl_play_selected">चयनित चलाएँ</string>
-    <string name="lbl_shuffle_selected">फेरबदल का चयन किया गया</string>
     <string name="lbl_state_wiped">स्थिति साफ की गई</string>
     <string name="lbl_state_saved">स्थिति सहेजी गई</string>
     <string name="set_lib_tabs_desc">लायब्रेरी टैब की दृश्यता और क्रम बदलें</string>
@@ -299,4 +297,6 @@
     <string name="set_intelligent_sorting">बुद्धिमान छंटाई</string>
     <string name="set_intelligent_sorting_desc">संख्याओं या \"the\" जैसे शब्दों से शुरू होने वाले नामों को सही ढंग से क्रमबद्ध करें (अंग्रेजी भाषा के संगीत के साथ सबसे अच्छा काम करता है)</string>
     <string name="set_play_song_by_itself">इसी गीत को चलाएं</string>
+    <string name="lbl_sort_direction">दिशा</string>
+    <string name="lbl_sort_mode">के अनुसार क्रमबद्ध करें</string>
 </resources>

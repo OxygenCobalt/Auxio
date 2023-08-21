@@ -51,7 +51,7 @@ constructor(
         // Apply the new configuration possibly set in flipTo. This should occur even if
         // a flip was canceled by a hide.
         pendingConfig?.run {
-            this@FlipFloatingActionButton.logD("Applying pending configuration")
+            logD("Applying pending configuration")
             setImageResource(iconRes)
             contentDescription = context.getString(contentDescriptionRes)
             setOnClickListener(clickListener)

@@ -116,7 +116,7 @@ class ArtistListFragment :
     }
 
     override fun onOpenMenu(item: Artist) {
-        listModel.openMenu(R.menu.item_parent, item)
+        listModel.openMenu(R.menu.parent, item)
     }
 
     private fun updateArtists(artists: List<Artist>) {

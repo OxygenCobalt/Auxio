@@ -20,9 +20,8 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
@@ -51,6 +50,7 @@ import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -68,8 +68,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class PlaylistDetailFragment :
     ListFragment<Song, FragmentDetailBinding>(),
     DetailHeaderAdapter.Listener,
-    PlaylistDetailListAdapter.Listener,
-    NavController.OnDestinationChangedListener {
+    PlaylistDetailListAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
     override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
@@ -80,7 +79,7 @@ class PlaylistDetailFragment :
     private val playlistHeaderAdapter = PlaylistDetailHeaderAdapter(this)
     private val playlistListAdapter = PlaylistDetailListAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
-    private var initialNavDestinationChange = false
+    private var editNavigationListener: DialogAwareNavigationListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,14 +97,15 @@ class PlaylistDetailFragment :
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
+        editNavigationListener = DialogAwareNavigationListener(detailModel::dropPlaylistEdit)
+
         // --- UI SETUP ---
         binding.detailNormalToolbar.apply {
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
             overrideOnOverflowMenuClick {
                 listModel.openMenu(
-                    R.menu.item_detail_playlist,
-                    unlikelyToBeNull(detailModel.currentPlaylist.value))
+                    R.menu.detail_playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
             }
         }
 
@@ -148,17 +148,31 @@ class PlaylistDetailFragment :
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (super.onMenuItemClick(item)) {
+            return true
+        }
+
+        if (item.itemId == R.id.action_save) {
+            detailModel.savePlaylistEdit()
+            return true
+        }
+
+        return false
+    }
+
     override fun onStart() {
         super.onStart()
         // Once we add the destination change callback, we will receive another initialization call,
         // so handle that by resetting the flag.
-        initialNavDestinationChange = false
-        findNavController().addOnDestinationChangedListener(this)
+        requireNotNull(editNavigationListener) { "NavigationListener was not available" }
+            .attach(findNavController())
     }
 
     override fun onStop() {
         super.onStop()
-        findNavController().removeOnDestinationChangedListener(this)
+        requireNotNull(editNavigationListener) { "NavigationListener was not available" }
+            .release(findNavController())
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -169,26 +183,7 @@ class PlaylistDetailFragment :
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.playlistSongInstructions.consume()
-    }
-
-    override fun onDestinationChanged(
-        controller: NavController,
-        destination: NavDestination,
-        arguments: Bundle?
-    ) {
-        // Drop the initial call by NavController that simply provides us with the current
-        // destination. This would cause the selection state to be lost every time the device
-        // rotates.
-        if (!initialNavDestinationChange) {
-            initialNavDestinationChange = true
-            return
-        }
-        if (destination.id != R.id.playlist_detail_fragment &&
-            destination.id != R.id.playlist_song_sort_dialog) {
-            // Drop any pending playlist edits when navigating away. This could actually happen
-            // if the user is quick enough.
-            detailModel.dropPlaylistEdit()
-        }
+        editNavigationListener = null
     }
 
     override fun onRealClick(item: Song) {
@@ -200,7 +195,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenMenu(item: Song) {
-        listModel.openMenu(R.menu.item_playlist_song, item, detailModel.playInPlaylistWith)
+        listModel.openMenu(R.menu.playlist_song, item, detailModel.playInPlaylistWith)
     }
 
     override fun onPlay() {
@@ -302,6 +297,8 @@ class PlaylistDetailFragment :
                 is Menu.ForSong -> PlaylistDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForPlaylist ->
                     PlaylistDetailFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForSelection ->
+                    PlaylistDetailFragmentDirections.openSelectionMenu(menu.parcel)
                 is Menu.ForArtist,
                 is Menu.ForAlbum,
                 is Menu.ForGenre -> error("Unexpected menu $menu")

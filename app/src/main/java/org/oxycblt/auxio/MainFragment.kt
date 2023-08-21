@@ -27,8 +27,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.R as MR
@@ -40,6 +38,7 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.Outer
 import org.oxycblt.auxio.list.ListViewModel
@@ -49,7 +48,9 @@ import org.oxycblt.auxio.playback.OpenPanel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
+import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
@@ -67,9 +68,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class MainFragment :
-    ViewBindingFragment<FragmentMainBinding>(),
-    ViewTreeObserver.OnPreDrawListener,
-    NavController.OnDestinationChangedListener {
+    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
@@ -77,9 +76,9 @@ class MainFragment :
     private var sheetBackCallback: SheetBackPressedCallback? = null
     private var detailBackCallback: DetailBackPressedCallback? = null
     private var selectionBackCallback: SelectionBackPressedCallback? = null
+    private var selectionNavigationListener: DialogAwareNavigationListener? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
-    private var initialNavDestinationChange = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +109,8 @@ class MainFragment :
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
             SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
+
+        selectionNavigationListener = DialogAwareNavigationListener(listModel::dropSelection)
 
         // --- UI SETUP ---
         val context = requireActivity()
@@ -150,6 +151,11 @@ class MainFragment :
         }
 
         // --- VIEWMODEL SETUP ---
+        // This has to be done here instead of the playback panel to make sure that it's prioritized
+        // by StateFlow over any detail fragment.
+        // FIXME: This is a consequence of sharing events across several consumers. There has to be
+        //  a better way of doing this.
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
         collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
         collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
@@ -162,8 +168,8 @@ class MainFragment :
         val binding = requireBinding()
         // Once we add the destination change callback, we will receive another initialization call,
         // so handle that by resetting the flag.
-        initialNavDestinationChange = false
-        binding.exploreNavHost.findNavController().addOnDestinationChangedListener(this)
+        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+            .attach(binding.exploreNavHost.findNavController())
         // Listener could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
         binding.playbackSheet.viewTreeObserver.addOnPreDrawListener(this@MainFragment)
@@ -184,7 +190,8 @@ class MainFragment :
     override fun onStop() {
         super.onStop()
         val binding = requireBinding()
-        binding.exploreNavHost.findNavController().removeOnDestinationChangedListener(this)
+        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+            .release(binding.exploreNavHost.findNavController())
         binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
     }
 
@@ -193,6 +200,7 @@ class MainFragment :
         sheetBackCallback = null
         detailBackCallback = null
         selectionBackCallback = null
+        selectionNavigationListener = null
     }
 
     override fun onPreDraw(): Boolean {
@@ -286,19 +294,18 @@ class MainFragment :
         return true
     }
 
-    override fun onDestinationChanged(
-        controller: NavController,
-        destination: NavDestination,
-        arguments: Bundle?
-    ) {
-        // Drop the initial call by NavController that simply provides us with the current
-        // destination. This would cause the selection state to be lost every time the device
-        // rotates.
-        if (!initialNavDestinationChange) {
-            initialNavDestinationChange = true
-            return
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongAlbumDetails,
+            is Show.ArtistDetails,
+            is Show.AlbumDetails -> playbackModel.openMain()
+            is Show.SongDetails,
+            is Show.SongArtistDecision,
+            is Show.AlbumArtistDecision,
+            is Show.GenreDetails,
+            is Show.PlaylistDetails,
+            null -> {}
         }
-        listModel.dropSelection()
     }
 
     private fun handleShowOuter(outer: Outer?) {

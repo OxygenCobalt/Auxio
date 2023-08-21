@@ -39,6 +39,7 @@ class TextTagsTest {
         assertEquals(listOf("2022"), textTags.vorbis["date"])
         assertEquals(listOf("ep"), textTags.vorbis["releasetype"])
         assertEquals(listOf("+2 dB"), textTags.vorbis["replaygain_track_gain"])
+        assertEquals(null, textTags.id3v2["APIC"])
     }
 
     @Test
@@ -51,6 +52,7 @@ class TextTagsTest {
         assertEquals(listOf("2022"), textTags.id3v2["TDRC"])
         assertEquals(listOf("ep"), textTags.id3v2["TXXX:musicbrainz album type"])
         assertEquals(listOf("+2 dB"), textTags.id3v2["TXXX:replaygain_track_gain"])
+        assertEquals(null, textTags.id3v2["metadata_block_picture"])
     }
 
     @Test
@@ -62,10 +64,13 @@ class TextTagsTest {
         assertEquals(listOf("2022"), textTags.vorbis["date"])
         assertEquals(listOf("ep"), textTags.vorbis["releasetype"])
         assertEquals(listOf("+2 dB"), textTags.vorbis["replaygain_track_gain"])
+        assertEquals(null, textTags.id3v2["metadata_block_picture"])
+
         assertEquals(listOf("Wheel"), textTags.id3v2["TIT2"])
         assertEquals(listOf("Paraglow"), textTags.id3v2["TALB"])
         assertEquals(listOf("Parannoul", "Asian Glow"), textTags.id3v2["TPE1"])
         assertEquals(listOf("2022"), textTags.id3v2["TDRC"])
+        assertEquals(null, textTags.id3v2["APIC"])
         assertEquals(listOf("ep"), textTags.id3v2["TXXX:musicbrainz album type"])
         assertEquals(listOf("+2 dB"), textTags.id3v2["TXXX:replaygain_track_gain"])
     }

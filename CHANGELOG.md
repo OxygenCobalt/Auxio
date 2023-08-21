@@ -2,10 +2,17 @@
 
 ## dev
 
+#### What's Fixed
+- Fixed app restart being required when changing intelligent sorting
+or music separator settings
+
+## 3.2.0
+
 #### What's New
 - Item and sort menus have been refreshed with a cleaner look
 - Added ability to sort playlists
 - Added option to play song by itself in library/item details
+- Added error details when music loading fails
 
 #### What's Improved
 - Made "Add to Playlist" action more prominent in selection toolbar
@@ -14,9 +21,6 @@ aspect ratio setting
 
 #### What's Fixed
 - Playlist detail view now respects playback settings
-
-#### Dev/Meta
-- Unified navigation graph
 
 ## 3.1.4
 

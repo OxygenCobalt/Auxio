@@ -255,8 +255,6 @@
     <string name="set_state">Stan odtwarzania</string>
     <string name="set_images">Obrazy</string>
     <string name="set_audio_desc">Zarządzaj dźwiękiem i odtwarzaniem muzyki</string>
-    <string name="lbl_play_selected">Odtwórz wybrane</string>
-    <string name="lbl_shuffle_selected">Wybrane losowo</string>
     <string name="fmt_selected">Wybrano %d</string>
     <string name="set_replay_gain">Wyrównanie głośności (ReplayGain)</string>
     <string name="lbl_reset">Resetuj</string>
@@ -305,4 +303,6 @@
     <string name="lbl_song">Piosenka</string>
     <string name="set_play_song_by_itself">Odtwarzanie utworu samodzielnie</string>
     <string name="lbl_parent_detail">Widok</string>
+    <string name="lbl_sort_mode">Sortuj według</string>
+    <string name="lbl_sort_direction">Kierunek</string>
 </resources>

@@ -34,6 +34,7 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
@@ -78,10 +79,10 @@ class SongMenuDialogFragment : MenuDialogFragment<Menu.ForSong>() {
                 playbackModel.addToQueue(menu.song)
                 requireContext().showToast(R.string.lng_queue_added)
             }
+            R.id.action_playlist_add -> musicModel.addToPlaylist(menu.song)
             R.id.action_artist_details -> detailModel.showArtist(menu.song)
             R.id.action_album_details -> detailModel.showAlbum(menu.song.album)
             R.id.action_share -> requireContext().share(menu.song)
-            R.id.action_playlist_add -> musicModel.addToPlaylist(menu.song)
             R.id.action_detail -> detailModel.showSong(menu.song)
             else -> error("Unexpected menu item selected $item")
         }
@@ -318,6 +319,54 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
             R.id.action_delete -> musicModel.deletePlaylist(menu.playlist)
             R.id.action_share -> requireContext().share(menu.playlist)
             else -> error("Unexpected menu item $item")
+        }
+    }
+}
+
+/**
+ * [MenuDialogFragment] implementation for a [Song] selection.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+@AndroidEntryPoint
+class SelectionMenuDialogFragment : MenuDialogFragment<Menu.ForSelection>() {
+    override val menuModel: MenuViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val args: SelectionMenuDialogFragmentArgs by navArgs()
+
+    override val parcel
+        get() = args.parcel
+
+    // Nothing to disable in song menus.
+    override fun getDisabledItemIds(menu: Menu.ForSelection) = setOf<Int>()
+
+    override fun updateMenu(binding: DialogMenuBinding, menu: Menu.ForSelection) {
+        binding.menuCover.bind(
+            menu.songs, getString(R.string.desc_selection_image), R.drawable.ic_song_24)
+        binding.menuType.text = getString(R.string.lbl_selection)
+        binding.menuName.text =
+            requireContext().getPlural(R.plurals.fmt_song_count, menu.songs.size)
+        binding.menuInfo.text = menu.songs.sumOf { it.durationMs }.formatDurationMs(true)
+    }
+
+    override fun onClick(item: MenuItem, menu: Menu.ForSelection) {
+        listModel.dropSelection()
+        when (item.itemId) {
+            R.id.action_play -> playbackModel.play(menu.songs)
+            R.id.action_shuffle -> playbackModel.shuffle(menu.songs)
+            R.id.action_play_next -> {
+                playbackModel.playNext(menu.songs)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(menu.songs)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_playlist_add -> musicModel.addToPlaylist(menu.songs)
+            R.id.action_share -> requireContext().share(menu.songs)
+            else -> error("Unexpected menu item selected $item")
         }
     }
 }

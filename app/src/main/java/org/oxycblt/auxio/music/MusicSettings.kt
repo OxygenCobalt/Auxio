@@ -43,7 +43,7 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     /** Whether to be actively watching for changes in the music library. */
     val shouldBeObserving: Boolean
     /** A [String] of characters representing the desired characters to denote multi-value tags. */
-    var multiValueSeparators: String
+    var separators: String
     /** Whether to enable more advanced sorting by articles and numbers. */
     val intelligentSorting: Boolean
 
@@ -85,7 +85,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
     override val shouldBeObserving: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_observing), false)
 
-    override var multiValueSeparators: String
+    override var separators: String
         // Differ from convention and store a string of separator characters instead of an int
         // code. This makes it easier to use and more extendable.
         get() = sharedPreferences.getString(getString(R.string.set_key_separators), "") ?: ""

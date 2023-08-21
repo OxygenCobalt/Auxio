@@ -38,7 +38,6 @@ import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -48,7 +47,6 @@ import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
@@ -107,7 +105,7 @@ class PlaybackPanelFragment :
                 playbackModel.song.value?.let {
                     // No playback options are actually available in the menu, so use a junk
                     // PlaySong option.
-                    listModel.openMenu(R.menu.item_playback_song, it, PlaySong.ByItself)
+                    listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
                 }
             }
         }
@@ -119,6 +117,20 @@ class PlaybackPanelFragment :
             registerOnPageChangeCallback(OnCoverChangedCallback(queueModel))
             val recycler = VP_RECYCLER_FIELD.get(this@apply) as RecyclerView
             recycler.isNestedScrollingEnabled = false
+        }
+        // Set up marquee on song information, alongside click handlers that navigate to each
+        // respective item.
+        binding.playbackSong.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentSong() }
+        }
+        binding.playbackArtist.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentArtist() }
+        }
+        binding.playbackAlbum.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentAlbum() }
         }
 
         binding.playbackSeekBar.listener = this
@@ -140,7 +152,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
         collectImmediately(queueModel.queue, ::updateQueue)
         collectImmediately(queueModel.index, ::updateQueuePosition)
-        collect(detailModel.toShow.flow, ::handleShow)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
@@ -226,25 +237,8 @@ class PlaybackPanelFragment :
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
 
-    private fun handleShow(show: Show?) {
-        when (show) {
-            is Show.SongAlbumDetails,
-            is Show.ArtistDetails,
-            is Show.AlbumDetails -> playbackModel.openMain()
-            is Show.SongDetails,
-            is Show.SongArtistDecision,
-            is Show.AlbumArtistDecision,
-            is Show.GenreDetails,
-            is Show.PlaylistDetails,
-            null -> {}
-        }
-    }
-
     override fun navigateToCurrentSong() {
-        playbackModel.song.value?.let {
-            detailModel.showAlbum(it)
-            playbackModel.openMain()
-        }
+        playbackModel.song.value?.let(detailModel::showAlbum)
     }
 
     override fun navigateToCurrentArtist() {

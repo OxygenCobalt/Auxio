@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.music.user
 
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
@@ -51,10 +50,10 @@ private constructor(
      * Clone the data in this instance to a new [PlaylistImpl] with the given [name].
      *
      * @param name The new name to use.
-     * @param musicSettings [MusicSettings] required for name configuration.
+     * @param nameFactory The [Name.Known.Factory] to interpret name information with.
      */
-    fun edit(name: String, musicSettings: MusicSettings) =
-        PlaylistImpl(uid, Name.Known.from(name, null, musicSettings), songs)
+    fun edit(name: String, nameFactory: Name.Known.Factory) =
+        PlaylistImpl(uid, nameFactory.parse(name, null), songs)
 
     /**
      * Clone the data in this instance to a new [PlaylistImpl] with the given [Song]s.
@@ -76,29 +75,26 @@ private constructor(
          *
          * @param name The name of the playlist.
          * @param songs The songs to initially populate the playlist with.
-         * @param musicSettings [MusicSettings] required for name configuration.
+         * @param nameFactory The [Name.Known.Factory] to interpret name information with.
          */
-        fun from(name: String, songs: List<Song>, musicSettings: MusicSettings) =
-            PlaylistImpl(
-                Music.UID.auxio(MusicType.PLAYLISTS),
-                Name.Known.from(name, null, musicSettings),
-                songs)
+        fun from(name: String, songs: List<Song>, nameFactory: Name.Known.Factory) =
+            PlaylistImpl(Music.UID.auxio(MusicType.PLAYLISTS), nameFactory.parse(name, null), songs)
 
         /**
          * Populate a new instance from a read [RawPlaylist].
          *
          * @param rawPlaylist The [RawPlaylist] to read from.
          * @param deviceLibrary The [DeviceLibrary] to initialize from.
-         * @param musicSettings [MusicSettings] required for name configuration.
+         * @param nameFactory The [Name.Known.Factory] to interpret name information with.
          */
         fun fromRaw(
             rawPlaylist: RawPlaylist,
             deviceLibrary: DeviceLibrary,
-            musicSettings: MusicSettings
+            nameFactory: Name.Known.Factory
         ) =
             PlaylistImpl(
                 rawPlaylist.playlistInfo.playlistUid,
-                Name.Known.from(rawPlaylist.playlistInfo.name, null, musicSettings),
+                nameFactory.parse(rawPlaylist.playlistInfo.name, null),
                 rawPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.songUid) })
     }
 }

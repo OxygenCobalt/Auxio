@@ -251,8 +251,6 @@
     <string name="err_did_not_save">Zustand konnte nicht gespeichert werden</string>
     <string name="set_rescan">Music neu scannen</string>
     <string name="set_rescan_desc">Tag-Cache leeren und die Musik-Bibliothek vollständig neu laden (langsamer, aber vollständiger)</string>
-    <string name="lbl_play_selected">Ausgewählte abspielen</string>
-    <string name="lbl_shuffle_selected">Ausgewählte zufällig abspielen</string>
     <string name="fmt_selected">%d ausgewählt</string>
     <string name="set_play_song_from_genre">Vom Genre abspielen</string>
     <string name="lbl_wiki">Wiki</string>
@@ -299,4 +297,7 @@
     <string name="set_square_covers_desc">Alle Album-Cover auf ein Seitenverhältnis von 1:1 zuschneiden</string>
     <string name="lbl_song">Lied</string>
     <string name="lbl_parent_detail">Ansehen</string>
+    <string name="set_play_song_by_itself">Lied selbst spielen</string>
+    <string name="lbl_sort_direction">Richtung</string>
+    <string name="lbl_sort_mode">Sortieren nach</string>
 </resources>

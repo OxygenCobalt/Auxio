@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -48,6 +48,9 @@ abstract class SelectionFragment<VB : ViewBinding> :
             // Add cancel and menu item listeners to manage what occurs with the selection.
             setNavigationOnClickListener { listModel.dropSelection() }
             setOnMenuItemClickListener(this@SelectionFragment)
+            overrideOnOverflowMenuClick {
+                listModel.openMenu(R.menu.selection, listModel.peekSelection())
+            }
         }
     }
 
@@ -65,23 +68,6 @@ abstract class SelectionFragment<VB : ViewBinding> :
             }
             R.id.action_selection_playlist_add -> {
                 musicModel.addToPlaylist(listModel.takeSelection())
-                true
-            }
-            R.id.action_selection_queue_add -> {
-                playbackModel.addToQueue(listModel.takeSelection())
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_selection_play -> {
-                playbackModel.play(listModel.takeSelection())
-                true
-            }
-            R.id.action_selection_shuffle -> {
-                playbackModel.shuffle(listModel.takeSelection())
-                true
-            }
-            R.id.action_selection_share -> {
-                requireContext().share(listModel.takeSelection())
                 true
             }
             else -> false

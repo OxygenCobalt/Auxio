@@ -18,7 +18,10 @@
  
 package org.oxycblt.auxio.util
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -28,10 +31,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.net.toUri
 import androidx.core.view.children
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
@@ -40,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.MaterialToolbar
 import java.lang.IllegalArgumentException
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 
@@ -111,7 +117,7 @@ val ViewBinding.context: Context
  * Override the behavior of a [MaterialToolbar]'s overflow menu to do something else. This is
  * extremely dumb, but required to hook overflow menus to bottom sheet menus.
  */
-fun MaterialToolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
+fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
     for (toolbarChild in children) {
         if (toolbarChild is ActionMenuView) {
             for (menuChild in toolbarChild.children) {
@@ -320,4 +326,66 @@ fun Context.share(songs: Collection<Song>) {
     }
 
     builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
+}
+
+/**
+ * Open the given URI in a web browser.
+ *
+ * @param uri The URL to open.
+ */
+fun Context.openInBrowser(uri: String) {
+    fun openAppChooser(intent: Intent) {
+        logD("Opening app chooser for ${intent.action}")
+        val chooserIntent =
+            Intent(Intent.ACTION_CHOOSER)
+                .putExtra(Intent.EXTRA_INTENT, intent)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(chooserIntent)
+    }
+
+    logD("Opening $uri")
+    val browserIntent =
+        Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        // Android 11 seems to now handle the app chooser situations on its own now
+        // [along with adding a new permission that breaks the old manual code], so
+        // we just do a typical activity launch.
+        logD("Using API 30+ chooser")
+        try {
+            startActivity(browserIntent)
+        } catch (e: ActivityNotFoundException) {
+            // No app installed to open the link
+            showToast(R.string.err_no_app)
+        }
+    } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        // On older versions of android, opening links from an ACTION_VIEW intent might
+        // not work in all cases, especially when no default app was set. If that is the
+        // case, we will try to manually handle these cases before we try to launch the
+        // browser.
+        logD("Resolving browser activity for chooser")
+        val pkgName =
+            packageManager.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)?.run {
+                activityInfo.packageName
+            }
+
+        if (pkgName != null) {
+            if (pkgName == "android") {
+                // No default browser [Must open app chooser, may not be supported]
+                logD("No default browser found")
+                openAppChooser(browserIntent)
+            } else logD("Opening browser intent")
+            try {
+                browserIntent.setPackage(pkgName)
+                startActivity(browserIntent)
+            } catch (e: ActivityNotFoundException) {
+                // Not a browser but an app chooser
+                browserIntent.setPackage(null)
+                openAppChooser(browserIntent)
+            }
+        } else {
+            // No app installed to open the link
+            showToast(R.string.err_no_app)
+        }
+    }
 }

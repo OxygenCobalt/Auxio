@@ -99,4 +99,11 @@ sealed interface Menu {
 
         @Parcelize data class Parcel(val res: Int, val playlistUid: Music.UID) : Menu.Parcel
     }
+
+    class ForSelection(@MenuRes override val res: Int, val songs: List<Song>) : Menu {
+        override val parcel: Parcel
+            get() = Parcel(res, songs.map { it.uid })
+
+        @Parcelize data class Parcel(val res: Int, val songUids: List<Music.UID>) : Menu.Parcel
+    }
 }

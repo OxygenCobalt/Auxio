@@ -18,13 +18,8 @@
  
 package org.oxycblt.auxio.settings
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.net.toUri
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -37,8 +32,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.openInBrowser
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -69,10 +63,10 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         }
 
         binding.aboutVersion.text = BuildConfig.VERSION_NAME
-        binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_SOURCE) }
-        binding.aboutWiki.setOnClickListener { openLinkInBrowser(LINK_WIKI) }
-        binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
-        binding.aboutAuthor.setOnClickListener { openLinkInBrowser(LINK_AUTHOR) }
+        binding.aboutCode.setOnClickListener { requireContext().openInBrowser(LINK_SOURCE) }
+        binding.aboutWiki.setOnClickListener { requireContext().openInBrowser(LINK_WIKI) }
+        binding.aboutLicenses.setOnClickListener { requireContext().openInBrowser(LINK_LICENSES) }
+        binding.aboutAuthor.setOnClickListener { requireContext().openInBrowser(LINK_AUTHOR) }
 
         // VIEWMODEL SETUP
         collectImmediately(musicModel.statistics, ::updateStatistics)
@@ -91,74 +85,6 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             getString(
                 R.string.fmt_lib_total_duration,
                 (statistics?.durationMs ?: 0).formatDurationMs(false))
-    }
-
-    /**
-     * Open the given URI in a web browser.
-     *
-     * @param uri The URL to open.
-     */
-    private fun openLinkInBrowser(uri: String) {
-        logD("Opening $uri")
-        val context = requireContext()
-        val browserIntent =
-            Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Android 11 seems to now handle the app chooser situations on its own now
-            // [along with adding a new permission that breaks the old manual code], so
-            // we just do a typical activity launch.
-            logD("Using API 30+ chooser")
-            try {
-                context.startActivity(browserIntent)
-            } catch (e: ActivityNotFoundException) {
-                // No app installed to open the link
-                context.showToast(R.string.err_no_app)
-            }
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            // On older versions of android, opening links from an ACTION_VIEW intent might
-            // not work in all cases, especially when no default app was set. If that is the
-            // case, we will try to manually handle these cases before we try to launch the
-            // browser.
-            logD("Resolving browser activity for chooser")
-            val pkgName =
-                context.packageManager
-                    .resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
-                    ?.run { activityInfo.packageName }
-
-            if (pkgName != null) {
-                if (pkgName == "android") {
-                    // No default browser [Must open app chooser, may not be supported]
-                    logD("No default browser found")
-                    openAppChooser(browserIntent)
-                } else logD("Opening browser intent")
-                try {
-                    browserIntent.setPackage(pkgName)
-                    startActivity(browserIntent)
-                } catch (e: ActivityNotFoundException) {
-                    // Not a browser but an app chooser
-                    browserIntent.setPackage(null)
-                    openAppChooser(browserIntent)
-                }
-            } else {
-                // No app installed to open the link
-                context.showToast(R.string.err_no_app)
-            }
-        }
-    }
-
-    /**
-     * Open an app chooser for a given [Intent].
-     *
-     * @param intent The [Intent] to show an app chooser for.
-     */
-    private fun openAppChooser(intent: Intent) {
-        logD("Opening app chooser for ${intent.action}")
-        val chooserIntent =
-            Intent(Intent.ACTION_CHOOSER)
-                .putExtra(Intent.EXTRA_INTENT, intent)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(chooserIntent)
     }
 
     private companion object {

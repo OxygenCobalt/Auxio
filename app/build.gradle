@@ -21,8 +21,8 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "3.1.4"
-        versionCode 34
+        versionName "3.2.0"
+        versionCode 35
 
         minSdk 24
         targetSdk 34
@@ -88,7 +88,7 @@ dependencies {
     implementation "androidx.core:core-ktx:1.10.1"
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.activity:activity-ktx:1.7.2"
-    implementation "androidx.fragment:fragment-ktx:1.6.0"
+    implementation "androidx.fragment:fragment-ktx:1.6.1"
 
     // Components
     // Deliberately kept on 1.2.1 to prevent a bug where the queue sheet will not collapse on
@@ -114,13 +114,11 @@ dependencies {
     implementation "androidx.media:media:1.6.0"
 
     // Preferences
-    implementation "androidx.preference:preference-ktx:1.2.0"
+    implementation "androidx.preference:preference-ktx:1.2.1"
 
     // Database
-    def room_version = '2.6.0-alpha02'
+    def room_version = '2.6.0-alpha03'
     implementation "androidx.room:room-runtime:$room_version"
-    // I have no clue why, but using KSP breaks the playlist database definition.
-    //noinspection KaptUsageInsteadOfKsp
     ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
@@ -136,7 +134,7 @@ dependencies {
     // Material
     // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
     //  PR a fix.
-    implementation "com.google.android.material:material:1.10.0-alpha05"
+    implementation "com.google.android.material:material:1.10.0-alpha06"
 
     // Dependency Injection
     implementation "com.google.dagger:dagger:$hilt_version"
@@ -144,9 +142,15 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
+    // Logging
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     testImplementation "junit:junit:4.13.2"
+    testImplementation "io.mockk:mockk:1.13.7"
+    testImplementation "org.robolectric:robolectric:4.9"
+    testImplementation 'androidx.test:core-ktx:1.5.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

@@ -209,7 +209,6 @@
     <string name="set_hide_collaborators_desc">Toon alleen artiesten die rechtstreeks op een album worden genoemd (werkt het beste op goed getagde bibliotheken)</string>
     <string name="set_intelligent_sorting_desc">Sorteer namen die beginnen met cijfers of woorden zoals \"de\" correct (werkt het beste met Engelstalige muziek)</string>
     <string name="desc_exit">Stop met afspelen</string>
-    <string name="lbl_play_selected">Geselecteerd afspelen</string>
     <string name="lng_indexing">Uw muziekbibliotheek wordt geladen…</string>
     <string name="set_behavior">Gedrag</string>
     <string name="lbl_compilation_remix">Remix compilatie</string>
@@ -279,7 +278,6 @@
         <item quantity="one">%d artiest</item>
         <item quantity="other">%d artiesten</item>
     </plurals>
-    <string name="lbl_shuffle_selected">Shuffle geselecteerd</string>
     <string name="set_intelligent_sorting">Intelligent sorteren</string>
     <string name="lbl_appears_on">Verschijnt op</string>
     <string name="lbl_playlists">Afspeellijsten</string>

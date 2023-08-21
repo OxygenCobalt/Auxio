@@ -43,7 +43,6 @@
     <string name="lbl_playback">Nu spelar</string>
     <string name="lbl_equalizer">Utjämnare</string>
     <string name="lbl_play">Spela</string>
-    <string name="lbl_play_selected">Spela utvalda</string>
     <string name="lbl_shuffle">Blanda</string>
     <string name="lbl_queue">Kö</string>
     <string name="lbl_play_next">Spela nästa</string>
@@ -99,7 +98,6 @@
     <string name="lbl_filter_all">Alla</string>
     <string name="lbl_disc">Disk</string>
     <string name="lbl_sort">Sortera</string>
-    <string name="lbl_shuffle_selected">Blanda utvalda</string>
     <string name="lbl_queue_add">Lägg till kö</string>
     <string name="lbl_file_name">Filnamn</string>
     <string name="lbl_add">Lägg till</string>
