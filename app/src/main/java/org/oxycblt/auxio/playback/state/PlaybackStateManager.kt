@@ -120,8 +120,9 @@ interface PlaybackStateManager {
      * Play a [Song] at the given position in the queue.
      *
      * @param index The position of the [Song] in the queue to start playing.
+     * @param play Whether to start playing after switching to target index
      */
-    fun goto(index: Int)
+    fun goto(index: Int, play: Boolean)
 
     /**
      * Add [Song]s to the top of the queue.
@@ -429,12 +430,12 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     @Synchronized
-    override fun goto(index: Int) {
+    override fun goto(index: Int, play: Boolean) {
         val internalPlayer = internalPlayer ?: return
         if (queue.goto(index)) {
             logD("Moving to $index")
             notifyIndexMoved()
-            internalPlayer.loadSong(queue.currentSong, true)
+            internalPlayer.loadSong(queue.currentSong, play)
         } else {
             logW("$index was not in bounds, could not move to it")
         }
