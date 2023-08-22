@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's New
+- Added ability to rewind/skip tracks by swiping back/forward
+
 #### What's Fixed
 - Fixed app restart being required when changing intelligent sorting
 or music separator settings

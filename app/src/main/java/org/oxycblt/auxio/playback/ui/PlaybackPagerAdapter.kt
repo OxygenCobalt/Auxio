@@ -16,78 +16,50 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.pager
+package org.oxycblt.auxio.playback.ui
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.jvm.internal.Intrinsics
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemPlaybackSongBinding
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
+import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.inflater
 
-class PlaybackPagerAdapter(
-    private val listener: PlaybackPageListener,
-    private val lifecycleOwner: LifecycleOwner
-) : FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
-
+/** @author Koitharu, Alexander Capehart (OxygenCobalt) */
+class PlaybackPagerAdapter(private val listener: Listener) : FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoverViewHolder {
-        return CoverViewHolder.from(parent, listener).also {
-            lifecycleOwner.lifecycle.addObserver(it)
-        }
+        return CoverViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: CoverViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), listener)
     }
 
     override fun onViewRecycled(holder: CoverViewHolder) {
         holder.recycle()
         super.onViewRecycled(holder)
     }
+
+    interface Listener {
+        fun navigateToCurrentArtist()
+        fun navigateToCurrentAlbum()
+        fun navigateToCurrentSong()
+        fun navigateToMenu()
+    }
 }
 
-class CoverViewHolder
-private constructor(
-    private val binding: ItemPlaybackSongBinding,
-    private val listener: PlaybackPageListener
-) : RecyclerView.ViewHolder(binding.root), DefaultLifecycleObserver, View.OnClickListener {
-
+class CoverViewHolder private constructor(private val binding: ItemPlaybackSongBinding) :
+    RecyclerView.ViewHolder(binding.root), DefaultLifecycleObserver {
     init {
-        binding.playbackSong.setOnClickListener(this)
-        binding.playbackArtist.setOnClickListener(this)
-        binding.playbackAlbum.setOnClickListener(this)
-        binding.playbackCover.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.playback_album -> listener.navigateToCurrentAlbum()
-            R.id.playback_artist -> listener.navigateToCurrentArtist()
-            R.id.playback_song -> listener.navigateToCurrentSong()
-            R.id.playback_cover -> listener.navigateToMenu()
-        }
-    }
-
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-        setSelected(true)
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        setSelected(false)
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        super.onDestroy(owner)
-        owner.lifecycle.removeObserver(this)
+        binding.root.layoutParams =
+            RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT)
     }
 
     /**
@@ -95,17 +67,27 @@ private constructor(
      *
      * @param item The new [Song] to bind.
      */
-    fun bind(item: Song) {
-        binding.playbackCover.bind(item)
+    fun bind(item: Song, listener: PlaybackPagerAdapter.Listener) {
         val context = binding.root.context
-        binding.playbackSong.text = item.name.resolve(context)
-        binding.playbackArtist.text = item.artists.resolveNames(context)
-        binding.playbackAlbum.text = item.album.name.resolve(context)
+        // binding.playbackCover.bind(item)
+        binding.playbackSong.apply {
+            text = item.name.resolve(context)
+            setOnClickListener { listener.navigateToCurrentSong() }
+        }
+        binding.playbackArtist.apply {
+            text = item.artists.resolveNames(context)
+            setOnClickListener { listener.navigateToCurrentArtist() }
+        }
+        binding.playbackAlbum.apply {
+            text = item.album.name.resolve(context)
+            setOnClickListener { listener.navigateToCurrentAlbum() }
+        }
         setSelected(true)
     }
 
     fun recycle() {
         // Marquee elements leak if they are not disabled when the views are destroyed.
+        // TODO: Move to TextView impl to avoid having to deal with lifecycle here
         setSelected(false)
     }
 
@@ -122,11 +104,8 @@ private constructor(
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: ViewGroup, listener: PlaybackPageListener) =
-            CoverViewHolder(
-                ItemPlaybackSongBinding.inflate(parent.context.inflater, parent, false),
-                listener
-            )
+        fun from(parent: ViewGroup) =
+            CoverViewHolder(ItemPlaybackSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

@@ -39,12 +39,12 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.pager.PlaybackPageListener
-import org.oxycblt.auxio.playback.pager.PlaybackPagerAdapter
 import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.ui.PlaybackPagerAdapter
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -67,7 +67,7 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-    PlaybackPageListener {
+    PlaybackPagerAdapter.Listener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val queueModel: QueueViewModel by activityViewModels()
@@ -111,26 +111,12 @@ class PlaybackPanelFragment :
         }
 
         // cover carousel adapter
-        coverAdapter = PlaybackPagerAdapter(this, viewLifecycleOwner)
+        coverAdapter = PlaybackPagerAdapter(this)
         binding.playbackCoverPager.apply {
             adapter = coverAdapter
             registerOnPageChangeCallback(OnCoverChangedCallback(queueModel))
             val recycler = VP_RECYCLER_FIELD.get(this@apply) as RecyclerView
             recycler.isNestedScrollingEnabled = false
-        }
-        // Set up marquee on song information, alongside click handlers that navigate to each
-        // respective item.
-        binding.playbackSong.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentSong() }
-        }
-        binding.playbackArtist.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentArtist() }
-        }
-        binding.playbackAlbum.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentAlbum() }
         }
 
         binding.playbackSeekBar.listener = this
@@ -189,7 +175,7 @@ class PlaybackPanelFragment :
     }
 
     private fun updateQueue(queue: List<Song>) {
-        coverAdapter?.update(queue, queueModel.queueInstructions.flow.value)
+        coverAdapter?.update(queue, UpdateInstructions.Diff)
     }
 
     private fun updateQueuePosition(position: Int) {
@@ -250,7 +236,7 @@ class PlaybackPanelFragment :
     }
 
     override fun navigateToMenu() {
-        binding?.playbackToolbar?.showOverflowMenu()
+        // TODO
     }
 
     private class OnCoverChangedCallback(private val viewModel: QueueViewModel) :
