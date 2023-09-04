@@ -258,10 +258,10 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 // TODO: Avoid redundant data creation
 
 class DeviceLibraryImpl(
-    override val songs: Set<SongImpl>,
-    override val albums: Set<AlbumImpl>,
-    override val artists: Set<ArtistImpl>,
-    override val genres: Set<GenreImpl>
+    override val songs: Collection<SongImpl>,
+    override val albums: Collection<AlbumImpl>,
+    override val artists: Collection<ArtistImpl>,
+    override val genres: Collection<GenreImpl>
 ) : DeviceLibrary {
     // Use a mapping to make finding information based on it's UID much faster.
     private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }
