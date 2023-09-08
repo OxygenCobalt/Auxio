@@ -306,4 +306,8 @@
     <string name="lbl_sort_direction">Dirección</string>
     <string name="desc_selection_image">Selección de imágenes</string>
     <string name="lbl_selection">Selección</string>
+    <string name="lbl_show_error_info">Más</string>
+    <string name="lbl_error_info">Información sobre el error</string>
+    <string name="lbl_copied">Copiado</string>
+    <string name="lbl_report">Informar</string>
 </resources>

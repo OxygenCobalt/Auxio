@@ -292,4 +292,10 @@
     <string name="set_play_song_by_itself">ਇਸੇ ਗੀਤ ਨੂੰ ਚਲਾਓ</string>
     <string name="lbl_sort_mode">ਸੌਰਟ ਕਰੋ</string>
     <string name="lbl_sort_direction">ਦਿਸ਼ਾ</string>
+    <string name="lbl_selection">ਚੋਣ</string>
+    <string name="desc_selection_image">ਚੋਣ ਚਿੱਤਰ</string>
+    <string name="lbl_show_error_info">ਹੋਰ</string>
+    <string name="lbl_error_info">ਤਰੁੱਟੀ ਦੀ ਜਾਣਕਾਰੀ</string>
+    <string name="lbl_copied">ਕਾਪੀ ਕੀਤਾ ਗਿਆ</string>
+    <string name="lbl_report">ਰਿਪੋਰਟ ਕਰੋ</string>
 </resources>

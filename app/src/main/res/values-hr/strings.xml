@@ -297,4 +297,8 @@
     <string name="lbl_sort_direction">Smjer</string>
     <string name="desc_selection_image">Slika odabira</string>
     <string name="lbl_selection">Odabir</string>
+    <string name="lbl_show_error_info">Više</string>
+    <string name="lbl_error_info">Podaci greške</string>
+    <string name="lbl_report">Prijavi grešku</string>
+    <string name="lbl_copied">Kopirano</string>
 </resources>

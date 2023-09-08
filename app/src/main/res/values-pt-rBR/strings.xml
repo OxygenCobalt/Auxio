@@ -11,7 +11,7 @@
     <string name="lbl_search">Pesquisar</string>
     <string name="lbl_filter">Filtro</string>
     <string name="lbl_filter_all">Tudo</string>
-    <string name="lbl_sort">Classificar</string>
+    <string name="lbl_sort">Organizar</string>
     <string name="lbl_play">Reproduzir</string>
     <string name="lbl_shuffle">Aleatório</string>
     <string name="lbl_playback">Tocando agora</string>
@@ -273,4 +273,26 @@
     <string name="lbl_sort_dsc">Descendente</string>
     <string name="set_intelligent_sorting">Ignorar artigos ao classificar</string>
     <string name="set_intelligent_sorting_desc">Ignore palavras como \"the\" ao classificar por nome (funciona melhor com músicas em inglês)</string>
+    <string name="lbl_playlists">Playlists</string>
+    <string name="fmt_def_playlist">Playlist %d</string>
+    <string name="lbl_playlist">Playlist</string>
+    <string name="lng_playlist_created">Playlist criada</string>
+    <string name="lbl_show_error_info">Mais</string>
+    <string name="lbl_delete">Apagar</string>
+    <string name="lbl_copied">Copiado</string>
+    <string name="lbl_playlist_add">Adicionar à playlist</string>
+    <string name="lbl_share">Compartilhar</string>
+    <string name="lbl_edit">Editar</string>
+    <string name="lbl_rename">Renomear</string>
+    <string name="lng_playlist_added">Adicionada à playlist</string>
+    <string name="fmt_editing">Editando %s</string>
+    <string name="lbl_sort_mode">Organizar por</string>
+    <string name="lbl_song">Música</string>
+    <string name="lbl_confirm_delete_playlist">Apagar playlist\?</string>
+    <string name="desc_new_playlist">Criar uma nova playlist</string>
+    <string name="lng_playlist_deleted">Playlist deletada</string>
+    <string name="lbl_new_playlist">Nova playlist</string>
+    <string name="lng_playlist_renamed">Playlist renomeada</string>
+    <string name="lbl_rename_playlist">Renomear playlist</string>
+    <string name="lbl_appears_on">Aparece em</string>
 </resources>
