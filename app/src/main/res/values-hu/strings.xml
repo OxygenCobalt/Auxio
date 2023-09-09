@@ -301,4 +301,8 @@
     <string name="lbl_sort_mode">Rendezés</string>
     <string name="lbl_selection">Kiválasztás</string>
     <string name="desc_selection_image">Kép kiválasztás</string>
+    <string name="lbl_show_error_info">További</string>
+    <string name="lbl_copied">Másolva</string>
+    <string name="lbl_report">Jelentés</string>
+    <string name="lbl_error_info">Hiba információ</string>
 </resources>
