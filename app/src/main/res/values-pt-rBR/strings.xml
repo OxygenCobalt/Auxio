@@ -145,7 +145,7 @@
     <string name="cdc_mp4">Áudio MPEG-4</string>
     <string name="cdc_ogg">Áudio Ogg</string>
     <string name="cdc_mka">Áudio Matroska</string>
-    <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
+    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="desc_song_handle">Mover esta música da fila</string>
     <string name="clr_dynamic">Dinâmico</string>
@@ -295,4 +295,5 @@
     <string name="lng_playlist_renamed">Playlist renomeada</string>
     <string name="lbl_rename_playlist">Renomear playlist</string>
     <string name="lbl_appears_on">Aparece em</string>
+    <string name="fmt_deletion_info">Apagar %s\? Esta ação não pode ser desfeita.</string>
 </resources>
