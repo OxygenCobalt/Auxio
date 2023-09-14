@@ -211,4 +211,26 @@
     <string name="set_library">Pustaka</string>
     <string name="set_playback">Pemutaran</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="lbl_compilations">Kompilasi</string>
+    <string name="lbl_compilation_remix">Kompilasi remix</string>
+    <string name="lbl_eps">EP</string>
+    <string name="lbl_ep_live">EP Live</string>
+    <string name="lbl_compilation">Kompilasi</string>
+    <string name="lbl_mixtapes">Kaset campuran</string>
+    <string name="lbl_show_error_info">Lainnya</string>
+    <string name="lbl_soundtracks">Soundtrack</string>
+    <string name="lbl_album_live">Album live</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="other">%d artis</item>
+    </plurals>
+    <string name="lbl_single_live">Single Live</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_mixtape">Kaset campuran</string>
+    <string name="lbl_single_remix">Single remix</string>
+    <string name="lbl_song">Lagu</string>
+    <string name="lbl_single">Single</string>
+    <string name="lbl_soundtrack">Soundtrek</string>
+    <string name="lbl_compilation_live">Kompilasi live</string>
+    <string name="lbl_ep_remix">EP Remix</string>
+    <string name="lbl_singles">Single</string>
 </resources>
