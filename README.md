@@ -58,12 +58,12 @@ precise/original dates, sort tags, and more
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
-- No rounded album covers
+- No rounded album covers (by default)
 
 ## Permissions
 
-- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your media files
-- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing even if the app itself is in background
+- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your music files
+- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing in the background
 
 ## Building
 
