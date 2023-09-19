@@ -63,7 +63,7 @@
     <string name="set_lib_tabs">라이브러리 탭</string>
     <string name="set_lib_tabs_desc">라이브러리 탭 순서 및 표시할 탭 변경</string>
     <string name="set_round_mode">둥근 UI 모드</string>
-    <string name="set_round_mode_desc">기타 UI 요소 가장자리를 둥글게 표시 (앨범 커버도 둥글어짐)</string>
+    <string name="set_round_mode_desc">앨범 커버를 포함한 기타 UI의 가장자리를 둥글게 표시합니다.</string>
     <string name="set_notif_action">알림 동작 사용자 정의</string>
     <string name="set_audio">소리</string>
     <string name="set_headset_autoplay">헤드셋 자동 재생</string>
@@ -272,8 +272,8 @@
     <string name="lbl_playlist">재생 목록</string>
     <string name="lbl_playlists">재생 목록</string>
     <string name="desc_playlist_image">%s의 재생 목록 이미지</string>
-    <string name="set_intelligent_sorting">정렬할 때 기사 무시</string>
-    <string name="set_intelligent_sorting_desc">이름으로 정렬할 때 \"the\"와 같은 단어 무시(영어 음악에서 가장 잘 작동함)</string>
+    <string name="set_intelligent_sorting">적응형 정렬</string>
+    <string name="set_intelligent_sorting_desc">정렬할 때 숫자나 \"the\"와 같은 단어를 무시합니다. 태그가 영어로 되어 있을 때 가장 잘 작동합니다.</string>
     <string name="desc_new_playlist">새 재생 목록 만들기</string>
     <string name="lbl_new_playlist">새 재생 목록</string>
     <string name="lbl_playlist_add">재생 목록에 추가</string>
@@ -292,7 +292,7 @@
     <string name="lng_playlist_renamed">재생 목록의 이름을 바꿨습니다.</string>
     <string name="def_disc">디스크 없음</string>
     <string name="lng_playlist_deleted">재생 목록을 삭제했습니다.</string>
-    <string name="fmt_editing">%s 수정 중</string>
+    <string name="fmt_editing">%s 편집 중</string>
     <string name="lbl_song">노래</string>
     <string name="lbl_parent_detail">보기</string>
     <string name="set_square_covers">정사각형 앨범 커버 강제</string>
