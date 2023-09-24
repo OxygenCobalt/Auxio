@@ -300,4 +300,10 @@
     <string name="set_play_song_by_itself">Lied selbst spielen</string>
     <string name="lbl_sort_direction">Richtung</string>
     <string name="lbl_sort_mode">Sortieren nach</string>
+    <string name="desc_selection_image">Auswahl-Bild</string>
+    <string name="lbl_selection">Auswahl</string>
+    <string name="lbl_show_error_info">Mehr</string>
+    <string name="lbl_copied">Kopiert</string>
+    <string name="lbl_report">Melden</string>
+    <string name="lbl_error_info">Fehlerinformation</string>
 </resources>
