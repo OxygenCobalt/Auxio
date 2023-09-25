@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">مشغل موسيقى بسيط ومعقول للأندرويد</string>
+    <string name="info_app_desc">مشغل موسيقى بسيط ومعقول للأندرويد.</string>
     <string name="lng_widget">عرض وتحكم بشتغيل الموسيقى</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">إعادة المحاولة</string>
@@ -40,7 +40,7 @@
     <string name="lbl_version">الإصدار</string>
     <string name="lbl_code">عرض على الكود في Github</string>
     <string name="lbl_licenses">التراخيص</string>
-    <string name="lng_author">تمت برمجة التطبيق من قبل OxygenCobalt</string>
+    <string name="lng_author">تمت برمجة التطبيق من قبل الكساندر كابيهارت</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">الإعدادات</string>
     <string name="set_ui">المظهر</string>
@@ -192,4 +192,27 @@
     <string name="lbl_mixes">مزيج</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_song">أغنية</string>
+    <string name="lbl_sort_direction">أتجاه</string>
+    <string name="lbl_selection">أختيار</string>
+    <string name="lbl_playlists">قوائم التشغيل</string>
+    <string name="lbl_playlist">قائمة التشغيل</string>
+    <string name="lng_playlist_created">تم خلق قائمة التشغيل</string>
+    <string name="lbl_show_error_info">المزيد</string>
+    <string name="lbl_delete">حذف</string>
+    <string name="lbl_copied">تم النسخ</string>
+    <string name="lbl_playlist_add">إضافة إلى قائمة التشغيل</string>
+    <string name="lbl_share">مشاركة</string>
+    <string name="lbl_edit">تعديل</string>
+    <string name="lbl_rename">إعادة التسمية</string>
+    <string name="lng_playlist_added">تمت الإضافة إلى قائمة التشغيل</string>
+    <string name="lbl_sort_mode">رتب حسب</string>
+    <string name="lbl_parent_detail">مشاهدة</string>
+    <string name="lbl_confirm_delete_playlist">حذف قائمة التشغيل؟</string>
+    <string name="lng_playlist_deleted">تم حذف قائمة التشغيل</string>
+    <string name="lbl_report">تقرير</string>
+    <string name="lbl_new_playlist">قائمة تشغيل جديدة</string>
+    <string name="lbl_error_info">معلومات خاطئة</string>
+    <string name="lng_playlist_renamed">تم إعادة تسمية قائمة التشغيل</string>
+    <string name="lbl_rename_playlist">إعادة تسمية قائمة التشغيل</string>
+    <string name="lbl_appears_on">يظهر على</string>
 </resources>
