@@ -16,7 +16,7 @@
     <string name="lbl_shuffle">Aleatório</string>
     <string name="lbl_playback">Tocando agora</string>
     <string name="lbl_queue">Fila</string>
-    <string name="lbl_play_next">Reproduzir próxima</string>
+    <string name="lbl_play_next">Reproduzir a seguir</string>
     <string name="lbl_queue_add">Adicionar à fila</string>
     <string name="lng_queue_added">Adicionada à fila</string>
     <string name="lbl_artist_details">Ir para o artista</string>
