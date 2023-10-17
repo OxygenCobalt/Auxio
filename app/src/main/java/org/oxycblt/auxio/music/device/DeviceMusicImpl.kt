@@ -182,8 +182,8 @@ class SongImpl(
                 .toList()
                 .ifEmpty { listOf(RawGenre()) }
 
-        hashCode = 31 * rawSong.hashCode()
-        hashCode = 31 * nameFactory.hashCode()
+        hashCode = 31 * hashCode + rawSong.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
     }
 
     override fun hashCode() = hashCode
@@ -332,7 +332,7 @@ class AlbumImpl(
         dateAdded = earliestDateAdded
 
         hashCode = 31 * hashCode + rawAlbum.hashCode()
-        hashCode = 31 * nameFactory.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
@@ -529,7 +529,7 @@ class GenreImpl(
         durationMs = totalDuration
 
         hashCode = 31 * hashCode + rawGenre.hashCode()
-        hashCode = 31 * nameFactory.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
