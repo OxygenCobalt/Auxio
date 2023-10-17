@@ -166,7 +166,7 @@ class PlaybackService :
             }
 
         ContextCompat.registerReceiver(
-            this, systemReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
+            this, systemReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED)
 
         logD("Service created")
     }
