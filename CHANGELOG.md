@@ -29,6 +29,10 @@ aspect ratio setting
 #### What's Fixed
 - Playlist detail view now respects playback settings
 
+
+#### Dev/Meta
+- Revamped navigation backend
+
 ## 3.1.4
 
 #### What's Fixed
