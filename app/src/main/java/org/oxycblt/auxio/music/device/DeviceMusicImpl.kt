@@ -75,28 +75,41 @@ class SongImpl(
             }
     override val name =
         nameFactory.parse(
-            requireNotNull(rawSong.name) { "Invalid raw: No title" }, rawSong.sortName)
+            requireNotNull(rawSong.name) { "Invalid raw ${rawSong.fileName}: No title" },
+            rawSong.sortName)
 
     override val track = rawSong.track
     override val disc = rawSong.disc?.let { Disc(it, rawSong.subtitle) }
     override val date = rawSong.date
-    override val uri = requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()
+    override val uri =
+        requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.fileName}: No id" }
+            .toAudioUri()
     override val path =
         Path(
-            name = requireNotNull(rawSong.fileName) { "Invalid raw: No display name" },
-            parent = requireNotNull(rawSong.directory) { "Invalid raw: No parent directory" })
+            name =
+                requireNotNull(rawSong.fileName) {
+                    "Invalid raw ${rawSong.fileName}: No display name"
+                },
+            parent =
+                requireNotNull(rawSong.directory) {
+                    "Invalid raw ${rawSong.fileName}: No parent directory"
+                })
     override val mimeType =
         MimeType(
             fromExtension =
-                requireNotNull(rawSong.extensionMimeType) { "Invalid raw: No mime type" },
+                requireNotNull(rawSong.extensionMimeType) {
+                    "Invalid raw ${rawSong.fileName}: No mime type"
+                },
             fromFormat = null)
-    override val size = requireNotNull(rawSong.size) { "Invalid raw: No size" }
-    override val durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" }
+    override val size = requireNotNull(rawSong.size) { "Invalid raw ${rawSong.fileName}: No size" }
+    override val durationMs =
+        requireNotNull(rawSong.durationMs) { "Invalid raw ${rawSong.fileName}: No duration" }
     override val replayGainAdjustment =
         ReplayGainAdjustment(
             track = rawSong.replayGainTrackAdjustment, album = rawSong.replayGainAlbumAdjustment)
 
-    override val dateAdded = requireNotNull(rawSong.dateAdded) { "Invalid raw: No date added" }
+    override val dateAdded =
+        requireNotNull(rawSong.dateAdded) { "Invalid raw ${rawSong.fileName}: No date added" }
 
     private var _album: AlbumImpl? = null
     override val album: Album
@@ -161,9 +174,14 @@ class SongImpl(
         rawAlbum =
             RawAlbum(
                 mediaStoreId =
-                    requireNotNull(rawSong.albumMediaStoreId) { "Invalid raw: No album id" },
+                    requireNotNull(rawSong.albumMediaStoreId) {
+                        "Invalid raw ${rawSong.fileName}: No album id"
+                    },
                 musicBrainzId = rawSong.albumMusicBrainzId?.toUuidOrNull(),
-                name = requireNotNull(rawSong.albumName) { "Invalid raw: No album name" },
+                name =
+                    requireNotNull(rawSong.albumName) {
+                        "Invalid raw ${rawSong.fileName}: No album name"
+                    },
                 sortName = rawSong.albumSortName,
                 releaseType = ReleaseType.parse(separators.split(rawSong.releaseTypes)),
                 rawArtists =
@@ -232,10 +250,12 @@ class SongImpl(
      * @return This instance upcasted to [Song].
      */
     fun finalize(): Song {
-        checkNotNull(_album) { "Malformed song: No album" }
+        checkNotNull(_album) { "Malformed song ${path.name}: No album" }
 
-        check(_artists.isNotEmpty()) { "Malformed song: No artists" }
-        check(_artists.size == rawArtists.size) { "Malformed song: Artist grouping mismatch" }
+        check(_artists.isNotEmpty()) { "Malformed song ${path.name}: No artists" }
+        check(_artists.size == rawArtists.size) {
+            "Malformed song ${path.name}: Artist grouping mismatch"
+        }
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
@@ -245,8 +265,10 @@ class SongImpl(
             _artists[i] = other
         }
 
-        check(_genres.isNotEmpty()) { "Malformed song: No genres" }
-        check(_genres.size == rawGenres.size) { "Malformed song: Genre grouping mismatch" }
+        check(_genres.isNotEmpty()) { "Malformed song ${path.name}: No genres" }
+        check(_genres.size == rawGenres.size) {
+            "Malformed song ${path.name}: Genre grouping mismatch"
+        }
         for (i in _genres.indices) {
             // Non-destructively reorder the linked genres so that they align with
             // the genre ordering within the song metadata.
@@ -371,9 +393,11 @@ class AlbumImpl(
      * @return This instance upcasted to [Album].
      */
     fun finalize(): Album {
-        check(songs.isNotEmpty()) { "Malformed album: Empty" }
-        check(_artists.isNotEmpty()) { "Malformed album: No artists" }
-        check(_artists.size == rawArtists.size) { "Malformed album: Artist grouping mismatch" }
+        check(songs.isNotEmpty()) { "Malformed album $name: Empty" }
+        check(_artists.isNotEmpty()) { "Malformed album $name: No artists" }
+        check(_artists.size == rawArtists.size) {
+            "Malformed album $name: Artist grouping mismatch"
+        }
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
@@ -434,7 +458,7 @@ class ArtistImpl(
                     music.link(this)
                     albumMap[music] = true
                 }
-                else -> error("Unexpected input music ${music::class.simpleName}")
+                else -> error("Unexpected input music $music in $name ${music::class.simpleName}")
             }
         }
 
@@ -482,7 +506,7 @@ class ArtistImpl(
      * @return This instance upcasted to [Artist].
      */
     fun finalize(): Artist {
-        check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist: Empty" }
+        check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist $name: Empty" }
         genres =
             Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
                 .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
@@ -562,7 +586,7 @@ class GenreImpl(
      * @return This instance upcasted to [Genre].
      */
     fun finalize(): Genre {
-        check(songs.isNotEmpty()) { "Malformed genre: Empty" }
+        check(songs.isNotEmpty()) { "Malformed genre $name: Empty" }
         return this
     }
 }
