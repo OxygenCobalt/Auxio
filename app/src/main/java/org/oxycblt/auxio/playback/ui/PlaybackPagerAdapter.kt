@@ -20,19 +20,18 @@ package org.oxycblt.auxio.playback.ui
 
 import android.view.ViewGroup
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.jvm.internal.Intrinsics
 import org.oxycblt.auxio.databinding.ItemPlaybackSongBinding
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
-import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.inflater
 
 /** @author Koitharu, Alexander Capehart (OxygenCobalt) */
-class PlaybackPagerAdapter(private val listener: Listener) : FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
+class PlaybackPagerAdapter(private val listener: Listener) :
+    FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoverViewHolder {
         return CoverViewHolder.from(parent)
     }
@@ -48,8 +47,11 @@ class PlaybackPagerAdapter(private val listener: Listener) : FlexibleListAdapter
 
     interface Listener {
         fun navigateToCurrentArtist()
+
         fun navigateToCurrentAlbum()
+
         fun navigateToCurrentSong()
+
         fun navigateToMenu()
     }
 }
@@ -69,6 +71,7 @@ class CoverViewHolder private constructor(private val binding: ItemPlaybackSongB
      */
     fun bind(item: Song, listener: PlaybackPagerAdapter.Listener) {
         val context = binding.root.context
+        binding.playbackCover.bind(item)
         // binding.playbackCover.bind(item)
         binding.playbackSong.apply {
             text = item.name.resolve(context)
