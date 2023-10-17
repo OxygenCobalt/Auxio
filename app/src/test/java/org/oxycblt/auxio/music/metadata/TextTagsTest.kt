@@ -56,7 +56,20 @@ class TextTagsTest {
     }
 
     @Test
-    fun textTags_combined() {
+    fun textTags_mp4() {
+        val textTags = TextTags(MP4_METADATA)
+        assertTrue(textTags.vorbis.isEmpty())
+        assertEquals(listOf("Wheel"), textTags.id3v2["TIT2"])
+        assertEquals(listOf("Paraglow"), textTags.id3v2["TALB"])
+        assertEquals(listOf("Parannoul", "Asian Glow"), textTags.id3v2["TPE1"])
+        assertEquals(listOf("2022"), textTags.id3v2["TDRC"])
+        assertEquals(listOf("ep"), textTags.id3v2["TXXX:musicbrainz album type"])
+        assertEquals(listOf("+2 dB"), textTags.id3v2["TXXX:replaygain_track_gain"])
+        assertEquals(null, textTags.id3v2["metadata_block_picture"])
+    }
+
+    @Test
+    fun textTags_id3v2_vorbis_combined() {
         val textTags = TextTags(VORBIS_METADATA.copyWithAppendedEntriesFrom(ID3V2_METADATA))
         assertEquals(listOf("Wheel"), textTags.vorbis["title"])
         assertEquals(listOf("Paraglow"), textTags.vorbis["album"])
@@ -93,6 +106,19 @@ class TextTagsTest {
                 TextInformationFrame("TIT2", null, listOf("Wheel")),
                 TextInformationFrame("TALB", null, listOf("Paraglow")),
                 TextInformationFrame("TPE1", null, listOf("Parannoul", "Asian Glow")),
+                TextInformationFrame("TDRC", null, listOf("2022")),
+                TextInformationFrame("TXXX", "MusicBrainz Album Type", listOf("ep")),
+                TextInformationFrame("TXXX", "replaygain_track_gain", listOf("+2 dB")),
+                ApicFrame("", "", 0, byteArrayOf()))
+
+        // MP4 atoms are mapped to ID3v2 text information frames by ExoPlayer, but can
+        // duplicate frames and have ---- mapped to InternalFrame.
+        private val MP4_METADATA =
+            Metadata(
+                TextInformationFrame("TIT2", null, listOf("Wheel")),
+                TextInformationFrame("TALB", null, listOf("Paraglow")),
+                TextInformationFrame("TPE1", null, listOf("Parannoul")),
+                TextInformationFrame("TPE1", null, listOf("Asian Glow")),
                 TextInformationFrame("TDRC", null, listOf("2022")),
                 TextInformationFrame("TXXX", "MusicBrainz Album Type", listOf("ep")),
                 InternalFrame("com.apple.iTunes", "replaygain_track_gain", "+2 dB"),

@@ -22,17 +22,16 @@ import androidx.media3.common.Metadata
 import androidx.media3.extractor.metadata.id3.InternalFrame
 import androidx.media3.extractor.metadata.id3.TextInformationFrame
 import androidx.media3.extractor.metadata.vorbis.VorbisComment
+import org.oxycblt.auxio.util.logD
 
 /**
  * Processing wrapper for [Metadata] that allows organized access to text-based audio tags.
  *
  * @param metadata The [Metadata] to wrap.
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Merge with TagWorker
  */
 class TextTags(metadata: Metadata) {
-    private val _id3v2 = mutableMapOf<String, List<String>>()
+    private val _id3v2 = mutableMapOf<String, MutableList<String>>()
     /** The ID3v2 text identification frames found in the file. Can have more than one value. */
     val id3v2: Map<String, List<String>>
         get() = _id3v2
@@ -53,7 +52,11 @@ class TextTags(metadata: Metadata) {
                             ?: tag.id.sanitize()
                     val values = tag.values.map { it.sanitize() }.correctWhitespace()
                     if (values.isNotEmpty()) {
-                        _id3v2[id] = values
+                        // Normally, duplicate ID3v2 frames are forbidden. But since MP4 atoms,
+                        // which can also have duplicates, are mapped to ID3v2 frames by ExoPlayer,
+                        // we must drop this invariant and gracefully treat duplicates as if they
+                        // are another way of specfiying multi-value tags.
+                        _id3v2.getOrPut(id) { mutableListOf() }.addAll(values)
                     }
                 }
                 is InternalFrame -> {
@@ -62,7 +65,7 @@ class TextTags(metadata: Metadata) {
                     val id = "TXXX:${tag.description.sanitize().lowercase()}"
                     val value = tag.text
                     if (value.isNotEmpty()) {
-                        _id3v2[id] = listOf(value)
+                        _id3v2.getOrPut(id) { mutableListOf() }.add(value)
                     }
                 }
                 is VorbisComment -> {
