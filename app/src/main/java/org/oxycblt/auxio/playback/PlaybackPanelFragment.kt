@@ -175,7 +175,7 @@ class PlaybackPanelFragment :
     }
 
     private fun updateQueue(queue: List<Song>) {
-        coverAdapter?.update(queue, UpdateInstructions.Diff)
+        coverAdapter?.update(queue, UpdateInstructions.Replace(0))
     }
 
     private fun updateQueuePosition(position: Int) {
@@ -239,7 +239,7 @@ class PlaybackPanelFragment :
         // TODO
     }
 
-    private class OnCoverChangedCallback(private val viewModel: QueueViewModel) :
+    private class OnCoverChangedCallback(private val queueViewModel: QueueViewModel) :
         OnPageChangeCallback() {
 
         private var targetPosition = RecyclerView.NO_POSITION
@@ -253,8 +253,8 @@ class PlaybackPanelFragment :
             super.onPageScrollStateChanged(state)
             if (state == ViewPager2.SCROLL_STATE_IDLE &&
                 targetPosition != RecyclerView.NO_POSITION &&
-                targetPosition != viewModel.index.value) {
-                viewModel.goto(targetPosition, playIfPaused = false)
+                targetPosition != queueViewModel.index.value) {
+                queueViewModel.goto(targetPosition)
             }
         }
     }

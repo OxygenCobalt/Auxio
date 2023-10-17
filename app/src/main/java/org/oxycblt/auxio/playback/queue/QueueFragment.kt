@@ -88,7 +88,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
     }
 
     override fun onClick(item: Song, viewHolder: RecyclerView.ViewHolder) {
-        queueModel.goto(viewHolder.bindingAdapterPosition, playIfPaused = true)
+        queueModel.goto(viewHolder.bindingAdapterPosition)
     }
 
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {

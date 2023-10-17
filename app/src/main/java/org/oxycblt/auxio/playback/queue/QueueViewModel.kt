@@ -108,12 +108,12 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
      *   range.
      * @param playIfPaused Start playing after switching even if it currently is paused
      */
-    fun goto(adapterIndex: Int, playIfPaused: Boolean) {
+    fun goto(adapterIndex: Int) {
         if (adapterIndex !in queue.value.indices) {
             return
         }
         logD("Going to position $adapterIndex in queue")
-        playbackManager.goto(adapterIndex, playIfPaused || playbackManager.playerState.isPlaying)
+        playbackManager.goto(adapterIndex)
     }
 
     /**

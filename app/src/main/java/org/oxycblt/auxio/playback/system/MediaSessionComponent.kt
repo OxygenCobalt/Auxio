@@ -256,7 +256,7 @@ constructor(
     }
 
     override fun onSkipToQueueItem(id: Long) {
-        playbackManager.goto(id.toInt(), true)
+        playbackManager.goto(id.toInt())
     }
 
     override fun onCustomAction(action: String?, extras: Bundle?) {
