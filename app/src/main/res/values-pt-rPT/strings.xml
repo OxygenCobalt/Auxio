@@ -244,7 +244,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="err_did_not_wipe">Não foi possível limpar a lista</string>
     <string name="err_did_not_save">Não foi possível gravar a lista</string>
-    <string name="set_rescan">Rescan músicas</string>
+    <string name="set_rescan">Procurar músicas novamente</string>
     <string name="err_did_not_restore">Nenhuma lista pode ser restaurada</string>
     <string name="desc_auxio_icon">Ícone do Auxio</string>
     <string name="lbl_shuffle_shortcut_long">Misturar tudo</string>
