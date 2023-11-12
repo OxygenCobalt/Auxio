@@ -328,7 +328,11 @@ class PlaylistDetailFragment :
                     logD("Deleting ${decision.playlist}")
                     PlaylistDetailFragmentDirections.deletePlaylist(decision.playlist.uid)
                 }
-                is PlaylistDecision.Add,
+                is PlaylistDecision.Add -> {
+                    logD("Adding ${decision.songs.size} songs to a playlist")
+                    PlaylistDetailFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                }
                 is PlaylistDecision.New -> error("Unexpected playlist decision $decision")
             }
         findNavController().navigateSafe(directions)
