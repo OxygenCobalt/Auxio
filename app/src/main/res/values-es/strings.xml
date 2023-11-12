@@ -311,4 +311,6 @@
     <string name="lbl_copied">Copiado</string>
     <string name="lbl_report">Informar</string>
     <string name="def_album_count">Sin álbumes</string>
+    <string name="lbl_demo">Demostración</string>
+    <string name="lbl_demos">Demostraciones</string>
 </resources>
