@@ -432,7 +432,6 @@ class ArtistImpl(
             ?: Name.Unknown(R.string.def_artist)
 
     override val songs: Set<Song>
-    override val albums: Set<Album> = emptySet()
     override val explicitAlbums: Set<Album>
     override val implicitAlbums: Set<Album>
     override val durationMs: Long?
