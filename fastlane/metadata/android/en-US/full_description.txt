@@ -20,4 +20,4 @@ precise/original dates, sort tags, and more
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
-- No rounded album covers (Unless you want them. Then you can.)
+- No rounded album covers (by default)

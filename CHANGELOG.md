@@ -13,6 +13,8 @@
 or music separator settings
 - Fixed widget/notification actions not working on Android 14
 - Fixed app crash when using hebrew language
+- Fixed app crash when adding to a playlist while in the playlist detail view
+- Fixed music loading failing in some cases on Android 14
 
 ## 3.2.0
 
