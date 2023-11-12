@@ -20,4 +20,4 @@ fechas precisas/originales, ordenar etiquetas y más
 - Reproducción automática de auriculares
 - Widgets con estilo que se adaptan automáticamente a su tamaño
 - Completamente privado y fuera de línea
-- No hay portadas de álbumes redondeadas (a menos que las quieras. Entonces puedes)
+- Sin carátulas redondeadas (por defecto)
