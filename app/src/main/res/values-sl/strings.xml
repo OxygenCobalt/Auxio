@@ -191,7 +191,7 @@
         <item quantity="other">%d albumov</item>
     </plurals>
     <string name="lbl_disc">Disk</string>
-    <string name="fmt_indexing">Nalaganje vaše glasbene knjižnice... (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Nalaganje vaše glasbene knjižnice… (%1$d/%2$d)</string>
     <string name="desc_clear_search">Počisti iskalno poizvedbo</string>
     <string name="lbl_sort_asc">Naraščajoče</string>
     <string name="clr_pink">Roza</string>

@@ -205,7 +205,7 @@
     <string name="clr_deep_blue">כחול עמוק</string>
     <string name="clr_grey">אפור</string>
     <string name="clr_dynamic">דינמי</string>
-    <string name="fmt_indexing">המוזיקה שלך בטעינה... (‎%1$d/%2$d)</string>
+    <string name="fmt_indexing">המוזיקה שלך בטעינה… (‎%1$d/%2$d)</string>
     <string name="fmt_disc_no">דיסק %d</string>
     <string name="set_dirs_desc">ניהול המקומות שמהם תיטען מוזיקה</string>
     <string name="def_song_count">אין שירים</string>

@@ -106,7 +106,6 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
      *
      * @param adapterIndex The index of the queue item to play. Does nothing if the index is out of
      *   range.
-     * @param playIfPaused Start playing after switching even if it currently is paused
      */
     fun goto(adapterIndex: Int) {
         if (adapterIndex !in queue.value.indices) {

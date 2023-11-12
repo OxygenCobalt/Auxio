@@ -26,14 +26,14 @@ import timber.log.Timber
  *
  * @param obj The object to log.
  */
-inline fun Any.logD(obj: Any?) = logD("$obj")
+inline fun logD(obj: Any?) = logD("$obj")
 
 /**
  * Log a string message to the debug channel. Automatically handles tags.
  *
  * @param msg The message to log.
  */
-inline fun Any.logD(msg: String) {
+inline fun logD(msg: String) {
     if (BuildConfig.DEBUG && !copyleftNotice()) {
         Timber.d(msg)
     }
