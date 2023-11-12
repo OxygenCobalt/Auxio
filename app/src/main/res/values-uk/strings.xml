@@ -306,4 +306,8 @@
     <string name="lbl_sort_direction">Напрямок</string>
     <string name="lbl_selection">Вибрати</string>
     <string name="desc_selection_image">Вибрати зображення</string>
+    <string name="lbl_show_error_info">Докладніше</string>
+    <string name="lbl_error_info">Інформація про помилку</string>
+    <string name="lbl_copied">Скопійовано</string>
+    <string name="lbl_report">Звіт</string>
 </resources>

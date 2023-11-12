@@ -23,8 +23,6 @@
 
 Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
 
-I primarily built Auxio for myself, but you can use it too, I guess.
-
 **The default branch is the development version of the repository. For a stable version, see the master branch.**
 
 ## Screenshots
@@ -60,12 +58,12 @@ precise/original dates, sort tags, and more
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
-- No rounded album covers (Unless you want them. Then you can.)
+- No rounded album covers (by default)
 
 ## Permissions
 
-- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your media files
-- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing even if the app itself is in background
+- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your music files
+- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing in the background
 
 ## Building
 

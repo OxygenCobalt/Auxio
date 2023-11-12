@@ -1,19 +1,23 @@
-Auxio, diğer müzik oynatıcılarda bulunan birçok gereksiz özellik olmadan hızlı, güvenilir bir kullanıcı arayüzüne ve deneyimine sahip yerel bir müzik çalardır. &lt;a href="https://exoplayer.dev/"&gt;Exoplayer&lt;/a&gt; üzerine inşa edilen Auxio, yerel MediaPlayer API'sini kullanan diğer uygulamalara kıyasla çok daha iyi bir dinleme deneyimine sahiptir. Kısaca, <b>Müzik çalar.</b>
+Auxio, diğer müzik çalarlarda bulunan birçok gereksiz özellik olmadan hızlı, güvenilir bir UI / UX'a sahip yerel bir müzik oynatıcıdır. Modern medya oynatma kütüphaneleri üzerine inşa edilen Auxio, eski android işlevselliğini kullanan diğer uygulamalara kıyasla üstün kütüphane desteği ve dinleme kalitesine sahiptir. Kısacası, <b>Müzik çalar.</b>
 
 <b>Özellikler</b>
 
-- ExoPlayer tabanlı oynatma
+- Media3 ExoPlayer tabanlı oynatma
 - En son Materyal Tasarım yönergelerinden türetilen hızlı kullanıcı arayüzü
 - Uç durumlardan ziyade kullanım kolaylığına öncelik veren fikir sahibi kullanıcı deneyimi
 - Özelleştirilebilir davranış
-- Doğru meta verilere öncelik veren gelişmiş medya indeksleyici
+- Disk numaraları, çoklu sanatçılar, sürüm türleri için destek,
+kesin/orijinal tarihler, sıralama etiketleri ve daha fazlası
+- Sanatçıları ve albüm sanatçılarını birleştiren gelişmiş sanatçı sistemi
 - SD Card-aware klasör yönetimi
-- Güvenilir oynatma durumu kalıcılığı
-- Tam ReplayGain desteği (MP3, MP4, FLAC, OGG ve OPUS'ta)
+- Güvenilir çalma listesi işlevi
+- Oynatma durumu kalıcılığı
+- Tam ReplayGain desteği (MP3, FLAC, OGG, OPUS ve MP4 dosyalarında)
+- Harici ekolayzer desteği (örn. Wavelet)
 - Kenardan kenara
 - Gömülü kapak desteği
-- Arama İşlevselliği
+- Arama işlevi
 - Kulaklık otomatik oynatma
 - Boyutlarına otomatik olarak uyum sağlayan şık widget'lar
 - Tamamen özel ve çevrimdışı
-- Yuvarlak albüm kapakları yok (İstediğiniz zaman açıp kapatabilirsiniz.)
+- Yuvarlak albüm kapakları yok (İstemediğiniz sürece. O zaman yapabilirsiniz.)

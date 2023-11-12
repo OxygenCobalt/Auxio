@@ -204,6 +204,10 @@ class MainFragment :
     }
 
     override fun onPreDraw(): Boolean {
+        // TODO: Due to draw caching even *this* isn't effective enough to avoid the bottom
+        //  sheets continually getting stuck. I need something with even more frequent updates,
+        //  or otherwise bottom sheets get stuck.
+
         // We overload CoordinatorLayout far too much to rely on any of it's typical
         // listener functionality. Just update all transitions before every draw. Should
         // probably be cheap enough.

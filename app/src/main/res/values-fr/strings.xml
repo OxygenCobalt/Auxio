@@ -242,7 +242,7 @@
     <string name="lbl_playlist_add">Ajouter à la liste de lecture</string>
     <string name="desc_new_playlist">Créer une nouvelle liste de lecture</string>
     <string name="cdc_mka">Audio Matroska</string>
-    <string name="fmt_lib_artist_count">Artistes chargés&amp;nbsp;: %d</string>
+    <string name="fmt_lib_artist_count">Artistes chargés : %d</string>
     <string name="set_rewind_prev">Rembobiner avant de revenir en arrière</string>
     <string name="desc_artist_image">Image d\'artiste pour %s</string>
     <string name="def_track">Aucune piste</string>
@@ -253,8 +253,8 @@
     <string name="lbl_rename">Renommer</string>
     <string name="err_did_not_wipe">Impossible d\'effacer l\'état</string>
     <string name="desc_change_repeat">Modifier le mode de répétition</string>
-    <string name="fmt_lib_album_count">Albums chargés&amp;nbsp;: %d</string>
-    <string name="fmt_lib_total_duration">Durée totale&amp;nbsp;: %s</string>
+    <string name="fmt_lib_album_count">Albums chargés : %d</string>
+    <string name="fmt_lib_total_duration">Durée totale : %s</string>
     <string name="desc_clear_search">Effacer la requête de recherche</string>
     <string name="desc_playlist_image">Image de la liste de lecture pour %s</string>
     <string name="fmt_disc_no">Disque %d</string>
@@ -288,7 +288,7 @@
     <string name="err_did_not_save">Impossible de sauvegarder l\'état</string>
     <string name="def_song_count">Aucune chanson</string>
     <string name="fmt_editing">Modification de %s</string>
-    <string name="fmt_lib_genre_count">Genres chargés&amp;nbsp;: %d</string>
+    <string name="fmt_lib_genre_count">Genres chargés : %d</string>
     <string name="desc_genre_image">Image de genre pour %s</string>
     <string name="cdc_flac">Codec audio gratuit sans perte (FLAC)</string>
     <string name="fmt_selected">%d sélectionnés</string>
@@ -300,4 +300,12 @@
     <string name="lbl_song">Chanson</string>
     <string name="lbl_parent_detail">Voir</string>
     <string name="set_play_song_by_itself">Jouer la chanson par elle-même</string>
+    <string name="desc_selection_image">Image de sélection</string>
+    <string name="lbl_sort_mode">Trier par</string>
+    <string name="lbl_sort_direction">Direction</string>
+    <string name="lbl_selection">Sélection</string>
+    <string name="lbl_show_error_info">En savoir plus</string>
+    <string name="lbl_copied">Copié</string>
+    <string name="lbl_report">Signaler</string>
+    <string name="lbl_error_info">Info sur l\'erreur</string>
 </resources>

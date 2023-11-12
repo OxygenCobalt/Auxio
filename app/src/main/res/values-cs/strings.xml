@@ -311,4 +311,8 @@
     <string name="lbl_sort_mode">Seřadit podle</string>
     <string name="desc_selection_image">Výběr obrázku</string>
     <string name="lbl_selection">Výběr</string>
+    <string name="lbl_show_error_info">Další</string>
+    <string name="lbl_error_info">Informace o chybě</string>
+    <string name="lbl_copied">Zkopírovat</string>
+    <string name="lbl_report">Nahlásit</string>
 </resources>

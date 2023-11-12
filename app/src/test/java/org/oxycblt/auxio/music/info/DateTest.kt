@@ -88,32 +88,4 @@ class DateTest {
         assertEquals(null, Date.from("2016-08-16:00:01:02"))
         assertEquals("2016-11", Date.from("2016-11-32 25:43:01").toString())
     }
-
-    @Test
-    fun dateRange_from_correct() {
-        val range =
-            requireNotNull(
-                Date.Range.from(
-                    listOf(
-                        requireNotNull(Date.from("2016-08-16T00:01:02")),
-                        requireNotNull(Date.from("2016-07-16")),
-                        requireNotNull(Date.from("2014-03-12T00")),
-                        requireNotNull(Date.from("2022-12-22T22:22:22")))))
-        assertEquals("2014-03-12T00Z", range.min.toString())
-        assertEquals("2022-12-22T22:22:22Z", range.max.toString())
-    }
-
-    @Test
-    fun dateRange_from_one() {
-        val range =
-            requireNotNull(
-                Date.Range.from(listOf(requireNotNull(Date.from("2016-08-16T00:01:02")))))
-        assertEquals("2016-08-16T00:01:02Z", range.min.toString())
-        assertEquals("2016-08-16T00:01:02Z", range.max.toString())
-    }
-
-    @Test
-    fun dateRange_from_none() {
-        assertEquals(null, Date.Range.from(listOf()))
-    }
 }

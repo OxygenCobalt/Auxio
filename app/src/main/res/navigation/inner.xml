@@ -380,6 +380,9 @@
             android:id="@+id/delete_playlist"
             app:destination="@id/delete_playlist_dialog" />
         <action
+            android:id="@+id/add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
             android:id="@+id/play_from_artist"
             app:destination="@id/play_from_artist_dialog" />
         <action

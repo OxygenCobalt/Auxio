@@ -2,10 +2,10 @@
 <resources>
     <string name="lbl_songs">Dainos</string>
     <string name="lbl_all_songs">Visos dainos</string>
-    <string name="lbl_search">Ieškoti</string>
+    <string name="lbl_search">Paieška</string>
     <string name="lbl_filter">Filtruoti</string>
     <string name="lbl_filter_all">Visos</string>
-    <string name="lbl_sort">Rūšiuoti</string>
+    <string name="lbl_sort">Rūšiavimas</string>
     <string name="lbl_name">Pavadinimas</string>
     <string name="lbl_date">Metai</string>
     <string name="lbl_duration">Trukmė</string>
@@ -34,7 +34,7 @@
     <string name="lbl_play">Groti</string>
     <string name="lbl_licenses">Licencijos</string>
     <string name="lbl_shuffle">Maišyti</string>
-    <string name="lng_queue_added">Pridėta į eilę</string>
+    <string name="lng_queue_added">Pridėtas į eilę</string>
     <string name="lbl_props">Dainų ypatybės</string>
     <string name="lbl_file_name">Failo pavadinimas</string>
     <string name="lbl_save">Išsaugoti</string>
@@ -47,7 +47,7 @@
     <string name="set_theme">Tema</string>
     <string name="set_black_mode_desc">Naudoti grynai juodą tamsią temą</string>
     <string name="info_app_desc">Paprastas, racionalus Android muzikos grotuvas.</string>
-    <string name="lbl_indexer">Muzika kraunama</string>
+    <string name="lbl_indexer">Muzikos pakraunimas</string>
     <string name="lng_widget">Peržiūrėk ir valdyk muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Pakartoti</string>
@@ -72,7 +72,7 @@
     <string name="desc_no_cover">Albumo viršelis</string>
     <string name="clr_deep_purple">Giliai violetinė</string>
     <string name="lbl_observing">Stebėjimas muzikos biblioteka</string>
-    <string name="lng_observing">Stebima tavo muzikos biblioteko dėl pakeitimų…</string>
+    <string name="lng_observing">Stebimas tavo muzikos biblioteka dėl pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Maišyti</string>
     <string name="lbl_shuffle_shortcut_long">Maišyti viską</string>
     <string name="lbl_state_restored">Atkurta būsena</string>
@@ -123,7 +123,7 @@
     <string name="lbl_live_group">Gyvai</string>
     <string name="set_headset_autoplay_desc">Visada pradėti groti, kai ausinės yra prijungtos (gali neveikti visuose įrenginiuose)</string>
     <string name="cdc_ogg">Ogg garsas</string>
-    <string name="lng_author">Sukūrė Alexanderis Capehartas</string>
+    <string name="lng_author">Sukūrė Alexanderis Capehartas (angl. Alexander Capehart)</string>
     <string name="set_replay_gain_mode_track">Pageidauti takelį</string>
     <string name="err_no_dirs">Jokių aplankų</string>
     <string name="err_bad_dir">Šis aplankas nepalaikomas</string>
@@ -159,7 +159,7 @@
     <string name="set_play_in_parent_with">Kai grojant iš elemento detalių</string>
     <string name="desc_music_dir_delete">Pašalinti aplanką</string>
     <string name="lbl_genre">Žanras</string>
-    <string name="lng_search_library">Ieškok savo bibliotekoje…</string>
+    <string name="lng_search_library">Ieškoti savo bibliotekoje…</string>
     <string name="lbl_equalizer">Ekvalaizeris</string>
     <string name="set_dirs_mode">Režimas</string>
     <string name="set_observing">Automatinis įkrovimas</string>
@@ -171,7 +171,7 @@
     <string name="set_action_mode_repeat">Kartojimo režimas</string>
     <string name="desc_queue_bar">Atidaryti eilę</string>
     <string name="desc_clear_search">Išvalyti paieškos paraišką</string>
-    <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> įkeliama iš pridėtų aplankų, kurių tu pridėsi.</string>
+    <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> kraunama iš pridėtų aplankų, kurių tu pridėsi.</string>
     <string name="set_dirs_mode_include">Įtraukti</string>
     <string name="desc_remove_song">Pašalinti šią dainą</string>
     <string name="set_play_song_from_all">Groti iš visų dainų</string>
@@ -180,17 +180,17 @@
     <string name="set_play_song_from_artist">Groti iš atlikėjo</string>
     <string name="lbl_state_wiped">Išvalyta būsena</string>
     <string name="set_dirs_mode_exclude">Neįtraukti</string>
-    <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkeliama iš aplankų, kurių tu pridėsi.</string>
+    <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> kraunama iš aplankų, kurių tu pridėsi.</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="set_observing_desc">Perkrauti muzikos biblioteką, kai ji pasikeičia (reikia nuolatinio pranešimo)</string>
-    <string name="fmt_lib_song_count">Įkeltos dainos: %d</string>
-    <string name="fmt_lib_genre_count">Įkeltos žanrai: %d</string>
-    <string name="fmt_lib_album_count">Įkeltos albumai: %d</string>
-    <string name="fmt_lib_artist_count">Įkeltos atlikėjai: %d</string>
-    <string name="fmt_indexing">Kraunamas tavo muzikos biblioteka… (%1$d/%2$d)</string>
+    <string name="fmt_lib_song_count">Pakrautos dainos: %d</string>
+    <string name="fmt_lib_genre_count">Pakrautos žanros: %d</string>
+    <string name="fmt_lib_album_count">Pakrauti albumai: %d</string>
+    <string name="fmt_lib_artist_count">Pakrauti atlikėjai: %d</string>
+    <string name="fmt_indexing">Kraunama tavo muzikos biblioteka… (%1$d/%2$d)</string>
     <string name="desc_shuffle_all">Maišyti visas dainas</string>
     <string name="set_personalize">Personalizuotas</string>
-    <string name="set_pre_amp_warning">Įspėjimas: Keičiant išankstinį stiprintuvą į didelę teigiamą vertę, kai kuriuose garso takeliuose gali atsirasti tarpų.</string>
+    <string name="set_pre_amp_warning">Įspėjimas: keičiant išankstinį stiprintuvą į didelę teigiamą vertę, kai kuriuose garso takeliuose gali atsirasti tarpų.</string>
     <string name="desc_album_cover">Albumo viršelis %s</string>
     <string name="desc_artist_image">Atlikėjo vaizdas %s</string>
     <string name="def_playback">Nėra grojančio muzikos</string>
@@ -214,7 +214,7 @@
     <string name="lbl_mix">DJ miksas</string>
     <string name="lbl_compilation_live">Gyvai kompiliacija</string>
     <string name="lbl_compilation_remix">Remikso kompiliacija</string>
-    <string name="lbl_relative_path">Pagrindinis aplankas</string>
+    <string name="lbl_relative_path">Pirminis kelias</string>
     <string name="set_wipe_desc">Išvalyti anksčiau išsaugotą grojimo būseną (jei yra)</string>
     <string name="set_separators">Daugiareikšmiai separatoriai</string>
     <string name="set_separators_slash">Pasvirasis brūkšnys (/)</string>
@@ -228,7 +228,7 @@
     <string name="set_separators_desc">Konfigūruoti simbolius, kurie nurodo kelias žymių reikšmes</string>
     <string name="set_separators_comma">Kablelis (,)</string>
     <string name="set_pre_amp_without">Reguliavimas be žymų</string>
-    <string name="set_separators_warning">Įspėjimas: Naudojant šį nustatymą, kai kurios žymos gali būti neteisingai interpretuojamos kaip turinčios kelias reikšmes. Tai galima išspręsti prieš nepageidaujamus skiriamuosius ženklus naudojant atgalinį brūkšnį (\\).</string>
+    <string name="set_separators_warning">Įspėjimas: naudojant šį nustatymą, kai kurios žymos gali būti neteisingai interpretuojamos kaip turinčios kelias reikšmes. Tai galima išspręsti prieš nepageidaujamus skiriamuosius ženklus su agalinių brūkšniu (\\).</string>
     <string name="set_separators_semicolon">Kabliataškis (;)</string>
     <string name="set_cover_mode_quality">Aukštos kokybės</string>
     <string name="set_restore_state">Atkurti grojimo būseną</string>
@@ -245,6 +245,7 @@
         <item quantity="one">%d atlikėjas (-a)</item>
         <item quantity="few">%d atlikėjai</item>
         <item quantity="other">%d atlikėjų</item>
+        <item quantity="many">%d atlikėjų</item>
     </plurals>
     <string name="set_rescan">Perskenuoti muziką</string>
     <string name="set_rescan_desc">Išvalyti žymių talpyklą ir pilnai perkrauti muzikos biblioteką (lėčiau, bet labiau išbaigta)</string>
@@ -297,4 +298,10 @@
     <string name="set_play_song_by_itself">Groti dainą pačią</string>
     <string name="lbl_sort_mode">Rūšiuoti pagal</string>
     <string name="lbl_sort_direction">Kryptis</string>
+    <string name="desc_selection_image">Pasirinkimo vaizdas</string>
+    <string name="lbl_selection">Pasirinkimas</string>
+    <string name="lbl_error_info">Klaidos informacija</string>
+    <string name="lbl_copied">Nukopijuota</string>
+    <string name="lbl_show_error_info">Daugiau</string>
+    <string name="lbl_report">Pranešti</string>
 </resources>

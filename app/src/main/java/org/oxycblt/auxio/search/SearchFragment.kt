@@ -119,7 +119,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
-                this@SearchFragment.logD("Keyboard is not shown yet")
+                logD("Keyboard is not shown yet")
                 showKeyboard(this)
                 launchedKeyboard = true
             }

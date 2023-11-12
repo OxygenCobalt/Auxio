@@ -25,7 +25,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
@@ -36,8 +35,8 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
-import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.positiveOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
@@ -48,10 +47,15 @@ import org.oxycblt.auxio.util.update
  * Library-backed implementation of [Song].
  *
  * @param rawSong The [RawSong] to derive the member data from.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
+ * @param separators The [Separators] to parse multi-value tags with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Song {
+class SongImpl(
+    private val rawSong: RawSong,
+    private val nameFactory: Name.Known.Factory,
+    private val separators: Separators
+) : Song {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
@@ -70,66 +74,46 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
                 update(rawSong.albumArtistNames)
             }
     override val name =
-        Name.Known.from(
-            requireNotNull(rawSong.name) { "Invalid raw: No title" },
-            rawSong.sortName,
-            musicSettings)
+        nameFactory.parse(
+            requireNotNull(rawSong.name) { "Invalid raw ${rawSong.fileName}: No title" },
+            rawSong.sortName)
 
     override val track = rawSong.track
     override val disc = rawSong.disc?.let { Disc(it, rawSong.subtitle) }
     override val date = rawSong.date
-    override val uri = requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()
+    override val uri =
+        requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.fileName}: No id" }
+            .toAudioUri()
     override val path =
         Path(
-            name = requireNotNull(rawSong.fileName) { "Invalid raw: No display name" },
-            parent = requireNotNull(rawSong.directory) { "Invalid raw: No parent directory" })
+            name =
+                requireNotNull(rawSong.fileName) {
+                    "Invalid raw ${rawSong.fileName}: No display name"
+                },
+            parent =
+                requireNotNull(rawSong.directory) {
+                    "Invalid raw ${rawSong.fileName}: No parent directory"
+                })
     override val mimeType =
         MimeType(
             fromExtension =
-                requireNotNull(rawSong.extensionMimeType) { "Invalid raw: No mime type" },
+                requireNotNull(rawSong.extensionMimeType) {
+                    "Invalid raw ${rawSong.fileName}: No mime type"
+                },
             fromFormat = null)
-    override val size = requireNotNull(rawSong.size) { "Invalid raw: No size" }
-    override val durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" }
+    override val size = requireNotNull(rawSong.size) { "Invalid raw ${rawSong.fileName}: No size" }
+    override val durationMs =
+        requireNotNull(rawSong.durationMs) { "Invalid raw ${rawSong.fileName}: No duration" }
     override val replayGainAdjustment =
         ReplayGainAdjustment(
             track = rawSong.replayGainTrackAdjustment, album = rawSong.replayGainAlbumAdjustment)
 
-    override val dateAdded = requireNotNull(rawSong.dateAdded) { "Invalid raw: No date added" }
+    override val dateAdded =
+        requireNotNull(rawSong.dateAdded) { "Invalid raw ${rawSong.fileName}: No date added" }
+
     private var _album: AlbumImpl? = null
     override val album: Album
         get() = unlikelyToBeNull(_album)
-
-    private val hashCode = 31 * uid.hashCode() + rawSong.hashCode()
-
-    override fun hashCode() = hashCode
-
-    override fun equals(other: Any?) =
-        other is SongImpl && uid == other.uid && rawSong == other.rawSong
-
-    override fun toString() = "Song(uid=$uid, name=$name)"
-
-    private val artistMusicBrainzIds = rawSong.artistMusicBrainzIds.parseMultiValue(musicSettings)
-    private val artistNames = rawSong.artistNames.parseMultiValue(musicSettings)
-    private val artistSortNames = rawSong.artistSortNames.parseMultiValue(musicSettings)
-    private val rawIndividualArtists =
-        artistNames.mapIndexed { i, name ->
-            RawArtist(
-                artistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
-                name,
-                artistSortNames.getOrNull(i))
-        }
-
-    private val albumArtistMusicBrainzIds =
-        rawSong.albumArtistMusicBrainzIds.parseMultiValue(musicSettings)
-    private val albumArtistNames = rawSong.albumArtistNames.parseMultiValue(musicSettings)
-    private val albumArtistSortNames = rawSong.albumArtistSortNames.parseMultiValue(musicSettings)
-    private val rawAlbumArtists =
-        albumArtistNames.mapIndexed { i, name ->
-            RawArtist(
-                albumArtistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
-                name,
-                albumArtistSortNames.getOrNull(i))
-        }
 
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
@@ -143,40 +127,95 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
      * [Album].
      */
-    val rawAlbum =
-        RawAlbum(
-            mediaStoreId = requireNotNull(rawSong.albumMediaStoreId) { "Invalid raw: No album id" },
-            musicBrainzId = rawSong.albumMusicBrainzId?.toUuidOrNull(),
-            name = requireNotNull(rawSong.albumName) { "Invalid raw: No album name" },
-            sortName = rawSong.albumSortName,
-            releaseType = ReleaseType.parse(rawSong.releaseTypes.parseMultiValue(musicSettings)),
-            rawArtists =
-                rawAlbumArtists
-                    .ifEmpty { rawIndividualArtists }
-                    .distinctBy { it.key }
-                    .ifEmpty { listOf(RawArtist(null, null)) })
+    val rawAlbum: RawAlbum
 
     /**
      * The [RawArtist] instances collated by the [Song]. The artists of the song take priority,
      * followed by the album artists. If there are no artists, this field will be a single "unknown"
      * [RawArtist]. This can be used to group up [Song]s into an [Artist].
      */
-    val rawArtists =
-        rawIndividualArtists
-            .ifEmpty { rawAlbumArtists }
-            .distinctBy { it.key }
-            .ifEmpty { listOf(RawArtist()) }
+    val rawArtists: List<RawArtist>
 
     /**
      * The [RawGenre] instances collated by the [Song]. This can be used to group up [Song]s into a
      * [Genre]. ID3v2 Genre names are automatically converted to their resolved names.
      */
-    val rawGenres =
-        rawSong.genreNames
-            .parseId3GenreNames(musicSettings)
-            .map { RawGenre(it) }
-            .distinctBy { it.key }
-            .ifEmpty { listOf(RawGenre()) }
+    val rawGenres: List<RawGenre>
+
+    private var hashCode: Int = uid.hashCode()
+
+    init {
+        val artistMusicBrainzIds = separators.split(rawSong.artistMusicBrainzIds)
+        val artistNames = separators.split(rawSong.artistNames)
+        val artistSortNames = separators.split(rawSong.artistSortNames)
+        val rawIndividualArtists =
+            artistNames
+                .mapIndexedTo(mutableSetOf()) { i, name ->
+                    RawArtist(
+                        artistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
+                        name,
+                        artistSortNames.getOrNull(i))
+                }
+                .toList()
+
+        val albumArtistMusicBrainzIds = separators.split(rawSong.albumArtistMusicBrainzIds)
+        val albumArtistNames = separators.split(rawSong.albumArtistNames)
+        val albumArtistSortNames = separators.split(rawSong.albumArtistSortNames)
+        val rawAlbumArtists =
+            albumArtistNames
+                .mapIndexedTo(mutableSetOf()) { i, name ->
+                    RawArtist(
+                        albumArtistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
+                        name,
+                        albumArtistSortNames.getOrNull(i))
+                }
+                .toList()
+
+        rawAlbum =
+            RawAlbum(
+                mediaStoreId =
+                    requireNotNull(rawSong.albumMediaStoreId) {
+                        "Invalid raw ${rawSong.fileName}: No album id"
+                    },
+                musicBrainzId = rawSong.albumMusicBrainzId?.toUuidOrNull(),
+                name =
+                    requireNotNull(rawSong.albumName) {
+                        "Invalid raw ${rawSong.fileName}: No album name"
+                    },
+                sortName = rawSong.albumSortName,
+                releaseType = ReleaseType.parse(separators.split(rawSong.releaseTypes)),
+                rawArtists =
+                    rawAlbumArtists
+                        .ifEmpty { rawIndividualArtists }
+                        .ifEmpty { listOf(RawArtist()) })
+
+        rawArtists =
+            rawIndividualArtists.ifEmpty { rawAlbumArtists }.ifEmpty { listOf(RawArtist()) }
+
+        val genreNames =
+            (rawSong.genreNames.parseId3GenreNames() ?: separators.split(rawSong.genreNames))
+        rawGenres =
+            genreNames
+                .mapTo(mutableSetOf()) { RawGenre(it) }
+                .toList()
+                .ifEmpty { listOf(RawGenre()) }
+
+        hashCode = 31 * hashCode + rawSong.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
+    }
+
+    override fun hashCode() = hashCode
+
+    // Since equality on public-facing music models is not identical to the tag equality,
+    // we just compare raw instances and how they are interpreted.
+    override fun equals(other: Any?) =
+        other is SongImpl &&
+            uid == other.uid &&
+            nameFactory == other.nameFactory &&
+            separators == other.separators &&
+            rawSong == other.rawSong
+
+    override fun toString() = "Song(uid=$uid, name=$name)"
 
     /**
      * Links this [Song] with a parent [Album].
@@ -211,10 +250,12 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
      * @return This instance upcasted to [Song].
      */
     fun finalize(): Song {
-        checkNotNull(_album) { "Malformed song: No album" }
+        checkNotNull(_album) { "Malformed song ${path.name}: No album" }
 
-        check(_artists.isNotEmpty()) { "Malformed song: No artists" }
-        check(_artists.size == rawArtists.size) { "Malformed song: Artist grouping mismatch" }
+        check(_artists.isNotEmpty()) { "Malformed song ${path.name}: No artists" }
+        check(_artists.size == rawArtists.size) {
+            "Malformed song ${path.name}: Artist grouping mismatch"
+        }
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
@@ -224,8 +265,10 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
             _artists[i] = other
         }
 
-        check(_genres.isNotEmpty()) { "Malformed song: No genres" }
-        check(_genres.size == rawGenres.size) { "Malformed song: Genre grouping mismatch" }
+        check(_genres.isNotEmpty()) { "Malformed song ${path.name}: No genres" }
+        check(_genres.size == rawGenres.size) {
+            "Malformed song ${path.name}: Genre grouping mismatch"
+        }
         for (i in _genres.indices) {
             // Non-destructively reorder the linked genres so that they align with
             // the genre ordering within the song metadata.
@@ -242,12 +285,12 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
  * Library-backed implementation of [Album].
  *
  * @param grouping [Grouping] to derive the member data from.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumImpl(
     grouping: Grouping<RawAlbum, SongImpl>,
-    musicSettings: MusicSettings,
+    private val nameFactory: Name.Known.Factory
 ) : Album {
     private val rawAlbum = grouping.raw.inner
 
@@ -261,7 +304,7 @@ class AlbumImpl(
                 update(rawAlbum.name)
                 update(rawAlbum.rawArtists.map { it.name })
             }
-    override val name = Name.Known.from(rawAlbum.name, rawAlbum.sortName, musicSettings)
+    override val name = nameFactory.parse(rawAlbum.name, rawAlbum.sortName)
     override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
     override val coverUri = CoverUri(rawAlbum.mediaStoreId.toCoverUri(), grouping.raw.src.uri)
@@ -311,13 +354,20 @@ class AlbumImpl(
         dateAdded = earliestDateAdded
 
         hashCode = 31 * hashCode + rawAlbum.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
     override fun hashCode() = hashCode
 
+    // Since equality on public-facing music models is not identical to the tag equality,
+    // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
-        other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
+        other is AlbumImpl &&
+            uid == other.uid &&
+            rawAlbum == other.rawAlbum &&
+            nameFactory == other.nameFactory &&
+            songs == other.songs
 
     override fun toString() = "Album(uid=$uid, name=$name)"
 
@@ -343,9 +393,11 @@ class AlbumImpl(
      * @return This instance upcasted to [Album].
      */
     fun finalize(): Album {
-        check(songs.isNotEmpty()) { "Malformed album: Empty" }
-        check(_artists.isNotEmpty()) { "Malformed album: No artists" }
-        check(_artists.size == rawArtists.size) { "Malformed album: Artist grouping mismatch" }
+        check(songs.isNotEmpty()) { "Malformed album $name: Empty" }
+        check(_artists.isNotEmpty()) { "Malformed album $name: No artists" }
+        check(_artists.size == rawArtists.size) {
+            "Malformed album $name: Artist grouping mismatch"
+        }
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
@@ -362,10 +414,13 @@ class AlbumImpl(
  * Library-backed implementation of [Artist].
  *
  * @param grouping [Grouping] to derive the member data from.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSettings) : Artist {
+class ArtistImpl(
+    grouping: Grouping<RawArtist, Music>,
+    private val nameFactory: Name.Known.Factory
+) : Artist {
     private val rawArtist = grouping.raw.inner
 
     override val uid =
@@ -373,7 +428,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
         rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ARTISTS, it) }
             ?: Music.UID.auxio(MusicType.ARTISTS) { update(rawArtist.name) }
     override val name =
-        rawArtist.name?.let { Name.Known.from(it, rawArtist.sortName, musicSettings) }
+        rawArtist.name?.let { nameFactory.parse(it, rawArtist.sortName) }
             ?: Name.Unknown(R.string.def_artist)
 
     override val songs: Set<Song>
@@ -403,7 +458,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
                     music.link(this)
                     albumMap[music] = true
                 }
-                else -> error("Unexpected input music ${music::class.simpleName}")
+                else -> error("Unexpected input music $music in $name ${music::class.simpleName}")
             }
         }
 
@@ -414,6 +469,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
         durationMs = songs.sumOf { it.durationMs }.positiveOrNull()
 
         hashCode = 31 * hashCode + rawArtist.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
@@ -421,10 +477,13 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
     // the same UID but different songs are not equal.
     override fun hashCode() = hashCode
 
+    // Since equality on public-facing music models is not identical to the tag equality,
+    // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
         other is ArtistImpl &&
             uid == other.uid &&
             rawArtist == other.rawArtist &&
+            nameFactory == other.nameFactory &&
             songs == other.songs
 
     override fun toString() = "Artist(uid=$uid, name=$name)"
@@ -447,7 +506,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
      * @return This instance upcasted to [Artist].
      */
     fun finalize(): Artist {
-        check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist: Empty" }
+        check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist $name: Empty" }
         genres =
             Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
                 .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
@@ -459,15 +518,18 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
  * Library-backed implementation of [Genre].
  *
  * @param grouping [Grouping] to derive the member data from.
- * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param nameFactory The [Name.Known.Factory] to interpret name information with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSettings) : Genre {
+class GenreImpl(
+    grouping: Grouping<RawGenre, SongImpl>,
+    private val nameFactory: Name.Known.Factory
+) : Genre {
     private val rawGenre = grouping.raw.inner
 
     override val uid = Music.UID.auxio(MusicType.GENRES) { update(rawGenre.name) }
     override val name =
-        rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
+        rawGenre.name?.let { nameFactory.parse(it, rawGenre.name) }
             ?: Name.Unknown(R.string.def_genre)
 
     override val songs: Set<Song>
@@ -491,13 +553,18 @@ class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSett
         durationMs = totalDuration
 
         hashCode = 31 * hashCode + rawGenre.hashCode()
+        hashCode = 31 * hashCode + nameFactory.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }
 
     override fun hashCode() = hashCode
 
     override fun equals(other: Any?) =
-        other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
+        other is GenreImpl &&
+            uid == other.uid &&
+            rawGenre == other.rawGenre &&
+            nameFactory == other.nameFactory &&
+            songs == other.songs
 
     override fun toString() = "Genre(uid=$uid, name=$name)"
 
@@ -519,7 +586,7 @@ class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSett
      * @return This instance upcasted to [Genre].
      */
     fun finalize(): Genre {
-        check(songs.isNotEmpty()) { "Malformed genre: Empty" }
+        check(songs.isNotEmpty()) { "Malformed genre $name: Empty" }
         return this
     }
 }

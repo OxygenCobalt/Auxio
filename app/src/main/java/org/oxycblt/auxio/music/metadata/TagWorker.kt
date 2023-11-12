@@ -77,7 +77,6 @@ private class TagWorkerImpl(
     private val rawSong: RawSong,
     private val future: Future<TrackGroupArray>
 ) : TagWorker {
-
     override fun poll(): RawSong? {
         if (!future.isDone) {
             // Not done yet, nothing to do.

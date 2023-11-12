@@ -1,5 +1,21 @@
 # Changelog
 
+## dev
+
+#### What's New
+- Added ability to rewind/skip tracks by swiping back/forward
+
+#### What's Improved
+- Added support for native M4A multi-value tags based on duplicate atoms
+
+#### What's Fixed
+- Fixed app restart being required when changing intelligent sorting
+or music separator settings
+- Fixed widget/notification actions not working on Android 14
+- Fixed app crash when using hebrew language
+- Fixed app crash when adding to a playlist while in the playlist detail view
+- Fixed music loading failing in some cases on Android 14
+
 ## 3.2.0
 
 #### What's New
@@ -15,6 +31,10 @@ aspect ratio setting
 
 #### What's Fixed
 - Playlist detail view now respects playback settings
+
+
+#### Dev/Meta
+- Revamped navigation backend
 
 ## 3.1.4
 

@@ -19,30 +19,36 @@
 package org.oxycblt.auxio.music.info
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DiscTest {
     @Test
-    fun disc_compare() {
-        val a = Disc(1, "Part I")
-        val b = Disc(2, "Part II")
+    fun disc_equals_byNum() {
+        val a = Disc(0, null)
+        val b = Disc(0, null)
+        assertEquals(a, b)
+        assertEquals(a.hashCode(), b.hashCode())
+    }
+
+    @Test
+    fun disc_equals_bySubtitle() {
+        val a = Disc(0, "z subtitle")
+        val b = Disc(0, "a subtitle")
+        assertEquals(a, b)
+        assertEquals(a.hashCode(), b.hashCode())
+    }
+
+    @Test
+    fun disc_compareTo_byNum() {
+        val a = Disc(0, null)
+        val b = Disc(1, null)
         assertEquals(-1, a.compareTo(b))
     }
 
     @Test
-    fun disc_equals_correct() {
-        val a = Disc(1, "Part I")
-        val b = Disc(1, "Part I")
-        assertTrue(a == b)
-        assertTrue(a.hashCode() == b.hashCode())
-    }
-
-    @Test
-    fun disc_equals_inconsistentNames() {
-        val a = Disc(1, "Part I")
-        val b = Disc(1, null)
-        assertTrue(a == b)
-        assertTrue(a.hashCode() == b.hashCode())
+    fun disc_compareTo_bySubtitle() {
+        val a = Disc(0, "z subtitle")
+        val b = Disc(1, "a subtitle")
+        assertEquals(-1, a.compareTo(b))
     }
 }

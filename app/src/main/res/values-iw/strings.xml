@@ -176,12 +176,12 @@
     <string name="err_did_not_save">לא ניתן לשמור את המצב</string>
     <string name="err_no_perms">‏ Auxio צריך הרשאות על מנת לקרוא את ספריית המוזיקה שלך</string>
     <string name="desc_queue_bar">פתיחת התור</string>
-    <string name="fmt_lib_total_duration">סך הכל משך: %s</string>
+    <string name="fmt_lib_total_duration">משך כולל: %s</string>
     <string name="fmt_def_playlist">רשימת השמעה %d</string>
     <string name="fmt_lib_artist_count">אומנים טעונים: %d</string>
     <string name="fmt_lib_song_count">שירים טעונים: %d</string>
     <string name="fmt_lib_album_count">אלבומים טעונים: %d</string>
-    <string name="fmt_lib_genre_count">סוגות טעונות: %d</string>
+    <string name="fmt_lib_genre_count">ז\'אנרים טעונים: %d</string>
     <string name="lbl_state_wiped">המצב נוקה</string>
     <string name="set_library">ספריה</string>
     <string name="set_save_desc">שמירת מצב הנגינה הנוכחי כעת</string>
@@ -197,15 +197,15 @@
     <string name="desc_artist_image">תמונת אומן עבור %s</string>
     <string name="desc_genre_image">יצירת תמונה עבור %s</string>
     <string name="def_artist">אומן לא ידוע</string>
-    <string name="def_genre">סוגה לא ידועה</string>
+    <string name="def_genre">ז\'אנר לא ידוע</string>
     <string name="def_date">אין תאריך</string>
     <string name="def_track">אין רצועה</string>
-    <string name="def_playback">אך מוזיקה אינה מתנגנת</string>
+    <string name="def_playback">מוזיקה לא מתנגנת</string>
     <string name="clr_blue">כחול</string>
     <string name="clr_deep_blue">כחול עמוק</string>
     <string name="clr_grey">אפור</string>
     <string name="clr_dynamic">דינמי</string>
-    <string name="fmt_indexing">המוזיקה שלך בטעינה (‎%1$d/%2$d)…</string>
+    <string name="fmt_indexing">המוזיקה שלך בטעינה… (‎%1$d/%2$d)</string>
     <string name="fmt_disc_no">דיסק %d</string>
     <string name="set_dirs_desc">ניהול המקומות שמהם תיטען מוזיקה</string>
     <string name="def_song_count">אין שירים</string>
@@ -215,7 +215,7 @@
     <plurals name="fmt_artist_count">
         <item quantity="one">אומן אחד</item>
         <item quantity="two">שני אומנים</item>
-        <item quantity="many">%d אומנים</item>
+        <item quantity="other">%d אומנים</item>
     </plurals>
     <string name="set_dirs_mode_include">לכלול</string>
     <string name="set_reindex">רענון מוזיקה</string>
@@ -226,12 +226,12 @@
     <plurals name="fmt_song_count">
         <item quantity="one">שיר אחד</item>
         <item quantity="two">שני שירים</item>
-        <item quantity="many">%d שירים</item>
+        <item quantity="other">%d שירים</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">אלבום אחד</item>
         <item quantity="two">שני אלבומים</item>
-        <item quantity="many">%d אלבומים</item>
+        <item quantity="other">%d אלבומים</item>
     </plurals>
     <string name="lng_playlist_renamed">שונה שם רשימת ההשמעה</string>
     <string name="lng_playlist_deleted">רשימת השמעה נמחקה</string>
@@ -242,7 +242,7 @@
     <string name="desc_playlist_image">תמונת רשימת השמעה עבור %s</string>
     <string name="clr_red">אדום</string>
     <string name="clr_green">ירוק</string>
-    <string name="lbl_relative_path">נתיב הורה</string>
+    <string name="lbl_relative_path">נתיב ראשי</string>
     <string name="err_did_not_restore">לא ניתן לשחזר את המצב</string>
     <string name="desc_track_number">רצועה %d</string>
     <string name="desc_new_playlist">יצירת רשימת השמעה חדשה</string>
@@ -257,7 +257,7 @@
     <string name="def_disc">אין דיסק</string>
     <string name="clr_deep_green">ירוק עמוק</string>
     <string name="clr_yellow">צהוב</string>
-    <string name="fmt_deletion_info">מחיקת %s\? פעולה זו לא ניתן לביטול.</string>
+    <string name="fmt_deletion_info">למחוק את %s\? פעולה זו לא ניתן לביטול.</string>
     <string name="lbl_song">שיר</string>
     <string name="set_intelligent_sorting">מיון חכם</string>
     <string name="lbl_parent_detail">הצגה</string>
@@ -271,6 +271,34 @@
     <string name="set_dirs_mode_include_desc">מוזיקה תיטען <b>רק</b> מהתיקיות שנוספו.</string>
     <string name="lbl_appears_on">מופיע~ה ב-</string>
     <string name="set_play_song_by_itself">ניגון השיר בלבד</string>
-    <string name="set_pre_amp_warning">אזהרה: שינוי המגבר לערך חיובי גבוה עלול לגרום לשיאים בחלק מרצועות האודיו</string>
+    <string name="set_pre_amp_warning">אזהרה: שינוי המגבר לערך חיובי גבוה עלול לגרום לעיוות (דיסטורשן) בחלק מרצועות האודיו.</string>
     <string name="set_restore_state">שחזור מצב נגינה</string>
+    <string name="clr_indigo">אינדיגו</string>
+    <string name="cdc_mp3">אודיו MPEG-1</string>
+    <string name="cdc_mp4">אודיו MPEG-4</string>
+    <string name="cdc_ogg">אודיו Ogg</string>
+    <string name="clr_cyan">ציאן</string>
+    <string name="clr_teal">טורקיז</string>
+    <string name="clr_brown">חום</string>
+    <string name="fmt_selected">%d נבחרו</string>
+    <string name="set_state">התמדה</string>
+    <string name="lbl_show_error_info">עוד</string>
+    <string name="lbl_selection">בחירה</string>
+    <string name="lbl_error_info">מידע על השגיאה</string>
+    <string name="lbl_report">דיווח</string>
+    <string name="desc_selection_image">תמונה נבחרת</string>
+    <string name="cdc_flac">קודק אודיו חופשי ללא איבוד נתונים (FLAC)</string>
+    <string name="clr_purple">סגול</string>
+    <string name="clr_deep_purple">סגול עמוק</string>
+    <string name="fmt_db_pos">+%.1f דציבלים (dB)</string>
+    <string name="fmt_db_neg">-%.1f דציבלים (dB)</string>
+    <string name="fmt_sample_rate">%d הרץ (Hz)</string>
+    <string name="fmt_bitrate">%d קילוביטים לשנייה (kbps)</string>
+    <string name="lbl_copied">מועתק</string>
+    <string name="set_restore_desc">שחזור מצב הנגינה שנשמר קודם (אם קיים)</string>
+    <string name="cdc_mka">אודיו Matroska</string>
+    <string name="cdc_aac">קידוד אודיו מתקדם (AAC)</string>
+    <string name="fmt_list">%1$s, %2$s</string>
+    <string name="clr_lime">ליים</string>
+    <string name="fmt_editing">%s נערך</string>
 </resources>

@@ -271,4 +271,7 @@
     <string name="set_rescan_desc">Tyhjennä tunnistevälimuisti ja lataa musiikkikirjasto kokonaan uudelleen (hitaampi mutta kattavampi)</string>
     <string name="lbl_song">Kappale</string>
     <string name="lbl_parent_detail">Näytä</string>
+    <string name="lbl_show_error_info">Lisää</string>
+    <string name="lbl_copied">Kopioitu</string>
+    <string name="lbl_report">Ilmoita virheestä</string>
 </resources>

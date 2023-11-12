@@ -197,7 +197,7 @@
     <string name="lbl_single">Tekli</string>
     <string name="lbl_mixtape">Karışık kaset</string>
     <string name="lbl_compilation_live">Canlı derleme</string>
-    <string name="lbl_compilation_remix">Remiks derlemeler</string>
+    <string name="lbl_compilation_remix">Remiks derlemesi</string>
     <string name="lbl_equalizer">Ekolayzır</string>
     <string name="lbl_ep_live">Canlı EP</string>
     <string name="lbl_ep_remix">Remiks EP</string>
@@ -228,8 +228,8 @@
         <item quantity="one">%d sanatçı</item>
         <item quantity="other">%d sanatçılar</item>
     </plurals>
-    <string name="lbl_mixes">Karmalar</string>
-    <string name="lbl_mix">Karma</string>
+    <string name="lbl_mixes">DJ Miksleri</string>
+    <string name="lbl_mix">DJ Mix</string>
     <string name="set_rescan_desc">Etiket önbelleğini temizleyin ve müzik kitaplığını tamamen yeniden yükleyin (daha yavaş, ancak daha eksiksiz)</string>
     <string name="set_separators">Çok değerli ayırıcılar</string>
     <string name="set_separators_desc">Birden fazla etiket değerini ifade eden karakterleri yapılandırın</string>
@@ -278,4 +278,30 @@
     <string name="lbl_rename">Yeniden Adlandır</string>
     <string name="lbl_rename_playlist">Oynatma Listesini Yeniden Adlandır</string>
     <string name="lbl_confirm_delete_playlist">Oynatma listesini silmek istiyor musun\?</string>
+    <string name="lbl_sort_direction">Yön</string>
+    <string name="desc_selection_image">Seçim görüntüsü</string>
+    <string name="lbl_selection">Seçim</string>
+    <string name="set_play_song_by_itself">Şarkıyı kendi kendine çal</string>
+    <string name="fmt_def_playlist">Çalma listesi %d</string>
+    <string name="lng_playlist_created">Oynatma listesi oluşturuldu</string>
+    <string name="lbl_show_error_info">Daha fazla</string>
+    <string name="def_disc">Disk yok</string>
+    <string name="lbl_copied">Kopyalandı</string>
+    <string name="lbl_playlist_add">Çalma listesine ekle</string>
+    <string name="lbl_share">Paylaş</string>
+    <string name="lbl_edit">Düzenle</string>
+    <string name="lng_playlist_added">Çalma listesine eklendi</string>
+    <string name="def_song_count">Şarkı yok</string>
+    <string name="set_square_covers_desc">Tüm albüm kapaklarını 1:1 en boy oranına kırp</string>
+    <string name="fmt_editing">%s düzenleniyor</string>
+    <string name="lbl_sort_mode">Göre sırala</string>
+    <string name="lbl_parent_detail">Görünüm</string>
+    <string name="lbl_song">Şarkı</string>
+    <string name="lng_playlist_deleted">Çalma listesi silindi</string>
+    <string name="lbl_report">Rapor</string>
+    <string name="lbl_error_info">Hata bilgisi</string>
+    <string name="set_square_covers">Kare albüm kapaklarına zorla</string>
+    <string name="lng_playlist_renamed">Çalma listesi yeniden adlandırıldı</string>
+    <string name="fmt_deletion_info">%s silinsin mi\? Geri alınamaz.</string>
+    <string name="lbl_appears_on">Üzerinde görünür</string>
 </resources>
