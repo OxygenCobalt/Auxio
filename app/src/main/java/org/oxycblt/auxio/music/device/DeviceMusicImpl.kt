@@ -432,7 +432,7 @@ class ArtistImpl(
             ?: Name.Unknown(R.string.def_artist)
 
     override val songs: Set<Song>
-    override val albums: Set<Album>
+    override val albums: Set<Album> = emptySet()
     override val explicitAlbums: Set<Album>
     override val implicitAlbums: Set<Album>
     override val durationMs: Long?
@@ -463,7 +463,7 @@ class ArtistImpl(
         }
 
         songs = distinctSongs
-        albums = albumMap.keys
+        val albums = albumMap.keys
         explicitAlbums = albums.filterTo(mutableSetOf()) { albumMap[it] == true }
         implicitAlbums = albums.filterNotTo(mutableSetOf()) { albumMap[it] == true }
         durationMs = songs.sumOf { it.durationMs }.positiveOrNull()
@@ -506,7 +506,16 @@ class ArtistImpl(
      * @return This instance upcasted to [Artist].
      */
     fun finalize(): Artist {
-        check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist $name: Empty" }
+        // There are valid artist configurations:
+        // 1. No songs, no implicit albums, some explicit albums
+        // 2. Some songs, no implicit albums, some explicit albums
+        // 3. Some songs, some implicit albums, no implicit albums
+        // 4. Some songs, some implicit albums, some explicit albums
+        // I'm pretty sure the latter check could be reduced to just explicitAlbums.isNotEmpty,
+        // but I can't be 100% certain.
+        check(songs.isNotEmpty() || (implicitAlbums.size + explicitAlbums.size) > 0) {
+            "Malformed artist $name: Empty"
+        }
         genres =
             Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
                 .genres(songs.flatMapTo(mutableSetOf()) { it.genres })

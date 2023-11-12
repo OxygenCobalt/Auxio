@@ -6,6 +6,10 @@
 - Added ability to rewind/skip tracks by swiping back/forward
 - Added support for demo release type
 
+#### What's Changed
+- Albums linked to an artist only as a collaborator are no longer included
+in an artist's album count
+
 ## 3.2.1
 
 #### What's Improved

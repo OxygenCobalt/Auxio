@@ -357,6 +357,7 @@
     <string name="def_disc">No disc</string>
     <string name="def_track">No track</string>
     <string name="def_song_count">No songs</string>
+    <string name="def_album_count">No albums</string>
     <string name="def_playback">No music playing</string>
 
     <!-- Codec Namespace | Format names -->

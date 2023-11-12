@@ -178,7 +178,11 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Menu.ForArtist>() {
         binding.menuInfo.text =
             getString(
                 R.string.fmt_two,
-                context.getPlural(R.plurals.fmt_album_count, menu.artist.albums.size),
+                if (menu.artist.explicitAlbums.isNotEmpty()) {
+                    context.getPlural(R.plurals.fmt_album_count, menu.artist.explicitAlbums.size)
+                } else {
+                    context.getString(R.string.def_album_count)
+                },
                 if (menu.artist.songs.isNotEmpty()) {
                     context.getPlural(R.plurals.fmt_song_count, menu.artist.songs.size)
                 } else {
