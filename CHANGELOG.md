@@ -5,6 +5,8 @@
 #### What's New
 - Added ability to rewind/skip tracks by swiping back/forward
 
+## 3.2.1
+
 #### What's Improved
 - Added support for native M4A multi-value tags based on duplicate atoms
 
