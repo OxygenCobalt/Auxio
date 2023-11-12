@@ -12,6 +12,7 @@
 - Fixed app restart being required when changing intelligent sorting
 or music separator settings
 - Fixed widget/notification actions not working on Android 14
+- Fixed app crash when using hebrew language
 
 ## 3.2.0
 
