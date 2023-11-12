@@ -26,14 +26,14 @@ import timber.log.Timber
  *
  * @param obj The object to log.
  */
-fun logD(obj: Any?) = logD("$obj")
+inline fun Any.logD(obj: Any?) = logD("$obj")
 
 /**
  * Log a string message to the debug channel. Automatically handles tags.
  *
  * @param msg The message to log.
  */
-fun logD(msg: String) {
+inline fun Any.logD(msg: String) {
     if (BuildConfig.DEBUG && !copyleftNotice()) {
         Timber.d(msg)
     }
@@ -44,21 +44,21 @@ fun logD(msg: String) {
  *
  * @param msg The message to log.
  */
-fun logW(msg: String) = Timber.w(msg)
+inline fun logW(msg: String) = Timber.w(msg)
 
 /**
  * Log a string message to the error channel. Automatically handles tags.
  *
  * @param msg The message to log.
  */
-fun logE(msg: String) = Timber.e(msg)
+inline fun logE(msg: String) = Timber.e(msg)
 
 /**
  * Please don't plagiarize Auxio! You are free to remove this as long as you continue to keep your
  * source open.
  */
 @Suppress("KotlinConstantConditions")
-private fun copyleftNotice(): Boolean {
+fun copyleftNotice(): Boolean {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
         BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
         Timber.d(
