@@ -18,9 +18,6 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import androidx.annotation.VisibleForTesting
-import org.oxycblt.auxio.music.MusicSettings
-
 /**
  * Defines the user-specified parsing of multi-value tags. This should be used to parse any tags
  * that may be delimited with a separator character.
@@ -45,15 +42,12 @@ interface Separators {
         const val AND = '&'
 
         /**
-         * Creates a new instance from the **current state** of the given [MusicSettings]'s
-         * user-defined separator configuration.
+         * Creates a new instance from a string of separator characters to use.
          *
-         * @param settings The [MusicSettings] to use.
-         * @return A new [Separators] instance reflecting the configuration state.
+         * @param chars The separator characters to use. Each character in the string will be
+         *   checked for when splitting a string list.
+         * @return A new [Separators] instance reflecting the separators.
          */
-        fun from(settings: MusicSettings) = from(settings.separators)
-
-        @VisibleForTesting
         fun from(chars: String) =
             if (chars.isNotEmpty()) {
                 CharSeparators(chars.toSet())

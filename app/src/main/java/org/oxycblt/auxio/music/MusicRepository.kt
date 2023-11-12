@@ -36,6 +36,8 @@ import org.oxycblt.auxio.music.cache.CacheRepository
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.MediaStoreExtractor
+import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.metadata.TagExtractor
 import org.oxycblt.auxio.music.user.MutableUserLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
@@ -223,7 +225,8 @@ constructor(
     private val mediaStoreExtractor: MediaStoreExtractor,
     private val tagExtractor: TagExtractor,
     private val deviceLibraryFactory: DeviceLibrary.Factory,
-    private val userLibraryFactory: UserLibrary.Factory
+    private val userLibraryFactory: UserLibrary.Factory,
+    private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
@@ -356,6 +359,8 @@ constructor(
     }
 
     private suspend fun indexImpl(worker: MusicRepository.IndexingWorker, withCache: Boolean) {
+        // TODO: Find a way to break up this monster of a method, preferably as another class.
+
         val start = System.currentTimeMillis()
         // Make sure we have permissions before going forward. Theoretically this would be better
         // done at the UI level, but that intertwines logic and display too much.
@@ -364,6 +369,17 @@ constructor(
             logE("Permissions were not granted")
             throw NoAudioPermissionException()
         }
+
+        // Obtain configuration information
+        val constraints =
+            MediaStoreExtractor.Constraints(musicSettings.excludeNonMusic, musicSettings.musicDirs)
+        val separators = Separators.from(musicSettings.separators)
+        val nameFactory =
+            if (musicSettings.intelligentSorting) {
+                Name.Known.IntelligentFactory
+            } else {
+                Name.Known.SimpleFactory
+            }
 
         // Begin with querying MediaStore and the music cache. The former is needed for Auxio
         // to figure out what songs are (probably) on the device, and the latter will be needed
@@ -376,7 +392,7 @@ constructor(
             worker.scope.async {
                 val query =
                     try {
-                        mediaStoreExtractor.query()
+                        mediaStoreExtractor.query(constraints)
                     } catch (e: Exception) {
                         // Normally, errors in an async call immediately bubble up to the Looper
                         // and crash the app. Thus, we have to wrap any error into a Result
@@ -445,7 +461,8 @@ constructor(
             worker.scope.async(Dispatchers.Default) {
                 val deviceLibrary =
                     try {
-                        deviceLibraryFactory.create(completeSongs, processedSongs)
+                        deviceLibraryFactory.create(
+                            completeSongs, processedSongs, separators, nameFactory)
                     } catch (e: Exception) {
                         processedSongs.close(e)
                         return@async Result.failure(e)
@@ -518,7 +535,7 @@ constructor(
         logD("Awaiting DeviceLibrary creation")
         val deviceLibrary = deviceLibraryJob.await().getOrThrow()
         logD("Starting UserLibrary creation")
-        val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary)
+        val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary, nameFactory)
 
         // Loading process is functionally done, indicate such
         logD(

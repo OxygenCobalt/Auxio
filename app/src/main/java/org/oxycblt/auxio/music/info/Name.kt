@@ -23,12 +23,11 @@ import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import java.text.CollationKey
 import java.text.Collator
-import org.oxycblt.auxio.music.MusicSettings
 
 /**
  * The name of a music item.
  *
- * This class automatically implements
+ * This class automatically implements advanced sorting heuristics for music naming,
  *
  * @author Alexander Capehart
  */
@@ -80,7 +79,7 @@ sealed interface Name : Comparable<Name> {
                 is Unknown -> 1
             }
 
-        interface Factory {
+        sealed interface Factory {
             /**
              * Create a new instance of [Name.Known]
              *
@@ -88,22 +87,16 @@ sealed interface Name : Comparable<Name> {
              * @param sort The raw sort name obtained from the music item
              */
             fun parse(raw: String, sort: String?): Known
+        }
 
-            companion object {
-                /**
-                 * Creates a new instance from the **current state** of the given [MusicSettings]'s
-                 * user-defined name configuration.
-                 *
-                 * @param settings The [MusicSettings] to use.
-                 * @return A [Factory] instance reflecting the configuration state.
-                 */
-                fun from(settings: MusicSettings) =
-                    if (settings.intelligentSorting) {
-                        IntelligentKnownName.Factory
-                    } else {
-                        SimpleKnownName.Factory
-                    }
-            }
+        /** Produces a simple [Known] with basic sorting heuristics that are locale-independent. */
+        data object SimpleFactory : Factory {
+            override fun parse(raw: String, sort: String?) = SimpleKnownName(raw, sort)
+        }
+
+        /** Produces an intelligent [Known] with advanced, but more fragile heuristics. */
+        data object IntelligentFactory : Factory {
+            override fun parse(raw: String, sort: String?) = IntelligentKnownName(raw, sort)
         }
     }
 
@@ -137,7 +130,6 @@ private val punctRegex by lazy { Regex("[\\p{Punct}+]") }
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-@VisibleForTesting
 data class SimpleKnownName(override val raw: String, override val sort: String?) : Name.Known() {
     override val sortTokens = listOf(parseToken(sort ?: raw))
 
@@ -148,10 +140,6 @@ data class SimpleKnownName(override val raw: String, override val sort: String?)
         // Always use lexicographic mode since we aren't parsing any numeric components
         return SortToken(collationKey, SortToken.Type.LEXICOGRAPHIC)
     }
-
-    data object Factory : Name.Known.Factory {
-        override fun parse(raw: String, sort: String?) = SimpleKnownName(raw, sort)
-    }
 }
 
 /**
@@ -159,7 +147,6 @@ data class SimpleKnownName(override val raw: String, override val sort: String?)
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-@VisibleForTesting
 data class IntelligentKnownName(override val raw: String, override val sort: String?) :
     Name.Known() {
     override val sortTokens = parseTokens(sort ?: raw)
@@ -206,10 +193,6 @@ data class IntelligentKnownName(override val raw: String, override val sort: Str
             }
             SortToken(collationKey, type)
         }
-    }
-
-    data object Factory : Name.Known.Factory {
-        override fun parse(raw: String, sort: String?) = IntelligentKnownName(raw, sort)
     }
 
     companion object {

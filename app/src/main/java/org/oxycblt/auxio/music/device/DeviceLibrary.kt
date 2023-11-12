@@ -28,7 +28,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
@@ -110,19 +109,19 @@ interface DeviceLibrary {
         suspend fun create(
             rawSongs: Channel<RawSong>,
             processedSongs: Channel<RawSong>,
+            separators: Separators,
+            nameFactory: Name.Known.Factory
         ): DeviceLibraryImpl
     }
 }
 
-class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: MusicSettings) :
-    DeviceLibrary.Factory {
+class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
     override suspend fun create(
         rawSongs: Channel<RawSong>,
-        processedSongs: Channel<RawSong>
+        processedSongs: Channel<RawSong>,
+        separators: Separators,
+        nameFactory: Name.Known.Factory
     ): DeviceLibraryImpl {
-        val nameFactory = Name.Known.Factory.from(musicSettings)
-        val separators = Separators.from(musicSettings)
-
         val songGrouping = mutableMapOf<Music.UID, SongImpl>()
         val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl>>()
         val artistGrouping = mutableMapOf<RawArtist.Key, Grouping<RawArtist, Music>>()

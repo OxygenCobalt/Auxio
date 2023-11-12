@@ -22,7 +22,6 @@ import java.lang.Exception
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
@@ -82,7 +81,8 @@ interface UserLibrary {
          */
         suspend fun create(
             rawPlaylists: List<RawPlaylist>,
-            deviceLibrary: DeviceLibrary
+            deviceLibrary: DeviceLibrary,
+            nameFactory: Name.Known.Factory
         ): MutableUserLibrary
     }
 }
@@ -139,9 +139,7 @@ interface MutableUserLibrary : UserLibrary {
     suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>): Boolean
 }
 
-class UserLibraryFactoryImpl
-@Inject
-constructor(private val playlistDao: PlaylistDao, private val musicSettings: MusicSettings) :
+class UserLibraryFactoryImpl @Inject constructor(private val playlistDao: PlaylistDao) :
     UserLibrary.Factory {
     override suspend fun query() =
         try {
@@ -155,22 +153,22 @@ constructor(private val playlistDao: PlaylistDao, private val musicSettings: Mus
 
     override suspend fun create(
         rawPlaylists: List<RawPlaylist>,
-        deviceLibrary: DeviceLibrary
+        deviceLibrary: DeviceLibrary,
+        nameFactory: Name.Known.Factory
     ): MutableUserLibrary {
-        val nameFactory = Name.Known.Factory.from(musicSettings)
         val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
         for (rawPlaylist in rawPlaylists) {
             val playlistImpl = PlaylistImpl.fromRaw(rawPlaylist, deviceLibrary, nameFactory)
             playlistMap[playlistImpl.uid] = playlistImpl
         }
-        return UserLibraryImpl(playlistDao, playlistMap, musicSettings)
+        return UserLibraryImpl(playlistDao, playlistMap, nameFactory)
     }
 }
 
 private class UserLibraryImpl(
     private val playlistDao: PlaylistDao,
     private val playlistMap: MutableMap<Music.UID, PlaylistImpl>,
-    private val musicSettings: MusicSettings
+    private val nameFactory: Name.Known.Factory
 ) : MutableUserLibrary {
     override fun hashCode() = playlistMap.hashCode()
 
@@ -186,7 +184,7 @@ private class UserLibraryImpl(
     override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>): Playlist? {
-        val playlistImpl = PlaylistImpl.from(name, songs, Name.Known.Factory.from(musicSettings))
+        val playlistImpl = PlaylistImpl.from(name, songs, nameFactory)
         synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
         val rawPlaylist =
             RawPlaylist(
@@ -209,9 +207,7 @@ private class UserLibraryImpl(
         val playlistImpl =
             synchronized(this) {
                 requireNotNull(playlistMap[playlist.uid]) { "Cannot rename invalid playlist" }
-                    .also {
-                        playlistMap[it.uid] = it.edit(name, Name.Known.Factory.from(musicSettings))
-                    }
+                    .also { playlistMap[it.uid] = it.edit(name, nameFactory) }
             }
 
         return try {

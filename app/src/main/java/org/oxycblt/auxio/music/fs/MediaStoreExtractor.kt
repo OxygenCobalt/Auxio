@@ -29,7 +29,6 @@ import androidx.core.database.getStringOrNull
 import java.io.File
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.cache.Cache
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
@@ -50,9 +49,11 @@ interface MediaStoreExtractor {
     /**
      * Query the media database.
      *
+     * @param constraints Configuration parameter to restrict what music should be ignored when
+     *   querying.
      * @return A new [Query] returned from the media database.
      */
-    suspend fun query(): Query
+    suspend fun query(constraints: Constraints): Query
 
     /**
      * Consume the [Cursor] loaded after [query].
@@ -84,46 +85,44 @@ interface MediaStoreExtractor {
         fun populateTags(rawSong: RawSong)
     }
 
+    data class Constraints(val excludeNonMusic: Boolean, val musicDirs: MusicDirectories)
+
     companion object {
         /**
          * Create a framework-backed instance.
          *
          * @param context [Context] required.
-         * @param musicSettings [MusicSettings] required.
          * @return A new [MediaStoreExtractor] that will work best on the device's API level.
          */
-        fun from(context: Context, musicSettings: MusicSettings): MediaStoreExtractor =
+        fun from(context: Context): MediaStoreExtractor =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
-                    Api30MediaStoreExtractor(context, musicSettings)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-                    Api29MediaStoreExtractor(context, musicSettings)
-                else -> Api21MediaStoreExtractor(context, musicSettings)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreExtractor(context)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreExtractor(context)
+                else -> Api21MediaStoreExtractor(context)
             }
     }
 }
 
-private abstract class BaseMediaStoreExtractor(
-    protected val context: Context,
-    private val musicSettings: MusicSettings
-) : MediaStoreExtractor {
-    final override suspend fun query(): MediaStoreExtractor.Query {
+private abstract class BaseMediaStoreExtractor(protected val context: Context) :
+    MediaStoreExtractor {
+    final override suspend fun query(
+        constraints: MediaStoreExtractor.Constraints
+    ): MediaStoreExtractor.Query {
         val start = System.currentTimeMillis()
 
         val args = mutableListOf<String>()
         var selector = BASE_SELECTOR
 
         // Filter out audio that is not music, if enabled.
-        if (musicSettings.excludeNonMusic) {
+        if (constraints.excludeNonMusic) {
             logD("Excluding non-music")
             selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
         }
 
         // Set up the projection to follow the music directory configuration.
-        val dirs = musicSettings.musicDirs
-        if (dirs.dirs.isNotEmpty()) {
+        if (constraints.musicDirs.dirs.isNotEmpty()) {
             selector += " AND "
-            if (!dirs.shouldInclude) {
+            if (!constraints.musicDirs.shouldInclude) {
                 logD("Excluding directories in selector")
                 // Without a NOT, the query will be restricted to the specified paths, resulting
                 // in the "Include" mode. With a NOT, the specified paths will not be included,
@@ -134,10 +133,10 @@ private abstract class BaseMediaStoreExtractor(
 
             // Specifying the paths to filter is version-specific, delegate to the concrete
             // implementations.
-            for (i in dirs.dirs.indices) {
-                if (addDirToSelector(dirs.dirs[i], args)) {
+            for (i in constraints.musicDirs.dirs.indices) {
+                if (addDirToSelector(constraints.musicDirs.dirs[i], args)) {
                     selector +=
-                        if (i < dirs.dirs.lastIndex) {
+                        if (i < constraints.musicDirs.dirs.lastIndex) {
                             "$dirSelectorTemplate OR "
                         } else {
                             dirSelectorTemplate
@@ -362,8 +361,7 @@ private abstract class BaseMediaStoreExtractor(
 // Note: The separation between version-specific backends may not be the cleanest. To preserve
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
-private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSettings) :
-    BaseMediaStoreExtractor(context, musicSettings) {
+private class Api21MediaStoreExtractor(context: Context) : BaseMediaStoreExtractor(context) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -447,10 +445,8 @@ private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSet
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-private abstract class BaseApi29MediaStoreExtractor(
-    context: Context,
-    musicSettings: MusicSettings
-) : BaseMediaStoreExtractor(context, musicSettings) {
+private abstract class BaseApi29MediaStoreExtractor(context: Context) :
+    BaseMediaStoreExtractor(context) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -512,8 +508,7 @@ private abstract class BaseApi29MediaStoreExtractor(
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-private class Api29MediaStoreExtractor(context: Context, musicSettings: MusicSettings) :
-    BaseApi29MediaStoreExtractor(context, musicSettings) {
+private class Api29MediaStoreExtractor(context: Context) : BaseApi29MediaStoreExtractor(context) {
 
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
@@ -553,8 +548,7 @@ private class Api29MediaStoreExtractor(context: Context, musicSettings: MusicSet
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.R)
-private class Api30MediaStoreExtractor(context: Context, musicSettings: MusicSettings) :
-    BaseApi29MediaStoreExtractor(context, musicSettings) {
+private class Api30MediaStoreExtractor(context: Context) : BaseApi29MediaStoreExtractor(context) {
     override val projection: Array<String>
         get() =
             super.projection +
