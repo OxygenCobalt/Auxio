@@ -36,6 +36,7 @@ class ReleaseTypeTest {
         assertEquals(ReleaseType.Soundtrack, ReleaseType.parse(listOf("album", "soundtrack")))
         assertEquals(ReleaseType.Mix, ReleaseType.parse(listOf("album", "dj-mix")))
         assertEquals(ReleaseType.Mixtape, ReleaseType.parse(listOf("album", "mixtape/street")))
+        assertEquals(ReleaseType.Demo, ReleaseType.parse(listOf("album", "demo")))
     }
 
     @Test

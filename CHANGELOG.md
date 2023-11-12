@@ -4,6 +4,7 @@
 
 #### What's New
 - Added ability to rewind/skip tracks by swiping back/forward
+- Added support for demo release type
 
 ## 3.2.1
 

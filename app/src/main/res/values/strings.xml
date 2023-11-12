@@ -63,6 +63,10 @@
     <string name="lbl_mixtapes">Mixtapes</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
+    <!-- As in the collection of music -->
+    <string name="lbl_demo">Demo</string>
+    <!-- AS in the collection of music -->
+    <string name="lbl_demos">Demos</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
     <string name="lbl_mixes">DJ Mixes</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->

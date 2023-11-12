@@ -607,6 +607,7 @@ constructor(
                             is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
                             is ReleaseType.Mix -> AlbumGrouping.DJMIXES
                             is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
+                            is ReleaseType.Demo -> AlbumGrouping.DEMOS
                         }
                 }
             }
@@ -709,6 +710,7 @@ constructor(
         SOUNDTRACKS(R.string.lbl_soundtracks),
         DJMIXES(R.string.lbl_mixes),
         MIXTAPES(R.string.lbl_mixtapes),
+        DEMOS(R.string.lbl_demos),
         APPEARANCES(R.string.lbl_appears_on),
         LIVE(R.string.lbl_live_group),
         REMIXES(R.string.lbl_remix_group),

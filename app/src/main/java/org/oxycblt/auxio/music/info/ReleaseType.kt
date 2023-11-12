@@ -143,6 +143,18 @@ sealed interface ReleaseType {
             get() = R.string.lbl_mixtape
     }
 
+    /**
+     * A demo. These are usually [EP]-sized releases of music made to promote an Artist or a future
+     * release.
+     */
+    data object Demo : ReleaseType {
+        override val refinement: Refinement?
+            get() = null
+
+        override val stringRes: Int
+            get() = R.string.lbl_demo
+    }
+
     /** A specification of what kind of performance a particular release is. */
     enum class Refinement {
         /** A release consisting of a live performance */
@@ -220,6 +232,7 @@ sealed interface ReleaseType {
                 type.equals("dj-mix", true) -> Mix
                 type.equals("live", true) -> convertRefinement(Refinement.LIVE)
                 type.equals("remix", true) -> convertRefinement(Refinement.REMIX)
+                type.equals("demo", true) -> Demo
                 else -> convertRefinement(null)
             }
     }
