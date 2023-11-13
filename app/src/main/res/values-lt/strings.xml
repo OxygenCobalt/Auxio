@@ -304,4 +304,7 @@
     <string name="lbl_copied">Nukopijuota</string>
     <string name="lbl_show_error_info">Daugiau</string>
     <string name="lbl_report">Pranešti</string>
+    <string name="def_album_count">Nėra albumų</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
 </resources>
