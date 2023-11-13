@@ -315,4 +315,7 @@
     <string name="lbl_error_info">Informace o chybě</string>
     <string name="lbl_copied">Zkopírovat</string>
     <string name="lbl_report">Nahlásit</string>
+    <string name="def_album_count">Žádná alba</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Dema</string>
 </resources>
