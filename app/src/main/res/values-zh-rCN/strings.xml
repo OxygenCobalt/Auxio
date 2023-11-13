@@ -304,4 +304,7 @@
     <string name="lbl_show_error_info">更多</string>
     <string name="lbl_copied">已复制</string>
     <string name="lbl_error_info">错误信息</string>
+    <string name="def_album_count">无专辑</string>
+    <string name="lbl_demo">演示</string>
+    <string name="lbl_demos">样曲</string>
 </resources>
