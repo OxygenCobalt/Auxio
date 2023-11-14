@@ -298,4 +298,7 @@
     <string name="lbl_error_info">ਤਰੁੱਟੀ ਦੀ ਜਾਣਕਾਰੀ</string>
     <string name="lbl_copied">ਕਾਪੀ ਕੀਤਾ ਗਿਆ</string>
     <string name="lbl_report">ਰਿਪੋਰਟ ਕਰੋ</string>
+    <string name="def_album_count">ਕੋਈ ਐਲਬਮ ਨਹੀਂ</string>
+    <string name="lbl_demo">ਡੈਮੋ</string>
+    <string name="lbl_demos">ਡੈਮੋ</string>
 </resources>
