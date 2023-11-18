@@ -304,4 +304,7 @@
     <string name="lbl_copied">Скапіравана</string>
     <string name="lbl_error_info">Інфармацыя пра памылку</string>
     <string name="lbl_report">Справаздача пра памылку</string>
+    <string name="def_album_count">Няма альбомаў</string>
+    <string name="lbl_demo">Дэма</string>
+    <string name="lbl_demos">Дэманстрацыі</string>
 </resources>
