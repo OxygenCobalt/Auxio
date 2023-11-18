@@ -313,4 +313,7 @@
     <string name="lbl_error_info">Информация об ошибке</string>
     <string name="lbl_report">Отчёт об ошибке</string>
     <string name="lbl_copied">Скопировано</string>
+    <string name="def_album_count">Няма альбомаў</string>
+    <string name="lbl_demo">Демо</string>
+    <string name="lbl_demos">Дэманстрацыі</string>
 </resources>
