@@ -310,4 +310,7 @@
     <string name="lbl_error_info">Інформація про помилку</string>
     <string name="lbl_copied">Скопійовано</string>
     <string name="lbl_report">Звіт</string>
+    <string name="def_album_count">Альбомів немає</string>
+    <string name="lbl_demo">Демо</string>
+    <string name="lbl_demos">Демонстрації</string>
 </resources>

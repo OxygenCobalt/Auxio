@@ -305,4 +305,7 @@
     <string name="lbl_report">रिपोर्ट करें</string>
     <string name="lbl_copied">कापी किया गया</string>
     <string name="lbl_show_error_info">और</string>
+    <string name="def_album_count">कोई एल्बम नहीं</string>
+    <string name="lbl_demo">डेमो</string>
+    <string name="lbl_demos">डेमो</string>
 </resources>

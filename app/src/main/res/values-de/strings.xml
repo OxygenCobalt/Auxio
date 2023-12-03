@@ -306,4 +306,7 @@
     <string name="lbl_copied">Kopiert</string>
     <string name="lbl_report">Melden</string>
     <string name="lbl_error_info">Fehlerinformation</string>
+    <string name="def_album_count">Keine Alben</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
 </resources>
