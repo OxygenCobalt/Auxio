@@ -10,6 +10,10 @@
 - Albums linked to an artist only as a collaborator are no longer included
 in an artist's album count
 
+#### What's Fixed
+- Fixed certain FLAC files failing to play on some devices
+
+
 ## 3.2.1
 
 #### What's Improved
