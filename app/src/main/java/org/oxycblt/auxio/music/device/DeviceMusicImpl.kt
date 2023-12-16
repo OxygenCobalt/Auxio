@@ -150,26 +150,26 @@ class SongImpl(
         val artistSortNames = separators.split(rawSong.artistSortNames)
         val rawIndividualArtists =
             artistNames
-                .mapIndexedTo(mutableSetOf()) { i, name ->
+                .mapIndexed { i, name ->
                     RawArtist(
                         artistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
                         name,
                         artistSortNames.getOrNull(i))
                 }
-                .toList()
+                .distinctBy { it.key }
 
         val albumArtistMusicBrainzIds = separators.split(rawSong.albumArtistMusicBrainzIds)
         val albumArtistNames = separators.split(rawSong.albumArtistNames)
         val albumArtistSortNames = separators.split(rawSong.albumArtistSortNames)
         val rawAlbumArtists =
             albumArtistNames
-                .mapIndexedTo(mutableSetOf()) { i, name ->
+                .mapIndexed { i, name ->
                     RawArtist(
                         albumArtistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
                         name,
                         albumArtistSortNames.getOrNull(i))
                 }
-                .toList()
+                .distinctBy { it.key }
 
         rawAlbum =
             RawAlbum(
@@ -195,10 +195,7 @@ class SongImpl(
         val genreNames =
             (rawSong.genreNames.parseId3GenreNames() ?: separators.split(rawSong.genreNames))
         rawGenres =
-            genreNames
-                .mapTo(mutableSetOf()) { RawGenre(it) }
-                .toList()
-                .ifEmpty { listOf(RawGenre()) }
+            genreNames.map { RawGenre(it) }.distinctBy { it.key }.ifEmpty { listOf(RawGenre()) }
 
         hashCode = 31 * hashCode + rawSong.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()
