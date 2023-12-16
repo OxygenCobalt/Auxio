@@ -16,7 +16,7 @@ android {
     // it here so that binary stripping will work.
     // TODO: Eventually you might just want to start vendoring the FFMpeg extension so the
     //  NDK use is unified
-    ndkVersion "26.1.10909125"
+    ndkVersion "25.2.9519653"
     namespace "org.oxycblt.auxio"
 
     defaultConfig {
