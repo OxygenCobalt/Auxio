@@ -31,6 +31,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -127,6 +128,7 @@ dependencies {
     // Exoplayer (Vendored)
     implementation project(":media-lib-exoplayer")
     implementation project(":media-lib-decoder-ffmpeg")
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
 
     // Image loading
     implementation 'io.coil-kt:coil-base:2.4.0'
