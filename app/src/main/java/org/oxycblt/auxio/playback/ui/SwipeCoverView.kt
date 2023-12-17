@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.ui
 
 import android.annotation.SuppressLint
@@ -77,8 +77,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val diffX = e2.x - e1.x
         if (abs(diffX) > abs(diffY) &&
             abs(diffX) > viewConfig.scaledTouchSlop &&
-            abs(velocityX) > viewConfig.scaledMinimumFlingVelocity
-        ) {
+            abs(velocityX) > viewConfig.scaledMinimumFlingVelocity) {
             if (diffX > 0) {
                 onSwipeRight()
             } else {
@@ -102,6 +101,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     interface OnSwipeListener {
 
         fun onSwipePrevious()
+
         fun onSwipeNext()
     }
 }

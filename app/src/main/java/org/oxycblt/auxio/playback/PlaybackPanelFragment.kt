@@ -29,27 +29,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Field
-import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.queue.QueueViewModel
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.PlaybackPagerAdapter
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
@@ -71,7 +64,6 @@ class PlaybackPanelFragment :
     SwipeCoverView.OnSwipeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val queueModel: QueueViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
     private var coverAdapter: PlaybackPagerAdapter? = null
@@ -111,15 +103,11 @@ class PlaybackPanelFragment :
             }
         }
 
-        // cover carousel adapter
-        coverAdapter = PlaybackPagerAdapter(this)
-        binding.playbackCoverPager.apply {
-            adapter = coverAdapter
-            registerOnPageChangeCallback(OnCoverChangedCallback(queueModel))
-            val recycler = VP_RECYCLER_FIELD.get(this@apply) as RecyclerView
-            recycler.isNestedScrollingEnabled = false
-        }
         binding.playbackCover.onSwipeListener = this
+        binding.playbackSong.setOnClickListener { navigateToCurrentSong() }
+        binding.playbackArtist.setOnClickListener { navigateToCurrentArtist() }
+        binding.playbackAlbum.setOnClickListener { navigateToCurrentAlbum() }
+
         binding.playbackSeekBar.listener = this
 
         // Set up actions
@@ -137,8 +125,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
-        collectImmediately(queueModel.queue, ::updateQueue)
-        collectImmediately(queueModel.index, ::updateQueuePosition)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
@@ -190,7 +176,12 @@ class PlaybackPanelFragment :
         }
 
         val binding = requireBinding()
+        val context = requireContext()
         logD("Updating song display: $song")
+        binding.playbackCover.bind(song)
+        binding.playbackSong.text = song.name.resolve(context)
+        binding.playbackArtist.text = song.artists.resolveNames(context)
+        binding.playbackAlbum.text = song.album.name.resolve(context)
         binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }
 
@@ -220,43 +211,15 @@ class PlaybackPanelFragment :
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
 
-    override fun navigateToCurrentSong() {
+    private fun navigateToCurrentSong() {
         playbackModel.song.value?.let(detailModel::showAlbum)
     }
 
-    override fun navigateToCurrentArtist() {
+    private fun navigateToCurrentArtist() {
         playbackModel.song.value?.let(detailModel::showArtist)
     }
 
-    override fun navigateToCurrentAlbum() {
+    private fun navigateToCurrentAlbum() {
         playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
-    }
-
-    override fun navigateToMenu() {
-        // TODO
-    }
-
-    private class OnCoverChangedCallback(private val queueViewModel: QueueViewModel) :
-        OnPageChangeCallback() {
-
-        private var targetPosition = RecyclerView.NO_POSITION
-
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
-            targetPosition = position
-        }
-
-        override fun onPageScrollStateChanged(state: Int) {
-            super.onPageScrollStateChanged(state)
-            if (state == ViewPager2.SCROLL_STATE_IDLE &&
-                targetPosition != RecyclerView.NO_POSITION &&
-                targetPosition != queueViewModel.index.value) {
-                queueViewModel.goto(targetPosition)
-            }
-        }
-    }
-
-    private companion object {
-        val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
     }
 }

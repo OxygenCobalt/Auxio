@@ -73,10 +73,7 @@ class CoverViewHolder private constructor(private val binding: ItemPlaybackSongB
         val context = binding.root.context
         binding.playbackCover.bind(item)
         // binding.playbackCover.bind(item)
-        binding.playbackSong.apply {
-            text = item.name.resolve(context)
-            setOnClickListener { listener.navigateToCurrentSong() }
-        }
+        binding.playbackSong.apply { text = item.name.resolve(context) }
         binding.playbackArtist.apply {
             text = item.artists.resolveNames(context)
             setOnClickListener { listener.navigateToCurrentArtist() }
