@@ -1,0 +1,2 @@
+Auxio 3.2.0 refreshes the item management experience, with a new menu UI and playback options.
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v3.2.0.

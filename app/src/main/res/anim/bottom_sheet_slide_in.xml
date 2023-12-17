@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@integer/m3_sys_motion_duration_medium4"
+    android:interpolator="@interpolator/m3_sys_motion_easing_emphasized">
+    <!-- Replacement for ugly default bottom sheet dialog transition -->
+    <translate
+        android:fromYDelta="100%p"
+        android:toYDelta="0" />
+</set>

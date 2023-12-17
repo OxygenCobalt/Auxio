@@ -77,13 +77,13 @@ interface InternalPlayer {
     /** Possible long-running background tasks handled by the background playback task. */
     sealed interface Action {
         /** Restore the previously saved playback state. */
-        object RestoreState : Action
+        data object RestoreState : Action
 
         /**
          * Start shuffled playback of the entire music library. Analogous to the "Shuffle All"
          * shortcut.
          */
-        object ShuffleAll : Action
+        data object ShuffleAll : Action
 
         /**
          * Start playing an audio file at the given [Uri].

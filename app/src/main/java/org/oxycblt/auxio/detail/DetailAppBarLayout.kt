@@ -59,7 +59,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        (layoutParams as CoordinatorLayout.LayoutParams).behavior = Behavior(context)
+        if (!isInEditMode) {
+            (layoutParams as CoordinatorLayout.LayoutParams).behavior = Behavior(context)
+        }
     }
 
     private fun findTitleView(): TextView {

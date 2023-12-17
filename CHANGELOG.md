@@ -1,5 +1,59 @@
 # Changelog
 
+## dev
+
+#### What's New
+- Added ability to rewind/skip tracks by swiping back/forward
+- Added support for demo release type
+
+#### What's Changed
+- Albums linked to an artist only as a collaborator are no longer included
+in an artist's album count
+
+#### What's Fixed
+- Fixed certain FLAC files failing to play on some devices
+
+
+## 3.2.1
+
+#### What's Improved
+- Added support for native M4A multi-value tags based on duplicate atoms
+
+#### What's Fixed
+- Fixed app restart being required when changing intelligent sorting
+or music separator settings
+- Fixed widget/notification actions not working on Android 14
+- Fixed app crash when using hebrew language
+- Fixed app crash when adding to a playlist while in the playlist detail view
+- Fixed music loading failing in some cases on Android 14
+
+## 3.2.0
+
+#### What's New
+- Item and sort menus have been refreshed with a cleaner look
+- Added ability to sort playlists
+- Added option to play song by itself in library/item details
+- Added error details when music loading fails
+
+#### What's Improved
+- Made "Add to Playlist" action more prominent in selection toolbar
+- Fixed notification album covers not updating after changing the cover
+aspect ratio setting 
+
+#### What's Fixed
+- Playlist detail view now respects playback settings
+
+
+#### Dev/Meta
+- Revamped navigation backend
+
+## 3.1.4
+
+#### What's Fixed
+- Fixed issue where one could not navigate to settings after navigating elsewhere
+- Fixed the queue list being non-scrollable in certain cases
+- Fixed negative ReplayGain adjustments not being applied
+
 ## 3.1.3
 
 #### What's New

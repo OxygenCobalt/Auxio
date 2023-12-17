@@ -41,21 +41,21 @@ fun <T> unlikelyToBeNull(value: T?) =
  *
  * @return The given number if it's non-zero, null otherwise.
  */
-fun Int.nonZeroOrNull() = if (this > 0) this else null
+fun Int.positiveOrNull() = if (this > 0) this else null
 
 /**
  * Aliases a check to ensure that the given number is non-zero.
  *
  * @return The same number if it's non-zero, null otherwise.
  */
-fun Long.nonZeroOrNull() = if (this > 0) this else null
+fun Long.positiveOrNull() = if (this > 0) this else null
 
 /**
  * Aliases a check to ensure that the given number is non-zero.
  *
  * @return The same number if it's non-zero, null otherwise.
  */
-fun Float.nonZeroOrNull() = if (this > 0) this else null
+fun Float.nonZeroOrNull() = if (this != 0f) this else null
 
 /**
  * Aliases a check to ensure a given value is in a specified range.
@@ -82,8 +82,10 @@ fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {
  * @param clazz The [KClass] to reflect into.
  * @param method The name of the method to obtain.
  */
-fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
-    clazz.java.getDeclaredMethod(method).also { it.isAccessible = true }
+fun lazyReflectedMethod(clazz: KClass<*>, method: String, vararg params: KClass<*>) = lazy {
+    clazz.java.getDeclaredMethod(method, *params.map { it.java }.toTypedArray()).also {
+        it.isAccessible = true
+    }
 }
 
 /**

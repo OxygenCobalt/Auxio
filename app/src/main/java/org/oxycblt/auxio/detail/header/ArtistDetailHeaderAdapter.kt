@@ -41,6 +41,7 @@ class ArtistDetailHeaderAdapter(private val listener: Listener) :
     DetailHeaderAdapter<Artist, ArtistDetailHeaderViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ArtistDetailHeaderViewHolder.from(parent)
+
     override fun onBindHeader(holder: ArtistDetailHeaderViewHolder, parent: Artist) =
         holder.bind(parent, listener)
 }
@@ -70,7 +71,11 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
         binding.detailInfo.text =
             binding.context.getString(
                 R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
+                if (artist.explicitAlbums.isNotEmpty()) {
+                    binding.context.getPlural(R.plurals.fmt_album_count, artist.explicitAlbums.size)
+                } else {
+                    binding.context.getString(R.string.def_album_count)
+                },
                 if (artist.songs.isNotEmpty()) {
                     binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
                 } else {

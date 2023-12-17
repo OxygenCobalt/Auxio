@@ -20,14 +20,14 @@ package org.oxycblt.auxio.music.info
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import java.text.CollationKey
 import java.text.Collator
-import org.oxycblt.auxio.music.MusicSettings
 
 /**
  * The name of a music item.
  *
- * This class automatically implements
+ * This class automatically implements advanced sorting heuristics for music naming,
  *
  * @author Alexander Capehart
  */
@@ -54,36 +54,7 @@ sealed interface Name : Comparable<Name> {
         abstract val sort: String?
 
         /** A tokenized version of the name that will be compared. */
-        protected abstract val sortTokens: List<SortToken>
-
-        /** An individual part of a name string that can be compared intelligently. */
-        protected data class SortToken(val collationKey: CollationKey, val type: Type) :
-            Comparable<SortToken> {
-            override fun compareTo(other: SortToken): Int {
-                // Numeric tokens should always be lower than lexicographic tokens.
-                val modeComp = type.compareTo(other.type)
-                if (modeComp != 0) {
-                    return modeComp
-                }
-
-                // Numeric strings must be ordered by magnitude, thus immediately short-circuit
-                // the comparison if the lengths do not match.
-                if (type == Type.NUMERIC &&
-                    collationKey.sourceString.length != other.collationKey.sourceString.length) {
-                    return collationKey.sourceString.length - other.collationKey.sourceString.length
-                }
-
-                return collationKey.compareTo(other.collationKey)
-            }
-
-            /** Denotes the type of comparison to be performed with this token. */
-            enum class Type {
-                /** Compare as a digit string, like "65". */
-                NUMERIC,
-                /** Compare as a standard alphanumeric string, like "65daysofstatic" */
-                LEXICOGRAPHIC
-            }
-        }
+        @VisibleForTesting(VisibleForTesting.PROTECTED) abstract val sortTokens: List<SortToken>
 
         final override val thumb: String
             get() =
@@ -108,20 +79,24 @@ sealed interface Name : Comparable<Name> {
                 is Unknown -> 1
             }
 
-        companion object {
+        sealed interface Factory {
             /**
              * Create a new instance of [Name.Known]
              *
              * @param raw The raw name obtained from the music item
              * @param sort The raw sort name obtained from the music item
-             * @param musicSettings [MusicSettings] required for name configuration.
              */
-            fun from(raw: String, sort: String?, musicSettings: MusicSettings): Known =
-                if (musicSettings.intelligentSorting) {
-                    IntelligentKnownName(raw, sort)
-                } else {
-                    SimpleKnownName(raw, sort)
-                }
+            fun parse(raw: String, sort: String?): Known
+        }
+
+        /** Produces a simple [Known] with basic sorting heuristics that are locale-independent. */
+        data object SimpleFactory : Factory {
+            override fun parse(raw: String, sort: String?) = SimpleKnownName(raw, sort)
+        }
+
+        /** Produces an intelligent [Known] with advanced, but more fragile heuristics. */
+        data object IntelligentFactory : Factory {
+            override fun parse(raw: String, sort: String?) = IntelligentKnownName(raw, sort)
         }
     }
 
@@ -132,7 +107,9 @@ sealed interface Name : Comparable<Name> {
      */
     data class Unknown(@StringRes val stringRes: Int) : Name {
         override val thumb = "?"
+
         override fun resolve(context: Context) = context.getString(stringRes)
+
         override fun compareTo(other: Name) =
             when (other) {
                 // Unknown names do not need any direct comparison right now.
@@ -143,22 +120,23 @@ sealed interface Name : Comparable<Name> {
     }
 }
 
-private val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
-private val PUNCT_REGEX by lazy { Regex("[\\p{Punct}+]") }
+private val collator: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
+private val punctRegex by lazy { Regex("[\\p{Punct}+]") }
+
+// TODO: Consider how you want to handle whitespace and "gaps" in names.
 
 /**
  * Plain [Name.Known] implementation that is internationalization-safe.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-private data class SimpleKnownName(override val raw: String, override val sort: String?) :
-    Name.Known() {
+data class SimpleKnownName(override val raw: String, override val sort: String?) : Name.Known() {
     override val sortTokens = listOf(parseToken(sort ?: raw))
 
     private fun parseToken(name: String): SortToken {
         // Remove excess punctuation from the string, as those usually aren't considered in sorting.
-        val stripped = name.replace(PUNCT_REGEX, "").ifEmpty { name }
-        val collationKey = COLLATOR.getCollationKey(stripped)
+        val stripped = name.replace(punctRegex, "").trim().ifEmpty { name }
+        val collationKey = collator.getCollationKey(stripped)
         // Always use lexicographic mode since we aren't parsing any numeric components
         return SortToken(collationKey, SortToken.Type.LEXICOGRAPHIC)
     }
@@ -169,7 +147,7 @@ private data class SimpleKnownName(override val raw: String, override val sort: 
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-private data class IntelligentKnownName(override val raw: String, override val sort: String?) :
+data class IntelligentKnownName(override val raw: String, override val sort: String?) :
     Name.Known() {
     override val sortTokens = parseTokens(sort ?: raw)
 
@@ -178,8 +156,9 @@ private data class IntelligentKnownName(override val raw: String, override val s
         //  optimize it
         val stripped =
             name
-                // Remove excess punctuation from the string, as those u
-                .replace(PUNCT_REGEX, "")
+                // Remove excess punctuation from the string, as those usually aren't
+                // considered in sorting.
+                .replace(punctRegex, "")
                 .ifEmpty { name }
                 .run {
                     // Strip any english articles like "the" or "an" from the start, as music
@@ -206,10 +185,10 @@ private data class IntelligentKnownName(override val raw: String, override val s
                 val digits =
                     token.trimStart { Character.getNumericValue(it) == 0 }.ifEmpty { token }
                 // Other languages have other types of digit strings, still use collation keys
-                collationKey = COLLATOR.getCollationKey(digits)
+                collationKey = collator.getCollationKey(digits)
                 type = SortToken.Type.NUMERIC
             } else {
-                collationKey = COLLATOR.getCollationKey(token)
+                collationKey = collator.getCollationKey(token)
                 type = SortToken.Type.LEXICOGRAPHIC
             }
             SortToken(collationKey, type)
@@ -218,5 +197,34 @@ private data class IntelligentKnownName(override val raw: String, override val s
 
     companion object {
         private val TOKEN_REGEX by lazy { Regex("(\\d+)|(\\D+)") }
+    }
+}
+
+/** An individual part of a name string that can be compared intelligently. */
+@VisibleForTesting(VisibleForTesting.PROTECTED)
+data class SortToken(val collationKey: CollationKey, val type: Type) : Comparable<SortToken> {
+    override fun compareTo(other: SortToken): Int {
+        // Numeric tokens should always be lower than lexicographic tokens.
+        val modeComp = type.compareTo(other.type)
+        if (modeComp != 0) {
+            return modeComp
+        }
+
+        // Numeric strings must be ordered by magnitude, thus immediately short-circuit
+        // the comparison if the lengths do not match.
+        if (type == Type.NUMERIC &&
+            collationKey.sourceString.length != other.collationKey.sourceString.length) {
+            return collationKey.sourceString.length - other.collationKey.sourceString.length
+        }
+
+        return collationKey.compareTo(other.collationKey)
+    }
+
+    /** Denotes the type of comparison to be performed with this token. */
+    enum class Type {
+        /** Compare as a digit string, like "65". */
+        NUMERIC,
+        /** Compare as a standard alphanumeric string, like "65daysofstatic" */
+        LEXICOGRAPHIC
     }
 }

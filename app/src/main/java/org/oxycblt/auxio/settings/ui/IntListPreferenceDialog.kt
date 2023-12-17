@@ -35,6 +35,7 @@ import org.oxycblt.auxio.util.fixDoubleRipple
 class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
     private val listPreference: IntListPreference
         get() = (preference as IntListPreference)
+
     private var pendingValueIndex = -1
 
     override fun onStart() {

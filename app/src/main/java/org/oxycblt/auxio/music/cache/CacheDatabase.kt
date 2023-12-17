@@ -32,7 +32,7 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 32, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 36, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {
     abstract fun cachedSongsDao(): CachedSongsDao
 }
@@ -40,7 +40,9 @@ abstract class CacheDatabase : RoomDatabase() {
 @Dao
 interface CachedSongsDao {
     @Query("SELECT * FROM CachedSong") suspend fun readSongs(): List<CachedSong>
+
     @Query("DELETE FROM CachedSong") suspend fun nukeSongs()
+
     @Insert suspend fun insertSongs(songs: List<CachedSong>)
 }
 
@@ -61,9 +63,9 @@ data class CachedSong(
     /** @see RawSong */
     var durationMs: Long,
     /** @see RawSong.replayGainTrackAdjustment */
-    val replayGainTrackAdjustment: Float?,
+    val replayGainTrackAdjustment: Float? = null,
     /** @see RawSong.replayGainAlbumAdjustment */
-    val replayGainAlbumAdjustment: Float?,
+    val replayGainAlbumAdjustment: Float? = null,
     /** @see RawSong.musicBrainzId */
     var musicBrainzId: String? = null,
     /** @see RawSong.name */

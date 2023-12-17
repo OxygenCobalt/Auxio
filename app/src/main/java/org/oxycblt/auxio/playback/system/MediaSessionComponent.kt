@@ -173,7 +173,7 @@ constructor(
 
     // --- SETTINGS OVERRIDES ---
 
-    override fun onCoverModeChanged() {
+    override fun onImageSettingsChanged() {
         // Need to reload the metadata cover.
         updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
     }
@@ -338,8 +338,7 @@ constructor(
             song,
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
-                    this@MediaSessionComponent.logD(
-                        "Bitmap loaded, applying media " + "session and posting notification")
+                    logD("Bitmap loaded, applying media session and posting notification")
                     builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
                     builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
                     val metadata = builder.build()

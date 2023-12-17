@@ -22,7 +22,7 @@ import android.os.Build
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logW
 
-private val ACCENT_NAMES =
+private val accentNames =
     intArrayOf(
         R.string.clr_red,
         R.string.clr_pink,
@@ -42,7 +42,7 @@ private val ACCENT_NAMES =
         R.string.clr_grey,
         R.string.clr_dynamic)
 
-private val ACCENT_THEMES =
+private val accentThemes =
     intArrayOf(
         R.style.Theme_Auxio_Red,
         R.style.Theme_Auxio_Pink,
@@ -63,7 +63,7 @@ private val ACCENT_THEMES =
         R.style.Theme_Auxio_App // Dynamic colors are on the base theme
         )
 
-private val ACCENT_BLACK_THEMES =
+private val accentBlackThemes =
     intArrayOf(
         R.style.Theme_Auxio_Black_Red,
         R.style.Theme_Auxio_Black_Pink,
@@ -84,7 +84,7 @@ private val ACCENT_BLACK_THEMES =
         R.style.Theme_Auxio_Black // Dynamic colors are on the base theme
         )
 
-private val ACCENT_PRIMARY_COLORS =
+private val accentPrimaryColors =
     intArrayOf(
         R.color.red_primary,
         R.color.pink_primary,
@@ -115,18 +115,18 @@ private val ACCENT_PRIMARY_COLORS =
 class Accent private constructor(val index: Int) {
     /** The name of this [Accent]. */
     val name: Int
-        get() = ACCENT_NAMES[index]
+        get() = accentNames[index]
     /** The theme resource for this accent. */
     val theme: Int
-        get() = ACCENT_THEMES[index]
+        get() = accentThemes[index]
     /**
      * The black theme resource for this accent. Identical to [theme], but with a black background.
      */
     val blackTheme: Int
-        get() = ACCENT_BLACK_THEMES[index]
+        get() = accentBlackThemes[index]
     /** The accent's primary color. */
     val primary: Int
-        get() = ACCENT_PRIMARY_COLORS[index]
+        get() = accentPrimaryColors[index]
 
     override fun equals(other: Any?) = other is Accent && index == other.index
 
@@ -152,7 +152,7 @@ class Accent private constructor(val index: Int) {
         val DEFAULT =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 // Use dynamic coloring on devices that support it.
-                ACCENT_THEMES.lastIndex
+                accentThemes.lastIndex
             } else {
                 // Use blue everywhere else.
                 5
@@ -161,10 +161,10 @@ class Accent private constructor(val index: Int) {
         /** The amount of valid accents. */
         val MAX =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                ACCENT_THEMES.size
+                accentThemes.size
             } else {
                 // Disable the option for a dynamic accent on unsupported devices.
-                ACCENT_THEMES.size - 1
+                accentThemes.size - 1
             }
     }
 }

@@ -29,21 +29,29 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.Field
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.ui.PlaybackPagerAdapter
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -62,9 +70,11 @@ class PlaybackPanelFragment :
     StyledSeekBar.Listener,
     SwipeCoverView.OnSwipeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
+    private val queueModel: QueueViewModel by activityViewModels()
+    private val listModel: ListViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
+    private var coverAdapter: PlaybackPagerAdapter? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -92,26 +102,22 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { playbackModel.openMain() }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
-        }
-
-        // Set up marquee on song information, alongside click handlers that navigate to each
-        // respective item.
-        binding.playbackSong.apply {
-            isSelected = true
-            setOnClickListener {
+            overrideOnOverflowMenuClick {
                 playbackModel.song.value?.let {
-                    detailModel.showAlbum(it)
-                    playbackModel.openMain()
+                    // No playback options are actually available in the menu, so use a junk
+                    // PlaySong option.
+                    listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
                 }
             }
         }
-        binding.playbackArtist.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentArtist() }
-        }
-        binding.playbackAlbum.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentAlbum() }
+
+        // cover carousel adapter
+        coverAdapter = PlaybackPagerAdapter(this)
+        binding.playbackCoverPager.apply {
+            adapter = coverAdapter
+            registerOnPageChangeCallback(OnCoverChangedCallback(queueModel))
+            val recycler = VP_RECYCLER_FIELD.get(this@apply) as RecyclerView
+            recycler.isNestedScrollingEnabled = false
         }
         binding.playbackCover.onSwipeListener = this
         binding.playbackSeekBar.listener = this
@@ -131,63 +137,39 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
+        collectImmediately(queueModel.queue, ::updateQueue)
+        collectImmediately(queueModel.index, ::updateQueuePosition)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
+        coverAdapter = null
         binding.playbackToolbar.setOnMenuItemClickListener(null)
-        // Marquee elements leak if they are not disabled when the views are destroyed.
-        binding.playbackSong.isSelected = false
-        binding.playbackArtist.isSelected = false
-        binding.playbackAlbum.isSelected = false
     }
 
-    override fun onMenuItemClick(item: MenuItem) =
-        when (item.itemId) {
-            R.id.action_open_equalizer -> {
-                // Launch the system equalizer app, if possible.
-                logD("Launching equalizer")
-                val equalizerIntent =
-                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                        // Provide audio session ID so the equalizer can show options for this app
-                        // in particular.
-                        .putExtra(
-                            AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
-                        // Signal music type so that the equalizer settings are appropriate for
-                        // music playback.
-                        .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                try {
-                    requireNotNull(equalizerLauncher) {
-                            "Equalizer panel launcher was not available"
-                        }
-                        .launch(equalizerIntent)
-                } catch (e: ActivityNotFoundException) {
-                    requireContext().showToast(R.string.err_no_app)
-                }
-                true
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_open_equalizer) {
+            // Launch the system equalizer app, if possible.
+            logD("Launching equalizer")
+            val equalizerIntent =
+                Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                    // Provide audio session ID so the equalizer can show options for this app
+                    // in particular.
+                    .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
+                    // Signal music type so that the equalizer settings are appropriate for
+                    // music playback.
+                    .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            try {
+                requireNotNull(equalizerLauncher) { "Equalizer panel launcher was not available" }
+                    .launch(equalizerIntent)
+            } catch (e: ActivityNotFoundException) {
+                requireContext().showToast(R.string.err_no_app)
             }
-            R.id.action_go_artist -> {
-                navigateToCurrentArtist()
-                true
-            }
-            R.id.action_go_album -> {
-                navigateToCurrentAlbum()
-                true
-            }
-            R.id.action_playlist_add -> {
-                playbackModel.song.value?.let(musicModel::addToPlaylist)
-                true
-            }
-            R.id.action_song_detail -> {
-                playbackModel.song.value?.let(detailModel::showSong)
-                true
-            }
-            R.id.action_share -> {
-                playbackModel.song.value?.let { requireContext().share(it) }
-                true
-            }
-            else -> false
+            return true
         }
+
+        return false
+    }
 
     override fun onSeekConfirmed(positionDs: Long) {
         playbackModel.seekTo(positionDs)
@@ -208,12 +190,7 @@ class PlaybackPanelFragment :
         }
 
         val binding = requireBinding()
-        val context = requireContext()
         logD("Updating song display: $song")
-        binding.playbackCover.bind(song)
-        binding.playbackSong.text = song.name.resolve(context)
-        binding.playbackArtist.text = song.artists.resolveNames(context)
-        binding.playbackAlbum.text = song.album.name.resolve(context)
         binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }
 
@@ -243,17 +220,43 @@ class PlaybackPanelFragment :
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
 
-    private fun navigateToCurrentArtist() {
-        playbackModel.song.value?.let {
-            detailModel.showArtist(it)
-            playbackModel.openMain()
+    override fun navigateToCurrentSong() {
+        playbackModel.song.value?.let(detailModel::showAlbum)
+    }
+
+    override fun navigateToCurrentArtist() {
+        playbackModel.song.value?.let(detailModel::showArtist)
+    }
+
+    override fun navigateToCurrentAlbum() {
+        playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
+    }
+
+    override fun navigateToMenu() {
+        // TODO
+    }
+
+    private class OnCoverChangedCallback(private val queueViewModel: QueueViewModel) :
+        OnPageChangeCallback() {
+
+        private var targetPosition = RecyclerView.NO_POSITION
+
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            targetPosition = position
+        }
+
+        override fun onPageScrollStateChanged(state: Int) {
+            super.onPageScrollStateChanged(state)
+            if (state == ViewPager2.SCROLL_STATE_IDLE &&
+                targetPosition != RecyclerView.NO_POSITION &&
+                targetPosition != queueViewModel.index.value) {
+                queueViewModel.goto(targetPosition)
+            }
         }
     }
 
-    private fun navigateToCurrentAlbum() {
-        playbackModel.song.value?.let {
-            detailModel.showAlbum(it.album)
-            playbackModel.openMain()
-        }
+    private companion object {
+        val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
     }
 }

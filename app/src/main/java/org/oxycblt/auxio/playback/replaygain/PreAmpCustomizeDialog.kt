@@ -28,16 +28,17 @@ import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.logD
 
 /**
- * aa [ViewBindingDialogFragment] that allows user configuration of the current [ReplayGainPreAmp].
+ * aa [ViewBindingMaterialDialogFragment] that allows user configuration of the current
+ * [ReplayGainPreAmp].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
+class PreAmpCustomizeDialog : ViewBindingMaterialDialogFragment<DialogPreAmpBinding>() {
     @Inject lateinit var playbackSettings: PlaybackSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogPreAmpBinding.inflate(inflater)

@@ -27,5 +27,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface SearchModule {
     @Binds fun engine(searchEngine: SearchEngineImpl): SearchEngine
+
     @Binds fun settings(searchSettings: SearchSettingsImpl): SearchSettings
 }

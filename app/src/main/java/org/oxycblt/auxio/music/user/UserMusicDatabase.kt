@@ -51,7 +51,7 @@ abstract class UserMusicDatabase : RoomDatabase() {
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Dao
-interface PlaylistDao {
+abstract class PlaylistDao {
     /**
      * Read out all playlists stored in the database.
      *
@@ -59,7 +59,7 @@ interface PlaylistDao {
      */
     @Transaction
     @Query("SELECT * FROM PlaylistInfo")
-    suspend fun readRawPlaylists(): List<RawPlaylist>
+    abstract suspend fun readRawPlaylists(): List<RawPlaylist>
 
     /**
      * Create a new playlist.
@@ -67,7 +67,7 @@ interface PlaylistDao {
      * @param rawPlaylist The [RawPlaylist] to create.
      */
     @Transaction
-    suspend fun insertPlaylist(rawPlaylist: RawPlaylist) {
+    open suspend fun insertPlaylist(rawPlaylist: RawPlaylist) {
         insertInfo(rawPlaylist.playlistInfo)
         insertSongs(rawPlaylist.songs)
         insertRefs(
@@ -83,7 +83,7 @@ interface PlaylistDao {
      * @param playlistInfo The new [PlaylistInfo] to store.
      */
     @Transaction
-    suspend fun replacePlaylistInfo(playlistInfo: PlaylistInfo) {
+    open suspend fun replacePlaylistInfo(playlistInfo: PlaylistInfo) {
         deleteInfo(playlistInfo.playlistUid)
         insertInfo(playlistInfo)
     }
@@ -94,7 +94,7 @@ interface PlaylistDao {
      * @param playlistUid The [Music.UID] of the playlist to delete.
      */
     @Transaction
-    suspend fun deletePlaylist(playlistUid: Music.UID) {
+    open suspend fun deletePlaylist(playlistUid: Music.UID) {
         deleteInfo(playlistUid)
         deleteRefs(playlistUid)
     }
@@ -106,7 +106,7 @@ interface PlaylistDao {
      * @param songs The [PlaylistSong] representing each song to put into the playlist.
      */
     @Transaction
-    suspend fun insertPlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
+    open suspend fun insertPlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
         insertSongs(songs)
         insertRefs(
             songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) })
@@ -120,7 +120,7 @@ interface PlaylistDao {
      *   playlist.
      */
     @Transaction
-    suspend fun replacePlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
+    open suspend fun replacePlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
         deleteRefs(playlistUid)
         insertSongs(songs)
         insertRefs(
@@ -128,21 +128,22 @@ interface PlaylistDao {
     }
 
     /** Internal, do not use. */
-    @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun insertInfo(info: PlaylistInfo)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    abstract suspend fun insertInfo(info: PlaylistInfo)
 
     /** Internal, do not use. */
     @Query("DELETE FROM PlaylistInfo where playlistUid = :playlistUid")
-    suspend fun deleteInfo(playlistUid: Music.UID)
+    abstract suspend fun deleteInfo(playlistUid: Music.UID)
 
     /** Internal, do not use. */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSongs(songs: List<PlaylistSong>)
+    abstract suspend fun insertSongs(songs: List<PlaylistSong>)
 
     /** Internal, do not use. */
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertRefs(refs: List<PlaylistSongCrossRef>)
+    abstract suspend fun insertRefs(refs: List<PlaylistSongCrossRef>)
 
     /** Internal, do not use. */
     @Query("DELETE FROM PlaylistSongCrossRef where playlistUid = :playlistUid")
-    suspend fun deleteRefs(playlistUid: Music.UID)
+    abstract suspend fun deleteRefs(playlistUid: Music.UID)
 }

@@ -29,19 +29,19 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.logW
 
 /**
- * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
- * split tags with multiple values.
+ * A [ViewBindingMaterialDialogFragment] that allows the user to configure the separator characters
+ * used to split tags with multiple values.
  *
  * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Replace with unsplit names dialog
  */
 @AndroidEntryPoint
-class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
+class SeparatorsDialog : ViewBindingMaterialDialogFragment<DialogSeparatorsBinding>() {
     @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -52,7 +52,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
             .setTitle(R.string.set_separators)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                musicSettings.multiValueSeparators = getCurrentSeparators()
+                musicSettings.separators = getCurrentSeparators()
             }
     }
 
@@ -68,8 +68,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // More efficient to do one iteration through the separator list and initialize
         // the corresponding CheckBox for each character instead of doing an iteration
         // through the separator list for each CheckBox.
-        (savedInstanceState?.getString(KEY_PENDING_SEPARATORS)
-                ?: musicSettings.multiValueSeparators)
+        (savedInstanceState?.getString(KEY_PENDING_SEPARATORS) ?: musicSettings.separators)
             .forEach {
                 when (it) {
                     Separators.COMMA -> binding.separatorComma.isChecked = true
@@ -100,14 +99,6 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         if (binding.separatorPlus.isChecked) separators += Separators.PLUS
         if (binding.separatorAnd.isChecked) separators += Separators.AND
         return separators
-    }
-
-    private object Separators {
-        const val COMMA = ','
-        const val SEMICOLON = ';'
-        const val SLASH = '/'
-        const val PLUS = '+'
-        const val AND = '&'
     }
 
     private companion object {

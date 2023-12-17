@@ -25,8 +25,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
-import android.os.Build
 import android.os.IBinder
+import androidx.core.content.ContextCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -47,8 +47,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
@@ -99,8 +99,8 @@ class PlaybackService :
     @Inject lateinit var playbackManager: PlaybackStateManager
     @Inject lateinit var playbackSettings: PlaybackSettings
     @Inject lateinit var persistenceRepository: PersistenceRepository
+    @Inject lateinit var listSettings: ListSettings
     @Inject lateinit var musicRepository: MusicRepository
-    @Inject lateinit var musicSettings: MusicSettings
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -121,14 +121,14 @@ class PlaybackService :
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
+                FfmpegAudioRenderer(handler, audioListener, replayGainProcessor),
                 MediaCodecAudioRenderer(
                     this,
                     MediaCodecSelector.DEFAULT,
                     handler,
                     audioListener,
                     AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                    replayGainProcessor),
-                FfmpegAudioRenderer(handler, audioListener, replayGainProcessor))
+                    replayGainProcessor))
         }
 
         player =
@@ -165,18 +165,8 @@ class PlaybackService :
                 addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
             }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            registerReceiver(
-                systemReceiver,
-                intentFilter,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    RECEIVER_NOT_EXPORTED
-                } else {
-                    0
-                })
-        } else {
-            registerReceiver(systemReceiver, intentFilter)
-        }
+        ContextCompat.registerReceiver(
+            this, systemReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED)
 
         logD("Service created")
     }
@@ -379,7 +369,7 @@ class PlaybackService :
             is InternalPlayer.Action.ShuffleAll -> {
                 logD("Shuffling all tracks")
                 playbackManager.play(
-                    null, null, musicSettings.songSort.songs(deviceLibrary.songs), true)
+                    null, null, listSettings.songSort.songs(deviceLibrary.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
@@ -388,7 +378,7 @@ class PlaybackService :
                     playbackManager.play(
                         song,
                         null,
-                        musicSettings.songSort.songs(deviceLibrary.songs),
+                        listSettings.songSort.songs(deviceLibrary.songs),
                         playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
                 }
             }

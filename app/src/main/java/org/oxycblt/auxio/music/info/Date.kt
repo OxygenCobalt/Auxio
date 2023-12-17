@@ -25,7 +25,7 @@ import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.nonZeroOrNull
+import org.oxycblt.auxio.util.positiveOrNull
 
 /**
  * An ISO-8601/RFC 3339 Date.
@@ -74,8 +74,11 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     }
 
     override fun equals(other: Any?) = other is Date && compareTo(other) == 0
+
     override fun hashCode() = tokens.hashCode()
+
     override fun toString() = StringBuilder().appendDate().toString()
+
     override fun compareTo(other: Date): Int {
         for (i in 0 until max(tokens.size, other.tokens.size)) {
             val ai = tokens.getOrNull(i)
@@ -247,7 +250,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          * @param dst The destination list to add valid tokens to.
          */
         private fun transformTokens(src: List<Int>, dst: MutableList<Int>) {
-            dst.add(src.getOrNull(0)?.nonZeroOrNull() ?: return)
+            dst.add(src.getOrNull(0)?.positiveOrNull() ?: return)
             dst.add(src.getOrNull(1)?.inRangeOrNull(1..12) ?: return)
             dst.add(src.getOrNull(2)?.inRangeOrNull(1..31) ?: return)
             dst.add(src.getOrNull(3)?.inRangeOrNull(0..23) ?: return)

@@ -54,16 +54,15 @@
     <string name="set_accent">カラースキーム</string>
     <string name="set_black_mode">黒基調</string>
     <string name="set_restore_state">再生状態を復元</string>
-    <string name="set_playback_mode_none">表示されたアイテムから再生</string>
+    <string name="set_play_song_none">表示されたアイテムから再生</string>
     <string name="desc_exit">再生停止</string>
     <string name="clr_red">赤</string>
     <string name="lbl_file_name">ファイル名</string>
     <string name="lbl_date_added">追加した日付け</string>
     <string name="lbl_sample_rate">サンプルレート</string>
-    <string name="lbl_sort_dec">降順</string>
+    <string name="lbl_sort_dsc">降順</string>
     <string name="lbl_play">再生</string>
     <string name="lbl_shuffle">シャフル</string>
-    <string name="lbl_shuffle_selected">選択曲をシャフル</string>
     <string name="lbl_play_next">次に再生</string>
     <string name="lbl_queue_add">再生待ちに追加</string>
     <string name="lbl_format">オーディオ形式</string>
@@ -116,8 +115,8 @@
     <plurals name="fmt_artist_count">
         <item quantity="other">%d 人のアーティスト</item>
     </plurals>
-    <string name="lbl_go_artist">アーティストに移動</string>
-    <string name="lbl_go_album">アルバムに移動</string>
+    <string name="lbl_artist_details">アーティストに移動</string>
+    <string name="lbl_album_details">アルバムに移動</string>
     <string name="lbl_props">曲のプロパティ</string>
     <string name="lng_queue_added">再生待ちに追加</string>
     <string name="lng_author">開発者 アレクサンダー・ケイプハート (Alexander Capehart)</string>
@@ -151,11 +150,11 @@
     <string name="set_headset_autoplay_desc">ヘッドセット接続時に常時再生開始 (動作しない機種あり)</string>
     <string name="set_headset_autoplay">ヘッドセット自動再生</string>
     <string name="set_replay_gain">リプレイゲイン</string>
-    <string name="set_playback_mode_songs">すべての曲から再生</string>
-    <string name="set_playback_mode_album">アルバムから再生</string>
-    <string name="set_playback_mode_artist">アーティストから再生</string>
-    <string name="set_library_song_playback_mode">ライブラリからの再生時</string>
-    <string name="set_detail_song_playback_mode">アイテム詳細からの再生時</string>
+    <string name="set_play_song_from_all">すべての曲から再生</string>
+    <string name="set_play_song_from_album">アルバムから再生</string>
+    <string name="set_play_song_from_artist">アーティストから再生</string>
+    <string name="set_play_in_list_with">ライブラリからの再生時</string>
+    <string name="set_play_in_parent_with">アイテム詳細からの再生時</string>
     <string name="set_exclude_non_music">音楽以外を除外</string>
     <string name="set_dirs_mode_include_desc">ここに追加したフォルダから<b>のみ</b>音楽が読み込まれます。</string>
     <string name="set_restore_desc">前回保存された再生状態がある場合、再生状態を復元</string>
@@ -178,7 +177,6 @@
     <string name="lbl_ep_remix">リミックスEP</string>
     <string name="lbl_remix_group">リミックス</string>
     <string name="lbl_genre">ジャンル</string>
-    <string name="lbl_play_selected">選択曲を再生</string>
     <string name="lbl_song_detail">プロパティを見る</string>
     <string name="lbl_queue">再生待ち</string>
     <string name="lbl_library_counts">ライブラリ統計</string>
@@ -227,7 +225,7 @@
     </plurals>
     <string name="set_action_mode_next">次ヘスキップ</string>
     <string name="set_action_mode_repeat">繰り返しモード</string>
-    <string name="set_playback_mode_genre">ジャンルから再生</string>
+    <string name="set_play_song_from_genre">ジャンルから再生</string>
     <string name="set_keep_shuffle_desc">新しい曲の再生時にシャフルを保持</string>
     <string name="clr_dynamic">ダイナミック</string>
     <string name="err_did_not_wipe">再生状態を解除できません</string>
@@ -284,4 +282,7 @@
     <string name="def_disc">ディスクがありません</string>
     <string name="fmt_editing">%sを編集中</string>
     <string name="lbl_appears_on">に登場します</string>
+    <string name="lbl_song">曲</string>
+    <string name="set_square_covers">フォーススクエアのアルバムカバー</string>
+    <string name="set_square_covers_desc">すべてのアルバム カバーを 1:1 のアスペクト比にトリミングします</string>
 </resources>

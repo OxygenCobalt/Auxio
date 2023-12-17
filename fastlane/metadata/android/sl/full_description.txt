@@ -1,0 +1,22 @@
+Auxio je lokalni predvajalnik glasbe z hitrim in zanesljivim uporabniškim vmesnikom brez večino nepotrebnih funkcij, ki jih najdete v drugih predvajalnikih glasbe. Zgrajen na sodobnih knjižnicah za predvajanje medijskih vsebin, Auxio ponuja izjemno podporo za knjižnico in kakovost poslušanja v primerjavi z aplikacijami, ki uporabljajo zastarelo funkcionalnost Androida. Skratka, <b>predvaja glasbo</b>.
+
+<b>Lastnosti</b>
+
+- Predvajanje temelji na Media3 ExoPlayer predvajalniku
+- Hiter uporabniški vmesnik, izpeljan iz najnovejših smernic oblikovanja gradiva (Material Design)
+- Samostojno premišljena uporabniška izkušnja, ki postavlja enostavnost uporabe pred izjemne primere, ki se zelo redko zgodijo
+- Prilagodljivo obnašanje
+- Podpora za številke diskov, več izvajalcev, vrste izdaj, natančne/izvirne datume, razvrščalne oznake in še več
+- Napreden sistem izvajalcev, ki združuje izvajalce in izvajalce albumov
+- Upravljanje map na SD kartici
+- Zanesljiva funkcionalnost ustvarjanja seznama predvajanja
+- Trajnost stanja predvajanja
+- Popolna podpora za ReplayGain tehnologijo (za MP3, FLAC, OGG, OPUS in MP4 datoteke)
+- Podpora za zunanje izenačevalnike (npr. Wavelet)
+- Od roba do roba
+- Podpora za vdelane naslovnice albumov
+- Funkcionalnost iskanja
+- Avtomatski zagon ob priključitvi slušalk
+- Elegantni pripomočki, ki se samodejno prilagajajo svoji velikosti
+- Popolnoma zasebno in brez povezave
+- Brez zaobljenih naslovnic albumov (če jih ne želite; če pa želite, jih lahko omogočite)

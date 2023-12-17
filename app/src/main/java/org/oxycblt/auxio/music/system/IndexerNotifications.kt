@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  * @author Alexander Capehart (OxygenCobalt)
  */
 class IndexingNotification(private val context: Context) :
-    ForegroundServiceNotification(context, INDEXER_CHANNEL) {
+    ForegroundServiceNotification(context, indexerChannel) {
     private var lastUpdateTime = -1L
 
     init {
@@ -98,7 +98,7 @@ class IndexingNotification(private val context: Context) :
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ObservingNotification(context: Context) :
-    ForegroundServiceNotification(context, INDEXER_CHANNEL) {
+    ForegroundServiceNotification(context, indexerChannel) {
     init {
         setSmallIcon(R.drawable.ic_indexer_24)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -115,6 +115,6 @@ class ObservingNotification(context: Context) :
 }
 
 /** Notification channel shared by [IndexingNotification] and [ObservingNotification]. */
-private val INDEXER_CHANNEL =
+private val indexerChannel =
     ForegroundServiceNotification.ChannelInfo(
         id = BuildConfig.APPLICATION_ID + ".channel.INDEXER", nameRes = R.string.lbl_indexer)

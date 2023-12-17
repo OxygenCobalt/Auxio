@@ -16,10 +16,13 @@
     <string name="lbl_observing">Monitoring music library</string>
     <!-- As in to retry loading music -->
     <string name="lbl_retry">Retry</string>
+    <!-- As in to show additional information about a music loading error -->
+    <string name="lbl_show_error_info">More</string>
     <!-- As in grant permission -->
     <string name="lbl_grant">Grant</string>
 
     <string name="lbl_songs">Songs</string>
+    <string name="lbl_song">Song</string>
     <string name="lbl_all_songs">All songs</string>
 
     <string name="lbl_albums">Albums</string>
@@ -60,6 +63,10 @@
     <string name="lbl_mixtapes">Mixtapes</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
+    <!-- As in the collection of music -->
+    <string name="lbl_demo">Demo</string>
+    <!-- AS in the collection of music -->
+    <string name="lbl_demos">Demos</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
     <string name="lbl_mixes">DJ Mixes</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
@@ -103,15 +110,15 @@
     <string name="lbl_date_added">Date added</string>
 
     <string name="lbl_sort">Sort</string>
+    <string name="lbl_sort_mode">Sort by</string>
+    <string name="lbl_sort_direction">Direction</string>
     <string name="lbl_sort_asc">Ascending</string>
-    <string name="lbl_sort_dec">Descending</string>
+    <string name="lbl_sort_dsc">Descending</string>
 
     <string name="lbl_playback">Now playing</string>
     <string name="lbl_equalizer">Equalizer</string>
     <string name="lbl_play">Play</string>
-    <string name="lbl_play_selected">Play selected</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="lbl_shuffle_selected">Shuffle selected</string>
 
     <string name="lbl_queue">Queue</string>
     <string name="lbl_play_next">Play next</string>
@@ -119,9 +126,10 @@
 
     <string name="lbl_playlist_add">Add to playlist</string>
 
-    <string name="lbl_go_artist">Go to artist</string>
-    <string name="lbl_go_album">Go to album</string>
+    <string name="lbl_artist_details">Go to artist</string>
+    <string name="lbl_album_details">Go to album</string>
     <string name="lbl_song_detail">View properties</string>
+    <string name="lbl_parent_detail">View</string>
     <string name="lbl_share">Share</string>
 
     <string name="lbl_props">Song properties</string>
@@ -161,6 +169,14 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_licenses">Licenses</string>
     <string name="lbl_library_counts">Library statistics</string>
+
+    <string name="lbl_selection">Selection</string>
+
+    <string name="lbl_error_info">Error information</string>
+    <!-- As in copied to the system clipboard -->
+    <string name="lbl_copied">Copied</string>
+    <!-- As in to report an error -->
+    <string name="lbl_report">Report</string>
 
     <!-- Long Namespace | Longer Descriptions -->
     <eat-comment />
@@ -205,13 +221,14 @@
     <string name="set_action_mode_next">Skip to next</string>
     <string name="set_action_mode_repeat">Repeat mode</string>
     <string name="set_behavior">Behavior</string>
-    <string name="set_library_song_playback_mode">When playing from the library</string>
-    <string name="set_detail_song_playback_mode">When playing from item details</string>
-    <string name="set_playback_mode_none">Play from shown item</string>
-    <string name="set_playback_mode_songs">Play from all songs</string>
-    <string name="set_playback_mode_album">Play from album</string>
-    <string name="set_playback_mode_artist">Play from artist</string>
-    <string name="set_playback_mode_genre">Play from genre</string>
+    <string name="set_play_in_list_with">When playing from the library</string>
+    <string name="set_play_in_parent_with">When playing from item details</string>
+    <string name="set_play_song_none">Play from shown item</string>
+    <string name="set_play_song_from_all">Play from all songs</string>
+    <string name="set_play_song_from_album">Play from album</string>
+    <string name="set_play_song_from_artist">Play from artist</string>
+    <string name="set_play_song_from_genre">Play from genre</string>
+    <string name="set_play_song_by_itself">Play song by itself</string>
     <string name="set_keep_shuffle">Remember shuffle</string>
     <string name="set_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
 
@@ -329,6 +346,7 @@
     <string name="desc_artist_image">Artist image for %s</string>
     <string name="desc_genre_image">Genre image for %s</string>
     <string name="desc_playlist_image">Playlist image for %s</string>
+    <string name="desc_selection_image">Selection image</string>
 
     <!-- Default Namespace | Placeholder values -->
     <eat-comment />
@@ -339,6 +357,7 @@
     <string name="def_disc">No disc</string>
     <string name="def_track">No track</string>
     <string name="def_song_count">No songs</string>
+    <string name="def_album_count">No albums</string>
     <string name="def_playback">No music playing</string>
 
     <!-- Codec Namespace | Format names -->

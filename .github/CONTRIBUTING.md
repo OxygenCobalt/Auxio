@@ -39,8 +39,8 @@ If you have knowledge of Android/Kotlin, feel free to to contribute to the proje
 - If you want to help out with an existing bug report, comment on the issue that you want to fix saying that you are going to try your hand at it.
 - If you want to add something, its recommended to open up an issue for what you want to change before you start working on it. That way I can determine if the addition will be merged in the first place, and generally gives a heads-up overall.
 - Do not bring non-free software into the project, such as Binary Blobs.
-- Stick to [F-Droid Including Guidelines](https://f-droid.org/wiki/page/Inclusion_Policy)
-- Make sure you stick to Auxio's styling with [ktlint](https://github.com/pinterest/ktlint). `ktlintformat` should run on every build.
+- Stick to [F-Droid Inclusion Guidelines](https://f-droid.org/wiki/page/Inclusion_Policy)
+- Make sure you stick to Auxio's styling, which should be auto-formatted on every build.
 - Please ***FULLY TEST*** your changes before creating a PR. Untested code will not be merged.
-- Java code will **NOT** be accepted. Kotlin only.
+- Only **Kotlin** will be accepted, except for the case that a UI component must be vendored in the project.
 - Keep your code up the date with the upstream and continue to maintain it after you create the PR. This makes it less of a hassle to merge.

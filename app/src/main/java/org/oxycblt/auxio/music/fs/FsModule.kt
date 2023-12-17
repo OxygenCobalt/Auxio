@@ -24,12 +24,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.auxio.music.MusicSettings
 
 @Module
 @InstallIn(SingletonComponent::class)
 class FsModule {
     @Provides
-    fun mediaStoreExtractor(@ApplicationContext context: Context, musicSettings: MusicSettings) =
-        MediaStoreExtractor.from(context, musicSettings)
+    fun mediaStoreExtractor(@ApplicationContext context: Context) =
+        MediaStoreExtractor.from(context)
 }

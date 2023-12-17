@@ -28,10 +28,11 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
+import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -75,7 +76,7 @@ interface DeviceLibrary {
      * Find a [Album] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
-     * @return The corresponding [Song], or null if one was not found.
+     * @return The corresponding [Album], or null if one was not found.
      */
     fun findAlbum(uid: Music.UID): Album?
 
@@ -83,7 +84,7 @@ interface DeviceLibrary {
      * Find a [Artist] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
-     * @return The corresponding [Song], or null if one was not found.
+     * @return The corresponding [Artist], or null if one was not found.
      */
     fun findArtist(uid: Music.UID): Artist?
 
@@ -91,7 +92,7 @@ interface DeviceLibrary {
      * Find a [Genre] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
-     * @return The corresponding [Song], or null if one was not found.
+     * @return The corresponding [Genre], or null if one was not found.
      */
     fun findGenre(uid: Music.UID): Genre?
 
@@ -107,16 +108,19 @@ interface DeviceLibrary {
          */
         suspend fun create(
             rawSongs: Channel<RawSong>,
-            processedSongs: Channel<RawSong>
+            processedSongs: Channel<RawSong>,
+            separators: Separators,
+            nameFactory: Name.Known.Factory
         ): DeviceLibraryImpl
     }
 }
 
-class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: MusicSettings) :
-    DeviceLibrary.Factory {
+class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
     override suspend fun create(
         rawSongs: Channel<RawSong>,
-        processedSongs: Channel<RawSong>
+        processedSongs: Channel<RawSong>,
+        separators: Separators,
+        nameFactory: Name.Known.Factory
     ): DeviceLibraryImpl {
         val songGrouping = mutableMapOf<Music.UID, SongImpl>()
         val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl>>()
@@ -127,7 +131,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // All music information is grouped as it is indexed by other components.
         for (rawSong in rawSongs) {
-            val song = SongImpl(rawSong, musicSettings)
+            val song = SongImpl(rawSong, nameFactory, separators)
             // At times the indexer produces duplicate songs, try to filter these. Comparing by
             // UID is sufficient for something like this, and also prevents collisions from
             // causing severe issues elsewhere.
@@ -207,7 +211,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        val albums = albumGrouping.values.mapTo(mutableSetOf()) { AlbumImpl(it, musicSettings) }
+        val albums = albumGrouping.values.mapTo(mutableSetOf()) { AlbumImpl(it, nameFactory) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
                 val key = RawArtist.Key(rawArtist)
@@ -243,8 +247,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         }
 
         // Artists and genres do not need to be grouped and can be processed immediately.
-        val artists = artistGrouping.values.mapTo(mutableSetOf()) { ArtistImpl(it, musicSettings) }
-        val genres = genreGrouping.values.mapTo(mutableSetOf()) { GenreImpl(it, musicSettings) }
+        val artists = artistGrouping.values.mapTo(mutableSetOf()) { ArtistImpl(it, nameFactory) }
+        val genres = genreGrouping.values.mapTo(mutableSetOf()) { GenreImpl(it, nameFactory) }
 
         return DeviceLibraryImpl(songGrouping.values.toSet(), albums, artists, genres)
     }
@@ -253,10 +257,10 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 // TODO: Avoid redundant data creation
 
 class DeviceLibraryImpl(
-    override val songs: Set<SongImpl>,
-    override val albums: Set<AlbumImpl>,
-    override val artists: Set<ArtistImpl>,
-    override val genres: Set<GenreImpl>
+    override val songs: Collection<SongImpl>,
+    override val albums: Collection<AlbumImpl>,
+    override val artists: Collection<ArtistImpl>,
+    override val genres: Collection<GenreImpl>
 ) : DeviceLibrary {
     // Use a mapping to make finding information based on it's UID much faster.
     private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }
@@ -266,14 +270,19 @@ class DeviceLibraryImpl(
 
     // All other music is built from songs, so comparison only needs to check songs.
     override fun equals(other: Any?) = other is DeviceLibrary && other.songs == songs
+
     override fun hashCode() = songs.hashCode()
+
     override fun toString() =
         "DeviceLibrary(songs=${songs.size}, albums=${albums.size}, " +
             "artists=${artists.size}, genres=${genres.size})"
 
     override fun findSong(uid: Music.UID): Song? = songUidMap[uid]
+
     override fun findAlbum(uid: Music.UID): Album? = albumUidMap[uid]
+
     override fun findArtist(uid: Music.UID): Artist? = artistUidMap[uid]
+
     override fun findGenre(uid: Music.UID): Genre? = genreUidMap[uid]
 
     override fun findSongForUri(context: Context, uri: Uri) =

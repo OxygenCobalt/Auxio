@@ -23,6 +23,9 @@
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>
         <item name="linearProgressIndicatorStyle">@style/Widget.Auxio.LinearProgressIndicator</item>
+        <item name="bottomSheetStyle">@style/Widget.Auxio.BottomSheet</item>
+        <item name="bottomSheetDialogTheme">@style/Widget.Auxio.BottomSheet.Dialog</item>
+        <item name="bottomSheetDragHandleStyle">@style/Widget.Auxio.BottomSheet.Handle</item>
 
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Auxio.DisplayLarge</item>
         <item name="textAppearanceDisplayMedium">@style/TextAppearance.Auxio.DisplayMedium</item>
@@ -49,8 +52,6 @@
         <item name="android:scrollbars">none</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
-        <!-- Fix dumb default android behavior -->
         <item name="colorControlHighlight">@color/sel_compat_ripple</item>
         <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>

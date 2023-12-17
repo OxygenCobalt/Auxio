@@ -83,7 +83,7 @@ inline fun <reified R> ContentResolver.useQuery(
 ) = safeQuery(uri, projection, selector, args).use(block)
 
 /** Album art [MediaStore] database is not a built-in constant, have to define it ourselves. */
-private val EXTERNAL_COVERS_URI = Uri.parse("content://media/external/audio/albumart")
+private val externalCoversUri = Uri.parse("content://media/external/audio/albumart")
 
 /**
  * Convert a [MediaStore] Song ID into a [Uri] to it's audio file.
@@ -102,20 +102,10 @@ fun Long.toAudioUri() =
  * @return An external storage image [Uri]. May not exist.
  * @see ContentUris.withAppendedId
  */
-fun Long.toCoverUri() = ContentUris.withAppendedId(EXTERNAL_COVERS_URI, this)
+fun Long.toCoverUri() = ContentUris.withAppendedId(externalCoversUri, this)
 
 // --- STORAGEMANAGER UTILITIES ---
 // Largely derived from Material Files: https://github.com/zhanghai/MaterialFiles
-
-/**
- * Provides the analogous method to [StorageManager.getStorageVolumes] method that is usable from
- * API 21 to API 23, in which the [StorageManager] API was hidden and differed greatly.
- *
- * @see StorageManager.getStorageVolumes
- */
-@Suppress("NewApi")
-private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
-    lazyReflectedMethod(StorageManager::class, "getVolumeList")
 
 /**
  * Provides the analogous method to [StorageVolume.getDirectory] method that is usable from API 21
@@ -124,7 +114,7 @@ private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
  * @see StorageVolume.getDirectory
  */
 @Suppress("NewApi")
-private val SV_API21_GET_PATH_METHOD: Method by lazyReflectedMethod(StorageVolume::class, "getPath")
+private val svApi21GetPathMethod: Method by lazyReflectedMethod(StorageVolume::class, "getPath")
 
 /**
  * The [StorageVolume] considered the "primary" volume by the system, obtained in a
@@ -143,13 +133,7 @@ val StorageManager.primaryStorageVolumeCompat: StorageVolume
  * @see StorageManager.getStorageVolumes
  */
 val StorageManager.storageVolumesCompat: List<StorageVolume>
-    get() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            storageVolumes.toList()
-        } else {
-            @Suppress("UNCHECKED_CAST")
-            (SM_API21_GET_VOLUME_LIST_METHOD.invoke(this) as Array<StorageVolume>).toList()
-        }
+    get() = storageVolumes.toList()
 
 /**
  * The the absolute path to this [StorageVolume]'s directory within the file-system, in a
@@ -166,8 +150,7 @@ val StorageVolume.directoryCompat: String?
             // Replicate API: Analogous method if mounted, null if not
             when (stateCompat) {
                 Environment.MEDIA_MOUNTED,
-                Environment.MEDIA_MOUNTED_READ_ONLY ->
-                    SV_API21_GET_PATH_METHOD.invoke(this) as String
+                Environment.MEDIA_MOUNTED_READ_ONLY -> svApi21GetPathMethod.invoke(this) as String
                 else -> null
             }
         }

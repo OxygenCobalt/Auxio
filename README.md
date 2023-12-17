@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.1.3">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.1.3&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.2.0">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.2.0&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -21,9 +21,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of [ExoPlayer](https://exoplayer.dev/), Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
-
-I primarily built Auxio for myself, but you can use it too, I guess.
+Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
 
 **The default branch is the development version of the repository. For a stable version, see the master branch.**
 
@@ -42,7 +40,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## Features
 
-- [ExoPlayer](https://exoplayer.dev/)-based playback
+- Playback based on [Media3 ExoPlayer](https://developer.android.com/guide/topics/media/exoplayer)
 - Snappy UI derived from the latest Material Design guidelines
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
@@ -60,21 +58,20 @@ precise/original dates, sort tags, and more
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
-- No rounded album covers (Unless you want them. Then you can.)
+- No rounded album covers (by default)
 
 ## Permissions
 
-- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your media files
-- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing even if the app itself is in background
+- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your music files
+- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing in the background
 
 ## Building
 
-Auxio relies on a custom version of ExoPlayer that enables some extra features. This adds some caveats to
-the build process:
+Auxio relies on a custom version of Media3 that enables some extra features. This adds some caveats to the build process:
 1. `cmake` and `ninja-build` must be installed before building the project.
 2. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
 download the external code.
-3. You are **unable** to build this project on windows, as the custom ExoPlayer build runs shell scripts that
+3. You are **unable** to build this project on windows, as the custom Media3 build runs shell scripts that
 will only work on unix-based systems.
 
 ## Contributing

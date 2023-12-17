@@ -52,6 +52,7 @@ interface Event<T> {
  */
 class MutableEvent<T> : Event<T> {
     override val flow = MutableStateFlow<T?>(null)
+
     override fun consume() = flow.value?.also { flow.value = null }
 
     /**

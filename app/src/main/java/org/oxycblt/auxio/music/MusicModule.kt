@@ -28,5 +28,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 interface MusicModule {
     @Singleton @Binds fun repository(musicRepository: MusicRepositoryImpl): MusicRepository
+
     @Binds fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
 }

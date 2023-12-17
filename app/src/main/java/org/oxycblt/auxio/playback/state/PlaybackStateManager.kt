@@ -309,15 +309,18 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Volatile
     override var parent: MusicParent? = null
         private set
+
     @Volatile
     override var playerState = InternalPlayer.State.from(isPlaying = false, isAdvancing = false, 0)
         private set
+
     @Volatile
     override var repeatMode = RepeatMode.NONE
         set(value) {
             field = value
             notifyRepeatModeChanged()
         }
+
     override val currentAudioSessionId: Int?
         get() = internalPlayer?.audioSessionId
 

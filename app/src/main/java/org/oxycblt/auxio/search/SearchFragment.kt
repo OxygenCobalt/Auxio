@@ -36,12 +36,12 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.detail.Show
-import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -51,6 +51,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -70,11 +71,11 @@ import org.oxycblt.auxio.util.setFullWidthLookup
  */
 @AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
-    override val detailModel: DetailViewModel by activityViewModels()
+    private val searchModel: SearchViewModel by viewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
-    private val searchModel: SearchViewModel by viewModels()
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
     private var launchedKeyboard = false
@@ -118,7 +119,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
-                this@SearchFragment.logD("Keyboard is not shown yet")
+                logD("Keyboard is not shown yet")
                 showKeyboard(this)
                 launchedKeyboard = true
             }
@@ -138,10 +139,12 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         // --- VIEWMODEL SETUP ---
 
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collectImmediately(listModel.selected, ::updateSelection)
+        collect(listModel.menu.flow, ::handleMenu)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+        collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
         collect(detailModel.toShow.flow, ::handleShow)
     }
 
@@ -171,7 +174,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onRealClick(item: Music) {
         when (item) {
-            is Song -> playbackModel.playFrom(item, searchModel.playbackMode)
+            is Song -> playbackModel.play(item, searchModel.playWith)
             is Album -> detailModel.showAlbum(item)
             is Artist -> detailModel.showArtist(item)
             is Genre -> detailModel.showGenre(item)
@@ -179,13 +182,13 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         }
     }
 
-    override fun onOpenMenu(item: Music, anchor: View) {
+    override fun onOpenMenu(item: Music) {
         when (item) {
-            is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
-            is Album -> openMusicMenu(anchor, R.menu.menu_album_actions, item)
-            is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
-            is Genre -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
-            is Playlist -> openMusicMenu(anchor, R.menu.menu_playlist_actions, item)
+            is Song -> listModel.openMenu(R.menu.song, item, searchModel.playWith)
+            is Album -> listModel.openMenu(R.menu.album, item)
+            is Artist -> listModel.openMenu(R.menu.parent, item)
+            is Genre -> listModel.openMenu(R.menu.parent, item)
+            is Playlist -> listModel.openMenu(R.menu.playlist, item)
         }
     }
 
@@ -209,36 +212,29 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 logD("Navigating to ${show.song}")
                 findNavController().navigateSafe(SearchFragmentDirections.showSong(show.song.uid))
             }
-
-            // Songs should be scrolled to if the album matches, or a new detail
-            // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
                 logD("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showAlbum(show.song.album.uid))
             }
-
-            // If the album matches, no need to do anything. Otherwise launch a new
-            // detail fragment.
             is Show.AlbumDetails -> {
                 logD("Navigating to ${show.album}")
                 findNavController().navigateSafe(SearchFragmentDirections.showAlbum(show.album.uid))
             }
-
-            // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
                 logD("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showArtist(show.artist.uid))
             }
-            is Show.SongArtistDetails -> {
+            is Show.SongArtistDecision -> {
                 logD("Navigating to artist choices for ${show.song}")
-                findNavController().navigateSafe(SearchFragmentDirections.showArtist(show.song.uid))
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.showArtistChoices(show.song.uid))
             }
-            is Show.AlbumArtistDetails -> {
+            is Show.AlbumArtistDecision -> {
                 logD("Navigating to artist choices for ${show.album}")
                 findNavController()
-                    .navigateSafe(SearchFragmentDirections.showArtist(show.album.uid))
+                    .navigateSafe(SearchFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
                 logD("Navigating to ${show.genre}")
@@ -247,7 +243,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             is Show.PlaylistDetails -> {
                 logD("Navigating to ${show.playlist}")
                 findNavController()
-                    .navigateSafe(SearchFragmentDirections.showGenre(show.playlist.uid))
+                    .navigateSafe(SearchFragmentDirections.showPlaylist(show.playlist.uid))
             }
             null -> {}
         }
@@ -256,39 +252,20 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         hideKeyboard()
     }
 
-    private fun handleDecision(decision: PlaylistDecision?) {
-        if (decision == null) return
-        when (decision) {
-            is PlaylistDecision.New -> {
-                logD("Creating new playlist")
-                findNavController()
-                    .navigateSafe(
-                        HomeFragmentDirections.newPlaylist(
-                            decision.songs.map { it.uid }.toTypedArray()))
+    private fun handleMenu(menu: Menu?) {
+        if (menu == null) return
+        val directions =
+            when (menu) {
+                is Menu.ForSong -> SearchFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForAlbum -> SearchFragmentDirections.openAlbumMenu(menu.parcel)
+                is Menu.ForArtist -> SearchFragmentDirections.openArtistMenu(menu.parcel)
+                is Menu.ForGenre -> SearchFragmentDirections.openGenreMenu(menu.parcel)
+                is Menu.ForPlaylist -> SearchFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForSelection -> SearchFragmentDirections.openSelectionMenu(menu.parcel)
             }
-            is PlaylistDecision.Rename -> {
-                logD("Renaming ${decision.playlist}")
-                findNavController()
-                    .navigateSafe(HomeFragmentDirections.renamePlaylist(decision.playlist.uid))
-            }
-            is PlaylistDecision.Delete -> {
-                logD("Deleting ${decision.playlist}")
-                findNavController()
-                    .navigateSafe(SearchFragmentDirections.deletePlaylist(decision.playlist.uid))
-            }
-            is PlaylistDecision.Add -> {
-                logD("Adding ${decision.songs.size} to a playlist")
-                findNavController()
-                    .navigateSafe(
-                        HomeFragmentDirections.addToPlaylist(
-                            decision.songs.map { it.uid }.toTypedArray()))
-            }
-        }
-        musicModel.playlistDecision.consume()
-    }
-
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        searchAdapter.setPlaying(parent ?: song, isPlaying)
+        findNavController().navigateSafe(directions)
+        // Keyboard is no longer needed.
+        hideKeyboard()
     }
 
     private fun updateSelection(selected: List<Music>) {
@@ -304,6 +281,50 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         } else {
             binding.searchToolbar.setVisible(R.id.search_normal_toolbar)
         }
+    }
+
+    private fun handleDecision(decision: PlaylistDecision?) {
+        if (decision == null) return
+        val directions =
+            when (decision) {
+                is PlaylistDecision.Rename -> {
+                    logD("Renaming ${decision.playlist}")
+                    SearchFragmentDirections.renamePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Delete -> {
+                    logD("Deleting ${decision.playlist}")
+                    SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Add -> {
+                    logD("Adding ${decision.songs.size} to a playlist")
+                    SearchFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                }
+                is PlaylistDecision.New -> {
+                    error("Unexpected decision $decision")
+                }
+            }
+        findNavController().navigateSafe(directions)
+    }
+
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        searchAdapter.setPlaying(parent ?: song, isPlaying)
+    }
+
+    private fun handlePlaybackDecision(decision: PlaybackDecision?) {
+        if (decision == null) return
+        val directions =
+            when (decision) {
+                is PlaybackDecision.PlayFromArtist -> {
+                    logD("Launching play from artist dialog for $decision")
+                    SearchFragmentDirections.playFromArtist(decision.song.uid)
+                }
+                is PlaybackDecision.PlayFromGenre -> {
+                    logD("Launching play from artist dialog for $decision")
+                    SearchFragmentDirections.playFromGenre(decision.song.uid)
+                }
+            }
+        findNavController().navigateSafe(directions)
     }
 
     /**

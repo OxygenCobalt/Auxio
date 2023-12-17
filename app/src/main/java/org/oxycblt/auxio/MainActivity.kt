@@ -68,8 +68,8 @@ class MainActivity : AppCompatActivity() {
         logD("Activity created")
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
         startService(Intent(this, IndexerService::class.java))
         startService(Intent(this, PlaybackService::class.java))

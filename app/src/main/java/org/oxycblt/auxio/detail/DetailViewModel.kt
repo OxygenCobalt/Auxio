@@ -36,24 +36,25 @@ import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.AudioProperties
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
@@ -65,12 +66,15 @@ import org.oxycblt.auxio.util.logW
 class DetailViewModel
 @Inject
 constructor(
+    private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
     private val audioPropertiesFactory: AudioProperties.Factory,
-    private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
     private val _toShow = MutableEvent<Show>()
+    /**
+     * A [Show] command that is awaiting a view capable of responding to it. Null if none currently.
+     */
     val toShow: Event<Show>
         get() = _toShow
 
@@ -94,23 +98,23 @@ constructor(
     val currentAlbum: StateFlow<Album?>
         get() = _currentAlbum
 
-    private val _albumList = MutableStateFlow(listOf<Item>())
+    private val _albumSongList = MutableStateFlow(listOf<Item>())
     /** The current list data derived from [currentAlbum]. */
-    val albumList: StateFlow<List<Item>>
-        get() = _albumList
-    private val _albumInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [albumList] in the UI. */
-    val albumInstructions: Event<UpdateInstructions>
-        get() = _albumInstructions
+    val albumSongList: StateFlow<List<Item>>
+        get() = _albumSongList
 
-    /** The current [Sort] used for [Song]s in [albumList]. */
-    var albumSongSort: Sort
-        get() = musicSettings.albumSongSort
-        set(value) {
-            musicSettings.albumSongSort = value
-            // Refresh the album list to reflect the new sort.
-            currentAlbum.value?.let { refreshAlbumList(it, true) }
-        }
+    private val _albumSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [albumSongList] in the UI. */
+    val albumSongInstructions: Event<UpdateInstructions>
+        get() = _albumSongInstructions
+
+    /** The current [Sort] used for [Song]s in [albumSongList]. */
+    val albumSongSort: Sort
+        get() = listSettings.albumSongSort
+
+    /** The [PlaySong] instructions to use when playing a [Song] from [Album] details. */
+    val playInAlbumWith
+        get() = playbackSettings.inParentPlaybackMode ?: PlaySong.FromAlbum
 
     // --- ARTIST ---
 
@@ -119,22 +123,27 @@ constructor(
     val currentArtist: StateFlow<Artist?>
         get() = _currentArtist
 
-    private val _artistList = MutableStateFlow(listOf<Item>())
+    private val _artistSongList = MutableStateFlow(listOf<Item>())
     /** The current list derived from [currentArtist]. */
-    val artistList: StateFlow<List<Item>> = _artistList
-    private val _artistInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [artistList] in the UI. */
-    val artistInstructions: Event<UpdateInstructions>
-        get() = _artistInstructions
+    val artistSongList: StateFlow<List<Item>> = _artistSongList
 
-    /** The current [Sort] used for [Song]s in [artistList]. */
+    private val _artistSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [artistSongList] in the UI. */
+    val artistSongInstructions: Event<UpdateInstructions>
+        get() = _artistSongInstructions
+
+    /** The current [Sort] used for [Song]s in [artistSongList]. */
     var artistSongSort: Sort
-        get() = musicSettings.artistSongSort
+        get() = listSettings.artistSongSort
         set(value) {
-            musicSettings.artistSongSort = value
+            listSettings.artistSongSort = value
             // Refresh the artist list to reflect the new sort.
             currentArtist.value?.let { refreshArtistList(it, true) }
         }
+
+    /** The [PlaySong] instructions to use when playing a [Song] from [Artist] details. */
+    val playInArtistWith
+        get() = playbackSettings.inParentPlaybackMode ?: PlaySong.FromArtist(currentArtist.value)
 
     // --- GENRE ---
 
@@ -143,22 +152,27 @@ constructor(
     val currentGenre: StateFlow<Genre?>
         get() = _currentGenre
 
-    private val _genreList = MutableStateFlow(listOf<Item>())
+    private val _genreSongList = MutableStateFlow(listOf<Item>())
     /** The current list data derived from [currentGenre]. */
-    val genreList: StateFlow<List<Item>> = _genreList
-    private val _genreInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [artistList] in the UI. */
-    val genreInstructions: Event<UpdateInstructions>
-        get() = _genreInstructions
+    val genreSongList: StateFlow<List<Item>> = _genreSongList
 
-    /** The current [Sort] used for [Song]s in [genreList]. */
+    private val _genreSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [artistSongList] in the UI. */
+    val genreSongInstructions: Event<UpdateInstructions>
+        get() = _genreSongInstructions
+
+    /** The current [Sort] used for [Song]s in [genreSongList]. */
     var genreSongSort: Sort
-        get() = musicSettings.genreSongSort
+        get() = listSettings.genreSongSort
         set(value) {
-            musicSettings.genreSongSort = value
+            listSettings.genreSongSort = value
             // Refresh the genre list to reflect the new sort.
             currentGenre.value?.let { refreshGenreList(it, true) }
         }
+
+    /** The [PlaySong] instructions to use when playing a [Song] from [Genre] details. */
+    val playInGenreWith
+        get() = playbackSettings.inParentPlaybackMode ?: PlaySong.FromGenre(currentGenre.value)
 
     // --- PLAYLIST ---
 
@@ -167,13 +181,14 @@ constructor(
     val currentPlaylist: StateFlow<Playlist?>
         get() = _currentPlaylist
 
-    private val _playlistList = MutableStateFlow(listOf<Item>())
+    private val _playlistSongList = MutableStateFlow(listOf<Item>())
     /** The current list data derived from [currentPlaylist] */
-    val playlistList: StateFlow<List<Item>> = _playlistList
-    private val _playlistInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [playlistList] in the UI. */
-    val playlistInstructions: Event<UpdateInstructions>
-        get() = _playlistInstructions
+    val playlistSongList: StateFlow<List<Item>> = _playlistSongList
+
+    private val _playlistSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [playlistSongList] in the UI. */
+    val playlistSongInstructions: Event<UpdateInstructions>
+        get() = _playlistSongInstructions
 
     private val _editedPlaylist = MutableStateFlow<List<Song>?>(null)
     /**
@@ -183,12 +198,11 @@ constructor(
     val editedPlaylist: StateFlow<List<Song>?>
         get() = _editedPlaylist
 
-    /**
-     * The [MusicMode] to use when playing a [Song] from the UI, or null to play from the currently
-     * shown item.
-     */
-    val playbackMode: MusicMode?
-        get() = playbackSettings.inParentPlaybackMode
+    /** The [PlaySong] instructions to use when playing a [Song] from [Genre] details. */
+    val playInPlaylistWith
+        get() =
+            playbackSettings.inParentPlaybackMode
+                ?: PlaySong.FromPlaylist(unlikelyToBeNull(currentPlaylist.value))
 
     init {
         musicRepository.addUpdateListener(this)
@@ -241,32 +255,74 @@ constructor(
         }
     }
 
+    /**
+     * Navigate to the details (properties) of a [Song].
+     *
+     * @param song The [Song] to navigate with.
+     */
     fun showSong(song: Song) = showImpl(Show.SongDetails(song))
 
+    /**
+     * Navigate to the [Album] details of the given [Song], scrolling to the given [Song] as well.
+     *
+     * @param song The [Song] to navigate with.
+     */
     fun showAlbum(song: Song) = showImpl(Show.SongAlbumDetails(song))
 
+    /**
+     * Navigate to the details of an [Album].
+     *
+     * @param album The [Album] to navigate with.
+     */
     fun showAlbum(album: Album) = showImpl(Show.AlbumDetails(album))
 
+    /**
+     * Navigate to the details of one of the [Artist]s of a [Song] using the corresponding choice
+     * dialog. If there is only one artist, this call is identical to [showArtist].
+     *
+     * @param song The [Song] to navigate with.
+     */
     fun showArtist(song: Song) =
         showImpl(
             if (song.artists.size > 1) {
-                Show.SongArtistDetails(song)
+                Show.SongArtistDecision(song)
             } else {
                 Show.ArtistDetails(song.artists.first())
             })
 
+    /**
+     * Navigate to the details of one of the [Artist]s of an [Album] using the corresponding choice
+     * dialog. If there is only one artist, this call is identical to [showArtist].
+     *
+     * @param album The [Album] to navigate with.
+     */
     fun showArtist(album: Album) =
         showImpl(
             if (album.artists.size > 1) {
-                Show.AlbumArtistDetails(album)
+                Show.AlbumArtistDecision(album)
             } else {
                 Show.ArtistDetails(album.artists.first())
             })
 
+    /**
+     * Navigate to the details of an [Artist].
+     *
+     * @param artist The [Artist] to navigate with.
+     */
     fun showArtist(artist: Artist) = showImpl(Show.ArtistDetails(artist))
 
+    /**
+     * Navigate to the details of a [Genre].
+     *
+     * @param genre The [Genre] to navigate with.
+     */
     fun showGenre(genre: Genre) = showImpl(Show.GenreDetails(genre))
 
+    /**
+     * Navigate to the details of a [Playlist].
+     *
+     * @param playlist The [Playlist] to navigate with.
+     */
     fun showPlaylist(playlist: Playlist) = showImpl(Show.PlaylistDetails(playlist))
 
     private fun showImpl(show: Show) {
@@ -293,7 +349,7 @@ constructor(
     }
 
     /**
-     * Set a new [currentAlbum] from it's [Music.UID]. [currentAlbum] and [albumList] will be
+     * Set a new [currentAlbum] from it's [Music.UID]. [currentAlbum] and [albumSongList] will be
      * updated to align with the new [Album].
      *
      * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
@@ -308,7 +364,17 @@ constructor(
     }
 
     /**
-     * Set a new [currentArtist] from it's [Music.UID]. [currentArtist] and [artistList] will be
+     * Apply a new [Sort] to [albumSongList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyAlbumSongSort(sort: Sort) {
+        listSettings.albumSongSort = sort
+        _currentAlbum.value?.let { refreshAlbumList(it, true) }
+    }
+
+    /**
+     * Set a new [currentArtist] from it's [Music.UID]. [currentArtist] and [artistSongList] will be
      * updated to align with the new [Artist].
      *
      * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
@@ -323,7 +389,17 @@ constructor(
     }
 
     /**
-     * Set a new [currentGenre] from it's [Music.UID]. [currentGenre] and [genreList] will be
+     * Apply a new [Sort] to [artistSongList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyArtistSongSort(sort: Sort) {
+        listSettings.artistSongSort = sort
+        _currentArtist.value?.let { refreshArtistList(it, true) }
+    }
+
+    /**
+     * Set a new [currentGenre] from it's [Music.UID]. [currentGenre] and [genreSongList] will be
      * updated to align with the new album.
      *
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
@@ -335,6 +411,16 @@ constructor(
         if (_currentGenre.value == null) {
             logW("Given genre UID was invalid")
         }
+    }
+
+    /**
+     * Apply a new [Sort] to [genreSongList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyGenreSongSort(sort: Sort) {
+        listSettings.genreSongSort = sort
+        _currentGenre.value?.let { refreshGenreList(it, true) }
     }
 
     /**
@@ -395,6 +481,17 @@ constructor(
     }
 
     /**
+     * Apply a [Sort] to the edited playlist. Does nothing if not in an editing session.
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyPlaylistSongSort(sort: Sort) {
+        val playlist = _currentPlaylist.value ?: return
+        _editedPlaylist.value = sort.songs(_editedPlaylist.value ?: return)
+        refreshPlaylistList(playlist, UpdateInstructions.Replace(2))
+    }
+
+    /**
      * (Visually) move a song in the current playlist. Does nothing if not in an editing session.
      *
      * @param from The start position, in the list adapter data.
@@ -402,7 +499,6 @@ constructor(
      * @return true if the song was moved, false otherwise.
      */
     fun movePlaylistSongs(from: Int, to: Int): Boolean {
-        // TODO: Song re-sorting
         val playlist = _currentPlaylist.value ?: return false
         val editedPlaylist = (_editedPlaylist.value ?: return false).toMutableList()
         val realFrom = from - 2
@@ -486,8 +582,8 @@ constructor(
         }
 
         logD("Update album list to ${list.size} items with $instructions")
-        _albumInstructions.put(instructions)
-        _albumList.value = list
+        _albumSongInstructions.put(instructions)
+        _albumSongList.value = list
     }
 
     private fun refreshArtistList(artist: Artist, replace: Boolean = false) {
@@ -511,6 +607,7 @@ constructor(
                             is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
                             is ReleaseType.Mix -> AlbumGrouping.DJMIXES
                             is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
+                            is ReleaseType.Demo -> AlbumGrouping.DEMOS
                         }
                 }
             }
@@ -549,8 +646,8 @@ constructor(
         }
 
         logD("Updating artist list to ${list.size} items with $instructions")
-        _artistInstructions.put(instructions)
-        _artistList.value = list.toList()
+        _artistSongInstructions.put(instructions)
+        _artistSongList.value = list.toList()
     }
 
     private fun refreshGenreList(genre: Genre, replace: Boolean = false) {
@@ -575,8 +672,8 @@ constructor(
         list.addAll(genreSongSort.songs(genre.songs))
 
         logD("Updating genre list to ${list.size} items with $instructions")
-        _genreInstructions.put(instructions)
-        _genreList.value = list
+        _genreSongInstructions.put(instructions)
+        _genreSongList.value = list
     }
 
     private fun refreshPlaylistList(
@@ -595,8 +692,8 @@ constructor(
         }
 
         logD("Updating playlist list to ${list.size} items with $instructions")
-        _playlistInstructions.put(instructions)
-        _playlistList.value = list
+        _playlistSongInstructions.put(instructions)
+        _playlistSongList.value = list
     }
 
     /**
@@ -613,6 +710,7 @@ constructor(
         SOUNDTRACKS(R.string.lbl_soundtracks),
         DJMIXES(R.string.lbl_mixes),
         MIXTAPES(R.string.lbl_mixtapes),
+        DEMOS(R.string.lbl_demos),
         APPEARANCES(R.string.lbl_appears_on),
         LIVE(R.string.lbl_live_group),
         REMIXES(R.string.lbl_remix_group),
@@ -624,13 +722,68 @@ constructor(
     }
 }
 
+/**
+ * A command for navigation to detail views. These can be handled partially if a certain command
+ * cannot occur in a specific view.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 sealed interface Show {
+    /**
+     * Navigate to the details (properties) of a [Song].
+     *
+     * @param song The [Song] to navigate with.
+     */
     data class SongDetails(val song: Song) : Show
+
+    /**
+     * Navigate to the details of an [Album].
+     *
+     * @param album The [Album] to navigate with.
+     */
     data class AlbumDetails(val album: Album) : Show
+
+    /**
+     * Navigate to the [Album] details of the given [Song], scrolling to the given [Song] as well.
+     *
+     * @param song The [Song] to navigate with.
+     */
     data class SongAlbumDetails(val song: Song) : Show
+
+    /**
+     * Navigate to the details of an [Artist].
+     *
+     * @param artist The [Artist] to navigate with.
+     */
     data class ArtistDetails(val artist: Artist) : Show
-    data class SongArtistDetails(val song: Song) : Show
-    data class AlbumArtistDetails(val album: Album) : Show
+
+    /**
+     * Navigate to the details of one of the [Artist]s of a [Song] using the corresponding choice
+     * dialog.
+     *
+     * @param song The [Song] to navigate with.
+     */
+    data class SongArtistDecision(val song: Song) : Show
+
+    /**
+     * Navigate to the details of one of the [Artist]s of an [Album] using the corresponding
+     * decision dialog.
+     *
+     * @param album The [Album] to navigate with.
+     */
+    data class AlbumArtistDecision(val album: Album) : Show
+
+    /**
+     * Navigate to the details of a [Genre].
+     *
+     * @param genre The [Genre] to navigate with.
+     */
     data class GenreDetails(val genre: Genre) : Show
+
+    /**
+     * Navigate to the details of a [Playlist].
+     *
+     * @param playlist The [Playlist] to navigate with.
+     */
     data class PlaylistDetails(val playlist: Playlist) : Show
 }

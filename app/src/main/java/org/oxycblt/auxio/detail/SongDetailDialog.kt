@@ -38,18 +38,18 @@ import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.logD
 
 /**
- * A [ViewBindingDialogFragment] that shows information about a Song.
+ * A [ViewBindingMaterialDialogFragment] that shows information about a Song.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
+class SongDetailDialog : ViewBindingMaterialDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what song to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an song.
@@ -69,8 +69,8 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         binding.detailProperties.adapter = detailAdapter
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setSong(args.songUid)
+        detailModel.toShow.consume()
         collectImmediately(detailModel.currentSong, detailModel.songAudioProperties, ::updateSong)
-        collectImmediately(detailModel.toShow.flow, ::handleShow)
     }
 
     private fun updateSong(song: Song?, info: AudioProperties?) {
@@ -123,16 +123,6 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                     }
                 },
                 UpdateInstructions.Replace(0))
-        }
-    }
-
-    private fun handleShow(show: Show?) {
-        if (show == null) return
-        if (show is Show.SongDetails) {
-            logD("Navigated to this song")
-            detailModel.toShow.consume()
-        } else {
-            error("Unexpected show command $show")
         }
     }
 

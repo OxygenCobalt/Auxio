@@ -1,8 +1,8 @@
-Auxio je lokalni glazbeni player s brzim, pouzdanim UI/UX bez mnogih beskorisnih značajki prisutnih u drugim glazbenim playerima. Izgrađen na temelju ExoPlayera, Auxio ima vrhunsku podršku za biblioteku i kvalitetu slušanja u usporedbi s drugim aplikacijama koje koriste zastarjelu funkcionalnost Androida. Ukratko, <b>Reproducira glazbu</b>.
+Auxio je lokalni glazbeni player s brzim, pouzdanim UI/UX bez mnogih beskorisnih značajki prisutnih u drugim glazbenim playerima. Izgrađen na osnovi modernih biblioteka za reprodukciju, Auxio ima vrhunsku podršku za biblioteku i kvalitetu slušanja u usporedbi s drugim aplikacijama koje koriste zastarjelu funkcionalnost Androida. Ukratko, <b>Reproducira glazbu</b>.
 
 <b>Značajke</b>
 
-- Reprodukcija temeljena na ExoPlayeru
+- Reprodukcija temeljena na Media3 ExoPlayeru
 - Snappy UI izvedeno iz najnovijih smjernica za materijalni dizajn
 - Iskustveni korisnički doživljaj koji daje prednost jednostavnosti upotrebe u odnosu na rubne slučajeve
 - Prilagodljivo ponašanje

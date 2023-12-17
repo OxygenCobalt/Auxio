@@ -29,6 +29,7 @@ import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.UISettings
+import timber.log.Timber
 
 /**
  * A simple, rational music player for android.
@@ -44,6 +45,10 @@ class Auxio : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+
         // Migrate any settings that may have changed in an app update.
         imageSettings.migrate()
         playbackSettings.migrate()

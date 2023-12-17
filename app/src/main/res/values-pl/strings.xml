@@ -20,8 +20,8 @@
     <string name="lbl_play_next">Odtwórz następny</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>
     <string name="lng_queue_added">Dodano do kolejki</string>
-    <string name="lbl_go_artist">Przejdź do wykonawcy</string>
-    <string name="lbl_go_album">Przejdź do albumu</string>
+    <string name="lbl_artist_details">Przejdź do wykonawcy</string>
+    <string name="lbl_album_details">Przejdź do albumu</string>
     <string name="lbl_about">O aplikacji</string>
     <string name="lbl_version">Wersja</string>
     <string name="lbl_code">Kod źródłowy</string>
@@ -132,8 +132,8 @@
     <string name="lbl_equalizer">Korektor</string>
     <string name="lbl_size">Rozmiar</string>
     <string name="err_no_dirs">Brak folderów</string>
-    <string name="set_playback_mode_songs">Odtwórz wszystkie utwory</string>
-    <string name="set_playback_mode_album">Odtwórz album</string>
+    <string name="set_play_song_from_all">Odtwórz wszystkie utwory</string>
+    <string name="set_play_song_from_album">Odtwórz album</string>
     <string name="set_headset_autoplay_desc">Automatycznie odtwórz muzykę po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
     <string name="set_reindex">Odśwież muzykę</string>
     <string name="set_reindex_desc">Odśwież bibliotekę muzyczną używając tagów z pamięci cache, jeśli są dostępne</string>
@@ -157,7 +157,7 @@
     <string name="set_action_mode_repeat">Tryb powtarzania</string>
     <string name="set_replay_gain_mode">Ustawienie ReplayGain</string>
     <string name="set_replay_gain_mode_dynamic">Preferuj album, jeśli jest odtwarzany</string>
-    <string name="set_library_song_playback_mode">Odtwarzanie z widoku biblioteki</string>
+    <string name="set_play_in_list_with">Odtwarzanie z widoku biblioteki</string>
     <string name="set_save_state">Zapisz stan odtwarzania</string>
     <string name="set_separators_comma">Przecinek (,)</string>
     <string name="set_separators_semicolon">Średnik (;)</string>
@@ -215,8 +215,8 @@
     <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
     <string name="set_pre_amp_without">Regulacja bez tagów</string>
     <string name="set_pre_amp_desc">Wzmocnienie dźwięku przez preamplifier jest nakładane na wcześniej ustawione wzmocnienie podczas odtwarzania</string>
-    <string name="set_detail_song_playback_mode">Odtwarzanie z widoku szczegółowego</string>
-    <string name="set_playback_mode_none">Odtwórz tylko wybrane</string>
+    <string name="set_play_in_parent_with">Odtwarzanie z widoku szczegółowego</string>
+    <string name="set_play_song_none">Odtwórz tylko wybrane</string>
     <string name="set_repeat_pause_desc">Zatrzymaj odtwarzanie, kiedy utwór się powtórzy</string>
     <string name="set_dirs_mode_include_desc">Muzyka będzie importowana <b>tylko</b> z wybranych folderów.</string>
     <string name="set_separators">Znaki oddzielające wartości</string>
@@ -237,7 +237,7 @@
     <string name="set_keep_shuffle_desc">Kontynuuj odtwarzanie losowe po wybraniu nowego utworu</string>
     <string name="fmt_lib_song_count">Zaimportowane utwory: %d</string>
     <string name="set_exclude_non_music_desc">Ignoruj pliki audio które nie są utworami muzycznymi (np. podcasty)</string>
-    <string name="set_playback_mode_artist">Odtwórz od wykonawcy</string>
+    <string name="set_play_song_from_artist">Odtwórz od wykonawcy</string>
     <string name="set_exclude_non_music">Wyklucz inne pliki dźwiękowe</string>
     <string name="set_cover_mode">Okładki albumów</string>
     <string name="set_cover_mode_off">Wyłączone</string>
@@ -255,14 +255,12 @@
     <string name="set_state">Stan odtwarzania</string>
     <string name="set_images">Obrazy</string>
     <string name="set_audio_desc">Zarządzaj dźwiękiem i odtwarzaniem muzyki</string>
-    <string name="lbl_play_selected">Odtwórz wybrane</string>
-    <string name="lbl_shuffle_selected">Wybrane losowo</string>
     <string name="fmt_selected">Wybrano %d</string>
     <string name="set_replay_gain">Wyrównanie głośności (ReplayGain)</string>
     <string name="lbl_reset">Resetuj</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="set_behavior">Funkcje</string>
-    <string name="set_playback_mode_genre">Odtwórz z gatunku</string>
+    <string name="set_play_song_from_genre">Odtwórz z gatunku</string>
     <string name="set_rescan_desc">Wyczyść pamięć cache z tagami i zaimportuj ponownie bibliotekę (wolniej, ale dokładniej)</string>
     <string name="set_rescan">Zaimportuj ponownie bibliotekę</string>
     <plurals name="fmt_artist_count">
@@ -275,7 +273,7 @@
     <string name="set_music">Muzyka</string>
     <string name="err_did_not_wipe">Nie można wyczyścić stanu odtwarzania</string>
     <string name="err_did_not_save">Nie można zapisać stanu odtwarzania</string>
-    <string name="lbl_sort_dec">Malejąco</string>
+    <string name="lbl_sort_dsc">Malejąco</string>
     <string name="lbl_playlists">Playlisty</string>
     <string name="lbl_playlist">Playlista</string>
     <string name="desc_playlist_image">Obraz playlisty %s</string>
@@ -302,4 +300,9 @@
     <string name="fmt_editing">Edytowanie %s</string>
     <string name="set_square_covers_desc">Przytnij okładki do formatu 1:1</string>
     <string name="set_square_covers">Wymuś kwadratowe okładki</string>
+    <string name="lbl_song">Piosenka</string>
+    <string name="set_play_song_by_itself">Odtwarzanie utworu samodzielnie</string>
+    <string name="lbl_parent_detail">Widok</string>
+    <string name="lbl_sort_mode">Sortuj według</string>
+    <string name="lbl_sort_direction">Kierunek</string>
 </resources>

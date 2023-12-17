@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:menu="@menu/menu_home"
+                app:menu="@menu/toolbar_home"
                 app:title="@string/info_app_name" />
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -32,7 +32,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:navigationIcon="@drawable/ic_close_24"
-                app:menu="@menu/menu_selection_actions" />
+                app:menu="@menu/toolbar_selection" />
 
         </org.oxycblt.auxio.ui.MultiToolbar>
 
@@ -70,8 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/spacing_medium"
-            android:fitsSystemWindows="true"
-            android:visibility="invisible">
+            android:visibility="invisible"
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                         android:layout_margin="@dimen/spacing_medium"
                         android:gravity="center"
                         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-                        app:layout_constraintBottom_toTopOf="@+id/home_indexing_action"
+                        app:layout_constraintBottom_toTopOf="@+id/home_indexing_actions"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_chainStyle="packed"
                         tools:text="Status" />
@@ -103,20 +103,40 @@
                         android:layout_marginEnd="@dimen/spacing_medium"
                         android:indeterminate="true"
                         app:indeterminateAnimationType="disjoint"
-                        app:layout_constraintBottom_toBottomOf="@+id/home_indexing_action"
-                        app:layout_constraintTop_toTopOf="@+id/home_indexing_action" />
+                        app:layout_constraintBottom_toBottomOf="@+id/home_indexing_actions"
+                        app:layout_constraintTop_toTopOf="@+id/home_indexing_actions" />
 
-                    <org.oxycblt.auxio.ui.RippleFixMaterialButton
-                        android:id="@+id/home_indexing_action"
+                    <LinearLayout
+                        android:id="@+id/home_indexing_actions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_marginEnd="@dimen/spacing_medium"
                         android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/lbl_retry"
                         android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_indexing_status" />
+                        tools:layout_editor_absoluteX="16dp">
+
+                        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                            android:id="@+id/home_indexing_try"
+                            style="@style/Widget.Auxio.Button.Primary"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/lbl_retry" />
+
+                        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                            android:id="@+id/home_indexing_more"
+                            style="@style/Widget.Auxio.Button.Secondary"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:layout_weight="1"
+                            android:text="@string/lbl_show_error_info" />
+
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

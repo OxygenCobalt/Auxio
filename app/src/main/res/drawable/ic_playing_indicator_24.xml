@@ -3,9 +3,10 @@
     xmlns:aapt="http://schemas.android.com/aapt">
 
     <!--
-    Yes, this whole file is the material equalizer icon influenced by Spotify's
-    equalizer animation with each vector inlined using aapt:attr so that it does
-    not clutter the drawable folder.
+    I kind of like Spotify's little equalizer playing indicator, so I tried to make
+    the material symbols equalizer icon animate in a similar way. I got the best
+    results doing it frame by frame, but to avoid cluttering the drawable folder I
+    bundled them up with AAPT inlining, hence this monster of a file.
     -->
 
     <!-- Frame 1 -->

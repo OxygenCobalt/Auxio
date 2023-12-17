@@ -42,8 +42,8 @@
     <string name="lbl_play_next">Tugtugin pagkatapos</string>
     <string name="lbl_queue_add">Idagdag sa pila</string>
     <string name="lng_queue_added">Idiinagdag sa pila</string>
-    <string name="lbl_go_artist">Puntahan ang artista</string>
-    <string name="lbl_go_album">Puntahan ang album</string>
+    <string name="lbl_artist_details">Puntahan ang artista</string>
+    <string name="lbl_album_details">Puntahan ang album</string>
     <string name="lbl_song_detail">Tignan ang katangian</string>
     <string name="lbl_props">Katangian ng kanta</string>
     <string name="lbl_file_name">Pangalan ng file</string>

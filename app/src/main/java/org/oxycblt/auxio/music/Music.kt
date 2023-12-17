@@ -80,23 +80,23 @@ sealed interface Music : Item {
     class UID
     private constructor(
         private val format: Format,
-        private val mode: MusicMode,
+        private val type: MusicType,
         private val uuid: UUID
     ) : Parcelable {
         // Cache the hashCode for HashMap efficiency.
         @IgnoredOnParcel private var hashCode = format.hashCode()
 
         init {
-            hashCode = 31 * hashCode + mode.hashCode()
+            hashCode = 31 * hashCode + type.hashCode()
             hashCode = 31 * hashCode + uuid.hashCode()
         }
 
         override fun hashCode() = hashCode
 
         override fun equals(other: Any?) =
-            other is UID && format == other.format && mode == other.mode && uuid == other.uuid
+            other is UID && format == other.format && type == other.type && uuid == other.uuid
 
-        override fun toString() = "${format.namespace}:${mode.intCode.toString(16)}-$uuid"
+        override fun toString() = "${format.namespace}:${type.intCode.toString(16)}-$uuid"
 
         /**
          * Internal marker of [Music.UID] format type.
@@ -124,23 +124,23 @@ sealed interface Music : Item {
              * Creates an Auxio-style [UID] of random composition. Used if there is no
              * non-subjective, unlikely-to-change metadata of the music.
              *
-             * @param mode The analogous [MusicMode] of the item that created this [UID].
+             * @param type The analogous [MusicType] of the item that created this [UID].
              */
-            fun auxio(mode: MusicMode): UID {
-                return UID(Format.AUXIO, mode, UUID.randomUUID())
+            fun auxio(type: MusicType): UID {
+                return UID(Format.AUXIO, type, UUID.randomUUID())
             }
 
             /**
              * Creates an Auxio-style [UID] with a [UUID] composed of a hash of the non-subjective,
              * unlikely-to-change metadata of the music.
              *
-             * @param mode The analogous [MusicMode] of the item that created this [UID].
+             * @param type The analogous [MusicType] of the item that created this [UID].
              * @param updates Block to update the [MessageDigest] hash with the metadata of the
              *   item. Make sure the metadata hashed semantically aligns with the format
              *   specification.
              * @return A new auxio-style [UID].
              */
-            fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
+            fun auxio(type: MusicType, updates: MessageDigest.() -> Unit): UID {
                 val digest =
                     MessageDigest.getInstance("SHA-256").run {
                         updates()
@@ -170,19 +170,19 @@ sealed interface Music : Item {
                             .or(digest[13].toLong().and(0xFF).shl(16))
                             .or(digest[14].toLong().and(0xFF).shl(8))
                             .or(digest[15].toLong().and(0xFF)))
-                return UID(Format.AUXIO, mode, uuid)
+                return UID(Format.AUXIO, type, uuid)
             }
 
             /**
              * Creates a MusicBrainz-style [UID] with a [UUID] derived from the MusicBrainz ID
              * extracted from a file.
              *
-             * @param mode The analogous [MusicMode] of the item that created this [UID].
+             * @param type The analogous [MusicType] of the item that created this [UID].
              * @param mbid The analogous MusicBrainz ID for this item that was extracted from a
              *   file.
              * @return A new MusicBrainz-style [UID].
              */
-            fun musicBrainz(mode: MusicMode, mbid: UUID) = UID(Format.MUSICBRAINZ, mode, mbid)
+            fun musicBrainz(type: MusicType, mbid: UUID) = UID(Format.MUSICBRAINZ, type, mbid)
 
             /**
              * Convert a [UID]'s string representation back into a concrete [UID] instance.
@@ -210,10 +210,10 @@ sealed interface Music : Item {
                     return null
                 }
 
-                val mode =
-                    MusicMode.fromIntCode(ids[0].toIntOrNull(16) ?: return null) ?: return null
+                val type =
+                    MusicType.fromIntCode(ids[0].toIntOrNull(16) ?: return null) ?: return null
                 val uuid = ids[1].toUuidOrNull() ?: return null
-                return UID(format, mode, uuid)
+                return UID(format, type, uuid)
             }
         }
     }
@@ -317,12 +317,6 @@ interface Album : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Artist : MusicParent {
-    /**
-     * All of the [Album]s this artist is credited to from [explicitAlbums] and [implicitAlbums].
-     * Note that any [Song] credited to this artist will have it's [Album] considered to be
-     * "indirectly" linked to this [Artist], and thus included in this list.
-     */
-    val albums: Collection<Album>
     /** Albums directly credited to this [Artist] via a "Album Artist" tag. */
     val explicitAlbums: Collection<Album>
     /** Albums indirectly credited to this [Artist] via an "Artist" tag. */

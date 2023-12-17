@@ -47,7 +47,7 @@ sealed interface IndexingState {
      * @param error If music loading has failed, the error that occurred will be here. Otherwise, it
      *   will be null.
      */
-    data class Completed(val error: Throwable?) : IndexingState
+    data class Completed(val error: Exception?) : IndexingState
 }
 
 /**
@@ -57,7 +57,7 @@ sealed interface IndexingState {
  */
 sealed interface IndexingProgress {
     /** Other work is being done that does not have a defined progress. */
-    object Indeterminate : IndexingProgress
+    data object Indeterminate : IndexingProgress
 
     /**
      * Songs are currently being loaded.

@@ -26,11 +26,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -40,44 +38,47 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.detail.Show
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.home.Outer
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.Panel
+import org.oxycblt.auxio.playback.OpenPanel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
+import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A wrapper around the home fragment that shows the playback fragment and controls the more
- * high-level navigation features.
+ * A wrapper around the home fragment that shows the playback fragment and high-level navigation.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
 class MainFragment :
-    ViewBindingFragment<FragmentMainBinding>(),
-    ViewTreeObserver.OnPreDrawListener,
-    NavController.OnDestinationChangedListener {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val selectionModel: SelectionViewModel by activityViewModels()
+    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {
     private val detailModel: DetailViewModel by activityViewModels()
+    private val homeModel: HomeViewModel by activityViewModels()
+    private val listModel: ListViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private var sheetBackCallback: SheetBackPressedCallback? = null
     private var detailBackCallback: DetailBackPressedCallback? = null
     private var selectionBackCallback: SelectionBackPressedCallback? = null
-    private var exploreBackCallback: ExploreBackPressedCallback? = null
+    private var selectionNavigationListener: DialogAwareNavigationListener? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
-    private var initialNavDestinationChange = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,28 +101,19 @@ class MainFragment :
         // Currently all back press callbacks are handled in MainFragment, as it's not guaranteed
         // that instantiating these callbacks in their respective fragments would result in the
         // correct order.
-        val sheetBackCallback =
+        sheetBackCallback =
             SheetBackPressedCallback(
-                    playbackSheetBehavior = playbackSheetBehavior,
-                    queueSheetBehavior = queueSheetBehavior)
-                .also { sheetBackCallback = it }
+                playbackSheetBehavior = playbackSheetBehavior,
+                queueSheetBehavior = queueSheetBehavior)
         val detailBackCallback =
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
-            SelectionBackPressedCallback(selectionModel).also { selectionBackCallback = it }
-        val exploreBackCallback =
-            ExploreBackPressedCallback(binding.exploreNavHost).also { exploreBackCallback = it }
+            SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
+
+        selectionNavigationListener = DialogAwareNavigationListener(listModel::dropSelection)
 
         // --- UI SETUP ---
         val context = requireActivity()
-        // Override the back pressed listener so we can map back navigation to collapsing
-        // navigation, navigation out of detail views, etc.
-        context.onBackPressedDispatcher.apply {
-            addCallback(viewLifecycleOwner, exploreBackCallback)
-            addCallback(viewLifecycleOwner, selectionBackCallback)
-            addCallback(viewLifecycleOwner, detailBackCallback)
-            addCallback(viewLifecycleOwner, sheetBackCallback)
-        }
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             lastInsets = insets
@@ -159,8 +151,14 @@ class MainFragment :
         }
 
         // --- VIEWMODEL SETUP ---
+        // This has to be done here instead of the playback panel to make sure that it's prioritized
+        // by StateFlow over any detail fragment.
+        // FIXME: This is a consequence of sharing events across several consumers. There has to be
+        //  a better way of doing this.
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
-        collectImmediately(selectionModel.selected, selectionBackCallback::invalidateEnabled)
+        collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
+        collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
     }
@@ -170,17 +168,30 @@ class MainFragment :
         val binding = requireBinding()
         // Once we add the destination change callback, we will receive another initialization call,
         // so handle that by resetting the flag.
-        initialNavDestinationChange = false
-        binding.exploreNavHost.findNavController().addOnDestinationChangedListener(this)
+        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+            .attach(binding.exploreNavHost.findNavController())
         // Listener could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
         binding.playbackSheet.viewTreeObserver.addOnPreDrawListener(this@MainFragment)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Override the back pressed listener so we can map back navigation to collapsing
+        // navigation, navigation out of detail views, etc. We have to do this here in
+        // onResume or otherwise the FragmentManager will have precedence.
+        requireActivity().onBackPressedDispatcher.apply {
+            addCallback(viewLifecycleOwner, requireNotNull(selectionBackCallback))
+            addCallback(viewLifecycleOwner, requireNotNull(detailBackCallback))
+            addCallback(viewLifecycleOwner, requireNotNull(sheetBackCallback))
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         val binding = requireBinding()
-        binding.exploreNavHost.findNavController().removeOnDestinationChangedListener(this)
+        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+            .release(binding.exploreNavHost.findNavController())
         binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
     }
 
@@ -189,10 +200,14 @@ class MainFragment :
         sheetBackCallback = null
         detailBackCallback = null
         selectionBackCallback = null
-        exploreBackCallback = null
+        selectionNavigationListener = null
     }
 
     override fun onPreDraw(): Boolean {
+        // TODO: Due to draw caching even *this* isn't effective enough to avoid the bottom
+        //  sheets continually getting stuck. I need something with even more frequent updates,
+        //  or otherwise bottom sheets get stuck.
+
         // We overload CoordinatorLayout far too much to rely on any of it's typical
         // listener functionality. Just update all transitions before every draw. Should
         // probably be cheap enough.
@@ -283,21 +298,29 @@ class MainFragment :
         return true
     }
 
-    override fun onDestinationChanged(
-        controller: NavController,
-        destination: NavDestination,
-        arguments: Bundle?
-    ) {
-        // Drop the initial call by NavController that simply provides us with the current
-        // destination. This would cause the selection state to be lost every time the device
-        // rotates.
-        requireNotNull(exploreBackCallback) { "ExploreBackPressedCallback was not available" }
-            .invalidateEnabled()
-        if (!initialNavDestinationChange) {
-            initialNavDestinationChange = true
-            return
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongAlbumDetails,
+            is Show.ArtistDetails,
+            is Show.AlbumDetails -> playbackModel.openMain()
+            is Show.SongDetails,
+            is Show.SongArtistDecision,
+            is Show.AlbumArtistDecision,
+            is Show.GenreDetails,
+            is Show.PlaylistDetails,
+            null -> {}
         }
-        selectionModel.drop()
+    }
+
+    private fun handleShowOuter(outer: Outer?) {
+        val directions =
+            when (outer) {
+                is Outer.Settings -> MainFragmentDirections.preferences()
+                is Outer.About -> MainFragmentDirections.about()
+                null -> return
+            }
+        findNavController().navigateSafe(directions)
+        homeModel.showOuter.consume()
     }
 
     private fun updateSong(song: Song?) {
@@ -308,13 +331,13 @@ class MainFragment :
         }
     }
 
-    private fun handlePanel(panel: Panel?) {
+    private fun handlePanel(panel: OpenPanel?) {
         if (panel == null) return
         logD("Trying to update panel to $panel")
         when (panel) {
-            is Panel.Main -> tryClosePlaybackPanel()
-            is Panel.Playback -> tryOpenPlaybackPanel()
-            is Panel.Queue -> tryOpenQueuePanel()
+            OpenPanel.MAIN -> tryClosePlaybackPanel()
+            OpenPanel.PLAYBACK -> tryOpenPlaybackPanel()
+            OpenPanel.QUEUE -> tryOpenQueuePanel()
         }
         playbackModel.openPanel.consume()
     }
@@ -458,36 +481,16 @@ class MainFragment :
         }
     }
 
-    private inner class SelectionBackPressedCallback(
-        private val selectionModel: SelectionViewModel
-    ) : OnBackPressedCallback(false) {
+    private inner class SelectionBackPressedCallback(private val listModel: ListViewModel) :
+        OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            if (selectionModel.drop()) {
+            if (listModel.dropSelection()) {
                 logD("Dropped selection")
             }
         }
 
         fun invalidateEnabled(selection: List<Music>) {
             isEnabled = selection.isNotEmpty()
-        }
-    }
-
-    private inner class ExploreBackPressedCallback(
-        private val exploreNavHost: FragmentContainerView
-    ) : OnBackPressedCallback(false) {
-        // Note: We cannot cache the NavController in a variable since it's current destination
-        // value goes stale for some reason.
-
-        override fun handleOnBackPressed() {
-            exploreNavHost.findNavController().navigateUp()
-            logD("Forwarded back navigation to explore nav host")
-        }
-
-        fun invalidateEnabled() {
-            val exploreNavController = exploreNavHost.findNavController()
-            isEnabled =
-                exploreNavController.currentDestination?.id !=
-                    exploreNavController.graph.startDestinationId
         }
     }
 }
