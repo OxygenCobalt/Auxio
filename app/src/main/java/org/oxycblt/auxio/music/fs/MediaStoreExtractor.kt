@@ -36,6 +36,7 @@ import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
 import org.oxycblt.auxio.music.metadata.transformPositionField
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.sendWithTimeout
 
 /**
  * The layer that loads music from the [MediaStore] database. This is an intermediate step in the
@@ -205,10 +206,10 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
             val rawSong = RawSong()
             query.populateFileInfo(rawSong)
             if (cache?.populate(rawSong) == true) {
-                completeSongs.send(rawSong)
+                completeSongs.sendWithTimeout(rawSong)
             } else {
                 query.populateTags(rawSong)
-                incompleteSongs.send(rawSong)
+                incompleteSongs.sendWithTimeout(rawSong)
             }
             yield()
         }

@@ -41,6 +41,7 @@ import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.metadata.TagExtractor
 import org.oxycblt.auxio.music.user.MutableUserLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
+import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -448,6 +449,7 @@ constructor(
                 try {
                     tagExtractor.consume(incompleteSongs, completeSongs)
                 } catch (e: Exception) {
+                    logD("Tag extraction failed: $e")
                     completeSongs.close(e)
                     return@async
                 }
@@ -464,6 +466,7 @@ constructor(
                         deviceLibraryFactory.create(
                             completeSongs, processedSongs, separators, nameFactory)
                     } catch (e: Exception) {
+                        logD("DeviceLibrary creation failed: $e")
                         processedSongs.close(e)
                         return@async Result.failure(e)
                     }
@@ -474,8 +477,10 @@ constructor(
         // We could keep track of a total here, but we also need to collate this RawSong information
         // for when we write the cache later on in the finalization step.
         val rawSongs = LinkedList<RawSong>()
-        for (rawSong in processedSongs) {
-            rawSongs.add(rawSong)
+        // Use a longer timeout so that dependent components can timeout and throw errors that
+        // provide more context than if we timed out here.
+        processedSongs.forEachWithTimeout(20000) {
+            rawSongs.add(it)
             // Since discovery takes up the bulk of the music loading process, we switch to
             // indicating a defined amount of loaded songs in comparison to the projected amount
             // of songs that were queried.

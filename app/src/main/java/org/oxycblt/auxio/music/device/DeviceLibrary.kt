@@ -33,7 +33,9 @@ import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
+import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.sendWithTimeout
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -130,7 +132,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
         // TODO: Use comparators here
 
         // All music information is grouped as it is indexed by other components.
-        for (rawSong in rawSongs) {
+        rawSongs.forEachWithTimeout { rawSong ->
             val song = SongImpl(rawSong, nameFactory, separators)
             // At times the indexer produces duplicate songs, try to filter these. Comparing by
             // UID is sufficient for something like this, and also prevents collisions from
@@ -142,8 +144,8 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
                 // We still want to say that we "processed" the song so that the user doesn't
                 // get confused at why the bar was only partly filled by the end of the loading
                 // process.
-                processedSongs.send(rawSong)
-                continue
+                processedSongs.sendWithTimeout(rawSong)
+                return@forEachWithTimeout
             }
             songGrouping[song.uid] = song
 
@@ -206,7 +208,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
                 }
             }
 
-            processedSongs.send(rawSong)
+            processedSongs.sendWithTimeout(rawSong)
         }
 
         // Now that all songs are processed, also process albums and group them into their
