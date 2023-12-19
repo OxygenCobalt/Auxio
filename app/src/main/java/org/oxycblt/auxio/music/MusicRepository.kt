@@ -435,7 +435,8 @@ constructor(
                     // To prevent a deadlock, we want to close the channel with an exception
                     // to cascade to and cancel all other routines before finally bubbling up
                     // to the main extractor loop.
-                    incompleteSongs.close(e)
+                    logE("MediaStore extraction failed: $e")
+                    incompleteSongs.close(Exception("MediaStore extraction failed: e"))
                     return@async
                 }
                 incompleteSongs.close()
@@ -449,8 +450,8 @@ constructor(
                 try {
                     tagExtractor.consume(incompleteSongs, completeSongs)
                 } catch (e: Exception) {
-                    logD("Tag extraction failed: $e")
-                    completeSongs.close(e)
+                    logE("Tag extraction failed: $e")
+                    completeSongs.close(Exception("Tag extraction failed: $e"))
                     return@async
                 }
                 completeSongs.close()
@@ -466,8 +467,8 @@ constructor(
                         deviceLibraryFactory.create(
                             completeSongs, processedSongs, separators, nameFactory)
                     } catch (e: Exception) {
-                        logD("DeviceLibrary creation failed: $e")
-                        processedSongs.close(e)
+                        logE("DeviceLibrary creation failed: $e")
+                        processedSongs.close(Exception("DeviceLibrary creation failed: $e"))
                         return@async Result.failure(e)
                     }
                 processedSongs.close()

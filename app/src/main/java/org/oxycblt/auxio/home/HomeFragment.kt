@@ -36,10 +36,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
+import java.lang.reflect.Method
 import kotlin.math.abs
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -71,6 +73,7 @@ import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.lazyReflectedField
+import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
@@ -165,6 +168,35 @@ class HomeFragment :
         // Further initialization must be done in the function that also handles
         // re-creating the ViewPager.
         setupPager(binding)
+
+        binding.homeShuffleFab.setOnClickListener {
+            logD("Shuffling")
+            playbackModel.shuffleAll()
+        }
+
+        binding.homeNewPlaylistFab.apply {
+            inflate(R.menu.new_playlist_actions)
+            setOnActionSelectedListener { action ->
+                when (action.id) {
+                    R.id.action_new_playlist -> {
+                        logD("Creating playlist")
+                        musicModel.createPlaylist()
+                    }
+                    R.id.action_import_playlist -> {
+                        TODO("Not implemented")
+                    }
+                    else -> {}
+                }
+                close()
+                true
+            }
+        }
+
+        hideAllFabs()
+        updateFabVisibility(
+            homeModel.songList.value,
+            homeModel.isFastScrolling.value,
+            homeModel.currentTabType.value)
 
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
@@ -291,17 +323,7 @@ class HomeFragment :
                 MusicType.PLAYLISTS -> R.id.home_playlist_recycler
             }
 
-        if (tabType != MusicType.PLAYLISTS) {
-            logD("Flipping to shuffle button")
-            binding.homeFab.flipTo(R.drawable.ic_shuffle_off_24, R.string.desc_shuffle_all) {
-                playbackModel.shuffleAll()
-            }
-        } else {
-            logD("Flipping to playlist button")
-            binding.homeFab.flipTo(R.drawable.ic_add_24, R.string.desc_new_playlist) {
-                musicModel.createPlaylist()
-            }
-        }
+        updateFabVisibility(homeModel.songList.value, homeModel.isFastScrolling.value, tabType)
     }
 
     private fun handleRecreate(recreate: Unit?) {
@@ -333,7 +355,10 @@ class HomeFragment :
     private fun setupCompleteState(binding: FragmentHomeBinding, error: Exception?) {
         if (error == null) {
             logD("Received ok response")
-            binding.homeFab.show()
+            updateFabVisibility(
+                homeModel.songList.value,
+                homeModel.isFastScrolling.value,
+                homeModel.currentTabType.value)
             binding.homeIndexingContainer.visibility = View.INVISIBLE
             return
         }
@@ -440,16 +465,75 @@ class HomeFragment :
     }
 
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
+        updateFabVisibility(songs, isFastScrolling, homeModel.currentTabType.value)
+    }
+
+    private fun updateFabVisibility(
+        songs: List<Song>,
+        isFastScrolling: Boolean,
+        tabType: MusicType
+    ) {
         val binding = requireBinding()
         // If there are no songs, it's likely that the library has not been loaded, so
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
         // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
         if (songs.isEmpty() || isFastScrolling) {
             logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
-            binding.homeFab.hide()
+            hideAllFabs()
         } else {
-            logD("Showing fab")
-            binding.homeFab.show()
+            if (tabType != MusicType.PLAYLISTS) {
+                logD("Showing shuffle button")
+                if (binding.homeShuffleFab.isOrWillBeShown) {
+                    logD("Nothing to do")
+                    return
+                }
+
+                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
+                    logD("Animating transition")
+                    binding.homeNewPlaylistFab.hide(
+                        object : FloatingActionButton.OnVisibilityChangedListener() {
+                            override fun onHidden(fab: FloatingActionButton) {
+                                super.onHidden(fab)
+                                binding.homeShuffleFab.show()
+                            }
+                        })
+                } else {
+                    logD("Showing immediately")
+                    binding.homeShuffleFab.show()
+                }
+            } else {
+                logD("Showing playlist button")
+                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
+                    logD("Nothing to do")
+                    return
+                }
+
+                logD(binding.homeShuffleFab.isOrWillBeShown)
+
+                if (binding.homeShuffleFab.isOrWillBeShown) {
+                    logD("Animating transition")
+                    binding.homeShuffleFab.hide(
+                        object : FloatingActionButton.OnVisibilityChangedListener() {
+                            override fun onHidden(fab: FloatingActionButton) {
+                                super.onHidden(fab)
+                                binding.homeNewPlaylistFab.show()
+                            }
+                        })
+                } else {
+                    logD("Showing immediately")
+                    binding.homeNewPlaylistFab.show()
+                }
+            }
+        }
+    }
+
+    private fun hideAllFabs() {
+        val binding = requireBinding()
+        if (binding.homeShuffleFab.isOrWillBeShown) {
+            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeShuffleFab, null, false)
+        }
+        if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
+            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeNewPlaylistFab.mainFab, null, false)
         }
     }
 
@@ -568,6 +652,12 @@ class HomeFragment :
     private companion object {
         val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
         val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
+        val FAB_HIDE_FROM_USER_FIELD: Method by
+            lazyReflectedMethod(
+                FloatingActionButton::class,
+                "hide",
+                FloatingActionButton.OnVisibilityChangedListener::class,
+                Boolean::class)
         const val KEY_LAST_TRANSITION_ID = BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }

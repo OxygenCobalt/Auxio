@@ -147,6 +147,9 @@ dependencies {
     // Logging
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
+    // Speed dial
+    implementation "com.leinardi.android:speed-dial:3.3.0"
+
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     testImplementation "junit:junit:4.13.2"

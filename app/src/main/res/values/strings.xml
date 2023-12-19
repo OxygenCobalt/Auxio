@@ -88,6 +88,8 @@
     <string name="lbl_playlist">Playlist</string>
     <string name="lbl_playlists">Playlists</string>
     <string name="lbl_new_playlist">New playlist</string>
+    <string name="lbl_empty_playlist">Empty playlist</string>
+    <string name="lbl_import_playlist">Imported playlist</string>
     <string name="lbl_rename">Rename</string>
     <string name="lbl_rename_playlist">Rename playlist</string>
     <string name="lbl_delete">Delete</string>
