@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * DocumentTreePathFactory.kt is part of Auxio.
+ * DocumentPathFactory.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.dirs
+package org.oxycblt.auxio.music.fs
 
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -35,7 +35,15 @@ import org.oxycblt.auxio.music.fs.VolumeManager
  */
 interface DocumentTreePathFactory {
     /**
-     * Unpacks a document tree URI into a [Path] instance, using [deserializeDocumentTreePath].
+     * Unpacks a document URI into a [Path] instance, using [fromDocumentId].
+     *
+     * @param uri The document URI to unpack.
+     * @return The [Path] instance, or null if the URI could not be unpacked.
+     */
+    fun unpackDocumentUri(uri: Uri): Path?
+
+    /**
+     * Unpacks a document tree URI into a [Path] instance, using [fromDocumentId].
      *
      * @param uri The document tree URI to unpack.
      * @return The [Path] instance, or null if the URI could not be unpacked.
@@ -48,7 +56,7 @@ interface DocumentTreePathFactory {
      * @param path The [Path] instance to serialize.
      * @return The serialized path.
      */
-    fun serializeDocumentTreePath(path: Path): String
+    fun toDocumentId(path: Path): String
 
     /**
      * Deserializes a document tree URI format path into a [Path] instance.
@@ -56,11 +64,13 @@ interface DocumentTreePathFactory {
      * @param path The path to deserialize.
      * @return The [Path] instance, or null if the path could not be deserialized.
      */
-    fun deserializeDocumentTreePath(path: String): Path?
+    fun fromDocumentId(path: String): Path?
 }
 
 class DocumentTreePathFactoryImpl @Inject constructor(private val volumeManager: VolumeManager) :
     DocumentTreePathFactory {
+    override fun unpackDocumentUri(uri: Uri) = fromDocumentId(DocumentsContract.getDocumentId(uri))
+
     override fun unpackDocumentTreeUri(uri: Uri): Path? {
         // Convert the document tree URI into it's relative path form, which can then be
         // parsed into a Directory instance.
@@ -68,10 +78,10 @@ class DocumentTreePathFactoryImpl @Inject constructor(private val volumeManager:
             DocumentsContract.buildDocumentUriUsingTree(
                 uri, DocumentsContract.getTreeDocumentId(uri))
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
-        return deserializeDocumentTreePath(treeUri)
+        return fromDocumentId(treeUri)
     }
 
-    override fun serializeDocumentTreePath(path: Path): String =
+    override fun toDocumentId(path: Path): String =
         when (val volume = path.volume) {
             // The primary storage has a volume prefix of "primary", regardless
             // of if it's internal or not.
@@ -80,7 +90,7 @@ class DocumentTreePathFactoryImpl @Inject constructor(private val volumeManager:
             is Volume.External -> "${volume.id}:${path.components}"
         }
 
-    override fun deserializeDocumentTreePath(path: String): Path? {
+    override fun fromDocumentId(path: String): Path? {
         // Document tree URIs consist of a prefixed volume name followed by a relative path,
         // delimited with a colon.
         val split = path.split(File.pathSeparator, limit = 2)

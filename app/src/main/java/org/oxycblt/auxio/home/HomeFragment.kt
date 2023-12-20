@@ -39,6 +39,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
+import com.leinardi.android.speeddial.SpeedDialActionItem
+import com.leinardi.android.speeddial.SpeedDialView
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import java.lang.reflect.Method
@@ -77,6 +79,7 @@ import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.showToast
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
@@ -86,13 +89,16 @@ import org.oxycblt.auxio.util.navigateSafe
  */
 @AndroidEntryPoint
 class HomeFragment :
-    SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
+    SelectionFragment<FragmentHomeBinding>(),
+    AppBarLayout.OnOffsetChangedListener,
+    SpeedDialView.OnActionSelectedListener {
     override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
+    private var filePickerLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,6 +125,17 @@ class HomeFragment :
         storagePermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
                 musicModel.refresh()
+            }
+
+        filePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                if (uri == null) {
+                    logW("No URI returned from file picker")
+                    return@registerForActivityResult
+                }
+
+                logD("Received playlist URI $uri")
+                musicModel.importPlaylist(uri)
             }
 
         // --- UI SETUP ---
@@ -176,20 +193,7 @@ class HomeFragment :
 
         binding.homeNewPlaylistFab.apply {
             inflate(R.menu.new_playlist_actions)
-            setOnActionSelectedListener { action ->
-                when (action.id) {
-                    R.id.action_new_playlist -> {
-                        logD("Creating playlist")
-                        musicModel.createPlaylist()
-                    }
-                    R.id.action_import_playlist -> {
-                        TODO("Not implemented")
-                    }
-                    else -> {}
-                }
-                close()
-                true
-            }
+            setOnActionSelectedListener(this@HomeFragment)
         }
 
         hideAllFabs()
@@ -206,6 +210,7 @@ class HomeFragment :
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collectImmediately(musicModel.importError.flow, ::handleImportError)
         collect(detailModel.toShow.flow, ::handleShow)
     }
 
@@ -223,6 +228,7 @@ class HomeFragment :
         storagePermissionLauncher = null
         binding.homeAppbar.removeOnOffsetChangedListener(this)
         binding.homeNormalToolbar.setOnMenuItemClickListener(null)
+        binding.homeNewPlaylistFab.setOnActionSelectedListener(null)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -279,6 +285,24 @@ class HomeFragment :
                 false
             }
         }
+    }
+
+    override fun onActionSelected(actionItem: SpeedDialActionItem): Boolean {
+        when (actionItem.id) {
+            R.id.action_new_playlist -> {
+                logD("Creating playlist")
+                musicModel.createPlaylist()
+            }
+            R.id.action_import_playlist -> {
+                logD("Importing playlist")
+                filePickerLauncher?.launch("audio/x-mpegurl")
+            }
+            else -> {}
+        }
+        // Returning false to close th speed dial results in no animation, manually close instead.
+        // Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
+        requireBinding().homeNewPlaylistFab.close()
+        return true
     }
 
     private fun setupPager(binding: FragmentHomeBinding) {
@@ -462,6 +486,13 @@ class HomeFragment :
                 }
             }
         findNavController().navigateSafe(directions)
+    }
+
+    private fun handleImportError(flag: Unit?) {
+        if (flag != null) {
+            requireContext().showToast(R.string.err_import_failed)
+            musicModel.importError.consume()
+        }
     }
 
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
