@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.music.fs
 
+import android.content.ContentResolver
 import android.content.Context
 import android.os.storage.StorageManager
 import dagger.Module
@@ -41,4 +42,8 @@ class FsModule {
     @Provides
     fun contentPathResolver(@ApplicationContext context: Context, volumeManager: VolumeManager) =
         ContentPathResolver.from(context, volumeManager)
+
+    @Provides
+    fun contentResolver(@ApplicationContext context: Context): ContentResolver =
+        context.contentResolverSafe
 }
