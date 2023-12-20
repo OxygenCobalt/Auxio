@@ -5,6 +5,7 @@
 #### What's New
 - Added ability to rewind/skip tracks by swiping back/forward
 - Added support for demo release type
+- Added playlist importing from M3U files
 
 #### What's Changed
 - Albums linked to an artist only as a collaborator are no longer included
@@ -12,6 +13,10 @@ in an artist's album count
 
 #### What's Fixed
 - Fixed certain FLAC files failing to play on some devices
+- Fixed music loading failing when duplicate tags with different casing was present
+
+#### Dev/Meta
+- Revamped path management
 
 
 ## 3.2.1
