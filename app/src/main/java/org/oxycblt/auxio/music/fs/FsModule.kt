@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.fs
 import android.content.ContentResolver
 import android.content.Context
 import android.os.storage.StorageManager
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,10 +41,13 @@ class FsModule {
         MediaStoreExtractor.from(context, volumeManager)
 
     @Provides
-    fun contentPathResolver(@ApplicationContext context: Context, volumeManager: VolumeManager) =
-        ContentPathResolver.from(context, volumeManager)
-
-    @Provides
     fun contentResolver(@ApplicationContext context: Context): ContentResolver =
         context.contentResolverSafe
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface FsBindsModule {
+    @Binds
+    fun documentPathFactory(documentTreePathFactory: DocumentPathFactoryImpl): DocumentPathFactory
 }

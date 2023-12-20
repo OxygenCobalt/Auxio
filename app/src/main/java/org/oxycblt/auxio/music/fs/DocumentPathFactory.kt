@@ -22,18 +22,13 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import java.io.File
 import javax.inject.Inject
-import org.oxycblt.auxio.music.fs.Components
-import org.oxycblt.auxio.music.fs.Path
-import org.oxycblt.auxio.music.fs.Volume
-import org.oxycblt.auxio.music.fs.VolumeManager
 
 /**
- * A factory for parsing the reverse-engineered format of the URIs obtained from the document tree
- * (i.e directory) folder.
+ * A factory for parsing the reverse-engineered format of the URIs obtained from document picker.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface DocumentTreePathFactory {
+interface DocumentPathFactory {
     /**
      * Unpacks a document URI into a [Path] instance, using [fromDocumentId].
      *
@@ -67,8 +62,8 @@ interface DocumentTreePathFactory {
     fun fromDocumentId(path: String): Path?
 }
 
-class DocumentTreePathFactoryImpl @Inject constructor(private val volumeManager: VolumeManager) :
-    DocumentTreePathFactory {
+class DocumentPathFactoryImpl @Inject constructor(private val volumeManager: VolumeManager) :
+    DocumentPathFactory {
     override fun unpackDocumentUri(uri: Uri) = fromDocumentId(DocumentsContract.getDocumentId(uri))
 
     override fun unpackDocumentTreeUri(uri: Uri): Path? {

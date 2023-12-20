@@ -310,6 +310,7 @@
     <string name="err_no_music">No music found</string>
     <string name="err_index_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
+    <string name="err_import_failed">Could not import a playlist from this file</string>
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_no_dirs">No folders</string>

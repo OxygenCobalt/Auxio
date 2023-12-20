@@ -33,6 +33,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.logD
@@ -48,7 +49,7 @@ class MusicDirsDialog :
     ViewBindingMaterialDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
     private val dirAdapter = DirectoryAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    @Inject lateinit var documentTreePathFactory: DocumentTreePathFactory
+    @Inject lateinit var documentPathFactory: DocumentPathFactory
     @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -101,8 +102,7 @@ class MusicDirsDialog :
             if (pendingDirs != null) {
                 dirs =
                     MusicDirectories(
-                        pendingDirs.mapNotNull(
-                            documentTreePathFactory::deserializeDocumentTreePath),
+                        pendingDirs.mapNotNull(documentPathFactory::fromDocumentId),
                         savedInstanceState.getBoolean(KEY_PENDING_MODE))
             }
         }
@@ -126,8 +126,7 @@ class MusicDirsDialog :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_DIRS,
-            ArrayList(dirAdapter.dirs.map(documentTreePathFactory::serializeDocumentTreePath)))
+            KEY_PENDING_DIRS, ArrayList(dirAdapter.dirs.map(documentPathFactory::toDocumentId)))
         outState.putBoolean(KEY_PENDING_MODE, isUiModeInclude(requireBinding()))
     }
 
@@ -155,7 +154,7 @@ class MusicDirsDialog :
             return
         }
 
-        val dir = documentTreePathFactory.unpackDocumentTreeUri(uri)
+        val dir = documentPathFactory.unpackDocumentTreeUri(uri)
 
         if (dir != null) {
             dirAdapter.add(dir)

@@ -141,6 +141,11 @@ constructor(
             val deviceLibrary = musicRepository.deviceLibrary ?: return@launch
             val songs = importedPlaylist.paths.mapNotNull(deviceLibrary::findSongByPath)
 
+            if (songs.isEmpty()) {
+                _importError.put(Unit)
+                return@launch
+            }
+
             createPlaylist(importedPlaylist.name, songs)
         }
 

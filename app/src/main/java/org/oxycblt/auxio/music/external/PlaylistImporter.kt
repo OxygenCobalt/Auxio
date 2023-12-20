@@ -22,28 +22,42 @@ import android.content.Context
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import org.oxycblt.auxio.music.fs.ContentPathResolver
+import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 
+/**
+ * Generic playlist file importing abstraction.
+ *
+ * @see ImportedPlaylist
+ * @see M3U
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 interface PlaylistImporter {
     suspend fun import(uri: Uri): ImportedPlaylist?
 }
 
+/**
+ * A playlist that has been imported.
+ *
+ * @property name The name of the playlist. May be null if not provided.
+ * @property paths The paths of the files in the playlist.
+ * @see PlaylistImporter
+ * @see M3U
+ */
 data class ImportedPlaylist(val name: String?, val paths: List<Path>)
 
 class PlaylistImporterImpl
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val contentPathResolver: ContentPathResolver,
+    private val documentPathFactory: DocumentPathFactory,
     private val m3u: M3U
 ) : PlaylistImporter {
     override suspend fun import(uri: Uri): ImportedPlaylist? {
-        val workingDirectory = contentPathResolver.resolve(uri) ?: return null
+        val filePath = documentPathFactory.unpackDocumentUri(uri) ?: return null
         return context.contentResolverSafe.openInputStream(uri)?.use {
-            val paths = m3u.read(it, workingDirectory) ?: return null
-            return ImportedPlaylist(null, paths)
+            return m3u.read(it, filePath.directory)
         }
     }
 }
