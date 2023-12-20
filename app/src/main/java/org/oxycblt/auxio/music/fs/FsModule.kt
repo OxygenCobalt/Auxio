@@ -39,5 +39,6 @@ class FsModule {
         MediaStoreExtractor.from(context, volumeManager)
 
     @Provides
-    fun contentPathResolver(@ApplicationContext context: Context, volumeManager: VolumeManager) = ContentPathResolver.from(context, volumeManager)
+    fun contentPathResolver(@ApplicationContext context: Context, volumeManager: VolumeManager) =
+        ContentPathResolver.from(context, volumeManager)
 }

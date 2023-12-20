@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2023 Auxio Project
+ * ContentPathResolver.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.fs
 
 import android.content.ContentResolver
@@ -7,17 +25,18 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.logW
-import javax.inject.Inject
 
 /**
  * Resolves a content URI into a [Path] instance.
- * TODO: Integrate this with [MediaStoreExtractor].
+ *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Integrate this with [MediaStoreExtractor].
  */
 interface ContentPathResolver {
     /**
      * Resolve a content [Uri] into it's corresponding [Path].
+     *
      * @param uri The content [Uri] to resolve.
      * @return The corresponding [Path], or null if the [Uri] is invalid.
      */
@@ -28,7 +47,6 @@ interface ContentPathResolver {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
                     Api29ContentPathResolverImpl(context.contentResolverSafe, volumeManager)
-
                 else -> Api21ContentPathResolverImpl(context.contentResolverSafe, volumeManager)
             }
     }
@@ -39,12 +57,11 @@ private class Api21ContentPathResolverImpl(
     private val volumeManager: VolumeManager
 ) : ContentPathResolver {
     override fun resolve(uri: Uri): Path? {
-        val rawPath = contentResolver.useQuery(
-            uri, arrayOf(MediaStore.MediaColumns.DATA)
-        ) { cursor ->
-            cursor.moveToFirst()
-            cursor.getStringOrNull(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA))
-        }
+        val rawPath =
+            contentResolver.useQuery(uri, arrayOf(MediaStore.MediaColumns.DATA)) { cursor ->
+                cursor.moveToFirst()
+                cursor.getStringOrNull(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA))
+            }
 
         if (rawPath == null) {
             logE("No data available for uri $uri")
@@ -72,26 +89,19 @@ private class Api29ContentPathResolverImpl(
     private data class RawPath(val volumeName: String?, val relativePath: String?)
 
     override fun resolve(uri: Uri): Path? {
-        val rawPath = contentResolver.useQuery(
-            uri, arrayOf(
-                MediaStore.MediaColumns.VOLUME_NAME,
-                MediaStore.MediaColumns.RELATIVE_PATH
-            )
-        ) { cursor ->
-            cursor.moveToFirst()
-            RawPath(
-                cursor.getStringOrNull(
-                    cursor.getColumnIndexOrThrow(
-                        MediaStore.MediaColumns.VOLUME_NAME
-                    )
-                ),
-                cursor.getStringOrNull(
-                    cursor.getColumnIndexOrThrow(
-                        MediaStore.MediaColumns.RELATIVE_PATH
-                    )
-                )
-            )
-        }
+        val rawPath =
+            contentResolver.useQuery(
+                uri,
+                arrayOf(
+                    MediaStore.MediaColumns.VOLUME_NAME, MediaStore.MediaColumns.RELATIVE_PATH)) {
+                    cursor ->
+                    cursor.moveToFirst()
+                    RawPath(
+                        cursor.getStringOrNull(
+                            cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.VOLUME_NAME)),
+                        cursor.getStringOrNull(
+                            cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.RELATIVE_PATH)))
+                }
 
         if (rawPath.volumeName == null || rawPath.relativePath == null) {
             logE("No data available for uri $uri (raw path obtained: $rawPath)")

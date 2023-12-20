@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.list.ListSettings
-import org.oxycblt.auxio.music.import.PlaylistImporter
+import org.oxycblt.auxio.music.external.PlaylistImporter
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -66,7 +66,8 @@ constructor(
 
     private val _importError = MutableEvent<Unit>()
     /** Flag for when playlist importing failed. Consume this and show an error if active. */
-    val importError: Event<Unit> get() = _importError
+    val importError: Event<Unit>
+        get() = _importError
 
     init {
         musicRepository.addUpdateListener(this)
@@ -125,6 +126,7 @@ constructor(
 
     /**
      * Import a playlist from a file [Uri]. Errors pushed to [importError].
+     *
      * @param uri The [Uri] of the file to import.
      * @see PlaylistImporter
      */

@@ -16,15 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.import
+package org.oxycblt.auxio.music.external
 
-import org.oxycblt.auxio.music.fs.Components
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
+import javax.inject.Inject
+import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.util.logW
-import javax.inject.Inject
 
 interface M3U {
     fun read(stream: InputStream, workingDirectory: Path): List<Path>?
@@ -59,7 +59,10 @@ class M3UImpl @Inject constructor() : M3U {
         return media.ifEmpty { null }
     }
 
-    private fun resolveRelativePath(relative: Components, workingDirectory: Components): Components {
+    private fun resolveRelativePath(
+        relative: Components,
+        workingDirectory: Components
+    ): Components {
         var components = workingDirectory
         for (component in relative.components) {
             when (component) {

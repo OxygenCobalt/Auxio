@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * ForeignModule.kt is part of Auxio.
+ * ExternalModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.import
+package org.oxycblt.auxio.music.external
 
 import dagger.Binds
 import dagger.Module
@@ -25,7 +25,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface ImportModule {
+interface ExternalModule {
     @Binds fun playlistImporter(playlistImporter: PlaylistImporterImpl): PlaylistImporter
 
     @Binds fun m3u(m3u: M3UImpl): M3U
