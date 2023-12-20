@@ -135,8 +135,7 @@
     <string name="lbl_share">Share</string>
 
     <string name="lbl_props">Song properties</string>
-    <string name="lbl_file_name">File name</string>
-    <string name="lbl_relative_path">Parent path</string>
+    <string name="lbl_path">Path</string>
     <!-- As in audio format -->
     <string name="lbl_format">Format</string>
     <!-- As in file size -->

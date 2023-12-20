@@ -103,10 +103,8 @@
     <string name="lbl_equalizer">Egalizator</string>
     <string name="lbl_bitrate">Bit rate</string>
     <string name="lbl_date_added">Data adăugării</string>
-    <string name="lbl_relative_path">Calea principală</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_props">Proprietățile cântecului</string>
-    <string name="lbl_file_name">Numele fișierului</string>
     <string name="lbl_shuffle_shortcut_short">Amestecare</string>
     <string name="lbl_add">Adaugă</string>
     <string name="lbl_sample_rate">Frecvența de eșantionare</string>

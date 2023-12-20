@@ -179,8 +179,6 @@
     <string name="lbl_sample_rate">Abtastrate</string>
     <string name="lbl_song_detail">Eigenschaften ansehen</string>
     <string name="lbl_props">Lied-Eigenschaften</string>
-    <string name="lbl_file_name">Dateiname</string>
-    <string name="lbl_relative_path">Elternpfad</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Größe</string>
     <string name="lbl_bitrate">Bitrate</string>

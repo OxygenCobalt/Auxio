@@ -25,7 +25,6 @@
     <string name="lbl_size">വലിപ്പം</string>
     <string name="lbl_add">ചേർക്കുക</string>
     <string name="lbl_ok">ശരി</string>
-    <string name="lbl_relative_path">ഉത്ഭവ പാത</string>
     <string name="lbl_cancel">റദ്ദാക്കുക</string>
     <string name="set_theme_day">വെളിച്ചം</string>
     <string name="lbl_about">കുറിച്ച്</string>

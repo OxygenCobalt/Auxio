@@ -192,8 +192,6 @@
     <string name="lbl_format">Format</string>
     <string name="lbl_song_detail">Vis egenskaper</string>
     <string name="lbl_props">Spor-egenskaper</string>
-    <string name="lbl_file_name">Filnavn</string>
-    <string name="lbl_relative_path">Overnevnt sti</string>
     <string name="set_repeat_pause">Pause ved gjentagelse</string>
     <string name="clr_red">Rød</string>
     <plurals name="fmt_album_count">

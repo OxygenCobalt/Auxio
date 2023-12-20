@@ -59,7 +59,6 @@
     <string name="set_save_desc">Shrani trenutno stanje predvajanja zdaj</string>
     <string name="desc_skip_prev">Preskoči na zadnjo pesem</string>
     <string name="set_observing_desc">Ponovno naloži glasbeno knjižnico vsakič, ko se zazna sprememba (zahteva vztrajno obvestilo)</string>
-    <string name="lbl_relative_path">Pot do datoteke</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d pesem</item>
         <item quantity="two">%d pesmi</item>
@@ -79,7 +78,6 @@
     <string name="lbl_mixtapes">Mešanice</string>
     <string name="lbl_artist">Izvajalec</string>
     <string name="set_intelligent_sorting_desc">Pravilno razvrsti imena, ki se začnejo z številkami ali besedami, kot so \'the\' (najbolje deluje z angleško glasbo)</string>
-    <string name="lbl_file_name">Ime datoteke</string>
     <string name="clr_teal">Zelenkasto modra</string>
     <string name="set_state">Vztrajnost</string>
     <string name="desc_shuffle_all">Premešaj vse pesmi</string>

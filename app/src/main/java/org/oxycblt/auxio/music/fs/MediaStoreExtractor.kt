@@ -21,7 +21,6 @@ package org.oxycblt.auxio.music.fs
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
-import android.os.storage.StorageManager
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
@@ -31,10 +30,10 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.cache.Cache
 import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.dirs.MusicDirectories
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
 import org.oxycblt.auxio.music.metadata.transformPositionField
-import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.sendWithTimeout
 
@@ -93,13 +92,16 @@ interface MediaStoreExtractor {
          * Create a framework-backed instance.
          *
          * @param context [Context] required.
+         * @param volumeManager [VolumeManager] required.
          * @return A new [MediaStoreExtractor] that will work best on the device's API level.
          */
-        fun from(context: Context): MediaStoreExtractor =
+        fun from(context: Context, volumeManager: VolumeManager): MediaStoreExtractor =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreExtractor(context)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreExtractor(context)
-                else -> Api21MediaStoreExtractor(context)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+                    Api30MediaStoreExtractor(context, volumeManager)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                    Api29MediaStoreExtractor(context, volumeManager)
+                else -> Api21MediaStoreExtractor(context, volumeManager)
             }
     }
 }
@@ -249,15 +251,15 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
     protected abstract val dirSelectorTemplate: String
 
     /**
-     * Add a [Directory] to the given list of projection selector arguments.
+     * Add a [SystemPath] to the given list of projection selector arguments.
      *
-     * @param dir The [Directory] to add.
+     * @param path The [SystemPath] to add.
      * @param args The destination list to append selector arguments to that are analogous to the
-     *   given [Directory].
-     * @return true if the [Directory] was added, false otherwise.
+     *   given [SystemPath].
+     * @return true if the [SystemPath] was added, false otherwise.
      * @see dirSelectorTemplate
      */
-    protected abstract fun addDirToSelector(dir: Directory, args: MutableList<String>): Boolean
+    protected abstract fun addDirToSelector(path: Path, args: MutableList<String>): Boolean
 
     protected abstract fun wrapQuery(
         cursor: Cursor,
@@ -362,7 +364,8 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
 // Note: The separation between version-specific backends may not be the cleanest. To preserve
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
-private class Api21MediaStoreExtractor(context: Context) : BaseMediaStoreExtractor(context) {
+private class Api21MediaStoreExtractor(context: Context, private val volumeManager: VolumeManager) :
+    BaseMediaStoreExtractor(context) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -378,28 +381,27 @@ private class Api21MediaStoreExtractor(context: Context) : BaseMediaStoreExtract
     override val dirSelectorTemplate: String
         get() = "${MediaStore.Audio.Media.DATA} LIKE ?"
 
-    override fun addDirToSelector(dir: Directory, args: MutableList<String>): Boolean {
+    override fun addDirToSelector(path: Path, args: MutableList<String>): Boolean {
         // "%" signifies to accept any DATA value that begins with the Directory's path,
         // thus recursively filtering all files in the directory.
-        args.add("${dir.volume.directoryCompat ?: return false}/${dir.relativePath}%")
+        args.add("${path.volume.components ?: return false}${path.components}%")
         return true
     }
 
     override fun wrapQuery(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>,
-    ): MediaStoreExtractor.Query =
-        Query(cursor, genreNamesMap, context.getSystemServiceCompat(StorageManager::class))
+    ): MediaStoreExtractor.Query = Query(cursor, genreNamesMap, volumeManager)
 
     private class Query(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>,
-        storageManager: StorageManager
+        volumeManager: VolumeManager
     ) : BaseMediaStoreExtractor.Query(cursor, genreNamesMap) {
         // Set up cursor indices for later use.
         private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
         private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
-        private val volumes = storageManager.storageVolumesCompat
+        private val volumes = volumeManager.getVolumes()
 
         override fun populateFileInfo(rawSong: RawSong) {
             super.populateFileInfo(rawSong)
@@ -417,10 +419,10 @@ private class Api21MediaStoreExtractor(context: Context) : BaseMediaStoreExtract
             // the Directory we will use.
             val rawPath = data.substringBeforeLast(File.separatorChar)
             for (volume in volumes) {
-                val volumePath = volume.directoryCompat ?: continue
+                val volumePath = (volume.components ?: continue).toString()
                 val strippedPath = rawPath.removePrefix(volumePath)
                 if (strippedPath != rawPath) {
-                    rawSong.directory = Directory.from(volume, strippedPath)
+                    rawSong.directory = Path(volume, Components.parse(strippedPath))
                     break
                 }
             }
@@ -466,26 +468,26 @@ private abstract class BaseApi29MediaStoreExtractor(context: Context) :
             "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
                 "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
 
-    override fun addDirToSelector(dir: Directory, args: MutableList<String>): Boolean {
+    override fun addDirToSelector(path: Path, args: MutableList<String>): Boolean {
         // MediaStore uses a different naming scheme for it's volume column convert this
         // directory's volume to it.
-        args.add(dir.volume.mediaStoreVolumeNameCompat ?: return false)
+        args.add(path.volume.mediaStoreName ?: return false)
         // "%" signifies to accept any DATA value that begins with the Directory's path,
         // thus recursively filtering all files in the directory.
-        args.add("${dir.relativePath}%")
+        args.add("${path.components}%")
         return true
     }
 
     abstract class Query(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>,
-        storageManager: StorageManager
+        private val volumeManager: VolumeManager
     ) : BaseMediaStoreExtractor.Query(cursor, genreNamesMap) {
         private val volumeIndex =
             cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
         private val relativePathIndex =
             cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-        private val volumes = storageManager.storageVolumesCompat
+        private val volumes = volumeManager.getVolumes()
 
         final override fun populateFileInfo(rawSong: RawSong) {
             super.populateFileInfo(rawSong)
@@ -493,9 +495,9 @@ private abstract class BaseApi29MediaStoreExtractor(context: Context) :
             // This is combined with the plain relative path column to create the directory.
             val volumeName = cursor.getString(volumeIndex)
             val relativePath = cursor.getString(relativePathIndex)
-            val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
+            val volume = volumes.find { it.mediaStoreName == volumeName }
             if (volume != null) {
-                rawSong.directory = Directory.from(volume, relativePath)
+                rawSong.directory = Path(volume, Components.parse(relativePath))
             }
         }
     }
@@ -509,7 +511,8 @@ private abstract class BaseApi29MediaStoreExtractor(context: Context) :
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-private class Api29MediaStoreExtractor(context: Context) : BaseApi29MediaStoreExtractor(context) {
+private class Api29MediaStoreExtractor(context: Context, private val volumeManager: VolumeManager) :
+    BaseApi29MediaStoreExtractor(context) {
 
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
@@ -517,14 +520,13 @@ private class Api29MediaStoreExtractor(context: Context) : BaseApi29MediaStoreEx
     override fun wrapQuery(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>
-    ): MediaStoreExtractor.Query =
-        Query(cursor, genreNamesMap, context.getSystemServiceCompat(StorageManager::class))
+    ): MediaStoreExtractor.Query = Query(cursor, genreNamesMap, volumeManager)
 
     private class Query(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>,
-        storageManager: StorageManager
-    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, storageManager) {
+        volumeManager: VolumeManager
+    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, volumeManager) {
         private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
 
         override fun populateTags(rawSong: RawSong) {
@@ -549,7 +551,8 @@ private class Api29MediaStoreExtractor(context: Context) : BaseApi29MediaStoreEx
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.R)
-private class Api30MediaStoreExtractor(context: Context) : BaseApi29MediaStoreExtractor(context) {
+private class Api30MediaStoreExtractor(context: Context, private val volumeManager: VolumeManager) :
+    BaseApi29MediaStoreExtractor(context) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -562,14 +565,13 @@ private class Api30MediaStoreExtractor(context: Context) : BaseApi29MediaStoreEx
     override fun wrapQuery(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>
-    ): MediaStoreExtractor.Query =
-        Query(cursor, genreNamesMap, context.getSystemServiceCompat(StorageManager::class))
+    ): MediaStoreExtractor.Query = Query(cursor, genreNamesMap, volumeManager)
 
     private class Query(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>,
-        storageManager: StorageManager
-    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, storageManager) {
+        volumeManager: VolumeManager
+    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, volumeManager) {
         private val trackIndex =
             cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
         private val discIndex =

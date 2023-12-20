@@ -90,8 +90,6 @@
     <string name="set_headset_autoplay">Autoodtwarzanie w słuchawkach</string>
     <string name="clr_teal">Morski</string>
     <string name="fmt_db_pos">+%.1f dB</string>
-    <string name="lbl_file_name">Nazwa pliku</string>
-    <string name="lbl_relative_path">Ścieżka katalogu</string>
     <string name="lbl_format">Format</string>
     <string name="clr_cyan">Niebieskozielony</string>
     <string name="fmt_disc_no">Płyta %d</string>

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * FsModule.kt is part of Auxio.
+ * DirectoryModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,25 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.dirs
 
-import android.content.Context
-import android.os.storage.StorageManager
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.auxio.util.getSystemServiceCompat
 
 @Module
 @InstallIn(SingletonComponent::class)
-class FsModule {
-    @Provides
-    fun volumeManager(@ApplicationContext context: Context): VolumeManager =
-        VolumeManagerImpl(context.getSystemServiceCompat(StorageManager::class))
-
-    @Provides
-    fun mediaStoreExtractor(@ApplicationContext context: Context, volumeManager: VolumeManager) =
-        MediaStoreExtractor.from(context, volumeManager)
+interface DirectoryModule {
+    @Binds
+    fun documentTreePathFactory(factory: DocumentTreePathFactoryImpl): DocumentTreePathFactory
 }

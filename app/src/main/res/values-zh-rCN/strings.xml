@@ -176,8 +176,6 @@
     <string name="lbl_track">音轨</string>
     <string name="lbl_song_detail">查看属性</string>
     <string name="lbl_props">曲目属性</string>
-    <string name="lbl_file_name">文件名</string>
-    <string name="lbl_relative_path">上级目录</string>
     <string name="lbl_format">格式</string>
     <string name="lbl_size">大小</string>
     <string name="lbl_bitrate">比特率</string>

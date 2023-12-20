@@ -185,8 +185,6 @@
     <string name="set_play_song_none">Přehrát ze zobrazené položky</string>
     <string name="lbl_song_detail">Zobrazit vlastnosti</string>
     <string name="lbl_props">Vlastnosti skladby</string>
-    <string name="lbl_file_name">Název souboru</string>
-    <string name="lbl_relative_path">Nadřazená cesta</string>
     <string name="lbl_format">Formát</string>
     <string name="lbl_size">Velikost</string>
     <string name="lbl_bitrate">Přenosová rychlost</string>

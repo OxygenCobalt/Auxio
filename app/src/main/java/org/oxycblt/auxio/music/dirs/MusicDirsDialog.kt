@@ -16,13 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.dirs
 
 import android.content.ActivityNotFoundException
 import android.net.Uri
 import android.os.Bundle
-import android.os.storage.StorageManager
-import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,8 +33,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
-import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
@@ -50,7 +48,7 @@ class MusicDirsDialog :
     ViewBindingMaterialDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
     private val dirAdapter = DirectoryAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    private var storageManager: StorageManager? = null
+    @Inject lateinit var documentTreePathFactory: DocumentTreePathFactory
     @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -70,10 +68,6 @@ class MusicDirsDialog :
     }
 
     override fun onBindingCreated(binding: DialogMusicDirsBinding, savedInstanceState: Bundle?) {
-        val context = requireContext()
-        val storageManager =
-            context.getSystemServiceCompat(StorageManager::class).also { storageManager = it }
-
         openDocumentTreeLauncher =
             registerForActivityResult(
                 ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
@@ -107,9 +101,8 @@ class MusicDirsDialog :
             if (pendingDirs != null) {
                 dirs =
                     MusicDirectories(
-                        pendingDirs.mapNotNull {
-                            Directory.fromDocumentTreeUri(storageManager, it)
-                        },
+                        pendingDirs.mapNotNull(
+                            documentTreePathFactory::deserializeDocumentTreePath),
                         savedInstanceState.getBoolean(KEY_PENDING_MODE))
             }
         }
@@ -133,18 +126,18 @@ class MusicDirsDialog :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_DIRS, ArrayList(dirAdapter.dirs.map { it.toString() }))
+            KEY_PENDING_DIRS,
+            ArrayList(dirAdapter.dirs.map(documentTreePathFactory::serializeDocumentTreePath)))
         outState.putBoolean(KEY_PENDING_MODE, isUiModeInclude(requireBinding()))
     }
 
     override fun onDestroyBinding(binding: DialogMusicDirsBinding) {
         super.onDestroyBinding(binding)
-        storageManager = null
         openDocumentTreeLauncher = null
         binding.dirsRecycler.adapter = null
     }
 
-    override fun onRemoveDirectory(dir: Directory) {
+    override fun onRemoveDirectory(dir: Path) {
         dirAdapter.remove(dir)
         requireBinding().dirsEmpty.isVisible = dirAdapter.dirs.isEmpty()
     }
@@ -162,15 +155,7 @@ class MusicDirsDialog :
             return
         }
 
-        // Convert the document tree URI into it's relative path form, which can then be
-        // parsed into a Directory instance.
-        val docUri =
-            DocumentsContract.buildDocumentUriUsingTree(
-                uri, DocumentsContract.getTreeDocumentId(uri))
-        val treeUri = DocumentsContract.getTreeDocumentId(docUri)
-        val dir =
-            Directory.fromDocumentTreeUri(
-                requireNotNull(storageManager) { "StorageManager was not available" }, treeUri)
+        val dir = documentTreePathFactory.unpackDocumentTreeUri(uri)
 
         if (dir != null) {
             dirAdapter.add(dir)

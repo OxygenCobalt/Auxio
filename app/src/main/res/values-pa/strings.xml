@@ -55,7 +55,6 @@
     <string name="lbl_album_details">ਐਲਬਮ \'ਤੇ ਜਾਓ</string>
     <string name="lbl_song_detail">ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਵੇਖੋ</string>
     <string name="lbl_props">ਗੀਤ ਦੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ</string>
-    <string name="lbl_relative_path">ਪੇਰੈਂਟ ਮਾਰਗ</string>
     <string name="lbl_format">ਫਾਰਮੈਟ</string>
     <string name="lbl_size">ਆਕਾਰ</string>
     <string name="lbl_shuffle_shortcut_short">ਸ਼ਫਲ</string>
@@ -76,7 +75,6 @@
     <string name="lbl_song_count">ਗੀਤ ਦੀ ਗਿਣਤੀ</string>
     <string name="lbl_sort_dsc">ਘਟਦੇ ਹੋਏ</string>
     <string name="lbl_artist_details">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>
-    <string name="lbl_file_name">ਫਾਈਲ ਦਾ ਨਾਮ</string>
     <string name="lbl_bitrate">ਬਿੱਟ ਰੇਟ</string>
     <string name="lbl_sample_rate">ਸੈਂਪਲ ਰੇਟ</string>
     <string name="lbl_add">ਸ਼ਾਮਿਲ ਕਰੋ</string>

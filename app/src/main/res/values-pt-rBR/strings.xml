@@ -106,7 +106,6 @@
     <string name="lbl_artist">Artista</string>
     <string name="lbl_album">Álbum</string>
     <string name="lbl_props">Propriedades da música</string>
-    <string name="lbl_file_name">Nome do arquivo</string>
     <string name="lbl_format">Formato</string>
     <string name="lbl_size">Tamanho</string>
     <string name="lbl_bitrate">Taxa de bits</string>
@@ -158,7 +157,6 @@
     <string name="set_pre_amp_without">Ajuste em faixas sem metadados</string>
     <string name="set_headset_autoplay">Reprodução automática em fones de ouvido</string>
     <string name="set_pre_amp">Pré-amplificação da normalização de volume</string>
-    <string name="lbl_relative_path">Caminho principal</string>
     <string name="lbl_ok">OK</string>
     <string name="set_display">Exibição</string>
     <string name="set_round_mode_desc">Ativa cantos arredondados em elementos adicionais da interface do usuário</string>

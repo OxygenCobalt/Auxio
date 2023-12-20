@@ -53,11 +53,9 @@
     <string name="lbl_queue_add">Engadir á cola</string>
     <string name="set_exclude_non_music">Excluir o que non é música</string>
     <string name="lbl_artist_details">Ir ao artista</string>
-    <string name="lbl_file_name">Nome do arquivo</string>
     <string name="lbl_shuffle_shortcut_short">Mesturar</string>
     <string name="lbl_shuffle_shortcut_long">Mesturar todo</string>
     <string name="lbl_reset">Restablecer</string>
-    <string name="lbl_relative_path">Directorio superior</string>
     <string name="lbl_format">Formato</string>
     <string name="lbl_size">Tamaño</string>
     <string name="lbl_bitrate">Tasa de bits</string>

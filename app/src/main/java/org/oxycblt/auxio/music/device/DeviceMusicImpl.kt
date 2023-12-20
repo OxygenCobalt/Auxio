@@ -28,7 +28,6 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
-import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.fs.toCoverUri
 import org.oxycblt.auxio.music.info.Date
@@ -85,14 +84,10 @@ class SongImpl(
         requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.fileName}: No id" }
             .toAudioUri()
     override val path =
-        Path(
-            name =
+        requireNotNull(rawSong.directory) { "Invalid raw ${rawSong.fileName}: No parent directory" }
+            .file(
                 requireNotNull(rawSong.fileName) {
                     "Invalid raw ${rawSong.fileName}: No display name"
-                },
-            parent =
-                requireNotNull(rawSong.directory) {
-                    "Invalid raw ${rawSong.fileName}: No parent directory"
                 })
     override val mimeType =
         MimeType(
@@ -247,11 +242,11 @@ class SongImpl(
      * @return This instance upcasted to [Song].
      */
     fun finalize(): Song {
-        checkNotNull(_album) { "Malformed song ${path.name}: No album" }
+        checkNotNull(_album) { "Malformed song ${path}: No album" }
 
-        check(_artists.isNotEmpty()) { "Malformed song ${path.name}: No artists" }
+        check(_artists.isNotEmpty()) { "Malformed song ${path}: No artists" }
         check(_artists.size == rawArtists.size) {
-            "Malformed song ${path.name}: Artist grouping mismatch"
+            "Malformed song ${path}: Artist grouping mismatch"
         }
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
@@ -262,10 +257,8 @@ class SongImpl(
             _artists[i] = other
         }
 
-        check(_genres.isNotEmpty()) { "Malformed song ${path.name}: No genres" }
-        check(_genres.size == rawGenres.size) {
-            "Malformed song ${path.name}: Genre grouping mismatch"
-        }
+        check(_genres.isNotEmpty()) { "Malformed song ${path}: No genres" }
+        check(_genres.size == rawGenres.size) { "Malformed song ${path}: Genre grouping mismatch" }
         for (i in _genres.indices) {
             // Non-destructively reorder the linked genres so that they align with
             // the genre ordering within the song metadata.
@@ -519,6 +512,7 @@ class ArtistImpl(
         return this
     }
 }
+
 /**
  * Library-backed implementation of [Genre].
  *

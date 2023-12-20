@@ -52,7 +52,6 @@
     <string name="lbl_song_detail">Visa egenskaper</string>
     <string name="lbl_share">Dela</string>
     <string name="lbl_props">Egenskaper för låt</string>
-    <string name="lbl_relative_path">Överordnad mapp</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Storlek</string>
     <string name="lbl_sample_rate">Samplingsfrekvens</string>
@@ -99,7 +98,6 @@
     <string name="lbl_disc">Disk</string>
     <string name="lbl_sort">Sortera</string>
     <string name="lbl_queue_add">Lägg till kö</string>
-    <string name="lbl_file_name">Filnamn</string>
     <string name="lbl_add">Lägg till</string>
     <string name="lbl_state_wiped">Tillstånd tog bort</string>
     <string name="lbl_bitrate">Bithastighet</string>

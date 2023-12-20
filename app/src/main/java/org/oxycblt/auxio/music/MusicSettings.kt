@@ -24,8 +24,8 @@ import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.fs.Directory
-import org.oxycblt.auxio.music.fs.MusicDirectories
+import org.oxycblt.auxio.music.dirs.DocumentTreePathFactory
+import org.oxycblt.auxio.music.dirs.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
@@ -55,8 +55,12 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     }
 }
 
-class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
-    Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
+class MusicSettingsImpl
+@Inject
+constructor(
+    @ApplicationContext context: Context,
+    val documentTreePathFactory: DocumentTreePathFactory
+) : Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
     private val storageManager = context.getSystemServiceCompat(StorageManager::class)
 
     override var musicDirs: MusicDirectories
@@ -64,7 +68,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
             val dirs =
                 (sharedPreferences.getStringSet(getString(R.string.set_key_music_dirs), null)
                         ?: emptySet())
-                    .mapNotNull { Directory.fromDocumentTreeUri(storageManager, it) }
+                    .mapNotNull(documentTreePathFactory::deserializeDocumentTreePath)
             return MusicDirectories(
                 dirs,
                 sharedPreferences.getBoolean(getString(R.string.set_key_music_dirs_include), false))
@@ -73,7 +77,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
             sharedPreferences.edit {
                 putStringSet(
                     getString(R.string.set_key_music_dirs),
-                    value.dirs.map(Directory::toDocumentTreeUri).toSet())
+                    value.dirs.map(documentTreePathFactory::serializeDocumentTreePath).toSet())
                 putBoolean(getString(R.string.set_key_music_dirs_include), value.shouldInclude)
                 apply()
             }

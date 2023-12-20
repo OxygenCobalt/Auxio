@@ -194,7 +194,6 @@
     <string name="lbl_mixtapes">Mixtapes (recopilación de canciones)</string>
     <string name="lbl_mixtape">Mixtape (recopilación de canciones)</string>
     <string name="lbl_remix_group">Remezclas</string>
-    <string name="lbl_file_name">Nombre de archivo</string>
     <string name="set_headset_autoplay_desc">Siempre empezar la reproducción cuando se conecten auriculares (puede no funcionar en todos los dispositivos)</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
     <string name="set_pre_amp_desc">El pre-amp se aplica al ajuste existente durante la reproducción</string>
@@ -215,7 +214,6 @@
     <string name="lbl_single_remix">Single remix</string>
     <string name="lbl_compilations">Compilaciones</string>
     <string name="lbl_ep_remix">EP de remixes</string>
-    <string name="lbl_relative_path">Directorio superior</string>
     <string name="set_wipe_desc">Eliminar el estado de reproducción guardado previamente (si existe)</string>
     <string name="desc_queue_bar">Abrir la cola</string>
     <string name="lbl_genre">Género</string>

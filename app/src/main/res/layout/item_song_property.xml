@@ -9,7 +9,7 @@
     android:paddingEnd="@dimen/spacing_medium"
     android:paddingTop="@dimen/spacing_small"
     android:paddingBottom="@dimen/spacing_small"
-    tools:hint="@string/lbl_file_name"
+    tools:hint="@string/lbl_path"
     app:expandedHintEnabled="false">
 
     <org.oxycblt.auxio.detail.ReadOnlyTextInput

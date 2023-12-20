@@ -61,14 +61,12 @@
     <string name="info_app_desc">एंड्रॉयड के लिए एक सीधा साधा, विवेकशील गाने बजाने वाला ऐप।</string>
     <string name="lbl_new_playlist">नई प्लेलिस्ट</string>
     <string name="lbl_play_next">अगला चलाएं</string>
-    <string name="lbl_file_name">फ़ाइल का नाम</string>
     <string name="set_lib_tabs">लायब्रेरी टैब्स</string>
     <string name="set_play_song_from_album">एल्बम से चलाएं</string>
     <string name="set_content">सामग्री</string>
     <string name="fmt_selected">%d चयनित</string>
     <string name="lbl_format">प्रारूप</string>
     <string name="lbl_playlist_add">प्लेलिस्ट में जोड़ें</string>
-    <string name="lbl_relative_path">मुख्य पथ</string>
     <string name="lbl_bitrate">बिट-रेट</string>
     <string name="lbl_cancel">रद्द करें</string>
     <string name="lbl_save">सहेजें</string>

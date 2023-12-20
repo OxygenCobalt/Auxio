@@ -80,7 +80,6 @@
     <string name="fmt_bitrate">%d kbps</string>
     <string name="lbl_add">Πρόσθεση</string>
     <string name="lbl_props">Ιδιότητες τραγουδιού</string>
-    <string name="lbl_file_name">Όνομα αρχείου</string>
     <string name="lbl_song_detail">Προβολή Ιδιοτήτων</string>
     <string name="lbl_library_counts">Στατιστικά συλλογής</string>
     <string name="lbl_album_live">Ζωντανό άλμπουμ</string>

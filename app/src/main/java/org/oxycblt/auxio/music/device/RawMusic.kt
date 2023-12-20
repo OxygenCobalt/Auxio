@@ -22,7 +22,7 @@ import java.util.UUID
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.fs.Directory
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.ReleaseType
 
@@ -44,7 +44,7 @@ data class RawSong(
     /** @see Song.path */
     var fileName: String? = null,
     /** @see Song.path */
-    var directory: Directory? = null,
+    var directory: Path? = null,
     /** @see Song.size */
     var size: Long? = null,
     /** @see Song.durationMs */

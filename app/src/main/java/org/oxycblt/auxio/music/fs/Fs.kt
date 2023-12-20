@@ -24,119 +24,174 @@ import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.webkit.MimeTypeMap
 import java.io.File
+import javax.inject.Inject
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.logD
 
 /**
- * A full absolute path to a file. Only intended for display purposes. For accessing files, URIs are
- * preferred in all cases due to scoped storage limitations.
+ * An abstraction of an android file system path, including the volume and relative path.
  *
- * @param name The name of the file.
- * @param parent The parent [Directory] of the file.
- * @author Alexander Capehart (OxygenCobalt)
+ * @param volume The volume that the path is on.
+ * @param components The components of the path of the file, relative to the root of the volume.
  */
-data class Path(val name: String, val parent: Directory)
+data class Path(
+    val volume: Volume,
+    val components: Components,
+) {
+    /** The name of the file/directory. */
+    val name: String?
+        get() = components.name
 
-/**
- * A volume-aware relative path to a directory.
- *
- * @param volume The [StorageVolume] that the [Directory] is contained in.
- * @param relativePath The relative path from within the [StorageVolume] to the [Directory].
- * @author Alexander Capehart (OxygenCobalt)
- */
-class Directory private constructor(val volume: StorageVolume, val relativePath: String) {
-    /**
-     * Resolve the [Directory] instance into a human-readable path name.
-     *
-     * @param context [Context] required to obtain volume descriptions.
-     * @return A human-readable path.
-     * @see StorageVolume.getDescription
-     */
-    fun resolveName(context: Context) =
-        context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
+    /** The parent directory of the path, or itself if it's the root path. */
+    val directory: Path
+        get() = Path(volume, components.parent())
+
+    override fun toString() = "Path(storageVolume=$volume, components=$components)"
 
     /**
-     * Converts this [Directory] instance into an opaque document tree path. This is a huge
-     * violation of the document tree URI contract, but it's also the only one can sensibly work
-     * with these uris in the UI, and it doesn't exactly matter since we never write or read to
-     * directory.
+     * Transforms this [Path] into a "file" of the given name that's within the "directory"
+     * represented by the current path. Ex. "/storage/emulated/0/Music" ->
+     * "/storage/emulated/0/Music/file.mp3"
      *
-     * @return A URI [String] abiding by the document tree specification, or null if the [Directory]
-     *   is not valid.
+     * @param fileName The name of the file to append to the path.
+     * @return The new [Path] instance.
      */
-    fun toDocumentTreeUri() =
-        // Document tree URIs consist of a prefixed volume name followed by a relative path.
-        if (volume.isInternalCompat) {
-            // The primary storage has a volume prefix of "primary", regardless
-            // of if it's internal or not.
-            "$DOCUMENT_URI_PRIMARY_NAME:$relativePath"
-        } else {
-            // Removable storage has a volume prefix of it's UUID.
-            volume.uuidCompat?.let { uuid -> "$uuid:$relativePath" }
-        }
+    fun file(fileName: String) = Path(volume, components.child(fileName))
 
-    override fun hashCode(): Int {
-        var result = volume.hashCode()
-        result = 31 * result + relativePath.hashCode()
-        return result
-    }
+    /**
+     * Resolves the [Path] in a human-readable format.
+     *
+     * @param context [Context] required to obtain human-readable strings.
+     */
+    fun resolve(context: Context) = "${volume.resolveName(context)}/$components"
+}
 
-    override fun equals(other: Any?) =
-        other is Directory && other.volume == volume && other.relativePath == relativePath
+sealed interface Volume {
+    /** The name of the volume as it appears in MediaStore. */
+    val mediaStoreName: String?
 
-    companion object {
-        /** The name given to the internal volume when in a document tree URI. */
-        private const val DOCUMENT_URI_PRIMARY_NAME = "primary"
+    /**
+     * The components of the path to the volume, relative from the system root. Should not be used
+     * except for compatibility purposes.
+     */
+    val components: Components?
 
-        /**
-         * Create a new directory instance from the given components.
-         *
-         * @param volume The [StorageVolume] that the [Directory] is contained in.
-         * @param relativePath The relative path from within the [StorageVolume] to the [Directory].
-         *   Will be stripped of any trailing separators for a consistent internal representation.
-         * @return A new [Directory] created from the components.
-         */
-        fun from(volume: StorageVolume, relativePath: String) =
-            Directory(
-                volume, relativePath.removePrefix(File.separator).removeSuffix(File.separator))
+    /** Resolves the name of the volume in a human-readable format. */
+    fun resolveName(context: Context): String
 
-        /**
-         * Create a new directory from a document tree URI. This is a huge violation of the document
-         * tree URI contract, but it's also the only one can sensibly work with these uris in the
-         * UI, and it doesn't exactly matter since we never write or read directory.
-         *
-         * @param storageManager [StorageManager] in order to obtain the [StorageVolume] specified
-         *   in the given URI.
-         * @param uri The URI string to parse into a [Directory].
-         * @return A new [Directory] parsed from the URI, or null if the URI is not valid.
-         */
-        fun fromDocumentTreeUri(storageManager: StorageManager, uri: String): Directory? {
-            // Document tree URIs consist of a prefixed volume name followed by a relative path,
-            // delimited with a colon.
-            val split = uri.split(File.pathSeparator, limit = 2)
-            val volume =
-                when (split[0]) {
-                    // The primary storage has a volume prefix of "primary", regardless
-                    // of if it's internal or not.
-                    DOCUMENT_URI_PRIMARY_NAME -> storageManager.primaryStorageVolumeCompat
-                    // Removable storage has a volume prefix of it's UUID, try to find it
-                    // within StorageManager's volume list.
-                    else -> storageManager.storageVolumesCompat.find { it.uuidCompat == split[0] }
-                }
-            val relativePath = split.getOrNull(1)
-            return from(volume ?: return null, relativePath ?: return null)
-        }
+    /** A volume representing the device's internal storage. */
+    interface Internal : Volume
+
+    /** A volume representing an external storage device, identified by a UUID. */
+    interface External : Volume {
+        /** The UUID of the volume. */
+        val id: String?
     }
 }
 
 /**
- * Represents the configuration for specific directories to filter to/from when loading music.
+ * The components of a path. This allows the path to be manipulated without having tp handle
+ * separator parsing.
  *
- * @param dirs A list of [Directory] instances. How these are interpreted depends on [shouldInclude]
- * @param shouldInclude True if the library should only load from the [Directory] instances, false
- *   if the library should not load from the [Directory] instances.
- * @author Alexander Capehart (OxygenCobalt)
+ * @param components The components of the path.
  */
-data class MusicDirectories(val dirs: List<Directory>, val shouldInclude: Boolean)
+@JvmInline
+value class Components private constructor(val components: List<String>) {
+    /** The name of the file/directory. */
+    val name: String?
+        get() = components.lastOrNull()
+
+    override fun toString() = components.joinToString(File.separator)
+
+    /**
+     * Returns a new [Components] instance with the last element of the path removed as a "parent"
+     * element of the original instance.
+     *
+     * @return The new [Components] instance, or the original instance if it's the root path.
+     */
+    fun parent() = Components(components.dropLast(1))
+
+    /**
+     * Returns a new [Components] instance with the given name appended to the end of the path as a
+     * "child" element of the original instance.
+     *
+     * @param name The name of the file/directory to append to the path.
+     */
+    fun child(name: String) =
+        if (name.isNotEmpty()) {
+            Components(components + name.trimSlashes()).also { logD(it.components) }
+        } else {
+            this
+        }
+
+    companion object {
+        /**
+         * Parses a path string into a [Components] instance by the system path separator.
+         *
+         * @param path The path string to parse.
+         * @return The [Components] instance.
+         */
+        fun parse(path: String) =
+            Components(path.trimSlashes().split(File.separatorChar).filter { it.isNotEmpty() })
+
+        private fun String.trimSlashes() = trimStart(File.separatorChar).trimEnd(File.separatorChar)
+    }
+}
+
+/** A wrapper around [StorageManager] that provides instances of the [Volume] interface. */
+interface VolumeManager {
+    /**
+     * The internal storage volume of the device.
+     *
+     * @see StorageManager.getPrimaryStorageVolume
+     */
+    fun getInternalVolume(): Volume.Internal
+
+    /**
+     * The list of [Volume]s currently recognized by [StorageManager].
+     *
+     * @see StorageManager.getStorageVolumes
+     */
+    fun getVolumes(): List<Volume>
+}
+
+class VolumeManagerImpl @Inject constructor(private val storageManager: StorageManager) :
+    VolumeManager {
+    override fun getInternalVolume(): Volume.Internal =
+        InternalVolumeImpl(storageManager.primaryStorageVolume)
+
+    override fun getVolumes() =
+        storageManager.storageVolumesCompat.map {
+            if (it.isInternalCompat) {
+                InternalVolumeImpl(it)
+            } else {
+                ExternalVolumeImpl(it)
+            }
+        }
+
+    private class InternalVolumeImpl(val storageVolume: StorageVolume) : Volume.Internal {
+        override val mediaStoreName
+            get() = storageVolume.mediaStoreVolumeNameCompat
+
+        override val components
+            get() = storageVolume.directoryCompat?.let(Components::parse)
+
+        override fun resolveName(context: Context) = storageVolume.getDescriptionCompat(context)
+    }
+
+    private class ExternalVolumeImpl(val storageVolume: StorageVolume) : Volume.External {
+        override val id
+            get() = storageVolume.uuidCompat
+
+        override val mediaStoreName
+            get() = storageVolume.mediaStoreVolumeNameCompat
+
+        override val components
+            get() = storageVolume.directoryCompat?.let(Components::parse)
+
+        override fun resolveName(context: Context) = storageVolume.getDescriptionCompat(context)
+    }
+}
 
 /**
  * A mime type of a file. Only intended for display.

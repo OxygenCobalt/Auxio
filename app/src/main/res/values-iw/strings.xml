@@ -131,7 +131,6 @@
     <string name="lbl_track">רצועה</string>
     <string name="lbl_queue">תור</string>
     <string name="lbl_artist_details">מעבר לאומן</string>
-    <string name="lbl_file_name">שם קובץ</string>
     <string name="lbl_shuffle_shortcut_short">ערבוב</string>
     <string name="lbl_state_restored">המצב שוחזר</string>
     <string name="lbl_about">אודות</string>
@@ -242,7 +241,6 @@
     <string name="desc_playlist_image">תמונת רשימת השמעה עבור %s</string>
     <string name="clr_red">אדום</string>
     <string name="clr_green">ירוק</string>
-    <string name="lbl_relative_path">נתיב ראשי</string>
     <string name="err_did_not_restore">לא ניתן לשחזר את המצב</string>
     <string name="desc_track_number">רצועה %d</string>
     <string name="desc_new_playlist">יצירת רשימת השמעה חדשה</string>

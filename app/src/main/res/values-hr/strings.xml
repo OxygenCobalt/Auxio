@@ -40,8 +40,6 @@
     <string name="lbl_queue">Popis pjesama</string>
     <string name="lbl_play_next">Reproduciraj sljedeću</string>
     <string name="lbl_props">Svojstva pjesme</string>
-    <string name="lbl_file_name">Naziv datoteke</string>
-    <string name="lbl_relative_path">Glavni direktorij</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Veličina</string>
     <string name="lbl_bitrate">Brzina prijenosa</string>

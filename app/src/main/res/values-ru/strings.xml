@@ -157,7 +157,6 @@
     <string name="set_pre_amp_warning">Внимание: Изменение предусиления на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
     <string name="lbl_song_detail">Сведения</string>
     <string name="lbl_props">Свойства трека</string>
-    <string name="lbl_relative_path">Путь</string>
     <string name="lbl_format">Формат</string>
     <string name="lbl_size">Размер</string>
     <string name="lbl_sample_rate">Частота дискретизации</string>
@@ -165,7 +164,6 @@
     <string name="lbl_library_counts">Статистика библиотеки</string>
     <string name="set_restore_state">Восстановить состояние воспроизведения</string>
     <string name="lbl_duration">Продолжительность</string>
-    <string name="lbl_file_name">Имя файла</string>
     <string name="lbl_ep">Мини-альбом</string>
     <string name="lbl_eps">Мини-альбомы</string>
     <string name="lbl_single">Сингл</string>

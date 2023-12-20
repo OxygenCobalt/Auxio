@@ -43,8 +43,6 @@
     <string name="lbl_album_details">Siirry albumiin</string>
     <string name="lbl_song_detail">Näytä ominaisuudet</string>
     <string name="lbl_props">Kappaleen ominaisuudet</string>
-    <string name="lbl_file_name">Tiedostonimi</string>
-    <string name="lbl_relative_path">Ylätason polku</string>
     <string name="lbl_format">Muoto</string>
     <string name="lbl_size">Koko</string>
     <string name="lbl_bitrate">Bittitaajuus</string>
