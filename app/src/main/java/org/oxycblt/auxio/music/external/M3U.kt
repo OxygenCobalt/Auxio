@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.util.logW
+import java.io.File
 
 /**
  * Minimal M3U file format implementation.
@@ -85,10 +86,19 @@ class M3UImpl @Inject constructor() : M3U {
             }
 
             // The path may be relative to the directory that the M3U file is contained in,
+            // signified by either the typical ./ or the absence of any separator at all.
             // so we may need to resolve it into an absolute path before moving ahead.
-            val relativeComponents = Components.parse(path)
-            val absoluteComponents =
-                resolveRelativePath(relativeComponents, workingDirectory.components)
+            val components = Components.parse(path)
+            val absoluteComponents = if (path.startsWith(File.separatorChar)) {
+                // Already an absolute path, do nothing. Theres still some relative-ness here,
+                // as we assume that the path is still in the same volume as the working directory.
+                // Unsure if any program goes as far as writing out the full unobfuscated
+                // absolute path.
+                components
+            } else {
+                // Relative path, resolve it
+                resolveRelativePath(components, workingDirectory.components)
+            }
 
             paths.add(Path(workingDirectory.volume, absoluteComponents))
         }
