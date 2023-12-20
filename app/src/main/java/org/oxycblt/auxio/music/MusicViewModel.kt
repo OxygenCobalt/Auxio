@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.music
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.music.import.PlaylistImporter
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -42,6 +44,7 @@ class MusicViewModel
 constructor(
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
+    private val playlistImporter: PlaylistImporter
 ) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
 
     private val _indexingState = MutableStateFlow<IndexingState?>(null)
@@ -60,6 +63,10 @@ constructor(
      */
     val playlistDecision: Event<PlaylistDecision>
         get() = _playlistDecision
+
+    private val _importError = MutableEvent<Unit>()
+    /** Flag for when playlist importing failed. Consume this and show an error if active. */
+    val importError: Event<Unit> get() = _importError
 
     init {
         musicRepository.addUpdateListener(this)
@@ -115,6 +122,25 @@ constructor(
             _playlistDecision.put(PlaylistDecision.New(songs))
         }
     }
+
+    /**
+     * Import a playlist from a file [Uri]. Errors pushed to [importError].
+     * @param uri The [Uri] of the file to import.
+     * @see PlaylistImporter
+     */
+    fun importPlaylist(uri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val importedPlaylist = playlistImporter.import(uri)
+            if (importedPlaylist == null) {
+                _importError.put(Unit)
+                return@launch
+            }
+
+            val deviceLibrary = musicRepository.deviceLibrary ?: return@launch
+            val songs = importedPlaylist.paths.mapNotNull(deviceLibrary::findSongByPath)
+
+            createPlaylist(importedPlaylist.name, songs)
+        }
 
     /**
      * Rename the given playlist.

@@ -46,8 +46,6 @@ data class Path(
     val directory: Path
         get() = Path(volume, components.parent())
 
-    override fun toString() = "Path(storageVolume=$volume, components=$components)"
-
     /**
      * Transforms this [Path] into a "file" of the given name that's within the "directory"
      * represented by the current path. Ex. "/storage/emulated/0/Music" ->
@@ -169,7 +167,7 @@ class VolumeManagerImpl @Inject constructor(private val storageManager: StorageM
             }
         }
 
-    private class InternalVolumeImpl(val storageVolume: StorageVolume) : Volume.Internal {
+    private data class InternalVolumeImpl(val storageVolume: StorageVolume) : Volume.Internal {
         override val mediaStoreName
             get() = storageVolume.mediaStoreVolumeNameCompat
 
@@ -179,7 +177,7 @@ class VolumeManagerImpl @Inject constructor(private val storageManager: StorageM
         override fun resolveName(context: Context) = storageVolume.getDescriptionCompat(context)
     }
 
-    private class ExternalVolumeImpl(val storageVolume: StorageVolume) : Volume.External {
+    private data class ExternalVolumeImpl(val storageVolume: StorageVolume) : Volume.External {
         override val id
             get() = storageVolume.uuidCompat
 

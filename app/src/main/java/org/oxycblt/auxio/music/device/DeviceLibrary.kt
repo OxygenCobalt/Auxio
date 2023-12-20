@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
 import org.oxycblt.auxio.music.info.Name
@@ -73,6 +74,14 @@ interface DeviceLibrary {
      * @return A [Song] corresponding to the given [Uri], or null if one could not be found.
      */
     fun findSongForUri(context: Context, uri: Uri): Song?
+
+    /**
+     * Find a [Song] instance corresponding to the given [Path].
+     *
+     * @param path [Path] to search for.
+     * @return A [Song] corresponding to the given [Path], or null if one could not be found.
+     */
+    fun findSongByPath(path: Path): Song?
 
     /**
      * Find a [Album] instance corresponding to the given [Music.UID].
@@ -266,6 +275,7 @@ class DeviceLibraryImpl(
 ) : DeviceLibrary {
     // Use a mapping to make finding information based on it's UID much faster.
     private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }
+    private val songPathMap = buildMap { songs.forEach { put(it.path, it) } }
     private val albumUidMap = buildMap { albums.forEach { put(it.uid, it.finalize()) } }
     private val artistUidMap = buildMap { artists.forEach { put(it.uid, it.finalize()) } }
     private val genreUidMap = buildMap { genres.forEach { put(it.uid, it.finalize()) } }
@@ -286,6 +296,8 @@ class DeviceLibraryImpl(
     override fun findArtist(uid: Music.UID): Artist? = artistUidMap[uid]
 
     override fun findGenre(uid: Music.UID): Genre? = genreUidMap[uid]
+
+    override fun findSongByPath(path: Path) = songPathMap[path]
 
     override fun findSongForUri(context: Context, uri: Uri) =
         context.contentResolverSafe.useQuery(
