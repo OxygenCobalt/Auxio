@@ -316,4 +316,7 @@
     <string name="def_album_count">Žádná alba</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Dema</string>
+    <string name="lbl_import_playlist">Importovaný seznam skladeb</string>
+    <string name="lbl_path">Cesta</string>
+    <string name="lbl_empty_playlist">Prázdný seznam skladeb</string>
 </resources>
