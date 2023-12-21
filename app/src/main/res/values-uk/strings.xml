@@ -311,4 +311,8 @@
     <string name="def_album_count">Альбомів немає</string>
     <string name="lbl_demo">Демо</string>
     <string name="lbl_demos">Демонстрації</string>
+    <string name="lbl_import_playlist">Імпортований список відтворення</string>
+    <string name="lbl_path">Шлях</string>
+    <string name="err_import_failed">Не вдалось імпортувати список відтворення з даного файлу</string>
+    <string name="lbl_empty_playlist">Порожній список відтворення</string>
 </resources>
