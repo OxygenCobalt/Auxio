@@ -319,4 +319,5 @@
     <string name="lbl_import_playlist">Importovaný seznam skladeb</string>
     <string name="lbl_path">Cesta</string>
     <string name="lbl_empty_playlist">Prázdný seznam skladeb</string>
+    <string name="err_import_failed">Nepodařilo se importovat seznam skladeb z tohoto souboru</string>
 </resources>
