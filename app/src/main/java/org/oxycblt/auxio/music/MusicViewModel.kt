@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.list.ListSettings
-import org.oxycblt.auxio.music.external.PlaylistImporter
+import org.oxycblt.auxio.music.external.ExternalPlaylistManager
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -44,7 +44,7 @@ class MusicViewModel
 constructor(
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
-    private val playlistImporter: PlaylistImporter
+    private val externalPlaylistManager: ExternalPlaylistManager
 ) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
 
     private val _indexingState = MutableStateFlow<IndexingState?>(null)
@@ -128,11 +128,11 @@ constructor(
      * Import a playlist from a file [Uri]. Errors pushed to [importError].
      *
      * @param uri The [Uri] of the file to import.
-     * @see PlaylistImporter
+     * @see ExternalPlaylistManager
      */
     fun importPlaylist(uri: Uri) =
         viewModelScope.launch(Dispatchers.IO) {
-            val importedPlaylist = playlistImporter.import(uri)
+            val importedPlaylist = externalPlaylistManager.import(uri)
             if (importedPlaylist == null) {
                 _importError.put(Unit)
                 return@launch

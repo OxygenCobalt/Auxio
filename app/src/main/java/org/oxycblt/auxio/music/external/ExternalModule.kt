@@ -26,7 +26,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface ExternalModule {
-    @Binds fun playlistImporter(playlistImporter: PlaylistImporterImpl): PlaylistImporter
+    @Binds fun playlistImporter(playlistImporter: ExternalPlaylistManagerImpl): ExternalPlaylistManager
 
     @Binds fun m3u(m3u: M3UImpl): M3U
 }

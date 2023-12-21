@@ -18,15 +18,21 @@
  
 package org.oxycblt.auxio.music.external
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import org.oxycblt.auxio.music.Playlist
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
 import javax.inject.Inject
 import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.metadata.correctWhitespace
-import org.oxycblt.auxio.util.logW
-import java.io.File
+import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.util.logE
+import java.io.BufferedWriter
+import java.io.OutputStream
 
 /**
  * Minimal M3U file format implementation.
@@ -44,9 +50,18 @@ interface M3U {
      * @return An [ImportedPlaylist] containing the paths to the files listed in the M3U file,
      */
     fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist?
+
+    /**
+     * Writes the given [playlist] to the given [outputStream] in the M3U format,.
+     * @param playlist The playlist to write.
+     * @param outputStream The stream to write the M3U file to.
+     * @param workingDirectory The directory that the M3U file is contained in. This is used to
+     * create relative paths to where the M3U file is assumed to be stored.
+     */
+    fun write(playlist: Playlist, outputStream: OutputStream, workingDirectory: Path)
 }
 
-class M3UImpl @Inject constructor() : M3U {
+class M3UImpl @Inject constructor(@ApplicationContext private val context: Context) : M3U {
     override fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist? {
         val reader = BufferedReader(InputStreamReader(stream))
         val paths = mutableListOf<Path>()
@@ -81,7 +96,7 @@ class M3UImpl @Inject constructor() : M3U {
             }
 
             if (path == null) {
-                logW("Expected a path, instead got an EOF")
+                logE("Expected a path, instead got an EOF")
                 break@consumeFile
             }
 
@@ -89,16 +104,18 @@ class M3UImpl @Inject constructor() : M3U {
             // signified by either the typical ./ or the absence of any separator at all.
             // so we may need to resolve it into an absolute path before moving ahead.
             val components = Components.parse(path)
-            val absoluteComponents = if (path.startsWith(File.separatorChar)) {
-                // Already an absolute path, do nothing. Theres still some relative-ness here,
-                // as we assume that the path is still in the same volume as the working directory.
-                // Unsure if any program goes as far as writing out the full unobfuscated
-                // absolute path.
-                components
-            } else {
-                // Relative path, resolve it
-                resolveRelativePath(components, workingDirectory.components)
-            }
+            val absoluteComponents =
+                if (path.startsWith(File.separatorChar)) {
+                    // Already an absolute path, do nothing. Theres still some relative-ness here,
+                    // as we assume that the path is still in the same volume as the working
+                    // directory.
+                    // Unsure if any program goes as far as writing out the full unobfuscated
+                    // absolute path.
+                    components
+                } else {
+                    // Relative path, resolve it
+                    components.absoluteTo(workingDirectory.components)
+                }
 
             paths.add(Path(workingDirectory.volume, absoluteComponents))
         }
@@ -111,22 +128,62 @@ class M3UImpl @Inject constructor() : M3U {
         }
     }
 
-    private fun resolveRelativePath(
-        relative: Components,
+    override fun write(
+        playlist: Playlist,
+        outputStream: OutputStream,
+        workingDirectory: Path
+    ) {
+        val writer = outputStream.bufferedWriter()
+        // Try to be as compliant to the spec as possible while also cramming it full of extensions
+        // I imagine other players will use.
+        writer.writeLine("#EXTM3U")
+        writer.writeLine("#EXTENC:UTF-8")
+        writer.writeLine("#PLAYLIST:${playlist.name}")
+        for (song in playlist.songs) {
+            val relativePath = song.path.components.relativeTo(workingDirectory.components)
+            writer.writeLine("#EXTINF:${song.durationMs},${song.name.resolve(context)}")
+            writer.writeLine("#EXTALB:${song.album.name.resolve(context)}")
+            writer.writeLine("#EXTART:${song.artists.resolveNames(context)}")
+            writer.writeLine("#EXTGEN:${song.genres.resolveNames(context)}")
+            writer.writeLine(relativePath.toString())
+        }
+    }
+
+    private fun BufferedWriter.writeLine(line: String) {
+        write(line)
+        newLine()
+    }
+
+    private fun Components.absoluteTo(
         workingDirectory: Components
     ): Components {
-        var components = workingDirectory
-        for (component in relative.components) {
+        var absoluteComponents = workingDirectory
+        for (component in components) {
             when (component) {
                 // Parent specifier, go "back" one directory (in practice cleave off the last
                 // component)
-                ".." -> components = components.parent()
+                ".." -> absoluteComponents = absoluteComponents.parent()
                 // Current directory, the components are already there.
                 "." -> {}
                 // New directory, add it
-                else -> components = components.child(component)
+                else -> absoluteComponents = absoluteComponents.child(component)
             }
         }
-        return components
+        return absoluteComponents
     }
+
+    private fun Components.relativeTo(
+        workingDirectory: Components
+    ): Components {
+        var relativeComponents = Components.parse(".")
+        var commonIndex = 0
+        while (commonIndex < components.size &&
+            commonIndex < workingDirectory.components.size &&
+            components[commonIndex] == workingDirectory.components[commonIndex]) {
+            ++commonIndex
+            relativeComponents = relativeComponents.child("..")
+        }
+        return relativeComponents.concat(depth(commonIndex))
+    }
+
 }

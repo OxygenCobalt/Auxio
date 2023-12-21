@@ -26,7 +26,6 @@ import android.webkit.MimeTypeMap
 import java.io.File
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.logD
 
 /**
  * An abstraction of an android file system path, including the volume and relative path.
@@ -117,10 +116,25 @@ value class Components private constructor(val components: List<String>) {
      */
     fun child(name: String) =
         if (name.isNotEmpty()) {
-            Components(components + name.trimSlashes()).also { logD(it.components) }
+            Components(components + name.trimSlashes())
         } else {
             this
         }
+
+    /**
+     * Removes the first [n] elements of the path, effectively resulting in a path that is n
+     * levels deep.
+     * @param n The number of elements to remove.
+     * @return The new [Components] instance.
+     */
+    fun depth(n: Int) = Components(components.drop(n))
+
+    /**
+     * Concatenates this [Components] instance with another.
+     * @param other The [Components] instance to concatenate with.
+     * @return The new [Components] instance.
+     */
+    fun concat(other: Components) = Components(components + other.components)
 
     companion object {
         /**
