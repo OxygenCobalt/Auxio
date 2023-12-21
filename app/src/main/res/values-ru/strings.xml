@@ -314,4 +314,8 @@
     <string name="def_album_count">Нет альбомов</string>
     <string name="lbl_demo">Демо</string>
     <string name="lbl_demos">Демонстрации</string>
+    <string name="lbl_import_playlist">Импортированный плейлист</string>
+    <string name="lbl_path">Путь</string>
+    <string name="err_import_failed">Не удалось импортировать плейлист из этого файла</string>
+    <string name="lbl_empty_playlist">Пустой плейлист</string>
 </resources>
