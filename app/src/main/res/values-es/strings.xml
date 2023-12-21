@@ -311,4 +311,8 @@
     <string name="def_album_count">Sin álbumes</string>
     <string name="lbl_demo">Demostración</string>
     <string name="lbl_demos">Demostraciones</string>
+    <string name="lbl_import_playlist">Lista de reproducción importada</string>
+    <string name="lbl_path">Ruta</string>
+    <string name="err_import_failed">No se ha podido importar una lista de reproducción desde este archivo</string>
+    <string name="lbl_empty_playlist">Lista de reproducción vacía</string>
 </resources>
