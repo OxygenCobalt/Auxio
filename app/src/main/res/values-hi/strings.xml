@@ -306,4 +306,8 @@
     <string name="def_album_count">कोई एल्बम नहीं</string>
     <string name="lbl_demo">डेमो</string>
     <string name="lbl_demos">डेमो</string>
+    <string name="lbl_import_playlist">इम्पोर्टेड प्लेलिस्ट</string>
+    <string name="lbl_path">पथ</string>
+    <string name="err_import_failed">इस फ़ाइल से प्लेलिस्ट इम्पोर्ट नहीं की जा सकी</string>
+    <string name="lbl_empty_playlist">खाली प्लेलिस्ट</string>
 </resources>
