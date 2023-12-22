@@ -307,4 +307,8 @@
     <string name="def_album_count">Keine Alben</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Demos</string>
+    <string name="lbl_import_playlist">Importierte Wiedergabeliste</string>
+    <string name="lbl_path">Pfad</string>
+    <string name="err_import_failed">Wiedergabeliste konnte nicht aus dieser Datei importiert werden</string>
+    <string name="lbl_empty_playlist">Leere Wiedergabeliste</string>
 </resources>
