@@ -20,19 +20,19 @@ package org.oxycblt.auxio.music.external
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.oxycblt.auxio.music.Playlist
 import java.io.BufferedReader
+import java.io.BufferedWriter
 import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.OutputStream
 import javax.inject.Inject
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.logE
-import java.io.BufferedWriter
-import java.io.OutputStream
 
 /**
  * Minimal M3U file format implementation.
@@ -53,10 +53,11 @@ interface M3U {
 
     /**
      * Writes the given [playlist] to the given [outputStream] in the M3U format,.
+     *
      * @param playlist The playlist to write.
      * @param outputStream The stream to write the M3U file to.
      * @param workingDirectory The directory that the M3U file is contained in. This is used to
-     * create relative paths to where the M3U file is assumed to be stored.
+     *   create relative paths to where the M3U file is assumed to be stored.
      */
     fun write(playlist: Playlist, outputStream: OutputStream, workingDirectory: Path)
 }
@@ -128,17 +129,13 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
         }
     }
 
-    override fun write(
-        playlist: Playlist,
-        outputStream: OutputStream,
-        workingDirectory: Path
-    ) {
+    override fun write(playlist: Playlist, outputStream: OutputStream, workingDirectory: Path) {
         val writer = outputStream.bufferedWriter()
         // Try to be as compliant to the spec as possible while also cramming it full of extensions
         // I imagine other players will use.
         writer.writeLine("#EXTM3U")
         writer.writeLine("#EXTENC:UTF-8")
-        writer.writeLine("#PLAYLIST:${playlist.name}")
+        writer.writeLine("#PLAYLIST:${playlist.name.resolve(context)}")
         for (song in playlist.songs) {
             val relativePath = song.path.components.relativeTo(workingDirectory.components)
             writer.writeLine("#EXTINF:${song.durationMs},${song.name.resolve(context)}")
@@ -147,6 +144,7 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
             writer.writeLine("#EXTGEN:${song.genres.resolveNames(context)}")
             writer.writeLine(relativePath.toString())
         }
+        writer.flush()
     }
 
     private fun BufferedWriter.writeLine(line: String) {
@@ -154,9 +152,7 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
         newLine()
     }
 
-    private fun Components.absoluteTo(
-        workingDirectory: Components
-    ): Components {
+    private fun Components.absoluteTo(workingDirectory: Components): Components {
         var absoluteComponents = workingDirectory
         for (component in components) {
             when (component) {
@@ -172,18 +168,44 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
         return absoluteComponents
     }
 
-    private fun Components.relativeTo(
-        workingDirectory: Components
-    ): Components {
-        var relativeComponents = Components.parse(".")
+    private fun Components.relativeTo(workingDirectory: Components): Components {
+        // We want to find the common prefix of the working directory and path, and then
+        // and them combine them with the correct relative elements to make sure they
+        // resolve the same.
         var commonIndex = 0
         while (commonIndex < components.size &&
             commonIndex < workingDirectory.components.size &&
             components[commonIndex] == workingDirectory.components[commonIndex]) {
             ++commonIndex
-            relativeComponents = relativeComponents.child("..")
         }
-        return relativeComponents.concat(depth(commonIndex))
-    }
 
+        var relativeComponents = Components.parse(".")
+
+        // TODO: Simplify this logic
+        when {
+            commonIndex == components.size && commonIndex == workingDirectory.components.size -> {
+                // The paths are the same. This shouldn't occur.
+            }
+            commonIndex == components.size -> {
+                // The working directory is deeper in the path, backtrack.
+                for (i in 0..workingDirectory.components.size - commonIndex - 1) {
+                    relativeComponents = relativeComponents.child("..")
+                }
+            }
+            commonIndex == workingDirectory.components.size -> {
+                // Working directory is shallower than the path, can just append the
+                // non-common remainder of the path
+                relativeComponents = relativeComponents.child(depth(commonIndex))
+            }
+            else -> {
+                // The paths are siblings. Backtrack and append as needed.
+                for (i in 0..workingDirectory.components.size - commonIndex - 1) {
+                    relativeComponents = relativeComponents.child("..")
+                }
+                relativeComponents = relativeComponents.child(depth(commonIndex))
+            }
+        }
+
+        return relativeComponents
+    }
 }

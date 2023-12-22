@@ -122,8 +122,9 @@ value class Components private constructor(val components: List<String>) {
         }
 
     /**
-     * Removes the first [n] elements of the path, effectively resulting in a path that is n
-     * levels deep.
+     * Removes the first [n] elements of the path, effectively resulting in a path that is n levels
+     * deep.
+     *
      * @param n The number of elements to remove.
      * @return The new [Components] instance.
      */
@@ -131,10 +132,11 @@ value class Components private constructor(val components: List<String>) {
 
     /**
      * Concatenates this [Components] instance with another.
+     *
      * @param other The [Components] instance to concatenate with.
      * @return The new [Components] instance.
      */
-    fun concat(other: Components) = Components(components + other.components)
+    fun child(other: Components) = Components(components + other.components)
 
     companion object {
         /**
