@@ -422,7 +422,7 @@ private class Api21MediaStoreExtractor(context: Context, private val volumeManag
                 val volumePath = (volume.components ?: continue).toString()
                 val strippedPath = rawPath.removePrefix(volumePath)
                 if (strippedPath != rawPath) {
-                    rawSong.directory = Path(volume, Components.parse(strippedPath))
+                    rawSong.directory = Path(volume, Components.parseUnix(strippedPath))
                     break
                 }
             }
@@ -497,7 +497,7 @@ private abstract class BaseApi29MediaStoreExtractor(context: Context) :
             val relativePath = cursor.getString(relativePathIndex)
             val volume = volumes.find { it.mediaStoreName == volumeName }
             if (volume != null) {
-                rawSong.directory = Path(volume, Components.parse(relativePath))
+                rawSong.directory = Path(volume, Components.parseUnix(relativePath))
             }
         }
     }

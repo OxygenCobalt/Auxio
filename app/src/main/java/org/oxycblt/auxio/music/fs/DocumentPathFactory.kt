@@ -100,7 +100,7 @@ class DocumentPathFactoryImpl @Inject constructor(private val volumeManager: Vol
                     volumeManager.getVolumes().find { it is Volume.External && it.id == split[0] }
             }
         val relativePath = split.getOrNull(1) ?: return null
-        return Path(volume ?: return null, Components.parse(relativePath))
+        return Path(volume ?: return null, Components.parseUnix(relativePath))
     }
 
     private companion object {

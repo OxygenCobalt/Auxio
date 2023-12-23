@@ -22,7 +22,6 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.BufferedReader
 import java.io.BufferedWriter
-import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
@@ -58,8 +57,19 @@ interface M3U {
      * @param outputStream The stream to write the M3U file to.
      * @param workingDirectory The directory that the M3U file is contained in. This is used to
      *   create relative paths to where the M3U file is assumed to be stored.
+     * @param config The configuration to use when exporting the playlist.
      */
-    fun write(playlist: Playlist, outputStream: OutputStream, workingDirectory: Path)
+    fun write(
+        playlist: Playlist,
+        outputStream: OutputStream,
+        workingDirectory: Path,
+        config: ExportConfig
+    )
+
+    companion object {
+        /** The mime type used for M3U files by the android system. */
+        const val MIME_TYPE = "audio/x-mpegurl"
+    }
 }
 
 class M3UImpl @Inject constructor(@ApplicationContext private val context: Context) : M3U {
@@ -101,24 +111,40 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
                 break@consumeFile
             }
 
-            // The path may be relative to the directory that the M3U file is contained in,
-            // signified by either the typical ./ or the absence of any separator at all.
-            // so we may need to resolve it into an absolute path before moving ahead.
-            val components = Components.parse(path)
-            val absoluteComponents =
-                if (path.startsWith(File.separatorChar)) {
-                    // Already an absolute path, do nothing. Theres still some relative-ness here,
-                    // as we assume that the path is still in the same volume as the working
-                    // directory.
-                    // Unsure if any program goes as far as writing out the full unobfuscated
-                    // absolute path.
-                    components
-                } else {
-                    // Relative path, resolve it
-                    components.absoluteTo(workingDirectory.components)
+            // There is basically no formal specification of file paths in M3U, and it differs
+            // based on the US that generated it. These are the paths though that I assume most
+            // programs will generate.
+            val components =
+                when {
+                    path.startsWith('/') -> {
+                        // Unix absolute path. Note that we still assume this absolute path is in
+                        // the same volume as the M3U file. There's no sane way to map the volume
+                        // to the phone's volumes, so this is the only thing we can do.
+                        Components.parseUnix(path)
+                    }
+                    path.startsWith("./") -> {
+                        // Unix relative path, resolve it
+                        Components.parseUnix(path).absoluteTo(workingDirectory.components)
+                    }
+                    path.matches(WINDOWS_VOLUME_PREFIX_REGEX) -> {
+                        // Windows absolute path, we should get rid of the volume prefix, but
+                        // otherwise
+                        // the rest should be fine. Again, we have to disregard what the volume
+                        // actually
+                        // is since there's no sane way to map it to the phone's volumes.
+                        Components.parseWindows(path.substring(2))
+                    }
+                    path.startsWith(".\\") -> {
+                        // Windows relative path, we need to remove the .\\ prefix
+                        Components.parseWindows(path).absoluteTo(workingDirectory.components)
+                    }
+                    else -> {
+                        // No clue, parse by all separators and assume it's relative.
+                        Components.parseAny(path).absoluteTo(workingDirectory.components)
+                    }
                 }
 
-            paths.add(Path(workingDirectory.volume, absoluteComponents))
+            paths.add(Path(workingDirectory.volume, components))
         }
 
         return if (paths.isNotEmpty()) {
@@ -129,7 +155,12 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
         }
     }
 
-    override fun write(playlist: Playlist, outputStream: OutputStream, workingDirectory: Path) {
+    override fun write(
+        playlist: Playlist,
+        outputStream: OutputStream,
+        workingDirectory: Path,
+        config: ExportConfig
+    ) {
         val writer = outputStream.bufferedWriter()
         // Try to be as compliant to the spec as possible while also cramming it full of extensions
         // I imagine other players will use.
@@ -137,12 +168,33 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
         writer.writeLine("#EXTENC:UTF-8")
         writer.writeLine("#PLAYLIST:${playlist.name.resolve(context)}")
         for (song in playlist.songs) {
-            val relativePath = song.path.components.relativeTo(workingDirectory.components)
             writer.writeLine("#EXTINF:${song.durationMs},${song.name.resolve(context)}")
             writer.writeLine("#EXTALB:${song.album.name.resolve(context)}")
             writer.writeLine("#EXTART:${song.artists.resolveNames(context)}")
             writer.writeLine("#EXTGEN:${song.genres.resolveNames(context)}")
-            writer.writeLine(relativePath.toString())
+
+            val formattedPath =
+                if (config.absolute) {
+                    // The path is already absolute in this case, but we need to prefix and separate
+                    // it differently depending on the setting.
+                    if (config.windowsPaths) {
+                        // Assume the plain windows C volume, since that's probably where most music
+                        // libraries are on a windows PC.
+                        "C:\\\\${song.path.components.windowsString}"
+                    } else {
+                        "/${song.path.components.unixString}"
+                    }
+                } else {
+                    // First need to make this path relative to the working directory of the M3U
+                    // file, and then format it with the correct separators.
+                    val relativePath = song.path.components.relativeTo(workingDirectory.components)
+                    if (config.windowsPaths) {
+                        relativePath.windowsString
+                    } else {
+                        relativePath.unixString
+                    }
+                }
+            writer.writeLine(formattedPath)
         }
         writer.flush()
     }
@@ -179,7 +231,7 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
             ++commonIndex
         }
 
-        var relativeComponents = Components.parse(".")
+        var relativeComponents = Components.parseUnix(".")
 
         // TODO: Simplify this logic
         when {
@@ -207,5 +259,9 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
         }
 
         return relativeComponents
+    }
+
+    private companion object {
+        val WINDOWS_VOLUME_PREFIX_REGEX = Regex("^[A-Za-z]:\\\\")
     }
 }

@@ -98,7 +98,15 @@ value class Components private constructor(val components: List<String>) {
     val name: String?
         get() = components.lastOrNull()
 
-    override fun toString() = components.joinToString(File.separator)
+    override fun toString() = unixString
+
+    /** Formats these components using the unix file separator (/) */
+    val unixString: String
+        get() = components.joinToString(File.separator)
+
+    /** Formats these components using the windows file separator (\). */
+    val windowsString: String
+        get() = components.joinToString("\\")
 
     /**
      * Returns a new [Components] instance with the last element of the path removed as a "parent"
@@ -140,13 +148,34 @@ value class Components private constructor(val components: List<String>) {
 
     companion object {
         /**
-         * Parses a path string into a [Components] instance by the system path separator.
+         * Parses a path string into a [Components] instance by the unix path separator (/).
          *
          * @param path The path string to parse.
          * @return The [Components] instance.
          */
-        fun parse(path: String) =
+        fun parseUnix(path: String) =
             Components(path.trimSlashes().split(File.separatorChar).filter { it.isNotEmpty() })
+
+        /**
+         * Parses a path string into a [Components] instance by the windows path separator.
+         *
+         * @param path The path string to parse.
+         * @return The [Components] instance.
+         */
+        fun parseWindows(path: String) =
+            Components(path.trimSlashes().split('\\').filter { it.isNotEmpty() })
+
+        /**
+         * Parses a path string into a [Components] instance by any path separator, either unix or
+         * windows. This is useful for parsing paths when you can't determine the separators any
+         * other way, however also risks mangling the paths if they use unix-style escapes.
+         *
+         * @param path The path string to parse.
+         * @return The [Components] instance.
+         */
+        fun parseAny(path: String) =
+            Components(
+                path.trimSlashes().split(File.separatorChar, '\\').filter { it.isNotEmpty() })
 
         private fun String.trimSlashes() = trimStart(File.separatorChar).trimEnd(File.separatorChar)
     }
@@ -188,7 +217,7 @@ class VolumeManagerImpl @Inject constructor(private val storageManager: StorageM
             get() = storageVolume.mediaStoreVolumeNameCompat
 
         override val components
-            get() = storageVolume.directoryCompat?.let(Components::parse)
+            get() = storageVolume.directoryCompat?.let(Components::parseUnix)
 
         override fun resolveName(context: Context) = storageVolume.getDescriptionCompat(context)
     }
@@ -201,7 +230,7 @@ class VolumeManagerImpl @Inject constructor(private val storageManager: StorageM
             get() = storageVolume.mediaStoreVolumeNameCompat
 
         override val components
-            get() = storageVolume.directoryCompat?.let(Components::parse)
+            get() = storageVolume.directoryCompat?.let(Components::parseUnix)
 
         override fun resolveName(context: Context) = storageVolume.getDescriptionCompat(context)
     }

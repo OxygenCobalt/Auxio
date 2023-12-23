@@ -21,8 +21,9 @@ package org.oxycblt.auxio.music.external
 import android.content.Context
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.oxycblt.auxio.music.Playlist
 import javax.inject.Inject
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.contentResolverSafe
@@ -36,9 +37,36 @@ import org.oxycblt.auxio.util.logE
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface ExternalPlaylistManager {
+    /**
+     * Import the playlist file at the given [uri].
+     *
+     * @param uri The [Uri] of the playlist file to import.
+     * @return An [ImportedPlaylist] containing the paths to the files listed in the playlist file,
+     *   or null if the playlist could not be imported.
+     */
     suspend fun import(uri: Uri): ImportedPlaylist?
-    suspend fun export(playlist: Playlist, uri: Uri): Boolean
+
+    /**
+     * Export the given [playlist] to the given [uri].
+     *
+     * @param playlist The playlist to export.
+     * @param uri The [Uri] to export the playlist to.
+     * @param config The configuration to use when exporting the playlist.
+     * @return True if the playlist was successfully exported, false otherwise.
+     */
+    suspend fun export(playlist: Playlist, uri: Uri, config: ExportConfig): Boolean
 }
+
+/**
+ * Configuration to use when exporting playlists.
+ *
+ * @property absolute Whether or not to use absolute paths when exporting. If not, relative paths
+ *   will be used.
+ * @property windowsPaths Whether or not to use Windows-style paths when exporting (i.e prefixed
+ *   with C:\\ and using \). If not, Unix-style paths will be used (i.e prefixed with /).
+ * @see ExternalPlaylistManager.export
+ */
+data class ExportConfig(val absolute: Boolean, val windowsPaths: Boolean)
 
 /**
  * A playlist that has been imported.
@@ -70,8 +98,14 @@ constructor(
         }
     }
 
-    override suspend fun export(playlist: Playlist, uri: Uri): Boolean {
+    override suspend fun export(playlist: Playlist, uri: Uri, config: ExportConfig): Boolean {
         val filePath = documentPathFactory.unpackDocumentUri(uri) ?: return false
+        val workingDirectory =
+            if (config.absolute) {
+                filePath.directory
+            } else {
+                Path(filePath.volume, Components.parseUnix("/"))
+            }
         return try {
             val outputStream = context.contentResolverSafe.openOutputStream(uri)
             if (outputStream == null) {
@@ -79,7 +113,7 @@ constructor(
                 return false
             }
             outputStream.use {
-                m3u.write(playlist, it, filePath.directory)
+                m3u.write(playlist, it, workingDirectory, config)
                 true
             }
         } catch (e: Exception) {
