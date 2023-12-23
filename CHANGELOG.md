@@ -5,7 +5,10 @@
 #### What's New
 - Added ability to rewind/skip tracks by swiping back/forward
 - Added support for demo release type
-- Added playlist importing from M3U files
+- Added playlist importing/export from M3U files
+
+#### What's Improved
+- Music loading will now fail when it hangs
 
 #### What's Changed
 - Albums linked to an artist only as a collaborator are no longer included
