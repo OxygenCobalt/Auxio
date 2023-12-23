@@ -277,6 +277,7 @@ class ArtistDetailFragment :
                 }
                 is PlaylistDecision.New,
                 is PlaylistDecision.Rename,
+                is PlaylistDecision.Export,
                 is PlaylistDecision.Delete -> error("Unexpected playlist decision $decision")
             }
         findNavController().navigateSafe(directions)

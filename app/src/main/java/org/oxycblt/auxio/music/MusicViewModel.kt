@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.music.external.ExportConfig
 import org.oxycblt.auxio.music.external.ExternalPlaylistManager
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -64,10 +65,19 @@ constructor(
     val playlistDecision: Event<PlaylistDecision>
         get() = _playlistDecision
 
+    private val _playlistError = MutableEvent<PlaylistError>()
+    val playlistError: Event<PlaylistError>
+        get() = _playlistError
+
     private val _importError = MutableEvent<Unit>()
     /** Flag for when playlist importing failed. Consume this and show an error if active. */
     val importError: Event<Unit>
         get() = _importError
+
+    private val _exportError = MutableEvent<Unit>()
+    /** Flag for when playlist exporting failed. Consume this and show an error if active. */
+    val exportError: Event<Unit>
+        get() = _exportError
 
     init {
         musicRepository.addUpdateListener(this)
@@ -134,7 +144,7 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val importedPlaylist = externalPlaylistManager.import(uri)
             if (importedPlaylist == null) {
-                _importError.put(Unit)
+                _playlistError.put(PlaylistError.ImportFailed)
                 return@launch
             }
 
@@ -142,12 +152,33 @@ constructor(
             val songs = importedPlaylist.paths.mapNotNull(deviceLibrary::findSongByPath)
 
             if (songs.isEmpty()) {
-                _importError.put(Unit)
+                _playlistError.put(PlaylistError.ImportFailed)
                 return@launch
             }
-
+            // TODO Require the user to name it something else if the name is a duplicate of
+            //  a prior playlist
             createPlaylist(importedPlaylist.name, songs)
         }
+
+    /**
+     * Export a [Playlist] to a file [Uri]. Errors pushed to [exportError].
+     *
+     * @param playlist The [Playlist] to export.
+     * @param uri The [Uri] to export to. If null, the user will be prompted for one.
+     */
+    fun exportPlaylist(playlist: Playlist, uri: Uri? = null, config: ExportConfig? = null) {
+        if (uri != null && config != null) {
+            logD("Exporting playlist to $uri")
+            viewModelScope.launch(Dispatchers.IO) {
+                if (!externalPlaylistManager.export(playlist, uri, config)) {
+                    _playlistError.put(PlaylistError.ExportFailed)
+                }
+            }
+        } else {
+            logD("Launching export dialog")
+            _playlistDecision.put(PlaylistDecision.Export(playlist))
+        }
+    }
 
     /**
      * Rename the given playlist.
@@ -281,6 +312,13 @@ sealed interface PlaylistDecision {
     data class Rename(val playlist: Playlist) : PlaylistDecision
 
     /**
+     * Navigate to a dialog that allows the user to export a [Playlist].
+     *
+     * @param playlist The [Playlist] to export.
+     */
+    data class Export(val playlist: Playlist) : PlaylistDecision
+
+    /**
      * Navigate to a dialog that confirms the deletion of an existing [Playlist].
      *
      * @param playlist The playlist to act on.
@@ -293,4 +331,10 @@ sealed interface PlaylistDecision {
      * @param songs The [Song]s to add to the chosen [Playlist].
      */
     data class Add(val songs: List<Song>) : PlaylistDecision
+}
+
+sealed interface PlaylistError {
+    data object ImportFailed : PlaylistError
+
+    data object ExportFailed : PlaylistError
 }

@@ -288,6 +288,7 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
                 R.id.action_play_next,
                 R.id.action_queue_add,
                 R.id.action_playlist_add,
+                R.id.action_playlist_export,
                 R.id.action_share)
         } else {
             setOf()
@@ -320,6 +321,7 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
                 requireContext().showToast(R.string.lng_queue_added)
             }
             R.id.action_rename -> musicModel.renamePlaylist(menu.playlist)
+            R.id.action_playlist_export -> musicModel.exportPlaylist(menu.playlist)
             R.id.action_delete -> musicModel.deletePlaylist(menu.playlist)
             R.id.action_share -> requireContext().share(menu.playlist)
             else -> error("Unexpected menu item $item")

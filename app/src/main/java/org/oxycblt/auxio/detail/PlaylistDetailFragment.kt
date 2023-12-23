@@ -324,6 +324,10 @@ class PlaylistDetailFragment :
                     logD("Renaming ${decision.playlist}")
                     PlaylistDetailFragmentDirections.renamePlaylist(decision.playlist.uid)
                 }
+                is PlaylistDecision.Export -> {
+                    logD("Exporting ${decision.playlist}")
+                    PlaylistDetailFragmentDirections.exportPlaylist(decision.playlist.uid)
+                }
                 is PlaylistDecision.Delete -> {
                     logD("Deleting ${decision.playlist}")
                     PlaylistDetailFragmentDirections.deletePlaylist(decision.playlist.uid)

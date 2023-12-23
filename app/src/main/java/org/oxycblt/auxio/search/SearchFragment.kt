@@ -295,6 +295,10 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                     logD("Deleting ${decision.playlist}")
                     SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
                 }
+                is PlaylistDecision.Export -> {
+                    logD("Exporting ${decision.playlist}")
+                    SearchFragmentDirections.exportPlaylist(decision.playlist.uid)
+                }
                 is PlaylistDecision.Add -> {
                     logD("Adding ${decision.songs.size} to a playlist")
                     SearchFragmentDirections.addToPlaylist(

@@ -68,8 +68,11 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.NoAudioPermissionException
 import org.oxycblt.auxio.music.NoMusicException
 import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
+import org.oxycblt.auxio.music.PlaylistError
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -98,7 +101,9 @@ class HomeFragment :
     private val homeModel: HomeViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
-    private var filePickerLauncher: ActivityResultLauncher<String>? = null
+    private var getContentLauncher: ActivityResultLauncher<String>? = null
+    private var createDocumentLauncher: ActivityResultLauncher<String>? = null
+    private var pendingExportPlaylist: Playlist? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,7 +132,7 @@ class HomeFragment :
                 musicModel.refresh()
             }
 
-        filePickerLauncher =
+        getContentLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
                 if (uri == null) {
                     logW("No URI returned from file picker")
@@ -136,6 +141,24 @@ class HomeFragment :
 
                 logD("Received playlist URI $uri")
                 musicModel.importPlaylist(uri)
+            }
+
+        createDocumentLauncher =
+            registerForActivityResult(ActivityResultContracts.CreateDocument(M3U.MIME_TYPE)) { uri
+                ->
+                if (uri == null) {
+                    logW("No URI returned from file picker")
+                    return@registerForActivityResult
+                }
+
+                val playlist = pendingExportPlaylist
+                if (playlist == null) {
+                    logW("No playlist to export")
+                    return@registerForActivityResult
+                }
+
+                logD("Received playlist URI $uri")
+                musicModel.exportPlaylist(playlist, uri)
             }
 
         // --- UI SETUP ---
@@ -210,7 +233,7 @@ class HomeFragment :
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
-        collectImmediately(musicModel.importError.flow, ::handleImportError)
+        collectImmediately(musicModel.playlistError.flow, ::handlePlaylistError)
         collect(detailModel.toShow.flow, ::handleShow)
     }
 
@@ -295,7 +318,7 @@ class HomeFragment :
             }
             R.id.action_import_playlist -> {
                 logD("Importing playlist")
-                filePickerLauncher?.launch("audio/x-mpegurl")
+                getContentLauncher?.launch(M3U.MIME_TYPE)
             }
             else -> {}
         }
@@ -475,6 +498,10 @@ class HomeFragment :
                     logD("Renaming ${decision.playlist}")
                     HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
                 }
+                is PlaylistDecision.Export -> {
+                    logD("Exporting ${decision.playlist}")
+                    HomeFragmentDirections.exportPlaylist(decision.playlist.uid)
+                }
                 is PlaylistDecision.Delete -> {
                     logD("Deleting ${decision.playlist}")
                     HomeFragmentDirections.deletePlaylist(decision.playlist.uid)
@@ -486,13 +513,22 @@ class HomeFragment :
                 }
             }
         findNavController().navigateSafe(directions)
+        musicModel.playlistDecision.consume()
     }
 
-    private fun handleImportError(flag: Unit?) {
-        if (flag != null) {
-            requireContext().showToast(R.string.err_import_failed)
-            musicModel.importError.consume()
+    private fun handlePlaylistError(error: PlaylistError?) {
+        when (error) {
+            is PlaylistError.ImportFailed -> {
+                requireContext().showToast(R.string.err_import_failed)
+                musicModel.importError.consume()
+            }
+            is PlaylistError.ExportFailed -> {
+                requireContext().showToast(R.string.err_export_failed)
+                musicModel.importError.consume()
+            }
+            null -> {}
         }
+        musicModel.playlistError.consume()
     }
 
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {

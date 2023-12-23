@@ -31,6 +31,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.external.ExportConfig
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -52,6 +53,16 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     /** An existing [Playlist] that is being renamed. Null if none yet. */
     val currentPlaylistToRename: StateFlow<Playlist?>
         get() = _currentPlaylistToRename
+
+    private val _currentPlaylistToExport = MutableStateFlow<Playlist?>(null)
+    /** An existing [Playlist] that is being exported. Null if none yet. */
+    val currentPlaylistToExport: StateFlow<Playlist?>
+        get() = _currentPlaylistToExport
+
+    private val _currentExportConfig = MutableStateFlow(DEFAULT_EXPORT_CONFIG)
+    /** The current [ExportConfig] to use when exporting a playlist. */
+    val currentExportConfig: StateFlow<ExportConfig>
+        get() = _currentExportConfig
 
     private val _currentPlaylistToDelete = MutableStateFlow<Playlist?>(null)
     /** The current [Playlist] that needs it's deletion confirmed. Null if none yet. */
@@ -110,6 +121,14 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
             }
             logD("Updated chosen name to $chosenName")
             refreshChoicesWith = refreshChoicesWith ?: _currentSongsToAdd.value
+
+            // TODO: Add music syncing for other playlist states here
+
+            _currentPlaylistToExport.value =
+                _currentPlaylistToExport.value?.let { playlist ->
+                    musicRepository.userLibrary?.findPlaylist(playlist.uid)
+                }
+            logD("Updated playlist to export to ${_currentPlaylistToExport.value}")
         }
 
         refreshChoicesWith?.let(::refreshPlaylistChoices)
@@ -167,6 +186,33 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         if (_currentPlaylistToDelete.value == null) {
             logW("Given playlist UID to rename was invalid")
         }
+    }
+
+    /**
+     * Set a new [currentPlaylisttoExport] from a [Playlist] [Music.UID].
+     *
+     * @param playlistUid The [Music.UID] of the [Playlist] to export.
+     */
+    fun setPlaylistToExport(playlistUid: Music.UID) {
+        logD("Opening playlist $playlistUid to export")
+        // TODO: Add this guard to the rest of the methods here
+        if (_currentPlaylistToExport.value?.uid == playlistUid) return
+        _currentPlaylistToExport.value = musicRepository.userLibrary?.findPlaylist(playlistUid)
+        if (_currentPlaylistToExport.value == null) {
+            logW("Given playlist UID to export was invalid")
+        } else {
+            _currentExportConfig.value = DEFAULT_EXPORT_CONFIG
+        }
+    }
+
+    /**
+     * Update [currentExportConfig] based on new user input.
+     *
+     * @param exportConfig The new [ExportConfig] to use.
+     */
+    fun setExportConfig(exportConfig: ExportConfig) {
+        logD("Setting export config to $exportConfig")
+        _currentExportConfig.value = exportConfig
     }
 
     /**
@@ -237,6 +283,10 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                 val songSet = it.songs.toSet()
                 PlaylistChoice(it, songs.all(songSet::contains))
             }
+    }
+
+    private companion object {
+        private val DEFAULT_EXPORT_CONFIG = ExportConfig(absolute = false, windowsPaths = false)
     }
 }
 

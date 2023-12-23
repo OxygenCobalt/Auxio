@@ -90,6 +90,8 @@
     <string name="lbl_new_playlist">New playlist</string>
     <string name="lbl_empty_playlist">Empty playlist</string>
     <string name="lbl_import_playlist">Imported playlist</string>
+    <string name="lbl_export">Export</string>
+    <string name="lbl_export_playlist">Export playlist</string>
     <string name="lbl_rename">Rename</string>
     <string name="lbl_rename_playlist">Rename playlist</string>
     <string name="lbl_delete">Delete</string>
@@ -156,6 +158,12 @@
     <string name="lbl_reset">Reset</string>
     <!-- As in to add a new folder in the "Music folders" setting -->
     <string name="lbl_add">Add</string>
+
+    <string name="lbl_path_style">Path style</string>
+    <string name="lbl_path_style_absolute">Absolute</string>
+    <string name="lbl_path_style_relative">Relative</string>
+
+    <string name="lbl_windows_paths">Use Windows-compatible paths</string>
 
     <!-- Referring to playback state -->
     <string name="lbl_state_saved">State saved</string>
@@ -310,7 +318,8 @@
     <string name="err_no_music">No music found</string>
     <string name="err_index_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
-    <string name="err_import_failed">Could not import a playlist from this file</string>
+    <string name="err_import_failed">Unable to import a playlist from this file</string>
+    <string name="err_export_failed">Unable to export the playlist to this file</string>
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_no_dirs">No folders</string>
