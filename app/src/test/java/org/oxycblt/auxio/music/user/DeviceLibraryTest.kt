@@ -44,14 +44,14 @@ class DeviceLibraryTest {
             mockk<SongImpl> {
                 every { uid } returns songUidA
                 every { durationMs } returns 0
-                every { path } returns Path(mockk(), Components.parse("./"))
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val songB =
             mockk<SongImpl> {
                 every { uid } returns songUidB
                 every { durationMs } returns 1
-                every { path } returns Path(mockk(), Components.parse("./"))
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val deviceLibrary = DeviceLibraryImpl(listOf(songA, songB), listOf(), listOf(), listOf())
@@ -160,13 +160,13 @@ class DeviceLibraryTest {
         val songA =
             mockk<SongImpl> {
                 every { uid } returns Music.UID.auxio(MusicType.SONGS)
-                every { path } returns Path(mockk(), Components.parse("./"))
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val songB =
             mockk<SongImpl> {
                 every { uid } returns Music.UID.auxio(MusicType.SONGS)
-                every { path } returns Path(mockk(), Components.parse("./"))
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val album =
