@@ -98,7 +98,6 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
 
         binding.exportWindowsPaths.setOnClickListener { _ ->
             val current = pickerModel.currentExportConfig.value
-            logD("change")
             pickerModel.setExportConfig(current.copy(windowsPaths = !current.windowsPaths))
         }
 

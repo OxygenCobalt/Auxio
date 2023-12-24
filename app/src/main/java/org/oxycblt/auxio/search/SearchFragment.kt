@@ -52,6 +52,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
+import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
@@ -64,6 +65,7 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.showToast
 
 /**
  * The [ListFragment] providing search functionality for the music library.
@@ -160,7 +162,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
         collectImmediately(listModel.selected, ::updateSelection)
         collect(listModel.menu.flow, ::handleMenu)
-        collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
+        collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
@@ -302,7 +305,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         }
     }
 
-    private fun handleDecision(decision: PlaylistDecision?) {
+    private fun handlePlaylistDecision(decision: PlaylistDecision?) {
         if (decision == null) return
         val directions =
             when (decision) {
@@ -338,6 +341,12 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 }
             }
         findNavController().navigateSafe(directions)
+    }
+
+    private fun handlePlaylistMessage(message: PlaylistMessage?) {
+        if (message == null) return
+        requireContext().showToast(message.stringRes)
+        musicModel.playlistMessage.consume()
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {

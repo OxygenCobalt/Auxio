@@ -33,7 +33,6 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -62,7 +61,6 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
                     }
                 // TODO: Navigate to playlist if there are songs in it
                 musicModel.createPlaylist(name, pendingPlaylist.songs)
-                requireContext().showToast(R.string.lng_playlist_created)
                 findNavController().apply {
                     navigateUp()
                     // Do an additional navigation away from the playlist addition dialog, if

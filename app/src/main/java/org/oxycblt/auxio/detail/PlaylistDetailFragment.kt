@@ -49,6 +49,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
+import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
@@ -61,6 +62,7 @@ import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -159,7 +161,8 @@ class PlaylistDetailFragment :
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
-        collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
+        collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
@@ -333,7 +336,7 @@ class PlaylistDetailFragment :
         updateMultiToolbar()
     }
 
-    private fun handleDecision(decision: PlaylistDecision?) {
+    private fun handlePlaylistDecision(decision: PlaylistDecision?) {
         if (decision == null) return
         val directions =
             when (decision) {
@@ -367,6 +370,12 @@ class PlaylistDetailFragment :
                 is PlaylistDecision.New -> error("Unexpected playlist decision $decision")
             }
         findNavController().navigateSafe(directions)
+    }
+
+    private fun handlePlaylistMessage(message: PlaylistMessage?) {
+        if (message == null) return
+        requireContext().showToast(message.stringRes)
+        musicModel.playlistMessage.consume()
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {

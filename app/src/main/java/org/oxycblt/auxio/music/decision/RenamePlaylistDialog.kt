@@ -34,7 +34,6 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -58,7 +57,6 @@ class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNam
                 val playlist = unlikelyToBeNull(pickerModel.currentPlaylistToRename.value)
                 val chosenName = pickerModel.chosenName.value as ChosenName.Valid
                 musicModel.renamePlaylist(playlist, chosenName.value)
-                requireContext().showToast(R.string.lng_playlist_renamed)
                 findNavController().navigateUp()
             }
             .setNegativeButton(R.string.lbl_cancel, null)

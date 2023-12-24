@@ -27,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.music.external.ExportConfig
 import org.oxycblt.auxio.music.external.ExternalPlaylistManager
@@ -65,19 +66,9 @@ constructor(
     val playlistDecision: Event<PlaylistDecision>
         get() = _playlistDecision
 
-    private val _playlistError = MutableEvent<PlaylistError>()
-    val playlistError: Event<PlaylistError>
-        get() = _playlistError
-
-    private val _importError = MutableEvent<Unit>()
-    /** Flag for when playlist importing failed. Consume this and show an error if active. */
-    val importError: Event<Unit>
-        get() = _importError
-
-    private val _exportError = MutableEvent<Unit>()
-    /** Flag for when playlist exporting failed. Consume this and show an error if active. */
-    val exportError: Event<Unit>
-        get() = _exportError
+    private val _playlistMessage = MutableEvent<PlaylistMessage>()
+    val playlistMessage: Event<PlaylistMessage>
+        get() = _playlistMessage
 
     init {
         musicRepository.addUpdateListener(this)
@@ -127,7 +118,10 @@ constructor(
     fun createPlaylist(name: String? = null, songs: List<Song> = listOf()) {
         if (name != null) {
             logD("Creating $name with ${songs.size} songs]")
-            viewModelScope.launch(Dispatchers.IO) { musicRepository.createPlaylist(name, songs) }
+            viewModelScope.launch(Dispatchers.IO) {
+                musicRepository.createPlaylist(name, songs)
+                _playlistMessage.put(PlaylistMessage.NewPlaylistSuccess)
+            }
         } else {
             logD("Launching creation dialog for ${songs.size} songs")
             _playlistDecision.put(PlaylistDecision.New(songs))
@@ -148,7 +142,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val importedPlaylist = externalPlaylistManager.import(uri)
                 if (importedPlaylist == null) {
-                    _playlistError.put(PlaylistError.ImportFailed)
+                    _playlistMessage.put(PlaylistMessage.ImportFailed)
                     return@launch
                 }
 
@@ -156,14 +150,16 @@ constructor(
                 val songs = importedPlaylist.paths.mapNotNull(deviceLibrary::findSongByPath)
 
                 if (songs.isEmpty()) {
-                    _playlistError.put(PlaylistError.ImportFailed)
+                    _playlistMessage.put(PlaylistMessage.ImportFailed)
                     return@launch
                 }
                 // TODO Require the user to name it something else if the name is a duplicate of
                 //  a prior playlist
                 if (target !== null) {
                     musicRepository.rewritePlaylist(target, songs)
+                    _playlistMessage.put(PlaylistMessage.ImportSuccess)
                 } else {
+                    // TODO: Have to properly propagate the "Playlist Created" message
                     createPlaylist(importedPlaylist.name, songs)
                 }
             }
@@ -183,8 +179,10 @@ constructor(
         if (uri != null && config != null) {
             logD("Exporting playlist to $uri")
             viewModelScope.launch(Dispatchers.IO) {
-                if (!externalPlaylistManager.export(playlist, uri, config)) {
-                    _playlistError.put(PlaylistError.ExportFailed)
+                if (externalPlaylistManager.export(playlist, uri, config)) {
+                    _playlistMessage.put(PlaylistMessage.ExportSuccess)
+                } else {
+                    _playlistMessage.put(PlaylistMessage.ExportFailed)
                 }
             }
         } else {
@@ -202,7 +200,10 @@ constructor(
     fun renamePlaylist(playlist: Playlist, name: String? = null) {
         if (name != null) {
             logD("Renaming $playlist to $name")
-            viewModelScope.launch(Dispatchers.IO) { musicRepository.renamePlaylist(playlist, name) }
+            viewModelScope.launch(Dispatchers.IO) {
+                musicRepository.renamePlaylist(playlist, name)
+                _playlistMessage.put(PlaylistMessage.RenameSuccess)
+            }
         } else {
             logD("Launching rename dialog for $playlist")
             _playlistDecision.put(PlaylistDecision.Rename(playlist))
@@ -219,7 +220,10 @@ constructor(
     fun deletePlaylist(playlist: Playlist, rude: Boolean = false) {
         if (rude) {
             logD("Deleting $playlist")
-            viewModelScope.launch(Dispatchers.IO) { musicRepository.deletePlaylist(playlist) }
+            viewModelScope.launch(Dispatchers.IO) {
+                musicRepository.deletePlaylist(playlist)
+                _playlistMessage.put(PlaylistMessage.DeleteSuccess)
+            }
         } else {
             logD("Launching deletion dialog for $playlist")
             _playlistDecision.put(PlaylistDecision.Delete(playlist))
@@ -279,7 +283,10 @@ constructor(
     fun addToPlaylist(songs: List<Song>, playlist: Playlist? = null) {
         if (playlist != null) {
             logD("Adding ${songs.size} songs to $playlist")
-            viewModelScope.launch(Dispatchers.IO) { musicRepository.addToPlaylist(songs, playlist) }
+            viewModelScope.launch(Dispatchers.IO) {
+                musicRepository.addToPlaylist(songs, playlist)
+                _playlistMessage.put(PlaylistMessage.AddSuccess)
+            }
         } else {
             logD("Launching addition dialog for songs=${songs.size}")
             _playlistDecision.put(PlaylistDecision.Add(songs))
@@ -354,8 +361,46 @@ sealed interface PlaylistDecision {
     data class Add(val songs: List<Song>) : PlaylistDecision
 }
 
-sealed interface PlaylistError {
-    data object ImportFailed : PlaylistError
+sealed interface PlaylistMessage {
+    val stringRes: Int
 
-    data object ExportFailed : PlaylistError
+    data object NewPlaylistSuccess : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.lng_playlist_created
+    }
+
+    data object ImportSuccess : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.lng_playlist_imported
+    }
+
+    data object ImportFailed : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.err_import_failed
+    }
+
+    data object RenameSuccess : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.lng_playlist_renamed
+    }
+
+    data object DeleteSuccess : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.lng_playlist_deleted
+    }
+
+    data object AddSuccess : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.lng_playlist_added
+    }
+
+    data object ExportSuccess : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.lng_playlist_exported
+    }
+
+    data object ExportFailed : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.err_export_failed
+    }
 }

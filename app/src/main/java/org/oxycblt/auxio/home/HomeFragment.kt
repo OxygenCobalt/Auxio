@@ -70,7 +70,7 @@ import org.oxycblt.auxio.music.NoMusicException
 import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
-import org.oxycblt.auxio.music.PlaylistError
+import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -211,7 +211,7 @@ class HomeFragment :
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
-        collectImmediately(musicModel.playlistError.flow, ::handlePlaylistError)
+        collectImmediately(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collect(detailModel.toShow.flow, ::handleShow)
     }
 
@@ -503,19 +503,10 @@ class HomeFragment :
         findNavController().navigateSafe(directions)
     }
 
-    private fun handlePlaylistError(error: PlaylistError?) {
-        when (error) {
-            is PlaylistError.ImportFailed -> {
-                requireContext().showToast(R.string.err_import_failed)
-                musicModel.importError.consume()
-            }
-            is PlaylistError.ExportFailed -> {
-                requireContext().showToast(R.string.err_export_failed)
-                musicModel.importError.consume()
-            }
-            null -> {}
-        }
-        musicModel.playlistError.consume()
+    private fun handlePlaylistMessage(message: PlaylistMessage?) {
+        if (message == null) return
+        requireContext().showToast(message.stringRes)
+        musicModel.playlistMessage.consume()
     }
 
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
