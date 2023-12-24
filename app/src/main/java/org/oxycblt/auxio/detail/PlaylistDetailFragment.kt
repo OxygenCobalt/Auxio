@@ -21,6 +21,8 @@ package org.oxycblt.auxio.detail
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -48,12 +50,14 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
@@ -80,6 +84,8 @@ class PlaylistDetailFragment :
     private val playlistListAdapter = PlaylistDetailListAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
     private var editNavigationListener: DialogAwareNavigationListener? = null
+    private var getContentLauncher: ActivityResultLauncher<String>? = null
+    private var pendingImportTarget: Playlist? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +104,17 @@ class PlaylistDetailFragment :
         super.onBindingCreated(binding, savedInstanceState)
 
         editNavigationListener = DialogAwareNavigationListener(detailModel::dropPlaylistEdit)
+
+        getContentLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                if (uri == null) {
+                    logW("No URI returned from file picker")
+                    return@registerForActivityResult
+                }
+
+                logD("Received playlist URI $uri")
+                musicModel.importPlaylist(uri, pendingImportTarget)
+            }
 
         // --- UI SETUP ---
         binding.detailNormalToolbar.apply {
@@ -320,6 +337,16 @@ class PlaylistDetailFragment :
         if (decision == null) return
         val directions =
             when (decision) {
+                is PlaylistDecision.Import -> {
+                    logD("Importing playlist")
+                    pendingImportTarget = decision.target
+                    requireNotNull(getContentLauncher) {
+                            "Content picker launcher was not available"
+                        }
+                        .launch(M3U.MIME_TYPE)
+                    musicModel.playlistDecision.consume()
+                    return
+                }
                 is PlaylistDecision.Rename -> {
                     logD("Renaming ${decision.playlist}")
                     PlaylistDetailFragmentDirections.renamePlaylist(decision.playlist.uid)

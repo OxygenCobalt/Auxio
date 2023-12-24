@@ -137,28 +137,41 @@ constructor(
     /**
      * Import a playlist from a file [Uri]. Errors pushed to [importError].
      *
-     * @param uri The [Uri] of the file to import.
+     * @param uri The [Uri] of the file to import. If null, the user will be prompted with a file
+     *   picker.
+     * @param target The [Playlist] to import to. If null, a new playlist will be created. Note the
+     *   [Playlist] will not be renamed to the name of the imported playlist.
      * @see ExternalPlaylistManager
      */
-    fun importPlaylist(uri: Uri) =
-        viewModelScope.launch(Dispatchers.IO) {
-            val importedPlaylist = externalPlaylistManager.import(uri)
-            if (importedPlaylist == null) {
-                _playlistError.put(PlaylistError.ImportFailed)
-                return@launch
-            }
+    fun importPlaylist(uri: Uri? = null, target: Playlist? = null) {
+        if (uri != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val importedPlaylist = externalPlaylistManager.import(uri)
+                if (importedPlaylist == null) {
+                    _playlistError.put(PlaylistError.ImportFailed)
+                    return@launch
+                }
 
-            val deviceLibrary = musicRepository.deviceLibrary ?: return@launch
-            val songs = importedPlaylist.paths.mapNotNull(deviceLibrary::findSongByPath)
+                val deviceLibrary = musicRepository.deviceLibrary ?: return@launch
+                val songs = importedPlaylist.paths.mapNotNull(deviceLibrary::findSongByPath)
 
-            if (songs.isEmpty()) {
-                _playlistError.put(PlaylistError.ImportFailed)
-                return@launch
+                if (songs.isEmpty()) {
+                    _playlistError.put(PlaylistError.ImportFailed)
+                    return@launch
+                }
+                // TODO Require the user to name it something else if the name is a duplicate of
+                //  a prior playlist
+                if (target !== null) {
+                    musicRepository.rewritePlaylist(target, songs)
+                } else {
+                    createPlaylist(importedPlaylist.name, songs)
+                }
             }
-            // TODO Require the user to name it something else if the name is a duplicate of
-            //  a prior playlist
-            createPlaylist(importedPlaylist.name, songs)
+        } else {
+            logD("Launching import picker")
+            _playlistDecision.put(PlaylistDecision.Import(target))
         }
+    }
 
     /**
      * Export a [Playlist] to a file [Uri]. Errors pushed to [exportError].
@@ -303,6 +316,14 @@ sealed interface PlaylistDecision {
      * @param songs The [Song]s to contain in the new [Playlist].
      */
     data class New(val songs: List<Song>) : PlaylistDecision
+
+    /**
+     * Navigate to a file picker to import a playlist from.
+     *
+     * @param target The [Playlist] to import to. If null, then the file imported will create a new
+     *   playlist.
+     */
+    data class Import(val target: Playlist?) : PlaylistDecision
 
     /**
      * Navigate to a dialog that allows a user to rename an existing [Playlist].

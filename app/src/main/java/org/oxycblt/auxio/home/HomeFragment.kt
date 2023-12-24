@@ -102,8 +102,7 @@ class HomeFragment :
     private val detailModel: DetailViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     private var getContentLauncher: ActivityResultLauncher<String>? = null
-    private var createDocumentLauncher: ActivityResultLauncher<String>? = null
-    private var pendingExportPlaylist: Playlist? = null
+    private var pendingImportTarget: Playlist? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,25 +139,7 @@ class HomeFragment :
                 }
 
                 logD("Received playlist URI $uri")
-                musicModel.importPlaylist(uri)
-            }
-
-        createDocumentLauncher =
-            registerForActivityResult(ActivityResultContracts.CreateDocument(M3U.MIME_TYPE)) { uri
-                ->
-                if (uri == null) {
-                    logW("No URI returned from file picker")
-                    return@registerForActivityResult
-                }
-
-                val playlist = pendingExportPlaylist
-                if (playlist == null) {
-                    logW("No playlist to export")
-                    return@registerForActivityResult
-                }
-
-                logD("Received playlist URI $uri")
-                musicModel.exportPlaylist(playlist, uri)
+                musicModel.importPlaylist(uri, pendingImportTarget)
             }
 
         // --- UI SETUP ---
@@ -209,10 +190,7 @@ class HomeFragment :
         // re-creating the ViewPager.
         setupPager(binding)
 
-        binding.homeShuffleFab.setOnClickListener {
-            logD("Shuffling")
-            playbackModel.shuffleAll()
-        }
+        binding.homeShuffleFab.setOnClickListener { playbackModel.shuffleAll() }
 
         binding.homeNewPlaylistFab.apply {
             inflate(R.menu.new_playlist_actions)
@@ -318,7 +296,7 @@ class HomeFragment :
             }
             R.id.action_import_playlist -> {
                 logD("Importing playlist")
-                getContentLauncher?.launch(M3U.MIME_TYPE)
+                musicModel.importPlaylist()
             }
             else -> {}
         }
@@ -494,6 +472,16 @@ class HomeFragment :
                     logD("Creating new playlist")
                     HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray())
                 }
+                is PlaylistDecision.Import -> {
+                    logD("Importing playlist")
+                    pendingImportTarget = decision.target
+                    requireNotNull(getContentLauncher) {
+                            "Content picker launcher was not available"
+                        }
+                        .launch(M3U.MIME_TYPE)
+                    musicModel.playlistDecision.consume()
+                    return
+                }
                 is PlaylistDecision.Rename -> {
                     logD("Renaming ${decision.playlist}")
                     HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
@@ -513,7 +501,6 @@ class HomeFragment :
                 }
             }
         findNavController().navigateSafe(directions)
-        musicModel.playlistDecision.consume()
     }
 
     private fun handlePlaylistError(error: PlaylistError?) {

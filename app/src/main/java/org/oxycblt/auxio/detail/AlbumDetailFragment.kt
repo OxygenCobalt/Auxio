@@ -273,6 +273,7 @@ class AlbumDetailFragment :
                         decision.songs.map { it.uid }.toTypedArray())
                 }
                 is PlaylistDecision.New,
+                is PlaylistDecision.Import,
                 is PlaylistDecision.Rename,
                 is PlaylistDecision.Delete,
                 is PlaylistDecision.Export -> error("Unexpected playlist decision $decision")
