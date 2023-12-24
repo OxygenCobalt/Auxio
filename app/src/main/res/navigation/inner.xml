@@ -413,6 +413,9 @@
         <argument
             android:name="songUids"
             app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <argument
+            android:name="reason"
+            app:argType="org.oxycblt.auxio.music.PlaylistDecision$New$Reason" />
     </dialog>
 
     <dialog

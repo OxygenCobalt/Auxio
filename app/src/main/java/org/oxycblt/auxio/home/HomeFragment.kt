@@ -470,7 +470,8 @@ class HomeFragment :
             when (decision) {
                 is PlaylistDecision.New -> {
                     logD("Creating new playlist")
-                    HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray())
+                    HomeFragmentDirections.newPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray(), decision.reason)
                 }
                 is PlaylistDecision.Import -> {
                     logD("Importing playlist")

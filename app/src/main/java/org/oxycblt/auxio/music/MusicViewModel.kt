@@ -34,6 +34,7 @@ import org.oxycblt.auxio.music.external.ExternalPlaylistManager
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * A [ViewModel] providing data specific to the music loading process.
@@ -114,17 +115,29 @@ constructor(
      *
      * @param name The name of the new [Playlist]. If null, the user will be prompted for one.
      * @param songs The [Song]s to be contained in the new playlist.
+     * @param reason The reason why a new playlist is being created. For all intensive purposes, you
+     *   do not need to specify this.
      */
-    fun createPlaylist(name: String? = null, songs: List<Song> = listOf()) {
+    fun createPlaylist(
+        name: String? = null,
+        songs: List<Song> = listOf(),
+        reason: PlaylistDecision.New.Reason = PlaylistDecision.New.Reason.NEW
+    ) {
         if (name != null) {
             logD("Creating $name with ${songs.size} songs]")
             viewModelScope.launch(Dispatchers.IO) {
                 musicRepository.createPlaylist(name, songs)
-                _playlistMessage.put(PlaylistMessage.NewPlaylistSuccess)
+                val message =
+                    when (reason) {
+                        PlaylistDecision.New.Reason.NEW -> PlaylistMessage.NewPlaylistSuccess
+                        PlaylistDecision.New.Reason.ADD -> PlaylistMessage.AddSuccess
+                        PlaylistDecision.New.Reason.IMPORT -> PlaylistMessage.ImportSuccess
+                    }
+                _playlistMessage.put(message)
             }
         } else {
             logD("Launching creation dialog for ${songs.size} songs")
-            _playlistDecision.put(PlaylistDecision.New(songs))
+            _playlistDecision.put(PlaylistDecision.New(songs, reason))
         }
     }
 
@@ -142,6 +155,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val importedPlaylist = externalPlaylistManager.import(uri)
                 if (importedPlaylist == null) {
+                    logE("Could not import playlist")
                     _playlistMessage.put(PlaylistMessage.ImportFailed)
                     return@launch
                 }
@@ -150,6 +164,7 @@ constructor(
                 val songs = importedPlaylist.paths.mapNotNull(deviceLibrary::findSongByPath)
 
                 if (songs.isEmpty()) {
+                    logE("No songs found")
                     _playlistMessage.put(PlaylistMessage.ImportFailed)
                     return@launch
                 }
@@ -160,7 +175,7 @@ constructor(
                     _playlistMessage.put(PlaylistMessage.ImportSuccess)
                 } else {
                     // TODO: Have to properly propagate the "Playlist Created" message
-                    createPlaylist(importedPlaylist.name, songs)
+                    createPlaylist(importedPlaylist.name, songs, PlaylistDecision.New.Reason.IMPORT)
                 }
             }
         } else {
@@ -321,8 +336,15 @@ sealed interface PlaylistDecision {
      * Navigate to a dialog that allows a user to pick a name for a new [Playlist].
      *
      * @param songs The [Song]s to contain in the new [Playlist].
+     * @param context The context in which this decision is being fulfilled.
      */
-    data class New(val songs: List<Song>) : PlaylistDecision
+    data class New(val songs: List<Song>, val reason: Reason) : PlaylistDecision {
+        enum class Reason {
+            NEW,
+            ADD,
+            IMPORT
+        }
+    }
 
     /**
      * Navigate to a file picker to import a playlist from.

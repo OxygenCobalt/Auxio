@@ -32,6 +32,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -98,7 +99,8 @@ class AddToPlaylistDialog :
         val songs = pickerModel.currentSongsToAdd.value ?: return
         findNavController()
             .navigateSafe(
-                AddToPlaylistDialogDirections.newPlaylist(songs.map { it.uid }.toTypedArray()))
+                AddToPlaylistDialogDirections.newPlaylist(
+                    songs.map { it.uid }.toTypedArray(), PlaylistDecision.New.Reason.ADD))
     }
 
     private fun updatePendingSongs(songs: List<Song>?) {

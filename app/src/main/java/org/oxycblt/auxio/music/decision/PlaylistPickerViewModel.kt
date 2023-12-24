@@ -30,6 +30,7 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.ExportConfig
 import org.oxycblt.auxio.util.logD
@@ -96,7 +97,8 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                 _currentPendingPlaylist.value?.let { pendingPlaylist ->
                     PendingPlaylist(
                         pendingPlaylist.preferredName,
-                        pendingPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.uid) })
+                        pendingPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.uid) },
+                        pendingPlaylist.reason)
                 }
             logD("Updated pending playlist: ${_currentPendingPlaylist.value?.preferredName}")
 
@@ -143,8 +145,13 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
      *
      * @param context [Context] required to generate a playlist name.
      * @param songUids The [Music.UID]s of songs to be present in the playlist.
+     * @param reason The reason the playlist is being created.
      */
-    fun setPendingPlaylist(context: Context, songUids: Array<Music.UID>) {
+    fun setPendingPlaylist(
+        context: Context,
+        songUids: Array<Music.UID>,
+        reason: PlaylistDecision.New.Reason
+    ) {
         logD("Opening ${songUids.size} songs to create a playlist from")
         val userLibrary = musicRepository.userLibrary ?: return
         val songs =
@@ -168,7 +175,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
 
         _currentPendingPlaylist.value =
             if (possibleName != null && songs != null) {
-                PendingPlaylist(possibleName, songs)
+                PendingPlaylist(possibleName, songs, reason)
             } else {
                 logW("Given song UIDs to create were invalid")
                 null
@@ -295,9 +302,14 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
  *
  * @param preferredName The name to be used by default if no other name is chosen.
  * @param songs The [Song]s to be contained in the [PendingPlaylist]
+ * @param reason The reason the playlist is being created.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class PendingPlaylist(val preferredName: String, val songs: List<Song>)
+data class PendingPlaylist(
+    val preferredName: String,
+    val songs: List<Song>,
+    val reason: PlaylistDecision.New.Reason
+)
 
 /**
  * Represents the (processed) user input from the playlist naming dialogs.
