@@ -309,4 +309,12 @@
     <string name="lbl_path">路径</string>
     <string name="lbl_empty_playlist">清空播放列表</string>
     <string name="err_import_failed">无法从此文件导入播放列表</string>
+    <string name="lbl_path_style_absolute">绝对</string>
+    <string name="lbl_import">导入</string>
+    <string name="lbl_windows_paths">使用兼容 Windows 系统的路径</string>
+    <string name="lbl_export">导出</string>
+    <string name="lbl_path_style_relative">相对</string>
+    <string name="lbl_path_style">路径样式</string>
+    <string name="lbl_export_playlist">导出播放列表</string>
+    <string name="err_export_failed">无法将播放列表导出到此文件</string>
 </resources>
