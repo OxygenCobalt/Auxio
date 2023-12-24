@@ -327,4 +327,7 @@
     <string name="lbl_path_style">Styl cesty</string>
     <string name="lbl_export_playlist">Exportovat seznam skladeb</string>
     <string name="err_export_failed">Nepodařilo se exportovat seznam skladeb do tohoto souboru</string>
+    <string name="lbl_import">Import</string>
+    <string name="lng_playlist_imported">Seznam skladeb importován</string>
+    <string name="lng_playlist_exported">Seznam skladeb exportován</string>
 </resources>
