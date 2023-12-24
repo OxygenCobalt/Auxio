@@ -13,9 +13,9 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:defaultNavHost="true"
         app:layout_behavior="org.oxycblt.auxio.ui.BottomSheetContentBehavior"
         app:navGraph="@navigation/inner"
-        app:defaultNavHost="true"
         tools:layout="@layout/fragment_home" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -48,9 +48,9 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/queue_handle_wrapper"
-                android:contentDescription="@string/desc_queue_bar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_bottom_sheet_bar">
+                android:layout_height="@dimen/size_bottom_sheet_bar"
+                android:contentDescription="@string/desc_queue_bar">
 
                 <com.google.android.material.bottomsheet.BottomSheetDragHandleView
                     android:id="@+id/queue_handle"

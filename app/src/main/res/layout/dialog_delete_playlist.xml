@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/deletion_info"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/spacing_large"
     android:paddingTop="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_large"
-    android:paddingStart="@dimen/spacing_large"
-    android:layout_height="match_parent"
     android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:text="Delete Playlist 16? This cannot be undone."/>
+    tools:text="Delete Playlist 16? This cannot be undone." />

@@ -26,9 +26,9 @@
             android:id="@+id/song_track_placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_song_24"
-            android:scaleType="center"
             android:contentDescription="@string/def_track"
+            android:scaleType="center"
+            android:src="@drawable/ic_song_24"
             android:visibility="invisible"
             app:tint="@color/sel_on_cover_bg"
             tools:ignore="ContentDescription" />

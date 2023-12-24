@@ -32,10 +32,10 @@
 
     <org.oxycblt.auxio.list.recycler.DialogRecyclerView
         android:id="@+id/sort_mode_recycler"
+        style="@style/Widget.Auxio.RecyclerView.Linear"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        style="@style/Widget.Auxio.RecyclerView.Linear"
         tools:listitem="@layout/item_sort_mode" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,9 +54,9 @@
             android:id="@+id/sort_direction_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_tiny"
             android:gravity="center"
-            android:layout_marginHorizontal="@dimen/spacing_medium"
             app:layout_constraintTop_toBottomOf="@+id/sort_header"
             app:selectionRequired="false"
             app:singleSelection="true"
@@ -97,9 +97,9 @@
             style="@style/Widget.Material3.Button.TextButton.Dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_mid_medium"
-            android:layout_marginTop="@dimen/spacing_mid_medium"
             android:text="@string/lbl_ok"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

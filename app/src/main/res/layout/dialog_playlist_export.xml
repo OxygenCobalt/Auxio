@@ -45,7 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/lbl_path_style_absolute"/>
+            android:text="@string/lbl_path_style_absolute" />
 
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -69,10 +69,10 @@
             android:clickable="false"
             android:focusable="false"
             android:paddingStart="@dimen/spacing_medium"
+            android:text="@string/lbl_windows_paths"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-            tools:ignore="RtlSymmetry,contentDescription"
-            android:text="@string/lbl_windows_paths" />
+            tools:ignore="RtlSymmetry,contentDescription" />
     </FrameLayout>
 
 </LinearLayout>

@@ -42,8 +42,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:paddingBottom="@dimen/spacing_tiny"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/spacing_tiny">
 
                     <ImageView
                         android:id="@+id/about_auxio_icon"
@@ -175,8 +175,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                android:paddingBottom="@dimen/spacing_tiny"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/spacing_tiny">
 
                     <TextView
                         android:id="@+id/about_library_counts"

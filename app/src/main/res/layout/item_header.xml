@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-        android:id="@android:id/title"
-        style="@style/Widget.Auxio.TextView.Header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    android:id="@android:id/title"
+    style="@style/Widget.Auxio.TextView.Header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="?attr/colorSurface"
-        tools:text="Songs" />
+    tools:text="Songs" />

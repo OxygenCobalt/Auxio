@@ -5,16 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/spacing_medium"
     android:paddingStart="@dimen/spacing_medium"
+    android:paddingTop="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_medium"
     android:paddingBottom="@dimen/spacing_mid_medium">
 
     <org.oxycblt.auxio.image.CoverView
         android:id="@+id/detail_cover"
+        style="@style/Widget.Auxio.Image.MidHuge"
         app:enablePlaybackIndicator="false"
         app:enableSelectionBadge="false"
-        style="@style/Widget.Auxio.Image.MidHuge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

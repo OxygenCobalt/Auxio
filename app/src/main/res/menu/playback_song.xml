@@ -7,20 +7,20 @@
         android:title="@string/lbl_playlist_add" />
     <item
         android:id="@+id/action_artist_details"
-        android:title="@string/lbl_artist_details"
-        android:icon="@drawable/ic_artist_24" />
+        android:icon="@drawable/ic_artist_24"
+        android:title="@string/lbl_artist_details" />
     <item
         android:id="@+id/action_album_details"
-        android:title="@string/lbl_album_details"
         android:icon="@drawable/ic_album_24"
+        android:title="@string/lbl_album_details"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_detail"
-        android:title="@string/lbl_song_detail"
         android:icon="@drawable/ic_details_24"
+        android:title="@string/lbl_song_detail"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_share"
-        android:title="@string/lbl_share"
-        android:icon="@drawable/ic_share_24" />
+        android:icon="@drawable/ic_share_24"
+        android:title="@string/lbl_share" />
 </menu>

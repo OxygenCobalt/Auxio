@@ -25,8 +25,8 @@
             android:id="@+id/disc_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_album_24"
             android:scaleType="center"
+            android:src="@drawable/ic_album_24"
             app:tint="@color/sel_on_cover_bg"
             tools:ignore="ContentDescription" />
 
@@ -54,9 +54,9 @@
         android:layout_marginEnd="@dimen/spacing_mid_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/disc_cover"
         app:layout_constraintTop_toBottomOf="@+id/disc_number"
-        tools:text="Part 1" />
+        tools:text="Part 1"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
