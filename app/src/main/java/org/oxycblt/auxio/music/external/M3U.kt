@@ -262,6 +262,6 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
     }
 
     private companion object {
-        val WINDOWS_VOLUME_PREFIX_REGEX = Regex("^[A-Za-z]:\\\\")
+        val WINDOWS_VOLUME_PREFIX_REGEX = Regex("^[A-Za-z]:\\\\*")
     }
 }
