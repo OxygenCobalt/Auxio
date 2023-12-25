@@ -317,4 +317,6 @@
     <string name="lbl_path_style">路径样式</string>
     <string name="lbl_export_playlist">导出播放列表</string>
     <string name="err_export_failed">无法将播放列表导出到此文件</string>
+    <string name="lng_playlist_imported">导入了播放列表</string>
+    <string name="lng_playlist_exported">导出了播放列表</string>
 </resources>
