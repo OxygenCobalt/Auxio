@@ -32,7 +32,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
@@ -124,12 +123,11 @@ class IndexerService :
     // --- CONTROLLER CALLBACKS ---
 
     override fun requestIndex(withCache: Boolean) {
-        logD("Starting new indexing job")
+        logD("Starting new indexing job (previous=${currentIndexJob?.hashCode()})")
         // Cancel the previous music loading job.
         currentIndexJob?.cancel()
         // Start a new music loading job on a co-routine.
-        currentIndexJob =
-            indexScope.launch { musicRepository.index(this@IndexerService, withCache) }
+        currentIndexJob = musicRepository.index(this@IndexerService, withCache)
     }
 
     override val context = this

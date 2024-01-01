@@ -29,8 +29,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.cache.CacheRepository
 import org.oxycblt.auxio.music.device.DeviceLibrary
@@ -341,11 +343,11 @@ constructor(
     }
 
     override fun index(worker: MusicRepository.IndexingWorker, withCache: Boolean) =
-        worker.scope.launch { indexWrapper(worker, withCache) }
+        worker.scope.launch { indexWrapper(worker.context, this, withCache) }
 
-    private suspend fun indexWrapper(worker: MusicRepository.IndexingWorker, withCache: Boolean) {
+    private suspend fun indexWrapper(context: Context, scope: CoroutineScope, withCache: Boolean) {
         try {
-            indexImpl(worker, withCache)
+            indexImpl(context, scope, withCache)
         } catch (e: CancellationException) {
             // Got cancelled, propagate upwards to top-level co-routine.
             logD("Loading routine was cancelled")
@@ -359,13 +361,13 @@ constructor(
         }
     }
 
-    private suspend fun indexImpl(worker: MusicRepository.IndexingWorker, withCache: Boolean) {
+    private suspend fun indexImpl(context: Context, scope: CoroutineScope, withCache: Boolean) {
         // TODO: Find a way to break up this monster of a method, preferably as another class.
 
         val start = System.currentTimeMillis()
         // Make sure we have permissions before going forward. Theoretically this would be better
         // done at the UI level, but that intertwines logic and display too much.
-        if (ContextCompat.checkSelfPermission(worker.context, PERMISSION_READ_AUDIO) ==
+        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
             logE("Permissions were not granted")
             throw NoAudioPermissionException()
@@ -390,7 +392,7 @@ constructor(
         emitIndexingProgress(IndexingProgress.Indeterminate)
 
         val mediaStoreQueryJob =
-            worker.scope.async {
+            scope.async {
                 val query =
                     try {
                         mediaStoreExtractor.query(constraints)
@@ -428,7 +430,7 @@ constructor(
         // does not exist. In the latter situation, it also applies it's own (inferior) metadata.
         logD("Starting MediaStore discovery")
         val mediaStoreJob =
-            worker.scope.async {
+            scope.async {
                 try {
                     mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
                 } catch (e: Exception) {
@@ -446,7 +448,7 @@ constructor(
         // metadata for them, and then forwards it to DeviceLibrary.
         logD("Starting tag extraction")
         val tagJob =
-            worker.scope.async {
+            scope.async {
                 try {
                     tagExtractor.consume(incompleteSongs, completeSongs)
                 } catch (e: Exception) {
@@ -461,7 +463,7 @@ constructor(
         // and then forwards them to the primary loading loop.
         logD("Starting DeviceLibrary creation")
         val deviceLibraryJob =
-            worker.scope.async(Dispatchers.Default) {
+            scope.async(Dispatchers.Default) {
                 val deviceLibrary =
                     try {
                         deviceLibraryFactory.create(
@@ -488,6 +490,11 @@ constructor(
             emitIndexingProgress(IndexingProgress.Songs(rawSongs.size, query.projectedTotal))
         }
 
+        withTimeout(10000) {
+            mediaStoreJob.await()
+            tagJob.await()
+        }
+
         // Deliberately done after the involved initialization step to make it less likely
         // that the short-circuit occurs so quickly as to break the UI.
         // TODO: Do not error, instead just wipe the entire library.
@@ -510,7 +517,7 @@ constructor(
         // working on parent information.
         logD("Starting UserLibrary query")
         val userLibraryQueryJob =
-            worker.scope.async {
+            scope.async {
                 val rawPlaylists =
                     try {
                         userLibraryFactory.query()
