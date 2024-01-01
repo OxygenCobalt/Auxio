@@ -64,7 +64,15 @@ interface DocumentPathFactory {
 
 class DocumentPathFactoryImpl @Inject constructor(private val volumeManager: VolumeManager) :
     DocumentPathFactory {
-    override fun unpackDocumentUri(uri: Uri) = fromDocumentId(DocumentsContract.getDocumentId(uri))
+    override fun unpackDocumentUri(uri: Uri): Path? {
+        // Abuse the document contract and extract the encoded path from the URI.
+        // I've seen some implementations that just use getDocumentId. That no longer seems
+        // to work on Android 14 onwards. But spoofing our own document URI and then decoding
+        // it does for some reason.
+        val docUri = DocumentsContract.buildDocumentUri(uri.authority, uri.pathSegments[1])
+        val docId = DocumentsContract.getDocumentId(docUri)
+        return fromDocumentId(docId)
+    }
 
     override fun unpackDocumentTreeUri(uri: Uri): Path? {
         // Convert the document tree URI into it's relative path form, which can then be
