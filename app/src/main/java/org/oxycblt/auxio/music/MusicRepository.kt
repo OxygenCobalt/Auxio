@@ -488,12 +488,6 @@ constructor(
             emitIndexingProgress(IndexingProgress.Songs(rawSongs.size, query.projectedTotal))
         }
 
-        // This shouldn't occur, but keep them around just in case there's a regression.
-        // Note that DeviceLibrary might still actually be doing work (specifically parent
-        // processing), so we don't check if it's deadlocked.
-        check(!mediaStoreJob.isActive) { "MediaStore discovery is deadlocked" }
-        check(!tagJob.isActive) { "Tag extraction is deadlocked" }
-
         // Deliberately done after the involved initialization step to make it less likely
         // that the short-circuit occurs so quickly as to break the UI.
         // TODO: Do not error, instead just wipe the entire library.
