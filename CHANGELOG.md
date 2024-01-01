@@ -13,8 +13,12 @@
 #### What's Changed
 - Albums linked to an artist only as a collaborator are no longer included
 in an artist's album count
+- File name and parent path have been combined into "Path" in the Song Properties
+view
 
 #### What's Fixed
+- Fixed music loading failing on all huawei devices
+- Fixed prior music loads not cancelling when reloading music in settings
 - Fixed certain FLAC files failing to play on some devices
 - Fixed music loading failing when duplicate tags with different casing was present
 
