@@ -51,15 +51,18 @@ constructor(
 ) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
 
     private val _indexingState = MutableStateFlow<IndexingState?>(null)
+
     /** The current music loading state, or null if no loading is going on. */
     val indexingState: StateFlow<IndexingState?> = _indexingState
 
     private val _statistics = MutableStateFlow<Statistics?>(null)
+
     /** [Statistics] about the last completed music load. */
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
     private val _playlistDecision = MutableEvent<PlaylistDecision>()
+
     /**
      * A [PlaylistDecision] command that is awaiting a view capable of responding to it. Null if
      * none currently.
@@ -137,7 +140,7 @@ constructor(
             }
         } else {
             logD("Launching creation dialog for ${songs.size} songs")
-            _playlistDecision.put(PlaylistDecision.New(songs, reason))
+            _playlistDecision.put(PlaylistDecision.New(songs, null, reason))
         }
     }
 
@@ -168,14 +171,14 @@ constructor(
                     _playlistMessage.put(PlaylistMessage.ImportFailed)
                     return@launch
                 }
-                // TODO Require the user to name it something else if the name is a duplicate of
-                //  a prior playlist
+
                 if (target !== null) {
                     musicRepository.rewritePlaylist(target, songs)
                     _playlistMessage.put(PlaylistMessage.ImportSuccess)
                 } else {
-                    // TODO: Have to properly propagate the "Playlist Created" message
-                    createPlaylist(importedPlaylist.name, songs, PlaylistDecision.New.Reason.IMPORT)
+                    _playlistDecision.put(
+                        PlaylistDecision.New(
+                            songs, importedPlaylist.name, PlaylistDecision.New.Reason.IMPORT))
                 }
             }
         } else {
@@ -211,17 +214,27 @@ constructor(
      *
      * @param playlist The [Playlist] to rename,
      * @param name The new name of the [Playlist]. If null, the user will be prompted for a name.
+     * @param reason The reason why the playlist is being renamed. For all intensive purposes, you
      */
-    fun renamePlaylist(playlist: Playlist, name: String? = null) {
+    fun renamePlaylist(
+        playlist: Playlist,
+        name: String? = null,
+        reason: PlaylistDecision.Rename.Reason = PlaylistDecision.Rename.Reason.ACTION
+    ) {
         if (name != null) {
             logD("Renaming $playlist to $name")
             viewModelScope.launch(Dispatchers.IO) {
                 musicRepository.renamePlaylist(playlist, name)
-                _playlistMessage.put(PlaylistMessage.RenameSuccess)
+                val message =
+                    when (reason) {
+                        PlaylistDecision.Rename.Reason.ACTION -> PlaylistMessage.RenameSuccess
+                        PlaylistDecision.Rename.Reason.IMPORT -> PlaylistMessage.ImportSuccess
+                    }
+                _playlistMessage.put(message)
             }
         } else {
             logD("Launching rename dialog for $playlist")
-            _playlistDecision.put(PlaylistDecision.Rename(playlist))
+            _playlistDecision.put(PlaylistDecision.Rename(playlist, reason))
         }
     }
 
@@ -336,9 +349,12 @@ sealed interface PlaylistDecision {
      * Navigate to a dialog that allows a user to pick a name for a new [Playlist].
      *
      * @param songs The [Song]s to contain in the new [Playlist].
+     * @param template An existing playlist name that should be editable in the opened dialog. If
+     *   null, a placeholder should be created and shown as a hint instead.
      * @param context The context in which this decision is being fulfilled.
      */
-    data class New(val songs: List<Song>, val reason: Reason) : PlaylistDecision {
+    data class New(val songs: List<Song>, val template: String?, val reason: Reason) :
+        PlaylistDecision {
         enum class Reason {
             NEW,
             ADD,
@@ -359,7 +375,12 @@ sealed interface PlaylistDecision {
      *
      * @param playlist The playlist to act on.
      */
-    data class Rename(val playlist: Playlist) : PlaylistDecision
+    data class Rename(val playlist: Playlist, val reason: Reason) : PlaylistDecision {
+        enum class Reason {
+            ACTION,
+            IMPORT
+        }
+    }
 
     /**
      * Navigate to a dialog that allows the user to export a [Playlist].

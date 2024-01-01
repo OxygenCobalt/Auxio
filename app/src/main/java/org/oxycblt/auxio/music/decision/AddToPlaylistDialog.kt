@@ -100,7 +100,7 @@ class AddToPlaylistDialog :
         findNavController()
             .navigateSafe(
                 AddToPlaylistDialogDirections.newPlaylist(
-                    songs.map { it.uid }.toTypedArray(), PlaylistDecision.New.Reason.ADD))
+                    songs.map { it.uid }.toTypedArray(), null, PlaylistDecision.New.Reason.ADD))
     }
 
     private fun updatePendingSongs(songs: List<Song>?) {

@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music.decision
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
@@ -47,6 +48,7 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
     private val args: NewPlaylistDialogArgs by navArgs()
+    private var initializedField = false
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
@@ -83,6 +85,14 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
         // --- VIEWMODEL SETUP ---
         musicModel.playlistDecision.consume()
         pickerModel.setPendingPlaylist(requireContext(), args.songUids, args.reason)
+        if (!initializedField) {
+            initializedField = true
+            // Need to convert args.existingName to an Editable
+            if (args.template != null) {
+                binding.playlistName.text = EDITABLE_FACTORY.newEditable(args.template)
+            }
+        }
+
         collectImmediately(pickerModel.currentPendingPlaylist, ::updatePendingPlaylist)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
     }
@@ -100,5 +110,9 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
     private fun updateChosenName(chosenName: ChosenName) {
         (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled =
             chosenName is ChosenName.Valid || chosenName is ChosenName.Empty
+    }
+
+    private companion object {
+        val EDITABLE_FACTORY: Editable.Factory = Editable.Factory.getInstance()
     }
 }

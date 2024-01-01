@@ -471,7 +471,9 @@ class HomeFragment :
                 is PlaylistDecision.New -> {
                     logD("Creating new playlist")
                     HomeFragmentDirections.newPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray(), decision.reason)
+                        decision.songs.map { it.uid }.toTypedArray(),
+                        decision.template,
+                        decision.reason)
                 }
                 is PlaylistDecision.Import -> {
                     logD("Importing playlist")
