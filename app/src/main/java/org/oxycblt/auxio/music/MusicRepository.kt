@@ -436,7 +436,7 @@ constructor(
                     // to cascade to and cancel all other routines before finally bubbling up
                     // to the main extractor loop.
                     logE("MediaStore extraction failed: $e")
-                    incompleteSongs.close(Exception("MediaStore extraction failed: e"))
+                    incompleteSongs.close(Exception("MediaStore extraction failed: $e"))
                     return@async
                 }
                 incompleteSongs.close()
