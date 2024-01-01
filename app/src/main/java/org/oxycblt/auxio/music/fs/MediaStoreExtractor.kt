@@ -22,7 +22,6 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
-import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
@@ -95,69 +94,77 @@ interface MediaStoreExtractor {
          * @param volumeManager [VolumeManager] required.
          * @return A new [MediaStoreExtractor] that will work best on the device's API level.
          */
-        fun from(context: Context, volumeManager: VolumeManager): MediaStoreExtractor =
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
-                    Api30MediaStoreExtractor(context, volumeManager)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-                    Api29MediaStoreExtractor(context, volumeManager)
-                else -> Api21MediaStoreExtractor(context, volumeManager)
-            }
+        fun from(context: Context, volumeManager: VolumeManager): MediaStoreExtractor {
+            val pathInterpreter =
+                when {
+                    // Huawei violates the API docs and prevents you from accessing the new path
+                    // fields without first granting access to them through SAF. Fall back to DATA
+                    // instead.
+                    Build.MANUFACTURER.equals("huawei", ignoreCase = true) ||
+                        Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ->
+                        DataPathInterpreter.Factory(volumeManager)
+                    else -> VolumePathInterpreter.Factory(volumeManager)
+                }
+
+            val volumeInterpreter =
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30TagInterpreter.Factory()
+                    else -> Api21TagInterpreter.Factory()
+                }
+
+            return MediaStoreExtractorImpl(context, pathInterpreter, volumeInterpreter)
+        }
     }
 }
 
-private abstract class BaseMediaStoreExtractor(protected val context: Context) :
-    MediaStoreExtractor {
-    final override suspend fun query(
+private class MediaStoreExtractorImpl(
+    private val context: Context,
+    private val pathInterpreterFactory: PathInterpreterFactory,
+    private val tagInterpreterFactory: TagInterpreterFactory
+) : MediaStoreExtractor {
+    override suspend fun query(
         constraints: MediaStoreExtractor.Constraints
     ): MediaStoreExtractor.Query {
         val start = System.currentTimeMillis()
 
-        val args = mutableListOf<String>()
-        var selector = BASE_SELECTOR
+        val projection =
+            BASE_PROJECTION + pathInterpreterFactory.projection + tagInterpreterFactory.projection
+        var uniSelector = BASE_SELECTOR
+        var uniArgs = listOf<String>()
 
         // Filter out audio that is not music, if enabled.
         if (constraints.excludeNonMusic) {
             logD("Excluding non-music")
-            selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
+            uniSelector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
         }
 
         // Set up the projection to follow the music directory configuration.
         if (constraints.musicDirs.dirs.isNotEmpty()) {
-            selector += " AND "
-            if (!constraints.musicDirs.shouldInclude) {
-                logD("Excluding directories in selector")
-                // Without a NOT, the query will be restricted to the specified paths, resulting
-                // in the "Include" mode. With a NOT, the specified paths will not be included,
-                // resulting in the "Exclude" mode.
-                selector += "NOT "
-            }
-            selector += " ("
-
-            // Specifying the paths to filter is version-specific, delegate to the concrete
-            // implementations.
-            for (i in constraints.musicDirs.dirs.indices) {
-                if (addDirToSelector(constraints.musicDirs.dirs[i], args)) {
-                    selector +=
-                        if (i < constraints.musicDirs.dirs.lastIndex) {
-                            "$dirSelectorTemplate OR "
-                        } else {
-                            dirSelectorTemplate
-                        }
+            val pathSelector = pathInterpreterFactory.createSelector(constraints.musicDirs.dirs)
+            if (pathSelector != null) {
+                logD("Must select for directories")
+                uniSelector += " AND "
+                if (!constraints.musicDirs.shouldInclude) {
+                    logD("Excluding directories in selector")
+                    // Without a NOT, the query will be restricted to the specified paths, resulting
+                    // in the "Include" mode. With a NOT, the specified paths will not be included,
+                    // resulting in the "Exclude" mode.
+                    uniSelector += "NOT "
                 }
+                uniSelector += " (${pathSelector.template})"
+                uniArgs = pathSelector.args
             }
-
-            selector += ')'
         }
 
         // Now we can actually query MediaStore.
-        logD("Starting song query [proj=${projection.toList()}, selector=$selector, args=$args]")
+        logD(
+            "Starting song query [proj=${projection.toList()}, selector=$uniSelector, args=$uniArgs]")
         val cursor =
             context.contentResolverSafe.safeQuery(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
-                selector,
-                args.toTypedArray())
+                uniSelector,
+                uniArgs.toTypedArray())
         logD("Successfully queried for ${cursor.count} songs")
 
         val genreNamesMap = mutableMapOf<Long, String>()
@@ -195,10 +202,14 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
 
         logD("Read ${genreNamesMap.values.distinct().size} genres from MediaStore")
         logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
-        return wrapQuery(cursor, genreNamesMap)
+        return QueryImpl(
+            cursor,
+            pathInterpreterFactory.wrap(cursor),
+            tagInterpreterFactory.wrap(cursor),
+            genreNamesMap)
     }
 
-    final override suspend fun consume(
+    override suspend fun consume(
         query: MediaStoreExtractor.Query,
         cache: Cache?,
         incompleteSongs: Channel<RawSong>,
@@ -220,54 +231,10 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
         query.close()
     }
 
-    /**
-     * The database columns available to all android versions supported by Auxio. Concrete
-     * implementations can extend this projection to add version-specific columns.
-     */
-    protected open val projection: Array<String>
-        get() =
-            arrayOf(
-                // These columns are guaranteed to work on all versions of android
-                MediaStore.Audio.AudioColumns._ID,
-                MediaStore.Audio.AudioColumns.DATE_ADDED,
-                MediaStore.Audio.AudioColumns.DATE_MODIFIED,
-                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                MediaStore.Audio.AudioColumns.SIZE,
-                MediaStore.Audio.AudioColumns.DURATION,
-                MediaStore.Audio.AudioColumns.MIME_TYPE,
-                MediaStore.Audio.AudioColumns.TITLE,
-                MediaStore.Audio.AudioColumns.YEAR,
-                MediaStore.Audio.AudioColumns.ALBUM,
-                MediaStore.Audio.AudioColumns.ALBUM_ID,
-                MediaStore.Audio.AudioColumns.ARTIST,
-                AUDIO_COLUMN_ALBUM_ARTIST)
-
-    /**
-     * The companion template to add to the projection's selector whenever arguments are added by
-     * [addDirToSelector].
-     *
-     * @see addDirToSelector
-     */
-    protected abstract val dirSelectorTemplate: String
-
-    /**
-     * Add a [SystemPath] to the given list of projection selector arguments.
-     *
-     * @param path The [SystemPath] to add.
-     * @param args The destination list to append selector arguments to that are analogous to the
-     *   given [SystemPath].
-     * @return true if the [SystemPath] was added, false otherwise.
-     * @see dirSelectorTemplate
-     */
-    protected abstract fun addDirToSelector(path: Path, args: MutableList<String>): Boolean
-
-    protected abstract fun wrapQuery(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>
-    ): MediaStoreExtractor.Query
-
-    abstract class Query(
-        protected val cursor: Cursor,
+    class QueryImpl(
+        private val cursor: Cursor,
+        private val pathInterpreter: PathInterpreter,
+        private val tagInterpreter: TagInterpreter,
         private val genreNamesMap: Map<Long, String>
     ) : MediaStoreExtractor.Query {
         private val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
@@ -290,11 +257,11 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
         private val artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
         private val albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
 
-        final override val projectedTotal = cursor.count
+        override val projectedTotal = cursor.count
 
-        final override fun moveToNext() = cursor.moveToNext()
+        override fun moveToNext() = cursor.moveToNext()
 
-        final override fun close() = cursor.close()
+        override fun close() = cursor.close()
 
         override fun populateFileInfo(rawSong: RawSong) {
             rawSong.mediaStoreId = cursor.getLong(idIndex)
@@ -305,6 +272,7 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
             rawSong.fileName = cursor.getStringOrNull(displayNameIndex)
             rawSong.extensionMimeType = cursor.getString(mimeTypeIndex)
             rawSong.albumMediaStoreId = cursor.getLong(albumIdIndex)
+            pathInterpreter.populate(rawSong)
         }
 
         override fun populateTags(rawSong: RawSong) {
@@ -335,16 +303,12 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
             cursor.getStringOrNull(albumArtistIndex)?.let { rawSong.albumArtistNames = listOf(it) }
             // Get the genre value we had to query for in initialization
             genreNamesMap[rawSong.mediaStoreId]?.let { rawSong.genreNames = listOf(it) }
+            // Get version/device-specific tags
+            tagInterpreter.populate(rawSong)
         }
     }
 
     companion object {
-        /**
-         * The base selector that works across all versions of android. Does not exclude
-         * directories.
-         */
-        private const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
-
         /**
          * The album artist of a song. This column has existed since at least API 21, but until API
          * 30 it was an undocumented extension for Google Play Music. This column will work on all
@@ -358,254 +322,244 @@ private abstract class BaseMediaStoreExtractor(protected val context: Context) :
          * until API 29. This will work on all versions that Auxio supports.
          */
         @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
+
+        /**
+         * The base selector that works across all versions of android. Does not exclude
+         * directories.
+         */
+        private const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
+
+        /** The base projection that works across all versions of android. */
+        private val BASE_PROJECTION =
+            arrayOf(
+                // These columns are guaranteed to work on all versions of android
+                MediaStore.Audio.AudioColumns._ID,
+                MediaStore.Audio.AudioColumns.DATE_ADDED,
+                MediaStore.Audio.AudioColumns.DATE_MODIFIED,
+                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                MediaStore.Audio.AudioColumns.SIZE,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.MIME_TYPE,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.YEAR,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                AUDIO_COLUMN_ALBUM_ARTIST)
     }
 }
 
-// Note: The separation between version-specific backends may not be the cleanest. To preserve
-// speed, we only want to add redundancy on known issues, not with possible issues.
+interface Interpreter {
+    fun populate(rawSong: RawSong)
+}
 
-private class Api21MediaStoreExtractor(context: Context, private val volumeManager: VolumeManager) :
-    BaseMediaStoreExtractor(context) {
-    override val projection: Array<String>
-        get() =
-            super.projection +
-                arrayOf(
-                    MediaStore.Audio.AudioColumns.TRACK,
-                    // Below API 29, we are restricted to the absolute path (Called DATA by
-                    // MediaStore) when working with audio files.
-                    MediaStore.Audio.AudioColumns.DATA)
+interface InterpreterFactory {
+    val projection: Array<String>
 
-    // The selector should be configured to convert the given directories instances to their
-    // absolute paths and then compare them to DATA.
+    fun wrap(cursor: Cursor): Interpreter
+}
 
-    override val dirSelectorTemplate: String
-        get() = "${MediaStore.Audio.Media.DATA} LIKE ?"
+interface PathInterpreterFactory : InterpreterFactory {
+    override fun wrap(cursor: Cursor): PathInterpreter
 
-    override fun addDirToSelector(path: Path, args: MutableList<String>): Boolean {
-        // "%" signifies to accept any DATA value that begins with the Directory's path,
-        // thus recursively filtering all files in the directory.
-        args.add("${path.volume.components ?: return false}${path.components}%")
-        return true
+    fun createSelector(paths: List<Path>): Selector?
+
+    data class Selector(val template: String, val args: List<String>)
+}
+
+interface TagInterpreterFactory : InterpreterFactory {
+    override fun wrap(cursor: Cursor): TagInterpreter
+}
+
+sealed interface PathInterpreter : Interpreter
+
+class DataPathInterpreter(private val cursor: Cursor, private val volumeManager: VolumeManager) :
+    PathInterpreter {
+    private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
+    private val volumes = volumeManager.getVolumes()
+
+    override fun populate(rawSong: RawSong) {
+        val data = cursor.getString(dataIndex)
+        // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
+        // that this only applies to below API 29, as beyond API 29, this column not being
+        // present would completely break the scoped storage system. Fill it in with DATA
+        // if it's not available.
+        if (rawSong.fileName == null) {
+            rawSong.fileName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+        }
+
+        // Find the volume that transforms the DATA column into a relative path. This is
+        // the Directory we will use.
+        val rawPath = data.substringBeforeLast(File.separatorChar)
+        for (volume in volumes) {
+            val volumePath = (volume.components ?: continue).toString()
+            val strippedPath = rawPath.removePrefix(volumePath)
+            if (strippedPath != rawPath) {
+                rawSong.directory = Path(volume, Components.parseUnix(strippedPath))
+                break
+            }
+        }
     }
 
-    override fun wrapQuery(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>,
-    ): MediaStoreExtractor.Query = Query(cursor, genreNamesMap, volumeManager)
+    class Factory(private val volumeManager: VolumeManager) : PathInterpreterFactory {
+        override val projection: Array<String>
+            get() = arrayOf(MediaStore.Audio.AudioColumns.DATA)
 
-    private class Query(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>,
-        volumeManager: VolumeManager
-    ) : BaseMediaStoreExtractor.Query(cursor, genreNamesMap) {
-        // Set up cursor indices for later use.
-        private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-        private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
-        private val volumes = volumeManager.getVolumes()
-
-        override fun populateFileInfo(rawSong: RawSong) {
-            super.populateFileInfo(rawSong)
-
-            val data = cursor.getString(dataIndex)
-            // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
-            // that this only applies to below API 29, as beyond API 29, this column not being
-            // present would completely break the scoped storage system. Fill it in with DATA
-            // if it's not available.
-            if (rawSong.fileName == null) {
-                rawSong.fileName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+        override fun createSelector(paths: List<Path>): PathInterpreterFactory.Selector? {
+            val args = mutableListOf<String>()
+            var template = ""
+            for (i in paths.indices) {
+                val path = paths[i]
+                val volume = path.volume.components ?: continue
+                template +=
+                    if (i == 0) {
+                        "${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
+                    } else {
+                        " OR ${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
+                    }
+                args.add("${volume}${path.components}%")
             }
 
-            // Find the volume that transforms the DATA column into a relative path. This is
-            // the Directory we will use.
-            val rawPath = data.substringBeforeLast(File.separatorChar)
-            for (volume in volumes) {
-                val volumePath = (volume.components ?: continue).toString()
-                val strippedPath = rawPath.removePrefix(volumePath)
-                if (strippedPath != rawPath) {
-                    rawSong.directory = Path(volume, Components.parseUnix(strippedPath))
-                    break
-                }
+            if (template.isEmpty()) {
+                return null
             }
+
+            return PathInterpreterFactory.Selector(template, args)
         }
 
-        override fun populateTags(rawSong: RawSong) {
-            super.populateTags(rawSong)
-            // See unpackTrackNo/unpackDiscNo for an explanation
-            // of how this column is set up.
-            val rawTrack = cursor.getIntOrNull(trackIndex)
-            if (rawTrack != null) {
-                rawTrack.unpackTrackNo()?.let { rawSong.track = it }
-                rawTrack.unpackDiscNo()?.let { rawSong.disc = it }
-            }
-        }
+        override fun wrap(cursor: Cursor): PathInterpreter =
+            DataPathInterpreter(cursor, volumeManager)
     }
 }
 
-/**
- * A [BaseMediaStoreExtractor] that implements common behavior supported from API 29 onwards.
- *
- * @param context [Context] required to query the media database.
- * @author Alexander Capehart (OxygenCobalt)
- */
-@RequiresApi(Build.VERSION_CODES.Q)
-private abstract class BaseApi29MediaStoreExtractor(context: Context) :
-    BaseMediaStoreExtractor(context) {
-    override val projection: Array<String>
-        get() =
-            super.projection +
+class VolumePathInterpreter(private val cursor: Cursor, private val volumeManager: VolumeManager) :
+    PathInterpreter {
+    private val volumeIndex =
+        cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
+    private val relativePathIndex =
+        cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+    private val volumes = volumeManager.getVolumes()
+
+    override fun populate(rawSong: RawSong) {
+        // Find the StorageVolume whose MediaStore name corresponds to this song.
+        // This is combined with the plain relative path column to create the directory.
+        val volumeName = cursor.getString(volumeIndex)
+        val relativePath = cursor.getString(relativePathIndex)
+        val volume = volumes.find { it.mediaStoreName == volumeName }
+        if (volume != null) {
+            rawSong.directory = Path(volume, Components.parseUnix(relativePath))
+        }
+    }
+
+    class Factory(private val volumeManager: VolumeManager) : PathInterpreterFactory {
+        override val projection: Array<String>
+            get() =
                 arrayOf(
                     // After API 29, we now have access to the volume name and relative
                     // path, which simplifies working with Paths significantly.
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
                     MediaStore.Audio.AudioColumns.RELATIVE_PATH)
 
-    // The selector should be configured to compare both the volume name and relative path
-    // of the given directories, albeit with some conversion to the analogous MediaStore
-    // column values.
+        // The selector should be configured to compare both the volume name and relative path
+        // of the given directories, albeit with some conversion to the analogous MediaStore
+        // column values.
 
-    override val dirSelectorTemplate: String
-        get() =
-            "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
-                "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
-
-    override fun addDirToSelector(path: Path, args: MutableList<String>): Boolean {
-        // MediaStore uses a different naming scheme for it's volume column convert this
-        // directory's volume to it.
-        args.add(path.volume.mediaStoreName ?: return false)
-        // "%" signifies to accept any DATA value that begins with the Directory's path,
-        // thus recursively filtering all files in the directory.
-        args.add("${path.components}%")
-        return true
-    }
-
-    abstract class Query(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>,
-        private val volumeManager: VolumeManager
-    ) : BaseMediaStoreExtractor.Query(cursor, genreNamesMap) {
-        private val volumeIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
-        private val relativePathIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-        private val volumes = volumeManager.getVolumes()
-
-        final override fun populateFileInfo(rawSong: RawSong) {
-            super.populateFileInfo(rawSong)
-            // Find the StorageVolume whose MediaStore name corresponds to this song.
-            // This is combined with the plain relative path column to create the directory.
-            val volumeName = cursor.getString(volumeIndex)
-            val relativePath = cursor.getString(relativePathIndex)
-            val volume = volumes.find { it.mediaStoreName == volumeName }
-            if (volume != null) {
-                rawSong.directory = Path(volume, Components.parseUnix(relativePath))
+        override fun createSelector(paths: List<Path>): PathInterpreterFactory.Selector? {
+            val args = mutableListOf<String>()
+            var template = ""
+            for (i in paths.indices) {
+                val path = paths[i]
+                template =
+                    if (i == 0) {
+                        "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
+                            "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
+                    } else {
+                        " OR (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
+                            "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
+                    }
+                // MediaStore uses a different naming scheme for it's volume column. Convert this
+                // directory's volume to it.
+                args.add(path.volume.mediaStoreName ?: return null)
+                // "%" signifies to accept any DATA value that begins with the Directory's path,
+                // thus recursively filtering all files in the directory.
+                args.add("${path.components}%")
             }
+
+            if (template.isEmpty()) {
+                return null
+            }
+
+            return PathInterpreterFactory.Selector(template, args)
         }
+
+        override fun wrap(cursor: Cursor): PathInterpreter =
+            VolumePathInterpreter(cursor, volumeManager)
     }
 }
 
-/**
- * A [BaseMediaStoreExtractor] that completes the music loading process in a way compatible with at
- * API 29.
- *
- * @param context [Context] required to query the media database.
- * @author Alexander Capehart (OxygenCobalt)
- */
-@RequiresApi(Build.VERSION_CODES.Q)
-private class Api29MediaStoreExtractor(context: Context, private val volumeManager: VolumeManager) :
-    BaseApi29MediaStoreExtractor(context) {
+sealed interface TagInterpreter : Interpreter
 
-    override val projection: Array<String>
-        get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
+class Api21TagInterpreter(private val cursor: Cursor) : TagInterpreter {
+    private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
 
-    override fun wrapQuery(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>
-    ): MediaStoreExtractor.Query = Query(cursor, genreNamesMap, volumeManager)
-
-    private class Query(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>,
-        volumeManager: VolumeManager
-    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, volumeManager) {
-        private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-
-        override fun populateTags(rawSong: RawSong) {
-            super.populateTags(rawSong)
-            // This extractor is volume-aware, but does not support the modern track columns.
-            // Use the old column instead. See unpackTrackNo/unpackDiscNo for an explanation
-            // of how this column is set up.
-            val rawTrack = cursor.getIntOrNull(trackIndex)
-            if (rawTrack != null) {
-                rawTrack.unpackTrackNo()?.let { rawSong.track = it }
-                rawTrack.unpackDiscNo()?.let { rawSong.disc = it }
-            }
+    override fun populate(rawSong: RawSong) {
+        // See unpackTrackNo/unpackDiscNo for an explanation
+        // of how this column is set up.
+        val rawTrack = cursor.getIntOrNull(trackIndex)
+        if (rawTrack != null) {
+            rawTrack.unpackTrackNo()?.let { rawSong.track = it }
+            rawTrack.unpackDiscNo()?.let { rawSong.disc = it }
         }
     }
+
+    class Factory : TagInterpreterFactory {
+        override val projection: Array<String>
+            get() = arrayOf(MediaStore.Audio.AudioColumns.TRACK)
+
+        override fun wrap(cursor: Cursor): TagInterpreter = Api21TagInterpreter(cursor)
+    }
+
+    /**
+     * Unpack the track number from a combined track + disc [Int] field. These fields appear within
+     * MediaStore's TRACK column, and combine the track and disc value into a single field where the
+     * disc number is the 4th+ digit.
+     *
+     * @return The track number extracted from the combined integer value, or null if the value was
+     *   zero.
+     */
+    private fun Int.unpackTrackNo() = transformPositionField(mod(1000), null)
+
+    /**
+     * Unpack the disc number from a combined track + disc [Int] field. These fields appear within
+     * MediaStore's TRACK column, and combine the track and disc value into a single field where the
+     * disc number is the 4th+ digit.
+     *
+     * @return The disc number extracted from the combined integer field, or null if the value was zero.
+     */
+    private fun Int.unpackDiscNo() = transformPositionField(div(1000), null)
 }
 
-/**
- * A [BaseMediaStoreExtractor] that completes the music loading process in a way compatible from API
- * 30 onwards.
- *
- * @param context [Context] required to query the media database.
- * @author Alexander Capehart (OxygenCobalt)
- */
-@RequiresApi(Build.VERSION_CODES.R)
-private class Api30MediaStoreExtractor(context: Context, private val volumeManager: VolumeManager) :
-    BaseApi29MediaStoreExtractor(context) {
-    override val projection: Array<String>
-        get() =
-            super.projection +
+class Api30TagInterpreter(private val cursor: Cursor) : TagInterpreter {
+    private val trackIndex =
+        cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+    private val discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
+
+    override fun populate(rawSong: RawSong) {
+        // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
+        // the tag itself, which is to say that it is formatted as NN/TT tracks, where
+        // N is the number and T is the total. Parse the number while ignoring the
+        // total, as we have no use for it.
+        cursor.getStringOrNull(trackIndex)?.parseId3v2PositionField()?.let { rawSong.track = it }
+        cursor.getStringOrNull(discIndex)?.parseId3v2PositionField()?.let { rawSong.disc = it }
+    }
+
+    class Factory : TagInterpreterFactory {
+        override val projection: Array<String>
+            get() =
                 arrayOf(
-                    // API 30 grant us access to the superior CD_TRACK_NUMBER and DISC_NUMBER
-                    // fields, which take the place of TRACK.
                     MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
                     MediaStore.Audio.AudioColumns.DISC_NUMBER)
 
-    override fun wrapQuery(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>
-    ): MediaStoreExtractor.Query = Query(cursor, genreNamesMap, volumeManager)
-
-    private class Query(
-        cursor: Cursor,
-        genreNamesMap: Map<Long, String>,
-        volumeManager: VolumeManager
-    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, volumeManager) {
-        private val trackIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
-        private val discIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
-
-        override fun populateTags(rawSong: RawSong) {
-            super.populateTags(rawSong)
-            // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
-            // the tag itself, which is to say that it is formatted as NN/TT tracks, where
-            // N is the number and T is the total. Parse the number while ignoring the
-            // total, as we have no use for it.
-            cursor.getStringOrNull(trackIndex)?.parseId3v2PositionField()?.let {
-                rawSong.track = it
-            }
-            cursor.getStringOrNull(discIndex)?.parseId3v2PositionField()?.let { rawSong.disc = it }
-        }
+        override fun wrap(cursor: Cursor): TagInterpreter = Api30TagInterpreter(cursor)
     }
 }
-
-/**
- * Unpack the track number from a combined track + disc [Int] field. These fields appear within
- * MediaStore's TRACK column, and combine the track and disc value into a single field where the
- * disc number is the 4th+ digit.
- *
- * @return The track number extracted from the combined integer value, or null if the value was
- *   zero.
- */
-private fun Int.unpackTrackNo() = transformPositionField(mod(1000), null)
-
-/**
- * Unpack the disc number from a combined track + disc [Int] field. These fields appear within
- * MediaStore's TRACK column, and combine the track and disc value into a single field where the
- * disc number is the 4th+ digit.
- *
- * @return The disc number extracted from the combined integer field, or null if the value was zero.
- */
-private fun Int.unpackDiscNo() = transformPositionField(div(1000), null)
