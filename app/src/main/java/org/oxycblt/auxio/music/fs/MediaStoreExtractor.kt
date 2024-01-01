@@ -383,7 +383,7 @@ private class DataPathInterpreter(
             }
         }
 
-        throw IllegalStateException("Could not find volume for path $data (tried: $volumes)")
+        throw IllegalStateException("Could not find volume for path $data (tried: ${volumes.map { it.components }}})")
     }
 
     class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
