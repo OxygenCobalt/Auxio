@@ -379,9 +379,11 @@ private class DataPathInterpreter(
             val volumePath = volume.components ?: continue
             if (volumePath.contains(data)) {
                 rawSong.path = Path(volume, data.depth(volumePath.components.size))
-                break
+                return
             }
         }
+
+        throw IllegalStateException("Could not find volume for path $data (tried: $volumes)")
     }
 
     class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
@@ -431,16 +433,16 @@ private class VolumePathInterpreter(private val cursor: Cursor, volumeManager: V
         // Find the StorageVolume whose MediaStore name corresponds to it.
         val volumeName = cursor.getString(volumeIndex)
         val volume = volumes.find { it.mediaStoreName == volumeName }
+        if (volume == null) {
+            throw IllegalStateException("Could not find volume for name $volumeName")
+        }
 
         // Relative path does not include file name, must use DISPLAY_NAME and add it
         // in manually.
         val relativePath = cursor.getString(relativePathIndex)
         val displayName = cursor.getString(displayNameIndex)
         val components = Components.parseUnix(relativePath).child(displayName)
-
-        if (volume != null) {
-            rawSong.path = Path(volume, components)
-        }
+        rawSong.path = Path(volume, components)
     }
 
     class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
