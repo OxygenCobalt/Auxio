@@ -311,4 +311,18 @@
     <string name="def_album_count">Sin álbumes</string>
     <string name="lbl_demo">Demostración</string>
     <string name="lbl_demos">Demostraciones</string>
+    <string name="lbl_import_playlist">Lista de reproducción importada</string>
+    <string name="lbl_path">Ruta</string>
+    <string name="err_import_failed">No se puede importar una lista de reproducción desde este archivo</string>
+    <string name="lbl_empty_playlist">Lista de reproducción vacía</string>
+    <string name="lbl_path_style_absolute">Absoluto</string>
+    <string name="lbl_import">Importar</string>
+    <string name="lbl_windows_paths">Utilizar rutas compatibles con Windows</string>
+    <string name="lbl_export">Exportar</string>
+    <string name="lbl_path_style_relative">Relativo</string>
+    <string name="lng_playlist_imported">Lista de reproducción importada</string>
+    <string name="lbl_path_style">Estilo de la ruta</string>
+    <string name="lng_playlist_exported">Lista de reproducción exportada</string>
+    <string name="lbl_export_playlist">Exportar lista de reproducción</string>
+    <string name="err_export_failed">No se puede exportar la lista de reproducción a este archivo</string>
 </resources>

@@ -305,4 +305,18 @@
     <string name="def_album_count">无专辑</string>
     <string name="lbl_demo">演示</string>
     <string name="lbl_demos">样曲</string>
+    <string name="lbl_import_playlist">导入了播放列表</string>
+    <string name="lbl_path">路径</string>
+    <string name="lbl_empty_playlist">清空播放列表</string>
+    <string name="err_import_failed">无法从此文件导入播放列表</string>
+    <string name="lbl_path_style_absolute">绝对</string>
+    <string name="lbl_import">导入</string>
+    <string name="lbl_windows_paths">使用兼容 Windows 系统的路径</string>
+    <string name="lbl_export">导出</string>
+    <string name="lbl_path_style_relative">相对</string>
+    <string name="lbl_path_style">路径样式</string>
+    <string name="lbl_export_playlist">导出播放列表</string>
+    <string name="err_export_failed">无法将播放列表导出到此文件</string>
+    <string name="lng_playlist_imported">导入了播放列表</string>
+    <string name="lng_playlist_exported">导出了播放列表</string>
 </resources>

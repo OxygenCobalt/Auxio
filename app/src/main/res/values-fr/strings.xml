@@ -298,7 +298,7 @@
     <string name="lbl_song">Chanson</string>
     <string name="lbl_parent_detail">Voir</string>
     <string name="set_play_song_by_itself">Jouer la chanson par elle-même</string>
-    <string name="desc_selection_image">Image de sélection</string>
+    <string name="desc_selection_image">Image sélectionnée</string>
     <string name="lbl_sort_mode">Trier par</string>
     <string name="lbl_sort_direction">Direction</string>
     <string name="lbl_selection">Sélection</string>
@@ -306,4 +306,7 @@
     <string name="lbl_copied">Copié</string>
     <string name="lbl_report">Signaler</string>
     <string name="lbl_error_info">Info sur l\'erreur</string>
+    <string name="def_album_count">Aucun album</string>
+    <string name="lbl_demo">Démo</string>
+    <string name="lbl_demos">Démos</string>
 </resources>

@@ -311,4 +311,18 @@
     <string name="def_album_count">Альбомів немає</string>
     <string name="lbl_demo">Демо</string>
     <string name="lbl_demos">Демонстрації</string>
+    <string name="lbl_import_playlist">Імпортований список відтворення</string>
+    <string name="lbl_path">Шлях</string>
+    <string name="err_import_failed">Неможливо імпортувати список відтворення з цього файлу</string>
+    <string name="lbl_empty_playlist">Порожній список відтворення</string>
+    <string name="lbl_path_style_absolute">Абсолютний</string>
+    <string name="lbl_import">Імпорт</string>
+    <string name="lbl_windows_paths">Використовувати шляхи, сумісні з Windows</string>
+    <string name="lbl_export">Експорт</string>
+    <string name="lbl_path_style_relative">Відносний</string>
+    <string name="lng_playlist_imported">Список відтворення імпортовано</string>
+    <string name="lbl_path_style">Стиль шляху</string>
+    <string name="lng_playlist_exported">Список відтворення експортовано</string>
+    <string name="lbl_export_playlist">Експортувати список відтворення</string>
+    <string name="err_export_failed">Неможливо експортувати список відтворення в цей файл</string>
 </resources>

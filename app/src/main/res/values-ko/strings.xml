@@ -304,4 +304,9 @@
     <string name="lbl_copied">복사했습니다.</string>
     <string name="lbl_report">오류 보고</string>
     <string name="lbl_error_info">오류 정보</string>
+    <string name="def_album_count">앨범 없음</string>
+    <string name="lbl_path">경로</string>
+    <string name="lbl_demo">데모</string>
+    <string name="lbl_demos">데모</string>
+    <string name="lbl_empty_playlist">빈 재생 목록</string>
 </resources>

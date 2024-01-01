@@ -20,4 +20,4 @@ date precise/originali, tag di ordinamento e altro ancora
 - Riproduzione automatica delle cuffie
 - Widget eleganti che si adattano automaticamente alle loro dimensioni
 - Completamente privato e offline
-- Niente copertine arrotondate degli album (a meno che tu non le voglia, in tal caso puoi)
+- Niente copertine arrotondate degli album (comportamento predefinito)

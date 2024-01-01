@@ -305,4 +305,18 @@
     <string name="def_album_count">Няма альбомаў</string>
     <string name="lbl_demo">Дэма</string>
     <string name="lbl_demos">Дэманстрацыі</string>
+    <string name="lbl_import_playlist">Імпартаваны плэйліст</string>
+    <string name="lbl_path">Шлях</string>
+    <string name="err_import_failed">Немагчыма імпартаваць плэйліст з гэтага файла</string>
+    <string name="lbl_empty_playlist">Пусты плэйліст</string>
+    <string name="lbl_path_style_absolute">Абсалютны</string>
+    <string name="lbl_import">Імпарт</string>
+    <string name="lbl_windows_paths">Выкарыстоўваць шляхі, сумяшчальныя з Windows</string>
+    <string name="lbl_export">Экспарт</string>
+    <string name="lbl_path_style_relative">Адносны</string>
+    <string name="lng_playlist_imported">Плэйліст імпартаваны</string>
+    <string name="lbl_path_style">Стыль шляху</string>
+    <string name="lng_playlist_exported">Плэйліст экспартаваны</string>
+    <string name="lbl_export_playlist">Экспартаваць плэйліст</string>
+    <string name="err_export_failed">Немагчыма экспартаваць плэйліст ў гэты файл</string>
 </resources>

@@ -311,7 +311,21 @@
     <string name="lbl_error_info">Информация об ошибке</string>
     <string name="lbl_report">Отчёт об ошибке</string>
     <string name="lbl_copied">Скопировано</string>
-    <string name="def_album_count">Няма альбомаў</string>
+    <string name="def_album_count">Нет альбомов</string>
     <string name="lbl_demo">Демо</string>
-    <string name="lbl_demos">Дэманстрацыі</string>
+    <string name="lbl_demos">Демонстрации</string>
+    <string name="lbl_import_playlist">Импортированный плейлист</string>
+    <string name="lbl_path">Путь</string>
+    <string name="err_import_failed">Невозможно импортировать плейлист из этого файла</string>
+    <string name="lbl_empty_playlist">Пустой плейлист</string>
+    <string name="lbl_path_style_absolute">Абсолютный</string>
+    <string name="lbl_import">Импорт</string>
+    <string name="lbl_windows_paths">Использовать пути, совместимые с Windows</string>
+    <string name="lbl_export">Экспорт</string>
+    <string name="lbl_path_style_relative">Относительный</string>
+    <string name="lng_playlist_imported">Плейлист импортирован</string>
+    <string name="lbl_path_style">Стиль пути</string>
+    <string name="lng_playlist_exported">Плейлист экспортирован</string>
+    <string name="lbl_export_playlist">Экспортировать плейлист</string>
+    <string name="err_export_failed">Невозможно экспортировать плейлист в этот файл</string>
 </resources>

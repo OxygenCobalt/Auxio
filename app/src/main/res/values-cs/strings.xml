@@ -316,4 +316,18 @@
     <string name="def_album_count">Žádná alba</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Dema</string>
+    <string name="lbl_import_playlist">Importovaný seznam skladeb</string>
+    <string name="lbl_path">Cesta</string>
+    <string name="lbl_empty_playlist">Prázdný seznam skladeb</string>
+    <string name="err_import_failed">Nepodařilo se importovat seznam skladeb z tohoto souboru</string>
+    <string name="lbl_path_style_absolute">Absolutní</string>
+    <string name="lbl_windows_paths">Použít cesty kompatibilní s Windows</string>
+    <string name="lbl_export">Export</string>
+    <string name="lbl_path_style_relative">Relativní</string>
+    <string name="lbl_path_style">Styl cesty</string>
+    <string name="lbl_export_playlist">Exportovat seznam skladeb</string>
+    <string name="err_export_failed">Nepodařilo se exportovat seznam skladeb do tohoto souboru</string>
+    <string name="lbl_import">Import</string>
+    <string name="lng_playlist_imported">Seznam skladeb importován</string>
+    <string name="lng_playlist_exported">Seznam skladeb exportován</string>
 </resources>
