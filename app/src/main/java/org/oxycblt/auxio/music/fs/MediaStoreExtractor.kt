@@ -78,7 +78,7 @@ interface MediaStoreExtractor {
 
         fun close()
 
-        fun populateFileInfo(rawSong: RawSong)
+        fun populateFileInfo(rawSong: RawSong): Boolean
 
         fun populateTags(rawSong: RawSong)
     }
@@ -101,7 +101,7 @@ interface MediaStoreExtractor {
                     // instead.
                     Build.MANUFACTURER.equals("huawei", ignoreCase = true) ||
                         Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ->
-                        DataPathInterpreter.Factory(volumeManager)
+                        Api24PathInterpreter.Factory(volumeManager)
                     else -> VolumePathInterpreter.Factory(volumeManager)
                 }
 
@@ -216,7 +216,9 @@ private class MediaStoreExtractorImpl(
     ) {
         while (query.moveToNext()) {
             val rawSong = RawSong()
-            query.populateFileInfo(rawSong)
+            if (!query.populateFileInfo(rawSong)) {
+                continue
+            }
             if (cache?.populate(rawSong) == true) {
                 completeSongs.sendWithTimeout(rawSong)
             } else {
@@ -260,13 +262,13 @@ private class MediaStoreExtractorImpl(
 
         override fun close() = cursor.close()
 
-        override fun populateFileInfo(rawSong: RawSong) {
+        override fun populateFileInfo(rawSong: RawSong): Boolean {
             rawSong.mediaStoreId = cursor.getLong(idIndex)
             rawSong.dateAdded = cursor.getLong(dateAddedIndex)
             rawSong.dateModified = cursor.getLong(dateModifiedIndex)
             rawSong.extensionMimeType = cursor.getString(mimeTypeIndex)
             rawSong.albumMediaStoreId = cursor.getLong(albumIdIndex)
-            pathInterpreter.populate(rawSong)
+            return pathInterpreter.populate(rawSong)
         }
 
         override fun populateTags(rawSong: RawSong) {
@@ -343,19 +345,13 @@ private class MediaStoreExtractorImpl(
     }
 }
 
-private interface Interpreter {
-    fun populate(rawSong: RawSong)
+private sealed interface PathInterpreter {
+    fun populate(rawSong: RawSong): Boolean
 
     interface Factory {
         val projection: Array<String>
 
-        fun wrap(cursor: Cursor): Interpreter
-    }
-}
-
-private sealed interface PathInterpreter : Interpreter {
-    interface Factory : Interpreter.Factory {
-        override fun wrap(cursor: Cursor): PathInterpreter
+        fun wrap(cursor: Cursor): PathInterpreter
 
         fun createSelector(paths: List<Path>): Selector?
 
@@ -363,14 +359,14 @@ private sealed interface PathInterpreter : Interpreter {
     }
 }
 
-private class DataPathInterpreter(
+private open class Api24PathInterpreter(
     private val cursor: Cursor,
     private val volumeManager: VolumeManager
 ) : PathInterpreter {
     private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
     private val volumes = volumeManager.getVolumes()
 
-    override fun populate(rawSong: RawSong) {
+    override fun populate(rawSong: RawSong): Boolean {
         val data = Components.parseUnix(cursor.getString(dataIndex))
 
         // Find the volume that transforms the DATA column into a relative path. This is
@@ -379,11 +375,11 @@ private class DataPathInterpreter(
             val volumePath = volume.components ?: continue
             if (volumePath.contains(data)) {
                 rawSong.path = Path(volume, data.depth(volumePath.components.size))
-                return
+                return true
             }
         }
 
-        throw IllegalStateException("Could not find volume for path $data (tried: ${volumes.map { it.components }}})")
+        return false
     }
 
     class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
@@ -415,7 +411,7 @@ private class DataPathInterpreter(
         }
 
         override fun wrap(cursor: Cursor): PathInterpreter =
-            DataPathInterpreter(cursor, volumeManager)
+            Api24PathInterpreter(cursor, volumeManager)
     }
 }
 
@@ -429,20 +425,17 @@ private class VolumePathInterpreter(private val cursor: Cursor, volumeManager: V
         cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
     private val volumes = volumeManager.getVolumes()
 
-    override fun populate(rawSong: RawSong) {
+    override fun populate(rawSong: RawSong): Boolean {
         // Find the StorageVolume whose MediaStore name corresponds to it.
         val volumeName = cursor.getString(volumeIndex)
-        val volume = volumes.find { it.mediaStoreName == volumeName }
-        if (volume == null) {
-            throw IllegalStateException("Could not find volume for name $volumeName")
-        }
-
+        val volume = volumes.find { it.mediaStoreName == volumeName } ?: return false
         // Relative path does not include file name, must use DISPLAY_NAME and add it
         // in manually.
         val relativePath = cursor.getString(relativePathIndex)
         val displayName = cursor.getString(displayNameIndex)
         val components = Components.parseUnix(relativePath).child(displayName)
         rawSong.path = Path(volume, components)
+        return true
     }
 
     class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
@@ -493,9 +486,13 @@ private class VolumePathInterpreter(private val cursor: Cursor, volumeManager: V
     }
 }
 
-private sealed interface TagInterpreter : Interpreter {
-    interface Factory : Interpreter.Factory {
-        override fun wrap(cursor: Cursor): TagInterpreter
+private sealed interface TagInterpreter {
+    fun populate(rawSong: RawSong)
+
+    interface Factory {
+        val projection: Array<String>
+
+        fun wrap(cursor: Cursor): TagInterpreter
     }
 }
 

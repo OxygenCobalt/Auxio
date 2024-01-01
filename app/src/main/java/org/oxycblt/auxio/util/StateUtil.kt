@@ -163,7 +163,7 @@ private fun Fragment.launch(
 suspend fun <E> SendChannel<E>.sendWithTimeout(element: E, timeout: Long = 10000) {
     try {
         withTimeout(timeout) { send(element) }
-    } catch (e: Exception) {
+    } catch (e: TimeoutCancellationException) {
         throw TimeoutException("Timed out sending element $element to channel: $e")
     }
 }
