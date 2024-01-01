@@ -102,9 +102,9 @@ constructor(
         val filePath = documentPathFactory.unpackDocumentUri(uri) ?: return false
         val workingDirectory =
             if (config.absolute) {
-                filePath.directory
-            } else {
                 Path(filePath.volume, Components.parseUnix("/"))
+            } else {
+                filePath.directory
             }
         return try {
             val outputStream = context.contentResolverSafe.openOutputStream(uri)
