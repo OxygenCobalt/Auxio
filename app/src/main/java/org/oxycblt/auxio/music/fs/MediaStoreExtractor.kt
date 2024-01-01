@@ -390,12 +390,11 @@ class DataPathInterpreter(private val cursor: Cursor, private val volumeManager:
 
         // Find the volume that transforms the DATA column into a relative path. This is
         // the Directory we will use.
-        val rawPath = data.substringBeforeLast(File.separatorChar)
+        val rawPath = Components.parseUnix(data)
         for (volume in volumes) {
-            val volumePath = (volume.components ?: continue).toString()
-            val strippedPath = rawPath.removePrefix(volumePath)
-            if (strippedPath != rawPath) {
-                rawSong.directory = Path(volume, Components.parseUnix(strippedPath))
+            val volumePath = volume.components ?: continue
+            if (volumePath.contains(rawPath)) {
+                rawSong.directory = Path(volume, rawPath.depth(volumePath.components.size))
                 break
             }
         }

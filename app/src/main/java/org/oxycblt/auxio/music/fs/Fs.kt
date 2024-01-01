@@ -146,6 +146,18 @@ value class Components private constructor(val components: List<String>) {
      */
     fun child(other: Components) = Components(components + other.components)
 
+    /**
+     * Returns the given [Components] has a prefix equal to this [Components] instance. Effectively,
+     * as if the given [Components] instance was a child of this [Components] instance.
+     */
+    fun contains(other: Components): Boolean {
+        if (other.components.size < components.size) {
+            return false
+        }
+
+        return components == other.components.take(components.size)
+    }
+
     companion object {
         /**
          * Parses a path string into a [Components] instance by the unix path separator (/).
