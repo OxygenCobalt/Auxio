@@ -186,7 +186,7 @@ suspend fun <E> ReceiveChannel<E>.forEachWithTimeout(
     var subsequent = false
     val handler: suspend () -> Unit = {
         val value = receiveCatching()
-        if (value.isClosed) {
+        if (value.isClosed && value.exceptionOrNull() == null) {
             exhausted = true
         } else {
             action(value.getOrThrow())
