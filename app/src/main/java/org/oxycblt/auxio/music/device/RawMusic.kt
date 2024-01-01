@@ -42,9 +42,7 @@ data class RawSong(
     /** The latest date the [SongImpl]'s audio file was modified, as a unix epoch timestamp. */
     var dateModified: Long? = null,
     /** @see Song.path */
-    var fileName: String? = null,
-    /** @see Song.path */
-    var directory: Path? = null,
+    var path: Path? = null,
     /** @see Song.size */
     var size: Long? = null,
     /** @see Song.durationMs */

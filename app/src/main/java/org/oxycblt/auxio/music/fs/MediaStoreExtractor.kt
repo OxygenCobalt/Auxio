@@ -24,7 +24,6 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import java.io.File
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.cache.Cache
@@ -119,8 +118,8 @@ interface MediaStoreExtractor {
 
 private class MediaStoreExtractorImpl(
     private val context: Context,
-    private val pathInterpreterFactory: PathInterpreterFactory,
-    private val tagInterpreterFactory: TagInterpreterFactory
+    private val pathInterpreterFactory: PathInterpreter.Factory,
+    private val tagInterpreterFactory: TagInterpreter.Factory
 ) : MediaStoreExtractor {
     override suspend fun query(
         constraints: MediaStoreExtractor.Constraints
@@ -239,8 +238,6 @@ private class MediaStoreExtractorImpl(
     ) : MediaStoreExtractor.Query {
         private val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
         private val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
-        private val displayNameIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
         private val mimeTypeIndex =
             cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
         private val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
@@ -267,9 +264,6 @@ private class MediaStoreExtractorImpl(
             rawSong.mediaStoreId = cursor.getLong(idIndex)
             rawSong.dateAdded = cursor.getLong(dateAddedIndex)
             rawSong.dateModified = cursor.getLong(dateModifiedIndex)
-            // Try to use the DISPLAY_NAME column to obtain a (probably sane) file name
-            // from the android system.
-            rawSong.fileName = cursor.getStringOrNull(displayNameIndex)
             rawSong.extensionMimeType = cursor.getString(mimeTypeIndex)
             rawSong.albumMediaStoreId = cursor.getLong(albumIdIndex)
             pathInterpreter.populate(rawSong)
@@ -289,7 +283,8 @@ private class MediaStoreExtractorImpl(
             // A non-existent album name should theoretically be the name of the folder it contained
             // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it
             // the file is not actually in the root internal storage directory. We can't do
-            // anything to fix this, really.
+            // anything to fix this, really. We also can't really filter it out, since how can we
+            // know when it corresponds to the folder and not, say, Low Roar's breakout album "0"?
             rawSong.albumName = cursor.getString(albumIndex)
             // Android does not make a non-existent artist tag null, it instead fills it in
             // as <unknown>, which makes absolutely no sense given how other columns default
@@ -336,7 +331,6 @@ private class MediaStoreExtractorImpl(
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.DATE_ADDED,
                 MediaStore.Audio.AudioColumns.DATE_MODIFIED,
-                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
                 MediaStore.Audio.AudioColumns.SIZE,
                 MediaStore.Audio.AudioColumns.DURATION,
                 MediaStore.Audio.AudioColumns.MIME_TYPE,
@@ -349,62 +343,54 @@ private class MediaStoreExtractorImpl(
     }
 }
 
-interface Interpreter {
+private interface Interpreter {
     fun populate(rawSong: RawSong)
+
+    interface Factory {
+        val projection: Array<String>
+
+        fun wrap(cursor: Cursor): Interpreter
+    }
 }
 
-interface InterpreterFactory {
-    val projection: Array<String>
+private sealed interface PathInterpreter : Interpreter {
+    interface Factory : Interpreter.Factory {
+        override fun wrap(cursor: Cursor): PathInterpreter
 
-    fun wrap(cursor: Cursor): Interpreter
+        fun createSelector(paths: List<Path>): Selector?
+
+        data class Selector(val template: String, val args: List<String>)
+    }
 }
 
-interface PathInterpreterFactory : InterpreterFactory {
-    override fun wrap(cursor: Cursor): PathInterpreter
-
-    fun createSelector(paths: List<Path>): Selector?
-
-    data class Selector(val template: String, val args: List<String>)
-}
-
-interface TagInterpreterFactory : InterpreterFactory {
-    override fun wrap(cursor: Cursor): TagInterpreter
-}
-
-sealed interface PathInterpreter : Interpreter
-
-class DataPathInterpreter(private val cursor: Cursor, private val volumeManager: VolumeManager) :
-    PathInterpreter {
+private class DataPathInterpreter(
+    private val cursor: Cursor,
+    private val volumeManager: VolumeManager
+) : PathInterpreter {
     private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
     private val volumes = volumeManager.getVolumes()
 
     override fun populate(rawSong: RawSong) {
-        val data = cursor.getString(dataIndex)
-        // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
-        // that this only applies to below API 29, as beyond API 29, this column not being
-        // present would completely break the scoped storage system. Fill it in with DATA
-        // if it's not available.
-        if (rawSong.fileName == null) {
-            rawSong.fileName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
-        }
+        val data = Components.parseUnix(cursor.getString(dataIndex))
 
         // Find the volume that transforms the DATA column into a relative path. This is
         // the Directory we will use.
-        val rawPath = Components.parseUnix(data)
         for (volume in volumes) {
             val volumePath = volume.components ?: continue
-            if (volumePath.contains(rawPath)) {
-                rawSong.directory = Path(volume, rawPath.depth(volumePath.components.size))
+            if (volumePath.contains(data)) {
+                rawSong.path = Path(volume, data.depth(volumePath.components.size))
                 break
             }
         }
     }
 
-    class Factory(private val volumeManager: VolumeManager) : PathInterpreterFactory {
+    class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
         override val projection: Array<String>
-            get() = arrayOf(MediaStore.Audio.AudioColumns.DATA)
+            get() =
+                arrayOf(
+                    MediaStore.Audio.AudioColumns.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA)
 
-        override fun createSelector(paths: List<Path>): PathInterpreterFactory.Selector? {
+        override fun createSelector(paths: List<Path>): PathInterpreter.Factory.Selector? {
             val args = mutableListOf<String>()
             var template = ""
             for (i in paths.indices) {
@@ -423,7 +409,7 @@ class DataPathInterpreter(private val cursor: Cursor, private val volumeManager:
                 return null
             }
 
-            return PathInterpreterFactory.Selector(template, args)
+            return PathInterpreter.Factory.Selector(template, args)
         }
 
         override fun wrap(cursor: Cursor): PathInterpreter =
@@ -431,8 +417,10 @@ class DataPathInterpreter(private val cursor: Cursor, private val volumeManager:
     }
 }
 
-class VolumePathInterpreter(private val cursor: Cursor, private val volumeManager: VolumeManager) :
+private class VolumePathInterpreter(private val cursor: Cursor, volumeManager: VolumeManager) :
     PathInterpreter {
+    private val displayNameIndex =
+        cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
     private val volumeIndex =
         cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
     private val relativePathIndex =
@@ -440,22 +428,29 @@ class VolumePathInterpreter(private val cursor: Cursor, private val volumeManage
     private val volumes = volumeManager.getVolumes()
 
     override fun populate(rawSong: RawSong) {
-        // Find the StorageVolume whose MediaStore name corresponds to this song.
-        // This is combined with the plain relative path column to create the directory.
+        // Find the StorageVolume whose MediaStore name corresponds to it.
         val volumeName = cursor.getString(volumeIndex)
-        val relativePath = cursor.getString(relativePathIndex)
         val volume = volumes.find { it.mediaStoreName == volumeName }
+
+        // Relative path does not include file name, must use DISPLAY_NAME and add it
+        // in manually.
+        val relativePath = cursor.getString(relativePathIndex)
+        val displayName = cursor.getString(displayNameIndex)
+        val components = Components.parseUnix(relativePath).child(displayName)
+
         if (volume != null) {
-            rawSong.directory = Path(volume, Components.parseUnix(relativePath))
+            rawSong.path = Path(volume, components)
         }
     }
 
-    class Factory(private val volumeManager: VolumeManager) : PathInterpreterFactory {
+    class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
         override val projection: Array<String>
             get() =
                 arrayOf(
                     // After API 29, we now have access to the volume name and relative
-                    // path, which simplifies working with Paths significantly.
+                    // path, which hopefully are more standard and less likely to break
+                    // compared to DATA.
+                    MediaStore.Audio.AudioColumns.DISPLAY_NAME,
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
                     MediaStore.Audio.AudioColumns.RELATIVE_PATH)
 
@@ -463,7 +458,7 @@ class VolumePathInterpreter(private val cursor: Cursor, private val volumeManage
         // of the given directories, albeit with some conversion to the analogous MediaStore
         // column values.
 
-        override fun createSelector(paths: List<Path>): PathInterpreterFactory.Selector? {
+        override fun createSelector(paths: List<Path>): PathInterpreter.Factory.Selector? {
             val args = mutableListOf<String>()
             var template = ""
             for (i in paths.indices) {
@@ -488,7 +483,7 @@ class VolumePathInterpreter(private val cursor: Cursor, private val volumeManage
                 return null
             }
 
-            return PathInterpreterFactory.Selector(template, args)
+            return PathInterpreter.Factory.Selector(template, args)
         }
 
         override fun wrap(cursor: Cursor): PathInterpreter =
@@ -496,9 +491,13 @@ class VolumePathInterpreter(private val cursor: Cursor, private val volumeManage
     }
 }
 
-sealed interface TagInterpreter : Interpreter
+private sealed interface TagInterpreter : Interpreter {
+    interface Factory : Interpreter.Factory {
+        override fun wrap(cursor: Cursor): TagInterpreter
+    }
+}
 
-class Api21TagInterpreter(private val cursor: Cursor) : TagInterpreter {
+private class Api21TagInterpreter(private val cursor: Cursor) : TagInterpreter {
     private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
 
     override fun populate(rawSong: RawSong) {
@@ -511,7 +510,7 @@ class Api21TagInterpreter(private val cursor: Cursor) : TagInterpreter {
         }
     }
 
-    class Factory : TagInterpreterFactory {
+    class Factory : TagInterpreter.Factory {
         override val projection: Array<String>
             get() = arrayOf(MediaStore.Audio.AudioColumns.TRACK)
 
@@ -533,12 +532,13 @@ class Api21TagInterpreter(private val cursor: Cursor) : TagInterpreter {
      * MediaStore's TRACK column, and combine the track and disc value into a single field where the
      * disc number is the 4th+ digit.
      *
-     * @return The disc number extracted from the combined integer field, or null if the value was zero.
+     * @return The disc number extracted from the combined integer field, or null if the value was
+     *   zero.
      */
     private fun Int.unpackDiscNo() = transformPositionField(div(1000), null)
 }
 
-class Api30TagInterpreter(private val cursor: Cursor) : TagInterpreter {
+private class Api30TagInterpreter(private val cursor: Cursor) : TagInterpreter {
     private val trackIndex =
         cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
     private val discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
@@ -552,7 +552,7 @@ class Api30TagInterpreter(private val cursor: Cursor) : TagInterpreter {
         cursor.getStringOrNull(discIndex)?.parseId3v2PositionField()?.let { rawSong.disc = it }
     }
 
-    class Factory : TagInterpreterFactory {
+    class Factory : TagInterpreter.Factory {
         override val projection: Array<String>
             get() =
                 arrayOf(

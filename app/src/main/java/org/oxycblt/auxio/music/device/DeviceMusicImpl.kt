@@ -74,37 +74,31 @@ class SongImpl(
             }
     override val name =
         nameFactory.parse(
-            requireNotNull(rawSong.name) { "Invalid raw ${rawSong.fileName}: No title" },
+            requireNotNull(rawSong.name) { "Invalid raw ${rawSong.path}: No title" },
             rawSong.sortName)
 
     override val track = rawSong.track
     override val disc = rawSong.disc?.let { Disc(it, rawSong.subtitle) }
     override val date = rawSong.date
     override val uri =
-        requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.fileName}: No id" }
-            .toAudioUri()
-    override val path =
-        requireNotNull(rawSong.directory) { "Invalid raw ${rawSong.fileName}: No parent directory" }
-            .file(
-                requireNotNull(rawSong.fileName) {
-                    "Invalid raw ${rawSong.fileName}: No display name"
-                })
+        requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.path}: No id" }.toAudioUri()
+    override val path = requireNotNull(rawSong.path) { "Invalid raw ${rawSong.path}: No path" }
     override val mimeType =
         MimeType(
             fromExtension =
                 requireNotNull(rawSong.extensionMimeType) {
-                    "Invalid raw ${rawSong.fileName}: No mime type"
+                    "Invalid raw ${rawSong.path}: No mime type"
                 },
             fromFormat = null)
-    override val size = requireNotNull(rawSong.size) { "Invalid raw ${rawSong.fileName}: No size" }
+    override val size = requireNotNull(rawSong.size) { "Invalid raw ${rawSong.path}: No size" }
     override val durationMs =
-        requireNotNull(rawSong.durationMs) { "Invalid raw ${rawSong.fileName}: No duration" }
+        requireNotNull(rawSong.durationMs) { "Invalid raw ${rawSong.path}: No duration" }
     override val replayGainAdjustment =
         ReplayGainAdjustment(
             track = rawSong.replayGainTrackAdjustment, album = rawSong.replayGainAlbumAdjustment)
 
     override val dateAdded =
-        requireNotNull(rawSong.dateAdded) { "Invalid raw ${rawSong.fileName}: No date added" }
+        requireNotNull(rawSong.dateAdded) { "Invalid raw ${rawSong.path}: No date added" }
 
     private var _album: AlbumImpl? = null
     override val album: Album
@@ -170,12 +164,12 @@ class SongImpl(
             RawAlbum(
                 mediaStoreId =
                     requireNotNull(rawSong.albumMediaStoreId) {
-                        "Invalid raw ${rawSong.fileName}: No album id"
+                        "Invalid raw ${rawSong.path}: No album id"
                     },
                 musicBrainzId = rawSong.albumMusicBrainzId?.toUuidOrNull(),
                 name =
                     requireNotNull(rawSong.albumName) {
-                        "Invalid raw ${rawSong.fileName}: No album name"
+                        "Invalid raw ${rawSong.path}: No album name"
                     },
                 sortName = rawSong.albumSortName,
                 releaseType = ReleaseType.parse(separators.split(rawSong.releaseTypes)),
