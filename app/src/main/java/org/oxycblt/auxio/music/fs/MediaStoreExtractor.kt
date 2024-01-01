@@ -101,7 +101,7 @@ interface MediaStoreExtractor {
                     // instead.
                     Build.MANUFACTURER.equals("huawei", ignoreCase = true) ||
                         Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ->
-                        Api24PathInterpreter.Factory(volumeManager)
+                        DataPathInterpreter.Factory(volumeManager)
                     else -> VolumePathInterpreter.Factory(volumeManager)
                 }
 
@@ -345,24 +345,60 @@ private class MediaStoreExtractorImpl(
     }
 }
 
+/**
+ * Wrapper around a [Cursor] that interprets path information on a per-API/manufacturer basis.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 private sealed interface PathInterpreter {
+    /**
+     * Populate the [RawSong] with version-specific path information.
+     *
+     * @param rawSong The [RawSong] to populate.
+     * @return True if the path was successfully populated, false otherwise.
+     */
     fun populate(rawSong: RawSong): Boolean
 
     interface Factory {
+        /** The columns that must be added to a query to support this interpreter. */
         val projection: Array<String>
 
+        /**
+         * Wrap a [Cursor] with this interpreter. This cursor should be the result of a query
+         * containing the columns specified by [projection].
+         *
+         * @param cursor The [Cursor] to wrap.
+         * @return A new [PathInterpreter] that will work best on the device's API level.
+         */
         fun wrap(cursor: Cursor): PathInterpreter
 
+        /**
+         * Create a selector that will filter the given paths. By default this will filter *to* the
+         * given paths, to exclude them, use a NOT.
+         *
+         * @param paths The paths to filter for.
+         * @return A selector that will filter to the given paths, or null if a selector could not
+         *   be created from the paths.
+         */
         fun createSelector(paths: List<Path>): Selector?
 
+        /**
+         * A selector that will filter to the given paths.
+         *
+         * @param template The template to use for the selector.
+         * @param args The arguments to use for the selector.
+         * @see Factory.createSelector
+         */
         data class Selector(val template: String, val args: List<String>)
     }
 }
 
-private open class Api24PathInterpreter(
-    private val cursor: Cursor,
-    private val volumeManager: VolumeManager
-) : PathInterpreter {
+/**
+ * Wrapper around a [Cursor] that interprets the DATA column as a path. Create an instance with
+ * [Factory].
+ */
+private class DataPathInterpreter
+private constructor(private val cursor: Cursor, volumeManager: VolumeManager) : PathInterpreter {
     private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
     private val volumes = volumeManager.getVolumes()
 
@@ -382,6 +418,11 @@ private open class Api24PathInterpreter(
         return false
     }
 
+    /**
+     * Factory for [DataPathInterpreter].
+     *
+     * @param volumeManager The [VolumeManager] to use for volume information.
+     */
     class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
         override val projection: Array<String>
             get() =
@@ -411,12 +452,16 @@ private open class Api24PathInterpreter(
         }
 
         override fun wrap(cursor: Cursor): PathInterpreter =
-            Api24PathInterpreter(cursor, volumeManager)
+            DataPathInterpreter(cursor, volumeManager)
     }
 }
 
-private class VolumePathInterpreter(private val cursor: Cursor, volumeManager: VolumeManager) :
-    PathInterpreter {
+/**
+ * Wrapper around a [Cursor] that interprets the VOLUME_NAME, RELATIVE_PATH, and DISPLAY_NAME
+ * columns as a path. Create an instance with [Factory].
+ */
+private class VolumePathInterpreter
+private constructor(private val cursor: Cursor, volumeManager: VolumeManager) : PathInterpreter {
     private val displayNameIndex =
         cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
     private val volumeIndex =
@@ -438,6 +483,11 @@ private class VolumePathInterpreter(private val cursor: Cursor, volumeManager: V
         return true
     }
 
+    /**
+     * Factory for [VolumePathInterpreter].
+     *
+     * @param volumeManager The [VolumeManager] to use for volume information.
+     */
     class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
         override val projection: Array<String>
             get() =
@@ -486,12 +536,30 @@ private class VolumePathInterpreter(private val cursor: Cursor, volumeManager: V
     }
 }
 
+/**
+ * Wrapper around a [Cursor] that interprets certain tags on a per-API basis.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 private sealed interface TagInterpreter {
+    /**
+     * Populate the [RawSong] with version-specific tags.
+     *
+     * @param rawSong The [RawSong] to populate.
+     */
     fun populate(rawSong: RawSong)
 
     interface Factory {
+        /** The columns that must be added to a query to support this interpreter. */
         val projection: Array<String>
 
+        /**
+         * Wrap a [Cursor] with this interpreter. This cursor should be the result of a query
+         * containing the columns specified by [projection].
+         *
+         * @param cursor The [Cursor] to wrap.
+         * @return A new [TagInterpreter] that will work best on the device's API level.
+         */
         fun wrap(cursor: Cursor): TagInterpreter
     }
 }
