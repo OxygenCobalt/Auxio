@@ -330,4 +330,5 @@
     <string name="lbl_import">Import</string>
     <string name="lng_playlist_imported">Seznam skladeb importován</string>
     <string name="lng_playlist_exported">Seznam skladeb exportován</string>
+    <string name="lbl_import_playlist">Importovat seznam skladeb</string>
 </resources>
