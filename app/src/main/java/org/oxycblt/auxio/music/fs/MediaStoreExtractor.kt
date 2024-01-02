@@ -93,32 +93,24 @@ interface MediaStoreExtractor {
          * @param volumeManager [VolumeManager] required.
          * @return A new [MediaStoreExtractor] that will work best on the device's API level.
          */
-        fun from(context: Context, volumeManager: VolumeManager): MediaStoreExtractor {
-            val pathInterpreter =
-                when {
-                    // Huawei violates the API docs and prevents you from accessing the new path
-                    // fields without first granting access to them through SAF. Fall back to DATA
-                    // instead.
-                    Build.MANUFACTURER.equals("huawei", ignoreCase = true) ||
-                        Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ->
-                        DataPathInterpreter.Factory(volumeManager)
-                    else -> VolumePathInterpreter.Factory(volumeManager)
-                }
-
-            val volumeInterpreter =
+        fun from(
+            context: Context,
+            pathInterpreterFactory: MediaStorePathInterpreter.Factory
+        ): MediaStoreExtractor {
+            val tagInterpreterFactory =
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30TagInterpreter.Factory()
                     else -> Api21TagInterpreter.Factory()
                 }
 
-            return MediaStoreExtractorImpl(context, pathInterpreter, volumeInterpreter)
+            return MediaStoreExtractorImpl(context, pathInterpreterFactory, tagInterpreterFactory)
         }
     }
 }
 
 private class MediaStoreExtractorImpl(
     private val context: Context,
-    private val pathInterpreterFactory: PathInterpreter.Factory,
+    private val mediaStorePathInterpreterFactory: MediaStorePathInterpreter.Factory,
     private val tagInterpreterFactory: TagInterpreter.Factory
 ) : MediaStoreExtractor {
     override suspend fun query(
@@ -127,7 +119,9 @@ private class MediaStoreExtractorImpl(
         val start = System.currentTimeMillis()
 
         val projection =
-            BASE_PROJECTION + pathInterpreterFactory.projection + tagInterpreterFactory.projection
+            BASE_PROJECTION +
+                mediaStorePathInterpreterFactory.projection +
+                tagInterpreterFactory.projection
         var uniSelector = BASE_SELECTOR
         var uniArgs = listOf<String>()
 
@@ -139,7 +133,8 @@ private class MediaStoreExtractorImpl(
 
         // Set up the projection to follow the music directory configuration.
         if (constraints.musicDirs.dirs.isNotEmpty()) {
-            val pathSelector = pathInterpreterFactory.createSelector(constraints.musicDirs.dirs)
+            val pathSelector =
+                mediaStorePathInterpreterFactory.createSelector(constraints.musicDirs.dirs)
             if (pathSelector != null) {
                 logD("Must select for directories")
                 uniSelector += " AND "
@@ -203,7 +198,7 @@ private class MediaStoreExtractorImpl(
         logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
         return QueryImpl(
             cursor,
-            pathInterpreterFactory.wrap(cursor),
+            mediaStorePathInterpreterFactory.wrap(cursor),
             tagInterpreterFactory.wrap(cursor),
             genreNamesMap)
     }
@@ -234,7 +229,7 @@ private class MediaStoreExtractorImpl(
 
     class QueryImpl(
         private val cursor: Cursor,
-        private val pathInterpreter: PathInterpreter,
+        private val mediaStorePathInterpreter: MediaStorePathInterpreter,
         private val tagInterpreter: TagInterpreter,
         private val genreNamesMap: Map<Long, String>
     ) : MediaStoreExtractor.Query {
@@ -268,7 +263,8 @@ private class MediaStoreExtractorImpl(
             rawSong.dateModified = cursor.getLong(dateModifiedIndex)
             rawSong.extensionMimeType = cursor.getString(mimeTypeIndex)
             rawSong.albumMediaStoreId = cursor.getLong(albumIdIndex)
-            return pathInterpreter.populate(rawSong)
+            rawSong.path = mediaStorePathInterpreter.extract() ?: return false
+            return true
         }
 
         override fun populateTags(rawSong: RawSong) {
@@ -342,197 +338,6 @@ private class MediaStoreExtractorImpl(
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST,
                 AUDIO_COLUMN_ALBUM_ARTIST)
-    }
-}
-
-/**
- * Wrapper around a [Cursor] that interprets path information on a per-API/manufacturer basis.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-private sealed interface PathInterpreter {
-    /**
-     * Populate the [RawSong] with version-specific path information.
-     *
-     * @param rawSong The [RawSong] to populate.
-     * @return True if the path was successfully populated, false otherwise.
-     */
-    fun populate(rawSong: RawSong): Boolean
-
-    interface Factory {
-        /** The columns that must be added to a query to support this interpreter. */
-        val projection: Array<String>
-
-        /**
-         * Wrap a [Cursor] with this interpreter. This cursor should be the result of a query
-         * containing the columns specified by [projection].
-         *
-         * @param cursor The [Cursor] to wrap.
-         * @return A new [PathInterpreter] that will work best on the device's API level.
-         */
-        fun wrap(cursor: Cursor): PathInterpreter
-
-        /**
-         * Create a selector that will filter the given paths. By default this will filter *to* the
-         * given paths, to exclude them, use a NOT.
-         *
-         * @param paths The paths to filter for.
-         * @return A selector that will filter to the given paths, or null if a selector could not
-         *   be created from the paths.
-         */
-        fun createSelector(paths: List<Path>): Selector?
-
-        /**
-         * A selector that will filter to the given paths.
-         *
-         * @param template The template to use for the selector.
-         * @param args The arguments to use for the selector.
-         * @see Factory.createSelector
-         */
-        data class Selector(val template: String, val args: List<String>)
-    }
-}
-
-/**
- * Wrapper around a [Cursor] that interprets the DATA column as a path. Create an instance with
- * [Factory].
- */
-private class DataPathInterpreter
-private constructor(private val cursor: Cursor, volumeManager: VolumeManager) : PathInterpreter {
-    private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
-    private val volumes = volumeManager.getVolumes()
-
-    override fun populate(rawSong: RawSong): Boolean {
-        val data = Components.parseUnix(cursor.getString(dataIndex))
-
-        // Find the volume that transforms the DATA column into a relative path. This is
-        // the Directory we will use.
-        for (volume in volumes) {
-            val volumePath = volume.components ?: continue
-            if (volumePath.contains(data)) {
-                rawSong.path = Path(volume, data.depth(volumePath.components.size))
-                return true
-            }
-        }
-
-        return false
-    }
-
-    /**
-     * Factory for [DataPathInterpreter].
-     *
-     * @param volumeManager The [VolumeManager] to use for volume information.
-     */
-    class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
-        override val projection: Array<String>
-            get() =
-                arrayOf(
-                    MediaStore.Audio.AudioColumns.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA)
-
-        override fun createSelector(paths: List<Path>): PathInterpreter.Factory.Selector? {
-            val args = mutableListOf<String>()
-            var template = ""
-            for (i in paths.indices) {
-                val path = paths[i]
-                val volume = path.volume.components ?: continue
-                template +=
-                    if (i == 0) {
-                        "${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
-                    } else {
-                        " OR ${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
-                    }
-                args.add("${volume}${path.components}%")
-            }
-
-            if (template.isEmpty()) {
-                return null
-            }
-
-            return PathInterpreter.Factory.Selector(template, args)
-        }
-
-        override fun wrap(cursor: Cursor): PathInterpreter =
-            DataPathInterpreter(cursor, volumeManager)
-    }
-}
-
-/**
- * Wrapper around a [Cursor] that interprets the VOLUME_NAME, RELATIVE_PATH, and DISPLAY_NAME
- * columns as a path. Create an instance with [Factory].
- */
-private class VolumePathInterpreter
-private constructor(private val cursor: Cursor, volumeManager: VolumeManager) : PathInterpreter {
-    private val displayNameIndex =
-        cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
-    private val volumeIndex =
-        cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
-    private val relativePathIndex =
-        cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-    private val volumes = volumeManager.getVolumes()
-
-    override fun populate(rawSong: RawSong): Boolean {
-        // Find the StorageVolume whose MediaStore name corresponds to it.
-        val volumeName = cursor.getString(volumeIndex)
-        val volume = volumes.find { it.mediaStoreName == volumeName } ?: return false
-        // Relative path does not include file name, must use DISPLAY_NAME and add it
-        // in manually.
-        val relativePath = cursor.getString(relativePathIndex)
-        val displayName = cursor.getString(displayNameIndex)
-        val components = Components.parseUnix(relativePath).child(displayName)
-        rawSong.path = Path(volume, components)
-        return true
-    }
-
-    /**
-     * Factory for [VolumePathInterpreter].
-     *
-     * @param volumeManager The [VolumeManager] to use for volume information.
-     */
-    class Factory(private val volumeManager: VolumeManager) : PathInterpreter.Factory {
-        override val projection: Array<String>
-            get() =
-                arrayOf(
-                    // After API 29, we now have access to the volume name and relative
-                    // path, which hopefully are more standard and less likely to break
-                    // compared to DATA.
-                    MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                    MediaStore.Audio.AudioColumns.VOLUME_NAME,
-                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-
-        // The selector should be configured to compare both the volume name and relative path
-        // of the given directories, albeit with some conversion to the analogous MediaStore
-        // column values.
-
-        override fun createSelector(paths: List<Path>): PathInterpreter.Factory.Selector? {
-            val args = mutableListOf<String>()
-            var template = ""
-            for (i in paths.indices) {
-                val path = paths[i]
-                template =
-                    if (i == 0) {
-                        "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
-                            "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
-                    } else {
-                        " OR (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
-                            "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
-                    }
-                // MediaStore uses a different naming scheme for it's volume column. Convert this
-                // directory's volume to it.
-                args.add(path.volume.mediaStoreName ?: return null)
-                // "%" signifies to accept any DATA value that begins with the Directory's path,
-                // thus recursively filtering all files in the directory.
-                args.add("${path.components}%")
-            }
-
-            if (template.isEmpty()) {
-                return null
-            }
-
-            return PathInterpreter.Factory.Selector(template, args)
-        }
-
-        override fun wrap(cursor: Cursor): PathInterpreter =
-            VolumePathInterpreter(cursor, volumeManager)
     }
 }
 

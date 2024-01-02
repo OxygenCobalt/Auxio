@@ -37,8 +37,15 @@ class FsModule {
         VolumeManagerImpl(context.getSystemServiceCompat(StorageManager::class))
 
     @Provides
-    fun mediaStoreExtractor(@ApplicationContext context: Context, volumeManager: VolumeManager) =
-        MediaStoreExtractor.from(context, volumeManager)
+    fun mediaStoreExtractor(
+        @ApplicationContext context: Context,
+        mediaStorePathInterpreterFactory: MediaStorePathInterpreter.Factory
+    ) = MediaStoreExtractor.from(context, mediaStorePathInterpreterFactory)
+
+    @Provides
+    fun mediaStorePathInterpreterFactory(
+        volumeManager: VolumeManager
+    ): MediaStorePathInterpreter.Factory = MediaStorePathInterpreter.Factory.from(volumeManager)
 
     @Provides
     fun contentResolver(@ApplicationContext context: Context): ContentResolver =

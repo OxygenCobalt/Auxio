@@ -18,8 +18,11 @@
  
 package org.oxycblt.auxio.music.fs
 
+import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 
@@ -62,16 +65,38 @@ interface DocumentPathFactory {
     fun fromDocumentId(path: String): Path?
 }
 
-class DocumentPathFactoryImpl @Inject constructor(private val volumeManager: VolumeManager) :
-    DocumentPathFactory {
+class DocumentPathFactoryImpl
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val volumeManager: VolumeManager,
+    private val mediaStorePathInterpreterFactory: MediaStorePathInterpreter.Factory
+) : DocumentPathFactory {
     override fun unpackDocumentUri(uri: Uri): Path? {
-        // Abuse the document contract and extract the encoded path from the URI.
-        // I've seen some implementations that just use getDocumentId. That no longer seems
-        // to work on Android 14 onwards. But spoofing our own document URI and then decoding
-        // it does for some reason.
-        val docUri = DocumentsContract.buildDocumentUri(uri.authority, uri.pathSegments[1])
-        val docId = DocumentsContract.getDocumentId(docUri)
-        return fromDocumentId(docId)
+        val id = DocumentsContract.getDocumentId(uri)
+        val numericId = id.toLongOrNull()
+        return if (numericId != null) {
+            // The document URI is special and points to an entry only accessible via
+            // ContentResolver. In this case, we have to manually query MediaStore.
+            for (prefix in POSSIBLE_CONTENT_URI_PREFIXES) {
+                val contentUri = ContentUris.withAppendedId(prefix, numericId)
+
+                val path =
+                    context.contentResolverSafe.useQuery(
+                        contentUri, mediaStorePathInterpreterFactory.projection) {
+                            it.moveToFirst()
+                            mediaStorePathInterpreterFactory.wrap(it).extract()
+                        }
+
+                if (path != null) {
+                    return path
+                }
+            }
+
+            null
+        } else {
+            fromDocumentId(id)
+        }
     }
 
     override fun unpackDocumentTreeUri(uri: Uri): Path? {
@@ -113,5 +138,10 @@ class DocumentPathFactoryImpl @Inject constructor(private val volumeManager: Vol
 
     private companion object {
         const val DOCUMENT_URI_PRIMARY_NAME = "primary"
+
+        private val POSSIBLE_CONTENT_URI_PREFIXES =
+            arrayOf(
+                Uri.parse("content://downloads/public_downloads"),
+                Uri.parse("content://downloads/my_downloads"))
     }
 }
