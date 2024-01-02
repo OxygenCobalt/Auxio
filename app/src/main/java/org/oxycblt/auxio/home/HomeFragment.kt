@@ -21,6 +21,7 @@ package org.oxycblt.auxio.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -77,6 +78,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logD
@@ -143,6 +145,21 @@ class HomeFragment :
             }
 
         // --- UI SETUP ---
+
+        binding.root.rootView.apply {
+            // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
+            // it ourselves.
+            findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
+                handleSpeedDialBoundaryTouch(event)
+                false
+            }
+
+            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
+                handleSpeedDialBoundaryTouch(event)
+                false
+            }
+        }
+
         binding.homeAppbar.addOnOffsetChangedListener(this)
         binding.homeNormalToolbar.apply {
             setOnMenuItemClickListener(this@HomeFragment)
@@ -586,6 +603,14 @@ class HomeFragment :
         }
         if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
             FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeNewPlaylistFab.mainFab, null, false)
+        }
+    }
+
+    private fun handleSpeedDialBoundaryTouch(event: MotionEvent) {
+        val binding = requireBinding()
+        if (binding.homeNewPlaylistFab.isOpen &&
+            !binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
+            binding.homeNewPlaylistFab.close()
         }
     }
 

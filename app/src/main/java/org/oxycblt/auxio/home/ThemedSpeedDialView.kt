@@ -24,7 +24,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RotateDrawable
 import android.os.Bundle
@@ -41,6 +40,7 @@ import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.google.android.material.shape.MaterialShapeDrawable
 import com.leinardi.android.speeddial.FabWithLabelView
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
@@ -48,6 +48,7 @@ import kotlin.math.roundToInt
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
 
 /**
@@ -64,6 +65,7 @@ import org.oxycblt.auxio.util.getDimenPixels
  */
 class ThemedSpeedDialView : SpeedDialView {
     private var mainFabAnimator: Animator? = null
+    private val spacingSmall = context.getDimenPixels(R.dimen.spacing_small)
 
     constructor(context: Context) : super(context)
 
@@ -174,7 +176,13 @@ class ThemedSpeedDialView : SpeedDialView {
         val fabBackgroundColor =
             context.getAttrColorCompat(com.google.android.material.R.attr.colorSurface)
         val labelColor = context.getAttrColorCompat(android.R.attr.textColorSecondary)
-        val labelBackgroundColor = Color.TRANSPARENT
+        val labelBackgroundColor =
+            context.getAttrColorCompat(com.google.android.material.R.attr.colorSurface)
+        val labelStroke =
+            context.getAttrColorCompat(com.google.android.material.R.attr.colorOutline)
+        val labelElevation =
+            context.getDimen(com.google.android.material.R.dimen.m3_card_elevated_elevation)
+        val cornerRadius = context.getDimenPixels(R.dimen.spacing_medium)
         val actionItem =
             SpeedDialActionItem.Builder(
                     actionItem.id,
@@ -184,7 +192,7 @@ class ThemedSpeedDialView : SpeedDialView {
                 .setFabImageTintColor(fabImageTintColor.defaultColor)
                 .setFabBackgroundColor(fabBackgroundColor.defaultColor)
                 .setLabelColor(labelColor.defaultColor)
-                .setLabelBackgroundColor(labelBackgroundColor)
+                .setLabelBackgroundColor(labelBackgroundColor.defaultColor)
                 .setLabelClickable(actionItem.isLabelClickable)
                 .setTheme(actionItem.theme)
                 .create()
@@ -199,7 +207,13 @@ class ThemedSpeedDialView : SpeedDialView {
 
             labelBackground.apply {
                 useCompatPadding = false
-                setContentPadding(0, 0, 0, 0)
+                setContentPadding(spacingSmall, spacingSmall, spacingSmall, spacingSmall)
+                background =
+                    MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+                        fillColor = labelBackgroundColor
+                        elevation = labelElevation
+                        setCornerSize(cornerRadius.toFloat())
+                    }
                 foreground = null
                 (getChildAt(0) as TextView).apply {
                     TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_LabelLarge)

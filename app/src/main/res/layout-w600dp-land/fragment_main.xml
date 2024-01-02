@@ -17,6 +17,8 @@
         app:navGraph="@navigation/inner"
         tools:layout="@layout/fragment_home" />
 
+    <View android:id="@+id/main_scrim" android:layout_height="match_parent" android:layout_width="match_parent"/>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/playback_sheet"
         android:layout_width="match_parent"
@@ -71,6 +73,8 @@
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View android:id="@+id/sheet_scrim" android:layout_height="match_parent" android:layout_width="match_parent"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
