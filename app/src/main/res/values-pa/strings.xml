@@ -313,4 +313,5 @@
     <string name="lng_playlist_exported">ਪਲੇਲਿਸਟ ਨਿਰਯਾਤ ਕੀਤੀ ਗਈ</string>
     <string name="lbl_export_playlist">ਪਲੇਲਿਸਟ ਨਿਰਯਾਤ ਕਰੋ</string>
     <string name="err_export_failed">ਪਲੇਲਿਸਟ ਨੂੰ ਇਸ ਫ਼ਾਈਲ ਵਿੱਚ ਨਿਰਯਾਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
+    <string name="lbl_import_playlist">ਪਲੇਲਿਸਟ ਇੰਪੋਰਟ ਕਰੋ</string>
 </resources>
