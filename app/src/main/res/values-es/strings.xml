@@ -325,4 +325,5 @@
     <string name="lng_playlist_exported">Lista de reproducción exportada</string>
     <string name="lbl_export_playlist">Exportar lista de reproducción</string>
     <string name="err_export_failed">No se puede exportar la lista de reproducción a este archivo</string>
+    <string name="lbl_import_playlist">Importar lista de reproducción</string>
 </resources>
