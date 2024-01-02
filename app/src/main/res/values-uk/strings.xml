@@ -325,4 +325,5 @@
     <string name="lng_playlist_exported">Список відтворення експортовано</string>
     <string name="lbl_export_playlist">Експортувати список відтворення</string>
     <string name="err_export_failed">Неможливо експортувати список відтворення в цей файл</string>
+    <string name="lbl_import_playlist">Імпортувати список відтворення</string>
 </resources>
