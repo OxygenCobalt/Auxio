@@ -2,6 +2,8 @@
 
 ## dev
 
+## 3.3.0
+
 #### What's New
 - Added ability to rewind/skip tracks by swiping back/forward
 - Added support for demo release type
