@@ -30,7 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -54,9 +53,14 @@ class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNam
         builder
             .setTitle(R.string.lbl_rename_playlist)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                val playlist = unlikelyToBeNull(pickerModel.currentPlaylistToRename.value)
+                val pendingRenamePlaylist =
+                    unlikelyToBeNull(pickerModel.currentPendingRenamePlaylist.value)
                 val chosenName = pickerModel.chosenName.value as ChosenName.Valid
-                musicModel.renamePlaylist(playlist, chosenName.value)
+                musicModel.renamePlaylist(
+                    pendingRenamePlaylist.playlist,
+                    chosenName.value,
+                    pendingRenamePlaylist.applySongs,
+                    pendingRenamePlaylist.reason)
                 findNavController().navigateUp()
             }
             .setNegativeButton(R.string.lbl_cancel, null)
@@ -73,20 +77,23 @@ class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNam
 
         // --- VIEWMODEL SETUP ---
         musicModel.playlistDecision.consume()
-        pickerModel.setPlaylistToRename(args.playlistUid)
-        collectImmediately(pickerModel.currentPlaylistToRename, ::updatePlaylistToRename)
+        pickerModel.setPlaylistToRename(
+            args.playlistUid, args.applySongUids, args.template, args.reason)
+        collectImmediately(pickerModel.currentPendingRenamePlaylist, ::updatePlaylistToRename)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
     }
 
-    private fun updatePlaylistToRename(playlist: Playlist?) {
-        if (playlist == null) {
+    private fun updatePlaylistToRename(pendingRenamePlaylist: PendingRenamePlaylist?) {
+        if (pendingRenamePlaylist == null) {
             // Nothing to rename anymore.
             findNavController().navigateUp()
             return
         }
 
         if (!initializedField) {
-            val default = playlist.name.resolve(requireContext())
+            val default =
+                pendingRenamePlaylist.template
+                    ?: pendingRenamePlaylist.playlist.name.resolve(requireContext())
             logD("Name input is not initialized, setting to $default")
             requireBinding().playlistName.setText(default)
             initializedField = true

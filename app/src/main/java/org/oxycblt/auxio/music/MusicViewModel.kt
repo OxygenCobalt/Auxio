@@ -145,7 +145,7 @@ constructor(
     }
 
     /**
-     * Import a playlist from a file [Uri]. Errors pushed to [importError].
+     * Import a playlist from a file [Uri]. Errors pushed to [playlistMessage].
      *
      * @param uri The [Uri] of the file to import. If null, the user will be prompted with a file
      *   picker.
@@ -173,8 +173,17 @@ constructor(
                 }
 
                 if (target !== null) {
-                    musicRepository.rewritePlaylist(target, songs)
-                    _playlistMessage.put(PlaylistMessage.ImportSuccess)
+                    if (importedPlaylist.name != null && importedPlaylist.name != target.name.raw) {
+                        _playlistDecision.put(
+                            PlaylistDecision.Rename(
+                                target,
+                                importedPlaylist.name,
+                                songs,
+                                PlaylistDecision.Rename.Reason.IMPORT))
+                    } else {
+                        musicRepository.rewritePlaylist(target, songs)
+                        _playlistMessage.put(PlaylistMessage.ImportSuccess)
+                    }
                 } else {
                     _playlistDecision.put(
                         PlaylistDecision.New(
@@ -188,7 +197,7 @@ constructor(
     }
 
     /**
-     * Export a [Playlist] to a file [Uri]. Errors pushed to [exportError].
+     * Export a [Playlist] to a file [Uri]. Errors pushed to [playlistMessage].
      *
      * @param playlist The [Playlist] to export.
      * @param uri The [Uri] to export to. If null, the user will be prompted for one.
@@ -214,17 +223,24 @@ constructor(
      *
      * @param playlist The [Playlist] to rename,
      * @param name The new name of the [Playlist]. If null, the user will be prompted for a name.
-     * @param reason The reason why the playlist is being renamed. For all intensive purposes, you
+     * @param applySongs The songs to apply to the playlist after renaming. If empty, no songs will
+     * be applied. This argument is internal and does not need to be specified in normal use.
+     * @param reason The reason why the playlist is being renamed. This argument is internal and
+     * does not need to be specified in normal use.
      */
     fun renamePlaylist(
         playlist: Playlist,
         name: String? = null,
+        applySongs: List<Song> = listOf(),
         reason: PlaylistDecision.Rename.Reason = PlaylistDecision.Rename.Reason.ACTION
     ) {
         if (name != null) {
             logD("Renaming $playlist to $name")
             viewModelScope.launch(Dispatchers.IO) {
                 musicRepository.renamePlaylist(playlist, name)
+                if (applySongs.isNotEmpty()) {
+                    musicRepository.rewritePlaylist(playlist, applySongs)
+                }
                 val message =
                     when (reason) {
                         PlaylistDecision.Rename.Reason.ACTION -> PlaylistMessage.RenameSuccess
@@ -234,7 +250,7 @@ constructor(
             }
         } else {
             logD("Launching rename dialog for $playlist")
-            _playlistDecision.put(PlaylistDecision.Rename(playlist, reason))
+            _playlistDecision.put(PlaylistDecision.Rename(playlist, null, applySongs, reason))
         }
     }
 
@@ -243,7 +259,8 @@ constructor(
      *
      * @param playlist The playlist to delete.
      * @param rude Whether to immediately delete the playlist or prompt the user first. This should
-     *   be false at almost all times.
+     *   be false at almost all times. This argument is internal and does not need to be specified
+     *   in normal use.
      */
     fun deletePlaylist(playlist: Playlist, rude: Boolean = false) {
         if (rude) {
@@ -375,7 +392,12 @@ sealed interface PlaylistDecision {
      *
      * @param playlist The playlist to act on.
      */
-    data class Rename(val playlist: Playlist, val reason: Reason) : PlaylistDecision {
+    data class Rename(
+        val playlist: Playlist,
+        val template: String?,
+        val applySongs: List<Song>,
+        val reason: Reason
+    ) : PlaylistDecision {
         enum class Reason {
             ACTION,
             IMPORT

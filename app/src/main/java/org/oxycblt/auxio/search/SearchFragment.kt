@@ -321,7 +321,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 }
                 is PlaylistDecision.Rename -> {
                     logD("Renaming ${decision.playlist}")
-                    SearchFragmentDirections.renamePlaylist(decision.playlist.uid)
+                    SearchFragmentDirections.renamePlaylist(
+                        decision.playlist.uid,
+                        decision.template,
+                        decision.applySongs.map { it.uid }.toTypedArray(),
+                        decision.reason)
                 }
                 is PlaylistDecision.Delete -> {
                     logD("Deleting ${decision.playlist}")

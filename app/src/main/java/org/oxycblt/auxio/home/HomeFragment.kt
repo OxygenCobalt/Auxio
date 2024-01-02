@@ -487,7 +487,11 @@ class HomeFragment :
                 }
                 is PlaylistDecision.Rename -> {
                     logD("Renaming ${decision.playlist}")
-                    HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
+                    HomeFragmentDirections.renamePlaylist(
+                        decision.playlist.uid,
+                        decision.template,
+                        decision.applySongs.map { it.uid }.toTypedArray(),
+                        decision.reason)
                 }
                 is PlaylistDecision.Export -> {
                     logD("Exporting ${decision.playlist}")

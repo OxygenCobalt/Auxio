@@ -72,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/playback_controls_container"
-        app:layout_constraintEnd_toEndOf="@+id/playback_cover_pager"
+        app:layout_constraintEnd_toEndOf="@+id/playback_info_container"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -430,6 +430,16 @@
         <argument
             android:name="playlistUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <argument
+            android:name="template"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="applySongUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <argument
+            android:name="reason"
+            app:argType="org.oxycblt.auxio.music.PlaylistDecision$Rename$Reason" />
     </dialog>
 
     <dialog

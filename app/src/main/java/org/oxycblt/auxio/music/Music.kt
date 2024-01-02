@@ -348,6 +348,7 @@ interface Genre : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Playlist : MusicParent {
+    override val name: Name.Known
     override val songs: List<Song>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
