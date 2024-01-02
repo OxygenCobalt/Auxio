@@ -305,7 +305,7 @@
     <string name="def_album_count">无专辑</string>
     <string name="lbl_demo">演示</string>
     <string name="lbl_demos">样曲</string>
-    <string name="lbl_import_playlist">导入了播放列表</string>
+    <string name="lbl_imported_playlist">导入了播放列表</string>
     <string name="lbl_path">路径</string>
     <string name="lbl_empty_playlist">清空播放列表</string>
     <string name="err_import_failed">无法从此文件导入播放列表</string>

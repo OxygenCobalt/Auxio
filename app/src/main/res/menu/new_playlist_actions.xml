@@ -3,7 +3,7 @@
     <item
         android:id="@+id/action_import_playlist"
         android:icon="@drawable/ic_import_24"
-        android:title="@string/lbl_import_playlist" />
+        android:title="@string/lbl_imported_playlist" />
     <item
         android:id="@+id/action_new_playlist"
         android:icon="@drawable/ic_playlist_24"

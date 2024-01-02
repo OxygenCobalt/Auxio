@@ -299,7 +299,7 @@
     <string name="def_album_count">ਕੋਈ ਐਲਬਮ ਨਹੀਂ</string>
     <string name="lbl_demo">ਡੈਮੋ</string>
     <string name="lbl_demos">ਡੈਮੋ</string>
-    <string name="lbl_import_playlist">ਇੰਪੋਰਟਡ ਪਲੇਲਿਸਟ</string>
+    <string name="lbl_imported_playlist">ਇੰਪੋਰਟਡ ਪਲੇਲਿਸਟ</string>
     <string name="lbl_path">ਮਾਰਗ</string>
     <string name="err_import_failed">ਇਸ ਫਾਈਲ ਤੋਂ ਪਲੇਲਿਸਟ ਨੂੰ ਆਯਾਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
     <string name="lbl_empty_playlist">ਖਾਲੀ ਪਲੇਲਿਸਟ</string>

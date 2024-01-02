@@ -305,7 +305,7 @@
     <string name="def_album_count">Няма альбомаў</string>
     <string name="lbl_demo">Дэма</string>
     <string name="lbl_demos">Дэманстрацыі</string>
-    <string name="lbl_import_playlist">Імпартаваны плэйліст</string>
+    <string name="lbl_imported_playlist">Імпартаваны плэйліст</string>
     <string name="lbl_path">Шлях</string>
     <string name="err_import_failed">Немагчыма імпартаваць плэйліст з гэтага файла</string>
     <string name="lbl_empty_playlist">Пусты плэйліст</string>

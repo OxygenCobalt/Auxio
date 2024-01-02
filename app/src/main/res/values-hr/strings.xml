@@ -300,7 +300,7 @@
     <string name="lbl_report">Prijavi grešku</string>
     <string name="lbl_copied">Kopirano</string>
     <string name="def_album_count">Nema albuma</string>
-    <string name="lbl_import_playlist">Uvezen popis pjesama</string>
+    <string name="lbl_imported_playlist">Uvezen popis pjesama</string>
     <string name="lbl_path">Staza</string>
     <string name="lbl_demo">Demo snimka</string>
     <string name="lbl_demos">Demo snimke</string>
