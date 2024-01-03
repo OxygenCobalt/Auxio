@@ -633,7 +633,7 @@ class HomeFragment :
     private fun handleSpeedDialBoundaryTouch(event: MotionEvent): Boolean {
         val binding = binding ?: return false
 
-        if (binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
+        if (homeModel.speedDialOpen.value && binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
             // Convert absolute coordinates to relative coordinates
             val offsetX = event.x - binding.homeNewPlaylistFab.x
             val offsetY = event.y - binding.homeNewPlaylistFab.y
