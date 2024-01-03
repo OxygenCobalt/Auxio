@@ -76,6 +76,7 @@ class MainFragment :
     private var sheetBackCallback: SheetBackPressedCallback? = null
     private var detailBackCallback: DetailBackPressedCallback? = null
     private var selectionBackCallback: SelectionBackPressedCallback? = null
+    private var speedDialBackCallback: SpeedDialBackPressedCallback? = null
     private var selectionNavigationListener: DialogAwareNavigationListener? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
@@ -109,6 +110,8 @@ class MainFragment :
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
             SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
+        val speedDialBackCallback =
+            SpeedDialBackPressedCallback(homeModel).also { speedDialBackCallback = it }
 
         selectionNavigationListener = DialogAwareNavigationListener(listModel::dropSelection)
 
@@ -158,6 +161,7 @@ class MainFragment :
         collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
         collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
+        collectImmediately(homeModel.speedDialOpen, speedDialBackCallback::invalidateEnabled)
         collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
@@ -181,6 +185,7 @@ class MainFragment :
         // navigation, navigation out of detail views, etc. We have to do this here in
         // onResume or otherwise the FragmentManager will have precedence.
         requireActivity().onBackPressedDispatcher.apply {
+            addCallback(viewLifecycleOwner, requireNotNull(speedDialBackCallback))
             addCallback(viewLifecycleOwner, requireNotNull(selectionBackCallback))
             addCallback(viewLifecycleOwner, requireNotNull(detailBackCallback))
             addCallback(viewLifecycleOwner, requireNotNull(sheetBackCallback))
@@ -197,6 +202,7 @@ class MainFragment :
 
     override fun onDestroyBinding(binding: FragmentMainBinding) {
         super.onDestroyBinding(binding)
+        speedDialBackCallback = null
         sheetBackCallback = null
         detailBackCallback = null
         selectionBackCallback = null
@@ -218,6 +224,13 @@ class MainFragment :
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
+        if (playbackRatio > 0f && homeModel.speedDialOpen.value) {
+            // Stupid hack to prevent you from sliding the sheet up without closing the speed
+            // dial. Filtering out ACTION_MOVE events will cause back gestures to close the speed
+            // dial, which is super finicky behavior.
+            homeModel.setSpeedDialOpen(false)
+        }
+
         val outPlaybackRatio = 1 - playbackRatio
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
@@ -491,6 +504,19 @@ class MainFragment :
 
         fun invalidateEnabled(selection: List<Music>) {
             isEnabled = selection.isNotEmpty()
+        }
+    }
+
+    private inner class SpeedDialBackPressedCallback(private val homeModel: HomeViewModel) :
+        OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (homeModel.speedDialOpen.value) {
+                homeModel.setSpeedDialOpen(false)
+            }
+        }
+
+        fun invalidateEnabled(open: Boolean) {
+            isEnabled = open
         }
     }
 }

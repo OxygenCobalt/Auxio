@@ -149,14 +149,20 @@ class HomeFragment :
         binding.root.rootView.apply {
             // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
             // it ourselves.
+            findViewById<View>(R.id.main_scrim).setOnClickListener {
+                homeModel.setSpeedDialOpen(false)
+            }
+
             findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
                 handleSpeedDialBoundaryTouch(event)
-                false
+            }
+
+            findViewById<View>(R.id.sheet_scrim).setOnClickListener {
+                homeModel.setSpeedDialOpen(false)
             }
 
             findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
                 handleSpeedDialBoundaryTouch(event)
-                false
             }
         }
 
@@ -212,6 +218,7 @@ class HomeFragment :
         binding.homeNewPlaylistFab.apply {
             inflate(R.menu.new_playlist_actions)
             setOnActionSelectedListener(this@HomeFragment)
+            setChangeListener(homeModel::setSpeedDialOpen)
         }
 
         hideAllFabs()
@@ -224,6 +231,7 @@ class HomeFragment :
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
         collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
+        collect(homeModel.speedDialOpen, ::updateSpeedDial)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
@@ -246,6 +254,7 @@ class HomeFragment :
         storagePermissionLauncher = null
         binding.homeAppbar.removeOnOffsetChangedListener(this)
         binding.homeNormalToolbar.setOnMenuItemClickListener(null)
+        binding.homeNewPlaylistFab.setChangeListener(null)
         binding.homeNewPlaylistFab.setOnActionSelectedListener(null)
     }
 
@@ -577,8 +586,6 @@ class HomeFragment :
                     return
                 }
 
-                logD(binding.homeShuffleFab.isOrWillBeShown)
-
                 if (binding.homeShuffleFab.isOrWillBeShown) {
                     logD("Animating transition")
                     binding.homeShuffleFab.hide(
@@ -606,12 +613,51 @@ class HomeFragment :
         }
     }
 
-    private fun handleSpeedDialBoundaryTouch(event: MotionEvent) {
+    private fun updateSpeedDial(open: Boolean) {
         val binding = requireBinding()
-        if (binding.homeNewPlaylistFab.isOpen &&
-            !binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
-            binding.homeNewPlaylistFab.close()
+
+        binding.root.rootView.apply {
+            // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
+            // it ourselves.
+            findViewById<View>(R.id.main_scrim).isClickable = open
+            findViewById<View>(R.id.sheet_scrim).isClickable = open
         }
+
+        if (open) {
+            binding.homeNewPlaylistFab.open(true)
+        } else {
+            binding.homeNewPlaylistFab.close(true)
+        }
+    }
+
+    private fun handleSpeedDialBoundaryTouch(event: MotionEvent): Boolean {
+        val binding = binding ?: return false
+
+        if (binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
+            // Convert absolute coordinates to relative coordinates
+            val offsetX = event.x - binding.homeNewPlaylistFab.x
+            val offsetY = event.y - binding.homeNewPlaylistFab.y
+
+            // Create a new MotionEvent with relative coordinates
+            val relativeEvent =
+                MotionEvent.obtain(
+                    event.downTime,
+                    event.eventTime,
+                    event.action,
+                    offsetX,
+                    offsetY,
+                    event.metaState)
+
+            // Dispatch the relative MotionEvent to the target child view
+            val handled = binding.homeNewPlaylistFab.dispatchTouchEvent(relativeEvent)
+
+            // Recycle the relative MotionEvent
+            relativeEvent.recycle()
+
+            return handled
+        }
+
+        return false
     }
 
     private fun handleShow(show: Show?) {

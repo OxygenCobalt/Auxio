@@ -224,9 +224,9 @@ constructor(
      * @param playlist The [Playlist] to rename,
      * @param name The new name of the [Playlist]. If null, the user will be prompted for a name.
      * @param applySongs The songs to apply to the playlist after renaming. If empty, no songs will
-     * be applied. This argument is internal and does not need to be specified in normal use.
+     *   be applied. This argument is internal and does not need to be specified in normal use.
      * @param reason The reason why the playlist is being renamed. This argument is internal and
-     * does not need to be specified in normal use.
+     *   does not need to be specified in normal use.
      */
     fun renamePlaylist(
         playlist: Playlist,

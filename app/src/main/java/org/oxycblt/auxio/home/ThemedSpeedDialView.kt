@@ -66,6 +66,7 @@ import org.oxycblt.auxio.util.getDimenPixels
 class ThemedSpeedDialView : SpeedDialView {
     private var mainFabAnimator: Animator? = null
     private val spacingSmall = context.getDimenPixels(R.dimen.spacing_small)
+    private var innerChangeListener: ((Boolean) -> Unit)? = null
 
     constructor(context: Context) : super(context)
 
@@ -126,6 +127,7 @@ class ThemedSpeedDialView : SpeedDialView {
                                 })
                             start()
                         }
+                    innerChangeListener?.invoke(isOpen)
                 }
             })
     }
@@ -178,8 +180,6 @@ class ThemedSpeedDialView : SpeedDialView {
         val labelColor = context.getAttrColorCompat(android.R.attr.textColorSecondary)
         val labelBackgroundColor =
             context.getAttrColorCompat(com.google.android.material.R.attr.colorSurface)
-        val labelStroke =
-            context.getAttrColorCompat(com.google.android.material.R.attr.colorOutline)
         val labelElevation =
             context.getDimen(com.google.android.material.R.dimen.m3_card_elevated_elevation)
         val cornerRadius = context.getDimenPixels(R.dimen.spacing_medium)
@@ -235,6 +235,10 @@ class ThemedSpeedDialView : SpeedDialView {
         if (state.isOpen) {
             toggle(false)
         }
+    }
+
+    fun setChangeListener(listener: ((Boolean) -> Unit)?) {
+        innerChangeListener = listener
     }
 
     companion object {
