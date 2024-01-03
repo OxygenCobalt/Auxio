@@ -38,7 +38,9 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.ui.PlaybackPagerAdapter
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
+import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -58,11 +60,13 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
-    StyledSeekBar.Listener {
+    StyledSeekBar.Listener,
+    SwipeCoverView.OnSwipeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
+    private var coverAdapter: PlaybackPagerAdapter? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -99,20 +103,10 @@ class PlaybackPanelFragment :
             }
         }
 
-        // Set up marquee on song information, alongside click handlers that navigate to each
-        // respective item.
-        binding.playbackSong.apply {
-            isSelected = true
-            setOnClickListener { playbackModel.song.value?.let(detailModel::showAlbum) }
-        }
-        binding.playbackArtist.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentArtist() }
-        }
-        binding.playbackAlbum.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentAlbum() }
-        }
+        binding.playbackCover.onSwipeListener = this
+        binding.playbackSong.setOnClickListener { navigateToCurrentSong() }
+        binding.playbackArtist.setOnClickListener { navigateToCurrentArtist() }
+        binding.playbackAlbum.setOnClickListener { navigateToCurrentAlbum() }
 
         binding.playbackSeekBar.listener = this
 
@@ -135,11 +129,8 @@ class PlaybackPanelFragment :
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
+        coverAdapter = null
         binding.playbackToolbar.setOnMenuItemClickListener(null)
-        // Marquee elements leak if they are not disabled when the views are destroyed.
-        binding.playbackSong.isSelected = false
-        binding.playbackArtist.isSelected = false
-        binding.playbackAlbum.isSelected = false
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -168,6 +159,14 @@ class PlaybackPanelFragment :
 
     override fun onSeekConfirmed(positionDs: Long) {
         playbackModel.seekTo(positionDs)
+    }
+
+    override fun onSwipePrevious() {
+        playbackModel.prev()
+    }
+
+    override fun onSwipeNext() {
+        playbackModel.next()
     }
 
     private fun updateSong(song: Song?) {
@@ -210,6 +209,10 @@ class PlaybackPanelFragment :
 
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffled
+    }
+
+    private fun navigateToCurrentSong() {
+        playbackModel.song.value?.let(detailModel::showAlbum)
     }
 
     private fun navigateToCurrentArtist() {

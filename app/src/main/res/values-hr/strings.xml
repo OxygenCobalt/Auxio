@@ -40,8 +40,6 @@
     <string name="lbl_queue">Popis pjesama</string>
     <string name="lbl_play_next">Reproduciraj sljedeću</string>
     <string name="lbl_props">Svojstva pjesme</string>
-    <string name="lbl_file_name">Naziv datoteke</string>
-    <string name="lbl_relative_path">Glavni direktorij</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Veličina</string>
     <string name="lbl_bitrate">Brzina prijenosa</string>
@@ -119,7 +117,7 @@
     <string name="desc_genre_image">Slika žanra za %s</string>
     <string name="def_artist">Nepoznat izvođač</string>
     <string name="def_genre">Nepoznat žanr</string>
-    <string name="def_track">Nema staze</string>
+    <string name="def_track">Nema zvučnog zapisa</string>
     <string name="def_date">Bez datuma</string>
     <string name="def_playback">Glazba se ne reproducira</string>
     <string name="cdc_mp3">MPEG-1 zvuk</string>
@@ -301,4 +299,11 @@
     <string name="lbl_error_info">Podaci greške</string>
     <string name="lbl_report">Prijavi grešku</string>
     <string name="lbl_copied">Kopirano</string>
+    <string name="def_album_count">Nema albuma</string>
+    <string name="lbl_imported_playlist">Uvezen popis pjesama</string>
+    <string name="lbl_path">Staza</string>
+    <string name="lbl_demo">Demo snimka</string>
+    <string name="lbl_demos">Demo snimke</string>
+    <string name="err_import_failed">Nije bilo moguće uvesti popis pjesama iz ove datoteke</string>
+    <string name="lbl_empty_playlist">Prazan popis pjesama</string>
 </resources>

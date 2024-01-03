@@ -157,7 +157,6 @@
     <string name="set_pre_amp_warning">Внимание: Изменение предусиления на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
     <string name="lbl_song_detail">Сведения</string>
     <string name="lbl_props">Свойства трека</string>
-    <string name="lbl_relative_path">Путь</string>
     <string name="lbl_format">Формат</string>
     <string name="lbl_size">Размер</string>
     <string name="lbl_sample_rate">Частота дискретизации</string>
@@ -165,7 +164,6 @@
     <string name="lbl_library_counts">Статистика библиотеки</string>
     <string name="set_restore_state">Восстановить состояние воспроизведения</string>
     <string name="lbl_duration">Продолжительность</string>
-    <string name="lbl_file_name">Имя файла</string>
     <string name="lbl_ep">Мини-альбом</string>
     <string name="lbl_eps">Мини-альбомы</string>
     <string name="lbl_single">Сингл</string>
@@ -313,4 +311,21 @@
     <string name="lbl_error_info">Информация об ошибке</string>
     <string name="lbl_report">Отчёт об ошибке</string>
     <string name="lbl_copied">Скопировано</string>
+    <string name="def_album_count">Нет альбомов</string>
+    <string name="lbl_demo">Демо</string>
+    <string name="lbl_demos">Демонстрации</string>
+    <string name="lbl_imported_playlist">Импортированный плейлист</string>
+    <string name="lbl_path">Путь</string>
+    <string name="err_import_failed">Невозможно импортировать плейлист из этого файла</string>
+    <string name="lbl_empty_playlist">Пустой плейлист</string>
+    <string name="lbl_path_style_absolute">Абсолютный</string>
+    <string name="lbl_import">Импорт</string>
+    <string name="lbl_windows_paths">Использовать пути, совместимые с Windows</string>
+    <string name="lbl_export">Экспорт</string>
+    <string name="lbl_path_style_relative">Относительный</string>
+    <string name="lng_playlist_imported">Плейлист импортирован</string>
+    <string name="lbl_path_style">Стиль пути</string>
+    <string name="lng_playlist_exported">Плейлист экспортирован</string>
+    <string name="lbl_export_playlist">Экспортировать плейлист</string>
+    <string name="err_export_failed">Невозможно экспортировать плейлист в этот файл</string>
 </resources>

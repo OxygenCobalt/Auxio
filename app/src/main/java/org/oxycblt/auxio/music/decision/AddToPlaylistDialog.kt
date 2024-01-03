@@ -32,12 +32,12 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.showToast
 
 /**
  * A dialog that allows the user to pick a specific playlist to add song(s) to.
@@ -86,7 +86,6 @@ class AddToPlaylistDialog :
 
     override fun onClick(item: PlaylistChoice, viewHolder: RecyclerView.ViewHolder) {
         musicModel.addToPlaylist(pickerModel.currentSongsToAdd.value ?: return, item.playlist)
-        requireContext().showToast(R.string.lng_playlist_added)
         findNavController().navigateUp()
     }
 
@@ -100,7 +99,8 @@ class AddToPlaylistDialog :
         val songs = pickerModel.currentSongsToAdd.value ?: return
         findNavController()
             .navigateSafe(
-                AddToPlaylistDialogDirections.newPlaylist(songs.map { it.uid }.toTypedArray()))
+                AddToPlaylistDialogDirections.newPlaylist(
+                    songs.map { it.uid }.toTypedArray(), null, PlaylistDecision.New.Reason.ADD))
     }
 
     private fun updatePendingSongs(songs: List<Song>?) {

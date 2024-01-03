@@ -16,13 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.dirs
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicDirBinding
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
@@ -35,11 +36,11 @@ import org.oxycblt.auxio.util.logD
  */
 class DirectoryAdapter(private val listener: Listener) :
     RecyclerView.Adapter<MusicDirViewHolder>() {
-    private val _dirs = mutableListOf<Directory>()
+    private val _dirs = mutableListOf<Path>()
     /**
-     * The current list of [Directory]s, may not line up with [MusicDirectories] due to removals.
+     * The current list of [SystemPath]s, may not line up with [MusicDirectories] due to removals.
      */
-    val dirs: List<Directory> = _dirs
+    val dirs: List<Path> = _dirs
 
     override fun getItemCount() = dirs.size
 
@@ -50,37 +51,37 @@ class DirectoryAdapter(private val listener: Listener) :
         holder.bind(dirs[position], listener)
 
     /**
-     * Add a [Directory] to the end of the list.
+     * Add a [Path] to the end of the list.
      *
-     * @param dir The [Directory] to add.
+     * @param path The [Path] to add.
      */
-    fun add(dir: Directory) {
-        if (_dirs.contains(dir)) return
-        logD("Adding $dir")
-        _dirs.add(dir)
+    fun add(path: Path) {
+        if (_dirs.contains(path)) return
+        logD("Adding $path")
+        _dirs.add(path)
         notifyItemInserted(_dirs.lastIndex)
     }
 
     /**
-     * Add a list of [Directory] instances to the end of the list.
+     * Add a list of [Path] instances to the end of the list.
      *
-     * @param dirs The [Directory] instances to add.
+     * @param path The [Path] instances to add.
      */
-    fun addAll(dirs: List<Directory>) {
-        logD("Adding ${dirs.size} directories")
-        val oldLastIndex = dirs.lastIndex
-        _dirs.addAll(dirs)
-        notifyItemRangeInserted(oldLastIndex, dirs.size)
+    fun addAll(path: List<Path>) {
+        logD("Adding ${path.size} directories")
+        val oldLastIndex = path.lastIndex
+        _dirs.addAll(path)
+        notifyItemRangeInserted(oldLastIndex, path.size)
     }
 
     /**
-     * Remove a [Directory] from the list.
+     * Remove a [Path] from the list.
      *
-     * @param dir The [Directory] to remove. Must exist in the list.
+     * @param path The [Path] to remove. Must exist in the list.
      */
-    fun remove(dir: Directory) {
-        logD("Removing $dir")
-        val idx = _dirs.indexOf(dir)
+    fun remove(path: Path) {
+        logD("Removing $path")
+        val idx = _dirs.indexOf(path)
         _dirs.removeAt(idx)
         notifyItemRemoved(idx)
     }
@@ -88,7 +89,7 @@ class DirectoryAdapter(private val listener: Listener) :
     /** A Listener for [DirectoryAdapter] interactions. */
     interface Listener {
         /** Called when the delete button on a directory item is clicked. */
-        fun onRemoveDirectory(dir: Directory)
+        fun onRemoveDirectory(dir: Path)
     }
 }
 
@@ -102,12 +103,12 @@ class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBi
     /**
      * Bind new data to this instance.
      *
-     * @param dir The new [Directory] to bind.
+     * @param path The new [Path] to bind.
      * @param listener A [DirectoryAdapter.Listener] to bind interactions to.
      */
-    fun bind(dir: Directory, listener: DirectoryAdapter.Listener) {
-        binding.dirPath.text = dir.resolveName(binding.context)
-        binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(dir) }
+    fun bind(path: Path, listener: DirectoryAdapter.Listener) {
+        binding.dirPath.text = path.resolve(binding.context)
+        binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(path) }
     }
 
     companion object {

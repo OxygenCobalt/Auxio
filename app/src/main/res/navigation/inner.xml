@@ -67,6 +67,9 @@
             android:id="@+id/rename_playlist"
             app:destination="@id/rename_playlist_dialog" />
         <action
+            android:id="@+id/export_playlist"
+            app:destination="@id/export_playlist_dialog" />
+        <action
             android:id="@+id/delete_playlist"
             app:destination="@id/delete_playlist_dialog" />
         <action
@@ -180,6 +183,9 @@
         <action
             android:id="@+id/delete_playlist"
             app:destination="@id/delete_playlist_dialog" />
+        <action
+            android:id="@+id/export_playlist"
+            app:destination="@id/export_playlist_dialog" />
         <action
             android:id="@+id/add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
@@ -377,6 +383,9 @@
             android:id="@+id/rename_playlist"
             app:destination="@id/rename_playlist_dialog" />
         <action
+            android:id="@+id/export_playlist"
+            app:destination="@id/export_playlist_dialog" />
+        <action
             android:id="@+id/delete_playlist"
             app:destination="@id/delete_playlist_dialog" />
         <action
@@ -404,11 +413,38 @@
         <argument
             android:name="songUids"
             app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <argument
+            android:name="template"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="reason"
+            app:argType="org.oxycblt.auxio.music.PlaylistDecision$New$Reason" />
     </dialog>
 
     <dialog
         android:id="@+id/rename_playlist_dialog"
         android:name="org.oxycblt.auxio.music.decision.RenamePlaylistDialog"
+        android:label="rename_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <argument
+            android:name="template"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="applySongUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <argument
+            android:name="reason"
+            app:argType="org.oxycblt.auxio.music.PlaylistDecision$Rename$Reason" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/export_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.decision.ExportPlaylistDialog"
         android:label="rename_playlist_dialog"
         tools:layout="@layout/dialog_playlist_name">
         <argument

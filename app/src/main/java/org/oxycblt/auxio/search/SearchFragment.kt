@@ -23,6 +23,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
@@ -50,7 +52,9 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
+import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
@@ -58,8 +62,10 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.showToast
 
 /**
  * The [ListFragment] providing search functionality for the music library.
@@ -77,6 +83,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     private val searchAdapter = SearchAdapter(this)
+    private var getContentLauncher: ActivityResultLauncher<String>? = null
+    private var pendingImportTarget: Playlist? = null
     private var imm: InputMethodManager? = null
     private var launchedKeyboard = false
 
@@ -97,6 +105,19 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         super.onBindingCreated(binding, savedInstanceState)
 
         imm = binding.context.getSystemServiceCompat(InputMethodManager::class)
+
+        getContentLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                if (uri == null) {
+                    logW("No URI returned from file picker")
+                    return@registerForActivityResult
+                }
+
+                logD("Received playlist URI $uri")
+                musicModel.importPlaylist(uri, pendingImportTarget)
+            }
+
+        // --- UI SETUP ---
 
         binding.searchNormalToolbar.apply {
             // Initialize the current filtering mode.
@@ -141,7 +162,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
         collectImmediately(listModel.selected, ::updateSelection)
         collect(listModel.menu.flow, ::handleMenu)
-        collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
+        collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
@@ -283,17 +305,35 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         }
     }
 
-    private fun handleDecision(decision: PlaylistDecision?) {
+    private fun handlePlaylistDecision(decision: PlaylistDecision?) {
         if (decision == null) return
         val directions =
             when (decision) {
+                is PlaylistDecision.Import -> {
+                    logD("Importing playlist")
+                    pendingImportTarget = decision.target
+                    requireNotNull(getContentLauncher) {
+                            "Content picker launcher was not available"
+                        }
+                        .launch(M3U.MIME_TYPE)
+                    musicModel.playlistDecision.consume()
+                    return
+                }
                 is PlaylistDecision.Rename -> {
                     logD("Renaming ${decision.playlist}")
-                    SearchFragmentDirections.renamePlaylist(decision.playlist.uid)
+                    SearchFragmentDirections.renamePlaylist(
+                        decision.playlist.uid,
+                        decision.template,
+                        decision.applySongs.map { it.uid }.toTypedArray(),
+                        decision.reason)
                 }
                 is PlaylistDecision.Delete -> {
                     logD("Deleting ${decision.playlist}")
                     SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Export -> {
+                    logD("Exporting ${decision.playlist}")
+                    SearchFragmentDirections.exportPlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Add -> {
                     logD("Adding ${decision.songs.size} to a playlist")
@@ -305,6 +345,12 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 }
             }
         findNavController().navigateSafe(directions)
+    }
+
+    private fun handlePlaylistMessage(message: PlaylistMessage?) {
+        if (message == null) return
+        requireContext().showToast(message.stringRes)
+        musicModel.playlistMessage.consume()
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {

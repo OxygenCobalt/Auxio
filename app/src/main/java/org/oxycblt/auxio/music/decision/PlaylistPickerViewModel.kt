@@ -30,7 +30,9 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.external.ExportConfig
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -43,15 +45,25 @@ import org.oxycblt.auxio.util.logW
 @HiltViewModel
 class PlaylistPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
-    private val _currentPendingPlaylist = MutableStateFlow<PendingPlaylist?>(null)
+    private val _currentPendingNewPlaylist = MutableStateFlow<PendingNewPlaylist?>(null)
     /** A new [Playlist] having it's name chosen by the user. Null if none yet. */
-    val currentPendingPlaylist: StateFlow<PendingPlaylist?>
-        get() = _currentPendingPlaylist
+    val currentPendingNewPlaylist: StateFlow<PendingNewPlaylist?>
+        get() = _currentPendingNewPlaylist
 
-    private val _currentPlaylistToRename = MutableStateFlow<Playlist?>(null)
+    private val _currentPendingRenamePlaylist = MutableStateFlow<PendingRenamePlaylist?>(null)
     /** An existing [Playlist] that is being renamed. Null if none yet. */
-    val currentPlaylistToRename: StateFlow<Playlist?>
-        get() = _currentPlaylistToRename
+    val currentPendingRenamePlaylist: StateFlow<PendingRenamePlaylist?>
+        get() = _currentPendingRenamePlaylist
+
+    private val _currentPlaylistToExport = MutableStateFlow<Playlist?>(null)
+    /** An existing [Playlist] that is being exported. Null if none yet. */
+    val currentPlaylistToExport: StateFlow<Playlist?>
+        get() = _currentPlaylistToExport
+
+    private val _currentExportConfig = MutableStateFlow(DEFAULT_EXPORT_CONFIG)
+    /** The current [ExportConfig] to use when exporting a playlist. */
+    val currentExportConfig: StateFlow<ExportConfig>
+        get() = _currentExportConfig
 
     private val _currentPlaylistToDelete = MutableStateFlow<Playlist?>(null)
     /** The current [Playlist] that needs it's deletion confirmed. Null if none yet. */
@@ -59,7 +71,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         get() = _currentPlaylistToDelete
 
     private val _chosenName = MutableStateFlow<ChosenName>(ChosenName.Empty)
-    /** The users chosen name for [currentPendingPlaylist] or [currentPlaylistToRename]. */
+    /** The users chosen name for [currentPendingNewPlaylist] or [currentPendingRenamePlaylist]. */
     val chosenName: StateFlow<ChosenName>
         get() = _chosenName
 
@@ -81,13 +93,15 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         var refreshChoicesWith: List<Song>? = null
         val deviceLibrary = musicRepository.deviceLibrary
         if (changes.deviceLibrary && deviceLibrary != null) {
-            _currentPendingPlaylist.value =
-                _currentPendingPlaylist.value?.let { pendingPlaylist ->
-                    PendingPlaylist(
+            _currentPendingNewPlaylist.value =
+                _currentPendingNewPlaylist.value?.let { pendingPlaylist ->
+                    PendingNewPlaylist(
                         pendingPlaylist.preferredName,
-                        pendingPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.uid) })
+                        pendingPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.uid) },
+                        pendingPlaylist.template,
+                        pendingPlaylist.reason)
                 }
-            logD("Updated pending playlist: ${_currentPendingPlaylist.value?.preferredName}")
+            logD("Updated pending playlist: ${_currentPendingNewPlaylist.value?.preferredName}")
 
             _currentSongsToAdd.value =
                 _currentSongsToAdd.value?.let { pendingSongs ->
@@ -110,6 +124,14 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
             }
             logD("Updated chosen name to $chosenName")
             refreshChoicesWith = refreshChoicesWith ?: _currentSongsToAdd.value
+
+            // TODO: Add music syncing for other playlist states here
+
+            _currentPlaylistToExport.value =
+                _currentPlaylistToExport.value?.let { playlist ->
+                    musicRepository.userLibrary?.findPlaylist(playlist.uid)
+                }
+            logD("Updated playlist to export to ${_currentPlaylistToExport.value}")
         }
 
         refreshChoicesWith?.let(::refreshPlaylistChoices)
@@ -120,12 +142,18 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
-     * Set a new [currentPendingPlaylist] from a new batch of pending [Song] [Music.UID]s.
+     * Set a new [currentPendingNewPlaylist] from a new batch of pending [Song] [Music.UID]s.
      *
      * @param context [Context] required to generate a playlist name.
      * @param songUids The [Music.UID]s of songs to be present in the playlist.
+     * @param reason The reason the playlist is being created.
      */
-    fun setPendingPlaylist(context: Context, songUids: Array<Music.UID>) {
+    fun setPendingPlaylist(
+        context: Context,
+        songUids: Array<Music.UID>,
+        template: String?,
+        reason: PlaylistDecision.New.Reason
+    ) {
         logD("Opening ${songUids.size} songs to create a playlist from")
         val userLibrary = musicRepository.userLibrary ?: return
         val songs =
@@ -147,9 +175,9 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                 possibleName
             }
 
-        _currentPendingPlaylist.value =
+        _currentPendingNewPlaylist.value =
             if (possibleName != null && songs != null) {
-                PendingPlaylist(possibleName, songs)
+                PendingNewPlaylist(possibleName, songs, template, reason)
             } else {
                 logW("Given song UIDs to create were invalid")
                 null
@@ -157,20 +185,59 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
-     * Set a new [currentPlaylistToRename] from a [Playlist] [Music.UID].
+     * Set a new [currentPendingRenamePlaylist] from a [Playlist] [Music.UID].
      *
      * @param playlistUid The [Music.UID]s of the [Playlist] to rename.
      */
-    fun setPlaylistToRename(playlistUid: Music.UID) {
+    fun setPlaylistToRename(
+        playlistUid: Music.UID,
+        applySongUids: Array<Music.UID>,
+        template: String?,
+        reason: PlaylistDecision.Rename.Reason
+    ) {
         logD("Opening playlist $playlistUid to rename")
-        _currentPlaylistToRename.value = musicRepository.userLibrary?.findPlaylist(playlistUid)
-        if (_currentPlaylistToDelete.value == null) {
-            logW("Given playlist UID to rename was invalid")
+        val playlist = musicRepository.userLibrary?.findPlaylist(playlistUid)
+        val applySongs =
+            musicRepository.deviceLibrary?.let { applySongUids.mapNotNull(it::findSong) }
+
+        _currentPendingRenamePlaylist.value =
+            if (playlist != null && applySongs != null) {
+                PendingRenamePlaylist(playlist, applySongs, template, reason)
+            } else {
+                logW("Given playlist UID to rename was invalid")
+                null
+            }
+    }
+
+    /**
+     * Set a new [currentPlaylisttoExport] from a [Playlist] [Music.UID].
+     *
+     * @param playlistUid The [Music.UID] of the [Playlist] to export.
+     */
+    fun setPlaylistToExport(playlistUid: Music.UID) {
+        logD("Opening playlist $playlistUid to export")
+        // TODO: Add this guard to the rest of the methods here
+        if (_currentPlaylistToExport.value?.uid == playlistUid) return
+        _currentPlaylistToExport.value = musicRepository.userLibrary?.findPlaylist(playlistUid)
+        if (_currentPlaylistToExport.value == null) {
+            logW("Given playlist UID to export was invalid")
+        } else {
+            _currentExportConfig.value = DEFAULT_EXPORT_CONFIG
         }
     }
 
     /**
-     * Set a new [currentPendingPlaylist] from a new [Playlist] [Music.UID].
+     * Update [currentExportConfig] based on new user input.
+     *
+     * @param exportConfig The new [ExportConfig] to use.
+     */
+    fun setExportConfig(exportConfig: ExportConfig) {
+        logD("Setting export config to $exportConfig")
+        _currentExportConfig.value = exportConfig
+    }
+
+    /**
+     * Set a new [currentPendingNewPlaylist] from a new [Playlist] [Music.UID].
      *
      * @param playlistUid The [Music.UID] of the [Playlist] to delete.
      */
@@ -238,16 +305,33 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                 PlaylistChoice(it, songs.all(songSet::contains))
             }
     }
+
+    private companion object {
+        private val DEFAULT_EXPORT_CONFIG = ExportConfig(absolute = false, windowsPaths = false)
+    }
 }
 
 /**
  * Represents a playlist that will be created as soon as a name is chosen.
  *
  * @param preferredName The name to be used by default if no other name is chosen.
- * @param songs The [Song]s to be contained in the [PendingPlaylist]
+ * @param songs The [Song]s to be contained in the [PendingNewPlaylist]
+ * @param reason The reason the playlist is being created.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class PendingPlaylist(val preferredName: String, val songs: List<Song>)
+data class PendingNewPlaylist(
+    val preferredName: String,
+    val songs: List<Song>,
+    val template: String?,
+    val reason: PlaylistDecision.New.Reason
+)
+
+data class PendingRenamePlaylist(
+    val playlist: Playlist,
+    val applySongs: List<Song>,
+    val template: String?,
+    val reason: PlaylistDecision.Rename.Reason
+)
 
 /**
  * Represents the (processed) user input from the playlist naming dialogs.

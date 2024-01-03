@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/export_paths_header"
+        style="@style/Widget.Auxio.TextView.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_large"
+        android:paddingEnd="@dimen/spacing_large"
+        android:text="@string/lbl_path_style"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/export_paths_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:gravity="center"
+        app:checkedButton="@+id/export_relative_paths"
+        app:layout_constraintTop_toBottomOf="@+id/export_paths_header"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+            android:id="@+id/export_relative_paths"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/lbl_path_style_relative"
+            tools:icon="@drawable/ic_check_24" />
+
+        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+            android:id="@+id/export_absolute_paths"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/lbl_path_style_absolute" />
+
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/spacing_tiny"
+        android:paddingBottom="@dimen/spacing_tiny">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/export_windows_paths"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_mid_medium"
+            android:clickable="false"
+            android:focusable="false"
+            android:paddingStart="@dimen/spacing_medium"
+            android:text="@string/lbl_windows_paths"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            tools:ignore="RtlSymmetry,contentDescription" />
+    </FrameLayout>
+
+</LinearLayout>

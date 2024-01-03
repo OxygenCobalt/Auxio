@@ -163,7 +163,6 @@
     <string name="set_dirs_mode_include_desc"><b>추가한 폴더에서만</b> 음악을 불러옵니다.</string>
     <string name="lbl_props">곡 속성</string>
     <string name="lbl_song_detail">속성 보기</string>
-    <string name="lbl_file_name">파일 이름</string>
     <string name="lbl_sample_rate">샘플 속도</string>
     <string name="lbl_bitrate">전송 속도</string>
     <string name="lbl_size">크기</string>
@@ -195,7 +194,6 @@
     <string name="set_separators_and">앰퍼샌드 (&amp;)</string>
     <string name="cdc_mp3">MPEG-1 오디오</string>
     <string name="lbl_date_added">추가한 날짜</string>
-    <string name="lbl_relative_path">상위 경로</string>
     <string name="set_bar_action">맞춤형 재생 동작 버튼</string>
     <string name="set_action_mode_repeat">반복 방식</string>
     <string name="desc_queue_bar">대기열 열기</string>
@@ -306,4 +304,9 @@
     <string name="lbl_copied">복사했습니다.</string>
     <string name="lbl_report">오류 보고</string>
     <string name="lbl_error_info">오류 정보</string>
+    <string name="def_album_count">앨범 없음</string>
+    <string name="lbl_path">경로</string>
+    <string name="lbl_demo">데모</string>
+    <string name="lbl_demos">데모</string>
+    <string name="lbl_empty_playlist">빈 재생 목록</string>
 </resources>

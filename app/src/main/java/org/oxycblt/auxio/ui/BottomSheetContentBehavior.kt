@@ -68,12 +68,6 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         if (consumed != lastConsumed) {
             logD("Consumed amount changed, re-applying insets")
             lastConsumed = consumed
-
-            val insets = lastInsets
-            if (insets != null) {
-                child.dispatchApplyWindowInsets(insets)
-            }
-
             lastInsets?.let(child::dispatchApplyWindowInsets)
             measureContent(parent, child, consumed)
             layoutContent(child)

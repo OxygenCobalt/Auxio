@@ -16,7 +16,8 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.image.CoverView
+
+    <org.oxycblt.auxio.playback.ui.SwipeCoverView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_marginStart="@dimen/spacing_medium"
@@ -28,8 +29,6 @@
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
         app:layout_constraintVertical_chainStyle="packed" />
 
-
-    <!-- Playback information is wrapped in a container so that marquee doesn't break -->
 
     <LinearLayout
         android:id="@+id/playback_info_container"

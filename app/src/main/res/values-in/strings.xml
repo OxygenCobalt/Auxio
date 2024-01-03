@@ -52,7 +52,6 @@
         <item quantity="other">%d Album</item>
     </plurals>
     <string name="lbl_props">Properti lagu</string>
-    <string name="lbl_file_name">Nama berkas</string>
     <string name="lbl_bitrate">Laju bit</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_cancel">Batal</string>
@@ -65,7 +64,6 @@
     <string name="set_headset_autoplay">Putar otomatis headset</string>
     <string name="set_headset_autoplay_desc">Selalu mulai memutar ketika headset tersambung (mungkin tidak berfungsi pada semua perangkat)</string>
     <string name="set_replay_gain_mode">Strategi ReplayGain</string>
-    <string name="lbl_relative_path">Path induk</string>
     <string name="lbl_size">Ukuran</string>
     <string name="lbl_sample_rate">Tingkat sampel</string>
     <string name="set_lib_tabs">Tab Pustaka</string>

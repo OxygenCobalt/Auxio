@@ -9,10 +9,10 @@
     <org.oxycblt.auxio.image.CoverView
         android:id="@+id/detail_cover"
         style="@style/Widget.Auxio.Image.Huge"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:enablePlaybackIndicator="false"
         app:enableSelectionBadge="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
     <TextView

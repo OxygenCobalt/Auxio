@@ -20,4 +20,4 @@ přesná/původní data, štítky pro řazení a další
 - Automatické přehrávání při připojení sluchátek
 - Stylové widgety, které se automaticky adaptují své velikosti
 - Plně soukromý a offline
-- Žádné zakulacené obaly alb (Pokud je tedy nechcete. Jinak jsou k dispozici.)
+- Žádné zakulacené obaly alb (ve výchozím nastavení)

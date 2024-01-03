@@ -2,8 +2,33 @@
 
 ## dev
 
+## 3.3.0
+
 #### What's New
 - Added ability to rewind/skip tracks by swiping back/forward
+- Added support for demo release type
+- Added playlist importing/export from M3U files
+
+#### What's Improved
+- Music loading will now fail when it hangs
+
+#### What's Changed
+- Albums linked to an artist only as a collaborator are no longer included
+in an artist's album count
+- File name and parent path have been combined into "Path" in the Song Properties
+view
+
+#### What's Fixed
+- Fixed music loading failing on all huawei devices
+- Fixed prior music loads not cancelling when reloading music in settings
+- Fixed certain FLAC files failing to play on some devices
+- Fixed music loading failing when duplicate tags with different casing was present
+
+#### Dev/Meta
+- Revamped path management
+
+
+## 3.2.1
 
 #### What's Improved
 - Added support for native M4A multi-value tags based on duplicate atoms

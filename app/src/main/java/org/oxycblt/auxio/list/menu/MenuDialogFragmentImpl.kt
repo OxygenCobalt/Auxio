@@ -178,7 +178,11 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Menu.ForArtist>() {
         binding.menuInfo.text =
             getString(
                 R.string.fmt_two,
-                context.getPlural(R.plurals.fmt_album_count, menu.artist.albums.size),
+                if (menu.artist.explicitAlbums.isNotEmpty()) {
+                    context.getPlural(R.plurals.fmt_album_count, menu.artist.explicitAlbums.size)
+                } else {
+                    context.getString(R.string.def_album_count)
+                },
                 if (menu.artist.songs.isNotEmpty()) {
                     context.getPlural(R.plurals.fmt_song_count, menu.artist.songs.size)
                 } else {
@@ -284,6 +288,7 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
                 R.id.action_play_next,
                 R.id.action_queue_add,
                 R.id.action_playlist_add,
+                R.id.action_export,
                 R.id.action_share)
         } else {
             setOf()
@@ -316,6 +321,8 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
                 requireContext().showToast(R.string.lng_queue_added)
             }
             R.id.action_rename -> musicModel.renamePlaylist(menu.playlist)
+            R.id.action_import -> musicModel.importPlaylist(target = menu.playlist)
+            R.id.action_export -> musicModel.exportPlaylist(menu.playlist)
             R.id.action_delete -> musicModel.deletePlaylist(menu.playlist)
             R.id.action_share -> requireContext().share(menu.playlist)
             else -> error("Unexpected menu item $item")

@@ -20,4 +20,4 @@ les dates précises/originales, le classement par tags, and plus encore
 - Lecture automatique pour les casques
 - Widgets stylisés qui s'adaptent automatiquement à leur taille
 - Complètement privé et hors-ligne
-- On arrondit pas les couvertures d'albums (Sauf si vous le voulez. Dans ce cas c'est possible.)
+- On arrondit pas les couvertures d'albums (par défaut)

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_import_playlist"
+        android:icon="@drawable/ic_import_24"
+        android:title="@string/lbl_imported_playlist" />
+    <item
+        android:id="@+id/action_new_playlist"
+        android:icon="@drawable/ic_playlist_24"
+        android:title="@string/lbl_empty_playlist" />
+</menu>

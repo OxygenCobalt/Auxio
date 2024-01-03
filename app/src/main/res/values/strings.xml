@@ -63,6 +63,10 @@
     <string name="lbl_mixtapes">Mixtapes</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
+    <!-- As in the collection of music -->
+    <string name="lbl_demo">Demo</string>
+    <!-- AS in the collection of music -->
+    <string name="lbl_demos">Demos</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
     <string name="lbl_mixes">DJ Mixes</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
@@ -84,6 +88,12 @@
     <string name="lbl_playlist">Playlist</string>
     <string name="lbl_playlists">Playlists</string>
     <string name="lbl_new_playlist">New playlist</string>
+    <string name="lbl_empty_playlist">Empty playlist</string>
+    <string name="lbl_imported_playlist">Imported playlist</string>
+    <string name="lbl_import">Import</string>
+    <string name="lbl_import_playlist">Import playlist</string>
+    <string name="lbl_export">Export</string>
+    <string name="lbl_export_playlist">Export playlist</string>
     <string name="lbl_rename">Rename</string>
     <string name="lbl_rename_playlist">Rename playlist</string>
     <string name="lbl_delete">Delete</string>
@@ -129,8 +139,7 @@
     <string name="lbl_share">Share</string>
 
     <string name="lbl_props">Song properties</string>
-    <string name="lbl_file_name">File name</string>
-    <string name="lbl_relative_path">Parent path</string>
+    <string name="lbl_path">Path</string>
     <!-- As in audio format -->
     <string name="lbl_format">Format</string>
     <!-- As in file size -->
@@ -151,6 +160,12 @@
     <string name="lbl_reset">Reset</string>
     <!-- As in to add a new folder in the "Music folders" setting -->
     <string name="lbl_add">Add</string>
+
+    <string name="lbl_path_style">Path style</string>
+    <string name="lbl_path_style_absolute">Absolute</string>
+    <string name="lbl_path_style_relative">Relative</string>
+
+    <string name="lbl_windows_paths">Use Windows-compatible paths</string>
 
     <!-- Referring to playback state -->
     <string name="lbl_state_saved">State saved</string>
@@ -182,7 +197,9 @@
     <string name="lng_observing">Monitoring your music library for changes…</string>
     <string name="lng_queue_added">Added to queue</string>
     <string name="lng_playlist_created">Playlist created</string>
+    <string name="lng_playlist_imported">Playlist imported</string>
     <string name="lng_playlist_renamed">Playlist renamed</string>
+    <string name="lng_playlist_exported">Playlist exported</string>
     <string name="lng_playlist_deleted">Playlist deleted</string>
     <string name="lng_playlist_added">Added to playlist</string>
     <string name="lng_author">Developed by Alexander Capehart</string>
@@ -305,6 +322,8 @@
     <string name="err_no_music">No music found</string>
     <string name="err_index_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
+    <string name="err_import_failed">Unable to import a playlist from this file</string>
+    <string name="err_export_failed">Unable to export the playlist to this file</string>
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_no_dirs">No folders</string>
@@ -353,6 +372,7 @@
     <string name="def_disc">No disc</string>
     <string name="def_track">No track</string>
     <string name="def_song_count">No songs</string>
+    <string name="def_album_count">No albums</string>
     <string name="def_playback">No music playing</string>
 
     <!-- Codec Namespace | Format names -->

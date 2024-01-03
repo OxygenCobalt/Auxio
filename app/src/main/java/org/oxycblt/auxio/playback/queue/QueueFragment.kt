@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +43,7 @@ import org.oxycblt.auxio.util.logD
  */
 @AndroidEntryPoint
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickListListener<Song> {
-    private val queueModel: QueueViewModel by activityViewModels()
+    private val queueModel: QueueViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val queueAdapter = QueueAdapter(this)
     private var touchHelper: ItemTouchHelper? = null

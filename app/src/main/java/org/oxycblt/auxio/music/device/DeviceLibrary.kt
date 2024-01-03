@@ -28,13 +28,15 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
+import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.sendWithTimeout
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -74,6 +76,14 @@ interface DeviceLibrary {
     fun findSongForUri(context: Context, uri: Uri): Song?
 
     /**
+     * Find a [Song] instance corresponding to the given [Path].
+     *
+     * @param path [Path] to search for.
+     * @return A [Song] corresponding to the given [Path], or null if one could not be found.
+     */
+    fun findSongByPath(path: Path): Song?
+
+    /**
      * Find a [Album] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
@@ -110,19 +120,19 @@ interface DeviceLibrary {
         suspend fun create(
             rawSongs: Channel<RawSong>,
             processedSongs: Channel<RawSong>,
+            separators: Separators,
+            nameFactory: Name.Known.Factory
         ): DeviceLibraryImpl
     }
 }
 
-class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: MusicSettings) :
-    DeviceLibrary.Factory {
+class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
     override suspend fun create(
         rawSongs: Channel<RawSong>,
-        processedSongs: Channel<RawSong>
+        processedSongs: Channel<RawSong>,
+        separators: Separators,
+        nameFactory: Name.Known.Factory
     ): DeviceLibraryImpl {
-        val nameFactory = Name.Known.Factory.from(musicSettings)
-        val separators = Separators.from(musicSettings)
-
         val songGrouping = mutableMapOf<Music.UID, SongImpl>()
         val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl>>()
         val artistGrouping = mutableMapOf<RawArtist.Key, Grouping<RawArtist, Music>>()
@@ -131,7 +141,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         // TODO: Use comparators here
 
         // All music information is grouped as it is indexed by other components.
-        for (rawSong in rawSongs) {
+        rawSongs.forEachWithTimeout { rawSong ->
             val song = SongImpl(rawSong, nameFactory, separators)
             // At times the indexer produces duplicate songs, try to filter these. Comparing by
             // UID is sufficient for something like this, and also prevents collisions from
@@ -143,8 +153,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                 // We still want to say that we "processed" the song so that the user doesn't
                 // get confused at why the bar was only partly filled by the end of the loading
                 // process.
-                processedSongs.send(rawSong)
-                continue
+                processedSongs.sendWithTimeout(rawSong)
+                return@forEachWithTimeout
             }
             songGrouping[song.uid] = song
 
@@ -207,7 +217,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                 }
             }
 
-            processedSongs.send(rawSong)
+            processedSongs.sendWithTimeout(rawSong)
         }
 
         // Now that all songs are processed, also process albums and group them into their
@@ -265,6 +275,7 @@ class DeviceLibraryImpl(
 ) : DeviceLibrary {
     // Use a mapping to make finding information based on it's UID much faster.
     private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }
+    private val songPathMap = buildMap { songs.forEach { put(it.path, it) } }
     private val albumUidMap = buildMap { albums.forEach { put(it.uid, it.finalize()) } }
     private val artistUidMap = buildMap { artists.forEach { put(it.uid, it.finalize()) } }
     private val genreUidMap = buildMap { genres.forEach { put(it.uid, it.finalize()) } }
@@ -285,6 +296,8 @@ class DeviceLibraryImpl(
     override fun findArtist(uid: Music.UID): Artist? = artistUidMap[uid]
 
     override fun findGenre(uid: Music.UID): Genre? = genreUidMap[uid]
+
+    override fun findSongByPath(path: Path) = songPathMap[path]
 
     override fun findSongForUri(context: Context, uri: Uri) =
         context.contentResolverSafe.useQuery(

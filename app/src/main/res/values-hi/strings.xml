@@ -61,14 +61,12 @@
     <string name="info_app_desc">एंड्रॉयड के लिए एक सीधा साधा, विवेकशील गाने बजाने वाला ऐप।</string>
     <string name="lbl_new_playlist">नई प्लेलिस्ट</string>
     <string name="lbl_play_next">अगला चलाएं</string>
-    <string name="lbl_file_name">फ़ाइल का नाम</string>
     <string name="set_lib_tabs">लायब्रेरी टैब्स</string>
     <string name="set_play_song_from_album">एल्बम से चलाएं</string>
     <string name="set_content">सामग्री</string>
     <string name="fmt_selected">%d चयनित</string>
     <string name="lbl_format">प्रारूप</string>
     <string name="lbl_playlist_add">प्लेलिस्ट में जोड़ें</string>
-    <string name="lbl_relative_path">मुख्य पथ</string>
     <string name="lbl_bitrate">बिट-रेट</string>
     <string name="lbl_cancel">रद्द करें</string>
     <string name="lbl_save">सहेजें</string>
@@ -305,4 +303,21 @@
     <string name="lbl_report">रिपोर्ट करें</string>
     <string name="lbl_copied">कापी किया गया</string>
     <string name="lbl_show_error_info">और</string>
+    <string name="def_album_count">कोई एल्बम नहीं</string>
+    <string name="lbl_demo">डेमो</string>
+    <string name="lbl_demos">डेमो</string>
+    <string name="lbl_imported_playlist">इम्पोर्टेड प्लेलिस्ट</string>
+    <string name="lbl_path">पथ</string>
+    <string name="err_import_failed">इस फ़ाइल से प्लेलिस्ट इम्पोर्ट करने में असमर्थ</string>
+    <string name="lbl_empty_playlist">खाली प्लेलिस्ट</string>
+    <string name="lbl_path_style_absolute">पूर्ण</string>
+    <string name="lbl_import">इंपोर्ट करें</string>
+    <string name="lbl_windows_paths">विंडोज़-संगत पथों का उपयोग करें</string>
+    <string name="lbl_export">एक्सपोर्ट करें</string>
+    <string name="lbl_path_style_relative">सापेक्ष</string>
+    <string name="lng_playlist_imported">प्लेलिस्ट इंपोर्ट की गयी</string>
+    <string name="lbl_path_style">पथ शैली</string>
+    <string name="lng_playlist_exported">प्लेलिस्ट एक्सपोर्ट की गई</string>
+    <string name="lbl_export_playlist">प्लेलिस्ट एक्सपोर्ट करें</string>
+    <string name="err_export_failed">प्लेलिस्ट को इस फ़ाइल में एक्सपोर्ट करने में असमर्थ</string>
 </resources>

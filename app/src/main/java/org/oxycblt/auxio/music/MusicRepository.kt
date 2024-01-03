@@ -31,14 +31,18 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.cache.CacheRepository
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.MediaStoreExtractor
+import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.metadata.TagExtractor
 import org.oxycblt.auxio.music.user.MutableUserLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
+import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -223,7 +227,8 @@ constructor(
     private val mediaStoreExtractor: MediaStoreExtractor,
     private val tagExtractor: TagExtractor,
     private val deviceLibraryFactory: DeviceLibrary.Factory,
-    private val userLibraryFactory: UserLibrary.Factory
+    private val userLibraryFactory: UserLibrary.Factory,
+    private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
@@ -337,11 +342,11 @@ constructor(
     }
 
     override fun index(worker: MusicRepository.IndexingWorker, withCache: Boolean) =
-        worker.scope.launch { indexWrapper(worker, withCache) }
+        worker.scope.launch { indexWrapper(worker.context, this, withCache) }
 
-    private suspend fun indexWrapper(worker: MusicRepository.IndexingWorker, withCache: Boolean) {
+    private suspend fun indexWrapper(context: Context, scope: CoroutineScope, withCache: Boolean) {
         try {
-            indexImpl(worker, withCache)
+            indexImpl(context, scope, withCache)
         } catch (e: CancellationException) {
             // Got cancelled, propagate upwards to top-level co-routine.
             logD("Loading routine was cancelled")
@@ -355,15 +360,28 @@ constructor(
         }
     }
 
-    private suspend fun indexImpl(worker: MusicRepository.IndexingWorker, withCache: Boolean) {
+    private suspend fun indexImpl(context: Context, scope: CoroutineScope, withCache: Boolean) {
+        // TODO: Find a way to break up this monster of a method, preferably as another class.
+
         val start = System.currentTimeMillis()
         // Make sure we have permissions before going forward. Theoretically this would be better
         // done at the UI level, but that intertwines logic and display too much.
-        if (ContextCompat.checkSelfPermission(worker.context, PERMISSION_READ_AUDIO) ==
+        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
             logE("Permissions were not granted")
             throw NoAudioPermissionException()
         }
+
+        // Obtain configuration information
+        val constraints =
+            MediaStoreExtractor.Constraints(musicSettings.excludeNonMusic, musicSettings.musicDirs)
+        val separators = Separators.from(musicSettings.separators)
+        val nameFactory =
+            if (musicSettings.intelligentSorting) {
+                Name.Known.IntelligentFactory
+            } else {
+                Name.Known.SimpleFactory
+            }
 
         // Begin with querying MediaStore and the music cache. The former is needed for Auxio
         // to figure out what songs are (probably) on the device, and the latter will be needed
@@ -373,10 +391,10 @@ constructor(
         emitIndexingProgress(IndexingProgress.Indeterminate)
 
         val mediaStoreQueryJob =
-            worker.scope.async {
+            scope.async {
                 val query =
                     try {
-                        mediaStoreExtractor.query()
+                        mediaStoreExtractor.query(constraints)
                     } catch (e: Exception) {
                         // Normally, errors in an async call immediately bubble up to the Looper
                         // and crash the app. Thus, we have to wrap any error into a Result
@@ -411,14 +429,15 @@ constructor(
         // does not exist. In the latter situation, it also applies it's own (inferior) metadata.
         logD("Starting MediaStore discovery")
         val mediaStoreJob =
-            worker.scope.async {
+            scope.async {
                 try {
                     mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
                 } catch (e: Exception) {
                     // To prevent a deadlock, we want to close the channel with an exception
                     // to cascade to and cancel all other routines before finally bubbling up
                     // to the main extractor loop.
-                    incompleteSongs.close(e)
+                    logE("MediaStore extraction failed: $e")
+                    incompleteSongs.close(Exception("MediaStore extraction failed: $e"))
                     return@async
                 }
                 incompleteSongs.close()
@@ -428,11 +447,12 @@ constructor(
         // metadata for them, and then forwards it to DeviceLibrary.
         logD("Starting tag extraction")
         val tagJob =
-            worker.scope.async {
+            scope.async {
                 try {
                     tagExtractor.consume(incompleteSongs, completeSongs)
                 } catch (e: Exception) {
-                    completeSongs.close(e)
+                    logE("Tag extraction failed: $e")
+                    completeSongs.close(Exception("Tag extraction failed: $e"))
                     return@async
                 }
                 completeSongs.close()
@@ -442,12 +462,14 @@ constructor(
         // and then forwards them to the primary loading loop.
         logD("Starting DeviceLibrary creation")
         val deviceLibraryJob =
-            worker.scope.async(Dispatchers.Default) {
+            scope.async(Dispatchers.Default) {
                 val deviceLibrary =
                     try {
-                        deviceLibraryFactory.create(completeSongs, processedSongs)
+                        deviceLibraryFactory.create(
+                            completeSongs, processedSongs, separators, nameFactory)
                     } catch (e: Exception) {
-                        processedSongs.close(e)
+                        logE("DeviceLibrary creation failed: $e")
+                        processedSongs.close(Exception("DeviceLibrary creation failed: $e"))
                         return@async Result.failure(e)
                     }
                 processedSongs.close()
@@ -457,19 +479,20 @@ constructor(
         // We could keep track of a total here, but we also need to collate this RawSong information
         // for when we write the cache later on in the finalization step.
         val rawSongs = LinkedList<RawSong>()
-        for (rawSong in processedSongs) {
-            rawSongs.add(rawSong)
+        // Use a longer timeout so that dependent components can timeout and throw errors that
+        // provide more context than if we timed out here.
+        processedSongs.forEachWithTimeout(20000) {
+            rawSongs.add(it)
             // Since discovery takes up the bulk of the music loading process, we switch to
             // indicating a defined amount of loaded songs in comparison to the projected amount
             // of songs that were queried.
             emitIndexingProgress(IndexingProgress.Songs(rawSongs.size, query.projectedTotal))
         }
 
-        // This shouldn't occur, but keep them around just in case there's a regression.
-        // Note that DeviceLibrary might still actually be doing work (specifically parent
-        // processing), so we don't check if it's deadlocked.
-        check(!mediaStoreJob.isActive) { "MediaStore discovery is deadlocked" }
-        check(!tagJob.isActive) { "Tag extraction is deadlocked" }
+        withTimeout(10000) {
+            mediaStoreJob.await()
+            tagJob.await()
+        }
 
         // Deliberately done after the involved initialization step to make it less likely
         // that the short-circuit occurs so quickly as to break the UI.
@@ -493,7 +516,7 @@ constructor(
         // working on parent information.
         logD("Starting UserLibrary query")
         val userLibraryQueryJob =
-            worker.scope.async {
+            scope.async {
                 val rawPlaylists =
                     try {
                         userLibraryFactory.query()
@@ -518,7 +541,7 @@ constructor(
         logD("Awaiting DeviceLibrary creation")
         val deviceLibrary = deviceLibraryJob.await().getOrThrow()
         logD("Starting UserLibrary creation")
-        val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary)
+        val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary, nameFactory)
 
         // Loading process is functionally done, indicate such
         logD(

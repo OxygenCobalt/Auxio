@@ -18,18 +18,43 @@
  
 package org.oxycblt.auxio.music.fs
 
+import android.content.ContentResolver
 import android.content.Context
+import android.os.storage.StorageManager
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.util.getSystemServiceCompat
 
 @Module
 @InstallIn(SingletonComponent::class)
 class FsModule {
     @Provides
-    fun mediaStoreExtractor(@ApplicationContext context: Context, musicSettings: MusicSettings) =
-        MediaStoreExtractor.from(context, musicSettings)
+    fun volumeManager(@ApplicationContext context: Context): VolumeManager =
+        VolumeManagerImpl(context.getSystemServiceCompat(StorageManager::class))
+
+    @Provides
+    fun mediaStoreExtractor(
+        @ApplicationContext context: Context,
+        mediaStorePathInterpreterFactory: MediaStorePathInterpreter.Factory
+    ) = MediaStoreExtractor.from(context, mediaStorePathInterpreterFactory)
+
+    @Provides
+    fun mediaStorePathInterpreterFactory(
+        volumeManager: VolumeManager
+    ): MediaStorePathInterpreter.Factory = MediaStorePathInterpreter.Factory.from(volumeManager)
+
+    @Provides
+    fun contentResolver(@ApplicationContext context: Context): ContentResolver =
+        context.contentResolverSafe
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface FsBindsModule {
+    @Binds
+    fun documentPathFactory(documentTreePathFactory: DocumentPathFactoryImpl): DocumentPathFactory
 }

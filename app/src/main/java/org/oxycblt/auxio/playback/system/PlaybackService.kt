@@ -121,14 +121,14 @@ class PlaybackService :
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
+                FfmpegAudioRenderer(handler, audioListener, replayGainProcessor),
                 MediaCodecAudioRenderer(
                     this,
                     MediaCodecSelector.DEFAULT,
                     handler,
                     audioListener,
                     AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                    replayGainProcessor),
-                FfmpegAudioRenderer(handler, audioListener, replayGainProcessor))
+                    replayGainProcessor))
         }
 
         player =

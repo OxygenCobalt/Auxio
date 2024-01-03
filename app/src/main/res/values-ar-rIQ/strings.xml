@@ -143,10 +143,8 @@
     <string name="lbl_cancel">الغاء</string>
     <string name="lbl_format">التنسيق</string>
     <string name="lbl_size">الحجم</string>
-    <string name="lbl_relative_path">المسار</string>
     <string name="lbl_library_counts">إحصائيات المكتبة</string>
     <string name="lbl_bitrate">معدل البت</string>
-    <string name="lbl_file_name">اسم الملف</string>
     <string name="lbl_compilation_live">تجميع مباشر</string>
     <string name="lbl_compilation_remix">تجميعات</string>
     <string name="lbl_props">خصائص الاغنية</string>

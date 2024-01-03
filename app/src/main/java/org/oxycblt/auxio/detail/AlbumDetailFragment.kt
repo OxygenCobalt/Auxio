@@ -44,6 +44,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
+import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.playback.PlaybackDecision
@@ -55,6 +56,7 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -126,6 +128,7 @@ class AlbumDetailFragment :
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
+        collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
@@ -273,10 +276,18 @@ class AlbumDetailFragment :
                         decision.songs.map { it.uid }.toTypedArray())
                 }
                 is PlaylistDecision.New,
+                is PlaylistDecision.Import,
                 is PlaylistDecision.Rename,
-                is PlaylistDecision.Delete -> error("Unexpected playlist decision $decision")
+                is PlaylistDecision.Delete,
+                is PlaylistDecision.Export -> error("Unexpected playlist decision $decision")
             }
         findNavController().navigateSafe(directions)
+    }
+
+    private fun handlePlaylistMessage(message: PlaylistMessage?) {
+        if (message == null) return
+        requireContext().showToast(message.stringRes)
+        musicModel.playlistMessage.consume()
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {

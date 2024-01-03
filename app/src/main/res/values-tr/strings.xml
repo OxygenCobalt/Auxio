@@ -52,10 +52,8 @@
         <item quantity="one">%d albüm</item>
         <item quantity="other">%d albümler</item>
     </plurals>
-    <string name="lbl_file_name">Dosya adı</string>
     <string name="lbl_song_detail">Özellikleri görüntüle</string>
     <string name="lbl_props">Şarkı özellikleri</string>
-    <string name="lbl_relative_path">Ana yol</string>
     <string name="lbl_format">Biçim</string>
     <string name="lbl_shuffle_shortcut_short">Karıştır</string>
     <string name="lbl_shuffle_shortcut_long">Hepsini karıştır</string>

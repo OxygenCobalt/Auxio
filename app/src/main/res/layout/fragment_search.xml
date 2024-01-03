@@ -55,8 +55,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                app:navigationIcon="@drawable/ic_close_24"
-                app:menu="@menu/toolbar_selection" />
+                app:menu="@menu/toolbar_selection"
+                app:navigationIcon="@drawable/ic_close_24" />
 
         </org.oxycblt.auxio.ui.MultiToolbar>
 

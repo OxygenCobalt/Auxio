@@ -83,7 +83,6 @@
     <string name="desc_shuffle">Keverés be/ki kapcsolása</string>
     <string name="desc_album_cover">%s album borítója</string>
     <string name="set_replay_gain">Visszajátszás</string>
-    <string name="lbl_relative_path">Szülő útvonal</string>
     <string name="desc_music_dir_delete">Mappa eltávolítása</string>
     <string name="lbl_playlist_add">Lejátszólistához ad</string>
     <string name="lbl_format">Formátum</string>
@@ -160,7 +159,6 @@
     <string name="set_replay_gain_mode_dynamic">Inkább album, ha egyet játszik</string>
     <string name="set_reindex">Zene frissítése</string>
     <string name="lbl_cancel">Mégse</string>
-    <string name="lbl_file_name">Fájl név</string>
     <string name="set_bar_action">Egyéni lejátszási sáv művelet</string>
     <string name="set_headset_autoplay_desc">A lejátszás mindig akkor indul el, ha a fejhallgató csatlakoztatva van (nem minden eszközön működik)</string>
     <string name="set_observing">Automatikus újratöltés</string>

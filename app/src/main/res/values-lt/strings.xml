@@ -36,7 +36,6 @@
     <string name="lbl_shuffle">Maišyti</string>
     <string name="lng_queue_added">Pridėtas į eilę</string>
     <string name="lbl_props">Dainų ypatybės</string>
-    <string name="lbl_file_name">Failo pavadinimas</string>
     <string name="lbl_save">Išsaugoti</string>
     <string name="lbl_about">Apie</string>
     <string name="lbl_add">Pridėti</string>
@@ -214,7 +213,6 @@
     <string name="lbl_mix">DJ miksas</string>
     <string name="lbl_compilation_live">Gyvai kompiliacija</string>
     <string name="lbl_compilation_remix">Remikso kompiliacija</string>
-    <string name="lbl_relative_path">Pirminis kelias</string>
     <string name="set_wipe_desc">Išvalyti anksčiau išsaugotą grojimo būseną (jei yra)</string>
     <string name="set_separators">Daugiareikšmiai separatoriai</string>
     <string name="set_separators_slash">Pasvirasis brūkšnys (/)</string>
@@ -304,4 +302,7 @@
     <string name="lbl_copied">Nukopijuota</string>
     <string name="lbl_show_error_info">Daugiau</string>
     <string name="lbl_report">Pranešti</string>
+    <string name="def_album_count">Nėra albumų</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
 </resources>

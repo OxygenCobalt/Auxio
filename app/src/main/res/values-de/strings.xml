@@ -179,8 +179,6 @@
     <string name="lbl_sample_rate">Abtastrate</string>
     <string name="lbl_song_detail">Eigenschaften ansehen</string>
     <string name="lbl_props">Lied-Eigenschaften</string>
-    <string name="lbl_file_name">Dateiname</string>
-    <string name="lbl_relative_path">Elternpfad</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Größe</string>
     <string name="lbl_bitrate">Bitrate</string>
@@ -306,4 +304,11 @@
     <string name="lbl_copied">Kopiert</string>
     <string name="lbl_report">Melden</string>
     <string name="lbl_error_info">Fehlerinformation</string>
+    <string name="def_album_count">Keine Alben</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
+    <string name="lbl_imported_playlist">Importierte Wiedergabeliste</string>
+    <string name="lbl_path">Pfad</string>
+    <string name="err_import_failed">Wiedergabeliste konnte nicht aus dieser Datei importiert werden</string>
+    <string name="lbl_empty_playlist">Leere Wiedergabeliste</string>
 </resources>

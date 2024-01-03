@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music.decision
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
@@ -30,10 +31,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -48,12 +49,18 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
     private val args: NewPlaylistDialogArgs by navArgs()
+    private var initializedField = false
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
-            .setTitle(R.string.lbl_new_playlist)
+            .setTitle(
+                when (args.reason) {
+                    PlaylistDecision.New.Reason.NEW,
+                    PlaylistDecision.New.Reason.ADD -> R.string.lbl_new_playlist
+                    PlaylistDecision.New.Reason.IMPORT -> R.string.lbl_import_playlist
+                })
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                val pendingPlaylist = unlikelyToBeNull(pickerModel.currentPendingPlaylist.value)
+                val pendingPlaylist = unlikelyToBeNull(pickerModel.currentPendingNewPlaylist.value)
                 val name =
                     when (val chosenName = pickerModel.chosenName.value) {
                         is ChosenName.Valid -> chosenName.value
@@ -61,8 +68,7 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
                         else -> throw IllegalStateException()
                     }
                 // TODO: Navigate to playlist if there are songs in it
-                musicModel.createPlaylist(name, pendingPlaylist.songs)
-                requireContext().showToast(R.string.lng_playlist_created)
+                musicModel.createPlaylist(name, pendingPlaylist.songs, pendingPlaylist.reason)
                 findNavController().apply {
                     navigateUp()
                     // Do an additional navigation away from the playlist addition dialog, if
@@ -84,23 +90,37 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
 
         // --- VIEWMODEL SETUP ---
         musicModel.playlistDecision.consume()
-        pickerModel.setPendingPlaylist(requireContext(), args.songUids)
-        collectImmediately(pickerModel.currentPendingPlaylist, ::updatePendingPlaylist)
+        pickerModel.setPendingPlaylist(requireContext(), args.songUids, args.template, args.reason)
+
+        collectImmediately(pickerModel.currentPendingNewPlaylist, ::updatePendingPlaylist)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
     }
 
-    private fun updatePendingPlaylist(pendingPlaylist: PendingPlaylist?) {
-        if (pendingPlaylist == null) {
+    private fun updatePendingPlaylist(pendingNewPlaylist: PendingNewPlaylist?) {
+        if (pendingNewPlaylist == null) {
             logD("No playlist to create, leaving")
             findNavController().navigateUp()
             return
         }
-
-        requireBinding().playlistName.hint = pendingPlaylist.preferredName
+        val binding = requireBinding()
+        if (pendingNewPlaylist.template != null) {
+            if (initializedField) return
+            initializedField = true
+            // Need to convert args.existingName to an Editable
+            if (args.template != null) {
+                binding.playlistName.text = EDITABLE_FACTORY.newEditable(args.template)
+            }
+        } else {
+            binding.playlistName.hint = pendingNewPlaylist.preferredName
+        }
     }
 
     private fun updateChosenName(chosenName: ChosenName) {
         (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled =
             chosenName is ChosenName.Valid || chosenName is ChosenName.Empty
+    }
+
+    private companion object {
+        val EDITABLE_FACTORY: Editable.Factory = Editable.Factory.getInstance()
     }
 }

@@ -31,6 +31,8 @@ import org.oxycblt.auxio.music.device.ArtistImpl
 import org.oxycblt.auxio.music.device.DeviceLibraryImpl
 import org.oxycblt.auxio.music.device.GenreImpl
 import org.oxycblt.auxio.music.device.SongImpl
+import org.oxycblt.auxio.music.fs.Components
+import org.oxycblt.auxio.music.fs.Path
 
 class DeviceLibraryTest {
 
@@ -42,12 +44,14 @@ class DeviceLibraryTest {
             mockk<SongImpl> {
                 every { uid } returns songUidA
                 every { durationMs } returns 0
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val songB =
             mockk<SongImpl> {
                 every { uid } returns songUidB
                 every { durationMs } returns 1
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val deviceLibrary = DeviceLibraryImpl(listOf(songA, songB), listOf(), listOf(), listOf())
@@ -156,11 +160,13 @@ class DeviceLibraryTest {
         val songA =
             mockk<SongImpl> {
                 every { uid } returns Music.UID.auxio(MusicType.SONGS)
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val songB =
             mockk<SongImpl> {
                 every { uid } returns Music.UID.auxio(MusicType.SONGS)
+                every { path } returns Path(mockk(), Components.parseUnix("./"))
                 every { finalize() } returns this
             }
         val album =

@@ -121,9 +121,7 @@
     <string name="lbl_cancel">Annuleren</string>
     <string name="set_lib_tabs">Bibliotheek tabbladen</string>
     <string name="lbl_date">Jaar</string>
-    <string name="lbl_relative_path">Ouderpad</string>
     <string name="lbl_props">Lied eigenschappen</string>
-    <string name="lbl_file_name">Bestandsnaam</string>
     <string name="set_replay_gain_mode_dynamic">Voorkeur album als er een speelt</string>
     <string name="set_replay_gain_mode_track">Voorkeur titel</string>
     <string name="set_replay_gain_mode_album">Voorkeur album</string>

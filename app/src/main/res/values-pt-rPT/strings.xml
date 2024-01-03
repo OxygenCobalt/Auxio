@@ -115,7 +115,6 @@
     <string name="lbl_sample_rate">Taxa de amostragem</string>
     <string name="lbl_save">Salvar</string>
     <string name="set_separators">Separadores multi-valor</string>
-    <string name="lbl_file_name">Nome do ficheiro</string>
     <string name="lbl_size">Tamanho</string>
     <string name="lbl_song_detail">Propriedades</string>
     <string name="lbl_props">Propriedades da música</string>
@@ -217,7 +216,6 @@
     <string name="fmt_indexing">A carregar a sua biblioteca de músicas… (%1$d/%2$d)</string>
     <string name="set_rewind_prev">Retroceder antes de voltar</string>
     <string name="desc_exit">Parar reprodução</string>
-    <string name="lbl_relative_path">Caminho principal</string>
     <string name="set_round_mode_desc">Ativar cantos arredondados em elementos adicionais da interface do utilizador (requer que as capas dos álbuns sejam arredondadas)</string>
     <string name="fmt_selected">%d Selecionadas</string>
     <string name="lbl_mixes">Misturas DJ</string>

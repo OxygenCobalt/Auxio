@@ -33,8 +33,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                app:navigationIcon="@drawable/ic_close_24"
-                app:menu="@menu/toolbar_selection" />
+                app:menu="@menu/toolbar_selection"
+                app:navigationIcon="@drawable/ic_close_24" />
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/detail_edit_toolbar"
@@ -42,8 +42,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                app:navigationIcon="@drawable/ic_close_24"
-                app:menu="@menu/toolbar_edit" />
+                app:menu="@menu/toolbar_edit"
+                app:navigationIcon="@drawable/ic_close_24" />
 
         </org.oxycblt.auxio.ui.MultiToolbar>
 

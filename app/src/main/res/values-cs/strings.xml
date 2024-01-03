@@ -185,8 +185,6 @@
     <string name="set_play_song_none">Přehrát ze zobrazené položky</string>
     <string name="lbl_song_detail">Zobrazit vlastnosti</string>
     <string name="lbl_props">Vlastnosti skladby</string>
-    <string name="lbl_file_name">Název souboru</string>
-    <string name="lbl_relative_path">Nadřazená cesta</string>
     <string name="lbl_format">Formát</string>
     <string name="lbl_size">Velikost</string>
     <string name="lbl_bitrate">Přenosová rychlost</string>
@@ -315,4 +313,21 @@
     <string name="lbl_error_info">Informace o chybě</string>
     <string name="lbl_copied">Zkopírovat</string>
     <string name="lbl_report">Nahlásit</string>
+    <string name="def_album_count">Žádná alba</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Dema</string>
+    <string name="lbl_imported_playlist">Importovaný seznam skladeb</string>
+    <string name="lbl_path">Cesta</string>
+    <string name="lbl_empty_playlist">Prázdný seznam skladeb</string>
+    <string name="err_import_failed">Nepodařilo se importovat seznam skladeb z tohoto souboru</string>
+    <string name="lbl_path_style_absolute">Absolutní</string>
+    <string name="lbl_windows_paths">Použít cesty kompatibilní s Windows</string>
+    <string name="lbl_export">Export</string>
+    <string name="lbl_path_style_relative">Relativní</string>
+    <string name="lbl_path_style">Styl cesty</string>
+    <string name="lbl_export_playlist">Exportovat seznam skladeb</string>
+    <string name="err_export_failed">Nepodařilo se exportovat seznam skladeb do tohoto souboru</string>
+    <string name="lbl_import">Import</string>
+    <string name="lng_playlist_imported">Seznam skladeb importován</string>
+    <string name="lng_playlist_exported">Seznam skladeb exportován</string>
 </resources>

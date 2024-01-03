@@ -55,7 +55,6 @@
     <string name="lbl_album_details">ਐਲਬਮ \'ਤੇ ਜਾਓ</string>
     <string name="lbl_song_detail">ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਵੇਖੋ</string>
     <string name="lbl_props">ਗੀਤ ਦੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ</string>
-    <string name="lbl_relative_path">ਪੇਰੈਂਟ ਮਾਰਗ</string>
     <string name="lbl_format">ਫਾਰਮੈਟ</string>
     <string name="lbl_size">ਆਕਾਰ</string>
     <string name="lbl_shuffle_shortcut_short">ਸ਼ਫਲ</string>
@@ -76,7 +75,6 @@
     <string name="lbl_song_count">ਗੀਤ ਦੀ ਗਿਣਤੀ</string>
     <string name="lbl_sort_dsc">ਘਟਦੇ ਹੋਏ</string>
     <string name="lbl_artist_details">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>
-    <string name="lbl_file_name">ਫਾਈਲ ਦਾ ਨਾਮ</string>
     <string name="lbl_bitrate">ਬਿੱਟ ਰੇਟ</string>
     <string name="lbl_sample_rate">ਸੈਂਪਲ ਰੇਟ</string>
     <string name="lbl_add">ਸ਼ਾਮਿਲ ਕਰੋ</string>
@@ -298,4 +296,21 @@
     <string name="lbl_error_info">ਤਰੁੱਟੀ ਦੀ ਜਾਣਕਾਰੀ</string>
     <string name="lbl_copied">ਕਾਪੀ ਕੀਤਾ ਗਿਆ</string>
     <string name="lbl_report">ਰਿਪੋਰਟ ਕਰੋ</string>
+    <string name="def_album_count">ਕੋਈ ਐਲਬਮ ਨਹੀਂ</string>
+    <string name="lbl_demo">ਡੈਮੋ</string>
+    <string name="lbl_demos">ਡੈਮੋ</string>
+    <string name="lbl_imported_playlist">ਇੰਪੋਰਟਡ ਪਲੇਲਿਸਟ</string>
+    <string name="lbl_path">ਮਾਰਗ</string>
+    <string name="err_import_failed">ਇਸ ਫਾਈਲ ਤੋਂ ਪਲੇਲਿਸਟ ਨੂੰ ਆਯਾਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
+    <string name="lbl_empty_playlist">ਖਾਲੀ ਪਲੇਲਿਸਟ</string>
+    <string name="lbl_path_style_absolute">ਪੂਰਨ</string>
+    <string name="lbl_import">ਆਯਾਤ ਕਰੋ</string>
+    <string name="lbl_windows_paths">ਵਿੰਡੋਜ਼-ਅਨੁਕੂਲ ਮਾਰਗਾਂ ਦੀ ਵਰਤੋਂ ਕਰੋ</string>
+    <string name="lbl_export">ਨਿਰਯਾਤ ਕਰੋ</string>
+    <string name="lbl_path_style_relative">ਰਿਲੇਟਿਵ</string>
+    <string name="lng_playlist_imported">ਪਲੇਲਿਸਟ ਆਯਾਤ ਕੀਤੀ ਗਈ</string>
+    <string name="lbl_path_style">ਮਾਰਗ ਸਟਾਈਲ</string>
+    <string name="lng_playlist_exported">ਪਲੇਲਿਸਟ ਨਿਰਯਾਤ ਕੀਤੀ ਗਈ</string>
+    <string name="lbl_export_playlist">ਪਲੇਲਿਸਟ ਨਿਰਯਾਤ ਕਰੋ</string>
+    <string name="err_export_failed">ਪਲੇਲਿਸਟ ਨੂੰ ਇਸ ਫ਼ਾਈਲ ਵਿੱਚ ਨਿਰਯਾਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
 </resources>

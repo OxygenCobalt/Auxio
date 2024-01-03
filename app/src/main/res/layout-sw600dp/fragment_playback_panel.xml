@@ -16,7 +16,7 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.image.CoverView
+    <org.oxycblt.auxio.playback.ui.SwipeCoverView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_margin="@dimen/spacing_medium"
@@ -63,7 +63,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Album Name" />
-
 
     <org.oxycblt.auxio.playback.ui.StyledSeekBar
         android:id="@+id/playback_seek_bar"

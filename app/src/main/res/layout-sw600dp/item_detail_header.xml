@@ -10,9 +10,9 @@
     <org.oxycblt.auxio.image.CoverView
         android:id="@+id/detail_cover"
         style="@style/Widget.Auxio.Image.MidHuge"
-        app:layout_constraintDimensionRatio="1"
         app:enablePlaybackIndicator="false"
         app:enableSelectionBadge="false"
+        app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />

@@ -16,13 +16,13 @@ android {
     // it here so that binary stripping will work.
     // TODO: Eventually you might just want to start vendoring the FFMpeg extension so the
     //  NDK use is unified
-    ndkVersion = "23.2.8568313"
+    ndkVersion = "25.2.9519653"
     namespace "org.oxycblt.auxio"
 
     defaultConfig {
         applicationId namespace
-        versionName "3.2.1"
-        versionCode 36
+        versionName "3.3.0"
+        versionCode 37
 
         minSdk 24
         targetSdk 34
@@ -31,6 +31,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -87,8 +88,8 @@ dependencies {
     // General
     implementation "androidx.core:core-ktx:1.12.0"
     implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "androidx.activity:activity-ktx:1.8.0"
-    implementation "androidx.fragment:fragment-ktx:1.6.1"
+    implementation "androidx.activity:activity-ktx:1.8.2"
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
 
     // Components
     // Deliberately kept on 1.2.1 to prevent a bug where the queue sheet will not collapse on
@@ -111,13 +112,13 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
 
     // Media
-    implementation "androidx.media:media:1.6.0"
+    implementation "androidx.media:media:1.7.0"
 
     // Preferences
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     // Database
-    def room_version = '2.6.0-rc01'
+    def room_version = '2.6.1'
     implementation "androidx.room:room-runtime:$room_version"
     ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
@@ -127,6 +128,7 @@ dependencies {
     // Exoplayer (Vendored)
     implementation project(":media-lib-exoplayer")
     implementation project(":media-lib-decoder-ffmpeg")
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
 
     // Image loading
     implementation 'io.coil-kt:coil-base:2.4.0'
@@ -144,6 +146,9 @@ dependencies {
 
     // Logging
     implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    // Speed dial
+    implementation "com.leinardi.android:speed-dial:3.3.0"
 
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'

@@ -57,7 +57,6 @@
     <string name="set_play_song_none">表示されたアイテムから再生</string>
     <string name="desc_exit">再生停止</string>
     <string name="clr_red">赤</string>
-    <string name="lbl_file_name">ファイル名</string>
     <string name="lbl_date_added">追加した日付け</string>
     <string name="lbl_sample_rate">サンプルレート</string>
     <string name="lbl_sort_dsc">降順</string>
@@ -245,7 +244,6 @@
     <string name="set_cover_mode_media_store">初期 (高速読み込み)</string>
     <string name="set_replay_gain_mode_dynamic">再生中の場合はアルバムを優先</string>
     <string name="set_separators">複数値セパレータ</string>
-    <string name="lbl_relative_path">親パス</string>
     <string name="set_observing_desc">変更されるたびに音楽ライブラリをリロードします (永続的な通知が必要です)</string>
     <string name="set_audio_desc">サウンドと再生の動作を構成する</string>
     <string name="set_rewind_prev">戻る前に巻き戻す</string>

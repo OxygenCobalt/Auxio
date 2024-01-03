@@ -164,7 +164,11 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
         binding.parentInfo.text =
             binding.context.getString(
                 R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
+                if (artist.explicitAlbums.isNotEmpty()) {
+                    binding.context.getPlural(R.plurals.fmt_album_count, artist.explicitAlbums.size)
+                } else {
+                    binding.context.getString(R.string.def_album_count)
+                },
                 if (artist.songs.isNotEmpty()) {
                     binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
                 } else {
@@ -199,7 +203,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
             object : SimpleDiffCallback<Artist>() {
                 override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.name == newItem.name &&
-                        oldItem.albums.size == newItem.albums.size &&
+                        oldItem.explicitAlbums.size == newItem.explicitAlbums.size &&
                         oldItem.songs.size == newItem.songs.size
             }
     }

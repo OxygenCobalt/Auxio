@@ -22,7 +22,7 @@ import java.util.UUID
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.fs.Directory
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.ReleaseType
 
@@ -42,9 +42,7 @@ data class RawSong(
     /** The latest date the [SongImpl]'s audio file was modified, as a unix epoch timestamp. */
     var dateModified: Long? = null,
     /** @see Song.path */
-    var fileName: String? = null,
-    /** @see Song.path */
-    var directory: Directory? = null,
+    var path: Path? = null,
     /** @see Song.size */
     var size: Long? = null,
     /** @see Song.durationMs */

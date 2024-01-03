@@ -8,6 +8,7 @@
     android:background="?attr/colorSurface"
     android:transitionGroup="true">
 
+
     <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
         android:id="@+id/home_appbar"
         style="@style/Widget.Auxio.AppBarLayout">
@@ -31,8 +32,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                app:navigationIcon="@drawable/ic_close_24"
-                app:menu="@menu/toolbar_selection" />
+                app:menu="@menu/toolbar_selection"
+                app:navigationIcon="@drawable/ic_close_24" />
 
         </org.oxycblt.auxio.ui.MultiToolbar>
 
@@ -70,8 +71,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/spacing_medium"
-            android:visibility="invisible"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            android:visibility="invisible">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -110,10 +111,10 @@
                         android:id="@+id/home_indexing_actions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_marginEnd="@dimen/spacing_medium"
                         android:layout_marginBottom="@dimen/spacing_medium"
+                        android:orientation="horizontal"
                         android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         tools:layout_editor_absoluteX="16dp">
@@ -147,17 +148,33 @@
     </FrameLayout>
 
     <org.oxycblt.auxio.home.EdgeFrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/home_content"
-        app:layout_anchorGravity="bottom|end">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom|end"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_anchor="@id/home_content">
 
-        <org.oxycblt.auxio.home.FlipFloatingActionButton
-            android:id="@+id/home_fab"
-            style="@style/Widget.Auxio.FloatingActionButton.Adaptive"
+
+        <org.oxycblt.auxio.home.ThemedSpeedDialView
+            android:id="@+id/home_new_playlist_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_medium" />
+            android:layout_gravity="bottom|end"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="bottom|end"
+            app:sdMainFabAnimationRotateAngle="135"
+            app:sdMainFabClosedIconColor="@android:color/white"
+            app:sdMainFabClosedSrc="@drawable/ic_add_24"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/home_shuffle_fab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/spacing_medium"
+            android:src="@drawable/ic_shuffle_off_24" />
 
     </org.oxycblt.auxio.home.EdgeFrameLayout>
 

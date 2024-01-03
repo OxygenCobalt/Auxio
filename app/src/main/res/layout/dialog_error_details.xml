@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="@dimen/spacing_large"
     android:paddingTop="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_large"
-    android:paddingStart="@dimen/spacing_large"
     tools:context=".MainActivity">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/error_container"
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/Widget.Material3.CardView.Filled"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -37,12 +36,12 @@
                         android:id="@+id/error_stack_trace"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/spacing_medium"
-                        android:paddingStart="@dimen/spacing_medium"
-                        android:paddingBottom="@dimen/spacing_medium"
-                        android:paddingEnd="@dimen/size_copy_button"
                         android:breakStrategy="simple"
                         android:hyphenationFrequency="none"
+                        android:paddingStart="@dimen/spacing_medium"
+                        android:paddingTop="@dimen/spacing_medium"
+                        android:paddingEnd="@dimen/size_copy_button"
+                        android:paddingBottom="@dimen/spacing_medium"
                         android:typeface="monospace"
                         tools:text="Stack trace here" />
 
@@ -56,10 +55,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                app:icon="@drawable/ic_copy_24"
                 android:layout_margin="@dimen/spacing_small"
+                android:src="@drawable/ic_code_24"
                 app:backgroundTint="?attr/colorPrimaryContainer"
-                android:src="@drawable/ic_code_24" />
+                app:icon="@drawable/ic_copy_24" />
 
         </FrameLayout>
     </com.google.android.material.card.MaterialCardView>

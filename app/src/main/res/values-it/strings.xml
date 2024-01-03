@@ -181,8 +181,6 @@
     <string name="lbl_sample_rate">Frequenza di campionamento</string>
     <string name="lbl_song_detail">Vedi proprietà</string>
     <string name="lbl_props">Proprietà brano</string>
-    <string name="lbl_file_name">Nome file</string>
-    <string name="lbl_relative_path">Directory superiore</string>
     <string name="lbl_format">Formato</string>
     <string name="lbl_size">Dimensione</string>
     <string name="lbl_bitrate">Bitrate</string>

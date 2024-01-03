@@ -317,12 +317,6 @@ interface Album : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Artist : MusicParent {
-    /**
-     * All of the [Album]s this artist is credited to from [explicitAlbums] and [implicitAlbums].
-     * Note that any [Song] credited to this artist will have it's [Album] considered to be
-     * "indirectly" linked to this [Artist], and thus included in this list.
-     */
-    val albums: Collection<Album>
     /** Albums directly credited to this [Artist] via a "Album Artist" tag. */
     val explicitAlbums: Collection<Album>
     /** Albums indirectly credited to this [Artist] via an "Artist" tag. */
@@ -354,6 +348,7 @@ interface Genre : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Playlist : MusicParent {
+    override val name: Name.Known
     override val songs: List<Song>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long

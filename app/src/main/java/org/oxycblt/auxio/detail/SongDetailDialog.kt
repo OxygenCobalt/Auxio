@@ -102,10 +102,7 @@ class SongDetailDialog : ViewBindingMaterialDialogFragment<DialogSongDetailBindi
                             }
                         add(SongProperty(R.string.lbl_disc, zipped))
                     }
-                    add(SongProperty(R.string.lbl_file_name, song.path.name))
-                    add(
-                        SongProperty(
-                            R.string.lbl_relative_path, song.path.parent.resolveName(context)))
+                    add(SongProperty(R.string.lbl_path, song.path.resolve(context)))
                     info.resolvedMimeType.resolveName(context)?.let {
                         add(SongProperty(R.string.lbl_format, it))
                     }
