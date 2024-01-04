@@ -13,10 +13,10 @@
     </a>
     <img alt="Minimum SDK Version" src="https://img.shields.io/badge/API-24%2B-1450A8?style=flat">
 </p>
-<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a></h4>
+<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a> | <a href="https://github.com/OxygenCobalt/Auxio#Donate">Donate</a></h4>
 <p align="center">
     <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
-    <a href="https://hosted.weblate.org/engage/auxio/"><img src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>
+    <a href="https://hosted.weblate.org/engage/auxio/"><img height=64 src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>
 </p>
 
 ## About
@@ -37,6 +37,7 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
     <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png" width=200>
     <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png" width=200>
 </p>
+
 
 ## Features
 
@@ -65,6 +66,20 @@ precise/original dates, sort tags, and more
 - Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your music files
 - Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing in the background
 
+## Donate
+
+You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even App Itself!
+
+**$16/month supporters:**
+
+*Be the first to have their profile picture and username added here!*
+
+**$8/month supporters:**
+
+<p align="start">
+    <img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 />
+</p>
+
 ## Building
 
 Auxio relies on a custom version of Media3 that enables some extra features. This adds some caveats to the build process:
@@ -81,6 +96,8 @@ Auxio accepts most contributions as long as they follow the [Contribution Guidel
 However, feature additions and major UI changes are less likely to be accepted. See
 [Why Are These Features Missing?](https://github.com/OxygenCobalt/Auxio/wiki/Why-Are-These-Features-Missing%3F)
 for more information.
+
+
 
 ## License
 
