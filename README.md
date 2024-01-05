@@ -80,8 +80,6 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
     <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
 </p>
 
-\* Auxio Icons are private supporters
-
 ## Building
 
 Auxio relies on a custom version of Media3 that enables some extra features. This adds some caveats to the build process:
