@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -124,6 +125,7 @@ class HomeFragment :
 
     override fun getSelectionToolbar(binding: FragmentHomeBinding) = binding.homeSelectionToolbar
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
@@ -146,23 +148,16 @@ class HomeFragment :
 
         // --- UI SETUP ---
 
+        // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
+        // it ourselves.
         binding.root.rootView.apply {
-            // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
-            // it ourselves.
-            findViewById<View>(R.id.main_scrim).setOnClickListener {
-                homeModel.setSpeedDialOpen(false)
-            }
-
-            findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
-            }
-
-            findViewById<View>(R.id.sheet_scrim).setOnClickListener {
-                homeModel.setSpeedDialOpen(false)
-            }
-
-            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
+            post {
+                findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
+                    handleSpeedDialBoundaryTouch(event)
+                }
+                findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
+                    handleSpeedDialBoundaryTouch(event)
+                }
             }
         }
 
@@ -615,13 +610,6 @@ class HomeFragment :
 
     private fun updateSpeedDial(open: Boolean) {
         val binding = requireBinding()
-
-        binding.root.rootView.apply {
-            // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
-            // it ourselves.
-            findViewById<View>(R.id.main_scrim).isClickable = open
-            findViewById<View>(R.id.sheet_scrim).isClickable = open
-        }
 
         if (open) {
             binding.homeNewPlaylistFab.open(true)

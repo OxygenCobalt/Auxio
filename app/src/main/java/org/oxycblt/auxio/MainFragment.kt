@@ -25,6 +25,7 @@ import android.view.WindowInsets
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -33,7 +34,9 @@ import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialFadeThrough
+import com.leinardi.android.speeddial.SpeedDialOverlayLayout
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.Field
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
@@ -56,6 +59,7 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -153,6 +157,9 @@ class MainFragment :
             }
         }
 
+        binding.mainScrim.setOnClickListener { homeModel.setSpeedDialOpen(false) }
+        binding.sheetScrim.setOnClickListener { homeModel.setSpeedDialOpen(false) }
+
         // --- VIEWMODEL SETUP ---
         // This has to be done here instead of the playback panel to make sure that it's prioritized
         // by StateFlow over any detail fragment.
@@ -161,7 +168,7 @@ class MainFragment :
         collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
         collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
-        collectImmediately(homeModel.speedDialOpen, speedDialBackCallback::invalidateEnabled)
+        collectImmediately(homeModel.speedDialOpen, ::handleSpeedDialState)
         collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
@@ -334,6 +341,13 @@ class MainFragment :
             }
         findNavController().navigateSafe(directions)
         homeModel.showOuter.consume()
+    }
+
+    private fun handleSpeedDialState(open: Boolean) {
+        requireNotNull(speedDialBackCallback) { "SpeedDialBackPressedCallback was not available" }
+            .invalidateEnabled(open)
+        requireBinding().mainScrim.isVisible = open
+        requireBinding().sheetScrim.isVisible = open
     }
 
     private fun updateSong(song: Song?) {
@@ -518,5 +532,10 @@ class MainFragment :
         fun invalidateEnabled(open: Boolean) {
             isEnabled = open
         }
+    }
+
+    private companion object {
+        val SPEED_DIAL_OVERLAY_ANIMATION_DURATION_FIELD: Field by
+            lazyReflectedField(SpeedDialOverlayLayout::class, "mAnimationDuration")
     }
 }
