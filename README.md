@@ -78,7 +78,10 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
 
 <p align="start">
     <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
+    <img src="https://github.com/OxygenCobalt/Auxio/raw/dev/fastlane/metadata/android/en-US/images/icon.png" alt="Private sponsor" width=50 />
 </p>
+
+\* Auxio Icons are private supporters
 
 ## Building
 
