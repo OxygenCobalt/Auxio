@@ -319,4 +319,5 @@
     <string name="lng_playlist_exported">Плэйліст экспартаваны</string>
     <string name="lbl_export_playlist">Экспартаваць плэйліст</string>
     <string name="err_export_failed">Немагчыма экспартаваць плэйліст ў гэты файл</string>
+    <string name="lbl_import_playlist">Імпартаваць плэйліст</string>
 </resources>
