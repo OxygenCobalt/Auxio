@@ -320,4 +320,10 @@
     <string name="lng_playlist_imported">导入了播放列表</string>
     <string name="lng_playlist_exported">导出了播放列表</string>
     <string name="lbl_import_playlist">导入播放列表</string>
+    <string name="lbl_replaygain_track">回放增益曲目调整</string>
+    <string name="lbl_supporters">支持者</string>
+    <string name="lbl_replaygain_album">回放增益专辑调整</string>
+    <string name="lbl_author">作者</string>
+    <string name="lbl_donate">捐赠</string>
+    <string name="lng_supporters_promo">要在此添加您的名字请给项目捐款！</string>
 </resources>
