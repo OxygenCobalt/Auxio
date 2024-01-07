@@ -331,4 +331,10 @@
     <string name="lng_playlist_imported">Seznam skladeb importován</string>
     <string name="lng_playlist_exported">Seznam skladeb exportován</string>
     <string name="lbl_import_playlist">Importovat seznam skladeb</string>
+    <string name="lbl_replaygain_track">Úprava ReplayGain u stopy</string>
+    <string name="lbl_donate">Přispět</string>
+    <string name="lbl_supporters">Podporovatelé</string>
+    <string name="lbl_author">Autor</string>
+    <string name="lbl_replaygain_album">Úprava ReplayGain u alba</string>
+    <string name="lng_supporters_promo">Přispějte na projekt a uvidíte zde své jméno!</string>
 </resources>
