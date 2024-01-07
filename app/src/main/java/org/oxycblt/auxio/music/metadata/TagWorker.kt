@@ -101,9 +101,9 @@ private class TagWorkerImpl(
 
             // If this metadata is of a vorbis file, we actually need to extract it's base gain
             // and divide it by 256 to get the gain in decibels.
-            if (format.sampleMimeType == MimeTypes.AUDIO_OPUS
-                && format.initializationData.isNotEmpty()
-                && format.initializationData[0].size >= 18) {
+            if (format.sampleMimeType == MimeTypes.AUDIO_OPUS &&
+                format.initializationData.isNotEmpty() &&
+                format.initializationData[0].size >= 18) {
                 val header = format.initializationData[0]
                 val gain = header[1].toInt() or ((header[0].toInt() shl 8) and 0xFF)
                 logD("Obtained opus base gain: ${gain / 256f} dB")
@@ -112,7 +112,6 @@ private class TagWorkerImpl(
                 rawSong.replayGainAlbumAdjustment =
                     rawSong.replayGainAlbumAdjustment?.plus(gain / 256f)
             }
-
         } else {
             logD("No metadata could be extracted for ${rawSong.name}")
         }

@@ -181,7 +181,8 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
         val displayName = cursor.getString(displayNameIndex)
         val volume = volumes.find { it.mediaStoreName == volumeName }
         if (volume == null) {
-            logE("Could not find volume for $volumeName:$relativePath/$displayName [tried: ${volumes.map { it.mediaStoreName }}]")
+            logE(
+                "Could not find volume for $volumeName:$relativePath/$displayName [tried: ${volumes.map { it.mediaStoreName }}]")
             return null
         }
         val components = Components.parseUnix(relativePath).child(displayName)
