@@ -3,7 +3,15 @@
 ## dev
 
 #### What's Improved
-- The OPUS base volume adjustment field is now parsed and used in as a ReplayGain adjustment
+- The OPUS base volume adjustment field is now parsed and used as a ReplayGain adjustment
+- Added ReplayGain adjustment values to Song Properties dialog
+
+#### What's Changed
+- Added donation links to the about page
+
+#### What's Fixed
+- Fixed a crash occuring if you navigated to the settings page from the playlist view
+and then back
 
 ## 3.3.0
 
