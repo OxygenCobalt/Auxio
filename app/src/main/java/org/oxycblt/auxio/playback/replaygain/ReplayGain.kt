@@ -18,7 +18,10 @@
  
 package org.oxycblt.auxio.playback.replaygain
 
+import android.content.Context
+import kotlin.math.abs
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 
 /**
  * The current ReplayGain configuration.
@@ -67,3 +70,16 @@ data class ReplayGainAdjustment(val track: Float?, val album: Float?)
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class ReplayGainPreAmp(val with: Float, val without: Float)
+
+/**
+ * Format a decibel value in a human-readable format.
+ *
+ * @param context The context to resolve resources from.
+ * @return A formatted decibel value. Will be prefixed by a + or - sign.
+ */
+fun Float.formatDb(context: Context) =
+    if (this >= 0) {
+        context.getString(R.string.fmt_db_pos, this)
+    } else {
+        context.getString(R.string.fmt_db_neg, abs(this))
+    }

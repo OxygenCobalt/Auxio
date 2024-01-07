@@ -24,7 +24,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -85,11 +84,6 @@ class PreAmpCustomizeDialog : ViewBindingMaterialDialogFragment<DialogPreAmpBind
         // It is more clear to prepend a +/- before the pre-amp value to make it easier to
         // gauge how much it may be increasing the volume, however android does not add +
         // to positive float values when formatting them in a string. Instead, add it ourselves.
-        ticker.text =
-            if (valueDb >= 0) {
-                getString(R.string.fmt_db_pos, valueDb)
-            } else {
-                getString(R.string.fmt_db_neg, abs(valueDb))
-            }
+        ticker.text = valueDb.formatDb(requireContext())
     }
 }

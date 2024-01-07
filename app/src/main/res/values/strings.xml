@@ -146,6 +146,8 @@
     <string name="lbl_size">Size</string>
     <string name="lbl_bitrate">Bit rate</string>
     <string name="lbl_sample_rate">Sample rate</string>
+    <string name="lbl_replaygain_track">ReplayGain Track Adjustment</string>
+    <string name="lbl_replaygain_album">ReplayGain Album Adjustment</string>
 
     <!-- Limit to 10 characters -->
     <string name="lbl_shuffle_shortcut_short">Shuffle</string>
