@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.metadata
 
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
@@ -97,6 +98,21 @@ private class TagWorkerImpl(
             val textTags = TextTags(metadata)
             populateWithId3v2(textTags.id3v2)
             populateWithVorbis(textTags.vorbis)
+
+            // If this metadata is of a vorbis file, we actually need to extract it's base gain
+            // and divide it by 256 to get the gain in decibels.
+            if (format.sampleMimeType == MimeTypes.AUDIO_OPUS
+                && format.initializationData.isNotEmpty()
+                && format.initializationData[0].size >= 18) {
+                val header = format.initializationData[0]
+                val gain = header[1].toInt() or ((header[0].toInt() shl 8) and 0xFF)
+                logD("Obtained opus base gain: ${gain / 256f} dB")
+                rawSong.replayGainTrackAdjustment =
+                    rawSong.replayGainTrackAdjustment?.plus(gain / 256f)
+                rawSong.replayGainAlbumAdjustment =
+                    rawSong.replayGainAlbumAdjustment?.plus(gain / 256f)
+            }
+
         } else {
             logD("No metadata could be extracted for ${rawSong.name}")
         }
