@@ -35,7 +35,6 @@ import kotlinx.coroutines.Job
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.fs.contentResolverSafe
@@ -139,22 +138,23 @@ class IndexerService :
         logD("Music changed, updating shared objects")
         // Wipe possibly-invalidated outdated covers
         imageLoader.memoryCache?.clear()
-        // Clear invalid models from PlaybackStateManager. This is not connected
-        // to a listener as it is bad practice for a shared object to attach to
-        // the listener system of another.
-        playbackManager.toSavedState()?.let { savedState ->
-            playbackManager.applySavedState(
-                PlaybackStateManager.SavedState(
-                    parent =
-                        savedState.parent?.let { musicRepository.find(it.uid) as? MusicParent },
-                    queueState =
-                        savedState.queueState.remap { song ->
-                            deviceLibrary.findSong(requireNotNull(song).uid)
-                        },
-                    positionMs = savedState.positionMs,
-                    repeatMode = savedState.repeatMode),
-                true)
-        }
+        //        // Clear invalid models from PlaybackStateManager. This is not connected
+        //        // to a listener as it is bad practice for a shared object to attach to
+        //        // the listener system of another.
+        //        playbackManager.toSavedState()?.let { savedState ->
+        //            playbackManager.applySavedState(
+        //                PlaybackStateManager.SavedState(
+        //                    parent =
+        //                        savedState.parent?.let { musicRepository.find(it.uid) as?
+        // MusicParent },
+        //                    queueState =
+        //                        savedState.queueState.remap { song ->
+        //                            deviceLibrary.findSong(requireNotNull(song).uid)
+        //                        },
+        //                    positionMs = savedState.positionMs,
+        //                    repeatMode = savedState.repeatMode),
+        //                true)
+        //        }
     }
 
     override fun onIndexingStateChanged() {

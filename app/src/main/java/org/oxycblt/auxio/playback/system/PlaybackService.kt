@@ -48,13 +48,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
-import org.oxycblt.auxio.playback.state.InternalPlayer
+import org.oxycblt.auxio.playback.state.DeferredPlayback
+import org.oxycblt.auxio.playback.state.PlaybackEvent
+import org.oxycblt.auxio.playback.state.PlaybackStateHolder
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Progression
+import org.oxycblt.auxio.playback.state.Queue
+import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.util.logD
@@ -82,7 +89,7 @@ import org.oxycblt.auxio.widgets.WidgetProvider
 class PlaybackService :
     Service(),
     Player.Listener,
-    InternalPlayer,
+    PlaybackStateHolder,
     MediaSessionComponent.Listener,
     MusicRepository.UpdateListener {
     // Player components
@@ -148,7 +155,7 @@ class PlaybackService :
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
-        playbackManager.registerInternalPlayer(this)
+        playbackManager.registerStateHolder(this)
         musicRepository.addUpdateListener(this)
         mediaSessionComponent.registerListener(this)
 
@@ -189,8 +196,8 @@ class PlaybackService :
         foregroundManager.release()
 
         // Pause just in case this destruction was unexpected.
-        playbackManager.setPlaying(false)
-        playbackManager.unregisterInternalPlayer(this)
+        playbackManager.playing(false)
+        playbackManager.unregisterStateHolder(this)
         musicRepository.removeUpdateListener(this)
 
         unregisterReceiver(systemReceiver)
@@ -210,101 +217,221 @@ class PlaybackService :
         logD("Service destroyed")
     }
 
-    // --- CONTROLLER OVERRIDES ---
+    // --- PLAYBACKSTATEHOLDER OVERRIDES ---
+
+    override val currentSong
+        get() = player.song
+
+    override val repeatMode
+        get() = player.repeat
+
+    override val progression: Progression
+        get() =
+            player.song?.let {
+                Progression.from(
+                    player.playWhenReady,
+                    player.isPlaying,
+                    // The position value can be below zero or past the expected duration, make
+                    // sure we handle that.
+                    player.currentPosition.coerceAtLeast(0).coerceAtMost(it.durationMs))
+            }
+                ?: Progression.nil()
 
     override val audioSessionId: Int
         get() = player.audioSessionId
 
-    override val shouldRewindWithPrev: Boolean
-        get() = playbackSettings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
+    override var parent: MusicParent? = null
 
-    override fun getState(durationMs: Long) =
-        InternalPlayer.State.from(
-            player.playWhenReady,
-            player.isPlaying,
-            // The position value can be below zero or past the expected duration, make
-            // sure we handle that.
-            player.currentPosition.coerceAtLeast(0).coerceAtMost(durationMs))
+    override val isShuffled
+        get() = player.shuffleModeEnabled
 
-    override fun loadSong(song: Song?, play: Boolean) {
-        if (song == null) {
-            // No song, stop playback and foreground state.
-            logD("Nothing playing, stopping playback")
-            // For some reason the player does not mark playWhenReady as false when stopped,
-            // which then completely breaks any re-initialization if playback starts again.
-            // So we manually set it to false here.
-            player.playWhenReady = false
-            player.stop()
-            stopAndSave()
-            return
+    override fun resolveQueue(): Queue =
+        player.song?.let { Queue(player.currentIndex, player.resolveQueue()) } ?: Queue.nil()
+
+    override fun newPlayback(
+        queue: List<Song>,
+        start: Song?,
+        parent: MusicParent?,
+        shuffled: Boolean,
+        play: Boolean
+    ) {
+        this.parent = parent
+        if (shuffled) {
+            player.shuffledQueue(queue, start)
+        } else {
+            player.orderedQueue(queue, start)
         }
-
-        logD("Loading $song")
-        player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
         player.playWhenReady = play
+        playbackManager.dispatchEvent(
+            this,
+            PlaybackEvent.NewPlayback(
+                requireNotNull(player.song) {
+                    "Inconsistency detected: Player does not have song despite being populated"
+                },
+                Queue(player.currentIndex, player.resolveQueue()),
+                parent,
+                isShuffled))
+    }
+
+    override fun playing(playing: Boolean) {
+        player.playWhenReady = playing
+    }
+
+    override fun repeatMode(repeatMode: RepeatMode) {
+        player.repeatMode =
+            when (repeatMode) {
+                RepeatMode.NONE -> Player.REPEAT_MODE_OFF
+                RepeatMode.ALL -> Player.REPEAT_MODE_ALL
+                RepeatMode.TRACK -> Player.REPEAT_MODE_ONE
+            }
     }
 
     override fun seekTo(positionMs: Long) {
-        logD("Seeking to ${positionMs}ms")
         player.seekTo(positionMs)
     }
 
-    override fun setPlaying(isPlaying: Boolean) {
-        logD("Updating player state to $isPlaying")
-        player.playWhenReady = isPlaying
+    override fun next() {
+        player.seekToNext()
+        player.play()
+    }
+
+    override fun prev() {
+        player.seekToPrevious()
+        player.play()
+    }
+
+    override fun goto(index: Int) {
+        player.goto(index)
+        player.play()
+    }
+
+    override fun reorder(shuffled: Boolean) {
+        player.reorder(shuffled)
+        playbackManager.dispatchEvent(
+            this,
+            PlaybackEvent.QueueReordered(
+                Queue(
+                    player.currentIndex,
+                    player.resolveQueue(),
+                ),
+                shuffled))
+    }
+
+    override fun addToQueue(songs: List<Song>) {
+        val insertAt = player.currentIndex + 1
+        player.addToQueue(songs)
+        playbackManager.dispatchEvent(
+            this,
+            PlaybackEvent.QueueChanged(
+                requireNotNull(player.song) {
+                    "Inconsistency detected: Player does not have song despite being populated"
+                },
+                Queue(player.currentIndex, player.resolveQueue()),
+                QueueChange(
+                    QueueChange.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))))
+    }
+
+    override fun playNext(songs: List<Song>) {
+        val insertAt = player.currentIndex + 1
+        player.playNext(songs)
+        // TODO: Re-add queue changes
+        playbackManager.dispatchEvent(
+            this,
+            PlaybackEvent.QueueChanged(
+                requireNotNull(player.song) {
+                    "Inconsistency detected: Player does not have song despite being populated"
+                },
+                Queue(player.currentIndex, player.resolveQueue()),
+                QueueChange(
+                    QueueChange.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))))
+    }
+
+    override fun move(from: Int, to: Int) {
+        val oldIndex = player.currentIndex
+        player.move(from, to)
+        val changeType =
+            if (player.currentIndex != oldIndex) {
+                QueueChange.Type.INDEX
+            } else {
+                QueueChange.Type.MAPPING
+            }
+        playbackManager.dispatchEvent(
+            this,
+            PlaybackEvent.QueueChanged(
+                requireNotNull(player.song) {
+                    "Inconsistency detected: Player does not have song despite being populated"
+                },
+                Queue(player.currentIndex, player.resolveQueue()),
+                QueueChange(changeType, UpdateInstructions.Diff)))
+    }
+
+    override fun remove(at: Int) {
+        val oldUnscrambledIndex = player.currentIndex
+        val oldScrambledIndex = player.currentMediaItemIndex
+        player.remove(at)
+        val newUnscrambledIndex = player.currentIndex
+        val newScrambledIndex = player.currentMediaItemIndex
+        val changeType =
+            when {
+                oldScrambledIndex != newScrambledIndex -> QueueChange.Type.SONG
+                oldUnscrambledIndex != newUnscrambledIndex -> QueueChange.Type.INDEX
+                else -> QueueChange.Type.MAPPING
+            }
+
+        playbackManager.dispatchEvent(
+            this,
+            PlaybackEvent.QueueChanged(
+                requireNotNull(player.song) {
+                    "Inconsistency detected: Player does not have song despite being populated"
+                },
+                Queue(player.currentIndex, player.resolveQueue()),
+                QueueChange(changeType, UpdateInstructions.Diff)))
     }
 
     // --- PLAYER OVERRIDES ---
 
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        super.onPlayWhenReadyChanged(playWhenReady, reason)
+
+        if (player.playWhenReady) {
+            // Mark that we have started playing so that the notification can now be posted.
+            hasPlayed = true
+            logD("Player has started playing")
+            if (!openAudioEffectSession) {
+                // Convention to start an audioeffect session on play/pause rather than
+                // start/stop
+                logD("Opening audio effect session")
+                broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+                openAudioEffectSession = true
+            }
+        } else if (openAudioEffectSession) {
+            // Make sure to close the audio session when we stop playback.
+            logD("Closing audio effect session")
+            broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
+            openAudioEffectSession = false
+        }
+    }
+
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        super.onMediaItemTransition(mediaItem, reason)
+
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
+            reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
+            playbackManager.dispatchEvent(
+                this, PlaybackEvent.IndexMoved(player.song, player.currentIndex))
+        }
+    }
+
     override fun onEvents(player: Player, events: Player.Events) {
         super.onEvents(player, events)
-        if (events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
-            if (player.playWhenReady) {
-                // Mark that we have started playing so that the notification can now be posted.
-                hasPlayed = true
-                logD("Player has started playing")
-                if (!openAudioEffectSession) {
-                    // Convention to start an audioeffect session on play/pause rather than
-                    // start/stop
-                    logD("Opening audio effect session")
-                    broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-                    openAudioEffectSession = true
-                }
-            } else if (openAudioEffectSession) {
-                // Make sure to close the audio session when we stop playback.
-                logD("Closing audio effect session")
-                broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
-                openAudioEffectSession = false
-            }
-        }
 
-        // Any change to the analogous isPlaying, isAdvancing, or positionMs values require
-        // us to synchronize with a new state.
         if (events.containsAny(
             Player.EVENT_PLAY_WHEN_READY_CHANGED,
             Player.EVENT_IS_PLAYING_CHANGED,
             Player.EVENT_POSITION_DISCONTINUITY)) {
             logD("Player state changed, must synchronize state")
-            playbackManager.synchronizeState(this)
-        }
-    }
-
-    override fun onPlaybackStateChanged(state: Int) {
-        if (state == Player.STATE_ENDED) {
-            // Player ended, repeat the current track if we are configured to.
-            if (playbackManager.repeatMode == RepeatMode.TRACK) {
-                logD("Looping current track")
-                playbackManager.rewind()
-                // May be configured to pause when we repeat a track.
-                if (playbackSettings.pauseOnRepeat) {
-                    logD("Pausing track on loop")
-                    playbackManager.setPlaying(false)
-                }
-            } else {
-                logD("Track ended, moving to next track")
-                playbackManager.next()
-            }
+            playbackManager.dispatchEvent(this, PlaybackEvent.ProgressionChanged(progression))
         }
     }
 
@@ -347,7 +474,7 @@ class PlaybackService :
         }
     }
 
-    override fun performAction(action: InternalPlayer.Action): Boolean {
+    override fun handleDeferred(action: DeferredPlayback): Boolean {
         val deviceLibrary =
             musicRepository.deviceLibrary
             // No library, cannot do anything.
@@ -355,7 +482,7 @@ class PlaybackService :
 
         when (action) {
             // Restore state -> Start a new restoreState job
-            is InternalPlayer.Action.RestoreState -> {
+            is DeferredPlayback.RestoreState -> {
                 logD("Restoring playback state")
                 restoreScope.launch {
                     persistenceRepository.readState()?.let {
@@ -366,20 +493,20 @@ class PlaybackService :
                 }
             }
             // Shuffle all -> Start new playback from all songs
-            is InternalPlayer.Action.ShuffleAll -> {
+            is DeferredPlayback.ShuffleAll -> {
                 logD("Shuffling all tracks")
                 playbackManager.play(
                     null, null, listSettings.songSort.songs(deviceLibrary.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
-            is InternalPlayer.Action.Open -> {
+            is DeferredPlayback.Open -> {
                 logD("Opening specified file")
                 deviceLibrary.findSongForUri(application, action.uri)?.let { song ->
                     playbackManager.play(
                         song,
                         null,
                         listSettings.songSort.songs(deviceLibrary.songs),
-                        playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
+                        player.shuffleModeEnabled && playbackSettings.keepShuffle)
                 }
             }
         }
@@ -437,15 +564,15 @@ class PlaybackService :
                 // --- AUXIO EVENTS ---
                 ACTION_PLAY_PAUSE -> {
                     logD("Received play event")
-                    playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
+                    playbackManager.playing(!playbackManager.progression.isPlaying)
                 }
                 ACTION_INC_REPEAT_MODE -> {
                     logD("Received repeat mode event")
-                    playbackManager.repeatMode = playbackManager.repeatMode.increment()
+                    playbackManager.repeatMode(playbackManager.repeatMode.increment())
                 }
                 ACTION_INVERT_SHUFFLE -> {
                     logD("Received shuffle event")
-                    playbackManager.reorder(!playbackManager.queue.isShuffled)
+                    playbackManager.reorder(!playbackManager.isShuffled)
                 }
                 ACTION_SKIP_PREV -> {
                     logD("Received skip previous event")
@@ -457,7 +584,7 @@ class PlaybackService :
                 }
                 ACTION_EXIT -> {
                     logD("Received exit event")
-                    playbackManager.setPlaying(false)
+                    playbackManager.playing(false)
                     stopAndSave()
                 }
                 WidgetProvider.ACTION_WIDGET_UPDATE -> {
@@ -472,17 +599,17 @@ class PlaybackService :
             // which would result in unexpected playback. Work around it by dropping the first
             // call to this function, which should come from that Intent.
             if (playbackSettings.headsetAutoplay &&
-                playbackManager.queue.currentSong != null &&
+                playbackManager.currentSong != null &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
-                playbackManager.setPlaying(true)
+                playbackManager.playing(true)
             }
         }
 
         private fun pauseFromHeadsetPlug() {
-            if (playbackManager.queue.currentSong != null) {
+            if (playbackManager.currentSong != null) {
                 logD("Device disconnected, pausing")
-                playbackManager.setPlaying(false)
+                playbackManager.playing(false)
             }
         }
     }

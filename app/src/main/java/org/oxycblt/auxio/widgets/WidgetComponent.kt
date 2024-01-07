@@ -29,11 +29,11 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
 import org.oxycblt.auxio.image.extractor.SquareCropTransformation
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.queue.Queue
-import org.oxycblt.auxio.playback.state.InternalPlayer
+import org.oxycblt.auxio.playback.state.PlaybackEvent
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getDimenPixels
@@ -64,7 +64,7 @@ constructor(
 
     /** Update [WidgetProvider] with the current playback state. */
     fun update() {
-        val song = playbackManager.queue.currentSong
+        val song = playbackManager.currentSong
         if (song == null) {
             logD("No song, resetting widget")
             widgetProvider.update(context, uiSettings, null)
@@ -72,9 +72,9 @@ constructor(
         }
 
         // Note: Store these values here so they remain consistent once the bitmap is loaded.
-        val isPlaying = playbackManager.playerState.isPlaying
+        val isPlaying = playbackManager.progression.isPlaying
         val repeatMode = playbackManager.repeatMode
-        val isShuffled = playbackManager.queue.isShuffled
+        val isShuffled = playbackManager.isShuffled
 
         logD("Updating widget with new playback state")
         bitmapProvider.load(
@@ -135,16 +135,16 @@ constructor(
 
     // --- CALLBACKS ---
 
-    // Respond to all major song or player changes that will affect the widget
-    override fun onIndexMoved(queue: Queue) = update()
-
-    override fun onQueueReordered(queue: Queue) = update()
-
-    override fun onNewPlayback(queue: Queue, parent: MusicParent?) = update()
-
-    override fun onStateChanged(state: InternalPlayer.State) = update()
-
-    override fun onRepeatChanged(repeatMode: RepeatMode) = update()
+    override fun onPlaybackEvent(event: PlaybackEvent) {
+        if (event is PlaybackEvent.NewPlayback ||
+            event is PlaybackEvent.ProgressionChanged ||
+            (event is PlaybackEvent.QueueChanged && event.change.type == QueueChange.Type.SONG) ||
+            event is PlaybackEvent.QueueReordered ||
+            event is PlaybackEvent.IndexMoved ||
+            event is PlaybackEvent.RepeatModeChanged) {
+            update()
+        }
+    }
 
     // Respond to settings changes that will affect the widget
     override fun onRoundModeChanged() = update()
@@ -156,7 +156,7 @@ constructor(
      *
      * @param song [Queue.currentSong]
      * @param cover A pre-loaded album cover [Bitmap] for [song].
-     * @param isPlaying [PlaybackStateManager.playerState]
+     * @param isPlaying [PlaybackStateManager.progression]
      * @param repeatMode [PlaybackStateManager.repeatMode]
      * @param isShuffled [Queue.isShuffled]
      */

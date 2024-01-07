@@ -29,18 +29,10 @@ import java.util.*
  *
  * @author media3 team, Alexander Capehart (OxygenCobalt)
  */
-class BetterShuffleOrder
-private constructor(private val shuffled: IntArray, private val random: Random) : ShuffleOrder {
+class BetterShuffleOrder private constructor(private val shuffled: IntArray) : ShuffleOrder {
     private val indexInShuffled: IntArray = IntArray(shuffled.size)
 
-    /**
-     * Creates an instance with a specified length.
-     *
-     * @param length The length of the shuffle order.
-     */
-    constructor(length: Int) : this(length, Random())
-
-    constructor(length: Int, random: Random) : this(createShuffledList(length, random), random)
+    constructor(length: Int, startIndex: Int) : this(createShuffledList(length, startIndex))
 
     init {
         for (i in shuffled.indices) {
@@ -88,7 +80,7 @@ private constructor(private val shuffled: IntArray, private val random: Random) 
         for (i in 0 until insertionCount) {
             newShuffled[pivot + i + 1] = insertionIndex + i + 1
         }
-        return BetterShuffleOrder(newShuffled, Random(random.nextLong()))
+        return BetterShuffleOrder(newShuffled)
     }
 
     override fun cloneAndRemove(indexFrom: Int, indexToExclusive: Int): ShuffleOrder {
@@ -104,20 +96,26 @@ private constructor(private val shuffled: IntArray, private val random: Random) 
                     else shuffled[i]
             }
         }
-        return BetterShuffleOrder(newShuffled, Random(random.nextLong()))
+        return BetterShuffleOrder(newShuffled)
     }
 
     override fun cloneAndClear(): ShuffleOrder {
-        return BetterShuffleOrder(0, Random(random.nextLong()))
+        return BetterShuffleOrder(0, -1)
     }
 
     companion object {
-        private fun createShuffledList(length: Int, random: Random): IntArray {
+        private fun createShuffledList(length: Int, startIndex: Int): IntArray {
             val shuffled = IntArray(length)
             for (i in 0 until length) {
-                val swapIndex = random.nextInt(i + 1)
+                val swapIndex = (0..i).random()
                 shuffled[i] = shuffled[swapIndex]
                 shuffled[swapIndex] = i
+            }
+            if (startIndex != -1) {
+                val startIndexInShuffled = shuffled.indexOf(startIndex)
+                val temp = shuffled[0]
+                shuffled[0] = shuffled[startIndexInShuffled]
+                shuffled[startIndexInShuffled] = temp
             }
             return shuffled
         }

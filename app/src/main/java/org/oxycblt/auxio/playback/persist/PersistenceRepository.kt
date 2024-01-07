@@ -21,7 +21,6 @@ package org.oxycblt.auxio.playback.persist
 import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -76,17 +75,19 @@ constructor(
         val parent = playbackState.parentUid?.let { musicRepository.find(it) as? MusicParent }
         logD("Successfully read playback state")
 
-        return PlaybackStateManager.SavedState(
-            parent = parent,
-            queueState =
-                Queue.SavedState(
-                    heap.map { deviceLibrary.findSong(it.uid) },
-                    orderedMapping,
-                    shuffledMapping,
-                    playbackState.index,
-                    playbackState.songUid),
-            positionMs = playbackState.positionMs,
-            repeatMode = playbackState.repeatMode)
+        //        return PlaybackStateManager.SavedState(
+        //            parent = parent,
+        //            queueState =
+        //                Queue.SavedState(
+        //                    heap.map { deviceLibrary.findSong(it.uid) },
+        //                    orderedMapping,
+        //                    shuffledMapping,
+        //                    playbackState.index,
+        //                    playbackState.songUid),
+        //            positionMs = playbackState.positionMs,
+        //            repeatMode = playbackState.repeatMode)
+
+        return null
     }
 
     override suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean {
