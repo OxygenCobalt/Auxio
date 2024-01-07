@@ -177,7 +177,7 @@
     <string name="lbl_shuffle_shortcut_short">शफल करें</string>
     <string name="lbl_state_restored">स्थिति बहाल</string>
     <string name="lng_playlist_renamed">प्लेलिस्ट का नाम बदला गया</string>
-    <string name="lng_author">अलेक्जेंडर कैपहार्ट द्वारा विकसित</string>
+    <string name="lbl_author_name">अलेक्जेंडर कैपहार्ट द्वारा विकसित</string>
     <string name="set_separators_desc">एकाधिक टैग मानों को निरूपित करने वाले वर्ण कॉन्फ़िगर करें</string>
     <string name="set_separators_comma">अल्पविराम (,)</string>
     <string name="set_separators_slash">स्लैश (/)</string>

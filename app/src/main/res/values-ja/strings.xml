@@ -118,7 +118,7 @@
     <string name="lbl_album_details">アルバムに移動</string>
     <string name="lbl_props">曲のプロパティ</string>
     <string name="lng_queue_added">再生待ちに追加</string>
-    <string name="lng_author">開発者 アレクサンダー・ケイプハート (Alexander Capehart)</string>
+    <string name="lbl_author_name">開発者 アレクサンダー・ケイプハート (Alexander Capehart)</string>
     <string name="desc_artist_image">%s のアーティスト画像</string>
     <string name="lbl_compilations">オムニバス</string>
     <string name="lbl_compilation">オムニバス</string>

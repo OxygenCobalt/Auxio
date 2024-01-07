@@ -59,7 +59,7 @@
     <string name="lbl_version">Ulat</string>
     <string name="lbl_code">Tignan sa GitHub</string>
     <string name="lbl_licenses">Mga Lisensya</string>
-    <string name="lng_author">Binuo ni OxygenCobalt</string>
+    <string name="lbl_author_name">Binuo ni OxygenCobalt</string>
     <string name="lbl_library_counts">Istatistika ng library</string>
     <string name="set_root_title">Mga Setting</string>
     <string name="set_ui">Hitsura</string>

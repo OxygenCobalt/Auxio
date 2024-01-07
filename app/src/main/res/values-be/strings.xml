@@ -10,7 +10,7 @@
     <string name="set_personalize">Персаналізаваць</string>
     <string name="lng_observing">Адсочванне змяненняў у вашай музычнай бібліятэцы…</string>
     <string name="lng_queue_added">Дададзены ў чаргу</string>
-    <string name="lng_author">Распрацавана Аляксандрам Кейпхартам</string>
+    <string name="lbl_author_name">Распрацавана Аляксандрам Кейпхартам</string>
     <string name="set_bar_action">Карыстальніцкае дзеянне панэлі прайгравання</string>
     <string name="set_play_song_from_album">Прайграць з альбома</string>
     <string name="set_separators_comma">Коска (,)</string>

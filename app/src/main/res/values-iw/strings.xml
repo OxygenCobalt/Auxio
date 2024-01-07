@@ -66,7 +66,7 @@
     <string name="lng_indexing">ספריית המוזיקה שלך נטענת…</string>
     <string name="lng_observing">ספריית המוזיקה שלך נסרקת לאיתור שינויים…</string>
     <string name="lng_queue_added">התווסף לתור</string>
-    <string name="lng_author">מפותח על ידי אלכסנדר קייפהארט</string>
+    <string name="lbl_author_name">מפותח על ידי אלכסנדר קייפהארט</string>
     <string name="lng_search_library">חיפוש בספרייה שלך…</string>
     <string name="set_ui">מראה ותחושה</string>
     <string name="set_ui_desc">שינוי ערכת הנושא והצבעים של היישום</string>

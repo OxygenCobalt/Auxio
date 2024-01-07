@@ -170,7 +170,7 @@
     <string name="lbl_save">Ment</string>
     <string name="lbl_reset">Alaphelyzet</string>
     <string name="lbl_state_wiped">Állapot törölve</string>
-    <string name="lng_author">Fejlesztő Alexander Capehart</string>
+    <string name="lbl_author_name">Fejlesztő Alexander Capehart</string>
     <string name="set_play_song_from_all">Lejátszás az összes dalból</string>
     <string name="set_play_song_from_genre">Lejátszás műfajból</string>
     <string name="set_content">Tartalom</string>

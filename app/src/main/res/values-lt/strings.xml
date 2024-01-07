@@ -122,7 +122,7 @@
     <string name="lbl_live_group">Gyvai</string>
     <string name="set_headset_autoplay_desc">Visada pradėti groti, kai ausinės yra prijungtos (gali neveikti visuose įrenginiuose)</string>
     <string name="cdc_ogg">Ogg garsas</string>
-    <string name="lng_author">Sukūrė Alexanderis Capehartas (angl. Alexander Capehart)</string>
+    <string name="lbl_author_name">Sukūrė Alexanderis Capehartas (angl. Alexander Capehart)</string>
     <string name="set_replay_gain_mode_track">Pageidauti takelį</string>
     <string name="err_no_dirs">Jokių aplankų</string>
     <string name="err_bad_dir">Šis aplankas nepalaikomas</string>

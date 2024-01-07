@@ -147,7 +147,7 @@
     <string name="lbl_mix">DJ Mix</string>
     <string name="desc_skip_prev">Przejdź do ostatniego utworu</string>
     <string name="desc_skip_next">Przejdź do następnego utworu</string>
-    <string name="lng_author">Autorstwa Alexandra Capeharta</string>
+    <string name="lbl_author_name">Autorstwa Alexandra Capeharta</string>
     <string name="set_round_mode">Zaokrąglone krawędzie</string>
     <string name="set_round_mode_desc">Włącz zaokrąglone rogi na dodatkowych elementach interfejsu (wymaga zaokrąglenia okładek albumów)</string>
     <string name="set_bar_action">Akcja na pasku odtwarzania</string>
