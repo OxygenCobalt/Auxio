@@ -22,7 +22,6 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
@@ -33,13 +32,14 @@ val ExoPlayer.song
 fun ExoPlayer.orderedQueue(queue: Collection<Song>, start: Song?) {
     clearMediaItems()
     shuffleModeEnabled = false
-    setShuffleOrder(DefaultShuffleOrder(mediaItemCount))
     setMediaItems(queue.map { it.toMediaItem() })
-    val startIndex = queue.indexOf(start)
-    if (startIndex != -1) {
-        seekTo(startIndex, C.TIME_UNSET)
-    } else {
-        throw IllegalArgumentException("Start song not in queue")
+    if (start != null) {
+        val startIndex = queue.indexOf(start)
+        if (startIndex != -1) {
+            seekTo(startIndex, C.TIME_UNSET)
+        } else {
+            throw IllegalArgumentException("Start song not in queue")
+        }
     }
 }
 
@@ -48,7 +48,6 @@ fun ExoPlayer.shuffledQueue(queue: Collection<Song>, start: Song?) {
     // MediaItems AND repopulate MediaItems (?!?!?!?!). As a result, we have to use the default
     // shuffle order and it's stupid cloneAndInsert implementation to add the songs, and then
     // switch back to our implementation that actually works in normal use.
-    setShuffleOrder(DefaultShuffleOrder(mediaItemCount))
     setMediaItems(queue.map { it.toMediaItem() })
     shuffleModeEnabled = true
     val startIndex =
@@ -82,11 +81,11 @@ val ExoPlayer.repeat: RepeatMode
 
 fun ExoPlayer.reorder(shuffled: Boolean) {
     logD("Reordering queue to $shuffled")
+    shuffleModeEnabled = shuffled
     if (shuffled) {
         // Have to manually refresh the shuffle seed.
         setShuffleOrder(BetterShuffleOrder(mediaItemCount, currentMediaItemIndex))
     }
-    shuffleModeEnabled = shuffled
 }
 
 fun ExoPlayer.playNext(songs: List<Song>) {
@@ -115,7 +114,17 @@ fun ExoPlayer.move(from: Int, to: Int) {
 
     val trueFrom = queue[from]
     val trueTo = queue[to]
-    moveMediaItem(trueFrom, trueTo)
+
+    when {
+        trueFrom > trueTo -> {
+            moveMediaItem(trueFrom, trueTo)
+            moveMediaItem(trueTo + 1, trueFrom)
+        }
+        trueTo > trueFrom -> {
+            moveMediaItem(trueFrom, trueTo)
+            moveMediaItem(trueTo - 1, trueFrom)
+        }
+    }
 }
 
 fun ExoPlayer.remove(at: Int) {

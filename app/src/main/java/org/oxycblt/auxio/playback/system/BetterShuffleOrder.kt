@@ -63,6 +63,10 @@ class BetterShuffleOrder private constructor(private val shuffled: IntArray) : S
     }
 
     override fun cloneAndInsert(insertionIndex: Int, insertionCount: Int): ShuffleOrder {
+        if (shuffled.isEmpty()) {
+            return BetterShuffleOrder(insertionCount, -1)
+        }
+
         val newShuffled = IntArray(shuffled.size + insertionCount)
         val pivot = indexInShuffled[insertionIndex]
         for (i in shuffled.indices) {

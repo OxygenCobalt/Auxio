@@ -363,7 +363,7 @@ class PlaybackService :
                     "Inconsistency detected: Player does not have song despite being populated"
                 },
                 Queue(player.currentIndex, player.resolveQueue()),
-                QueueChange(changeType, UpdateInstructions.Diff)))
+                QueueChange(changeType, UpdateInstructions.Move(from, to))))
     }
 
     override fun remove(at: Int) {
@@ -386,7 +386,7 @@ class PlaybackService :
                     "Inconsistency detected: Player does not have song despite being populated"
                 },
                 Queue(player.currentIndex, player.resolveQueue()),
-                QueueChange(changeType, UpdateInstructions.Diff)))
+                QueueChange(changeType, UpdateInstructions.Remove(at, 1))))
     }
 
     // --- PLAYER OVERRIDES ---
