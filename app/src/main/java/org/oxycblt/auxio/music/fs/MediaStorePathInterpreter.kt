@@ -137,7 +137,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
                 val path = paths[i]
                 val volume = path.volume.components ?: continue
                 template +=
-                    if (i == 0) {
+                    if (args.isEmpty()) {
                         "${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
                     } else {
                         " OR ${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
@@ -217,7 +217,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
             for (i in paths.indices) {
                 val path = paths[i]
                 template =
-                    if (i == 0) {
+                    if (args.isEmpty()) {
                         "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
                             "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
                     } else {
