@@ -38,9 +38,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.playback.state.PlaybackEvent
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.Queue
+import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
@@ -118,58 +117,64 @@ constructor(
 
     // --- PLAYBACKSTATEMANAGER OVERRIDES ---
 
-    override fun onPlaybackEvent(event: PlaybackEvent) {
-        when (event) {
-            is PlaybackEvent.IndexMoved -> {
-                updateMediaMetadata(event.currentSong, playbackManager.parent)
-                invalidateSessionState()
-            }
-            is PlaybackEvent.QueueChanged -> {
-                updateQueue(event.queue)
-                when (event.change.type) {
-                    // Nothing special to do with mapping changes.
-                    QueueChange.Type.MAPPING -> {}
-                    // Index changed, ensure playback state's index changes.
-                    QueueChange.Type.INDEX -> invalidateSessionState()
-                    // Song changed, ensure metadata changes.
-                    QueueChange.Type.SONG ->
-                        updateMediaMetadata(event.currentSong, playbackManager.parent)
-                }
-            }
-            is PlaybackEvent.QueueReordered -> {
-                updateQueue(event.queue)
-                invalidateSessionState()
-                mediaSession.setShuffleMode(
-                    if (event.isShuffled) {
-                        PlaybackStateCompat.SHUFFLE_MODE_ALL
-                    } else {
-                        PlaybackStateCompat.SHUFFLE_MODE_NONE
-                    })
-                invalidateSecondaryAction()
-            }
-            is PlaybackEvent.NewPlayback -> {
-                updateMediaMetadata(event.currentSong, event.parent)
-                updateQueue(event.queue)
-                invalidateSessionState()
-            }
-            is PlaybackEvent.ProgressionChanged -> {
-                invalidateSessionState()
-                notification.updatePlaying(playbackManager.progression.isPlaying)
-                if (!bitmapProvider.isBusy) {
-                    listener?.onPostNotification(notification)
-                }
-            }
-            is PlaybackEvent.RepeatModeChanged -> {
-                mediaSession.setRepeatMode(
-                    when (event.repeatMode) {
-                        RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
-                        RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
-                        RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
-                    })
+    override fun onIndexMoved(index: Int) {
+        updateMediaMetadata(playbackManager.currentSong, playbackManager.parent)
+        invalidateSessionState()
+    }
 
-                invalidateSecondaryAction()
-            }
+    override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
+        updateQueue(queue)
+        when (change.type) {
+            // Nothing special to do with mapping changes.
+            QueueChange.Type.MAPPING -> {}
+            // Index changed, ensure playback state's index changes.
+            QueueChange.Type.INDEX -> invalidateSessionState()
+            // Song changed, ensure metadata changes.
+            QueueChange.Type.SONG ->
+                updateMediaMetadata(playbackManager.currentSong, playbackManager.parent)
         }
+    }
+
+    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
+        updateQueue(queue)
+        invalidateSessionState()
+        mediaSession.setShuffleMode(
+            if (isShuffled) {
+                PlaybackStateCompat.SHUFFLE_MODE_ALL
+            } else {
+                PlaybackStateCompat.SHUFFLE_MODE_NONE
+            })
+        invalidateSecondaryAction()
+    }
+
+    override fun onNewPlayback(
+        parent: MusicParent?,
+        queue: List<Song>,
+        index: Int,
+        isShuffled: Boolean
+    ) {
+        updateMediaMetadata(playbackManager.currentSong, parent)
+        updateQueue(queue)
+        invalidateSessionState()
+    }
+
+    override fun onProgressionChanged(progression: Progression) {
+        invalidateSessionState()
+        notification.updatePlaying(playbackManager.progression.isPlaying)
+        if (!bitmapProvider.isBusy) {
+            listener?.onPostNotification(notification)
+        }
+    }
+
+    override fun onRepeatModeChanged(repeatMode: RepeatMode) {
+        mediaSession.setRepeatMode(
+            when (repeatMode) {
+                RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
+                RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
+                RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
+            })
+
+        invalidateSecondaryAction()
     }
 
     // --- SETTINGS OVERRIDES ---
@@ -251,7 +256,7 @@ constructor(
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
-        playbackManager.reorder(
+        playbackManager.shuffled(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
                 shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
@@ -355,9 +360,9 @@ constructor(
      *
      * @param queue The current queue to upload.
      */
-    private fun updateQueue(queue: Queue) {
+    private fun updateQueue(queue: List<Song>) {
         val queueItems =
-            queue.queue.mapIndexed { i, song ->
+            queue.mapIndexed { i, song ->
                 val description =
                     MediaDescriptionCompat.Builder()
                         // Media ID should not be the item index but rather the UID,
@@ -382,15 +387,13 @@ constructor(
     private fun invalidateSessionState() {
         logD("Updating media session playback state")
 
-        val queue = playbackManager.resolveQueue()
-
         val state =
             // InternalPlayer.State handles position/state information.
             playbackManager.progression
                 .intoPlaybackState(PlaybackStateCompat.Builder())
                 .setActions(ACTIONS)
                 // Active queue ID corresponds to the indices we populated prior, use them here.
-                .setActiveQueueItemId(queue.index.toLong())
+                .setActiveQueueItemId(playbackManager.index.toLong())
 
         // Android 13+ relies on custom actions in the notification.
 

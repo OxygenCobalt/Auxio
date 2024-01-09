@@ -27,19 +27,19 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 
 interface PlaybackStateHolder {
-    val currentSong: Song?
+    val progression: Progression
 
     val repeatMode: RepeatMode
 
-    val progression: Progression
-
-    val audioSessionId: Int
-
     val parent: MusicParent?
+
+    fun resolveQueue(): List<Song>
+
+    fun resolveIndex(): Int
 
     val isShuffled: Boolean
 
-    fun resolveQueue(): Queue
+    val audioSessionId: Int
 
     fun newPlayback(
         queue: List<Song>,
@@ -72,6 +72,21 @@ interface PlaybackStateHolder {
     fun reorder(shuffled: Boolean)
 
     fun handleDeferred(action: DeferredPlayback): Boolean
+}
+
+sealed interface StateEvent {
+    data object IndexMoved : StateEvent
+
+    data class QueueChanged(val instructions: UpdateInstructions, val songChanged: Boolean) :
+        StateEvent
+
+    data object QueueReordered : StateEvent
+
+    data object NewPlayback : StateEvent
+
+    data object ProgressionChanged : StateEvent
+
+    data object RepeatModeChanged : StateEvent
 }
 
 /**
@@ -114,9 +129,9 @@ sealed interface DeferredPlayback {
     data class Open(val uri: Uri) : DeferredPlayback
 }
 
-data class Queue(val index: Int, val queue: List<Song>) {
+data class Queue(val songs: List<Song>, val index: Int) {
     companion object {
-        fun nil() = Queue(-1, emptyList())
+        fun nil() = Queue(emptyList(), -1)
     }
 }
 

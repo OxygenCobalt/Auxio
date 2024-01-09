@@ -29,6 +29,19 @@ import org.oxycblt.auxio.util.logD
 val ExoPlayer.song
     get() = currentMediaItem?.song
 
+fun ExoPlayer.resolveIndex() = unscrambleQueueIndices().indexOf(currentMediaItemIndex)
+
+fun ExoPlayer.resolveQueue() = unscrambleQueueIndices().map { getMediaItemAt(it).song }
+
+val ExoPlayer.repeat: RepeatMode
+    get() =
+        when (repeatMode) {
+            Player.REPEAT_MODE_OFF -> RepeatMode.NONE
+            Player.REPEAT_MODE_ONE -> RepeatMode.TRACK
+            Player.REPEAT_MODE_ALL -> RepeatMode.ALL
+            else -> throw IllegalStateException("Unknown repeat mode: $repeatMode")
+        }
+
 fun ExoPlayer.orderedQueue(queue: Collection<Song>, start: Song?) {
     clearMediaItems()
     shuffleModeEnabled = false
@@ -60,25 +73,6 @@ fun ExoPlayer.shuffledQueue(queue: Collection<Song>, start: Song?) {
     seekTo(currentTimeline.getFirstWindowIndex(shuffleModeEnabled), C.TIME_UNSET)
 }
 
-val ExoPlayer.currentIndex: Int
-    get() {
-        val queue = unscrambleQueue { index -> index }
-        if (queue.isEmpty()) {
-            return C.INDEX_UNSET
-        }
-
-        return queue.indexOf(currentMediaItemIndex)
-    }
-
-val ExoPlayer.repeat: RepeatMode
-    get() =
-        when (repeatMode) {
-            Player.REPEAT_MODE_OFF -> RepeatMode.NONE
-            Player.REPEAT_MODE_ONE -> RepeatMode.TRACK
-            Player.REPEAT_MODE_ALL -> RepeatMode.ALL
-            else -> throw IllegalStateException("Unknown repeat mode: $repeatMode")
-        }
-
 fun ExoPlayer.reorder(shuffled: Boolean) {
     logD("Reordering queue to $shuffled")
     shuffleModeEnabled = shuffled
@@ -97,23 +91,23 @@ fun ExoPlayer.addToQueue(songs: List<Song>) {
 }
 
 fun ExoPlayer.goto(index: Int) {
-    val queue = unscrambleQueue { index -> index }
-    if (queue.isEmpty()) {
+    val indices = unscrambleQueueIndices()
+    if (indices.isEmpty()) {
         return
     }
 
-    val trueIndex = queue[index]
+    val trueIndex = indices[index]
     seekTo(trueIndex, C.TIME_UNSET)
 }
 
 fun ExoPlayer.move(from: Int, to: Int) {
-    val queue = unscrambleQueue { index -> index }
-    if (queue.isEmpty()) {
+    val indices = unscrambleQueueIndices()
+    if (indices.isEmpty()) {
         return
     }
 
-    val trueFrom = queue[from]
-    val trueTo = queue[to]
+    val trueFrom = indices[from]
+    val trueTo = indices[to]
 
     when {
         trueFrom > trueTo -> {
@@ -128,29 +122,25 @@ fun ExoPlayer.move(from: Int, to: Int) {
 }
 
 fun ExoPlayer.remove(at: Int) {
-    val queue = unscrambleQueue { index -> index }
-    if (queue.isEmpty()) {
+    val indices = unscrambleQueueIndices()
+    if (indices.isEmpty()) {
         return
     }
 
-    val trueIndex = queue[at]
+    val trueIndex = indices[at]
     removeMediaItem(trueIndex)
 }
 
-fun ExoPlayer.resolveQueue(): List<Song> {
-    return unscrambleQueue { index -> getMediaItemAt(index).song }
-}
-
-inline fun <T> ExoPlayer.unscrambleQueue(mapper: (Int) -> T): List<T> {
+fun ExoPlayer.unscrambleQueueIndices(): List<Int> {
     val timeline = currentTimeline
     if (timeline.isEmpty()) {
         return emptyList()
     }
-    val queue = mutableListOf<T>()
+    val queue = mutableListOf<Int>()
 
     // Add the active queue item.
     val currentMediaItemIndex = currentMediaItemIndex
-    queue.add(mapper(currentMediaItemIndex))
+    queue.add(currentMediaItemIndex)
 
     // Fill queue alternating with next and/or previous queue items.
     var firstMediaItemIndex = currentMediaItemIndex
@@ -164,7 +154,7 @@ inline fun <T> ExoPlayer.unscrambleQueue(mapper: (Int) -> T): List<T> {
                 timeline.getNextWindowIndex(
                     lastMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled)
             if (lastMediaItemIndex != C.INDEX_UNSET) {
-                queue.add(mapper(lastMediaItemIndex))
+                queue.add(lastMediaItemIndex)
             }
         }
         if (firstMediaItemIndex != C.INDEX_UNSET) {
@@ -172,7 +162,7 @@ inline fun <T> ExoPlayer.unscrambleQueue(mapper: (Int) -> T): List<T> {
                 timeline.getPreviousWindowIndex(
                     firstMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled)
             if (firstMediaItemIndex != C.INDEX_UNSET) {
-                queue.add(0, mapper(firstMediaItemIndex))
+                queue.add(0, firstMediaItemIndex)
             }
         }
     }

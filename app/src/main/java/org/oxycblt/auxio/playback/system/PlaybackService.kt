@@ -56,13 +56,11 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.DeferredPlayback
-import org.oxycblt.auxio.playback.state.PlaybackEvent
 import org.oxycblt.auxio.playback.state.PlaybackStateHolder
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
-import org.oxycblt.auxio.playback.state.Queue
-import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.StateEvent
 import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -219,9 +217,6 @@ class PlaybackService :
 
     // --- PLAYBACKSTATEHOLDER OVERRIDES ---
 
-    override val currentSong
-        get() = player.song
-
     override val repeatMode
         get() = player.repeat
 
@@ -237,16 +232,17 @@ class PlaybackService :
             }
                 ?: Progression.nil()
 
-    override val audioSessionId: Int
-        get() = player.audioSessionId
-
     override var parent: MusicParent? = null
 
     override val isShuffled
         get() = player.shuffleModeEnabled
 
-    override fun resolveQueue(): Queue =
-        player.song?.let { Queue(player.currentIndex, player.resolveQueue()) } ?: Queue.nil()
+    override fun resolveIndex() = player.resolveIndex()
+
+    override fun resolveQueue() = player.resolveQueue()
+
+    override val audioSessionId: Int
+        get() = player.audioSessionId
 
     override fun newPlayback(
         queue: List<Song>,
@@ -263,19 +259,12 @@ class PlaybackService :
         }
         player.prepare()
         player.playWhenReady = play
-        playbackManager.dispatchEvent(
-            this,
-            PlaybackEvent.NewPlayback(
-                requireNotNull(player.song) {
-                    "Inconsistency detected: Player does not have song despite being populated"
-                },
-                Queue(player.currentIndex, player.resolveQueue()),
-                parent,
-                isShuffled))
+        playbackManager.dispatchEvent(this, StateEvent.NewPlayback)
     }
 
     override fun playing(playing: Boolean) {
         player.playWhenReady = playing
+        // Dispatched later once all of the changes have been accumulated
     }
 
     override fun repeatMode(repeatMode: RepeatMode) {
@@ -285,6 +274,7 @@ class PlaybackService :
                 RepeatMode.ALL -> Player.REPEAT_MODE_ALL
                 RepeatMode.TRACK -> Player.REPEAT_MODE_ONE
             }
+        playbackManager.dispatchEvent(this, StateEvent.RepeatModeChanged)
     }
 
     override fun seekTo(positionMs: Long) {
@@ -293,100 +283,53 @@ class PlaybackService :
 
     override fun next() {
         player.seekToNext()
+        playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
         player.play()
     }
 
     override fun prev() {
         player.seekToPrevious()
+        playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
         player.play()
     }
 
     override fun goto(index: Int) {
         player.goto(index)
+        playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
         player.play()
     }
 
     override fun reorder(shuffled: Boolean) {
         player.reorder(shuffled)
-        playbackManager.dispatchEvent(
-            this,
-            PlaybackEvent.QueueReordered(
-                Queue(
-                    player.currentIndex,
-                    player.resolveQueue(),
-                ),
-                shuffled))
+        playbackManager.dispatchEvent(this, StateEvent.QueueReordered)
     }
 
     override fun addToQueue(songs: List<Song>) {
-        val insertAt = player.currentIndex + 1
+        val insertAt = playbackManager.index + 1
         player.addToQueue(songs)
         playbackManager.dispatchEvent(
-            this,
-            PlaybackEvent.QueueChanged(
-                requireNotNull(player.song) {
-                    "Inconsistency detected: Player does not have song despite being populated"
-                },
-                Queue(player.currentIndex, player.resolveQueue()),
-                QueueChange(
-                    QueueChange.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))))
+            this, StateEvent.QueueChanged(UpdateInstructions.Add(insertAt, songs.size), false))
     }
 
     override fun playNext(songs: List<Song>) {
-        val insertAt = player.currentIndex + 1
+        val insertAt = playbackManager.index + 1
         player.playNext(songs)
-        // TODO: Re-add queue changes
         playbackManager.dispatchEvent(
-            this,
-            PlaybackEvent.QueueChanged(
-                requireNotNull(player.song) {
-                    "Inconsistency detected: Player does not have song despite being populated"
-                },
-                Queue(player.currentIndex, player.resolveQueue()),
-                QueueChange(
-                    QueueChange.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))))
+            this, StateEvent.QueueChanged(UpdateInstructions.Add(insertAt, songs.size), false))
     }
 
     override fun move(from: Int, to: Int) {
-        val oldIndex = player.currentIndex
         player.move(from, to)
-        val changeType =
-            if (player.currentIndex != oldIndex) {
-                QueueChange.Type.INDEX
-            } else {
-                QueueChange.Type.MAPPING
-            }
         playbackManager.dispatchEvent(
-            this,
-            PlaybackEvent.QueueChanged(
-                requireNotNull(player.song) {
-                    "Inconsistency detected: Player does not have song despite being populated"
-                },
-                Queue(player.currentIndex, player.resolveQueue()),
-                QueueChange(changeType, UpdateInstructions.Move(from, to))))
+            this, StateEvent.QueueChanged(UpdateInstructions.Move(from, to), false))
     }
 
     override fun remove(at: Int) {
-        val oldUnscrambledIndex = player.currentIndex
-        val oldScrambledIndex = player.currentMediaItemIndex
+        val oldIndex = player.currentMediaItemIndex
         player.remove(at)
-        val newUnscrambledIndex = player.currentIndex
-        val newScrambledIndex = player.currentMediaItemIndex
-        val changeType =
-            when {
-                oldScrambledIndex != newScrambledIndex -> QueueChange.Type.SONG
-                oldUnscrambledIndex != newUnscrambledIndex -> QueueChange.Type.INDEX
-                else -> QueueChange.Type.MAPPING
-            }
-
+        val newIndex = player.currentMediaItemIndex
         playbackManager.dispatchEvent(
-            this,
-            PlaybackEvent.QueueChanged(
-                requireNotNull(player.song) {
-                    "Inconsistency detected: Player does not have song despite being populated"
-                },
-                Queue(player.currentIndex, player.resolveQueue()),
-                QueueChange(changeType, UpdateInstructions.Remove(at, 1))))
+            this, StateEvent.QueueChanged(UpdateInstructions.Remove(at, 1), oldIndex != newIndex))
     }
 
     // --- PLAYER OVERRIDES ---
@@ -418,8 +361,7 @@ class PlaybackService :
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
             reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
-            playbackManager.dispatchEvent(
-                this, PlaybackEvent.IndexMoved(player.song, player.currentIndex))
+            playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
         }
     }
 
@@ -431,7 +373,7 @@ class PlaybackService :
             Player.EVENT_IS_PLAYING_CHANGED,
             Player.EVENT_POSITION_DISCONTINUITY)) {
             logD("Player state changed, must synchronize state")
-            playbackManager.dispatchEvent(this, PlaybackEvent.ProgressionChanged(progression))
+            playbackManager.dispatchEvent(this, StateEvent.ProgressionChanged)
         }
     }
 
@@ -572,7 +514,7 @@ class PlaybackService :
                 }
                 ACTION_INVERT_SHUFFLE -> {
                     logD("Received shuffle event")
-                    playbackManager.reorder(!playbackManager.isShuffled)
+                    playbackManager.shuffled(!playbackManager.isShuffled)
                 }
                 ACTION_SKIP_PREV -> {
                     logD("Received skip previous event")

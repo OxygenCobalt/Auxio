@@ -29,10 +29,10 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
 import org.oxycblt.auxio.image.extractor.SquareCropTransformation
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.queue.Queue
-import org.oxycblt.auxio.playback.state.PlaybackEvent
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
@@ -135,16 +135,27 @@ constructor(
 
     // --- CALLBACKS ---
 
-    override fun onPlaybackEvent(event: PlaybackEvent) {
-        if (event is PlaybackEvent.NewPlayback ||
-            event is PlaybackEvent.ProgressionChanged ||
-            (event is PlaybackEvent.QueueChanged && event.change.type == QueueChange.Type.SONG) ||
-            event is PlaybackEvent.QueueReordered ||
-            event is PlaybackEvent.IndexMoved ||
-            event is PlaybackEvent.RepeatModeChanged) {
+    // Respond to all major song or player changes that will affect the widget
+    override fun onIndexMoved(index: Int) = update()
+
+    override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
+        if (change.type == QueueChange.Type.SONG) {
             update()
         }
     }
+
+    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) = update()
+
+    override fun onNewPlayback(
+        parent: MusicParent?,
+        queue: List<Song>,
+        index: Int,
+        isShuffled: Boolean
+    ) = update()
+
+    override fun onProgressionChanged(progression: Progression) = update()
+
+    override fun onRepeatModeChanged(repeatMode: RepeatMode) = update()
 
     // Respond to settings changes that will affect the widget
     override fun onRoundModeChanged() = update()
@@ -156,7 +167,7 @@ constructor(
      *
      * @param song [Queue.currentSong]
      * @param cover A pre-loaded album cover [Bitmap] for [song].
-     * @param isPlaying [PlaybackStateManager.progression]
+     * @param isPlaying [PlaybackStateManager.playerState]
      * @param repeatMode [PlaybackStateManager.repeatMode]
      * @param isShuffled [Queue.isShuffled]
      */

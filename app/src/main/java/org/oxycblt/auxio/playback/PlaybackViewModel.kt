@@ -37,8 +37,8 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.state.DeferredPlayback
-import org.oxycblt.auxio.playback.state.PlaybackEvent
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.Event
@@ -130,52 +130,56 @@ constructor(
         playbackSettings.unregisterListener(this)
     }
 
-    override fun onPlaybackEvent(event: PlaybackEvent) {
-        when (event) {
-            is PlaybackEvent.IndexMoved -> {
-                logD("Index moved, updating current song")
-                _song.value = event.currentSong
-            }
-            is PlaybackEvent.QueueChanged -> {
-                // Other types of queue changes preserve the current song.
-                if (event.change.type == QueueChange.Type.SONG) {
-                    logD("Queue changed, updating current song")
-                    _song.value = event.currentSong
+    override fun onIndexMoved(index: Int) {
+        logD("Index moved, updating current song")
+        _song.value = playbackManager.currentSong
+    }
+
+    override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
+        // Other types of queue changes preserve the current song.
+        if (change.type == QueueChange.Type.SONG) {
+            logD("Queue changed, updating current song")
+            _song.value = playbackManager.currentSong
+        }
+    }
+
+    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
+        logD("Queue completely changed, updating current song")
+        _isShuffled.value = isShuffled
+    }
+
+    override fun onNewPlayback(
+        parent: MusicParent?,
+        queue: List<Song>,
+        index: Int,
+        isShuffled: Boolean
+    ) {
+        logD("New playback started, updating playback information")
+        _song.value = playbackManager.currentSong
+        _parent.value = parent
+        _isShuffled.value = isShuffled
+    }
+
+    override fun onProgressionChanged(progression: Progression) {
+        logD("Player state changed, starting new position polling")
+        _isPlaying.value = progression.isPlaying
+        // Still need to update the position now due to co-routine launch delays
+        _positionDs.value = progression.calculateElapsedPositionMs().msToDs()
+        // Replace the previous position co-routine with a new one that uses the new
+        // state information.
+        lastPositionJob?.cancel()
+        lastPositionJob =
+            viewModelScope.launch {
+                while (true) {
+                    _positionDs.value = progression.calculateElapsedPositionMs().msToDs()
+                    // Wait a deci-second for the next position tick.
+                    delay(100)
                 }
             }
-            is PlaybackEvent.QueueReordered -> {
-                logD("Queue completely changed, updating current song")
-                _isShuffled.value = event.isShuffled
-            }
-            is PlaybackEvent.NewPlayback -> {
-                logD("New playback started, updating playback information")
-                _song.value = event.currentSong
-                _parent.value = event.parent
-                _isShuffled.value = event.isShuffled
-            }
-            is PlaybackEvent.ProgressionChanged -> {
-                logD("Progression changed, starting new position polling")
-                _isPlaying.value = event.progression.isPlaying
-                // Still need to update the position now due to co-routine launch delays
-                _positionDs.value = event.progression.calculateElapsedPositionMs().msToDs()
-                // Replace the previous position co-routine with a new one that uses the new
-                // state information.
-                lastPositionJob?.cancel()
-                lastPositionJob =
-                    viewModelScope.launch {
-                        while (true) {
-                            _positionDs.value =
-                                event.progression.calculateElapsedPositionMs().msToDs()
-                            // Wait a deci-second for the next position tick.
-                            delay(100)
-                        }
-                    }
-            }
-            is PlaybackEvent.RepeatModeChanged -> {
-                logD("Repeat mode changed, updating current mode")
-                _repeatMode.value = event.repeatMode
-            }
-        }
+    }
+
+    override fun onRepeatModeChanged(repeatMode: RepeatMode) {
+        _repeatMode.value = repeatMode
     }
 
     override fun onBarActionChanged() {
@@ -579,7 +583,7 @@ constructor(
     /** Toggle [isShuffled] (ex. from on to off) */
     fun toggleShuffled() {
         logD("Toggling shuffled state")
-        playbackManager.reorder(!playbackManager.isShuffled)
+        playbackManager.shuffled(!playbackManager.isShuffled)
     }
 
     /**

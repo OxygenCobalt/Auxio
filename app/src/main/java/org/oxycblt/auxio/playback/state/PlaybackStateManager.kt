@@ -46,17 +46,17 @@ interface PlaybackStateManager {
     /** The current [Progression] state. */
     val progression: Progression
 
-    val currentSong: Song?
-
     val repeatMode: RepeatMode
-
-    val audioSessionId: Int
 
     val parent: MusicParent?
 
-    val isShuffled: Boolean
+    val currentSong: Song?
 
-    fun resolveQueue(): Queue
+    val queue: List<Song>
+
+    val index: Int
+
+    val isShuffled: Boolean
 
     /** The audio session ID of the internal player. Null if no internal player exists. */
     val currentAudioSessionId: Int?
@@ -178,9 +178,9 @@ interface PlaybackStateManager {
      *
      * @param shuffled Whether to shuffle the queue or not.
      */
-    fun reorder(shuffled: Boolean)
+    fun shuffled(shuffled: Boolean)
 
-    fun dispatchEvent(stateHolder: PlaybackStateHolder, vararg events: PlaybackEvent)
+    fun dispatchEvent(stateHolder: PlaybackStateHolder, event: StateEvent)
 
     /**
      * Start a [DeferredPlayback] for the current [PlaybackStateHolder] to handle eventually.
@@ -240,7 +240,54 @@ interface PlaybackStateManager {
      * [PlaybackStateManager] using [addListener], remove them on destruction with [removeListener].
      */
     interface Listener {
-        fun onPlaybackEvent(event: PlaybackEvent)
+        /**
+         * Called when the position of the currently playing item has changed, changing the current
+         * [Song], but no other queue attribute has changed.
+         */
+        fun onIndexMoved(index: Int) {}
+
+        /**
+         * Called when the [Queue] changed in a manner outlined by the given [Queue.Change].
+         *
+         * @param queue The new [Queue].
+         * @param change The type of [Queue.Change] that occurred.
+         */
+        fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {}
+
+        /**
+         * Called when the [Queue] has changed in a non-trivial manner (such as re-shuffling), but
+         * the currently playing [Song] has not.
+         *
+         * @param queue The new [Queue].
+         */
+        fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {}
+
+        /**
+         * Called when a new playback configuration was created.
+         *
+         * @param queue The new [Queue].
+         * @param parent The new [MusicParent] being played from, or null if playing from all songs.
+         */
+        fun onNewPlayback(
+            parent: MusicParent?,
+            queue: List<Song>,
+            index: Int,
+            isShuffled: Boolean
+        ) {}
+
+        /**
+         * Called when the state of the [InternalPlayer] changes.
+         *
+         * @param progression The new state of the [InternalPlayer].
+         */
+        fun onProgressionChanged(progression: Progression) {}
+
+        /**
+         * Called when the [RepeatMode] changes.
+         *
+         * @param repeatMode The new [RepeatMode].
+         */
+        fun onRepeatModeChanged(repeatMode: RepeatMode) {}
     }
 
     /**
@@ -259,52 +306,52 @@ interface PlaybackStateManager {
     )
 }
 
-sealed interface PlaybackEvent {
-    class IndexMoved(val currentSong: Song?, val index: Int) : PlaybackEvent
-
-    class QueueChanged(val currentSong: Song?, val queue: Queue, val change: QueueChange) :
-        PlaybackEvent
-
-    class QueueReordered(val queue: Queue, val isShuffled: Boolean) : PlaybackEvent
-
-    class NewPlayback(
-        val currentSong: Song,
-        val queue: Queue,
-        val parent: MusicParent?,
-        val isShuffled: Boolean,
-    ) : PlaybackEvent
-
-    class ProgressionChanged(val progression: Progression) : PlaybackEvent
-
-    class RepeatModeChanged(val repeatMode: RepeatMode) : PlaybackEvent
-}
-
 class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
+    private data class StateMirror(
+        val progression: Progression,
+        val repeatMode: RepeatMode,
+        val parent: MusicParent?,
+        val queue: List<Song>,
+        val index: Int,
+        val isShuffled: Boolean,
+    )
+
     private val listeners = mutableListOf<PlaybackStateManager.Listener>()
+
+    @Volatile
+    private var stateMirror =
+        StateMirror(
+            progression = Progression.nil(),
+            repeatMode = RepeatMode.NONE,
+            parent = null,
+            queue = emptyList(),
+            index = -1,
+            isShuffled = false,
+        )
     @Volatile private var stateHolder: PlaybackStateHolder? = null
     @Volatile private var pendingDeferredPlayback: DeferredPlayback? = null
     @Volatile private var isInitialized = false
 
-    /** The current [Progression] state. */
-    override val progression: Progression
-        get() = stateHolder?.progression ?: Progression.nil()
+    override val progression
+        get() = stateMirror.progression
 
-    override val currentSong: Song?
-        get() = stateHolder?.currentSong
+    override val repeatMode
+        get() = stateMirror.repeatMode
 
-    override val repeatMode: RepeatMode
-        get() = stateHolder?.repeatMode ?: RepeatMode.NONE
+    override val parent
+        get() = stateMirror.parent
 
-    override val audioSessionId: Int
-        get() = stateHolder?.audioSessionId ?: -1
+    override val currentSong
+        get() = stateMirror.queue.getOrNull(stateMirror.index)
 
-    override val parent: MusicParent?
-        get() = stateHolder?.parent
+    override val queue
+        get() = stateMirror.queue
 
-    override val isShuffled: Boolean
-        get() = stateHolder?.isShuffled ?: false
+    override val index
+        get() = stateMirror.index
 
-    override fun resolveQueue() = stateHolder?.resolveQueue() ?: Queue.nil()
+    override val isShuffled
+        get() = stateMirror.isShuffled
 
     override val currentAudioSessionId: Int?
         get() = stateHolder?.audioSessionId
@@ -313,6 +360,14 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun addListener(listener: PlaybackStateManager.Listener) {
         logD("Adding $listener to listeners")
         listeners.add(listener)
+
+        if (isInitialized) {
+            logD("Sending initial state to $listener")
+            listener.onNewPlayback(
+                stateMirror.parent, stateMirror.queue, stateMirror.index, stateMirror.isShuffled)
+            listener.onProgressionChanged(stateMirror.progression)
+            listener.onRepeatModeChanged(stateMirror.repeatMode)
+        }
     }
 
     @Synchronized
@@ -418,7 +473,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     @Synchronized
-    override fun reorder(shuffled: Boolean) {
+    override fun shuffled(shuffled: Boolean) {
         val stateHolder = stateHolder ?: return
         logD("Reordering queue [shuffled=$shuffled]")
         stateHolder.reorder(shuffled)
@@ -470,15 +525,79 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     @Synchronized
-    override fun dispatchEvent(stateHolder: PlaybackStateHolder, vararg events: PlaybackEvent) {
+    override fun dispatchEvent(stateHolder: PlaybackStateHolder, event: StateEvent) {
         if (BuildConfig.DEBUG && this.stateHolder !== stateHolder) {
             logW("Given internal player did not match current internal player")
             return
         }
 
-        events.forEach { event ->
-            logD("Dispatching event $event")
-            listeners.forEach { it.onPlaybackEvent(event) }
+        when (event) {
+            is StateEvent.IndexMoved -> {
+                stateMirror =
+                    stateMirror.copy(
+                        index = stateHolder.resolveIndex(),
+                    )
+                listeners.forEach { it.onIndexMoved(stateMirror.index) }
+            }
+            is StateEvent.QueueChanged -> {
+                val instructions = event.instructions
+                val newIndex = stateHolder.resolveIndex()
+                val changeType =
+                    when {
+                        event.songChanged -> {
+                            QueueChange.Type.SONG
+                        }
+                        stateMirror.index != newIndex -> QueueChange.Type.INDEX
+                        else -> QueueChange.Type.MAPPING
+                    }
+                stateMirror = stateMirror.copy(queue = stateHolder.resolveQueue(), index = newIndex)
+                val change = QueueChange(changeType, instructions)
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateEvent.QueueReordered -> {
+                stateMirror =
+                    stateMirror.copy(
+                        queue = stateHolder.resolveQueue(),
+                        index = stateHolder.resolveIndex(),
+                        isShuffled = stateHolder.isShuffled,
+                    )
+                listeners.forEach {
+                    it.onQueueReordered(
+                        stateMirror.queue, stateMirror.index, stateMirror.isShuffled)
+                }
+            }
+            is StateEvent.NewPlayback -> {
+                stateMirror =
+                    stateMirror.copy(
+                        parent = stateHolder.parent,
+                        queue = stateHolder.resolveQueue(),
+                        index = stateHolder.resolveIndex(),
+                        isShuffled = stateHolder.isShuffled,
+                    )
+                listeners.forEach {
+                    it.onNewPlayback(
+                        stateMirror.parent,
+                        stateMirror.queue,
+                        stateMirror.index,
+                        stateMirror.isShuffled)
+                }
+            }
+            is StateEvent.ProgressionChanged -> {
+                stateMirror =
+                    stateMirror.copy(
+                        progression = stateHolder.progression,
+                    )
+                listeners.forEach { it.onProgressionChanged(stateMirror.progression) }
+            }
+            is StateEvent.RepeatModeChanged -> {
+                stateMirror =
+                    stateMirror.copy(
+                        repeatMode = stateHolder.repeatMode,
+                    )
+                listeners.forEach { it.onRepeatModeChanged(stateMirror.repeatMode) }
+            }
         }
     }
 

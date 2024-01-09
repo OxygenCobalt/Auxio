@@ -27,9 +27,9 @@ import java.nio.ByteBuffer
 import javax.inject.Inject
 import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.playback.state.PlaybackEvent
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.util.logD
@@ -70,30 +70,26 @@ constructor(
 
     // --- OVERRIDES ---
 
-    override fun onPlaybackEvent(event: PlaybackEvent) {
-        when (event) {
-            is PlaybackEvent.IndexMoved -> {
-                logD("Index moved, updating current song")
-                applyReplayGain(event.currentSong)
-            }
-            is PlaybackEvent.QueueChanged -> {
-                // Queue changed trivially due to item mo -> Diff queue, stay at current index.
-                logD("Updating queue display")
-                // Other types of queue changes preserve the current song.
-                if (event.change.type == QueueChange.Type.SONG) {
-                    applyReplayGain(event.currentSong)
-                }
-            }
-            is PlaybackEvent.NewPlayback -> {
-                logD("New playback started, updating playback information")
-                applyReplayGain(event.currentSong)
-            }
-            is PlaybackEvent.ProgressionChanged,
-            is PlaybackEvent.QueueReordered,
-            is PlaybackEvent.RepeatModeChanged -> {
-                // Nothing to do
-            }
+    override fun onIndexMoved(index: Int) {
+        logD("Index moved, updating current song")
+        applyReplayGain(playbackManager.currentSong)
+    }
+
+    override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
+        // Other types of queue changes preserve the current song.
+        if (change.type == QueueChange.Type.SONG) {
+            applyReplayGain(playbackManager.currentSong)
         }
+    }
+
+    override fun onNewPlayback(
+        parent: MusicParent?,
+        queue: List<Song>,
+        index: Int,
+        isShuffled: Boolean
+    ) {
+        logD("New playback started, updating playback information")
+        applyReplayGain(playbackManager.currentSong)
     }
 
     override fun onReplayGainSettingsChanged() {
