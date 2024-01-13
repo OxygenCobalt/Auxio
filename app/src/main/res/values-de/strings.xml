@@ -316,7 +316,7 @@
     <string name="lbl_author">Autor</string>
     <string name="lbl_donate">Spenden</string>
     <string name="lbl_supporters">Unterstützer</string>
-    <string name="lng_supporters_promo">Dem Projekt spenden, um Ihren Namen hier hinzuzufügen!</string>
+    <string name="lng_supporters_promo">Spende für das Projekt, damit dein Name hier aufgenommen wird!</string>
     <string name="lbl_import_playlist">Wiedergabeliste importieren</string>
     <string name="lbl_export_playlist">Wiedergabeliste exportieren</string>
     <string name="lbl_path_style">Pfadstil</string>
@@ -324,7 +324,7 @@
     <string name="lbl_path_style_relative">Relativ</string>
     <string name="lbl_windows_paths">Windows-kompatible Pfade verwenden</string>
     <string name="lbl_export">Exportieren</string>
-    <string name="err_export_failed">Wiedergabeliste konnte nicht in dieser Datei exportiert werden</string>
+    <string name="err_export_failed">Wiedergabeliste konnte nicht in diese Datei exportiert werden</string>
     <string name="lbl_import">Importieren</string>
     <string name="lng_playlist_imported">Wiedergabeliste importiert</string>
     <string name="lng_playlist_exported">Wiedergabeliste exportiert</string>
