@@ -104,7 +104,10 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackCover.onSwipeListener = this
-        binding.playbackSong.setOnClickListener { navigateToCurrentSong() }
+        binding.playbackSong.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentSong() }
+        }
         binding.playbackArtist.setOnClickListener { navigateToCurrentArtist() }
         binding.playbackAlbum.setOnClickListener { navigateToCurrentAlbum() }
 
@@ -130,6 +133,7 @@ class PlaybackPanelFragment :
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
         coverAdapter = null
+        binding.playbackSong.isSelected = false
         binding.playbackToolbar.setOnMenuItemClickListener(null)
     }
 

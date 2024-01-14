@@ -1,6 +1,16 @@
 # Changelog
 
-## dev
+## 3.3.3
+
+#### What's Fixed
+- Fixed music folders not behaving correctly below Android 11
+
+## 3.3.2
+
+#### What's Fixed
+- Fixed music loading failing with an SQL error with certain music folder configurations
+
+## 3.3.1
 
 #### What's Improved
 - The OPUS base volume adjustment field is now parsed and used as a ReplayGain adjustment
@@ -13,6 +23,7 @@
 - Fixed a crash occuring if you navigated to the settings page from the playlist view
 and then back
 - Fixed music loading failing with an SQL error with certain music folder configurations
+- Fixed issue where song title on playback screen would not scroll
 
 ## 3.3.0
 
