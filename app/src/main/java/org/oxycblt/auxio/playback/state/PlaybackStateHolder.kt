@@ -34,8 +34,6 @@ interface PlaybackStateHolder {
 
     fun resolveQueue(): RawQueue
 
-    val isShuffled: Boolean
-
     val audioSessionId: Int
 
     fun newPlayback(queue: List<Song>, start: Song?, parent: MusicParent?, shuffled: Boolean)

@@ -187,9 +187,9 @@ interface PlaybackStateManager {
      * [PlaybackStateHolder].
      *
      * @param stateHolder The [PlaybackStateHolder] to synchronize with. Must be the current
-     *  [PlaybackStateHolder]. Does nothing if invoked by another [PlaybackStateHolder]
-     *  implementation.
-     *  @param ack The [StateAck] to acknowledge.
+     *   [PlaybackStateHolder]. Does nothing if invoked by another [PlaybackStateHolder]
+     *   implementation.
+     *     @param ack The [StateAck] to acknowledge.
      */
     fun ack(stateHolder: PlaybackStateHolder, ack: StateAck)
 
@@ -269,8 +269,8 @@ interface PlaybackStateManager {
         fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {}
 
         /**
-         * Called when the queue has changed in a non-trivial manner (such as re-shuffling), but
-         * the currently playing [Song] has not.
+         * Called when the queue has changed in a non-trivial manner (such as re-shuffling), but the
+         * currently playing [Song] has not.
          *
          * @param queue The songs of the new queue.
          * @param index The new index of the currently playing [Song].
@@ -407,6 +407,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
 
         this.stateHolder = stateHolder
+
+        // TODO: Re-init player
     }
 
     @Synchronized
@@ -627,7 +629,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                     )
 
                 if (change.type == QueueChange.Type.SONG) {
-                    playing(true)
+                    stateHolder.playing(true)
                 }
 
                 listeners.forEach {
@@ -640,7 +642,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                     stateMirror.copy(
                         queue = rawQueue.resolveSongs(),
                         index = rawQueue.resolveIndex(),
-                        isShuffled = stateHolder.isShuffled,
+                        isShuffled = rawQueue.isShuffled,
                         rawQueue = rawQueue)
                 listeners.forEach {
                     it.onQueueReordered(
@@ -654,7 +656,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         parent = stateHolder.parent,
                         queue = rawQueue.resolveSongs(),
                         index = rawQueue.resolveIndex(),
-                        isShuffled = stateHolder.isShuffled,
+                        isShuffled = rawQueue.isShuffled,
                         rawQueue = rawQueue)
                 listeners.forEach {
                     it.onNewPlayback(

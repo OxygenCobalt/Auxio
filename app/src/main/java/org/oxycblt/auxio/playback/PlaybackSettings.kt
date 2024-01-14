@@ -66,6 +66,8 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
         fun onNotificationActionChanged() {}
         /** Called when [barAction] has changed. */
         fun onBarActionChanged() {}
+        /** Called when [pauseOnRepeat] has changed. */
+        fun onPauseOnRepeatChanged() {}
     }
 }
 
@@ -186,6 +188,10 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
             getString(R.string.set_key_bar_action) -> {
                 logD("Dispatching bar action change")
                 listener.onBarActionChanged()
+            }
+            getString(R.string.set_key_repeat_pause) -> {
+                logD("Dispatching pause on repeat change")
+                listener.onPauseOnRepeatChanged()
             }
         }
     }

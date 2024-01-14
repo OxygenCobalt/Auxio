@@ -24,7 +24,6 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RawQueue
-import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
 
 val ExoPlayer.song
@@ -33,18 +32,8 @@ val ExoPlayer.song
 fun ExoPlayer.resolveQueue(): RawQueue {
     val heap = (0 until mediaItemCount).map { getMediaItemAt(it).song }
     val shuffledMapping = if (shuffleModeEnabled) unscrambleQueueIndices() else emptyList()
-    logD(shuffledMapping)
     return RawQueue(heap, shuffledMapping, currentMediaItemIndex)
 }
-
-val ExoPlayer.repeat: RepeatMode
-    get() =
-        when (repeatMode) {
-            Player.REPEAT_MODE_OFF -> RepeatMode.NONE
-            Player.REPEAT_MODE_ONE -> RepeatMode.TRACK
-            Player.REPEAT_MODE_ALL -> RepeatMode.ALL
-            else -> throw IllegalStateException("Unknown repeat mode: $repeatMode")
-        }
 
 fun ExoPlayer.orderedQueue(queue: Collection<Song>, start: Song?) {
     clearMediaItems()

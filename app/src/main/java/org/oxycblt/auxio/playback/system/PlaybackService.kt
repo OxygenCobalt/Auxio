@@ -88,6 +88,7 @@ class PlaybackService :
     Service(),
     Player.Listener,
     PlaybackStateHolder,
+    PlaybackSettings.Listener,
     MediaSessionComponent.Listener,
     MusicRepository.UpdateListener {
     // Player components
@@ -156,6 +157,7 @@ class PlaybackService :
         playbackManager.registerStateHolder(this)
         musicRepository.addUpdateListener(this)
         mediaSessionComponent.registerListener(this)
+        playbackSettings.registerListener(this)
 
         val intentFilter =
             IntentFilter().apply {
@@ -197,6 +199,7 @@ class PlaybackService :
         playbackManager.playing(false)
         playbackManager.unregisterStateHolder(this)
         musicRepository.removeUpdateListener(this)
+        playbackSettings.unregisterListener(this)
 
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -217,9 +220,6 @@ class PlaybackService :
 
     // --- PLAYBACKSTATEHOLDER OVERRIDES ---
 
-    override val repeatMode
-        get() = player.repeat
-
     override val progression: Progression
         get() =
             player.song?.let {
@@ -232,10 +232,16 @@ class PlaybackService :
             }
                 ?: Progression.nil()
 
-    override var parent: MusicParent? = null
+    override val repeatMode
+        get() =
+            when (val repeatMode = player.repeatMode) {
+                Player.REPEAT_MODE_OFF -> RepeatMode.NONE
+                Player.REPEAT_MODE_ONE -> RepeatMode.TRACK
+                Player.REPEAT_MODE_ALL -> RepeatMode.ALL
+                else -> throw IllegalStateException("Unknown repeat mode: $repeatMode")
+            }
 
-    override val isShuffled
-        get() = player.shuffleModeEnabled
+    override var parent: MusicParent? = null
 
     override fun resolveQueue() = player.resolveQueue()
 
@@ -272,6 +278,7 @@ class PlaybackService :
                 RepeatMode.TRACK -> Player.REPEAT_MODE_ONE
             }
         playbackManager.ack(this, StateAck.RepeatModeChanged)
+        updatePauseOnRepeat()
     }
 
     override fun seekTo(positionMs: Long) {
@@ -284,7 +291,11 @@ class PlaybackService :
     }
 
     override fun prev() {
-        player.seekToPrevious()
+        if (playbackSettings.rewindWithPrev) {
+            player.seekToPrevious()
+        } else {
+            player.seekToPreviousMediaItem()
+        }
         playbackManager.ack(this, StateAck.IndexMoved)
     }
 
@@ -398,6 +409,15 @@ class PlaybackService :
         }
     }
 
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+
+        if (playbackState == Player.STATE_ENDED && player.repeatMode == Player.REPEAT_MODE_OFF) {
+            goto(0)
+            player.pause()
+        }
+    }
+
     override fun onEvents(player: Player, events: Player.Events) {
         super.onEvents(player, events)
 
@@ -418,6 +438,12 @@ class PlaybackService :
         playbackManager.next()
     }
 
+    // --- OTHER OVERRIDES ---
+
+    override fun onPauseOnRepeatChanged() {
+        updatePauseOnRepeat()
+    }
+
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
             // We now have a library, see if we have anything we need to do.
@@ -427,6 +453,11 @@ class PlaybackService :
     }
 
     // --- OTHER FUNCTIONS ---
+
+    private fun updatePauseOnRepeat() {
+        player.pauseAtEndOfMediaItems =
+            playbackManager.repeatMode == RepeatMode.TRACK && playbackSettings.pauseOnRepeat
+    }
 
     private fun broadcastAudioEffectAction(event: String) {
         logD("Broadcasting AudioEffect event: $event")
@@ -556,6 +587,5 @@ class PlaybackService :
         const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
         const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
         const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
-        private const val REWIND_THRESHOLD = 3000L
     }
 }
