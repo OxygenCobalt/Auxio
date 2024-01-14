@@ -330,6 +330,6 @@
     <string name="lbl_supporters">Прибічники</string>
     <string name="lbl_replaygain_track">Підлаштування ReplayGain пісні</string>
     <string name="lbl_replaygain_album">Підлаштування ReplayGain альбому</string>
-    <string name="lng_supporters_promo">Пожертвуйте на проект, щоб ваше ім\'я було додано сюди!</string>
+    <string name="lng_supporters_promo">Пожертвуйте на проєкт, щоб ваше ім\'я було додано сюди!</string>
     <string name="lbl_author">Автор</string>
 </resources>
