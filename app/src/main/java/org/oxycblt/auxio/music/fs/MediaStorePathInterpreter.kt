@@ -216,7 +216,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
             var template = ""
             for (i in paths.indices) {
                 val path = paths[i]
-                template =
+                template +=
                     if (args.isEmpty()) {
                         "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
                             "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"

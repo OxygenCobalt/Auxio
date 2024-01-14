@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.2
+
+#### What's Fixed
+- Fixed music loading failing with an SQL error with certain music folder configurations
+
 ## 3.3.1
 
 #### What's Improved
