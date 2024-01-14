@@ -26,7 +26,7 @@
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Code source</string>
     <string name="lbl_licenses">Licences</string>
-    <string name="lng_author">Développé par Alexandre Capehart</string>
+    <string name="lbl_author_name">Développé par Alexandre Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Paramètres</string>
     <string name="set_ui">Apparence</string>

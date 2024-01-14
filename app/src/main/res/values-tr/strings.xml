@@ -78,7 +78,7 @@
     <string name="lbl_date">Yıl</string>
     <string name="lbl_duration">Süre</string>
     <string name="lbl_state_saved">Durum kaydedildi</string>
-    <string name="lng_author">Alexander Capehart tarafından geliştirildi</string>
+    <string name="lbl_author_name">Alexander Capehart tarafından geliştirildi</string>
     <string name="set_black_mode">Siyah tema</string>
     <string name="lbl_library_counts">Kitaplık istatistikleri</string>
     <string name="set_black_mode_desc">Kapkara koyu tema kullan</string>

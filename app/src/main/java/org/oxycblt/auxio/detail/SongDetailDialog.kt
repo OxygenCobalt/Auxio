@@ -38,6 +38,7 @@ import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.playback.replaygain.formatDb
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.concatLocalized
@@ -117,6 +118,12 @@ class SongDetailDialog : ViewBindingMaterialDialogFragment<DialogSongDetailBindi
                         add(
                             SongProperty(
                                 R.string.lbl_sample_rate, getString(R.string.fmt_sample_rate, it)))
+                    }
+                    song.replayGainAdjustment.track?.let {
+                        add(SongProperty(R.string.lbl_replaygain_track, it.formatDb(context)))
+                    }
+                    song.replayGainAdjustment.album?.let {
+                        add(SongProperty(R.string.lbl_replaygain_album, it.formatDb(context)))
                     }
                 },
                 UpdateInstructions.Replace(0))

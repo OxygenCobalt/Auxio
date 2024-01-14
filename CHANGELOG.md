@@ -1,6 +1,19 @@
 # Changelog
 
-## dev
+## 3.3.1
+
+#### What's Improved
+- The OPUS base volume adjustment field is now parsed and used as a ReplayGain adjustment
+- Added ReplayGain adjustment values to Song Properties dialog
+
+#### What's Changed
+- Added donation links to the about page
+
+#### What's Fixed
+- Fixed a crash occuring if you navigated to the settings page from the playlist view
+and then back
+- Fixed music loading failing with an SQL error with certain music folder configurations
+- Fixed issue where song title on playback screen would not scroll
 
 ## 3.3.0
 

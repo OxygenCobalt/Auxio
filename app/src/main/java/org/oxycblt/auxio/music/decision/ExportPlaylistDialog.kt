@@ -143,7 +143,13 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
             } else {
                 R.id.export_relative_paths
             })
-        logD(config.windowsPaths)
+        if (config.absolute) {
+            binding.exportRelativePaths.icon = null
+            binding.exportAbsolutePaths.setIconResource(R.drawable.ic_check_24)
+        } else {
+            binding.exportAbsolutePaths.icon = null
+            binding.exportRelativePaths.setIconResource(R.drawable.ic_check_24)
+        }
         binding.exportWindowsPaths.isChecked = config.windowsPaths
     }
 

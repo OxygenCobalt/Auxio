@@ -56,7 +56,7 @@
     <string name="lbl_version">Inačica</string>
     <string name="lbl_code">Izvorni kod</string>
     <string name="lbl_licenses">Licencije</string>
-    <string name="lng_author">Programer: Alexander Capehart</string>
+    <string name="lbl_author_name">Programer: Alexander Capehart</string>
     <string name="lbl_library_counts">Statistika zbirke</string>
     <string name="set_ui">Izgled</string>
     <string name="set_theme_day">Svjetla</string>

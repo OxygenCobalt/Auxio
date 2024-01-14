@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.fs
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
+import org.oxycblt.auxio.util.logE
 
 /**
  * Wrapper around a [Cursor] that interprets path information on a per-API/manufacturer basis.
@@ -111,6 +112,8 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
             }
         }
 
+        logE("Could not find volume for $data [tried: ${volumes.map { it.components }}]")
+
         return null
     }
 
@@ -134,7 +137,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
                 val path = paths[i]
                 val volume = path.volume.components ?: continue
                 template +=
-                    if (i == 0) {
+                    if (args.isEmpty()) {
                         "${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
                     } else {
                         " OR ${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
@@ -172,11 +175,16 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
     override fun extract(): Path? {
         // Find the StorageVolume whose MediaStore name corresponds to it.
         val volumeName = cursor.getString(volumeIndex)
-        val volume = volumes.find { it.mediaStoreName == volumeName } ?: return null
         // Relative path does not include file name, must use DISPLAY_NAME and add it
         // in manually.
         val relativePath = cursor.getString(relativePathIndex)
         val displayName = cursor.getString(displayNameIndex)
+        val volume = volumes.find { it.mediaStoreName == volumeName }
+        if (volume == null) {
+            logE(
+                "Could not find volume for $volumeName:$relativePath/$displayName [tried: ${volumes.map { it.mediaStoreName }}]")
+            return null
+        }
         val components = Components.parseUnix(relativePath).child(displayName)
         return Path(volume, components)
     }
@@ -209,7 +217,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
             for (i in paths.indices) {
                 val path = paths[i]
                 template =
-                    if (i == 0) {
+                    if (args.isEmpty()) {
                         "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
                             "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
                     } else {

@@ -202,7 +202,7 @@
     <string name="lbl_track">Spor</string>
     <string name="lbl_date_added">Dato tillagt</string>
     <string name="lbl_sort">Sorter</string>
-    <string name="lng_author">Utviklet av Alexander Capehart</string>
+    <string name="lbl_author_name">Utviklet av Alexander Capehart</string>
     <string name="lng_search_library">Søk i biblioteket ditt …</string>
     <string name="set_root_title">Innstillinger</string>
     <string name="lng_playlist_created">Spilleliste opprettet</string>

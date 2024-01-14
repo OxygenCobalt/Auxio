@@ -155,7 +155,7 @@
     </plurals>
     <string name="lbl_observing">Tarkkaillaan musiikkikirjastoa</string>
     <string name="lbl_code">Lähdekoodi</string>
-    <string name="lng_author">Kehittänyt Alexander Capehart</string>
+    <string name="lbl_author_name">Kehittänyt Alexander Capehart</string>
     <string name="fmt_lib_total_duration">Kesto yhteensä: %s</string>
     <string name="lbl_album_live">Live-albumi</string>
     <string name="lbl_album_remix">Remix-albumi</string>

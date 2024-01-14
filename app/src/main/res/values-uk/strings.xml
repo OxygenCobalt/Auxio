@@ -130,7 +130,7 @@
     <string name="lbl_ep_live">Концертний мініальбом</string>
     <string name="lbl_library_counts">Статистика бібліотеки</string>
     <string name="lng_indexing">Завантаження музичної бібліотеки…</string>
-    <string name="lng_author">Розроблено Олександром Кейпхартом</string>
+    <string name="lbl_author_name">Розроблено Олександром Кейпхартом</string>
     <string name="fmt_lib_artist_count">Завантажено виконавців: %d</string>
     <string name="set_theme_auto">Автоматично</string>
     <string name="set_accent">Кольоровий акцент</string>

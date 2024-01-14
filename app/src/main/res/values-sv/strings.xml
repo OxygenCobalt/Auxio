@@ -107,7 +107,7 @@
     <string name="lbl_library_counts">Statistik över beroende</string>
     <string name="lng_playlist_renamed">Byt namn av spellista</string>
     <string name="lng_playlist_deleted">Spellista tog bort</string>
-    <string name="lng_author">Utvecklad av Alexander Capeheart</string>
+    <string name="lbl_author_name">Utvecklad av Alexander Capeheart</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_night">Mörkt</string>
     <string name="set_accent">Färgschema</string>

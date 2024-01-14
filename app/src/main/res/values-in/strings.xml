@@ -79,7 +79,7 @@
     <string name="lbl_disc">Disk</string>
     <string name="lbl_song_detail">Lihat properti</string>
     <string name="lbl_format">Format</string>
-    <string name="lng_author">Dikembangkan oleh Alexander Capehart</string>
+    <string name="lbl_author_name">Dikembangkan oleh Alexander Capehart</string>
     <string name="lbl_library_counts">Statistik pustaka</string>
     <string name="set_notif_action">Tindakan notifikasi khusus</string>
     <string name="lbl_shuffle_shortcut_short">Acak</string>

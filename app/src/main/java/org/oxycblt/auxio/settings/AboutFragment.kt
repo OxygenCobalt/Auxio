@@ -66,7 +66,11 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutCode.setOnClickListener { requireContext().openInBrowser(LINK_SOURCE) }
         binding.aboutWiki.setOnClickListener { requireContext().openInBrowser(LINK_WIKI) }
         binding.aboutLicenses.setOnClickListener { requireContext().openInBrowser(LINK_LICENSES) }
-        binding.aboutAuthor.setOnClickListener { requireContext().openInBrowser(LINK_AUTHOR) }
+        binding.aboutProfile.setOnClickListener { requireContext().openInBrowser(LINK_PROFILE) }
+        binding.aboutDonate.setOnClickListener { requireContext().openInBrowser(LINK_DONATE) }
+        binding.aboutSupportersPromo.setOnClickListener {
+            requireContext().openInBrowser(LINK_DONATE)
+        }
 
         // VIEWMODEL SETUP
         collectImmediately(musicModel.statistics, ::updateStatistics)
@@ -88,13 +92,10 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     }
 
     private companion object {
-        /** The URL to the source code. */
         const val LINK_SOURCE = "https://github.com/OxygenCobalt/Auxio"
-        /** The URL to the app wiki. */
         const val LINK_WIKI = "$LINK_SOURCE/wiki"
-        /** The URL to the licenses wiki page. */
         const val LINK_LICENSES = "$LINK_WIKI/Licenses"
-        /** The URL to the app author. */
-        const val LINK_AUTHOR = "https://github.com/OxygenCobalt"
+        const val LINK_PROFILE = "https://github.com/OxygenCobalt"
+        const val LINK_DONATE = "https://github.com/sponsors/OxygenCobalt"
     }
 }

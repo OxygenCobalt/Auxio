@@ -126,7 +126,7 @@
     <string name="lbl_sample_rate">Frecuencia de mostraxe</string>
     <string name="lbl_about">Acerca de</string>
     <string name="lng_observing">Monitorizando cambios na túa biblioteca…</string>
-    <string name="lng_author">Desenvolvido por Alexander Capehart</string>
+    <string name="lbl_author_name">Desenvolvido por Alexander Capehart</string>
     <string name="set_ui">Aspecto e sensación</string>
     <string name="set_round_mode">Modo redondo</string>
     <string name="set_round_mode_desc">Habilita as esquinas redondeadas en elementos adicionais da interface de usuario (require que as portadas dos álbums estean redondeadas)</string>

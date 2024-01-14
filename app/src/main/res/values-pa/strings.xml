@@ -84,7 +84,7 @@
     <string name="lng_widget">ਸੰਗੀਤ ਪਲੇਬੈਕ ਵੇਖੋ ਅਤੇ ਕੰਟਰੋਲ ਕਰੋ</string>
     <string name="lng_indexing">ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਨੂੰ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…</string>
     <string name="lng_queue_added">ਕਤਾਰ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕੀਤਾ</string>
-    <string name="lng_author">ਅਲੈਗਜ਼ੈਂਡਰ ਕੇਪਹਾਰਟ ਦੁਆਰਾ ਵਿਕਸਿਤ</string>
+    <string name="lbl_author_name">ਅਲੈਗਜ਼ੈਂਡਰ ਕੇਪਹਾਰਟ ਦੁਆਰਾ ਵਿਕਸਿਤ</string>
     <string name="lng_search_library">ਆਪਣੀ ਲਾਇਬ੍ਰੇਰੀ ਖੋਜੋ…</string>
     <string name="set_root_title">ਸੈਟਿੰਗਾਂ</string>
     <string name="set_ui">ਦਿੱਖ ਅਤੇ ਛੋਹ</string>

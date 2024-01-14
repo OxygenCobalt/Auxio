@@ -128,7 +128,7 @@
     <string name="set_music">Glasba</string>
     <string name="err_bad_dir">Ta mapa ni podprta</string>
     <string name="set_restore_desc">Obnovi prej shranjeno stanje predvajanja (če obstaja)</string>
-    <string name="lng_author">Razvil Alexander Capehart</string>
+    <string name="lbl_author_name">Razvil Alexander Capehart</string>
     <string name="desc_music_dir_delete">Odstrani mapo</string>
     <string name="lbl_copied">Kopirano</string>
     <string name="err_index_failed">Nalaganje glasbe ni uspelo</string>

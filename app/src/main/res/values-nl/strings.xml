@@ -35,7 +35,7 @@
     <string name="lbl_version">Versie</string>
     <string name="lbl_code">Broncode</string>
     <string name="lbl_licenses">Licenties</string>
-    <string name="lng_author">Ontwikkeld door Alexander Capehart</string>
+    <string name="lbl_author_name">Ontwikkeld door Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Instellingen</string>
     <string name="set_ui">Uiterlijk en gevoel</string>
