@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.3.1
 
 #### What's Improved
 - The OPUS base volume adjustment field is now parsed and used as a ReplayGain adjustment
