@@ -12,6 +12,8 @@
 #### What's Fixed
 - Fixed a crash occuring if you navigated to the settings page from the playlist view
 and then back
+- Fixed music loading failing with an SQL error with certain music folder configurations
+- Fixed issue where song title on playback screen would not scroll
 
 ## 3.3.0
 
