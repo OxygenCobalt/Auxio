@@ -217,6 +217,11 @@ interface PlaybackStateManager {
      */
     fun playing(isPlaying: Boolean)
 
+    /**
+     * Update the current [RepeatMode].
+     *
+     * @param repeatMode The new [RepeatMode].
+     */
     fun repeatMode(repeatMode: RepeatMode)
 
     /**
@@ -407,8 +412,11 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
 
         this.stateHolder = stateHolder
-
-        // TODO: Re-init player
+        if (isInitialized) {
+            stateHolder.applySavedState(stateMirror.parent, stateMirror.rawQueue, null)
+            stateHolder.seekTo(stateMirror.progression.calculateElapsedPositionMs())
+            stateHolder.playing(false)
+        }
     }
 
     @Synchronized
@@ -770,12 +778,14 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
         if (oldStateMirror.rawQueue != rawQueue) {
             logD("Queue changed, must reload player")
-            stateHolder?.applySavedState(parent, rawQueue)
+            stateHolder?.applySavedState(parent, rawQueue, StateAck.NewPlayback)
+            stateHolder?.playing(false)
         }
 
         if (oldStateMirror.progression.calculateElapsedPositionMs() != savedState.positionMs) {
             logD("Seeking to saved position ${savedState.positionMs}ms")
             stateHolder?.seekTo(savedState.positionMs)
+            stateHolder?.playing(false)
         }
 
         isInitialized = true

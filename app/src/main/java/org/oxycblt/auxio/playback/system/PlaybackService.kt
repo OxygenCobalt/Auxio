@@ -369,11 +369,15 @@ class PlaybackService :
         return true
     }
 
-    override fun applySavedState(parent: MusicParent?, rawQueue: RawQueue) {
+    override fun applySavedState(
+        parent: MusicParent?,
+        rawQueue: RawQueue,
+        ack: StateAck.NewPlayback?
+    ) {
         this.parent = parent
         player.applyQueue(rawQueue)
         player.prepare()
-        playbackManager.ack(this, StateAck.NewPlayback)
+        ack?.let { playbackManager.ack(this, it) }
     }
 
     // --- PLAYER OVERRIDES ---

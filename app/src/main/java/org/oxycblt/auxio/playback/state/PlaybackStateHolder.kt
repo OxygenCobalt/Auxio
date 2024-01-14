@@ -62,7 +62,7 @@ interface PlaybackStateHolder {
 
     fun handleDeferred(action: DeferredPlayback): Boolean
 
-    fun applySavedState(parent: MusicParent?, rawQueue: RawQueue)
+    fun applySavedState(parent: MusicParent?, rawQueue: RawQueue, ack: StateAck.NewPlayback?)
 }
 
 sealed interface StateAck {
