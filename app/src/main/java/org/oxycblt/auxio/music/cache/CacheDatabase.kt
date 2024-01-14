@@ -32,7 +32,7 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 36, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 38, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {
     abstract fun cachedSongsDao(): CachedSongsDao
 }
