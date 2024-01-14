@@ -22,7 +22,6 @@ import android.net.Uri
 import android.os.SystemClock
 import android.support.v4.media.session.PlaybackStateCompat
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 
@@ -33,21 +32,13 @@ interface PlaybackStateHolder {
 
     val parent: MusicParent?
 
-    fun resolveQueue(): List<Song>
-
-    fun resolveIndex(): Int
+    fun resolveQueue(): RawQueue
 
     val isShuffled: Boolean
 
     val audioSessionId: Int
 
-    fun newPlayback(
-        queue: List<Song>,
-        start: Song?,
-        parent: MusicParent?,
-        shuffled: Boolean,
-        play: Boolean
-    )
+    fun newPlayback(queue: List<Song>, start: Song?, parent: MusicParent?, shuffled: Boolean)
 
     fun playing(playing: Boolean)
 
@@ -61,32 +52,65 @@ interface PlaybackStateHolder {
 
     fun goto(index: Int)
 
-    fun playNext(songs: List<Song>)
+    fun playNext(songs: List<Song>, ack: StateAck.PlayNext)
 
-    fun addToQueue(songs: List<Song>)
+    fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue)
 
-    fun move(from: Int, to: Int)
+    fun move(from: Int, to: Int, ack: StateAck.Move)
 
-    fun remove(at: Int)
+    fun remove(at: Int, ack: StateAck.Remove)
 
-    fun reorder(shuffled: Boolean)
+    fun shuffled(shuffled: Boolean)
 
     fun handleDeferred(action: DeferredPlayback): Boolean
+
+    fun applySavedState(parent: MusicParent?, rawQueue: RawQueue)
 }
 
-sealed interface StateEvent {
-    data object IndexMoved : StateEvent
+sealed interface StateAck {
+    data object IndexMoved : StateAck
 
-    data class QueueChanged(val instructions: UpdateInstructions, val songChanged: Boolean) :
-        StateEvent
+    data class PlayNext(val at: Int, val size: Int) : StateAck
 
-    data object QueueReordered : StateEvent
+    data class AddToQueue(val at: Int, val size: Int) : StateAck
 
-    data object NewPlayback : StateEvent
+    data class Move(val from: Int, val to: Int) : StateAck
 
-    data object ProgressionChanged : StateEvent
+    data class Remove(val index: Int) : StateAck
 
-    data object RepeatModeChanged : StateEvent
+    data object QueueReordered : StateAck
+
+    data object NewPlayback : StateAck
+
+    data object ProgressionChanged : StateAck
+
+    data object RepeatModeChanged : StateAck
+}
+
+data class RawQueue(
+    val heap: List<Song>,
+    val shuffledMapping: List<Int>,
+    val heapIndex: Int,
+) {
+    val isShuffled = shuffledMapping.isNotEmpty()
+
+    fun resolveSongs() =
+        if (isShuffled) {
+            shuffledMapping.map { heap[it] }
+        } else {
+            heap
+        }
+
+    fun resolveIndex() =
+        if (isShuffled) {
+            shuffledMapping.indexOf(heapIndex)
+        } else {
+            heapIndex
+        }
+
+    companion object {
+        fun nil() = RawQueue(emptyList(), emptyList(), -1)
+    }
 }
 
 /**
@@ -128,20 +152,6 @@ sealed interface DeferredPlayback {
      */
     data class Open(val uri: Uri) : DeferredPlayback
 }
-
-data class Queue(val songs: List<Song>, val index: Int) {
-    companion object {
-        fun nil() = Queue(emptyList(), -1)
-    }
-}
-
-data class SavedQueue(
-    val heap: List<Song?>,
-    val orderedMapping: List<Int>,
-    val shuffledMapping: List<Int>,
-    val index: Int,
-    val songUid: Music.UID,
-)
 
 /** A representation of the current state of audio playback. Use [from] to create an instance. */
 class Progression

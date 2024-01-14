@@ -53,48 +53,37 @@ constructor(
     override suspend fun readState(): PlaybackStateManager.SavedState? {
         val deviceLibrary = musicRepository.deviceLibrary ?: return null
         val playbackState: PlaybackState
-        val heap: List<QueueHeapItem>
-        val mapping: List<QueueMappingItem>
+        val heapItems: List<QueueHeapItem>
+        val mappingItems: List<QueueShuffledMappingItem>
         try {
             playbackState = playbackStateDao.getState() ?: return null
-            heap = queueDao.getHeap()
-            mapping = queueDao.getMapping()
+            heapItems = queueDao.getHeap()
+            mappingItems = queueDao.getShuffledMapping()
         } catch (e: Exception) {
             logE("Unable read playback state")
             logE(e.stackTraceToString())
             return null
         }
 
-        val orderedMapping = mutableListOf<Int>()
-        val shuffledMapping = mutableListOf<Int>()
-        for (entry in mapping) {
-            orderedMapping.add(entry.orderedIndex)
-            shuffledMapping.add(entry.shuffledIndex)
-        }
-
+        val heap = heapItems.map { deviceLibrary.findSong(it.uid) }
+        val shuffledMapping = mappingItems.map { it.index }
         val parent = playbackState.parentUid?.let { musicRepository.find(it) as? MusicParent }
-        logD("Successfully read playback state")
 
-        //        return PlaybackStateManager.SavedState(
-        //            parent = parent,
-        //            queueState =
-        //                Queue.SavedState(
-        //                    heap.map { deviceLibrary.findSong(it.uid) },
-        //                    orderedMapping,
-        //                    shuffledMapping,
-        //                    playbackState.index,
-        //                    playbackState.songUid),
-        //            positionMs = playbackState.positionMs,
-        //            repeatMode = playbackState.repeatMode)
-
-        return null
+        return PlaybackStateManager.SavedState(
+            positionMs = playbackState.positionMs,
+            repeatMode = playbackState.repeatMode,
+            parent = parent,
+            heap = heap,
+            shuffledMapping = shuffledMapping,
+            index = playbackState.index,
+            songUid = playbackState.songUid)
     }
 
     override suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean {
         try {
             playbackStateDao.nukeState()
             queueDao.nukeHeap()
-            queueDao.nukeMapping()
+            queueDao.nukeShuffledMapping()
         } catch (e: Exception) {
             logE("Unable to clear previous state")
             logE(e.stackTraceToString())
@@ -107,29 +96,23 @@ constructor(
             val playbackState =
                 PlaybackState(
                     id = 0,
-                    index = state.queueState.index,
+                    index = state.index,
                     positionMs = state.positionMs,
                     repeatMode = state.repeatMode,
-                    songUid = state.queueState.songUid,
+                    songUid = state.songUid,
                     parentUid = state.parent?.uid)
 
             // Convert the remaining queue information do their database-specific counterparts.
             val heap =
-                state.queueState.heap.mapIndexed { i, song ->
-                    QueueHeapItem(i, requireNotNull(song).uid)
-                }
+                state.heap.mapIndexed { i, song -> QueueHeapItem(i, requireNotNull(song).uid) }
 
-            val mapping =
-                state.queueState.orderedMapping.zip(state.queueState.shuffledMapping).mapIndexed {
-                    i,
-                    pair ->
-                    QueueMappingItem(i, pair.first, pair.second)
-                }
+            val shuffledMapping =
+                state.shuffledMapping.mapIndexed { i, index -> QueueShuffledMappingItem(i, index) }
 
             try {
                 playbackStateDao.insertState(playbackState)
                 queueDao.insertHeap(heap)
-                queueDao.insertMapping(mapping)
+                queueDao.insertShuffledMapping(shuffledMapping)
             } catch (e: Exception) {
                 logE("Unable to write new state")
                 logE(e.stackTraceToString())

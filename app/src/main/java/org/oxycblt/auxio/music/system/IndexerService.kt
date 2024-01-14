@@ -138,23 +138,18 @@ class IndexerService :
         logD("Music changed, updating shared objects")
         // Wipe possibly-invalidated outdated covers
         imageLoader.memoryCache?.clear()
-        //        // Clear invalid models from PlaybackStateManager. This is not connected
-        //        // to a listener as it is bad practice for a shared object to attach to
-        //        // the listener system of another.
-        //        playbackManager.toSavedState()?.let { savedState ->
-        //            playbackManager.applySavedState(
-        //                PlaybackStateManager.SavedState(
-        //                    parent =
-        //                        savedState.parent?.let { musicRepository.find(it.uid) as?
-        // MusicParent },
-        //                    queueState =
-        //                        savedState.queueState.remap { song ->
-        //                            deviceLibrary.findSong(requireNotNull(song).uid)
-        //                        },
-        //                    positionMs = savedState.positionMs,
-        //                    repeatMode = savedState.repeatMode),
-        //                true)
-        //        }
+        // Clear invalid models from PlaybackStateManager. This is not connected
+        // to a listener as it is bad practice for a shared object to attach to
+        // the listener system of another.
+        playbackManager.toSavedState()?.let { savedState ->
+            playbackManager.applySavedState(
+                savedState.copy(
+                    heap =
+                        savedState.heap.map { song ->
+                            song?.let { deviceLibrary.findSong(it.uid) }
+                        }),
+                true)
+        }
     }
 
     override fun onIndexingStateChanged() {

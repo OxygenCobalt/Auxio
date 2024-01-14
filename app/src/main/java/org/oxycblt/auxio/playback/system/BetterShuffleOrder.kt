@@ -29,7 +29,7 @@ import java.util.*
  *
  * @author media3 team, Alexander Capehart (OxygenCobalt)
  */
-class BetterShuffleOrder private constructor(private val shuffled: IntArray) : ShuffleOrder {
+class BetterShuffleOrder constructor(private val shuffled: IntArray) : ShuffleOrder {
     private val indexInShuffled: IntArray = IntArray(shuffled.size)
 
     constructor(length: Int, startIndex: Int) : this(createShuffledList(length, startIndex))

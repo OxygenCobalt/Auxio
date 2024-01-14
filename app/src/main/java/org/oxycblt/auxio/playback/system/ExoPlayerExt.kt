@@ -23,15 +23,19 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
 
 val ExoPlayer.song
     get() = currentMediaItem?.song
 
-fun ExoPlayer.resolveIndex() = unscrambleQueueIndices().indexOf(currentMediaItemIndex)
-
-fun ExoPlayer.resolveQueue() = unscrambleQueueIndices().map { getMediaItemAt(it).song }
+fun ExoPlayer.resolveQueue(): RawQueue {
+    val heap = (0 until mediaItemCount).map { getMediaItemAt(it).song }
+    val shuffledMapping = if (shuffleModeEnabled) unscrambleQueueIndices() else emptyList()
+    logD(shuffledMapping)
+    return RawQueue(heap, shuffledMapping, currentMediaItemIndex)
+}
 
 val ExoPlayer.repeat: RepeatMode
     get() =
@@ -57,10 +61,6 @@ fun ExoPlayer.orderedQueue(queue: Collection<Song>, start: Song?) {
 }
 
 fun ExoPlayer.shuffledQueue(queue: Collection<Song>, start: Song?) {
-    // A fun thing about ShuffleOrder is that ExoPlayer will use cloneAndInsert to both add
-    // MediaItems AND repopulate MediaItems (?!?!?!?!). As a result, we have to use the default
-    // shuffle order and it's stupid cloneAndInsert implementation to add the songs, and then
-    // switch back to our implementation that actually works in normal use.
     setMediaItems(queue.map { it.toMediaItem() })
     shuffleModeEnabled = true
     val startIndex =
@@ -73,11 +73,22 @@ fun ExoPlayer.shuffledQueue(queue: Collection<Song>, start: Song?) {
     seekTo(currentTimeline.getFirstWindowIndex(shuffleModeEnabled), C.TIME_UNSET)
 }
 
-fun ExoPlayer.reorder(shuffled: Boolean) {
+fun ExoPlayer.applyQueue(rawQueue: RawQueue) {
+    setMediaItems(rawQueue.heap.map { it.toMediaItem() })
+    if (rawQueue.isShuffled) {
+        shuffleModeEnabled = true
+        setShuffleOrder(BetterShuffleOrder(rawQueue.shuffledMapping.toIntArray()))
+    } else {
+        shuffleModeEnabled = false
+    }
+    seekTo(rawQueue.heapIndex, C.TIME_UNSET)
+}
+
+fun ExoPlayer.shuffled(shuffled: Boolean) {
     logD("Reordering queue to $shuffled")
     shuffleModeEnabled = shuffled
     if (shuffled) {
-        // Have to manually refresh the shuffle seed.
+        // Have to manually refresh the shuffle seed and anchor it to the new current songs
         setShuffleOrder(BetterShuffleOrder(mediaItemCount, currentMediaItemIndex))
     }
 }

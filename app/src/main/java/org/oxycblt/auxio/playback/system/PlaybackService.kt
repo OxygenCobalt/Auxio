@@ -48,7 +48,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.list.ListSettings
-import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
@@ -59,8 +58,9 @@ import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateHolder
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
+import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.playback.state.StateEvent
+import org.oxycblt.auxio.playback.state.StateAck
 import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -237,8 +237,6 @@ class PlaybackService :
     override val isShuffled
         get() = player.shuffleModeEnabled
 
-    override fun resolveIndex() = player.resolveIndex()
-
     override fun resolveQueue() = player.resolveQueue()
 
     override val audioSessionId: Int
@@ -248,8 +246,7 @@ class PlaybackService :
         queue: List<Song>,
         start: Song?,
         parent: MusicParent?,
-        shuffled: Boolean,
-        play: Boolean
+        shuffled: Boolean
     ) {
         this.parent = parent
         if (shuffled) {
@@ -258,8 +255,8 @@ class PlaybackService :
             player.orderedQueue(queue, start)
         }
         player.prepare()
-        player.playWhenReady = play
-        playbackManager.dispatchEvent(this, StateEvent.NewPlayback)
+        player.play()
+        playbackManager.ack(this, StateAck.NewPlayback)
     }
 
     override fun playing(playing: Boolean) {
@@ -274,7 +271,7 @@ class PlaybackService :
                 RepeatMode.ALL -> Player.REPEAT_MODE_ALL
                 RepeatMode.TRACK -> Player.REPEAT_MODE_ONE
             }
-        playbackManager.dispatchEvent(this, StateEvent.RepeatModeChanged)
+        playbackManager.ack(this, StateAck.RepeatModeChanged)
     }
 
     override fun seekTo(positionMs: Long) {
@@ -283,137 +280,42 @@ class PlaybackService :
 
     override fun next() {
         player.seekToNext()
-        playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
-        player.play()
+        playbackManager.ack(this, StateAck.IndexMoved)
     }
 
     override fun prev() {
         player.seekToPrevious()
-        playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
-        player.play()
+        playbackManager.ack(this, StateAck.IndexMoved)
     }
 
     override fun goto(index: Int) {
         player.goto(index)
-        playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
-        player.play()
+        playbackManager.ack(this, StateAck.IndexMoved)
     }
 
-    override fun reorder(shuffled: Boolean) {
-        player.reorder(shuffled)
-        playbackManager.dispatchEvent(this, StateEvent.QueueReordered)
+    override fun shuffled(shuffled: Boolean) {
+        player.shuffled(shuffled)
+        playbackManager.ack(this, StateAck.QueueReordered)
     }
 
-    override fun addToQueue(songs: List<Song>) {
-        val insertAt = playbackManager.index + 1
-        player.addToQueue(songs)
-        playbackManager.dispatchEvent(
-            this, StateEvent.QueueChanged(UpdateInstructions.Add(insertAt, songs.size), false))
-    }
-
-    override fun playNext(songs: List<Song>) {
-        val insertAt = playbackManager.index + 1
+    override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
         player.playNext(songs)
-        playbackManager.dispatchEvent(
-            this, StateEvent.QueueChanged(UpdateInstructions.Add(insertAt, songs.size), false))
+        playbackManager.ack(this, ack)
     }
 
-    override fun move(from: Int, to: Int) {
+    override fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue) {
+        player.addToQueue(songs)
+        playbackManager.ack(this, ack)
+    }
+
+    override fun move(from: Int, to: Int, ack: StateAck.Move) {
         player.move(from, to)
-        playbackManager.dispatchEvent(
-            this, StateEvent.QueueChanged(UpdateInstructions.Move(from, to), false))
+        playbackManager.ack(this, ack)
     }
 
-    override fun remove(at: Int) {
-        val oldIndex = player.currentMediaItemIndex
+    override fun remove(at: Int, ack: StateAck.Remove) {
         player.remove(at)
-        val newIndex = player.currentMediaItemIndex
-        playbackManager.dispatchEvent(
-            this, StateEvent.QueueChanged(UpdateInstructions.Remove(at, 1), oldIndex != newIndex))
-    }
-
-    // --- PLAYER OVERRIDES ---
-
-    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-        super.onPlayWhenReadyChanged(playWhenReady, reason)
-
-        if (player.playWhenReady) {
-            // Mark that we have started playing so that the notification can now be posted.
-            hasPlayed = true
-            logD("Player has started playing")
-            if (!openAudioEffectSession) {
-                // Convention to start an audioeffect session on play/pause rather than
-                // start/stop
-                logD("Opening audio effect session")
-                broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-                openAudioEffectSession = true
-            }
-        } else if (openAudioEffectSession) {
-            // Make sure to close the audio session when we stop playback.
-            logD("Closing audio effect session")
-            broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
-            openAudioEffectSession = false
-        }
-    }
-
-    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-        super.onMediaItemTransition(mediaItem, reason)
-
-        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
-            reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
-            playbackManager.dispatchEvent(this, StateEvent.IndexMoved)
-        }
-    }
-
-    override fun onEvents(player: Player, events: Player.Events) {
-        super.onEvents(player, events)
-
-        if (events.containsAny(
-            Player.EVENT_PLAY_WHEN_READY_CHANGED,
-            Player.EVENT_IS_PLAYING_CHANGED,
-            Player.EVENT_POSITION_DISCONTINUITY)) {
-            logD("Player state changed, must synchronize state")
-            playbackManager.dispatchEvent(this, StateEvent.ProgressionChanged)
-        }
-    }
-
-    override fun onPlayerError(error: PlaybackException) {
-        // TODO: Replace with no skipping and a notification instead
-        // If there's any issue, just go to the next song.
-        logE("Player error occured")
-        logE(error.stackTraceToString())
-        playbackManager.next()
-    }
-
-    override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
-            // We now have a library, see if we have anything we need to do.
-            logD("Library obtained, requesting action")
-            playbackManager.requestAction(this)
-        }
-    }
-
-    // --- OTHER FUNCTIONS ---
-
-    private fun broadcastAudioEffectAction(event: String) {
-        logD("Broadcasting AudioEffect event: $event")
-        sendBroadcast(
-            Intent(event)
-                .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-                .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
-    }
-
-    private fun stopAndSave() {
-        // This session has ended, so we need to reset this flag for when the next session starts.
-        hasPlayed = false
-        if (foregroundManager.tryStopForeground()) {
-            // Now that we have ended the foreground state (and thus music playback), we'll need
-            // to save the current state as it's not long until this service (and likely the whole
-            // app) is killed.
-            logD("Saving playback state")
-            saveScope.launch { persistenceRepository.saveState(playbackManager.toSavedState()) }
-        }
+        playbackManager.ack(this, ack)
     }
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
@@ -454,6 +356,97 @@ class PlaybackService :
         }
 
         return true
+    }
+
+    override fun applySavedState(parent: MusicParent?, rawQueue: RawQueue) {
+        this.parent = parent
+        player.applyQueue(rawQueue)
+        player.prepare()
+        playbackManager.ack(this, StateAck.NewPlayback)
+    }
+
+    // --- PLAYER OVERRIDES ---
+
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        super.onPlayWhenReadyChanged(playWhenReady, reason)
+
+        if (player.playWhenReady) {
+            // Mark that we have started playing so that the notification can now be posted.
+            hasPlayed = true
+            logD("Player has started playing")
+            if (!openAudioEffectSession) {
+                // Convention to start an audioeffect session on play/pause rather than
+                // start/stop
+                logD("Opening audio effect session")
+                broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+                openAudioEffectSession = true
+            }
+        } else if (openAudioEffectSession) {
+            // Make sure to close the audio session when we stop playback.
+            logD("Closing audio effect session")
+            broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
+            openAudioEffectSession = false
+        }
+    }
+
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        super.onMediaItemTransition(mediaItem, reason)
+
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
+            reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
+            playbackManager.ack(this, StateAck.IndexMoved)
+        }
+    }
+
+    override fun onEvents(player: Player, events: Player.Events) {
+        super.onEvents(player, events)
+
+        if (events.containsAny(
+            Player.EVENT_PLAY_WHEN_READY_CHANGED,
+            Player.EVENT_IS_PLAYING_CHANGED,
+            Player.EVENT_POSITION_DISCONTINUITY)) {
+            logD("Player state changed, must synchronize state")
+            playbackManager.ack(this, StateAck.ProgressionChanged)
+        }
+    }
+
+    override fun onPlayerError(error: PlaybackException) {
+        // TODO: Replace with no skipping and a notification instead
+        // If there's any issue, just go to the next song.
+        logE("Player error occured")
+        logE(error.stackTraceToString())
+        playbackManager.next()
+    }
+
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
+            // We now have a library, see if we have anything we need to do.
+            logD("Library obtained, requesting action")
+            playbackManager.requestAction(this)
+        }
+    }
+
+    // --- OTHER FUNCTIONS ---
+
+    private fun broadcastAudioEffectAction(event: String) {
+        logD("Broadcasting AudioEffect event: $event")
+        sendBroadcast(
+            Intent(event)
+                .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+                .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
+    }
+
+    private fun stopAndSave() {
+        // This session has ended, so we need to reset this flag for when the next session starts.
+        hasPlayed = false
+        if (foregroundManager.tryStopForeground()) {
+            // Now that we have ended the foreground state (and thus music playback), we'll need
+            // to save the current state as it's not long until this service (and likely the whole
+            // app) is killed.
+            logD("Saving playback state")
+            saveScope.launch { persistenceRepository.saveState(playbackManager.toSavedState()) }
+        }
     }
 
     // --- MEDIASESSIONCOMPONENT OVERRIDES ---

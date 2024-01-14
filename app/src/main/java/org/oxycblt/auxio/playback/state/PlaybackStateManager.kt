@@ -20,6 +20,8 @@ package org.oxycblt.auxio.playback.state
 
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
@@ -180,7 +182,16 @@ interface PlaybackStateManager {
      */
     fun shuffled(shuffled: Boolean)
 
-    fun dispatchEvent(stateHolder: PlaybackStateHolder, event: StateEvent)
+    /**
+     * Acknowledges that an event has happened that modified the state held by the current
+     * [PlaybackStateHolder].
+     *
+     * @param stateHolder The [PlaybackStateHolder] to synchronize with. Must be the current
+     *  [PlaybackStateHolder]. Does nothing if invoked by another [PlaybackStateHolder]
+     *  implementation.
+     *  @param ack The [StateAck] to acknowledge.
+     */
+    fun ack(stateHolder: PlaybackStateHolder, ack: StateAck)
 
     /**
      * Start a [DeferredPlayback] for the current [PlaybackStateHolder] to handle eventually.
@@ -243,30 +254,37 @@ interface PlaybackStateManager {
         /**
          * Called when the position of the currently playing item has changed, changing the current
          * [Song], but no other queue attribute has changed.
+         *
+         * @param index The new index of the currently playing [Song].
          */
         fun onIndexMoved(index: Int) {}
 
         /**
-         * Called when the [Queue] changed in a manner outlined by the given [Queue.Change].
+         * Called when the queue changed in a manner outlined by the given [Queue.Change].
          *
-         * @param queue The new [Queue].
-         * @param change The type of [Queue.Change] that occurred.
+         * @param queue The songs of the new queue.
+         * @param index The new index of the currently playing [Song].
+         * @param change The [QueueChange] that occurred.
          */
         fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {}
 
         /**
-         * Called when the [Queue] has changed in a non-trivial manner (such as re-shuffling), but
+         * Called when the queue has changed in a non-trivial manner (such as re-shuffling), but
          * the currently playing [Song] has not.
          *
-         * @param queue The new [Queue].
+         * @param queue The songs of the new queue.
+         * @param index The new index of the currently playing [Song].
+         * @param isShuffled Whether the queue is shuffled or not.
          */
         fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {}
 
         /**
          * Called when a new playback configuration was created.
          *
-         * @param queue The new [Queue].
-         * @param parent The new [MusicParent] being played from, or null if playing from all songs.
+         * @param parent The [MusicParent] item currently being played from.
+         * @param queue The queue of [Song]s to play from.
+         * @param index The index of the currently playing [Song].
+         * @param isShuffled Whether the queue is shuffled or not.
          */
         fun onNewPlayback(
             parent: MusicParent?,
@@ -294,15 +312,17 @@ interface PlaybackStateManager {
      * A condensed representation of the playback state that can be persisted.
      *
      * @param parent The [MusicParent] item currently being played from.
-     * @param queueState The [SavedQueue]
      * @param positionMs The current position in the currently played song, in ms
      * @param repeatMode The current [RepeatMode].
      */
     data class SavedState(
-        val parent: MusicParent?,
-        val queueState: SavedQueue,
         val positionMs: Long,
         val repeatMode: RepeatMode,
+        val parent: MusicParent?,
+        val heap: List<Song?>,
+        val shuffledMapping: List<Int>,
+        val index: Int,
+        val songUid: Music.UID,
     )
 }
 
@@ -314,6 +334,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val queue: List<Song>,
         val index: Int,
         val isShuffled: Boolean,
+        val rawQueue: RawQueue
     )
 
     private val listeners = mutableListOf<PlaybackStateManager.Listener>()
@@ -327,7 +348,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             queue = emptyList(),
             index = -1,
             isShuffled = false,
-        )
+            rawQueue = RawQueue.nil())
     @Volatile private var stateHolder: PlaybackStateHolder? = null
     @Volatile private var pendingDeferredPlayback: DeferredPlayback? = null
     @Volatile private var isInitialized = false
@@ -408,7 +429,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         logD("Playing $song from $parent in ${queue.size}-song queue [shuffled=$shuffled]")
         // Played something, so we are initialized now
         isInitialized = true
-        stateHolder.newPlayback(queue, song, parent, shuffled, true)
+        stateHolder.newPlayback(queue, song, parent, shuffled)
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -418,6 +439,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val stateHolder = stateHolder ?: return
         logD("Going to next song")
         stateHolder.next()
+        stateHolder.playing(true)
     }
 
     @Synchronized
@@ -425,6 +447,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val stateHolder = stateHolder ?: return
         logD("Going to previous song")
         stateHolder.prev()
+        stateHolder.playing(true)
     }
 
     @Synchronized
@@ -432,6 +455,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val stateHolder = stateHolder ?: return
         logD("Going to index $index")
         stateHolder.goto(index)
+        stateHolder.playing(true)
     }
 
     @Synchronized
@@ -442,7 +466,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to start of queue")
-            stateHolder.playNext(songs)
+            stateHolder.playNext(songs, StateAck.PlayNext(stateMirror.index + 1, songs.size))
         }
     }
 
@@ -454,7 +478,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to end of queue")
-            stateHolder.addToQueue(songs)
+            stateHolder.addToQueue(songs, StateAck.AddToQueue(stateMirror.index + 1, songs.size))
         }
     }
 
@@ -462,21 +486,21 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun moveQueueItem(src: Int, dst: Int) {
         val stateHolder = stateHolder ?: return
         logD("Moving item $src to position $dst")
-        stateHolder.move(src, dst)
+        stateHolder.move(src, dst, StateAck.Move(src, dst))
     }
 
     @Synchronized
     override fun removeQueueItem(at: Int) {
         val stateHolder = stateHolder ?: return
         logD("Removing item at $at")
-        stateHolder.remove(at)
+        stateHolder.remove(at, StateAck.Remove(at))
     }
 
     @Synchronized
     override fun shuffled(shuffled: Boolean) {
         val stateHolder = stateHolder ?: return
         logD("Reordering queue [shuffled=$shuffled]")
-        stateHolder.reorder(shuffled)
+        stateHolder.shuffled(shuffled)
     }
 
     // --- INTERNAL PLAYER FUNCTIONS ---
@@ -525,57 +549,113 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     @Synchronized
-    override fun dispatchEvent(stateHolder: PlaybackStateHolder, event: StateEvent) {
+    override fun ack(stateHolder: PlaybackStateHolder, ack: StateAck) {
         if (BuildConfig.DEBUG && this.stateHolder !== stateHolder) {
             logW("Given internal player did not match current internal player")
             return
         }
 
-        when (event) {
-            is StateEvent.IndexMoved -> {
-                stateMirror =
-                    stateMirror.copy(
-                        index = stateHolder.resolveIndex(),
-                    )
+        when (ack) {
+            is StateAck.IndexMoved -> {
+                val rawQueue = stateHolder.resolveQueue()
+                stateMirror = stateMirror.copy(index = rawQueue.resolveIndex(), rawQueue = rawQueue)
                 listeners.forEach { it.onIndexMoved(stateMirror.index) }
             }
-            is StateEvent.QueueChanged -> {
-                val instructions = event.instructions
-                val newIndex = stateHolder.resolveIndex()
-                val changeType =
-                    when {
-                        event.songChanged -> {
-                            QueueChange.Type.SONG
-                        }
-                        stateMirror.index != newIndex -> QueueChange.Type.INDEX
-                        else -> QueueChange.Type.MAPPING
-                    }
-                stateMirror = stateMirror.copy(queue = stateHolder.resolveQueue(), index = newIndex)
-                val change = QueueChange(changeType, instructions)
+            is StateAck.PlayNext -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val change =
+                    QueueChange(QueueChange.Type.MAPPING, UpdateInstructions.Add(ack.at, ack.size))
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        rawQueue = rawQueue,
+                    )
                 listeners.forEach {
                     it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
                 }
             }
-            is StateEvent.QueueReordered -> {
+            is StateAck.AddToQueue -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val change =
+                    QueueChange(QueueChange.Type.MAPPING, UpdateInstructions.Add(ack.at, ack.size))
                 stateMirror =
                     stateMirror.copy(
-                        queue = stateHolder.resolveQueue(),
-                        index = stateHolder.resolveIndex(),
-                        isShuffled = stateHolder.isShuffled,
+                        queue = rawQueue.resolveSongs(),
+                        rawQueue = rawQueue,
                     )
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateAck.Move -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val newIndex = rawQueue.resolveIndex()
+                val change =
+                    QueueChange(
+                        if (stateMirror.index != newIndex) QueueChange.Type.INDEX
+                        else QueueChange.Type.MAPPING,
+                        UpdateInstructions.Move(ack.from, ack.to))
+
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        index = newIndex,
+                        rawQueue = rawQueue,
+                    )
+
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateAck.Remove -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val newIndex = rawQueue.resolveIndex()
+                val change =
+                    QueueChange(
+                        when {
+                            ack.index == stateMirror.index -> QueueChange.Type.SONG
+                            stateMirror.index != newIndex -> QueueChange.Type.INDEX
+                            else -> QueueChange.Type.MAPPING
+                        },
+                        UpdateInstructions.Remove(ack.index, 1))
+
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        index = newIndex,
+                        rawQueue = rawQueue,
+                    )
+
+                if (change.type == QueueChange.Type.SONG) {
+                    playing(true)
+                }
+
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateAck.QueueReordered -> {
+                val rawQueue = stateHolder.resolveQueue()
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        index = rawQueue.resolveIndex(),
+                        isShuffled = stateHolder.isShuffled,
+                        rawQueue = rawQueue)
                 listeners.forEach {
                     it.onQueueReordered(
                         stateMirror.queue, stateMirror.index, stateMirror.isShuffled)
                 }
             }
-            is StateEvent.NewPlayback -> {
+            is StateAck.NewPlayback -> {
+                val rawQueue = stateHolder.resolveQueue()
                 stateMirror =
                     stateMirror.copy(
                         parent = stateHolder.parent,
-                        queue = stateHolder.resolveQueue(),
-                        index = stateHolder.resolveIndex(),
+                        queue = rawQueue.resolveSongs(),
+                        index = rawQueue.resolveIndex(),
                         isShuffled = stateHolder.isShuffled,
-                    )
+                        rawQueue = rawQueue)
                 listeners.forEach {
                     it.onNewPlayback(
                         stateMirror.parent,
@@ -584,14 +664,14 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         stateMirror.isShuffled)
                 }
             }
-            is StateEvent.ProgressionChanged -> {
+            is StateAck.ProgressionChanged -> {
                 stateMirror =
                     stateMirror.copy(
                         progression = stateHolder.progression,
                     )
                 listeners.forEach { it.onProgressionChanged(stateMirror.progression) }
             }
-            is StateEvent.RepeatModeChanged -> {
+            is StateAck.RepeatModeChanged -> {
                 stateMirror =
                     stateMirror.copy(
                         repeatMode = stateHolder.repeatMode,
@@ -603,51 +683,99 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     // --- PERSISTENCE FUNCTIONS ---
 
-    @Synchronized override fun toSavedState() = null
-    //        queue.toSavedState()?.let {
-    //            PlaybackStateManager.SavedState(
-    //                parent = parent,
-    //                queueState = it,
-    //                positionMs = progression.calculateElapsedPositionMs(),
-    //                repeatMode = repeatMode)
-    //        }
+    @Synchronized
+    override fun toSavedState(): PlaybackStateManager.SavedState? {
+        val currentSong = currentSong ?: return null
+        return PlaybackStateManager.SavedState(
+            positionMs = stateMirror.progression.calculateElapsedPositionMs(),
+            repeatMode = stateMirror.repeatMode,
+            parent = stateMirror.parent,
+            heap = stateMirror.rawQueue.heap,
+            shuffledMapping = stateMirror.rawQueue.shuffledMapping,
+            index = stateMirror.index,
+            songUid = currentSong.uid,
+        )
+    }
 
     @Synchronized
     override fun applySavedState(
         savedState: PlaybackStateManager.SavedState,
         destructive: Boolean
     ) {
-        //        if (isInitialized && !destructive) {
-        //            logW("Already initialized, cannot apply saved  state")
-        //            return
-        //        }
-        //        val stateHolder = stateHolder ?: return
-        //        logD("Applying state $savedState")
-        //
-        //        val lastSong = queue.currentSong
-        //        parent = savedState.parent
-        //        queue.applySavedState(savedState.queueState)
-        //        repeatMode = savedState.repeatMode
-        //        notifyNewPlayback()
-        //
-        //        // Check if we need to reload the player with a new music file, or if we can just
-        // leave
-        //        // it be. Specifically done so we don't pause on music updates that don't really
-        // change
-        //        // what's playing (ex. playlist editing)
-        //        if (lastSong != queue.currentSong) {
-        //            logD("Song changed, must reload player")
-        //            // Continuing playback while also possibly doing drastic state updates is
-        //            // a bad idea, so pause.
-        //            stateHolder.loadSong(queue.currentSong, false)
-        //            if (queue.currentSong != null) {
-        //                logD("Seeking to saved position ${savedState.positionMs}ms")
-        //                // Internal player may have reloaded the media item, re-seek to the
-        // previous
-        //                // position
-        //                seekTo(savedState.positionMs)
-        //            }
-        //        }
+        if (isInitialized && !destructive) {
+            logW("Already initialized, cannot apply saved state")
+            return
+        }
+
+        // The heap may not be the same if the song composition changed between state saves/reloads.
+        // This also means that we must modify the shuffled mapping as well, in what it points to
+        // and it's general composition.
+        val heap = mutableListOf<Song>()
+        val adjustments = mutableListOf<Int?>()
+        var currentShift = 0
+        for (song in savedState.heap) {
+            if (song != null) {
+                heap.add(song)
+                adjustments.add(currentShift)
+            } else {
+                adjustments.add(null)
+                currentShift -= 1
+            }
+        }
+
+        logD("Created adjustment mapping [max shift=$currentShift]")
+
+        val shuffledMapping =
+            savedState.shuffledMapping.mapNotNullTo(mutableListOf()) { index ->
+                adjustments[index]?.let { index + it }
+            }
+
+        // Make sure we re-align the index to point to the previously playing song.
+        fun pointingAtSong(): Boolean {
+            val currentSong =
+                if (shuffledMapping.isNotEmpty()) {
+                    shuffledMapping.getOrNull(savedState.index)?.let { heap.getOrNull(it) }
+                } else {
+                    heap.getOrNull(savedState.index)
+                }
+
+            return currentSong?.uid == savedState.songUid
+        }
+
+        var index = savedState.index
+        while (pointingAtSong() && index > -1) {
+            index--
+        }
+
+        logD("Corrected index: ${savedState.index} -> $index")
+
+        check(shuffledMapping.all { it in heap.indices }) {
+            "Queue inconsistency detected: Shuffled mapping indices out of heap bounds"
+        }
+
+        val rawQueue =
+            RawQueue(
+                heap = heap,
+                shuffledMapping = savedState.shuffledMapping,
+                heapIndex =
+                    if (savedState.shuffledMapping.isNotEmpty()) {
+                        savedState.shuffledMapping[savedState.index]
+                    } else {
+                        savedState.index
+                    })
+
+        val oldStateMirror = stateMirror
+
+        if (oldStateMirror.rawQueue != rawQueue) {
+            logD("Queue changed, must reload player")
+            stateHolder?.applySavedState(parent, rawQueue)
+        }
+
+        if (oldStateMirror.progression.calculateElapsedPositionMs() != savedState.positionMs) {
+            logD("Seeking to saved position ${savedState.positionMs}ms")
+            stateHolder?.seekTo(savedState.positionMs)
+        }
+
         isInitialized = true
     }
 }
