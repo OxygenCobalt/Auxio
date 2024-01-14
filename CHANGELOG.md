@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.3
+
+#### What's Fixed
+- Fixed music folders not behaving correctly below Android 11
+
 ## 3.3.2
 
 #### What's Fixed

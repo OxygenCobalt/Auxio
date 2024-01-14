@@ -142,7 +142,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
                     } else {
                         " OR ${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
                     }
-                args.add("${volume}${path.components}%")
+                args.add("/${volume}/${path.components}%")
             }
 
             if (template.isEmpty()) {
