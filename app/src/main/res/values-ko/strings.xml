@@ -47,7 +47,7 @@
     <string name="lbl_version">버전</string>
     <string name="lbl_code">소스 코드</string>
     <string name="lbl_licenses">라이선스</string>
-    <string name="lbl_author_name">Alexander Capehart가 개발</string>
+    <string name="lbl_author_name">Alexander Capehart</string>
     <string name="lbl_library_counts">라이브러리 통계</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">설정</string>
@@ -309,4 +309,19 @@
     <string name="lbl_demo">데모</string>
     <string name="lbl_demos">데모</string>
     <string name="lbl_empty_playlist">빈 재생 목록</string>
+    <string name="lbl_imported_playlist">재생 목록을 가져왔습니다.</string>
+    <string name="lbl_author">개발자</string>
+    <string name="lbl_import_playlist">재생 목록 가져오기</string>
+    <string name="lbl_donate">후원</string>
+    <string name="lbl_supporters">서포터</string>
+    <string name="lng_supporters_promo">여기에 이름을 올리고 싶으시면 프로젝트를 후원해 주세요!</string>
+    <string name="lng_playlist_imported">재생 목록을 가져왔습니다.</string>
+    <string name="lng_playlist_exported">재생 목록을 내보냈습니다.</string>
+    <string name="lbl_path_style_absolute">절대</string>
+    <string name="lbl_path_style_relative">상대</string>
+    <string name="lbl_windows_paths">Windows 호환 경로 사용</string>
+    <string name="lbl_import">가져오기</string>
+    <string name="lbl_export">내보내기</string>
+    <string name="lbl_export_playlist">재생 목록 내보내기</string>
+    <string name="lbl_path_style">경로 스타일</string>
 </resources>
