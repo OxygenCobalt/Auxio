@@ -44,5 +44,5 @@
             app:title="@string/set_rescan" />
 
     </PreferenceCategory>
-    
+
 </PreferenceScreen>

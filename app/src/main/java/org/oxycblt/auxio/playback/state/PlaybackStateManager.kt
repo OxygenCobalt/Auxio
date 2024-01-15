@@ -456,7 +456,6 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val stateHolder = stateHolder ?: return
         logD("Going to next song")
         stateHolder.next()
-        stateHolder.playing(true)
     }
 
     @Synchronized
@@ -464,7 +463,6 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val stateHolder = stateHolder ?: return
         logD("Going to previous song")
         stateHolder.prev()
-        stateHolder.playing(true)
     }
 
     @Synchronized
@@ -472,7 +470,6 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val stateHolder = stateHolder ?: return
         logD("Going to index $index")
         stateHolder.goto(index)
-        stateHolder.playing(true)
     }
 
     @Synchronized
@@ -642,10 +639,6 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         index = newIndex,
                         rawQueue = rawQueue,
                     )
-
-                if (change.type == QueueChange.Type.SONG) {
-                    stateHolder.playing(true)
-                }
 
                 listeners.forEach {
                     it.onQueueChanged(stateMirror.queue, stateMirror.index, change)

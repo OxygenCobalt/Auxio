@@ -32,7 +32,6 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.showToast
 
 /**
  * The [PreferenceFragmentCompat] that displays the root settings list.

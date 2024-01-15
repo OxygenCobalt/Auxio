@@ -21,6 +21,12 @@
             app:summary="@string/set_repeat_pause_desc"
             app:title="@string/set_repeat_pause" />
 
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="@string/set_key_remember_pause"
+            app:summary="@string/set_remember_pause_desc"
+            app:title="@string/set_remember_pause" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/set_replay_gain">

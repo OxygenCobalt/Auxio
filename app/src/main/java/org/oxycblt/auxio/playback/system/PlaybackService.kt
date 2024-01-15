@@ -316,6 +316,9 @@ class PlaybackService :
 
     override fun next() {
         player.seekToNext()
+        if (!playbackSettings.rememberPause) {
+            player.play()
+        }
         playbackManager.ack(this, StateAck.IndexMoved)
         // Deferred save is handled on position discontinuity
     }
@@ -325,6 +328,9 @@ class PlaybackService :
             player.seekToPrevious()
         } else {
             player.seekToPreviousMediaItem()
+        }
+        if (!playbackSettings.rememberPause) {
+            player.play()
         }
         playbackManager.ack(this, StateAck.IndexMoved)
         // Deferred save is handled on position discontinuity
@@ -338,6 +344,9 @@ class PlaybackService :
 
         val trueIndex = indices[index]
         player.seekTo(trueIndex, C.TIME_UNSET)
+        if (!playbackSettings.rememberPause) {
+            player.play()
+        }
         playbackManager.ack(this, StateAck.IndexMoved)
         // Deferred save is handled on position discontinuity
     }
@@ -396,7 +405,11 @@ class PlaybackService :
         }
 
         val trueIndex = indices[at]
+        val songWillChange = player.currentMediaItemIndex == trueIndex
         player.removeMediaItem(trueIndex)
+        if (songWillChange && !playbackSettings.rememberPause) {
+            player.play()
+        }
         playbackManager.ack(this, ack)
         deferSave()
     }
