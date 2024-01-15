@@ -44,23 +44,5 @@
             app:title="@string/set_rescan" />
 
     </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/set_state">
-
-        <Preference
-            app:key="@string/set_key_save_state"
-            app:summary="@string/set_save_desc"
-            app:title="@string/set_save_state" />
-
-        <Preference
-            app:key="@string/set_key_wipe_state"
-            app:summary="@string/set_wipe_desc"
-            app:title="@string/set_wipe_state" />
-
-        <Preference
-            app:key="@string/set_key_restore_state"
-            app:summary="@string/set_restore_desc"
-            app:title="@string/set_restore_state" />
-    </PreferenceCategory>
-
+    
 </PreferenceScreen>

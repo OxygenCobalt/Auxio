@@ -44,8 +44,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.music.MusicParent
@@ -117,6 +119,7 @@ class PlaybackService :
     private val serviceJob = Job()
     private val restoreScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private val saveScope = CoroutineScope(serviceJob + Dispatchers.IO)
+    private var currentSaveJob: Job? = null
 
     // --- SERVICE OVERRIDES ---
 
@@ -228,8 +231,7 @@ class PlaybackService :
                     player.isPlaying,
                     // The position value can be below zero or past the expected duration, make
                     // sure we handle that.
-                    player.currentPosition.coerceAtLeast(0)
-                        .coerceAtMost(it.song.durationMs))
+                    player.currentPosition.coerceAtLeast(0).coerceAtMost(it.song.durationMs))
             }
                 ?: Progression.nil()
 
@@ -246,11 +248,12 @@ class PlaybackService :
 
     override fun resolveQueue(): RawQueue {
         val heap = (0 until player.mediaItemCount).map { player.getMediaItemAt(it).song }
-        val shuffledMapping = if (player.shuffleModeEnabled) {
-            player.unscrambleQueueIndices()
-        } else {
-            emptyList()
-        }
+        val shuffledMapping =
+            if (player.shuffleModeEnabled) {
+                player.unscrambleQueueIndices()
+            } else {
+                emptyList()
+            }
         return RawQueue(heap, shuffledMapping, player.currentMediaItemIndex)
     }
 
@@ -279,11 +282,13 @@ class PlaybackService :
         player.prepare()
         player.play()
         playbackManager.ack(this, StateAck.NewPlayback)
+        deferSave()
     }
 
     override fun playing(playing: Boolean) {
         player.playWhenReady = playing
         // Dispatched later once all of the changes have been accumulated
+        // Playing state is not persisted, do not need to save
     }
 
     override fun repeatMode(repeatMode: RepeatMode) {
@@ -295,15 +300,19 @@ class PlaybackService :
             }
         playbackManager.ack(this, StateAck.RepeatModeChanged)
         updatePauseOnRepeat()
+        deferSave()
     }
 
     override fun seekTo(positionMs: Long) {
         player.seekTo(positionMs)
+        // Dispatched later once all of the changes have been accumulated
+        // Deferred save is handled on position discontinuity
     }
 
     override fun next() {
         player.seekToNext()
         playbackManager.ack(this, StateAck.IndexMoved)
+        // Deferred save is handled on position discontinuity
     }
 
     override fun prev() {
@@ -313,6 +322,7 @@ class PlaybackService :
             player.seekToPreviousMediaItem()
         }
         playbackManager.ack(this, StateAck.IndexMoved)
+        // Deferred save is handled on position discontinuity
     }
 
     override fun goto(index: Int) {
@@ -324,6 +334,7 @@ class PlaybackService :
         val trueIndex = indices[index]
         player.seekTo(trueIndex, C.TIME_UNSET)
         playbackManager.ack(this, StateAck.IndexMoved)
+        // Deferred save is handled on position discontinuity
     }
 
     override fun shuffled(shuffled: Boolean) {
@@ -335,16 +346,19 @@ class PlaybackService :
                 BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex))
         }
         playbackManager.ack(this, StateAck.QueueReordered)
+        deferSave()
     }
 
     override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
         player.addMediaItems(player.nextMediaItemIndex, songs.map { it.toMediaItem() })
         playbackManager.ack(this, ack)
+        deferSave()
     }
 
     override fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue) {
         player.addMediaItems(songs.map { it.toMediaItem() })
         playbackManager.ack(this, ack)
+        deferSave()
     }
 
     override fun move(from: Int, to: Int, ack: StateAck.Move) {
@@ -367,6 +381,7 @@ class PlaybackService :
             }
         }
         playbackManager.ack(this, ack)
+        deferSave()
     }
 
     override fun remove(at: Int, ack: StateAck.Remove) {
@@ -378,6 +393,7 @@ class PlaybackService :
         val trueIndex = indices[at]
         player.removeMediaItem(trueIndex)
         playbackManager.ack(this, ack)
+        deferSave()
     }
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
@@ -477,6 +493,17 @@ class PlaybackService :
         if (playbackState == Player.STATE_ENDED && player.repeatMode == Player.REPEAT_MODE_OFF) {
             goto(0)
             player.pause()
+        }
+    }
+
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            deferSave()
         }
     }
 
@@ -580,6 +607,21 @@ class PlaybackService :
 
     // --- OTHER FUNCTIONS ---
 
+    private fun deferSave() {
+        currentSaveJob?.let {
+            logD("Discarding prior save job")
+            it.cancel()
+        }
+        currentSaveJob =
+            saveScope.launch {
+                logD("Waiting for save buffer")
+                delay(SAVE_BUFFER)
+                yield()
+                logD("Committing saved state")
+                persistenceRepository.saveState(playbackManager.toSavedState())
+            }
+    }
+
     private fun broadcastAudioEffectAction(event: String) {
         logD("Broadcasting AudioEffect event: $event")
         sendBroadcast(
@@ -587,18 +629,6 @@ class PlaybackService :
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
                 .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
-    }
-
-    private fun stopAndSave() {
-        // This session has ended, so we need to reset this flag for when the next session starts.
-        hasPlayed = false
-        if (foregroundManager.tryStopForeground()) {
-            // Now that we have ended the foreground state (and thus music playback), we'll need
-            // to save the current state as it's not long until this service (and likely the whole
-            // app) is killed.
-            logD("Saving playback state")
-            saveScope.launch { persistenceRepository.saveState(playbackManager.toSavedState()) }
-        }
     }
 
     /**
@@ -657,7 +687,10 @@ class PlaybackService :
                 ACTION_EXIT -> {
                     logD("Received exit event")
                     playbackManager.playing(false)
-                    stopAndSave()
+                    // This session has ended, so we need to reset this flag for when the next
+                    // session starts.
+                    hasPlayed = false
+                    foregroundManager.tryStopForeground()
                 }
                 WidgetProvider.ACTION_WIDGET_UPDATE -> {
                     logD("Received widget update event")
@@ -687,6 +720,7 @@ class PlaybackService :
     }
 
     companion object {
+        const val SAVE_BUFFER = 5000L
         const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"
         const val ACTION_INVERT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
         const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
