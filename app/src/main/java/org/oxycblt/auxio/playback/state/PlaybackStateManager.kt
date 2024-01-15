@@ -416,6 +416,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             stateHolder.applySavedState(stateMirror.parent, stateMirror.rawQueue, null)
             stateHolder.seekTo(stateMirror.progression.calculateElapsedPositionMs())
             stateHolder.playing(false)
+            pendingDeferredPlayback?.let(stateHolder::handleDeferred)
         }
     }
 
