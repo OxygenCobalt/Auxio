@@ -191,7 +191,12 @@ class PlaybackService :
 
     override fun onBind(intent: Intent): IBinder? = null
 
-    // TODO: Implement task removal (Have to radically alter state saving to occur at runtime)
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        if (!playbackManager.progression.isPlaying) {
+            endSession()
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -631,6 +636,13 @@ class PlaybackService :
                 .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
     }
 
+    private fun endSession() {
+        // This session has ended, so we need to reset this flag for when the next
+        // session starts.
+        hasPlayed = false
+        foregroundManager.tryStopForeground()
+    }
+
     /**
      * A [BroadcastReceiver] for receiving playback-specific [Intent]s from the system that require
      * an active [IntentFilter] to be registered.
@@ -687,10 +699,7 @@ class PlaybackService :
                 ACTION_EXIT -> {
                     logD("Received exit event")
                     playbackManager.playing(false)
-                    // This session has ended, so we need to reset this flag for when the next
-                    // session starts.
-                    hasPlayed = false
-                    foregroundManager.tryStopForeground()
+                    endSession()
                 }
                 WidgetProvider.ACTION_WIDGET_UPDATE -> {
                     logD("Received widget update event")
