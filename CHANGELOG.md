@@ -1,5 +1,20 @@
 # Changelog
 
+## dev
+
+#### What's New
+- Gapless playback is now used whenever possible
+- Added "Remember pause" setting that makes remain paused when skipping
+or editing queue
+
+#### What's Improved
+- The playback state is now saved more often, improving persistence
+- The queue is now fully circular when repeat all is enabled
+
+#### What's Changed
+- You can no longer save, restore, or clear the playback state
+- The playback session now ends if you swipe away the app while it's paused
+
 ## 3.3.3
 
 #### What's Fixed
