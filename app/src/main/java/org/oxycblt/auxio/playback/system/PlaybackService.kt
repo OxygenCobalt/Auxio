@@ -222,13 +222,14 @@ class PlaybackService :
 
     override val progression: Progression
         get() =
-            player.song?.let {
+            player.currentMediaItem?.let {
                 Progression.from(
                     player.playWhenReady,
                     player.isPlaying,
                     // The position value can be below zero or past the expected duration, make
                     // sure we handle that.
-                    player.currentPosition.coerceAtLeast(0).coerceAtMost(it.durationMs))
+                    player.currentPosition.coerceAtLeast(0)
+                        .coerceAtMost(it.song.durationMs))
             }
                 ?: Progression.nil()
 
@@ -243,7 +244,15 @@ class PlaybackService :
 
     override var parent: MusicParent? = null
 
-    override fun resolveQueue() = player.resolveQueue()
+    override fun resolveQueue(): RawQueue {
+        val heap = (0 until player.mediaItemCount).map { player.getMediaItemAt(it).song }
+        val shuffledMapping = if (player.shuffleModeEnabled) {
+            player.unscrambleQueueIndices()
+        } else {
+            emptyList()
+        }
+        return RawQueue(heap, shuffledMapping, player.currentMediaItemIndex)
+    }
 
     override val audioSessionId: Int
         get() = player.audioSessionId
@@ -255,11 +264,18 @@ class PlaybackService :
         shuffled: Boolean
     ) {
         this.parent = parent
+        player.shuffleModeEnabled = shuffled
+        player.setMediaItems(queue.map { it.toMediaItem() })
+        val startIndex =
+            start
+                ?.let { queue.indexOf(start) }
+                .also { check(it != -1) { "Start song not in queue" } }
         if (shuffled) {
-            player.shuffledQueue(queue, start)
-        } else {
-            player.orderedQueue(queue, start)
+            player.setShuffleOrder(BetterShuffleOrder(queue.size, startIndex ?: -1))
         }
+        val target =
+            startIndex ?: player.currentTimeline.getFirstWindowIndex(player.shuffleModeEnabled)
+        player.seekTo(target, C.TIME_UNSET)
         player.prepare()
         player.play()
         playbackManager.ack(this, StateAck.NewPlayback)
@@ -300,32 +316,67 @@ class PlaybackService :
     }
 
     override fun goto(index: Int) {
-        player.goto(index)
+        val indices = player.unscrambleQueueIndices()
+        if (indices.isEmpty()) {
+            return
+        }
+
+        val trueIndex = indices[index]
+        player.seekTo(trueIndex, C.TIME_UNSET)
         playbackManager.ack(this, StateAck.IndexMoved)
     }
 
     override fun shuffled(shuffled: Boolean) {
-        player.shuffled(shuffled)
+        logD("Reordering queue to $shuffled")
+        player.shuffleModeEnabled = shuffled
+        if (shuffled) {
+            // Have to manually refresh the shuffle seed and anchor it to the new current songs
+            player.setShuffleOrder(
+                BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex))
+        }
         playbackManager.ack(this, StateAck.QueueReordered)
     }
 
     override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
-        player.playNext(songs)
+        player.addMediaItems(player.nextMediaItemIndex, songs.map { it.toMediaItem() })
         playbackManager.ack(this, ack)
     }
 
     override fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue) {
-        player.addToQueue(songs)
+        player.addMediaItems(songs.map { it.toMediaItem() })
         playbackManager.ack(this, ack)
     }
 
     override fun move(from: Int, to: Int, ack: StateAck.Move) {
-        player.move(from, to)
+        val indices = player.unscrambleQueueIndices()
+        if (indices.isEmpty()) {
+            return
+        }
+
+        val trueFrom = indices[from]
+        val trueTo = indices[to]
+
+        when {
+            trueFrom > trueTo -> {
+                player.moveMediaItem(trueFrom, trueTo)
+                player.moveMediaItem(trueTo + 1, trueFrom)
+            }
+            trueTo > trueFrom -> {
+                player.moveMediaItem(trueFrom, trueTo)
+                player.moveMediaItem(trueTo - 1, trueFrom)
+            }
+        }
         playbackManager.ack(this, ack)
     }
 
     override fun remove(at: Int, ack: StateAck.Remove) {
-        player.remove(at)
+        val indices = player.unscrambleQueueIndices()
+        if (indices.isEmpty()) {
+            return
+        }
+
+        val trueIndex = indices[at]
+        player.removeMediaItem(trueIndex)
         playbackManager.ack(this, ack)
     }
 
@@ -375,7 +426,14 @@ class PlaybackService :
         ack: StateAck.NewPlayback?
     ) {
         this.parent = parent
-        player.applyQueue(rawQueue)
+        player.setMediaItems(rawQueue.heap.map { it.toMediaItem() })
+        if (rawQueue.isShuffled) {
+            player.shuffleModeEnabled = true
+            player.setShuffleOrder(BetterShuffleOrder(rawQueue.shuffledMapping.toIntArray()))
+        } else {
+            player.shuffleModeEnabled = false
+        }
+        player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
         player.prepare()
         ack?.let { playbackManager.ack(this, it) }
     }
@@ -456,12 +514,71 @@ class PlaybackService :
         }
     }
 
-    // --- OTHER FUNCTIONS ---
+    override fun onPostNotification(notification: NotificationComponent) {
+        // Do not post the notification if playback hasn't started yet. This prevents errors
+        // where changing a setting would cause the notification to appear in an unfriendly
+        // manner.
+        if (hasPlayed) {
+            logD("Played before, starting foreground state")
+            if (!foregroundManager.tryStartForeground(notification)) {
+                logD("Notification changed, re-posting")
+                notification.post()
+            }
+        }
+    }
+
+    // --- PLAYER MANAGEMENT ---
 
     private fun updatePauseOnRepeat() {
         player.pauseAtEndOfMediaItems =
             playbackManager.repeatMode == RepeatMode.TRACK && playbackSettings.pauseOnRepeat
     }
+
+    private fun ExoPlayer.unscrambleQueueIndices(): List<Int> {
+        val timeline = currentTimeline
+        if (timeline.isEmpty()) {
+            return emptyList()
+        }
+        val queue = mutableListOf<Int>()
+
+        // Add the active queue item.
+        val currentMediaItemIndex = currentMediaItemIndex
+        queue.add(currentMediaItemIndex)
+
+        // Fill queue alternating with next and/or previous queue items.
+        var firstMediaItemIndex = currentMediaItemIndex
+        var lastMediaItemIndex = currentMediaItemIndex
+        val shuffleModeEnabled = shuffleModeEnabled
+        while ((firstMediaItemIndex != C.INDEX_UNSET || lastMediaItemIndex != C.INDEX_UNSET)) {
+            // Begin with next to have a longer tail than head if an even sized queue needs to be
+            // trimmed.
+            if (lastMediaItemIndex != C.INDEX_UNSET) {
+                lastMediaItemIndex =
+                    timeline.getNextWindowIndex(
+                        lastMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled)
+                if (lastMediaItemIndex != C.INDEX_UNSET) {
+                    queue.add(lastMediaItemIndex)
+                }
+            }
+            if (firstMediaItemIndex != C.INDEX_UNSET) {
+                firstMediaItemIndex =
+                    timeline.getPreviousWindowIndex(
+                        firstMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled)
+                if (firstMediaItemIndex != C.INDEX_UNSET) {
+                    queue.add(0, firstMediaItemIndex)
+                }
+            }
+        }
+
+        return queue
+    }
+
+    private fun Song.toMediaItem() = MediaItem.Builder().setUri(uri).setTag(this).build()
+
+    private val MediaItem.song: Song
+        get() = requireNotNull(localConfiguration).tag as Song
+
+    // --- OTHER FUNCTIONS ---
 
     private fun broadcastAudioEffectAction(event: String) {
         logD("Broadcasting AudioEffect event: $event")
@@ -481,21 +598,6 @@ class PlaybackService :
             // app) is killed.
             logD("Saving playback state")
             saveScope.launch { persistenceRepository.saveState(playbackManager.toSavedState()) }
-        }
-    }
-
-    // --- MEDIASESSIONCOMPONENT OVERRIDES ---
-
-    override fun onPostNotification(notification: NotificationComponent) {
-        // Do not post the notification if playback hasn't started yet. This prevents errors
-        // where changing a setting would cause the notification to appear in an unfriendly
-        // manner.
-        if (hasPlayed) {
-            logD("Played before, starting foreground state")
-            if (!foregroundManager.tryStartForeground(notification)) {
-                logD("Notification changed, re-posting")
-                notification.post()
-            }
         }
     }
 

@@ -45,19 +45,25 @@ import org.oxycblt.auxio.util.logW
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface PlaybackStateManager {
-    /** The current [Progression] state. */
+    /** The current [Progression] of the audio player */
     val progression: Progression
 
+    /** The current [RepeatMode]. */
     val repeatMode: RepeatMode
 
+    /** The current [MusicParent] being played from */
     val parent: MusicParent?
 
+    /** The current [Song] being played. Null if nothing is playing. */
     val currentSong: Song?
 
+    /** The current queue of [Song]s. */
     val queue: List<Song>
 
+    /** The index of the currently playing [Song] in the queue. */
     val index: Int
 
+    /** Whether the queue is shuffled or not. */
     val isShuffled: Boolean
 
     /** The audio session ID of the internal player. Null if no internal player exists. */
