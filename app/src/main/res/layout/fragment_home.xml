@@ -166,7 +166,7 @@
             android:gravity="bottom|end"
             app:sdMainFabAnimationRotateAngle="135"
             app:sdMainFabClosedIconColor="@android:color/white"
-            app:sdMainFabClosedSrc="@drawable/ic_add_24"/>
+            app:sdMainFabClosedSrc="@drawable/ic_add_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/home_shuffle_fab"
