@@ -310,7 +310,7 @@
     <string name="err_export_failed">Nepavyksta eksportuoti grojaraščio į šį failą</string>
     <string name="lbl_replaygain_track">ReplayGain takelio koregavimas</string>
     <string name="lbl_replaygain_album">ReplayGain albumo koregavimas</string>
-    <string name="lbl_author">Autorius (-ė)</string>
+    <string name="lbl_author">Autorius</string>
     <string name="lbl_donate">Aukoti</string>
     <string name="lbl_supporters">Palaikytojai</string>
     <string name="lng_supporters_promo">Paaukok projektui, kad tavo vardas būtų pridėtas čia!</string>
