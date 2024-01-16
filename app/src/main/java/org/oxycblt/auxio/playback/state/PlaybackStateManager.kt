@@ -766,12 +766,12 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val rawQueue =
             RawQueue(
                 heap = heap,
-                shuffledMapping = savedState.shuffledMapping,
+                shuffledMapping = shuffledMapping,
                 heapIndex =
-                    if (savedState.shuffledMapping.isNotEmpty()) {
-                        savedState.shuffledMapping[savedState.index]
+                    if (shuffledMapping.isNotEmpty()) {
+                        shuffledMapping[savedState.index]
                     } else {
-                        savedState.index
+                        index
                     })
 
         val oldStateMirror = stateMirror
