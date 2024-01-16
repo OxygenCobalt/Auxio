@@ -20,4 +20,4 @@ precizni/izvorni datumi, sortiranje oznaka i više
 - Automatska reprodukcija slušalica
 - Elegantni widgeti koji se automatski prilagođavaju njihovoj veličini
 - Potpuno privatno i izvan mreže
-- Nema zaobljenih naslovnica albuma (Osim ako ih ne želite. Onda možete.)
+- Bez zaobljenih naslovnica albuma (zadano)
