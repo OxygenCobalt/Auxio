@@ -337,4 +337,6 @@
     <string name="lbl_author">Autor</string>
     <string name="lbl_replaygain_album">Úprava ReplayGain u alba</string>
     <string name="lng_supporters_promo">Přispějte na projekt a uvidíte zde své jméno!</string>
+    <string name="set_remember_pause_desc">Zůstat ve stavu přehrávání/pozastavení při přeskakování nebo úpravě fronty</string>
+    <string name="set_remember_pause">Zapamatovat pozastavení</string>
 </resources>
