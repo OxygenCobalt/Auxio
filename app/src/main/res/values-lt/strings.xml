@@ -46,7 +46,7 @@
     <string name="set_theme">Tema</string>
     <string name="set_black_mode_desc">Naudoti grynai juodą tamsią temą.</string>
     <string name="info_app_desc">Paprastas, racionalus Android muzikos grotuvas.</string>
-    <string name="lbl_indexer">Muzikos kraunimas</string>
+    <string name="lbl_indexer">Muzikos pakrovimas</string>
     <string name="lng_widget">Peržiūrėk ir valdyk muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Pakartoti</string>
@@ -58,7 +58,7 @@
     <string name="lbl_album">Albumas</string>
     <string name="lbl_ep">Mini albumas</string>
     <string name="lbl_single">Singlas</string>
-    <string name="lbl_artist">Atlikėjas (-a)</string>
+    <string name="lbl_artist">Atlikėjas</string>
     <string name="def_genre">Nežinomas žanras</string>
     <string name="def_date">Nėra datos</string>
     <string name="clr_red">Raudona</string>
@@ -124,8 +124,8 @@
     <string name="cdc_ogg">Ogg garsas</string>
     <string name="lbl_author_name">Aleksandras Keiphartas (angl. Alexander Capehart)</string>
     <string name="set_replay_gain_mode_track">Pageidauti takeliui</string>
-    <string name="err_no_dirs">Jokių aplankų</string>
-    <string name="err_bad_dir">Šis aplankas nepalaikomas</string>
+    <string name="err_no_dirs">Nėra aplankų</string>
+    <string name="err_bad_dir">Šis aplankas nepalaikomas.</string>
     <string name="desc_play_pause">Groti arba pristabdyti</string>
     <string name="desc_skip_next">Praleisti į kitą dainą</string>
     <string name="desc_skip_prev">Praleisti į paskutinę dainą</string>
@@ -135,7 +135,7 @@
     <string name="set_lib_tabs_desc">Keisti bibliotekos skirtukų matomumą ir tvarką.</string>
     <string name="set_replay_gain_mode_album">Pageidauti albumui</string>
     <string name="set_replay_gain_mode_dynamic">Pageidauti albumui, jei vienas groja</string>
-    <string name="err_no_app">Jokią programą nerasta, kuri galėtų atlikti šią užduotį</string>
+    <string name="err_no_app">Programėlę nerasta, kuri galėtų atlikti šią užduotį.</string>
     <string name="desc_auxio_icon">Auxio piktograma</string>
     <string name="desc_song_handle">Perkelti šią dainą</string>
     <string name="desc_tab_handle">Perkelti šį skirtuką</string>
@@ -169,7 +169,7 @@
     <string name="set_headset_autoplay">Automatinis ausinių grojimas</string>
     <string name="set_action_mode_repeat">Kartojimo režimas</string>
     <string name="desc_queue_bar">Atidaryti eilę</string>
-    <string name="desc_clear_search">Išvalyti paieškos paraišką</string>
+    <string name="desc_clear_search">Išvalyti paieškos užklausą</string>
     <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> kraunama iš pridėtų aplankų, kurių tu pridėsi.</string>
     <string name="set_dirs_mode_include">Įtraukti</string>
     <string name="desc_remove_song">Pašalinti šią dainą</string>
@@ -199,13 +199,13 @@
     <string name="set_reindex">Atnaujinti muziką</string>
     <string name="set_reindex_desc">Perkrauti muzikos biblioteką, naudojant talpyklos žymes, kai įmanoma.</string>
     <string name="set_bar_action">Pasirinktinis grojimo juostos veiksmas</string>
-    <string name="err_did_not_restore">Nepavyko atkurti būsenos</string>
+    <string name="err_did_not_restore">Nepavyksta atkurti būsenos.</string>
     <string name="set_pre_amp">ReplayGain išankstinis stiprintuvas</string>
     <string name="set_save_state">Išsaugoti grojimo būseną</string>
     <string name="set_dirs_desc">Tvarkyti, kur muzika turėtų būti kraunama iš.</string>
     <string name="desc_genre_image">Žanro vaizdas %s</string>
     <string name="desc_shuffle">Įjungti maišymą arba išjungti</string>
-    <string name="desc_track_number">Takelis %d</string>
+    <string name="desc_track_number">%d takelis</string>
     <string name="desc_change_repeat">Keisti kartojimo režimą</string>
     <string name="clr_indigo">Indigos</string>
     <string name="fmt_bitrate">%d kbps</string>
@@ -237,13 +237,12 @@
     <string name="set_restore_desc">Atkurti anksčiau išsaugotą grojimo būseną (jei yra).</string>
     <string name="set_hide_collaborators">Slėpti bendradarbius</string>
     <string name="set_hide_collaborators_desc">Rodyti tik tuos atlikėjus, kurie yra tiesiogiai įtraukti į albumą (geriausiai veikia gerai pažymėtose bibliotekose).</string>
-    <string name="err_did_not_wipe">Nepavyko išvalyti būsenos</string>
-    <string name="err_did_not_save">Nepavyko išsaugoti būsenos</string>
+    <string name="err_did_not_wipe">Nepavyksta išvalyti būsenos.</string>
+    <string name="err_did_not_save">Nepavyksta išsaugoti būsenos.</string>
     <plurals name="fmt_artist_count">
-        <item quantity="one">%d atlikėjas (-a)</item>
+        <item quantity="one">%d atlikėjas</item>
         <item quantity="few">%d atlikėjai</item>
         <item quantity="other">%d atlikėjų</item>
-        <item quantity="many">%d atlikėjų</item>
     </plurals>
     <string name="set_rescan">Perskenuoti muziką</string>
     <string name="set_rescan_desc">Išvalyti žymių talpyklą ir pilnai perkrauti muzikos biblioteką (lėčiau, bet labiau užbaigta).</string>
@@ -270,7 +269,7 @@
     <string name="lbl_playlist">Grojaraštis</string>
     <string name="lbl_playlists">Grojaraščiai</string>
     <string name="desc_playlist_image">Grojaraščio vaizdas %s</string>
-    <string name="desc_new_playlist">Sukurti naują grojaraštį</string>
+    <string name="desc_new_playlist">Kurti naują grojaraštį</string>
     <string name="lbl_new_playlist">Naujas grojaraštis</string>
     <string name="lbl_playlist_add">Pridėti į grojaraštį</string>
     <string name="lng_playlist_added">Pridėta į grojaraštį</string>
@@ -283,7 +282,7 @@
     <string name="lbl_edit">Redaguoti</string>
     <string name="lbl_share">Bendrinti</string>
     <string name="lng_playlist_renamed">Pervadintas grojaraštis</string>
-    <string name="fmt_def_playlist">Grojaraštis %d</string>
+    <string name="fmt_def_playlist">%d grojaraštis</string>
     <string name="lng_playlist_created">Sukurtas grojaraštis</string>
     <string name="lng_playlist_deleted">Ištrintas grojaraštis</string>
     <string name="def_disc">Nėra disko</string>
@@ -326,4 +325,6 @@
     <string name="lbl_path_style_absolute">Absoliutinis</string>
     <string name="lbl_path_style_relative">Santykinis</string>
     <string name="lbl_windows_paths">Naudoti Windows suderinamus kelius</string>
+    <string name="set_remember_pause">Prisiminti pauzę</string>
+    <string name="set_remember_pause_desc">Išlieka grojimas ir (arba) pristabdomas, kai praleidžiama arba redaguojama eilė.</string>
 </resources>
