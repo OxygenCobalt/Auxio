@@ -28,7 +28,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import kotlin.math.sqrt
-import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
@@ -139,13 +138,3 @@ fun AppWidgetManager.updateAppWidgetCompat(
         }
     }
 }
-
-/**
- * Returns whether rounded UI elements are appropriate for the widget, either based on the current
- * settings or if the widget has to fit in aesthetically with other widgets.
- *
- * @param [uiSettings] [UISettings] required to obtain round mode configuration.
- * @return true if to use round mode, false otherwise.
- */
-fun useRoundedRemoteViews(uiSettings: UISettings) =
-    uiSettings.roundMode || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S

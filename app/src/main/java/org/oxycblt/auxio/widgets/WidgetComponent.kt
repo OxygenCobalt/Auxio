@@ -167,6 +167,7 @@ constructor(
      *
      * @param song [Queue.currentSong]
      * @param cover A pre-loaded album cover [Bitmap] for [song].
+     * @param cover A pre-loaded album cover [Bitmap] for [song], with rounded corners.
      * @param isPlaying [PlaybackStateManager.playerState]
      * @param repeatMode [PlaybackStateManager.repeatMode]
      * @param isShuffled [Queue.isShuffled]

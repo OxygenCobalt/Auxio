@@ -6,6 +6,7 @@
 - Gapless playback is now used whenever possible
 - Added "Remember pause" setting that makes remain paused when skipping
 or editing queue
+- Added 1x4 and 1x3 widget forms
 
 #### What's Improved
 - The playback state is now saved more often, improving persistence

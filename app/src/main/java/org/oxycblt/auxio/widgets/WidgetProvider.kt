@@ -91,11 +91,14 @@ class WidgetProvider : AppWidgetProvider() {
         // the widget elements, plus some leeway for text sizing.
         val views =
             mapOf(
-                SizeF(180f, 100f) to newThinLayout(context, uiSettings, state),
-                SizeF(180f, 152f) to newSmallLayout(context, uiSettings, state),
-                SizeF(272f, 152f) to newWideLayout(context, uiSettings, state),
-                SizeF(180f, 272f) to newMediumLayout(context, uiSettings, state),
-                SizeF(272f, 272f) to newLargeLayout(context, uiSettings, state))
+                SizeF(180f, 48f) to newThinStickLayout(context, state),
+                SizeF(304f, 48f) to newWideStickLayout(context, state),
+                SizeF(180f, 100f) to newThinWaferLayout(context, uiSettings, state),
+                SizeF(304f, 100f) to newWideWaferLayout(context, uiSettings, state),
+                SizeF(180f, 152f) to newThinDockedLayout(context, uiSettings, state),
+                SizeF(304f, 152f) to newWideDockedLayout(context, uiSettings, state),
+                SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state),
+                SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state))
 
         // Manually update AppWidgetManager with the new views.
         val awm = AppWidgetManager.getInstance(context)
@@ -139,60 +142,78 @@ class WidgetProvider : AppWidgetProvider() {
     private fun newDefaultLayout(context: Context) =
         newRemoteViews(context, R.layout.widget_default)
 
-    private fun newThinLayout(
+    private fun newThinStickLayout(context: Context, state: WidgetComponent.PlaybackState) =
+        newRemoteViews(context, R.layout.widget_stick_thin).setupTimelineControls(context, state)
+
+    private fun newWideStickLayout(context: Context, state: WidgetComponent.PlaybackState) =
+        newRemoteViews(context, R.layout.widget_stick_wide).setupFullControls(context, state)
+
+    private fun newThinWaferLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState
     ) =
-        newRemoteViews(context, R.layout.widget_thin)
+        newRemoteViews(context, R.layout.widget_wafer_thin)
             .setupBackground(
                 uiSettings,
             )
-            .setupPlaybackState(context, state)
+            .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
             .setupTimelineControls(context, state)
 
-    private fun newSmallLayout(
+    private fun newWideWaferLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState
     ) =
-        newRemoteViews(context, R.layout.widget_small)
+        newRemoteViews(context, R.layout.widget_wafer_wide)
+            .setupBackground(
+                uiSettings,
+            )
+            .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
+            .setupFullControls(context, state)
+
+    private fun newThinDockedLayout(
+        context: Context,
+        uiSettings: UISettings,
+        state: WidgetComponent.PlaybackState
+    ) =
+        newRemoteViews(context, R.layout.widget_docked_thin)
             .setupBar(
                 uiSettings,
             )
             .setupCover(context, state)
             .setupTimelineControls(context, state)
 
-    private fun newMediumLayout(
+    private fun newWideDockedLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState
     ) =
-        newRemoteViews(context, R.layout.widget_medium)
-            .setupBackground(
-                uiSettings,
-            )
-            .setupPlaybackState(context, state)
-            .setupTimelineControls(context, state)
-
-    private fun newWideLayout(
-        context: Context,
-        uiSettings: UISettings,
-        state: WidgetComponent.PlaybackState
-    ) =
-        newRemoteViews(context, R.layout.widget_wide)
+        newRemoteViews(context, R.layout.widget_docked_wide)
             .setupBar(
                 uiSettings,
             )
             .setupCover(context, state)
             .setupFullControls(context, state)
 
-    private fun newLargeLayout(
+    private fun newThinPaneLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState
     ) =
-        newRemoteViews(context, R.layout.widget_large)
+        newRemoteViews(context, R.layout.widget_pane_thin)
+            .setupBackground(
+                uiSettings,
+            )
+            .setupPlaybackState(context, state)
+            .setupTimelineControls(context, state)
+
+    private fun newWidePaneLayout(
+        context: Context,
+        uiSettings: UISettings,
+        state: WidgetComponent.PlaybackState
+    ) =
+        newRemoteViews(context, R.layout.widget_pane_wide)
             .setupBackground(
                 uiSettings,
             )
@@ -246,8 +267,14 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun RemoteViews.setupCover(
         context: Context,
-        state: WidgetComponent.PlaybackState
+        state: WidgetComponent.PlaybackState?
     ): RemoteViews {
+        if (state == null) {
+            setImageViewBitmap(R.id.widget_cover, null)
+            setContentDescription(R.id.widget_cover, null)
+            return this
+        }
+
         if (state.cover != null) {
             setImageViewBitmap(R.id.widget_cover, state.cover)
             setContentDescription(
@@ -387,6 +414,18 @@ class WidgetProvider : AppWidgetProvider() {
 
         return this
     }
+
+    private fun useRoundedRemoteViews(uiSettings: UISettings) =
+        uiSettings.roundMode || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+    private fun canDisplayWaferCover(uiSettings: UISettings) =
+        // We cannot display album covers in the wafer-style widget when round mode is enabled
+        // below Android 12, as:
+        // - We cannot rely on system widget corner clipping, like on Android 12+
+        // - We cannot manually clip the widget ourselves due to broken clipToOutline support
+        // - We cannot determine the exact widget height that would allow us to clip the loaded
+        // image itself
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S || !uiSettings.roundMode
 
     companion object {
         /**
