@@ -326,4 +326,6 @@
     <string name="lbl_author">作者</string>
     <string name="lbl_donate">捐赠</string>
     <string name="lng_supporters_promo">要在此添加您的名字请给项目捐款！</string>
+    <string name="set_remember_pause_desc">跳过或编辑队列时保留播放/暂停状态</string>
+    <string name="set_remember_pause">记住暂停状态</string>
 </resources>
