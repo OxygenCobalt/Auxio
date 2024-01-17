@@ -319,4 +319,11 @@
     <string name="lng_playlist_exported">Плэйліст экспартаваны</string>
     <string name="lbl_export_playlist">Экспартаваць плэйліст</string>
     <string name="err_export_failed">Немагчыма экспартаваць плэйліст ў гэты файл</string>
+    <string name="lbl_import_playlist">Імпартаваць плэйліст</string>
+    <string name="lbl_replaygain_track">Рэгуляванне ReplayGain песні</string>
+    <string name="lbl_replaygain_album">Рэгуляванне ReplayGain альбома</string>
+    <string name="lbl_author">Аўтар</string>
+    <string name="lbl_donate">Ахвярнасць</string>
+    <string name="lbl_supporters">Прыхільнікі</string>
+    <string name="lng_supporters_promo">Ахвяруйце на праект, каб ваша імя было дададзена тут!</string>
 </resources>

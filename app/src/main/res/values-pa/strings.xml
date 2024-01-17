@@ -313,4 +313,11 @@
     <string name="lng_playlist_exported">ਪਲੇਲਿਸਟ ਨਿਰਯਾਤ ਕੀਤੀ ਗਈ</string>
     <string name="lbl_export_playlist">ਪਲੇਲਿਸਟ ਨਿਰਯਾਤ ਕਰੋ</string>
     <string name="err_export_failed">ਪਲੇਲਿਸਟ ਨੂੰ ਇਸ ਫ਼ਾਈਲ ਵਿੱਚ ਨਿਰਯਾਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
+    <string name="lbl_import_playlist">ਪਲੇਲਿਸਟ ਇੰਪੋਰਟ ਕਰੋ</string>
+    <string name="lbl_replaygain_track">ਰੀਪਲੇਅਗੇਨ ਟ੍ਰੈਕ ਐਡਜਸਟਮੈਂਟ</string>
+    <string name="lbl_replaygain_album">ਰੀਪਲੇਗੇਨ ਐਲਬਮ ਐਡਜਸਟਮੈਂਟ</string>
+    <string name="lbl_author">ਲੇਖਕ</string>
+    <string name="lbl_donate">ਦਾਨ ਕਰੋ</string>
+    <string name="lbl_supporters">ਸਮਰਥਕ</string>
+    <string name="lng_supporters_promo">ਆਪਣਾ ਨਾਮ ਇੱਥੇ ਜੋੜਨ ਲਈ ਪ੍ਰੋਜੈਕਟ ਨੂੰ ਦਾਨ ਕਰੋ!</string>
 </resources>
