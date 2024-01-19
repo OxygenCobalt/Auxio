@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"  />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"  />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Bluetooth auto-connect functionality (Disabled until permission workflow can be made) -->
 <!--    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />-->

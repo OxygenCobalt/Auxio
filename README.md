@@ -65,6 +65,7 @@ precise/original dates, sort tags, and more
 
 - Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your music files
 - Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing in the background
+- Notifcations (`POST_NOTIFICATION`) to indicate ongoing playback and music loading
 
 ## Donate
 
