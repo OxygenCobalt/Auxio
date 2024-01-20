@@ -272,4 +272,25 @@
     <string name="lbl_show_error_info">Lisää</string>
     <string name="lbl_copied">Kopioitu</string>
     <string name="lbl_report">Ilmoita virheestä</string>
+    <string name="lbl_selection">Valinta</string>
+    <string name="lbl_imported_playlist">Tuotu soittolista</string>
+    <string name="lbl_author">Tekijä</string>
+    <string name="lbl_donate">Lahjoita</string>
+    <string name="lbl_supporters">Tukijat</string>
+    <string name="lng_playlist_imported">Soittolista tuotu</string>
+    <string name="lng_playlist_exported">Soittolista viety</string>
+    <string name="lng_supporters_promo">Lahjoita projektille saadaksesi nimesi näkyviin tähän!</string>
+    <string name="def_album_count">Ei albumeja</string>
+    <string name="lbl_empty_playlist">Tyhjä soittolista</string>
+    <string name="lbl_import_playlist">Tuo soittolista</string>
+    <string name="lbl_path">Polku</string>
+    <string name="lbl_import">Tuo</string>
+    <string name="lbl_export">Vie</string>
+    <string name="lbl_export_playlist">Vie soittolista</string>
+    <string name="lbl_sort_mode">Järjestys</string>
+    <string name="lbl_sort_direction">Suunta</string>
+    <string name="lbl_path_style">Polun tyyli</string>
+    <string name="lbl_path_style_absolute">Absoluuttinen</string>
+    <string name="lbl_path_style_relative">Suhteellinen</string>
+    <string name="lbl_windows_paths">Käytä Windows-yhteensopivia polkuja</string>
 </resources>
