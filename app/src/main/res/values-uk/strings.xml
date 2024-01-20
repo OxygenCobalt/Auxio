@@ -332,4 +332,6 @@
     <string name="lbl_replaygain_album">Підлаштування ReplayGain альбому</string>
     <string name="lng_supporters_promo">Пожертвуйте на проєкт, щоб ваше ім\'я було додано сюди!</string>
     <string name="lbl_author">Автор</string>
+    <string name="set_remember_pause_desc">Залишати відтворення/паузу під час пропуску або редагування черги</string>
+    <string name="set_remember_pause">Запам\'ятовувати паузу</string>
 </resources>
