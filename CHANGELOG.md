@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## dev (3.4.0)
 
 #### What's New
 - Gapless playback is now used whenever possible
