@@ -374,6 +374,11 @@ private constructor(
                 positionMs,
                 SystemClock.elapsedRealtime())
 
-        fun nil() = Progression(false, false, 0, SystemClock.elapsedRealtime())
+        fun nil() =
+            Progression(
+                isPlaying = false,
+                isAdvancing = false,
+                initPositionMs = 0,
+                creationTime = SystemClock.elapsedRealtime())
     }
 }

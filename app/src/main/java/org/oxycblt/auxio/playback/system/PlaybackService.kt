@@ -593,7 +593,7 @@ class PlaybackService :
 
     private fun ExoPlayer.unscrambleQueueIndices(): List<Int> {
         val timeline = currentTimeline
-        if (timeline.isEmpty()) {
+        if (timeline.isEmpty) {
             return emptyList()
         }
         val queue = mutableListOf<Int>()

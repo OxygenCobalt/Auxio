@@ -57,8 +57,10 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
 
 class MusicSettingsImpl
 @Inject
-constructor(@ApplicationContext context: Context, val documentPathFactory: DocumentPathFactory) :
-    Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
+constructor(
+    @ApplicationContext context: Context,
+    private val documentPathFactory: DocumentPathFactory
+) : Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
     private val storageManager = context.getSystemServiceCompat(StorageManager::class)
 
     override var musicDirs: MusicDirectories

@@ -111,12 +111,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Transform an [Intent] given to [MainActivity] into a [InternalPlayer.Action] that can be used
-     * in the playback system.
+     * Transform an [Intent] given to [MainActivity] into a [DeferredPlayback] that can be used in
+     * the playback system.
      *
      * @param intent The (new) [Intent] given to this [MainActivity], or null if there is no intent.
-     * @return true If the analogous [InternalPlayer.Action] to the given [Intent] was started,
-     *   false otherwise.
+     * @return true If the analogous [DeferredPlayback] to the given [Intent] was started, false
+     *   otherwise.
      */
     private fun startIntentAction(intent: Intent?): Boolean {
         if (intent == null) {

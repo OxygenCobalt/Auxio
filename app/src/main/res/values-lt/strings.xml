@@ -242,6 +242,7 @@
     <plurals name="fmt_artist_count">
         <item quantity="one">%d atlikėjas</item>
         <item quantity="few">%d atlikėjai</item>
+        <item quantity="many">%d atlikėjų</item>
         <item quantity="other">%d atlikėjų</item>
     </plurals>
     <string name="set_rescan">Perskenuoti muziką</string>

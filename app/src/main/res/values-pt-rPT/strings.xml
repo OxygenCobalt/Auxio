@@ -37,7 +37,7 @@
     <string name="set_accent">Esquema de cores</string>
     <string name="set_audio">Áudio</string>
     <string name="set_personalize">Personalizar</string>
-    <string name="set_keep_shuffle">Memorizar musica misturada</string>
+    <string name="set_keep_shuffle">Memorizar música misturada</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenhuma música encontrada</string>
     <!-- Description Namespace | Accessibility Strings -->

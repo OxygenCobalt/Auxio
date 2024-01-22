@@ -114,8 +114,7 @@ constructor(
         get() = _playbackDecision
 
     /**
-     * The current audio session ID of the internal player. Null if no [InternalPlayer] is
-     * available.
+     * The current audio session ID of the internal player. Null if no audio player is available.
      */
     val currentAudioSessionId: Int?
         get() = playbackManager.currentAudioSessionId
@@ -416,10 +415,10 @@ constructor(
     }
 
     /**
-     * Start the given [InternalPlayer.Action] to be completed eventually. This can be used to
-     * enqueue a playback action at startup to then occur when the music library is fully loaded.
+     * Start the given [DeferredPlayback] to be completed eventually. This can be used to enqueue a
+     * playback action at startup to then occur when the music library is fully loaded.
      *
-     * @param action The [InternalPlayer.Action] to perform eventually.
+     * @param action The [DeferredPlayback] to perform eventually.
      */
     fun playDeferred(action: DeferredPlayback) {
         logD("Starting action $action")

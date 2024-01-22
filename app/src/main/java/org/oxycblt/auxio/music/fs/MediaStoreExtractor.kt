@@ -90,7 +90,7 @@ interface MediaStoreExtractor {
          * Create a framework-backed instance.
          *
          * @param context [Context] required.
-         * @param volumeManager [VolumeManager] required.
+         * @param pathInterpreterFactory A [MediaStorePathInterpreter.Factory] to use.
          * @return A new [MediaStoreExtractor] that will work best on the device's API level.
          */
         fun from(

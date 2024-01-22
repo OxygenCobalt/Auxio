@@ -207,7 +207,7 @@ interface PlaybackStateManager {
     fun playDeferred(action: DeferredPlayback)
 
     /**
-     * Request that the pending [PlaybackStateHolder.Action] (if any) be passed to the given
+     * Request that the pending [DeferredPlayback] (if any) be passed to the given
      * [PlaybackStateHolder].
      *
      * @param stateHolder The [PlaybackStateHolder] to synchronize with. Must be the current
@@ -271,7 +271,7 @@ interface PlaybackStateManager {
         fun onIndexMoved(index: Int) {}
 
         /**
-         * Called when the queue changed in a manner outlined by the given [Queue.Change].
+         * Called when the queue changed in a manner outlined by the given [DeferredPlayback].
          *
          * @param queue The songs of the new queue.
          * @param index The new index of the currently playing [Song].
@@ -305,9 +305,9 @@ interface PlaybackStateManager {
         ) {}
 
         /**
-         * Called when the state of the [InternalPlayer] changes.
+         * Called when the state of the audio player changes.
          *
-         * @param progression The new state of the [InternalPlayer].
+         * @param progression The new state of the audio player.
          */
         fun onProgressionChanged(progression: Progression) {}
 

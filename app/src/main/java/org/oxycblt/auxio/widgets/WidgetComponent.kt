@@ -165,12 +165,12 @@ constructor(
     /**
      * A condensed form of the playback state that is safe to use in AppWidgets.
      *
-     * @param song [Queue.currentSong]
+     * @param song [PlaybackStateManager.currentSong]
      * @param cover A pre-loaded album cover [Bitmap] for [song].
      * @param cover A pre-loaded album cover [Bitmap] for [song], with rounded corners.
-     * @param isPlaying [PlaybackStateManager.playerState]
+     * @param isPlaying [PlaybackStateManager.progression]
      * @param repeatMode [PlaybackStateManager.repeatMode]
-     * @param isShuffled [Queue.isShuffled]
+     * @param isShuffled [PlaybackStateManager.isShuffled]
      */
     data class PlaybackState(
         val song: Song,

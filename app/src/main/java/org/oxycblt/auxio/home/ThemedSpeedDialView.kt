@@ -244,7 +244,7 @@ class ThemedSpeedDialView : SpeedDialView {
     companion object {
         private val VIEW_PROPERTY_BACKGROUND_TINT =
             object : Property<View, Int>(Int::class.java, "backgroundTint") {
-                override fun get(view: View): Int? = view.backgroundTintList!!.defaultColor
+                override fun get(view: View): Int = view.backgroundTintList!!.defaultColor
 
                 override fun set(view: View, value: Int?) {
                     view.backgroundTintList = ColorStateList.valueOf(value!!)
@@ -253,7 +253,7 @@ class ThemedSpeedDialView : SpeedDialView {
 
         private val IMAGE_VIEW_PROPERTY_IMAGE_TINT =
             object : Property<ImageView, Int>(Int::class.java, "imageTint") {
-                override fun get(view: ImageView): Int? = view.imageTintList!!.defaultColor
+                override fun get(view: ImageView): Int = view.imageTintList!!.defaultColor
 
                 override fun set(view: ImageView, value: Int?) {
                     view.imageTintList = ColorStateList.valueOf(value!!)

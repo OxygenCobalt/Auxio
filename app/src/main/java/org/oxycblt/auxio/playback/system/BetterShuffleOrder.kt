@@ -29,7 +29,7 @@ import java.util.*
  *
  * @author media3 team, Alexander Capehart (OxygenCobalt)
  */
-class BetterShuffleOrder constructor(private val shuffled: IntArray) : ShuffleOrder {
+class BetterShuffleOrder(private val shuffled: IntArray) : ShuffleOrder {
     private val indexInShuffled: IntArray = IntArray(shuffled.size)
 
     constructor(length: Int, startIndex: Int) : this(createShuffledList(length, startIndex))
@@ -62,6 +62,7 @@ class BetterShuffleOrder constructor(private val shuffled: IntArray) : ShuffleOr
         return if (shuffled.isNotEmpty()) shuffled[0] else C.INDEX_UNSET
     }
 
+    @Suppress("KotlinConstantConditions") // Bugged for this function
     override fun cloneAndInsert(insertionIndex: Int, insertionCount: Int): ShuffleOrder {
         if (shuffled.isEmpty()) {
             return BetterShuffleOrder(insertionCount, -1)

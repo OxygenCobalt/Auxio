@@ -29,7 +29,7 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 
 /**
- * [RecyclerView.Adapter] that manages a list of [Directory] instances.
+ * [RecyclerView.Adapter] that manages a list of [Path] music directory instances.
  *
  * @param listener A [DirectoryAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
@@ -37,9 +37,7 @@ import org.oxycblt.auxio.util.logD
 class DirectoryAdapter(private val listener: Listener) :
     RecyclerView.Adapter<MusicDirViewHolder>() {
     private val _dirs = mutableListOf<Path>()
-    /**
-     * The current list of [SystemPath]s, may not line up with [MusicDirectories] due to removals.
-     */
+    /** The current list of [Path]s, may not line up with [MusicDirectories] due to removals. */
     val dirs: List<Path> = _dirs
 
     override fun getItemCount() = dirs.size
@@ -94,7 +92,7 @@ class DirectoryAdapter(private val listener: Listener) :
 }
 
 /**
- * A [RecyclerView.Recycler] that displays a [Directory]. Use [from] to create an instance.
+ * A [RecyclerView.Recycler] that displays a [Path]. Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
