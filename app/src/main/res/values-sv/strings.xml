@@ -150,7 +150,7 @@
     <string name="set_separators_warning">Varning: Denna inställning kan leda till att vissa taggar separeras felaktigt. För att åtgärda detta, prefixa oönskade separatortecken med ett backslash (\\).</string>
     <string name="set_personalize_desc">Anpassa UI-kontroller och beteende</string>
     <string name="set_cover_mode_off">Av</string>
-    <string name="set_headset_autoplay">Hörlurar-autouppspelning</string>
+    <string name="set_headset_autoplay">Autouppspelning med hörlurar</string>
     <string name="set_repeat_pause_desc">Pausa när en låt upprepas</string>
     <string name="set_dirs_mode_exclude_desc">Musik laddas <b>inte</b> från mapparna som ni lägger till.</string>
     <string name="desc_queue_bar">Öppna kö</string>
@@ -160,7 +160,7 @@
         <item quantity="one">%d konstnär</item>
         <item quantity="other">%d konstnärer</item>
     </plurals>
-    <string name="set_images">Bildar</string>
+    <string name="set_images">Bilder</string>
     <string name="set_audio">Ljud</string>
     <string name="set_audio_desc">Konfigurera ljud- och uppspelningsbeteende</string>
     <string name="set_rewind_prev">Spola tillbaka innan spår hoppar tillbaka</string>
@@ -258,7 +258,7 @@
     <string name="set_play_song_by_itself">Spela endast vald låt</string>
     <string name="set_cover_mode_quality">Hög kvalitet</string>
     <string name="set_square_covers">Tvinga fyrkantiga skivomslag</string>
-    <string name="set_square_covers_desc">Beskär alla albumomslag till en 1:1 sidförhållande</string>
+    <string name="set_square_covers_desc">Beskär alla albumomslag till ett 1:1 sidförhållande</string>
     <string name="set_rewind_prev_desc">Spola tillbaka innan att hoppa till föregående låt</string>
     <string name="set_pre_amp_with">Justering med taggar</string>
     <string name="err_no_dirs">Inga mappar</string>
