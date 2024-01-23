@@ -327,4 +327,6 @@
     <string name="lbl_author">लेखक</string>
     <string name="lbl_donate">दान करें</string>
     <string name="lng_supporters_promo">अपना नाम यहां जुड़वाने के लिए परियोजना में दान करें!</string>
+    <string name="set_remember_pause">विराम याद रखें</string>
+    <string name="set_remember_pause_desc">कतार छोड़ते या संपादित करते समय चलता/रोका रखिए</string>
 </resources>
