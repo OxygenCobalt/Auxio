@@ -71,14 +71,17 @@ precise/original dates, sort tags, and more
 
 You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even App Itself!
 
-**$16/month supporters:**
+<p align="center"><b>$16/month supporters:</b></p>
 
-*Be the first to have their profile picture and username added here!*
+<p align="center">
+<a href="https://github.com/yrliet"><img src="https://avatars.githubusercontent.com/u/151430565?v=4" width=100 /><p align="center"><b><a href="https://github.com/yrliet">yrliet</a></b></p></a>
+</p>
 
-**$8/month supporters:**
+<p align="center"><b>$8/month supporters:</b></p>
 
-<p align="start">
+<p align="center">
     <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
+    <a href="https://github.com/dmint789"><img src="https://avatars.githubusercontent.com/u/53250435?v=4" width=50 /></a>
 </p>
 
 ## Building
