@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_retry">Försök igen</string>
-    <string name="lbl_indexer">Musik laddar</string>
-    <string name="lbl_indexing">Laddar musik</string>
+    <string name="lbl_indexer">Läser in musik</string>
+    <string name="lbl_indexing">Läser in musik</string>
     <string name="lbl_all_songs">Alla spår</string>
     <string name="lbl_albums">Album</string>
     <string name="lbl_album">Albumet</string>
@@ -51,7 +51,7 @@
     <string name="lbl_album_details">Gå till album</string>
     <string name="lbl_song_detail">Visa egenskaper</string>
     <string name="lbl_share">Dela</string>
-    <string name="lbl_props">Egenskaper för låt</string>
+    <string name="lbl_props">Låtegenskaper</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Storlek</string>
     <string name="lbl_sample_rate">Samplingsfrekvens</string>
@@ -67,14 +67,14 @@
     <string name="lbl_licenses">Licenser</string>
     <string name="lng_widget">Visa och kontrollera musikuppspelning</string>
     <string name="lng_indexing">Laddar ditt musikbibliotek…</string>
-    <string name="lng_observing">Overvåker ditt musikbibliotek för ändringar…</string>
+    <string name="lng_observing">Övervakar ändringar i ditt musikbibliotek…</string>
     <string name="lng_queue_added">Tillagd i kö</string>
     <string name="lng_playlist_created">Spellista skapad</string>
     <string name="lng_playlist_added">Tillagd till spellista</string>
     <string name="lng_search_library">Sök i ditt musikbibliotek…</string>
     <string name="set_root_title">Inställningar</string>
     <string name="set_ui">Utseende</string>
-    <string name="set_ui_desc">Ändra tema och färger på appen</string>
+    <string name="set_ui_desc">Ändra färger och tema</string>
     <string name="set_theme_auto">Automatisk</string>
     <string name="set_theme_day">Ljust</string>
     <string name="set_black_mode">Svart tema</string>
@@ -107,7 +107,7 @@
     <string name="lbl_library_counts">Bibliotekstatistik</string>
     <string name="lng_playlist_renamed">Bytt namn på spellista</string>
     <string name="lng_playlist_deleted">Spellista tog bort</string>
-    <string name="lbl_author_name">Utvecklad av Alexander Capeheart</string>
+    <string name="lbl_author_name">Alexander Capeheart</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_night">Mörkt</string>
     <string name="set_accent">Färgschema</string>
@@ -120,7 +120,7 @@
     <string name="set_action_mode_next">Hoppa till nästa</string>
     <string name="set_action_mode_repeat">Upprepningsmodus</string>
     <string name="set_behavior">Beteende</string>
-    <string name="set_play_in_parent_with">Vid uppspelning från artikeluppgifter</string>
+    <string name="set_play_in_parent_with">Vid uppspelning baserat på objektuppgifter</string>
     <string name="set_play_song_from_genre">Spela från genre</string>
     <string name="set_keep_shuffle">Komma ihåg blandningsstatus</string>
     <string name="set_keep_shuffle_desc">Behåll blandning på när en ny låt spelas</string>
@@ -134,11 +134,11 @@
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_intelligent_sorting">Intelligent sortering</string>
     <string name="set_intelligent_sorting_desc">Sorterar namn som börjar med siffror eller ord som \"the\" korrekt (fungerar bäst med engelskspråkig music)</string>
-    <string name="set_hide_collaborators">Dölj medarbetare</string>
+    <string name="set_hide_collaborators">Dölj medverkande</string>
     <string name="set_display">Skärm</string>
     <string name="set_lib_tabs">Bibliotekflikar</string>
     <string name="set_play_in_list_with">Vid uppspelning från biblioteket</string>
-    <string name="set_play_song_none">Spela från visad artikel</string>
+    <string name="set_play_song_none">Spela från visat objekt</string>
     <string name="set_play_song_from_all">Spela från alla låtar</string>
     <string name="set_play_song_from_artist">Spela från artist</string>
     <string name="set_play_song_from_album">Spela från album</string>
@@ -155,10 +155,10 @@
     <string name="set_dirs_mode_exclude_desc">Musik laddas <b>inte</b> från mapparna som ni lägger till.</string>
     <string name="desc_queue_bar">Öppna kön</string>
     <string name="clr_dynamic">Dynamisk</string>
-    <string name="fmt_lib_artist_count">%d konstnärer som laddats</string>
+    <string name="fmt_lib_artist_count">Inlästa artister: %d</string>
     <plurals name="fmt_artist_count">
-        <item quantity="one">%d konstnär</item>
-        <item quantity="other">%d konstnärer</item>
+        <item quantity="one">%d artist</item>
+        <item quantity="other">%d artister</item>
     </plurals>
     <string name="set_images">Bilder</string>
     <string name="set_audio">Ljud</string>
@@ -218,7 +218,7 @@
     <string name="set_rescan">Skanna om musik</string>
     <string name="set_rescan_desc">Rensa tagbiblioteket och ladda komplett om musikbiblioteket (långsammare, men mer komplett)</string>
     <string name="err_no_music">Ingen musik på gång</string>
-    <string name="err_index_failed">Laddning av musik misslyckades</string>
+    <string name="err_index_failed">Läsa in musik misslyckades</string>
     <string name="err_no_perms">Auxio måste ges behörighet för att läsa in ditt musikbibliotek</string>
     <string name="err_no_app">Ingen lämplig app kunde hittas</string>
     <string name="err_bad_dir">Denna mapp stöds inte</string>
@@ -233,15 +233,15 @@
     <string name="fmt_def_playlist">Spellista %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <plurals name="fmt_song_count">
-        <item quantity="one">%d spår</item>
-        <item quantity="other">%d spår</item>
+        <item quantity="one">%d låt</item>
+        <item quantity="other">%d låtar</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d album</item>
         <item quantity="other">%d album</item>
     </plurals>
-    <string name="fmt_lib_song_count">%d spår som laddats</string>
-    <string name="fmt_lib_total_duration">Total längd: %s</string>
+    <string name="fmt_lib_song_count">Inlästa låtar: %d</string>
+    <string name="fmt_lib_total_duration">Total spellängd: %s</string>
     <string name="lbl_copied">Kopierade</string>
     <string name="lbl_selection">Urval</string>
     <string name="lbl_error_info">Felinformation</string>
@@ -253,8 +253,8 @@
     <string name="clr_purple">Lila</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="fmt_lib_album_count">%d album som laddats</string>
-    <string name="fmt_lib_genre_count">%d genrer som laddats</string>
+    <string name="fmt_lib_album_count">Inlästa album: %d</string>
+    <string name="fmt_lib_genre_count">Inlästa genrer: %d</string>
     <string name="set_play_song_by_itself">Spela endast vald låt</string>
     <string name="set_cover_mode_quality">Hög kvalitet</string>
     <string name="set_square_covers">Tvinga fyrkantiga skivomslag</string>
@@ -265,9 +265,9 @@
     <string name="err_did_not_wipe">Misslyckades att rensa uppspelningsläget</string>
     <string name="desc_new_playlist">Skapa en ny spellista</string>
     <string name="desc_exit">Stoppa uppspelning</string>
-    <string name="desc_remove_song">Radera detta spår</string>
+    <string name="desc_remove_song">Ta bort låt</string>
     <string name="desc_auxio_icon">Auxio-ikon</string>
-    <string name="desc_tab_handle">Flytta denna flik</string>
+    <string name="desc_tab_handle">Flytta flik</string>
     <string name="desc_no_cover">Albumomslag</string>
     <string name="desc_selection_image">Urvalsbild</string>
     <string name="clr_deep_purple">Mörklila</string>
@@ -277,9 +277,9 @@
     <string name="desc_skip_next">Hoppa till nästa låt</string>
     <string name="desc_skip_prev">Hoppa till sista låt</string>
     <string name="desc_change_repeat">Ändra upprepningsläge</string>
-    <string name="desc_shuffle">Slå på eller av blanda</string>
+    <string name="desc_shuffle">Blanda På/Av</string>
     <string name="desc_album_cover">Albumomslag för %s</string>
-    <string name="desc_artist_image">Konstnärbild för %s</string>
+    <string name="desc_artist_image">Artistbild för %s</string>
     <string name="def_playback">Ingen musik spelas</string>
     <string name="cdc_flac">Fri förlustfri ljudkodek (FLAC)</string>
     <string name="clr_pink">Rosa</string>
@@ -292,4 +292,34 @@
     <string name="set_pre_amp_desc">Förförstarkning användas för befintliga justeringar vid uppspelning</string>
     <string name="clr_red">Röd</string>
     <string name="lbl_show_error_info">Visa mera</string>
+    <string name="lbl_song">Låt</string>
+    <string name="lbl_imported_playlist">Importerad spellista</string>
+    <string name="err_import_failed">Kunde inte importera spellista från denna fil</string>
+    <string name="lbl_sort_mode">Lista efter</string>
+    <string name="lbl_sort_direction">Riktning</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
+    <string name="lbl_author">Upphovsperson</string>
+    <string name="lng_playlist_imported">Spellistan har importerats</string>
+    <string name="lng_playlist_exported">Spellistan har exporterats</string>
+    <string name="lng_supporters_promo">Skänk projektet ett bidrag så lägger vi till ditt namn här!</string>
+    <string name="set_remember_pause">Kom ihåg pausat läge</string>
+    <string name="set_remember_pause_desc">Fortsätt uppspelning/pausat läge vid spårbyte och listredigering</string>
+    <string name="err_export_failed">Kunde inte importera spellistan till denna fil</string>
+    <string name="lbl_empty_playlist">Tom spellista</string>
+    <string name="lbl_import_playlist">Importera spellista</string>
+    <string name="lbl_parent_detail">Vy</string>
+    <string name="lbl_path">Sökväg</string>
+    <string name="lbl_replaygain_track">ReplayGain Spårbaserad Volymjustering</string>
+    <string name="lbl_replaygain_album">ReplayGain Albumbaserad Volymjustering</string>
+    <string name="lbl_donate">Donera</string>
+    <string name="lbl_supporters">Bidragsgivare</string>
+    <string name="lbl_import">Importera</string>
+    <string name="lbl_export">Exportera</string>
+    <string name="lbl_export_playlist">Exportera spellista</string>
+    <string name="lbl_path_style">Sökvägsform</string>
+    <string name="lbl_path_style_absolute">Absolut</string>
+    <string name="lbl_path_style_relative">Relativ</string>
+    <string name="lbl_windows_paths">Använd Windowskompatibla sökvägar</string>
+    <string name="def_album_count">Inga album</string>
 </resources>
