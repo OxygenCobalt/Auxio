@@ -418,7 +418,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
 
         this.stateHolder = stateHolder
-        if (isInitialized) {
+        if (isInitialized && stateMirror.index > -1) {
             stateHolder.applySavedState(stateMirror.parent, stateMirror.rawQueue, null)
             stateHolder.seekTo(stateMirror.progression.calculateElapsedPositionMs())
             stateHolder.playing(false)
@@ -753,7 +753,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
 
         var index = savedState.index
-        while (pointingAtSong() && index > -1) {
+        while (!pointingAtSong() && index > -1) {
             index--
         }
 
