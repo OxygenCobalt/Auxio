@@ -152,6 +152,8 @@ private fun Fragment.launch(
     viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
 }
 
+const val DEFAULT_TIMEOUT = 60000L
+
 /**
  * Wraps [SendChannel.send] with a specified timeout.
  *
@@ -160,7 +162,7 @@ private fun Fragment.launch(
  * @throws TimeoutException If the timeout is reached, provides context on what element
  *   specifically.
  */
-suspend fun <E> SendChannel<E>.sendWithTimeout(element: E, timeout: Long = 10000) {
+suspend fun <E> SendChannel<E>.sendWithTimeout(element: E, timeout: Long = DEFAULT_TIMEOUT) {
     try {
         withTimeout(timeout) { send(element) }
     } catch (e: TimeoutCancellationException) {
@@ -179,7 +181,7 @@ suspend fun <E> SendChannel<E>.sendWithTimeout(element: E, timeout: Long = 10000
  *   specifically.
  */
 suspend fun <E> ReceiveChannel<E>.forEachWithTimeout(
-    timeout: Long = 10000,
+    timeout: Long = DEFAULT_TIMEOUT,
     action: suspend (E) -> Unit
 ) {
     var exhausted = false

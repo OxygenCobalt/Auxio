@@ -42,6 +42,7 @@ import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.metadata.TagExtractor
 import org.oxycblt.auxio.music.user.MutableUserLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
+import org.oxycblt.auxio.util.DEFAULT_TIMEOUT
 import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -481,7 +482,7 @@ constructor(
         val rawSongs = LinkedList<RawSong>()
         // Use a longer timeout so that dependent components can timeout and throw errors that
         // provide more context than if we timed out here.
-        processedSongs.forEachWithTimeout(20000) {
+        processedSongs.forEachWithTimeout(DEFAULT_TIMEOUT * 2) {
             rawSongs.add(it)
             // Since discovery takes up the bulk of the music loading process, we switch to
             // indicating a defined amount of loaded songs in comparison to the projected amount
@@ -489,7 +490,7 @@ constructor(
             emitIndexingProgress(IndexingProgress.Songs(rawSongs.size, query.projectedTotal))
         }
 
-        withTimeout(10000) {
+        withTimeout(DEFAULT_TIMEOUT) {
             mediaStoreJob.await()
             tagJob.await()
         }
