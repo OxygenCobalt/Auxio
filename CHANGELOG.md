@@ -8,6 +8,10 @@
 or editing queue
 - Added 1x4 and 1x3 widget forms
 
+#### What's Fixed
+- Increased music timeout to 60 seconds to accomodate large cover arts
+on slow storage drives
+
 #### What's Improved
 - The playback state is now saved more often, improving persistence
 - The queue is now fully circular when repeat all is enabled
