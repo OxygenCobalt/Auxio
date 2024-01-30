@@ -293,4 +293,10 @@
     <string name="lbl_path_style_absolute">Absoluuttinen</string>
     <string name="lbl_path_style_relative">Suhteellinen</string>
     <string name="lbl_windows_paths">Käytä Windows-yhteensopivia polkuja</string>
+    <string name="set_notif_action">Mukautettu ilmoituksen toiminto</string>
+    <string name="lbl_replaygain_track">ReplayGain-kappalesäätö</string>
+    <string name="set_remember_pause">Muista keskeytys</string>
+    <string name="lbl_replaygain_album">ReplayGain-albumisäätö</string>
+    <string name="err_import_failed">Soittolistan tuonti tästä tiedostosta ei onnistu</string>
+    <string name="err_export_failed">Soittolistan vienti tähän tiedostoon ei onnistu</string>
 </resources>
