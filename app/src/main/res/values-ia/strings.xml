@@ -1,2 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="lbl_indexing">Cargante le musica</string>
+    <string name="lbl_retry">Retentar</string>
+    <string name="lbl_show_error_info">Plus</string>
+    <string name="lbl_grant">Conceder</string>
+    <string name="lbl_songs">Cantos</string>
+    <string name="lbl_song">Canto</string>
+    <string name="lbl_all_songs">Tote le cantos</string>
+    <string name="lbl_albums">Albumes</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_album_remix">Album remix</string>
+    <string name="lbl_eps">EPs</string>
+    <string name="lbl_ep_remix">EP de remix</string>
+    <string name="lbl_compilations">Compilationes</string>
+    <string name="lbl_compilation">Compilation</string>
+    <string name="lbl_compilation_remix">Compilatom de remix</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
+    <string name="lbl_artist">Artista</string>
+    <string name="lbl_artists">Artistas</string>
+    <string name="lbl_playlist">Lista de reproduction</string>
+    <string name="lbl_playlists">Listas de reproduction</string>
+    <string name="lbl_new_playlist">Nove lista de reproduction</string>
+    <string name="lbl_empty_playlist">Lista de reproduction vacue</string>
+    <string name="lbl_import">Importar</string>
+    <string name="lbl_export">Exportar</string>
+    <string name="lbl_rename">Renominar</string>
+    <string name="lbl_rename_playlist">Renominar lista de reproduction</string>
+    <string name="lbl_delete">Deler</string>
+    <string name="lbl_confirm_delete_playlist">Deler le lista de reproduction?</string>
+    <string name="lbl_edit">Modificar</string>
+    <string name="lbl_filter_all">Toto</string>
+    <string name="lbl_filter">Filtrar</string>
+    <string name="lbl_name">Nomine</string>
+    <string name="lbl_duration">Duration</string>
+    <string name="lbl_song_count">Numero de cantos</string>
+    <string name="lbl_track">Tracia</string>
+    <string name="lbl_shuffle">Aleatori</string>
+    <string name="lbl_sort">Ordinar</string>
+    <string name="lbl_queue">Cauda</string>
+    <string name="lbl_sort_mode">Ordinar per</string>
+    <string name="lbl_playback">Reproduction in curso</string>
+    <string name="lbl_play">Reproducer</string>
+    <string name="lbl_play_next">Reproducer sequente</string>
+    <string name="lbl_queue_add">Adder al cauda</string>
+</resources>
