@@ -326,4 +326,6 @@
     <string name="lbl_donate">Ахвярнасць</string>
     <string name="lbl_supporters">Прыхільнікі</string>
     <string name="lng_supporters_promo">Ахвяруйце на праект, каб ваша імя было дададзена тут!</string>
+    <string name="set_remember_pause">Запамінаць паўзу</string>
+    <string name="set_remember_pause_desc">Пакідаць прайграванне/паўзу падчас пропуску або рэдагаванні чаргі</string>
 </resources>
