@@ -10,7 +10,7 @@
     <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_ep_live">Live EP</string>
-    <string name="lbl_ep_remix">Remix EP</string>
+    <string name="lbl_ep_remix">Remix-EP</string>
     <string name="lbl_singles">Singlar</string>
     <string name="lbl_single_remix">Remix-singel</string>
     <string name="lbl_compilation">Sammanställning</string>
@@ -18,7 +18,7 @@
     <string name="lbl_soundtracks">Ljudspår</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <string name="lbl_mixtapes">Blandband</string>
-    <string name="lbl_mixes">DJ-mixar</string>
+    <string name="lbl_mixes">DJ-Mixar</string>
     <string name="lbl_live_group">Live</string>
     <string name="lbl_remix_group">Remixar</string>
     <string name="lbl_appears_on">Framträder på</string>
@@ -175,16 +175,16 @@
     <string name="set_library">Bibliotek</string>
     <string name="set_dirs_mode_include">Inkludera</string>
     <string name="set_reindex">Uppdatera musik</string>
-    <string name="set_reindex_desc">Ladda musikbiblioteket om och använd cachad taggar när det är möjligt</string>
+    <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade taggar</string>
     <string name="set_state">Persistens</string>
     <string name="set_wipe_state">Rensa uppspelningsläge</string>
     <string name="set_restore_desc">Återställ det tidigare lagrade uppspelningsläget om det finns</string>
     <string name="err_did_not_save">Misslyckades att spara uppspelningsläget</string>
-    <string name="desc_shuffle_all">Blanda alla spår</string>
+    <string name="desc_shuffle_all">Blanda alla låtar</string>
     <string name="desc_clear_search">Rensa sökfrågan</string>
     <string name="desc_music_dir_delete">Ta bort mapp</string>
     <string name="desc_genre_image">Genrebild för %s</string>
-    <string name="desc_playlist_image">Spellistabild för %s</string>
+    <string name="desc_playlist_image">Bild spellista för %s</string>
     <string name="cdc_mp3">MPEG-1-ljud</string>
     <string name="cdc_mp4">MPEG-4-ljud</string>
     <string name="cdc_ogg">OGG-ljud</string>
@@ -205,11 +205,11 @@
     <string name="clr_brown">Brun</string>
     <string name="set_headset_autoplay_desc">Alltid börja uppspelning när hörlurar kopplas till (kanske inte fungerar på alla enheter)</string>
     <string name="set_repeat_pause">Pausa vid upprepning</string>
-    <string name="set_pre_amp">ReplayGain förförstärkare</string>
+    <string name="set_pre_amp">ReplayGain försteg</string>
     <string name="set_pre_amp_without">Justering utan taggar</string>
     <string name="set_dirs">Musikmappar</string>
     <string name="set_pre_amp_warning">Varning: Om man ändrar förförstärkaren till ett högt positivt värde kan det leda till toppning på vissa ljudspår.</string>
-    <string name="set_dirs_desc">Hantera var musik bör laddas in från</string>
+    <string name="set_dirs_desc">Hantera vart musik läses in ifrån</string>
     <string name="set_dirs_list">Mappar</string>
     <string name="set_dirs_mode">Modus</string>
     <string name="set_dirs_mode_exclude">Utesluta</string>
@@ -241,7 +241,7 @@
         <item quantity="other">%d album</item>
     </plurals>
     <string name="fmt_lib_song_count">Inlästa låtar: %d</string>
-    <string name="fmt_lib_total_duration">Total spellängd: %s</string>
+    <string name="fmt_lib_total_duration">Total spårlängd: %s</string>
     <string name="lbl_copied">Kopierade</string>
     <string name="lbl_selection">Urval</string>
     <string name="lbl_error_info">Felinformation</string>
