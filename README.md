@@ -69,7 +69,7 @@ precise/original dates, sort tags, and more
 
 ## Donate
 
-You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even App Itself!
+You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even the app itself!
 
 <p align="center"><b>$16/month supporters:</b></p>
 
