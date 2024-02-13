@@ -44,7 +44,7 @@
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d एल्बम</item>
-        <item quantity="other">%d एल्बम</item>
+        <item quantity="other">%d एल्बमस</item>
     </plurals>
     <string name="lbl_name">नाम</string>
     <string name="lbl_genre">शैली</string>
@@ -58,7 +58,7 @@
     <string name="lbl_date_added">तिथि जोड़ी गई</string>
     <string name="lbl_indexer">गाने लोड हो रहे है</string>
     <string name="lbl_indexing">गाने लोड हो रहे है</string>
-    <string name="info_app_desc">एंड्रॉयड के लिए एक सीधा साधा, विवेकशील गाने बजाने वाला ऐप।</string>
+    <string name="info_app_desc">एंड्रॉयड के लिए एक सीधा साधा,विवेकशील गाने बजाने वाला ऐप।</string>
     <string name="lbl_new_playlist">नई प्लेलिस्ट</string>
     <string name="lbl_play_next">अगला चलाएं</string>
     <string name="set_lib_tabs">लायब्रेरी टैब्स</string>
