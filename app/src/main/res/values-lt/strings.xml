@@ -257,7 +257,7 @@
     <string name="set_ui_desc">Pakeisk programėlės temą ir spalvas.</string>
     <string name="set_content_desc">Valdyk, kaip muzika ir vaizdai kraunami.</string>
     <string name="set_audio_desc">Konfigūruok garso ir grojimo elgesį.</string>
-    <string name="set_personalize_desc">Pritaikyk UI valdiklius ir elgseną.</string>
+    <string name="set_personalize_desc">Pritaikyk naudotojo sąsajos valdiklius ir elgseną.</string>
     <string name="set_music">Muzika</string>
     <string name="set_images">Vaizdai</string>
     <string name="set_playback">Grojimas</string>
