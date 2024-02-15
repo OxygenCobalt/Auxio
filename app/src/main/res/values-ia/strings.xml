@@ -68,7 +68,6 @@
     <string name="lbl_format">Formato</string>
     <string name="lbl_size">Dimension</string>
     <string name="lbl_sample_rate">Taxa de monstra</string>
-    <string name="lbl_shuffle_shortcut_short"></string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_cancel">Cancellar</string>
     <string name="lbl_save">Salveguardar</string>
