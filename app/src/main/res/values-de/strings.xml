@@ -328,4 +328,6 @@
     <string name="lbl_import">Importieren</string>
     <string name="lng_playlist_imported">Wiedergabeliste importiert</string>
     <string name="lng_playlist_exported">Wiedergabeliste exportiert</string>
+    <string name="set_remember_pause">Pause merken</string>
+    <string name="set_remember_pause_desc">Wiedergabe/Pause beim Springen oder Bearbeiten der Warteschlange beibehalten</string>
 </resources>

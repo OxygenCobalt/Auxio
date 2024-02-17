@@ -335,4 +335,6 @@
     <string name="lbl_donate">Пожертвовать</string>
     <string name="lbl_supporters">Сторонники</string>
     <string name="lng_supporters_promo">Сделайте пожертвование проекту, чтобы ваше имя было добавлено сюда!</string>
+    <string name="set_remember_pause_desc">Оставлять воспроизведение/паузу во время пропуска или редактирования очереди</string>
+    <string name="set_remember_pause">Запоминать паузу</string>
 </resources>

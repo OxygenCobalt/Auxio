@@ -71,11 +71,11 @@
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Slušalice: odmah reproduciraj</string>
     <string name="set_headset_autoplay_desc">Uvijek pokreni reprodukciju kada su slušalice povezane (možda neće raditi na svim uređajima)</string>
-    <string name="set_replay_gain_mode">Strategija pojačanja</string>
+    <string name="set_replay_gain_mode">ReplayGain strategija</string>
     <string name="set_replay_gain_mode_track">Preferiraj zvučni zapis</string>
     <string name="set_replay_gain_mode_album">Preferiraj album</string>
     <string name="set_replay_gain_mode_dynamic">Ako se reproducira album, preferiraj album</string>
-    <string name="set_pre_amp">Pretpojačalo pojačanja</string>
+    <string name="set_pre_amp">ReplayGain pretpojačalo</string>
     <string name="set_pre_amp_desc">Pretpojačalo je tijekom reprodukcije primijenjeno postojećoj prilagodbi</string>
     <string name="set_pre_amp_with">Prilagođavanje s oznakama</string>
     <string name="set_pre_amp_without">Prilagođavanje bez oznaka</string>
@@ -193,10 +193,10 @@
     <string name="set_keep_shuffle">Zapamti miješanje glazbe</string>
     <string name="set_restore_desc">Vrati prethodno spremljeno stanje reprodukcije (ako postoji)</string>
     <string name="set_play_song_from_album">Reproduciraj iz albuma</string>
-    <string name="set_repeat_pause_desc">Pauziraj čim se pjesma ponovi</string>
+    <string name="set_repeat_pause_desc">Pauziraj pri ponavljanju pjesme</string>
     <string name="set_rewind_prev_desc">Premotaj prije vraćanja na prethodnu pjesmu</string>
     <string name="desc_play_pause">Reproduciraj ili pauziraj</string>
-    <string name="set_repeat_pause">Pauziraj na ponavljanje</string>
+    <string name="set_repeat_pause">Pauziraj pri ponavljanju</string>
     <string name="set_content">Sadržaj</string>
     <string name="set_save_state">Spremi stanje reprodukcije</string>
     <string name="set_restore_state">Vrati stanje reprodukcije</string>
@@ -249,7 +249,7 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Resetiraj</string>
-    <string name="set_replay_gain">ReplayGain izjednačavanje glasnoće</string>
+    <string name="set_replay_gain">ReplayGain</string>
     <string name="set_dirs_list">Mape</string>
     <string name="lbl_sort_dsc">Silazno</string>
     <string name="set_ui_desc">Promijenite temu i boje aplikacije</string>
@@ -321,4 +321,8 @@
     <string name="lbl_windows_paths">Koristi Windows kompatibilne putanje</string>
     <string name="lng_playlist_imported">Popis pjesama je uvezen</string>
     <string name="lng_playlist_exported">Popis pjesama je izvezen</string>
+    <string name="lbl_replaygain_track">Podešavanje ReplayGain pjesme</string>
+    <string name="lbl_replaygain_album">Podešavanje ReplayGain albuma</string>
+    <string name="set_remember_pause">Zapamti pauzu</string>
+    <string name="set_remember_pause_desc">Nastavi reprodukciju/pauziranje prilikom preskakanja ili uređivanja slijeda</string>
 </resources>
