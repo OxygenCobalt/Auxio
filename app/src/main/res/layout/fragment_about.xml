@@ -182,7 +182,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_author_name"
-                        app:drawableStartCompat="@drawable/ic_author_24"
+                        app:drawableStartCompat="@drawable/ic_person_24"
                         app:drawableTint="?attr/colorControlNormal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -223,6 +223,18 @@
                         android:text="@string/lbl_supporters"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/about_supporter_yrliet"
+                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sup_yrliet"
+                        app:drawableStartCompat="@drawable/ic_person_24"
+                        app:drawableTint="?attr/colorControlNormal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/about_licenses" />
 
                     <TextView
                         android:id="@+id/about_supporters_promo"

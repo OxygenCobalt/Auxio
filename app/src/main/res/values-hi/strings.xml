@@ -44,7 +44,7 @@
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d एल्बम</item>
-        <item quantity="other">%d एल्बम</item>
+        <item quantity="other">%d एल्बमस</item>
     </plurals>
     <string name="lbl_name">नाम</string>
     <string name="lbl_genre">शैली</string>
@@ -58,7 +58,7 @@
     <string name="lbl_date_added">तिथि जोड़ी गई</string>
     <string name="lbl_indexer">गाने लोड हो रहे है</string>
     <string name="lbl_indexing">गाने लोड हो रहे है</string>
-    <string name="info_app_desc">एंड्रॉयड के लिए एक सीधा साधा, विवेकशील गाने बजाने वाला ऐप।</string>
+    <string name="info_app_desc">एंड्रॉयड के लिए एक सीधा साधा,विवेकशील गाने बजाने वाला ऐप।</string>
     <string name="lbl_new_playlist">नई प्लेलिस्ट</string>
     <string name="lbl_play_next">अगला चलाएं</string>
     <string name="set_lib_tabs">लायब्रेरी टैब्स</string>
@@ -320,4 +320,13 @@
     <string name="lng_playlist_exported">प्लेलिस्ट एक्सपोर्ट की गई</string>
     <string name="lbl_export_playlist">प्लेलिस्ट एक्सपोर्ट करें</string>
     <string name="err_export_failed">प्लेलिस्ट को इस फ़ाइल में एक्सपोर्ट करने में असमर्थ</string>
+    <string name="lbl_import_playlist">प्लेलिस्ट इम्पोर्ट करें</string>
+    <string name="lbl_replaygain_track">रीप्लेगेन ट्रैक एडजस्टमेंट</string>
+    <string name="lbl_replaygain_album">रीप्लेगेन एल्बम एडजस्टमेंट</string>
+    <string name="lbl_supporters">समर्थक</string>
+    <string name="lbl_author">लेखक</string>
+    <string name="lbl_donate">दान करें</string>
+    <string name="lng_supporters_promo">अपना नाम यहां जुड़वाने के लिए परियोजना में दान करें!</string>
+    <string name="set_remember_pause">विराम याद रखें</string>
+    <string name="set_remember_pause_desc">कतार छोड़ते या संपादित करते समय चलता/रोका रखिए</string>
 </resources>

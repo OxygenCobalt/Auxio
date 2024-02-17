@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.4.0
+
+#### What's New
+- Gapless playback is now used whenever possible
+- Added "Remember pause" setting that makes remain paused when skipping
+or editing queue
+- Added 1x4 and 1x3 widget forms
+
+#### What's Fixed
+- Increased music timeout to 60 seconds to accomodate large cover arts
+on slow storage drives
+- Fixed app repeatedly crashing when automatic theme was on
+
+#### What's Improved
+- The playback state is now saved more often, improving persistence
+- The queue is now fully circular when repeat all is enabled
+
+#### What's Changed
+- You can no longer save, restore, or clear the playback state
+- The playback session now ends if you swipe away the app while it's paused
+
 ## 3.3.3
 
 #### What's Fixed

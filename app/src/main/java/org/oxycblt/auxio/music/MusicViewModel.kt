@@ -368,7 +368,8 @@ sealed interface PlaylistDecision {
      * @param songs The [Song]s to contain in the new [Playlist].
      * @param template An existing playlist name that should be editable in the opened dialog. If
      *   null, a placeholder should be created and shown as a hint instead.
-     * @param context The context in which this decision is being fulfilled.
+     * @param reason The reason why a new playlist is being created. For all intensive purposes, you
+     *   do not need to specify this.
      */
     data class New(val songs: List<Song>, val template: String?, val reason: Reason) :
         PlaylistDecision {

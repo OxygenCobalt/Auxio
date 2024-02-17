@@ -27,6 +27,7 @@ import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -51,7 +52,7 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
     val scrollTo: Event<Int>
         get() = _scrollTo
 
-    private val _index = MutableStateFlow(playbackManager.queue.index)
+    private val _index = MutableStateFlow(playbackManager.index)
     /** The index of the currently playing song in the queue. */
     val index: StateFlow<Int>
         get() = _index
@@ -60,40 +61,45 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
         playbackManager.addListener(this)
     }
 
-    override fun onIndexMoved(queue: Queue) {
+    override fun onIndexMoved(index: Int) {
         logD("Index moved, synchronizing and scrolling to new position")
-        _scrollTo.put(queue.index)
-        _index.value = queue.index
+        _scrollTo.put(index)
+        _index.value = index
     }
 
-    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
+    override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
         // Queue changed trivially due to item mo -> Diff queue, stay at current index.
         logD("Updating queue display")
         _queueInstructions.put(change.instructions)
-        _queue.value = queue.resolve()
-        if (change.type != Queue.Change.Type.MAPPING) {
+        _queue.value = queue
+        if (change.type != QueueChange.Type.MAPPING) {
             // Index changed, make sure it remains updated without actually scrolling to it.
             logD("Index changed with queue, synchronizing new position")
-            _index.value = queue.index
+            _index.value = index
         }
     }
 
-    override fun onQueueReordered(queue: Queue) {
+    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         // Queue changed completely -> Replace queue, update index
         logD("Queue changed completely, replacing queue and position")
         _queueInstructions.put(UpdateInstructions.Replace(0))
-        _scrollTo.put(queue.index)
-        _queue.value = queue.resolve()
-        _index.value = queue.index
+        _scrollTo.put(index)
+        _queue.value = queue
+        _index.value = index
     }
 
-    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+    override fun onNewPlayback(
+        parent: MusicParent?,
+        queue: List<Song>,
+        index: Int,
+        isShuffled: Boolean
+    ) {
         // Entirely new queue -> Replace queue, update index
         logD("New playback, replacing queue and position")
         _queueInstructions.put(UpdateInstructions.Replace(0))
-        _scrollTo.put(queue.index)
-        _queue.value = queue.resolve()
-        _index.value = queue.index
+        _scrollTo.put(index)
+        _queue.value = queue
+        _index.value = index
     }
 
     override fun onCleared() {

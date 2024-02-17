@@ -1,0 +1,2 @@
+Auxio 3.4.0 adds gapless playback and new widget designs, alongside a variety of fixes.
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v3.4.0

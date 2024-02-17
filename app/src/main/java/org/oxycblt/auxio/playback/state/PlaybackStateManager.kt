@@ -20,10 +20,10 @@ package org.oxycblt.auxio.playback.state
 
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.queue.MutableQueue
-import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -40,19 +40,32 @@ import org.oxycblt.auxio.util.logW
  *   PlaybackService.
  *
  * Internal consumers should usually use [Listener], however the component that manages the player
- * itself should instead use [InternalPlayer].
+ * itself should instead use [PlaybackStateHolder].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface PlaybackStateManager {
-    /** The current [Queue]. */
-    val queue: Queue
-    /** The [MusicParent] currently being played. Null if playback is occurring from all songs. */
+    /** The current [Progression] of the audio player */
+    val progression: Progression
+
+    /** The current [RepeatMode]. */
+    val repeatMode: RepeatMode
+
+    /** The current [MusicParent] being played from */
     val parent: MusicParent?
-    /** The current [InternalPlayer] state. */
-    val playerState: InternalPlayer.State
-    /** The current [RepeatMode] */
-    var repeatMode: RepeatMode
+
+    /** The current [Song] being played. Null if nothing is playing. */
+    val currentSong: Song?
+
+    /** The current queue of [Song]s. */
+    val queue: List<Song>
+
+    /** The index of the currently playing [Song] in the queue. */
+    val index: Int
+
+    /** Whether the queue is shuffled or not. */
+    val isShuffled: Boolean
+
     /** The audio session ID of the internal player. Null if no internal player exists. */
     val currentAudioSessionId: Int?
 
@@ -75,23 +88,25 @@ interface PlaybackStateManager {
     fun removeListener(listener: Listener)
 
     /**
-     * Register an [InternalPlayer] for this instance. This instance will handle translating the
-     * current playback state into audio playback. There can be only one [InternalPlayer] at a time.
-     * Will invoke [InternalPlayer] methods to initialize the instance with the current state.
+     * Register an [PlaybackStateHolder] for this instance. This instance will handle translating
+     * the current playback state into audio playback. There can be only one [PlaybackStateHolder]
+     * at a time. Will invoke [PlaybackStateHolder] methods to initialize the instance with the
+     * current state.
      *
-     * @param internalPlayer The [InternalPlayer] to register. Will do nothing if already
+     * @param stateHolder The [PlaybackStateHolder] to register. Will do nothing if already
      *   registered.
      */
-    fun registerInternalPlayer(internalPlayer: InternalPlayer)
+    fun registerStateHolder(stateHolder: PlaybackStateHolder)
 
     /**
-     * Unregister the [InternalPlayer] from this instance, prevent it from receiving any further
-     * commands.
+     * Unregister the [PlaybackStateHolder] from this instance, prevent it from receiving any
+     * further commands.
      *
-     * @param internalPlayer The [InternalPlayer] to unregister. Must be the current
-     *   [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
+     * @param stateHolder The [PlaybackStateHolder] to unregister. Must be the current
+     *   [PlaybackStateHolder]. Does nothing if invoked by another [PlaybackStateHolder]
+     *   implementation.
      */
-    fun unregisterInternalPlayer(internalPlayer: InternalPlayer)
+    fun unregisterStateHolder(stateHolder: PlaybackStateHolder)
 
     /**
      * Start new playback.
@@ -171,38 +186,49 @@ interface PlaybackStateManager {
      *
      * @param shuffled Whether to shuffle the queue or not.
      */
-    fun reorder(shuffled: Boolean)
+    fun shuffled(shuffled: Boolean)
 
     /**
-     * Synchronize the state of this instance with the current [InternalPlayer].
+     * Acknowledges that an event has happened that modified the state held by the current
+     * [PlaybackStateHolder].
      *
-     * @param internalPlayer The [InternalPlayer] to synchronize with. Must be the current
-     *   [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
+     * @param stateHolder The [PlaybackStateHolder] to synchronize with. Must be the current
+     *   [PlaybackStateHolder]. Does nothing if invoked by another [PlaybackStateHolder]
+     *   implementation.
+     *     @param ack The [StateAck] to acknowledge.
      */
-    fun synchronizeState(internalPlayer: InternalPlayer)
+    fun ack(stateHolder: PlaybackStateHolder, ack: StateAck)
 
     /**
-     * Start a [InternalPlayer.Action] for the current [InternalPlayer] to handle eventually.
+     * Start a [DeferredPlayback] for the current [PlaybackStateHolder] to handle eventually.
      *
-     * @param action The [InternalPlayer.Action] to perform.
+     * @param action The [DeferredPlayback] to perform.
      */
-    fun startAction(action: InternalPlayer.Action)
+    fun playDeferred(action: DeferredPlayback)
 
     /**
-     * Request that the pending [InternalPlayer.Action] (if any) be passed to the given
-     * [InternalPlayer].
+     * Request that the pending [DeferredPlayback] (if any) be passed to the given
+     * [PlaybackStateHolder].
      *
-     * @param internalPlayer The [InternalPlayer] to synchronize with. Must be the current
-     *   [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
+     * @param stateHolder The [PlaybackStateHolder] to synchronize with. Must be the current
+     *   [PlaybackStateHolder]. Does nothing if invoked by another [PlaybackStateHolder]
+     *   implementation.
      */
-    fun requestAction(internalPlayer: InternalPlayer)
+    fun requestAction(stateHolder: PlaybackStateHolder)
 
     /**
      * Update whether playback is ongoing or not.
      *
      * @param isPlaying Whether playback is ongoing or not.
      */
-    fun setPlaying(isPlaying: Boolean)
+    fun playing(isPlaying: Boolean)
+
+    /**
+     * Update the current [RepeatMode].
+     *
+     * @param repeatMode The new [RepeatMode].
+     */
+    fun repeatMode(repeatMode: RepeatMode)
 
     /**
      * Seek to the given position in the currently playing [Song].
@@ -240,100 +266,140 @@ interface PlaybackStateManager {
          * Called when the position of the currently playing item has changed, changing the current
          * [Song], but no other queue attribute has changed.
          *
-         * @param queue The new [Queue].
+         * @param index The new index of the currently playing [Song].
          */
-        fun onIndexMoved(queue: Queue) {}
+        fun onIndexMoved(index: Int) {}
 
         /**
-         * Called when the [Queue] changed in a manner outlined by the given [Queue.Change].
+         * Called when the queue changed in a manner outlined by the given [DeferredPlayback].
          *
-         * @param queue The new [Queue].
-         * @param change The type of [Queue.Change] that occurred.
+         * @param queue The songs of the new queue.
+         * @param index The new index of the currently playing [Song].
+         * @param change The [QueueChange] that occurred.
          */
-        fun onQueueChanged(queue: Queue, change: Queue.Change) {}
+        fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {}
 
         /**
-         * Called when the [Queue] has changed in a non-trivial manner (such as re-shuffling), but
-         * the currently playing [Song] has not.
+         * Called when the queue has changed in a non-trivial manner (such as re-shuffling), but the
+         * currently playing [Song] has not.
          *
-         * @param queue The new [Queue].
+         * @param queue The songs of the new queue.
+         * @param index The new index of the currently playing [Song].
+         * @param isShuffled Whether the queue is shuffled or not.
          */
-        fun onQueueReordered(queue: Queue) {}
+        fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {}
 
         /**
          * Called when a new playback configuration was created.
          *
-         * @param queue The new [Queue].
-         * @param parent The new [MusicParent] being played from, or null if playing from all songs.
+         * @param parent The [MusicParent] item currently being played from.
+         * @param queue The queue of [Song]s to play from.
+         * @param index The index of the currently playing [Song].
+         * @param isShuffled Whether the queue is shuffled or not.
          */
-        fun onNewPlayback(queue: Queue, parent: MusicParent?) {}
+        fun onNewPlayback(
+            parent: MusicParent?,
+            queue: List<Song>,
+            index: Int,
+            isShuffled: Boolean
+        ) {}
 
         /**
-         * Called when the state of the [InternalPlayer] changes.
+         * Called when the state of the audio player changes.
          *
-         * @param state The new state of the [InternalPlayer].
+         * @param progression The new state of the audio player.
          */
-        fun onStateChanged(state: InternalPlayer.State) {}
+        fun onProgressionChanged(progression: Progression) {}
 
         /**
          * Called when the [RepeatMode] changes.
          *
          * @param repeatMode The new [RepeatMode].
          */
-        fun onRepeatChanged(repeatMode: RepeatMode) {}
+        fun onRepeatModeChanged(repeatMode: RepeatMode) {}
     }
 
     /**
      * A condensed representation of the playback state that can be persisted.
      *
      * @param parent The [MusicParent] item currently being played from.
-     * @param queueState The [Queue.SavedState]
      * @param positionMs The current position in the currently played song, in ms
      * @param repeatMode The current [RepeatMode].
      */
     data class SavedState(
-        val parent: MusicParent?,
-        val queueState: Queue.SavedState,
         val positionMs: Long,
         val repeatMode: RepeatMode,
+        val parent: MusicParent?,
+        val heap: List<Song?>,
+        val shuffledMapping: List<Int>,
+        val index: Int,
+        val songUid: Music.UID,
     )
 }
 
 class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
+    private data class StateMirror(
+        val progression: Progression,
+        val repeatMode: RepeatMode,
+        val parent: MusicParent?,
+        val queue: List<Song>,
+        val index: Int,
+        val isShuffled: Boolean,
+        val rawQueue: RawQueue
+    )
+
     private val listeners = mutableListOf<PlaybackStateManager.Listener>()
-    @Volatile private var internalPlayer: InternalPlayer? = null
-    @Volatile private var pendingAction: InternalPlayer.Action? = null
+
+    @Volatile
+    private var stateMirror =
+        StateMirror(
+            progression = Progression.nil(),
+            repeatMode = RepeatMode.NONE,
+            parent = null,
+            queue = emptyList(),
+            index = -1,
+            isShuffled = false,
+            rawQueue = RawQueue.nil())
+    @Volatile private var stateHolder: PlaybackStateHolder? = null
+    @Volatile private var pendingDeferredPlayback: DeferredPlayback? = null
     @Volatile private var isInitialized = false
 
-    override val queue = MutableQueue()
-    @Volatile
-    override var parent: MusicParent? = null
-        private set
+    override val progression
+        get() = stateMirror.progression
 
-    @Volatile
-    override var playerState = InternalPlayer.State.from(isPlaying = false, isAdvancing = false, 0)
-        private set
+    override val repeatMode
+        get() = stateMirror.repeatMode
 
-    @Volatile
-    override var repeatMode = RepeatMode.NONE
-        set(value) {
-            field = value
-            notifyRepeatModeChanged()
-        }
+    override val parent
+        get() = stateMirror.parent
+
+    override val currentSong
+        get() = stateMirror.queue.getOrNull(stateMirror.index)
+
+    override val queue
+        get() = stateMirror.queue
+
+    override val index
+        get() = stateMirror.index
+
+    override val isShuffled
+        get() = stateMirror.isShuffled
 
     override val currentAudioSessionId: Int?
-        get() = internalPlayer?.audioSessionId
+        get() = stateHolder?.audioSessionId
 
     @Synchronized
     override fun addListener(listener: PlaybackStateManager.Listener) {
         logD("Adding $listener to listeners")
-        if (isInitialized) {
-            listener.onNewPlayback(queue, parent)
-            listener.onRepeatChanged(repeatMode)
-            listener.onStateChanged(playerState)
-        }
-
         listeners.add(listener)
+
+        if (isInitialized) {
+            logD("Sending initial state to $listener")
+            listener.onNewPlayback(
+                stateMirror.parent, stateMirror.queue, stateMirror.index, stateMirror.isShuffled)
+            listener.onProgressionChanged(stateMirror.progression)
+            listener.onRepeatModeChanged(stateMirror.repeatMode)
+        }
     }
 
     @Synchronized
@@ -345,208 +411,301 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     @Synchronized
-    override fun registerInternalPlayer(internalPlayer: InternalPlayer) {
-        if (this.internalPlayer != null) {
+    override fun registerStateHolder(stateHolder: PlaybackStateHolder) {
+        if (this.stateHolder != null) {
             logW("Internal player is already registered")
             return
         }
 
-        logD("Registering internal player $internalPlayer")
-
-        if (isInitialized) {
-            internalPlayer.loadSong(queue.currentSong, playerState.isPlaying)
-            internalPlayer.seekTo(playerState.calculateElapsedPositionMs())
-            // See if there's any action that has been queued.
-            requestAction(internalPlayer)
-            // Once initialized, try to synchronize with the player state it has created.
-            synchronizeState(internalPlayer)
+        this.stateHolder = stateHolder
+        if (isInitialized && stateMirror.index > -1) {
+            stateHolder.applySavedState(stateMirror.parent, stateMirror.rawQueue, null)
+            stateHolder.seekTo(stateMirror.progression.calculateElapsedPositionMs())
+            stateHolder.playing(false)
+            pendingDeferredPlayback?.let(stateHolder::handleDeferred)
         }
-
-        this.internalPlayer = internalPlayer
     }
 
     @Synchronized
-    override fun unregisterInternalPlayer(internalPlayer: InternalPlayer) {
-        if (this.internalPlayer !== internalPlayer) {
+    override fun unregisterStateHolder(stateHolder: PlaybackStateHolder) {
+        if (this.stateHolder !== stateHolder) {
             logW("Given internal player did not match current internal player")
             return
         }
 
-        logD("Unregistering internal player $internalPlayer")
+        logD("Unregistering internal player $stateHolder")
 
-        this.internalPlayer = null
+        this.stateHolder = null
     }
 
     // --- PLAYING FUNCTIONS ---
 
     @Synchronized
     override fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean) {
-        val internalPlayer = internalPlayer ?: return
+        val stateHolder = stateHolder ?: return
         logD("Playing $song from $parent in ${queue.size}-song queue [shuffled=$shuffled]")
-        // Set up parent and queue
-        this.parent = parent
-        this.queue.start(song, queue, shuffled)
-        // Notify components of changes
-        notifyNewPlayback()
-        internalPlayer.loadSong(this.queue.currentSong, true)
         // Played something, so we are initialized now
         isInitialized = true
+        stateHolder.newPlayback(queue, song, parent, shuffled)
     }
 
     // --- QUEUE FUNCTIONS ---
 
     @Synchronized
     override fun next() {
-        val internalPlayer = internalPlayer ?: return
-        var play = true
-        if (!queue.goto(queue.index + 1)) {
-            queue.goto(0)
-            play = repeatMode == RepeatMode.ALL
-            logD("At end of queue, wrapping around to position 0 [play=$play]")
-        } else {
-            logD("Moving to next song")
-        }
-        notifyIndexMoved()
-        internalPlayer.loadSong(queue.currentSong, play)
+        val stateHolder = stateHolder ?: return
+        logD("Going to next song")
+        stateHolder.next()
     }
 
     @Synchronized
     override fun prev() {
-        val internalPlayer = internalPlayer ?: return
-        // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
-        if (internalPlayer.shouldRewindWithPrev) {
-            logD("Rewinding current song")
-            rewind()
-            setPlaying(true)
-        } else {
-            logD("Moving to previous song")
-            if (!queue.goto(queue.index - 1)) {
-                queue.goto(0)
-            }
-            notifyIndexMoved()
-            internalPlayer.loadSong(queue.currentSong, true)
-        }
+        val stateHolder = stateHolder ?: return
+        logD("Going to previous song")
+        stateHolder.prev()
     }
 
     @Synchronized
     override fun goto(index: Int) {
-        val internalPlayer = internalPlayer ?: return
-        if (queue.goto(index)) {
-            logD("Moving to $index")
-            notifyIndexMoved()
-            internalPlayer.loadSong(queue.currentSong, true)
-        } else {
-            logW("$index was not in bounds, could not move to it")
-        }
+        val stateHolder = stateHolder ?: return
+        logD("Going to index $index")
+        stateHolder.goto(index)
     }
 
     @Synchronized
     override fun playNext(songs: List<Song>) {
-        if (queue.currentSong == null) {
+        if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
             play(songs[0], null, songs, false)
         } else {
+            val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to start of queue")
-            notifyQueueChanged(queue.addToTop(songs))
+            stateHolder.playNext(songs, StateAck.PlayNext(stateMirror.index + 1, songs.size))
         }
     }
 
     @Synchronized
     override fun addToQueue(songs: List<Song>) {
-        if (queue.currentSong == null) {
+        if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
             play(songs[0], null, songs, false)
         } else {
+            val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to end of queue")
-            notifyQueueChanged(queue.addToBottom(songs))
+            stateHolder.addToQueue(songs, StateAck.AddToQueue(stateMirror.index + 1, songs.size))
         }
     }
 
     @Synchronized
     override fun moveQueueItem(src: Int, dst: Int) {
+        val stateHolder = stateHolder ?: return
         logD("Moving item $src to position $dst")
-        notifyQueueChanged(queue.move(src, dst))
+        stateHolder.move(src, dst, StateAck.Move(src, dst))
     }
 
     @Synchronized
     override fun removeQueueItem(at: Int) {
-        val internalPlayer = internalPlayer ?: return
+        val stateHolder = stateHolder ?: return
         logD("Removing item at $at")
-        val change = queue.remove(at)
-        if (change.type == Queue.Change.Type.SONG) {
-            internalPlayer.loadSong(queue.currentSong, playerState.isPlaying)
-        }
-        notifyQueueChanged(change)
+        stateHolder.remove(at, StateAck.Remove(at))
     }
 
     @Synchronized
-    override fun reorder(shuffled: Boolean) {
+    override fun shuffled(shuffled: Boolean) {
+        val stateHolder = stateHolder ?: return
         logD("Reordering queue [shuffled=$shuffled]")
-        queue.reorder(shuffled)
-        notifyQueueReordered()
+        stateHolder.shuffled(shuffled)
     }
 
     // --- INTERNAL PLAYER FUNCTIONS ---
 
     @Synchronized
-    override fun synchronizeState(internalPlayer: InternalPlayer) {
-        if (BuildConfig.DEBUG && this.internalPlayer !== internalPlayer) {
-            logW("Given internal player did not match current internal player")
-            return
-        }
-
-        val newState = internalPlayer.getState(queue.currentSong?.durationMs ?: 0)
-        if (newState != playerState) {
-            playerState = newState
-            notifyStateChanged()
-        }
-    }
-
-    @Synchronized
-    override fun startAction(action: InternalPlayer.Action) {
-        val internalPlayer = internalPlayer
-        if (internalPlayer == null || !internalPlayer.performAction(action)) {
+    override fun playDeferred(action: DeferredPlayback) {
+        val stateHolder = stateHolder
+        if (stateHolder == null || !stateHolder.handleDeferred(action)) {
             logD("Internal player not present or did not consume action, waiting")
-            pendingAction = action
+            pendingDeferredPlayback = action
         }
     }
 
     @Synchronized
-    override fun requestAction(internalPlayer: InternalPlayer) {
-        if (BuildConfig.DEBUG && this.internalPlayer !== internalPlayer) {
+    override fun requestAction(stateHolder: PlaybackStateHolder) {
+        if (BuildConfig.DEBUG && this.stateHolder !== stateHolder) {
             logW("Given internal player did not match current internal player")
             return
         }
 
-        if (pendingAction?.let(internalPlayer::performAction) == true) {
+        if (pendingDeferredPlayback?.let(stateHolder::handleDeferred) == true) {
             logD("Pending action consumed")
-            pendingAction = null
+            pendingDeferredPlayback = null
         }
     }
 
     @Synchronized
-    override fun setPlaying(isPlaying: Boolean) {
+    override fun playing(isPlaying: Boolean) {
+        val stateHolder = stateHolder ?: return
         logD("Updating playing state to $isPlaying")
-        internalPlayer?.setPlaying(isPlaying)
+        stateHolder.playing(isPlaying)
+    }
+
+    @Synchronized
+    override fun repeatMode(repeatMode: RepeatMode) {
+        val stateHolder = stateHolder ?: return
+        logD("Updating repeat mode to $repeatMode")
+        stateHolder.repeatMode(repeatMode)
     }
 
     @Synchronized
     override fun seekTo(positionMs: Long) {
+        val stateHolder = stateHolder ?: return
         logD("Seeking to ${positionMs}ms")
-        internalPlayer?.seekTo(positionMs)
+        stateHolder.seekTo(positionMs)
+    }
+
+    @Synchronized
+    override fun ack(stateHolder: PlaybackStateHolder, ack: StateAck) {
+        if (BuildConfig.DEBUG && this.stateHolder !== stateHolder) {
+            logW("Given internal player did not match current internal player")
+            return
+        }
+
+        when (ack) {
+            is StateAck.IndexMoved -> {
+                val rawQueue = stateHolder.resolveQueue()
+                stateMirror = stateMirror.copy(index = rawQueue.resolveIndex(), rawQueue = rawQueue)
+                listeners.forEach { it.onIndexMoved(stateMirror.index) }
+            }
+            is StateAck.PlayNext -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val change =
+                    QueueChange(QueueChange.Type.MAPPING, UpdateInstructions.Add(ack.at, ack.size))
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        rawQueue = rawQueue,
+                    )
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateAck.AddToQueue -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val change =
+                    QueueChange(QueueChange.Type.MAPPING, UpdateInstructions.Add(ack.at, ack.size))
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        rawQueue = rawQueue,
+                    )
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateAck.Move -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val newIndex = rawQueue.resolveIndex()
+                val change =
+                    QueueChange(
+                        if (stateMirror.index != newIndex) QueueChange.Type.INDEX
+                        else QueueChange.Type.MAPPING,
+                        UpdateInstructions.Move(ack.from, ack.to))
+
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        index = newIndex,
+                        rawQueue = rawQueue,
+                    )
+
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateAck.Remove -> {
+                val rawQueue = stateHolder.resolveQueue()
+                val newIndex = rawQueue.resolveIndex()
+                val change =
+                    QueueChange(
+                        when {
+                            ack.index == stateMirror.index -> QueueChange.Type.SONG
+                            stateMirror.index != newIndex -> QueueChange.Type.INDEX
+                            else -> QueueChange.Type.MAPPING
+                        },
+                        UpdateInstructions.Remove(ack.index, 1))
+
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        index = newIndex,
+                        rawQueue = rawQueue,
+                    )
+
+                listeners.forEach {
+                    it.onQueueChanged(stateMirror.queue, stateMirror.index, change)
+                }
+            }
+            is StateAck.QueueReordered -> {
+                val rawQueue = stateHolder.resolveQueue()
+                stateMirror =
+                    stateMirror.copy(
+                        queue = rawQueue.resolveSongs(),
+                        index = rawQueue.resolveIndex(),
+                        isShuffled = rawQueue.isShuffled,
+                        rawQueue = rawQueue)
+                listeners.forEach {
+                    it.onQueueReordered(
+                        stateMirror.queue, stateMirror.index, stateMirror.isShuffled)
+                }
+            }
+            is StateAck.NewPlayback -> {
+                val rawQueue = stateHolder.resolveQueue()
+                stateMirror =
+                    stateMirror.copy(
+                        parent = stateHolder.parent,
+                        queue = rawQueue.resolveSongs(),
+                        index = rawQueue.resolveIndex(),
+                        isShuffled = rawQueue.isShuffled,
+                        rawQueue = rawQueue)
+                listeners.forEach {
+                    it.onNewPlayback(
+                        stateMirror.parent,
+                        stateMirror.queue,
+                        stateMirror.index,
+                        stateMirror.isShuffled)
+                }
+            }
+            is StateAck.ProgressionChanged -> {
+                stateMirror =
+                    stateMirror.copy(
+                        progression = stateHolder.progression,
+                    )
+                listeners.forEach { it.onProgressionChanged(stateMirror.progression) }
+            }
+            is StateAck.RepeatModeChanged -> {
+                stateMirror =
+                    stateMirror.copy(
+                        repeatMode = stateHolder.repeatMode,
+                    )
+                listeners.forEach { it.onRepeatModeChanged(stateMirror.repeatMode) }
+            }
+        }
     }
 
     // --- PERSISTENCE FUNCTIONS ---
 
     @Synchronized
-    override fun toSavedState() =
-        queue.toSavedState()?.let {
-            PlaybackStateManager.SavedState(
-                parent = parent,
-                queueState = it,
-                positionMs = playerState.calculateElapsedPositionMs(),
-                repeatMode = repeatMode)
-        }
+    override fun toSavedState(): PlaybackStateManager.SavedState? {
+        val currentSong = currentSong ?: return null
+        return PlaybackStateManager.SavedState(
+            positionMs = stateMirror.progression.calculateElapsedPositionMs(),
+            repeatMode = stateMirror.repeatMode,
+            parent = stateMirror.parent,
+            heap = stateMirror.rawQueue.heap,
+            shuffledMapping = stateMirror.rawQueue.shuffledMapping,
+            index = stateMirror.index,
+            songUid = currentSong.uid,
+        )
+    }
 
     @Synchronized
     override fun applySavedState(
@@ -554,77 +713,84 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         destructive: Boolean
     ) {
         if (isInitialized && !destructive) {
-            logW("Already initialized, cannot apply saved  state")
+            logW("Already initialized, cannot apply saved state")
             return
         }
-        val internalPlayer = internalPlayer ?: return
-        logD("Applying state $savedState")
 
-        val lastSong = queue.currentSong
-        parent = savedState.parent
-        queue.applySavedState(savedState.queueState)
-        repeatMode = savedState.repeatMode
-        notifyNewPlayback()
-
-        // Check if we need to reload the player with a new music file, or if we can just leave
-        // it be. Specifically done so we don't pause on music updates that don't really change
-        // what's playing (ex. playlist editing)
-        if (lastSong != queue.currentSong) {
-            logD("Song changed, must reload player")
-            // Continuing playback while also possibly doing drastic state updates is
-            // a bad idea, so pause.
-            internalPlayer.loadSong(queue.currentSong, false)
-            if (queue.currentSong != null) {
-                logD("Seeking to saved position ${savedState.positionMs}ms")
-                // Internal player may have reloaded the media item, re-seek to the previous
-                // position
-                seekTo(savedState.positionMs)
+        // The heap may not be the same if the song composition changed between state saves/reloads.
+        // This also means that we must modify the shuffled mapping as well, in what it points to
+        // and it's general composition.
+        val heap = mutableListOf<Song>()
+        val adjustments = mutableListOf<Int?>()
+        var currentShift = 0
+        for (song in savedState.heap) {
+            if (song != null) {
+                heap.add(song)
+                adjustments.add(currentShift)
+            } else {
+                adjustments.add(null)
+                currentShift -= 1
             }
         }
+
+        logD("Created adjustment mapping [max shift=$currentShift]")
+
+        val shuffledMapping =
+            savedState.shuffledMapping.mapNotNullTo(mutableListOf()) { index ->
+                adjustments[index]?.let { index + it }
+            }
+
+        // Make sure we re-align the index to point to the previously playing song.
+        fun pointingAtSong(): Boolean {
+            val currentSong =
+                if (shuffledMapping.isNotEmpty()) {
+                    shuffledMapping.getOrNull(savedState.index)?.let { heap.getOrNull(it) }
+                } else {
+                    heap.getOrNull(savedState.index)
+                }
+
+            return currentSong?.uid == savedState.songUid
+        }
+
+        var index = savedState.index
+        while (!pointingAtSong() && index > -1) {
+            index--
+        }
+
+        logD("Corrected index: ${savedState.index} -> $index")
+
+        check(shuffledMapping.all { it in heap.indices }) {
+            "Queue inconsistency detected: Shuffled mapping indices out of heap bounds"
+        }
+
+        val rawQueue =
+            RawQueue(
+                heap = heap,
+                shuffledMapping = shuffledMapping,
+                heapIndex =
+                    if (shuffledMapping.isNotEmpty()) {
+                        shuffledMapping[savedState.index]
+                    } else {
+                        index
+                    })
+
+        if (index > -1) {
+            // Valid state where something needs to be played, direct the stateholder to apply
+            // this new state.
+            val oldStateMirror = stateMirror
+            if (oldStateMirror.rawQueue != rawQueue) {
+                logD("Queue changed, must reload player")
+                stateHolder?.applySavedState(parent, rawQueue, StateAck.NewPlayback)
+                stateHolder?.playing(false)
+            }
+
+            if (oldStateMirror.progression.calculateElapsedPositionMs() != savedState.positionMs) {
+                logD("Seeking to saved position ${savedState.positionMs}ms")
+                stateHolder?.seekTo(savedState.positionMs)
+                stateHolder?.playing(false)
+            }
+        }
+
         isInitialized = true
-    }
-
-    // --- CALLBACKS ---
-
-    private fun notifyIndexMoved() {
-        logD("Dispatching index change")
-        for (callback in listeners) {
-            callback.onIndexMoved(queue)
-        }
-    }
-
-    private fun notifyQueueChanged(change: Queue.Change) {
-        logD("Dispatching queue change $change")
-        for (callback in listeners) {
-            callback.onQueueChanged(queue, change)
-        }
-    }
-
-    private fun notifyQueueReordered() {
-        logD("Dispatching queue reordering")
-        for (callback in listeners) {
-            callback.onQueueReordered(queue)
-        }
-    }
-
-    private fun notifyNewPlayback() {
-        logD("Dispatching new playback")
-        for (callback in listeners) {
-            callback.onNewPlayback(queue, parent)
-        }
-    }
-
-    private fun notifyStateChanged() {
-        logD("Dispatching player state change")
-        for (callback in listeners) {
-            callback.onStateChanged(playerState)
-        }
-    }
-
-    private fun notifyRepeatModeChanged() {
-        logD("Dispatching repeat mode change")
-        for (callback in listeners) {
-            callback.onRepeatChanged(repeatMode)
-        }
     }
 }

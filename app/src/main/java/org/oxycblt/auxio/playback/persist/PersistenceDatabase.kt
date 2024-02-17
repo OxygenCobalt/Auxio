@@ -37,8 +37,8 @@ import org.oxycblt.auxio.playback.state.RepeatMode
  * @author Alexander Capehart
  */
 @Database(
-    entities = [PlaybackState::class, QueueHeapItem::class, QueueMappingItem::class],
-    version = 32,
+    entities = [PlaybackState::class, QueueHeapItem::class, QueueShuffledMappingItem::class],
+    version = 38,
     exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
 abstract class PersistenceDatabase : RoomDatabase() {
@@ -109,15 +109,16 @@ interface QueueDao {
     /**
      * Get the previously persisted queue mapping.
      *
-     * @return A list of persisted [QueueMappingItem]s wrapping each heap item.
+     * @return A list of persisted [QueueShuffledMappingItem]s wrapping each heap item.
      */
-    @Query("SELECT * FROM QueueMappingItem") suspend fun getMapping(): List<QueueMappingItem>
+    @Query("SELECT * FROM QueueShuffledMappingItem")
+    suspend fun getShuffledMapping(): List<QueueShuffledMappingItem>
 
     /** Delete any previously persisted queue heap entries. */
     @Query("DELETE FROM QueueHeapItem") suspend fun nukeHeap()
 
     /** Delete any previously persisted queue mapping entries. */
-    @Query("DELETE FROM QueueMappingItem") suspend fun nukeMapping()
+    @Query("DELETE FROM QueueShuffledMappingItem") suspend fun nukeShuffledMapping()
 
     /**
      * Insert new heap entries into the database.
@@ -129,10 +130,10 @@ interface QueueDao {
     /**
      * Insert new mapping entries into the database.
      *
-     * @param mapping The list of wrapped [QueueMappingItem] to insert.
+     * @param mapping The list of wrapped [QueueShuffledMappingItem] to insert.
      */
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertMapping(mapping: List<QueueMappingItem>)
+    suspend fun insertShuffledMapping(mapping: List<QueueShuffledMappingItem>)
 }
 
 // TODO: Figure out how to get RepeatMode to map to an int instead of a string
@@ -148,5 +149,4 @@ data class PlaybackState(
 
 @Entity data class QueueHeapItem(@PrimaryKey val id: Int, val uid: Music.UID)
 
-@Entity
-data class QueueMappingItem(@PrimaryKey val id: Int, val orderedIndex: Int, val shuffledIndex: Int)
+@Entity data class QueueShuffledMappingItem(@PrimaryKey val id: Int, val index: Int)

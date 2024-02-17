@@ -23,9 +23,10 @@ import org.oxycblt.auxio.music.fs.Path
 /**
  * Represents the configuration for specific directories to filter to/from when loading music.
  *
- * @param dirs A list of [Directory] instances. How these are interpreted depends on [shouldInclude]
- * @param shouldInclude True if the library should only load from the [Directory] instances, false
- *   if the library should not load from the [Directory] instances.
+ * @param dirs A list of directory [Path] instances. How these are interpreted depends on
+ *   [shouldInclude]
+ * @param shouldInclude True if the library should only load from the [Path] instances, false if the
+ *   library should not load from the [Path] instances.
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class MusicDirectories(val dirs: List<Path>, val shouldInclude: Boolean)

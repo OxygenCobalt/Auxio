@@ -36,9 +36,10 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
-import org.oxycblt.auxio.playback.queue.Queue
-import org.oxycblt.auxio.playback.state.InternalPlayer
+import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Progression
+import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -113,8 +114,7 @@ constructor(
         get() = _playbackDecision
 
     /**
-     * The current audio session ID of the internal player. Null if no [InternalPlayer] is
-     * available.
+     * The current audio session ID of the internal player. Null if no audio player is available.
      */
     val currentAudioSessionId: Int?
         get() = playbackManager.currentAudioSessionId
@@ -129,50 +129,55 @@ constructor(
         playbackSettings.unregisterListener(this)
     }
 
-    override fun onIndexMoved(queue: Queue) {
+    override fun onIndexMoved(index: Int) {
         logD("Index moved, updating current song")
-        _song.value = queue.currentSong
+        _song.value = playbackManager.currentSong
     }
 
-    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
+    override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
         // Other types of queue changes preserve the current song.
-        if (change.type == Queue.Change.Type.SONG) {
+        if (change.type == QueueChange.Type.SONG) {
             logD("Queue changed, updating current song")
-            _song.value = queue.currentSong
+            _song.value = playbackManager.currentSong
         }
     }
 
-    override fun onQueueReordered(queue: Queue) {
+    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         logD("Queue completely changed, updating current song")
-        _isShuffled.value = queue.isShuffled
+        _isShuffled.value = isShuffled
     }
 
-    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+    override fun onNewPlayback(
+        parent: MusicParent?,
+        queue: List<Song>,
+        index: Int,
+        isShuffled: Boolean
+    ) {
         logD("New playback started, updating playback information")
-        _song.value = queue.currentSong
+        _song.value = playbackManager.currentSong
         _parent.value = parent
-        _isShuffled.value = queue.isShuffled
+        _isShuffled.value = isShuffled
     }
 
-    override fun onStateChanged(state: InternalPlayer.State) {
+    override fun onProgressionChanged(progression: Progression) {
         logD("Player state changed, starting new position polling")
-        _isPlaying.value = state.isPlaying
+        _isPlaying.value = progression.isPlaying
         // Still need to update the position now due to co-routine launch delays
-        _positionDs.value = state.calculateElapsedPositionMs().msToDs()
+        _positionDs.value = progression.calculateElapsedPositionMs().msToDs()
         // Replace the previous position co-routine with a new one that uses the new
         // state information.
         lastPositionJob?.cancel()
         lastPositionJob =
             viewModelScope.launch {
                 while (true) {
-                    _positionDs.value = state.calculateElapsedPositionMs().msToDs()
+                    _positionDs.value = progression.calculateElapsedPositionMs().msToDs()
                     // Wait a deci-second for the next position tick.
                     delay(100)
                 }
             }
     }
 
-    override fun onRepeatChanged(repeatMode: RepeatMode) {
+    override fun onRepeatModeChanged(repeatMode: RepeatMode) {
         _repeatMode.value = repeatMode
     }
 
@@ -223,8 +228,7 @@ constructor(
         playFromGenreImpl(song, genre, isImplicitlyShuffled())
     }
 
-    private fun isImplicitlyShuffled() =
-        playbackManager.queue.isShuffled && playbackSettings.keepShuffle
+    private fun isImplicitlyShuffled() = playbackManager.isShuffled && playbackSettings.keepShuffle
 
     private fun playWithImpl(song: Song, with: PlaySong, shuffled: Boolean) {
         when (with) {
@@ -411,14 +415,14 @@ constructor(
     }
 
     /**
-     * Start the given [InternalPlayer.Action] to be completed eventually. This can be used to
-     * enqueue a playback action at startup to then occur when the music library is fully loaded.
+     * Start the given [DeferredPlayback] to be completed eventually. This can be used to enqueue a
+     * playback action at startup to then occur when the music library is fully loaded.
      *
-     * @param action The [InternalPlayer.Action] to perform eventually.
+     * @param action The [DeferredPlayback] to perform eventually.
      */
-    fun startAction(action: InternalPlayer.Action) {
+    fun playDeferred(action: DeferredPlayback) {
         logD("Starting action $action")
-        playbackManager.startAction(action)
+        playbackManager.playDeferred(action)
     }
 
     // --- PLAYER FUNCTIONS ---
@@ -572,13 +576,13 @@ constructor(
     /** Toggle [isPlaying] (i.e from playing to paused) */
     fun togglePlaying() {
         logD("Toggling playing state")
-        playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
+        playbackManager.playing(!playbackManager.progression.isPlaying)
     }
 
     /** Toggle [isShuffled] (ex. from on to off) */
     fun toggleShuffled() {
         logD("Toggling shuffled state")
-        playbackManager.reorder(!playbackManager.queue.isShuffled)
+        playbackManager.shuffled(!playbackManager.isShuffled)
     }
 
     /**
@@ -588,7 +592,7 @@ constructor(
      */
     fun toggleRepeatMode() {
         logD("Toggling repeat mode")
-        playbackManager.repeatMode = playbackManager.repeatMode.increment()
+        playbackManager.repeatMode(playbackManager.repeatMode.increment())
     }
 
     // --- UI CONTROL ---

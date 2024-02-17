@@ -325,4 +325,13 @@
     <string name="lng_playlist_exported">Список відтворення експортовано</string>
     <string name="lbl_export_playlist">Експортувати список відтворення</string>
     <string name="err_export_failed">Неможливо експортувати список відтворення в цей файл</string>
+    <string name="lbl_import_playlist">Імпортувати список відтворення</string>
+    <string name="lbl_donate">Пожертвувати</string>
+    <string name="lbl_supporters">Прибічники</string>
+    <string name="lbl_replaygain_track">Підлаштування ReplayGain пісні</string>
+    <string name="lbl_replaygain_album">Підлаштування ReplayGain альбому</string>
+    <string name="lng_supporters_promo">Пожертвуйте на проєкт, щоб ваше ім\'я було додано сюди!</string>
+    <string name="lbl_author">Автор</string>
+    <string name="set_remember_pause_desc">Залишати відтворення/паузу під час пропуску або редагування черги</string>
+    <string name="set_remember_pause">Запам\'ятовувати паузу</string>
 </resources>

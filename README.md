@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.3.3">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.3.3&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.4.0">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.4.0&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -51,6 +51,7 @@ precise/original dates, sort tags, and more
 - SD Card-aware folder management
 - Reliable playlisting functionality
 - Playback state persistence
+- Automatic gapless playback
 - Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)
 - External equalizer support (ex. Wavelet)
 - Edge-to-edge
@@ -65,19 +66,24 @@ precise/original dates, sort tags, and more
 
 - Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your music files
 - Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing in the background
+- Notifcations (`POST_NOTIFICATION`) to indicate ongoing playback and music loading
 
 ## Donate
 
-You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even App Itself!
+You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even the app itself!
 
-**$16/month supporters:**
+<p align="center"><b>$16/month supporters:</b></p>
 
-*Be the first to have their profile picture and username added here!*
+<p align="center">
+<a href="https://github.com/yrliet"><img src="https://avatars.githubusercontent.com/u/151430565?v=4" width=100 /><p align="center"><b><a href="https://github.com/yrliet">yrliet</a></b></p></a>
+</p>
 
-**$8/month supporters:**
+<p align="center"><b>$8/month supporters:</b></p>
 
-<p align="start">
+<p align="center">
     <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
+    <a href="https://github.com/dmint789"><img src="https://avatars.githubusercontent.com/u/53250435?v=4" width=50 /></a>
+    <a href="https://github.com/gtsiam"><img src="https://avatars.githubusercontent.com/u/7459196?v=4" width=50 /></a>
 </p>
 
 ## Building

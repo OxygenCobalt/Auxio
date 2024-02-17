@@ -288,6 +288,8 @@
     <string name="set_rewind_prev_desc">Rewind before skipping to the previous song</string>
     <string name="set_repeat_pause">Pause on repeat</string>
     <string name="set_repeat_pause_desc">Pause when a song repeats</string>
+    <string name="set_remember_pause">Remember pause</string>
+    <string name="set_remember_pause_desc">Remain playing/paused when skipping or editing queue</string>
     <string name="set_replay_gain">ReplayGain</string>
     <string name="set_replay_gain_mode">ReplayGain strategy</string>
     <string name="set_replay_gain_mode_track">Prefer track</string>

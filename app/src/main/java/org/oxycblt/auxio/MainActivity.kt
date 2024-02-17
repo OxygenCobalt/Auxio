@@ -31,7 +31,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.music.system.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.state.InternalPlayer
+import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         if (!startIntentAction(intent)) {
             // No intent action to do, just restore the previously saved state.
-            playbackModel.startAction(InternalPlayer.Action.RestoreState)
+            playbackModel.playDeferred(DeferredPlayback.RestoreState)
         }
     }
 
@@ -111,12 +111,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Transform an [Intent] given to [MainActivity] into a [InternalPlayer.Action] that can be used
-     * in the playback system.
+     * Transform an [Intent] given to [MainActivity] into a [DeferredPlayback] that can be used in
+     * the playback system.
      *
      * @param intent The (new) [Intent] given to this [MainActivity], or null if there is no intent.
-     * @return true If the analogous [InternalPlayer.Action] to the given [Intent] was started,
-     *   false otherwise.
+     * @return true If the analogous [DeferredPlayback] to the given [Intent] was started, false
+     *   otherwise.
      */
     private fun startIntentAction(intent: Intent?): Boolean {
         if (intent == null) {
@@ -137,15 +137,15 @@ class MainActivity : AppCompatActivity() {
 
         val action =
             when (intent.action) {
-                Intent.ACTION_VIEW -> InternalPlayer.Action.Open(intent.data ?: return false)
-                Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> InternalPlayer.Action.ShuffleAll
+                Intent.ACTION_VIEW -> DeferredPlayback.Open(intent.data ?: return false)
+                Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> DeferredPlayback.ShuffleAll
                 else -> {
                     logW("Unexpected intent ${intent.action}")
                     return false
                 }
             }
         logD("Translated intent to $action")
-        playbackModel.startAction(action)
+        playbackModel.playDeferred(action)
         return true
     }
 

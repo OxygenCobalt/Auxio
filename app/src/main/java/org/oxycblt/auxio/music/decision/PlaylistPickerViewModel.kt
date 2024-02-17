@@ -210,7 +210,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
-     * Set a new [currentPlaylisttoExport] from a [Playlist] [Music.UID].
+     * Set a new [currentPlaylistToExport] from a [Playlist] [Music.UID].
      *
      * @param playlistUid The [Music.UID] of the [Playlist] to export.
      */

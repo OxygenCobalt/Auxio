@@ -30,8 +30,8 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -70,26 +70,31 @@ constructor(
 
     // --- OVERRIDES ---
 
-    override fun onIndexMoved(queue: Queue) {
+    override fun onIndexMoved(index: Int) {
         logD("Index moved, updating current song")
-        applyReplayGain(queue.currentSong)
+        applyReplayGain(playbackManager.currentSong)
     }
 
-    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
+    override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
         // Other types of queue changes preserve the current song.
-        if (change.type == Queue.Change.Type.SONG) {
-            applyReplayGain(queue.currentSong)
+        if (change.type == QueueChange.Type.SONG) {
+            applyReplayGain(playbackManager.currentSong)
         }
     }
 
-    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+    override fun onNewPlayback(
+        parent: MusicParent?,
+        queue: List<Song>,
+        index: Int,
+        isShuffled: Boolean
+    ) {
         logD("New playback started, updating playback information")
-        applyReplayGain(queue.currentSong)
+        applyReplayGain(playbackManager.currentSong)
     }
 
     override fun onReplayGainSettingsChanged() {
         // ReplayGain config changed, we need to set it up again.
-        applyReplayGain(playbackManager.queue.currentSong)
+        applyReplayGain(playbackManager.currentSong)
     }
 
     // --- REPLAYGAIN PARSING ---
@@ -131,7 +136,7 @@ constructor(
                     logD("Using dynamic strategy")
                     gain.album?.takeIf {
                         playbackManager.parent is Album &&
-                            playbackManager.queue.currentSong?.album == playbackManager.parent
+                            playbackManager.currentSong?.album == playbackManager.parent
                     }
                         ?: gain.track
                 }

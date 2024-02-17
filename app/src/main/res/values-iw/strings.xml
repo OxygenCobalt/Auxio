@@ -2,7 +2,7 @@
 <resources>
     <string name="lbl_indexer">מוזיקה נטענת</string>
     <string name="lbl_indexing">מוזיקה נטענת</string>
-    <string name="lbl_retry">לנסות שוב</string>
+    <string name="lbl_retry">נסה שוב</string>
     <string name="lbl_observing">ספריית המוזיקה שלך נסרקת</string>
     <string name="lbl_all_songs">כל השירים</string>
     <string name="lbl_albums">אלבומים</string>
@@ -158,7 +158,7 @@
     <string name="set_pre_amp_desc">המגבר מוחל על ההתאמה הקיימת בזמן השמעה</string>
     <string name="lbl_new_playlist">רשימת השמעה חדשה</string>
     <string name="lbl_playlist_add">הוספה לרשימת השמעה</string>
-    <string name="lbl_grant">לתת</string>
+    <string name="lbl_grant">הענק</string>
     <string name="lbl_playlist">רשימת השמעה (פלייליסט)</string>
     <string name="lbl_playlists">רשימות השמעה</string>
     <string name="lbl_delete">מחיקה</string>
@@ -299,4 +299,22 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="clr_lime">ליים</string>
     <string name="fmt_editing">%s נערך</string>
+    <string name="def_album_count">אין אלבומים</string>
+    <string name="lbl_path_style_absolute">מחלט</string>
+    <string name="lbl_import">יבא</string>
+    <string name="lbl_windows_paths">השתמש בנתיבים המותאמים למערכת חלונות</string>
+    <string name="lbl_import_playlist">יבא רשימת השמעה</string>
+    <string name="lbl_path">נתיב</string>
+    <string name="lbl_export">יצא</string>
+    <string name="lbl_imported_playlist">רשימת השמעה מיובאת</string>
+    <string name="lbl_demo">דמו</string>
+    <string name="lbl_path_style_relative">יחסי</string>
+    <string name="lng_playlist_imported">רשימת השמעה יובאה</string>
+    <string name="lbl_demos">דמו</string>
+    <string name="err_import_failed">אין יכולת לייבא רשימת השמעה מהקובץ הנ”ל</string>
+    <string name="lbl_empty_playlist">רשימת השמעה ריקה</string>
+    <string name="lbl_path_style">צורת נתיב</string>
+    <string name="lng_playlist_exported">רשימת השמעה יוצאה</string>
+    <string name="lbl_export_playlist">יצא רשימת השמעה</string>
+    <string name="err_export_failed">אין יכולת לייצא רשימת השמעה מהקובץ הנ”ל</string>
 </resources>

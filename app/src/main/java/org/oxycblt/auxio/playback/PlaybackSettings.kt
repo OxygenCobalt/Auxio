@@ -58,6 +58,8 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
     val rewindWithPrev: Boolean
     /** Whether a song should pause after every repeat. */
     val pauseOnRepeat: Boolean
+    /** Whether to maintain the play/pause state when skipping or editing the queue */
+    val rememberPause: Boolean
 
     interface Listener {
         /** Called when one of the ReplayGain configurations have changed. */
@@ -66,6 +68,8 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
         fun onNotificationActionChanged() {}
         /** Called when [barAction] has changed. */
         fun onBarActionChanged() {}
+        /** Called when [pauseOnRepeat] has changed. */
+        fun onPauseOnRepeatChanged() {}
     }
 }
 
@@ -127,6 +131,9 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
     override val pauseOnRepeat: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_repeat_pause), false)
 
+    override val rememberPause: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_remember_pause), false)
+
     override fun migrate() {
         // MusicMode was converted to PlaySong in 3.2.0
         fun Int.migrateMusicMode() =
@@ -186,6 +193,10 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
             getString(R.string.set_key_bar_action) -> {
                 logD("Dispatching bar action change")
                 listener.onBarActionChanged()
+            }
+            getString(R.string.set_key_repeat_pause) -> {
+                logD("Dispatching pause on repeat change")
+                listener.onPauseOnRepeatChanged()
             }
         }
     }

@@ -164,14 +164,16 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="bottom|end"
+            android:contentDescription="@string/lbl_new_playlist"
             app:sdMainFabAnimationRotateAngle="135"
             app:sdMainFabClosedIconColor="@android:color/white"
-            app:sdMainFabClosedSrc="@drawable/ic_add_24"/>
+            app:sdMainFabClosedSrc="@drawable/ic_add_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/home_shuffle_fab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/lbl_shuffle"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/spacing_medium"
             android:src="@drawable/ic_shuffle_off_24" />

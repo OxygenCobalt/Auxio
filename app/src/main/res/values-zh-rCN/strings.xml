@@ -319,4 +319,13 @@
     <string name="err_export_failed">无法将播放列表导出到此文件</string>
     <string name="lng_playlist_imported">导入了播放列表</string>
     <string name="lng_playlist_exported">导出了播放列表</string>
+    <string name="lbl_import_playlist">导入播放列表</string>
+    <string name="lbl_replaygain_track">回放增益曲目调整</string>
+    <string name="lbl_supporters">支持者</string>
+    <string name="lbl_replaygain_album">回放增益专辑调整</string>
+    <string name="lbl_author">作者</string>
+    <string name="lbl_donate">捐赠</string>
+    <string name="lng_supporters_promo">要在此添加您的名字请给项目捐款！</string>
+    <string name="set_remember_pause_desc">跳过或编辑队列时保留播放/暂停状态</string>
+    <string name="set_remember_pause">记住暂停状态</string>
 </resources>

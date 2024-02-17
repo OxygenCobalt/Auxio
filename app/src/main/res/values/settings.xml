@@ -32,9 +32,7 @@
     <string name="set_key_keep_shuffle" translatable="false">KEY_KEEP_SHUFFLE</string>
     <string name="set_key_rewind_prev" translatable="false">KEY_PREV_REWIND</string>
     <string name="set_key_repeat_pause" translatable="false">KEY_LOOP_PAUSE</string>
-    <string name="set_key_save_state" translatable="false">auxio_save_state</string>
-    <string name="set_key_wipe_state" translatable="false">auxio_wipe_state</string>
-    <string name="set_key_restore_state" translatable="false">auxio_restore_state</string>
+    <string name="set_key_remember_pause" translatable="false">auxio_remember_pause</string>
 
     <string name="set_key_home_tabs" translatable="false">auxio_home_tabs</string>
     <string name="set_key_hide_collaborators" translatable="false">auxio_hide_collaborators</string>
