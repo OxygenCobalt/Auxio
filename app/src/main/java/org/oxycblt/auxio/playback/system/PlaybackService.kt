@@ -194,6 +194,7 @@ class PlaybackService :
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         if (!playbackManager.progression.isPlaying) {
+            playbackManager.playing(false)
             endSession()
         }
     }
@@ -533,6 +534,7 @@ class PlaybackService :
     ) {
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            // TODO: Once position also naturally drifts by some threshold, save
             deferSave()
         }
     }
@@ -638,18 +640,21 @@ class PlaybackService :
     // --- OTHER FUNCTIONS ---
 
     private fun deferSave() {
+        saveJob {
+            logD("Waiting for save buffer")
+            delay(SAVE_BUFFER)
+            yield()
+            logD("Committing saved state")
+            persistenceRepository.saveState(playbackManager.toSavedState())
+        }
+    }
+
+    private fun saveJob(block: suspend () -> Unit) {
         currentSaveJob?.let {
             logD("Discarding prior save job")
             it.cancel()
         }
-        currentSaveJob =
-            saveScope.launch {
-                logD("Waiting for save buffer")
-                delay(SAVE_BUFFER)
-                yield()
-                logD("Committing saved state")
-                persistenceRepository.saveState(playbackManager.toSavedState())
-            }
+        currentSaveJob = saveScope.launch { block() }
     }
 
     private fun broadcastAudioEffectAction(event: String) {
@@ -664,8 +669,19 @@ class PlaybackService :
     private fun endSession() {
         // This session has ended, so we need to reset this flag for when the next
         // session starts.
-        hasPlayed = false
-        foregroundManager.tryStopForeground()
+        saveJob {
+            logD("Committing saved state")
+            persistenceRepository.saveState(playbackManager.toSavedState())
+            withContext(Dispatchers.Main) {
+                // User could feasibly start playing again if they were fast enough, so
+                // we need to avoid stopping the foreground state if that's the case.
+                if (!player.isPlaying) {
+                    hasPlayed = false
+                    playbackManager.playing(false)
+                    foregroundManager.tryStopForeground()
+                }
+            }
+        }
     }
 
     /**
