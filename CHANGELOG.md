@@ -1,6 +1,6 @@
 # Changelog
 
-## dev (3.4.0)
+## 3.4.0
 
 #### What's New
 - Gapless playback is now used whenever possible
@@ -11,6 +11,7 @@ or editing queue
 #### What's Fixed
 - Increased music timeout to 60 seconds to accomodate large cover arts
 on slow storage drives
+- Fixed app repeatedly crashing when automatic theme was on
 
 #### What's Improved
 - The playback state is now saved more often, improving persistence

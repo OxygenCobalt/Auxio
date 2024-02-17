@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.3.3">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.3.3&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.4.0">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.4.0&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -51,6 +51,7 @@ precise/original dates, sort tags, and more
 - SD Card-aware folder management
 - Reliable playlisting functionality
 - Playback state persistence
+ -Automatic gapless playback
 - Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)
 - External equalizer support (ex. Wavelet)
 - Edge-to-edge
