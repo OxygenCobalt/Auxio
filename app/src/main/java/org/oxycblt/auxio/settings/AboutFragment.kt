@@ -68,6 +68,9 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutLicenses.setOnClickListener { requireContext().openInBrowser(LINK_LICENSES) }
         binding.aboutProfile.setOnClickListener { requireContext().openInBrowser(LINK_PROFILE) }
         binding.aboutDonate.setOnClickListener { requireContext().openInBrowser(LINK_DONATE) }
+        binding.aboutSupporterYrliet.setOnClickListener {
+            requireContext().openInBrowser(LINK_YRLIET)
+        }
         binding.aboutSupportersPromo.setOnClickListener {
             requireContext().openInBrowser(LINK_DONATE)
         }
@@ -97,5 +100,6 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         const val LINK_LICENSES = "$LINK_WIKI/Licenses"
         const val LINK_PROFILE = "https://github.com/OxygenCobalt"
         const val LINK_DONATE = "https://github.com/sponsors/OxygenCobalt"
+        const val LINK_YRLIET = "https://github.com/yrliet"
     }
 }
