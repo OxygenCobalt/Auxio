@@ -148,19 +148,6 @@ class HomeFragment :
 
         // --- UI SETUP ---
 
-        // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
-        // it ourselves.
-        binding.root.rootView.apply {
-            post {
-                findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
-                    handleSpeedDialBoundaryTouch(event)
-                }
-                findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
-                    handleSpeedDialBoundaryTouch(event)
-                }
-            }
-        }
-
         binding.homeAppbar.addOnOffsetChangedListener(this)
         binding.homeNormalToolbar.apply {
             setOnMenuItemClickListener(this@HomeFragment)
@@ -233,6 +220,23 @@ class HomeFragment :
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collect(detailModel.toShow.flow, ::handleShow)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
+        // it ourselves.
+        requireBinding().root.rootView.apply {
+            post {
+                findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
+                    handleSpeedDialBoundaryTouch(event)
+                }
+                findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
+                    handleSpeedDialBoundaryTouch(event)
+                }
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
