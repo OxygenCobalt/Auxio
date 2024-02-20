@@ -1,5 +1,11 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- R128 adjustments are now adjusted to -18 LUFS to be consistent with MP3
+- Fixed double application of opus base gain
+
 ## 3.4.0
 
 #### What's New
