@@ -418,12 +418,14 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
 
         this.stateHolder = stateHolder
-        if (isInitialized && stateMirror.index > -1) {
-            stateHolder.applySavedState(stateMirror.parent, stateMirror.rawQueue, null)
-            stateHolder.seekTo(stateMirror.progression.calculateElapsedPositionMs())
-            stateHolder.playing(false)
-            pendingDeferredPlayback?.let(stateHolder::handleDeferred)
+        if (isInitialized) {
+            if (currentSong != null) {
+                stateHolder.applySavedState(stateMirror.parent, stateMirror.rawQueue, null)
+                stateHolder.seekTo(stateMirror.progression.calculateElapsedPositionMs())
+                stateHolder.playing(false)
+            }
         }
+        pendingDeferredPlayback?.let(stateHolder::handleDeferred)
     }
 
     @Synchronized
