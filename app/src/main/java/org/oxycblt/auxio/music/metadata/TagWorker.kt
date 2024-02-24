@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.metadata
 
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MimeTypes
 import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
@@ -99,22 +98,26 @@ private class TagWorkerImpl(
             populateWithId3v2(textTags.id3v2)
             populateWithVorbis(textTags.vorbis)
 
-            // If this metadata is of a vorbis file, we actually need to extract it's base gain
-            // and divide it by 256 to get the gain in decibels.
-            if (format.sampleMimeType == MimeTypes.AUDIO_OPUS &&
-                format.initializationData.isNotEmpty() &&
-                format.initializationData[0].size >= 18) {
-                val header = format.initializationData[0]
-                val gain = (((header[16]).toInt() and 0xFF) or ((header[17].toInt() shl 8))) / 256f
-                logD("Obtained opus base gain: $gain dB")
-                if (gain != 0f) {
-                    logD("Applying opus base gain")
-                    rawSong.replayGainTrackAdjustment =
-                        (rawSong.replayGainTrackAdjustment ?: 0f) + gain
-                    rawSong.replayGainAlbumAdjustment =
-                        (rawSong.replayGainAlbumAdjustment ?: 0f) + gain
-                }
-            }
+            // OPUS base gain interpretation code: This is likely not needed, as the media player
+            // should be using the base gain already. Uncomment if that's not the case.
+            // if (format.sampleMimeType == MimeTypes.AUDIO_OPUS
+            //    && format.initializationData.isNotEmpty()
+            //    && format.initializationData[0].size >= 18) {
+            //    val header = format.initializationData[0]
+            //    val gain =
+            //        (((header[16]).toInt() and 0xFF) or ((header[17].toInt() shl 8)))
+            //        .R128ToLUFS18()
+            //    logD("Obtained opus base gain: $gain dB")
+            //    if (gain != 0f) {
+            //        logD("Applying opus base gain")
+            //        rawSong.replayGainTrackAdjustment =
+            //            (rawSong.replayGainTrackAdjustment ?: 0f) + gain
+            //        rawSong.replayGainAlbumAdjustment =
+            //            (rawSong.replayGainAlbumAdjustment ?: 0f) + gain
+            //    } else {
+            //        logD("Ignoring opus base gain")
+            //    }
+            // }
         } else {
             logD("No metadata could be extracted for ${rawSong.name}")
         }
@@ -317,13 +320,23 @@ private class TagWorkerImpl(
         // the base adjustment intrinsic to the format to create the normalized adjustment. This is
         // normally the only tag used for opus files, but some software still writes replay gain
         // tags anyway.
-        (comments["r128_track_gain"]?.parseReplayGainAdjustment()?.div(256)
+        (comments["r128_track_gain"]?.parseR128Adjustment()
                 ?: comments["replaygain_track_gain"]?.parseReplayGainAdjustment())
             ?.let { rawSong.replayGainTrackAdjustment = it }
-        (comments["r128_album_gain"]?.parseReplayGainAdjustment()?.div(256)
+        (comments["r128_album_gain"]?.parseR128Adjustment()
                 ?: comments["replaygain_album_gain"]?.parseReplayGainAdjustment())
             ?.let { rawSong.replayGainAlbumAdjustment = it }
     }
+
+    private fun List<String>.parseR128Adjustment() =
+        first()
+            .replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "")
+            .toFloatOrNull()
+            ?.nonZeroOrNull()
+            ?.run {
+                // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
+                this / 256f + 5
+            }
 
     /**
      * Parse a ReplayGain adjustment into a float value.
