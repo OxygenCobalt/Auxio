@@ -222,19 +222,17 @@ class HomeFragment :
         collect(detailModel.toShow.flow, ::handleShow)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
         // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
         // it ourselves.
         requireBinding().root.rootView.apply {
-            post {
-                findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
-                    handleSpeedDialBoundaryTouch(event)
-                }
-                findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
-                    handleSpeedDialBoundaryTouch(event)
-                }
+            findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
+                handleSpeedDialBoundaryTouch(event)
+            }
+            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
+                handleSpeedDialBoundaryTouch(event)
             }
         }
     }
