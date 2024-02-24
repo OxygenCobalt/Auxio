@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.metadata
 
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MimeTypes
 import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
@@ -99,10 +98,9 @@ private class TagWorkerImpl(
             populateWithId3v2(textTags.id3v2)
             populateWithVorbis(textTags.vorbis)
 
-
             // OPUS base gain interpretation code: This is likely not needed, as the media player
             // should be using the base gain already. Uncomment if that's not the case.
-            //if (format.sampleMimeType == MimeTypes.AUDIO_OPUS
+            // if (format.sampleMimeType == MimeTypes.AUDIO_OPUS
             //    && format.initializationData.isNotEmpty()
             //    && format.initializationData[0].size >= 18) {
             //    val header = format.initializationData[0]
@@ -119,7 +117,7 @@ private class TagWorkerImpl(
             //    } else {
             //        logD("Ignoring opus base gain")
             //    }
-            //}
+            // }
         } else {
             logD("No metadata could be extracted for ${rawSong.name}")
         }
@@ -331,10 +329,14 @@ private class TagWorkerImpl(
     }
 
     private fun List<String>.parseR128Adjustment() =
-        first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()?.run {
-            // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
-            this / 256f + 5
-        }
+        first()
+            .replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "")
+            .toFloatOrNull()
+            ?.nonZeroOrNull()
+            ?.run {
+                // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
+                this / 256f + 5
+            }
 
     /**
      * Parse a ReplayGain adjustment into a float value.
