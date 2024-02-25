@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackService.kt is part of Auxio.
+ * PlaybackServiceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,16 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.system
+package org.oxycblt.auxio.playback.service
 
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
-import android.os.IBinder
 import androidx.core.content.ContextCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -39,7 +37,6 @@ import androidx.media3.exoplayer.audio.AudioCapabilities
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.MediaSource
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,7 +60,7 @@ import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.StateAck
-import org.oxycblt.auxio.service.ForegroundManager
+import org.oxycblt.auxio.service.ServiceFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -85,9 +82,20 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * TODO: Refactor lifecycle to run completely headless (i.e no activity needed)
  * TODO: Android Auto
  */
-@AndroidEntryPoint
-class PlaybackService :
-    Service(),
+class PlaybackServiceFragment
+@Inject
+constructor(
+    val mediaSourceFactory: MediaSource.Factory,
+    val replayGainProcessor: ReplayGainAudioProcessor,
+    val mediaSessionComponent: MediaSessionComponent,
+    val widgetComponent: WidgetComponent,
+    val playbackManager: PlaybackStateManager,
+    val playbackSettings: PlaybackSettings,
+    val persistenceRepository: PersistenceRepository,
+    val listSettings: ListSettings,
+    val musicRepository: MusicRepository
+) :
+    ServiceFragment(),
     Player.Listener,
     PlaybackStateHolder,
     PlaybackSettings.Listener,
@@ -95,23 +103,11 @@ class PlaybackService :
     MusicRepository.UpdateListener {
     // Player components
     private lateinit var player: ExoPlayer
-    @Inject lateinit var mediaSourceFactory: MediaSource.Factory
-    @Inject lateinit var replayGainProcessor: ReplayGainAudioProcessor
 
     // System backend components
-    @Inject lateinit var mediaSessionComponent: MediaSessionComponent
-    @Inject lateinit var widgetComponent: WidgetComponent
     private val systemReceiver = PlaybackReceiver()
 
-    // Shared components
-    @Inject lateinit var playbackManager: PlaybackStateManager
-    @Inject lateinit var playbackSettings: PlaybackSettings
-    @Inject lateinit var persistenceRepository: PersistenceRepository
-    @Inject lateinit var listSettings: ListSettings
-    @Inject lateinit var musicRepository: MusicRepository
-
-    // State
-    private lateinit var foregroundManager: ForegroundManager
+    // Stat
     private var hasPlayed = false
     private var openAudioEffectSession = false
 
@@ -123,16 +119,14 @@ class PlaybackService :
 
     // --- SERVICE OVERRIDES ---
 
-    override fun onCreate() {
-        super.onCreate()
-
+    override fun onCreate(context: Context) {
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
                 FfmpegAudioRenderer(handler, audioListener, replayGainProcessor),
                 MediaCodecAudioRenderer(
-                    this,
+                    context,
                     MediaCodecSelector.DEFAULT,
                     handler,
                     audioListener,
@@ -141,7 +135,7 @@ class PlaybackService :
         }
 
         player =
-            ExoPlayer.Builder(this, audioRenderer)
+            ExoPlayer.Builder(context, audioRenderer)
                 .setMediaSourceFactory(mediaSourceFactory)
                 // Enable automatic WakeLock support
                 .setWakeMode(C.WAKE_MODE_LOCAL)
@@ -154,7 +148,6 @@ class PlaybackService :
                     true)
                 .build()
                 .also { it.addListener(this) }
-        foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         playbackManager.registerStateHolder(this)
@@ -176,23 +169,19 @@ class PlaybackService :
             }
 
         ContextCompat.registerReceiver(
-            this, systemReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED)
+            context, systemReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED)
 
         logD("Service created")
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent) {
         // Forward system media button sent by MediaButtonReceiver to MediaSessionComponent
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
             mediaSessionComponent.handleMediaButtonIntent(intent)
         }
-        return START_NOT_STICKY
     }
 
-    override fun onBind(intent: Intent): IBinder? = null
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
+    override fun onTaskRemoved() {
         if (!playbackManager.progression.isPlaying) {
             playbackManager.playing(false)
             endSession()
@@ -200,17 +189,13 @@ class PlaybackService :
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
-        foregroundManager.release()
-
         // Pause just in case this destruction was unexpected.
         playbackManager.playing(false)
         playbackManager.unregisterStateHolder(this)
         musicRepository.removeUpdateListener(this)
         playbackSettings.unregisterListener(this)
 
-        unregisterReceiver(systemReceiver)
+        context.unregisterReceiver(systemReceiver)
         serviceJob.cancel()
 
         widgetComponent.release()
@@ -454,7 +439,7 @@ class PlaybackService :
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
                 logD("Opening specified file")
-                deviceLibrary.findSongForUri(application, action.uri)?.let { song ->
+                deviceLibrary.findSongForUri(context.applicationContext, action.uri)?.let { song ->
                     playbackManager.play(
                         song,
                         null,
@@ -579,10 +564,7 @@ class PlaybackService :
         // manner.
         if (hasPlayed) {
             logD("Played before, starting foreground state")
-            if (!foregroundManager.tryStartForeground(notification)) {
-                logD("Notification changed, re-posting")
-                notification.post()
-            }
+            startForeground(notification)
         }
     }
 
@@ -659,9 +641,9 @@ class PlaybackService :
 
     private fun broadcastAudioEffectAction(event: String) {
         logD("Broadcasting AudioEffect event: $event")
-        sendBroadcast(
+        context.sendBroadcast(
             Intent(event)
-                .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+                .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
                 .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
     }
@@ -678,7 +660,7 @@ class PlaybackService :
                 if (!player.isPlaying) {
                     hasPlayed = false
                     playbackManager.playing(false)
-                    foregroundManager.tryStopForeground()
+                    stopForeground()
                 }
             }
         }

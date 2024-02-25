@@ -16,11 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.system
+package org.oxycblt.auxio.playback.service
 
 import androidx.media3.common.C
 import androidx.media3.exoplayer.source.ShuffleOrder
-import java.util.*
 
 /**
  * A ShuffleOrder that fixes the poorly defined default implementation of cloneAndInsert. Whereas

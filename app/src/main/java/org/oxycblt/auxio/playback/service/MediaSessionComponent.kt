@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.system
+package org.oxycblt.auxio.playback.service
 
 import android.content.Context
 import android.content.Intent
@@ -275,7 +275,7 @@ constructor(
 
     override fun onStop() {
         // Get the service to shut down with the ACTION_EXIT intent
-        context.sendBroadcast(Intent(PlaybackService.ACTION_EXIT))
+        context.sendBroadcast(Intent(PlaybackServiceFragment.ACTION_EXIT))
     }
 
     // --- INTERNAL ---
@@ -403,7 +403,7 @@ constructor(
                 ActionMode.SHUFFLE -> {
                     logD("Using shuffle MediaSession action")
                     PlaybackStateCompat.CustomAction.Builder(
-                        PlaybackService.ACTION_INVERT_SHUFFLE,
+                        PlaybackServiceFragment.ACTION_INVERT_SHUFFLE,
                         context.getString(R.string.desc_shuffle),
                         if (playbackManager.isShuffled) {
                             R.drawable.ic_shuffle_on_24
@@ -414,7 +414,7 @@ constructor(
                 else -> {
                     logD("Using repeat mode MediaSession action")
                     PlaybackStateCompat.CustomAction.Builder(
-                        PlaybackService.ACTION_INC_REPEAT_MODE,
+                        PlaybackServiceFragment.ACTION_INC_REPEAT_MODE,
                         context.getString(R.string.desc_change_repeat),
                         playbackManager.repeatMode.icon)
                 }
@@ -424,7 +424,7 @@ constructor(
         // Add the exit action so the service can be closed
         val exitAction =
             PlaybackStateCompat.CustomAction.Builder(
-                    PlaybackService.ACTION_EXIT,
+                    PlaybackServiceFragment.ACTION_EXIT,
                     context.getString(R.string.desc_exit),
                     R.drawable.ic_close_24)
                 .build()

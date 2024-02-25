@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.system
+package org.oxycblt.auxio.playback.service
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -53,11 +53,13 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))
         addAction(
-            buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24))
+            buildAction(
+                context, PlaybackServiceFragment.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24))
         addAction(buildPlayPauseAction(context, true))
         addAction(
-            buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24))
-        addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_close_24))
+            buildAction(
+                context, PlaybackServiceFragment.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24))
+        addAction(buildAction(context, PlaybackServiceFragment.ACTION_EXIT, R.drawable.ic_close_24))
 
         setStyle(MediaStyle().setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
     }
@@ -122,14 +124,14 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
             } else {
                 R.drawable.ic_play_24
             }
-        return buildAction(context, PlaybackService.ACTION_PLAY_PAUSE, drawableRes)
+        return buildAction(context, PlaybackServiceFragment.ACTION_PLAY_PAUSE, drawableRes)
     }
 
     private fun buildRepeatAction(
         context: Context,
         repeatMode: RepeatMode
     ): NotificationCompat.Action {
-        return buildAction(context, PlaybackService.ACTION_INC_REPEAT_MODE, repeatMode.icon)
+        return buildAction(context, PlaybackServiceFragment.ACTION_INC_REPEAT_MODE, repeatMode.icon)
     }
 
     private fun buildShuffleAction(
@@ -142,7 +144,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
             } else {
                 R.drawable.ic_shuffle_off_24
             }
-        return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
+        return buildAction(context, PlaybackServiceFragment.ACTION_INVERT_SHUFFLE, drawableRes)
     }
 
     private fun buildAction(context: Context, actionName: String, @DrawableRes iconRes: Int) =

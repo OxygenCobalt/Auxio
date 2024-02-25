@@ -32,7 +32,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.playback.system.PlaybackService
+import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -323,7 +323,7 @@ class WidgetProvider : AppWidgetProvider() {
         // by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_play_pause,
-            context.newBroadcastPendingIntent(PlaybackService.ACTION_PLAY_PAUSE))
+            context.newBroadcastPendingIntent(PlaybackServiceFragment.ACTION_PLAY_PAUSE))
 
         // Set up the play/pause button appearance. Like the Android 13 media controls, use
         // a circular FAB when paused, and a squircle FAB when playing. This does require us
@@ -364,10 +364,10 @@ class WidgetProvider : AppWidgetProvider() {
         // by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_skip_prev,
-            context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_PREV))
+            context.newBroadcastPendingIntent(PlaybackServiceFragment.ACTION_SKIP_PREV))
         setOnClickPendingIntent(
             R.id.widget_skip_next,
-            context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_NEXT))
+            context.newBroadcastPendingIntent(PlaybackServiceFragment.ACTION_SKIP_NEXT))
         return this
     }
 
@@ -389,10 +389,10 @@ class WidgetProvider : AppWidgetProvider() {
         // be recognized by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_repeat,
-            context.newBroadcastPendingIntent(PlaybackService.ACTION_INC_REPEAT_MODE))
+            context.newBroadcastPendingIntent(PlaybackServiceFragment.ACTION_INC_REPEAT_MODE))
         setOnClickPendingIntent(
             R.id.widget_shuffle,
-            context.newBroadcastPendingIntent(PlaybackService.ACTION_INVERT_SHUFFLE))
+            context.newBroadcastPendingIntent(PlaybackServiceFragment.ACTION_INVERT_SHUFFLE))
 
         // Set up the repeat/shuffle buttons. When working with RemoteViews, we will
         // need to hard-code different accent tinting configurations, as stateful drawables

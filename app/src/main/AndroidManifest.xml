@@ -77,22 +77,12 @@
             </intent-filter>
         </activity>
 
-        <!--
-        Service handling querying the media database,  extracting metadata, and constructing
-        the music library.
-        -->
-        <service
-            android:name=".music.system.IndexerService"
-            android:foregroundServiceType="dataSync"
-            android:icon="@mipmap/ic_launcher"
-            android:exported="false"
-            android:roundIcon="@mipmap/ic_launcher" />
 
         <!--
         Service handling music playback, system components, and state saving.
         -->
         <service
-            android:name=".playback.system.PlaybackService"
+            android:name=".service.AuxioService"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:exported="false"
@@ -103,7 +93,7 @@
         See the class for more info.
         -->
         <receiver
-            android:name=".playback.system.MediaButtonReceiver"
+            android:name=".playback.service.MediaButtonReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

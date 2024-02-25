@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * IndexerService.kt is part of Auxio.
+ * IndexerServiceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.system
+package org.oxycblt.auxio.music.service
 
 import android.app.Service
-import android.content.Intent
+import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
 import android.os.PowerManager
 import android.provider.MediaStore
 import coil.ImageLoader
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +37,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.service.ForegroundManager
+import org.oxycblt.auxio.service.ServiceFragment
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
@@ -57,35 +55,33 @@ import org.oxycblt.auxio.util.logD
  *
  * TODO: Unify with PlaybackService as part of the service independence project
  */
-@AndroidEntryPoint
-class IndexerService :
-    Service(),
+class IndexerServiceFragment
+@Inject
+constructor(
+    val imageLoader: ImageLoader,
+    val musicRepository: MusicRepository,
+    val musicSettings: MusicSettings,
+    val playbackManager: PlaybackStateManager
+) :
+    ServiceFragment(),
     MusicRepository.IndexingWorker,
     MusicRepository.IndexingListener,
     MusicRepository.UpdateListener,
     MusicSettings.Listener {
-    @Inject lateinit var imageLoader: ImageLoader
-    @Inject lateinit var musicRepository: MusicRepository
-    @Inject lateinit var musicSettings: MusicSettings
-    @Inject lateinit var playbackManager: PlaybackStateManager
-
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
-    private lateinit var foregroundManager: ForegroundManager
     private lateinit var indexingNotification: IndexingNotification
     private lateinit var observingNotification: ObservingNotification
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var indexerContentObserver: SystemContentObserver
 
-    override fun onCreate() {
-        super.onCreate()
-        // Initialize the core service components first.
-        foregroundManager = ForegroundManager(this)
-        indexingNotification = IndexingNotification(this)
-        observingNotification = ObservingNotification(this)
+    override fun onCreate(context: Context) {
+        indexingNotification = IndexingNotification(context)
+        observingNotification = ObservingNotification(context)
         wakeLock =
-            getSystemServiceCompat(PowerManager::class)
+            context
+                .getSystemServiceCompat(PowerManager::class)
                 .newWakeLock(
                     PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexerService")
         // Initialize any listener-dependent components last as we wouldn't want a listener race
@@ -99,14 +95,8 @@ class IndexerService :
         logD("Service created.")
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) = START_NOT_STICKY
-
-    override fun onBind(intent: Intent?): IBinder? = null
-
     override fun onDestroy() {
-        super.onDestroy()
         // De-initialize core service components first.
-        foregroundManager.release()
         wakeLock.releaseSafe()
         // Then cancel the listener-dependent components to ensure that stray reloading
         // events will not occur.
@@ -126,10 +116,11 @@ class IndexerService :
         // Cancel the previous music loading job.
         currentIndexJob?.cancel()
         // Start a new music loading job on a co-routine.
-        currentIndexJob = musicRepository.index(this@IndexerService, withCache)
+        currentIndexJob = musicRepository.index(this, withCache)
     }
 
-    override val context = this
+    override val applicationContext: Context
+        get() = context
 
     override val scope = indexScope
 
@@ -169,9 +160,9 @@ class IndexerService :
         // notification when initially starting, we will not update the notification
         // unless it indicates that it has changed.
         val changed = indexingNotification.updateIndexingState(progress)
-        if (!foregroundManager.tryStartForeground(indexingNotification) && changed) {
+        if (changed) {
             logD("Notification changed, re-posting notification")
-            indexingNotification.post()
+            startForeground(indexingNotification)
         }
         // Make sure we can keep the CPU on while loading music
         wakeLock.acquireSafe()
@@ -188,14 +179,11 @@ class IndexerService :
             // TODO: Assuming I unify this with PlaybackService, it's possible that I won't need
             //  this anymore, or at least I only have to use it when the app task is not removed.
             logD("Need to observe, staying in foreground")
-            if (!foregroundManager.tryStartForeground(observingNotification)) {
-                logD("Notification changed, re-posting notification")
-                observingNotification.post()
-            }
+            startForeground(observingNotification)
         } else {
             // Not observing and done loading, exit foreground.
             logD("Exiting foreground")
-            foregroundManager.tryStopForeground()
+            stopForeground()
         }
         // Release our wake lock (if we were using it)
         wakeLock.releaseSafe()
@@ -250,7 +238,7 @@ class IndexerService :
         private val handler = Handler(Looper.getMainLooper())
 
         init {
-            contentResolverSafe.registerContentObserver(
+            context.contentResolverSafe.registerContentObserver(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, this)
         }
 
@@ -260,7 +248,7 @@ class IndexerService :
          */
         fun release() {
             handler.removeCallbacks(this)
-            contentResolverSafe.unregisterContentObserver(this)
+            context.contentResolverSafe.unregisterContentObserver(this)
         }
 
         override fun onChange(selfChange: Boolean) {

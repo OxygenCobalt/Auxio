@@ -29,10 +29,9 @@ import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.databinding.ActivityMainBinding
-import org.oxycblt.auxio.music.system.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
-import org.oxycblt.auxio.playback.system.PlaybackService
+import org.oxycblt.auxio.service.AuxioService
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -71,8 +70,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        startService(Intent(this, IndexerService::class.java))
-        startService(Intent(this, PlaybackService::class.java))
+        startService(Intent(this, AuxioService::class.java))
 
         if (!startIntentAction(intent)) {
             // No intent action to do, just restore the previously saved state.

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.system
+package org.oxycblt.auxio.playback.service
 
 import android.content.BroadcastReceiver
 import android.content.ComponentName
@@ -29,7 +29,8 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 
 /**
- * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to [PlaybackService].
+ * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to
+ * [PlaybackServiceFragment].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -46,7 +47,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
             // wrong action at the wrong time will result in the app crashing, and there is
             // nothing I can do about it.
             logD("Delivering media button intent $intent")
-            intent.component = ComponentName(context, PlaybackService::class.java)
+            intent.component = ComponentName(context, PlaybackServiceFragment::class.java)
             ContextCompat.startForegroundService(context, intent)
         }
     }
