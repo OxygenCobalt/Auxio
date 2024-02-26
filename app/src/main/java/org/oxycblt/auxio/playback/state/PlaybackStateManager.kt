@@ -780,14 +780,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             val oldStateMirror = stateMirror
             if (oldStateMirror.rawQueue != rawQueue) {
                 logD("Queue changed, must reload player")
+                stateHolder?.playing(false)
                 stateHolder?.applySavedState(parent, rawQueue, StateAck.NewPlayback)
-                stateHolder?.playing(false)
-            }
-
-            if (oldStateMirror.progression.calculateElapsedPositionMs() != savedState.positionMs) {
-                logD("Seeking to saved position ${savedState.positionMs}ms")
                 stateHolder?.seekTo(savedState.positionMs)
-                stateHolder?.playing(false)
             }
         }
 

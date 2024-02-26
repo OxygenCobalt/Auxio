@@ -305,35 +305,35 @@ constructor(
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Creating playlist $name with ${songs.size} songs")
         userLibrary.createPlaylist(name, songs)
-        dispatchLibraryChange(device = false, user = true)
+        withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Renaming $playlist to $name")
         userLibrary.renamePlaylist(playlist, name)
-        dispatchLibraryChange(device = false, user = true)
+        withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Deleting $playlist")
         userLibrary.deletePlaylist(playlist)
-        dispatchLibraryChange(device = false, user = true)
+        withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Adding ${songs.size} songs to $playlist")
         userLibrary.addToPlaylist(playlist, songs)
-        dispatchLibraryChange(device = false, user = true)
+        withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Rewriting $playlist with ${songs.size} songs")
         userLibrary.rewritePlaylist(playlist, songs)
-        dispatchLibraryChange(device = false, user = true)
+        withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     @Synchronized
