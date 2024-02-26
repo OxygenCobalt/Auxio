@@ -492,7 +492,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to end of queue")
-            stateHolder.addToQueue(songs, StateAck.AddToQueue(stateMirror.index + 1, songs.size))
+            stateHolder.addToQueue(songs, StateAck.AddToQueue(queue.size, songs.size))
         }
     }
 
