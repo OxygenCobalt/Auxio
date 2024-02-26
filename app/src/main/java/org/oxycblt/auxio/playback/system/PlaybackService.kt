@@ -485,6 +485,10 @@ class PlaybackService :
         ack?.let { playbackManager.ack(this, it) }
     }
 
+    override fun reset() {
+        player.setMediaItems(emptyList())
+    }
+
     // --- PLAYER OVERRIDES ---
 
     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {

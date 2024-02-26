@@ -153,6 +153,9 @@ interface PlaybackStateHolder {
      *   ack.
      */
     fun applySavedState(parent: MusicParent?, rawQueue: RawQueue, ack: StateAck.NewPlayback?)
+
+    /** Reset this instance to an empty state. */
+    fun reset()
 }
 
 /**

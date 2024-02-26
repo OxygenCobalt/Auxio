@@ -717,6 +717,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             return
         }
 
+        val stateHolder = stateHolder ?: return
+
         // The heap may not be the same if the song composition changed between state saves/reloads.
         // This also means that we must modify the shuffled mapping as well, in what it points to
         // and it's general composition.
@@ -763,27 +765,30 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             "Queue inconsistency detected: Shuffled mapping indices out of heap bounds"
         }
 
+        if (index < 0) {
+            stateHolder.reset()
+            return
+        }
+
         val rawQueue =
             RawQueue(
                 heap = heap,
                 shuffledMapping = shuffledMapping,
                 heapIndex =
                     if (shuffledMapping.isNotEmpty()) {
-                        shuffledMapping[savedState.index]
+                        shuffledMapping[index]
                     } else {
                         index
                     })
 
-        if (index > -1) {
-            // Valid state where something needs to be played, direct the stateholder to apply
-            // this new state.
-            val oldStateMirror = stateMirror
-            if (oldStateMirror.rawQueue != rawQueue) {
-                logD("Queue changed, must reload player")
-                stateHolder?.playing(false)
-                stateHolder?.applySavedState(parent, rawQueue, StateAck.NewPlayback)
-                stateHolder?.seekTo(savedState.positionMs)
-            }
+        // Valid state where something needs to be played, direct the stateholder to apply
+        // this new state.
+        val oldStateMirror = stateMirror
+        if (oldStateMirror.rawQueue != rawQueue) {
+            logD("Queue changed, must reload player")
+            stateHolder.playing(false)
+            stateHolder.applySavedState(parent, rawQueue, StateAck.NewPlayback)
+            stateHolder.seekTo(savedState.positionMs)
         }
 
         isInitialized = true
