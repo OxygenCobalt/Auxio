@@ -4,22 +4,23 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ui_widget_bg_system"
+    android:background="@drawable/ui_widget_bg_sharp"
     android:backgroundTint="?attr/colorSurface"
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:theme="@style/Theme.Auxio.Widget">
 
     <!--
-    Wrapping the 1:1 ImageView hack in a LinearLayout allows the view to measure greedily
-    without squishing the controls.
+    clipToOutline won't actually do anything before Android 12, but that's fine since we won't
+    show a cover then anyway.
     -->
-
     <android.widget.ImageView
         android:id="@+id/widget_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
+        android:background="@drawable/ui_widget_bg_round"
+        android:clipToOutline="true"
         tools:ignore="ContentDescription" />
 
     <android.widget.LinearLayout
