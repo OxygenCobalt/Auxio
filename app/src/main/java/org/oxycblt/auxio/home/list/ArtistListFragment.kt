@@ -90,7 +90,7 @@ class ArtistListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val artist = homeModel.artistList.value[pos]
+        val artist = homeModel.artistList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.artistSort.mode) {
             // By Name -> Use Name

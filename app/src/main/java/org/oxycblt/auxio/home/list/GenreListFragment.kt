@@ -89,7 +89,7 @@ class GenreListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val genre = homeModel.genreList.value[pos]
+        val genre = homeModel.genreList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.genreSort.mode) {
             // By Name -> Use Name

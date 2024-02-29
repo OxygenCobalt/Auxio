@@ -492,7 +492,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to end of queue")
-            stateHolder.addToQueue(songs, StateAck.AddToQueue(stateMirror.index + 1, songs.size))
+            stateHolder.addToQueue(songs, StateAck.AddToQueue(queue.size, songs.size))
         }
     }
 
@@ -717,6 +717,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             return
         }
 
+        val stateHolder = stateHolder ?: return
+
         // The heap may not be the same if the song composition changed between state saves/reloads.
         // This also means that we must modify the shuffled mapping as well, in what it points to
         // and it's general composition.
@@ -741,19 +743,20 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             }
 
         // Make sure we re-align the index to point to the previously playing song.
-        fun pointingAtSong(): Boolean {
+        fun pointingAtSong(index: Int): Boolean {
             val currentSong =
                 if (shuffledMapping.isNotEmpty()) {
-                    shuffledMapping.getOrNull(savedState.index)?.let { heap.getOrNull(it) }
+                    shuffledMapping.getOrNull(index)?.let { heap.getOrNull(it) }
                 } else {
-                    heap.getOrNull(savedState.index)
+                    heap.getOrNull(index)
                 }
+            logD(currentSong)
 
             return currentSong?.uid == savedState.songUid
         }
 
         var index = savedState.index
-        while (!pointingAtSong() && index > -1) {
+        while (!pointingAtSong(index) && index > -1) {
             index--
         }
 
@@ -763,32 +766,30 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             "Queue inconsistency detected: Shuffled mapping indices out of heap bounds"
         }
 
+        if (index < 0) {
+            stateHolder.reset(StateAck.NewPlayback)
+            return
+        }
+
         val rawQueue =
             RawQueue(
                 heap = heap,
                 shuffledMapping = shuffledMapping,
                 heapIndex =
                     if (shuffledMapping.isNotEmpty()) {
-                        shuffledMapping[savedState.index]
+                        shuffledMapping[index]
                     } else {
                         index
                     })
 
-        if (index > -1) {
-            // Valid state where something needs to be played, direct the stateholder to apply
-            // this new state.
-            val oldStateMirror = stateMirror
-            if (oldStateMirror.rawQueue != rawQueue) {
-                logD("Queue changed, must reload player")
-                stateHolder?.applySavedState(parent, rawQueue, StateAck.NewPlayback)
-                stateHolder?.playing(false)
-            }
-
-            if (oldStateMirror.progression.calculateElapsedPositionMs() != savedState.positionMs) {
-                logD("Seeking to saved position ${savedState.positionMs}ms")
-                stateHolder?.seekTo(savedState.positionMs)
-                stateHolder?.playing(false)
-            }
+        // Valid state where something needs to be played, direct the stateholder to apply
+        // this new state.
+        val oldStateMirror = stateMirror
+        if (oldStateMirror.rawQueue != rawQueue) {
+            logD("Queue changed, must reload player")
+            stateHolder.playing(false)
+            stateHolder.applySavedState(parent, rawQueue, StateAck.NewPlayback)
+            stateHolder.seekTo(savedState.positionMs)
         }
 
         isInitialized = true

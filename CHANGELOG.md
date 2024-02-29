@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.4.2
+
+#### What's Fixed
+- Fixed "Add to queue" incorrectly changing the queue and crashing the app
+- Fixed 1x4 and 1x3 widgets having square edges
+- Fixed crash when music library updates in such a way to change music information
+- Fixed crash when music library updates while scrolled in a list
+- Fixed inconsistent corner radius in wafer widgets
+
 ## 3.4.1
 
 #### What's Fixed

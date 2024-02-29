@@ -158,6 +158,7 @@ class WidgetProvider : AppWidgetProvider() {
                 uiSettings,
             )
             .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
+            .setupFillingCover(uiSettings)
             .setupTimelineControls(context, state)
 
     private fun newWideWaferLayout(
@@ -170,6 +171,7 @@ class WidgetProvider : AppWidgetProvider() {
                 uiSettings,
             )
             .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
+            .setupFillingCover(uiSettings)
             .setupFullControls(context, state)
 
     private fun newThinDockedLayout(
@@ -231,9 +233,9 @@ class WidgetProvider : AppWidgetProvider() {
         // On API 31+, the bar should always be round in order to fit in with other widgets.
         val background =
             if (useRoundedRemoteViews(uiSettings)) {
-                R.drawable.ui_widget_bar_round
+                R.drawable.ui_widget_bg_round
             } else {
-                R.drawable.ui_widget_bar_system
+                R.drawable.ui_widget_bg_sharp
             }
         setBackgroundResource(R.id.widget_controls, background)
         return this
@@ -253,7 +255,7 @@ class WidgetProvider : AppWidgetProvider() {
             if (useRoundedRemoteViews(uiSettings)) {
                 R.drawable.ui_widget_bg_round
             } else {
-                R.drawable.ui_widget_bg_system
+                R.drawable.ui_widget_bg_sharp
             }
         setBackgroundResource(android.R.id.background, background)
         return this
@@ -289,6 +291,20 @@ class WidgetProvider : AppWidgetProvider() {
             setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
         }
 
+        return this
+    }
+
+    private fun RemoteViews.setupFillingCover(uiSettings: UISettings): RemoteViews {
+        // Below API 31, enable a rounded background only if round mode is enabled.
+        // On API 31+, the background should always be round in order to fit in with other
+        // widgets.
+        val background =
+            if (useRoundedRemoteViews(uiSettings)) {
+                R.drawable.ui_widget_bg_round
+            } else {
+                R.drawable.ui_widget_bg_sharp
+            }
+        setBackgroundResource(R.id.widget_cover, background)
         return this
     }
 

@@ -95,7 +95,7 @@ class AlbumListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val album = homeModel.albumList.value[pos]
+        val album = homeModel.albumList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.albumSort.mode) {
             // By Name -> Use Name
