@@ -68,11 +68,12 @@ class BetterShuffleOrder(private val shuffled: IntArray) : ShuffleOrder {
         }
 
         val newShuffled = IntArray(shuffled.size + insertionCount)
-        val pivot: Int = if (insertionIndex < shuffled.size) {
-            indexInShuffled[insertionIndex]
-        } else {
-            indexInShuffled.size
-        }
+        val pivot: Int =
+            if (insertionIndex < shuffled.size) {
+                indexInShuffled[insertionIndex]
+            } else {
+                indexInShuffled.size
+            }
         for (i in shuffled.indices) {
             var currentIndex = shuffled[i]
             if (currentIndex > insertionIndex) {
