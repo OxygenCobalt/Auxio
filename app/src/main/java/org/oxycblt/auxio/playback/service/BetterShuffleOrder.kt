@@ -67,6 +67,9 @@ class BetterShuffleOrder(private val shuffled: IntArray) : ShuffleOrder {
             return BetterShuffleOrder(insertionCount, -1)
         }
 
+        // TODO: Fix this scuffed hacky logic
+        // TODO: Play next ordering needs to persist in unshuffle
+
         val newShuffled = IntArray(shuffled.size + insertionCount)
         val pivot: Int =
             if (insertionIndex < shuffled.size) {
@@ -86,8 +89,14 @@ class BetterShuffleOrder(private val shuffled: IntArray) : ShuffleOrder {
                 newShuffled[i + insertionCount] = currentIndex
             }
         }
-        for (i in 0 until insertionCount) {
-            newShuffled[pivot + i + 1] = insertionIndex + i + 1
+        if (insertionIndex < shuffled.size) {
+            for (i in 0 until insertionCount) {
+                newShuffled[pivot + i + 1] = insertionIndex + i + 1
+            }
+        } else {
+            for (i in 0 until insertionCount) {
+                newShuffled[pivot + i] = insertionIndex + i
+            }
         }
         return BetterShuffleOrder(newShuffled)
     }
