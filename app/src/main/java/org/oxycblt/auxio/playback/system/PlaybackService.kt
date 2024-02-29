@@ -485,8 +485,9 @@ class PlaybackService :
         ack?.let { playbackManager.ack(this, it) }
     }
 
-    override fun reset() {
+    override fun reset(ack: StateAck.NewPlayback) {
         player.setMediaItems(emptyList())
+        playbackManager.ack(this, ack)
     }
 
     // --- PLAYER OVERRIDES ---

@@ -743,19 +743,20 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             }
 
         // Make sure we re-align the index to point to the previously playing song.
-        fun pointingAtSong(): Boolean {
+        fun pointingAtSong(index: Int): Boolean {
             val currentSong =
                 if (shuffledMapping.isNotEmpty()) {
-                    shuffledMapping.getOrNull(savedState.index)?.let { heap.getOrNull(it) }
+                    shuffledMapping.getOrNull(index)?.let { heap.getOrNull(it) }
                 } else {
-                    heap.getOrNull(savedState.index)
+                    heap.getOrNull(index)
                 }
+            logD(currentSong)
 
             return currentSong?.uid == savedState.songUid
         }
 
         var index = savedState.index
-        while (!pointingAtSong() && index > -1) {
+        while (!pointingAtSong(index) && index > -1) {
             index--
         }
 
@@ -766,7 +767,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
 
         if (index < 0) {
-            stateHolder.reset()
+            stateHolder.reset(StateAck.NewPlayback)
             return
         }
 
