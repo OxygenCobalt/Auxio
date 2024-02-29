@@ -92,7 +92,7 @@ class SongListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val song = homeModel.songList.value[pos]
+        val song = homeModel.songList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.

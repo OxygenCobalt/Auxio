@@ -87,7 +87,7 @@ class PlaylistListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val playlist = homeModel.playlistList.value[pos]
+        val playlist = homeModel.playlistList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.playlistSort.mode) {
             // By Name -> Use Name
