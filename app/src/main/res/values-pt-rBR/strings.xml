@@ -223,7 +223,7 @@
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="lbl_compilation_live">Compilação ao vivo</string>
-    <string name="lbl_compilation_remix">Compilações de remix</string>
+    <string name="lbl_compilation_remix">Compilação de remix</string>
     <string name="set_separators_plus">Mais (+)</string>
     <string name="set_separators_and">E comercial (&amp;)</string>
     <string name="set_separators_comma">Vírgula (,)</string>
@@ -238,8 +238,8 @@
     <string name="set_cover_mode_off">Desligado</string>
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_cover_mode_quality">Alta qualidade</string>
-    <string name="lbl_mixes">Mixes</string>
-    <string name="lbl_mix">Mix</string>
+    <string name="lbl_mixes">Mixagens de DJ</string>
+    <string name="lbl_mix">Mixagem de DJ</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artista</item>
         <item quantity="many">%d artistas</item>
@@ -299,7 +299,7 @@
     <string name="lbl_parent_detail">Visualizar</string>
     <string name="lng_playlist_imported">Playlist importada</string>
     <string name="lng_playlist_exported">Playlist exportada</string>
-    <string name="err_import_failed">Incapaz de importar uma playlist deste arquivo</string>
+    <string name="err_import_failed">Não foi possível importar uma playlist deste arquivo</string>
     <string name="err_export_failed">Incapaz de exportar a playlist para este arquivo</string>
     <string name="lbl_demos">Demos</string>
     <string name="lbl_author">Autor</string>
@@ -320,4 +320,13 @@
     <string name="lbl_path_style_relative">Relativo</string>
     <string name="lbl_import">Importar</string>
     <string name="lbl_windows_paths">Usar caminhos compatíveis com Windows</string>
+    <string name="lbl_replaygain_album">Ajuste de ReplayGain do álbum</string>
+    <string name="lbl_error_info">Informação de erro</string>
+    <string name="set_square_covers">Forçar capas de álbuns quadradas</string>
+    <string name="def_disc">Sem disco</string>
+    <string name="def_album_count">Sem álbuns</string>
+    <string name="lbl_replaygain_track">Ajuste de ReplayGain da faixa</string>
+    <string name="set_square_covers_desc">Recorta todas as capas de álbuns para uma proporção de imagem 1:1</string>
+    <string name="def_song_count">Sem músicas</string>
+    <string name="lbl_report">Informar</string>
 </resources>
