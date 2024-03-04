@@ -176,4 +176,23 @@
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_selected">%d seligite</string>
     <string name="fmt_disc_no">Disco %d</string>
+    <plurals name="fmt_album_count">
+        <item quantity="one">%d album</item>
+        <item quantity="other">%d albumes</item>
+    </plurals>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artista</item>
+        <item quantity="other">%d artistas</item>
+    </plurals>
+    <plurals name="fmt_song_count">
+        <item quantity="one">%d canto</item>
+        <item quantity="other">%d cantos</item>
+    </plurals>
+    <string name="err_did_not_wipe">Non poteva rader le stato</string>
+    <string name="err_did_not_restore">Non poteva restaurar le stato</string>
+    <string name="fmt_lib_song_count">Cantos cargate: %d</string>
+    <string name="fmt_lib_album_count">Albumes cargate: %d</string>
+    <string name="fmt_lib_artist_count">Artistas cargate: %d</string>
+    <string name="fmt_lib_total_duration">Duration total: %s</string>
+    <string name="lbl_shuffle_shortcut_short">Aleatori</string>
 </resources>
