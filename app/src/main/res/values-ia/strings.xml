@@ -195,4 +195,11 @@
     <string name="fmt_lib_artist_count">Artistas cargate: %d</string>
     <string name="fmt_lib_total_duration">Duration total: %s</string>
     <string name="lbl_shuffle_shortcut_short">Aleatori</string>
+    <string name="set_repeat_pause">Pausar in le repetition</string>
+    <string name="lbl_indexer">Cargamento del musica</string>
+    <string name="lng_playlist_renamed">Lista de reproduction renominate</string>
+    <string name="lng_playlist_exported">Lista de reproduction exportate</string>
+    <string name="lng_playlist_deleted">Lista de reproduction delite</string>
+    <string name="set_observing">Recargamento automatic</string>
+    <string name="set_images">Imagines</string>
 </resources>
