@@ -224,7 +224,7 @@
     <string name="lbl_equalizer">Эквалайзер</string>
     <string name="set_hide_collaborators">Скрыть соавторов</string>
     <string name="set_hide_collaborators_desc">Показывать только тех исполнителей, которые напрямую указаны в альбоме</string>
-    <string name="set_exclude_non_music">Исключить не-музыку</string>
+    <string name="set_exclude_non_music">Исключить другие звуковые файлы</string>
     <string name="set_separators">Многозначные разделители</string>
     <string name="set_separators_slash">Косая черта (/)</string>
     <string name="set_separators_desc">Настройка символов, обозначающих несколько значений тегов</string>
