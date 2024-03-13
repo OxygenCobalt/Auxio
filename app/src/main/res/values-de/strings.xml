@@ -232,7 +232,7 @@
     <string name="set_separators_slash">Schrägstrich (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_play_song_from_artist">Vom Künstler abspielen</string>
-    <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte. Das kann gelöst werden, in dem vor ungewollte Trenner ein Backslash (\\) eingefügt wird.</string>
+    <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte. Das kann gelöst werden, indem vor ungewollte Trenner ein Backslash (\\) eingefügt wird.</string>
     <string name="set_exclude_non_music">Nicht-Musik ausschließen</string>
     <string name="set_exclude_non_music_desc">Audio-Dateien, die keine Musik sind (wie Podcasts), ignorieren</string>
     <string name="set_cover_mode">Album-Cover</string>

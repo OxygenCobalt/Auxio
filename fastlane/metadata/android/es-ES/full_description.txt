@@ -11,6 +11,7 @@ fechas precisas/originales, ordenar etiquetas y más
 - Sistema de artista avanzado que unifica artistas y artistas de álbumes
 - Gestión de carpetas compatible con tarjetas SD
 - Funcionalidad de lista de reproducción confiable
+- Reproducción automática sin pausas
 - Persistencia del estado de reproducción
 - Compatibilidad total con ReplayGain (en archivos MP3, FLAC, OGG, OPUS y MP4)
 - Soporte de ecualizador externo (ej. Wavelet)

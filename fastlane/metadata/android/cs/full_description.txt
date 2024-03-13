@@ -12,6 +12,7 @@ přesná/původní data, štítky pro řazení a další
 - Správa složek podporující SD karty
 - Spolehlivá funkce seznamů skladeb
 - Uchovávání stavu přehrávání
+- Automatické přehrávání bez mezer
 - Plná podpora ReplayGain (u souborů MP3, FLAC, OGG, OPUS a MP4)
 - Podpora externích přehrávačů (např. Wavelet)
 - Edge-to-edge
