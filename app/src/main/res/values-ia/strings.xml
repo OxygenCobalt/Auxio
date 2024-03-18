@@ -206,4 +206,7 @@
     <string name="lng_indexing">Cargante tu bibliotheca de musica…</string>
     <string name="set_bar_action">Action personalisate del barra de reproduction</string>
     <string name="lbl_artist_details">Vader al artista</string>
+    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_audio_desc">Configurar le sono e le comportamento de reproduction</string>
+    <string name="fmt_deletion_info">Deler %s? Isto non es pote disfacer.</string>
 </resources>
