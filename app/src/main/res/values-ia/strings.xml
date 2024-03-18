@@ -202,4 +202,8 @@
     <string name="lng_playlist_deleted">Lista de reproduction delite</string>
     <string name="set_observing">Recargamento automatic</string>
     <string name="set_images">Imagines</string>
+    <string name="lbl_state_restored">Stato restaurate</string>
+    <string name="lng_indexing">Cargante tu bibliotheca de musica…</string>
+    <string name="set_bar_action">Action personalisate del barra de reproduction</string>
+    <string name="lbl_artist_details">Vader al artista</string>
 </resources>
