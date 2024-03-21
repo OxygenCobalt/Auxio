@@ -209,4 +209,22 @@
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_audio_desc">Configurar le sono e le comportamento de reproduction</string>
     <string name="fmt_deletion_info">Deler %s? Isto non es pote disfacer.</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="fmt_sample_rate">%d Hz</string>
+    <string name="fmt_bitrate">%d kbps</string>
+    <string name="fmt_indexing">Cargante le bibliotheca de musica… (%1$d/%2$d)</string>
+    <string name="lbl_import_playlist">Importar lista de reproduction</string>
+    <string name="set_notif_action">Action de notification personalisate</string>
+    <string name="set_content_desc">Controlar le cargamento del musica e imagines</string>
+    <string name="set_pre_amp_without">Adjustamento sin etiquettas</string>
+    <string name="set_rescan">Rescannar le musica</string>
+    <string name="set_save_desc">Salveguardar le stato de reproduction ora</string>
+    <string name="set_wipe_state">Rader le stato de reproduction</string>
+    <string name="desc_clear_search">Rader le requestas de recerca</string>
+    <string name="desc_artist_image">Imagine de artista pro %s</string>
+    <string name="desc_playlist_image">Imagine del lista de reproduction pro %s</string>
+    <string name="def_playback">Necun musica in reproduction</string>
+    <string name="fmt_editing">Modificante %s</string>
+    <string name="fmt_def_playlist">Lista de reproduction %d</string>
 </resources>
