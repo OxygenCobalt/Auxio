@@ -21,7 +21,7 @@
     <string name="lbl_queue_add">Adăugați la lista de așteptare</string>
     <string name="lng_queue_added">A fost adăugat la lista de așteptare</string>
     <string name="lbl_artist_details">Mergi la artist</string>
-    <string name="lbl_album_details">Accesaţi albumul</string>
+    <string name="lbl_album_details">Accesați albumul</string>
     <string name="lbl_about">Despre</string>
     <string name="lbl_version">Versiune</string>
     <string name="lbl_code">Cod sursă</string>
@@ -129,7 +129,7 @@
     <string name="set_round_mode_desc">Activați colțurile rotunjite pentru elementele suplimentare ale interfeței de utilizare (necesită rotunjirea coperților albumelor)</string>
     <string name="lng_indexing">Se încarcă biblioteca muzicală…</string>
     <string name="lng_observing">Monitorizarea bibliotecii muzicale pentru modificări…</string>
-    <string name="set_display">Afişa</string>
+    <string name="set_display">Afișa</string>
     <string name="set_black_mode_desc">Utilizați o temă întunecată pur-negru</string>
     <string name="set_round_mode">Coperți rotunjite ale albumelor</string>
     <string name="lbl_playlist">Listă de redare</string>
