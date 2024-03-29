@@ -377,7 +377,24 @@ class PlaybackService :
     }
 
     override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
-        player.addMediaItems(player.nextMediaItemIndex, songs.map { it.toMediaItem() })
+        val currTimeline = player.currentTimeline
+        val nextIndex =
+            if (currTimeline.isEmpty) {
+                C.INDEX_UNSET
+            } else {
+                currTimeline.getNextWindowIndex(
+                    player.currentMediaItemIndex,
+                    Player.REPEAT_MODE_OFF,
+                    player.shuffleModeEnabled
+                )
+            }
+
+        if (nextIndex == C.INDEX_UNSET) {
+            player.addMediaItems(songs.map { it.toMediaItem() })
+        } else {
+            player.addMediaItems(nextIndex, songs.map { it.toMediaItem() })
+        }
+
         playbackManager.ack(this, ack)
         deferSave()
     }
