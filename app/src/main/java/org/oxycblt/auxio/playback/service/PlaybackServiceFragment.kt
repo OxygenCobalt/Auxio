@@ -362,7 +362,17 @@ constructor(
     }
 
     override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
-        val nextIndex = player.nextMediaItemIndex
+        val currTimeline = player.currentTimeline
+        val nextIndex =
+            if (currTimeline.isEmpty) {
+                C.INDEX_UNSET
+            } else {
+                currTimeline.getNextWindowIndex(
+                    player.currentMediaItemIndex,
+                    Player.REPEAT_MODE_OFF,
+                    player.shuffleModeEnabled
+                )
+            }
 
         if (nextIndex == C.INDEX_UNSET) {
             player.addMediaItems(songs.map { it.toMediaItem() })
