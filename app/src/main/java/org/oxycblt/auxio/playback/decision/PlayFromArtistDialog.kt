@@ -70,7 +70,7 @@ class PlayFromArtistDialog :
         }
 
         playbackModel.playbackDecision.consume()
-        pickerModel.setPickerSongUid(args.artistUid)
+        pickerModel.setPickerSongUid(args.songUid)
         collectImmediately(pickerModel.currentPickerSong, ::updateSong)
     }
 

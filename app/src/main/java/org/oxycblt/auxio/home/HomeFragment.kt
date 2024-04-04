@@ -75,6 +75,7 @@ import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.M3U
+import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -214,12 +215,13 @@ class HomeFragment :
         collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
         collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
         collect(homeModel.speedDialOpen, ::updateSpeedDial)
+        collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
-        collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collectImmediately(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
-        collect(detailModel.toShow.flow, ::handleShow)
+        collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
     override fun onResume() {
@@ -487,7 +489,7 @@ class HomeFragment :
         }
     }
 
-    private fun handleDecision(decision: PlaylistDecision?) {
+    private fun handlePlaylistDecision(decision: PlaylistDecision?) {
         if (decision == null) return
         val directions =
             when (decision) {
@@ -537,6 +539,20 @@ class HomeFragment :
         if (message == null) return
         requireContext().showToast(message.stringRes)
         musicModel.playlistMessage.consume()
+    }
+
+    private fun handlePlaybackDecision(decision: PlaybackDecision?) {
+        when (decision) {
+            is PlaybackDecision.PlayFromArtist -> {
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.playFromArtist(decision.song.uid))
+            }
+            is PlaybackDecision.PlayFromGenre -> {
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.playFromGenre(decision.song.uid))
+            }
+            null -> {}
+        }
     }
 
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
