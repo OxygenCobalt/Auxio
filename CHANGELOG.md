@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's Improved
+- Added back option disable ReplayGain for poorly tagged libraries
+
 #### What's Fixed
 - Fixed crash when using play next on the end of a queue or with a single-song queue
 - Fixed weird behavior if using play next on the end of a queue with repeat all enabled
