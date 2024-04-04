@@ -1,5 +1,12 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Fixed crash when using play next on the end of a queue or with a single-song queue
+- Fixed weird behavior if using play next on the end of a queue with repeat all enabled
+- Fixed artist choice dialog not showing up on home screen if playing from artist/genre was enabled
+
 ## 3.4.2
 
 #### What's Fixed

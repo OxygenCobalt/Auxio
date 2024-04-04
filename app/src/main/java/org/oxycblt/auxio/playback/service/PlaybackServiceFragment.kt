@@ -368,10 +368,7 @@ constructor(
                 C.INDEX_UNSET
             } else {
                 currTimeline.getNextWindowIndex(
-                    player.currentMediaItemIndex,
-                    Player.REPEAT_MODE_OFF,
-                    player.shuffleModeEnabled
-                )
+                    player.currentMediaItemIndex, Player.REPEAT_MODE_OFF, player.shuffleModeEnabled)
             }
 
         if (nextIndex == C.INDEX_UNSET) {
