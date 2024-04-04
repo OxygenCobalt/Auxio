@@ -139,12 +139,14 @@
     </integer-array>
 
     <string-array name="entries_replay_gain">
+        <item>@string/set_replay_gain_mode_off</item>
         <item>@string/set_replay_gain_mode_track</item>
         <item>@string/set_replay_gain_mode_album</item>
         <item>@string/set_replay_gain_mode_dynamic</item>
     </string-array>
 
     <integer-array name="values_replay_gain">
+        <item>@integer/replay_gain_off</item>
         <item>@integer/replay_gain_track</item>
         <item>@integer/replay_gain_album</item>
         <item>@integer/replay_gain_dynamic</item>
@@ -161,6 +163,7 @@
     <integer name="play_song_from_genre">0xA122</integer>
     <integer name="play_song_by_itself">0xA124</integer>
 
+    <integer name="replay_gain_off">0xA110</integer>
     <integer name="replay_gain_track">0xA111</integer>
     <integer name="replay_gain_album">0xA112</integer>
     <integer name="replay_gain_dynamic">0xA113</integer>

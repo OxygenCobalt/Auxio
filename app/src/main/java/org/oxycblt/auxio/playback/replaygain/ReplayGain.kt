@@ -29,6 +29,8 @@ import org.oxycblt.auxio.R
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class ReplayGainMode {
+    /** Do not apply any ReplayGain adjustments. */
+    OFF,
     /** Apply the track gain, falling back to the album gain if the track gain is not found. */
     TRACK,
     /** Apply the album gain, falling back to the track gain if the album gain is not found. */
@@ -45,6 +47,7 @@ enum class ReplayGainMode {
          */
         fun fromIntCode(intCode: Int) =
             when (intCode) {
+                IntegerTable.REPLAY_GAIN_MODE_OFF -> OFF
                 IntegerTable.REPLAY_GAIN_MODE_TRACK -> TRACK
                 IntegerTable.REPLAY_GAIN_MODE_ALBUM -> ALBUM
                 IntegerTable.REPLAY_GAIN_MODE_DYNAMIC -> DYNAMIC
