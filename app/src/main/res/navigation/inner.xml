@@ -491,7 +491,7 @@
         android:label="play_from_artist_dialog"
         tools:layout="@layout/dialog_music_choices">
         <argument
-            android:name="artistUid"
+            android:name="songUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
@@ -501,7 +501,7 @@
         android:label="play_from_genre_dialog"
         tools:layout="@layout/dialog_music_choices">
         <argument
-            android:name="genreUid"
+            android:name="songUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 

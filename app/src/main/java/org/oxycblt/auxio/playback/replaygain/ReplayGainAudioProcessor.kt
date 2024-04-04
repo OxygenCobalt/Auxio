@@ -119,6 +119,11 @@ constructor(
         // ReplayGain is configurable, so determine what to do based off of the mode.
         val resolvedAdjustment =
             when (playbackSettings.replayGainMode) {
+                // User wants no adjustment.
+                ReplayGainMode.OFF -> {
+                    logD("ReplayGain is off")
+                    null
+                }
                 // User wants track gain to be preferred. Default to album gain only if
                 // there is no track gain.
                 ReplayGainMode.TRACK -> {
