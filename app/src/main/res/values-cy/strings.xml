@@ -1,2 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="lbl_indexing">Yn llwytho cerddoriaeth</string>
+    <string name="lbl_indexer">Llwytho cerddoriaeth</string>
+    <string name="lbl_observing">Yn monitro llyfrgell cerddoriaeth</string>
+    <string name="lbl_retry">Ceisio eto</string>
+    <string name="lbl_grant">Caniatáu</string>
+    <string name="lbl_songs">Caneuon</string>
+    <string name="lbl_song">Cân</string>
+    <string name="lbl_all_songs">Holl ganeuon</string>
+    <string name="lbl_albums">Albymau</string>
+    <string name="lbl_album">Albwm</string>
+    <string name="lbl_album_live">Albwm byw</string>
+    <string name="lbl_album_remix">Albwm ail-gymysgu</string>
+    <string name="lbl_eps">EPau</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_ep_live">EP byw</string>
+    <string name="lbl_compilations">Detholiadau</string>
+    <string name="lbl_compilation">Detholiad</string>
+    <string name="lbl_compilation_live">Detholiad byw</string>
+    <string name="lbl_compilation_remix">Detholiad ail-gymysgu</string>
+    <string name="lbl_soundtracks">Traciau sain</string>
+    <string name="lbl_soundtrack">Trac sain</string>
+    <string name="lbl_mixtapes">Tapiau cymysg</string>
+    <string name="lbl_mixtape">Tâp cymysg</string>
+    <string name="info_app_desc">Chwaraewr cerddoriaeth syml a synhwyrol.</string>
+    <string name="lbl_show_error_info">Mwy</string>
+    <string name="lbl_ep_remix">EP ail-gymysgu</string>
+</resources>
