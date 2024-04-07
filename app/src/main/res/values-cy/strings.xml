@@ -26,4 +26,12 @@
     <string name="info_app_desc">Chwaraewr cerddoriaeth syml a synhwyrol.</string>
     <string name="lbl_show_error_info">Mwy</string>
     <string name="lbl_ep_remix">EP ail-gymysgu</string>
+    <string name="lbl_name">Enw</string>
+    <string name="lbl_date">Dyddiad</string>
+    <string name="lbl_duration">Hyd</string>
+    <string name="lbl_song_count">Nifer gân</string>
+    <string name="lbl_disc">Disg</string>
+    <string name="lbl_track">Trac</string>
+    <string name="lbl_sort">Didoli</string>
+    <string name="lbl_sort_mode">Didoli gan</string>
 </resources>
