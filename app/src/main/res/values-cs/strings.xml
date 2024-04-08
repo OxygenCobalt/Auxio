@@ -264,7 +264,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Obnovit</string>
     <string name="set_dirs_list">Složky</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Normalizace hlasitosti</string>
     <string name="set_behavior">Chování</string>
     <string name="set_ui_desc">Změnit motiv a barvy aplikace</string>
     <string name="set_personalize_desc">Přizpůsobit ovládání a chování rozhraní</string>
@@ -339,4 +339,5 @@
     <string name="lng_supporters_promo">Přispějte na projekt a uvidíte zde své jméno!</string>
     <string name="set_remember_pause_desc">Zůstat ve stavu přehrávání/pozastavení při přeskakování nebo úpravě fronty</string>
     <string name="set_remember_pause">Zapamatovat pozastavení</string>
+    <string name="set_replay_gain_mode_off">Vypnuto</string>
 </resources>
