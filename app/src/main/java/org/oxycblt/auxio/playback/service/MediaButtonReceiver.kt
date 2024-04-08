@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.service.AuxioService
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -47,7 +48,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
             // wrong action at the wrong time will result in the app crashing, and there is
             // nothing I can do about it.
             logD("Delivering media button intent $intent")
-            intent.component = ComponentName(context, PlaybackServiceFragment::class.java)
+            intent.component = ComponentName(context, AuxioService::class.java)
             ContextCompat.startForegroundService(context, intent)
         }
     }

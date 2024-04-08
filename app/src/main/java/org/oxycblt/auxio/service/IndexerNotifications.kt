@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.service
+package org.oxycblt.auxio.service
 
 import android.content.Context
 import android.os.SystemClock
@@ -25,7 +25,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.IndexingProgress
-import org.oxycblt.auxio.service.ForegroundServiceNotification
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -108,6 +107,20 @@ class ObservingNotification(context: Context) :
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         setContentTitle(context.getString(R.string.lbl_observing))
         setContentText(context.getString(R.string.lng_observing))
+    }
+
+    override val code: Int
+        get() = IntegerTable.INDEXER_NOTIFICATION_CODE
+}
+
+class FakeNotification(context: Context) : ForegroundServiceNotification(context, indexerChannel) {
+    init {
+        setSmallIcon(R.drawable.ic_auxio_24)
+        setCategory(NotificationCompat.CATEGORY_SERVICE)
+        setShowWhen(false)
+        setSilent(true)
+        setContentIntent(context.newMainPendingIntent())
+        setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
     }
 
     override val code: Int

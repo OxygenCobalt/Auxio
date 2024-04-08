@@ -85,8 +85,13 @@
             android:name=".service.AuxioService"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
-            android:exported="false"
-            android:roundIcon="@mipmap/ic_launcher" />
+            android:exported="true"
+            android:roundIcon="@mipmap/ic_launcher">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService"/>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+            </intent-filter>
+        </service>
 
         <!--
         Work around apps that blindly query for ACTION_MEDIA_BUTTON working.

@@ -37,9 +37,9 @@ import org.oxycblt.auxio.util.positiveOrNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
-    private val year = tokens[0]
-    private val month = tokens.getOrNull(1)
-    private val day = tokens.getOrNull(2)
+    val year = tokens[0]
+    val month = tokens.getOrNull(1)
+    val day = tokens.getOrNull(2)
     private val hour = tokens.getOrNull(3)
     private val minute = tokens.getOrNull(4)
     private val second = tokens.getOrNull(5)

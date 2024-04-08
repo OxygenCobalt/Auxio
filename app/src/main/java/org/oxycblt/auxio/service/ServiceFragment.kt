@@ -22,22 +22,22 @@ import android.content.Context
 import android.content.Intent
 
 abstract class ServiceFragment {
-    private var handle: AuxioService? = null
+    // private var handle: AuxioService? = null
 
     protected val context: Context
-        get() = requireNotNull(handle)
+        get() = throw NotImplementedError()
 
     var notification: ForegroundServiceNotification? = null
         private set
 
     fun attach(handle: AuxioService) {
-        this.handle = handle
+        throw NotImplementedError()
         onCreate(handle)
     }
 
     fun release() {
         notification = null
-        handle = null
+        throw NotImplementedError()
         onDestroy()
     }
 
@@ -59,11 +59,11 @@ abstract class ServiceFragment {
 
     protected fun startForeground(notification: ForegroundServiceNotification) {
         this.notification = notification
-        requireNotNull(handle).refreshForeground()
+        // requireNotNull(handle).refreshForeground()
     }
 
     protected fun stopForeground() {
         this.notification = null
-        requireNotNull(handle).refreshForeground()
+        // requireNotNull(handle).refreshForeground()
     }
 }
