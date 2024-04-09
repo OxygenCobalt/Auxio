@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.service
 
+import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -56,6 +57,7 @@ import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
+import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSession.ConnectionResult
 import androidx.media3.session.SessionCommand
@@ -145,7 +147,7 @@ class AuxioService :
     private val restoreScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private val saveScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentSaveJob: Job? = null
-    private var sessionExposed = false
+    private var hasPlayed = false
     private var openAudioEffectSession = false
 
     @Inject lateinit var listSettings: ListSettings
@@ -195,8 +197,6 @@ class AuxioService :
                 .also { it.addListener(this) }
 
         player = NeoPlayer(this, exoPlayer, musicRepository, playbackSettings)
-        mediaSession =
-            MediaLibrarySession.Builder(this, player, this).setBitmapLoader(bitmapLoader).build()
         setMediaNotificationProvider(
             DefaultMediaNotificationProvider.Builder(this)
                 .setNotificationId(IntegerTable.PLAYBACK_NOTIFICATION_CODE)
@@ -204,6 +204,9 @@ class AuxioService :
                 .setChannelName(R.string.lbl_playback)
                 .build()
                 .also { it.setSmallIcon(R.drawable.ic_auxio_24) })
+        mediaSession =
+            MediaLibrarySession.Builder(this, player, this).setBitmapLoader(bitmapLoader).build()
+        addSession(mediaSession)
         updateCustomButtons()
 
         val intentFilter =
@@ -273,9 +276,7 @@ class AuxioService :
             openAudioEffectSession = false
         }
 
-        if (sessionExposed) {
-            removeSession(mediaSession)
-        }
+        removeSession(mediaSession)
         mediaSession.release()
         player.release()
     }
@@ -593,12 +594,9 @@ class AuxioService :
         super.onPlayWhenReadyChanged(playWhenReady, reason)
 
         if (player.playWhenReady) {
-            if (!sessionExposed) {
-                addSession(mediaSession)
-            }
             // Mark that we have started playing so that the notification can now be posted.
-            sessionExposed = true
             logD("Player has started playing")
+            hasPlayed = true
             if (!openAudioEffectSession) {
                 // Convention to start an audioeffect session on play/pause rather than
                 // start/stop
@@ -689,8 +687,24 @@ class AuxioService :
         mediaSession
 
     override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
-        super.onUpdateNotification(session, startInForegroundRequired)
-        onIndexingStateChanged()
+        if (hasPlayed) {
+            logD(hasPlayed)
+            val notification =
+                mediaNotificationProvider.createNotification(
+                    session, session.customLayout, mediaNotificationManager.actionFactory) {
+                        notification ->
+                        postNotification(notification, session)
+                    }
+            postNotification(notification, session)
+        }
+    }
+
+    private fun postNotification(notification: MediaNotification, session: MediaSession) {
+        // Pulled from MediaNotificationManager: Need to specify MediaSession token manually
+        // in notification
+        val fwkToken = session.sessionCompatToken.token as android.media.session.MediaSession.Token
+        notification.notification.extras.putParcelable(Notification.EXTRA_MEDIA_SESSION, fwkToken)
+        startForeground(notification.notificationId, notification.notification)
     }
 
     override fun onConnect(
@@ -894,13 +908,12 @@ class AuxioService :
             withContext(Dispatchers.Main) {
                 // User could feasibly start playing again if they were fast enough, so
                 // we need to avoid stopping the foreground state if that's the case.
-                if (!player.isPlaying) {
+                if (player.isPlaying) {
                     playbackManager.playing(false)
                 }
-                if (sessionExposed) {
-                    removeSession(mediaSession)
-                    sessionExposed = false
-                }
+                hasPlayed = false
+                ServiceCompat.stopForeground(
+                    this@AuxioService, ServiceCompat.STOP_FOREGROUND_REMOVE)
             }
         }
     }
