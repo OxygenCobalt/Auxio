@@ -113,20 +113,6 @@ class ObservingNotification(context: Context) :
         get() = IntegerTable.INDEXER_NOTIFICATION_CODE
 }
 
-class FakeNotification(context: Context) : ForegroundServiceNotification(context, indexerChannel) {
-    init {
-        setSmallIcon(R.drawable.ic_auxio_24)
-        setCategory(NotificationCompat.CATEGORY_SERVICE)
-        setShowWhen(false)
-        setSilent(true)
-        setContentIntent(context.newMainPendingIntent())
-        setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-    }
-
-    override val code: Int
-        get() = IntegerTable.INDEXER_NOTIFICATION_CODE
-}
-
 /** Notification channel shared by [IndexingNotification] and [ObservingNotification]. */
 private val indexerChannel =
     ForegroundServiceNotification.ChannelInfo(
