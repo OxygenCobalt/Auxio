@@ -150,7 +150,7 @@ class AuxioService :
     private val restoreScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private val saveScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentSaveJob: Job? = null
-    private var hasPlayed = false
+    private var inPlayback = false
     private var openAudioEffectSession = false
 
     @Inject lateinit var listSettings: ListSettings
@@ -300,21 +300,35 @@ class AuxioService :
     override val scope = indexScope
 
     override fun onIndexingStateChanged() {
-        if (mediaNotificationManager.isStartedInForeground) {
-            // Playback notification is ongoing, let's ignore this.
-            return
-        }
-        val state = musicRepository.indexingState
-        if (state is IndexingState.Indexing) {
-            updateActiveSession(state.progress)
-        } else {
-            updateIdleSession()
-        }
+        updateForeground(forMusic = true)
     }
 
     // --- INTERNAL ---
 
-    private fun updateActiveSession(progress: IndexingProgress) {
+    private fun updateForeground(forMusic: Boolean) {
+        if (inPlayback) {
+            if (!forMusic) {
+                val notification =
+                    mediaNotificationProvider.createNotification(
+                        mediaSession,
+                        mediaSession.customLayout,
+                        mediaNotificationManager.actionFactory) { notification ->
+                            postMediaNotification(notification, mediaSession)
+                        }
+                postMediaNotification(notification, mediaSession)
+            }
+            return
+        }
+
+        val state = musicRepository.indexingState
+        if (state is IndexingState.Indexing) {
+            updateLoadingForeground(state.progress)
+        } else {
+            updateIdleForeground()
+        }
+    }
+
+    private fun updateLoadingForeground(progress: IndexingProgress) {
         // When loading, we want to enter the foreground state so that android does
         // not shut off the loading process. Note that while we will always post the
         // notification when initially starting, we will not update the notification
@@ -328,7 +342,7 @@ class AuxioService :
         wakeLock.acquireSafe()
     }
 
-    private fun updateIdleSession() {
+    private fun updateIdleForeground() {
         if (musicSettings.shouldBeObserving) {
             // There are a few reasons why we stay in the foreground with automatic rescanning:
             // 1. Newer versions of Android have become more and more restrictive regarding
@@ -384,7 +398,7 @@ class AuxioService :
         // the music loading process ends.
         if (currentIndexJob == null) {
             logD("Not loading, updating idle session")
-            updateIdleSession()
+            updateForeground(forMusic = false)
         }
     }
 
@@ -600,7 +614,7 @@ class AuxioService :
         if (player.playWhenReady) {
             // Mark that we have started playing so that the notification can now be posted.
             logD("Player has started playing")
-            hasPlayed = true
+            inPlayback = true
             if (!openAudioEffectSession) {
                 // Convention to start an audioeffect session on play/pause rather than
                 // start/stop
@@ -691,19 +705,10 @@ class AuxioService :
         mediaSession
 
     override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
-        if (hasPlayed) {
-            logD(hasPlayed)
-            val notification =
-                mediaNotificationProvider.createNotification(
-                    session, session.customLayout, mediaNotificationManager.actionFactory) {
-                        notification ->
-                        postNotification(notification, session)
-                    }
-            postNotification(notification, session)
-        }
+        updateForeground(forMusic = false)
     }
 
-    private fun postNotification(notification: MediaNotification, session: MediaSession) {
+    private fun postMediaNotification(notification: MediaNotification, session: MediaSession) {
         // Pulled from MediaNotificationManager: Need to specify MediaSession token manually
         // in notification
         val fwkToken = session.sessionCompatToken.token as android.media.session.MediaSession.Token
@@ -1019,9 +1024,8 @@ class AuxioService :
                 if (player.isPlaying) {
                     playbackManager.playing(false)
                 }
-                hasPlayed = false
-                ServiceCompat.stopForeground(
-                    this@AuxioService, ServiceCompat.STOP_FOREGROUND_REMOVE)
+                inPlayback = false
+                updateForeground(forMusic = false)
             }
         }
     }
