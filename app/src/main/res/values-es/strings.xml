@@ -259,7 +259,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Restablecer</string>
     <string name="set_behavior">Comportamiento</string>
-    <string name="set_replay_gain">Ganancia de la reproducción</string>
+    <string name="set_replay_gain">Normalización del volumen</string>
     <string name="set_content_desc">Controla cómo se cargan la música y las imágenes</string>
     <string name="set_music">Música</string>
     <string name="set_images">Imágenes</string>
@@ -334,4 +334,5 @@
     <string name="lng_supporters_promo">¡Haga una donación al proyecto para que agreguen su nombre aquí!</string>
     <string name="set_remember_pause">Recordar la pausa</string>
     <string name="set_remember_pause_desc">Permanecer en reproducción/pausa al saltar o editar la cola</string>
+    <string name="set_replay_gain_mode_off">Apagar</string>
 </resources>
