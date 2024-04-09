@@ -1038,6 +1038,13 @@ class NeoPlayer(
         player.setShuffleOrder(order)
     }
 
+    override fun getAvailableCommands(): Player.Commands {
+        return super.getAvailableCommands()
+            .buildUpon()
+            .addAll(Player.COMMAND_SEEK_TO_NEXT, Player.COMMAND_SEEK_TO_PREVIOUS)
+            .build()
+    }
+
     override fun isCommandAvailable(command: Int): Boolean {
         // We can always skip forward and backward (this is to retain parity with the old behavior)
         return super.isCommandAvailable(command) ||
