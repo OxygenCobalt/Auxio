@@ -32,15 +32,16 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.state.DeferredPlayback
+import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -59,8 +60,8 @@ constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
     private val persistenceRepository: PersistenceRepository,
+    private val commandFactory: PlaybackCommand.Factory,
     private val listSettings: ListSettings,
-    private val musicRepository: MusicRepository,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
@@ -189,21 +190,21 @@ constructor(
 
     fun play(song: Song, with: PlaySong) {
         logD("Playing $song with $with")
-        playWithImpl(song, with, isImplicitlyShuffled())
+        playWithImpl(song, with, ShuffleMode.IMPLICIT)
     }
 
     fun playExplicit(song: Song, with: PlaySong) {
-        playWithImpl(song, with, false)
+        playWithImpl(song, with, ShuffleMode.OFF)
     }
 
     fun shuffleExplicit(song: Song, with: PlaySong) {
-        playWithImpl(song, with, true)
+        playWithImpl(song, with, ShuffleMode.ON)
     }
 
     /** Shuffle all songs in the music library. */
     fun shuffleAll() {
         logD("Shuffling all songs")
-        playFromAllImpl(null, true)
+        playFromAllImpl(null, ShuffleMode.ON)
     }
 
     /**
@@ -214,7 +215,7 @@ constructor(
      *   be prompted on what artist to play. Defaults to null.
      */
     fun playFromArtist(song: Song, artist: Artist? = null) {
-        playFromArtistImpl(song, artist, isImplicitlyShuffled())
+        playFromArtistImpl(song, artist, ShuffleMode.IMPLICIT)
     }
 
     /**
@@ -225,63 +226,66 @@ constructor(
      *   be prompted on what artist to play. Defaults to null.
      */
     fun playFromGenre(song: Song, genre: Genre? = null) {
-        playFromGenreImpl(song, genre, isImplicitlyShuffled())
+        playFromGenreImpl(song, genre, ShuffleMode.IMPLICIT)
     }
 
-    private fun isImplicitlyShuffled() = playbackManager.isShuffled && playbackSettings.keepShuffle
-
-    private fun playWithImpl(song: Song, with: PlaySong, shuffled: Boolean) {
+    private fun playWithImpl(song: Song, with: PlaySong, shuffle: ShuffleMode) {
         when (with) {
-            is PlaySong.FromAll -> playFromAllImpl(song, shuffled)
-            is PlaySong.FromAlbum -> playFromAlbumImpl(song, shuffled)
-            is PlaySong.FromArtist -> playFromArtistImpl(song, with.which, shuffled)
-            is PlaySong.FromGenre -> playFromGenreImpl(song, with.which, shuffled)
-            is PlaySong.FromPlaylist -> playFromPlaylistImpl(song, with.which, shuffled)
-            is PlaySong.ByItself -> playItselfImpl(song, shuffled)
+            is PlaySong.FromAll -> playFromAllImpl(song, shuffle)
+            is PlaySong.FromAlbum -> playFromAlbumImpl(song, shuffle)
+            is PlaySong.FromArtist -> playFromArtistImpl(song, with.which, shuffle)
+            is PlaySong.FromGenre -> playFromGenreImpl(song, with.which, shuffle)
+            is PlaySong.FromPlaylist -> playFromPlaylistImpl(song, with.which, shuffle)
+            is PlaySong.ByItself -> playItselfImpl(song, shuffle)
         }
     }
 
-    private fun playFromAllImpl(song: Song?, shuffled: Boolean) {
-        playImpl(song, null, shuffled)
+    private fun playItselfImpl(song: Song, shuffle: ShuffleMode) {
+        playbackManager.play(
+            requireNotNull(commandFactory.song(song, shuffle)) {
+                "Invalid playback parameters [$song $shuffle]"
+            })
     }
 
-    private fun playFromAlbumImpl(song: Song, shuffled: Boolean) {
-        playImpl(song, song.album, shuffled)
+    private fun playFromAllImpl(song: Song?, shuffle: ShuffleMode) {
+        val params =
+            if (song != null) {
+                commandFactory.songFromAll(song, shuffle)
+            } else {
+                commandFactory.all(shuffle)
+            }
+
+        playImpl(params)
     }
 
-    private fun playFromArtistImpl(song: Song, artist: Artist?, shuffled: Boolean) {
-        if (artist != null) {
-            logD("Playing $song from $artist")
-            playImpl(song, artist, shuffled)
-        } else if (song.artists.size == 1) {
-            logD("$song has one artist, playing from it")
-            playImpl(song, song.artists[0], shuffled)
-        } else {
-            logD("$song has multiple artists, showing choice dialog")
-            startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
+    private fun playFromAlbumImpl(song: Song, shuffle: ShuffleMode) {
+        logD("Playing $song from album")
+        playImpl(commandFactory.songFromAlbum(song, shuffle))
+    }
+
+    private fun playFromArtistImpl(song: Song, artist: Artist?, shuffle: ShuffleMode) {
+        val params = commandFactory.songFromArtist(song, artist, shuffle)
+        if (params != null) {
+            playbackManager.play(params)
         }
+        logD(
+            "Cannot use given artist parameter for $song [$artist from ${song.artists}], showing choice dialog")
+        startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
     }
 
-    private fun playFromGenreImpl(song: Song, genre: Genre?, shuffled: Boolean) {
-        if (genre != null) {
-            logD("Playing $song from $genre")
-            playImpl(song, genre, shuffled)
-        } else if (song.genres.size == 1) {
-            logD("$song has one genre, playing from it")
-            playImpl(song, song.genres[0], shuffled)
-        } else {
-            logD("$song has multiple genres, showing choice dialog")
-            startPlaybackDecision(PlaybackDecision.PlayFromGenre(song))
+    private fun playFromGenreImpl(song: Song, genre: Genre?, shuffle: ShuffleMode) {
+        val params = commandFactory.songFromGenre(song, genre, shuffle)
+        if (params != null) {
+            playbackManager.play(params)
         }
+        logD(
+            "Cannot use given genre parameter for $song [$genre from ${song.genres}], showing choice dialog")
+        startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
     }
 
-    private fun playFromPlaylistImpl(song: Song, playlist: Playlist, shuffled: Boolean) {
+    private fun playFromPlaylistImpl(song: Song, playlist: Playlist, shuffle: ShuffleMode) {
         logD("Playing $song from $playlist")
-        playImpl(song, playlist, shuffled)
-    }
-
-    private fun playItselfImpl(song: Song, shuffled: Boolean) {
-        playImpl(song, listOf(song), shuffled)
+        playImpl(commandFactory.songFromPlaylist(song, playlist, shuffle))
     }
 
     private fun startPlaybackDecision(decision: PlaybackDecision) {
@@ -300,7 +304,7 @@ constructor(
      */
     fun play(album: Album) {
         logD("Playing $album")
-        playImpl(null, album, false)
+        playImpl(commandFactory.album(album, ShuffleMode.OFF))
     }
 
     /**
@@ -310,7 +314,7 @@ constructor(
      */
     fun shuffle(album: Album) {
         logD("Shuffling $album")
-        playImpl(null, album, true)
+        playImpl(commandFactory.album(album, ShuffleMode.ON))
     }
 
     /**
@@ -320,7 +324,7 @@ constructor(
      */
     fun play(artist: Artist) {
         logD("Playing $artist")
-        playImpl(null, artist, false)
+        playImpl(commandFactory.artist(artist, ShuffleMode.OFF))
     }
 
     /**
@@ -330,7 +334,7 @@ constructor(
      */
     fun shuffle(artist: Artist) {
         logD("Shuffling $artist")
-        playImpl(null, artist, true)
+        playImpl(commandFactory.artist(artist, ShuffleMode.ON))
     }
 
     /**
@@ -340,7 +344,7 @@ constructor(
      */
     fun play(genre: Genre) {
         logD("Playing $genre")
-        playImpl(null, genre, false)
+        playImpl(commandFactory.genre(genre, ShuffleMode.OFF))
     }
 
     /**
@@ -350,7 +354,7 @@ constructor(
      */
     fun shuffle(genre: Genre) {
         logD("Shuffling $genre")
-        playImpl(null, genre, true)
+        playImpl(commandFactory.genre(genre, ShuffleMode.ON))
     }
 
     /**
@@ -360,7 +364,7 @@ constructor(
      */
     fun play(playlist: Playlist) {
         logD("Playing $playlist")
-        playImpl(null, playlist, false)
+        playImpl(commandFactory.playlist(playlist, ShuffleMode.OFF))
     }
 
     /**
@@ -370,7 +374,7 @@ constructor(
      */
     fun shuffle(playlist: Playlist) {
         logD("Shuffling $playlist")
-        playImpl(null, playlist, true)
+        playImpl(commandFactory.playlist(playlist, ShuffleMode.ON))
     }
 
     /**
@@ -380,7 +384,7 @@ constructor(
      */
     fun play(songs: List<Song>) {
         logD("Playing ${songs.size} songs")
-        playbackManager.play(null, null, songs, false)
+        playImpl(commandFactory.songs(songs, ShuffleMode.OFF))
     }
 
     /**
@@ -390,28 +394,11 @@ constructor(
      */
     fun shuffle(songs: List<Song>) {
         logD("Shuffling ${songs.size} songs")
-        playbackManager.play(null, null, songs, true)
+        playImpl(commandFactory.songs(songs, ShuffleMode.ON))
     }
 
-    private fun playImpl(song: Song?, queue: List<Song>, shuffled: Boolean) {
-        check(song == null || queue.contains(song)) { "Song to play not in queue" }
-        playbackManager.play(song, null, queue, shuffled)
-    }
-
-    private fun playImpl(song: Song?, parent: MusicParent?, shuffled: Boolean) {
-        check(song == null || parent == null || parent.songs.contains(song)) {
-            "Song to play not in parent"
-        }
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val queue =
-            when (parent) {
-                is Genre -> listSettings.genreSongSort.songs(parent.songs)
-                is Artist -> listSettings.artistSongSort.songs(parent.songs)
-                is Album -> listSettings.albumSongSort.songs(parent.songs)
-                is Playlist -> parent.songs
-                null -> listSettings.songSort.songs(deviceLibrary.songs)
-            }
-        playbackManager.play(song, parent, queue, shuffled)
+    private fun playImpl(command: PlaybackCommand?) {
+        playbackManager.play(requireNotNull(command) { "Invalid playback parameters" })
     }
 
     /**
@@ -616,49 +603,6 @@ constructor(
             return
         }
         _openPanel.put(panel)
-    }
-
-    // --- SAVE/RESTORE FUNCTIONS ---
-
-    /**
-     * Force-save the current playback state.
-     *
-     * @param onDone Called when the save is completed with true if successful, and false otherwise.
-     */
-    fun savePlaybackState(onDone: (Boolean) -> Unit) {
-        logD("Saving playback state")
-        viewModelScope.launch {
-            onDone(persistenceRepository.saveState(playbackManager.toSavedState()))
-        }
-    }
-
-    /**
-     * Clear the current playback state.
-     *
-     * @param onDone Called when the wipe is completed with true if successful, and false otherwise.
-     */
-    fun wipePlaybackState(onDone: (Boolean) -> Unit) {
-        logD("Wiping playback state")
-        viewModelScope.launch { onDone(persistenceRepository.saveState(null)) }
-    }
-
-    /**
-     * Force-restore the current playback state.
-     *
-     * @param onDone Called when the restoration is completed with true if successful, and false
-     *   otherwise.
-     */
-    fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
-        logD("Force-restoring playback state")
-        viewModelScope.launch {
-            val savedState = persistenceRepository.readState()
-            if (savedState != null) {
-                playbackManager.applySavedState(savedState, true)
-                onDone(true)
-                return@launch
-            }
-            onDone(false)
-        }
     }
 }
 

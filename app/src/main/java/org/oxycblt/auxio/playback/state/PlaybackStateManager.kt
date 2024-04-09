@@ -111,13 +111,9 @@ interface PlaybackStateManager {
     /**
      * Start new playback.
      *
-     * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
-     * @param queue The queue of [Song]s to play from.
-     * @param parent The [MusicParent] to play from, or null if to play from an non-specific
-     *   collection of "All [Song]s".
-     * @param shuffled Whether to shuffle or not.
+     * @param command The parameters to start playback with.
      */
-    fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean)
+    fun play(command: PlaybackCommand)
 
     /**
      * Go to the next [Song] in the queue. Will go to the first [Song] in the queue if there is no
@@ -441,9 +437,13 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     // --- PLAYING FUNCTIONS ---
 
     @Synchronized
-    override fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean) {
+    override fun play(command: PlaybackCommand) {
+        play(command.song, command.parent, command.queue, command.shuffled)
+    }
+
+    private fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean) {
         val stateHolder = stateHolder ?: return
-        logD("Playing $song from $parent in ${queue.size}-song queue [shuffled=$shuffled]")
+        logD("Playing ${song} from $parent in ${queue.size}-song queue [shuffled=${shuffled}]")
         // Played something, so we are initialized now
         isInitialized = true
         stateHolder.newPlayback(queue, song, parent, shuffled)
@@ -476,7 +476,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun playNext(songs: List<Song>) {
         if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
-            play(songs[0], null, songs, false)
+            play(null, null, songs, false)
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to start of queue")
@@ -488,7 +488,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun addToQueue(songs: List<Song>) {
         if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
-            play(songs[0], null, songs, false)
+            play(null, null, songs, false)
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to end of queue")

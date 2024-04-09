@@ -101,11 +101,13 @@ import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.service.BetterShuffleOrder
 import org.oxycblt.auxio.playback.state.DeferredPlayback
+import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateHolder
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.getSystemServiceCompat
@@ -137,6 +139,7 @@ class AuxioService :
     private var currentIndexJob: Job? = null
 
     @Inject lateinit var playbackManager: PlaybackStateManager
+    @Inject lateinit var commandFactory: PlaybackCommand.Factory
     @Inject lateinit var playbackSettings: PlaybackSettings
     @Inject lateinit var persistenceRepository: PersistenceRepository
     @Inject lateinit var mediaSourceFactory: MediaSource.Factory
@@ -518,7 +521,7 @@ class AuxioService :
     }
 
     override fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue) {
-        player.addMediaItems(songs.map { it.toMediaItem(this, null) })
+        player.addToQueue(songs)
         playbackManager.ack(this, ack)
         deferSave()
     }
@@ -556,17 +559,18 @@ class AuxioService :
             is DeferredPlayback.ShuffleAll -> {
                 logD("Shuffling all tracks")
                 playbackManager.play(
-                    null, null, listSettings.songSort.songs(deviceLibrary.songs), true)
+                    requireNotNull(commandFactory.all(ShuffleMode.ON)) {
+                        "Invalid playback parameters"
+                    })
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
                 logD("Opening specified file")
                 deviceLibrary.findSongForUri(workerContext, action.uri)?.let { song ->
                     playbackManager.play(
-                        song,
-                        null,
-                        listSettings.songSort.songs(deviceLibrary.songs),
-                        player.shuffleModeEnabled && playbackSettings.keepShuffle)
+                        requireNotNull(commandFactory.song(song, ShuffleMode.IMPLICIT)) {
+                            "Invalid playback parameters"
+                        })
                 }
             }
         }
@@ -735,6 +739,15 @@ class AuxioService :
         return Futures.immediateFuture(result)
     }
 
+    override fun onGetItem(
+        session: MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        mediaId: String
+    ): ListenableFuture<LibraryResult<MediaItem>> {
+        // TODO
+        return super.onGetItem(session, browser, mediaId)
+    }
+
     override fun onGetChildren(
         session: MediaLibrarySession,
         browser: MediaSession.ControllerInfo,
@@ -813,6 +826,101 @@ class AuxioService :
             is Song,
             null -> return null
         }
+    }
+
+    override fun onSetMediaItems(
+        mediaSession: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        mediaItems: MutableList<MediaItem>,
+        startIndex: Int,
+        startPositionMs: Long
+    ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+        val deviceLibrary =
+            musicRepository.deviceLibrary
+                ?: return Futures.immediateFailedFuture(Exception("Invalid state"))
+        val result =
+            if (mediaItems.size > 1) {
+                playMediaItemSelection(mediaItems, startIndex, deviceLibrary)
+            } else {
+                playSingleMediaItem(mediaItems.first(), deviceLibrary)
+            }
+        return if (result) {
+            // This will not actually do anything to the player, I patched that out
+            Futures.immediateFuture(
+                MediaSession.MediaItemsWithStartPosition(listOf(), C.INDEX_UNSET, C.TIME_UNSET))
+        } else {
+            Futures.immediateFailedFuture(Exception("Invalid state"))
+        }
+    }
+
+    private fun playMediaItemSelection(
+        mediaItems: List<MediaItem>,
+        startIndex: Int,
+        deviceLibrary: DeviceLibrary
+    ): Boolean {
+        val targetSong = mediaItems.getOrNull(startIndex)?.toSong(deviceLibrary)
+        val songs = mediaItems.mapNotNull { it.toSong(deviceLibrary) }
+        var index = startIndex
+        if (targetSong != null) {
+            while (songs.getOrNull(index)?.uid != targetSong.uid) {
+                index--
+            }
+        }
+        playbackManager.play(commandFactory.songs(songs, ShuffleMode.OFF) ?: return false)
+        return true
+    }
+
+    private fun playSingleMediaItem(mediaItem: MediaItem, deviceLibrary: DeviceLibrary): Boolean {
+        val uid = ExternalUID.fromString(mediaItem.mediaId) ?: return false
+        val music: Music
+        var parent: MusicParent? = null
+        when (uid) {
+            is ExternalUID.Single -> {
+                music = musicRepository.find(uid.uid) ?: return false
+            }
+            is ExternalUID.Joined -> {
+                music = musicRepository.find(uid.childUid) ?: return false
+                parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return false
+            }
+            else -> return false
+        }
+
+        val command =
+            when (music) {
+                is Song -> inferSongFromParentCommand(music, parent)
+                is Album -> commandFactory.album(music, ShuffleMode.OFF)
+                is Artist -> commandFactory.artist(music, ShuffleMode.OFF)
+                is Genre -> commandFactory.genre(music, ShuffleMode.OFF)
+                is Playlist -> commandFactory.playlist(music, ShuffleMode.OFF)
+            }
+
+        playbackManager.play(command ?: return false)
+
+        return true
+    }
+
+    private fun inferSongFromParentCommand(music: Song, parent: MusicParent?) =
+        when (parent) {
+            is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
+            is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
+                    ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
+            is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
+                    ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
+            is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
+            null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
+        }
+
+    override fun onAddMediaItems(
+        mediaSession: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        mediaItems: MutableList<MediaItem>
+    ): ListenableFuture<MutableList<MediaItem>> {
+        val deviceLibrary =
+            musicRepository.deviceLibrary ?: return Futures.immediateFuture(mutableListOf())
+        val songs = mediaItems.mapNotNull { it.toSong(deviceLibrary) }
+        playbackManager.addToQueue(songs)
+        // This will not actually do anything to the player, I patched that out
+        return Futures.immediateFuture(mutableListOf())
     }
 
     override fun onCustomCommand(
@@ -1146,6 +1254,10 @@ class NeoPlayer(
         }
     }
 
+    fun addToQueue(songs: List<Song>) {
+        addMediaItems(songs.map { it.toMediaItem(context, null) })
+    }
+
     fun move(from: Int, to: Int) {
         val indices = unscrambleQueueIndices()
         if (indices.isEmpty()) {
@@ -1419,6 +1531,17 @@ private fun MediaItem.toSong(deviceLibrary: DeviceLibrary): Song? {
         is ExternalUID.Joined -> {
             deviceLibrary.findSong(uid.childUid)
         }
+        is ExternalUID.Category -> null
+    }
+}
+
+private fun MediaItem.toParent(deviceLibrary: DeviceLibrary): MusicParent? {
+    val uid = ExternalUID.fromString(mediaId) ?: return null
+    return when (uid) {
+        is ExternalUID.Joined -> {
+            deviceLibrary.findArtist(uid.parentUid)
+        }
+        is ExternalUID.Single -> null
         is ExternalUID.Category -> null
     }
 }
