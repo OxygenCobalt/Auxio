@@ -438,15 +438,11 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun play(command: PlaybackCommand) {
-        play(command.song, command.parent, command.queue, command.shuffled)
-    }
-
-    private fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean) {
         val stateHolder = stateHolder ?: return
-        logD("Playing ${song} from $parent in ${queue.size}-song queue [shuffled=${shuffled}]")
+        logD("Playing $command")
         // Played something, so we are initialized now
         isInitialized = true
-        stateHolder.newPlayback(queue, song, parent, shuffled)
+        stateHolder.newPlayback(command)
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -476,7 +472,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun playNext(songs: List<Song>) {
         if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
-            play(null, null, songs, false)
+            play(QueueCommand(songs))
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to start of queue")
@@ -488,12 +484,18 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun addToQueue(songs: List<Song>) {
         if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
-            play(null, null, songs, false)
+            play(QueueCommand(songs))
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to end of queue")
             stateHolder.addToQueue(songs, StateAck.AddToQueue(queue.size, songs.size))
         }
+    }
+
+    private class QueueCommand(override val queue: List<Song>) : PlaybackCommand  {
+        override val song: Song? = null
+        override val parent: MusicParent? = null
+        override val shuffled = false
     }
 
     @Synchronized

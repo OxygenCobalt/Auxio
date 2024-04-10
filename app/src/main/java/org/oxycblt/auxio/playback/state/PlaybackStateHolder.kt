@@ -53,13 +53,8 @@ interface PlaybackStateHolder {
 
     /**
      * Applies a completely new playback state to the holder.
-     *
-     * @param queue The new queue to use.
-     * @param start The song to start playback from. Should be in the queue.
-     * @param parent The parent to play from.
-     * @param shuffled Whether the queue should be shuffled.
      */
-    fun newPlayback(queue: List<Song>, start: Song?, parent: MusicParent?, shuffled: Boolean)
+    fun newPlayback(command: PlaybackCommand)
 
     /**
      * Update the playing state of the audio player.

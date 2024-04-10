@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.service
 
 import android.app.Notification
@@ -67,7 +67,6 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -116,6 +115,10 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
+import javax.inject.Inject
+
+// TODO: Android Auto Hookup
+// TODO: Have to clobber shuffle and repeat mode handlers
 
 @AndroidEntryPoint
 class AuxioService :
@@ -128,8 +131,10 @@ class AuxioService :
     PlaybackStateHolder,
     Player.Listener,
     PlaybackSettings.Listener {
-    @Inject lateinit var musicRepository: MusicRepository
-    @Inject lateinit var musicSettings: MusicSettings
+    @Inject
+    lateinit var musicRepository: MusicRepository
+    @Inject
+    lateinit var musicSettings: MusicSettings
 
     private lateinit var indexingNotification: IndexingNotification
     private lateinit var observingNotification: ObservingNotification
@@ -139,12 +144,18 @@ class AuxioService :
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
 
-    @Inject lateinit var playbackManager: PlaybackStateManager
-    @Inject lateinit var commandFactory: PlaybackCommand.Factory
-    @Inject lateinit var playbackSettings: PlaybackSettings
-    @Inject lateinit var persistenceRepository: PersistenceRepository
-    @Inject lateinit var mediaSourceFactory: MediaSource.Factory
-    @Inject lateinit var replayGainProcessor: ReplayGainAudioProcessor
+    @Inject
+    lateinit var playbackManager: PlaybackStateManager
+    @Inject
+    lateinit var commandFactory: PlaybackCommand.Factory
+    @Inject
+    lateinit var playbackSettings: PlaybackSettings
+    @Inject
+    lateinit var persistenceRepository: PersistenceRepository
+    @Inject
+    lateinit var mediaSourceFactory: MediaSource.Factory
+    @Inject
+    lateinit var replayGainProcessor: ReplayGainAudioProcessor
     private lateinit var player: NeoPlayer
     private lateinit var mediaSession: MediaLibrarySession
     private val systemReceiver = PlaybackReceiver()
@@ -154,11 +165,15 @@ class AuxioService :
     private var inPlayback = false
     private var openAudioEffectSession = false
 
-    @Inject lateinit var listSettings: ListSettings
-    @Inject lateinit var widgetComponent: WidgetComponent
-    @Inject lateinit var bitmapLoader: NeoBitmapLoader
+    @Inject
+    lateinit var listSettings: ListSettings
+    @Inject
+    lateinit var widgetComponent: WidgetComponent
+    @Inject
+    lateinit var bitmapLoader: NeoBitmapLoader
 
-    @Inject lateinit var searchEngine: SearchEngine
+    @Inject
+    lateinit var searchEngine: SearchEngine
     private var searchResultsCache = mutableMapOf<String, SearchEngine.Items>()
     private var searchScope = CoroutineScope(serviceJob + Dispatchers.Default)
     private var searchJob: Job? = null
@@ -171,7 +186,8 @@ class AuxioService :
         wakeLock =
             getSystemServiceCompat(PowerManager::class)
                 .newWakeLock(
-                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexerService")
+                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexerService"
+                )
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
@@ -187,7 +203,9 @@ class AuxioService :
                     handler,
                     audioListener,
                     AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                    replayGainProcessor))
+                    replayGainProcessor
+                )
+            )
         }
 
         val exoPlayer =
@@ -201,11 +219,20 @@ class AuxioService :
                         .setUsage(C.USAGE_MEDIA)
                         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                         .build(),
-                    true)
+                    true
+                )
                 .build()
                 .also { it.addListener(this) }
 
-        player = NeoPlayer(this, exoPlayer, musicRepository, playbackSettings)
+        player = NeoPlayer(
+            this,
+            exoPlayer,
+            musicRepository,
+            playbackManager,
+            this,
+            commandFactory,
+            playbackSettings
+        )
         setMediaNotificationProvider(
             DefaultMediaNotificationProvider.Builder(this)
                 .setNotificationId(IntegerTable.PLAYBACK_NOTIFICATION_CODE)
@@ -232,7 +259,8 @@ class AuxioService :
             }
 
         ContextCompat.registerReceiver(
-            this, systemReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED)
+            this, systemReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED
+        )
 
         musicSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
@@ -318,9 +346,10 @@ class AuxioService :
                     mediaNotificationProvider.createNotification(
                         mediaSession,
                         mediaSession.customLayout,
-                        mediaNotificationManager.actionFactory) { notification ->
-                            postMediaNotification(notification, mediaSession)
-                        }
+                        mediaNotificationManager.actionFactory
+                    ) { notification ->
+                        postMediaNotification(notification, mediaSession)
+                    }
                 postMediaNotification(notification, mediaSession)
             }
             return
@@ -419,7 +448,8 @@ class AuxioService :
 
         init {
             contentResolverSafe.registerContentObserver(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, this)
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, this
+            )
         }
 
         /**
@@ -459,7 +489,8 @@ class AuxioService :
                     // sure we handle that.
                     player.currentPosition
                         .coerceAtLeast(0)
-                        .coerceAtMost(player.durationMs ?: Long.MAX_VALUE))
+                        .coerceAtMost(player.durationMs ?: Long.MAX_VALUE)
+                )
             }
                 ?: Progression.nil()
 
@@ -480,15 +511,9 @@ class AuxioService :
 
     override fun resolveQueue() = player.resolveQueue()
 
-    override fun newPlayback(
-        queue: List<Song>,
-        start: Song?,
-        parent: MusicParent?,
-        shuffled: Boolean
-    ) {
-        player.newPlayback(queue, start, parent, shuffled)
+    override fun newPlayback(command: PlaybackCommand) {
+        player.newPlayback(command)
         updateCustomButtons()
-        playbackManager.ack(this, StateAck.NewPlayback)
         deferSave()
     }
 
@@ -500,7 +525,6 @@ class AuxioService :
 
     override fun repeatMode(repeatMode: RepeatMode) {
         player.repeatMode(repeatMode)
-        playbackManager.ack(this, StateAck.RepeatModeChanged)
         deferSave()
         updateCustomButtons()
     }
@@ -517,7 +541,7 @@ class AuxioService :
     }
 
     override fun prev() {
-        player.seekToNext()
+        player.seekToPrevious()
         // Deferred save is handled on position discontinuity
     }
 
@@ -529,31 +553,27 @@ class AuxioService :
     override fun shuffled(shuffled: Boolean) {
         logD("Reordering queue to $shuffled")
         player.shuffleModeEnabled = shuffled
-        playbackManager.ack(this, StateAck.QueueReordered)
         deferSave()
         updateCustomButtons()
     }
 
     override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
-        player.playNext(songs)
-        playbackManager.ack(this, ack)
+        player.playNext(songs, ack)
         deferSave()
     }
 
     override fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue) {
-        player.addToQueue(songs)
-        playbackManager.ack(this, ack)
+        player.addToQueue(songs, ack)
         deferSave()
     }
 
     override fun move(from: Int, to: Int, ack: StateAck.Move) {
-        player.move(from, to)
-        playbackManager.ack(this, ack)
+        player.move(from, to, ack)
         deferSave()
     }
 
     override fun remove(at: Int, ack: StateAck.Remove) {
-        playbackManager.ack(this, ack)
+        player.remove(at, ack)
         deferSave()
     }
 
@@ -561,7 +581,7 @@ class AuxioService :
         val deviceLibrary =
             musicRepository.deviceLibrary
             // No library, cannot do anything.
-            ?: return false
+                ?: return false
 
         when (action) {
             // Restore state -> Start a new restoreState job
@@ -603,13 +623,11 @@ class AuxioService :
         rawQueue: RawQueue,
         ack: StateAck.NewPlayback?
     ) {
-        player.applySavedState(parent, rawQueue)
-        ack?.let { playbackManager.ack(this, it) }
+        player.applySavedState(parent, rawQueue, ack)
     }
 
     override fun reset(ack: StateAck.NewPlayback) {
-        player.setMediaItems(emptyList())
-        playbackManager.ack(this, ack)
+        player.reset(ack)
     }
 
     // --- PLAYER OVERRIDES ---
@@ -640,7 +658,8 @@ class AuxioService :
         super.onMediaItemTransition(mediaItem, reason)
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
-            reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
+            reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK
+        ) {
             playbackManager.ack(this, StateAck.IndexMoved)
         }
     }
@@ -670,9 +689,11 @@ class AuxioService :
         super.onEvents(player, events)
 
         if (events.containsAny(
-            Player.EVENT_PLAY_WHEN_READY_CHANGED,
-            Player.EVENT_IS_PLAYING_CHANGED,
-            Player.EVENT_POSITION_DISCONTINUITY)) {
+                Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                Player.EVENT_IS_PLAYING_CHANGED,
+                Player.EVENT_POSITION_DISCONTINUITY
+            )
+        ) {
             logD("Player state changed, must synchronize state")
             playbackManager.ack(this, StateAck.ProgressionChanged)
         }
@@ -760,15 +781,20 @@ class AuxioService :
             when (val uid = ExternalUID.fromString(mediaId)) {
                 is ExternalUID.Category ->
                     return Futures.immediateFuture(
-                        LibraryResult.ofItem(uid.toMediaItem(this), null))
+                        LibraryResult.ofItem(uid.toMediaItem(this), null)
+                    )
+
                 is ExternalUID.Single ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
+
                 is ExternalUID.Joined ->
                     musicRepository.find(uid.childUid)?.let { musicRepository.find(it.uid) }
+
                 null -> null
             }
                 ?: return Futures.immediateFuture(
-                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                )
 
         val mediaItem =
             when (music) {
@@ -799,11 +825,13 @@ class AuxioService :
         val items =
             getMediaItemList(parentId, deviceLibrary, userLibrary)
                 ?: return Futures.immediateFuture(
-                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                )
         val paginatedItems =
             items.paginate(page, pageSize)
                 ?: return Futures.immediateFuture(
-                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                )
         val result = LibraryResult.ofItemList(paginatedItems, params)
         return Futures.immediateFuture(result)
     }
@@ -818,29 +846,37 @@ class AuxioService :
                 when (externalUID) {
                     ExternalUID.Category.ROOT ->
                         listOf(
-                                ExternalUID.Category.SONGS,
-                                ExternalUID.Category.ALBUMS,
-                                ExternalUID.Category.ARTISTS,
-                                ExternalUID.Category.GENRES,
-                                ExternalUID.Category.PLAYLISTS)
+                            ExternalUID.Category.SONGS,
+                            ExternalUID.Category.ALBUMS,
+                            ExternalUID.Category.ARTISTS,
+                            ExternalUID.Category.GENRES,
+                            ExternalUID.Category.PLAYLISTS
+                        )
                             .map { it.toMediaItem(this) }
+
                     ExternalUID.Category.SONGS ->
                         deviceLibrary.songs.map { it.toMediaItem(this, null) }
+
                     ExternalUID.Category.ALBUMS ->
                         deviceLibrary.albums.map { it.toMediaItem(this, null) }
+
                     ExternalUID.Category.ARTISTS ->
                         deviceLibrary.artists.map { it.toMediaItem(this, null) }
+
                     ExternalUID.Category.GENRES -> deviceLibrary.genres.map { it.toMediaItem(this) }
                     ExternalUID.Category.PLAYLISTS ->
                         userLibrary.playlists.map { it.toMediaItem(this) }
                 }
             }
+
             is ExternalUID.Single -> {
                 getChildMediaItems(externalUID.uid) ?: return null
             }
+
             is ExternalUID.Joined -> {
                 getChildMediaItems(externalUID.childUid) ?: return null
             }
+
             null -> return null
         }
     }
@@ -850,16 +886,20 @@ class AuxioService :
             is Album -> {
                 item.songs.map { it.toMediaItem(this, item) }
             }
+
             is Artist -> {
                 (item.explicitAlbums + item.implicitAlbums).map { it.toMediaItem(this, item) } +
-                    item.songs.map { it.toMediaItem(this, item) }
+                        item.songs.map { it.toMediaItem(this, item) }
             }
+
             is Genre -> {
                 item.songs.map { it.toMediaItem(this, item) }
             }
+
             is Playlist -> {
                 item.songs.map { it.toMediaItem(this, item) }
             }
+
             is Song,
             null -> return null
         }
@@ -875,7 +915,8 @@ class AuxioService :
         val userLibrary = musicRepository.userLibrary
         if (deviceLibrary == null || userLibrary == null) {
             return Futures.immediateFuture(
-                LibraryResult.ofError(LibraryResult.RESULT_ERROR_INVALID_STATE))
+                LibraryResult.ofError(LibraryResult.RESULT_ERROR_INVALID_STATE)
+            )
         }
 
         if (query.isEmpty()) {
@@ -899,7 +940,8 @@ class AuxioService :
         val userLibrary = musicRepository.userLibrary
         if (deviceLibrary == null || userLibrary == null) {
             return Futures.immediateFuture(
-                LibraryResult.ofError(LibraryResult.RESULT_ERROR_INVALID_STATE))
+                LibraryResult.ofError(LibraryResult.RESULT_ERROR_INVALID_STATE)
+            )
         }
 
         if (query.isEmpty()) {
@@ -912,7 +954,8 @@ class AuxioService :
             val paginatedItems =
                 concatenatedItems.paginate(page, pageSize)
                     ?: return Futures.immediateFuture(
-                        LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+                        LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                    )
             val result = LibraryResult.ofItemList(paginatedItems, params)
             return Futures.immediateFuture(result)
         }
@@ -964,7 +1007,8 @@ class AuxioService :
                         deviceLibrary.albums,
                         deviceLibrary.artists,
                         deviceLibrary.genres,
-                        userLibrary.playlists)
+                        userLibrary.playlists
+                    )
                 val results = searchEngine.search(items, query)
                 searchResultsCache[query] = results
                 cb(results)
@@ -979,101 +1023,11 @@ class AuxioService :
         }
         val start = page * pageSize
         val end = (page + 1) * pageSize
-        if (start !in indices || end - 1 !in indices) {
-            // Assume that everything out of bounds is a weird magic value implying that it
-            // actually wants all of the pages. This will not backfire at all.
-            return this
+        if (pageSize == 0 || start !in indices || end - 1 !in indices) {
+            // These pages are probably invalid. Hopefully this won't backfire.
+            return null
         }
         return subList(page * pageSize, (page + 1) * pageSize).toMutableList()
-    }
-
-    override fun onSetMediaItems(
-        mediaSession: MediaSession,
-        controller: MediaSession.ControllerInfo,
-        mediaItems: MutableList<MediaItem>,
-        startIndex: Int,
-        startPositionMs: Long
-    ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
-        val result =
-            if (mediaItems.size > 1) {
-                playMediaItemSelection(mediaItems, startIndex)
-            } else {
-                playSingleMediaItem(mediaItems.first())
-            }
-        return if (result) {
-            // This will not actually do anything to the player, I patched that out
-            Futures.immediateFuture(
-                MediaSession.MediaItemsWithStartPosition(listOf(), C.INDEX_UNSET, C.TIME_UNSET))
-        } else {
-            Futures.immediateFailedFuture(Exception("Invalid state"))
-        }
-    }
-
-    private fun playMediaItemSelection(mediaItems: List<MediaItem>, startIndex: Int): Boolean {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return false
-        val targetSong = mediaItems.getOrNull(startIndex)?.toSong(deviceLibrary)
-        val songs = mediaItems.mapNotNull { it.toSong(deviceLibrary) }
-        var index = startIndex
-        if (targetSong != null) {
-            while (songs.getOrNull(index)?.uid != targetSong.uid) {
-                index--
-            }
-        }
-        playbackManager.play(commandFactory.songs(songs, ShuffleMode.OFF) ?: return false)
-        return true
-    }
-
-    private fun playSingleMediaItem(mediaItem: MediaItem): Boolean {
-        val uid = ExternalUID.fromString(mediaItem.mediaId) ?: return false
-        val music: Music
-        var parent: MusicParent? = null
-        when (uid) {
-            is ExternalUID.Single -> {
-                music = musicRepository.find(uid.uid) ?: return false
-            }
-            is ExternalUID.Joined -> {
-                music = musicRepository.find(uid.childUid) ?: return false
-                parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return false
-            }
-            else -> return false
-        }
-
-        val command =
-            when (music) {
-                is Song -> inferSongFromParentCommand(music, parent)
-                is Album -> commandFactory.album(music, ShuffleMode.OFF)
-                is Artist -> commandFactory.artist(music, ShuffleMode.OFF)
-                is Genre -> commandFactory.genre(music, ShuffleMode.OFF)
-                is Playlist -> commandFactory.playlist(music, ShuffleMode.OFF)
-            }
-
-        playbackManager.play(command ?: return false)
-
-        return true
-    }
-
-    private fun inferSongFromParentCommand(music: Song, parent: MusicParent?) =
-        when (parent) {
-            is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
-            is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
-                    ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
-            is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
-                    ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
-            is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
-            null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
-        }
-
-    override fun onAddMediaItems(
-        mediaSession: MediaSession,
-        controller: MediaSession.ControllerInfo,
-        mediaItems: MutableList<MediaItem>
-    ): ListenableFuture<MutableList<MediaItem>> {
-        val deviceLibrary =
-            musicRepository.deviceLibrary ?: return Futures.immediateFuture(mutableListOf())
-        val songs = mediaItems.mapNotNull { it.toSong(deviceLibrary) }
-        playbackManager.addToQueue(songs)
-        // This will not actually do anything to the player, I patched that out
-        return Futures.immediateFuture(mutableListOf())
     }
 
     override fun onCustomCommand(
@@ -1087,14 +1041,17 @@ class AuxioService :
                 repeatMode(repeatMode.increment())
                 Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
             }
+
             ACTION_INVERT_SHUFFLE -> {
                 shuffled(!player.shuffleModeEnabled)
                 Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
             }
+
             ACTION_EXIT -> {
                 endSession()
                 Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
             }
+
             else -> super.onCustomCommand(session, controller, customCommand, args)
         }
 
@@ -1108,18 +1065,23 @@ class AuxioService :
                         .setIconResId(playbackManager.repeatMode.icon)
                         .setDisplayName(getString(R.string.desc_change_repeat))
                         .setSessionCommand(SessionCommand(ACTION_INC_REPEAT_MODE, Bundle()))
-                        .build())
+                        .build()
+                )
             }
+
             ActionMode.SHUFFLE -> {
                 actions.add(
                     CommandButton.Builder()
                         .setIconResId(
                             if (player.shuffleModeEnabled) R.drawable.ic_shuffle_on_24
-                            else R.drawable.ic_shuffle_off_24)
+                            else R.drawable.ic_shuffle_off_24
+                        )
                         .setDisplayName(getString(R.string.lbl_shuffle))
                         .setSessionCommand(SessionCommand(ACTION_INVERT_SHUFFLE, Bundle()))
-                        .build())
+                        .build()
+                )
             }
+
             else -> {}
         }
 
@@ -1128,7 +1090,8 @@ class AuxioService :
                 .setIconResId(R.drawable.ic_close_24)
                 .setDisplayName(getString(R.string.desc_exit))
                 .setSessionCommand(SessionCommand(ACTION_EXIT, Bundle()))
-                .build())
+                .build()
+        )
 
         mediaSession.setCustomLayout(actions)
     }
@@ -1157,7 +1120,8 @@ class AuxioService :
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
+                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+        )
     }
 
     private fun endSession() {
@@ -1205,6 +1169,7 @@ class AuxioService :
 
                     initialHeadsetPlugEventHandled = true
                 }
+
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
                     logD("Received Headset noise event")
                     pauseFromHeadsetPlug()
@@ -1215,27 +1180,33 @@ class AuxioService :
                     logD("Received play event")
                     playbackManager.playing(!playbackManager.progression.isPlaying)
                 }
+
                 ACTION_INC_REPEAT_MODE -> {
                     logD("Received repeat mode event")
                     playbackManager.repeatMode(playbackManager.repeatMode.increment())
                 }
+
                 ACTION_INVERT_SHUFFLE -> {
                     logD("Received shuffle event")
                     playbackManager.shuffled(!playbackManager.isShuffled)
                 }
+
                 ACTION_SKIP_PREV -> {
                     logD("Received skip previous event")
                     playbackManager.prev()
                 }
+
                 ACTION_SKIP_NEXT -> {
                     logD("Received skip next event")
                     playbackManager.next()
                 }
+
                 ACTION_EXIT -> {
                     logD("Received exit event")
                     playbackManager.playing(false)
                     endSession()
                 }
+
                 WidgetProvider.ACTION_WIDGET_UPDATE -> {
                     logD("Received widget update event")
                     widgetComponent.update()
@@ -1249,7 +1220,8 @@ class AuxioService :
             // call to this function, which should come from that Intent.
             if (playbackSettings.headsetAutoplay &&
                 playbackManager.currentSong != null &&
-                initialHeadsetPlugEventHandled) {
+                initialHeadsetPlugEventHandled
+            ) {
                 logD("Device connected, resuming")
                 playbackManager.playing(true)
             }
@@ -1280,7 +1252,10 @@ class NeoPlayer(
     val context: Context,
     val player: ExoPlayer,
     val musicRepository: MusicRepository,
-    val playbackSettings: PlaybackSettings
+    val playbackManager: PlaybackStateManager,
+    val stateHolder: PlaybackStateHolder,
+    val commandFactory: PlaybackCommand.Factory,
+    val playbackSettings: PlaybackSettings,
 ) : ForwardingPlayer(player) {
     var parent: MusicParent? = null
         private set
@@ -1294,10 +1269,6 @@ class NeoPlayer(
                 currentMediaItem?.mediaMetadata?.extras?.getLong("durationMs")
             }
 
-    fun setShuffleOrder(order: BetterShuffleOrder) {
-        player.setShuffleOrder(order)
-    }
-
     override fun getAvailableCommands(): Player.Commands {
         return super.getAvailableCommands()
             .buildUpon()
@@ -1308,62 +1279,203 @@ class NeoPlayer(
     override fun isCommandAvailable(command: Int): Boolean {
         // We can always skip forward and backward (this is to retain parity with the old behavior)
         return super.isCommandAvailable(command) ||
-            command in setOf(Player.COMMAND_SEEK_TO_NEXT, Player.COMMAND_SEEK_TO_PREVIOUS)
+                command in setOf(Player.COMMAND_SEEK_TO_NEXT, Player.COMMAND_SEEK_TO_PREVIOUS)
     }
+
+    override fun getMediaMetadata(): MediaMetadata {
+        // TODO: Append parent to this for patched notification
+        return player.mediaMetadata
+    }
+
+    override fun setMediaItems(
+        mediaItems: MutableList<MediaItem>,
+        startIndex: Int,
+        startPositionMs: Long
+    ) {
+        // We assume the only people calling this method are going to be the MediaSession callbacks,
+        // since anything else (like newPlayback) will be calling directly on the player. As part
+        // of this, we expand the given MediaItems into the command that should be sent to the
+        // player.
+        val command =
+            if (mediaItems.size > 1) {
+                this.playMediaItemSelection(mediaItems, startIndex)
+            } else {
+                this.playSingleMediaItem(mediaItems.first())
+            }
+        if (command != null) {
+            this.newPlayback(command)
+            player.seekTo(startPositionMs)
+        } else {
+            error("Invalid playback configuration")
+        }
+    }
+
+    private fun playMediaItemSelection(
+        mediaItems: List<MediaItem>,
+        startIndex: Int
+    ): PlaybackCommand? {
+        val deviceLibrary = musicRepository.deviceLibrary ?: return null
+        val targetSong = mediaItems.getOrNull(startIndex)?.toSong(deviceLibrary)
+        val songs = mediaItems.mapNotNull { it.toSong(deviceLibrary) }
+        var index = startIndex
+        if (targetSong != null) {
+            while (songs.getOrNull(index)?.uid != targetSong.uid) {
+                index--
+            }
+        }
+        return commandFactory.songs(songs, ShuffleMode.OFF)
+    }
+
+    private fun playSingleMediaItem(mediaItem: MediaItem): PlaybackCommand? {
+        val uid = ExternalUID.fromString(mediaItem.mediaId) ?: return null
+        val music: Music
+        var parent: MusicParent? = null
+        when (uid) {
+            is ExternalUID.Single -> {
+                music = musicRepository.find(uid.uid) ?: return null
+            }
+
+            is ExternalUID.Joined -> {
+                music = musicRepository.find(uid.childUid) ?: return null
+                parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return null
+            }
+
+            else -> return null
+        }
+
+        return when (music) {
+            is Song -> inferSongFromParentCommand(music, parent)
+            is Album -> commandFactory.album(music, ShuffleMode.OFF)
+            is Artist -> commandFactory.artist(music, ShuffleMode.OFF)
+            is Genre -> commandFactory.genre(music, ShuffleMode.OFF)
+            is Playlist -> commandFactory.playlist(music, ShuffleMode.OFF)
+        }
+    }
+
+    private fun inferSongFromParentCommand(music: Song, parent: MusicParent?) =
+        when (parent) {
+            is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
+            is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
+                ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
+
+            is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
+                ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
+
+            is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
+            null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
+        }
 
     override fun seekToNext() {
         // Replicate the old pseudo-circular queue behavior when no repeat option is implemented.
         // Basically, you can't skip back and wrap around the queue, but you can skip forward and
         // wrap around the queue, albeit playback will be paused.
         if (repeatMode != REPEAT_MODE_OFF || hasNextMediaItem()) {
-            super.seekToNext()
+            player.seekToNext()
             if (!playbackSettings.rememberPause) {
-                play()
+                player.play()
             }
         } else {
-            seekTo(currentTimeline.getFirstWindowIndex(shuffleModeEnabled), C.TIME_UNSET)
+            player.seekTo(currentTimeline.getFirstWindowIndex(shuffleModeEnabled), C.TIME_UNSET)
             // TODO: Dislike the UX implications of this, I feel should I bite the bullet
             //  and switch to dynamic skip enable/disable?
             if (!playbackSettings.rememberPause) {
-                pause()
+                player.pause()
             }
         }
+        // Ack is handled in listener.
     }
 
     override fun seekToPrevious() {
         if (playbackSettings.rewindWithPrev) {
-            super.seekToPrevious()
+            player.seekToPrevious()
         } else {
-            seekToPreviousMediaItem()
+            player.seekToPreviousMediaItem()
         }
         if (!playbackSettings.rememberPause) {
-            play()
+            player.play()
         }
+        // Ack is handled in listener.
+    }
+
+    override fun seekTo(mediaItemIndex: Int, positionMs: Long) {
+        player.seekTo(mediaItemIndex, positionMs)
+        if (!playbackSettings.rememberPause) {
+            player.play()
+        }
+        // Ack handled in listener.
+    }
+
+    override fun setRepeatMode(repeatMode: Int) {
+        player.setRepeatMode(repeatMode)
+        this.updatePauseOnRepeat()
+        playbackManager.ack(stateHolder, StateAck.RepeatModeChanged)
     }
 
     override fun setShuffleModeEnabled(shuffleModeEnabled: Boolean) {
-        super.setShuffleModeEnabled(shuffleModeEnabled)
+        player.setShuffleModeEnabled(shuffleModeEnabled)
         if (shuffleModeEnabled) {
             // Have to manually refresh the shuffle seed and anchor it to the new current songs
-            setShuffleOrder(BetterShuffleOrder(mediaItemCount, currentMediaItemIndex))
+            player.setShuffleOrder(BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex))
         }
+        playbackManager.ack(stateHolder, StateAck.QueueReordered)
     }
 
-    fun newPlayback(queue: List<Song>, start: Song?, parent: MusicParent?, shuffled: Boolean) {
-        this.parent = parent
-        super.setShuffleModeEnabled(shuffleModeEnabled)
-        setMediaItems(queue.map { it.toMediaItem(context, null) })
-        val startIndex =
-            start
-                ?.let { queue.indexOf(start) }
-                .also { check(it != -1) { "Start song not in queue" } }
-        if (shuffled) {
-            setShuffleOrder(BetterShuffleOrder(queue.size, startIndex ?: -1))
+    override fun addMediaItems(index: Int, mediaItems: MutableList<MediaItem>) {
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        // Sanitize possible MediaBrowser-specific items
+        val items = mediaItems.mapNotNull { it.toSong(deviceLibrary)?.toMediaItem(context, null) }
+        if (items.isEmpty()) {
+            return
         }
-        val target = startIndex ?: currentTimeline.getFirstWindowIndex(shuffleModeEnabled)
-        seekTo(target, C.TIME_UNSET)
-        prepare()
-        play()
+        val indices = unscrambleQueueIndices()
+        val fakeIndex = indices.indexOf(index)
+        val ack = if (index == player.nextMediaItemIndex) {
+            StateAck.PlayNext(fakeIndex + 1, items.size)
+        } else if (index >= mediaItemCount) {
+            // Add to queue
+            StateAck.AddToQueue(mediaItemCount, items.size)
+        } else {
+            // I really don't want to handle any other case right now and won't until I know
+            // they occured.
+            return
+        }
+        player.addMediaItems(index, items)
+        playbackManager.ack(stateHolder, ack)
+    }
+
+    override fun moveMediaItem(currentIndex: Int, newIndex: Int) {
+        val indices = unscrambleQueueIndices()
+        val fakeFrom = indices.indexOf(currentIndex)
+        val fakeTo = indices.indexOf(newIndex)
+        val ack = StateAck.Move(fakeFrom, fakeTo)
+        player.moveMediaItem(currentIndex, newIndex)
+        playbackManager.ack(stateHolder, ack)
+    }
+
+    override fun removeMediaItem(index: Int) {
+        val indices = unscrambleQueueIndices()
+        val fakeAt = indices.indexOf(index)
+        player.removeMediaItem(index)
+        val ack = StateAck.Remove(fakeAt)
+        playbackManager.ack(stateHolder, ack)
+    }
+
+    fun newPlayback(command: PlaybackCommand) {
+        this.parent = command.parent
+        player.shuffleModeEnabled = shuffleModeEnabled
+        player.setMediaItems(command.queue.map { it.toMediaItem(context, null) })
+        val startIndex =
+            command.song
+                ?.let { command.queue.indexOf(it) }
+                .also { check(it != -1) { "Start song not in queue" } }
+        if (command.shuffled) {
+            player.setShuffleOrder(BetterShuffleOrder(command.queue.size, startIndex ?: -1))
+        }
+        val target = startIndex ?: player.currentTimeline.getFirstWindowIndex(shuffleModeEnabled)
+        player.seekTo(target, C.TIME_UNSET)
+        player.prepare()
+        player.play()
+        playbackManager.ack(stateHolder, StateAck.NewPlayback)
     }
 
     fun repeatMode(repeatMode: RepeatMode) {
@@ -1373,7 +1485,6 @@ class NeoPlayer(
                 RepeatMode.ALL -> REPEAT_MODE_ALL
                 RepeatMode.TRACK -> REPEAT_MODE_ONE
             }
-        updatePauseOnRepeat()
     }
 
     fun goto(index: Int) {
@@ -1383,34 +1494,34 @@ class NeoPlayer(
         }
 
         val trueIndex = indices[index]
-        seekTo(trueIndex, C.TIME_UNSET)
-        if (!playbackSettings.rememberPause) {
-            play()
-        }
+        this.seekTo(trueIndex, C.TIME_UNSET) // Handles remaining custom logic
     }
 
-    fun playNext(songs: List<Song>) {
-        val currTimeline = currentTimeline
+    fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
+        val currTimeline = player.currentTimeline
         val nextIndex =
             if (currTimeline.isEmpty) {
                 C.INDEX_UNSET
             } else {
                 currTimeline.getNextWindowIndex(
-                    currentMediaItemIndex, REPEAT_MODE_OFF, shuffleModeEnabled)
+                    currentMediaItemIndex, REPEAT_MODE_OFF, shuffleModeEnabled
+                )
             }
 
         if (nextIndex == C.INDEX_UNSET) {
-            addMediaItems(songs.map { it.toMediaItem(context, null) })
+            player.addMediaItems(songs.map { it.toMediaItem(context, null) })
         } else {
-            addMediaItems(nextIndex, songs.map { it.toMediaItem(context, null) })
+            player.addMediaItems(nextIndex, songs.map { it.toMediaItem(context, null) })
         }
+        playbackManager.ack(stateHolder, ack)
     }
 
-    fun addToQueue(songs: List<Song>) {
-        addMediaItems(songs.map { it.toMediaItem(context, null) })
+    fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue) {
+        player.addMediaItems(songs.map { it.toMediaItem(context, null) })
+        playbackManager.ack(stateHolder, ack)
     }
 
-    fun move(from: Int, to: Int) {
+    fun move(from: Int, to: Int, ack: StateAck.Move) {
         val indices = unscrambleQueueIndices()
         if (indices.isEmpty()) {
             return
@@ -1421,17 +1532,19 @@ class NeoPlayer(
 
         when {
             trueFrom > trueTo -> {
-                moveMediaItem(trueFrom, trueTo)
-                moveMediaItem(trueTo + 1, trueFrom)
+                player.moveMediaItem(trueFrom, trueTo)
+                player.moveMediaItem(trueTo + 1, trueFrom)
             }
+
             trueTo > trueFrom -> {
-                moveMediaItem(trueFrom, trueTo)
-                moveMediaItem(trueTo - 1, trueFrom)
+                player.moveMediaItem(trueFrom, trueTo)
+                player.moveMediaItem(trueTo - 1, trueFrom)
             }
         }
+        playbackManager.ack(stateHolder, ack)
     }
 
-    fun remove(at: Int) {
+    fun remove(at: Int, ack: StateAck.Remove) {
         val indices = unscrambleQueueIndices()
         if (indices.isEmpty()) {
             return
@@ -1443,9 +1556,10 @@ class NeoPlayer(
         if (songWillChange && !playbackSettings.rememberPause) {
             play()
         }
+        playbackManager.ack(stateHolder, ack)
     }
 
-    fun applySavedState(parent: MusicParent?, rawQueue: RawQueue) {
+    fun applySavedState(parent: MusicParent?, rawQueue: RawQueue, ack: StateAck.NewPlayback?) {
         this.parent = parent
         player.setMediaItems(rawQueue.heap.map { it.toMediaItem(context, null) })
         if (rawQueue.isShuffled) {
@@ -1456,6 +1570,12 @@ class NeoPlayer(
         }
         player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
         player.prepare()
+        ack?.let { playbackManager.ack(stateHolder, it) }
+    }
+
+    fun reset(ack: StateAck.NewPlayback) {
+        player.setMediaItems(listOf())
+        playbackManager.ack(stateHolder, ack)
     }
 
     fun updatePauseOnRepeat() {
@@ -1467,7 +1587,7 @@ class NeoPlayer(
         val deviceLibrary =
             musicRepository.deviceLibrary
             // No library, cannot do anything.
-            ?: return RawQueue(emptyList(), emptyList(), 0)
+                ?: return RawQueue(emptyList(), emptyList(), 0)
         val heap = (0 until player.mediaItemCount).map { player.getMediaItemAt(it) }
         val shuffledMapping =
             if (shuffleModeEnabled) {
@@ -1478,7 +1598,8 @@ class NeoPlayer(
         return RawQueue(
             heap.mapNotNull { it.toSong(deviceLibrary) },
             shuffledMapping,
-            player.currentMediaItemIndex)
+            player.currentMediaItemIndex
+        )
     }
 
     private fun unscrambleQueueIndices(): List<Int> {
@@ -1502,7 +1623,8 @@ class NeoPlayer(
             if (lastMediaItemIndex != C.INDEX_UNSET) {
                 lastMediaItemIndex =
                     timeline.getNextWindowIndex(
-                        lastMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled)
+                        lastMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled
+                    )
                 if (lastMediaItemIndex != C.INDEX_UNSET) {
                     queue.add(lastMediaItemIndex)
                 }
@@ -1510,7 +1632,8 @@ class NeoPlayer(
             if (firstMediaItemIndex != C.INDEX_UNSET) {
                 firstMediaItemIndex =
                     timeline.getPreviousWindowIndex(
-                        firstMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled)
+                        firstMediaItemIndex, Player.REPEAT_MODE_OFF, shuffleModeEnabled
+                    )
                 if (firstMediaItemIndex != C.INDEX_UNSET) {
                     queue.add(0, firstMediaItemIndex)
                 }
@@ -1623,7 +1746,9 @@ private fun Artist.toMediaItem(context: Context, parent: Genre?): MediaItem {
                         context.getPlural(R.plurals.fmt_song_count, songs.size)
                     } else {
                         context.getString(R.string.def_song_count)
-                    }))
+                    }
+                )
+            )
             .setMediaType(MediaMetadata.MEDIA_TYPE_ARTIST)
             .setIsPlayable(true)
             .setIsBrowsable(true)
@@ -1644,7 +1769,8 @@ private fun Genre.toMediaItem(context: Context): MediaItem {
                     context.getPlural(R.plurals.fmt_song_count, songs.size)
                 } else {
                     context.getString(R.string.def_song_count)
-                })
+                }
+            )
             .setMediaType(MediaMetadata.MEDIA_TYPE_GENRE)
             .setIsPlayable(true)
             .setIsBrowsable(true)
@@ -1664,7 +1790,8 @@ private fun Playlist.toMediaItem(context: Context): MediaItem {
                     context.getPlural(R.plurals.fmt_song_count, songs.size)
                 } else {
                     context.getString(R.string.def_song_count)
-                })
+                }
+            )
             .setMediaType(MediaMetadata.MEDIA_TYPE_PLAYLIST)
             .setIsPlayable(true)
             .setIsBrowsable(true)
@@ -1680,20 +1807,11 @@ private fun MediaItem.toSong(deviceLibrary: DeviceLibrary): Song? {
         is ExternalUID.Single -> {
             deviceLibrary.findSong(uid.uid)
         }
+
         is ExternalUID.Joined -> {
             deviceLibrary.findSong(uid.childUid)
         }
-        is ExternalUID.Category -> null
-    }
-}
 
-private fun MediaItem.toParent(deviceLibrary: DeviceLibrary): MusicParent? {
-    val uid = ExternalUID.fromString(mediaId) ?: return null
-    return when (uid) {
-        is ExternalUID.Joined -> {
-            deviceLibrary.findArtist(uid.parentUid)
-        }
-        is ExternalUID.Single -> null
         is ExternalUID.Category -> null
     }
 }
@@ -1778,6 +1896,7 @@ sealed interface ExternalUID {
                         Category.PLAYLISTS.id -> Category.PLAYLISTS
                         else -> null
                     }
+
                 ID_ITEM -> {
                     val uids = parts[1].split(">", limit = 2)
                     if (uids.size == 1) {
@@ -1788,6 +1907,7 @@ sealed interface ExternalUID {
                         }
                     }
                 }
+
                 else -> return null
             }
         }
