@@ -109,6 +109,7 @@ import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
+import org.oxycblt.auxio.search.SearchEngine
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
@@ -156,6 +157,11 @@ class AuxioService :
     @Inject lateinit var listSettings: ListSettings
     @Inject lateinit var widgetComponent: WidgetComponent
     @Inject lateinit var bitmapLoader: NeoBitmapLoader
+
+    @Inject lateinit var searchEngine: SearchEngine
+    private var searchResultsCache = mutableMapOf<String, SearchEngine.Items>()
+    private var searchScope = CoroutineScope(serviceJob + Dispatchers.Default)
+    private var searchJob: Job? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -692,10 +698,15 @@ class AuxioService :
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
-            // We now have a library, see if we have anything we need to do.
-            logD("Library obtained, requesting action")
-            playbackManager.requestAction(this)
+        if (changes.deviceLibrary) {
+            if (musicRepository.deviceLibrary != null) {
+                // We now have a library, see if we have anything we need to do.
+                logD("Library obtained, requesting action")
+                playbackManager.requestAction(this)
+            }
+            // Invalidate anything we searched prior.
+            searchResultsCache.clear()
+            searchJob?.cancel()
         }
     }
 
@@ -720,7 +731,6 @@ class AuxioService :
         session: MediaSession,
         controller: MediaSession.ControllerInfo
     ): ConnectionResult {
-        logD(Exception().stackTraceToString())
         val sessionCommands =
             ConnectionResult.DEFAULT_SESSION_AND_LIBRARY_COMMANDS.buildUpon()
                 .add(SessionCommand(ACTION_INC_REPEAT_MODE, Bundle.EMPTY))
@@ -738,9 +748,7 @@ class AuxioService :
         browser: MediaSession.ControllerInfo,
         params: LibraryParams?
     ): ListenableFuture<LibraryResult<MediaItem>> {
-        val result =
-            LibraryResult.ofItem(
-                ExternalUID.Category.ROOT.toMediaItem(this), LibraryParams.Builder().build())
+        val result = LibraryResult.ofItem(ExternalUID.Category.ROOT.toMediaItem(this), params)
         return Futures.immediateFuture(result)
     }
 
@@ -764,15 +772,18 @@ class AuxioService :
         val deviceLibrary = musicRepository.deviceLibrary
         val userLibrary = musicRepository.userLibrary
         if (deviceLibrary == null || userLibrary == null) {
-            return Futures.immediateFuture(
-                LibraryResult.ofItemList(emptyList(), LibraryParams.Builder().build()))
+            return Futures.immediateFuture(LibraryResult.ofItemList(emptyList(), params))
         }
 
         val items =
             getMediaItemList(parentId, deviceLibrary, userLibrary)
                 ?: return Futures.immediateFuture(
                     LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
-        val result = LibraryResult.ofItemList(items, LibraryParams.Builder().build())
+        val paginatedItems =
+            items.paginate(page, pageSize)
+                ?: return Futures.immediateFuture(
+                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+        val result = LibraryResult.ofItemList(paginatedItems, params)
         return Futures.immediateFuture(result)
     }
 
@@ -833,6 +844,128 @@ class AuxioService :
         }
     }
 
+    override fun onSearch(
+        session: MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        query: String,
+        params: LibraryParams?
+    ): ListenableFuture<LibraryResult<Void>> {
+        val deviceLibrary = musicRepository.deviceLibrary
+        val userLibrary = musicRepository.userLibrary
+        if (deviceLibrary == null || userLibrary == null) {
+            return Futures.immediateFuture(
+                LibraryResult.ofError(LibraryResult.RESULT_ERROR_INVALID_STATE))
+        }
+
+        if (query.isEmpty()) {
+            return Futures.immediateFuture(LibraryResult.ofVoid())
+        }
+
+        val future = SettableFuture.create<LibraryResult<Void>>()
+        searchTo(query, deviceLibrary, userLibrary) { future.set(LibraryResult.ofVoid()) }
+        return Futures.immediateFuture(LibraryResult.ofVoid())
+    }
+
+    override fun onGetSearchResult(
+        session: MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        query: String,
+        page: Int,
+        pageSize: Int,
+        params: LibraryParams?
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val deviceLibrary = musicRepository.deviceLibrary
+        val userLibrary = musicRepository.userLibrary
+        if (deviceLibrary == null || userLibrary == null) {
+            return Futures.immediateFuture(
+                LibraryResult.ofError(LibraryResult.RESULT_ERROR_INVALID_STATE))
+        }
+
+        if (query.isEmpty()) {
+            return Futures.immediateFuture(LibraryResult.ofItemList(emptyList(), params))
+        }
+
+        val items = searchResultsCache[query]
+        if (items != null) {
+            val concatenatedItems = items.concat()
+            val paginatedItems =
+                concatenatedItems.paginate(page, pageSize)
+                    ?: return Futures.immediateFuture(
+                        LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+            val result = LibraryResult.ofItemList(paginatedItems, params)
+            return Futures.immediateFuture(result)
+        }
+
+        val future = SettableFuture.create<LibraryResult<ImmutableList<MediaItem>>>()
+        searchTo(query, deviceLibrary, userLibrary) {
+            val concatenatedItems = it.concat()
+            val paginatedItems = concatenatedItems.paginate(page, pageSize) ?: return@searchTo
+            val result = LibraryResult.ofItemList(paginatedItems, params)
+            future.set(result)
+        }
+
+        return future
+    }
+
+    private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
+        val music = mutableListOf<MediaItem>()
+        if (songs != null) {
+            music.addAll(songs.map { it.toMediaItem(this@AuxioService, null) })
+        }
+        if (albums != null) {
+            music.addAll(albums.map { it.toMediaItem(this@AuxioService, null) })
+        }
+        if (artists != null) {
+            music.addAll(artists.map { it.toMediaItem(this@AuxioService, null) })
+        }
+        if (genres != null) {
+            music.addAll(genres.map { it.toMediaItem(this@AuxioService) })
+        }
+        if (playlists != null) {
+            music.addAll(playlists.map { it.toMediaItem(this@AuxioService) })
+        }
+        return music
+    }
+
+    private fun searchTo(
+        query: String,
+        deviceLibrary: DeviceLibrary,
+        userLibrary: UserLibrary,
+        cb: (SearchEngine.Items) -> Unit
+    ) {
+        // TODO: Queue up searches rather than clobbering the last one
+        searchJob?.cancel()
+        searchJob =
+            searchScope.launch {
+                val items =
+                    SearchEngine.Items(
+                        deviceLibrary.songs,
+                        deviceLibrary.albums,
+                        deviceLibrary.artists,
+                        deviceLibrary.genres,
+                        userLibrary.playlists)
+                val results = searchEngine.search(items, query)
+                searchResultsCache[query] = results
+                cb(results)
+            }
+    }
+
+    private fun List<MediaItem>.paginate(page: Int, pageSize: Int): List<MediaItem>? {
+        if (page == Int.MAX_VALUE) {
+            // I think if someone requests this page it more or less implies that I should
+            // return all of the pages.
+            return this
+        }
+        val start = page * pageSize
+        val end = (page + 1) * pageSize
+        if (start !in indices || end - 1 !in indices) {
+            // Assume that everything out of bounds is a weird magic value implying that it
+            // actually wants all of the pages. This will not backfire at all.
+            return this
+        }
+        return subList(page * pageSize, (page + 1) * pageSize).toMutableList()
+    }
+
     override fun onSetMediaItems(
         mediaSession: MediaSession,
         controller: MediaSession.ControllerInfo,
@@ -840,14 +973,11 @@ class AuxioService :
         startIndex: Int,
         startPositionMs: Long
     ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
-        val deviceLibrary =
-            musicRepository.deviceLibrary
-                ?: return Futures.immediateFailedFuture(Exception("Invalid state"))
         val result =
             if (mediaItems.size > 1) {
-                playMediaItemSelection(mediaItems, startIndex, deviceLibrary)
+                playMediaItemSelection(mediaItems, startIndex)
             } else {
-                playSingleMediaItem(mediaItems.first(), deviceLibrary)
+                playSingleMediaItem(mediaItems.first())
             }
         return if (result) {
             // This will not actually do anything to the player, I patched that out
@@ -858,11 +988,8 @@ class AuxioService :
         }
     }
 
-    private fun playMediaItemSelection(
-        mediaItems: List<MediaItem>,
-        startIndex: Int,
-        deviceLibrary: DeviceLibrary
-    ): Boolean {
+    private fun playMediaItemSelection(mediaItems: List<MediaItem>, startIndex: Int): Boolean {
+        val deviceLibrary = musicRepository.deviceLibrary ?: return false
         val targetSong = mediaItems.getOrNull(startIndex)?.toSong(deviceLibrary)
         val songs = mediaItems.mapNotNull { it.toSong(deviceLibrary) }
         var index = startIndex
@@ -875,7 +1002,7 @@ class AuxioService :
         return true
     }
 
-    private fun playSingleMediaItem(mediaItem: MediaItem, deviceLibrary: DeviceLibrary): Boolean {
+    private fun playSingleMediaItem(mediaItem: MediaItem): Boolean {
         val uid = ExternalUID.fromString(mediaItem.mediaId) ?: return false
         val music: Music
         var parent: MusicParent? = null
