@@ -737,7 +737,6 @@ class AuxioService :
                 .add(SessionCommand(ACTION_INVERT_SHUFFLE, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_EXIT, Bundle.EMPTY))
                 .build()
-        logD(controller)
         return ConnectionResult.AcceptedResultBuilder(session)
             .setAvailableSessionCommands(sessionCommands)
             .build()
@@ -757,8 +756,30 @@ class AuxioService :
         browser: MediaSession.ControllerInfo,
         mediaId: String
     ): ListenableFuture<LibraryResult<MediaItem>> {
-        // TODO
-        return super.onGetItem(session, browser, mediaId)
+        val music =
+            when (val uid = ExternalUID.fromString(mediaId)) {
+                is ExternalUID.Category ->
+                    return Futures.immediateFuture(
+                        LibraryResult.ofItem(uid.toMediaItem(this), null))
+                is ExternalUID.Single ->
+                    musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
+                is ExternalUID.Joined ->
+                    musicRepository.find(uid.childUid)?.let { musicRepository.find(it.uid) }
+                null -> null
+            }
+                ?: return Futures.immediateFuture(
+                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+
+        val mediaItem =
+            when (music) {
+                is Album -> music.toMediaItem(this, null)
+                is Artist -> music.toMediaItem(this, null)
+                is Genre -> music.toMediaItem(this)
+                is Playlist -> music.toMediaItem(this)
+                is Song -> music.toMediaItem(this, null)
+            }
+
+        return Futures.immediateFuture(LibraryResult.ofItem(mediaItem, null))
     }
 
     override fun onGetChildren(
