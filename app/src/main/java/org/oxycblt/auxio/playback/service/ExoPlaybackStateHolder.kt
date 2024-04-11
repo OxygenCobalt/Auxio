@@ -236,7 +236,7 @@ class ExoPlaybackStateHolder(
         // Replicate the old pseudo-circular queue behavior when no repeat option is implemented.
         // Basically, you can't skip back and wrap around the queue, but you can skip forward and
         // wrap around the queue, albeit playback will be paused.
-        if (player.repeatMode != Player.REPEAT_MODE_OFF || player.hasNextMediaItem()) {
+        if (player.repeatMode == Player.REPEAT_MODE_ALL || player.hasNextMediaItem()) {
             player.seekToNext()
             if (!playbackSettings.rememberPause) {
                 player.play()
