@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.service
+package org.oxycblt.auxio.music.service
 
 import android.content.Context
 import android.os.SystemClock
@@ -25,6 +25,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.IndexingProgress
+import org.oxycblt.auxio.ui.ForegroundServiceNotification
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 

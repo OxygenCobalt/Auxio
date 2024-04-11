@@ -492,7 +492,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
     }
 
-    private class QueueCommand(override val queue: List<Song>) : PlaybackCommand  {
+    private class QueueCommand(override val queue: List<Song>) : PlaybackCommand {
         override val song: Song? = null
         override val parent: MusicParent? = null
         override val shuffled = false

@@ -82,7 +82,7 @@
         Service handling music playback, system components, and state saving.
         -->
         <service
-            android:name=".service.AuxioService"
+            android:name=".AuxioService"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:exported="true"

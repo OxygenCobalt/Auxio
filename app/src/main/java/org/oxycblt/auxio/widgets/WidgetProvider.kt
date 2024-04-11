@@ -28,11 +28,11 @@ import android.os.Bundle
 import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
+import org.oxycblt.auxio.AuxioService
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.service.AuxioService
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW

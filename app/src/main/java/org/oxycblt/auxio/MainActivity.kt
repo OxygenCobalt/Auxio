@@ -31,7 +31,6 @@ import javax.inject.Inject
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
-import org.oxycblt.auxio.service.AuxioService
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
