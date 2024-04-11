@@ -22,6 +22,7 @@ import android.content.Context
 import androidx.media3.common.MediaItem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.math.min
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -161,18 +162,20 @@ constructor(
         }
     }
 
-    suspend fun prepareSearch(query: String) {
+    suspend fun prepareSearch(query: String): Int {
         val deviceLibrary = musicRepository.deviceLibrary
         val userLibrary = musicRepository.userLibrary
         if (deviceLibrary == null || userLibrary == null) {
-            return
+            return 0
         }
 
         if (query.isEmpty()) {
-            return
+            return 0
         }
 
-        searchTo(query, deviceLibrary, userLibrary).await()
+        val deferred = searchTo(query, deviceLibrary, userLibrary)
+        searchResults[query] = deferred
+        return deferred.await().count()
     }
 
     suspend fun getSearchResult(
@@ -216,6 +219,26 @@ constructor(
             music.addAll(playlists.map { it.toMediaItem(context) })
         }
         return music
+    }
+
+    private fun SearchEngine.Items.count(): Int {
+        var count = 0
+        if (songs != null) {
+            count += songs.size
+        }
+        if (albums != null) {
+            count += albums.size
+        }
+        if (artists != null) {
+            count += artists.size
+        }
+        if (genres != null) {
+            count += genres.size
+        }
+        if (playlists != null) {
+            count += playlists.size
+        }
+        return count
     }
 
     private fun searchTo(query: String, deviceLibrary: DeviceLibrary, userLibrary: UserLibrary) =
