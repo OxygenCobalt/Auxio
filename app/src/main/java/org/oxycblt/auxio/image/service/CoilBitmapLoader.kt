@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.image.service
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.BitmapLoader
@@ -44,8 +43,8 @@ constructor(
         throw NotImplementedError()
     }
 
-    override fun loadBitmap(uri: Uri, options: BitmapFactory.Options?): ListenableFuture<Bitmap> {
-        throw NotImplementedError()
+    override fun supportsMimeType(mimeType: String): Boolean {
+        return true
     }
 
     override fun loadBitmapFromMetadata(metadata: MediaMetadata): ListenableFuture<Bitmap>? {
