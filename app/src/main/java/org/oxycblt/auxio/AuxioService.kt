@@ -67,6 +67,7 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.service.ExoPlaybackStateHolder
 import org.oxycblt.auxio.playback.service.SystemPlaybackReceiver
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
@@ -232,10 +233,6 @@ class AuxioService :
     // --- INTERNAL ---
 
     private fun updateForeground(forMusic: Boolean) {
-        if (playbackManager.progression.isPlaying) {
-            inPlayback = true
-        }
-
         if (inPlayback) {
             if (!forMusic) {
                 val notification =
@@ -287,7 +284,7 @@ class AuxioService :
         } else {
             // Not observing and done loading, exit foreground.
             logD("Exiting foreground")
-            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_DETACH)
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         }
         // Release our wake lock (if we were using it)
         wakeLock.releaseSafe()
@@ -500,13 +497,20 @@ class AuxioService :
         updateCustomButtons()
     }
 
-    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
-        super.onQueueReordered(queue, index, isShuffled)
-        updateCustomButtons()
+    override fun onProgressionChanged(progression: Progression) {
+        super.onProgressionChanged(progression)
+        if (progression.isPlaying) {
+            inPlayback = true
+        }
     }
 
     override fun onRepeatModeChanged(repeatMode: RepeatMode) {
         super.onRepeatModeChanged(repeatMode)
+        updateCustomButtons()
+    }
+
+    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
+        super.onQueueReordered(queue, index, isShuffled)
         updateCustomButtons()
     }
 

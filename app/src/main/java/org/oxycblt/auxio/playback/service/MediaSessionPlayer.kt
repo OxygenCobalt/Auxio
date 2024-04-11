@@ -44,11 +44,11 @@ import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
-import org.oxycblt.auxio.util.logD
 
 /**
  * A thin wrapper around the player instance that takes all the events I know MediaSession will send
  * and routes them to PlaybackStateManager so I know that they will work the way I want it to.
+ *
  * @author Alexander Capehart
  */
 class MediaSessionPlayer(
