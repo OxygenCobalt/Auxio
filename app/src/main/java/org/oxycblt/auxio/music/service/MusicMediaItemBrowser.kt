@@ -55,11 +55,13 @@ constructor(
     }
 
     fun release() {
+        browserJob.cancel()
         musicRepository.removeUpdateListener(this)
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.deviceLibrary) {
+        val deviceLibrary = musicRepository.deviceLibrary
+        if (changes.deviceLibrary && deviceLibrary != null) {
             for (entry in searchResults.entries) {
                 entry.value.cancel()
             }
