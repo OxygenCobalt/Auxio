@@ -44,10 +44,17 @@ import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
- * A thin wrapper around the player instance that takes all the events I know MediaSession will send
- * and routes them to PlaybackStateManager so I know that they will work the way I want it to.
+ * A thin wrapper around the player instance that drastically reduces the command surface and
+ * forwards all commands to PlaybackStateManager so I can ensure that all the unhinged commands
+ * that Media3 will throw at me will be handled in a predictable way, rather than just clobbering
+ * the playback state. Largely limited to the legacy media APIs.
+ *
+ * I'll add more support as I go along when I can confirm that apps will use the Media3 API and
+ * send more advanced commands.
  *
  * @author Alexander Capehart
  */
@@ -70,45 +77,34 @@ class MediaSessionPlayer(
             command in setOf(Player.COMMAND_SEEK_TO_NEXT, Player.COMMAND_SEEK_TO_PREVIOUS)
     }
 
+    override fun setMediaItems(mediaItems: MutableList<MediaItem>, resetPosition: Boolean) {
+        if (!resetPosition) {
+            error("Playing MediaItems with custom position parameters is not supported")
+        }
+
+        setMediaItems(mediaItems, C.INDEX_UNSET, C.TIME_UNSET)
+    }
+
     override fun setMediaItems(
         mediaItems: MutableList<MediaItem>,
         startIndex: Int,
         startPositionMs: Long
     ) {
-        // We assume the only people calling this method are going to be the MediaSession callbacks,
-        // since anything else (like newPlayback) will be calling directly on the player. As part
-        // of this, we expand the given MediaItems into the command that should be sent to the
-        // player.
-        val command =
-            if (mediaItems.size > 1) {
-                this.playMediaItemSelection(mediaItems, startIndex)
-            } else {
-                this.playSingleMediaItem(mediaItems.first())
-            }
+        // We assume the only people calling this method are going to be the MediaSession callbacks.
+        // As part  of this, we expand the given MediaItems into the command that should be sent to
+        // the player.
+        if (startIndex != C.INDEX_UNSET || startPositionMs != C.TIME_UNSET) {
+            error("Playing MediaItems with custom position parameters is not supported")
+        }
+        if (mediaItems.size != 1) {
+            error("Playing multiple MediaItems is not supported")
+        }
+        val command = expandMediaItemIntoCommand(mediaItems.first())
         requireNotNull(command) { "Invalid playback configuration" }
         playbackManager.play(command)
-        if (startPositionMs != C.TIME_UNSET) {
-            playbackManager.seekTo(startPositionMs)
-        }
     }
 
-    private fun playMediaItemSelection(
-        mediaItems: List<MediaItem>,
-        startIndex: Int
-    ): PlaybackCommand? {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return null
-        val targetSong = mediaItems.getOrNull(startIndex)?.toSong(deviceLibrary)
-        val songs = mediaItems.mapNotNull { it.toSong(deviceLibrary) }
-        var index = startIndex
-        if (targetSong != null) {
-            while (songs.getOrNull(index)?.uid != targetSong.uid) {
-                index--
-            }
-        }
-        return commandFactory.songs(songs, ShuffleMode.OFF)
-    }
-
-    private fun playSingleMediaItem(mediaItem: MediaItem): PlaybackCommand? {
+    private fun expandMediaItemIntoCommand(mediaItem: MediaItem): PlaybackCommand? {
         val uid = MediaSessionUID.fromString(mediaItem.mediaId) ?: return null
         val music: Music
         var parent: MusicParent? = null
@@ -143,9 +139,9 @@ class MediaSessionPlayer(
             null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
         }
 
-    override fun setPlayWhenReady(playWhenReady: Boolean) {
-        playbackManager.playing(playWhenReady)
-    }
+    override fun play() = playbackManager.playing(true)
+
+    override fun pause() = playbackManager.playing(false)
 
     override fun setRepeatMode(repeatMode: Int) {
         val appRepeatMode =
@@ -243,9 +239,6 @@ class MediaSessionPlayer(
 
     override fun setMediaItems(mediaItems: MutableList<MediaItem>) = notAllowed()
 
-    override fun setMediaItems(mediaItems: MutableList<MediaItem>, resetPosition: Boolean) =
-        notAllowed()
-
     override fun addMediaItem(mediaItem: MediaItem) = notAllowed()
 
     override fun addMediaItem(index: Int, mediaItem: MediaItem) = notAllowed()
@@ -280,13 +273,11 @@ class MediaSessionPlayer(
 
     @Deprecated("Deprecated in Java") override fun seekToNextWindow() = notAllowed()
 
-    override fun play() = playbackManager.playing(true)
-
-    override fun pause() = playbackManager.playing(false)
-
     override fun prepare() = notAllowed()
 
     override fun release() = notAllowed()
+
+    override fun setPlayWhenReady(playWhenReady: Boolean) = notAllowed()
 
     override fun stop() = notAllowed()
 
@@ -337,7 +328,11 @@ class MediaSessionPlayer(
 
     override fun clearVideoTextureView(textureView: TextureView?) = notAllowed()
 
-    private fun notAllowed(): Nothing = error("MediaSession unexpectedly called this method")
+    private fun notAllowed(): Nothing {
+        logD("MediaSession unexpectedly called this method")
+        logE(Exception().stackTraceToString())
+        error("MediaSession unexpectedly called this method")
+    }
 }
 
 fun Player.unscrambleQueueIndices(): List<Int> {
