@@ -793,6 +793,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             stateHolder.applySavedState(parent, rawQueue, StateAck.NewPlayback)
             stateHolder.seekTo(savedState.positionMs)
         }
+        stateHolder.repeatMode(savedState.repeatMode)
 
         isInitialized = true
     }
