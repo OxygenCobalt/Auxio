@@ -235,11 +235,11 @@ constructor(
             return this
         }
         val start = page * pageSize
-        val end = (page + 1) * pageSize
-        if (pageSize == 0 || start !in indices || end - 1 !in indices) {
+        val end = min((page + 1) * pageSize, size) // Tolerate partial page queries
+        if (pageSize == 0 || start !in indices) {
             // These pages are probably invalid. Hopefully this won't backfire.
             return null
         }
-        return subList(page * pageSize, (page + 1) * pageSize).toMutableList()
+        return subList(start, end).toMutableList()
     }
 }
