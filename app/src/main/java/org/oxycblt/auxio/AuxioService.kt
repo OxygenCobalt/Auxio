@@ -444,6 +444,16 @@ class AuxioService :
         return Futures.immediateFuture(result)
     }
 
+    override fun onSetMediaItems(
+        mediaSession: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        mediaItems: MutableList<MediaItem>,
+        startIndex: Int,
+        startPositionMs: Long
+    ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> =
+        Futures.immediateFuture(
+            MediaSession.MediaItemsWithStartPosition(mediaItems, startIndex, startPositionMs))
+
     override fun onGetChildren(
         session: MediaLibrarySession,
         browser: MediaSession.ControllerInfo,
@@ -456,7 +466,8 @@ class AuxioService :
             musicMediaItemBrowser.getChildren(parentId, page, pageSize)?.let {
                 LibraryResult.ofItemList(it, params)
             }
-                ?: LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                ?: LibraryResult.ofError<ImmutableList<MediaItem>>(
+                    LibraryResult.RESULT_ERROR_BAD_VALUE)
         return Futures.immediateFuture(children)
     }
 
