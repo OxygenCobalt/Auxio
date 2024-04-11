@@ -88,13 +88,8 @@ fun Song.toMediaItem(context: Context, parent: MusicParent?): MediaItem {
         .build()
 }
 
-fun Album.toMediaItem(context: Context, parent: Artist?): MediaItem {
-    val mediaSessionUID =
-        if (parent == null) {
-            MediaSessionUID.Single(uid)
-        } else {
-            MediaSessionUID.Joined(parent.uid, uid)
-        }
+fun Album.toMediaItem(context: Context): MediaItem {
+    val mediaSessionUID = MediaSessionUID.Single(uid)
     val metadata =
         MediaMetadata.Builder()
             .setTitle(name.resolve(context))
@@ -119,13 +114,8 @@ fun Album.toMediaItem(context: Context, parent: Artist?): MediaItem {
         .build()
 }
 
-fun Artist.toMediaItem(context: Context, parent: Genre?): MediaItem {
-    val mediaSessionUID =
-        if (parent == null) {
-            MediaSessionUID.Single(uid)
-        } else {
-            MediaSessionUID.Joined(parent.uid, uid)
-        }
+fun Artist.toMediaItem(context: Context): MediaItem {
+    val mediaSessionUID = MediaSessionUID.Single(uid)
     val metadata =
         MediaMetadata.Builder()
             .setTitle(name.resolve(context))

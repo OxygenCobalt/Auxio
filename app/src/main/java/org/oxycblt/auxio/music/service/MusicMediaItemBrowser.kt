@@ -82,8 +82,8 @@ constructor(
                 ?: return null
 
         return when (music) {
-            is Album -> music.toMediaItem(context, null)
-            is Artist -> music.toMediaItem(context, null)
+            is Album -> music.toMediaItem(context)
+            is Artist -> music.toMediaItem(context)
             is Genre -> music.toMediaItem(context)
             is Playlist -> music.toMediaItem(context)
             is Song -> music.toMediaItem(context, null)
@@ -120,9 +120,9 @@ constructor(
                     MediaSessionUID.Category.SONGS ->
                         deviceLibrary.songs.map { it.toMediaItem(context, null) }
                     MediaSessionUID.Category.ALBUMS ->
-                        deviceLibrary.albums.map { it.toMediaItem(context, null) }
+                        deviceLibrary.albums.map { it.toMediaItem(context) }
                     MediaSessionUID.Category.ARTISTS ->
-                        deviceLibrary.artists.map { it.toMediaItem(context, null) }
+                        deviceLibrary.artists.map { it.toMediaItem(context) }
                     MediaSessionUID.Category.GENRES ->
                         deviceLibrary.genres.map { it.toMediaItem(context) }
                     MediaSessionUID.Category.PLAYLISTS ->
@@ -130,12 +130,14 @@ constructor(
                 }
             }
             is MediaSessionUID.Single -> {
-                getChildMediaItems(mediaSessionUID.uid) ?: return null
+                getChildMediaItems(mediaSessionUID.uid)
             }
             is MediaSessionUID.Joined -> {
-                getChildMediaItems(mediaSessionUID.childUid) ?: return null
+                getChildMediaItems(mediaSessionUID.childUid)
             }
-            null -> return null
+            null -> {
+                return null
+            }
         }
     }
 
@@ -145,7 +147,7 @@ constructor(
                 item.songs.map { it.toMediaItem(context, item) }
             }
             is Artist -> {
-                (item.explicitAlbums + item.implicitAlbums).map { it.toMediaItem(context, item) } +
+                (item.explicitAlbums + item.implicitAlbums).map { it.toMediaItem(context) } +
                     item.songs.map { it.toMediaItem(context, item) }
             }
             is Genre -> {
@@ -202,10 +204,10 @@ constructor(
             music.addAll(songs.map { it.toMediaItem(context, null) })
         }
         if (albums != null) {
-            music.addAll(albums.map { it.toMediaItem(context, null) })
+            music.addAll(albums.map { it.toMediaItem(context) })
         }
         if (artists != null) {
-            music.addAll(artists.map { it.toMediaItem(context, null) })
+            music.addAll(artists.map { it.toMediaItem(context) })
         }
         if (genres != null) {
             music.addAll(genres.map { it.toMediaItem(context) })
