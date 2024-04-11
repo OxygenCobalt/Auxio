@@ -479,7 +479,8 @@ class AuxioService :
     ): ListenableFuture<LibraryResult<Void>> =
         waitScope
             .async {
-                musicMediaItemBrowser.prepareSearch(query)
+                val count = musicMediaItemBrowser.prepareSearch(query)
+                session.notifySearchResultChanged(browser, query, count, params)
                 LibraryResult.ofVoid()
             }
             .asListenableFuture()
