@@ -37,6 +37,12 @@
         android:enableOnBackInvokedCallback="true"
         tools:ignore="UnusedAttribute">
 
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
+        <meta-data
+                android:name="androidx.car.app.TintableAttributionIcon"
+                android:resource="@drawable/ic_auxio_24" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
