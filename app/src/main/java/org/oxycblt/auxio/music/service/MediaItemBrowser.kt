@@ -28,6 +28,8 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -44,6 +46,7 @@ class MediaItemBrowser
 constructor(
     @ApplicationContext private val context: Context,
     private val musicRepository: MusicRepository,
+    private val listSettings: ListSettings,
     private val searchEngine: SearchEngine
 ) : MusicRepository.UpdateListener {
     private val browserJob = Job()
@@ -142,13 +145,21 @@ constructor(
                     MediaSessionUID.Category.ROOT ->
                         MediaSessionUID.Category.IMPORTANT.map { it.toMediaItem(context) }
                     MediaSessionUID.Category.SONGS ->
-                        deviceLibrary.songs.map { it.toMediaItem(context, null) }
+                        listSettings.songSort.songs(deviceLibrary.songs).map {
+                            it.toMediaItem(context, null)
+                        }
                     MediaSessionUID.Category.ALBUMS ->
-                        deviceLibrary.albums.map { it.toMediaItem(context) }
+                        listSettings.albumSort.albums(deviceLibrary.albums).map {
+                            it.toMediaItem(context)
+                        }
                     MediaSessionUID.Category.ARTISTS ->
-                        deviceLibrary.artists.map { it.toMediaItem(context) }
+                        listSettings.artistSort.artists(deviceLibrary.artists).map {
+                            it.toMediaItem(context)
+                        }
                     MediaSessionUID.Category.GENRES ->
-                        deviceLibrary.genres.map { it.toMediaItem(context) }
+                        listSettings.genreSort.genres(deviceLibrary.genres).map {
+                            it.toMediaItem(context)
+                        }
                     MediaSessionUID.Category.PLAYLISTS ->
                         userLibrary.playlists.map { it.toMediaItem(context) }
                 }
@@ -168,14 +179,18 @@ constructor(
     private fun getChildMediaItems(uid: Music.UID): List<MediaItem>? {
         return when (val item = musicRepository.find(uid)) {
             is Album -> {
-                item.songs.map { it.toMediaItem(context, item) }
+                val songs = listSettings.albumSongSort.songs(item.songs)
+                songs.map { it.toMediaItem(context, item) }
             }
             is Artist -> {
-                (item.explicitAlbums + item.implicitAlbums).map { it.toMediaItem(context) } +
-                    item.songs.map { it.toMediaItem(context, item) }
+                val albums = ARTIST_ALBUMS_SORT.albums(item.explicitAlbums + item.implicitAlbums)
+                val songs = listSettings.artistSongSort.songs(item.songs)
+                albums.map { it.toMediaItem(context) } + songs.map { it.toMediaItem(context, item) }
             }
             is Genre -> {
-                item.songs.map { it.toMediaItem(context, item) }
+                val artists = GENRE_ARTISTS_SORT.artists(item.artists)
+                val songs = listSettings.genreSongSort.songs(item.songs)
+                artists.map { it.toMediaItem(context) } + songs.map { it.toMediaItem(context, null) }
             }
             is Playlist -> {
                 item.songs.map { it.toMediaItem(context, item) }
@@ -289,5 +304,11 @@ constructor(
             return null
         }
         return subList(start, end).toMutableList()
+    }
+
+    private companion object {
+        // TODO: Rely on detail item gen logic?
+        val ARTIST_ALBUMS_SORT = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
+        val GENRE_ARTISTS_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
     }
 }
