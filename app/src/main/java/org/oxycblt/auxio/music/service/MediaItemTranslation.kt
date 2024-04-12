@@ -217,6 +217,8 @@ sealed interface MediaSessionUID {
         override fun toString() = "$ID_CATEGORY:$id"
 
         companion object {
+            val DEVICE_MUSIC = listOf(ROOT, SONGS, ALBUMS, ARTISTS, GENRES)
+            val USER_MUSIC = listOf(ROOT, PLAYLISTS)
             val IMPORTANT = listOf(SONGS, ALBUMS, ARTISTS, GENRES, PLAYLISTS)
         }
     }

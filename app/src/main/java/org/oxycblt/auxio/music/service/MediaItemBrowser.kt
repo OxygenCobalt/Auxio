@@ -69,21 +69,25 @@ constructor(
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary
         var invalidateSearch = false
+        val invalidate = mutableListOf<MediaSessionUID>()
         if (changes.deviceLibrary && deviceLibrary != null) {
-            val ids =
-                MediaSessionUID.Category.IMPORTANT +
-                    deviceLibrary.albums.map { MediaSessionUID.Single(it.uid) } +
-                    deviceLibrary.artists.map { MediaSessionUID.Single(it.uid) } +
-                    deviceLibrary.genres.map { MediaSessionUID.Single(it.uid) }
-            invalidator?.invalidate(ids.map { it.toString() })
+            invalidate.addAll(MediaSessionUID.Category.DEVICE_MUSIC)
+            deviceLibrary.albums.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
+            deviceLibrary.artists.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
+            deviceLibrary.genres.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
             invalidateSearch = true
         }
         val userLibrary = musicRepository.userLibrary
         if (changes.userLibrary && userLibrary != null) {
-            val ids = userLibrary.playlists.map { MediaSessionUID.Single(it.uid) }
-            invalidator?.invalidate(ids.map { it.toString() })
+            invalidate.addAll(MediaSessionUID.Category.USER_MUSIC)
+            userLibrary.playlists.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
             invalidateSearch = true
         }
+
+        if (invalidate.isNotEmpty()) {
+            invalidator?.invalidate(invalidate.map { it.toString() })
+        }
+
         if (invalidateSearch) {
             for (entry in searchResults.entries) {
                 entry.value.cancel()
