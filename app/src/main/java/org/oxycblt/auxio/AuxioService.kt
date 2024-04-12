@@ -20,6 +20,7 @@ package org.oxycblt.auxio
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.IBinder
 import androidx.core.app.ServiceCompat
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
@@ -39,6 +40,27 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
         super.onCreate()
         mediaSessionFragment.attach(this, this)
         indexingFragment.attach(this)
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        handleIntent(intent)
+        return super.onBind(intent)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // TODO: Start command occurring from a foreign service basically implies a detached
+        //  service, we might need more handling here.
+        handleIntent(intent)
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val nativeStart = intent?.getBooleanExtra(INTENT_KEY_NATIVE_START, false) ?: false
+        if (!nativeStart) {
+            // Some foreign code started us, no guarantees about foreground stability. Figure
+            // out what to do.
+            mediaSessionFragment.handleNonNativeStart()
+        }
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -77,6 +99,11 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
                 }
             }
         }
+    }
+
+    companion object {
+        // This is only meant for Auxio to internally ensure that it's state management will work.
+        const val INTENT_KEY_NATIVE_START = BuildConfig.APPLICATION_ID + ".service.NATIVE_START"
     }
 }
 

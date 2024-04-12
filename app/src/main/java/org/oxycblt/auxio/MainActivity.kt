@@ -69,7 +69,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        startService(Intent(this, AuxioService::class.java))
+        startService(
+            Intent(this, AuxioService::class.java)
+                .putExtra(AuxioService.INTENT_KEY_NATIVE_START, true))
 
         if (!startIntentAction(intent)) {
             // No intent action to do, just restore the previously saved state.

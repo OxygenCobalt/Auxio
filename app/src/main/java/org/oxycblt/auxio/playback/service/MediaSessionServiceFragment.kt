@@ -50,7 +50,9 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.service.MediaSessionBitmapLoader
 import org.oxycblt.auxio.music.service.MediaItemBrowser
+import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.util.logD
 
 class MediaSessionServiceFragment
 @Inject
@@ -103,14 +105,11 @@ constructor(
         }
     }
 
-    fun release() {
-        waitJob.cancel()
-        mediaSession.release()
-        actionHandler.release()
-        exoHolder.release()
-        playbackManager.removeListener(this)
-        mediaSession.release()
-        foregroundListener = null
+    fun handleNonNativeStart() {
+        // At minimum we want to ensure an active playback state.
+        // TODO: Possibly also force to go foreground?
+        logD("Handling non-native start.")
+        playbackManager.playDeferred(DeferredPlayback.RestoreState)
     }
 
     fun hasNotification(): Boolean = exoHolder.sessionOngoing
@@ -122,6 +121,16 @@ constructor(
                     post(wrapMediaNotification(notification))
                 }
         post(wrapMediaNotification(notification))
+    }
+
+    fun release() {
+        waitJob.cancel()
+        mediaSession.release()
+        actionHandler.release()
+        exoHolder.release()
+        playbackManager.removeListener(this)
+        mediaSession.release()
+        foregroundListener = null
     }
 
     private fun wrapMediaNotification(notification: MediaNotification): MediaNotification {
