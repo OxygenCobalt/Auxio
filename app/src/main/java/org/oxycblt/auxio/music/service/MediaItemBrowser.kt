@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * MusicMediaItemBrowser.kt is part of Auxio.
+ * MediaItemBrowser.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.search.SearchEngine
 
-class MusicMediaItemBrowser
+class MediaItemBrowser
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
@@ -49,19 +49,42 @@ constructor(
     private val browserJob = Job()
     private val searchScope = CoroutineScope(browserJob + Dispatchers.Default)
     private val searchResults = mutableMapOf<String, Deferred<SearchEngine.Items>>()
+    private var invalidator: Invalidator? = null
 
-    fun attach() {
+    interface Invalidator {
+        fun invalidate(ids: List<String>)
+    }
+
+    fun attach(invalidator: Invalidator) {
+        this.invalidator = invalidator
         musicRepository.addUpdateListener(this)
     }
 
     fun release() {
         browserJob.cancel()
+        invalidator = null
         musicRepository.removeUpdateListener(this)
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary
+        var invalidateSearch = false
         if (changes.deviceLibrary && deviceLibrary != null) {
+            val ids =
+                MediaSessionUID.Category.IMPORTANT +
+                    deviceLibrary.albums.map { MediaSessionUID.Single(it.uid) } +
+                    deviceLibrary.artists.map { MediaSessionUID.Single(it.uid) } +
+                    deviceLibrary.genres.map { MediaSessionUID.Single(it.uid) }
+            invalidator?.invalidate(ids.map { it.toString() })
+            invalidateSearch = true
+        }
+        val userLibrary = musicRepository.userLibrary
+        if (changes.userLibrary && userLibrary != null) {
+            val ids = userLibrary.playlists.map { MediaSessionUID.Single(it.uid) }
+            invalidator?.invalidate(ids.map { it.toString() })
+            invalidateSearch = true
+        }
+        if (invalidateSearch) {
             for (entry in searchResults.entries) {
                 entry.value.cancel()
             }
@@ -113,13 +136,7 @@ constructor(
             is MediaSessionUID.Category -> {
                 when (mediaSessionUID) {
                     MediaSessionUID.Category.ROOT ->
-                        listOf(
-                                MediaSessionUID.Category.SONGS,
-                                MediaSessionUID.Category.ALBUMS,
-                                MediaSessionUID.Category.ARTISTS,
-                                MediaSessionUID.Category.GENRES,
-                                MediaSessionUID.Category.PLAYLISTS)
-                            .map { it.toMediaItem(context) }
+                        MediaSessionUID.Category.IMPORTANT.map { it.toMediaItem(context) }
                     MediaSessionUID.Category.SONGS ->
                         deviceLibrary.songs.map { it.toMediaItem(context, null) }
                     MediaSessionUID.Category.ALBUMS ->

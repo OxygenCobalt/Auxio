@@ -29,7 +29,7 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.service.MediaSessionUID
 
-class NeoBitmapLoader
+class MediaSessionBitmapLoader
 @Inject
 constructor(
     private val musicRepository: MusicRepository,

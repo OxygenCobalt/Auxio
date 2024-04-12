@@ -23,13 +23,140 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.os.Bundle
+import androidx.core.content.ContextCompat
+import androidx.media3.session.CommandButton
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionCommands
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import org.oxycblt.auxio.AuxioService
+import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
+
+class PlaybackActionHandler
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val playbackManager: PlaybackStateManager,
+    private val playbackSettings: PlaybackSettings,
+    private val systemReceiver: SystemPlaybackReceiver
+) : PlaybackStateManager.Listener, PlaybackSettings.Listener {
+
+    interface Callback {
+        fun onCustomLayoutChanged(layout: List<CommandButton>)
+    }
+
+    private var callback: Callback? = null
+
+    fun attach(callback: Callback) {
+        this.callback = callback
+        playbackManager.addListener(this)
+        playbackSettings.registerListener(this)
+        ContextCompat.registerReceiver(
+            context, systemReceiver, systemReceiver.intentFilter, ContextCompat.RECEIVER_EXPORTED)
+    }
+
+    fun release() {
+        callback = null
+        playbackManager.removeListener(this)
+        playbackSettings.unregisterListener(this)
+        context.unregisterReceiver(systemReceiver)
+    }
+
+    fun withCommands(commands: SessionCommands) =
+        commands
+            .buildUpon()
+            .add(SessionCommand(PlaybackActions.ACTION_INC_REPEAT_MODE, Bundle.EMPTY))
+            .add(SessionCommand(PlaybackActions.ACTION_INVERT_SHUFFLE, Bundle.EMPTY))
+            .add(SessionCommand(PlaybackActions.ACTION_EXIT, Bundle.EMPTY))
+            .build()
+
+    fun handleCommand(command: SessionCommand): Boolean {
+        when (command.customAction) {
+            PlaybackActions.ACTION_INC_REPEAT_MODE ->
+                playbackManager.repeatMode(playbackManager.repeatMode.increment())
+            PlaybackActions.ACTION_INVERT_SHUFFLE ->
+                playbackManager.shuffled(!playbackManager.isShuffled)
+            PlaybackActions.ACTION_EXIT -> playbackManager.endSession()
+            else -> return false
+        }
+        return true
+    }
+
+    fun createCustomLayout(): List<CommandButton> {
+        val actions = mutableListOf<CommandButton>()
+
+        when (playbackSettings.notificationAction) {
+            ActionMode.REPEAT -> {
+                actions.add(
+                    CommandButton.Builder()
+                        .setIconResId(playbackManager.repeatMode.icon)
+                        .setDisplayName(context.getString(R.string.desc_change_repeat))
+                        .setSessionCommand(
+                            SessionCommand(PlaybackActions.ACTION_INC_REPEAT_MODE, Bundle()))
+                        .build())
+            }
+            ActionMode.SHUFFLE -> {
+                actions.add(
+                    CommandButton.Builder()
+                        .setIconResId(
+                            if (playbackManager.isShuffled) R.drawable.ic_shuffle_on_24
+                            else R.drawable.ic_shuffle_off_24)
+                        .setDisplayName(context.getString(R.string.lbl_shuffle))
+                        .setSessionCommand(
+                            SessionCommand(PlaybackActions.ACTION_INVERT_SHUFFLE, Bundle()))
+                        .build())
+            }
+            else -> {}
+        }
+
+        actions.add(
+            CommandButton.Builder()
+                .setIconResId(R.drawable.ic_close_24)
+                .setDisplayName(context.getString(R.string.desc_exit))
+                .setSessionCommand(SessionCommand(PlaybackActions.ACTION_EXIT, Bundle()))
+                .build())
+
+        return actions
+    }
+
+    override fun onPauseOnRepeatChanged() {
+        super.onPauseOnRepeatChanged()
+        callback?.onCustomLayoutChanged(createCustomLayout())
+    }
+
+    override fun onRepeatModeChanged(repeatMode: RepeatMode) {
+        super.onRepeatModeChanged(repeatMode)
+        callback?.onCustomLayoutChanged(createCustomLayout())
+    }
+
+    override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
+        super.onQueueReordered(queue, index, isShuffled)
+        callback?.onCustomLayoutChanged(createCustomLayout())
+    }
+
+    override fun onNotificationActionChanged() {
+        super.onNotificationActionChanged()
+        callback?.onCustomLayoutChanged(createCustomLayout())
+    }
+}
+
+object PlaybackActions {
+    const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"
+    const val ACTION_INVERT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
+    const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
+    const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
+    const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
+    const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
+}
 
 /**
  * A [BroadcastReceiver] for receiving playback-specific [Intent]s from the system that require an
@@ -48,11 +175,11 @@ constructor(
         IntentFilter().apply {
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
             addAction(AudioManager.ACTION_HEADSET_PLUG)
-            addAction(AuxioService.ACTION_INC_REPEAT_MODE)
-            addAction(AuxioService.ACTION_INVERT_SHUFFLE)
-            addAction(AuxioService.ACTION_SKIP_PREV)
-            addAction(AuxioService.ACTION_PLAY_PAUSE)
-            addAction(AuxioService.ACTION_SKIP_NEXT)
+            addAction(PlaybackActions.ACTION_INC_REPEAT_MODE)
+            addAction(PlaybackActions.ACTION_INVERT_SHUFFLE)
+            addAction(PlaybackActions.ACTION_SKIP_PREV)
+            addAction(PlaybackActions.ACTION_PLAY_PAUSE)
+            addAction(PlaybackActions.ACTION_SKIP_NEXT)
             addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
         }
 
@@ -82,25 +209,29 @@ constructor(
             }
 
             // --- AUXIO EVENTS ---
-            AuxioService.ACTION_PLAY_PAUSE -> {
+            PlaybackActions.ACTION_PLAY_PAUSE -> {
                 logD("Received play event")
                 playbackManager.playing(!playbackManager.progression.isPlaying)
             }
-            AuxioService.ACTION_INC_REPEAT_MODE -> {
+            PlaybackActions.ACTION_INC_REPEAT_MODE -> {
                 logD("Received repeat mode event")
                 playbackManager.repeatMode(playbackManager.repeatMode.increment())
             }
-            AuxioService.ACTION_INVERT_SHUFFLE -> {
+            PlaybackActions.ACTION_INVERT_SHUFFLE -> {
                 logD("Received shuffle event")
                 playbackManager.shuffled(!playbackManager.isShuffled)
             }
-            AuxioService.ACTION_SKIP_PREV -> {
+            PlaybackActions.ACTION_SKIP_PREV -> {
                 logD("Received skip previous event")
                 playbackManager.prev()
             }
-            AuxioService.ACTION_SKIP_NEXT -> {
+            PlaybackActions.ACTION_SKIP_NEXT -> {
                 logD("Received skip next event")
                 playbackManager.next()
+            }
+            PlaybackActions.ACTION_EXIT -> {
+                logD("Received exit event")
+                playbackManager.endSession()
             }
             WidgetProvider.ACTION_WIDGET_UPDATE -> {
                 logD("Received widget update event")

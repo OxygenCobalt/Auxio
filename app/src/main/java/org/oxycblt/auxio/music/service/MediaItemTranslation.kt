@@ -215,6 +215,10 @@ sealed interface MediaSessionUID {
         PLAYLISTS("playlists", R.string.lbl_playlists, MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS);
 
         override fun toString() = "$ID_CATEGORY:$id"
+
+        companion object {
+            val IMPORTANT = listOf(SONGS, ALBUMS, ARTISTS, GENRES, PLAYLISTS)
+        }
     }
 
     data class Single(val uid: Music.UID) : MediaSessionUID {

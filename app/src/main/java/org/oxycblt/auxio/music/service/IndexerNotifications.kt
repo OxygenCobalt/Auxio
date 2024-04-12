@@ -20,23 +20,64 @@ package org.oxycblt.auxio.music.service
 
 import android.content.Context
 import android.os.SystemClock
+import androidx.annotation.StringRes
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.IndexingProgress
-import org.oxycblt.auxio.ui.ForegroundServiceNotification
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
- * A dynamic [ForegroundServiceNotification] that shows the current music loading state.
+ * Wrapper around [NotificationCompat.Builder] intended for use for [NotificationCompat]s that
+ * signal a Service's ongoing foreground state.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+abstract class IndexerNotification(context: Context, info: ChannelInfo) :
+    NotificationCompat.Builder(context, info.id) {
+    private val notificationManager = NotificationManagerCompat.from(context)
+
+    init {
+        // Set up the notification channel. Foreground notifications are non-substantial, and
+        // thus make no sense to have lights, vibration, or lead to a notification badge.
+        val channel =
+            NotificationChannelCompat.Builder(info.id, NotificationManagerCompat.IMPORTANCE_LOW)
+                .setName(context.getString(info.nameRes))
+                .setLightsEnabled(false)
+                .setVibrationEnabled(false)
+                .setShowBadge(false)
+                .build()
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    /**
+     * The code used to identify this notification.
+     *
+     * @see NotificationManagerCompat.notify
+     */
+    abstract val code: Int
+
+    /**
+     * Reduced representation of a [NotificationChannelCompat].
+     *
+     * @param id The ID of the channel.
+     * @param nameRes A string resource ID corresponding to the human-readable name of this channel.
+     */
+    data class ChannelInfo(val id: String, @StringRes val nameRes: Int)
+}
+
+/**
+ * A dynamic [IndexerNotification] that shows the current music loading state.
  *
  * @param context [Context] required to create the notification.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class IndexingNotification(private val context: Context) :
-    ForegroundServiceNotification(context, indexerChannel) {
+    IndexerNotification(context, indexerChannel) {
     private var lastUpdateTime = -1L
 
     init {
@@ -92,13 +133,12 @@ class IndexingNotification(private val context: Context) :
 }
 
 /**
- * A static [ForegroundServiceNotification] that signals to the user that the app is currently
- * monitoring the music library for changes.
+ * A static [IndexerNotification] that signals to the user that the app is currently monitoring the
+ * music library for changes.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ObservingNotification(context: Context) :
-    ForegroundServiceNotification(context, indexerChannel) {
+class ObservingNotification(context: Context) : IndexerNotification(context, indexerChannel) {
     init {
         setSmallIcon(R.drawable.ic_indexer_24)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -116,5 +156,5 @@ class ObservingNotification(context: Context) :
 
 /** Notification channel shared by [IndexingNotification] and [ObservingNotification]. */
 private val indexerChannel =
-    ForegroundServiceNotification.ChannelInfo(
+    IndexerNotification.ChannelInfo(
         id = BuildConfig.APPLICATION_ID + ".channel.INDEXER", nameRes = R.string.lbl_indexer)

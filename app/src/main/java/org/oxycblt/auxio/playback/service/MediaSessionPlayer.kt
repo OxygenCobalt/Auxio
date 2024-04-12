@@ -50,12 +50,12 @@ import org.oxycblt.auxio.util.logE
 
 /**
  * A thin wrapper around the player instance that drastically reduces the command surface and
- * forwards all commands to PlaybackStateManager so I can ensure that all the unhinged commands
- * that Media3 will throw at me will be handled in a predictable way, rather than just clobbering
- * the playback state. Largely limited to the legacy media APIs.
+ * forwards all commands to PlaybackStateManager so I can ensure that all the unhinged commands that
+ * Media3 will throw at me will be handled in a predictable way, rather than just clobbering the
+ * playback state. Largely limited to the legacy media APIs.
  *
- * I'll add more support as I go along when I can confirm that apps will use the Media3 API and
- * send more advanced commands.
+ * I'll add more support as I go along when I can confirm that apps will use the Media3 API and send
+ * more advanced commands.
  *
  * @author Alexander Capehart
  */
@@ -229,6 +229,8 @@ class MediaSessionPlayer(
     override fun removeMediaItems(fromIndex: Int, toIndex: Int) =
         error("Any multi-item queue removal is unsupported")
 
+    override fun stop() = playbackManager.endSession()
+
     // These methods I don't want MediaSession calling in any way since they'll do insane things
     // that I'm not tracking. If they do call them, I will know.
 
@@ -279,8 +281,6 @@ class MediaSessionPlayer(
     override fun release() = notAllowed()
 
     override fun setPlayWhenReady(playWhenReady: Boolean) = notAllowed()
-
-    override fun stop() = notAllowed()
 
     override fun hasNextMediaItem() = notAllowed()
 

@@ -147,6 +147,9 @@ interface PlaybackStateHolder {
      */
     fun applySavedState(parent: MusicParent?, rawQueue: RawQueue, ack: StateAck.NewPlayback?)
 
+    /** End whatever ongoing playback session may be going on */
+    fun endSession()
+
     /** Reset this instance to an empty state. */
     fun reset(ack: StateAck.NewPlayback)
 }
@@ -195,6 +198,8 @@ sealed interface StateAck {
 
     /** @see PlaybackStateHolder.repeatMode */
     data object RepeatModeChanged : StateAck
+
+    data object SessionEnded : StateAck
 }
 
 /**

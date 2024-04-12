@@ -81,6 +81,9 @@ class ExoPlaybackStateHolder(
     private var currentSaveJob: Job? = null
     private var openAudioEffectSession = false
 
+    var sessionOngoing = false
+        private set
+
     fun attach() {
         player.addListener(this)
         playbackManager.registerStateHolder(this)
@@ -358,6 +361,20 @@ class ExoPlaybackStateHolder(
         ack?.let { playbackManager.ack(this, it) }
     }
 
+    override fun endSession() {
+        // This session has ended, so we need to reset this flag for when the next
+        // session starts.
+        save {
+            // User could feasibly start playing again if they were fast enough, so
+            // we need to avoid stopping the foreground state if that's the case.
+            if (playbackManager.progression.isPlaying) {
+                playbackManager.playing(false)
+            }
+            sessionOngoing = false
+            playbackManager.ack(this, StateAck.SessionEnded)
+        }
+    }
+
     override fun reset(ack: StateAck.NewPlayback) {
         player.setMediaItems(listOf())
         playbackManager.ack(this, ack)
@@ -372,6 +389,7 @@ class ExoPlaybackStateHolder(
         if (player.playWhenReady) {
             // Mark that we have started playing so that the notification can now be posted.
             logD("Player has started playing")
+            sessionOngoing = true
             if (!openAudioEffectSession) {
                 // Convention to start an audioeffect session on play/pause rather than
                 // start/stop

@@ -233,8 +233,7 @@ interface PlaybackStateManager {
      */
     fun seekTo(positionMs: Long)
 
-    /** Rewind to the beginning of the currently playing [Song]. */
-    fun rewind() = seekTo(0)
+    fun endSession()
 
     /**
      * Converts the current state of this instance into a [SavedState].
@@ -313,6 +312,8 @@ interface PlaybackStateManager {
          * @param repeatMode The new [RepeatMode].
          */
         fun onRepeatModeChanged(repeatMode: RepeatMode) {}
+
+        fun onSessionEnded() {}
     }
 
     /**
@@ -565,6 +566,13 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     @Synchronized
+    override fun endSession() {
+        val stateHolder = stateHolder ?: return
+        logD("Ending session")
+        stateHolder.endSession()
+    }
+
+    @Synchronized
     override fun ack(stateHolder: PlaybackStateHolder, ack: StateAck) {
         if (BuildConfig.DEBUG && this.stateHolder !== stateHolder) {
             logW("Given internal player did not match current internal player")
@@ -689,6 +697,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         repeatMode = stateHolder.repeatMode,
                     )
                 listeners.forEach { it.onRepeatModeChanged(stateMirror.repeatMode) }
+            }
+            is StateAck.SessionEnded -> {
+                listeners.forEach { it.onSessionEnded() }
             }
         }
     }
