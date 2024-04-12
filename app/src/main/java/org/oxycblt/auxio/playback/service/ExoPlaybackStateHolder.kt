@@ -486,7 +486,7 @@ class ExoPlaybackStateHolder(
             player.repeatMode == Player.REPEAT_MODE_ONE && playbackSettings.pauseOnRepeat
     }
 
-    fun save(cb: () -> Unit) {
+    private fun save(cb: () -> Unit) {
         saveJob {
             persistenceRepository.saveState(playbackManager.toSavedState())
             withContext(Dispatchers.Main) { cb() }
