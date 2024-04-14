@@ -224,8 +224,8 @@ constructor(
     ): ListenableFuture<LibraryResult<Void>> =
         waitScope
             .async {
-                val count = mediaItemBrowser.prepareSearch(query)
-                session.notifySearchResultChanged(browser, query, count, params)
+                mediaItemBrowser.prepareSearch(query, browser)
+                // Invalidator will send the notify result
                 LibraryResult.ofVoid()
             }
             .asListenableFuture()
@@ -259,5 +259,13 @@ constructor(
         for (id in ids) {
             mediaSession.notifyChildrenChanged(id, Int.MAX_VALUE, null)
         }
+    }
+
+    override fun invalidate(
+        controller: MediaSession.ControllerInfo,
+        query: String,
+        itemCount: Int
+    ) {
+        mediaSession.notifySearchResultChanged(controller, query, itemCount, null)
     }
 }

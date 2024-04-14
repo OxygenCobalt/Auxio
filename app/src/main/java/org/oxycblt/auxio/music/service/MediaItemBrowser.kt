@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.service
 
 import android.content.Context
 import androidx.media3.common.MediaItem
+import androidx.media3.session.MediaSession.ControllerInfo
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlin.math.min
@@ -51,11 +52,14 @@ constructor(
 ) : MusicRepository.UpdateListener {
     private val browserJob = Job()
     private val searchScope = CoroutineScope(browserJob + Dispatchers.Default)
+    private val searchSubscribers = mutableMapOf<ControllerInfo, String>()
     private val searchResults = mutableMapOf<String, Deferred<SearchEngine.Items>>()
     private var invalidator: Invalidator? = null
 
     interface Invalidator {
         fun invalidate(ids: List<String>)
+
+        fun invalidate(controller: ControllerInfo, query: String, itemCount: Int)
     }
 
     fun attach(invalidator: Invalidator) {
@@ -93,9 +97,16 @@ constructor(
 
         if (invalidateSearch) {
             for (entry in searchResults.entries) {
-                entry.value.cancel()
+                searchResults[entry.key]?.cancel()
             }
             searchResults.clear()
+
+            for (entry in searchSubscribers.entries) {
+                if (searchResults[entry.value] != null) {
+                    continue
+                }
+                searchResults[entry.value] = searchTo(entry.value)
+            }
         }
     }
 
@@ -190,7 +201,8 @@ constructor(
             is Genre -> {
                 val artists = GENRE_ARTISTS_SORT.artists(item.artists)
                 val songs = listSettings.genreSongSort.songs(item.songs)
-                artists.map { it.toMediaItem(context) } + songs.map { it.toMediaItem(context, null) }
+                artists.map { it.toMediaItem(context) } +
+                    songs.map { it.toMediaItem(context, null) }
             }
             is Playlist -> {
                 item.songs.map { it.toMediaItem(context, item) }
@@ -200,20 +212,17 @@ constructor(
         }
     }
 
-    suspend fun prepareSearch(query: String): Int {
-        val deviceLibrary = musicRepository.deviceLibrary
-        val userLibrary = musicRepository.userLibrary
-        if (deviceLibrary == null || userLibrary == null) {
-            return 0
+    suspend fun prepareSearch(query: String, controller: ControllerInfo) {
+        searchSubscribers[controller] = query
+        val existing = searchResults[query]
+        if (existing == null) {
+            val new = searchTo(query)
+            searchResults[query] = new
+            new.await()
+        } else {
+            val items = existing.await()
+            invalidator?.invalidate(controller, query, items.count())
         }
-
-        if (query.isEmpty()) {
-            return 0
-        }
-
-        val deferred = searchTo(query, deviceLibrary, userLibrary)
-        searchResults[query] = deferred
-        return deferred.await().count()
     }
 
     suspend fun getSearchResult(
@@ -221,22 +230,8 @@ constructor(
         page: Int,
         pageSize: Int,
     ): List<MediaItem>? {
-        val deviceLibrary = musicRepository.deviceLibrary
-        val userLibrary = musicRepository.userLibrary
-        if (deviceLibrary == null || userLibrary == null) {
-            return listOf()
-        }
-
-        if (query.isEmpty()) {
-            return listOf()
-        }
-
-        val existing = searchResults[query]
-        if (existing != null) {
-            return existing.await().concat().paginate(page, pageSize)
-        }
-
-        return searchTo(query, deviceLibrary, userLibrary).await().concat().paginate(page, pageSize)
+        val deferred = searchResults[query] ?: searchTo(query).also { searchResults[query] = it }
+        return deferred.await().concat().paginate(page, pageSize)
     }
 
     private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
@@ -279,8 +274,13 @@ constructor(
         return count
     }
 
-    private fun searchTo(query: String, deviceLibrary: DeviceLibrary, userLibrary: UserLibrary) =
+    private fun searchTo(query: String) =
         searchScope.async {
+            if (query.isEmpty()) {
+                return@async SearchEngine.Items()
+            }
+            val deviceLibrary = musicRepository.deviceLibrary ?: return@async SearchEngine.Items()
+            val userLibrary = musicRepository.userLibrary ?: return@async SearchEngine.Items()
             val items =
                 SearchEngine.Items(
                     deviceLibrary.songs,
@@ -288,7 +288,13 @@ constructor(
                     deviceLibrary.artists,
                     deviceLibrary.genres,
                     userLibrary.playlists)
-            searchEngine.search(items, query)
+            val results = searchEngine.search(items, query)
+            for (entry in searchSubscribers.entries) {
+                if (entry.value == query) {
+                    invalidator?.invalidate(entry.key, query, results.count())
+                }
+            }
+            results
         }
 
     private fun List<MediaItem>.paginate(page: Int, pageSize: Int): List<MediaItem>? {
