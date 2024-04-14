@@ -255,9 +255,9 @@ constructor(
         mediaSession.setCustomLayout(layout)
     }
 
-    override fun invalidate(ids: List<String>) {
+    override fun invalidate(ids: Map<String, Int>){
         for (id in ids) {
-            mediaSession.notifyChildrenChanged(id, Int.MAX_VALUE, null)
+            mediaSession.notifyChildrenChanged(id.key, id.value, null)
         }
     }
 

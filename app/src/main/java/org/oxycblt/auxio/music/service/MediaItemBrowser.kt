@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
@@ -57,7 +57,9 @@ constructor(
     private var invalidator: Invalidator? = null
 
     interface Invalidator {
-        fun invalidate(ids: List<String>)
+        data class ParentId(val id: String, val itemCount: Int)
+
+        fun invalidate(ids: Map<String, Int>)
 
         fun invalidate(controller: ControllerInfo, query: String, itemCount: Int)
     }
@@ -76,23 +78,43 @@ constructor(
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary
         var invalidateSearch = false
-        val invalidate = mutableListOf<MediaSessionUID>()
+        val invalidate = mutableMapOf<String, Int>()
         if (changes.deviceLibrary && deviceLibrary != null) {
-            invalidate.addAll(MediaSessionUID.Category.DEVICE_MUSIC)
-            deviceLibrary.albums.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
-            deviceLibrary.artists.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
-            deviceLibrary.genres.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
+            MediaSessionUID.Category.DEVICE_MUSIC.forEach {
+                invalidate[it.toString()] = getCategorySize(it, musicRepository)
+            }
+
+            deviceLibrary.albums.forEach {
+                val id = MediaSessionUID.Single(it.uid).toString()
+                invalidate[id] = it.songs.size
+            }
+
+            deviceLibrary.artists.forEach {
+                val id = MediaSessionUID.Single(it.uid).toString()
+                invalidate[id] = it.songs.size + it.explicitAlbums.size + it.implicitAlbums.size
+            }
+
+            deviceLibrary.genres.forEach {
+                val id = MediaSessionUID.Single(it.uid).toString()
+                invalidate[id] = it.songs.size + it.artists.size
+            }
+
             invalidateSearch = true
         }
         val userLibrary = musicRepository.userLibrary
         if (changes.userLibrary && userLibrary != null) {
-            invalidate.addAll(MediaSessionUID.Category.USER_MUSIC)
-            userLibrary.playlists.mapTo(invalidate) { MediaSessionUID.Single(it.uid) }
+            MediaSessionUID.Category.USER_MUSIC.forEach {
+                invalidate[it.toString()] = getCategorySize(it, musicRepository)
+            }
+            userLibrary.playlists.forEach {
+                val id = MediaSessionUID.Single(it.uid).toString()
+                invalidate[id] = it.songs.size
+            }
             invalidateSearch = true
         }
 
         if (invalidate.isNotEmpty()) {
-            invalidator?.invalidate(invalidate.map { it.toString() })
+            invalidator?.invalidate(invalidate)
         }
 
         if (invalidateSearch) {
@@ -119,8 +141,10 @@ constructor(
                 is MediaSessionUID.Category -> return uid.toMediaItem(context)
                 is MediaSessionUID.Single ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
+
                 is MediaSessionUID.Joined ->
                     musicRepository.find(uid.childUid)?.let { musicRepository.find(it.uid) }
+
                 null -> null
             }
                 ?: return null
@@ -155,32 +179,40 @@ constructor(
                 when (mediaSessionUID) {
                     MediaSessionUID.Category.ROOT ->
                         MediaSessionUID.Category.IMPORTANT.map { it.toMediaItem(context) }
+
                     MediaSessionUID.Category.SONGS ->
                         listSettings.songSort.songs(deviceLibrary.songs).map {
                             it.toMediaItem(context, null)
                         }
+
                     MediaSessionUID.Category.ALBUMS ->
                         listSettings.albumSort.albums(deviceLibrary.albums).map {
                             it.toMediaItem(context)
                         }
+
                     MediaSessionUID.Category.ARTISTS ->
                         listSettings.artistSort.artists(deviceLibrary.artists).map {
                             it.toMediaItem(context)
                         }
+
                     MediaSessionUID.Category.GENRES ->
                         listSettings.genreSort.genres(deviceLibrary.genres).map {
                             it.toMediaItem(context)
                         }
+
                     MediaSessionUID.Category.PLAYLISTS ->
                         userLibrary.playlists.map { it.toMediaItem(context) }
                 }
             }
+
             is MediaSessionUID.Single -> {
                 getChildMediaItems(mediaSessionUID.uid)
             }
+
             is MediaSessionUID.Joined -> {
                 getChildMediaItems(mediaSessionUID.childUid)
             }
+
             null -> {
                 return null
             }
@@ -193,22 +225,42 @@ constructor(
                 val songs = listSettings.albumSongSort.songs(item.songs)
                 songs.map { it.toMediaItem(context, item) }
             }
+
             is Artist -> {
                 val albums = ARTIST_ALBUMS_SORT.albums(item.explicitAlbums + item.implicitAlbums)
                 val songs = listSettings.artistSongSort.songs(item.songs)
                 albums.map { it.toMediaItem(context) } + songs.map { it.toMediaItem(context, item) }
             }
+
             is Genre -> {
                 val artists = GENRE_ARTISTS_SORT.artists(item.artists)
                 val songs = listSettings.genreSongSort.songs(item.songs)
                 artists.map { it.toMediaItem(context) } +
-                    songs.map { it.toMediaItem(context, null) }
+                        songs.map { it.toMediaItem(context, null) }
             }
+
             is Playlist -> {
                 item.songs.map { it.toMediaItem(context, item) }
             }
+
             is Song,
             null -> return null
+        }
+    }
+
+    private fun getCategorySize(
+        category: MediaSessionUID.Category,
+        musicRepository: MusicRepository
+    ): Int {
+        val deviceLibrary = musicRepository.deviceLibrary ?: return 0
+        val userLibrary = musicRepository.userLibrary ?: return 0
+        return when (category) {
+            MediaSessionUID.Category.ROOT -> MediaSessionUID.Category.IMPORTANT.size
+            MediaSessionUID.Category.SONGS -> deviceLibrary.songs.size
+            MediaSessionUID.Category.ALBUMS -> deviceLibrary.albums.size
+            MediaSessionUID.Category.ARTISTS -> deviceLibrary.artists.size
+            MediaSessionUID.Category.GENRES -> deviceLibrary.genres.size
+            MediaSessionUID.Category.PLAYLISTS -> userLibrary.playlists.size
         }
     }
 
@@ -287,7 +339,8 @@ constructor(
                     deviceLibrary.albums,
                     deviceLibrary.artists,
                     deviceLibrary.genres,
-                    userLibrary.playlists)
+                    userLibrary.playlists
+                )
             val results = searchEngine.search(items, query)
             for (entry in searchSubscribers.entries) {
                 if (entry.value == query) {
