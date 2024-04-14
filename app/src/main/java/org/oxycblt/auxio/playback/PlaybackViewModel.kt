@@ -267,6 +267,7 @@ constructor(
         val params = commandFactory.songFromArtist(song, artist, shuffle)
         if (params != null) {
             playbackManager.play(params)
+            return
         }
         logD(
             "Cannot use given artist parameter for $song [$artist from ${song.artists}], showing choice dialog")
@@ -277,6 +278,7 @@ constructor(
         val params = commandFactory.songFromGenre(song, genre, shuffle)
         if (params != null) {
             playbackManager.play(params)
+            return
         }
         logD(
             "Cannot use given genre parameter for $song [$genre from ${song.genres}], showing choice dialog")

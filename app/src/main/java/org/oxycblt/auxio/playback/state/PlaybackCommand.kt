@@ -162,7 +162,7 @@ constructor(
         sort: Sort,
         shuffle: ShuffleMode
     ): PlaybackCommand? {
-        if (queue.isEmpty() || song !in queue) {
+        if (queue.isEmpty() || (song != null && song !in queue)) {
             return null
         }
         return newCommand(song, parent, sort.songs(queue), shuffle)
