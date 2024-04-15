@@ -40,13 +40,13 @@
     <string name="lbl_date_added">Datum tillagt</string>
     <string name="lbl_sort_asc">Stigande</string>
     <string name="lbl_sort_dsc">Fallande</string>
-    <string name="lbl_playback">Nu spelar</string>
+    <string name="lbl_playback">Spelas nu</string>
     <string name="lbl_equalizer">Utjämnare</string>
     <string name="lbl_play">Spela</string>
     <string name="lbl_shuffle">Blanda</string>
     <string name="lbl_queue">Kö</string>
     <string name="lbl_play_next">Spela nästa</string>
-    <string name="lbl_playlist_add">Lägg till spellista</string>
+    <string name="lbl_playlist_add">Lägg till i spellista</string>
     <string name="lbl_artist_details">Gå till artist</string>
     <string name="lbl_album_details">Gå till album</string>
     <string name="lbl_song_detail">Visa egenskaper</string>
@@ -70,12 +70,12 @@
     <string name="lng_observing">Övervakar ändringar i ditt musikbibliotek…</string>
     <string name="lng_queue_added">Tillagd i kö</string>
     <string name="lng_playlist_created">Spellista skapad</string>
-    <string name="lng_playlist_added">Tillagd till spellista</string>
+    <string name="lng_playlist_added">Tillagd i spellista</string>
     <string name="lng_search_library">Sök i ditt musikbibliotek…</string>
     <string name="set_root_title">Inställningar</string>
     <string name="set_ui">Utseende</string>
     <string name="set_ui_desc">Ändra färger och tema</string>
-    <string name="set_theme_auto">Automatisk</string>
+    <string name="set_theme_auto">Automatiskt</string>
     <string name="set_theme_day">Ljust</string>
     <string name="set_black_mode">Svart tema</string>
     <string name="set_round_mode">Runt läge</string>
@@ -97,7 +97,7 @@
     <string name="lbl_filter_all">Alla</string>
     <string name="lbl_disc">Disk</string>
     <string name="lbl_sort">Sortera</string>
-    <string name="lbl_queue_add">Lägg till kö</string>
+    <string name="lbl_queue_add">Lägg till i kö</string>
     <string name="lbl_add">Lägg till</string>
     <string name="lbl_state_wiped">Tillstånd togs bort</string>
     <string name="lbl_bitrate">Överföringskapacitet</string>
@@ -106,7 +106,7 @@
     <string name="lbl_version">Version</string>
     <string name="lbl_library_counts">Bibliotekstatistik</string>
     <string name="lng_playlist_renamed">Bytt namn på spellista</string>
-    <string name="lng_playlist_deleted">Spellista tog bort</string>
+    <string name="lng_playlist_deleted">Spellistan togs bort</string>
     <string name="lbl_author_name">Alexander Capeheart</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_night">Mörkt</string>
@@ -184,7 +184,7 @@
     <string name="desc_clear_search">Rensa sökfrågan</string>
     <string name="desc_music_dir_delete">Ta bort mapp</string>
     <string name="desc_genre_image">Genrebild för %s</string>
-    <string name="desc_playlist_image">Bild spellista för %s</string>
+    <string name="desc_playlist_image">Spellistabild för %s</string>
     <string name="cdc_mp3">MPEG-1-ljud</string>
     <string name="cdc_mp4">MPEG-4-ljud</string>
     <string name="cdc_ogg">OGG-ljud</string>
@@ -285,7 +285,7 @@
     <string name="clr_pink">Rosa</string>
     <string name="fmt_indexing">Laddar ditt musikbibliotek… (%1$d/%2$d)</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Volymnormalisering</string>
     <string name="set_replay_gain_mode_track">Föredra spår</string>
     <string name="set_replay_gain_mode_album">Föredra album</string>
     <string name="set_replay_gain_mode_dynamic">Föredra album om ett album spelar</string>
@@ -299,7 +299,7 @@
     <string name="lbl_sort_direction">Riktning</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Demos</string>
-    <string name="lbl_author">Upphovsperson</string>
+    <string name="lbl_author">Utvecklare</string>
     <string name="lng_playlist_imported">Spellistan har importerats</string>
     <string name="lng_playlist_exported">Spellistan har exporterats</string>
     <string name="lng_supporters_promo">Skänk projektet ett bidrag så lägger vi till ditt namn här!</string>
@@ -308,7 +308,7 @@
     <string name="err_export_failed">Kunde inte importera spellistan till denna fil</string>
     <string name="lbl_empty_playlist">Tom spellista</string>
     <string name="lbl_import_playlist">Importera spellista</string>
-    <string name="lbl_parent_detail">Vy</string>
+    <string name="lbl_parent_detail">Visa</string>
     <string name="lbl_path">Sökväg</string>
     <string name="lbl_replaygain_track">ReplayGain Spårbaserad Volymjustering</string>
     <string name="lbl_replaygain_album">ReplayGain Albumbaserad Volymjustering</string>
@@ -322,4 +322,5 @@
     <string name="lbl_path_style_relative">Relativ</string>
     <string name="lbl_windows_paths">Använd Windowskompatibla sökvägar</string>
     <string name="def_album_count">Inga album</string>
+    <string name="set_replay_gain_mode_off">Av</string>
 </resources>
