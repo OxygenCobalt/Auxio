@@ -106,7 +106,7 @@
     <string name="set_audio_desc">Наладзьце гук і паводзіны прайгравання</string>
     <string name="set_headset_autoplay_desc">Заўсёды пачынаць гульню, калі падключана гарнітура (можа працаваць не на ўсіх прыладах)</string>
     <string name="set_repeat_pause_desc">Паўза, калі песня паўтараецца</string>
-    <string name="set_replay_gain">Выраўноўванне гучнасці ReplayGain</string>
+    <string name="set_replay_gain">Выраўноўванне гучнасці</string>
     <string name="set_pre_amp_with">Карэкціроўка з тэгамі</string>
     <string name="set_rewind_prev">Пераматайце назад, перш чым перайсці назад</string>
     <string name="set_rewind_prev_desc">Перамотка назад, перш чым перайсці да папярэдняй песні</string>
@@ -328,4 +328,5 @@
     <string name="lng_supporters_promo">Ахвяруйце на праект, каб ваша імя было дададзена тут!</string>
     <string name="set_remember_pause">Запамінаць паўзу</string>
     <string name="set_remember_pause_desc">Пакідаць прайграванне/паўзу падчас пропуску або рэдагаванні чаргі</string>
+    <string name="set_replay_gain_mode_off">Адкл.</string>
 </resources>
