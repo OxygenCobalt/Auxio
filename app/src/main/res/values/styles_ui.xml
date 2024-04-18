@@ -277,7 +277,8 @@
         <item name="android:paddingEnd">10dp</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
-        <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
+        <item name="iconTint">?attr/colorSecondaryContainer</item>
+        <item name="backgroundTint">?attr/colorOnSecondaryContainer</item>
     </style>
 
     <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
@@ -295,7 +296,8 @@
         <item name="shapeAppearanceOverlay">
             @style/ShapeAppearanceOverlay.Material3.FloatingActionButton
         </item>
-        <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
+        <item name="iconTint">?attr/colorOnPrimaryContainer</item>
+        <item name="backgroundTint">?attr/colorPrimaryContainer</item>
     </style>
 
     <style name="Widget.Auxio.FloatingActionButton.Adaptive" parent="Widget.Material3.FloatingActionButton.Primary">
