@@ -22,6 +22,8 @@
         <item name="labelBehavior">gone</item>
         <item name="tickVisible">false</item>
         <item name="trackStopIndicatorSize">0dp</item>
+        <item name="trackHeight">@dimen/slider_track_height</item>
+        <item name="thumbHeight">@dimen/slider_thumb_height</item>
     </style>
 
     <style name="Widget.Auxio.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
@@ -254,8 +256,8 @@
         <item name="iconSize">@dimen/size_icon_medium</item>
         <item name="android:minWidth">@dimen/size_btn</item>
         <item name="android:minHeight">@dimen/size_btn</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetTop">@dimen/spacing_small</item>
+        <item name="android:insetBottom">@dimen/spacing_small</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
         <item name="android:paddingStart">@dimen/spacing_small</item>
@@ -265,20 +267,24 @@
         <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Icon.Larger" parent="Widget.Auxio.Button.Icon.Base">
+    <style name="Widget.Auxio.Button.Icon.Huge" parent="Widget.Material3.Button.IconButton">
         <item name="iconSize">40dp</item>
-        <item name="android:minWidth">@dimen/size_btn</item>
-        <item name="android:minHeight">@dimen/size_btn</item>
+        <item name="android:minWidth">@dimen/size_btn_larger</item>
+        <item name="android:minHeight">@dimen/size_btn_larger</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
-        <item name="android:paddingStart">10dp</item>
-        <item name="android:paddingEnd">10dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="iconTint">?attr/colorSecondaryContainer</item>
-        <item name="backgroundTint">?attr/colorOnSecondaryContainer</item>
+        <item name="android:paddingStart">@dimen/spacing_small</item>
+        <item name="android:paddingEnd">@dimen/spacing_small</item>
+        <item name="android:paddingTop">@dimen/spacing_small</item>
+        <item name="android:paddingBottom">@dimen/spacing_small</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.Huge</item>
+    </style>
+
+    <style name="ThemeOverlay.Auxio.IconButton.Huge" parent="">
+        <item name="colorContainer">?attr/colorSecondaryContainer</item>
+        <item name="colorOnContainer">?attr/colorOnSecondaryContainer</item>
     </style>
 
     <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
@@ -296,8 +302,12 @@
         <item name="shapeAppearanceOverlay">
             @style/ShapeAppearanceOverlay.Material3.FloatingActionButton
         </item>
-        <item name="iconTint">?attr/colorOnPrimaryContainer</item>
-        <item name="backgroundTint">?attr/colorPrimaryContainer</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.PlayPause</item>
+    </style>
+
+    <style name="ThemeOverlay.Auxio.IconButton.PlayPause" parent="">
+        <item name="colorContainer">?attr/colorPrimaryFixedDim</item>
+        <item name="colorOnContainer">?attr/colorOnPrimaryFixed</item>
     </style>
 
     <style name="Widget.Auxio.FloatingActionButton.Adaptive" parent="Widget.Material3.FloatingActionButton.Primary">

@@ -105,13 +105,11 @@
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_prev"
-                style="@style/Widget.Auxio.Button.Icon.Larger"
+                style="@style/Widget.Auxio.Button.Icon.Huge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_skip_prev"
                 app:icon="@drawable/ic_skip_prev_24"
-                app:iconTint="?attr/colorOnSecondaryContainer"
-                app:backgroundTint="?attr/colorSecondaryContainer"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
                 app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
                 app:layout_constraintStart_toEndOf="@+id/playback_repeat"
@@ -123,8 +121,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_play_pause"
-                app:backgroundTint="?attr/colorPrimaryContainer"
-                app:iconTint="?attr/colorOnPrimaryContainer"
                 app:icon="@drawable/sel_playing_state_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -134,13 +130,11 @@
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_next"
-                style="@style/Widget.Auxio.Button.Icon.Larger"
+                style="@style/Widget.Auxio.Button.Icon.Huge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_skip_next"
                 app:icon="@drawable/ic_skip_next_24"
-                app:iconTint="?attr/colorOnSecondaryContainer"
-                app:backgroundTint="?attr/colorSecondaryContainer"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
                 app:layout_constraintEnd_toStartOf="@+id/playback_shuffle"
                 app:layout_constraintStart_toEndOf="@+id/playback_play_pause"

@@ -10,8 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_medium"
-        app:trackHeight="4dp"
-        app:thumbHeight="24dp"
         android:valueFrom="0"
         android:valueTo="1" />
 

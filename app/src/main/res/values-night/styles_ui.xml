@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ThemeOverlay.Auxio.IconButton.PlayPause" parent="">
+        <item name="colorContainer">?attr/colorPrimaryContainer</item>
+        <item name="colorOnContainer">?attr/colorOnPrimaryContainer</item>
+    </style>
+</resources>
