@@ -25,7 +25,6 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/playback_sheet"
-        style="@style/Widget.Auxio.DisableDropShadows"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior">
@@ -45,10 +44,10 @@
 
         <LinearLayout
             android:id="@+id/queue_sheet"
-            style="@style/Widget.Auxio.DisableDropShadows"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            style="@style/Widget.Auxio.DisableDropShadows"
             app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout

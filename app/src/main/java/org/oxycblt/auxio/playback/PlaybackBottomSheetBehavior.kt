@@ -29,7 +29,6 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
 
 /**
  * The [BaseBottomSheetBehavior] for the playback bottom sheet. This bottom sheet
@@ -40,8 +39,8 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
     BaseBottomSheetBehavior<V>(context, attributeSet) {
     val sheetBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-            fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
-            elevation = context.getDimen(R.dimen.elevation_normal)
+            fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerLow)
+            setCornerSize(context.resources.getDimension(R.dimen.size_corners_mid_large))
         }
 
     init {

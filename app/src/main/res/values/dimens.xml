@@ -16,8 +16,8 @@
     <dimen name="size_cover_mid_huge">192dp</dimen>
     <dimen name="size_cover_huge">256dp</dimen>
 
-    <dimen name="size_corners_small">8dp</dimen>
-    <dimen name="size_corners_medium">16dp</dimen>
+    <dimen name="size_corners_small">12dp</dimen>
+    <dimen name="size_corners_medium">14dp</dimen>
     <dimen name="size_corners_mid_large">24dp</dimen>
 
     <dimen name="size_btn">48dp</dimen>
@@ -36,7 +36,7 @@
     <dimen name="text_size_track_number_step">2sp</dimen>
 
     <!-- Misc -->
-    <dimen name="elevation_normal">3dp</dimen>
+    <dimen name="elevation_normal">6dp</dimen>
 
     <dimen name="fast_scroll_popup_min_width">78dp</dimen>
     <dimen name="fast_scroll_popup_min_height">64dp</dimen>

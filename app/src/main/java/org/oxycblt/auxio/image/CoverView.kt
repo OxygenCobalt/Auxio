@@ -461,7 +461,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     companion object {
         val SIZING_CORNER_RADII =
             arrayOf(
-                R.dimen.size_corners_small, R.dimen.size_corners_small, R.dimen.size_corners_medium)
+                R.dimen.size_corners_small,
+                R.dimen.size_corners_medium,
+                R.dimen.size_corners_mid_large)
         val SIZING_ICON_SIZE = arrayOf(R.dimen.size_icon_small, R.dimen.size_icon_medium, null)
     }
 }

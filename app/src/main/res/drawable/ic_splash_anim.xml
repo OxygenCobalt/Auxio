@@ -8,9 +8,7 @@
             android:viewportHeight="108">
             <group android:name="bg"
                 android:pivotX="56"
-                android:pivotY="56"
-                android:scaleX="0"
-                android:scaleY="0">
+                android:pivotY="56">
                 <path
                     android:fillColor="#eef0ff"
                     android:pathData="M 136,54 A 82,82 0 0 1 54,136 82,82 0 0 1 -28,54 82,82 0 0 1 54,-28 82,82 0 0 1 136,54 Z"
@@ -62,22 +60,6 @@
     <target android:name="bg">
         <aapt:attr name="android:animation">
             <set>
-                <objectAnimator
-                    android:duration="1000"
-                    android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:propertyName="scaleX"
-                    android:startOffset="0"
-                    android:valueFrom="0"
-                    android:valueTo="1"
-                    android:valueType="floatType" />
-                <objectAnimator
-                    android:duration="1000"
-                    android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:propertyName="scaleY"
-                    android:startOffset="0"
-                    android:valueFrom="0"
-                    android:valueTo="1"
-                    android:valueType="floatType" />
             </set>
         </aapt:attr>
     </target>

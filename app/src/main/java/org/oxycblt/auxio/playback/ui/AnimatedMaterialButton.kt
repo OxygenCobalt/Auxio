@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback.ui
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.animation.AnimationUtils
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.RippleFixMaterialButton
@@ -64,6 +65,9 @@ class AnimatedMaterialButton : RippleFixMaterialButton {
         animator =
             ValueAnimator.ofFloat(currentCornerRadiusRatio, targetRadius).apply {
                 duration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
+                interpolator =
+                    AnimationUtils.loadInterpolator(
+                        context, android.R.interpolator.fast_out_slow_in)
                 addUpdateListener { updateCornerRadiusRatio(animatedValue as Float) }
                 start()
             }

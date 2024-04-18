@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
@@ -141,10 +141,8 @@ constructor(
                 is MediaSessionUID.Category -> return uid.toMediaItem(context)
                 is MediaSessionUID.Single ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
-
                 is MediaSessionUID.Joined ->
                     musicRepository.find(uid.childUid)?.let { musicRepository.find(it.uid) }
-
                 null -> null
             }
                 ?: return null
@@ -179,40 +177,32 @@ constructor(
                 when (mediaSessionUID) {
                     MediaSessionUID.Category.ROOT ->
                         MediaSessionUID.Category.IMPORTANT.map { it.toMediaItem(context) }
-
                     MediaSessionUID.Category.SONGS ->
                         listSettings.songSort.songs(deviceLibrary.songs).map {
                             it.toMediaItem(context, null)
                         }
-
                     MediaSessionUID.Category.ALBUMS ->
                         listSettings.albumSort.albums(deviceLibrary.albums).map {
                             it.toMediaItem(context)
                         }
-
                     MediaSessionUID.Category.ARTISTS ->
                         listSettings.artistSort.artists(deviceLibrary.artists).map {
                             it.toMediaItem(context)
                         }
-
                     MediaSessionUID.Category.GENRES ->
                         listSettings.genreSort.genres(deviceLibrary.genres).map {
                             it.toMediaItem(context)
                         }
-
                     MediaSessionUID.Category.PLAYLISTS ->
                         userLibrary.playlists.map { it.toMediaItem(context) }
                 }
             }
-
             is MediaSessionUID.Single -> {
                 getChildMediaItems(mediaSessionUID.uid)
             }
-
             is MediaSessionUID.Joined -> {
                 getChildMediaItems(mediaSessionUID.childUid)
             }
-
             null -> {
                 return null
             }
@@ -225,24 +215,20 @@ constructor(
                 val songs = listSettings.albumSongSort.songs(item.songs)
                 songs.map { it.toMediaItem(context, item) }
             }
-
             is Artist -> {
                 val albums = ARTIST_ALBUMS_SORT.albums(item.explicitAlbums + item.implicitAlbums)
                 val songs = listSettings.artistSongSort.songs(item.songs)
                 albums.map { it.toMediaItem(context) } + songs.map { it.toMediaItem(context, item) }
             }
-
             is Genre -> {
                 val artists = GENRE_ARTISTS_SORT.artists(item.artists)
                 val songs = listSettings.genreSongSort.songs(item.songs)
                 artists.map { it.toMediaItem(context) } +
-                        songs.map { it.toMediaItem(context, null) }
+                    songs.map { it.toMediaItem(context, null) }
             }
-
             is Playlist -> {
                 item.songs.map { it.toMediaItem(context, item) }
             }
-
             is Song,
             null -> return null
         }
@@ -339,8 +325,7 @@ constructor(
                     deviceLibrary.albums,
                     deviceLibrary.artists,
                     deviceLibrary.genres,
-                    userLibrary.playlists
-                )
+                    userLibrary.playlists)
             val results = searchEngine.search(items, query)
             for (entry in searchSubscribers.entries) {
                 if (entry.value == query) {

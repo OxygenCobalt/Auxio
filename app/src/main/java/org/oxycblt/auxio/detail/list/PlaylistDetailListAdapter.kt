@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemEditHeaderBinding
 import org.oxycblt.auxio.databinding.ItemEditableSongBinding
 import org.oxycblt.auxio.list.EditableListListener
@@ -46,7 +45,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 
@@ -232,8 +230,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
     override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
-            elevation = binding.context.getDimen(R.dimen.elevation_normal)
+            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
             alpha = 0
         }
 

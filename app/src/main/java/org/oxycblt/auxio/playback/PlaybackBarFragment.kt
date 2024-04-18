@@ -76,6 +76,10 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackProgressBar.trackColor =
             context.getColorCompat(R.color.sel_track).defaultColor
 
+        //        binding.playbackProgressBar.wavelength = 48
+        //        binding.playbackProgressBar.speed = 20
+        //        binding.playbackProgressBar.amplitude = 5
+
         // -- VIEWMODEL SETUP ---
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)

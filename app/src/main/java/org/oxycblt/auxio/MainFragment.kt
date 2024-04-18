@@ -146,8 +146,7 @@ class MainFragment :
                 // Emulate the elevated bottom sheet style.
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                        fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
-                        elevation = context.getDimen(R.dimen.elevation_normal)
+                        fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
                     }
                 // Apply bar insets for the queue's RecyclerView to use.
                 setOnApplyWindowInsetsListener { v, insets ->
@@ -277,7 +276,7 @@ class MainFragment :
         // Reduce playback sheet elevation as it expands. This involves both updating the
         // shadow elevation for older versions, and fading out the background drawable
         // containing the elevation overlay.
-        binding.playbackSheet.translationZ = elevationNormal * outPlaybackRatio
+        binding.playbackSheet.elevation = elevationNormal * outPlaybackRatio
         playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
 
         // Fade out the playback bar as the panel expands.
