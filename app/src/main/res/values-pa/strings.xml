@@ -117,7 +117,7 @@
     <string name="set_play_song_from_genre">ਸ਼ੈਲੀ ਤੋਂ ਖੇਡੋ</string>
     <string name="set_keep_shuffle">ਸ਼ਫਲ ਯਾਦ ਰੱਖੋ</string>
     <string name="set_repeat_pause_desc">ਗੀਤ ਦੁਹਰਾਉਣ ਤੇ ਰੋਕੋ</string>
-    <string name="set_replay_gain">ਰੀਪਲੇਅ-ਗੇਨ</string>
+    <string name="set_replay_gain">ਵਾਲੀਅਮ ਨਾਰਮਲਾਈਜ਼ੇਸ਼ਨ</string>
     <string name="set_replay_gain_mode">ਰੀਪਲੇਅ-ਗੇਨ ਰਣਨੀਤੀ</string>
     <string name="set_replay_gain_mode_track">ਟਰੈਕ ਨੂੰ ਤਰਜੀਹ</string>
     <string name="set_replay_gain_mode_album">ਐਲਬਮ ਨੂੰ ਤਰਜੀਹ</string>
@@ -322,4 +322,5 @@
     <string name="lng_supporters_promo">ਆਪਣਾ ਨਾਮ ਇੱਥੇ ਜੋੜਨ ਲਈ ਪ੍ਰੋਜੈਕਟ ਨੂੰ ਦਾਨ ਕਰੋ!</string>
     <string name="set_remember_pause_desc">ਕਤਾਰ ਨੂੰ ਛੱਡਣ ਜਾਂ ਸੰਪਾਦਿਤ ਕਰਨ ਵੇਲੇ ਚਲਾਉਂਦੇ/ਰੋਕੇ ਰਹੋ</string>
     <string name="set_remember_pause">ਵਿਰਾਮ ਯਾਦ ਰੱਖੋ</string>
+    <string name="set_replay_gain_mode_off">ਬੰਦ</string>
 </resources>
