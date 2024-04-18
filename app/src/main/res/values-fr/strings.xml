@@ -332,4 +332,5 @@
     <string name="lbl_path_style_absolute">Absolu</string>
     <string name="lbl_path_style_relative">Relatif</string>
     <string name="lbl_windows_paths">Utiliser les chemins compatibles Windows</string>
+    <string name="set_replay_gain_mode_off">Désactivé</string>
 </resources>
