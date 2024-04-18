@@ -130,7 +130,7 @@ constructor(
         imageSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)
-        widgetProvider.reset(context)
+        widgetProvider.reset(context, uiSettings)
     }
 
     // --- CALLBACKS ---

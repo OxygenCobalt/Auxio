@@ -34,6 +34,7 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.service.PlaybackActions
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
+import org.oxycblt.auxio.ui.UISettingsImpl
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
@@ -53,7 +54,7 @@ class WidgetProvider : AppWidgetProvider() {
         requestUpdate(context)
         // Revert to the default layout for now until we get a response from WidgetComponent.
         // If we don't, then we will stick with the default widget layout.
-        reset(context)
+        reset(context, UISettingsImpl(context))
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -82,7 +83,7 @@ class WidgetProvider : AppWidgetProvider() {
         if (state == null) {
             // No state, use the default widget.
             logD("No state provided, returning to default")
-            reset(context)
+            reset(context, uiSettings)
             return
         }
 
@@ -109,7 +110,7 @@ class WidgetProvider : AppWidgetProvider() {
         } catch (e: Exception) {
             // Layout update failed, gracefully degrade to the default widget.
             logW("Unable to update widget: $e")
-            reset(context)
+            reset(context, uiSettings)
         }
     }
 
@@ -118,10 +119,11 @@ class WidgetProvider : AppWidgetProvider() {
      *
      * @param context [Context] required to update the widget layout.
      */
-    fun reset(context: Context) {
+    fun reset(context: Context, uiSettings: UISettings) {
         logD("Using default layout")
         AppWidgetManager.getInstance(context)
-            .updateAppWidget(ComponentName(context, this::class.java), newDefaultLayout(context))
+            .updateAppWidget(
+                ComponentName(context, this::class.java), newDefaultLayout(context, uiSettings))
     }
 
     // --- INTERNAL METHODS ---
@@ -139,8 +141,10 @@ class WidgetProvider : AppWidgetProvider() {
 
     // --- LAYOUTS ---
 
-    private fun newDefaultLayout(context: Context) =
+    private fun newDefaultLayout(context: Context, uiSettings: UISettings) =
         newRemoteViews(context, R.layout.widget_default)
+            .setupBackground(uiSettings)
+            .setupBackground(uiSettings)
 
     private fun newThinStickLayout(context: Context, state: WidgetComponent.PlaybackState) =
         newRemoteViews(context, R.layout.widget_stick_thin).setupTimelineControls(context, state)
