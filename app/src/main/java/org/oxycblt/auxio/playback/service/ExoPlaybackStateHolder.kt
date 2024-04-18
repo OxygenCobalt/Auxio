@@ -69,7 +69,8 @@ class ExoPlaybackStateHolder(
     private val persistenceRepository: PersistenceRepository,
     private val playbackSettings: PlaybackSettings,
     private val commandFactory: PlaybackCommand.Factory,
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
+    private val replayGainProcessor: ReplayGainAudioProcessor
 ) :
     PlaybackStateHolder,
     Player.Listener,
@@ -86,6 +87,7 @@ class ExoPlaybackStateHolder(
 
     fun attach() {
         player.addListener(this)
+        replayGainProcessor.attach()
         playbackManager.registerStateHolder(this)
         playbackSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
@@ -96,6 +98,7 @@ class ExoPlaybackStateHolder(
         player.removeListener(this)
         playbackManager.unregisterStateHolder(this)
         musicRepository.removeUpdateListener(this)
+        replayGainProcessor.release()
         player.release()
     }
 
@@ -190,7 +193,8 @@ class ExoPlaybackStateHolder(
 
     override fun seekTo(positionMs: Long) {
         player.seekTo(positionMs)
-        // Ack/state save handled on discontinuity
+        deferSave()
+        // Ack handled w/ExoPlayer events
     }
 
     override fun repeatMode(repeatMode: RepeatMode) {
@@ -253,7 +257,8 @@ class ExoPlaybackStateHolder(
                 player.pause()
             }
         }
-        // Ack/state save is handled in timeline change
+        playbackManager.ack(this, StateAck.IndexMoved)
+        deferSave()
     }
 
     override fun prev() {
@@ -265,7 +270,8 @@ class ExoPlaybackStateHolder(
         if (!playbackSettings.rememberPause) {
             player.play()
         }
-        // Ack/state save is handled in timeline change
+        playbackManager.ack(this, StateAck.IndexMoved)
+        deferSave()
     }
 
     override fun goto(index: Int) {
@@ -279,7 +285,8 @@ class ExoPlaybackStateHolder(
         if (!playbackSettings.rememberPause) {
             player.play()
         }
-        // Ack/state save is handled in timeline change
+        playbackManager.ack(this, StateAck.IndexMoved)
+        deferSave()
     }
 
     override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
@@ -405,15 +412,6 @@ class ExoPlaybackStateHolder(
         }
     }
 
-    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-        super.onMediaItemTransition(mediaItem, reason)
-
-        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
-            reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
-            playbackManager.ack(this, StateAck.IndexMoved)
-        }
-    }
-
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
 
@@ -423,21 +421,19 @@ class ExoPlaybackStateHolder(
         }
     }
 
-    override fun onPositionDiscontinuity(
-        oldPosition: Player.PositionInfo,
-        newPosition: Player.PositionInfo,
-        reason: Int
-    ) {
-        super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            // TODO: Once position also naturally drifts by some threshold, save
-            deferSave()
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        super.onMediaItemTransition(mediaItem, reason)
+
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+            playbackManager.ack(this, StateAck.IndexMoved)
         }
     }
 
     override fun onEvents(player: Player, events: Player.Events) {
         super.onEvents(player, events)
 
+        // So many actions trigger progression changes that it becomes easier just to handle it
+        // in an ExoPlayer callback anyway. This doesn't really cause issues anywhere.
         if (events.containsAny(
             Player.EVENT_PLAY_WHEN_READY_CHANGED,
             Player.EVENT_IS_PLAYING_CHANGED,
@@ -559,7 +555,8 @@ class ExoPlaybackStateHolder(
                 persistenceRepository,
                 playbackSettings,
                 commandFactory,
-                musicRepository)
+                musicRepository,
+                replayGainProcessor)
         }
     }
 
