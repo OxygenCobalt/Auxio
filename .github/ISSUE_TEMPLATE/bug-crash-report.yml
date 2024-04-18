@@ -62,6 +62,7 @@ body:
     attributes:
       label: Provide a sample file
       description: Upload a sample file the error is related to the loading or playback of music files. **IF YOU DO NOT DO THIS, I WILL BE UNABLE TO SOLVE YOUR ISSUE.** Music loading errors may indicate what file is causing the issue. Upload that file. If the audio is copyrighted, you should cut it out in an audio error while still making sure the edited file reproduces the issue. *Upload a ZIP file containing the files or share a link to a file hosted on the cloud.*
+    validations:
       required: true
   - type: textarea
     id: logs
