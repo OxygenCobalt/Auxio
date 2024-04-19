@@ -6,7 +6,8 @@
             android:height="108dp"
             android:viewportWidth="108"
             android:viewportHeight="108">
-            <group android:name="bg"
+            <group
+                android:name="bg"
                 android:pivotX="56"
                 android:pivotY="56">
                 <path
@@ -17,26 +18,26 @@
 
             <group
                 android:name="top_left_block"
-                android:rotation="40"
-                android:translateY="-32"
-                android:translateX="16"
                 android:pivotX="54"
-                android:pivotY="54">
+                android:pivotY="54"
+                android:rotation="40"
+                android:translateX="16"
+                android:translateY="-32">
                 <path
-                    android:fillColor="#b0c6ff"
+                    android:fillColor="#94AAE4"
                     android:pathData="m -19,5e-7 h 38 c 4.432,0 8,3.568 8,8 V 100 c 0,4.432 -3.568,8 -8,8 h -38 c -4.432,0 -8,-3.568 -8,-8 V 8.0000005 c 0,-4.432 3.568,-8 8,-8 z"
                     android:strokeColor="#00000000" />
             </group>
 
             <group
                 android:name="bottom_right_block"
-                android:rotation="40"
-                android:translateY="32"
-                android:translateX="-16"
                 android:pivotX="54"
-                android:pivotY="54">
+                android:pivotY="54"
+                android:rotation="40"
+                android:translateX="-16"
+                android:translateY="32">
                 <path
-                    android:fillColor="#d9e2ff"
+                    android:fillColor="#B1C6FF"
                     android:pathData="m 89,0 h 38 c 4.432,0 8,3.568 8,8 V 99.999999 C 135,104.432 131.432,108 127,108 H 89 c -4.432,0 -8,-3.568 -8,-8.000001 V 8 c 0,-4.432 3.568,-8 8,-8 z"
                     android:strokeColor="#00000000" />
             </group>
@@ -59,8 +60,7 @@
     </aapt:attr>
     <target android:name="bg">
         <aapt:attr name="android:animation">
-            <set>
-            </set>
+            <set></set>
         </aapt:attr>
     </target>
     <target android:name="top_left_block">
