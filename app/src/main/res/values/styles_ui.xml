@@ -66,38 +66,48 @@
     <style name="Widget.Auxio.Image.Small" parent="">
         <item name="android:layout_width">@dimen/size_cover_compact</item>
         <item name="android:layout_height">@dimen/size_cover_compact</item>
-        <item name="sizing">small</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Medium</item>
+        <item name="iconSize">@dimen/size_icon_small</item>
     </style>
 
     <style name="Widget.Auxio.Image.Medium" parent="">
         <item name="android:layout_width">@dimen/size_cover_medium</item>
         <item name="android:layout_height">@dimen/size_cover_medium</item>
-        <item name="sizing">medium</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Medium</item>
+        <item name="iconSize">@dimen/size_icon_medium</item>
     </style>
+
 
     <style name="Widget.Auxio.Image.Large" parent="">
         <item name="android:layout_width">@dimen/size_cover_large</item>
         <item name="android:layout_height">@dimen/size_cover_large</item>
-        <item name="sizing">large</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
     </style>
 
     <style name="Widget.Auxio.Image.MidHuge" parent="">
         <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
         <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
-        <item name="sizing">large</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
     </style>
 
     <style name="Widget.Auxio.Image.Huge" parent="">
         <item name="android:layout_width">@dimen/size_cover_huge</item>
         <item name="android:layout_height">@dimen/size_cover_huge</item>
-        <item name="sizing">large</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
+    </style>
+
+    <style name="Widget.Auxio.Image.MidFull" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="layout_constraintDimensionRatio">1</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Large</item>
     </style>
 
     <style name="Widget.Auxio.Image.Full" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="layout_constraintDimensionRatio">1</item>
-        <item name="sizing">large</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
     </style>
 
     <style name="Widget.Auxio.RecyclerView.Linear" parent="">

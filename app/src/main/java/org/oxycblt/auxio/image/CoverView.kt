@@ -33,9 +33,8 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.AttrRes
-import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
-import androidx.core.content.res.getIntOrThrow
+import androidx.annotation.Px
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
 import androidx.core.view.updateMarginsRelative
@@ -45,6 +44,7 @@ import coil.request.ImageRequest
 import coil.util.CoilUtils
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
@@ -58,7 +58,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.getInteger
@@ -91,15 +90,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private val playbackIndicator: PlaybackIndicator?
     private val selectionBadge: ImageView?
-
-    private val sizing: Int
-    @DimenRes private val iconSizeRes: Int?
-    @DimenRes private var cornerRadiusRes: Int?
+    private val iconSize: Int?
 
     private var fadeAnimator: ValueAnimator? = null
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
+
+    private val shapeAppearance: ShapeAppearanceModel
 
     private data class Cover(
         val songs: Collection<Song>,
@@ -114,9 +112,21 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.CoverView)
 
-        sizing = styledAttrs.getIntOrThrow(R.styleable.CoverView_sizing)
-        iconSizeRes = SIZING_ICON_SIZE[sizing]
-        cornerRadiusRes = getCornerRadiusRes()
+        val shapeAppearanceRes = styledAttrs.getResourceId(R.styleable.CoverView_shapeAppearance, 0)
+        shapeAppearance =
+            if (shapeAppearanceRes != 0) {
+                ShapeAppearanceModel.builder(context, shapeAppearanceRes, -1).build()
+            } else {
+                ShapeAppearanceModel.builder(
+                        context,
+                        com.google.android.material.R.style.ShapeAppearance_Material3_Corner_Medium,
+                        -1)
+                    .build()
+            }
+        iconSize =
+            styledAttrs.getDimensionPixelSize(R.styleable.CoverView_iconSize, -1).takeIf {
+                it != -1
+            }
 
         val playbackIndicatorEnabled =
             styledAttrs.getBoolean(R.styleable.CoverView_enablePlaybackIndicator, true)
@@ -190,7 +200,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // AnimatedVectorDrawable cannot be placed in a StyledDrawable, we must replicate the
         // behavior with a matrix.
         val playbackIndicator = (playbackIndicator ?: return).view
-        val iconSize = iconSizeRes?.let(context::getDimenPixels) ?: (measuredWidth / 2)
+        val iconSize = iconSize ?: (measuredWidth / 2)
         playbackIndicator.apply {
             imageMatrix =
                 indicatorMatrix.apply {
@@ -254,14 +264,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    private fun getCornerRadiusRes() =
-        if (!isInEditMode && uiSettings.roundMode) {
-            SIZING_CORNER_RADII[sizing]
-        } else {
-            null
-        }
-
     private fun applyBackgroundsToChildren() {
+
         // Add backgrounds to each child for visual consistency
         for (child in children) {
             child.apply {
@@ -271,7 +275,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 background =
                     MaterialShapeDrawable().apply {
                         fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                        setCornerSize(cornerRadiusRes?.let(context::getDimen) ?: 0f)
+                        shapeAppearanceModel = shapeAppearance
                     }
             }
         }
@@ -402,11 +406,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val request =
             ImageRequest.Builder(context)
                 .data(songs)
-                .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSizeRes))
+                .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize))
                 .target(image)
 
         val cornersTransformation =
-            RoundedRectTransformation(cornerRadiusRes?.let(context::getDimen) ?: 0f)
+            RoundedRectTransformation(
+                shapeAppearance.topLeftCornerSize.getCornerSize(
+                    RectF(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())))
         if (imageSettings.forceSquareCovers) {
             request.transformations(SquareCropTransformation.INSTANCE, cornersTransformation)
         } else {
@@ -427,7 +433,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private class StyledDrawable(
         context: Context,
         private val inner: Drawable,
-        @DimenRes iconSizeRes: Int?
+        @Px val iconSize: Int?
     ) : Drawable() {
         init {
             // Re-tint the drawable to use the analogous "on surface" color for
@@ -435,12 +441,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             DrawableCompat.setTintList(inner, context.getColorCompat(R.color.sel_on_cover_bg))
         }
 
-        private val dimen = iconSizeRes?.let(context::getDimenPixels)
-
         override fun draw(canvas: Canvas) {
             // Resize the drawable such that it's always 1/4 the size of the image and
             // centered in the middle of the canvas.
-            val adj = dimen?.let { (bounds.width() - it) / 2 } ?: (bounds.width() / 4)
+            val adj = iconSize?.let { (bounds.width() - it) / 2 } ?: (bounds.width() / 4)
             inner.bounds.set(adj, adj, bounds.width() - adj, bounds.height() - adj)
             inner.draw(canvas)
         }
@@ -456,14 +460,5 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-    }
-
-    companion object {
-        val SIZING_CORNER_RADII =
-            arrayOf(
-                R.dimen.size_corners_small,
-                R.dimen.size_corners_medium,
-                R.dimen.size_corners_mid_large)
-        val SIZING_ICON_SIZE = arrayOf(R.dimen.size_icon_small, R.dimen.size_icon_medium, null)
     }
 }

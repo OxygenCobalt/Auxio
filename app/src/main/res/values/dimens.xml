@@ -29,6 +29,8 @@
 
     <dimen name="size_icon_small">24dp</dimen>
     <dimen name="size_icon_medium">32dp</dimen>
+    <dimen name="size_icon_large">40dp</dimen>
+    <dimen name="size_icon_huge">48dp</dimen>
 
     <dimen name="size_pre_amp_ticker">56dp</dimen>
 
