@@ -14,7 +14,7 @@
         app:menu="@menu/toolbar_playback"
         app:titleCentered="true"
         app:subtitleCentered="true"
-        app:titleTextAppearance="@style/TextAppearance.Auxio.TitleMediumEmphasis"
+        app:titleTextAppearance="@style/TextAppearance.Auxio.LabelLarge"
         app:subtitleTextAppearance="@style/TextAppearance.Auxio.BodySmall"
         app:navigationIcon="@drawable/ic_down_24"
         app:title="@string/lbl_playback"
