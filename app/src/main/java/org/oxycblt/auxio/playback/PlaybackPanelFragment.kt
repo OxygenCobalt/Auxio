@@ -44,7 +44,6 @@ import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -94,13 +93,6 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { playbackModel.openMain() }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
-            overrideOnOverflowMenuClick {
-                playbackModel.song.value?.let {
-                    // No playback options are actually available in the menu, so use a junk
-                    // PlaySong option.
-                    listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
-                }
-            }
         }
 
         binding.playbackCover.onSwipeListener = this
@@ -120,6 +112,11 @@ class PlaybackPanelFragment :
         binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
+        binding.playbackMore?.setOnClickListener {
+            playbackModel.song.value?.let {
+                listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
+            }
+        }
 
         // --- VIEWMODEL SETUP --
         collectImmediately(playbackModel.song, ::updateSong)

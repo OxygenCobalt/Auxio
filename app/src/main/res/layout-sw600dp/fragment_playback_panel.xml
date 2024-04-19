@@ -12,6 +12,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/toolbar_playback"
+        app:titleCentered="true"
+        app:subtitleCentered="true"
+        app:titleTextAppearance="@style/TextAppearance.Auxio.TitleMediumEmphasis"
+        app:subtitleTextAppearance="@style/TextAppearance.Auxio.BodySmall"
         app:navigationIcon="@drawable/ic_down_24"
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
@@ -33,9 +37,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
         app:layout_constraintBottom_toTopOf="@+id/playback_artist"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/playback_more"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Song Name" />
@@ -46,9 +50,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_medium"
         app:layout_constraintBottom_toTopOf="@+id/playback_album"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/playback_song"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Artist Name" />
 
@@ -58,11 +61,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_medium"
         app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/playback_song"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Album Name" />
+
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
+        android:id="@+id/playback_more"
+        style="@style/Widget.Auxio.Button.Icon.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_more_24"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        app:layout_constraintBottom_toBottomOf="@+id/playback_album"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/playback_song" />
 
     <org.oxycblt.auxio.playback.ui.StyledSeekBar
         android:id="@+id/playback_seek_bar"
@@ -104,7 +117,7 @@
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_prev"
-                style="@style/Widget.Auxio.Button.Icon.Large"
+                style="@style/Widget.Auxio.Button.Icon.Huge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_huge"
@@ -129,7 +142,7 @@
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_next"
-                style="@style/Widget.Auxio.Button.Icon.Large"
+                style="@style/Widget.Auxio.Button.Icon.Huge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_huge"

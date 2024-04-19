@@ -78,6 +78,14 @@
         <item name="android:letterSpacing">-0.01125</item>
     </style>
 
+    <style name="TextAppearance.Auxio.TitleMediumEmphasis" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textStyle">bold</item>
+        <!-- TODO: Fix letter spacing here -->
+        <item name="android:letterSpacing">-0.01125</item>
+    </style>
+
     <style name="TextAppearance.Auxio.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
