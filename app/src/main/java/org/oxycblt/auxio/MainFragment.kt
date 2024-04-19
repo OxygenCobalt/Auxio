@@ -26,13 +26,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialFadeThrough
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,7 +62,6 @@ import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -84,6 +83,7 @@ class MainFragment :
     private var selectionNavigationListener: DialogAwareNavigationListener? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
+    private var normalCornerSize = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,15 +146,21 @@ class MainFragment :
                 // Emulate the elevated bottom sheet style.
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+                        val cornerSize =
+                            context.resources.getDimension(R.dimen.size_corners_mid_large)
+                        shapeAppearanceModel =
+                            ShapeAppearanceModel.builder()
+                                .setTopLeftCornerSize(cornerSize)
+                                .setTopRightCornerSize(cornerSize)
+                                .build()
                         fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
                     }
-                // Apply bar insets for the queue's RecyclerView to use.
-                setOnApplyWindowInsetsListener { v, insets ->
-                    v.updatePadding(top = insets.systemBarInsetsCompat.top)
-                    insets
-                }
             }
         }
+
+        normalCornerSize = playbackSheetBehavior.sheetBackgroundDrawable.topLeftCornerResolvedSize
+
+        binding.playbackSheet.elevation = 0f
 
         binding.mainScrim.setOnClickListener { homeModel.setSpeedDialOpen(false) }
         binding.sheetScrim.setOnClickListener { homeModel.setSpeedDialOpen(false) }
@@ -241,6 +247,14 @@ class MainFragment :
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
 
+        val lastStretchRatio = max(playbackRatio - 0.9f, 0f) / 0.1f
+
+        binding.mainSheetScrim.alpha = lastStretchRatio
+        playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(
+            normalCornerSize * (1 - lastStretchRatio))
+        binding.exploreNavHost.isInvisible = playbackRatio == 1f
+        binding.playbackSheet.translationZ = (1 - lastStretchRatio) * elevationNormal
+
         if (queueSheetBehavior != null) {
             // Queue sheet available, the normal transition applies, but it now much be combined
             // with another transition where the playback panel disappears and the playback bar
@@ -263,31 +277,16 @@ class MainFragment :
             // No queue sheet, fade normally based on the playback sheet
             binding.playbackBarFragment.alpha = 1 - halfOutRatio
             binding.playbackPanelFragment.alpha = halfInPlaybackRatio
+            (binding.queueSheet.background as MaterialShapeDrawable).shapeAppearanceModel =
+                ShapeAppearanceModel.builder()
+                    .setTopLeftCornerSize(normalCornerSize)
+                    .setTopRightCornerSize(normalCornerSize * (1 - lastStretchRatio))
+                    .build()
         }
-
-        // Fade out the content as the playback panel expands.
-        // TODO: Replace with shadow?
-        binding.exploreNavHost.apply {
-            alpha = outPlaybackRatio
-            // Prevent interactions when the content fully fades out.
-            isInvisible = alpha == 0f
-        }
-
-        // Reduce playback sheet elevation as it expands. This involves both updating the
-        // shadow elevation for older versions, and fading out the background drawable
-        // containing the elevation overlay.
-        binding.playbackSheet.elevation = elevationNormal * outPlaybackRatio
-        playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
-
         // Fade out the playback bar as the panel expands.
         binding.playbackBarFragment.apply {
             // Prevent interactions when the playback bar fully fades out.
             isInvisible = alpha == 0f
-            // As the playback bar expands, we also want to subtly translate the bar to
-            // align with the top inset. This results in both a smooth transition from the bar
-            // to the playback panel's toolbar, but also a correctly positioned playback bar
-            // for when the queue sheet expands.
-            lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
         }
 
         // Prevent interactions when the playback panel fully fades out.

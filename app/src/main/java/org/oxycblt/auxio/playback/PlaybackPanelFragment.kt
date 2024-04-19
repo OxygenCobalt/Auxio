@@ -87,7 +87,7 @@ class PlaybackPanelFragment :
         // --- UI SETUP ---
         binding.root.setOnApplyWindowInsetsListener { view, insets ->
             val bars = insets.systemBarInsetsCompat
-            view.updatePadding(top = bars.top, bottom = bars.bottom)
+            view.updatePadding(bottom = bars.bottom)
             insets
         }
 

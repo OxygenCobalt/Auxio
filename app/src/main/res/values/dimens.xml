@@ -42,7 +42,7 @@
     <dimen name="slider_thumb_height">24dp</dimen>
 
     <!-- Misc -->
-    <dimen name="elevation_normal">6dp</dimen>
+    <dimen name="elevation_normal">1dp</dimen>
 
     <dimen name="fast_scroll_popup_min_width">78dp</dimen>
     <dimen name="fast_scroll_popup_min_height">64dp</dimen>

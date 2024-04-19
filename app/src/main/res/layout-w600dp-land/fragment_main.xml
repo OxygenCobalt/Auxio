@@ -19,6 +19,13 @@
 
     <View android:id="@+id/main_scrim" android:layout_height="match_parent" android:layout_width="match_parent"/>
 
+    <View
+        android:id="@+id/main_sheet_scrim"
+        android:background="?attr/colorSurfaceContainerLow"
+        android:layout_width="match_parent"
+        android:alpha="0"
+        android:layout_height="match_parent" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/playback_sheet"
         android:layout_width="match_parent"

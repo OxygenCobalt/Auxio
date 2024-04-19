@@ -23,12 +23,15 @@ import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The [BaseBottomSheetBehavior] for the playback bottom sheet. This bottom sheet
@@ -64,4 +67,14 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
                     fillColor = sheetBackgroundDrawable.fillColor
                 },
                 sheetBackgroundDrawable))
+
+    override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
+        super.applyWindowInsets(child, insets)
+        // Offset our expanded panel by the size of the playback bar, as that is shown when
+        // we slide up the panel.
+        val bars = insets.systemBarInsetsCompat
+        expandedOffset = bars.top
+        return insets.replaceSystemBarInsetsCompat(
+            bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
+    }
 }

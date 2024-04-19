@@ -73,7 +73,7 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
         // Offset our expanded panel by the size of the playback bar, as that is shown when
         // we slide up the panel.
         val bars = insets.systemBarInsetsCompat
-        expandedOffset = bars.top + barHeight + barSpacing
+        expandedOffset = barHeight + barSpacing
         return insets.replaceSystemBarInsetsCompat(
             bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
     }
