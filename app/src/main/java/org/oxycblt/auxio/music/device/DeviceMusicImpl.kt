@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.extractor.CoverUri
+import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -111,6 +111,8 @@ class SongImpl(
     private val _genres = mutableListOf<GenreImpl>()
     override val genres: List<Genre>
         get() = _genres
+
+    override val cover = Cover("", requireNotNull(rawSong.mediaStoreId).toCoverUri(), uri)
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
@@ -291,9 +293,9 @@ class AlbumImpl(
     override val name = nameFactory.parse(rawAlbum.name, rawAlbum.sortName)
     override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
-    override val coverUri = CoverUri(rawAlbum.mediaStoreId.toCoverUri(), grouping.raw.src.uri)
     override val durationMs: Long
     override val dateAdded: Long
+    override val cover = grouping.raw.src.cover
 
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
@@ -419,6 +421,12 @@ class ArtistImpl(
     override val explicitAlbums: Set<Album>
     override val implicitAlbums: Set<Album>
     override val durationMs: Long?
+    override val cover =
+        when (val src = grouping.raw.src) {
+            is AlbumImpl -> src.cover
+            is SongImpl -> src.cover
+            else -> error("Unexpected input music $src in $name ${src::class.simpleName}")
+        }
 
     override lateinit var genres: List<Genre>
 
@@ -528,6 +536,7 @@ class GenreImpl(
     override val songs: Set<Song>
     override val artists: Set<Artist>
     override val durationMs: Long
+    override val cover = grouping.raw.src.cover
 
     private var hashCode = uid.hashCode()
 

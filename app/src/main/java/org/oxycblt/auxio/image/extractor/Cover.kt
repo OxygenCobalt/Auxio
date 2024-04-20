@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * CoverUri.kt is part of Auxio.
+ * Cover.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ import android.net.Uri
  * Bundle of [Uri] information used in [CoverExtractor] to ensure consistent [Uri] use when loading
  * images.
  *
- * @param mediaStore The album cover [Uri] obtained from MediaStore.
+ * @param mediaStoreUri The album cover [Uri] obtained from MediaStore.
  * @param song The [Uri] of the first song (by track) of the album, which can also be used to obtain
  *   an album cover.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class CoverUri(val mediaStore: Uri, val song: Uri)
+data class Cover(val perceptualHash: String?, val mediaStoreUri: Uri, val songUri: Uri)

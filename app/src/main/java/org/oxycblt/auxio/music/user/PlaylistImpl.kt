@@ -46,6 +46,8 @@ private constructor(
 
     override fun toString() = "Playlist(uid=$uid, name=$name)"
 
+    override val cover = songs.firstOrNull()?.cover
+
     /**
      * Clone the data in this instance to a new [PlaylistImpl] with the given [name].
      *

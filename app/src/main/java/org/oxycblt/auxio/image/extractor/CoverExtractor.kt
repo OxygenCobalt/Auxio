@@ -77,10 +77,10 @@ constructor(
      *   [computeCoverOrdering]. Otherwise, a [SourceResult] of one album cover will be returned.
      */
     suspend fun extract(songs: Collection<Song>, size: Size): FetchResult? {
-        val albums = computeCoverOrdering(songs)
+        val covers = computeCoverOrdering(songs)
         val streams = mutableListOf<InputStream>()
-        for (album in albums) {
-            openCoverInputStream(album)?.let(streams::add)
+        for (cover in covers) {
+            openCoverInputStream(cover)?.let(streams::add)
             // We don't immediately check for mosaic feasibility from album count alone, as that
             // does not factor in InputStreams failing to load. Instead, only check once we
             // definitely have image data to use.
@@ -116,40 +116,33 @@ constructor(
      *   by their names. "Representation" is defined by how many [Song]s were found to be linked to
      *   the given [Album] in the given [Song] list.
      */
-    fun computeCoverOrdering(songs: Collection<Song>): List<Album> {
-        // TODO: Start short-circuiting in more places
-        if (songs.isEmpty()) return listOf()
-        if (songs.size == 1) return listOf(songs.first().album)
+    fun computeCoverOrdering(songs: Collection<Song>) =
+        Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
+            .songs(songs)
+            .distinctBy { (it.cover.perceptualHash ?: it.uri).toString() }
+            .map { it.cover }
 
-        val sortedMap =
-            sortedMapOf<Album, Int>(Sort.Mode.ByName.getAlbumComparator(Sort.Direction.ASCENDING))
-        for (song in songs) {
-            sortedMap[song.album] = (sortedMap[song.album] ?: 0) + 1
-        }
-        return sortedMap.keys.sortedByDescending { sortedMap[it] }
-    }
-
-    private suspend fun openCoverInputStream(album: Album) =
+    private suspend fun openCoverInputStream(cover: Cover) =
         try {
             when (imageSettings.coverMode) {
                 CoverMode.OFF -> null
-                CoverMode.MEDIA_STORE -> extractMediaStoreCover(album)
-                CoverMode.QUALITY -> extractQualityCover(album)
+                CoverMode.MEDIA_STORE -> extractMediaStoreCover(cover)
+                CoverMode.QUALITY -> extractQualityCover(cover)
             }
         } catch (e: Exception) {
             logE("Unable to extract album cover due to an error: $e")
             null
         }
 
-    private suspend fun extractQualityCover(album: Album) =
-        extractAospMetadataCover(album)
-            ?: extractExoplayerCover(album) ?: extractMediaStoreCover(album)
+    private suspend fun extractQualityCover(cover: Cover) =
+        extractAospMetadataCover(cover)
+            ?: extractExoplayerCover(cover) ?: extractMediaStoreCover(cover)
 
-    private fun extractAospMetadataCover(album: Album): InputStream? =
+    private fun extractAospMetadataCover(cover: Cover): InputStream? =
         MediaMetadataRetriever().run {
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.rmt
-            setDataSource(context, album.coverUri.song)
+            setDataSource(context, cover.songUri)
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
@@ -157,10 +150,9 @@ constructor(
             embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
         }
 
-    private suspend fun extractExoplayerCover(album: Album): InputStream? {
+    private suspend fun extractExoplayerCover(cover: Cover): InputStream? {
         val tracks =
-            MetadataRetriever.retrieveMetadata(
-                    mediaSourceFactory, MediaItem.fromUri(album.coverUri.song))
+            MetadataRetriever.retrieveMetadata(mediaSourceFactory, MediaItem.fromUri(cover.songUri))
                 .asDeferred()
                 .await()
 
@@ -204,11 +196,9 @@ constructor(
         return stream
     }
 
-    private suspend fun extractMediaStoreCover(album: Album) =
+    private suspend fun extractMediaStoreCover(cover: Cover) =
         // Eliminate any chance that this blocking call might mess up the loading process
-        withContext(Dispatchers.IO) {
-            context.contentResolver.openInputStream(album.coverUri.mediaStore)
-        }
+        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(cover.mediaStoreUri) }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
     private suspend fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {
