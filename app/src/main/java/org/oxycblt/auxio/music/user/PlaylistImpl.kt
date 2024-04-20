@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.music.user
 
+import org.oxycblt.auxio.image.extractor.ParentCover
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
@@ -46,7 +47,7 @@ private constructor(
 
     override fun toString() = "Playlist(uid=$uid, name=$name)"
 
-    override val cover = songs.firstOrNull()?.cover
+    override val cover = songs.takeIf { it.isNotEmpty() }?.let { ParentCover.from(it.first(), it) }
 
     /**
      * Clone the data in this instance to a new [PlaylistImpl] with the given [name].

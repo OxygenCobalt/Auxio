@@ -27,6 +27,7 @@ import android.util.Size as AndroidSize
 import androidx.core.graphics.drawable.toDrawable
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Metadata
 import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.extractor.metadata.flac.PictureFrame
@@ -50,8 +51,6 @@ import okio.buffer
 import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logE
 
@@ -70,14 +69,13 @@ constructor(
     /**
      * Extract an image (in the form of [FetchResult]) to represent the given [Song]s.
      *
-     * @param songs The [Song]s to load.
+     * @param covers The [Cover]s to load.
      * @param size The [Size] of the image to load.
      * @return If four distinct album covers could be extracted from the [Song]s, a [DrawableResult]
      *   will be returned of a mosaic composed of four album covers ordered by
      *   [computeCoverOrdering]. Otherwise, a [SourceResult] of one album cover will be returned.
      */
-    suspend fun extract(songs: Collection<Song>, size: Size): FetchResult? {
-        val covers = computeCoverOrdering(songs)
+    suspend fun extract(covers: Collection<Cover>, size: Size): FetchResult? {
         val streams = mutableListOf<InputStream>()
         for (cover in covers) {
             openCoverInputStream(cover)?.let(streams::add)
@@ -108,19 +106,37 @@ constructor(
             dataSource = DataSource.DISK)
     }
 
-    /**
-     * Creates an [Album] list representing the order that album covers would be used in [extract].
-     *
-     * @param songs A hypothetical list of [Song]s that would be used in [extract].
-     * @return A list of [Album]s first ordered by the "representation" within the [Song]s, and then
-     *   by their names. "Representation" is defined by how many [Song]s were found to be linked to
-     *   the given [Album] in the given [Song] list.
-     */
-    fun computeCoverOrdering(songs: Collection<Song>) =
-        Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
-            .songs(songs)
-            .distinctBy { (it.cover.perceptualHash ?: it.uri).toString() }
-            .map { it.cover }
+    fun findCoverDataInMetadata(metadata: Metadata): InputStream? {
+        var stream: ByteArrayInputStream? = null
+
+        for (i in 0 until metadata.length()) {
+            // We can only extract pictures from two tags with this method, ID3v2's APIC or
+            // Vorbis picture comments.
+            val pic: ByteArray?
+            val type: Int
+
+            when (val entry = metadata.get(i)) {
+                is ApicFrame -> {
+                    pic = entry.pictureData
+                    type = entry.pictureType
+                }
+                is PictureFrame -> {
+                    pic = entry.pictureData
+                    type = entry.pictureType
+                }
+                else -> continue
+            }
+
+            if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
+                stream = ByteArrayInputStream(pic)
+                break
+            } else if (stream == null) {
+                stream = ByteArrayInputStream(pic)
+            }
+        }
+
+        return stream
+    }
 
     private suspend fun openCoverInputStream(cover: Cover) =
         try {
@@ -165,35 +181,7 @@ constructor(
             return null
         }
 
-        var stream: ByteArrayInputStream? = null
-
-        for (i in 0 until metadata.length()) {
-            // We can only extract pictures from two tags with this method, ID3v2's APIC or
-            // Vorbis picture comments.
-            val pic: ByteArray?
-            val type: Int
-
-            when (val entry = metadata.get(i)) {
-                is ApicFrame -> {
-                    pic = entry.pictureData
-                    type = entry.pictureType
-                }
-                is PictureFrame -> {
-                    pic = entry.pictureData
-                    type = entry.pictureType
-                }
-                else -> continue
-            }
-
-            if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
-                stream = ByteArrayInputStream(pic)
-                break
-            } else if (stream == null) {
-                stream = ByteArrayInputStream(pic)
-            }
-        }
-
-        return stream
+        return findCoverDataInMetadata(metadata)
     }
 
     private suspend fun extractMediaStoreCover(cover: Cover) =

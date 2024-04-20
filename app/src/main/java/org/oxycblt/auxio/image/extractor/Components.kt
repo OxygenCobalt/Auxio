@@ -24,25 +24,23 @@ import coil.key.Keyer
 import coil.request.Options
 import coil.size.Size
 import javax.inject.Inject
-import org.oxycblt.auxio.music.Song
 
-class SongKeyer @Inject constructor(private val coverExtractor: CoverExtractor) :
-    Keyer<Collection<Song>> {
-    override fun key(data: Collection<Song>, options: Options) =
-        "${coverExtractor.computeCoverOrdering(data).hashCode()}"
+class CoverKeyer @Inject constructor() : Keyer<Collection<Cover>> {
+    override fun key(data: Collection<Cover>, options: Options) =
+        "${data.map { it.perceptualHash }.hashCode()}"
 }
 
-class SongCoverFetcher
+class CoverFetcher
 private constructor(
-    private val songs: Collection<Song>,
+    private val covers: Collection<Cover>,
     private val size: Size,
     private val coverExtractor: CoverExtractor,
 ) : Fetcher {
-    override suspend fun fetch() = coverExtractor.extract(songs, size)
+    override suspend fun fetch() = coverExtractor.extract(covers, size)
 
     class Factory @Inject constructor(private val coverExtractor: CoverExtractor) :
-        Fetcher.Factory<Collection<Song>> {
-        override fun create(data: Collection<Song>, options: Options, imageLoader: ImageLoader) =
-            SongCoverFetcher(data, options.size, coverExtractor)
+        Fetcher.Factory<Collection<Cover>> {
+        override fun create(data: Collection<Cover>, options: Options, imageLoader: ImageLoader) =
+            CoverFetcher(data, options.size, coverExtractor)
     }
 }

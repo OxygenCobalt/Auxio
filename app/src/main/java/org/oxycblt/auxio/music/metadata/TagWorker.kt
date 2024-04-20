@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.music.metadata
 
+import android.graphics.BitmapFactory
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.MetadataRetriever
@@ -25,6 +26,8 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
 import java.util.concurrent.Future
 import javax.inject.Inject
+import org.oxycblt.auxio.image.extractor.CoverExtractor
+import org.oxycblt.auxio.image.extractor.dHash
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.info.Date
@@ -60,7 +63,10 @@ interface TagWorker {
 
 class TagWorkerFactoryImpl
 @Inject
-constructor(private val mediaSourceFactory: MediaSource.Factory) : TagWorker.Factory {
+constructor(
+    private val mediaSourceFactory: MediaSource.Factory,
+    private val coverExtractor: CoverExtractor
+) : TagWorker.Factory {
     override fun create(rawSong: RawSong): TagWorker =
         // Note that we do not leverage future callbacks. This is because errors in the
         // (highly fallible) extraction process will not bubble up to Indexer when a
@@ -70,12 +76,14 @@ constructor(private val mediaSourceFactory: MediaSource.Factory) : TagWorker.Fac
             MetadataRetriever.retrieveMetadata(
                 mediaSourceFactory,
                 MediaItem.fromUri(
-                    requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri())))
+                    requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri())),
+            coverExtractor)
 }
 
 private class TagWorkerImpl(
     private val rawSong: RawSong,
-    private val future: Future<TrackGroupArray>
+    private val future: Future<TrackGroupArray>,
+    private val coverExtractor: CoverExtractor
 ) : TagWorker {
     override fun poll(): RawSong? {
         if (!future.isDone) {
@@ -97,6 +105,11 @@ private class TagWorkerImpl(
             val textTags = TextTags(metadata)
             populateWithId3v2(textTags.id3v2)
             populateWithVorbis(textTags.vorbis)
+
+            val coverInputStream = coverExtractor.findCoverDataInMetadata(metadata)
+            val bitmap = coverInputStream?.use { BitmapFactory.decodeStream(it) }
+            rawSong.coverPerceptualHash = bitmap?.dHash()
+            bitmap?.recycle()
 
             // OPUS base gain interpretation code: This is likely not needed, as the media player
             // should be using the base gain already. Uncomment if that's not the case.

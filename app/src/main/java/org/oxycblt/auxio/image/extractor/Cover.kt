@@ -19,6 +19,8 @@
 package org.oxycblt.auxio.image.extractor
 
 import android.net.Uri
+import org.oxycblt.auxio.list.sort.Sort
+import org.oxycblt.auxio.music.Song
 
 /**
  * Bundle of [Uri] information used in [CoverExtractor] to ensure consistent [Uri] use when loading
@@ -29,4 +31,24 @@ import android.net.Uri
  *   an album cover.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class Cover(val perceptualHash: String?, val mediaStoreUri: Uri, val songUri: Uri)
+data class Cover(val perceptualHash: String?, val mediaStoreUri: Uri, val songUri: Uri) {
+    companion object {
+        private val FALLBACK_SORT = Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
+
+        fun order(songs: Collection<Song>) =
+            FALLBACK_SORT.songs(songs)
+                .map { it.cover }
+                .groupBy { it.perceptualHash }
+                .entries
+                .sortedByDescending { it.value.size }
+                .map { it.value.first() }
+    }
+}
+
+data class ParentCover(val single: Cover, val all: List<Cover>) {
+    companion object {
+        fun from(song: Song, songs: Collection<Song>) = from(song.cover, songs)
+
+        fun from(src: Cover, songs: Collection<Song>) = ParentCover(src, Cover.order(songs))
+    }
+}

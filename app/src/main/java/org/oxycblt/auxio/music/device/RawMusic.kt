@@ -67,6 +67,8 @@ data class RawSong(
     var subtitle: String? = null,
     /** @see Song.date */
     var date: Date? = null,
+    /** @see Song.cover */
+    var coverPerceptualHash: String? = null,
     /** @see RawAlbum.mediaStoreId */
     var albumMediaStoreId: Long? = null,
     /** @see RawAlbum.musicBrainzId */

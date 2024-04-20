@@ -28,6 +28,7 @@ import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.extractor.ParentCover
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
@@ -296,7 +297,7 @@ interface Album : MusicParent {
      */
     val releaseType: ReleaseType
     /** Cover information from the template song used for the album. */
-    val cover: Cover
+    val cover: ParentCover
     /** The duration of all songs in the album, in milliseconds. */
     val durationMs: Long
     /** The earliest date a song in this album was added, as a unix epoch timestamp. */
@@ -326,7 +327,7 @@ interface Artist : MusicParent {
      */
     val durationMs: Long?
     /** Useful information to quickly obtain a (single) cover for a Genre. */
-    val cover: Cover
+    val cover: ParentCover
     /** The [Genre]s of this artist. */
     val genres: List<Genre>
 }
@@ -342,7 +343,7 @@ interface Genre : MusicParent {
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
     /** Useful information to quickly obtain a (single) cover for a Genre. */
-    val cover: Cover
+    val cover: ParentCover
 }
 
 /**
@@ -356,7 +357,7 @@ interface Playlist : MusicParent {
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
     /** Useful information to quickly obtain a (single) cover for a Genre. */
-    val cover: Cover?
+    val cover: ParentCover?
 }
 
 /**

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * CoilBitmapLoader.kt is part of Auxio.
+ * MediaSessionBitmapLoader.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import com.google.common.util.concurrent.SettableFuture
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.image.BitmapProvider
-import org.oxycblt.auxio.image.extractor.SongKeyer
+import org.oxycblt.auxio.image.extractor.CoverKeyer
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.service.MediaSessionUID
 
@@ -41,7 +41,7 @@ constructor(
     @ApplicationContext private val context: Context,
     private val musicRepository: MusicRepository,
     private val bitmapProvider: BitmapProvider,
-    private val songKeyer: SongKeyer,
+    private val keyer: CoverKeyer,
     private val imageLoader: ImageLoader,
 ) : BitmapLoader {
     override fun decodeBitmap(data: ByteArray): ListenableFuture<Bitmap> {
@@ -69,7 +69,7 @@ constructor(
                 ?: return null
         // Even launching a coroutine to obtained cached covers is enough to make the notification
         // go without covers.
-        val key = songKeyer.key(listOf(song), Options(context))
+        val key = keyer.key(listOf(song.cover), Options(context))
         if (imageLoader.memoryCache?.get(MemoryCache.Key(key)) != null) {
             future.set(imageLoader.memoryCache?.get(MemoryCache.Key(key))?.bitmap)
             return future
