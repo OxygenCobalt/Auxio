@@ -106,7 +106,8 @@ class ExoPlaybackStateHolder(
         private set
 
     val mediaSessionPlayer: Player
-        get() = MediaSessionPlayer(player, playbackManager, commandFactory, musicRepository)
+        get() =
+            MediaSessionPlayer(context, player, playbackManager, commandFactory, musicRepository)
 
     override val progression: Progression
         get() {
