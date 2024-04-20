@@ -48,6 +48,7 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
 import org.oxycblt.auxio.image.extractor.SquareCropTransformation
 import org.oxycblt.auxio.music.Album
@@ -98,14 +99,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val indicatorMatrixDst = RectF()
 
     private val shapeAppearance: ShapeAppearanceModel
-
-    private data class Cover(
-        val songs: Collection<Song>,
-        val desc: String,
-        @DrawableRes val errorRes: Int
-    )
-
-    private var currentCover: Cover? = null
 
     init {
         // Obtain some StyledImageView attributes to use later when theming the custom view.
@@ -346,8 +339,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param song The [Song] to bind to the view.
      */
     fun bind(song: Song) =
-        bind(
-            listOf(song),
+        bindImpl(
+            listOf(song.cover),
             context.getString(R.string.desc_album_cover, song.album.name),
             R.drawable.ic_album_24)
 
@@ -357,8 +350,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param album The [Album] to bind to the view.
      */
     fun bind(album: Album) =
-        bind(
-            album.songs,
+        bindImpl(
+            album.cover.all,
             context.getString(R.string.desc_album_cover, album.name),
             R.drawable.ic_album_24)
 
@@ -368,8 +361,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param artist The [Artist] to bind to the view.
      */
     fun bind(artist: Artist) =
-        bind(
-            artist.songs,
+        bindImpl(
+            artist.cover.all,
             context.getString(R.string.desc_artist_image, artist.name),
             R.drawable.ic_artist_24)
 
@@ -379,8 +372,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param genre The [Genre] to bind to the view.
      */
     fun bind(genre: Genre) =
-        bind(
-            genre.songs,
+        bindImpl(
+            genre.cover.all,
             context.getString(R.string.desc_genre_image, genre.name),
             R.drawable.ic_genre_24)
 
@@ -390,8 +383,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param playlist the [Playlist] to bind.
      */
     fun bind(playlist: Playlist) =
-        bind(
-            playlist.songs,
+        bindImpl(
+            playlist.cover?.all ?: emptyList(),
             context.getString(R.string.desc_playlist_image, playlist.name),
             R.drawable.ic_playlist_24)
 
@@ -402,10 +395,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param desc The content description to describe the bound data.
      * @param errorRes The resource of the error drawable to use if the cover cannot be loaded.
      */
-    fun bind(songs: Collection<Song>, desc: String, @DrawableRes errorRes: Int) {
+    fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) =
+        bindImpl(Cover.order(songs), desc, errorRes)
+
+    private fun bindImpl(covers: List<Cover>, desc: String, @DrawableRes errorRes: Int) {
         val request =
             ImageRequest.Builder(context)
-                .data(songs)
+                .data(covers)
                 .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize))
                 .target(image)
 
@@ -423,7 +419,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         CoilUtils.dispose(image)
         imageLoader.enqueue(request.build())
         contentDescription = desc
-        currentCover = Cover(songs, desc, errorRes)
     }
 
     /**
@@ -436,7 +431,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         @Px val iconSize: Int?
     ) : Drawable() {
         init {
-            // Re-tint the drawable to use the analogous "on surface" color for
+            // Re-tint the drawable to use the analogous "on surfaceg" color for
             // StyledImageView.
             DrawableCompat.setTintList(inner, context.getColorCompat(R.color.sel_on_cover_bg))
         }

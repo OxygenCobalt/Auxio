@@ -18,6 +18,8 @@
  
 package org.oxycblt.auxio.playback.service
 
+import android.content.Context
+import android.os.Bundle
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -31,6 +33,7 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionParameters
 import java.lang.Exception
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -60,6 +63,7 @@ import org.oxycblt.auxio.util.logE
  * @author Alexander Capehart
  */
 class MediaSessionPlayer(
+    private val context: Context,
     player: Player,
     private val playbackManager: PlaybackStateManager,
     private val commandFactory: PlaybackCommand.Factory,
@@ -85,6 +89,20 @@ class MediaSessionPlayer(
 
         setMediaItems(mediaItems, C.INDEX_UNSET, C.TIME_UNSET)
     }
+
+    override fun getMediaMetadata() =
+        super.getMediaMetadata().run {
+            val existingExtras = extras
+            val newExtras = existingExtras?.let { Bundle(it) } ?: Bundle()
+            newExtras.apply {
+                putString(
+                    "parent",
+                    playbackManager.parent?.name?.resolve(context)
+                        ?: context.getString(R.string.lbl_all_songs))
+            }
+
+            buildUpon().setExtras(newExtras).build()
+        }
 
     override fun setMediaItems(
         mediaItems: MutableList<MediaItem>,

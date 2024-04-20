@@ -100,7 +100,7 @@ constructor(
     }
 
     fun handleTaskRemoved() {
-        if (playbackManager.progression.isPlaying) {
+        if (!playbackManager.progression.isPlaying) {
             playbackManager.endSession()
         }
     }

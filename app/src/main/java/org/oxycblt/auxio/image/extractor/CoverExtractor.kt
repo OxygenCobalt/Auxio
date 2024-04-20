@@ -27,6 +27,7 @@ import android.util.Size as AndroidSize
 import androidx.core.graphics.drawable.toDrawable
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Metadata
 import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.extractor.metadata.flac.PictureFrame
@@ -50,8 +51,6 @@ import okio.buffer
 import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logE
 
@@ -70,17 +69,16 @@ constructor(
     /**
      * Extract an image (in the form of [FetchResult]) to represent the given [Song]s.
      *
-     * @param songs The [Song]s to load.
+     * @param covers The [Cover]s to load.
      * @param size The [Size] of the image to load.
      * @return If four distinct album covers could be extracted from the [Song]s, a [DrawableResult]
      *   will be returned of a mosaic composed of four album covers ordered by
      *   [computeCoverOrdering]. Otherwise, a [SourceResult] of one album cover will be returned.
      */
-    suspend fun extract(songs: Collection<Song>, size: Size): FetchResult? {
-        val albums = computeCoverOrdering(songs)
+    suspend fun extract(covers: Collection<Cover>, size: Size): FetchResult? {
         val streams = mutableListOf<InputStream>()
-        for (album in albums) {
-            openCoverInputStream(album)?.let(streams::add)
+        for (cover in covers) {
+            openCoverInputStream(cover)?.let(streams::add)
             // We don't immediately check for mosaic feasibility from album count alone, as that
             // does not factor in InputStreams failing to load. Instead, only check once we
             // definitely have image data to use.
@@ -108,71 +106,7 @@ constructor(
             dataSource = DataSource.DISK)
     }
 
-    /**
-     * Creates an [Album] list representing the order that album covers would be used in [extract].
-     *
-     * @param songs A hypothetical list of [Song]s that would be used in [extract].
-     * @return A list of [Album]s first ordered by the "representation" within the [Song]s, and then
-     *   by their names. "Representation" is defined by how many [Song]s were found to be linked to
-     *   the given [Album] in the given [Song] list.
-     */
-    fun computeCoverOrdering(songs: Collection<Song>): List<Album> {
-        // TODO: Start short-circuiting in more places
-        if (songs.isEmpty()) return listOf()
-        if (songs.size == 1) return listOf(songs.first().album)
-
-        val sortedMap =
-            sortedMapOf<Album, Int>(Sort.Mode.ByName.getAlbumComparator(Sort.Direction.ASCENDING))
-        for (song in songs) {
-            sortedMap[song.album] = (sortedMap[song.album] ?: 0) + 1
-        }
-        return sortedMap.keys.sortedByDescending { sortedMap[it] }
-    }
-
-    private suspend fun openCoverInputStream(album: Album) =
-        try {
-            when (imageSettings.coverMode) {
-                CoverMode.OFF -> null
-                CoverMode.MEDIA_STORE -> extractMediaStoreCover(album)
-                CoverMode.QUALITY -> extractQualityCover(album)
-            }
-        } catch (e: Exception) {
-            logE("Unable to extract album cover due to an error: $e")
-            null
-        }
-
-    private suspend fun extractQualityCover(album: Album) =
-        extractAospMetadataCover(album)
-            ?: extractExoplayerCover(album) ?: extractMediaStoreCover(album)
-
-    private fun extractAospMetadataCover(album: Album): InputStream? =
-        MediaMetadataRetriever().run {
-            // This call is time-consuming but it also doesn't seem to hold up the main thread,
-            // so it's probably fine not to wrap it.rmt
-            setDataSource(context, album.coverUri.song)
-
-            // Get the embedded picture from MediaMetadataRetriever, which will return a full
-            // ByteArray of the cover without any compression artifacts.
-            // If its null [i.e there is no embedded cover], than just ignore it and move on
-            embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
-        }
-
-    private suspend fun extractExoplayerCover(album: Album): InputStream? {
-        val tracks =
-            MetadataRetriever.retrieveMetadata(
-                    mediaSourceFactory, MediaItem.fromUri(album.coverUri.song))
-                .asDeferred()
-                .await()
-
-        // The metadata extraction process of ExoPlayer results in a dump of all metadata
-        // it found, which must be iterated through.
-        val metadata = tracks[0].getFormat(0).metadata
-
-        if (metadata == null || metadata.length() == 0) {
-            // No (parsable) metadata. This is also expected.
-            return null
-        }
-
+    fun findCoverDataInMetadata(metadata: Metadata): InputStream? {
         var stream: ByteArrayInputStream? = null
 
         for (i in 0 until metadata.length()) {
@@ -204,11 +138,55 @@ constructor(
         return stream
     }
 
-    private suspend fun extractMediaStoreCover(album: Album) =
-        // Eliminate any chance that this blocking call might mess up the loading process
-        withContext(Dispatchers.IO) {
-            context.contentResolver.openInputStream(album.coverUri.mediaStore)
+    private suspend fun openCoverInputStream(cover: Cover) =
+        try {
+            when (imageSettings.coverMode) {
+                CoverMode.OFF -> null
+                CoverMode.MEDIA_STORE -> extractMediaStoreCover(cover)
+                CoverMode.QUALITY -> extractQualityCover(cover)
+            }
+        } catch (e: Exception) {
+            logE("Unable to extract album cover due to an error: $e")
+            null
         }
+
+    private suspend fun extractQualityCover(cover: Cover) =
+        extractAospMetadataCover(cover)
+            ?: extractExoplayerCover(cover) ?: extractMediaStoreCover(cover)
+
+    private fun extractAospMetadataCover(cover: Cover): InputStream? =
+        MediaMetadataRetriever().run {
+            // This call is time-consuming but it also doesn't seem to hold up the main thread,
+            // so it's probably fine not to wrap it.rmt
+            setDataSource(context, cover.songUri)
+
+            // Get the embedded picture from MediaMetadataRetriever, which will return a full
+            // ByteArray of the cover without any compression artifacts.
+            // If its null [i.e there is no embedded cover], than just ignore it and move on
+            embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
+        }
+
+    private suspend fun extractExoplayerCover(cover: Cover): InputStream? {
+        val tracks =
+            MetadataRetriever.retrieveMetadata(mediaSourceFactory, MediaItem.fromUri(cover.songUri))
+                .asDeferred()
+                .await()
+
+        // The metadata extraction process of ExoPlayer results in a dump of all metadata
+        // it found, which must be iterated through.
+        val metadata = tracks[0].getFormat(0).metadata
+
+        if (metadata == null || metadata.length() == 0) {
+            // No (parsable) metadata. This is also expected.
+            return null
+        }
+
+        return findCoverDataInMetadata(metadata)
+    }
+
+    private suspend fun extractMediaStoreCover(cover: Cover) =
+        // Eliminate any chance that this blocking call might mess up the loading process
+        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(cover.mediaStoreUri) }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
     private suspend fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {

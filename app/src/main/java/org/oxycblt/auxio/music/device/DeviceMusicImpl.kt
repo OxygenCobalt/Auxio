@@ -19,7 +19,8 @@
 package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.extractor.CoverUri
+import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.extractor.ParentCover
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -111,6 +112,9 @@ class SongImpl(
     private val _genres = mutableListOf<GenreImpl>()
     override val genres: List<Genre>
         get() = _genres
+
+    override val cover =
+        Cover(rawSong.coverPerceptualHash, requireNotNull(rawSong.mediaStoreId).toCoverUri(), uri)
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
@@ -291,9 +295,9 @@ class AlbumImpl(
     override val name = nameFactory.parse(rawAlbum.name, rawAlbum.sortName)
     override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
-    override val coverUri = CoverUri(rawAlbum.mediaStoreId.toCoverUri(), grouping.raw.src.uri)
     override val durationMs: Long
     override val dateAdded: Long
+    override val cover: ParentCover
 
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
@@ -336,6 +340,8 @@ class AlbumImpl(
         dates = if (min != null && max != null) Date.Range(min, max) else null
         durationMs = totalDuration
         dateAdded = earliestDateAdded
+
+        cover = ParentCover.from(grouping.raw.src.cover, songs)
 
         hashCode = 31 * hashCode + rawAlbum.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()
@@ -419,6 +425,7 @@ class ArtistImpl(
     override val explicitAlbums: Set<Album>
     override val implicitAlbums: Set<Album>
     override val durationMs: Long?
+    override val cover: ParentCover
 
     override lateinit var genres: List<Genre>
 
@@ -450,6 +457,14 @@ class ArtistImpl(
         explicitAlbums = albums.filterTo(mutableSetOf()) { albumMap[it] == true }
         implicitAlbums = albums.filterNotTo(mutableSetOf()) { albumMap[it] == true }
         durationMs = songs.sumOf { it.durationMs }.positiveOrNull()
+
+        val singleCover =
+            when (val src = grouping.raw.src) {
+                is SongImpl -> src.cover
+                is AlbumImpl -> src.cover.single
+                else -> error("Unexpected input source $src in $name ${src::class.simpleName}")
+            }
+        cover = ParentCover.from(singleCover, songs)
 
         hashCode = 31 * hashCode + rawArtist.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()
@@ -528,6 +543,7 @@ class GenreImpl(
     override val songs: Set<Song>
     override val artists: Set<Artist>
     override val durationMs: Long
+    override val cover: ParentCover
 
     private var hashCode = uid.hashCode()
 
@@ -544,6 +560,8 @@ class GenreImpl(
         songs = grouping.music
         artists = distinctArtists
         durationMs = totalDuration
+
+        cover = ParentCover.from(grouping.raw.src.cover, songs)
 
         hashCode = 31 * hashCode + rawGenre.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()

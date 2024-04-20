@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * CoilBitmapLoader.kt is part of Auxio.
+ * MediaSessionBitmapLoader.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +18,31 @@
  
 package org.oxycblt.auxio.image.service
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.BitmapLoader
+import coil.ImageLoader
+import coil.memory.MemoryCache
+import coil.request.Options
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.image.BitmapProvider
+import org.oxycblt.auxio.image.extractor.CoverKeyer
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.service.MediaSessionUID
 
 class MediaSessionBitmapLoader
 @Inject
 constructor(
+    @ApplicationContext private val context: Context,
     private val musicRepository: MusicRepository,
-    private val bitmapProvider: BitmapProvider
+    private val bitmapProvider: BitmapProvider,
+    private val keyer: CoverKeyer,
+    private val imageLoader: ImageLoader,
 ) : BitmapLoader {
     override fun decodeBitmap(data: ByteArray): ListenableFuture<Bitmap> {
         throw NotImplementedError()
@@ -58,6 +67,13 @@ constructor(
                 else -> return null
             }
                 ?: return null
+        // Even launching a coroutine to obtained cached covers is enough to make the notification
+        // go without covers.
+        val key = keyer.key(listOf(song.cover), Options(context))
+        if (imageLoader.memoryCache?.get(MemoryCache.Key(key)) != null) {
+            future.set(imageLoader.memoryCache?.get(MemoryCache.Key(key))?.bitmap)
+            return future
+        }
         bitmapProvider.load(
             song,
             object : BitmapProvider.Target {

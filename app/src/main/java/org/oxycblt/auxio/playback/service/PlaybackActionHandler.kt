@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * SystemPlaybackReciever.kt is part of Auxio.
+ * PlaybackActionHandler.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,9 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.media3.common.Player
 import androidx.media3.session.CommandButton
+import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionCommands
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,6 +38,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -102,6 +105,13 @@ constructor(
                         .setDisplayName(context.getString(R.string.desc_change_repeat))
                         .setSessionCommand(
                             SessionCommand(PlaybackActions.ACTION_INC_REPEAT_MODE, Bundle()))
+                        .setEnabled(true)
+                        .setExtras(
+                            Bundle().apply {
+                                putInt(
+                                    DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX,
+                                    0)
+                            })
                         .build())
             }
             ActionMode.SHUFFLE -> {
@@ -113,6 +123,7 @@ constructor(
                         .setDisplayName(context.getString(R.string.lbl_shuffle))
                         .setSessionCommand(
                             SessionCommand(PlaybackActions.ACTION_INVERT_SHUFFLE, Bundle()))
+                        .setEnabled(true)
                         .build())
             }
             else -> {}
@@ -120,9 +131,48 @@ constructor(
 
         actions.add(
             CommandButton.Builder()
+                .setIconResId(R.drawable.ic_skip_prev_24)
+                .setDisplayName(context.getString(R.string.desc_skip_prev))
+                .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS)
+                .setEnabled(true)
+                .setExtras(
+                    Bundle().apply {
+                        putInt(DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX, 1)
+                    })
+                .build())
+
+        actions.add(
+            CommandButton.Builder()
+                .setIconResId(
+                    if (playbackManager.progression.isPlaying) R.drawable.ic_pause_24
+                    else R.drawable.ic_play_24)
+                .setDisplayName(context.getString(R.string.desc_play_pause))
+                .setPlayerCommand(Player.COMMAND_PLAY_PAUSE)
+                .setEnabled(true)
+                .setExtras(
+                    Bundle().apply {
+                        putInt(DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX, 2)
+                    })
+                .build())
+
+        actions.add(
+            CommandButton.Builder()
+                .setIconResId(R.drawable.ic_skip_next_24)
+                .setDisplayName(context.getString(R.string.desc_skip_next))
+                .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT)
+                .setEnabled(true)
+                .setExtras(
+                    Bundle().apply {
+                        putInt(DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX, 3)
+                    })
+                .build())
+
+        actions.add(
+            CommandButton.Builder()
                 .setIconResId(R.drawable.ic_close_24)
                 .setDisplayName(context.getString(R.string.desc_exit))
                 .setSessionCommand(SessionCommand(PlaybackActions.ACTION_EXIT, Bundle()))
+                .setEnabled(true)
                 .build())
 
         return actions
@@ -130,6 +180,11 @@ constructor(
 
     override fun onPauseOnRepeatChanged() {
         super.onPauseOnRepeatChanged()
+        callback?.onCustomLayoutChanged(createCustomLayout())
+    }
+
+    override fun onProgressionChanged(progression: Progression) {
+        super.onProgressionChanged(progression)
         callback?.onCustomLayoutChanged(createCustomLayout())
     }
 
