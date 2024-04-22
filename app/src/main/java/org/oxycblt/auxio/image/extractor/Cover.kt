@@ -20,6 +20,7 @@ package org.oxycblt.auxio.image.extractor
 
 import android.net.Uri
 import org.oxycblt.auxio.list.sort.Sort
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -31,14 +32,20 @@ import org.oxycblt.auxio.music.Song
  *   an album cover.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class Cover(val perceptualHash: String?, val mediaStoreUri: Uri, val songUri: Uri) {
+data class Cover(val uniqueness: Uniqueness?, val mediaStoreUri: Uri, val songUri: Uri) {
+    sealed interface Uniqueness {
+        data class PerceptualHash(val perceptualHash: String) : Uniqueness
+
+        data class UID(val uid: Music.UID) : Uniqueness
+    }
+
     companion object {
         private val FALLBACK_SORT = Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
 
         fun order(songs: Collection<Song>) =
             FALLBACK_SORT.songs(songs)
                 .map { it.cover }
-                .groupBy { it.perceptualHash }
+                .groupBy { it.uniqueness }
                 .entries
                 .sortedByDescending { it.value.size }
                 .map { it.value.first() }

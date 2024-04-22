@@ -114,7 +114,11 @@ class SongImpl(
         get() = _genres
 
     override val cover =
-        Cover(rawSong.coverPerceptualHash, requireNotNull(rawSong.mediaStoreId).toCoverUri(), uri)
+        Cover(
+            rawSong.coverPerceptualHash?.let { Cover.Uniqueness.PerceptualHash(it) }
+                ?: Cover.Uniqueness.UID(uid),
+            requireNotNull(rawSong.mediaStoreId).toCoverUri(),
+            uri)
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
