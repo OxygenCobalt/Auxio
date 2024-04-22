@@ -140,21 +140,28 @@ constructor(
 
     private suspend fun openCoverInputStream(cover: Cover) =
         try {
-            when (imageSettings.coverMode) {
-                CoverMode.OFF -> null
-                CoverMode.MEDIA_STORE -> extractMediaStoreCover(cover)
-                CoverMode.QUALITY -> extractQualityCover(cover)
+            when (cover) {
+                is Cover.Embedded ->
+                    when (imageSettings.coverMode) {
+                        CoverMode.OFF -> null
+                        CoverMode.MEDIA_STORE -> extractMediaStoreCover(cover)
+                        CoverMode.QUALITY -> extractQualityCover(cover)
+                    }
+
+                is Cover.External -> {
+                    extractMediaStoreCover(cover)
+                }
             }
         } catch (e: Exception) {
             logE("Unable to extract album cover due to an error: $e")
             null
         }
 
-    private suspend fun extractQualityCover(cover: Cover) =
+    private suspend fun extractQualityCover(cover: Cover.Embedded) =
         extractAospMetadataCover(cover)
             ?: extractExoplayerCover(cover) ?: extractMediaStoreCover(cover)
 
-    private fun extractAospMetadataCover(cover: Cover): InputStream? =
+    private fun extractAospMetadataCover(cover: Cover.Embedded): InputStream? =
         MediaMetadataRetriever().run {
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.rmt
@@ -166,7 +173,7 @@ constructor(
             embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
         }
 
-    private suspend fun extractExoplayerCover(cover: Cover): InputStream? {
+    private suspend fun extractExoplayerCover(cover: Cover.Embedded): InputStream? {
         val tracks =
             MetadataRetriever.retrieveMetadata(mediaSourceFactory, MediaItem.fromUri(cover.songUri))
                 .asDeferred()
@@ -186,7 +193,7 @@ constructor(
 
     private suspend fun extractMediaStoreCover(cover: Cover) =
         // Eliminate any chance that this blocking call might mess up the loading process
-        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(cover.mediaStoreUri) }
+        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(cover.mediaStoreCoverUri) }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
     private suspend fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {

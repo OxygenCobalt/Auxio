@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 class CoverKeyer @Inject constructor() : Keyer<Collection<Cover>> {
     override fun key(data: Collection<Cover>, options: Options) =
-        "${data.map { it.uniqueness }.hashCode()}"
+        "${data.map { it.key }.hashCode()}"
 }
 
 class CoverFetcher
