@@ -27,10 +27,10 @@ sealed interface Cover {
     val mediaStoreCoverUri: Uri
 
     /**
-     * The song has an embedded cover art we support, so we can operate with it on a per-song
-     * basis.
+     * The song has an embedded cover art we support, so we can operate with it on a per-song basis.
      */
-    data class Embedded(val songCoverUri: Uri, val songUri: Uri, val perceptualHash: String) : Cover {
+    data class Embedded(val songCoverUri: Uri, val songUri: Uri, val perceptualHash: String) :
+        Cover {
         override val mediaStoreCoverUri = songCoverUri
         override val key = perceptualHash
     }

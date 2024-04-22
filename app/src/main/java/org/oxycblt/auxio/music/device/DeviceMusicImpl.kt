@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
@@ -77,8 +77,7 @@ class SongImpl(
     override val name =
         nameFactory.parse(
             requireNotNull(rawSong.name) { "Invalid raw ${rawSong.path}: No title" },
-            rawSong.sortName
-        )
+            rawSong.sortName)
 
     override val track = rawSong.track
     override val disc = rawSong.disc?.let { Disc(it, rawSong.subtitle) }
@@ -122,14 +121,12 @@ class SongImpl(
             // it implies either a cover.jpg pattern is used (likely) or ExoPlayer does not
             // support the cover metadata of a given spec (unlikely).
             Cover.Embedded(
-                requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.path}: No id" }.toSongCoverUri(),
-                uid,
-                it
-            )
+                requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.path}: No id" }
+                    .toSongCoverUri(),
+                uri,
+                it)
         }
-            ?: Cover.External(
-                requireNotNull(rawSong.albumMediaStoreId).toAlbumCoverUri()
-            )
+            ?: Cover.External(requireNotNull(rawSong.albumMediaStoreId).toAlbumCoverUri())
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an

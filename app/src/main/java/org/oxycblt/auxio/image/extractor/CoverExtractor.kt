@@ -147,7 +147,6 @@ constructor(
                         CoverMode.MEDIA_STORE -> extractMediaStoreCover(cover)
                         CoverMode.QUALITY -> extractQualityCover(cover)
                     }
-
                 is Cover.External -> {
                     extractMediaStoreCover(cover)
                 }
@@ -193,7 +192,9 @@ constructor(
 
     private suspend fun extractMediaStoreCover(cover: Cover) =
         // Eliminate any chance that this blocking call might mess up the loading process
-        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(cover.mediaStoreCoverUri) }
+        withContext(Dispatchers.IO) {
+            context.contentResolver.openInputStream(cover.mediaStoreCoverUri)
+        }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
     private suspend fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {

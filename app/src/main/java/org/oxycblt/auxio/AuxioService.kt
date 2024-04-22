@@ -26,14 +26,14 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import org.oxycblt.auxio.music.service.IndexingServiceFragment
+import org.oxycblt.auxio.music.service.IndexerServiceFragment
 import org.oxycblt.auxio.playback.service.MediaSessionServiceFragment
 
 @AndroidEntryPoint
 class AuxioService : MediaLibraryService(), ForegroundListener {
     @Inject lateinit var mediaSessionFragment: MediaSessionServiceFragment
 
-    @Inject lateinit var indexingFragment: IndexingServiceFragment
+    @Inject lateinit var indexingFragment: IndexerServiceFragment
 
     @SuppressLint("WrongConstant")
     override fun onCreate() {
