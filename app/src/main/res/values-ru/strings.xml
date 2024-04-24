@@ -262,7 +262,7 @@
     <string name="fmt_list">%1$s,%2$s</string>
     <string name="set_play_song_from_genre">Играть жанр</string>
     <string name="set_behavior">Поведение</string>
-    <string name="set_replay_gain">Выравнивание громкости ReplayGain</string>
+    <string name="set_replay_gain">Выравнивание громкости</string>
     <string name="set_music">Музыка</string>
     <string name="set_images">Изображения</string>
     <string name="set_library">Библиотека</string>
@@ -337,4 +337,5 @@
     <string name="lng_supporters_promo">Сделайте пожертвование проекту, чтобы ваше имя было добавлено сюда!</string>
     <string name="set_remember_pause_desc">Оставлять воспроизведение/паузу во время пропуска или редактирования очереди</string>
     <string name="set_remember_pause">Запоминать паузу</string>
+    <string name="set_replay_gain_mode_off">Откл.</string>
 </resources>

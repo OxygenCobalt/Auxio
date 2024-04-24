@@ -9,14 +9,14 @@
     <string name="lbl_albums">Albumi</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_album_live">Album uživo</string>
-    <string name="lbl_album_remix">Album remixa</string>
-    <string name="lbl_eps">Kompilacije za promidžbu</string>
-    <string name="lbl_ep">Kompilacija za promidžbu</string>
-    <string name="lbl_ep_live">Kompilacija za promidžbu uživo</string>
-    <string name="lbl_ep_remix">Remiks kompilacije za promidžbu</string>
+    <string name="lbl_album_remix">Album remiksa</string>
+    <string name="lbl_eps">Mini-albumi</string>
+    <string name="lbl_ep">Mini-album</string>
+    <string name="lbl_ep_live">Mini-album uživo</string>
+    <string name="lbl_ep_remix">Mini-album remiksa</string>
     <string name="lbl_singles">Singlovi</string>
     <string name="lbl_compilations">Kompilacije</string>
-    <string name="lbl_compilation">Kompliacija</string>
+    <string name="lbl_compilation">Kompilacija</string>
     <string name="lbl_soundtrack">Zvučni zapis</string>
     <string name="lbl_mixtapes">Muzičke zbirke</string>
     <string name="lbl_mixtape">Muzička zbirka</string>
@@ -37,7 +37,7 @@
     <string name="lbl_playback">Trenutačno svira</string>
     <string name="lbl_play">Reproduciraj</string>
     <string name="lbl_shuffle">Promiješaj</string>
-    <string name="lbl_queue">Popis pjesama</string>
+    <string name="lbl_queue">Redoslijed</string>
     <string name="lbl_play_next">Reproduciraj sljedeću</string>
     <string name="lbl_props">Svojstva pjesme</string>
     <string name="lbl_format">Format</string>
@@ -56,7 +56,7 @@
     <string name="lbl_version">Inačica</string>
     <string name="lbl_code">Izvorni kod</string>
     <string name="lbl_licenses">Licencije</string>
-    <string name="lbl_author_name">Programer: Alexander Capehart</string>
+    <string name="lbl_author_name">Alexander Capehart</string>
     <string name="lbl_library_counts">Statistika zbirke</string>
     <string name="set_ui">Izgled</string>
     <string name="set_theme_day">Svjetla</string>
@@ -71,12 +71,12 @@
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Slušalice: odmah reproduciraj</string>
     <string name="set_headset_autoplay_desc">Uvijek pokreni reprodukciju kada su slušalice povezane (možda neće raditi na svim uređajima)</string>
-    <string name="set_replay_gain_mode">ReplayGain strategija</string>
+    <string name="set_replay_gain_mode">Strategija normalizacije glasnoće</string>
     <string name="set_replay_gain_mode_track">Preferiraj zvučni zapis</string>
     <string name="set_replay_gain_mode_album">Preferiraj album</string>
-    <string name="set_replay_gain_mode_dynamic">Ako se reproducira album, preferiraj album</string>
-    <string name="set_pre_amp">ReplayGain pretpojačalo</string>
-    <string name="set_pre_amp_desc">Pretpojačalo je tijekom reprodukcije primijenjeno postojećoj prilagodbi</string>
+    <string name="set_replay_gain_mode_dynamic">Preferiraj album ako se jedan reproducira</string>
+    <string name="set_pre_amp">Pretpojačalo normalizacije glasnoće</string>
+    <string name="set_pre_amp_desc">Pretpojačalo se tijekom reprodukcije primijenjue na postojeću podešavanje</string>
     <string name="set_pre_amp_with">Prilagođavanje s oznakama</string>
     <string name="set_pre_amp_without">Prilagođavanje bez oznaka</string>
     <string name="set_pre_amp_warning">Upozorenje: Postavljanje pretpojačala na visoke razine može uzrokovati vrhunce tonova u nekim zvučnim zapisima.</string>
@@ -146,7 +146,7 @@
     <string name="fmt_db_neg">−%.1f dB</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="fmt_indexing">Učitavanje tvoje zbirke blazbe … (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Učitavanje tvoje zbirke glazbe … (%1$d/%2$d)</string>
     <string name="fmt_lib_song_count">Broj učitanih pjesama: %d</string>
     <string name="fmt_lib_album_count">Broj učitanih albuma: %d</string>
     <string name="fmt_lib_artist_count">Broj učitanih izvođača: %d</string>
@@ -174,7 +174,7 @@
     <string name="lbl_soundtracks">Zvučni zapisi</string>
     <string name="lbl_search">Traži</string>
     <string name="lbl_filter_all">Sve</string>
-    <string name="lbl_queue_add">Dodaj u popis pjesama</string>
+    <string name="lbl_queue_add">Dodaj u redoslijed izvođenja</string>
     <string name="lng_queue_added">Dodano u popis pjesama</string>
     <string name="lbl_song_detail">Pogledaj svojstva</string>
     <string name="lbl_artist_details">Idi na izvođača</string>
@@ -249,7 +249,7 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Resetiraj</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Normalizacija glasnoće</string>
     <string name="set_dirs_list">Mape</string>
     <string name="lbl_sort_dsc">Silazno</string>
     <string name="set_ui_desc">Promijenite temu i boje aplikacije</string>
@@ -283,7 +283,7 @@
     <string name="lbl_edit">Uredi</string>
     <string name="fmt_deletion_info">Izbrisati %s\? To je nepovratna radnja.</string>
     <string name="fmt_editing">Uređivanje popisa pjesama %s</string>
-    <string name="lbl_appears_on">Sudjelovanja:</string>
+    <string name="lbl_appears_on">Sudjelovanje:</string>
     <string name="lbl_share">Dijeli</string>
     <string name="def_disc">Nema diska</string>
     <string name="set_square_covers">Prisili kvadratične omote albuma</string>
@@ -321,8 +321,9 @@
     <string name="lbl_windows_paths">Koristi Windows kompatibilne putanje</string>
     <string name="lng_playlist_imported">Popis pjesama je uvezen</string>
     <string name="lng_playlist_exported">Popis pjesama je izvezen</string>
-    <string name="lbl_replaygain_track">Podešavanje ReplayGain pjesme</string>
-    <string name="lbl_replaygain_album">Podešavanje ReplayGain albuma</string>
+    <string name="lbl_replaygain_track">Podešavanje normalizacije glasnoće pjesme</string>
+    <string name="lbl_replaygain_album">Podešavanje normalizacije glasnoće albuma</string>
     <string name="set_remember_pause">Zapamti pauzu</string>
     <string name="set_remember_pause_desc">Nastavi reprodukciju/pauziranje prilikom preskakanja ili uređivanja slijeda</string>
+    <string name="set_replay_gain_mode_off">Isključeno</string>
 </resources>

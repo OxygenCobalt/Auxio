@@ -253,7 +253,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">重置</string>
     <string name="set_behavior">行为</string>
-    <string name="set_replay_gain">回放增益</string>
+    <string name="set_replay_gain">音量正常化</string>
     <string name="set_state">持久性</string>
     <string name="set_ui_desc">更改应用的主题和颜色</string>
     <string name="set_personalize_desc">定制用户界面操控和行为</string>
@@ -328,4 +328,5 @@
     <string name="lng_supporters_promo">要在此添加您的名字请给项目捐款！</string>
     <string name="set_remember_pause_desc">跳过或编辑队列时保留播放/暂停状态</string>
     <string name="set_remember_pause">记住暂停状态</string>
+    <string name="set_replay_gain_mode_off">关闭</string>
 </resources>

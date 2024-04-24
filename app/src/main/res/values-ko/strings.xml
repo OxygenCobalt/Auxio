@@ -254,7 +254,7 @@
     <string name="lbl_wiki">위키</string>
     <string name="set_play_song_from_genre">장르에서 재생</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">ReplayGain 볼륨 조정</string>
     <string name="set_audio_desc">사운드 및 재생 동작 구성</string>
     <string name="set_playback">재생</string>
     <string name="set_dirs_list">폴더</string>
@@ -330,4 +330,5 @@
     <string name="lbl_replaygain_track">ReplayGain 트랙 조절값</string>
     <string name="lbl_replaygain_album">ReplayGain 앨범 조절값</string>
     <string name="set_remember_pause">일시 중지 기억</string>
+    <string name="set_replay_gain_mode_off">끄기</string>
 </resources>

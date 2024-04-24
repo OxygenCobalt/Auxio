@@ -265,7 +265,7 @@
     <string name="set_music">Музика</string>
     <string name="set_images">Зображення</string>
     <string name="set_playback">Відтворення</string>
-    <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
+    <string name="set_replay_gain">Вирівнювання гучності</string>
     <string name="set_library">Бібліотека</string>
     <string name="set_state">Стан відтворення</string>
     <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
@@ -334,4 +334,5 @@
     <string name="lbl_author">Автор</string>
     <string name="set_remember_pause_desc">Залишати відтворення/паузу під час пропуску або редагування черги</string>
     <string name="set_remember_pause">Запам\'ятовувати паузу</string>
+    <string name="set_replay_gain_mode_off">Вимкнено</string>
 </resources>

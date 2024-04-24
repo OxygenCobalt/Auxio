@@ -261,7 +261,7 @@
     <string name="set_music">Muzika</string>
     <string name="set_images">Vaizdai</string>
     <string name="set_playback">Grojimas</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Garso normalizavimas</string>
     <string name="set_dirs_list">Aplankai</string>
     <string name="set_state">Pastovumas</string>
     <string name="lbl_sort_dsc">Mažėjantis</string>
@@ -328,4 +328,5 @@
     <string name="lbl_windows_paths">Naudoti Windows suderinamus kelius</string>
     <string name="set_remember_pause">Prisiminti pauzę</string>
     <string name="set_remember_pause_desc">Išlieka grojimas ir (arba) pristabdomas, kai praleidžiama arba redaguojama eilė.</string>
+    <string name="set_replay_gain_mode_off">Išjungta</string>
 </resources>

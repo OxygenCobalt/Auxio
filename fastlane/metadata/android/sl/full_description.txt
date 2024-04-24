@@ -11,6 +11,7 @@ Auxio je lokalni predvajalnik glasbe z hitrim in zanesljivim uporabniškim vmesn
 - Upravljanje map na SD kartici
 - Zanesljiva funkcionalnost ustvarjanja seznama predvajanja
 - Trajnost stanja predvajanja
+- Samodejno predvajanje brez lukenj (praznega zvoka)
 - Popolna podpora za ReplayGain tehnologijo (za MP3, FLAC, OGG, OPUS in MP4 datoteke)
 - Podpora za zunanje izenačevalnike (npr. Wavelet)
 - Od roba do roba
