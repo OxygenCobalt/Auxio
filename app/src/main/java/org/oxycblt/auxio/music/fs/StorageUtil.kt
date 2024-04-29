@@ -102,12 +102,14 @@ fun Long.toAudioUri() =
  * @return An external storage image [Uri]. May not exist.
  * @see ContentUris.withAppendedId
  */
-fun Long.toCoverUri(): Uri =
+fun Long.toSongCoverUri(): Uri =
     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.buildUpon().run {
-        appendPath(this@toCoverUri.toString())
+        appendPath(this@toSongCoverUri.toString())
         appendPath("albumart")
         build()
     }
+
+fun Long.toAlbumCoverUri(): Uri = ContentUris.withAppendedId(externalCoversUri, this)
 
 // --- STORAGEMANAGER UTILITIES ---
 // Largely derived from Material Files: https://github.com/zhanghai/MaterialFiles

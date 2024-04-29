@@ -29,8 +29,9 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
+import org.oxycblt.auxio.music.fs.toAlbumCoverUri
 import org.oxycblt.auxio.music.fs.toAudioUri
-import org.oxycblt.auxio.music.fs.toCoverUri
+import org.oxycblt.auxio.music.fs.toSongCoverUri
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
@@ -114,7 +115,18 @@ class SongImpl(
         get() = _genres
 
     override val cover =
-        Cover(rawSong.coverPerceptualHash, requireNotNull(rawSong.mediaStoreId).toCoverUri(), uri)
+        rawSong.coverPerceptualHash?.let {
+            // We were able to confirm that the song had a parsable cover and can be used on
+            // a per-song basis. Otherwise, just fall back to a per-album cover instead, as
+            // it implies either a cover.jpg pattern is used (likely) or ExoPlayer does not
+            // support the cover metadata of a given spec (unlikely).
+            Cover.Embedded(
+                requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.path}: No id" }
+                    .toSongCoverUri(),
+                uri,
+                it)
+        }
+            ?: Cover.External(requireNotNull(rawSong.albumMediaStoreId).toAlbumCoverUri())
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an

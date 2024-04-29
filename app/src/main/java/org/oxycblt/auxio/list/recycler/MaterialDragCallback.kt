@@ -64,7 +64,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         totalSize: Int,
         msSinceStartScroll: Long
     ): Int {
-        // Clamp the scroll speed to prevent thefrom freaking out
+        // Clamp the scroll speed to prevent the lists from freaking out
         // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
         val standardSpeed =
             super.interpolateOutOfBoundsScroll(

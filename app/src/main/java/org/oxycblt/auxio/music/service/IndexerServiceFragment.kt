@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * IndexerComponent.kt is part of Auxio.
+ * IndexerServiceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
-class IndexingServiceFragment
+class IndexerServiceFragment
 @Inject
 constructor(
     @ApplicationContext override val workerContext: Context,

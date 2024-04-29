@@ -22,23 +22,35 @@ import android.net.Uri
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Song
 
-/**
- * Bundle of [Uri] information used in [CoverExtractor] to ensure consistent [Uri] use when loading
- * images.
- *
- * @param mediaStoreUri The album cover [Uri] obtained from MediaStore.
- * @param song The [Uri] of the first song (by track) of the album, which can also be used to obtain
- *   an album cover.
- * @author Alexander Capehart (OxygenCobalt)
- */
-data class Cover(val perceptualHash: String?, val mediaStoreUri: Uri, val songUri: Uri) {
+sealed interface Cover {
+    val key: String
+    val mediaStoreCoverUri: Uri
+
+    /**
+     * The song has an embedded cover art we support, so we can operate with it on a per-song basis.
+     */
+    data class Embedded(val songCoverUri: Uri, val songUri: Uri, val perceptualHash: String) :
+        Cover {
+        override val mediaStoreCoverUri = songCoverUri
+        override val key = perceptualHash
+    }
+
+    /**
+     * We couldn't find any embedded cover art ourselves, but the android system might have some
+     * through a cover.jpg file or something similar.
+     */
+    data class External(val albumCoverUri: Uri) : Cover {
+        override val mediaStoreCoverUri = albumCoverUri
+        override val key = albumCoverUri.toString()
+    }
+
     companion object {
         private val FALLBACK_SORT = Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
 
         fun order(songs: Collection<Song>) =
             FALLBACK_SORT.songs(songs)
                 .map { it.cover }
-                .groupBy { it.perceptualHash }
+                .groupBy { it.key }
                 .entries
                 .sortedByDescending { it.value.size }
                 .map { it.value.first() }
