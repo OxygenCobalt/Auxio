@@ -97,7 +97,7 @@
     <string name="set_dirs_mode">Modo</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para android.</string>
-    <string name="lng_indexing">Carregando sua biblioteca de músicas…</string>
+    <string name="lng_indexing">Carregando a sua biblioteca de músicas…</string>
     <string name="lbl_date">Ano</string>
     <string name="lbl_duration">Duração</string>
     <string name="lbl_song_count">Contagem de músicas</string>
@@ -263,7 +263,7 @@
     <string name="set_personalize_desc">Customize os controles da interface e o comportamento</string>
     <string name="set_music">Música</string>
     <string name="set_content_desc">Controle como as músicas e imagens são carregadas</string>
-    <string name="set_replay_gain">Normalização de volume (ReplayGain)</string>
+    <string name="set_replay_gain">Normalização de volume</string>
     <string name="set_library">Biblioteca</string>
     <string name="set_state">Persistência</string>
     <string name="set_behavior">Comportamento</string>
@@ -329,4 +329,8 @@
     <string name="set_square_covers_desc">Recorta todas as capas de álbuns para uma proporção de imagem 1:1</string>
     <string name="def_song_count">Sem músicas</string>
     <string name="lbl_report">Informar</string>
+    <string name="set_replay_gain_mode_off">Desligado</string>
+    <string name="desc_playlist_image">Imagem de playlist para %s</string>
+    <string name="set_play_song_by_itself">Reproduzir música sozinha</string>
+    <string name="desc_selection_image">Imagem de seleção</string>
 </resources>
