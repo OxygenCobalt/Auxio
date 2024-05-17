@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback.service
 import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import android.os.Bundle
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -42,6 +43,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
@@ -69,13 +71,15 @@ class ExoPlaybackStateHolder(
     private val persistenceRepository: PersistenceRepository,
     private val playbackSettings: PlaybackSettings,
     private val commandFactory: PlaybackCommand.Factory,
+    private val replayGainProcessor: ReplayGainAudioProcessor,
     private val musicRepository: MusicRepository,
-    private val replayGainProcessor: ReplayGainAudioProcessor
+    private val imageSettings: ImageSettings
 ) :
     PlaybackStateHolder,
     Player.Listener,
     MusicRepository.UpdateListener,
-    PlaybackSettings.Listener {
+    PlaybackSettings.Listener,
+    ImageSettings.Listener {
     private val saveJob = Job()
     private val saveScope = CoroutineScope(Dispatchers.IO + saveJob)
     private val restoreScope = CoroutineScope(Dispatchers.IO + saveJob)
@@ -86,6 +90,7 @@ class ExoPlaybackStateHolder(
         private set
 
     fun attach() {
+        imageSettings.registerListener(this)
         player.addListener(this)
         replayGainProcessor.attach()
         playbackManager.registerStateHolder(this)
@@ -99,6 +104,7 @@ class ExoPlaybackStateHolder(
         playbackManager.unregisterStateHolder(this)
         musicRepository.removeUpdateListener(this)
         replayGainProcessor.release()
+        imageSettings.unregisterListener(this)
         player.release()
     }
 
@@ -516,9 +522,10 @@ class ExoPlaybackStateHolder(
         private val persistenceRepository: PersistenceRepository,
         private val playbackSettings: PlaybackSettings,
         private val commandFactory: PlaybackCommand.Factory,
-        private val musicRepository: MusicRepository,
         private val mediaSourceFactory: MediaSource.Factory,
-        private val replayGainProcessor: ReplayGainAudioProcessor
+        private val replayGainProcessor: ReplayGainAudioProcessor,
+        private val musicRepository: MusicRepository,
+        private val imageSettings: ImageSettings,
     ) {
         fun create(): ExoPlaybackStateHolder {
             // Since Auxio is a music player, only specify an audio renderer to save
@@ -556,8 +563,9 @@ class ExoPlaybackStateHolder(
                 persistenceRepository,
                 playbackSettings,
                 commandFactory,
+                replayGainProcessor,
                 musicRepository,
-                replayGainProcessor)
+                imageSettings)
         }
     }
 
