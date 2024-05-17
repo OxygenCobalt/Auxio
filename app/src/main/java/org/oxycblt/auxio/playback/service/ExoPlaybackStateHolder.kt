@@ -21,7 +21,6 @@ package org.oxycblt.auxio.playback.service
 import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
-import android.os.Bundle
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -329,12 +328,16 @@ class ExoPlaybackStateHolder(
 
         val trueFrom = indices[from]
         val trueTo = indices[to]
+        // ExoPlayer does not actually update it's ShuffleOrder when moving items. Retain a
+        // semblance of "normalcy" by doing a weird no-op swap that actually moves the item.
         when {
             trueFrom > trueTo -> {
                 player.moveMediaItem(trueFrom, trueTo)
+                player.moveMediaItem(trueTo + 1, trueFrom)
             }
             trueTo > trueFrom -> {
                 player.moveMediaItem(trueFrom, trueTo)
+                player.moveMediaItem(trueTo - 1, trueFrom)
             }
         }
         playbackManager.ack(this, ack)
