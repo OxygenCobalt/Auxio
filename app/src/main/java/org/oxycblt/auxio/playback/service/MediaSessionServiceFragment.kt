@@ -48,7 +48,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.service.MediaSessionBitmapLoader
 import org.oxycblt.auxio.music.service.MediaItemBrowser
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -61,7 +60,6 @@ constructor(
     private val playbackManager: PlaybackStateManager,
     private val actionHandler: PlaybackActionHandler,
     private val mediaItemBrowser: MediaItemBrowser,
-    private val bitmapLoader: MediaSessionBitmapLoader,
     exoHolderFactory: ExoPlaybackStateHolder.Factory
 ) :
     MediaLibrarySession.Callback,
@@ -143,9 +141,7 @@ constructor(
     }
 
     private fun createSession(service: MediaLibraryService) =
-        MediaLibrarySession.Builder(service, exoHolder.mediaSessionPlayer, this)
-            .setBitmapLoader(bitmapLoader)
-            .build()
+        MediaLibrarySession.Builder(service, exoHolder.mediaSessionPlayer, this).build()
 
     override fun onConnect(
         session: MediaSession,

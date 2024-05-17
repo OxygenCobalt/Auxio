@@ -74,7 +74,7 @@ fun Song.toMediaItem(context: Context, parent: MusicParent?): MediaItem {
             .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
             .setIsPlayable(true)
             .setIsBrowsable(false)
-            .setArtworkUri(album.cover.single.mediaStoreCoverUri)
+            .setArtworkUri(cover.mediaStoreCoverUri)
             .setExtras(
                 Bundle().apply {
                     putString("uid", mediaSessionUID.toString())
