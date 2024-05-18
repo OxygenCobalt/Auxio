@@ -135,17 +135,5 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-
-        <!-- Tasker integration -->
-        <activity
-            android:name=".tasker.StartConfigBasicAction"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="Start Auxio">
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
-        </activity>
-
     </application>
 </manifest>

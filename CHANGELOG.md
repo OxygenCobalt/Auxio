@@ -5,11 +5,10 @@
 #### What's New
 - Android Auto support
 - Full media browser implementation
-- Service can now operate independently of app
-- Added basic tasker plugin
 
 #### What's Improved
 - Album covers are now loaded on a per-song basis
+- Correctly interpret MP4 sort tags
 
 #### What's Fixed
 - Fixed repeat mode not restoring on startup
@@ -17,6 +16,10 @@
 #### What's Changed
 - For the time being, the media notification will not follow Album Covers or 1:1 Covers settings
 - Playback will close automatically after some time left idle
+
+#### dev -> dev1 changes
+- Re-added ability to open app from clicking on notification
+- Removed tasker plugin
 
 ## 3.4.3
 
