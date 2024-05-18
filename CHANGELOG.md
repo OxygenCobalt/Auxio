@@ -1,6 +1,24 @@
 # Changelog
 
-## dev
+## 3.5.0
+
+#### What's New
+- Android Auto support
+- Full media browser implementation
+- Service can now operate independently of app
+- Added basic tasker plugin
+
+#### What's Improved
+- Album covers are now loaded on a per-song basis
+
+#### What's Fixed
+- Fixed repeat mode not restoring on startup
+
+#### What's Changed
+- For the time being, the media notification will not follow Album Covers or 1:1 Covers settings
+- Playback will close automatically after some time left idle
+
+## 3.4.3
 
 #### What's Improved
 - Added back option disable ReplayGain for poorly tagged libraries
