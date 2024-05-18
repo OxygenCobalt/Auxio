@@ -50,8 +50,8 @@ class StartActionHelper(config: TaskerPluginConfig<Unit>) :
     override fun addToStringBlurb(input: TaskerInput<Unit>, blurbBuilder: StringBuilder) {
         blurbBuilder.append(
             "Starts the Auxio Service. This will block until the service is fully initialized." +
-                    "You must start active playback/foreground state after this or Auxio may" +
-                    "crash.")
+                "You must start active playback/foreground state after this or Auxio may" +
+                "crash.")
     }
 }
 
@@ -70,10 +70,7 @@ class StartConfigBasicAction : Activity(), TaskerPluginConfigNoInput {
 class StartActionRunner : TaskerPluginRunnerActionNoOutputOrInput() {
     override fun run(context: Context, input: TaskerInput<Unit>): TaskerPluginResult<Unit> {
         ContextCompat.startForegroundService(context, Intent(context, AuxioService::class.java))
-        while (!serviceRunning) {
-            Thread.sleep(100)
-        }
-
+        while (!serviceRunning) {}
         return TaskerPluginResultSucess()
     }
 }
