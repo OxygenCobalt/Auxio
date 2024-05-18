@@ -151,6 +151,9 @@ dependencies {
     // Speed dial
     implementation "com.leinardi.android:speed-dial:3.3.0"
 
+    // Tasker
+    implementation 'com.joaomgcd:taskerpluginlibrary:0.4.10'
+
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     testImplementation "junit:junit:4.13.2"
