@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * Start.kt is part of Auxio.
+ * ShuffleAll.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,23 +30,27 @@ import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfigNoInput
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResult
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultSucess
+import dagger.hilt.EntryPoints
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.oxycblt.auxio.AuxioService
+import org.oxycblt.auxio.playback.state.DeferredPlayback
 
-class StartActionHelper(config: TaskerPluginConfig<Unit>) :
-    TaskerPluginConfigHelperNoOutputOrInput<StartActionRunner>(config) {
-    override val runnerClass: Class<StartActionRunner>
-        get() = StartActionRunner::class.java
+class ShuffleAllHelper(config: TaskerPluginConfig<Unit>) :
+    TaskerPluginConfigHelperNoOutputOrInput<ShuffleAllRunner>(config) {
+    override val runnerClass: Class<ShuffleAllRunner>
+        get() = ShuffleAllRunner::class.java
 
     override fun addToStringBlurb(input: TaskerInput<Unit>, blurbBuilder: StringBuilder) {
-        blurbBuilder.append("Starts the Auxio Service. You MUST apply an action after this.")
+        blurbBuilder.append("Shuffles All Songs Once the Service is Available")
     }
 }
 
-class StartConfigBasicAction : Activity(), TaskerPluginConfigNoInput {
+class ShuffleAllConfigBasicAction : Activity(), TaskerPluginConfigNoInput {
     override val context: Context
         get() = applicationContext
 
-    private val taskerHelper by lazy { StartActionHelper(this) }
+    private val taskerHelper by lazy { ShuffleAllHelper(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +58,17 @@ class StartConfigBasicAction : Activity(), TaskerPluginConfigNoInput {
     }
 }
 
-class StartActionRunner : TaskerPluginRunnerActionNoOutputOrInput() {
+class ShuffleAllRunner : TaskerPluginRunnerActionNoOutputOrInput() {
     override fun run(context: Context, input: TaskerInput<Unit>): TaskerPluginResult<Unit> {
         ContextCompat.startForegroundService(
             context,
             Intent(context, AuxioService::class.java)
                 .putExtra(AuxioService.INTENT_KEY_INTERNAL_START, true))
+        val entryPoint = EntryPoints.get(context.applicationContext, TaskerEntryPoint::class.java)
+        val playbackManager = entryPoint.playbackManager()
+        runBlocking(Dispatchers.Main) { playbackManager.playDeferred(DeferredPlayback.ShuffleAll) }
+        while (!playbackManager.sessionOngoing) {}
+        Thread.sleep(100)
         return TaskerPluginResultSucess()
     }
 }

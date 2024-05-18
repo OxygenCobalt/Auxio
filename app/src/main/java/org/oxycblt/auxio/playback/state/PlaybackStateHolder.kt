@@ -41,6 +41,9 @@ interface PlaybackStateHolder {
     /** The current [MusicParent] being played from. Null if playing from all songs. */
     val parent: MusicParent?
 
+    /** Whether the player is in an active playback session. */
+    val sessionOngoing: Boolean
+
     /**
      * Resolve the current queue state as a [RawQueue].
      *
@@ -275,8 +278,12 @@ data class QueueChange(val type: Type, val instructions: UpdateInstructions) {
 
 /** Possible long-running background tasks handled by the background playback task. */
 sealed interface DeferredPlayback {
-    /** Restore the previously saved playback state. */
-    data object RestoreState : DeferredPlayback
+    /**
+     * Restore the previously saved playback state.
+     *
+     * @param sessionRequired Whether a playback session must be started after restoration.
+     */
+    data class RestoreState(val sessionRequired: Boolean) : DeferredPlayback
 
     /**
      * Start shuffled playback of the entire music library. Analogous to the "Shuffle All" shortcut.

@@ -85,7 +85,7 @@ class ExoPlaybackStateHolder(
     private var currentSaveJob: Job? = null
     private var openAudioEffectSession = false
 
-    var sessionOngoing = false
+    override var sessionOngoing = false
         private set
 
     fun attach() {
@@ -157,16 +157,24 @@ class ExoPlaybackStateHolder(
             musicRepository.deviceLibrary
             // No library, cannot do anything.
             ?: return false
-
+        logD((Exception().stackTraceToString()))
         when (action) {
             // Restore state -> Start a new restoreState job
             is DeferredPlayback.RestoreState -> {
                 logD("Restoring playback state")
                 restoreScope.launch {
-                    persistenceRepository.readState()?.let {
+                    val state = persistenceRepository.readState()
+                    if (state != null) {
                         // Apply the saved state on the main thread to prevent code expecting
                         // state updates on the main thread from crashing.
-                        withContext(Dispatchers.Main) { playbackManager.applySavedState(it, false) }
+                        withContext(Dispatchers.Main) {
+                            if (action.sessionRequired) {
+                                sessionOngoing = true
+                            }
+                            playbackManager.applySavedState(state, false)
+                        }
+                    } else if (action.sessionRequired) {
+                        error("No playback state to restore, but need to start session")
                     }
                 }
             }

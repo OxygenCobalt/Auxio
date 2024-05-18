@@ -147,5 +147,24 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".tasker.ShuffleAllConfigBasicAction"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Shuffle All Songs">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".tasker.RestoreStateConfigBasicAction"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Restore State">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

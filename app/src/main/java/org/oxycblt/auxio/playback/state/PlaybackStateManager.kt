@@ -66,6 +66,9 @@ interface PlaybackStateManager {
     /** Whether the queue is shuffled or not. */
     val isShuffled: Boolean
 
+    /** Whether there is an ongoing playback session or not. */
+    val sessionOngoing: Boolean
+
     /** The audio session ID of the internal player. Null if no internal player exists. */
     val currentAudioSessionId: Int?
 
@@ -194,6 +197,13 @@ interface PlaybackStateManager {
      *     @param ack The [StateAck] to acknowledge.
      */
     fun ack(stateHolder: PlaybackStateHolder, ack: StateAck)
+
+    /**
+     * Check if there is a pending [DeferredPlayback] to handle.
+     *
+     * @return Whether there is a pending [DeferredPlayback] to handle.
+     */
+    fun hasDeferredPlayback(): Boolean
 
     /**
      * Start a [DeferredPlayback] for the current [PlaybackStateHolder] to handle eventually.
@@ -382,6 +392,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override val isShuffled
         get() = stateMirror.isShuffled
 
+    override val sessionOngoing
+        get() = stateHolder?.sessionOngoing ?: false
+
     override val currentAudioSessionId: Int?
         get() = stateHolder?.audioSessionId
 
@@ -521,6 +534,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     // --- INTERNAL PLAYER FUNCTIONS ---
+
+    @Synchronized override fun hasDeferredPlayback(): Boolean = pendingDeferredPlayback != null
 
     @Synchronized
     override fun playDeferred(action: DeferredPlayback) {

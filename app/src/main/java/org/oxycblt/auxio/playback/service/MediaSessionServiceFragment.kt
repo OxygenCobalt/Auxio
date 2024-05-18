@@ -51,7 +51,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.service.MediaItemBrowser
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
 class MediaSessionServiceFragment
@@ -112,11 +111,25 @@ constructor(
     fun handleNonNativeStart() {
         // At minimum we want to ensure an active playback state.
         // TODO: Possibly also force to go foreground?
-        logD("Handling non-native start.")
-        playbackManager.playDeferred(DeferredPlayback.RestoreState)
+        // We assume that all non-native starts are from media controllers that should know
+        // what they are doing and have their own commands they want to execute.
+        playbackManager.playDeferred(DeferredPlayback.RestoreState(sessionRequired = true))
     }
 
-    fun hasNotification(): Boolean = exoHolder.sessionOngoing
+    enum class NotificationState {
+        RUNNING,
+        NOT_RUNNING,
+        MAYBE_LATER
+    }
+
+    fun hasNotification(): NotificationState =
+        if (exoHolder.sessionOngoing) {
+            NotificationState.RUNNING
+        } else if (playbackManager.hasDeferredPlayback()) {
+            NotificationState.MAYBE_LATER
+        } else {
+            NotificationState.NOT_RUNNING
+        }
 
     fun createNotification(post: (MediaNotification) -> Unit) {
         val notification =

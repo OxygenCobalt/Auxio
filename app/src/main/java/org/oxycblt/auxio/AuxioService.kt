@@ -28,8 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.music.service.IndexerServiceFragment
 import org.oxycblt.auxio.playback.service.MediaSessionServiceFragment
-import org.oxycblt.auxio.tasker.indicateServiceRunning
-import org.oxycblt.auxio.tasker.indicateServiceStopped
+import org.oxycblt.auxio.util.logD
 
 @AndroidEntryPoint
 class AuxioService : MediaLibraryService(), ForegroundListener {
@@ -37,16 +36,17 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
 
     @Inject lateinit var indexingFragment: IndexerServiceFragment
 
+    private var nativeStart = false
+
     @SuppressLint("WrongConstant")
     override fun onCreate() {
         super.onCreate()
         mediaSessionFragment.attach(this, this)
         indexingFragment.attach(this)
-        indicateServiceRunning()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        handleIntent(intent)
+        // handleIntent(intent)
         return super.onBind(intent)
     }
 
@@ -58,7 +58,8 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
     }
 
     private fun handleIntent(intent: Intent?) {
-        val nativeStart = intent?.getBooleanExtra(INTENT_KEY_NATIVE_START, false) ?: false
+        nativeStart = intent?.getBooleanExtra(INTENT_KEY_INTERNAL_START, false) ?: false
+        logD("${intent} $nativeStart")
         if (!nativeStart) {
             // Some foreign code started us, no guarantees about foreground stability. Figure
             // out what to do.
@@ -73,7 +74,6 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        indicateServiceStopped()
         indexingFragment.release()
         mediaSessionFragment.release()
     }
@@ -86,7 +86,9 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
     }
 
     override fun updateForeground(change: ForegroundListener.Change) {
-        if (mediaSessionFragment.hasNotification()) {
+        val state = mediaSessionFragment.hasNotification()
+
+        if (state == MediaSessionServiceFragment.NotificationState.RUNNING) {
             if (change == ForegroundListener.Change.MEDIA_SESSION) {
                 mediaSessionFragment.createNotification {
                     startForeground(it.notificationId, it.notification)
@@ -98,7 +100,7 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
             indexingFragment.createNotification {
                 if (it != null) {
                     startForeground(it.code, it.build())
-                } else {
+                } else if (state == MediaSessionServiceFragment.NotificationState.NOT_RUNNING) {
                     ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
                 }
             }
@@ -107,7 +109,7 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
 
     companion object {
         // This is only meant for Auxio to internally ensure that it's state management will work.
-        const val INTENT_KEY_NATIVE_START = BuildConfig.APPLICATION_ID + ".service.NATIVE_START"
+        const val INTENT_KEY_INTERNAL_START = BuildConfig.APPLICATION_ID + ".service.INTERNAL_START"
     }
 }
 
