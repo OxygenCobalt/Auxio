@@ -76,6 +76,10 @@ constructor(
             .setNotificationId(IntegerTable.PLAYBACK_NOTIFICATION_CODE)
             .setChannelId(BuildConfig.APPLICATION_ID + ".channel.PLAYBACK")
             .setChannelName(R.string.lbl_playback)
+            .setPlayDrawableResourceId(R.drawable.ic_play_24)
+            .setPauseDrawableResourceId(R.drawable.ic_pause_24)
+            .setSkipNextDrawableResourceId(R.drawable.ic_skip_next_24)
+            .setSkipPrevDrawableResourceId(R.drawable.ic_skip_prev_24)
             .build()
             .also { it.setSmallIcon(R.drawable.ic_auxio_24) }
     private var foregroundListener: ForegroundListener? = null

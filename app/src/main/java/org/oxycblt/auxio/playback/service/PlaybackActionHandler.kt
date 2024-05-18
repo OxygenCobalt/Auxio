@@ -27,7 +27,6 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.media3.common.Player
 import androidx.media3.session.CommandButton
-import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionCommands
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -106,12 +105,6 @@ constructor(
                         .setSessionCommand(
                             SessionCommand(PlaybackActions.ACTION_INC_REPEAT_MODE, Bundle()))
                         .setEnabled(true)
-                        .setExtras(
-                            Bundle().apply {
-                                putInt(
-                                    DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX,
-                                    0)
-                            })
                         .build())
             }
             ActionMode.SHUFFLE -> {
@@ -135,36 +128,6 @@ constructor(
                 .setDisplayName(context.getString(R.string.desc_skip_prev))
                 .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS)
                 .setEnabled(true)
-                .setExtras(
-                    Bundle().apply {
-                        putInt(DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX, 1)
-                    })
-                .build())
-
-        actions.add(
-            CommandButton.Builder()
-                .setIconResId(
-                    if (playbackManager.progression.isPlaying) R.drawable.ic_pause_24
-                    else R.drawable.ic_play_24)
-                .setDisplayName(context.getString(R.string.desc_play_pause))
-                .setPlayerCommand(Player.COMMAND_PLAY_PAUSE)
-                .setEnabled(true)
-                .setExtras(
-                    Bundle().apply {
-                        putInt(DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX, 2)
-                    })
-                .build())
-
-        actions.add(
-            CommandButton.Builder()
-                .setIconResId(R.drawable.ic_skip_next_24)
-                .setDisplayName(context.getString(R.string.desc_skip_next))
-                .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT)
-                .setEnabled(true)
-                .setExtras(
-                    Bundle().apply {
-                        putInt(DefaultMediaNotificationProvider.COMMAND_KEY_COMPACT_VIEW_INDEX, 3)
-                    })
                 .build())
 
         actions.add(
