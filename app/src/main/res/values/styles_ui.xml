@@ -285,10 +285,10 @@
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
-        <item name="android:paddingStart">@dimen/spacing_small</item>
-        <item name="android:paddingEnd">@dimen/spacing_small</item>
-        <item name="android:paddingTop">@dimen/spacing_small</item>
-        <item name="android:paddingBottom">@dimen/spacing_small</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
         <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.Huge</item>
     </style>
 
