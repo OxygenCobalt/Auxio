@@ -31,15 +31,17 @@ import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.core.view.isInvisible
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as MR
+import com.google.android.material.motion.MotionUtils
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.AuxioRecyclerView
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
-import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -79,9 +81,27 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     // Thumb
     private val thumbView =
         View(context).apply {
-            alpha = 0f
+            scaleX = 0f
             background = context.getDrawableCompat(R.drawable.ui_scroll_thumb)
         }
+
+    private val thumbEnterInterpolator =
+        MotionUtils.resolveThemeInterpolator(
+            context,
+            MR.attr.motionEasingEmphasizedDecelerateInterpolator,
+            FastOutSlowInInterpolator())
+
+    private val thumbEnterDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort4, 300)
+
+    private val thumbExitInterpolator =
+        MotionUtils.resolveThemeInterpolator(
+            context,
+            MR.attr.motionEasingEmphasizedAccelerateInterpolator,
+            FastOutSlowInInterpolator())
+
+    private val thumbExitDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort2, 100)
 
     private val thumbWidth = thumbView.background.intrinsicWidth
     private val thumbHeight = thumbView.background.intrinsicHeight
@@ -98,6 +118,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     // Popup
     private val popupView =
         FastScrollPopupView(context).apply {
+            scaleX = 0f
+            scaleY = 0f
+            alpha = 0f
             layoutParams =
                 FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -106,6 +129,24 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         marginEnd = context.getDimenPixels(R.dimen.spacing_small)
                     }
         }
+
+    private val popupEnterInterpolator =
+        MotionUtils.resolveThemeInterpolator(
+            context,
+            MR.attr.motionEasingEmphasizedDecelerateInterpolator,
+            FastOutSlowInInterpolator())
+
+    private val popupEnterDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium1, 300)
+
+    private val popupExitInterpolator =
+        MotionUtils.resolveThemeInterpolator(
+            context,
+            MR.attr.motionEasingEmphasizedAccelerateInterpolator,
+            FastOutSlowInInterpolator())
+
+    private val popupExitDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort2, 100)
 
     private var showingPopup = false
 
@@ -417,7 +458,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingThumb = true
-        animateViewIn(thumbView)
+        thumbView
+            .animate()
+            .scaleX(1f)
+            .setInterpolator(thumbEnterInterpolator)
+            .setDuration(thumbEnterDuration.toLong())
+            .start()
     }
 
     private fun hideScrollbar() {
@@ -426,7 +472,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingThumb = false
-        animateViewOut(thumbView)
+        thumbView
+            .animate()
+            .scaleX(0f)
+            .setInterpolator(thumbExitInterpolator)
+            .setDuration(thumbExitDuration.toLong())
+            .start()
     }
 
     private fun showPopup() {
@@ -434,8 +485,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             return
         }
 
+        popupView.scaleX = 0f
+        popupView.scaleY = 0f
+
+        popupView.alpha = 1f
         showingPopup = true
-        animateViewIn(popupView)
+        popupView
+            .animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setInterpolator(popupEnterInterpolator)
+            .setDuration(popupEnterDuration.toLong())
+            .start()
     }
 
     private fun hidePopup() {
@@ -444,22 +505,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingPopup = false
-        animateViewOut(popupView)
-    }
-
-    private fun animateViewIn(view: View) {
-        view
-            .animate()
-            .alpha(1f)
-            .setDuration(context.getInteger(R.integer.anim_fade_enter_duration).toLong())
-            .start()
-    }
-
-    private fun animateViewOut(view: View) {
-        view
+        popupView
             .animate()
             .alpha(0f)
-            .setDuration(context.getInteger(R.integer.anim_fade_exit_duration).toLong())
+            .scaleX(0.75f)
+            .scaleY(0.75f)
+            .setInterpolator(popupExitInterpolator)
+            .setDuration(popupExitDuration.toLong())
             .start()
     }
 
