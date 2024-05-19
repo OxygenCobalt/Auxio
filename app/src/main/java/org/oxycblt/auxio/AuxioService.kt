@@ -28,6 +28,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.music.service.IndexerServiceFragment
 import org.oxycblt.auxio.playback.service.MediaSessionServiceFragment
+import org.oxycblt.auxio.tasker.indicateServiceRunning
+import org.oxycblt.auxio.tasker.indicateServiceStopped
 
 @AndroidEntryPoint
 class AuxioService : MediaLibraryService(), ForegroundListener {
@@ -40,6 +42,7 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
         super.onCreate()
         mediaSessionFragment.attach(this, this)
         indexingFragment.attach(this)
+        indicateServiceRunning()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -70,6 +73,7 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        indicateServiceStopped()
         indexingFragment.release()
         mediaSessionFragment.release()
     }
