@@ -1,9 +1,9 @@
-Auxio – tai vietinis muzikos grotuvas su greita, patikima naudotojo sąsaja ir potyris be daugybės nenaudingų funkcijų, esančių kituose muzikos grotuvuose. Sukurta remiantis iš šiuolaikinių medijos grojimo bibliotekų, Auxio turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programeles, kurios naudoja pasenusias Android funkcijas. Trumpai tariant, <b>jame grojama muziką</b>.
+„Auxio“ – tai vietinis muzikos leistuvė su greita, patikima naudotojo sąsaja ir potyris be daugybės nenaudingų funkcijų, esančių kituose muzikos leistuvėse. Sukurta remiantis iš šiuolaikinių medijos leidimo bibliotekų, „Auxio“ turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programeles, kurios naudoja pasenusias „Android“ funkcijas. Trumpai tariant, <b>jame leidžiama muziką</b>.
 
 <b>Funkcijos</b>
 
-- Media3 ExoPlayer pagrįstas grojimas
-- Sparti naudotojo sąsaja, sukurta pagal naujausias Material Design gaires
+- „Media3 ExoPlayer“ pagrįstas leidimas
+- Sparti naudotojo sąsaja, sukurta pagal naujausias „Material Design“ gaires
 - Nuomonę turintis naudotojo potyris, kuriame prioritetas teikiamas naudojimo paprastumui, o ne kraštutiniam atvejui
 - Pasirinktas elgesys
 - Palaikomas diskų numerių, kelių atlikėjų, leidinių tipų palaikymas,
@@ -11,14 +11,14 @@ tikslias / originalias datas, rūšiavimo žymes ir dar daugiau
 - Išplėstinė atlikėjų sistema, kuri suvienija atlikėjus ir albumų atlikėjus
 - SD kortelių aplankų valdymas
 - Patikima grojaraščių sudarymo funkcija
-- Grojimo būsenos išsaugojimas
-- Automatinis grojimas be tarpų
-- Visiškas ReplayGain palaikymas (MP3, MP4, FLAC, OGG, OPUS ir MP4 failuose)
-- Išorinio ekvalaizerio funkcija (pvz., Wavelet)
+- Leidimo būsenos išsaugojimas
+- Automatinis leidimas be tarpų
+- Visiškas „ReplayGain“ palaikymas (MP3, MP4, FLAC, OGG, OPUS ir MP4 failuose)
+- Išorinio ekvalaizerio funkcija (pvz., „Wavelet“)
 - Krašto iki krašto
 - Įterptųjų viršelių palaikymas
 - Paieškos funkcija
-- Automatinis ausinių grojimas
+- Automatinis ausinių leidimas
 - Stilingi valdikliai, kurie automatiškai prisitaiko prie savo dydžio
-- Visiškai privatus ir neprisijungęs
+- Visiškai privati ir neprisijungę
 - Jokių suapvalintų albumų viršelių (pagal numatytuosius nustatymus)
