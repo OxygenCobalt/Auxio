@@ -7,32 +7,29 @@
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_mid_large">20dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_mid_huge">28dp</dimen>
     <dimen name="spacing_huge">32dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
-    <dimen name="size_cover_compact">48dp</dimen>
-    <dimen name="size_cover_medium">56dp</dimen>
-    <dimen name="size_cover_large">128dp</dimen>
-    <dimen name="size_cover_mid_huge">192dp</dimen>
-    <dimen name="size_cover_huge">256dp</dimen>
+    <dimen name="size_touchable_small">48dp</dimen>
+    <dimen name="size_touchable_medium">56dp</dimen>
+    <dimen name="size_touchable_mid_large">60dp</dimen>
+    <dimen name="size_touchable_large">64dp</dimen>
+    <dimen name="size_touchable_mid_huge">76dp</dimen>
+    <dimen name="size_touchable_huge">80dp</dimen>
 
-    <dimen name="size_corners_small">12dp</dimen>
-    <dimen name="size_corners_medium">14dp</dimen>
-    <dimen name="size_corners_mid_large">24dp</dimen>
-
-    <dimen name="size_btn">48dp</dimen>
-    <dimen name="size_btn_larger">60dp</dimen>
-    <dimen name="size_accent_item">56dp</dimen>
-    <dimen name="size_bottom_sheet_bar">64dp</dimen>
-    <dimen name="size_copy_button">64dp</dimen>
-    <dimen name="size_play_pause_button">80dp</dimen>
+    <dimen name="size_hero_small">128dp</dimen>
+    <dimen name="size_hero_medium">192dp</dimen>
+    <dimen name="size_hero_large">256dp</dimen>
 
     <dimen name="size_icon_small">24dp</dimen>
     <dimen name="size_icon_medium">32dp</dimen>
     <dimen name="size_icon_large">40dp</dimen>
     <dimen name="size_icon_huge">48dp</dimen>
 
-    <dimen name="size_pre_amp_ticker">56dp</dimen>
+    <!-- Misc -->
+    <dimen name="m3_shape_corners_large">16dp</dimen>
+    <dimen name="m3_shape_corners_full">128dp</dimen>
 
     <dimen name="text_size_track_number_min">14sp</dimen>
     <dimen name="text_size_track_number_max">22sp</dimen>
@@ -40,17 +37,6 @@
 
     <dimen name="slider_track_height">10dp</dimen>
     <dimen name="slider_thumb_height">24dp</dimen>
-
-    <!-- Misc -->
-    <dimen name="elevation_normal">1dp</dimen>
-
-    <dimen name="fast_scroll_popup_min_width">78dp</dimen>
-    <dimen name="fast_scroll_popup_min_height">64dp</dimen>
-    <dimen name="fast_scroll_popup_padding_start">@dimen/spacing_medium</dimen>
-    <dimen name="fast_scroll_popup_padding_end">28dp</dimen>
-    <dimen name="fast_scroll_thumb_touch_target_size">48dp</dimen>
-
-    <dimen name="slider_thumb_radius">6dp</dimen>
 
     <dimen name="recycler_fab_space_normal">88dp</dimen>
     <dimen name="recycler_fab_space_large">128dp</dimen>

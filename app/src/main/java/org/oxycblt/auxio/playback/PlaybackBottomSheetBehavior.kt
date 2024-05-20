@@ -27,7 +27,7 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
-import org.oxycblt.auxio.R
+import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
@@ -43,7 +43,12 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
     val sheetBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerLow)
-            setCornerSize(context.resources.getDimension(R.dimen.size_corners_mid_large))
+            shapeAppearanceModel =
+                ShapeAppearanceModel.builder(
+                        context,
+                        MR.style.ShapeAppearance_Material3_Corner_ExtraLarge,
+                        MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                    .build()
         }
 
     init {

@@ -25,8 +25,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
@@ -87,7 +87,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
             logD("Not initialized, setting up child")
             child.apply {
                 // Set up compat elevation attributes. These are only shown below API 28.
-                translationZ = context.getDimen(R.dimen.elevation_normal)
+                translationZ = context.getDimen(MR.dimen.m3_sys_elevation_level1)
                 // Background differs depending on concrete implementation.
                 background = createBackground(context)
                 setOnApplyWindowInsetsListener(::applyWindowInsets)

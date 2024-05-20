@@ -25,6 +25,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as MR
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -96,7 +97,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
             logD("Lifting ViewHolder")
 
             val bg = holder.background
-            val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
+            val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
             holder.root
                 .animate()
                 .translationZ(elevation)
@@ -138,7 +139,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
             logD("Lifting ViewHolder")
 
             val bg = holder.background
-            val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
+            val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
             holder.root
                 .animate()
                 .translationZ(0f)

@@ -7,7 +7,7 @@
     56dp to 48dp.
     -->
     <style name="Widget.Auxio.Toolbar.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
-        <item name="android:minWidth">@dimen/size_btn</item>
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
     </style>
 
     <!--
@@ -15,8 +15,8 @@
     (presumably for compat with older devices)
     -->
     <style name="Widget.Auxio.Button.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:minWidth">@dimen/size_btn</item>
-        <item name="android:minHeight">@dimen/size_btn</item>
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
     </style>
@@ -85,13 +85,13 @@
 
     <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
     <style name="Widget.Auxio.MaterialButton.AppWidget" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:minHeight">@dimen/size_btn</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <!-- A variant of button that emulates a FAB-ish button that plays along with widget restrictions -->
     <style name="Widget.Auxio.MaterialButton.AppWidget.PlayPause" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:minWidth">@dimen/size_btn</item>
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
         <item name="android:background">@drawable/ui_remote_fab_container_paused</item>
         <item name="android:tint">?attr/colorOnPrimary</item>
     </style>

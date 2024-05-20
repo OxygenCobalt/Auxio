@@ -73,7 +73,7 @@
 
     <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/playback_more"
-        style="@style/Widget.Auxio.Button.Icon.Small"
+        style="@style/Widget.Auxio.Button.Icon.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:icon="@drawable/ic_more_24"
@@ -108,7 +108,7 @@
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_repeat"
-                style="@style/Widget.Auxio.Button.Icon.Large"
+                style="@style/Widget.Auxio.Button.Icon.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_change_repeat"
@@ -157,7 +157,7 @@
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_shuffle"
-                style="@style/Widget.Auxio.Button.Icon.Large"
+                style="@style/Widget.Auxio.Button.Icon.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_shuffle"

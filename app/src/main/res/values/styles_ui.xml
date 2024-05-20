@@ -11,7 +11,7 @@
 
     <!-- Base toolbar style -->
     <style name="Widget.Auxio.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="maxButtonHeight">@dimen/size_btn</item>
+        <item name="maxButtonHeight">@dimen/size_touchable_small</item>
         <item name="android:paddingLeft">@dimen/spacing_tiny</item>
         <item name="android:paddingStart">@dimen/spacing_tiny</item>
         <item name="android:paddingRight">@dimen/spacing_tiny</item>
@@ -28,7 +28,7 @@
 
     <style name="Widget.Auxio.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
         <item name="trackColor">@color/sel_track</item>
-        <item name="trackCornerRadius">@dimen/size_corners_medium</item>
+        <item name="trackCornerRadius">@dimen/m3_shape_corners_full</item>
         <item name="trackStopIndicatorSize">0dp</item>
     </style>
 
@@ -64,35 +64,35 @@
     </style>
 
     <style name="Widget.Auxio.Image.Small" parent="">
-        <item name="android:layout_width">@dimen/size_cover_compact</item>
-        <item name="android:layout_height">@dimen/size_cover_compact</item>
+        <item name="android:layout_width">@dimen/size_touchable_small</item>
+        <item name="android:layout_height">@dimen/size_touchable_small</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Medium</item>
         <item name="iconSize">@dimen/size_icon_small</item>
     </style>
 
     <style name="Widget.Auxio.Image.Medium" parent="">
-        <item name="android:layout_width">@dimen/size_cover_medium</item>
-        <item name="android:layout_height">@dimen/size_cover_medium</item>
+        <item name="android:layout_width">@dimen/size_touchable_medium</item>
+        <item name="android:layout_height">@dimen/size_touchable_medium</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Medium</item>
         <item name="iconSize">@dimen/size_icon_medium</item>
     </style>
 
 
     <style name="Widget.Auxio.Image.Large" parent="">
-        <item name="android:layout_width">@dimen/size_cover_large</item>
-        <item name="android:layout_height">@dimen/size_cover_large</item>
+        <item name="android:layout_width">@dimen/size_hero_small</item>
+        <item name="android:layout_height">@dimen/size_hero_small</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
     </style>
 
     <style name="Widget.Auxio.Image.MidHuge" parent="">
-        <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
-        <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
+        <item name="android:layout_width">@dimen/size_hero_medium</item>
+        <item name="android:layout_height">@dimen/size_hero_medium</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
     </style>
 
     <style name="Widget.Auxio.Image.Huge" parent="">
-        <item name="android:layout_width">@dimen/size_cover_huge</item>
-        <item name="android:layout_height">@dimen/size_cover_huge</item>
+        <item name="android:layout_width">@dimen/size_hero_large</item>
+        <item name="android:layout_height">@dimen/size_hero_large</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
     </style>
 
@@ -205,7 +205,7 @@
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:minHeight">@dimen/size_btn</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarge</item>
@@ -248,8 +248,8 @@
 
     <style name="Widget.Auxio.Button.Icon.Small" parent="Widget.Auxio.Button.Icon.Base">
         <item name="iconSize">@dimen/size_icon_small</item>
-        <item name="android:minWidth">@dimen/size_btn</item>
-        <item name="android:minHeight">@dimen/size_btn</item>
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
         <item name="android:insetTop">@dimen/spacing_tiny</item>
         <item name="android:insetBottom">@dimen/spacing_tiny</item>
         <item name="android:insetLeft">@dimen/spacing_tiny</item>
@@ -262,10 +262,10 @@
         <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Icon.Large" parent="Widget.Auxio.Button.Icon.Base">
+    <style name="Widget.Auxio.Button.Icon.Medium" parent="Widget.Auxio.Button.Icon.Base">
         <item name="iconSize">@dimen/size_icon_medium</item>
-        <item name="android:minWidth">@dimen/size_btn</item>
-        <item name="android:minHeight">@dimen/size_btn</item>
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
         <item name="android:insetTop">@dimen/spacing_small</item>
         <item name="android:insetBottom">@dimen/spacing_small</item>
         <item name="android:insetLeft">0dp</item>
@@ -279,8 +279,8 @@
 
     <style name="Widget.Auxio.Button.Icon.Huge" parent="Widget.Material3.Button.IconButton">
         <item name="iconSize">40dp</item>
-        <item name="android:minWidth">@dimen/size_btn_larger</item>
-        <item name="android:minHeight">@dimen/size_btn_larger</item>
+        <item name="android:minWidth">@dimen/size_touchable_mid_large</item>
+        <item name="android:minHeight">@dimen/size_touchable_mid_large</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
@@ -298,8 +298,8 @@
     </style>
 
     <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
-        <item name="android:minWidth">@dimen/size_play_pause_button</item>
-        <item name="android:minHeight">@dimen/size_play_pause_button</item>
+        <item name="android:minWidth">@dimen/size_touchable_huge</item>
+        <item name="android:minHeight">@dimen/size_touchable_huge</item>
         <item name="iconSize">48dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>

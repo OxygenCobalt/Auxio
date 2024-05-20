@@ -101,7 +101,7 @@ class MainFragment :
         val queueSheetBehavior =
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
-        elevationNormal = binding.context.getDimen(R.dimen.elevation_normal)
+        elevationNormal = binding.context.getDimen(MR.dimen.m3_sys_elevation_level1)
 
         // Currently all back press callbacks are handled in MainFragment, as it's not guaranteed
         // that instantiating these callbacks in their respective fragments would result in the
@@ -146,12 +146,11 @@ class MainFragment :
                 // Emulate the elevated bottom sheet style.
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                        val cornerSize =
-                            context.resources.getDimension(R.dimen.size_corners_mid_large)
                         shapeAppearanceModel =
-                            ShapeAppearanceModel.builder()
-                                .setTopLeftCornerSize(cornerSize)
-                                .setTopRightCornerSize(cornerSize)
+                            ShapeAppearanceModel.builder(
+                                    context,
+                                    MR.style.ShapeAppearance_Material3_Corner_ExtraLarge,
+                                    MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
                                 .build()
                         fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
                     }

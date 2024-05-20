@@ -151,8 +151,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var showingPopup = false
 
     // Touch
-    private val minTouchTargetSize =
-        context.getDimenPixels(R.dimen.fast_scroll_thumb_touch_target_size)
+    private val minTouchTargetSize = context.getDimenPixels(R.dimen.size_touchable_small)
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
     private var downX = 0f

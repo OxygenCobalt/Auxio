@@ -69,8 +69,8 @@
         <android.widget.ImageButton
             android:id="@+id/widget_skip_prev"
             style="@style/Widget.Auxio.MaterialButton.AppWidget"
-            android:layout_width="@dimen/size_btn"
-            android:layout_height="@dimen/size_btn"
+            android:layout_width="@dimen/size_touchable_small"
+            android:layout_height="@dimen/size_touchable_small"
             android:contentDescription="@string/desc_skip_prev"
             android:src="@drawable/ic_skip_prev_24" />
 
@@ -82,8 +82,8 @@
         <android.widget.ImageButton
             android:id="@+id/widget_play_pause"
             style="@style/Widget.Auxio.MaterialButton.AppWidget.PlayPause"
-            android:layout_width="@dimen/size_btn"
-            android:layout_height="@dimen/size_btn"
+            android:layout_width="@dimen/size_touchable_small"
+            android:layout_height="@dimen/size_touchable_small"
             android:contentDescription="@string/desc_play_pause"
             android:src="@drawable/ic_play_24" />
 
@@ -95,8 +95,8 @@
         <android.widget.ImageButton
             android:id="@+id/widget_skip_next"
             style="@style/Widget.Auxio.MaterialButton.AppWidget"
-            android:layout_width="@dimen/size_btn"
-            android:layout_height="@dimen/size_btn"
+            android:layout_width="@dimen/size_touchable_small"
+            android:layout_height="@dimen/size_touchable_small"
             android:contentDescription="@string/desc_skip_next"
             android:src="@drawable/ic_skip_next_24" />
 

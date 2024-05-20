@@ -89,7 +89,7 @@ constructor(
                         } else if (uiSettings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
                             logD("Using default corner radius")
-                            context.getDimenPixels(R.dimen.size_corners_medium)
+                            context.getDimenPixels(R.dimen.m3_shape_corners_large)
                         } else {
                             // User did not enable round mode.
                             logD("Using no corner radius")

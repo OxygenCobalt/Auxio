@@ -50,8 +50,8 @@ class FastScrollPopupView
 constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0) :
     MaterialTextView(context, attrs, defStyleRes) {
     init {
-        minimumWidth = context.getDimenPixels(R.dimen.fast_scroll_popup_min_width)
-        minimumHeight = context.getDimenPixels(R.dimen.fast_scroll_popup_min_height)
+        minimumWidth = context.getDimenPixels(R.dimen.size_touchable_mid_huge)
+        minimumHeight = context.getDimenPixels(R.dimen.size_touchable_large)
 
         TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
         setTextColor(context.getAttrColorCompat(MR.attr.colorOnSecondary))
@@ -60,7 +60,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         includeFontPadding = false
 
         alpha = 0f
-        elevation = context.getDimenPixels(R.dimen.elevation_normal).toFloat()
+        elevation = context.getDimenPixels(MR.dimen.m3_sys_elevation_level2).toFloat()
         background = FastScrollPopupDrawable(context)
     }
 
@@ -78,8 +78,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         private val path = Path()
         private val matrix = Matrix()
 
-        private val paddingStart = context.getDimenPixels(R.dimen.fast_scroll_popup_padding_start)
-        private val paddingEnd = context.getDimenPixels(R.dimen.fast_scroll_popup_padding_end)
+        private val paddingStart = context.getDimenPixels(R.dimen.spacing_medium)
+        private val paddingEnd = context.getDimenPixels(R.dimen.spacing_mid_huge)
 
         override fun draw(canvas: Canvas) {
             canvas.drawPath(path, paint)

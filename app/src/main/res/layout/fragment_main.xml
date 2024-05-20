@@ -60,7 +60,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/queue_handle_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_bottom_sheet_bar"
+                android:layout_height="@dimen/size_touchable_large"
                 android:contentDescription="@string/desc_queue_bar">
 
                 <com.google.android.material.bottomsheet.BottomSheetDragHandleView
