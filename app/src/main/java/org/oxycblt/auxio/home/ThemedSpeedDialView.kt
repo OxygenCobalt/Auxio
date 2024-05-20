@@ -40,6 +40,8 @@ import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.google.android.material.R as MR
+import com.google.android.material.motion.MotionUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.leinardi.android.speeddial.FabWithLabelView
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -78,6 +80,13 @@ class ThemedSpeedDialView : SpeedDialView {
         @AttrRes defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
+    private val matInterpolator =
+        MotionUtils.resolveThemeInterpolator(
+            context, MR.attr.motionEasingStandardInterpolator, FastOutSlowInInterpolator())
+
+    private val matDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium2, 300)
+
     init {
         // Work around ripple bug on Android 12 when useCompatPadding = true.
         // @see https://github.com/material-components/material-components-android/issues/2617
@@ -107,7 +116,7 @@ class ThemedSpeedDialView : SpeedDialView {
         val mainFabDrawable =
             RotateDrawable().apply {
                 drawable = mainFab.drawable
-                toDegrees = mainFabAnimationRotateAngle
+                toDegrees = 45f + 90f
             }
         mainFabAnimationRotateAngle = 0f
         setMainFabClosedDrawable(mainFabDrawable)
@@ -116,6 +125,13 @@ class ThemedSpeedDialView : SpeedDialView {
                 override fun onMainActionSelected(): Boolean = false
 
                 override fun onToggleChanged(isOpen: Boolean) {
+                    mainFab.backgroundTintList =
+                        ColorStateList.valueOf(
+                            if (isOpen) mainFabClosedBackgroundColor
+                            else mainFabOpenedBackgroundColor)
+                    mainFab.imageTintList =
+                        ColorStateList.valueOf(
+                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor)
                     mainFabAnimator?.cancel()
                     mainFabAnimator =
                         createMainFabAnimator(isOpen).apply {
@@ -132,22 +148,44 @@ class ThemedSpeedDialView : SpeedDialView {
             })
     }
 
-    private fun createMainFabAnimator(isOpen: Boolean): Animator =
-        AnimatorSet().apply {
-            playTogether(
-                ObjectAnimator.ofArgb(
+    private fun createMainFabAnimator(isOpen: Boolean): Animator {
+        val totalDuration = matDuration.toLong()
+        val partialDuration = totalDuration / 2 // This is half of the total duration
+        val delay = totalDuration / 4 // This is one fourth of the total duration
+
+        val backgroundTintAnimator =
+            ObjectAnimator.ofArgb(
                     mainFab,
                     VIEW_PROPERTY_BACKGROUND_TINT,
-                    if (isOpen) mainFabOpenedBackgroundColor else mainFabClosedBackgroundColor),
-                ObjectAnimator.ofArgb(
+                    if (isOpen) mainFabOpenedBackgroundColor else mainFabClosedBackgroundColor)
+                .apply {
+                    startDelay = delay
+                    duration = partialDuration
+                }
+
+        val imageTintAnimator =
+            ObjectAnimator.ofArgb(
                     mainFab,
                     IMAGE_VIEW_PROPERTY_IMAGE_TINT,
-                    if (isOpen) mainFabOpenedIconColor else mainFabClosedIconColor),
-                ObjectAnimator.ofInt(
-                    mainFab.drawable, DRAWABLE_PROPERTY_LEVEL, if (isOpen) 10000 else 0))
-            duration = 200
-            interpolator = FastOutSlowInInterpolator()
-        }
+                    if (isOpen) mainFabOpenedIconColor else mainFabClosedIconColor)
+                .apply {
+                    startDelay = delay
+                    duration = partialDuration
+                }
+
+        val levelAnimator =
+            ObjectAnimator.ofInt(
+                    mainFab.drawable, DRAWABLE_PROPERTY_LEVEL, if (isOpen) 10000 else 0)
+                .apply { duration = totalDuration }
+
+        val animatorSet =
+            AnimatorSet().apply {
+                playTogether(backgroundTintAnimator, imageTintAnimator, levelAnimator)
+                interpolator = matInterpolator
+            }
+        animatorSet.start()
+        return animatorSet
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
