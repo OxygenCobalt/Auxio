@@ -98,8 +98,14 @@ class PlaybackPanelFragment :
             isSelected = true
             setOnClickListener { navigateToCurrentSong() }
         }
-        binding.playbackArtist.setOnClickListener { navigateToCurrentArtist() }
-        binding.playbackAlbum.setOnClickListener { navigateToCurrentAlbum() }
+        binding.playbackArtist.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentArtist() }
+        }
+        binding.playbackAlbum.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentAlbum() }
+        }
 
         binding.playbackSeekBar.listener = this
 
@@ -110,7 +116,7 @@ class PlaybackPanelFragment :
         binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
-        binding.playbackMore?.setOnClickListener {
+        binding.playbackMore.setOnClickListener {
             playbackModel.song.value?.let {
                 listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
             }
@@ -128,6 +134,8 @@ class PlaybackPanelFragment :
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
         binding.playbackSong.isSelected = false
+        binding.playbackArtist.isSelected = false
+        binding.playbackAlbum.isSelected = false
         binding.playbackToolbar.setOnMenuItemClickListener(null)
     }
 
