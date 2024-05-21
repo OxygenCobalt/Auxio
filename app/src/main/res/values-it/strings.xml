@@ -265,7 +265,7 @@
     <string name="set_library">Collezione</string>
     <string name="set_ui_desc">Cambia il tema e i colori dell\'app</string>
     <string name="set_content_desc">Controlla come vengono caricate musica e immagini</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Normalizzazione del volume</string>
     <string name="set_playback">Riproduzione</string>
     <string name="set_state">Persistenza</string>
     <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
@@ -328,4 +328,11 @@
     <string name="lbl_windows_paths">Usa percorsi compatibili con Windows</string>
     <string name="lng_playlist_imported">Playlist importata</string>
     <string name="lng_playlist_exported">Playlist esportata</string>
+    <string name="set_replay_gain_mode_off">Spento</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demo</string>
+    <string name="lbl_replaygain_track">Regolazione traccia ReplayGain</string>
+    <string name="lbl_replaygain_album">Regolazione album ReplayGain</string>
+    <string name="set_remember_pause">Ricorda pausa</string>
+    <string name="set_remember_pause_desc">Mantiene riproduzione/pausa durante il cambio di brano e la modifica della coda di riproduzione</string>
 </resources>
