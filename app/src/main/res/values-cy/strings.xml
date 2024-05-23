@@ -197,4 +197,12 @@
     <string name="fmt_lib_artist_count">Artistiaid wedi\'u llwytho: %d</string>
     <string name="fmt_lib_genre_count">Genres wedi\'u llwytho: %d</string>
     <string name="fmt_lib_total_duration">Cyfanswm hyd: %s</string>
+    <string name="set_pre_amp_without">Addasiad heb dagiau</string>
+    <string name="set_replay_gain_mode_dynamic">Ffafrio albwm os oes un yn chwarae</string>
+    <string name="set_remember_pause">Cofio cyflwr oedi</string>
+    <string name="set_replay_gain">Normaleiddio uchder sain</string>
+    <string name="set_replay_gain_mode">Strategaeth ReplayGain</string>
+    <string name="set_replay_gain_mode_track">Ffafrio trac</string>
+    <string name="set_replay_gain_mode_album">Ffafrio albwm</string>
+    <string name="set_pre_amp_with">Addasiad gyda thagiau</string>
 </resources>
