@@ -320,7 +320,7 @@
     <string name="lbl_import_playlist">Wiedergabeliste importieren</string>
     <string name="lbl_export_playlist">Wiedergabeliste exportieren</string>
     <string name="lbl_path_style">Pfadstil</string>
-    <string name="lbl_path_style_absolute">Abolut</string>
+    <string name="lbl_path_style_absolute">Absolut</string>
     <string name="lbl_path_style_relative">Relativ</string>
     <string name="lbl_windows_paths">Windows-kompatible Pfade verwenden</string>
     <string name="lbl_export">Exportieren</string>
