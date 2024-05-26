@@ -68,7 +68,7 @@
             <set>
                 <objectAnimator
                     android:duration="1000"
-                    android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
+                    android:interpolator="@interpolator/m3_sys_motion_easing_standard_decelerate"
                     android:propertyName="rotation"
                     android:startOffset="0"
                     android:valueFrom="90"
@@ -83,7 +83,7 @@
             <set>
                 <objectAnimator
                     android:duration="1000"
-                    android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
+                    android:interpolator="@interpolator/m3_sys_motion_easing_standard_decelerate"
                     android:propertyName="rotation"
                     android:startOffset="0"
                     android:valueFrom="90"
@@ -97,7 +97,7 @@
             <set>
                 <objectAnimator
                     android:duration="1000"
-                    android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
+                    android:interpolator="@interpolator/m3_sys_motion_easing_standard_decelerate"
                     android:propertyName="strokeWidth"
                     android:startOffset="0"
                     android:valueFrom="0"
