@@ -75,7 +75,7 @@ interface M3U {
 class M3UImpl @Inject constructor(@ApplicationContext private val context: Context) : M3U {
     override fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist? {
         val reader = BufferedReader(InputStreamReader(stream))
-        val paths = mutableListOf<Path>()
+        val paths = mutableListOf<PossiblePaths>()
         var name: String? = null
 
         consumeFile@ while (true) {
@@ -112,39 +112,62 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
             }
 
             // There is basically no formal specification of file paths in M3U, and it differs
-            // based on the US that generated it. These are the paths though that I assume most
-            // programs will generate.
-            val components =
+            // based on the programs that generated it. These are the paths though that I assume
+            // most programs will generate. Note that we do end up proposing multiple
+            // interpretations
+            val possibilities =
                 when {
                     path.startsWith('/') -> {
                         // Unix absolute path. Note that we still assume this absolute path is in
                         // the same volume as the M3U file. There's no sane way to map the volume
                         // to the phone's volumes, so this is the only thing we can do.
-                        Components.parseUnix(path)
+                        val absoluteInterpretation = Components.parseUnix(path)
+                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        listOf(absoluteInterpretation, relativeInterpretation)
                     }
+
                     path.startsWith("./") -> {
                         // Unix relative path, resolve it
-                        Components.parseUnix(path).absoluteTo(workingDirectory.components)
+                        val absoluteInterpretation = Components.parseUnix(path)
+                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        listOf(relativeInterpretation, absoluteInterpretation)
                     }
+
                     path.matches(WINDOWS_VOLUME_PREFIX_REGEX) -> {
                         // Windows absolute path, we should get rid of the volume prefix, but
-                        // otherwise
-                        // the rest should be fine. Again, we have to disregard what the volume
-                        // actually
-                        // is since there's no sane way to map it to the phone's volumes.
-                        Components.parseWindows(path.substring(2))
+                        // otherwise the rest should be fine. Again, we have to disregard what the
+                        // volume actually is since there's no sane way to map it to the phone's volumes.
+                        val absoluteInterpretation = Components.parseWindows(path.substring(2))
+                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        listOf(absoluteInterpretation, relativeInterpretation)
                     }
+
+                    path.startsWith("\\") -> {
+                        // Weird unix/windows hybrid absolute path that appears sometimes
+                        val absoluteInterpretation = Components.parseWindows(path)
+                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        listOf(absoluteInterpretation, relativeInterpretation)
+                    }
+
                     path.startsWith(".\\") -> {
-                        // Windows relative path, we need to remove the .\\ prefix
-                        Components.parseWindows(path).absoluteTo(workingDirectory.components)
+                        // Windows-style relative path
+                        val absoluteInterpretation = Components.parseWindows(path)
+                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        listOf(relativeInterpretation, absoluteInterpretation)
                     }
+
                     else -> {
-                        // No clue, parse by all separators and assume it's relative.
-                        Components.parseAny(path).absoluteTo(workingDirectory.components)
+                        // No clue, just go wild and assume all possible combinations.
+                        val unixAbsoluteInterpretation = Components.parseUnix(path)
+                        val unixRelativeInterpretation = unixAbsoluteInterpretation.absoluteTo(workingDirectory.components)
+                        val windowsAbsoluteInterpretation = Components.parseWindows(path)
+                        val windowsRelativeInterpretation = windowsAbsoluteInterpretation.absoluteTo(workingDirectory.components)
+                        listOf(unixRelativeInterpretation, unixAbsoluteInterpretation,
+                            windowsRelativeInterpretation, windowsAbsoluteInterpretation)
                     }
                 }
 
-            paths.add(Path(workingDirectory.volume, components))
+            paths.add(possibilities.map { Path(workingDirectory.volume, it) })
         }
 
         return if (paths.isNotEmpty()) {

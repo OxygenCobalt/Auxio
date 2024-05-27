@@ -76,7 +76,9 @@ data class ExportConfig(val absolute: Boolean, val windowsPaths: Boolean)
  * @see ExternalPlaylistManager
  * @see M3U
  */
-data class ImportedPlaylist(val name: String?, val paths: List<Path>)
+data class ImportedPlaylist(val name: String?, val paths: List<PossiblePaths>)
+
+typealias PossiblePaths = List<Path>
 
 class ExternalPlaylistManagerImpl
 @Inject
