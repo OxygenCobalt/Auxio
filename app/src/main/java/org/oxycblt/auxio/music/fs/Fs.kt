@@ -158,6 +158,9 @@ value class Components private constructor(val components: List<String>) {
         return components == other.components.take(components.size)
     }
 
+    fun containing(other: Components) =
+        Components(components + other.components.drop(components.size))
+
     companion object {
         /**
          * Parses a path string into a [Components] instance by the unix path separator (/).
