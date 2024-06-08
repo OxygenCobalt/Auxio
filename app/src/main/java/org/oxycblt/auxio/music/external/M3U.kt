@@ -122,48 +122,54 @@ class M3UImpl @Inject constructor(@ApplicationContext private val context: Conte
                         // the same volume as the M3U file. There's no sane way to map the volume
                         // to the phone's volumes, so this is the only thing we can do.
                         val absoluteInterpretation = Components.parseUnix(path)
-                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        val relativeInterpretation =
+                            absoluteInterpretation.absoluteTo(workingDirectory.components)
                         listOf(absoluteInterpretation, relativeInterpretation)
                     }
-
                     path.startsWith("./") -> {
                         // Unix relative path, resolve it
                         val absoluteInterpretation = Components.parseUnix(path)
-                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        val relativeInterpretation =
+                            absoluteInterpretation.absoluteTo(workingDirectory.components)
                         listOf(relativeInterpretation, absoluteInterpretation)
                     }
-
                     path.matches(WINDOWS_VOLUME_PREFIX_REGEX) -> {
                         // Windows absolute path, we should get rid of the volume prefix, but
                         // otherwise the rest should be fine. Again, we have to disregard what the
-                        // volume actually is since there's no sane way to map it to the phone's volumes.
+                        // volume actually is since there's no sane way to map it to the phone's
+                        // volumes.
                         val absoluteInterpretation = Components.parseWindows(path.substring(2))
-                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        val relativeInterpretation =
+                            absoluteInterpretation.absoluteTo(workingDirectory.components)
                         listOf(absoluteInterpretation, relativeInterpretation)
                     }
-
                     path.startsWith("\\") -> {
                         // Weird unix/windows hybrid absolute path that appears sometimes
                         val absoluteInterpretation = Components.parseWindows(path)
-                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        val relativeInterpretation =
+                            absoluteInterpretation.absoluteTo(workingDirectory.components)
                         listOf(absoluteInterpretation, relativeInterpretation)
                     }
-
                     path.startsWith(".\\") -> {
                         // Windows-style relative path
                         val absoluteInterpretation = Components.parseWindows(path)
-                        val relativeInterpretation = absoluteInterpretation.absoluteTo(workingDirectory.components)
+                        val relativeInterpretation =
+                            absoluteInterpretation.absoluteTo(workingDirectory.components)
                         listOf(relativeInterpretation, absoluteInterpretation)
                     }
-
                     else -> {
                         // No clue, just go wild and assume all possible combinations.
                         val unixAbsoluteInterpretation = Components.parseUnix(path)
-                        val unixRelativeInterpretation = unixAbsoluteInterpretation.absoluteTo(workingDirectory.components)
+                        val unixRelativeInterpretation =
+                            unixAbsoluteInterpretation.absoluteTo(workingDirectory.components)
                         val windowsAbsoluteInterpretation = Components.parseWindows(path)
-                        val windowsRelativeInterpretation = windowsAbsoluteInterpretation.absoluteTo(workingDirectory.components)
-                        listOf(unixRelativeInterpretation, unixAbsoluteInterpretation,
-                            windowsRelativeInterpretation, windowsAbsoluteInterpretation)
+                        val windowsRelativeInterpretation =
+                            windowsAbsoluteInterpretation.absoluteTo(workingDirectory.components)
+                        listOf(
+                            unixRelativeInterpretation,
+                            unixAbsoluteInterpretation,
+                            windowsRelativeInterpretation,
+                            windowsAbsoluteInterpretation)
                     }
                 }
 

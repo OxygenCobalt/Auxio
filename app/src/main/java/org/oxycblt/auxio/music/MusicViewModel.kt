@@ -164,8 +164,10 @@ constructor(
                 }
 
                 val deviceLibrary = musicRepository.deviceLibrary ?: return@launch
-                val songs = importedPlaylist.paths.mapNotNull {
-                    it.firstNotNullOfOrNull(deviceLibrary::findSongByPath) }
+                val songs =
+                    importedPlaylist.paths.mapNotNull {
+                        it.firstNotNullOfOrNull(deviceLibrary::findSongByPath)
+                    }
 
                 if (songs.isEmpty()) {
                     logE("No songs found")
