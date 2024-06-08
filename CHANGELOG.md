@@ -12,6 +12,8 @@
 
 #### What's Fixed
 - Fixed repeat mode not restoring on startup
+- Fixed rewinding not occuring when skipping back at the beginning of the queue if
+rewind before skipping was turned off
 
 #### What's Changed
 - For the time being, the media notification will not follow Album Covers or 1:1 Covers settings

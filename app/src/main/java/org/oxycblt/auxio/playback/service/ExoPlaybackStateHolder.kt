@@ -270,8 +270,10 @@ class ExoPlaybackStateHolder(
     override fun prev() {
         if (playbackSettings.rewindWithPrev) {
             player.seekToPrevious()
-        } else {
+        } else if (player.hasPreviousMediaItem()) {
             player.seekToPreviousMediaItem()
+        } else {
+            player.seekTo(0)
         }
         if (!playbackSettings.rememberPause) {
             player.play()
