@@ -124,6 +124,8 @@ fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
                 // The overflow menu's view implementation is package-private, so test for the
                 // first child that isn't a plain action button.
                 if (menuChild !is ActionMenuItemView) {
+                    // Override all listeners related to opening the overflow menu.
+                    menuChild.setOnTouchListener(null)
                     menuChild.setOnClickListener(block)
                     return
                 }
