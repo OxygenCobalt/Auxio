@@ -173,6 +173,14 @@ class MediaSessionPlayer(
         playbackManager.repeatMode(appRepeatMode)
     }
 
+    override fun seekToDefaultPosition() {
+        playbackManager.seekTo(0)
+    }
+
+    override fun seekToDefaultPosition(mediaItemIndex: Int) {
+        playbackManager.goto(mediaItemIndex)
+    }
+
     override fun seekToNext() = playbackManager.next()
 
     override fun seekToNextMediaItem() = playbackManager.next()
@@ -277,10 +285,6 @@ class MediaSessionPlayer(
     override fun clearMediaItems() = notAllowed()
 
     override fun setPlaybackSpeed(speed: Float) = notAllowed()
-
-    override fun seekToDefaultPosition() = notAllowed()
-
-    override fun seekToDefaultPosition(mediaItemIndex: Int) = notAllowed()
 
     override fun seekForward() = notAllowed()
 
