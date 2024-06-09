@@ -91,7 +91,8 @@ constructor(
         override val shuffled: Boolean
     ) : PlaybackCommand
 
-    override fun song(song: Song, shuffle: ShuffleMode) = newCommand(song, shuffle)
+    override fun song(song: Song, shuffle: ShuffleMode) =
+        newCommand(song, null, listOf(song), shuffle)
 
     override fun songFromAll(song: Song, shuffle: ShuffleMode) = newCommand(song, shuffle)
 
@@ -105,7 +106,7 @@ constructor(
         newCommand(song, genre, song.genres, listSettings.genreSongSort, shuffle)
 
     override fun songFromPlaylist(song: Song, playlist: Playlist, shuffle: ShuffleMode) =
-        newCommand(song, playlist, playlist.songs, listSettings.playlistSort, shuffle)
+        newCommand(song, playlist, playlist.songs, shuffle)
 
     override fun all(shuffle: ShuffleMode) = newCommand(null, shuffle)
 
