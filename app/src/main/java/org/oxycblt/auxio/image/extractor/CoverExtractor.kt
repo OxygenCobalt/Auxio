@@ -157,8 +157,8 @@ constructor(
         }
 
     private suspend fun extractQualityCover(cover: Cover.Embedded) =
-        extractAospMetadataCover(cover)
-            ?: extractExoplayerCover(cover) ?: extractMediaStoreCover(cover)
+        extractExoplayerCover(cover)
+            ?: extractAospMetadataCover(cover) ?: extractMediaStoreCover(cover)
 
     private fun extractAospMetadataCover(cover: Cover.Embedded): InputStream? =
         MediaMetadataRetriever().run {
