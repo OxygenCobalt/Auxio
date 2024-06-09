@@ -20,6 +20,12 @@ package org.oxycblt.auxio.music.external
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStream
+import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.Path
@@ -29,12 +35,6 @@ import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.OutputStream
-import javax.inject.Inject
 
 /**
  * Minimal M3U file format implementation.
@@ -75,7 +75,9 @@ interface M3U {
     }
 }
 
-class M3UImpl @Inject constructor(
+class M3UImpl
+@Inject
+constructor(
     @ApplicationContext private val context: Context,
     private val volumeManager: VolumeManager
 ) : M3U {
@@ -122,9 +124,8 @@ class M3UImpl @Inject constructor(
             // based on the programs that generated it. I more or less have to consider any possible
             // interpretation as valid.
             val interpretations = interpretPath(path)
-            val possibilities = interpretations.flatMap {
-                expandInterpretation(it, workingDirectory, volumes)
-            }
+            val possibilities =
+                interpretations.flatMap { expandInterpretation(it, workingDirectory, volumes) }
 
             paths.add(possibilities)
         }
@@ -137,49 +138,20 @@ class M3UImpl @Inject constructor(
         }
     }
 
-    private data class InterpretedPath(
-        val components: Components,
-        val likelyAbsolute: Boolean
-    )
+    private data class InterpretedPath(val components: Components, val likelyAbsolute: Boolean)
 
     private fun interpretPath(path: String): List<InterpretedPath> =
         when {
-            path.startsWith('/') ->
-                listOf(InterpretedPath(Components.parseUnix(path), true))
-
-            path.startsWith("./") -> listOf(
-                InterpretedPath(
-                    Components.parseUnix(path),
-                    false
-                )
-            )
-
-            path.matches(WINDOWS_VOLUME_PREFIX_REGEX) -> listOf(
-                InterpretedPath(
-                    Components.parseWindows(
-                        path.substring(2)
-                    ), true
-                )
-            )
-
-            path.startsWith("\\") -> listOf(
-                InterpretedPath(
-                    Components.parseWindows(path),
-                    true
-                )
-            )
-
-            path.startsWith(".\\") -> listOf(
-                InterpretedPath(
-                    Components.parseWindows(path),
-                    false
-                )
-            )
-
-            else -> listOf(
-                InterpretedPath(Components.parseUnix(path), false),
-                InterpretedPath(Components.parseWindows(path), true)
-            )
+            path.startsWith('/') -> listOf(InterpretedPath(Components.parseUnix(path), true))
+            path.startsWith("./") -> listOf(InterpretedPath(Components.parseUnix(path), false))
+            path.matches(WINDOWS_VOLUME_PREFIX_REGEX) ->
+                listOf(InterpretedPath(Components.parseWindows(path.substring(2)), true))
+            path.startsWith("\\") -> listOf(InterpretedPath(Components.parseWindows(path), true))
+            path.startsWith(".\\") -> listOf(InterpretedPath(Components.parseWindows(path), false))
+            else ->
+                listOf(
+                    InterpretedPath(Components.parseUnix(path), false),
+                    InterpretedPath(Components.parseWindows(path), true))
         }
 
     private fun expandInterpretation(
@@ -191,23 +163,16 @@ class M3UImpl @Inject constructor(
         val relativeInterpretation =
             Path(workingDirectory.volume, path.components.absoluteTo(workingDirectory.components))
         val volumeExactMatch = volumes.find { it.components?.contains(path.components) == true }
-        val volumeInterpretation = volumeExactMatch?.let {
-            val components = unlikelyToBeNull(volumeExactMatch.components)
-                .containing(path.components)
-            Path(volumeExactMatch, components)
-        }
+        val volumeInterpretation =
+            volumeExactMatch?.let {
+                val components =
+                    unlikelyToBeNull(volumeExactMatch.components).containing(path.components)
+                Path(volumeExactMatch, components)
+            }
         return if (path.likelyAbsolute) {
-            listOfNotNull(
-                volumeInterpretation,
-                absoluteInterpretation,
-                relativeInterpretation
-            )
+            listOfNotNull(volumeInterpretation, absoluteInterpretation, relativeInterpretation)
         } else {
-            listOfNotNull(
-                relativeInterpretation,
-                volumeInterpretation,
-                absoluteInterpretation
-            )
+            listOfNotNull(relativeInterpretation, volumeInterpretation, absoluteInterpretation)
         }
     }
 
