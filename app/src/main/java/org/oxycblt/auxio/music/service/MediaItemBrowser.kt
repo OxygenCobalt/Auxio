@@ -19,6 +19,9 @@
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
+import android.os.Bundle
+import androidx.annotation.StringRes
+import androidx.media.utils.MediaConstants
 import androidx.media3.common.MediaItem
 import androidx.media3.session.MediaSession.ControllerInfo
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -29,6 +32,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
@@ -213,25 +217,39 @@ constructor(
         return when (val item = musicRepository.find(uid)) {
             is Album -> {
                 val songs = listSettings.albumSongSort.songs(item.songs)
-                songs.map { it.toMediaItem(context, item) }
+                songs.map { it.toMediaItem(context, item).withHeader(R.string.lbl_songs) }
             }
             is Artist -> {
                 val albums = ARTIST_ALBUMS_SORT.albums(item.explicitAlbums + item.implicitAlbums)
                 val songs = listSettings.artistSongSort.songs(item.songs)
-                albums.map { it.toMediaItem(context) } + songs.map { it.toMediaItem(context, item) }
+                albums.map { it.toMediaItem(context).withHeader(R.string.lbl_albums) } +
+                    songs.map { it.toMediaItem(context, item).withHeader(R.string.lbl_songs) }
             }
             is Genre -> {
                 val artists = GENRE_ARTISTS_SORT.artists(item.artists)
                 val songs = listSettings.genreSongSort.songs(item.songs)
-                artists.map { it.toMediaItem(context) } +
-                    songs.map { it.toMediaItem(context, null) }
+                artists.map { it.toMediaItem(context).withHeader(R.string.lbl_artists) } +
+                    songs.map { it.toMediaItem(context, null).withHeader(R.string.lbl_songs) }
             }
             is Playlist -> {
-                item.songs.map { it.toMediaItem(context, item) }
+                item.songs.map { it.toMediaItem(context, item).withHeader(R.string.lbl_songs) }
             }
             is Song,
             null -> return null
         }
+    }
+
+    private fun MediaItem.withHeader(@StringRes res: Int): MediaItem {
+        val oldExtras = mediaMetadata.extras ?: Bundle()
+        val newExtras =
+            Bundle(oldExtras).apply {
+                putString(
+                    MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
+                    context.getString(res))
+            }
+        return buildUpon()
+            .setMediaMetadata(mediaMetadata.buildUpon().setExtras(newExtras).build())
+            .build()
     }
 
     private fun getCategorySize(
