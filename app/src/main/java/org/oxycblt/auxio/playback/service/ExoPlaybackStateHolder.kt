@@ -367,17 +367,28 @@ class ExoPlaybackStateHolder(
         rawQueue: RawQueue,
         ack: StateAck.NewPlayback?
     ) {
-        this.parent = parent
-        player.setMediaItems(rawQueue.heap.map { it.toMediaItem(context, null) })
-        if (rawQueue.isShuffled) {
-            player.shuffleModeEnabled = true
-            player.setShuffleOrder(BetterShuffleOrder(rawQueue.shuffledMapping.toIntArray()))
-        } else {
-            player.shuffleModeEnabled = false
+        logD("Applying saved state")
+        var sendEvent = false
+        if (this.parent != parent) {
+            this.parent = parent
+            sendEvent = true
         }
-        player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
-        player.prepare()
-        ack?.let { playbackManager.ack(this, it) }
+        if (rawQueue != resolveQueue()) {
+            player.setMediaItems(rawQueue.heap.map { it.toMediaItem(context, null) })
+            if (rawQueue.isShuffled) {
+                player.shuffleModeEnabled = true
+                player.setShuffleOrder(BetterShuffleOrder(rawQueue.shuffledMapping.toIntArray()))
+            } else {
+                player.shuffleModeEnabled = false
+            }
+            player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
+            player.prepare()
+            player.pause()
+            sendEvent = true
+        }
+        if (sendEvent) {
+            ack?.let { playbackManager.ack(this, it) }
+        }
     }
 
     override fun endSession() {
