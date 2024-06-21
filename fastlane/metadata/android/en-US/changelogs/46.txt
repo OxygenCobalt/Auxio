@@ -1,0 +1,2 @@
+Auxio 3.5.0 adds support for android auto alongside various playback and music quality of life improvements.
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v3.5.0
