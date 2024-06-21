@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.4.3">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.4.3&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.5.0">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.5.0&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -78,6 +78,7 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
     <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
     <a href="https://github.com/dmint789"><img src="https://avatars.githubusercontent.com/u/53250435?v=4" width=50 /></a>
     <a href="https://github.com/gtsiam"><img src="https://avatars.githubusercontent.com/u/7459196?v=4" width=50 /></a>
+    <a href="https://github.com/yrliet"><img src="https://avatars.githubusercontent.com/u/151430565?v=4" width=50 /></a>
 </p>
 
 ## Building
