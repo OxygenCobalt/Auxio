@@ -12,6 +12,7 @@
 - Support multi-value MP4 tags with multiple `data` sub-atoms are parsed correctly
 - M3U paths are now interpreted both as relative and absolute regardless of the format
 - Added support for M3U paths starting with /storage/
+- Queue no longer scrolls as quickly when dragging items
 
 #### What's Fixed
 - Fixed repeat mode not restoring on startup
@@ -22,6 +23,9 @@ rewind before skipping was turned off
 #### What's Changed
 - For the time being, the media notification will not follow Album Covers or 1:1 Covers settings
 - Playback will close automatically after some time left idle
+
+#### Dev/Meta
+- Use WEBP instead of PNG icons
 
 #### dev -> release changes
 - Re-added ability to open app from clicking on notification
