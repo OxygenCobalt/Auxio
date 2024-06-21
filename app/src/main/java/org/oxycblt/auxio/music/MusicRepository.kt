@@ -206,7 +206,7 @@ interface MusicRepository {
     /** A persistent worker that can load music in the background. */
     interface IndexingWorker {
         /** A [Context] required to read device storage */
-        val context: Context
+        val workerContext: Context
 
         /** The [CoroutineScope] to perform coroutine music loading work on. */
         val scope: CoroutineScope
@@ -343,7 +343,7 @@ constructor(
     }
 
     override fun index(worker: MusicRepository.IndexingWorker, withCache: Boolean) =
-        worker.scope.launch { indexWrapper(worker.context, this, withCache) }
+        worker.scope.launch { indexWrapper(worker.workerContext, this, withCache) }
 
     private suspend fun indexWrapper(context: Context, scope: CoroutineScope, withCache: Boolean) {
         try {

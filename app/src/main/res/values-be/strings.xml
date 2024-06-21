@@ -16,7 +16,7 @@
     <string name="set_separators_comma">Коска (,)</string>
     <string name="set_separators_plus">Плюс (+)</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
-    <string name="set_dirs_mode_include">Уключэнні</string>
+    <string name="set_dirs_mode_include">Ўключыць</string>
     <string name="set_ui">Афармленне</string>
     <string name="lbl_retry">Паўтарыць</string>
     <string name="lng_search_library">Пошук у вашай бібліятэцы…</string>
@@ -27,7 +27,7 @@
     <string name="lbl_grant">Выдаць</string>
     <string name="lbl_songs">Песні</string>
     <string name="set_ui_desc">Змяніце тэму і колеры праграмы</string>
-    <string name="lbl_all_songs">Усе песні</string>
+    <string name="lbl_all_songs">Ўсе песні</string>
     <string name="lbl_albums">Альбомы</string>
     <string name="lbl_album">Альбом</string>
     <string name="lbl_album_live">Жывы альбом</string>
@@ -58,7 +58,7 @@
     <string name="lbl_genre">Жанр</string>
     <string name="lbl_search">Пошук</string>
     <string name="lbl_filter">Фільтр</string>
-    <string name="lbl_filter_all">Усе</string>
+    <string name="lbl_filter_all">Ўсе</string>
     <string name="lbl_name">Назва</string>
     <string name="lbl_genres">Жанры</string>
     <string name="lbl_sort">Сартаваць</string>
@@ -84,7 +84,7 @@
     <string name="lbl_album_details">Перайсці да альбома</string>
     <string name="lbl_artist_details">Перайсці да выканаўцы</string>
     <string name="lbl_song_detail">Праглядзіце ўласцівасці</string>
-    <string name="lbl_props">Уласцівасці песні</string>
+    <string name="lbl_props">Ўласцівасці песні</string>
     <string name="lbl_format">Фармат</string>
     <string name="lbl_shuffle_shortcut_long">Перамяшаць усё</string>
     <string name="lbl_bitrate">Бітрэйт</string>
@@ -121,8 +121,8 @@
     <string name="set_dirs_list">Тэчкі</string>
     <string name="set_dirs_mode">Рэжым</string>
     <string name="set_dirs_mode_exclude">Выключэнні</string>
-    <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будзе загружана з папак, якія вы дадасце.</string>
-    <string name="set_dirs_mode_include_desc">Музыка будзе загружацца <b>толькі</b> з папак, якія вы дадасце.</string>
+    <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будзе загружана з выбраных тэчак.</string>
+    <string name="set_dirs_mode_include_desc">Музыка будзе загружана <b>толькі</b> з выбраных тэчак.</string>
     <string name="set_rescan">Перасканаваць музыку</string>
     <string name="set_reindex">Абнавіць музыку</string>
     <string name="set_reindex_desc">Перазагрузіце музычную бібліятэку, выкарыстоўваючы па магчымасці кэшаваныя тэгі</string>
@@ -148,7 +148,7 @@
     <string name="desc_skip_prev">Перайсці да апошняй песні</string>
     <string name="desc_change_repeat">Змяніць рэжым паўтору</string>
     <string name="desc_auxio_icon">Значок Auxio</string>
-    <string name="desc_shuffle">Уключыце або выключыце перамешванне</string>
+    <string name="desc_shuffle">Ўключыце або выключыце перамешванне</string>
     <string name="desc_remove_song">Выдаліць гэтую песню з чаргі</string>
     <string name="desc_shuffle_all">Перамяшаць усе песні</string>
     <string name="desc_exit">Спыніць прайграванне</string>
@@ -221,11 +221,11 @@
     <string name="cdc_aac">Прасунуты аўдыё кодэк (AAC)</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="cdc_flac">Свабодны аўдыё кодэк без страты якасці (FLAC)</string>
-    <string name="set_exclude_non_music">Уключыць не-музыку</string>
-    <string name="set_round_mode_desc">Уключыць закругленыя вуглы на дадатковых элементах інтэрфейсу (патрабуецца закругленне вокладак альбомаў)</string>
+    <string name="set_exclude_non_music">Выключыць іншыя гукавыя файлы</string>
+    <string name="set_round_mode_desc">Ўключыць закругленыя вуглы на дадатковых элементах інтэрфейсу (патрабуецца закругленне вокладак альбомаў)</string>
     <string name="set_personalize_desc">Наладзьце элементы кіравання і паводзіны карыстацкага інтэрфейсу</string>
     <string name="set_display">Экран</string>
-    <string name="set_lib_tabs">Укладкі бібліятэкі</string>
+    <string name="set_lib_tabs">Ўкладкі бібліятэкі</string>
     <string name="set_lib_tabs_desc">Змяніць бачнасць і парадак укладак бібліятэкі</string>
     <string name="set_action_mode_next">Перайсці да наступнага</string>
     <string name="set_action_mode_repeat">Рэжым паўтору</string>
@@ -240,7 +240,7 @@
     <string name="set_play_song_from_artist">Гуляць ад выканаўцы</string>
     <string name="set_play_song_from_genre">Гуляць з жанру</string>
     <string name="set_keep_shuffle">Запамінаць перамешванне</string>
-    <string name="set_keep_shuffle_desc">Уключайце перамешванне падчас прайгравання новай песні</string>
+    <string name="set_keep_shuffle_desc">Ўключайце перамешванне падчас прайгравання новай песні</string>
     <string name="set_content">Кантэнт</string>
     <string name="set_music">Музыка</string>
     <string name="set_observing">Аўтаматычная перазагрузка</string>

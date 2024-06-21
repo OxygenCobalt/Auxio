@@ -37,6 +37,12 @@
         android:enableOnBackInvokedCallback="true"
         tools:ignore="UnusedAttribute">
 
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
+        <meta-data
+                android:name="androidx.car.app.TintableAttributionIcon"
+                android:resource="@drawable/ic_auxio_24" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -77,33 +83,28 @@
             </intent-filter>
         </activity>
 
-        <!--
-        Service handling querying the media database,  extracting metadata, and constructing
-        the music library.
-        -->
-        <service
-            android:name=".music.system.IndexerService"
-            android:foregroundServiceType="dataSync"
-            android:icon="@mipmap/ic_launcher"
-            android:exported="false"
-            android:roundIcon="@mipmap/ic_launcher" />
 
         <!--
         Service handling music playback, system components, and state saving.
         -->
         <service
-            android:name=".playback.system.PlaybackService"
+            android:name=".AuxioService"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
-            android:exported="false"
-            android:roundIcon="@mipmap/ic_launcher" />
+            android:exported="true"
+            android:roundIcon="@mipmap/ic_launcher">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService"/>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+            </intent-filter>
+        </service>
 
         <!--
         Work around apps that blindly query for ACTION_MEDIA_BUTTON working.
         See the class for more info.
         -->
         <receiver
-            android:name=".playback.system.MediaButtonReceiver"
+            android:name=".playback.service.MediaButtonReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -133,5 +134,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
+
     </application>
 </manifest>

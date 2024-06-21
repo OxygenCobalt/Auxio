@@ -41,7 +41,7 @@
     <string name="lbl_code">Codice sorgente</string>
     <string name="lbl_licenses">Licenze</string>
     <string name="lbl_author_name">Sviluppato da Alexander Capehart</string>
-    <string name="lbl_library_counts">Statistiche libreria</string>
+    <string name="lbl_library_counts">Statistiche della raccolta</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Opzioni</string>
     <string name="set_ui">Aspetto</string>
@@ -301,4 +301,31 @@
     <string name="lbl_parent_detail">Visualizza</string>
     <string name="set_play_song_by_itself">Riproduci brano da solo</string>
     <string name="lbl_sort_mode">Ordina per</string>
+    <string name="lbl_imported_playlist">Playlist importata</string>
+    <string name="err_export_failed">Impossibile esportare la playlist in questo file</string>
+    <string name="lbl_sort_direction">Direzione</string>
+    <string name="lbl_show_error_info">Espandi</string>
+    <string name="desc_selection_image">Immagine di selezione</string>
+    <string name="lbl_selection">Selezione</string>
+    <string name="lbl_copied">Copiato</string>
+    <string name="lbl_report">Segnala</string>
+    <string name="lbl_author">Autore</string>
+    <string name="lbl_donate">Dona</string>
+    <string name="lbl_supporters">Supporti</string>
+    <string name="lbl_error_info">Informazioni sull\'errore</string>
+    <string name="def_album_count">Nessun album</string>
+    <string name="lbl_path">Percorso</string>
+    <string name="lbl_empty_playlist">Playlist vuota</string>
+    <string name="lbl_import_playlist">Importa playlist</string>
+    <string name="lng_supporters_promo">Dona al progetto; il tuo nome sarà aggiunto qui!</string>
+    <string name="err_import_failed">Impossibile importare una playlist da questo file</string>
+    <string name="lbl_import">Importa</string>
+    <string name="lbl_export">Esporta</string>
+    <string name="lbl_export_playlist">Esporta playlist</string>
+    <string name="lbl_path_style">Stile percorso</string>
+    <string name="lbl_path_style_absolute">Assoluto</string>
+    <string name="lbl_path_style_relative">Relativo</string>
+    <string name="lbl_windows_paths">Usa percorsi compatibili con Windows</string>
+    <string name="lng_playlist_imported">Playlist importata</string>
+    <string name="lng_playlist_exported">Playlist esportata</string>
 </resources>

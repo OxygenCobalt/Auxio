@@ -1,6 +1,43 @@
 # Changelog
 
-## dev
+## 3.5.0
+
+#### What's New
+- Android Auto support
+- Full media browser implementation
+
+#### What's Improved
+- Album covers are now loaded on a per-song basis
+- MP4 sort tags are now correctly interpreted
+- Support multi-value MP4 tags with multiple `data` sub-atoms are parsed correctly
+- M3U paths are now interpreted both as relative and absolute regardless of the format
+- Added support for M3U paths starting with /storage/
+- Queue no longer scrolls as quickly when dragging items
+
+#### What's Fixed
+- Fixed repeat mode not restoring on startup
+- Fixed rewinding not occuring when skipping back at the beginning of the queue if
+rewind before skipping was turned off
+- Fixed artist duplication when inconsistent MusicBrainz ID tag naming was used
+
+#### What's Changed
+- For the time being, the media notification will not follow Album Covers or 1:1 Covers settings
+- Playback will close automatically after some time left idle
+
+#### Dev/Meta
+- Use WEBP instead of PNG icons
+
+#### dev -> release changes
+- Re-added ability to open app from clicking on notification
+- Removed tasker plugin
+- Support multi-value MP4 tags with multiple `data` sub-atoms are parsed correctly
+- M3U paths are now interpreted both as relative and absolute regardless of the format
+- Added support for M3U paths starting with /storage/
+- Fixed artist duplication when inconsistent MusicBrainz ID tag naming was used
+- Made album cover keying more efficient at the cost of resillience
+- Fixed android auto queue not respecting shuffle
+
+## 3.4.3
 
 #### What's Improved
 - Added back option disable ReplayGain for poorly tagged libraries

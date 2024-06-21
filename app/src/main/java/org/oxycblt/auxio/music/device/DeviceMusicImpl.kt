@@ -19,7 +19,8 @@
 package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.extractor.CoverUri
+import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.extractor.ParentCover
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -28,8 +29,9 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
+import org.oxycblt.auxio.music.fs.toAlbumCoverUri
 import org.oxycblt.auxio.music.fs.toAudioUri
-import org.oxycblt.auxio.music.fs.toCoverUri
+import org.oxycblt.auxio.music.fs.toSongCoverUri
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
@@ -111,6 +113,20 @@ class SongImpl(
     private val _genres = mutableListOf<GenreImpl>()
     override val genres: List<Genre>
         get() = _genres
+
+    override val cover =
+        rawSong.coverPerceptualHash?.let {
+            // We were able to confirm that the song had a parsable cover and can be used on
+            // a per-song basis. Otherwise, just fall back to a per-album cover instead, as
+            // it implies either a cover.jpg pattern is used (likely) or ExoPlayer does not
+            // support the cover metadata of a given spec (unlikely).
+            Cover.Embedded(
+                requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.path}: No id" }
+                    .toSongCoverUri(),
+                uri,
+                it)
+        }
+            ?: Cover.External(requireNotNull(rawSong.albumMediaStoreId).toAlbumCoverUri())
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
@@ -291,9 +307,9 @@ class AlbumImpl(
     override val name = nameFactory.parse(rawAlbum.name, rawAlbum.sortName)
     override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
-    override val coverUri = CoverUri(rawAlbum.mediaStoreId.toCoverUri(), grouping.raw.src.uri)
     override val durationMs: Long
     override val dateAdded: Long
+    override val cover: ParentCover
 
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
@@ -336,6 +352,8 @@ class AlbumImpl(
         dates = if (min != null && max != null) Date.Range(min, max) else null
         durationMs = totalDuration
         dateAdded = earliestDateAdded
+
+        cover = ParentCover.from(grouping.raw.src.cover, songs)
 
         hashCode = 31 * hashCode + rawAlbum.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()
@@ -419,6 +437,7 @@ class ArtistImpl(
     override val explicitAlbums: Set<Album>
     override val implicitAlbums: Set<Album>
     override val durationMs: Long?
+    override val cover: ParentCover
 
     override lateinit var genres: List<Genre>
 
@@ -450,6 +469,14 @@ class ArtistImpl(
         explicitAlbums = albums.filterTo(mutableSetOf()) { albumMap[it] == true }
         implicitAlbums = albums.filterNotTo(mutableSetOf()) { albumMap[it] == true }
         durationMs = songs.sumOf { it.durationMs }.positiveOrNull()
+
+        val singleCover =
+            when (val src = grouping.raw.src) {
+                is SongImpl -> src.cover
+                is AlbumImpl -> src.cover.single
+                else -> error("Unexpected input source $src in $name ${src::class.simpleName}")
+            }
+        cover = ParentCover.from(singleCover, songs)
 
         hashCode = 31 * hashCode + rawArtist.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()
@@ -528,6 +555,7 @@ class GenreImpl(
     override val songs: Set<Song>
     override val artists: Set<Artist>
     override val durationMs: Long
+    override val cover: ParentCover
 
     private var hashCode = uid.hashCode()
 
@@ -544,6 +572,8 @@ class GenreImpl(
         songs = grouping.music
         artists = distinctArtists
         durationMs = totalDuration
+
+        cover = ParentCover.from(grouping.raw.src.cover, songs)
 
         hashCode = 31 * hashCode + rawGenre.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()

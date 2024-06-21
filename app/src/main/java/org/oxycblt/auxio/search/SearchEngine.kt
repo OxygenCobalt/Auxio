@@ -56,11 +56,11 @@ interface SearchEngine {
      * @param playlists A list of [Playlist], null if empty.
      */
     data class Items(
-        val songs: Collection<Song>?,
-        val albums: Collection<Album>?,
-        val artists: Collection<Artist>?,
-        val genres: Collection<Genre>?,
-        val playlists: Collection<Playlist>?
+        val songs: Collection<Song>? = null,
+        val albums: Collection<Album>? = null,
+        val artists: Collection<Artist>? = null,
+        val genres: Collection<Genre>? = null,
+        val playlists: Collection<Playlist>? = null
     )
 }
 

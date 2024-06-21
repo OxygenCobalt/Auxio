@@ -32,7 +32,7 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 42, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 46, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {
     abstract fun cachedSongsDao(): CachedSongsDao
 }
@@ -80,6 +80,8 @@ data class CachedSong(
     var subtitle: String? = null,
     /** @see RawSong.date */
     var date: Date? = null,
+    /** @see RawSong.coverPerceptualHash */
+    var coverPerceptualHash: String? = null,
     /** @see RawSong.albumMusicBrainzId */
     var albumMusicBrainzId: String? = null,
     /** @see RawSong.albumName */
@@ -118,6 +120,8 @@ data class CachedSong(
         rawSong.disc = disc
         rawSong.subtitle = subtitle
         rawSong.date = date
+
+        rawSong.coverPerceptualHash = coverPerceptualHash
 
         rawSong.albumMusicBrainzId = albumMusicBrainzId
         rawSong.albumName = albumName
@@ -167,6 +171,7 @@ data class CachedSong(
                 disc = rawSong.disc,
                 subtitle = rawSong.subtitle,
                 date = rawSong.date,
+                coverPerceptualHash = rawSong.coverPerceptualHash,
                 albumMusicBrainzId = rawSong.albumMusicBrainzId,
                 albumName = requireNotNull(rawSong.albumName) { "Invalid raw: No album name" },
                 albumSortName = rawSong.albumSortName,

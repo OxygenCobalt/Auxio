@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        kotlin_version = '1.9.10'
+        kotlin_version = '1.9.23'
         navigation_version = "2.5.3"
-        hilt_version = '2.47'
+        hilt_version = '2.51.1'
     }
 
     dependencies {
@@ -12,10 +12,10 @@ buildscript {
 }
 
 plugins {
-    id "com.android.application" version '8.2.1' apply false
+    id "com.android.application" version '8.4.0' apply false
     id "androidx.navigation.safeargs.kotlin" version "$navigation_version" apply false
     id "org.jetbrains.kotlin.android" version "$kotlin_version" apply false
-    id "com.google.devtools.ksp" version '1.9.10-1.0.13' apply false
+    id "com.google.devtools.ksp" version '1.9.23-1.0.20' apply false
     id "com.diffplug.spotless" version "6.20.0" apply false
 }
 

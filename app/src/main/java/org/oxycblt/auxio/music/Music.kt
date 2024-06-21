@@ -27,7 +27,8 @@ import java.util.UUID
 import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import org.oxycblt.auxio.image.extractor.CoverUri
+import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.extractor.ParentCover
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
@@ -246,6 +247,8 @@ interface Song : Music {
      * audio file in a way that is scoped-storage-safe.
      */
     val uri: Uri
+    /** Useful information to quickly obtain the album cover. */
+    val cover: Cover
     /**
      * The [Path] to this audio file. This is only intended for display, [uri] should be favored
      * instead for accessing the audio file.
@@ -293,11 +296,8 @@ interface Album : MusicParent {
      * [ReleaseType.Album].
      */
     val releaseType: ReleaseType
-    /**
-     * The URI to a MediaStore-provided album cover. These images will be fast to load, but at the
-     * cost of image quality.
-     */
-    val coverUri: CoverUri
+    /** Cover information from the template song used for the album. */
+    val cover: ParentCover
     /** The duration of all songs in the album, in milliseconds. */
     val durationMs: Long
     /** The earliest date a song in this album was added, as a unix epoch timestamp. */
@@ -326,6 +326,8 @@ interface Artist : MusicParent {
      * songs.
      */
     val durationMs: Long?
+    /** Useful information to quickly obtain a (single) cover for a Genre. */
+    val cover: ParentCover
     /** The [Genre]s of this artist. */
     val genres: List<Genre>
 }
@@ -340,6 +342,8 @@ interface Genre : MusicParent {
     val artists: Collection<Artist>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
+    /** Useful information to quickly obtain a (single) cover for a Genre. */
+    val cover: ParentCover
 }
 
 /**
@@ -352,6 +356,8 @@ interface Playlist : MusicParent {
     override val songs: List<Song>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
+    /** Useful information to quickly obtain a (single) cover for a Genre. */
+    val cover: ParentCover?
 }
 
 /**

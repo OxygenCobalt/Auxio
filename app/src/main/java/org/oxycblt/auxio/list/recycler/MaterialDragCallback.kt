@@ -25,6 +25,10 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sign
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback.ViewHolder
 import org.oxycblt.auxio.util.getDimen
@@ -52,6 +56,27 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         } else {
             0
         }
+
+    override fun interpolateOutOfBoundsScroll(
+        recyclerView: RecyclerView,
+        viewSize: Int,
+        viewSizeOutOfBounds: Int,
+        totalSize: Int,
+        msSinceStartScroll: Long
+    ): Int {
+        // Clamp the scroll speed to prevent the lists from freaking out
+        // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
+        val standardSpeed =
+            super.interpolateOutOfBoundsScroll(
+                recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll)
+
+        val clampedAbsVelocity =
+            max(
+                MINIMUM_INITIAL_DRAG_VELOCITY,
+                min(abs(standardSpeed), MAXIMUM_INITIAL_DRAG_VELOCITY))
+
+        return clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
+    }
 
     final override fun onChildDraw(
         c: Canvas,
@@ -149,5 +174,10 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         val delete: View
         /** The drawable of the [body] background that can be elevated. */
         val background: Drawable
+    }
+
+    companion object {
+        const val MINIMUM_INITIAL_DRAG_VELOCITY = 10
+        const val MAXIMUM_INITIAL_DRAG_VELOCITY = 25
     }
 }

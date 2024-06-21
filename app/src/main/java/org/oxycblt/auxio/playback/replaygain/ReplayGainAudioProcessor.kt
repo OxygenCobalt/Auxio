@@ -57,7 +57,7 @@ constructor(
             flush()
         }
 
-    init {
+    fun attach() {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
     }

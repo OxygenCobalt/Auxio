@@ -35,14 +35,14 @@ class ExtractorModule {
     @Provides
     fun imageLoader(
         @ApplicationContext context: Context,
-        songKeyer: SongKeyer,
-        songFactory: SongCoverFetcher.Factory
+        keyer: CoverKeyer,
+        factory: CoverFetcher.Factory
     ) =
         ImageLoader.Builder(context)
             .components {
                 // Add fetchers for Music components to make them usable with ImageRequest
-                add(songKeyer)
-                add(songFactory)
+                add(keyer)
+                add(factory)
             }
             // Use our own crossfade with error drawable support
             .transitionFactory(ErrorCrossfadeTransitionFactory())

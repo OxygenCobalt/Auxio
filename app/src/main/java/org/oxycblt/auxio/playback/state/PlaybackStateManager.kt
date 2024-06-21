@@ -111,13 +111,9 @@ interface PlaybackStateManager {
     /**
      * Start new playback.
      *
-     * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
-     * @param queue The queue of [Song]s to play from.
-     * @param parent The [MusicParent] to play from, or null if to play from an non-specific
-     *   collection of "All [Song]s".
-     * @param shuffled Whether to shuffle or not.
+     * @param command The parameters to start playback with.
      */
-    fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean)
+    fun play(command: PlaybackCommand)
 
     /**
      * Go to the next [Song] in the queue. Will go to the first [Song] in the queue if there is no
@@ -237,8 +233,7 @@ interface PlaybackStateManager {
      */
     fun seekTo(positionMs: Long)
 
-    /** Rewind to the beginning of the currently playing [Song]. */
-    fun rewind() = seekTo(0)
+    fun endSession()
 
     /**
      * Converts the current state of this instance into a [SavedState].
@@ -317,6 +312,8 @@ interface PlaybackStateManager {
          * @param repeatMode The new [RepeatMode].
          */
         fun onRepeatModeChanged(repeatMode: RepeatMode) {}
+
+        fun onSessionEnded() {}
     }
 
     /**
@@ -441,12 +438,12 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     // --- PLAYING FUNCTIONS ---
 
     @Synchronized
-    override fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean) {
+    override fun play(command: PlaybackCommand) {
         val stateHolder = stateHolder ?: return
-        logD("Playing $song from $parent in ${queue.size}-song queue [shuffled=$shuffled]")
+        logD("Playing $command")
         // Played something, so we are initialized now
         isInitialized = true
-        stateHolder.newPlayback(queue, song, parent, shuffled)
+        stateHolder.newPlayback(command)
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -476,7 +473,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun playNext(songs: List<Song>) {
         if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
-            play(songs[0], null, songs, false)
+            play(QueueCommand(songs))
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to start of queue")
@@ -488,12 +485,18 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun addToQueue(songs: List<Song>) {
         if (currentSong == null) {
             logD("Nothing playing, short-circuiting to new playback")
-            play(songs[0], null, songs, false)
+            play(QueueCommand(songs))
         } else {
             val stateHolder = stateHolder ?: return
             logD("Adding ${songs.size} songs to end of queue")
             stateHolder.addToQueue(songs, StateAck.AddToQueue(queue.size, songs.size))
         }
+    }
+
+    private class QueueCommand(override val queue: List<Song>) : PlaybackCommand {
+        override val song: Song? = null
+        override val parent: MusicParent? = null
+        override val shuffled = false
     }
 
     @Synchronized
@@ -560,6 +563,13 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val stateHolder = stateHolder ?: return
         logD("Seeking to ${positionMs}ms")
         stateHolder.seekTo(positionMs)
+    }
+
+    @Synchronized
+    override fun endSession() {
+        val stateHolder = stateHolder ?: return
+        logD("Ending session")
+        stateHolder.endSession()
     }
 
     @Synchronized
@@ -688,6 +698,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                     )
                 listeners.forEach { it.onRepeatModeChanged(stateMirror.repeatMode) }
             }
+            is StateAck.SessionEnded -> {
+                listeners.forEach { it.onSessionEnded() }
+            }
         }
     }
 
@@ -782,15 +795,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         index
                     })
 
-        // Valid state where something needs to be played, direct the stateholder to apply
-        // this new state.
-        val oldStateMirror = stateMirror
-        if (oldStateMirror.rawQueue != rawQueue) {
-            logD("Queue changed, must reload player")
-            stateHolder.playing(false)
-            stateHolder.applySavedState(parent, rawQueue, StateAck.NewPlayback)
-            stateHolder.seekTo(savedState.positionMs)
-        }
+        stateHolder.applySavedState(savedState.parent, rawQueue, StateAck.NewPlayback)
+        stateHolder.seekTo(savedState.positionMs)
+        stateHolder.repeatMode(savedState.repeatMode)
 
         isInitialized = true
     }
