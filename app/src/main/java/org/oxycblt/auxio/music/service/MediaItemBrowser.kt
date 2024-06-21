@@ -61,8 +61,6 @@ constructor(
     private var invalidator: Invalidator? = null
 
     interface Invalidator {
-        data class ParentId(val id: String, val itemCount: Int)
-
         fun invalidate(ids: Map<String, Int>)
 
         fun invalidate(controller: ControllerInfo, query: String, itemCount: Int)

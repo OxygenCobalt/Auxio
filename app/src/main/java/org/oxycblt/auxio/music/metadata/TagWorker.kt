@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import android.graphics.BitmapFactory
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.MetadataRetriever
@@ -26,8 +25,8 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
 import java.util.concurrent.Future
 import javax.inject.Inject
+import kotlin.math.min
 import org.oxycblt.auxio.image.extractor.CoverExtractor
-import org.oxycblt.auxio.image.extractor.dHash
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.info.Date
@@ -106,10 +105,24 @@ private class TagWorkerImpl(
             populateWithId3v2(textTags.id3v2)
             populateWithVorbis(textTags.vorbis)
 
-            val coverInputStream = coverExtractor.findCoverDataInMetadata(metadata)
-            val bitmap = coverInputStream?.use { BitmapFactory.decodeStream(it) }
-            rawSong.coverPerceptualHash = bitmap?.dHash()
-            bitmap?.recycle()
+            coverExtractor.findCoverDataInMetadata(metadata)?.use {
+                val available = it.available()
+                val skip = min(available / 2L, available - COVER_KEY_SAMPLE.toLong())
+                it.skip(skip)
+                val bytes = ByteArray(COVER_KEY_SAMPLE)
+                it.read(bytes)
+
+                @OptIn(ExperimentalStdlibApi::class) val byteString = bytes.toHexString()
+
+                rawSong.coverPerceptualHash = byteString
+            }
+
+            // OPTIONAL: Nicer cover art keying using an actual perceptual hash
+            // Really bad idea if you have big cover arts. Okay idea if you have different
+            // formats for the same cover art.
+            //  val bitmap = coverInputStream?.use { BitmapFactory.decodeStream(it) }
+            //  rawSong.coverPerceptualHash = bitmap?.dHash()
+            //  bitmap?.recycle()
 
             // OPUS base gain interpretation code: This is likely not needed, as the media player
             // should be using the base gain already. Uncomment if that's not the case.
@@ -376,6 +389,8 @@ private class TagWorkerImpl(
         first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
 
     private companion object {
+        val COVER_KEY_SAMPLE = 32
+
         val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")
         val COMPILATION_RELEASE_TYPES = listOf("compilation")
 
