@@ -11,7 +11,7 @@
                 android:pivotX="56"
                 android:pivotY="56">
                 <path
-                    android:fillColor="#eef0ff"
+                    android:fillColor="#ffffff"
                     android:pathData="M 136,54 A 82,82 0 0 1 54,136 82,82 0 0 1 -28,54 82,82 0 0 1 54,-28 82,82 0 0 1 136,54 Z"
                     android:strokeColor="#00000000" />
             </group>
@@ -68,7 +68,7 @@
             <set>
                 <objectAnimator
                     android:duration="1000"
-                    android:interpolator="@interpolator/m3_sys_motion_easing_standard_decelerate"
+                    android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="rotation"
                     android:startOffset="0"
                     android:valueFrom="90"
@@ -83,7 +83,7 @@
             <set>
                 <objectAnimator
                     android:duration="1000"
-                    android:interpolator="@interpolator/m3_sys_motion_easing_standard_decelerate"
+                    android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="rotation"
                     android:startOffset="0"
                     android:valueFrom="90"
@@ -97,7 +97,7 @@
             <set>
                 <objectAnimator
                     android:duration="1000"
-                    android:interpolator="@interpolator/m3_sys_motion_easing_standard_decelerate"
+                    android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="strokeWidth"
                     android:startOffset="0"
                     android:valueFrom="0"
