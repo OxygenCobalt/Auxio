@@ -26,6 +26,7 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import java.math.BigInteger
 
+@Suppress("UNUSED")
 fun Bitmap.dHash(hashSize: Int = 16): String {
     // Step 1: Resize the bitmap to a fixed size
     val resizedBitmap = Bitmap.createScaledBitmap(this, hashSize + 1, hashSize, true)

@@ -129,7 +129,7 @@ constructor(
 
     fun release() {
         waitJob.cancel()
-        mediaSession.release()
+        mediaItemBrowser.release()
         actionHandler.release()
         exoHolder.release()
         playbackManager.removeListener(this)

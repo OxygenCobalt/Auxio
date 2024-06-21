@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import android.graphics.BitmapFactory
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.MetadataRetriever
@@ -26,8 +25,8 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
 import java.util.concurrent.Future
 import javax.inject.Inject
+import kotlin.math.min
 import org.oxycblt.auxio.image.extractor.CoverExtractor
-import org.oxycblt.auxio.image.extractor.dHash
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.info.Date
@@ -106,10 +105,24 @@ private class TagWorkerImpl(
             populateWithId3v2(textTags.id3v2)
             populateWithVorbis(textTags.vorbis)
 
-            val coverInputStream = coverExtractor.findCoverDataInMetadata(metadata)
-            val bitmap = coverInputStream?.use { BitmapFactory.decodeStream(it) }
-            rawSong.coverPerceptualHash = bitmap?.dHash()
-            bitmap?.recycle()
+            coverExtractor.findCoverDataInMetadata(metadata)?.use {
+                val available = it.available()
+                val skip = min(available / 2L, available - COVER_KEY_SAMPLE.toLong())
+                it.skip(skip)
+                val bytes = ByteArray(COVER_KEY_SAMPLE)
+                it.read(bytes)
+
+                @OptIn(ExperimentalStdlibApi::class) val byteString = bytes.toHexString()
+
+                rawSong.coverPerceptualHash = byteString
+            }
+
+            // OPTIONAL: Nicer cover art keying using an actual perceptual hash
+            // Really bad idea if you have big cover arts. Okay idea if you have different
+            // formats for the same cover art.
+            //  val bitmap = coverInputStream?.use { BitmapFactory.decodeStream(it) }
+            //  rawSong.coverPerceptualHash = bitmap?.dHash()
+            //  bitmap?.recycle()
 
             // OPUS base gain interpretation code: This is likely not needed, as the media player
             // should be using the base gain already. Uncomment if that's not the case.
@@ -140,7 +153,9 @@ private class TagWorkerImpl(
 
     private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
         // Song
-        textFrames["TXXX:musicbrainz release track id"]?.let { rawSong.musicBrainzId = it.first() }
+        (textFrames["TXXX:musicbrainz release track id"]
+                ?: textFrames["TXXX:musicbrainz_releasetrackid"])
+            ?.let { rawSong.musicBrainzId = it.first() }
         textFrames["TIT2"]?.let { rawSong.name = it.first() }
         textFrames["TSOT"]?.let { rawSong.sortName = it.first() }
 
@@ -170,7 +185,9 @@ private class TagWorkerImpl(
             ?.let { rawSong.date = it }
 
         // Album
-        textFrames["TXXX:musicbrainz album id"]?.let { rawSong.albumMusicBrainzId = it.first() }
+        (textFrames["TXXX:musicbrainz album id"] ?: textFrames["TXXX:musicbrainz_albumid"])?.let {
+            rawSong.albumMusicBrainzId = it.first()
+        }
         textFrames["TALB"]?.let { rawSong.albumName = it.first() }
         textFrames["TSOA"]?.let { rawSong.albumSortName = it.first() }
         (textFrames["TXXX:musicbrainz album type"]
@@ -180,7 +197,9 @@ private class TagWorkerImpl(
             ?.let { rawSong.releaseTypes = it }
 
         // Artist
-        textFrames["TXXX:musicbrainz artist id"]?.let { rawSong.artistMusicBrainzIds = it }
+        (textFrames["TXXX:musicbrainz artist id"] ?: textFrames["TXXX:musicbrainz_artistid"])?.let {
+            rawSong.artistMusicBrainzIds = it
+        }
         (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { rawSong.artistNames = it }
         (textFrames["TXXX:artistssort"]
                 ?: textFrames["TXXX:artists_sort"] ?: textFrames["TXXX:artists sort"]
@@ -188,9 +207,9 @@ private class TagWorkerImpl(
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
-        textFrames["TXXX:musicbrainz album artist id"]?.let {
-            rawSong.albumArtistMusicBrainzIds = it
-        }
+        (textFrames["TXXX:musicbrainz album artist id"]
+                ?: textFrames["TXXX:musicbrainz_albumartistid"])
+            ?.let { rawSong.albumArtistMusicBrainzIds = it }
         (textFrames["TXXX:albumartists"]
                 ?: textFrames["TXXX:album_artists"] ?: textFrames["TXXX:album artists"]
                     ?: textFrames["TPE2"])
@@ -261,7 +280,9 @@ private class TagWorkerImpl(
 
     private fun populateWithVorbis(comments: Map<String, List<String>>) {
         // Song
-        comments["musicbrainz_releasetrackid"]?.let { rawSong.musicBrainzId = it.first() }
+        (comments["musicbrainz_releasetrackid"] ?: comments["musicbrainz release track id"])?.let {
+            rawSong.musicBrainzId = it.first()
+        }
         comments["title"]?.let { rawSong.name = it.first() }
         comments["titlesort"]?.let { rawSong.sortName = it.first() }
 
@@ -290,20 +311,28 @@ private class TagWorkerImpl(
             ?.let { rawSong.date = it }
 
         // Album
-        comments["musicbrainz_albumid"]?.let { rawSong.albumMusicBrainzId = it.first() }
+        (comments["musicbrainz_albumid"] ?: comments["musicbrainz album id"])?.let {
+            rawSong.albumMusicBrainzId = it.first()
+        }
         comments["album"]?.let { rawSong.albumName = it.first() }
         comments["albumsort"]?.let { rawSong.albumSortName = it.first() }
-        comments["releasetype"]?.let { rawSong.releaseTypes = it }
+        (comments["releasetype"] ?: comments["musicbrainz album type"])?.let {
+            rawSong.releaseTypes = it
+        }
 
         // Artist
-        comments["musicbrainz_artistid"]?.let { rawSong.artistMusicBrainzIds = it }
+        (comments["musicbrainz_artistid"] ?: comments["musicbrainz artist id"])?.let {
+            rawSong.artistMusicBrainzIds = it
+        }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
         (comments["artistssort"]
                 ?: comments["artists_sort"] ?: comments["artists sort"] ?: comments["artistsort"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
-        comments["musicbrainz_albumartistid"]?.let { rawSong.albumArtistMusicBrainzIds = it }
+        (comments["musicbrainz_albumartistid"] ?: comments["musicbrainz album artist id"])?.let {
+            rawSong.albumArtistMusicBrainzIds = it
+        }
         (comments["albumartists"]
                 ?: comments["album_artists"] ?: comments["album artists"]
                     ?: comments["albumartist"])
@@ -360,6 +389,8 @@ private class TagWorkerImpl(
         first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
 
     private companion object {
+        val COVER_KEY_SAMPLE = 32
+
         val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")
         val COMPILATION_RELEASE_TYPES = listOf("compilation")
 

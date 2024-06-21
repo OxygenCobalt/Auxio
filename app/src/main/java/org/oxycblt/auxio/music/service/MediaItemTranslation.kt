@@ -19,10 +19,15 @@
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.media.utils.MediaConstants
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import java.io.ByteArrayOutputStream
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
@@ -37,14 +42,27 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.getPlural
 
 fun MediaSessionUID.Category.toMediaItem(context: Context): MediaItem {
+    // TODO: Make custom overflow menu for compat
+    val style =
+        Bundle().apply {
+            putInt(
+                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM,
+                MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM)
+        }
     val metadata =
         MediaMetadata.Builder()
             .setTitle(context.getString(nameRes))
             .setIsPlayable(false)
             .setIsBrowsable(true)
             .setMediaType(mediaType)
-            .build()
-    return MediaItem.Builder().setMediaId(toString()).setMediaMetadata(metadata).build()
+            .setExtras(style)
+    if (bitmapRes != null) {
+        val data = ByteArrayOutputStream()
+        BitmapFactory.decodeResource(context.resources, bitmapRes)
+            .compress(Bitmap.CompressFormat.PNG, 100, data)
+        metadata.setArtworkData(data.toByteArray(), MediaMetadata.PICTURE_TYPE_FILE_ICON)
+    }
+    return MediaItem.Builder().setMediaId(toString()).setMediaMetadata(metadata.build()).build()
 }
 
 fun Song.toMediaItem(context: Context, parent: MusicParent?): MediaItem {
@@ -103,7 +121,7 @@ fun Album.toMediaItem(context: Context): MediaItem {
             .setReleaseMonth(dates?.min?.month)
             .setReleaseDay(dates?.min?.day)
             .setMediaType(MediaMetadata.MEDIA_TYPE_ALBUM)
-            .setIsPlayable(true)
+            .setIsPlayable(false)
             .setIsBrowsable(true)
             .setArtworkUri(cover.single.mediaStoreCoverUri)
             .setExtras(Bundle().apply { putString("uid", mediaSessionUID.toString()) })
@@ -133,7 +151,7 @@ fun Artist.toMediaItem(context: Context): MediaItem {
                         context.getString(R.string.def_song_count)
                     }))
             .setMediaType(MediaMetadata.MEDIA_TYPE_ARTIST)
-            .setIsPlayable(true)
+            .setIsPlayable(false)
             .setIsBrowsable(true)
             .setGenre(genres.resolveNames(context))
             .setArtworkUri(cover.single.mediaStoreCoverUri)
@@ -157,7 +175,7 @@ fun Genre.toMediaItem(context: Context): MediaItem {
                     context.getString(R.string.def_song_count)
                 })
             .setMediaType(MediaMetadata.MEDIA_TYPE_GENRE)
-            .setIsPlayable(true)
+            .setIsPlayable(false)
             .setIsBrowsable(true)
             .setArtworkUri(cover.single.mediaStoreCoverUri)
             .setExtras(Bundle().apply { putString("uid", mediaSessionUID.toString()) })
@@ -180,7 +198,7 @@ fun Playlist.toMediaItem(context: Context): MediaItem {
                     context.getString(R.string.def_song_count)
                 })
             .setMediaType(MediaMetadata.MEDIA_TYPE_PLAYLIST)
-            .setIsPlayable(true)
+            .setIsPlayable(false)
             .setIsBrowsable(true)
             .setArtworkUri(cover?.single?.mediaStoreCoverUri)
             .setExtras(Bundle().apply { putString("uid", mediaSessionUID.toString()) })
@@ -205,14 +223,38 @@ fun MediaItem.toSong(deviceLibrary: DeviceLibrary): Song? {
 }
 
 sealed interface MediaSessionUID {
-    enum class Category(val id: String, @StringRes val nameRes: Int, val mediaType: Int?) :
-        MediaSessionUID {
-        ROOT("root", R.string.info_app_name, null),
-        SONGS("songs", R.string.lbl_songs, MediaMetadata.MEDIA_TYPE_MUSIC),
-        ALBUMS("albums", R.string.lbl_albums, MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS),
-        ARTISTS("artists", R.string.lbl_artists, MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS),
-        GENRES("genres", R.string.lbl_genres, MediaMetadata.MEDIA_TYPE_FOLDER_GENRES),
-        PLAYLISTS("playlists", R.string.lbl_playlists, MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS);
+    enum class Category(
+        val id: String,
+        @StringRes val nameRes: Int,
+        @DrawableRes val bitmapRes: Int?,
+        val mediaType: Int?
+    ) : MediaSessionUID {
+        ROOT("root", R.string.info_app_name, null, null),
+        SONGS(
+            "songs",
+            R.string.lbl_songs,
+            R.drawable.ic_song_bitmap_24,
+            MediaMetadata.MEDIA_TYPE_MUSIC),
+        ALBUMS(
+            "albums",
+            R.string.lbl_albums,
+            R.drawable.ic_album_bitmap_24,
+            MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS),
+        ARTISTS(
+            "artists",
+            R.string.lbl_artists,
+            R.drawable.ic_artist_bitmap_24,
+            MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS),
+        GENRES(
+            "genres",
+            R.string.lbl_genres,
+            R.drawable.ic_genre_bitmap_24,
+            MediaMetadata.MEDIA_TYPE_FOLDER_GENRES),
+        PLAYLISTS(
+            "playlists",
+            R.string.lbl_playlists,
+            R.drawable.ic_playlist_bitmap_24,
+            MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS);
 
         override fun toString() = "$ID_CATEGORY:$id"
 

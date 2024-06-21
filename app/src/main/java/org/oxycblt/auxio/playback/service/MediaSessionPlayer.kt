@@ -173,6 +173,15 @@ class MediaSessionPlayer(
         playbackManager.repeatMode(appRepeatMode)
     }
 
+    override fun seekToDefaultPosition(mediaItemIndex: Int) {
+        val indices = unscrambleQueueIndices()
+        val fakeIndex = indices.indexOf(mediaItemIndex)
+        if (fakeIndex < 0) {
+            return
+        }
+        playbackManager.goto(fakeIndex)
+    }
+
     override fun seekToNext() = playbackManager.next()
 
     override fun seekToNextMediaItem() = playbackManager.next()
@@ -183,18 +192,9 @@ class MediaSessionPlayer(
 
     override fun seekTo(positionMs: Long) = playbackManager.seekTo(positionMs)
 
-    override fun seekTo(mediaItemIndex: Int, positionMs: Long) {
-        val indices = unscrambleQueueIndices()
-        val fakeIndex = indices.indexOf(mediaItemIndex)
-        if (fakeIndex < 0) {
-            return
-        }
-        playbackManager.goto(fakeIndex)
-        if (positionMs == C.TIME_UNSET) {
-            return
-        }
-        playbackManager.seekTo(positionMs)
-    }
+    override fun seekTo(mediaItemIndex: Int, positionMs: Long) = notAllowed()
+
+    override fun seekToDefaultPosition() = notAllowed()
 
     override fun addMediaItems(index: Int, mediaItems: MutableList<MediaItem>) {
         val deviceLibrary = musicRepository.deviceLibrary ?: return
@@ -277,10 +277,6 @@ class MediaSessionPlayer(
     override fun clearMediaItems() = notAllowed()
 
     override fun setPlaybackSpeed(speed: Float) = notAllowed()
-
-    override fun seekToDefaultPosition() = notAllowed()
-
-    override fun seekToDefaultPosition(mediaItemIndex: Int) = notAllowed()
 
     override fun seekForward() = notAllowed()
 

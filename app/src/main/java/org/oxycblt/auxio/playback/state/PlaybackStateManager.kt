@@ -795,15 +795,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         index
                     })
 
-        // Valid state where something needs to be played, direct the stateholder to apply
-        // this new state.
-        val oldStateMirror = stateMirror
-        if (oldStateMirror.rawQueue != rawQueue) {
-            logD("Queue changed, must reload player")
-            stateHolder.playing(false)
-            stateHolder.applySavedState(parent, rawQueue, StateAck.NewPlayback)
-            stateHolder.seekTo(savedState.positionMs)
-        }
+        stateHolder.applySavedState(savedState.parent, rawQueue, StateAck.NewPlayback)
+        stateHolder.seekTo(savedState.positionMs)
         stateHolder.repeatMode(savedState.repeatMode)
 
         isInitialized = true

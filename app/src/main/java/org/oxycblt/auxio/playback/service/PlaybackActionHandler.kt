@@ -49,13 +49,15 @@ constructor(
     @ApplicationContext private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
-    private val systemReceiver: SystemPlaybackReceiver
+    private val widgetComponent: WidgetComponent
 ) : PlaybackStateManager.Listener, PlaybackSettings.Listener {
 
     interface Callback {
         fun onCustomLayoutChanged(layout: List<CommandButton>)
     }
 
+    private val systemReceiver =
+        SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
     private var callback: Callback? = null
 
     fun attach(callback: Callback) {
@@ -71,6 +73,7 @@ constructor(
         playbackManager.removeListener(this)
         playbackSettings.unregisterListener(this)
         context.unregisterReceiver(systemReceiver)
+        widgetComponent.release()
     }
 
     fun withCommands(commands: SessionCommands) =
@@ -180,12 +183,10 @@ object PlaybackActions {
  * A [BroadcastReceiver] for receiving playback-specific [Intent]s from the system that require an
  * active [IntentFilter] to be registered.
  */
-class SystemPlaybackReceiver
-@Inject
-constructor(
-    val playbackManager: PlaybackStateManager,
-    val playbackSettings: PlaybackSettings,
-    val widgetComponent: WidgetComponent
+class SystemPlaybackReceiver(
+    private val playbackManager: PlaybackStateManager,
+    private val playbackSettings: PlaybackSettings,
+    private val widgetComponent: WidgetComponent
 ) : BroadcastReceiver() {
     private var initialHeadsetPlugEventHandled = false
 
