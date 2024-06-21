@@ -23,14 +23,15 @@ rewind before skipping was turned off
 - For the time being, the media notification will not follow Album Covers or 1:1 Covers settings
 - Playback will close automatically after some time left idle
 
-#### dev -> dev1 changes
+#### dev -> release changes
 - Re-added ability to open app from clicking on notification
 - Removed tasker plugin
 - Support multi-value MP4 tags with multiple `data` sub-atoms are parsed correctly
 - M3U paths are now interpreted both as relative and absolute regardless of the format
 - Added support for M3U paths starting with /storage/
 - Fixed artist duplication when inconsistent MusicBrainz ID tag naming was used
-- Made album cover keying more efficient at the cost of resillients
+- Made album cover keying more efficient at the cost of resillience
+- Fixed android auto queue not respecting shuffle
 
 ## 3.4.3
 
