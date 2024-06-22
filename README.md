@@ -51,6 +51,7 @@ precise/original dates, sort tags, and more
 - SD Card-aware folder management
 - Reliable playlisting functionality
 - Playback state persistence
+- Android auto support
 - Automatic gapless playback
 - Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)
 - External equalizer support (ex. Wavelet)
