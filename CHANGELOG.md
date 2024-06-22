@@ -6,6 +6,9 @@
 - New app branding and icon
 - Refreshed playback design
 
+#### What's Improved
+- Sorting songs by date now uses songs date first, before the earliest album date
+
 #### What's Fixed
 - Music loader no longer spawns thousands of threads when scanning
 - Excessive CPU no longer spent showing music loading process

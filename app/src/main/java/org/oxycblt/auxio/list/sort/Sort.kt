@@ -18,9 +18,10 @@
  
 package org.oxycblt.auxio.list.sort
 
-import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.list.sort.Sort.Direction
+import org.oxycblt.auxio.list.sort.Sort.Mode
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -29,6 +30,7 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
+import kotlin.math.max
 
 /**
  * A sorting method.
@@ -284,7 +286,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(direction, NullableComparator.DATE_RANGE) { it.album.dates },
+                    compareByDynamic(direction, NullableComparator.DATE) { it.date },
                     compareByDescending(BasicComparator.ALBUM) { it.album },
                     compareBy(NullableComparator.DISC) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
@@ -624,5 +626,8 @@ private class NullableComparator<T : Comparable<T>> private constructor() : Comp
         val DISC = NullableComparator<Disc>()
         /** A re-usable instance configured for [Date.Range]s. */
         val DATE_RANGE = NullableComparator<Date.Range>()
+
+        /** A re-usable instance configured for [Date]s. */
+        val DATE = NullableComparator<Date>()
     }
 }
