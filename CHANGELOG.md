@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0
+
+#### What's New
+- New app branding and icon
+- Refreshed playback design
+
+#### What's Fixed
+- Music loader no longer spawns thousands of threads when scanning
+- Excessive CPU no longer spent showing music loading process
+
 ## 3.5.0
 
 #### What's New
