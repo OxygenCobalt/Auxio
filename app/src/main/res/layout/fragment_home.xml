@@ -90,6 +90,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/spacing_medium"
                         android:gravity="center"
+                        android:text="@string/lng_indexing"
                         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                         app:layout_constraintBottom_toTopOf="@+id/home_indexing_actions"
                         app:layout_constraintTop_toTopOf="parent"

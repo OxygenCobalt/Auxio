@@ -421,7 +421,7 @@ class HomeFragment :
         when (error) {
             is NoAudioPermissionException -> {
                 logD("Showing permission prompt")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
+                binding.homeIndexingStatus.setText(R.string.err_no_perms)
                 // Configure the action to act as a permission launcher.
                 binding.homeIndexingTry.apply {
                     text = context.getString(R.string.lbl_grant)
@@ -436,7 +436,7 @@ class HomeFragment :
             }
             is NoMusicException -> {
                 logD("Showing no music error")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
+                binding.homeIndexingStatus.setText(R.string.err_no_music)
                 // Configure the action to act as a reload trigger.
                 binding.homeIndexingTry.apply {
                     visibility = View.VISIBLE
@@ -447,7 +447,7 @@ class HomeFragment :
             }
             else -> {
                 logD("Showing generic error")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
+                binding.homeIndexingStatus.setText(R.string.err_index_failed)
                 // Configure the action to act as a reload trigger.
                 binding.homeIndexingTry.apply {
                     visibility = View.VISIBLE
@@ -470,16 +470,14 @@ class HomeFragment :
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingActions.visibility = View.INVISIBLE
 
+        binding.homeIndexingStatus.setText(R.string.lng_indexing)
         when (progress) {
             is IndexingProgress.Indeterminate -> {
                 // In a query/initialization state, show a generic loading status.
-                binding.homeIndexingStatus.text = getString(R.string.lng_indexing)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
             is IndexingProgress.Songs -> {
                 // Actively loading songs, show the current progress.
-                binding.homeIndexingStatus.text =
-                    getString(R.string.fmt_indexing, progress.current, progress.total)
                 binding.homeIndexingProgress.apply {
                     isIndeterminate = false
                     max = progress.total

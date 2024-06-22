@@ -89,8 +89,8 @@ private const val MESSAGE_RELEASE_ALL = 3
 private const val CHECK_INTERVAL_MS = 100
 
 /**
- * Patched version of Media3's MetadataRetriever that extracts metadata from several tracks at
- * once on one thread. This is generally more efficient than stacking several threads at once.
+ * Patched version of Media3's MetadataRetriever that extracts metadata from several tracks at once
+ * on one thread. This is generally more efficient than stacking several threads at once.
  *
  * @author Media3 Team, Alexander Capehart (OxygenCobalt)
  */
