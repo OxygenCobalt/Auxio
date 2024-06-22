@@ -26,9 +26,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface MetadataModule {
-    @Binds fun tagExtractor(extractor: TagExtractorImpl): TagExtractor
-
-    @Binds fun tagWorkerFactory(factory: TagWorkerFactoryImpl): TagWorker.Factory
+    @Binds fun tagInterpreter(interpreter: TagInterpreterImpl): TagInterpreter
 
     @Binds fun audioPropertiesFactory(factory: AudioPropertiesFactoryImpl): AudioProperties.Factory
 }

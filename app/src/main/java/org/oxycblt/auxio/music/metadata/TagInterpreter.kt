@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * TagWorker.kt is part of Auxio.
+ * TagInterpreter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,19 +19,14 @@
 package org.oxycblt.auxio.music.metadata
 
 import androidx.core.text.isDigitsOnly
-import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.MetadataRetriever
-import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
-import java.util.concurrent.Future
 import javax.inject.Inject
 import kotlin.math.min
 import org.oxycblt.auxio.image.extractor.CoverExtractor
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -40,70 +35,24 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface TagWorker {
+interface TagInterpreter {
     /**
      * Poll to see if this worker is done processing.
      *
      * @return A completed [RawSong] if done, null otherwise.
      */
-    fun poll(): RawSong?
-
-    /** Factory for new [TagWorker] jobs. */
-    interface Factory {
-        /**
-         * Create a new [TagWorker] to complete the given [RawSong].
-         *
-         * @param rawSong The [RawSong] to assign a new [TagWorker] to.
-         * @return A new [TagWorker] wrapping the given [RawSong].
-         */
-        fun create(rawSong: RawSong): TagWorker
-    }
+    fun interpret(rawSong: RawSong, trackGroupArray: TrackGroupArray)
 }
 
-class TagWorkerFactoryImpl
-@Inject
-constructor(
-    private val mediaSourceFactory: MediaSource.Factory,
-    private val coverExtractor: CoverExtractor
-) : TagWorker.Factory {
-    override fun create(rawSong: RawSong): TagWorker =
-        // Note that we do not leverage future callbacks. This is because errors in the
-        // (highly fallible) extraction process will not bubble up to Indexer when a
-        // listener is used, instead crashing the app entirely.
-        TagWorkerImpl(
-            rawSong,
-            MetadataRetriever.retrieveMetadata(
-                mediaSourceFactory,
-                MediaItem.fromUri(
-                    requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri())),
-            coverExtractor)
-}
-
-private class TagWorkerImpl(
-    private val rawSong: RawSong,
-    private val future: Future<TrackGroupArray>,
-    private val coverExtractor: CoverExtractor
-) : TagWorker {
-    override fun poll(): RawSong? {
-        if (!future.isDone) {
-            // Not done yet, nothing to do.
-            return null
-        }
-
-        val format =
-            try {
-                future.get()[0].getFormat(0)
-            } catch (e: Exception) {
-                logW("Unable to extract metadata for ${rawSong.name}")
-                logW(e.stackTraceToString())
-                return rawSong
-            }
-
+class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverExtractor) :
+    TagInterpreter {
+    override fun interpret(rawSong: RawSong, trackGroupArray: TrackGroupArray) {
+        val format = trackGroupArray.get(0).getFormat(0)
         val metadata = format.metadata
         if (metadata != null) {
             val textTags = TextTags(metadata)
-            populateWithId3v2(textTags.id3v2)
-            populateWithVorbis(textTags.vorbis)
+            populateWithId3v2(rawSong, textTags.id3v2)
+            populateWithVorbis(rawSong, textTags.vorbis)
 
             coverExtractor.findCoverDataInMetadata(metadata)?.use {
                 val available = it.available()
@@ -147,11 +96,9 @@ private class TagWorkerImpl(
         } else {
             logD("No metadata could be extracted for ${rawSong.name}")
         }
-
-        return rawSong
     }
 
-    private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
+    private fun populateWithId3v2(rawSong: RawSong, textFrames: Map<String, List<String>>) {
         // Song
         (textFrames["TXXX:musicbrainz release track id"]
                 ?: textFrames["TXXX:musicbrainz_releasetrackid"])
@@ -278,7 +225,7 @@ private class TagWorkerImpl(
         }
     }
 
-    private fun populateWithVorbis(comments: Map<String, List<String>>) {
+    private fun populateWithVorbis(rawSong: RawSong, comments: Map<String, List<String>>) {
         // Song
         (comments["musicbrainz_releasetrackid"] ?: comments["musicbrainz release track id"])?.let {
             rawSong.musicBrainzId = it.first()
