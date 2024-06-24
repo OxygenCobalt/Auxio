@@ -12,6 +12,7 @@ tikslias / originalias datas, rūšiavimo žymes ir dar daugiau
 - SD kortelių aplankų valdymas
 - Patikima grojaraščių sudarymo funkcija
 - Įrašo perklausos būsenos išsaugojimas
+- „Android Auto“ palaikymas
 - Automatinis įrašo perklausa be tarpų
 - Visiškas „ReplayGain“ palaikymas (MP3, MP4, FLAC, OGG, OPUS ir MP4 failuose)
 - Išorinio ekvalaizerio funkcija (pvz., „Wavelet“)
