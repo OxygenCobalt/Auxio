@@ -438,7 +438,7 @@ constructor(
                     // to cascade to and cancel all other routines before finally bubbling up
                     // to the main extractor loop.
                     logE("MediaStore extraction failed: $e")
-                    incompleteSongs.close(Exception("MediaStore extraction failed: $e"))
+                    incompleteSongs.close(Exception("MediaStore extraction failed: ${e.stackTraceToString()}"))
                     return@async
                 }
                 incompleteSongs.close()
@@ -453,7 +453,7 @@ constructor(
                     tagExtractor.consume(incompleteSongs, completeSongs)
                 } catch (e: Exception) {
                     logE("Tag extraction failed: $e")
-                    completeSongs.close(Exception("Tag extraction failed: $e"))
+                    completeSongs.close(Exception("Tag extraction failed: ${e.stackTraceToString()}"))
                     return@async
                 }
                 completeSongs.close()
@@ -470,7 +470,7 @@ constructor(
                             completeSongs, processedSongs, separators, nameFactory)
                     } catch (e: Exception) {
                         logE("DeviceLibrary creation failed: $e")
-                        processedSongs.close(Exception("DeviceLibrary creation failed: $e"))
+                        processedSongs.close(Exception("DeviceLibrary creation failed: ${e.stackTraceToString()}"))
                         return@async Result.failure(e)
                     }
                 processedSongs.close()
