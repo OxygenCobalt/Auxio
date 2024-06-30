@@ -12,6 +12,7 @@ date precise/originali, tag di ordinamento e altro ancora
 - Gestione delle cartelle consapevole delle schede SD
 - Gestione affidabile delle playlist
 - Persistenza dello stato di riproduzione
+- Riproduzione automatica senza silenzio
 - Supporto completo di ReplayGain (su file MP3, FLAC, OGG, OPUS e MP4)
 - Supporto di equalizzatori esterni (es. Wavelet)
 - Edge-to-edge

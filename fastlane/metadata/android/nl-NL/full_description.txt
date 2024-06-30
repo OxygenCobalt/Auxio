@@ -1,0 +1,24 @@
+Auxio is een lokale muziekspeler met een snelle, betrouwbare UI/UX zonder vele nutteloze functies in andere muziekspelers. Gebouwd op basis van moderne media-afspeelbibliotheken bevat Auxio superieure bibliotheekondersteuning en luisterkwaliteit vergeleken met andere apps die verouderde Android-functionaliteit gebruiken. Kortom, <b>Het speelt muziek.</b>
+
+<b>Functies</b>
+
+- Afspelen gebaseerd op Media3 ExoPlayer
+- Snelle gebruikersinterface afgeleid van de nieuwste Material Design-richtlijnen
+- Eigenzinnige UX die gebruiksgemak boven randgevallen stelt
+- Aanpasbaar gedrag
+- Ondersteuning voor disc nummers, meerdere artiesten, release types,
+exacte/originele data, sorteertags en meer
+- Geavanceerd artiestensysteem dat artiesten en albumartiesten verenigt
+- Beheer van SD-kaartmappen
+- Betrouwbare functionaliteit voor afspeellijsten
+- Persistentie van afspeelstatus
+- Automatisch gapless afspelen
+- Volledige ondersteuning voor ReplayGain (op MP3-, FLAC-, OGG-, OPUS- en MP4-bestanden)
+- Ondersteuning voor externe equalizer (bijv. Wavelet)
+- Rand-tot-rand
+- Ondersteuning voor ingesloten omslagen
+- Zoek functionaliteit
+- Automatisch afspelen voor koptelefoon
+- Stijlvolle widgets die zich automatisch aanpassen aan hun grootte
+- Volledig privé en offline
+- Geen afgeronde albumhoezen (standaard)
