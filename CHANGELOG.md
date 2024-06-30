@@ -1,5 +1,10 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Fixed music loading failure from improper sort systems
+
 ## 3.5.0
 
 #### What's New
