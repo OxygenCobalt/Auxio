@@ -34,6 +34,8 @@
         android:id="@+id/playback_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
         app:layout_behavior="org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior">
 
         <androidx.fragment.app.FragmentContainerView
@@ -54,7 +56,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-                android:elevation="1dp"
+            android:elevation="1dp"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout

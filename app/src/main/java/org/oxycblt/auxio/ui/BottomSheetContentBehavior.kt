@@ -114,7 +114,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
                 val bars = insets.systemBarInsetsCompat
 
                 insets.replaceSystemBarInsetsCompat(
-                    bars.left, bars.top, bars.right, (bars.bottom - consumed).coerceAtLeast(0))
+                    bars.left, bars.top, bars.right, consumed.coerceAtLeast(bars.bottom))
             }
 
             setup = true
@@ -127,9 +127,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         val contentWidthSpec =
             View.MeasureSpec.makeMeasureSpec(parent.measuredWidth, View.MeasureSpec.EXACTLY)
         val contentHeightSpec =
-            View.MeasureSpec.makeMeasureSpec(
-                parent.measuredHeight - consumed, View.MeasureSpec.EXACTLY)
-
+            View.MeasureSpec.makeMeasureSpec(parent.measuredHeight, View.MeasureSpec.EXACTLY)
         child.measure(contentWidthSpec, contentHeightSpec)
     }
 
