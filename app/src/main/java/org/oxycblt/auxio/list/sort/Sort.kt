@@ -181,6 +181,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val stringRes = R.string.lbl_album
 
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
                 songs.sortBy { it.track }
                 songs.sortBy { it.disc }
                 when (direction) {
@@ -195,6 +196,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val stringRes = R.string.lbl_artist
 
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
                 songs.sortBy { it.track }
                 songs.sortBy { it.disc }
                 songs.sortBy { it.album.name }
@@ -207,6 +209,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
                 albums.sortByDescending { it.dates }
                 when (direction) {
                     Direction.ASCENDING -> albums.sortBy { it.artists.firstOrNull()?.name }
@@ -221,6 +224,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val stringRes = R.string.lbl_date
 
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
                 songs.sortBy { it.track }
                 songs.sortBy { it.disc }
                 songs.sortByDescending { it.album.name }
@@ -231,6 +235,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> albums.sortBy { it.dates }
                     Direction.DESCENDING -> albums.sortByDescending { it.dates }
@@ -243,6 +248,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val stringRes = R.string.lbl_duration
 
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> songs.sortBy { it.durationMs }
                     Direction.DESCENDING -> songs.sortByDescending { it.durationMs }
@@ -250,6 +256,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> albums.sortBy { it.durationMs }
                     Direction.DESCENDING -> albums.sortByDescending { it.durationMs }
@@ -257,6 +264,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortArtists(artists: MutableList<Artist>, direction: Direction) {
+                artists.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> artists.sortBy { it.durationMs }
                     Direction.DESCENDING -> artists.sortByDescending { it.durationMs }
@@ -264,6 +272,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortGenres(genres: MutableList<Genre>, direction: Direction) {
+                genres.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> genres.sortBy { it.durationMs }
                     Direction.DESCENDING -> genres.sortByDescending { it.durationMs }
@@ -271,6 +280,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortPlaylists(playlists: MutableList<Playlist>, direction: Direction) {
+                playlists.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> playlists.sortBy { it.durationMs }
                     Direction.DESCENDING -> playlists.sortByDescending { it.durationMs }
@@ -283,6 +293,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val stringRes = R.string.lbl_song_count
 
             override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> albums.sortBy { it.songs.size }
                     Direction.DESCENDING -> albums.sortByDescending { it.songs.size }
@@ -290,6 +301,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortArtists(artists: MutableList<Artist>, direction: Direction) {
+                artists.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> artists.sortBy { it.songs.size }
                     Direction.DESCENDING -> artists.sortByDescending { it.songs.size }
@@ -297,6 +309,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortGenres(genres: MutableList<Genre>, direction: Direction) {
+                genres.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> genres.sortBy { it.songs.size }
                     Direction.DESCENDING -> genres.sortByDescending { it.songs.size }
@@ -304,6 +317,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortPlaylists(playlists: MutableList<Playlist>, direction: Direction) {
+                playlists.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> playlists.sortBy { it.songs.size }
                     Direction.DESCENDING -> playlists.sortByDescending { it.songs.size }
@@ -331,11 +345,11 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
                 songs.sortBy { it.name }
-                songs.sortBy { it.disc }
                 when (direction) {
                     Direction.ASCENDING -> songs.sortBy { it.track }
                     Direction.DESCENDING -> songs.sortByDescending { it.track }
                 }
+                songs.sortBy { it.disc }
             }
         }
 
@@ -344,6 +358,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val stringRes = R.string.lbl_date_added
 
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> songs.sortBy { it.dateAdded }
                     Direction.DESCENDING -> songs.sortByDescending { it.dateAdded }
@@ -351,6 +366,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
             }
 
             override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
                 when (direction) {
                     Direction.ASCENDING -> albums.sortBy { it.dateAdded }
                     Direction.DESCENDING -> albums.sortByDescending { it.dateAdded }
