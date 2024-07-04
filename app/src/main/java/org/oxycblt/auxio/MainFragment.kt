@@ -275,11 +275,13 @@ class MainFragment :
             val queueBackRatio =
                 max(1 - ((1 - binding.queueSheet.scaleX) / queueMaxXScaleDelta), 0f)
 
-            val queueBarEdgeRatio = max(queueRatio - 0.9f, 0f) / 0.1f
+            val queueEdgeRatio = max(queueRatio - 0.9f, 0f) / 0.1f
+
+            val queueBarEdgeRatio = max(queueEdgeRatio - 0.5f, 0f) * 2
             val queueBarBackRatio = max(queueBackRatio - 0.5f, 0f) * 2
             val queueBarRatio = min(queueBarEdgeRatio * queueBarBackRatio, 1f)
 
-            val queuePanelEdgeRatio = min(max(queueRatio - 0.8f, 0f) / 0.1f, 1f)
+            val queuePanelEdgeRatio = min(queueEdgeRatio * 2, 1f)
             val queuePanelBackRatio = min(queueBackRatio * 2, 1f)
             val queuePanelRatio = 1 - min(queuePanelEdgeRatio * queuePanelBackRatio, 1f)
 
