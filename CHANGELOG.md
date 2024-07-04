@@ -13,6 +13,11 @@
 - Music loader no longer spawns thousands of threads when scanning
 - Excessive CPU no longer spent showing music loading process
 
+## 3.5.1
+
+#### What's Fixed
+- Fixed music loading failure from improper sort systems
+
 ## 3.5.0
 
 #### What's New

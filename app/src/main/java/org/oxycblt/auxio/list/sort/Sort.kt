@@ -20,17 +20,11 @@ package org.oxycblt.auxio.list.sort
 
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.sort.Sort.Direction
-import org.oxycblt.auxio.list.sort.Sort.Mode
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.music.info.Disc
-import kotlin.math.max
 
 /**
  * A sorting method.
@@ -48,9 +42,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
      * @param songs The list of [Song]s.
      * @return A new list of [Song]s sorted by this [Sort]'s configuration.
      */
-    fun <T : Song> songs(songs: Collection<T>): List<T> {
+    fun songs(songs: Collection<Song>): List<Song> {
         val mutable = songs.toMutableList()
-        songsInPlace(mutable)
+        mode.sortSongs(mutable, direction)
         return mutable
     }
 
@@ -60,9 +54,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
      * @param albums The list of [Album]s.
      * @return A new list of [Album]s sorted by this [Sort]'s configuration.
      */
-    fun <T : Album> albums(albums: Collection<T>): List<T> {
+    fun albums(albums: Collection<Album>): List<Album> {
         val mutable = albums.toMutableList()
-        albumsInPlace(mutable)
+        mode.sortAlbums(mutable, direction)
         return mutable
     }
 
@@ -72,9 +66,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
      * @param artists The list of [Artist]s.
      * @return A new list of [Artist]s sorted by this [Sort]'s configuration.
      */
-    fun <T : Artist> artists(artists: Collection<T>): List<T> {
+    fun artists(artists: Collection<Artist>): List<Artist> {
         val mutable = artists.toMutableList()
-        artistsInPlace(mutable)
+        mode.sortArtists(mutable, direction)
         return mutable
     }
 
@@ -84,9 +78,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
      * @param genres The list of [Genre]s.
      * @return A new list of [Genre]s sorted by this [Sort]'s configuration.
      */
-    fun <T : Genre> genres(genres: Collection<T>): List<T> {
+    fun genres(genres: Collection<Genre>): List<Genre> {
         val mutable = genres.toMutableList()
-        genresInPlace(mutable)
+        mode.sortGenres(mutable, direction)
         return mutable
     }
 
@@ -96,35 +90,10 @@ data class Sort(val mode: Mode, val direction: Direction) {
      * @param playlists The list of [Playlist]s.
      * @return A new list of [Playlist]s sorted by this [Sort]'s configuration
      */
-    fun <T : Playlist> playlists(playlists: Collection<T>): List<T> {
+    fun playlists(playlists: Collection<Playlist>): List<Playlist> {
         val mutable = playlists.toMutableList()
-        playlistsInPlace(mutable)
+        mode.sortPlaylists(mutable, direction)
         return mutable
-    }
-
-    private fun songsInPlace(songs: MutableList<out Song>) {
-        val comparator = mode.getSongComparator(direction) ?: return
-        songs.sortWith(comparator)
-    }
-
-    private fun albumsInPlace(albums: MutableList<out Album>) {
-        val comparator = mode.getAlbumComparator(direction) ?: return
-        albums.sortWith(comparator)
-    }
-
-    private fun artistsInPlace(artists: MutableList<out Artist>) {
-        val comparator = mode.getArtistComparator(direction) ?: return
-        artists.sortWith(comparator)
-    }
-
-    private fun genresInPlace(genres: MutableList<out Genre>) {
-        val comparator = mode.getGenreComparator(direction) ?: return
-        genres.sortWith(comparator)
-    }
-
-    private fun playlistsInPlace(playlists: MutableList<out Playlist>) {
-        val comparator = mode.getPlaylistComparator(direction) ?: return
-        playlists.sortWith(comparator)
     }
 
     /**
@@ -143,289 +112,270 @@ data class Sort(val mode: Mode, val direction: Direction) {
                     Direction.DESCENDING -> 0
                 }
 
-    /** Describes the type of data to sort with. */
     sealed interface Mode {
-        /** The integer representation of this sort mode. */
         val intCode: Int
-        /** The string resource of the human-readable name of this sort mode. */
         val stringRes: Int
 
-        /**
-         * Get a [Comparator] that sorts [Song]s according to this [Mode].
-         *
-         * @param direction The direction to sort in.
-         * @return A [Comparator] that can be used to sort a [Song] list according to this [Mode],
-         *   or null to not sort at all.
-         */
-        fun getSongComparator(direction: Direction): Comparator<Song>? = null
+        fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+            throw NotImplementedError("Sorting songs is not supported for this mode")
+        }
 
-        /**
-         * Get a [Comparator] that sorts [Album]s according to this [Mode].
-         *
-         * @param direction The direction to sort in.
-         * @return A [Comparator] that can be used to sort a [Album] list according to this [Mode],
-         *   or null to not sort at all.
-         */
-        fun getAlbumComparator(direction: Direction): Comparator<Album>? = null
+        fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+            throw NotImplementedError("Sorting albums is not supported for this mode")
+        }
 
-        /**
-         * Return a [Comparator] that sorts [Artist]s according to this [Mode].
-         *
-         * @param direction The direction to sort in.
-         * @return A [Comparator] that can be used to sort a [Artist] list according to this [Mode].
-         *   or null to not sort at all.
-         */
-        fun getArtistComparator(direction: Direction): Comparator<Artist>? = null
+        fun sortArtists(artists: MutableList<Artist>, direction: Direction) {
+            throw NotImplementedError("Sorting artists is not supported for this mode")
+        }
 
-        /**
-         * Return a [Comparator] that sorts [Genre]s according to this [Mode].
-         *
-         * @param direction The direction to sort in.
-         * @return A [Comparator] that can be used to sort a [Genre] list according to this [Mode].
-         *   or null to not sort at all.
-         */
-        fun getGenreComparator(direction: Direction): Comparator<Genre>? = null
+        fun sortGenres(genres: MutableList<Genre>, direction: Direction) {
+            throw NotImplementedError("Sorting genres is not supported for this mode")
+        }
 
-        /**
-         * Return a [Comparator] that sorts [Playlist]s according to this [Mode].
-         *
-         * @param direction The direction to sort in.
-         * @return A [Comparator] that can be used to sort a [Genre] list according to this [Mode].
-         *   or null to not sort at all.
-         */
-        fun getPlaylistComparator(direction: Direction): Comparator<Playlist>? = null
+        fun sortPlaylists(playlists: MutableList<Playlist>, direction: Direction) {
+            throw NotImplementedError("Sorting playlists is not supported for this mode")
+        }
 
-        /**
-         * Sort by the item's name.
-         *
-         * @see Music.name
-         */
         data object ByName : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_NAME
+            override val intCode = IntegerTable.SORT_BY_NAME
+            override val stringRes = R.string.lbl_name
 
-            override val stringRes: Int
-                get() = R.string.lbl_name
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.name }
+                    Direction.DESCENDING -> songs.sortByDescending { it.name }
+                }
+            }
 
-            override fun getSongComparator(direction: Direction) =
-                compareByDynamic(direction, BasicComparator.SONG)
+            override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                when (direction) {
+                    Direction.ASCENDING -> albums.sortBy { it.name }
+                    Direction.DESCENDING -> albums.sortByDescending { it.name }
+                }
+            }
 
-            override fun getAlbumComparator(direction: Direction) =
-                compareByDynamic(direction, BasicComparator.ALBUM)
+            override fun sortArtists(artists: MutableList<Artist>, direction: Direction) {
+                when (direction) {
+                    Direction.ASCENDING -> artists.sortBy { it.name }
+                    Direction.DESCENDING -> artists.sortByDescending { it.name }
+                }
+            }
 
-            override fun getArtistComparator(direction: Direction) =
-                compareByDynamic(direction, BasicComparator.ARTIST)
+            override fun sortGenres(genres: MutableList<Genre>, direction: Direction) {
+                when (direction) {
+                    Direction.ASCENDING -> genres.sortBy { it.name }
+                    Direction.DESCENDING -> genres.sortByDescending { it.name }
+                }
+            }
 
-            override fun getGenreComparator(direction: Direction) =
-                compareByDynamic(direction, BasicComparator.GENRE)
-
-            override fun getPlaylistComparator(direction: Direction) =
-                compareByDynamic(direction, BasicComparator.PLAYLIST)
+            override fun sortPlaylists(playlists: MutableList<Playlist>, direction: Direction) {
+                when (direction) {
+                    Direction.ASCENDING -> playlists.sortBy { it.name }
+                    Direction.DESCENDING -> playlists.sortByDescending { it.name }
+                }
+            }
         }
 
-        /**
-         * Sort by the [Album] of an item. Only available for [Song]s.
-         *
-         * @see Album.name
-         */
         data object ByAlbum : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_ALBUM
+            override val intCode = IntegerTable.SORT_BY_ALBUM
+            override val stringRes = R.string.lbl_album
 
-            override val stringRes: Int
-                get() = R.string.lbl_album
-
-            override fun getSongComparator(direction: Direction): Comparator<Song> =
-                MultiComparator(
-                    compareByDynamic(direction, BasicComparator.ALBUM) { it.album },
-                    compareBy(NullableComparator.DISC) { it.disc },
-                    compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG))
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
+                songs.sortBy { it.track }
+                songs.sortBy { it.disc }
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.album.name }
+                    Direction.DESCENDING -> songs.sortByDescending { it.album.name }
+                }
+            }
         }
 
-        /**
-         * Sort by the [Artist] name of an item. Only available for [Song] and [Album].
-         *
-         * @see Artist.name
-         */
         data object ByArtist : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_ARTIST
+            override val intCode = IntegerTable.SORT_BY_ARTIST
+            override val stringRes = R.string.lbl_artist
 
-            override val stringRes: Int
-                get() = R.string.lbl_artist
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
+                songs.sortBy { it.track }
+                songs.sortBy { it.disc }
+                songs.sortBy { it.album.name }
+                songs.sortByDescending { it.album.dates }
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.artists.firstOrNull()?.name }
+                    Direction.DESCENDING ->
+                        songs.sortByDescending { it.artists.firstOrNull()?.name }
+                }
+            }
 
-            override fun getSongComparator(direction: Direction): Comparator<Song> =
-                MultiComparator(
-                    compareByDynamic(direction, ListComparator.ARTISTS) { it.artists },
-                    compareByDescending(NullableComparator.DATE_RANGE) { it.album.dates },
-                    compareByDescending(BasicComparator.ALBUM) { it.album },
-                    compareBy(NullableComparator.DISC) { it.disc },
-                    compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG))
-
-            override fun getAlbumComparator(direction: Direction): Comparator<Album> =
-                MultiComparator(
-                    compareByDynamic(direction, ListComparator.ARTISTS) { it.artists },
-                    compareByDescending(NullableComparator.DATE_RANGE) { it.dates },
-                    compareBy(BasicComparator.ALBUM))
+            override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
+                albums.sortByDescending { it.dates }
+                when (direction) {
+                    Direction.ASCENDING -> albums.sortBy { it.artists.firstOrNull()?.name }
+                    Direction.DESCENDING ->
+                        albums.sortByDescending { it.artists.firstOrNull()?.name }
+                }
+            }
         }
 
-        /**
-         * Sort by the [Date] of an item. Only available for [Song] and [Album].
-         *
-         * @see Song.date
-         * @see Album.dates
-         */
         data object ByDate : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_YEAR
+            override val intCode = IntegerTable.SORT_BY_YEAR
+            override val stringRes = R.string.lbl_date
 
-            override val stringRes: Int
-                get() = R.string.lbl_date
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
+                songs.sortBy { it.track }
+                songs.sortBy { it.disc }
+                songs.sortByDescending { it.album.name }
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.album.dates }
+                    Direction.DESCENDING -> songs.sortByDescending { it.album.dates }
+                }
+            }
 
-            override fun getSongComparator(direction: Direction): Comparator<Song> =
-                MultiComparator(
-                    compareByDynamic(direction, NullableComparator.DATE) { it.date },
-                    compareByDescending(BasicComparator.ALBUM) { it.album },
-                    compareBy(NullableComparator.DISC) { it.disc },
-                    compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG))
-
-            override fun getAlbumComparator(direction: Direction): Comparator<Album> =
-                MultiComparator(
-                    compareByDynamic(direction, NullableComparator.DATE_RANGE) { it.dates },
-                    compareBy(BasicComparator.ALBUM))
+            override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> albums.sortBy { it.dates }
+                    Direction.DESCENDING -> albums.sortByDescending { it.dates }
+                }
+            }
         }
 
-        /** Sort by the duration of an item. */
         data object ByDuration : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_DURATION
+            override val intCode = IntegerTable.SORT_BY_DURATION
+            override val stringRes = R.string.lbl_duration
 
-            override val stringRes: Int
-                get() = R.string.lbl_duration
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.durationMs }
+                    Direction.DESCENDING -> songs.sortByDescending { it.durationMs }
+                }
+            }
 
-            override fun getSongComparator(direction: Direction): Comparator<Song> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.durationMs }, compareBy(BasicComparator.SONG))
+            override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> albums.sortBy { it.durationMs }
+                    Direction.DESCENDING -> albums.sortByDescending { it.durationMs }
+                }
+            }
 
-            override fun getAlbumComparator(direction: Direction): Comparator<Album> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.durationMs }, compareBy(BasicComparator.ALBUM))
+            override fun sortArtists(artists: MutableList<Artist>, direction: Direction) {
+                artists.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> artists.sortBy { it.durationMs }
+                    Direction.DESCENDING -> artists.sortByDescending { it.durationMs }
+                }
+            }
 
-            override fun getArtistComparator(direction: Direction): Comparator<Artist> =
-                MultiComparator(
-                    compareByDynamic(direction, NullableComparator.LONG) { it.durationMs },
-                    compareBy(BasicComparator.ARTIST))
+            override fun sortGenres(genres: MutableList<Genre>, direction: Direction) {
+                genres.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> genres.sortBy { it.durationMs }
+                    Direction.DESCENDING -> genres.sortByDescending { it.durationMs }
+                }
+            }
 
-            override fun getGenreComparator(direction: Direction): Comparator<Genre> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.durationMs }, compareBy(BasicComparator.GENRE))
-
-            override fun getPlaylistComparator(direction: Direction): Comparator<Playlist> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.durationMs },
-                    compareBy(BasicComparator.PLAYLIST))
+            override fun sortPlaylists(playlists: MutableList<Playlist>, direction: Direction) {
+                playlists.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> playlists.sortBy { it.durationMs }
+                    Direction.DESCENDING -> playlists.sortByDescending { it.durationMs }
+                }
+            }
         }
 
-        /** Sort by the amount of songs an item contains. Only available for MusicParents. */
         data object ByCount : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_COUNT
+            override val intCode = IntegerTable.SORT_BY_COUNT
+            override val stringRes = R.string.lbl_song_count
 
-            override val stringRes: Int
-                get() = R.string.lbl_song_count
+            override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> albums.sortBy { it.songs.size }
+                    Direction.DESCENDING -> albums.sortByDescending { it.songs.size }
+                }
+            }
 
-            override fun getAlbumComparator(direction: Direction): Comparator<Album> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.songs.size }, compareBy(BasicComparator.ALBUM))
+            override fun sortArtists(artists: MutableList<Artist>, direction: Direction) {
+                artists.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> artists.sortBy { it.songs.size }
+                    Direction.DESCENDING -> artists.sortByDescending { it.songs.size }
+                }
+            }
 
-            override fun getArtistComparator(direction: Direction): Comparator<Artist> =
-                MultiComparator(
-                    compareByDynamic(direction, NullableComparator.INT) { it.songs.size },
-                    compareBy(BasicComparator.ARTIST))
+            override fun sortGenres(genres: MutableList<Genre>, direction: Direction) {
+                genres.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> genres.sortBy { it.songs.size }
+                    Direction.DESCENDING -> genres.sortByDescending { it.songs.size }
+                }
+            }
 
-            override fun getGenreComparator(direction: Direction): Comparator<Genre> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.songs.size }, compareBy(BasicComparator.GENRE))
-
-            override fun getPlaylistComparator(direction: Direction): Comparator<Playlist> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.songs.size },
-                    compareBy(BasicComparator.PLAYLIST))
+            override fun sortPlaylists(playlists: MutableList<Playlist>, direction: Direction) {
+                playlists.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> playlists.sortBy { it.songs.size }
+                    Direction.DESCENDING -> playlists.sortByDescending { it.songs.size }
+                }
+            }
         }
 
-        /**
-         * Sort by the disc number of an item. Only available for [Song]s.
-         *
-         * @see Song.disc
-         */
         data object ByDisc : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_DISC
+            override val intCode = IntegerTable.SORT_BY_DISC
+            override val stringRes = R.string.lbl_disc
 
-            override val stringRes: Int
-                get() = R.string.lbl_disc
-
-            override fun getSongComparator(direction: Direction): Comparator<Song> =
-                MultiComparator(
-                    compareByDynamic(direction, NullableComparator.DISC) { it.disc },
-                    compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG))
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
+                songs.sortBy { it.track }
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.disc }
+                    Direction.DESCENDING -> songs.sortByDescending { it.disc }
+                }
+            }
         }
 
-        /**
-         * Sort by the track number of an item. Only available for [Song]s.
-         *
-         * @see Song.track
-         */
         data object ByTrack : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_TRACK
+            override val intCode = IntegerTable.SORT_BY_TRACK
+            override val stringRes = R.string.lbl_track
 
-            override val stringRes: Int
-                get() = R.string.lbl_track
-
-            override fun getSongComparator(direction: Direction): Comparator<Song> =
-                MultiComparator(
-                    compareBy(NullableComparator.DISC) { it.disc },
-                    compareByDynamic(direction, NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG))
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.track }
+                    Direction.DESCENDING -> songs.sortByDescending { it.track }
+                }
+                songs.sortBy { it.disc }
+            }
         }
 
-        /**
-         * Sort by the date an item was added. Only supported by [Song]s and [Album]s.
-         *
-         * @see Song.dateAdded
-         * @see Album.dates
-         */
         data object ByDateAdded : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_DATE_ADDED
+            override val intCode = IntegerTable.SORT_BY_DATE_ADDED
+            override val stringRes = R.string.lbl_date_added
 
-            override val stringRes: Int
-                get() = R.string.lbl_date_added
+            override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
+                songs.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> songs.sortBy { it.dateAdded }
+                    Direction.DESCENDING -> songs.sortByDescending { it.dateAdded }
+                }
+            }
 
-            override fun getSongComparator(direction: Direction): Comparator<Song> =
-                MultiComparator(
-                    compareByDynamic(direction) { it.dateAdded }, compareBy(BasicComparator.SONG))
-
-            override fun getAlbumComparator(direction: Direction): Comparator<Album> =
-                MultiComparator(
-                    compareByDynamic(direction) { album -> album.dateAdded },
-                    compareBy(BasicComparator.ALBUM))
+            override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
+                albums.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> albums.sortBy { it.dateAdded }
+                    Direction.DESCENDING -> albums.sortByDescending { it.dateAdded }
+                }
+            }
         }
 
         companion object {
-            /**
-             * Convert a [Mode] integer representation into an instance.
-             *
-             * @param intCode An integer representation of a [Mode]
-             * @return The corresponding [Mode], or null if the [Mode] is invalid.
-             * @see intCode
-             */
-            fun fromIntCode(intCode: Int) =
+            fun fromIntCode(intCode: Int): Mode? =
                 when (intCode) {
                     ByName.intCode -> ByName
                     ByArtist.intCode -> ByArtist
@@ -463,171 +413,5 @@ data class Sort(val mode: Mode, val direction: Direction) {
             val mode = Mode.fromIntCode(intCode.shr(1)) ?: return null
             return Sort(mode, direction)
         }
-    }
-}
-
-/**
- * Utility function to create a [Comparator] in a dynamic way determined by [direction].
- *
- * @param direction The [Sort.Direction] to sort in.
- * @see compareBy
- * @see compareByDescending
- */
-private inline fun <T : Music, K : Comparable<K>> compareByDynamic(
-    direction: Sort.Direction,
-    crossinline selector: (T) -> K
-) =
-    when (direction) {
-        Sort.Direction.ASCENDING -> compareBy(selector)
-        Sort.Direction.DESCENDING -> compareByDescending(selector)
-    }
-
-/**
- * Utility function to create a [Comparator] in a dynamic way determined by [direction]
- *
- * @param direction The [Sort.Direction] to sort in.
- * @param comparator A [Comparator] to wrap.
- * @return A new [Comparator] with the specified configuration.
- * @see compareBy
- * @see compareByDescending
- */
-private fun <T : Music> compareByDynamic(
-    direction: Sort.Direction,
-    comparator: Comparator<in T>
-): Comparator<T> = compareByDynamic(direction, comparator) { it }
-
-/**
- * Utility function to create a [Comparator] a dynamic way determined by [direction]
- *
- * @param direction The [Sort.Direction] to sort in.
- * @param comparator A [Comparator] to wrap.
- * @param selector Called to obtain a specific attribute to sort by.
- * @return A new [Comparator] with the specified configuration.
- * @see compareBy
- * @see compareByDescending
- */
-private inline fun <T : Music, K> compareByDynamic(
-    direction: Sort.Direction,
-    comparator: Comparator<in K>,
-    crossinline selector: (T) -> K
-) =
-    when (direction) {
-        Sort.Direction.ASCENDING -> compareBy(comparator, selector)
-        Sort.Direction.DESCENDING -> compareByDescending(comparator, selector)
-    }
-
-/**
- * Utility function to create a [Comparator] that sorts in ascending order based on the given
- * [Comparator], with a selector based on the item itself.
- *
- * @param comparator The [Comparator] to wrap.
- * @return A new [Comparator] with the specified configuration.
- * @see compareBy
- */
-private fun <T : Music> compareBy(comparator: Comparator<T>): Comparator<T> =
-    compareBy(comparator) { it }
-
-/**
- * A [Comparator] that chains several other [Comparator]s together to form one comparison.
- *
- * @param comparators The [Comparator]s to chain. These will be iterated through in order during a
- *   comparison, with the first non-equal result becoming the result.
- */
-private class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
-    private val _comparators = comparators
-
-    override fun compare(a: T?, b: T?): Int {
-        for (comparator in _comparators) {
-            val result = comparator.compare(a, b)
-            if (result != 0) {
-                return result
-            }
-        }
-
-        return 0
-    }
-}
-
-/**
- * Wraps a [Comparator], extending it to compare two lists.
- *
- * @param inner The [Comparator] to use.
- */
-private class ListComparator<T>(private val inner: Comparator<T>) : Comparator<List<T>> {
-    override fun compare(a: List<T>, b: List<T>): Int {
-        for (i in 0 until max(a.size, b.size)) {
-            val ai = a.getOrNull(i)
-            val bi = b.getOrNull(i)
-            when {
-                ai != null && bi != null -> {
-                    val result = inner.compare(ai, bi)
-                    if (result != 0) {
-                        return result
-                    }
-                }
-                ai == null && bi != null -> return -1 // a < b
-                ai == null && bi == null -> return 0 // a = b
-                else -> return 1 // a < b
-            }
-        }
-
-        return 0
-    }
-
-    companion object {
-        /** A re-usable configured for [Artist]s.. */
-        val ARTISTS: Comparator<List<Artist>> = ListComparator(BasicComparator.ARTIST)
-    }
-}
-
-/**
- * A [Comparator] that compares abstract [Music] values. Internally, this is similar to
- * [NullableComparator], however comparing [Music.name] instead of [Comparable].
- *
- * @see NullableComparator
- * @see Music.name
- */
-private class BasicComparator<T : Music> private constructor() : Comparator<T> {
-    override fun compare(a: T, b: T) = a.name.compareTo(b.name)
-
-    companion object {
-        /** A re-usable instance configured for [Song]s. */
-        val SONG: Comparator<Song> = BasicComparator()
-        /** A re-usable instance configured for [Album]s. */
-        val ALBUM: Comparator<Album> = BasicComparator()
-        /** A re-usable instance configured for [Artist]s. */
-        val ARTIST: Comparator<Artist> = BasicComparator()
-        /** A re-usable instance configured for [Genre]s. */
-        val GENRE: Comparator<Genre> = BasicComparator()
-        /** A re-usable instance configured for [Playlist]s. */
-        val PLAYLIST: Comparator<Playlist> = BasicComparator()
-    }
-}
-
-/**
- * A [Comparator] that compares two possibly null values. Values will be considered lesser if they
- * are null, and greater if they are non-null.
- */
-private class NullableComparator<T : Comparable<T>> private constructor() : Comparator<T?> {
-    override fun compare(a: T?, b: T?) =
-        when {
-            a != null && b != null -> a.compareTo(b)
-            a == null && b != null -> -1 // a < b
-            a == null && b == null -> 0 // a = b
-            else -> 1 // a < b
-        }
-
-    companion object {
-        /** A re-usable instance configured for [Int]s. */
-        val INT = NullableComparator<Int>()
-        /** A re-usable instance configured for [Long]s. */
-        val LONG = NullableComparator<Long>()
-        /** A re-usable instance configured for [Disc]s */
-        val DISC = NullableComparator<Disc>()
-        /** A re-usable instance configured for [Date.Range]s. */
-        val DATE_RANGE = NullableComparator<Date.Range>()
-
-        /** A re-usable instance configured for [Date]s. */
-        val DATE = NullableComparator<Date>()
     }
 }
