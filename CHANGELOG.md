@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.5.1
 
 #### What's Fixed
 - Fixed music loading failure from improper sort systems
