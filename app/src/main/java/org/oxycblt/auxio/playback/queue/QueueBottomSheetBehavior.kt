@@ -49,6 +49,9 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
         isHideable = false
     }
 
+    override fun getIdealBarHeight(context: Context) =
+        context.getDimenPixels(R.dimen.size_touchable_large)
+
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View) =
         dependency.id == R.id.playback_bar_fragment
 

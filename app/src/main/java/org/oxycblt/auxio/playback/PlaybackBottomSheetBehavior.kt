@@ -28,8 +28,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -54,6 +56,9 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
     init {
         isHideable = true
     }
+
+    override fun getIdealBarHeight(context: Context) =
+        context.getDimenPixels(R.dimen.size_touchable_large)
 
     // Hack around issue where the playback sheet will try to intercept nested scrolling events
     // before the queue sheet.

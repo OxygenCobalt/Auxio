@@ -27,7 +27,9 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
@@ -42,6 +44,7 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
 abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     BackportBottomSheetBehavior<V>(context, attributeSet) {
     private var initalized = false
+    private val idealBottomGestureInsets = context.getDimenPixels(R.dimen.spacing_medium)
 
     init {
         // Disable isFitToContents to make the bottom sheet expand to the top of the screen and
@@ -57,6 +60,9 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
      */
     abstract fun createBackground(context: Context): Drawable
 
+    /** Get the ideal bar height to use before the bar is properly measured. */
+    abstract fun getIdealBarHeight(context: Context): Int
+
     /**
      * Called when window insets are being applied to the [View] this [BaseBottomSheetBehavior] is
      * linked to.
@@ -70,7 +76,13 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
         // All sheet behaviors derive their peek height from the size of the "bar" (i.e the
         // first child) plus the gesture insets.
         val gestures = insets.systemGestureInsetsCompat
-        peekHeight = (child as ViewGroup).getChildAt(0).height + gestures.bottom
+        val bar = (child as ViewGroup).getChildAt(0)
+        peekHeight =
+            if (bar.measuredHeight > 0) {
+                bar.measuredHeight + gestures.bottom
+            } else {
+                getIdealBarHeight(child.context) + gestures.bottom
+            }
         return insets
     }
 
@@ -93,6 +105,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
                 setOnApplyWindowInsetsListener(::applyWindowInsets)
             }
             initalized = true
+            peekHeight = getIdealBarHeight(child.context) + idealBottomGestureInsets
         }
         // Sometimes CoordinatorLayout doesn't dispatch window insets to us, likely due to how
         // much we overload it. Ensure that we get them.
