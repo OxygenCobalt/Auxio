@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import android.view.WindowInsets
+import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
@@ -84,6 +85,7 @@ class MainFragment :
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
     private var normalCornerSize = 0f
+    private var maxScaleXDistance = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,6 +160,8 @@ class MainFragment :
         }
 
         normalCornerSize = playbackSheetBehavior.sheetBackgroundDrawable.topLeftCornerResolvedSize
+        maxScaleXDistance =
+            context.getDimen(MR.dimen.m3_back_progress_bottom_container_max_scale_x_distance)
 
         binding.playbackSheet.elevation = 0f
 
@@ -246,12 +250,14 @@ class MainFragment :
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
 
-        val lastStretchRatio = max(playbackRatio - 0.9f, 0f) / 0.1f
-
+        val maxScaleXDelta = maxScaleXDistance / binding.playbackSheet.width
+        val closeRatio = max(playbackRatio - 0.9f, 0f) / 0.1f
+        val backRatio = max(1 - ((1 - binding.playbackSheet.scaleX) / maxScaleXDelta), 0f)
+        val lastStretchRatio = min(closeRatio * backRatio, 1f)
         binding.mainSheetScrim.alpha = lastStretchRatio
         playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(
             normalCornerSize * (1 - lastStretchRatio))
-        binding.exploreNavHost.isInvisible = playbackRatio == 1f
+        binding.exploreNavHost.isInvisible = lastStretchRatio == 1f
         binding.playbackSheet.translationZ = (1 - lastStretchRatio) * elevationNormal
 
         if (queueSheetBehavior != null) {
@@ -461,6 +467,30 @@ class MainFragment :
         private val playbackSheetBehavior: PlaybackBottomSheetBehavior<*>,
         private val queueSheetBehavior: QueueBottomSheetBehavior<*>?
     ) : OnBackPressedCallback(false) {
+        override fun handleOnBackStarted(backEvent: BackEventCompat) {
+            if (queueSheetShown()) {
+                return
+            }
+
+            if (playbackSheetShown()) {
+                playbackSheetBehavior.startBackProgress(backEvent)
+                logD("Collapsed playback sheet")
+                return
+            }
+        }
+
+        override fun handleOnBackProgressed(backEvent: BackEventCompat) {
+            if (queueSheetShown()) {
+                return
+            }
+
+            if (playbackSheetShown()) {
+                playbackSheetBehavior.updateBackProgress(backEvent)
+                logD("Collapsed playback sheet")
+                return
+            }
+        }
+
         override fun handleOnBackPressed() {
             // If expanded, collapse the queue sheet first.
             if (queueSheetShown()) {
@@ -472,8 +502,19 @@ class MainFragment :
 
             // If expanded, collapse the playback sheet next.
             if (playbackSheetShown()) {
-                playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
+                playbackSheetBehavior.handleBackInvoked()
                 logD("Collapsed playback sheet")
+                return
+            }
+        }
+
+        override fun handleOnBackCancelled() {
+            if (queueSheetShown()) {
+                return
+            }
+
+            if (playbackSheetShown()) {
+                playbackSheetBehavior.cancelBackProgress()
                 return
             }
         }

@@ -1634,7 +1634,7 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
       setState(hideable ? STATE_HIDDEN : STATE_COLLAPSED);
       return;
     }
-    if (hideable) {
+    if (hideable && isHideableWhenDragging()) {
       bottomContainerBackHelper.finishBackProgressNotPersistent(
           backEvent,
           new AnimatorListenerAdapter() {
