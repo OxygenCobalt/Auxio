@@ -10,6 +10,7 @@ O Auxio é um reprodutor de música local com UI/UX rápido e confiável, sem os
 - Sistema de artistas avançado que unifica artistas e seus álbuns
 - Gerenciamento de pastas com reconhecimento de cartão SD
 - Persistência confiável da lista de reprodução
+- Reprodução automática sem pausas
 - Suporte completo ao ReplayGain (MP3, MP4, FLAC, OGG e OPUS)
 - Funcionalidade de equalizador externo (como o Wavelet)
 - De ponta a ponta
