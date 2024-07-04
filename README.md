@@ -91,6 +91,10 @@ download the external code.
 3. You are **unable** to build this project on windows, as the custom Media3 build runs shell scripts that
 will only work on unix-based systems.
 
+## Caveats
+
+Due to Google's limitations, Android Auto feature requires enabling "Unknown sources" in the Android Auto settings. Expect this to be fixed once the app is published on the Play Store.
+
 ## Contributing
 
 Auxio accepts most contributions as long as they follow the [Contribution Guidelines](/.github/CONTRIBUTING.md).
