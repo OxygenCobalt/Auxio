@@ -208,12 +208,14 @@ class HomeFragment :
         updateFabVisibility(
             homeModel.songList.value,
             homeModel.isFastScrolling.value,
+            homeModel.sheetObscuresFab.value,
             homeModel.currentTabType.value)
 
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
-        collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(
+            homeModel.songList, homeModel.isFastScrolling, homeModel.sheetObscuresFab, ::updateFab)
         collect(homeModel.speedDialOpen, ::updateSpeedDial)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
@@ -373,7 +375,11 @@ class HomeFragment :
                 MusicType.PLAYLISTS -> R.id.home_playlist_recycler
             }
 
-        updateFabVisibility(homeModel.songList.value, homeModel.isFastScrolling.value, tabType)
+        updateFabVisibility(
+            homeModel.songList.value,
+            homeModel.isFastScrolling.value,
+            homeModel.sheetObscuresFab.value,
+            tabType)
     }
 
     private fun handleRecreate(recreate: Unit?) {
@@ -408,6 +414,7 @@ class HomeFragment :
             updateFabVisibility(
                 homeModel.songList.value,
                 homeModel.isFastScrolling.value,
+                homeModel.sheetObscuresFab.value,
                 homeModel.currentTabType.value)
             binding.homeIndexingContainer.visibility = View.INVISIBLE
             return
@@ -553,20 +560,21 @@ class HomeFragment :
         }
     }
 
-    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
-        updateFabVisibility(songs, isFastScrolling, homeModel.currentTabType.value)
+    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean, sheetRising: Boolean) {
+        updateFabVisibility(songs, isFastScrolling, sheetRising, homeModel.currentTabType.value)
     }
 
     private fun updateFabVisibility(
         songs: List<Song>,
         isFastScrolling: Boolean,
+        sheetRising: Boolean,
         tabType: MusicType
     ) {
         val binding = requireBinding()
         // If there are no songs, it's likely that the library has not been loaded, so
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
         // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
-        if (songs.isEmpty() || isFastScrolling) {
+        if (songs.isEmpty() || isFastScrolling || sheetRising) {
             logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
             hideAllFabs()
         } else {

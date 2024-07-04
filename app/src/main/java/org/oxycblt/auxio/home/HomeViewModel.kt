@@ -160,6 +160,9 @@ constructor(
     /** A marker for whether the speed dial is open or not. */
     val speedDialOpen: StateFlow<Boolean> = _speedDialOpen
 
+    private val _sheetObscuresFab = MutableStateFlow(false)
+    val sheetObscuresFab: StateFlow<Boolean> = _sheetObscuresFab
+
     private val _showOuter = MutableEvent<Outer>()
     val showOuter: Event<Outer>
         get() = _showOuter
@@ -305,6 +308,11 @@ constructor(
     fun setSpeedDialOpen(speedDialOpen: Boolean) {
         logD("Updating speed dial state: $speedDialOpen")
         _speedDialOpen.value = speedDialOpen
+    }
+
+    fun setSheetRising(sheetRising: Boolean) {
+        logD("Updating sheet rising state: $sheetRising")
+        _sheetObscuresFab.value = sheetRising
     }
 
     fun showSettings() {
