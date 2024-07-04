@@ -310,7 +310,7 @@ constructor(
         _speedDialOpen.value = speedDialOpen
     }
 
-    fun setSheetRising(sheetRising: Boolean) {
+    fun setSheetObscuresFab(sheetRising: Boolean) {
         logD("Updating sheet rising state: $sheetRising")
         _sheetObscuresFab.value = sheetRising
     }

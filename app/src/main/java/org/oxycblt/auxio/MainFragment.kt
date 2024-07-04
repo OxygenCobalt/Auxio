@@ -35,9 +35,7 @@ import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialFadeThrough
-import com.leinardi.android.speeddial.SpeedDialOverlayLayout
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Field
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
@@ -60,7 +58,6 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -239,18 +236,13 @@ class MainFragment :
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
-        if (playbackRatio > 0f) {
-            if (homeModel.speedDialOpen.value) {
-                // Stupid hack to prevent you from sliding the sheet up without closing the speed
-                // dial. Filtering out ACTION_MOVE events will cause back gestures to close the
-                // speed
-                // dial, which is super finicky behavior.
-                homeModel.setSpeedDialOpen(false)
-            }
-            homeModel.setSheetRising(true)
-        } else {
-            homeModel.setSheetRising(false)
+        if (playbackRatio > 0f && homeModel.speedDialOpen.value) {
+            // Stupid hack to prevent you from sliding the sheet up without closing the speed
+            // dial. Filtering out ACTION_MOVE events will cause back gestures to close the
+            // speed dial, which is super finicky behavior.
+            homeModel.setSpeedDialOpen(false)
         }
+        homeModel.setSheetObscuresFab(playbackRatio > 0f)
 
         val playbackOutRatio = 1 - min(playbackRatio * 2, 1f)
         val playbackInRatio = max(playbackRatio - 0.5f, 0f) * 2
@@ -508,13 +500,11 @@ class MainFragment :
         }
 
         override fun handleOnBackPressed() {
-            // If expanded, collapse the queue sheet first.
             if (queueSheetShown()) {
                 unlikelyToBeNull(queueSheetBehavior).handleBackInvoked()
                 return
             }
 
-            // If expanded, collapse the playback sheet next.
             if (playbackSheetShown()) {
                 playbackSheetBehavior.handleBackInvoked()
                 return
@@ -584,10 +574,5 @@ class MainFragment :
         fun invalidateEnabled(open: Boolean) {
             isEnabled = open
         }
-    }
-
-    private companion object {
-        val SPEED_DIAL_OVERLAY_ANIMATION_DURATION_FIELD: Field by
-            lazyReflectedField(SpeedDialOverlayLayout::class, "mAnimationDuration")
     }
 }
