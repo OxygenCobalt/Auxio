@@ -239,38 +239,53 @@ class MainFragment :
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
-        if (playbackRatio > 0f && homeModel.speedDialOpen.value) {
-            // Stupid hack to prevent you from sliding the sheet up without closing the speed
-            // dial. Filtering out ACTION_MOVE events will cause back gestures to close the speed
-            // dial, which is super finicky behavior.
-            homeModel.setSpeedDialOpen(false)
+        if (playbackRatio > 0f) {
+            if (homeModel.speedDialOpen.value) {
+                // Stupid hack to prevent you from sliding the sheet up without closing the speed
+                // dial. Filtering out ACTION_MOVE events will cause back gestures to close the
+                // speed
+                // dial, which is super finicky behavior.
+                homeModel.setSpeedDialOpen(false)
+            }
+            homeModel.setSheetRising(true)
+        } else {
+            homeModel.setSheetRising(false)
         }
 
-        val outPlaybackRatio = 1 - playbackRatio
-        val halfOutRatio = min(playbackRatio * 2, 1f)
-        val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
+        val playbackOutRatio = 1 - min(playbackRatio * 2, 1f)
+        val playbackInRatio = max(playbackRatio - 0.5f, 0f) * 2
 
-        val maxScaleXDelta = maxScaleXDistance / binding.playbackSheet.width
-        val closeRatio = max(playbackRatio - 0.9f, 0f) / 0.1f
-        val backRatio = max(1 - ((1 - binding.playbackSheet.scaleX) / maxScaleXDelta), 0f)
-        val lastStretchRatio = min(closeRatio * backRatio, 1f)
-        binding.mainSheetScrim.alpha = lastStretchRatio
+        val playbackMaxXScaleDelta = maxScaleXDistance / binding.playbackSheet.width
+        val playbackEdgeRatio = max(playbackRatio - 0.9f, 0f) / 0.1f
+        val playbackBackRatio =
+            max(1 - ((1 - binding.playbackSheet.scaleX) / playbackMaxXScaleDelta), 0f)
+        val playbackLastStretchRatio = min(playbackEdgeRatio * playbackBackRatio, 1f)
+        binding.mainSheetScrim.alpha = playbackLastStretchRatio
+
         playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(
-            normalCornerSize * (1 - lastStretchRatio))
-        binding.exploreNavHost.isInvisible = lastStretchRatio == 1f
-        binding.playbackSheet.translationZ = (1 - lastStretchRatio) * elevationNormal
+            normalCornerSize * (1 - playbackLastStretchRatio))
+        binding.exploreNavHost.isInvisible = playbackLastStretchRatio == 1f
+        binding.playbackSheet.translationZ = (1 - playbackLastStretchRatio) * elevationNormal
 
         if (queueSheetBehavior != null) {
-            // Queue sheet available, the normal transition applies, but it now much be combined
-            // with another transition where the playback panel disappears and the playback bar
-            // appears as the queue sheet expands.
             val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
-            val halfOutQueueRatio = min(queueRatio * 2, 1f)
-            val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
+            val queueInRatio = max(queueRatio - 0.5f, 0f) * 2
 
-            binding.playbackBarFragment.alpha = max(1 - halfOutRatio, halfInQueueRatio)
-            binding.playbackPanelFragment.alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
-            binding.queueFragment.alpha = queueRatio
+            val queueMaxXScaleDelta = maxScaleXDistance / binding.queueSheet.width
+            val queueBackRatio =
+                max(1 - ((1 - binding.queueSheet.scaleX) / queueMaxXScaleDelta), 0f)
+
+            val queueBarEdgeRatio = max(queueRatio - 0.9f, 0f) / 0.1f
+            val queueBarBackRatio = max(queueBackRatio - 0.5f, 0f) * 2
+            val queueBarRatio = min(queueBarEdgeRatio * queueBarBackRatio, 1f)
+
+            val queuePanelEdgeRatio = min(max(queueRatio - 0.8f, 0f) / 0.1f, 1f)
+            val queuePanelBackRatio = min(queueBackRatio * 2, 1f)
+            val queuePanelRatio = 1 - min(queuePanelEdgeRatio * queuePanelBackRatio, 1f)
+
+            binding.playbackBarFragment.alpha = max(playbackOutRatio, queueBarRatio)
+            binding.playbackPanelFragment.alpha = min(playbackInRatio, queuePanelRatio)
+            binding.queueFragment.alpha = queueInRatio
 
             if (playbackModel.song.value != null) {
                 // Playback sheet intercepts queue sheet touch events, prevent that from
@@ -280,12 +295,12 @@ class MainFragment :
             }
         } else {
             // No queue sheet, fade normally based on the playback sheet
-            binding.playbackBarFragment.alpha = 1 - halfOutRatio
-            binding.playbackPanelFragment.alpha = halfInPlaybackRatio
+            binding.playbackBarFragment.alpha = playbackOutRatio
+            binding.playbackPanelFragment.alpha = playbackInRatio
             (binding.queueSheet.background as MaterialShapeDrawable).shapeAppearanceModel =
                 ShapeAppearanceModel.builder()
                     .setTopLeftCornerSize(normalCornerSize)
-                    .setTopRightCornerSize(normalCornerSize * (1 - lastStretchRatio))
+                    .setTopRightCornerSize(normalCornerSize * (1 - playbackLastStretchRatio))
                     .build()
         }
         // Fade out the playback bar as the panel expands.
@@ -299,7 +314,7 @@ class MainFragment :
 
         binding.queueSheet.apply {
             // Queue sheet (not queue content) should fade out with the playback panel.
-            alpha = halfInPlaybackRatio
+            alpha = playbackInRatio
             // Prevent interactions when the queue sheet fully fades out.
             binding.queueSheet.isInvisible = alpha == 0f
         }
@@ -469,24 +484,23 @@ class MainFragment :
     ) : OnBackPressedCallback(false) {
         override fun handleOnBackStarted(backEvent: BackEventCompat) {
             if (queueSheetShown()) {
-                return
+                unlikelyToBeNull(queueSheetBehavior).startBackProgress(backEvent)
             }
 
             if (playbackSheetShown()) {
                 playbackSheetBehavior.startBackProgress(backEvent)
-                logD("Collapsed playback sheet")
                 return
             }
         }
 
         override fun handleOnBackProgressed(backEvent: BackEventCompat) {
             if (queueSheetShown()) {
+                unlikelyToBeNull(queueSheetBehavior).updateBackProgress(backEvent)
                 return
             }
 
             if (playbackSheetShown()) {
                 playbackSheetBehavior.updateBackProgress(backEvent)
-                logD("Collapsed playback sheet")
                 return
             }
         }
@@ -494,22 +508,20 @@ class MainFragment :
         override fun handleOnBackPressed() {
             // If expanded, collapse the queue sheet first.
             if (queueSheetShown()) {
-                unlikelyToBeNull(queueSheetBehavior).state =
-                    BackportBottomSheetBehavior.STATE_COLLAPSED
-                logD("Collapsed queue sheet")
+                unlikelyToBeNull(queueSheetBehavior).handleBackInvoked()
                 return
             }
 
             // If expanded, collapse the playback sheet next.
             if (playbackSheetShown()) {
                 playbackSheetBehavior.handleBackInvoked()
-                logD("Collapsed playback sheet")
                 return
             }
         }
 
         override fun handleOnBackCancelled() {
             if (queueSheetShown()) {
+                unlikelyToBeNull(queueSheetBehavior).cancelBackProgress()
                 return
             }
 
