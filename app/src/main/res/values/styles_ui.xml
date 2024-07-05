@@ -279,16 +279,16 @@
 
     <style name="Widget.Auxio.Button.Icon.Huge" parent="Widget.Material3.Button.IconButton">
         <item name="iconSize">40dp</item>
-        <item name="android:minWidth">@dimen/size_touchable_mid_large</item>
-        <item name="android:minHeight">@dimen/size_touchable_mid_large</item>
+        <item name="android:minWidth">@dimen/size_touchable_medium</item>
+        <item name="android:minHeight">@dimen/size_touchable_medium</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
-        <item name="android:paddingStart">10dp</item>
-        <item name="android:paddingEnd">10dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
         <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.Huge</item>
     </style>
 
