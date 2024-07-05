@@ -89,8 +89,9 @@ dependencies {
     implementation "androidx.core:core-ktx:1.13.1"
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.activity:activity-ktx:1.9.0"
-    implementation "androidx.fragment:fragment-ktx:1.8.1"
-    implementation "androidx.transition:transition:1.5.0"
+    // Disabled since 1.7+ has completely broken progressive back gestures.
+    // noinspection GradleDependency
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
 
     // Components
     // Deliberately kept on 1.2.1 to prevent a bug where the queue sheet will not collapse on
