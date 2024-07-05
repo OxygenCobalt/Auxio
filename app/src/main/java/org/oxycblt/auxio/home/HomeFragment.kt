@@ -47,7 +47,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.math.abs
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -111,15 +110,10 @@ class HomeFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (savedInstanceState != null) {
-            // Orientation change will wipe whatever transition we were using prior, which will
-            // result in no transition when the user navigates back. Make sure we re-initialize
-            // our transitions.
-            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -1)
-            if (axis > -1) {
-                applyAxisTransition(axis)
-            }
-        }
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
@@ -241,15 +235,6 @@ class HomeFragment :
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        val transition = enterTransition
-        if (transition is MaterialSharedAxis) {
-            outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
-        }
-
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
         storagePermissionLauncher = null
@@ -279,7 +264,6 @@ class HomeFragment :
             // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
                 logD("Navigating to search")
-                applyAxisTransition(MaterialSharedAxis.Z)
                 findNavController().navigateSafe(HomeFragmentDirections.search())
                 true
             }
@@ -680,18 +664,15 @@ class HomeFragment :
             }
             is Show.SongAlbumDetails -> {
                 logD("Navigating to the album of ${show.song}")
-                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showAlbum(show.song.album.uid))
             }
             is Show.AlbumDetails -> {
                 logD("Navigating to ${show.album}")
-                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showAlbum(show.album.uid))
             }
             is Show.ArtistDetails -> {
                 logD("Navigating to ${show.artist}")
-                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
@@ -706,12 +687,10 @@ class HomeFragment :
             }
             is Show.GenreDetails -> {
                 logD("Navigating to ${show.genre}")
-                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showGenre(show.genre.uid))
             }
             is Show.PlaylistDetails -> {
                 logD("Navigating to ${show.playlist}")
-                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showPlaylist(show.playlist.uid))
             }
@@ -745,18 +724,6 @@ class HomeFragment :
         } else {
             binding.homeToolbar.setVisible(R.id.home_normal_toolbar)
         }
-    }
-
-    private fun applyAxisTransition(axis: Int) {
-        // Sanity check to avoid in-correct axis transitions
-        check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
-            "Not expecting Y axis transition"
-        }
-
-        enterTransition = MaterialSharedAxis(axis, true)
-        returnTransition = MaterialSharedAxis(axis, false)
-        exitTransition = MaterialSharedAxis(axis, true)
-        reenterTransition = MaterialSharedAxis(axis, false)
     }
 
     /**
@@ -793,6 +760,5 @@ class HomeFragment :
                 "hide",
                 FloatingActionButton.OnVisibilityChangedListener::class,
                 Boolean::class)
-        const val KEY_LAST_TRANSITION_ID = BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }
