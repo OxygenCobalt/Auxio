@@ -270,8 +270,8 @@
     <string name="desc_playlist_image">Wiedergabelistenbild für %s</string>
     <string name="lbl_playlist">Wiedergabeliste</string>
     <string name="lbl_playlists">Wiedergabelisten</string>
-    <string name="set_intelligent_sorting">Artikel beim Sortieren ignorieren</string>
-    <string name="set_intelligent_sorting_desc">Wörter wie „the“ ignorieren (funktioniert am besten mit englischsprachiger Musik)</string>
+    <string name="set_intelligent_sorting">Intelligente Sortierung</string>
+    <string name="set_intelligent_sorting_desc">Korrekte Sortierung von Namen, die mit Nummern oder Wörtern wie „the“ beginnen (funktioniert am besten mit englischsprachiger Musik)</string>
     <string name="desc_new_playlist">Neue Wiedergabeliste erstellen</string>
     <string name="lbl_new_playlist">Neue Wiedergabeliste</string>
     <string name="lng_playlist_added">Zur Wiedergabeliste hinzugefügt</string>
