@@ -1,0 +1,25 @@
+Az Auxio egy helyi zenelejátszó gyors, megbízható felhasználói felülettel/UX-szel, anélkül, hogy a többi zenelejátszóban jelen lévő sok haszontalan funkciót tartalmazna. A modern médialejátszó könyvtárakra épülő Auxio kiváló könyvtártámogatással és zenehallgatási minőséggel rendelkezik, mint más, elavult Android-funkciókat használó alkalmazások. Röviden: <b>Zenét játszik.</b>
+
+<b>Funkciók</b>
+
+- Lejátszás Media3 ExoPlayer alapú
+- A legfrissebb anyagtervezési irányelvekből származó, lendületes felhasználói felület
+- Véleményes UX, amely előnyben részesíti a könnyű használatot a szélső esetekben
+- Testreszabható viselkedés
+- Lemezszámok, több előadó, kiadástípusok támogatása,
+pontos/eredeti dátumok, címkék rendezése stb
+- Fejlett előadói rendszer, amely egyesíti az előadókat és az album előadókat
+- SD-kártya-tudatos mappakezelés
+- Megbízható lejátszási lista funkció
+- Lejátszási állapot fennmaradása
+- Android automatikus támogatás
+- Automatikus hézagmentes lejátszás
+- Teljes ReplayGain támogatás (MP3, FLAC, OGG, OPUS és MP4 fájlokon)
+- Külső hangszínszabályzó támogatás (pl. Wavelet)
+- Éltől szélig
+- Beágyazott borítók támogatása
+- Keresés funkció
+- Headset automatikus lejátszása
+- Stílusos kütyük, amelyek automatikusan alkalmazkodnak a méretükhöz
+- Teljesen privát és offline
+- Nincsenek lekerekített albumborítók (alapértelmezés szerint)
