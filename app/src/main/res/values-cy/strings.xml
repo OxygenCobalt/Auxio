@@ -265,4 +265,20 @@
         <item quantity="many">%d chân</item>
         <item quantity="other">%d cân</item>
     </plurals>
+    <string name="lbl_singles">Senglau</string>
+    <string name="lbl_single">Sengl</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
+    <string name="lbl_appears_on">Ymddengys ar</string>
+    <string name="lbl_artist">Artist</string>
+    <string name="lbl_genre">Genre</string>
+    <string name="lbl_genres">Genres</string>
+    <string name="lbl_bitrate">Didradd</string>
+    <string name="set_separators_plus">Plws (+)</string>
+    <string name="set_playback">Chwarae</string>
+    <string name="clr_indigo">Indigo</string>
+    <string name="clr_teal">Gwyrddlas 2</string>
+    <string name="fmt_db_pos">+%.1f desibelau</string>
+    <string name="fmt_db_neg">-%.1f desibelau</string>
+    <string name="fmt_sample_rate">%d Hz</string>
 </resources>
