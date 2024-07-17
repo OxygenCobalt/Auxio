@@ -34,7 +34,7 @@
     <string name="lbl_track">Trac</string>
     <string name="lbl_sort">Didoli</string>
     <string name="lbl_sort_mode">Didoli gan</string>
-    <string name="set_dirs_list">Ffolderau</string>
+    <string name="set_dirs_list">Ffolderi</string>
     <string name="set_dirs_mode_exclude">Allgáu</string>
     <string name="lbl_playlists">Rhestri chwarae</string>
     <string name="lbl_new_playlist">Rhestr chwarae newydd</string>
@@ -87,7 +87,7 @@
     <string name="set_audio">Sain</string>
     <string name="set_replay_gain_mode_off">I ffwrdd</string>
     <string name="set_library">Llyfrgell</string>
-    <string name="set_dirs">Ffolderau cerddoriaeth</string>
+    <string name="set_dirs">Ffolderi cerddoriaeth</string>
     <string name="set_dirs_mode">Modd</string>
     <string name="set_dirs_mode_include">Cynnwys</string>
     <string name="set_reindex">Adnewyddu cerddoriaeth</string>
@@ -107,7 +107,7 @@
     <string name="clr_deep_purple">Porffor dwfn</string>
     <string name="clr_blue">Glas</string>
     <string name="clr_deep_blue">Glas dwfn</string>
-    <string name="clr_cyan">Gwyrddlas</string>
+    <string name="clr_cyan">Gwyrddlas 1</string>
     <string name="clr_green">Gwyrdd</string>
     <string name="clr_deep_green">Gwyrdd dwfn</string>
     <string name="clr_lime">Leim</string>
@@ -168,7 +168,7 @@
     <string name="lbl_state_restored">Cyflwr wedi\'i adfer</string>
     <string name="lbl_about">Ynghylch</string>
     <string name="lbl_version">Fersiwn</string>
-    <string name="lbl_code">Côd</string>
+    <string name="lbl_code">Cod ffynhonnell</string>
     <string name="lbl_wiki">Wici</string>
     <string name="lbl_licenses">Trwyddedau</string>
     <string name="set_black_mode_desc">Defnyddio thema ddu pur</string>
@@ -182,7 +182,7 @@
     <string name="set_theme_night">Tywyll</string>
     <string name="set_accent">Lliw</string>
     <string name="set_black_mode">Thema ddu</string>
-    <string name="set_round_mode_desc">Galluogi corneli crwn ar elfennau UI ychwanegol (angen i gloriau albwm fod yn crwn)</string>
+    <string name="set_round_mode_desc">Galluogi corneli crwn ar elfennau UI ychwanegol (angen cloriau albwm i fod yn grwn)</string>
     <string name="set_personalize">Personoleiddio</string>
     <string name="set_display">Arddangos</string>
     <string name="set_lib_tabs">Tabiau\'r llyfrgell</string>
@@ -219,7 +219,7 @@
     <string name="desc_selection_image">Llun y dewis</string>
     <string name="cdc_mp3">Sain MPEG-1</string>
     <string name="cdc_ogg">Sain Ogg</string>
-    <string name="fmt_bitrate">%d kb/e</string>
+    <string name="fmt_bitrate">%d cilobeit yr eiliad</string>
     <plurals name="fmt_artist_count">
         <item quantity="zero">%d artistiaid</item>
         <item quantity="one">%d artist</item>
@@ -281,4 +281,25 @@
     <string name="fmt_db_pos">+%.1f desibelau</string>
     <string name="fmt_db_neg">-%.1f desibelau</string>
     <string name="fmt_sample_rate">%d Hz</string>
+    <string name="lbl_single_live">Sengl byw</string>
+    <string name="lbl_single_remix">Sengl ail-gymysgiad</string>
+    <string name="lbl_sort_direction">Cyfeiriad</string>
+    <string name="lbl_sample_rate">Gradd samplu</string>
+    <string name="lbl_author_name">Alexander Capehart</string>
+    <string name="set_exclude_non_music">Allgáu pethau sydd ddim yn gerddoriaeth</string>
+    <string name="set_repeat_pause">Seibio os yn ailadrodd</string>
+    <string name="set_repeat_pause_desc">Seibio pan fydd cân yn ailadrodd</string>
+    <string name="set_pre_amp">pre-amp ReplayGain</string>
+    <string name="set_save_state">Cadw cyflwr chwarae</string>
+    <string name="set_wipe_state">Clirio cyflwr chwarae</string>
+    <string name="set_state">Dyfalbarhad</string>
+    <string name="set_restore_state">Adfer cyflwr chwarae</string>
+    <string name="set_separators_comma">Coma (,)</string>
+    <string name="set_separators_semicolon">Gwahannod (;)</string>
+    <string name="set_separators_slash">Blaenslaes (/)</string>
+    <string name="set_intelligent_sorting">Didoli\'n ddeallus</string>
+    <string name="set_intelligent_sorting_desc">Didoli enwau sydd yn dechrau gyda rhifau neu enwau megis \"the\" yn gywir (mae\'n gweithio orau gyda Saesneg)</string>
+    <string name="set_headset_autoplay">Chwarae\'n awtomatig gyda chlustffon</string>
+    <string name="set_rescan">Ail-sganio cerddoriaeth</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>
