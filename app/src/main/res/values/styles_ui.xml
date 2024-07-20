@@ -77,6 +77,11 @@
         <item name="iconSize">@dimen/size_icon_medium</item>
     </style>
 
+    <style name="Widget.Auxio.Image.MidLarge" parent="">
+        <item name="android:layout_width">@dimen/size_touchable_huge</item>
+        <item name="android:layout_height">@dimen/size_touchable_huge</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
+    </style>
 
     <style name="Widget.Auxio.Image.Large" parent="">
         <item name="android:layout_width">@dimen/size_hero_small</item>
