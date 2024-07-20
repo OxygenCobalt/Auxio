@@ -23,31 +23,26 @@ import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentDetail2Binding
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.list.PlaylistDetailListAdapter
 import org.oxycblt.auxio.detail.list.PlaylistDragCallback
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.util.collect
@@ -68,10 +63,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 @AndroidEntryPoint
 class PlaylistDetailFragment :
     DetailFragment<Playlist, Song>(), PlaylistDetailListAdapter.Listener {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val listModel: ListViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what playlist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an playlist.
     private val args: PlaylistDetailFragmentArgs by navArgs()
@@ -81,17 +72,9 @@ class PlaylistDetailFragment :
     private var getContentLauncher: ActivityResultLauncher<String>? = null
     private var pendingImportTarget: Playlist? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-    }
-
     override fun getDetailListAdapter() = playlistListAdapter
 
-    override fun onBindingCreated(binding: FragmentDetail2Binding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         editNavigationListener = DialogAwareNavigationListener(detailModel::dropPlaylistEdit)
@@ -114,13 +97,10 @@ class PlaylistDetailFragment :
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
         }
 
-        binding.detailRecycler.apply {
-            adapter = playlistListAdapter
-            touchHelper =
-                ItemTouchHelper(PlaylistDragCallback(detailModel)).also {
-                    it.attachToRecyclerView(this)
-                }
-        }
+        touchHelper =
+            ItemTouchHelper(PlaylistDragCallback(detailModel)).also {
+                it.attachToRecyclerView(binding.detailRecycler)
+            }
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
@@ -166,7 +146,7 @@ class PlaylistDetailFragment :
             .release(findNavController())
     }
 
-    override fun onDestroyBinding(binding: FragmentDetail2Binding) {
+    override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
         binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         touchHelper = null

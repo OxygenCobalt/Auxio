@@ -20,28 +20,23 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentDetail2Binding
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.list.GenreDetailListAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackDecision
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getPlural
@@ -57,27 +52,14 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class GenreDetailFragment : DetailFragment<Genre, Music>() {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val listModel: ListViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
     private val args: GenreDetailFragmentArgs by navArgs()
     private val genreListAdapter = GenreDetailListAdapter(this)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-    }
-
     override fun getDetailListAdapter() = genreListAdapter
 
-    override fun onBindingCreated(binding: FragmentDetail2Binding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- VIEWMODEL SETUP ---
@@ -95,7 +77,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
-    override fun onDestroyBinding(binding: FragmentDetail2Binding) {
+    override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.

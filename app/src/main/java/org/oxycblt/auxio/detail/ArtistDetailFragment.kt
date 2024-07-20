@@ -19,31 +19,25 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentDetail2Binding
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.list.ArtistDetailListAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.PlaybackDecision
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
@@ -60,35 +54,14 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class ArtistDetailFragment : DetailFragment<Artist, Music>() {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val listModel: ListViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val artistListAdapter = ArtistDetailListAdapter(this)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Detail transitions are always on the X axis. Shared element transitions are more
-        // semantically correct, but are also too buggy to be sensible.
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-    }
-
-    override fun onCreateBinding(inflater: LayoutInflater) =
-        FragmentDetail2Binding.inflate(inflater)
-
-    override fun getSelectionToolbar(binding: FragmentDetail2Binding) =
-        binding.detailSelectionToolbar
-
     override fun getDetailListAdapter() = artistListAdapter
 
-    override fun onBindingCreated(binding: FragmentDetail2Binding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- VIEWMODEL SETUP ---
@@ -106,7 +79,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
-    override fun onDestroyBinding(binding: FragmentDetail2Binding) {
+    override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.

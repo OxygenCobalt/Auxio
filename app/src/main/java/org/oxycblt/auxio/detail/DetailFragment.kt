@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.transition.MaterialSharedAxis
@@ -30,7 +29,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentDetail2Binding
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
@@ -45,10 +44,10 @@ import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
 
 abstract class DetailFragment<P : MusicParent, C : Music> :
-    ListFragment<C, FragmentDetail2Binding>(),
+    ListFragment<C, FragmentDetailBinding>(),
     DetailListAdapter.Listener<C>,
     AppBarLayout.OnOffsetChangedListener {
-    private val detailModel: DetailViewModel by activityViewModels()
+    protected val detailModel: DetailViewModel by activityViewModels()
     override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -65,15 +64,14 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
-    override fun onCreateBinding(inflater: LayoutInflater) =
-        FragmentDetail2Binding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     abstract fun getDetailListAdapter(): DetailListAdapter
 
-    override fun getSelectionToolbar(binding: FragmentDetail2Binding) =
+    override fun getSelectionToolbar(binding: FragmentDetailBinding) =
         binding.detailSelectionToolbar
 
-    override fun onBindingCreated(binding: FragmentDetail2Binding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- UI SETUP ---
@@ -103,7 +101,7 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
         spacingSmall = requireContext().getDimenPixels(R.dimen.spacing_small)
     }
 
-    override fun onDestroyBinding(binding: FragmentDetail2Binding) {
+    override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
         binding.detailAppbar.removeOnOffsetChangedListener(this)
         binding.detailNormalToolbar.setOnMenuItemClickListener(null)
