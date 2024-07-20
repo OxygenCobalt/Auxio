@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.ui
 
+import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -30,21 +31,28 @@ import androidx.core.view.isInvisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.R as MR
 import com.google.android.material.motion.MotionUtils
-import kotlin.math.max
-import kotlin.math.min
 import org.oxycblt.auxio.util.logD
 
 class MultiToolbar
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    private var fadeThroughAnimator: ValueAnimator? = null
+    private var animator: AnimatorSet? = null
     private var currentlyVisible = 0
-    private val matInterpolator =
+    private val outInterpolator =
         MotionUtils.resolveThemeInterpolator(
-            context, MR.attr.motionEasingStandardInterpolator, FastOutSlowInInterpolator())
-    private val matDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium3, 300).toLong()
+            context,
+            MR.attr.motionEasingEmphasizedAccelerateInterpolator,
+            FastOutSlowInInterpolator())
+    private val outDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort4, 250).toLong()
+    private val inInterpolator =
+        MotionUtils.resolveThemeInterpolator(
+            context,
+            MR.attr.motionEasingEmphasizedDecelerateInterpolator,
+            FastOutSlowInInterpolator())
+    private val inDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium1, 300).toLong()
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -81,38 +89,54 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             // Not laid out, just change it immediately while are not shown to the user.
             // This is an initialization, so we return false despite changing.
             logD("Not laid out, immediately updating visibility")
-            setToolbarsAlpha(fromView, toView, targetFromAlpha)
+            fromView.apply {
+                alpha = 0f
+                isInvisible = true
+            }
+            toView.apply {
+                alpha = 1f
+                isInvisible = false
+            }
             return false
         }
 
         logD("Changing toolbar visibility $from -> 0f, $to -> 1f")
-        fadeThroughAnimator?.cancel()
-        fadeThroughAnimator =
-            ValueAnimator.ofFloat(fromView.alpha, targetFromAlpha).apply {
-                duration = matDuration
-                interpolator = matInterpolator
-                addUpdateListener { setToolbarsAlpha(fromView, toView, it.animatedValue as Float) }
+        animator?.cancel()
+        val outAnimator =
+            ValueAnimator.ofFloat(fromView.alpha, 0f).apply {
+                duration = outDuration
+                interpolator = outInterpolator
+                addUpdateListener {
+                    val ratio = it.animatedValue as Float
+                    fromView.apply {
+                        scaleX = 1 - 0.05f * (1 - ratio)
+                        scaleY = 1 - 0.05f * (1 - ratio)
+                        alpha = ratio
+                        isInvisible = alpha == 0f
+                    }
+                }
+            }
+        val inAnimator =
+            ValueAnimator.ofFloat(toView.alpha, 1f).apply {
+                duration = inDuration
+                interpolator = inInterpolator
+                startDelay = outDuration
+                addUpdateListener {
+                    val ratio = it.animatedValue as Float
+                    toView.apply {
+                        scaleX = 1 - 0.05f * (1 - ratio)
+                        scaleY = 1 - 0.05f * (1 - ratio)
+                        alpha = ratio
+                        isInvisible = alpha == 0f
+                    }
+                }
+            }
+        animator =
+            AnimatorSet().apply {
+                playTogether(outAnimator, inAnimator)
                 start()
             }
 
         return true
-    }
-
-    private fun setToolbarsAlpha(from: Toolbar, to: Toolbar, ratio: Float) {
-        val outRatio = min(ratio * 2, 1f)
-        to.apply {
-            scaleX = 1 - 0.05f * outRatio
-            scaleY = 1 - 0.05f * outRatio
-            alpha = 1 - outRatio
-            isInvisible = alpha == 0f
-        }
-
-        val inRatio = max(ratio - 0.5f, 0f) * 2
-        from.apply {
-            scaleX = 1 - 0.05f * (1 - inRatio)
-            scaleY = 1 - 0.05f * (1 - inRatio)
-            alpha = inRatio
-            isInvisible = alpha == 0f
-        }
     }
 }
