@@ -623,8 +623,11 @@ constructor(
 
         logD("Release groups for this artist: ${grouping.keys}")
 
-        for (entry in grouping.entries) {
+        for ((i, entry) in grouping.entries.withIndex()) {
             val header = BasicHeader(entry.key.headerTitleRes)
+            if (i > 0) {
+                list.add(Divider(header))
+            }
             list.add(header)
             list.addAll(ARTIST_ALBUM_SORT.albums(entry.value))
         }
