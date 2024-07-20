@@ -27,8 +27,11 @@ import androidx.annotation.IdRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.core.view.isInvisible
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getInteger
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.google.android.material.R as MR
+import com.google.android.material.motion.MotionUtils
+import kotlin.math.max
+import kotlin.math.min
 import org.oxycblt.auxio.util.logD
 
 class MultiToolbar
@@ -37,6 +40,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     FrameLayout(context, attrs, defStyleAttr) {
     private var fadeThroughAnimator: ValueAnimator? = null
     private var currentlyVisible = 0
+    private val matInterpolator =
+        MotionUtils.resolveThemeInterpolator(
+            context, MR.attr.motionEasingStandardInterpolator, FastOutSlowInInterpolator())
+    private val matDuration =
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium3, 300).toLong()
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -61,16 +69,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Set up the target transitions for both the inner and selection toolbars.
         val targetFromAlpha = 0f
         val targetToAlpha = 1f
-        val targetDuration =
-            // Since this view starts with the lowest toolbar index,
-            if (from < to) {
-                logD("Moving higher, use an entrance animation")
-                context.getInteger(R.integer.anim_fade_enter_duration).toLong()
-            } else {
-                logD("Moving lower, use an exit animation")
-                context.getInteger(R.integer.anim_fade_exit_duration).toLong()
-            }
-
         val fromView = getChildAt(from) as Toolbar
         val toView = getChildAt(to) as Toolbar
 
@@ -91,7 +89,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         fadeThroughAnimator?.cancel()
         fadeThroughAnimator =
             ValueAnimator.ofFloat(fromView.alpha, targetFromAlpha).apply {
-                duration = targetDuration
+                duration = matDuration
+                interpolator = matInterpolator
                 addUpdateListener { setToolbarsAlpha(fromView, toView, it.animatedValue as Float) }
                 start()
             }
@@ -99,15 +98,21 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return true
     }
 
-    private fun setToolbarsAlpha(from: Toolbar, to: Toolbar, innerAlpha: Float) {
-        from.apply {
-            alpha = innerAlpha
-            isInvisible = innerAlpha == 0f
+    private fun setToolbarsAlpha(from: Toolbar, to: Toolbar, ratio: Float) {
+        val outRatio = min(ratio * 2, 1f)
+        to.apply {
+            scaleX = 1 - 0.05f * outRatio
+            scaleY = 1 - 0.05f * outRatio
+            alpha = 1 - outRatio
+            isInvisible = alpha == 0f
         }
 
-        to.apply {
-            alpha = 1 - innerAlpha
-            isInvisible = innerAlpha == 1f
+        val inRatio = max(ratio - 0.5f, 0f) * 2
+        from.apply {
+            scaleX = 1 - 0.05f * (1 - inRatio)
+            scaleY = 1 - 0.05f * (1 - inRatio)
+            alpha = inRatio
+            isInvisible = alpha == 0f
         }
     }
 }
