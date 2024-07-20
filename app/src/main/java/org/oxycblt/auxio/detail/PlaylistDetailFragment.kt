@@ -19,27 +19,21 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
-import org.oxycblt.auxio.detail.header.PlaylistDetailHeaderAdapter
+import org.oxycblt.auxio.databinding.FragmentDetail2Binding
 import org.oxycblt.auxio.detail.list.PlaylistDetailListAdapter
 import org.oxycblt.auxio.detail.list.PlaylistDragCallback
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
@@ -54,14 +48,15 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
-import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -72,9 +67,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class PlaylistDetailFragment :
-    ListFragment<Song, FragmentDetailBinding>(),
-    DetailHeaderAdapter.Listener,
-    PlaylistDetailListAdapter.Listener {
+    DetailFragment<Playlist, Song>(), PlaylistDetailListAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
     override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
@@ -82,7 +75,6 @@ class PlaylistDetailFragment :
     // Information about what playlist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an playlist.
     private val args: PlaylistDetailFragmentArgs by navArgs()
-    private val playlistHeaderAdapter = PlaylistDetailHeaderAdapter(this)
     private val playlistListAdapter = PlaylistDetailListAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
     private var editNavigationListener: DialogAwareNavigationListener? = null
@@ -97,12 +89,9 @@ class PlaylistDetailFragment :
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
-    override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
+    override fun getDetailListAdapter() = playlistListAdapter
 
-    override fun getSelectionToolbar(binding: FragmentDetailBinding) =
-        binding.detailSelectionToolbar
-
-    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: FragmentDetail2Binding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         editNavigationListener = DialogAwareNavigationListener(detailModel::dropPlaylistEdit)
@@ -119,14 +108,6 @@ class PlaylistDetailFragment :
             }
 
         // --- UI SETUP ---
-        binding.detailNormalToolbar.apply {
-            setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@PlaylistDetailFragment)
-            overrideOnOverflowMenuClick {
-                listModel.openMenu(
-                    R.menu.detail_playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
-            }
-        }
 
         binding.detailEditToolbar.apply {
             setNavigationOnClickListener { detailModel.dropPlaylistEdit() }
@@ -134,28 +115,18 @@ class PlaylistDetailFragment :
         }
 
         binding.detailRecycler.apply {
-            adapter = ConcatAdapter(playlistHeaderAdapter, playlistListAdapter)
+            adapter = playlistListAdapter
             touchHelper =
                 ItemTouchHelper(PlaylistDragCallback(detailModel)).also {
                     it.attachToRecyclerView(this)
                 }
-            (layoutManager as GridLayoutManager).setFullWidthLookup {
-                if (it != 0) {
-                    val item =
-                        detailModel.playlistSongList.value.getOrElse(it - 1) {
-                            return@setFullWidthLookup false
-                        }
-                    item is Divider || item is Header
-                } else {
-                    true
-                }
-            }
         }
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setPlaylist(args.playlistUid)
-        collectImmediately(detailModel.currentPlaylist, ::updatePlaylist)
+        collectImmediately(
+            detailModel.currentPlaylist, detailModel.editedPlaylist, ::updatePlaylist)
         collectImmediately(detailModel.playlistSongList, ::updateList)
         collectImmediately(detailModel.editedPlaylist, ::updateEditedList)
         collect(detailModel.toShow.flow, ::handleShow)
@@ -195,7 +166,7 @@ class PlaylistDetailFragment :
             .release(findNavController())
     }
 
-    override fun onDestroyBinding(binding: FragmentDetailBinding) {
+    override fun onDestroyBinding(binding: FragmentDetail2Binding) {
         super.onDestroyBinding(binding)
         binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         touchHelper = null
@@ -210,41 +181,82 @@ class PlaylistDetailFragment :
         playbackModel.play(item, detailModel.playInPlaylistWith)
     }
 
+    override fun onStartEdit() {
+        detailModel.startPlaylistEdit()
+    }
+
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
         requireNotNull(touchHelper) { "ItemTouchHelper was not available" }.startDrag(viewHolder)
+    }
+
+    override fun onOpenParentMenu() {
+        listModel.openMenu(R.menu.playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onOpenMenu(item: Song) {
         listModel.openMenu(R.menu.playlist_song, item, detailModel.playInPlaylistWith)
     }
 
-    override fun onPlay() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
-    }
-
-    override fun onShuffle() {
-        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
-    }
-
-    override fun onStartEdit() {
-        detailModel.startPlaylistEdit()
-    }
-
     override fun onOpenSortMenu() {
         findNavController().navigateSafe(PlaylistDetailFragmentDirections.sort())
     }
 
-    private fun updatePlaylist(playlist: Playlist?) {
+    private fun updatePlaylist(playlist: Playlist?, editedPlaylist: List<Song>?) {
         if (playlist == null) {
             // Playlist we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
         val binding = requireBinding()
-        binding.detailNormalToolbar.title = playlist.name.resolve(requireContext())
+        binding.detailToolbarTitle.text = playlist.name.resolve(requireContext())
         binding.detailEditToolbar.title =
             getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
-        playlistHeaderAdapter.setParent(playlist)
+
+        if (editedPlaylist != null) {
+            logD("Binding edited playlist image")
+            binding.detailCover.bind(
+                editedPlaylist,
+                binding.context.getString(R.string.desc_playlist_image, playlist.name),
+                R.drawable.ic_playlist_24)
+        } else {
+            binding.detailCover.bind(playlist)
+        }
+
+        binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
+        binding.detailName.text = playlist.name.resolve(binding.context)
+        // Nothing about a playlist is applicable to the sub-head text.
+        binding.detailSubhead.isVisible = false
+
+        val songs = editedPlaylist ?: playlist.songs
+        val durationMs = editedPlaylist?.sumOf { it.durationMs } ?: playlist.durationMs
+        // The song count of the playlist maps to the info text.
+        binding.detailInfo.text =
+            if (songs.isNotEmpty()) {
+                binding.context.getString(
+                    R.string.fmt_two,
+                    binding.context.getPlural(R.plurals.fmt_song_count, songs.size),
+                    durationMs.formatDurationMs(true))
+            } else {
+                binding.context.getString(R.string.def_song_count)
+            }
+
+        val playable = playlist.songs.isNotEmpty() && editedPlaylist == null
+        if (!playable) {
+            logD("Playlist is being edited or is empty, disabling playback options")
+        }
+
+        binding.detailPlayButton.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
+        binding.detailShuffleButton.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
     }
 
     private fun updateList(list: List<Item>) {
@@ -253,7 +265,6 @@ class PlaylistDetailFragment :
 
     private fun updateEditedList(editedPlaylist: List<Song>?) {
         playlistListAdapter.setEditing(editedPlaylist != null)
-        playlistHeaderAdapter.setEditedPlaylist(editedPlaylist)
         listModel.dropSelection()
 
         if (editedPlaylist != null) {

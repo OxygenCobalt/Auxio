@@ -683,7 +683,6 @@ constructor(
         val songs = editedPlaylist.value ?: playlist.songs
         if (songs.isNotEmpty()) {
             val header = EditHeader(R.string.lbl_songs)
-            list.add(Divider(header))
             list.add(header)
             list.addAll(songs)
         }
