@@ -37,7 +37,7 @@
 
                 <org.oxycblt.auxio.image.CoverView
                     android:id="@+id/detail_cover"
-                    style="@style/Widget.Auxio.Image.MidFull"
+                    style="@style/Widget.Auxio.Image.MidLarge"
                     app:enablePlaybackIndicator="false"
                     app:enableSelectionBadge="false"
                     android:layout_marginTop="@dimen/spacing_medium"
