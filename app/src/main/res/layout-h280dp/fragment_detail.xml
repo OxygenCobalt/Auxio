@@ -163,6 +163,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_tiny"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:ellipsize="end"
                             android:textAppearance="@style/TextAppearance.Auxio.TitleLarge"
                             android:textColor="?attr/colorOnSurface"
                             tools:text="Name" />
