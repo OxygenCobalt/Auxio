@@ -556,7 +556,6 @@ constructor(
         logD("Refreshing album list")
         val list = mutableListOf<Item>()
         val header = SortHeader(R.string.lbl_songs)
-        list.add(Divider(header))
         list.add(header)
         val instructions =
             if (replace) {
