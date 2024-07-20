@@ -653,7 +653,6 @@ constructor(
         val list = mutableListOf<Item>()
         // Genre is guaranteed to always have artists and songs.
         val artistHeader = BasicHeader(R.string.lbl_artists)
-        list.add(Divider(artistHeader))
         list.add(artistHeader)
         list.addAll(GENRE_ARTIST_SORT.artists(genre.artists))
 
