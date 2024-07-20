@@ -156,13 +156,6 @@ constructor(
     /** A marker for whether the user is fast-scrolling in the home view or not. */
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
-    private val _speedDialOpen = MutableStateFlow(false)
-    /** A marker for whether the speed dial is open or not. */
-    val speedDialOpen: StateFlow<Boolean> = _speedDialOpen
-
-    private val _sheetObscuresFab = MutableStateFlow(false)
-    val sheetObscuresFab: StateFlow<Boolean> = _sheetObscuresFab
-
     private val _showOuter = MutableEvent<Outer>()
     val showOuter: Event<Outer>
         get() = _showOuter
@@ -298,20 +291,6 @@ constructor(
     fun setFastScrolling(isFastScrolling: Boolean) {
         logD("Updating fast scrolling state: $isFastScrolling")
         _isFastScrolling.value = isFastScrolling
-    }
-
-    /**
-     * Update whether the speed dial is open or not.
-     *
-     * @param speedDialOpen true if the speed dial is open, false otherwise.
-     */
-    fun setSpeedDialOpen(speedDialOpen: Boolean) {
-        logD("Updating speed dial state: $speedDialOpen")
-        _speedDialOpen.value = speedDialOpen
-    }
-
-    fun setSheetObscuresFab(sheetRising: Boolean) {
-        _sheetObscuresFab.value = sheetRising
     }
 
     fun showSettings() {

@@ -22,7 +22,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,8 +40,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
-import com.leinardi.android.speeddial.SpeedDialActionItem
-import com.leinardi.android.speeddial.SpeedDialView
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import java.lang.reflect.Method
@@ -72,14 +69,12 @@ import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logD
@@ -95,9 +90,7 @@ import org.oxycblt.auxio.util.showToast
  */
 @AndroidEntryPoint
 class HomeFragment :
-    SelectionFragment<FragmentHomeBinding>(),
-    AppBarLayout.OnOffsetChangedListener,
-    SpeedDialView.OnActionSelectedListener {
+    SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
     override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -190,27 +183,9 @@ class HomeFragment :
         // re-creating the ViewPager.
         setupPager(binding)
 
-        binding.homeShuffleFab.setOnClickListener { playbackModel.shuffleAll() }
-
-        binding.homeNewPlaylistFab.apply {
-            inflate(R.menu.new_playlist_actions)
-            setOnActionSelectedListener(this@HomeFragment)
-            setChangeListener(homeModel::setSpeedDialOpen)
-        }
-
-        hideAllFabs()
-        updateFabVisibility(
-            homeModel.songList.value,
-            homeModel.isFastScrolling.value,
-            homeModel.sheetObscuresFab.value,
-            homeModel.currentTabType.value)
-
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
-        collectImmediately(
-            homeModel.songList, homeModel.isFastScrolling, homeModel.sheetObscuresFab, ::updateFab)
-        collect(homeModel.speedDialOpen, ::updateSpeedDial)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -220,28 +195,11 @@ class HomeFragment :
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
-        // it ourselves.
-        requireBinding().root.rootView.apply {
-            findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
-            }
-            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
-            }
-        }
-    }
-
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
         storagePermissionLauncher = null
         binding.homeAppbar.removeOnOffsetChangedListener(this)
         binding.homeNormalToolbar.setOnMenuItemClickListener(null)
-        binding.homeNewPlaylistFab.setChangeListener(null)
-        binding.homeNewPlaylistFab.setOnActionSelectedListener(null)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -299,24 +257,6 @@ class HomeFragment :
         }
     }
 
-    override fun onActionSelected(actionItem: SpeedDialActionItem): Boolean {
-        when (actionItem.id) {
-            R.id.action_new_playlist -> {
-                logD("Creating playlist")
-                musicModel.createPlaylist()
-            }
-            R.id.action_import_playlist -> {
-                logD("Importing playlist")
-                musicModel.importPlaylist()
-            }
-            else -> {}
-        }
-        // Returning false to close th speed dial results in no animation, manually close instead.
-        // Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
-        requireBinding().homeNewPlaylistFab.close()
-        return true
-    }
-
     private fun setupPager(binding: FragmentHomeBinding) {
         binding.homePager.adapter =
             HomePagerAdapter(homeModel.currentTabTypes, childFragmentManager, viewLifecycleOwner)
@@ -358,12 +298,6 @@ class HomeFragment :
                 MusicType.GENRES -> R.id.home_genre_recycler
                 MusicType.PLAYLISTS -> R.id.home_playlist_recycler
             }
-
-        updateFabVisibility(
-            homeModel.songList.value,
-            homeModel.isFastScrolling.value,
-            homeModel.sheetObscuresFab.value,
-            tabType)
     }
 
     private fun handleRecreate(recreate: Unit?) {
@@ -395,11 +329,6 @@ class HomeFragment :
     private fun setupCompleteState(binding: FragmentHomeBinding, error: Exception?) {
         if (error == null) {
             logD("Received ok response")
-            updateFabVisibility(
-                homeModel.songList.value,
-                homeModel.isFastScrolling.value,
-                homeModel.sheetObscuresFab.value,
-                homeModel.currentTabType.value)
             binding.homeIndexingContainer.visibility = View.INVISIBLE
             return
         }
@@ -542,118 +471,6 @@ class HomeFragment :
             }
             null -> {}
         }
-    }
-
-    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean, sheetRising: Boolean) {
-        updateFabVisibility(songs, isFastScrolling, sheetRising, homeModel.currentTabType.value)
-    }
-
-    private fun updateFabVisibility(
-        songs: List<Song>,
-        isFastScrolling: Boolean,
-        sheetRising: Boolean,
-        tabType: MusicType
-    ) {
-        val binding = requireBinding()
-        // If there are no songs, it's likely that the library has not been loaded, so
-        // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
-        // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
-        if (songs.isEmpty() || isFastScrolling || sheetRising) {
-            logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
-            hideAllFabs()
-        } else {
-            if (tabType != MusicType.PLAYLISTS) {
-                logD("Showing shuffle button")
-                if (binding.homeShuffleFab.isOrWillBeShown) {
-                    logD("Nothing to do")
-                    return
-                }
-
-                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
-                    logD("Animating transition")
-                    binding.homeNewPlaylistFab.hide(
-                        object : FloatingActionButton.OnVisibilityChangedListener() {
-                            override fun onHidden(fab: FloatingActionButton) {
-                                super.onHidden(fab)
-                                binding.homeShuffleFab.show()
-                            }
-                        })
-                } else {
-                    logD("Showing immediately")
-                    binding.homeShuffleFab.show()
-                }
-            } else {
-                logD("Showing playlist button")
-                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
-                    logD("Nothing to do")
-                    return
-                }
-
-                if (binding.homeShuffleFab.isOrWillBeShown) {
-                    logD("Animating transition")
-                    binding.homeShuffleFab.hide(
-                        object : FloatingActionButton.OnVisibilityChangedListener() {
-                            override fun onHidden(fab: FloatingActionButton) {
-                                super.onHidden(fab)
-                                binding.homeNewPlaylistFab.show()
-                            }
-                        })
-                } else {
-                    logD("Showing immediately")
-                    binding.homeNewPlaylistFab.show()
-                }
-            }
-        }
-    }
-
-    private fun hideAllFabs() {
-        val binding = requireBinding()
-        if (binding.homeShuffleFab.isOrWillBeShown) {
-            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeShuffleFab, null, false)
-        }
-        if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
-            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeNewPlaylistFab.mainFab, null, false)
-        }
-    }
-
-    private fun updateSpeedDial(open: Boolean) {
-        val binding = requireBinding()
-
-        if (open) {
-            binding.homeNewPlaylistFab.open(true)
-        } else {
-            binding.homeNewPlaylistFab.close(true)
-        }
-    }
-
-    private fun handleSpeedDialBoundaryTouch(event: MotionEvent): Boolean {
-        val binding = binding ?: return false
-
-        if (homeModel.speedDialOpen.value && binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
-            // Convert absolute coordinates to relative coordinates
-            val offsetX = event.x - binding.homeNewPlaylistFab.x
-            val offsetY = event.y - binding.homeNewPlaylistFab.y
-
-            // Create a new MotionEvent with relative coordinates
-            val relativeEvent =
-                MotionEvent.obtain(
-                    event.downTime,
-                    event.eventTime,
-                    event.action,
-                    offsetX,
-                    offsetY,
-                    event.metaState)
-
-            // Dispatch the relative MotionEvent to the target child view
-            val handled = binding.homeNewPlaylistFab.dispatchTouchEvent(relativeEvent)
-
-            // Recycle the relative MotionEvent
-            relativeEvent.recycle()
-
-            return handled
-        }
-
-        return false
     }
 
     private fun handleShow(show: Show?) {
