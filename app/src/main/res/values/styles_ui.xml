@@ -277,6 +277,18 @@
         <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
     </style>
 
+    <style name="Widget.Auxio.Button.Icon.Small.Secondary" parent="Widget.Auxio.Button.Icon.Small">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.Huge</item>
+    </style>
+
+    <style name="Widget.Auxio.Button.Icon.Small.PlayPause" parent="Widget.Auxio.Button.Icon.Small">
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.Material3.FloatingActionButton
+        </item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.PlayPause</item>
+    </style>
+
+
     <style name="Widget.Auxio.Button.Icon.Huge" parent="Widget.Material3.Button.IconButton">
         <item name="iconSize">40dp</item>
         <item name="android:minWidth">@dimen/size_touchable_medium</item>
