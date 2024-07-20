@@ -12,6 +12,7 @@ Auxio는 다른 음악 플레이어에 존재하는 쓸모없는 기능 없이, 
 - SD 카드를 지원하는 폴더 관리 기능
 - 안정적인 재생 목록 기능
 - 이전 재생 상태 기억
+- Android Auto 지원
 - 자동 갭리스 재생 지원
 - ReplayGain 완벽 지원 (MP3, FLAC, OGG, OPUS, MP4)
 - 외부 이퀄라이저 지원 (Wavelet 등)
