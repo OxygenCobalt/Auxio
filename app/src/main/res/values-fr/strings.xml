@@ -273,12 +273,12 @@
     <string name="fmt_bitrate">%d ko/s</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="fmt_deletion_info">Supprimer %s&amp;nbsp;\? Cette opération ne peut pas être annulée.</string>
+    <string name="fmt_deletion_info">Supprimer %s ? Cette opération ne peut pas être annulée.</string>
     <string name="set_pre_amp_warning">Avertissement&amp;nbsp;: Le fait de régler le préamplificateur sur une valeur positive élevée peut entraîner l\'apparition des distortions sur certaines pistes audio.</string>
     <string name="fmt_def_playlist">Liste de lecture %d</string>
     <string name="lbl_appears_on">Apparaît sur</string>
     <string name="lbl_rename_playlist">Renommer la liste de lecture</string>
-    <string name="lbl_confirm_delete_playlist">Supprimer la liste de lecture&amp;nbsp;\?</string>
+    <string name="lbl_confirm_delete_playlist">Supprimer la liste de lecture ?</string>
     <string name="lbl_share">Partager</string>
     <string name="desc_remove_song">Retirer cette chanson</string>
     <string name="desc_song_handle">Déplacer cette chanson</string>
