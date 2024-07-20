@@ -225,13 +225,13 @@ class PlaylistDetailFragment :
             logD("Playlist is being edited or is empty, disabling playback options")
         }
 
-        binding.detailPlayButton.apply {
+        binding.detailPlayButton?.apply {
             isEnabled = playable
             setOnClickListener {
                 playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
             }
         }
-        binding.detailShuffleButton.apply {
+        binding.detailShuffleButton?.apply {
             isEnabled = playable
             setOnClickListener {
                 playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))

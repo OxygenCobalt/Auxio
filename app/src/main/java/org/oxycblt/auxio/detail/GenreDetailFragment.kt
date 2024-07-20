@@ -129,10 +129,10 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
                 R.string.fmt_two,
                 context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
                 context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
-        binding.detailPlayButton.setOnClickListener {
+        binding.detailPlayButton?.setOnClickListener {
             playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
         }
-        binding.detailShuffleButton.setOnClickListener {
+        binding.detailShuffleButton?.setOnClickListener {
             playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
         }
     }

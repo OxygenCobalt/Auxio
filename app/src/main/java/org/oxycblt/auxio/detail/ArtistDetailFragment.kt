@@ -149,22 +149,22 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
 
             // In the case that this header used to he configured to have no songs,
             // we want to reset the visibility of all information that was hidden.
-            binding.detailPlayButton.isVisible = true
-            binding.detailShuffleButton.isVisible = true
+            binding.detailPlayButton?.isVisible = true
+            binding.detailShuffleButton?.isVisible = true
         } else {
             // The artist does not have any songs, so hide functionality that makes no sense.
             // ex. Play and Shuffle, Song Counts, and Genre Information.
             // Artists are always guaranteed to have albums however, so continue to show those.
             logD("Artist is empty, disabling genres and playback")
             binding.detailSubhead.isVisible = false
-            binding.detailPlayButton.isEnabled = false
-            binding.detailShuffleButton.isEnabled = false
+            binding.detailPlayButton?.isEnabled = false
+            binding.detailShuffleButton?.isEnabled = false
         }
 
-        binding.detailPlayButton.setOnClickListener {
+        binding.detailPlayButton?.setOnClickListener {
             playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
         }
-        binding.detailShuffleButton.setOnClickListener {
+        binding.detailShuffleButton?.setOnClickListener {
             playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
         }
     }

@@ -18,6 +18,8 @@
             android:id="@+id/detail_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:expandedTitleMargin="0dp"
+            app:forceApplySystemWindowInsetTop="false"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleEnabled="false"
             app:toolbarId="@+id/detail_toolbar">
@@ -25,12 +27,11 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/detail_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:paddingStart="@dimen/spacing_medium"
-                android:paddingTop="86dp"
+                android:paddingTop="?attr/actionBarSize"
                 android:paddingEnd="@dimen/spacing_medium"
-                android:paddingBottom="@dimen/spacing_mid_medium"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.85">
 
@@ -39,6 +40,7 @@
                     style="@style/Widget.Auxio.Image.Large"
                     app:enablePlaybackIndicator="false"
                     app:enableSelectionBadge="false"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     app:layout_constraintBottom_toTopOf="@+id/detail_play_button"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -108,6 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_mid_medium"
                     android:layout_marginEnd="@dimen/spacing_small"
+                    android:layout_marginBottom="@dimen/spacing_mid_medium"
                     android:text="@string/lbl_play"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"

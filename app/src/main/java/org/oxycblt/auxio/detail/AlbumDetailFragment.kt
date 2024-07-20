@@ -137,10 +137,10 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             text = context.getString(R.string.fmt_three, date, songCount, duration)
         }
 
-        binding.detailPlayButton.setOnClickListener {
+        binding.detailPlayButton?.setOnClickListener {
             playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
         }
-        binding.detailShuffleButton.setOnClickListener {
+        binding.detailShuffleButton?.setOnClickListener {
             playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
         }
     }
