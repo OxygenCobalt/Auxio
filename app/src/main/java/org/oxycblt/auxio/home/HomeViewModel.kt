@@ -311,7 +311,6 @@ constructor(
     }
 
     fun setSheetObscuresFab(sheetRising: Boolean) {
-        logD("Updating sheet rising state: $sheetRising")
         _sheetObscuresFab.value = sheetRising
     }
 
