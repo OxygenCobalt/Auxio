@@ -20,21 +20,15 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.header.ArtistDetailHeaderAdapter
-import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
+import org.oxycblt.auxio.databinding.FragmentDetail2Binding
 import org.oxycblt.auxio.detail.list.ArtistDetailListAdapter
-import org.oxycblt.auxio.detail.list.DetailListAdapter
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
@@ -47,14 +41,15 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
-import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -64,18 +59,15 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class ArtistDetailFragment :
-    ListFragment<Music, FragmentDetailBinding>(),
-    DetailHeaderAdapter.Listener,
-    DetailListAdapter.Listener<Music> {
+class ArtistDetailFragment : DetailFragment<Artist, Music>() {
     private val detailModel: DetailViewModel by activityViewModels()
     override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
     private val args: ArtistDetailFragmentArgs by navArgs()
-    private val artistHeaderAdapter = ArtistDetailHeaderAdapter(this)
     private val artistListAdapter = ArtistDetailListAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,38 +80,16 @@ class ArtistDetailFragment :
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
-    override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentDetail2Binding.inflate(inflater)
 
-    override fun getSelectionToolbar(binding: FragmentDetailBinding) =
+    override fun getSelectionToolbar(binding: FragmentDetail2Binding) =
         binding.detailSelectionToolbar
 
-    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
+    override fun getDetailListAdapter() = artistListAdapter
+
+    override fun onBindingCreated(binding: FragmentDetail2Binding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
-
-        // --- UI SETUP ---
-        binding.detailNormalToolbar.apply {
-            setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@ArtistDetailFragment)
-            overrideOnOverflowMenuClick {
-                listModel.openMenu(
-                    R.menu.detail_parent, unlikelyToBeNull(detailModel.currentArtist.value))
-            }
-        }
-
-        binding.detailRecycler.apply {
-            adapter = ConcatAdapter(artistHeaderAdapter, artistListAdapter)
-            (layoutManager as GridLayoutManager).setFullWidthLookup {
-                if (it != 0) {
-                    val item =
-                        detailModel.artistSongList.value.getOrElse(it - 1) {
-                            return@setFullWidthLookup false
-                        }
-                    item is Divider || item is Header
-                } else {
-                    true
-                }
-            }
-        }
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
@@ -136,10 +106,8 @@ class ArtistDetailFragment :
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
-    override fun onDestroyBinding(binding: FragmentDetailBinding) {
+    override fun onDestroyBinding(binding: FragmentDetail2Binding) {
         super.onDestroyBinding(binding)
-        binding.detailNormalToolbar.setOnMenuItemClickListener(null)
-        binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.artistSongInstructions.consume()
@@ -153,20 +121,16 @@ class ArtistDetailFragment :
         }
     }
 
+    override fun onOpenParentMenu() {
+        listModel.openMenu(R.menu.detail_parent, unlikelyToBeNull(detailModel.currentArtist.value))
+    }
+
     override fun onOpenMenu(item: Music) {
         when (item) {
             is Song -> listModel.openMenu(R.menu.artist_song, item, detailModel.playInArtistWith)
             is Album -> listModel.openMenu(R.menu.artist_album, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
-    }
-
-    override fun onPlay() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
-    }
-
-    override fun onShuffle() {
-        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
     }
 
     override fun onOpenSortMenu() {
@@ -179,8 +143,57 @@ class ArtistDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailNormalToolbar.title = artist.name.resolve(requireContext())
-        artistHeaderAdapter.setParent(artist)
+        val binding = requireBinding()
+        val context = requireContext()
+        val name = artist.name.resolve(context)
+        binding.detailToolbarTitle.text = name
+
+        binding.detailCover.bind(artist)
+        binding.detailType.text = context.getString(R.string.lbl_artist)
+        binding.detailName.text = name
+
+        // Song and album counts map to the info
+        binding.detailInfo.text =
+            context.getString(
+                R.string.fmt_two,
+                if (artist.explicitAlbums.isNotEmpty()) {
+                    context.getPlural(R.plurals.fmt_album_count, artist.explicitAlbums.size)
+                } else {
+                    context.getString(R.string.def_album_count)
+                },
+                if (artist.songs.isNotEmpty()) {
+                    context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
+                } else {
+                    context.getString(R.string.def_song_count)
+                })
+
+        if (artist.songs.isNotEmpty()) {
+            // Information about the artist's genre(s) map to the sub-head text
+            binding.detailSubhead.apply {
+                isVisible = true
+                text = artist.genres.resolveNames(context)
+            }
+
+            // In the case that this header used to he configured to have no songs,
+            // we want to reset the visibility of all information that was hidden.
+            binding.detailPlayButton.isVisible = true
+            binding.detailShuffleButton.isVisible = true
+        } else {
+            // The artist does not have any songs, so hide functionality that makes no sense.
+            // ex. Play and Shuffle, Song Counts, and Genre Information.
+            // Artists are always guaranteed to have albums however, so continue to show those.
+            logD("Artist is empty, disabling genres and playback")
+            binding.detailSubhead.isVisible = false
+            binding.detailPlayButton.isEnabled = false
+            binding.detailShuffleButton.isEnabled = false
+        }
+
+        binding.detailPlayButton.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
+        binding.detailShuffleButton.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
     }
 
     private fun updateList(list: List<Item>) {

@@ -625,7 +625,6 @@ constructor(
 
         for (entry in grouping.entries) {
             val header = BasicHeader(entry.key.headerTitleRes)
-            list.add(Divider(header))
             list.add(header)
             list.addAll(ARTIST_ALBUM_SORT.albums(entry.value))
         }
