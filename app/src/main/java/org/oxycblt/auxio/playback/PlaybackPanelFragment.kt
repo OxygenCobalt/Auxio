@@ -223,7 +223,7 @@ class PlaybackPanelFragment :
         val context = requireContext()
         logD("Updating song display: $song")
         binding.playbackCover.bind(song)
-        binding.playbackSong?.text = song.name.resolve(context)
+        binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)
         binding.playbackAlbum?.text = song.album.name.resolve(context)
         binding.playbackSeekBar?.durationDs = song.durationMs.msToDs()
