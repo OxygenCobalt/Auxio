@@ -24,6 +24,7 @@ import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.ViewTreeObserver
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
@@ -59,11 +60,13 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-    SwipeCoverView.OnSwipeListener {
+    SwipeCoverView.OnSwipeListener,
+    ViewTreeObserver.OnGlobalLayoutListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
+    private var lastCoverWidth = 0
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -129,6 +132,41 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        logD(requireBinding().playbackCover.width)
+        playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
+        requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireBinding().root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+    }
+
+    override fun onGlobalLayout() {
+        if (binding == null || lastCoverWidth < 0) {
+            return
+        }
+        // Hacky workaround for cover radius not being preserved in between sizing changes
+        // (i.e split screen or landscape mode)
+        // For some reason ConstraintLayout does several passes on 1:1 elements that causes their
+        // size to radically change, so we wait until it stabilizes and then force an image
+        // reload if needed. Optimistically this is a no-op from coil caching, but when the cover
+        // did accidentally load the wrong image (with weird corner radius intended for bigger
+        // covers) we can force it to reload.
+        // If this breaks, it's fine since we also started a load as we normally did w/state
+        // updates, so the cover will not break.
+        val binding = requireBinding()
+        val coverWidth = binding.playbackCover.width
+        if (lastCoverWidth != coverWidth) {
+            lastCoverWidth = coverWidth
+        } else {
+            playbackModel.song.value?.let { binding.playbackCover.bind(it) }
+            lastCoverWidth = -1
+        }
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
