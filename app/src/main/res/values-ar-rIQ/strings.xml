@@ -32,7 +32,6 @@
     <string name="lng_queue_added">تمت الإضافة إلى الطابور</string>
     <string name="lbl_artist_details">أذهب إلى الفنان</string>
     <string name="lbl_album_details">أذهب إلى الالبوم</string>
-    <string name="lbl_state_saved">تم حفظ الحالة</string>
     <string name="lbl_add">أضف</string>
     <string name="lbl_save">حفظ</string>
     <string name="err_no_dirs">لا مجلد</string>
@@ -71,8 +70,6 @@
     <string name="set_repeat_pause">ايقاف مؤقت عند التكرار</string>
     <string name="set_repeat_pause_desc">ايقاف مؤقت عند تكرار تشغيل اغنية</string>
     <string name="set_content">محتوى</string>
-    <string name="set_save_state">حفظ حالة التشغيل</string>
-    <string name="set_save_desc">حفظ حالة التشغيل الحالية الآن</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">لم يتم ايجاد موسيقى</string>
     <string name="err_index_failed">فشل تحميل الموسيقى</string>
@@ -152,10 +149,8 @@
     <string name="lbl_shuffle_shortcut_short">عشوائي</string>
     <string name="lbl_shuffle_shortcut_long">تشغيل كل الاغاني بشكل عشوائي</string>
     <string name="lbl_ok">حسنا</string>
-    <string name="lbl_state_restored">اعادة الحالة</string>
     <string name="lbl_sort_dsc">تنازلي</string>
     <string name="lbl_song_detail">عرض الخصائص</string>
-    <string name="lbl_state_wiped">مسح الحالة</string>
     <string name="lbl_live_group">مباشر</string>
     <string name="lbl_reset">اعادة ضبط</string>
     <string name="lng_indexing">يتم تحمل مكتبتك …</string>

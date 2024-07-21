@@ -74,7 +74,6 @@
     <string name="lbl_reset">Reinitialisar</string>
     <string name="lbl_path_style">Stylo de percurso</string>
     <string name="lbl_windows_paths">Usar percursos compatibile con Windows</string>
-    <string name="lbl_state_saved">Stato salveguardate</string>
     <string name="lbl_about">A proposito de</string>
     <string name="info_app_desc">Un reproductor de musica simple e rational pro Android.</string>
     <string name="lbl_genre">Genere</string>
@@ -126,14 +125,12 @@
     <string name="desc_genre_image">Imagine de genere ab %s</string>
     <string name="lbl_library_counts">Statisticas del bibliotheca</string>
     <string name="set_library">Bibliotheca</string>
-    <string name="lbl_state_wiped">Stato radite</string>
     <string name="lbl_copied">Copiate</string>
     <string name="set_action_mode_repeat">Modo de repetition</string>
     <string name="set_play_song_from_all">Reproducer ab tote le cantos</string>
     <string name="set_content">Contento</string>
     <string name="set_music">Musica</string>
     <string name="set_audio">Audio</string>
-    <string name="desc_new_playlist">Crear un nove lista de reproduction</string>
     <string name="desc_remove_song">Remover iste canto</string>
     <string name="desc_no_cover">Copertura de album</string>
     <string name="set_cover_mode">Coperrturas de album</string>
@@ -145,13 +142,10 @@
     <string name="set_dirs_list">Dossieres</string>
     <string name="set_dirs_mode">Modo</string>
     <string name="set_reindex">Actualisar le musica</string>
-    <string name="set_save_state">Salveguardar stato de reproduction</string>
-    <string name="set_restore_state">Restabilir le stato de reproduction</string>
     <string name="err_no_music">Nulle musica trovate</string>
     <string name="err_index_failed">Falleva le carga del musica</string>
     <string name="err_no_dirs">Necun dossieres</string>
     <string name="err_bad_dir">Iste dossier non es supportate</string>
-    <string name="err_did_not_save">Non poteva salveguardar le stato</string>
     <string name="desc_track_number">Tracia %d</string>
     <string name="desc_play_pause">Reproducer o pausar</string>
     <string name="desc_skip_next">Saltar al canto sequente</string>
@@ -188,8 +182,6 @@
         <item quantity="one">%d canto</item>
         <item quantity="other">%d cantos</item>
     </plurals>
-    <string name="err_did_not_wipe">Non poteva rader le stato</string>
-    <string name="err_did_not_restore">Non poteva restaurar le stato</string>
     <string name="fmt_lib_song_count">Cantos cargate: %d</string>
     <string name="fmt_lib_album_count">Albumes cargate: %d</string>
     <string name="fmt_lib_artist_count">Artistas cargate: %d</string>
@@ -202,7 +194,6 @@
     <string name="lng_playlist_deleted">Lista de reproduction delite</string>
     <string name="set_observing">Recargamento automatic</string>
     <string name="set_images">Imagines</string>
-    <string name="lbl_state_restored">Stato restaurate</string>
     <string name="lng_indexing">Cargante tu bibliotheca de musica…</string>
     <string name="set_bar_action">Action personalisate del barra de reproduction</string>
     <string name="lbl_artist_details">Vader al artista</string>
@@ -219,8 +210,6 @@
     <string name="set_content_desc">Controlar le cargamento del musica e imagines</string>
     <string name="set_pre_amp_without">Adjustamento sin etiquettas</string>
     <string name="set_rescan">Rescannar le musica</string>
-    <string name="set_save_desc">Salveguardar le stato de reproduction ora</string>
-    <string name="set_wipe_state">Rader le stato de reproduction</string>
     <string name="desc_clear_search">Rader le requestas de recerca</string>
     <string name="desc_artist_image">Imagine de artista pro %s</string>
     <string name="desc_playlist_image">Imagine del lista de reproduction pro %s</string>

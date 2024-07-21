@@ -124,16 +124,6 @@ fun Long.toAlbumCoverUri(): Uri = ContentUris.withAppendedId(externalCoversUri, 
 private val svApi21GetPathMethod: Method by lazyReflectedMethod(StorageVolume::class, "getPath")
 
 /**
- * The [StorageVolume] considered the "primary" volume by the system, obtained in a
- * version-compatible manner.
- *
- * @see StorageManager.getPrimaryStorageVolume
- * @see StorageVolume.isPrimary
- */
-val StorageManager.primaryStorageVolumeCompat: StorageVolume
-    @Suppress("NewApi") get() = primaryStorageVolume
-
-/**
  * The list of [StorageVolume]s currently recognized by [StorageManager], in a version-compatible
  * manner.
  *

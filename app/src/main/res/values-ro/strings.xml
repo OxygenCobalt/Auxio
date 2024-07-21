@@ -109,9 +109,6 @@
     <string name="lbl_add">Adaugă</string>
     <string name="lbl_sample_rate">Frecvența de eșantionare</string>
     <string name="lbl_save">Salvează</string>
-    <string name="lbl_state_restored">Stat restabilit</string>
-    <string name="lbl_state_saved">Stat salvat</string>
-    <string name="lbl_state_wiped">Statul a fost autorizat</string>
     <string name="lbl_genre">Gen</string>
     <string name="lbl_library_counts">Statisticile bibliotecii</string>
     <string name="lbl_size">Mărime</string>
@@ -196,7 +193,6 @@
     <string name="set_headset_autoplay_desc">Pornește mereu redarea când niște căști sunt conectate (s-ar putea să nu meargă pe toate dispozitivele)</string>
     <string name="set_rescan">Re-scanează muzica</string>
     <string name="set_rescan_desc">Șterge memoria cache cu taguri și reîncarcă biblioteca de muzică de tot (mai încet, dar mai complet)</string>
-    <string name="set_restore_state">Restaurează starea redării</string>
     <string name="fmt_lib_song_count">Cântece încărcate %d</string>
     <string name="desc_shuffle_all">Amestecă toate cântecele</string>
     <string name="clr_cyan">Bleu</string>
@@ -212,18 +208,13 @@
     </plurals>
     <string name="set_hide_collaborators_desc">Arată doar artiști care sunt creditați direct pe albun (Funcționează mai bine pe bibloteci cu taguri puse bine)</string>
     <string name="err_bad_dir">Dosarul ăsta nu e suportat</string>
-    <string name="desc_new_playlist">Crează un nou playlist</string>
     <string name="desc_no_cover">Copertă album</string>
     <string name="set_library">Bibliotecă</string>
     <string name="set_separators_slash">Slash (/)</string>
     <string name="desc_queue_bar">Deschide lista de așteptare</string>
-    <string name="set_save_desc">Salvează starea redării acum</string>
-    <string name="set_wipe_state">Uită starea redării</string>
     <string name="desc_genre_image">Imagine gen pentru %s</string>
     <string name="desc_playlist_image">Imagine playlist pentru %s</string>
     <string name="def_artist">Artist necunoscut</string>
-    <string name="err_did_not_restore">Nu s-a pututu restaura starea</string>
-    <string name="err_did_not_save">Nu s-a putut salva starea</string>
     <string name="lbl_show_error_info">Vezi mai mult</string>
     <string name="set_separators_desc">Configurează caracterele care denotă mai multe valori de taguri</string>
     <string name="set_dirs">Foldere cu muzică</string>
@@ -247,7 +238,6 @@
     <string name="set_playback">Redare</string>
     <string name="set_repeat_pause">Pauză la repetare</string>
     <string name="set_audio_desc">Configurează comportamentul sunetului și redării</string>
-    <string name="set_save_state">Salvează starea redării</string>
     <string name="def_track">Fără track</string>
     <string name="set_dirs_desc">Configurează de unde se încarcă muzica</string>
     <string name="set_reindex">Reîncarcă muzica</string>

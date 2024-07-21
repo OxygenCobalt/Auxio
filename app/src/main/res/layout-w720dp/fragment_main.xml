@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="@dimen/spacing_medium"
-                android:contentDescription="@string/lbl_shuffle"
+                android:contentDescription="@string/desc_shuffle_all"
                 android:src="@drawable/ic_shuffle_off_24" />
 
         </org.oxycblt.auxio.home.EdgeFrameLayout>

@@ -31,16 +31,21 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 
 /**
- * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
- * @param queue The queue of [Song]s to play from.
- * @param parent The [MusicParent] to play from, or null if to play from an non-specific collection
- *   of "All [Song]s".
- * @param shuffled Whether to shuffle or not.
+ * A playback command that can be passed to [PlaybackStateManager] to start new playback.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
  */
 interface PlaybackCommand {
+    /** A particular [Song] to play, or null to play the first [Song] in the new queue. * */
     val song: Song?
+    /**
+     * The [MusicParent] to play from, or null if to play from an non-specific collection of "All
+     * [Song]s". *
+     */
     val parent: MusicParent?
+    /** The queue of [Song]s to play from. * */
     val queue: List<Song>
+    /** Whether to shuffle or not. * */
     val shuffled: Boolean
 
     interface Factory {

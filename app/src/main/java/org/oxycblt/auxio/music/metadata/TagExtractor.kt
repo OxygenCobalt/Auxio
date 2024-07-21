@@ -109,7 +109,7 @@ private class MetadataWorker(
         var mediaSource: MediaSource?,
         var mediaPeriod: MediaPeriod?,
         var mediaSourceCaller: MediaSourceCaller?
-    ) {}
+    )
 
     init {
         mediaSourceThread.start()

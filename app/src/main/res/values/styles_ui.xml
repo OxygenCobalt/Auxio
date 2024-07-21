@@ -264,7 +264,7 @@
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
         <!-- Intentional to prevent button from spamming the log console -->
-        <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
+        <item name="iconTint" tools:ignore="PrivateResource">@color/m3_text_button_foreground_color_selector</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Medium" parent="Widget.Auxio.Button.Icon.Base">
@@ -279,7 +279,7 @@
         <item name="android:paddingEnd">@dimen/spacing_small</item>
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
-        <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
+        <item name="iconTint" tools:ignore="PrivateResource">@color/m3_text_button_foreground_color_selector</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Small.Secondary" parent="Widget.Auxio.Button.Icon.Small">
@@ -295,7 +295,7 @@
 
 
     <style name="Widget.Auxio.Button.Icon.Huge" parent="Widget.Material3.Button.IconButton">
-        <item name="iconSize">40dp</item>
+        <item name="iconSize">@dimen/size_icon_large</item>
         <item name="android:minWidth">@dimen/size_touchable_medium</item>
         <item name="android:minHeight">@dimen/size_touchable_medium</item>
         <item name="android:insetTop">0dp</item>
@@ -317,7 +317,7 @@
     <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
         <item name="android:minWidth">@dimen/size_touchable_huge</item>
         <item name="android:minHeight">@dimen/size_touchable_huge</item>
-        <item name="iconSize">48dp</item>
+        <item name="iconSize">@dimen/size_icon_huge</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
@@ -335,9 +335,5 @@
     <style name="ThemeOverlay.Auxio.IconButton.PlayPause" parent="">
         <item name="colorContainer">?attr/colorPrimaryFixedDim</item>
         <item name="colorOnContainer">?attr/colorOnPrimaryFixed</item>
-    </style>
-
-    <style name="Widget.Auxio.FloatingActionButton.Adaptive" parent="Widget.Material3.FloatingActionButton.Primary">
-        <item name="fabSize">normal</item>
     </style>
 </resources>

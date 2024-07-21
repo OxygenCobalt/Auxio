@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
-import android.os.storage.StorageManager
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -27,7 +26,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.dirs.MusicDirectories
 import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -61,8 +59,6 @@ constructor(
     @ApplicationContext context: Context,
     private val documentPathFactory: DocumentPathFactory
 ) : Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
-    private val storageManager = context.getSystemServiceCompat(StorageManager::class)
-
     override var musicDirs: MusicDirectories
         get() {
             val dirs =

@@ -32,7 +32,6 @@
     <string name="lng_queue_added">Agregado a la cola</string>
     <string name="lbl_artist_details">Ir al artista</string>
     <string name="lbl_album_details">Ir al álbum</string>
-    <string name="lbl_state_saved">Estado guardado</string>
     <string name="lbl_add">Agregar</string>
     <string name="lbl_save">Guardar</string>
     <string name="err_no_dirs">Sin carpetas</string>
@@ -71,8 +70,6 @@
     <string name="set_repeat_pause">Pausar al repetir</string>
     <string name="set_repeat_pause_desc">Pausar cuando se repite una canción</string>
     <string name="set_content">Contenido</string>
-    <string name="set_save_state">Guardar estado de reproducción</string>
-    <string name="set_save_desc">Guardar el estado de reproducción ahora</string>
     <string name="set_reindex">Actualizar música</string>
     <string name="set_reindex_desc">Recargar la biblioteca musical, utilizando las etiquetas en caché cuando sea posible</string>
     <!-- Error Namespace | Error Labels -->
@@ -162,10 +159,8 @@
     <string name="fmt_lib_genre_count">Géneros cargados: %d</string>
     <string name="lbl_indexer">Carga de música</string>
     <string name="lbl_song_count">Número de canciones</string>
-    <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
     <string name="set_observing_desc">Recargar la biblioteca musical cada vez que cambie (requiere una notificación persistente)</string>
-    <string name="err_did_not_restore">No es posible restaurar el estado</string>
     <string name="lng_indexing">Cargando tu librería de música…</string>
     <string name="lbl_indexing">Cargando música</string>
     <string name="lbl_observing">Monitorizando la librería de música</string>
@@ -177,8 +172,6 @@
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
     <string name="lbl_cancel">Cancelar</string>
     <string name="set_headset_autoplay">Reproducción automática con auriculares</string>
-    <string name="set_restore_state">Restablecer el estado de reproducción</string>
-    <string name="set_restore_desc">Restablecer el estado de reproducción guardado previamente (si existe)</string>
     <string name="set_dirs">Carpetas de música</string>
     <string name="set_dirs_desc">Gestionar de dónde se cargará la música</string>
     <string name="set_dirs_mode_include_desc">La música <b>solo</b> se cargará de las carpetas que añadas.</string>
@@ -214,11 +207,8 @@
     <string name="lbl_single_remix">Single remix</string>
     <string name="lbl_compilations">Compilaciones</string>
     <string name="lbl_ep_remix">EP de remixes</string>
-    <string name="set_wipe_desc">Eliminar el estado de reproducción guardado previamente (si existe)</string>
     <string name="desc_queue_bar">Abrir la cola</string>
     <string name="lbl_genre">Género</string>
-    <string name="lbl_state_wiped">Estado limpiado</string>
-    <string name="set_wipe_state">Limpiar el estado de reproducción</string>
     <string name="set_separators">Separadores de varios valores</string>
     <string name="set_exclude_non_music">Excluye los archivos que no sean música</string>
     <string name="set_separators_desc">Configurar caracteres que denotan múltiples valores de la etiqueta</string>
@@ -249,8 +239,6 @@
         <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
-    <string name="err_did_not_save">No se pudo guardar el estado</string>
-    <string name="err_did_not_wipe">No se puede borrar el estado</string>
     <string name="set_rescan_desc">Borrar la caché de las etiquetas y recargar completamente la biblioteca musical (más lento, pero más completo)</string>
     <string name="set_rescan">Volver a escanear la música</string>
     <string name="fmt_selected">%d seleccionado</string>
@@ -266,7 +254,6 @@
     <string name="set_audio_desc">Configurar el comportamiento del sonido y la reproducción</string>
     <string name="set_playback">Reproducción</string>
     <string name="set_dirs_list">Carpetas</string>
-    <string name="set_state">Persistencia</string>
     <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>
@@ -276,7 +263,6 @@
     <string name="lbl_playlist">Lista de reproducción</string>
     <string name="set_intelligent_sorting">Ignorar artículos al ordenar</string>
     <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" al ordenar por nombre (funciona mejor con música en inglés)</string>
-    <string name="desc_new_playlist">Crear una nueva lista de reproducción</string>
     <string name="lbl_new_playlist">Nueva lista de reproducción</string>
     <string name="fmt_def_playlist">Lista de reproducción %d</string>
     <string name="lbl_playlist_add">Agregar a la lista de reproducción</string>

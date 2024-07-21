@@ -34,7 +34,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -59,7 +58,6 @@ class PlaybackViewModel
 constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
-    private val persistenceRepository: PersistenceRepository,
     private val commandFactory: PlaybackCommand.Factory,
     private val listSettings: ListSettings,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {

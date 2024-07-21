@@ -73,10 +73,6 @@ constructor(
     private var currentRequest: Request? = null
     private var currentHandle = 0L
 
-    /** If this provider is currently attempting to load something. */
-    val isBusy: Boolean
-        get() = currentRequest?.run { !disposable.isDisposed } ?: false
-
     /**
      * Load the Album cover [Bitmap] from a [Song].
      *

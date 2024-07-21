@@ -300,7 +300,7 @@ class ThemedSpeedDialView : SpeedDialView {
 
         private val DRAWABLE_PROPERTY_LEVEL =
             object : Property<Drawable, Int>(Int::class.java, "level") {
-                override fun get(drawable: Drawable): Int? = drawable.level
+                override fun get(drawable: Drawable): Int = drawable.level
 
                 override fun set(drawable: Drawable, value: Int?) {
                     drawable.level = value!!

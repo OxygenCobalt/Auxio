@@ -156,7 +156,6 @@
     <string name="set_replay_gain_mode">Ustawienie ReplayGain</string>
     <string name="set_replay_gain_mode_dynamic">Preferuj album, jeśli jest odtwarzany</string>
     <string name="set_play_in_list_with">Odtwarzanie z widoku biblioteki</string>
-    <string name="set_save_state">Zapisz stan odtwarzania</string>
     <string name="set_separators_comma">Przecinek (,)</string>
     <string name="set_separators_semicolon">Średnik (;)</string>
     <string name="set_separators_slash">Ukośnik (/)</string>
@@ -176,21 +175,13 @@
     <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
     <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
     <string name="set_replay_gain_mode_track">Preferuj utwór</string>
-    <string name="lbl_state_restored">Przywrócono stan odtwarzania</string>
-    <string name="lbl_state_wiped">Wyczyszczono stan odtwarzania</string>
-    <string name="lbl_state_saved">Zapisano stan odtwarzania</string>
     <string name="set_lib_tabs">Karty w bibliotece</string>
     <string name="set_lib_tabs_desc">Zmień widoczność i kolejność kart w bibliotece</string>
     <string name="set_black_mode_desc">Użyj czarnego motywu</string>
     <string name="set_display">Elementy</string>
     <string name="clr_dynamic">Material You</string>
     <string name="fmt_bitrate">%d kb/s</string>
-    <string name="set_save_desc">Zapisz obecny stan odtwarzania</string>
-    <string name="set_wipe_state">Wyczyść stan odtwarzania</string>
     <string name="cdc_mka">Matroska</string>
-    <string name="set_wipe_desc">Wyczyść poprzedni stan odtwarzania (jeśli istnieje)</string>
-    <string name="set_restore_state">Przywróć stan odtwarzania</string>
-    <string name="set_restore_desc">Przywróć poprzedni stan odtwarzania (jeśli istnieje)</string>
     <string name="set_dirs">Foldery z muzyką</string>
     <string name="set_dirs_desc">Wybierz z których folderów importowane są utwory</string>
     <string name="set_dirs_mode">Tryb</string>
@@ -207,7 +198,6 @@
     <string name="set_notif_action">Użyj alternatywnej akcji w powiadomieniu</string>
     <string name="set_repeat_pause">Zatrzymaj odtwarzanie przy powtórzeniu</string>
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
-    <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>
     <string name="lng_widget">Podgląd i sterowanie odtwarzanianiem muzyki</string>
     <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
@@ -250,7 +240,6 @@
     <string name="set_hide_collaborators_desc">Pokaż tylko artystów bezpośrednio przypisanych do albumu (działa najlepiej w przypadku dobrze otagowanych bibliotek)</string>
     <string name="set_playback">Odtwarzanie</string>
     <string name="set_dirs_list">Foldery</string>
-    <string name="set_state">Stan odtwarzania</string>
     <string name="set_images">Obrazy</string>
     <string name="set_audio_desc">Zarządzaj dźwiękiem i odtwarzaniem muzyki</string>
     <string name="fmt_selected">Wybrano %d</string>
@@ -269,15 +258,12 @@
     </plurals>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="set_music">Muzyka</string>
-    <string name="err_did_not_wipe">Nie można wyczyścić stanu odtwarzania</string>
-    <string name="err_did_not_save">Nie można zapisać stanu odtwarzania</string>
     <string name="lbl_sort_dsc">Malejąco</string>
     <string name="lbl_playlists">Playlisty</string>
     <string name="lbl_playlist">Playlista</string>
     <string name="desc_playlist_image">Obraz playlisty %s</string>
     <string name="set_intelligent_sorting">Inteligentne sortowanie</string>
     <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” oraz numery w tytule podczas sortowania (działa najlepiej z utworami w języku angielskim)</string>
-    <string name="desc_new_playlist">Utwórz nową playlistę</string>
     <string name="lbl_new_playlist">Nowa playlista</string>
     <string name="lbl_playlist_add">Dodaj do playlisty</string>
     <string name="lng_playlist_created">Utworzono playlistę</string>

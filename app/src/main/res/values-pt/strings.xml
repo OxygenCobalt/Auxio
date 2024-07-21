@@ -79,7 +79,6 @@
     <string name="lbl_cancel">Cancelar</string>
     <string name="lbl_add">Adicionar</string>
     <string name="lbl_save">Salvar</string>
-    <string name="lbl_state_saved">Está salvo</string>
     <string name="set_ui_desc">Mudar o tema e as cores do app</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_day">Claro</string>
@@ -108,8 +107,6 @@
     <string name="lbl_shuffle_shortcut_short">Embaralhar</string>
     <string name="lbl_shuffle_shortcut_long">Embaralhar tudo</string>
     <string name="lbl_export">Exportar</string>
-    <string name="lbl_state_restored">Foi restaurado</string>
-    <string name="lbl_state_wiped">Foi limpo</string>
     <string name="lbl_about">Sobre</string>
     <string name="lbl_version">Versão</string>
     <string name="lng_playlist_renamed">Playlist renomeada</string>

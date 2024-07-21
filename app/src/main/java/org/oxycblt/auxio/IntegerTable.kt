@@ -133,7 +133,4 @@ object IntegerTable {
     const val PLAY_SONG_FROM_PLAYLIST = 0xA123
     /** PlaySong.ByItself */
     const val PLAY_SONG_BY_ITSELF = 0xA124
-    const val PLAYER_COMMAND_INC_REPEAT_MODE = 0xA125
-    const val PLAYER_COMMAND_TOGGLE_SHUFFLE = 0xA126
-    const val PLAYER_COMMAND_EXIT = 0xA127
 }

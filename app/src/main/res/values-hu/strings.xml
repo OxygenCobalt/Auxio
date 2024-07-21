@@ -98,7 +98,6 @@
     <string name="err_bad_dir">Ez a mappa nem támogatott</string>
     <string name="desc_playlist_image">%s playlista képe</string>
     <string name="def_track">Nincs hangsáv</string>
-    <string name="set_save_desc">Az aktuális lejátszási állapot mentése most</string>
     <string name="def_song_count">Nincs dal</string>
     <string name="cdc_mp3">MPEG-1 hang</string>
     <string name="cdc_mp4">MPEG-4 hang</string>
@@ -120,7 +119,6 @@
     <string name="set_rewind_prev_desc">Visszatekerés az előző dalra való ugrás előtt</string>
     <string name="set_pre_amp_warning">Figyelem: Az előerősítő magas pozitív értékre módosítása egyes hangsávoknál csúcsosodást eredményezhet.</string>
     <string name="set_library">Könyvtár</string>
-    <string name="set_state">Állapot</string>
     <string name="lbl_playlist">Lejátszólista</string>
     <string name="lbl_playlists">Lejátszólisták</string>
     <string name="lbl_delete">Töröl</string>
@@ -134,7 +132,6 @@
     <string name="set_keep_shuffle_desc">Új dal lejátszásakor a keverési mód bekapcsolva tartása</string>
     <string name="set_intelligent_sorting_desc">A számokkal vagy \"the\" típusú szavakkal kezdődő nevek helyes rendezése (legjobban angol nyelvű zenékkel működik)</string>
     <string name="lbl_shuffle_shortcut_long">Az összes keverése</string>
-    <string name="set_restore_desc">A korábban elmentett lejátszási állapot visszaállítása (ha van ilyen)</string>
     <string name="set_pre_amp">Visszajátszás előerősítő</string>
     <string name="set_pre_amp_desc">Az előerősítő a lejátszás során a létező beállítással kerül alkalmazásra</string>
     <string name="desc_song_handle">Helyezze át ezt a dalt</string>
@@ -169,7 +166,6 @@
     <string name="set_dirs_list">Mappák</string>
     <string name="lbl_save">Ment</string>
     <string name="lbl_reset">Alaphelyzet</string>
-    <string name="lbl_state_wiped">Állapot törölve</string>
     <string name="lbl_author_name">Fejlesztő Alexander Capehart</string>
     <string name="set_play_song_from_all">Lejátszás az összes dalból</string>
     <string name="set_play_song_from_genre">Lejátszás műfajból</string>
@@ -181,10 +177,8 @@
     <string name="err_index_failed">A zene betöltése sikertelen</string>
     <string name="set_separators_plus">Plusz (+)</string>
     <string name="err_no_app">Nem találtunk olyan alkalmazást, amely képes lenne kezelni ezt a feladatot</string>
-    <string name="err_did_not_restore">Állapot helyreállítás nem lehetséges</string>
     <string name="def_artist">Ismeretlen előadó</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="desc_new_playlist">Egy új playlista készítése</string>
     <string name="desc_queue_bar">Várósor megnyitás</string>
     <string name="desc_tab_handle">Mozgassa ezt a lapot</string>
     <string name="desc_clear_search">Keresési lekérdezés törlése</string>
@@ -193,8 +187,6 @@
     <string name="def_date">Nincs dátum</string>
     <string name="set_cover_mode_media_store">Gyors</string>
     <string name="set_exclude_non_music">A nem zenei anyagok kizárása</string>
-    <string name="err_did_not_wipe">Állapot törlés nem lehetséges</string>
-    <string name="err_did_not_save">Állapot mentés nem lehetséges</string>
     <string name="desc_shuffle_all">Keverés minden dalból</string>
     <string name="cdc_ogg">Ogg audio</string>
     <string name="set_display">Megjelenítés</string>
@@ -215,7 +207,6 @@
     <string name="lbl_indexer">Zene betöltés</string>
     <string name="lbl_indexing">Zene betöltése</string>
     <string name="lbl_observing">Zene könyvtár figyelése</string>
-    <string name="lbl_state_saved">Állapot mentve</string>
     <string name="desc_exit">Lejátszás megállítása</string>
     <string name="info_app_desc">Egyszerű, praktikus zenelejátszó androidra.</string>
     <string name="cdc_mka">Matroska hang</string>
@@ -265,8 +256,6 @@
     <string name="set_dirs_desc">Kezelje, hogy honnan töltsön be zenét</string>
     <string name="set_rescan">Zene újraolvasása</string>
     <string name="set_rescan_desc">A címkék gyorsítótárának törlése és a zenei könyvtár teljes újratöltése (lassabb, de teljesebb)</string>
-    <string name="set_save_state">Lejátszási állapot mentése</string>
-    <string name="set_wipe_state">Lejátszási állapot törlése</string>
     <string name="set_dirs_mode_include_desc">A zene <b>csak</b> az Ön által hozzáadott mappákból töltődik be.</string>
     <string name="set_reindex_desc">A zenei könyvtár újratöltése, lehetőség szerint a gyorstárazott címkék használatával</string>
     <string name="fmt_selected">%d kiválasztott</string>
@@ -281,9 +270,6 @@
     <string name="lbl_appears_on">Megjelenik itt,</string>
     <string name="lbl_share">Megoszt</string>
     <string name="lbl_confirm_delete_playlist">Lejátszólista törlése\?</string>
-    <string name="lbl_state_restored">Állapot helyreállítva</string>
-    <string name="set_wipe_desc">A korábban elmentett lejátszási állapot törlése (ha van ilyen)</string>
-    <string name="set_restore_state">Lejátszási állapot visszaállítása</string>
     <string name="set_dirs_mode_include">Tartalmaz</string>
     <string name="err_no_perms">Az Auxio engedélyt kér a zenei könyvtár olvasásához</string>
     <string name="desc_remove_song">Távolítsa el ezt a dalt</string>

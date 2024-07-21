@@ -84,7 +84,6 @@
     <string name="set_notif_action">Tindakan notifikasi khusus</string>
     <string name="lbl_shuffle_shortcut_short">Acak</string>
     <string name="lbl_shuffle_shortcut_long">Acak semua</string>
-    <string name="lbl_state_saved">Status disimpan</string>
     <string name="set_replay_gain_mode_track">Utamakan trek</string>
     <string name="set_replay_gain_mode_album">Utamakan album</string>
     <string name="set_pre_amp">Pra-amp ReplayGain</string>
@@ -99,8 +98,6 @@
     <string name="set_rewind_prev_desc">Putar mundur sebelum melompat ke lagu sebelumnya</string>
     <string name="set_repeat_pause_desc">Jeda saat lagu diulang</string>
     <string name="set_content">Konten</string>
-    <string name="set_save_state">Simpan status pemutaran</string>
-    <string name="set_save_desc">Simpan status pemutaran saat ini sekarang</string>
     <string name="set_reindex">Muat ulang musik</string>
     <string name="set_reindex_desc">Muat ulang perpustakaan musik, menggunakan tag yang di-cache jika memungkinkan</string>
     <string name="set_dirs_desc">Kelola dari mana musik dimuat</string>
@@ -231,7 +228,6 @@
     <string name="lbl_compilation_live">Kompilasi live</string>
     <string name="lbl_ep_remix">EP Remix</string>
     <string name="lbl_singles">Single</string>
-    <string name="err_did_not_save">Tidak dapat menyimpan status</string>
     <string name="lng_playlist_created">Daftar putar dibuat</string>
     <string name="lng_playlist_added">Ditambahkan ke daftar putar</string>
     <string name="set_rescan_desc">Bersihkan cache tag dan muat ulang perpustakaan musik secara penuh (lebih lambat, tetapi lebih sempurna)</string>
@@ -239,7 +235,6 @@
     <string name="lng_playlist_imported">Daftar putar diimpor</string>
     <string name="lng_playlist_exported">Daftar putar diekspor</string>
     <string name="lng_playlist_deleted">Daftar putar dihapus</string>
-    <string name="desc_new_playlist">Buat daftar putar baru</string>
     <string name="lbl_parent_detail">Tampilkan</string>
     <string name="set_exclude_non_music">Kecualikan item non-musik</string>
     <string name="set_square_covers">Paksa sampul album kotak</string>
@@ -268,12 +263,9 @@
     <string name="lng_supporters_promo">Donasi ke proyek ini agar nama Anda ditambahkan kesini!</string>
     <string name="set_separators">Pemisah nilai ganda</string>
     <string name="set_audio_desc">Konfigurasikan suara dan perilaku pemutaran</string>
-    <string name="set_state">Persisten</string>
     <string name="set_remember_pause">Ingat jeda</string>
     <string name="set_remember_pause_desc">Tetap memainkan/menjeda ketika melewati atau mengatur antrean</string>
-    <string name="err_did_not_restore">Tidak dapat memulihkan status</string>
     <string name="err_export_failed">Tidak dapat mengekspor daftar putar ke berkas ini</string>
-    <string name="err_did_not_wipe">Tidak dapat membersihkan status</string>
     <string name="desc_queue_bar">Buka antrean</string>
     <string name="desc_selection_image">Pemilihan gambar</string>
     <string name="def_disc">Tidak ada disk</string>
@@ -288,18 +280,12 @@
     <string name="set_action_mode_next">Lewati ke lagu berikutnya</string>
     <string name="set_action_mode_repeat">Mode perulangan</string>
     <string name="set_separators_warning">Peringatan: Menggunakan pengaturan ini mungkin akan menghasilkan beberapa tag salah diinterpretasikan sebagai nilai multipel. Anda dapat mengatasinya dengan mengawali karakter yang tidak diinginkan dengan garis miring terbalik (\\).</string>
-    <string name="set_wipe_state">Bersihkan status pemutaran</string>
     <string name="set_replay_gain_mode_off">Nonaktif</string>
-    <string name="set_wipe_desc">Bersihkan status pemutaran yang disimpan sebelumnya (jika ada)</string>
-    <string name="set_restore_state">Pulihkan status pemutaran</string>
-    <string name="set_restore_desc">Pulihkan status pemutaran yang disimpan sebelumnya (jika ada)</string>
     <string name="lbl_empty_playlist">Daftar putar kosong</string>
     <string name="lbl_import_playlist">Impor daftar putar</string>
     <string name="lbl_edit">Atur</string>
     <string name="lbl_equalizer">Ekualiser</string>
     <string name="lbl_reset">Atur ulang</string>
-    <string name="lbl_state_wiped">Status dibersihkan</string>
-    <string name="lbl_state_restored">Status dipulihkan</string>
     <string name="set_rescan">Pindai ulang musik</string>
     <string name="lbl_share">Bagikan</string>
     <string name="lbl_playlist">Daftar putar</string>

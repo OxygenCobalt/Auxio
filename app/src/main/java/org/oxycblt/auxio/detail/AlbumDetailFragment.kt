@@ -90,7 +90,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
     }
 
     override fun onOpenParentMenu() {
-        listModel.openMenu(R.menu.album, unlikelyToBeNull(detailModel.currentAlbum.value))
+        listModel.openMenu(R.menu.detail_album, unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     override fun onOpenMenu(item: Song) {

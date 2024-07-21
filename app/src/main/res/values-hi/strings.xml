@@ -98,8 +98,6 @@
     <string name="fmt_deletion_info">%s हटाएँ\? इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="fmt_lib_song_count">लोड किए गए गाने: %d</string>
     <string name="lbl_sort_dsc">अवरोही</string>
-    <string name="lbl_state_wiped">स्थिति साफ की गई</string>
-    <string name="lbl_state_saved">स्थिति सहेजी गई</string>
     <string name="set_lib_tabs_desc">लायब्रेरी टैब की दृश्यता और क्रम बदलें</string>
     <string name="set_music">संगीत</string>
     <string name="set_personalize_desc">UI नियंत्रण और व्यवहार अनुकूलित करें</string>
@@ -175,7 +173,6 @@
     <string name="lbl_appears_on">दिखाई देता है</string>
     <string name="lbl_share">साझा करें</string>
     <string name="lbl_shuffle_shortcut_short">शफल करें</string>
-    <string name="lbl_state_restored">स्थिति बहाल</string>
     <string name="lng_playlist_renamed">प्लेलिस्ट का नाम बदला गया</string>
     <string name="lbl_author_name">अलेक्जेंडर कैपहार्ट द्वारा विकसित</string>
     <string name="set_separators_desc">एकाधिक टैग मानों को निरूपित करने वाले वर्ण कॉन्फ़िगर करें</string>
@@ -208,15 +205,10 @@
     <string name="set_pre_amp_with">टैग के साथ समायोजन</string>
     <string name="set_dirs_list">फ़ोल्डर</string>
     <string name="set_dirs_mode_exclude">बाहर करें</string>
-    <string name="set_state">पर्सिस्टेंस</string>
-    <string name="set_save_desc">वर्तमान प्लेबैक स्थिति को अभी सहेजें</string>
-    <string name="set_restore_desc">पहले से सहेजी गई प्लेबैक स्थिति को पुनर्स्थापित करें (यदि कोई हो)</string>
     <string name="err_index_failed">संगीत लोड करना विफल रहा</string>
     <string name="err_bad_dir">यह फ़ोल्डर समर्थित नहीं है</string>
-    <string name="err_did_not_restore">स्थिति पुनर्स्थापित करने में असमर्थ</string>
     <string name="desc_change_repeat">रिपीट मोड बदलें</string>
     <string name="desc_shuffle">शफ़ल चालू या बंद करें</string>
-    <string name="desc_new_playlist">एक नई प्लेलिस्ट बनाएं</string>
     <string name="desc_shuffle_all">सभी गीत शफ़ल करें</string>
     <string name="desc_exit">प्लेबैक बंद करो</string>
     <string name="desc_song_handle">इस गीत को इस स्थानांतरित करें</string>
@@ -254,9 +246,7 @@
     <string name="set_hide_collaborators_desc">केवल उन कलाकारों को दिखाएँ जिन्हें सीधे एल्बम पर श्रेय दिया जाता है (अच्छी तरह से टैग की गई लाइब्रेरी पर अच्छा काम करता है)</string>
     <string name="set_cover_mode_media_store">तेज</string>
     <string name="set_cover_mode_quality">उच्च गुणवत्ता</string>
-    <string name="err_did_not_wipe">स्थिति साफ़ करने में असमर्थ</string>
     <string name="desc_music_dir_delete">फ़ोल्डर हटाएँ</string>
-    <string name="err_did_not_save">स्थिती को सहेजने में असमर्थ</string>
     <string name="desc_remove_song">यह गीत हटाओ</string>
     <string name="def_disc">डिस्क नहीं</string>
     <string name="cdc_flac">निःशुल्क दोषरहित ऑडियो कोडेक (FLAC)</string>
@@ -267,7 +257,6 @@
     <string name="set_pre_amp_warning">चेतावनी: प्री-एम्प को उच्च सकारात्मक मान में बदलने से कुछ ऑडियो ट्रैक पर आवाज फट सकती है।</string>
     <string name="set_dirs_mode_include">शामिल करें</string>
     <string name="set_reindex_desc">जब संभव हो तो कैश्ड टैग का उपयोग करके संगीत लाइब्रेरी को पुनः लोड करें</string>
-    <string name="set_wipe_desc">पहले से सहेजी गई प्लेबैक स्थिति साफ़ करें (यदि कोई हो)</string>
     <string name="err_no_app">कोई ऐप नहीं मिला जो इस कार्य को संभाल सके</string>
     <string name="def_artist">अज्ञात कलाकार</string>
     <string name="desc_tab_handle">इस टैब को स्थानांतरित करें</string>
@@ -280,9 +269,6 @@
     <string name="err_no_perms">Auxio को आपकी संगीत लाइब्रेरी पढ़ने के लिए अनुमति की आवश्यकता है</string>
     <string name="err_no_dirs">कोई फ़ोल्डर नहीं</string>
     <string name="clr_brown">भूरा</string>
-    <string name="set_save_state">प्लेबैक स्थिति सहेजें</string>
-    <string name="set_wipe_state">प्लेबैक स्थिति साफ़ करें</string>
-    <string name="set_restore_state">प्लेबैक स्थिति पुनर्स्थापित करें</string>
     <string name="clr_yellow">पीला</string>
     <string name="clr_lime">नींबू रंग</string>
     <string name="set_headset_autoplay_desc">हेडसेट कनेक्ट होने पर हमेशा चलाना शुरू करें (सभी उपकरणों पर काम नहीं करेगा)</string>

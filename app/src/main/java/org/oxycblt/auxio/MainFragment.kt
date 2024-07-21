@@ -128,7 +128,7 @@ class MainFragment :
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
             SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
-        speedDialBackCallback = SpeedDialBackPressedCallback(homeModel)
+        speedDialBackCallback = SpeedDialBackPressedCallback()
 
         navigationListener = DialogAwareNavigationListener(::onExploreNavigate)
 
@@ -236,10 +236,12 @@ class MainFragment :
         // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
         // it ourselves.
         requireBinding().root.rootView.apply {
-            findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
+            findViewById<View>(R.id.main_scrim).setOnTouchListener { v, event ->
+                v.performClick()
                 handleSpeedDialBoundaryTouch(event)
             }
-            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
+            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { v, event ->
+                v.performClick()
                 handleSpeedDialBoundaryTouch(event)
             }
         }
@@ -791,8 +793,7 @@ class MainFragment :
         }
     }
 
-    private inner class SpeedDialBackPressedCallback(private val homeModel: HomeViewModel) :
-        OnBackPressedCallback(false) {
+    private inner class SpeedDialBackPressedCallback() : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             val binding = requireBinding()
             if (binding.homeNewPlaylistFab.isOpen) {

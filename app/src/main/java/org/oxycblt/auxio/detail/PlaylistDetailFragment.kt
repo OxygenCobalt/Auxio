@@ -170,7 +170,8 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenParentMenu() {
-        listModel.openMenu(R.menu.playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
+        listModel.openMenu(
+            R.menu.detail_playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onOpenMenu(item: Song) {

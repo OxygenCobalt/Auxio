@@ -6,7 +6,6 @@
     <string name="lbl_artists">アーティスト</string>
     <string name="lbl_genres">ジャンル</string>
     <string name="lbl_duration">曲の長さ</string>
-    <string name="set_save_desc">現在の再生状態を保存</string>
     <string name="desc_tab_handle">このタブを移動</string>
     <string name="desc_song_handle">この再生待ちの曲を移動</string>
     <string name="def_date">日付けがありません</string>
@@ -53,7 +52,6 @@
     <string name="lbl_playback">再生中</string>
     <string name="set_accent">カラースキーム</string>
     <string name="set_black_mode">黒基調</string>
-    <string name="set_restore_state">再生状態を復元</string>
     <string name="set_play_song_none">表示されたアイテムから再生</string>
     <string name="desc_exit">再生停止</string>
     <string name="clr_red">赤</string>
@@ -81,12 +79,10 @@
     <string name="set_dirs_desc">音楽の読み込み元を管理</string>
     <string name="set_dirs_mode_exclude">除外</string>
     <string name="set_reindex">音楽の再読み込み</string>
-    <string name="set_save_state">再生状態を保存</string>
     <string name="err_no_perms">Auxio は音楽ライブラリを読む許可を必要とします</string>
     <string name="set_dirs_mode_include">追加</string>
     <string name="err_no_dirs">フォルダがありません</string>
     <string name="err_bad_dir">このフォルダはサポートされていません</string>
-    <string name="err_did_not_restore">再生状態を復元できません</string>
     <string name="desc_track_number">トラック %d</string>
     <string name="desc_play_pause">再生またはポーズ</string>
     <string name="desc_remove_song">再生待ちの曲を除去</string>
@@ -138,11 +134,8 @@
     <string name="fmt_lib_genre_count">読み込みが完了したジャンル数: %d</string>
     <string name="fmt_db_neg">-%.1f デシベル</string>
     <string name="fmt_lib_album_count">読み込みが完了したアルバム数: %d</string>
-    <string name="lbl_state_wiped">再生状態の解除完了</string>
-    <string name="lbl_state_restored">再生状態の復元完了</string>
     <string name="lbl_reset">リセット</string>
     <string name="lbl_about">Auxioについて</string>
-    <string name="lbl_state_saved">再生状態の保存完了</string>
     <string name="lbl_code">ソースコード</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_version">バージョン</string>
@@ -156,12 +149,9 @@
     <string name="set_play_in_parent_with">アイテム詳細からの再生時</string>
     <string name="set_exclude_non_music">音楽以外を除外</string>
     <string name="set_dirs_mode_include_desc">ここに追加したフォルダから<b>のみ</b>音楽が読み込まれます。</string>
-    <string name="set_restore_desc">前回保存された再生状態がある場合、再生状態を復元</string>
     <string name="err_no_app">このタスクを実行できるアプリが見つかりません</string>
     <string name="set_content">コンテンツ</string>
     <string name="set_rescan">音楽の再スキャン</string>
-    <string name="set_wipe_state">再生状態を解除</string>
-    <string name="set_wipe_desc">前回保存された再生状態を解除</string>
     <string name="cdc_mka">Matroska オーディオ</string>
     <string name="cdc_aac">高度なオーディオ コーデック (AAC)</string>
     <string name="cdc_flac">品質を損なうことのない無料のオーディオ コーデック (FLAC)</string>
@@ -196,7 +186,6 @@
     <string name="desc_change_repeat">繰り返しモードを変更</string>
     <string name="desc_shuffle">シャフルのオン・オフ</string>
     <string name="desc_skip_next">次の曲にスキップ</string>
-    <string name="err_did_not_save">再生状態を保存できません</string>
     <string name="desc_shuffle_all">すべての曲をシャフル</string>
     <string name="fmt_sample_rate">%d ヘルツ</string>
     <string name="fmt_bitrate">%d kbps</string>
@@ -227,7 +216,6 @@
     <string name="set_play_song_from_genre">ジャンルから再生</string>
     <string name="set_keep_shuffle_desc">新しい曲の再生時にシャフルを保持</string>
     <string name="clr_dynamic">ダイナミック</string>
-    <string name="err_did_not_wipe">再生状態を解除できません</string>
     <string name="def_playback">再生中の音楽がありません</string>
     <string name="cdc_mp4">MPEG-4 オーディオ</string>
     <string name="clr_deep_green">深緑</string>
@@ -248,7 +236,6 @@
     <string name="set_audio_desc">サウンドと再生の動作を構成する</string>
     <string name="set_rewind_prev">戻る前に巻き戻す</string>
     <string name="set_pre_amp_warning">警告: プリアンプを高い正の値に変更すると、一部のオーディオ トラックでピーキングが発生する場合があります。</string>
-    <string name="set_state">再生状況</string>
     <string name="desc_queue_bar">キューを開く</string>
     <string name="lng_widget">音楽再生の表示と制御</string>
     <string name="set_replay_gain_mode">ラウドネスイコライゼーション</string>
@@ -267,7 +254,6 @@
     <string name="lng_playlist_added">プレイリストに追加されました</string>
     <string name="def_song_count">曲がありません</string>
     <string name="fmt_def_playlist">プレイリスト %d</string>
-    <string name="desc_new_playlist">新しいプレイリストを作成する</string>
     <string name="lbl_delete">消去</string>
     <string name="lbl_rename">名前の変更</string>
     <string name="lbl_rename_playlist">プレイリストの名前を変更する</string>
