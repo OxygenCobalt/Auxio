@@ -77,17 +77,22 @@
         android:focusable="true"
         app:layout_behavior="org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior">
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/playback_bar_fragment"
-            android:name="org.oxycblt.auxio.playback.PlaybackBarFragment"
+        <FrameLayout
+            android:id="@+id/playback_panels"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            style="@style/Widget.Auxio.DisableDropShadows"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/playback_bar_fragment"
+                android:name="org.oxycblt.auxio.playback.PlaybackBarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                style="@style/Widget.Auxio.DisableDropShadows"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/playback_panel_fragment"
@@ -124,14 +129,15 @@
                     android:layout_weight="1" />
 
             </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
-            android:id="@+id/sheet_scrim"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <View
+        android:id="@+id/sheet_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
