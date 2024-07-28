@@ -42,6 +42,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
@@ -84,11 +85,13 @@ class ExoPlaybackStateHolder(
     private val restoreScope = CoroutineScope(Dispatchers.IO + saveJob)
     private var currentSaveJob: Job? = null
     private var openAudioEffectSession = false
+    private var foregroundListener: ForegroundListener? = null
 
     override var sessionOngoing = false
         private set
 
-    fun attach() {
+    fun attach(foregroundListener: ForegroundListener) {
+        this.foregroundListener = foregroundListener
         imageSettings.registerListener(this)
         player.addListener(this)
         replayGainProcessor.attach()
@@ -105,6 +108,7 @@ class ExoPlaybackStateHolder(
         replayGainProcessor.release()
         imageSettings.unregisterListener(this)
         player.release()
+        foregroundListener = null
     }
 
     override var parent: MusicParent? = null
@@ -168,13 +172,15 @@ class ExoPlaybackStateHolder(
                         // Apply the saved state on the main thread to prevent code expecting
                         // state updates on the main thread from crashing.
                         withContext(Dispatchers.Main) {
+                            playbackManager.applySavedState(state, false)
                             if (action.sessionRequired) {
                                 sessionOngoing = true
+                                foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
                             }
-                            playbackManager.applySavedState(state, false)
                         }
-                    } else if (action.sessionRequired) {
-                        error("No playback state to restore, but need to start session")
+                    } else {
+                        logD("No saved state to restore")
+                        foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
                     }
                 }
             }
@@ -189,11 +195,15 @@ class ExoPlaybackStateHolder(
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
                 logD("Opening specified file")
-                deviceLibrary.findSongForUri(context, action.uri)?.let { song ->
+                val song = deviceLibrary.findSongForUri(context, action.uri)
+                if (song != null) {
                     playbackManager.play(
                         requireNotNull(commandFactory.song(song, ShuffleMode.IMPLICIT)) {
                             "Invalid playback parameters"
                         })
+                } else {
+                    logD("No song found for uri")
+                    foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
                 }
             }
         }
@@ -373,13 +383,36 @@ class ExoPlaybackStateHolder(
         rawQueue: RawQueue,
         ack: StateAck.NewPlayback?
     ) {
-        this.parent = parent
-        player.setMediaItems(rawQueue.heap.map { it.toMediaItem(context, null) })
-        if (rawQueue.isShuffled) {
-            player.shuffleModeEnabled = true
-            player.setShuffleOrder(BetterShuffleOrder(rawQueue.shuffledMapping.toIntArray()))
-        } else {
-            player.shuffleModeEnabled = false
+        var sendNewPlaybackEvent = false
+        var shouldSeek = false
+        if (this.parent != parent) {
+            this.parent = parent
+            sendNewPlaybackEvent = true
+        }
+        if (rawQueue != resolveQueue()) {
+            player.setMediaItems(rawQueue.heap.map { it.toMediaItem(context, null) })
+            if (rawQueue.isShuffled) {
+                player.shuffleModeEnabled = true
+                player.setShuffleOrder(BetterShuffleOrder(rawQueue.shuffledMapping.toIntArray()))
+            } else {
+                player.shuffleModeEnabled = false
+            }
+            player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
+            player.prepare()
+            player.pause()
+            sendNewPlaybackEvent = true
+            shouldSeek = true
+        }
+
+        repeatMode(repeatMode)
+        // Positions in milliseconds will drift during tight restores (i.e what the music loader
+        // does to sanitize the state), compare by seconds instead.
+//        if (positionMs.msToSecs() != player.currentPosition.msToSecs() || shouldSeek) {
+//            player.seekTo(positionMs)
+//        }
+
+        if (sendNewPlaybackEvent) {
+            ack?.let { playbackManager.ack(this, it) }
         }
         player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
         player.prepare()

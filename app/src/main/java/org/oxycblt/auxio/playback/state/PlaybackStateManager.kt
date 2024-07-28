@@ -69,6 +69,10 @@ interface PlaybackStateManager {
     /** Whether there is an ongoing playback session or not. */
     val sessionOngoing: Boolean
 
+    /* Whether the player is awaiting a [DeferredPlayback] to be consumed. */
+    val awaitingDeferredPlayback: Boolean
+
+
     /** The audio session ID of the internal player. Null if no internal player exists. */
     val currentAudioSessionId: Int?
 
@@ -394,6 +398,10 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     override val sessionOngoing
         get() = stateHolder?.sessionOngoing ?: false
+
+    override val awaitingDeferredPlayback: Boolean
+        get() = pendingDeferredPlayback != null
+
 
     override val currentAudioSessionId: Int?
         get() = stateHolder?.audioSessionId

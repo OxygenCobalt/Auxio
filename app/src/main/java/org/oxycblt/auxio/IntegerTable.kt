@@ -57,6 +57,7 @@ object IntegerTable {
     const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0
     /** "Music loading" notification code */
     const val INDEXER_NOTIFICATION_CODE = 0xA0A1
+    const val TASKER_ERROR_NOT_RESTORED = 0xA0A2
     /** MainActivity Intent request code */
     const val REQUEST_CODE = 0xA0C0
     /** RepeatMode.NONE */

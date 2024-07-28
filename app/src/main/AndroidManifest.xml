@@ -136,32 +136,11 @@
         </receiver>
 
 
-        <!-- Tasker integration -->
         <activity
             android:name=".tasker.StartConfigBasicAction"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
-            android:label="Start Auxio">
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".tasker.ShuffleAllConfigBasicAction"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="Shuffle All Songs">
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".tasker.RestoreStateConfigBasicAction"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="Restore State">
+            android:label="Start">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>

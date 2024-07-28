@@ -96,7 +96,9 @@ constructor(
             // Not observing and done loading, exit foreground.
             logD("Exiting foreground")
             post(observingNotification)
-        } else {
+        } else if (!playbackManager.awaitingDeferredPlayback) {
+            // Very possible we are done loading music and now need to avoid downtime
+            // as the player begins to load the playback state.
             post(null)
         }
     }

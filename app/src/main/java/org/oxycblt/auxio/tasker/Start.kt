@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.tasker
 
 import android.app.Activity
@@ -29,16 +29,21 @@ import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfigHelperNoOutputO
 import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfigNoInput
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResult
+import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultError
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultSucess
+import dagger.hilt.EntryPoints
+import kotlinx.coroutines.runBlocking
 import org.oxycblt.auxio.AuxioService
+import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.playback.state.DeferredPlayback
 
-class StartActionHelper(config: TaskerPluginConfig<Unit>) :
-    TaskerPluginConfigHelperNoOutputOrInput<StartActionRunner>(config) {
-    override val runnerClass: Class<StartActionRunner>
-        get() = StartActionRunner::class.java
+class StartHelper(config: TaskerPluginConfig<Unit>) :
+    TaskerPluginConfigHelperNoOutputOrInput<StartStateRunner>(config) {
+    override val runnerClass: Class<StartStateRunner>
+        get() = StartStateRunner::class.java
 
     override fun addToStringBlurb(input: TaskerInput<Unit>, blurbBuilder: StringBuilder) {
-        blurbBuilder.append("Starts the Auxio Service. You MUST apply an action after this.")
+        blurbBuilder.append("Shuffles All Songs Once the Service is Available")
     }
 }
 
@@ -46,7 +51,7 @@ class StartConfigBasicAction : Activity(), TaskerPluginConfigNoInput {
     override val context: Context
         get() = applicationContext
 
-    private val taskerHelper by lazy { StartActionHelper(this) }
+    private val taskerHelper by lazy { StartHelper(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +59,27 @@ class StartConfigBasicAction : Activity(), TaskerPluginConfigNoInput {
     }
 }
 
-class StartActionRunner : TaskerPluginRunnerActionNoOutputOrInput() {
+class StartStateRunner : TaskerPluginRunnerActionNoOutputOrInput() {
     override fun run(context: Context, input: TaskerInput<Unit>): TaskerPluginResult<Unit> {
         ContextCompat.startForegroundService(
             context,
             Intent(context, AuxioService::class.java)
-                .putExtra(AuxioService.INTENT_KEY_INTERNAL_START, true))
+                .putExtra(AuxioService.INTENT_KEY_INTERNAL_START, true)
+        )
+        val entryPoint = EntryPoints.get(context.applicationContext, TaskerEntryPoint::class.java)
+        val playbackManager = entryPoint.playbackManager()
+        runBlocking {
+            playbackManager.playDeferred(DeferredPlayback.RestoreState(sessionRequired = true))
+        }
+        while (!playbackManager.sessionOngoing) {
+            if (!playbackManager.awaitingDeferredPlayback) {
+                return TaskerPluginResultError(
+                    IntegerTable.TASKER_ERROR_NOT_RESTORED,
+                    "No state to restore, did not restart playback."
+                )
+            }
+        }
+        Thread.sleep(100)
         return TaskerPluginResultSucess()
     }
 }
