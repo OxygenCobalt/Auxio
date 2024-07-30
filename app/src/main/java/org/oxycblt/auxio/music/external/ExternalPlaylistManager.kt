@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.external
 
 import android.content.Context
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.util.logE
+import javax.inject.Inject
 
 /**
  * Generic playlist file importing abstraction.
@@ -92,7 +92,20 @@ constructor(
 
         return try {
             context.contentResolverSafe.openInputStream(uri)?.use {
-                return m3u.read(it, filePath.directory)
+                val imported = m3u.read(it, filePath.directory) ?: return null
+                val name = imported.name
+                if (name != null) {
+                    return imported
+                }
+                // Strip extension
+                val fileName = filePath.name ?: return imported
+                val split = fileName.split(".")
+                var newName = split[0]
+                // Replace delimiters with space
+                newName = newName.replace(Regex("[_-]"), " ")
+                // Replace long stretches of whitespace with one space
+                newName = newName.replace(Regex("\\s+"), " ")
+                return ImportedPlaylist(newName, imported.paths)
             }
         } catch (e: Exception) {
             logE("Failed to import playlist: $e")
