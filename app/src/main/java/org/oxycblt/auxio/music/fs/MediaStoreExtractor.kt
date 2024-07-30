@@ -285,8 +285,9 @@ private class MediaStoreExtractorImpl(
             // know when it corresponds to the folder and not, say, Low Roar's breakout album "0"?
             // Also, on some devices it's literally just null. To maintain behavior sanity just
             // replicate the majority behavior described prior.
-            rawSong.albumName = cursor.getStringOrNull(albumIndex)
-                ?: requireNotNull(rawSong.path?.name) { "Invalid raw: No path" }
+            rawSong.albumName =
+                cursor.getStringOrNull(albumIndex)
+                    ?: requireNotNull(rawSong.path?.name) { "Invalid raw: No path" }
             // Android does not make a non-existent artist tag null, it instead fills it in
             // as <unknown>, which makes absolutely no sense given how other columns default
             // to null if they are not present. If this column is such, null it so that
