@@ -7,6 +7,7 @@
 - Refreshed playback design
 
 #### What's Improved
+- M3U playlist file name is now proposed if one cannot be found within the file
 - Sorting songs by date now uses songs date first, before the earliest album date
 
 #### What's Fixed
