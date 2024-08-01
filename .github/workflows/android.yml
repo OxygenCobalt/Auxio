@@ -12,7 +12,7 @@ jobs:
     
     steps:
     - name: Clone repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Clone submodules
       run: git submodule update --init --recursive --remote
     - name: Set up JDK 17
