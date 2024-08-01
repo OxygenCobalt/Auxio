@@ -70,12 +70,11 @@ sealed interface Name : Comparable<Name> {
         final override fun compareTo(other: Name) =
             when (other) {
                 is Known -> {
-                    // Progressively compare the sort tokens between each known name.
-                    sortTokens.zip(other.sortTokens).fold(0) { acc, (token, otherToken) ->
+                    val result = sortTokens.zip(other.sortTokens).fold(0) { acc, (token, otherToken) ->
                         acc.takeIf { it != 0 } ?: token.compareTo(otherToken)
                     }
+                    if (result != 0) result else sortTokens.size.compareTo(other.sortTokens.size)
                 }
-                // Unknown names always come before known names.
                 is Unknown -> 1
             }
 

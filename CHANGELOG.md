@@ -15,6 +15,11 @@
 - Excessive CPU no longer spent showing music loading process
 - Fixed playback sheet flickering on warm start
 
+## 3.5.2
+
+#### What's Fixed
+- Fixed music loading failure from improper sort systems (For real this time)
+
 ## 3.5.1
 
 #### What's Fixed
