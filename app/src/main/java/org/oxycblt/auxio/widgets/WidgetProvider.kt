@@ -101,17 +101,51 @@ class WidgetProvider : AppWidgetProvider() {
                 SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state),
                 SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state))
 
+        // This is the order in which we will disable cover art layouts if they exceed the
+        // maximum bitmap memory usage. (See the comment in the loop below for more info.)
+        val victims =
+            mutableSetOf(
+                R.layout.widget_wafer_thin,
+                R.layout.widget_wafer_wide,
+                R.layout.widget_pane_thin,
+                R.layout.widget_pane_wide,
+                R.layout.widget_docked_thin,
+                R.layout.widget_docked_wide,
+            )
+
         // Manually update AppWidgetManager with the new views.
         val awm = AppWidgetManager.getInstance(context)
         val component = ComponentName(context, this::class.java)
-        try {
-            awm.updateAppWidgetCompat(context, component, views)
-            logD("Successfully updated RemoteViews layout")
-        } catch (e: Exception) {
-            // Layout update failed, gracefully degrade to the default widget.
-            logW("Unable to update widget: $e")
-            reset(context, uiSettings)
+        while (victims.size > 0) {
+            try {
+                awm.updateAppWidgetCompat(context, component, views)
+                logD("Successfully updated RemoteViews layout")
+                return
+            } catch (e: IllegalArgumentException) {
+                val msg = e.message ?: return
+                if (!msg.startsWith(
+                    "RemoteViews for widget update exceeds maximum bitmap memory usage")) {
+                    throw e
+                }
+                // Some android devices on Android 12-14 suffer from a bug where the maximum bitmap
+                // size calculation does not factor in bitmaps shared across multiple RemoteView
+                // forms.
+                // To mitigate an outright crash, progressively disable layouts that contain cover
+                // art
+                // in order of least to most commonly used until it actually works.
+                val victim = victims.first()
+                val view = views.entries.find { it.value.layoutId == victim } ?: continue
+                view.value.setImageViewBitmap(R.id.widget_cover, null)
+                victims.remove(victim)
+            } catch (e: Exception) {
+                // Layout update failed, gracefully degrade to the default widget.
+                logW("Unable to update widget: $e")
+                reset(context, uiSettings)
+            }
         }
+        // We flat-out cannot fit the bitmap into the widget. Weird.
+        logW("Unable to update widget: Bitmap too large")
+        reset(context, uiSettings)
     }
 
     /**
