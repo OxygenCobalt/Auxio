@@ -51,11 +51,11 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
  * there is only one image.
  *
  * @param context [Context] required to perform calculation.
- * @param reduce Optional multiplier to reduce the image size. Recommended value is 3 to avoid
+ * @param reduce Optional multiplier to reduce the image size. Recommended value is 2 to avoid
  *   device-specific variations in memory limit.
  * @return The dimension of a bitmap that can be safely used in [RemoteViews].
  */
-fun getSafeRemoteViewsImageSize(context: Context, reduce: Float = 3f): Int {
+fun getSafeRemoteViewsImageSize(context: Context, reduce: Float = 2f): Int {
     val metrics = context.resources.displayMetrics
     val sw = metrics.widthPixels
     val sh = metrics.heightPixels
