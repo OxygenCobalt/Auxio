@@ -121,26 +121,20 @@ class WidgetProvider : AppWidgetProvider() {
                 awm.updateAppWidgetCompat(context, component, views)
                 logD("Successfully updated RemoteViews layout")
                 return
-            } catch (e: IllegalArgumentException) {
-                val msg = e.message ?: return
-                if (!msg.startsWith(
-                    "RemoteViews for widget update exceeds maximum bitmap memory usage")) {
-                    throw e
-                }
+            } catch (e: Exception) {
+                logW("Encountered widget error: $e")
+                logW("Widget message: ${e.message}")
                 // Some android devices on Android 12-14 suffer from a bug where the maximum bitmap
                 // size calculation does not factor in bitmaps shared across multiple RemoteView
                 // forms.
                 // To mitigate an outright crash, progressively disable layouts that contain cover
                 // art
                 // in order of least to most commonly used until it actually works.
+                logW("Killing layout: ${victims.first()}, remaining: ${victims.size - 1}")
                 val victim = victims.first()
                 val view = views.entries.find { it.value.layoutId == victim } ?: continue
                 view.value.setImageViewBitmap(R.id.widget_cover, null)
                 victims.remove(victim)
-            } catch (e: Exception) {
-                // Layout update failed, gracefully degrade to the default widget.
-                logW("Unable to update widget: $e")
-                reset(context, uiSettings)
             }
         }
         // We flat-out cannot fit the bitmap into the widget. Weird.
