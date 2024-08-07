@@ -48,7 +48,7 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
     return views
 }
 
-const val MINIMUM_OBSERVED_MAX_SAFE_BITMAP_SIZE = 6912000 * 0.95f // 95% slack
+const val MINIMUM_OBSERVED_MAX_SAFE_BITMAP_SIZE = (6912000 * 0.95f).toInt() // 95% slack
 
 /**
  * Get an image size guaranteed to not exceed the [RemoteViews] bitmap memory limit, assuming that
@@ -67,7 +67,8 @@ fun getSafeRemoteViewsImageSize(reduce: Float = 2f): Int {
     // Cap memory usage at 1.5 times the size of the display
     // 1.5 * 4 bytes/pixel * w * h ==> 6 * w * h
     // https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java
-    val maxWidgetBitmapMemory = 6 * sw * sh
+    // Of course since OEMs randomly patch this check, we have to also end up just capping it.
+    val maxWidgetBitmapMemory = min(6 * sw * sh, MINIMUM_OBSERVED_MAX_SAFE_BITMAP_SIZE)
     val maxBitmapArea = (maxWidgetBitmapMemory / 4) / reduce
     val maxBitmapSize = sqrt(maxBitmapArea).toInt()
     return maxBitmapSize;
