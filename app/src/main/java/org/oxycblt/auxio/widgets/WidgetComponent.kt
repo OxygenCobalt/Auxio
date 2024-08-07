@@ -99,7 +99,7 @@ constructor(
                     return if (cornerRadius > 0) {
                         // If rounded, reduce the bitmap size further to obtain more pronounced
                         // rounded corners.
-                        builder.size(getSafeRemoteViewsImageSize(context, 10f))
+                        builder.size(getSafeRemoteViewsImageSize(10f))
                         val cornersTransformation =
                             RoundedRectTransformation(cornerRadius.toFloat())
                         if (imageSettings.forceSquareCovers) {
@@ -112,7 +112,7 @@ constructor(
                         if (imageSettings.forceSquareCovers) {
                             builder.transformations(SquareCropTransformation.INSTANCE)
                         }
-                        builder.size(getSafeRemoteViewsImageSize(context))
+                        builder.size(getSafeRemoteViewsImageSize())
                     }
                 }
 

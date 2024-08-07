@@ -21,6 +21,7 @@ package org.oxycblt.auxio.widgets
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
 import android.util.SizeF
 import android.widget.RemoteViews
@@ -31,6 +32,7 @@ import kotlin.math.sqrt
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
+import kotlin.math.min
 
 /**
  * Create a [RemoteViews] instance with the specified layout and an automatic click handler to open
@@ -46,6 +48,8 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
     return views
 }
 
+const val MINIMUM_OBSERVED_MAX_SAFE_BITMAP_SIZE = 6912000 * 0.95f // 95% slack
+
 /**
  * Get an image size guaranteed to not exceed the [RemoteViews] bitmap memory limit, assuming that
  * there is only one image.
@@ -55,13 +59,18 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
  *   device-specific variations in memory limit.
  * @return The dimension of a bitmap that can be safely used in [RemoteViews].
  */
-fun getSafeRemoteViewsImageSize(context: Context, reduce: Float = 2f): Int {
-    val metrics = context.resources.displayMetrics
+fun getSafeRemoteViewsImageSize(reduce: Float = 2f): Int {
+    val metrics = Resources.getSystem().displayMetrics
     val sw = metrics.widthPixels
     val sh = metrics.heightPixels
-    // Maximum size is 1/3 total screen area * 4 bytes per pixel. Reverse
-    // that to obtain the image size.
-    return sqrt((6f / 4f / reduce) * sw * sh).toInt()
+
+    // Cap memory usage at 1.5 times the size of the display
+    // 1.5 * 4 bytes/pixel * w * h ==> 6 * w * h
+    // https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java
+    val maxWidgetBitmapMemory = 6 * sw * sh
+    val maxBitmapArea = (maxWidgetBitmapMemory / 4) / reduce
+    val maxBitmapSize = sqrt(maxBitmapArea).toInt()
+    return maxBitmapSize;
 }
 
 /**
