@@ -21,18 +21,15 @@ package org.oxycblt.auxio.widgets
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.res.Resources
 import android.os.Build
 import android.util.SizeF
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import kotlin.math.sqrt
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
-import kotlin.math.min
 
 /**
  * Create a [RemoteViews] instance with the specified layout and an automatic click handler to open
@@ -46,32 +43,6 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
     val views = RemoteViews(context.packageName, layoutRes)
     views.setOnClickPendingIntent(android.R.id.background, context.newMainPendingIntent())
     return views
-}
-
-const val MINIMUM_OBSERVED_MAX_SAFE_BITMAP_SIZE = (6912000 * 0.95f).toInt() // 95% slack
-
-/**
- * Get an image size guaranteed to not exceed the [RemoteViews] bitmap memory limit, assuming that
- * there is only one image.
- *
- * @param context [Context] required to perform calculation.
- * @param reduce Optional multiplier to reduce the image size. Recommended value is 2 to avoid
- *   device-specific variations in memory limit.
- * @return The dimension of a bitmap that can be safely used in [RemoteViews].
- */
-fun getSafeRemoteViewsImageSize(reduce: Float = 2f): Int {
-    val metrics = Resources.getSystem().displayMetrics
-    val sw = metrics.widthPixels
-    val sh = metrics.heightPixels
-
-    // Cap memory usage at 1.5 times the size of the display
-    // 1.5 * 4 bytes/pixel * w * h ==> 6 * w * h
-    // https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java
-    // Of course since OEMs randomly patch this check, we have to also end up just capping it.
-    val maxWidgetBitmapMemory = min(6 * sw * sh, MINIMUM_OBSERVED_MAX_SAFE_BITMAP_SIZE)
-    val maxBitmapArea = (maxWidgetBitmapMemory / 4) / reduce
-    val maxBitmapSize = sqrt(maxBitmapArea).toInt()
-    return maxBitmapSize;
 }
 
 /**
