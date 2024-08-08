@@ -22,6 +22,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
+import coil.size.Size
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
@@ -96,24 +97,19 @@ constructor(
                             0
                         }
 
-                    return if (cornerRadius > 0) {
-                        // If rounded, reduce the bitmap size further to obtain more pronounced
-                        // rounded corners.
-                        builder.size(getSafeRemoteViewsImageSize(context, 10f))
-                        val cornersTransformation =
-                            RoundedRectTransformation(cornerRadius.toFloat())
+                    val transformations = buildList {
                         if (imageSettings.forceSquareCovers) {
-                            builder.transformations(
-                                SquareCropTransformation.INSTANCE, cornersTransformation)
+                            add(SquareCropTransformation.INSTANCE)
+                        }
+                        if (cornerRadius > 0) {
+                            add(WidgetBitmapTransformation(10f))
+                            add(RoundedRectTransformation(cornerRadius.toFloat()))
                         } else {
-                            builder.transformations(cornersTransformation)
+                            add(WidgetBitmapTransformation(2f))
                         }
-                    } else {
-                        if (imageSettings.forceSquareCovers) {
-                            builder.transformations(SquareCropTransformation.INSTANCE)
-                        }
-                        builder.size(getSafeRemoteViewsImageSize(context))
                     }
+
+                    return builder.size(Size.ORIGINAL).transformations(transformations)
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {

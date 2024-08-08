@@ -107,7 +107,10 @@ class RoundedRectTransformation(
     }
 
     private fun calculateOutputSize(input: Bitmap, size: Size): Pair<Int, Int> {
-        // MODIFICATION: Remove short-circuiting for original size and input size
+        if (size == Size.ORIGINAL) {
+            // This path only runs w/the widget code, which already normalizes widget sizes
+            return input.width to input.height
+        }
         val multiplier =
             DecodeUtils.computeSizeMultiplier(
                 srcWidth = input.width,
