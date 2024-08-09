@@ -19,6 +19,8 @@
 package org.oxycblt.auxio.home
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -99,6 +101,14 @@ class HomeFragment :
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     private var getContentLauncher: ActivityResultLauncher<String>? = null
     private var pendingImportTarget: Playlist? = null
+    private val metrics = Resources.getSystem().displayMetrics
+    private val sw = metrics.widthPixels
+    private val sh = metrics.heightPixels
+    // Cap memory usage at 1.5 times the size of the display
+    // 1.5 * 4 bytes/pixel * w * h ==> 6 * w * h
+    // https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java
+    // Of course since OEMs randomly patch this check, we give a lot of slack.
+    private val maxBitmapMemory = 6 * sw * sh
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,6 +151,9 @@ class HomeFragment :
             setOnMenuItemClickListener(this@HomeFragment)
             MenuCompat.setGroupDividerEnabled(menu, true)
         }
+
+        binding.homeNormalToolbar.title = "${maxBitmapMemory}"
+        binding.homeNormalToolbar.subtitle = "${Build.MANUFACTURER} / ${Build.MODEL}"
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
