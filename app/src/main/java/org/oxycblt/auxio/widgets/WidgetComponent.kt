@@ -102,10 +102,10 @@ constructor(
                             add(SquareCropTransformation.INSTANCE)
                         }
                         if (cornerRadius > 0) {
-                            add(WidgetBitmapTransformation(10f))
+                            add(WidgetBitmapTransformation(20f))
                             add(RoundedRectTransformation(cornerRadius.toFloat()))
                         } else {
-                            add(WidgetBitmapTransformation(2f))
+                            add(WidgetBitmapTransformation(4f))
                         }
                     }
 
