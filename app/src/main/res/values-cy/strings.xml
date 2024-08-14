@@ -283,10 +283,6 @@
     <string name="set_repeat_pause">Seibio os yn ailadrodd</string>
     <string name="set_repeat_pause_desc">Seibio pan fydd cân yn ailadrodd</string>
     <string name="set_pre_amp">pre-amp ReplayGain</string>
-    <string name="set_save_state">Cadw cyflwr chwarae</string>
-    <string name="set_wipe_state">Clirio cyflwr chwarae</string>
-    <string name="set_state">Dyfalbarhad</string>
-    <string name="set_restore_state">Adfer cyflwr chwarae</string>
     <string name="set_separators_comma">Coma (,)</string>
     <string name="set_separators_semicolon">Gwahannod (;)</string>
     <string name="set_separators_slash">Blaenslaes (/)</string>
