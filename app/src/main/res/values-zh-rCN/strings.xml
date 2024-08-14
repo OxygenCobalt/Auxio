@@ -32,7 +32,6 @@
     <string name="lng_queue_added">已加入播放队列</string>
     <string name="lbl_artist_details">查看艺术家</string>
     <string name="lbl_album_details">查看专辑</string>
-    <string name="lbl_state_saved">已保存播放进度</string>
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
     <string name="err_no_dirs">没有文件夹</string>
@@ -73,8 +72,6 @@
     <string name="set_repeat_pause">重复播放前暂停</string>
     <string name="set_repeat_pause_desc">曲目重复播放前暂停</string>
     <string name="set_content">内容</string>
-    <string name="set_save_state">保存播放状态</string>
-    <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">刷新音乐</string>
     <string name="set_reindex_desc">重新加载音乐库，如有可能使用缓存的标签</string>
     <!-- Error Namespace | Error Labels -->
@@ -182,19 +179,12 @@
     <string name="lbl_sample_rate">采样率</string>
     <string name="lbl_ok">好的</string>
     <string name="lbl_cancel">取消</string>
-    <string name="set_wipe_state">清除播放状态</string>
-    <string name="set_wipe_desc">清除此前保存的播放状态（如果有）</string>
-    <string name="err_did_not_restore">无法恢复状态</string>
-    <string name="set_restore_state">恢复播放状态</string>
-    <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
     <string name="set_observing">自动重载</string>
     <string name="set_observing_desc">只要发生更改就重新加载曲库（需要持久性通知）</string>
     <string name="desc_queue_bar">打开队列</string>
     <string name="lbl_indexing">正在加载音乐</string>
     <string name="lbl_observing">正在监测曲库</string>
     <string name="lng_observing">正在监测您的曲库以查找更改…</string>
-    <string name="lbl_state_wiped">已清除状态</string>
-    <string name="lbl_state_restored">已恢复状态</string>
     <string name="lbl_eps">EP 专辑</string>
     <string name="lbl_ep">EP 专辑</string>
     <string name="lbl_singles">单曲</string>
@@ -243,8 +233,6 @@
     <plurals name="fmt_artist_count">
         <item quantity="other">%d 位艺术家</item>
     </plurals>
-    <string name="err_did_not_save">无法保存状态</string>
-    <string name="err_did_not_wipe">无法清除状态</string>
     <string name="set_rescan">重新扫描音乐</string>
     <string name="set_rescan_desc">清除标签缓存并完全重新加载音乐库（更慢，但更完整）</string>
     <string name="fmt_selected">选中了 %d 首</string>
@@ -254,7 +242,6 @@
     <string name="lbl_reset">重置</string>
     <string name="set_behavior">行为</string>
     <string name="set_replay_gain">音量正常化</string>
-    <string name="set_state">持久性</string>
     <string name="set_ui_desc">更改应用的主题和颜色</string>
     <string name="set_personalize_desc">定制用户界面操控和行为</string>
     <string name="set_content_desc">控制音乐和图片加载方式</string>
@@ -270,7 +257,6 @@
     <string name="desc_playlist_image">%s 的播放列表图片</string>
     <string name="set_intelligent_sorting">排序时忽略冠词</string>
     <string name="set_intelligent_sorting_desc">按名称排序时忽略类似“the”这样的冠词（对英文歌曲的效果最好）</string>
-    <string name="desc_new_playlist">创建新的播放列表</string>
     <string name="lbl_new_playlist">新建播放列表</string>
     <string name="fmt_def_playlist">播放列表 %d</string>
     <string name="lng_playlist_created">已创建播放列表</string>

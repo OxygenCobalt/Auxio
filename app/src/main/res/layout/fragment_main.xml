@@ -22,6 +22,12 @@
             app:navGraph="@navigation/inner"
             tools:layout="@layout/fragment_home" />
 
+        <View
+            android:id="@+id/main_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+
         <org.oxycblt.auxio.home.EdgeFrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -55,11 +61,6 @@
         </org.oxycblt.auxio.home.EdgeFrameLayout>
 
     </FrameLayout>
-
-    <View
-        android:id="@+id/main_scrim"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <View
         android:id="@+id/main_sheet_scrim"
@@ -137,7 +138,8 @@
         <View
             android:id="@+id/sheet_scrim"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

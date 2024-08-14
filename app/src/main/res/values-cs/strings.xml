@@ -38,7 +38,6 @@
     <string name="lng_queue_added">Přidáno do fronty</string>
     <string name="lbl_artist_details">Přejít na umělce</string>
     <string name="lbl_album_details">Přejít na album</string>
-    <string name="lbl_state_saved">Stav uložen</string>
     <!-- Actual string: Ok -->
     <string name="lbl_ok">OK</string>
     <!-- Actual string: Cancel -->
@@ -88,8 +87,6 @@
     <string name="set_repeat_pause">Pozastavit při opakování</string>
     <string name="set_repeat_pause_desc">Pozastavit při opakování skladby</string>
     <string name="set_content">Obsah</string>
-    <string name="set_save_state">Uložit stav přehrávání</string>
-    <string name="set_save_desc">Uložit aktuální stav přehrávání</string>
     <string name="set_reindex">Obnovit hudbu</string>
     <string name="set_reindex_desc">Znovu načíst hudební knihovnu, pokud možno s použitím značek uložených v mezipaměti</string>
     <!-- Error Namespace | Error Labels -->
@@ -190,10 +187,6 @@
     <string name="lbl_bitrate">Přenosová rychlost</string>
     <string name="lbl_sample_rate">Vzorkovací frekvence</string>
     <string name="set_dirs">Složky s hudbou</string>
-    <string name="set_restore_state">Obnovit stav přehrávání</string>
-    <string name="lbl_state_restored">Stav obnoven</string>
-    <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
-    <string name="err_did_not_restore">Nepodařilo se obnovit stav</string>
     <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
     <string name="lng_observing">Sledování změn v hudební knihovně…</string>
@@ -218,9 +211,6 @@
     <string name="lbl_album_remix">Remixové album</string>
     <string name="lbl_ep_live">Živé EP</string>
     <string name="lbl_ep_remix">Remixové EP</string>
-    <string name="set_wipe_state">Vymazat stav přehrávání</string>
-    <string name="set_wipe_desc">Vymazat dříve uložený stav přehrávání (pokud existuje)</string>
-    <string name="lbl_state_wiped">Stav vymazán</string>
     <string name="desc_queue_bar">Otevřít frontu</string>
     <string name="lbl_genre">Žánr</string>
     <string name="set_bar_action">Vlastní akce lišty přehrávání</string>
@@ -248,14 +238,12 @@
     <string name="set_cover_mode_media_store">Rychlé</string>
     <string name="set_hide_collaborators">Skrýt spoluautory</string>
     <string name="set_hide_collaborators_desc">Zobrazit pouze umělce, kteří jsou přímo uvedeni na albu (funguje nejlépe u dobře označených knihoven)</string>
-    <string name="err_did_not_save">Nepodařilo se uložit stav</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d umělec</item>
         <item quantity="few">%d umělci</item>
         <item quantity="many">%d umělců</item>
         <item quantity="other">%d umělců</item>
     </plurals>
-    <string name="err_did_not_wipe">Nepodařilo se vymazat stav</string>
     <string name="set_rescan">Znovu najít hudbu</string>
     <string name="set_rescan_desc">Vymazat mezipaměť značek a znovu úplně znovu načíst hudební knihovnu (pomalejší, ale úplnější)</string>
     <string name="fmt_selected">Vybráno %d</string>
@@ -274,14 +262,12 @@
     <string name="set_audio_desc">Nastavit chování zvuku a přehrávání</string>
     <string name="set_playback">Přehrávání</string>
     <string name="set_library">Knihovna</string>
-    <string name="set_state">Perzistence</string>
     <string name="lbl_sort_dsc">Sestupně</string>
     <string name="lbl_playlists">Seznamy skladeb</string>
     <string name="desc_playlist_image">Obrázek seznamu skladeb pro %s</string>
     <string name="lbl_playlist">Seznam skladeb</string>
     <string name="set_intelligent_sorting">Při řazení ignorovat předložky</string>
     <string name="set_intelligent_sorting_desc">Ignorovat slova jako „the“ při řazení podle názvu (funguje nejlépe u hudby v angličtině)</string>
-    <string name="desc_new_playlist">Vytvořit nový playlist</string>
     <string name="lbl_playlist_add">Přidat do seznamu skladeb</string>
     <string name="lng_playlist_added">Přidáno do seznamu skladeb</string>
     <string name="lng_playlist_created">Seznam skladeb vytvořen</string>

@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.playback.service
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -60,6 +61,7 @@ constructor(
         SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
     private var callback: Callback? = null
 
+    @SuppressLint("WrongConstant")
     fun attach(callback: Callback) {
         this.callback = callback
         playbackManager.addListener(this)

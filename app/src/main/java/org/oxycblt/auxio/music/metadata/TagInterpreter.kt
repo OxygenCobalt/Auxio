@@ -336,7 +336,7 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
 
     private companion object {
-        val COVER_KEY_SAMPLE = 32
+        const val COVER_KEY_SAMPLE = 32
 
         val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")
         val COMPILATION_RELEASE_TYPES = listOf("compilation")

@@ -44,7 +44,6 @@
     <string name="lbl_queue">Kø</string>
     <string name="lbl_play_next">Spill neste</string>
     <string name="set_library">Bibliotek</string>
-    <string name="err_did_not_save">Kunne ikke lagre tilstand</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artist</item>
         <item quantity="other">%d artister</item>
@@ -91,10 +90,7 @@
     <string name="set_dirs_desc">Håndter hvor musikk lastes inn fra</string>
     <string name="set_pre_amp_desc">Forforsterkning brukes for eksisterende justering under avspilling</string>
     <string name="set_dirs_mode">Modus</string>
-    <string name="set_save_desc">Lagre nåværende avspillingstilstand</string>
-    <string name="set_save_state">Lagre avspillingstilstand</string>
     <string name="set_rescan_desc">Tøm etiketthurtiglager og last inn hele musikkbiblioteket igjen (tregere, men mer fullstendig)</string>
-    <string name="set_state">Vedvarelse</string>
     <string name="desc_track_number">Spor %d</string>
     <string name="desc_no_cover">Albumsomslag</string>
     <string name="desc_shuffle">Skru omstokking på eller av</string>
@@ -108,7 +104,6 @@
     <string name="fmt_indexing">Laster inn musikkbiblioteket ditt … (%1$d/%2$d)</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_deletion_info">Slett %s for godt? Dette kan ikke angres.</string>
-    <string name="set_restore_desc">Gjenopprett tidligere lagret avspillingstilstand (hvis noen)</string>
     <string name="cdc_mp4">MPEG-4-lyd</string>
     <string name="fmt_def_playlist">Spilleliste %d</string>
     <string name="clr_cyan">Cyanblå</string>
@@ -116,21 +111,16 @@
     <string name="lbl_date">Dato</string>
     <string name="set_ui_desc">Endre drakten og programfargene</string>
     <string name="set_dirs_list">Mapper</string>
-    <string name="set_wipe_state">Tøm avspillingstilstand</string>
-    <string name="set_wipe_desc">Fjern tidligere lagret avspillingstilstand (hvis noen)</string>
     <string name="clr_yellow">Gul</string>
     <string name="set_intelligent_sorting">Intelligent sortering</string>
     <string name="lbl_rename">Gi nytt navn</string>
     <string name="lbl_rename_playlist">Gi spillelisten nytt navn</string>
     <string name="lbl_confirm_delete_playlist">Slett spilleliste\?</string>
     <string name="lbl_ok">OK</string>
-    <string name="lbl_state_saved">Tilstand lagret</string>
     <string name="lbl_version">Versjon</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_reset">Tilbakestill</string>
     <string name="lbl_add">Legg til</string>
-    <string name="lbl_state_wiped">Tilstand fjernet</string>
-    <string name="lbl_state_restored">Tilstand gjenopprettet</string>
     <string name="set_accent">Fargedrakt</string>
     <string name="set_black_mode">Svart drakt</string>
     <string name="set_black_mode_desc">Ifør helsvart drakt</string>
@@ -149,8 +139,6 @@
     <string name="set_dirs_mode_include_desc">Musikk vil <b>kun</b> innlastes fra mappene du legger til.</string>
     <string name="set_reindex_desc">Last inn musikkbiblioteket igjen, ved bruk av hurtiglagrede etiketter når mulig</string>
     <string name="err_no_dirs">Ingen mapper</string>
-    <string name="err_did_not_restore">Kunne ikke gjenopprette tilstand</string>
-    <string name="err_did_not_wipe">Kunne ikke fjerne tilstand</string>
     <string name="fmt_lib_album_count">Album innlastet: %d</string>
     <string name="lbl_library_counts">Biblioteksstatistikk</string>
     <string name="set_cover_mode_off">Av</string>
@@ -172,7 +160,6 @@
     <string name="def_artist">Ukjent artist</string>
     <string name="fmt_lib_genre_count">Sjangere innlastet: %d</string>
     <string name="desc_exit">Stopp avspilling</string>
-    <string name="desc_new_playlist">Opprett en ny spilleliste</string>
     <string name="clr_green">Grønn</string>
     <string name="clr_deep_green">Mørkegrønn</string>
     <string name="clr_teal">Turkis</string>
@@ -233,7 +220,6 @@
     <string name="set_play_song_from_album">Spill fra album</string>
     <string name="set_play_song_from_genre">Spill fra sjanger</string>
     <string name="set_replay_gain_mode_album">Foretrekk album</string>
-    <string name="set_restore_state">Gjenopprett avspillingstilstand</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="set_play_song_by_itself">Spill sporet for seg selv</string>
     <string name="set_square_covers">Påtving kvadratiske albumsomslag</string>

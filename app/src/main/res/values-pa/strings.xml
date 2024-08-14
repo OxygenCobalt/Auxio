@@ -63,8 +63,6 @@
     <string name="lbl_cancel">ਰੱਦ ਕਰੋ</string>
     <string name="lbl_save">ਸਾਂਭੋ</string>
     <string name="lbl_reset">ਰੀਸੈਟ ਕਰੋ</string>
-    <string name="lbl_state_wiped">ਸਟੇਟ ਕਲੀਅਰ ਕੀਤੀ ਗਈ</string>
-    <string name="lbl_state_restored">ਸਟੇਟ ਰੀਸਟੋਰ ਕੀਤੀ ਗਈ</string>
     <string name="lbl_about">ਦੇ ਬਾਰੇ</string>
     <string name="lbl_version">ਸੰਸਕਰਣ</string>
     <string name="lbl_code">ਸ੍ਰੋਤ ਕੋਡ</string>
@@ -78,7 +76,6 @@
     <string name="lbl_bitrate">ਬਿੱਟ ਰੇਟ</string>
     <string name="lbl_sample_rate">ਸੈਂਪਲ ਰੇਟ</string>
     <string name="lbl_add">ਸ਼ਾਮਿਲ ਕਰੋ</string>
-    <string name="lbl_state_saved">ਸਟੇਟ ਸਾਂਭੀ ਗਈ</string>
     <string name="lng_observing">ਤਬਦੀਲੀਆਂ ਲਈ ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਦੀ ਨਿਗਰਾਨੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ…</string>
     <string name="lbl_licenses">ਲਾਈਸੈਂਸ</string>
     <string name="lng_widget">ਸੰਗੀਤ ਪਲੇਬੈਕ ਵੇਖੋ ਅਤੇ ਕੰਟਰੋਲ ਕਰੋ</string>
@@ -127,16 +124,9 @@
     <string name="set_dirs_mode_exclude">ਬਾਹਰ ਰੱਖੋ</string>
     <string name="set_dirs_mode_include">ਸ਼ਾਮਿਲ ਕਰੋ</string>
     <string name="set_reindex">ਸੰਗੀਤ ਤਾਜ਼ਾ-ਤਰੀਨ ਕਰੋ</string>
-    <string name="set_state">ਪਰਸਿਸਟੈਂਟ</string>
-    <string name="set_save_state">ਪਲੇਬੈਕ ਸਥਿਤੀ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ</string>
-    <string name="set_save_desc">ਮੌਜੂਦਾ ਪਲੇਬੈਕ ਸਥਿਤੀ ਨੂੰ ਹੁਣੇ ਸੁਰੱਖਿਅਤ ਕਰੋ</string>
-    <string name="set_wipe_state">ਪਲੇਬੈਕ ਸਥਿਤੀ ਸਾਫ਼ ਕਰੋ</string>
-    <string name="set_restore_state">ਪਲੇਬੈਕ ਸਥਿਤੀ ਨੂੰ ਰੀਸਟੋਰ ਕਰੋ</string>
-    <string name="set_restore_desc">ਪਹਿਲਾਂ ਸੁਰੱਖਿਅਤ ਕੀਤੀ ਪਲੇਬੈਕ ਸਥਿਤੀ ਨੂੰ ਰੀਸਟੋਰ ਕਰੋ (ਜੇ ਕੋਈ ਹੈ)</string>
     <string name="err_no_app">ਕੋਈ ਐਪ ਨਹੀਂ ਮਿਲੀ ਜੋ ਇਸ ਕਾਰਜ ਨੂੰ ਸੰਭਾਲ ਸਕਦੀ ਹੈ</string>
     <string name="err_no_dirs">ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ</string>
     <string name="err_bad_dir">ਇਹ ਫੋਲਡਰ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ</string>
-    <string name="err_did_not_save">ਸਥਿਤੀ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
     <string name="desc_play_pause">ਚਲਾਓ ਜਾਂ ਰੋਕੋ</string>
     <string name="desc_skip_next">ਅਗਲੇ ਗੀਤ \'ਤੇ ਜਾਓ</string>
     <string name="desc_skip_prev">ਆਖਰੀ ਗੀਤ \'ਤੇ ਜਾਓ</string>
@@ -152,12 +142,9 @@
     <string name="set_dirs_mode_include_desc">ਤੁਹਾਡੇ ਦੁਆਰਾ ਸ਼ਾਮਲ ਕੀਤੇ ਫੋਲਡਰਾਂ ਤੋਂ ਸੰਗੀਤ <b>ਸਿਰਫ਼</b> ਲੋਡ ਕੀਤਾ ਜਾਵੇਗਾ।</string>
     <string name="set_dirs_mode">ਮੋਡ</string>
     <string name="set_rescan_desc">ਟੈਗ ਕੈਸ਼ ਨੂੰ ਸਾਫ਼ ਕਰੋ ਅਤੇ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਨੂੰ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੀਲੋਡ ਕਰੋ (ਹੌਲੀ, ਪਰ ਵਧੇਰੇ ਸੰਪੂਰਨ)</string>
-    <string name="set_wipe_desc">ਪਹਿਲਾਂ ਸੁਰੱਖਿਅਤ ਕੀਤੀ ਪਲੇਬੈਕ ਸਥਿਤੀ ਨੂੰ ਸਾਫ਼ ਕਰੋ (ਜੇ ਕੋਈ ਹੈ)</string>
     <string name="err_no_music">ਕੋਈ ਸੰਗੀਤ ਨਹੀਂ ਮਿਲਿਆ</string>
     <string name="err_index_failed">ਸੰਗੀਤ ਲੋਡ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ</string>
     <string name="err_no_perms">Auxio ਨੂੰ ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਨੂੰ ਪੜ੍ਹਨ ਲਈ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ</string>
-    <string name="err_did_not_restore">ਸਥਿਤੀ ਨੂੰ ਰੀਸਟੋਰ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
-    <string name="err_did_not_wipe">ਸਥਿਤੀ ਨੂੰ ਸਾਫ਼ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ</string>
     <string name="desc_track_number">%d ਨੂੰ ਟਰੈਕ ਕਰੋ</string>
     <string name="set_hide_collaborators_desc">ਸਿਰਫ਼ ਉਹਨਾਂ ਕਲਾਕਾਰਾਂ ਨੂੰ ਦਿਖਾਓ ਜੋ ਕਿਸੇ ਐਲਬਮ \'ਤੇ ਸਿੱਧੇ ਤੌਰ \'ਤੇ ਕ੍ਰੈਡਿਟ ਕੀਤੇ ਜਾਂਦੇ ਹਨ (ਚੰਗੀ ਤਰ੍ਹਾਂ ਨਾਲ ਟੈਗ ਕੀਤੀਆਂ ਲਾਇਬ੍ਰੇਰੀਆਂ \'ਤੇ ਵਧੀਆ ਕੰਮ ਕਰਦਾ ਹੈ</string>
     <string name="set_exclude_non_music_desc">ਉਹਨਾਂ ਆਡੀਓ ਫਾਈਲਾਂ ਨੂੰ ਅਣਡਿੱਠ ਕਰੋ ਜੋ ਸੰਗੀਤ ਨਹੀਂ ਹਨ, ਜਿਵੇਂ ਕਿ ਪੌਡਕਾਸਟ</string>
@@ -208,7 +195,6 @@
     <string name="lng_playlist_renamed">ਪਲੇਅ-ਲਿਸਟ ਦਾ ਨਾਂ ਬਦਲਿਆ</string>
     <string name="clr_cyan">ਨੀਲਾ-ਹਰਾ</string>
     <string name="lbl_delete">ਮਿਟਾਓ</string>
-    <string name="desc_new_playlist">ਇੱਕ ਨਵੀਂ ਪਲੇਅ-ਲਿਸਟ ਬਣਾਓ</string>
     <string name="lng_playlist_added">ਪਲੇਅ- ਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕੀਤਾ</string>
     <string name="desc_tab_handle">ਇਹ ਟੈਬ ਹਿਲਾਓ</string>
     <string name="def_song_count">ਕੋਈ ਗੀਤ ਨਹੀਂ</string>

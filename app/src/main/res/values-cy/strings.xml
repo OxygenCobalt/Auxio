@@ -162,10 +162,7 @@
     <string name="lbl_reset">Ailosod</string>
     <string name="lbl_add">Ychwanegu</string>
     <string name="lbl_path_style">Dull llwybr</string>
-    <string name="lbl_state_saved">Cyflwr wedi\'i gadw</string>
-    <string name="lbl_state_wiped">Cyflwr wedi\'i glirio</string>
     <string name="lbl_windows_paths">Defnyddio llwybrau Windows</string>
-    <string name="lbl_state_restored">Cyflwr wedi\'i adfer</string>
     <string name="lbl_about">Ynghylch</string>
     <string name="lbl_version">Fersiwn</string>
     <string name="lbl_code">Cod ffynhonnell</string>
@@ -210,7 +207,6 @@
     <string name="err_no_perms">Mae ar Auxio angen caniatâd i ddarllen eich llyfrgell gerddoriaeth</string>
     <string name="err_no_app">Methwyd dod o hyd ap sydd yn gallu gwneud y tasg hon</string>
     <string name="err_no_dirs">Dim ffolderi</string>
-    <string name="err_did_not_wipe">Methwyd clirio\'r cyflwr</string>
     <string name="desc_skip_next">Symud i\'r gân nesaf</string>
     <string name="desc_skip_prev">Symud i\'r gân ddiwethaf</string>
     <string name="desc_change_repeat">Newid y modd ail-chwarae</string>
@@ -246,11 +242,8 @@
     <string name="desc_album_cover">Clawr albwm %s</string>
     <string name="desc_artist_image">Llun artist %s</string>
     <string name="desc_genre_image">Llun genre %s</string>
-    <string name="err_did_not_restore">Methwyd adfer y cyflwr</string>
-    <string name="err_did_not_save">Methwyd cadw\'r cyflwr</string>
     <string name="desc_play_pause">Chwarae neu seibio</string>
     <string name="desc_shuffle">Troi\'r modd cymysgu ymlaen neu\'i ddiffodd</string>
-    <string name="desc_new_playlist">Creu rhestr chwarae newydd</string>
     <string name="desc_exit">Stopio\'r chwarae</string>
     <string name="desc_remove_song">Tynnu\'r gân hon</string>
     <string name="desc_queue_bar">Agor y ciw</string>

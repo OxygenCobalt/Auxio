@@ -27,7 +27,6 @@
     <string name="lng_queue_added">Toegevoegd aan wachtrij</string>
     <string name="lbl_artist_details">Ga naar artiest</string>
     <string name="lbl_album_details">Ga naar album</string>
-    <string name="lbl_state_saved">Status bewaard</string>
     <string name="lbl_add">Voeg toe</string>
     <string name="lbl_save">Bewaar</string>
     <string name="err_no_dirs">Geen mappen</string>
@@ -54,8 +53,6 @@
     <string name="set_rewind_prev">Terugspoelen voor het overslaan</string>
     <string name="set_rewind_prev_desc">Terugspoelen voor het overslaan van het vorige nummer</string>
     <string name="set_content">Inhoud</string>
-    <string name="set_save_state">Bewaar afspeelstatus</string>
-    <string name="set_save_desc">Bewaar de huidige afspeelstatus</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Geen muziek aangetroffen</string>
     <string name="err_index_failed">Laden van muziek mislukt</string>
@@ -150,16 +147,12 @@
     <string name="set_play_in_parent_with">Bij het afspelen van item details</string>
     <string name="set_round_mode">Ronde modus</string>
     <string name="set_round_mode_desc">Schakel afgeronde hoeken in voor extra UI-elementen (vereist dat albumhoezen zijn afgerond)</string>
-    <string name="lbl_state_restored">Status hersteld</string>
     <string name="lbl_library_counts">Bibliotheek statistieken</string>
     <string name="set_lib_tabs_desc">Verander de zichtbaarheid en volgorde van bibliotheek tabbladen</string>
     <string name="set_headset_autoplay">Headset automatisch afspelen</string>
     <string name="set_replay_gain_mode">ReplayGain strategie</string>
     <string name="set_pre_amp_warning">Waarschuwing: Als u de voorversterker op een hoge positieve waarde zet, kan dit bij sommige audiotracks tot pieken leiden.</string>
     <string name="set_play_song_none">Speel vanaf getoond item</string>
-    <string name="set_restore_state">Herstel afspeelstatus</string>
-    <string name="set_restore_desc">Herstel de eerder opgeslagen afspeelstatus (indien aanwezig)</string>
-    <string name="err_did_not_restore">Kan status niet herstellen</string>
     <string name="desc_remove_song">Verwijder dit nummer</string>
     <string name="desc_song_handle">Verplaats dit nummer</string>
     <string name="desc_tab_handle">Verplaats dit tabblad</string>
@@ -188,9 +181,7 @@
     <string name="cdc_aac">Geavanceerde audio codering (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="lbl_new_playlist">Nieuwe afspeellijst</string>
-    <string name="lbl_state_wiped">Status gewist</string>
     <string name="set_audio_desc">Configureer geluid en afspeel gedrag</string>
-    <string name="desc_new_playlist">Creëer een nieuwe afspeellijst</string>
     <string name="fmt_selected">%d geselecteerd</string>
     <string name="lbl_playlist_add">Voeg toe aan afspeellijst</string>
     <string name="lng_playlist_created">Afspeellijst gemaakt</string>
@@ -216,13 +207,10 @@
     <string name="lbl_remix_group">Remixen</string>
     <string name="set_separators_slash">Schuine streep (/)</string>
     <string name="set_replay_gain">Volume normalisatie</string>
-    <string name="set_state">Persisteer</string>
     <string name="lbl_playlist">Afspeellijst</string>
     <string name="lbl_wiki">Wiki</string>
-    <string name="err_did_not_save">Kan status niet opslaan</string>
     <string name="lbl_reset">Reset</string>
     <string name="set_images">Afbeeldingen</string>
-    <string name="set_wipe_state">Wis de afspeelstatus</string>
     <string name="set_cover_mode_media_store">Snel</string>
     <string name="set_library">Bibliotheek</string>
     <string name="lbl_ep_live">Live EP</string>
@@ -244,7 +232,6 @@
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="lbl_edit">Bewerk</string>
     <string name="lbl_sort_dsc">Aflopend</string>
-    <string name="err_did_not_wipe">Kan status niet wissen</string>
     <string name="desc_playlist_image">Afspeellijst afbeelding voor %s</string>
     <string name="def_song_count">Geen nummers</string>
     <string name="lbl_equalizer">Equalizer</string>
@@ -289,7 +276,6 @@
     <string name="set_playback">Afspelen</string>
     <string name="set_rescan">Scan muziek opnieuw</string>
     <string name="set_rescan_desc">Wis de tag-cache en laad de muziekbibliotheek opnieuw (langzamer, maar vollediger)</string>
-    <string name="set_wipe_desc">Wis de eerder opgeslagen afspeelstatus (indien aanwezig)</string>
     <string name="def_disc">Geen schijf</string>
     <string name="fmt_editing">%s bewerken</string>
     <string name="set_replay_gain_mode_off">Uit</string>

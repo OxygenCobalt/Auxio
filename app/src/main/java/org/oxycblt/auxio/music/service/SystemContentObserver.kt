@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A [ContentObserver] that observes the [MediaStore] music database for changes, a behavior known
  * to the user as automatic rescanning. The active (and not passive) nature of observing the
- * database is what requires [IndexerService] to stay foreground when this is enabled.
+ * database is what requires [IndexerServiceFragment] to stay foreground when this is enabled.
  */
 class SystemContentObserver
 @Inject

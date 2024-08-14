@@ -18,17 +18,15 @@
  
 package org.oxycblt.auxio
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowInsets
 import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -67,7 +65,6 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
@@ -128,7 +125,7 @@ class MainFragment :
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
             SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
-        speedDialBackCallback = SpeedDialBackPressedCallback(homeModel)
+        speedDialBackCallback = SpeedDialBackPressedCallback()
 
         navigationListener = DialogAwareNavigationListener(::onExploreNavigate)
 
@@ -231,17 +228,6 @@ class MainFragment :
             addCallback(viewLifecycleOwner, requireNotNull(selectionBackCallback))
             addCallback(viewLifecycleOwner, requireNotNull(detailBackCallback))
             addCallback(viewLifecycleOwner, requireNotNull(sheetBackCallback))
-        }
-
-        // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
-        // it ourselves.
-        requireBinding().root.rootView.apply {
-            findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
-            }
-            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
-            }
         }
     }
 
@@ -520,49 +506,14 @@ class MainFragment :
         }
     }
 
+    private var scrimAnimator: ValueAnimator? = null
+
     private fun updateSpeedDial(open: Boolean) {
         requireNotNull(speedDialBackCallback) { "SpeedDialBackPressedCallback was not available" }
             .invalidateEnabled(open)
         val binding = requireBinding()
-        logD(open)
-        binding.mainScrim.isVisible = open
-        binding.sheetScrim.isVisible = open
-        if (open) {
-            binding.homeNewPlaylistFab.open(true)
-        } else {
-            binding.homeNewPlaylistFab.close(true)
-        }
-    }
-
-    private fun handleSpeedDialBoundaryTouch(event: MotionEvent): Boolean {
-        val binding = binding ?: return false
-
-        if (binding.homeNewPlaylistFab.isOpen &&
-            binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
-            // Convert absolute coordinates to relative coordinates
-            val offsetX = event.x - binding.homeNewPlaylistFab.x
-            val offsetY = event.y - binding.homeNewPlaylistFab.y
-
-            // Create a new MotionEvent with relative coordinates
-            val relativeEvent =
-                MotionEvent.obtain(
-                    event.downTime,
-                    event.eventTime,
-                    event.action,
-                    offsetX,
-                    offsetY,
-                    event.metaState)
-
-            // Dispatch the relative MotionEvent to the target child view
-            val handled = binding.homeNewPlaylistFab.dispatchTouchEvent(relativeEvent)
-
-            // Recycle the relative MotionEvent
-            relativeEvent.recycle()
-
-            return handled
-        }
-
-        return false
+        binding.mainScrim.isInvisible = !open
+        binding.sheetScrim.isInvisible = !open
     }
 
     private fun handleShow(show: Show?) {
@@ -791,8 +742,7 @@ class MainFragment :
         }
     }
 
-    private inner class SpeedDialBackPressedCallback(private val homeModel: HomeViewModel) :
-        OnBackPressedCallback(false) {
+    private inner class SpeedDialBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             val binding = requireBinding()
             if (binding.homeNewPlaylistFab.isOpen) {

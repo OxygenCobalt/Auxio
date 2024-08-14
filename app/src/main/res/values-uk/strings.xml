@@ -142,7 +142,6 @@
     <string name="set_play_song_from_album">Відтворити альбом</string>
     <string name="set_play_in_list_with">При відтворенні з бібліотеки</string>
     <string name="set_replay_gain_mode_dynamic">Віддавати перевагу альбому, якщо він відтворюється</string>
-    <string name="lbl_state_wiped">Стан відтворення очищено</string>
     <string name="set_black_mode_desc">Використовувати повністю чорну тему</string>
     <string name="set_hide_collaborators_desc">Показувати лише тих виконавців, які безпосередньо зазначені в альбомі (найкраще працює в добре позначених бібліотеках)</string>
     <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до спотворення звуку в деяких піснях.</string>
@@ -152,11 +151,9 @@
     <string name="set_observing_desc">Перезавантажувати бібліотеку при виявленні змін (потрібне постійне сповіщення)</string>
     <string name="set_dirs_mode_exclude_desc">Музика <b>не</b> буде завантажена з вибраних папок.</string>
     <string name="set_separators_desc">Налаштуйте символи, які позначають кілька значень тегів</string>
-    <string name="lbl_state_saved">Стан відтворення збережено</string>
     <string name="set_replay_gain_mode_album">За альбомом</string>
     <string name="set_replay_gain_mode_track">За піснею</string>
     <string name="set_content">Зміст</string>
-    <string name="set_wipe_desc">Очистити раніше збережений стан відтворення (якщо є)</string>
     <string name="lng_observing">Відстеження змін в музичній бібліотеці…</string>
     <string name="set_bar_action">Власна дія для панелі відтворення</string>
     <string name="set_pre_amp_without">Регулювання без тегів</string>
@@ -165,20 +162,14 @@
     <string name="set_play_song_from_artist">Відтворити виконавця</string>
     <string name="set_play_song_from_genre">Відтворити жанр</string>
     <string name="set_rewind_prev">Перемотати назад перед відтворенням попередньої пісні</string>
-    <string name="set_save_desc">Зберегти поточний стан відтворення</string>
     <string name="set_rescan">Пересканувати музику</string>
     <string name="set_separators_warning">Попередження: Використання цього параметра може призвести до того, що деякі теги будуть неправильно інтерпретовані як такі, що мають кілька значень. Ви можете вирішити це, додавши перед небажаними символами-роздільниками зворотну скісну риску (\\).</string>
     <string name="set_notif_action">Кнопка в сповіщенні</string>
     <string name="set_separators">Багатозначні роздільники</string>
     <string name="set_dirs_mode_include_desc">Музика буде завантажена <b>тільки</b> з вибраних папок.</string>
-    <string name="set_restore_desc">Відновити раніше збережений стан відтворення (якщо є)</string>
     <string name="set_pre_amp_with">Регулювання на основі тегів</string>
     <string name="set_replay_gain_mode">Налаштування ReplayGain</string>
-    <string name="set_save_state">Зберегти стан відтворення</string>
-    <string name="set_wipe_state">Очистити стан відтворення</string>
-    <string name="set_restore_state">Відновити стан відтворення</string>
     <string name="lbl_track">Пісня</string>
-    <string name="lbl_state_restored">Стан відтворення відновлено</string>
     <string name="lng_widget">Перегляд і керування відтворенням музики</string>
     <string name="set_rewind_prev_desc">Перемотайте на початок пісні перед відтворенням попередньої</string>
     <string name="set_round_mode_desc">Увімкнути заокруглені кути на додаткових елементах інтерфейсу (потрібно заокруглення обкладинок альбомів)</string>
@@ -194,7 +185,6 @@
     <string name="clr_lime">Лаймовий</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
     <string name="err_no_dirs">Немає папок</string>
-    <string name="err_did_not_restore">Не вдалось відновити статус відтворення</string>
     <string name="desc_skip_next">Перейти до наступної пісні</string>
     <string name="desc_shuffle">Ввімкніть або вимкніть перемішування</string>
     <string name="desc_exit">Зупинити відтворення</string>
@@ -240,8 +230,6 @@
     <string name="def_date">Дата відсутня</string>
     <string name="def_track">Немає пісні</string>
     <string name="def_playback">Музика не грає</string>
-    <string name="err_did_not_wipe">Не вдалось очистити статус відтворення</string>
-    <string name="err_did_not_save">Не вдалось зберегти статус відтворення</string>
     <string name="desc_skip_prev">Перейти до попередньої пісні</string>
     <string name="clr_red">Червоний</string>
     <string name="cdc_mp4">Звук MPEG-4</string>
@@ -267,7 +255,6 @@
     <string name="set_playback">Відтворення</string>
     <string name="set_replay_gain">Вирівнювання гучності</string>
     <string name="set_library">Бібліотека</string>
-    <string name="set_state">Стан відтворення</string>
     <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
     <string name="lbl_sort_dsc">За спаданням</string>
@@ -276,7 +263,6 @@
     <string name="lbl_playlists">Списки відтворення</string>
     <string name="set_intelligent_sorting">Інтелектуальне сортування</string>
     <string name="set_intelligent_sorting_desc">Ігнорування таких слів, як \"the\", або цифр під час сортування за назвою (найкраще працює з англомовною музикою)</string>
-    <string name="desc_new_playlist">Створити новий список відтворення</string>
     <string name="lbl_new_playlist">Новий список відтворення</string>
     <string name="fmt_def_playlist">Список відтворення %d</string>
     <string name="lbl_playlist_add">Додати до списку відтворення</string>

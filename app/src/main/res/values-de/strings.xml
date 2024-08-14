@@ -24,7 +24,6 @@
     <string name="lng_queue_added">Der Warteschlange hinzugefügt</string>
     <string name="lbl_artist_details">Zum Künstler gehen</string>
     <string name="lbl_album_details">Zum Album gehen</string>
-    <string name="lbl_state_saved">Wiedergabezustand gespeichert</string>
     <string name="lbl_add">Hinzufügen</string>
     <string name="lbl_save">Speichern</string>
     <string name="err_no_dirs">Keine Ordner</string>
@@ -62,8 +61,6 @@
     <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
     <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorherigen Lied gewechselt wird</string>
     <string name="set_content">Inhalt</string>
-    <string name="set_save_state">Wiedergabezustand speichern</string>
-    <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
     <string name="set_reindex">Musik neu laden</string>
     <string name="set_reindex_desc">Musikbibliothek neu laden, verwendet gecachte Tags wenn möglich</string>
     <!-- Error Namespace | Error Labels -->
@@ -188,9 +185,6 @@
     <string name="lbl_date_added">Hinzugefügt am</string>
     <string name="set_observing_desc">Musikbibliothek neu laden, sobald es Änderungen gibt (erfordert persistente Benachrichtigung)</string>
     <string name="set_observing">Automatisch neuladen</string>
-    <string name="lbl_state_restored">Zustand wiederhergestellt</string>
-    <string name="set_restore_desc">Den vorher gespeicherten Wiedergabezustand wiederherstellen (wenn verfügbar)</string>
-    <string name="err_did_not_restore">Zustand konnte nicht wiederhergestellt werden</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_eps">Mini-Alben</string>
     <string name="lbl_single">Single</string>
@@ -199,7 +193,6 @@
     <string name="lbl_compilation">Kompilation</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <string name="lbl_soundtracks">Soundtracks</string>
-    <string name="set_restore_state">Wiedergabezustand wiederherstellen</string>
     <string name="lbl_album_remix">Remix-Album</string>
     <string name="lbl_mixtapes">Mixtapes</string>
     <string name="lbl_mixtape">Mixtape</string>
@@ -210,10 +203,7 @@
     <string name="lbl_single_live">Live-Single</string>
     <string name="lbl_single_remix">Remix-Single</string>
     <string name="lbl_live_group">Live</string>
-    <string name="set_wipe_desc">Den vorher gespeicherten Wiedergabezustand löschen (wenn vorhanden)</string>
-    <string name="lbl_state_wiped">Zustand gelöscht</string>
     <string name="desc_queue_bar">Warteschlange öffnen</string>
-    <string name="set_wipe_state">Wiedergabezustand löschen</string>
     <string name="lbl_genre">Genre</string>
     <string name="lbl_equalizer">Equalizer</string>
     <string name="set_bar_action">Angepasste Wiedergabeaktionstaste</string>
@@ -245,8 +235,6 @@
         <item quantity="one">%d Künstler</item>
         <item quantity="other">%d Künstler</item>
     </plurals>
-    <string name="err_did_not_wipe">Zustand konnte nicht gelöscht werden</string>
-    <string name="err_did_not_save">Zustand konnte nicht gespeichert werden</string>
     <string name="set_rescan">Music neu scannen</string>
     <string name="set_rescan_desc">Tag-Cache leeren und die Musik-Bibliothek vollständig neu laden (langsamer, aber vollständiger)</string>
     <string name="fmt_selected">%d ausgewählt</string>
@@ -264,7 +252,6 @@
     <string name="set_dirs_list">Ordner</string>
     <string name="set_playback">Wiedergabe</string>
     <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
-    <string name="set_state">Persistenz</string>
     <string name="set_replay_gain">Lautstärkenormalisierung</string>
     <string name="lbl_sort_dsc">Absteigend</string>
     <string name="desc_playlist_image">Wiedergabelistenbild für %s</string>
@@ -272,7 +259,6 @@
     <string name="lbl_playlists">Wiedergabelisten</string>
     <string name="set_intelligent_sorting">Intelligente Sortierung</string>
     <string name="set_intelligent_sorting_desc">Korrekte Sortierung von Namen, die mit Nummern oder Wörtern wie „the“ beginnen (funktioniert am besten mit englischsprachiger Musik)</string>
-    <string name="desc_new_playlist">Neue Wiedergabeliste erstellen</string>
     <string name="lbl_new_playlist">Neue Wiedergabeliste</string>
     <string name="lng_playlist_added">Zur Wiedergabeliste hinzugefügt</string>
     <string name="lbl_playlist_add">Zur Wiedergabeliste hinzufügen</string>

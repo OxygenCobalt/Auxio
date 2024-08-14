@@ -82,7 +82,7 @@ class MenuItemViewHolder private constructor(private val binding: ItemMenuOption
                     oldItem == newItem
 
                 override fun areContentsTheSame(oldItem: MenuItem, newItem: MenuItem) =
-                    oldItem.title == newItem.title
+                    oldItem.title.toString() == newItem.title.toString()
             }
     }
 }

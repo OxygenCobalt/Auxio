@@ -179,18 +179,6 @@ value class Components private constructor(val components: List<String>) {
         fun parseWindows(path: String) =
             Components(path.trimSlashes().split('\\').filter { it.isNotEmpty() })
 
-        /**
-         * Parses a path string into a [Components] instance by any path separator, either unix or
-         * windows. This is useful for parsing paths when you can't determine the separators any
-         * other way, however also risks mangling the paths if they use unix-style escapes.
-         *
-         * @param path The path string to parse.
-         * @return The [Components] instance.
-         */
-        fun parseAny(path: String) =
-            Components(
-                path.trimSlashes().split(File.separatorChar, '\\').filter { it.isNotEmpty() })
-
         private fun String.trimSlashes() = trimStart(File.separatorChar).trimEnd(File.separatorChar)
     }
 }

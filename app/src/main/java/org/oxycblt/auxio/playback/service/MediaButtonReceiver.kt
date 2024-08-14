@@ -31,7 +31,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to
- * [PlaybackServiceFragment].
+ * [MediaSessionServiceFragment].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */

@@ -5,7 +5,6 @@
     <string name="lbl_compilations">Zbirke</string>
     <string name="lbl_albums">Albumi</string>
     <string name="lbl_compilation_remix">Zbirka remiksov</string>
-    <string name="set_wipe_state">Počisti stanje predvajanja</string>
     <string name="lbl_album_details">Pojdi na album</string>
     <string name="desc_artist_image">Slika izvajalca za %s</string>
     <string name="lbl_sort_direction">Smer</string>
@@ -26,7 +25,6 @@
     <string name="set_replay_gain_mode_album">Prednost albumu</string>
     <string name="set_play_song_none">Predvajaj iz prikazanega elementa</string>
     <string name="set_observing">Samodejno ponovno nalaganje</string>
-    <string name="err_did_not_wipe">Ni mogoče počistiti stanja</string>
     <string name="lbl_eps">Podaljšane</string>
     <string name="lbl_props">Lastnosti pesmi</string>
     <string name="desc_change_repeat">Spremenite način ponavljanja</string>
@@ -48,7 +46,6 @@
     <string name="set_play_in_parent_with">Ko se predvaja iz podrobnosti elementa</string>
     <string name="set_reindex">Ponovno naloži glasbo</string>
     <string name="lbl_remix_group">Remiksi</string>
-    <string name="set_save_state">Shrani stanje predvajanja</string>
     <string name="set_pre_amp_warning">Opozorilo: Sprememba pred-ojačevalca na visoko pozitivno vrednost lahko privede do preseganja na nekaterih avdio posnetkih.</string>
     <string name="def_date">Ni datuma</string>
     <string name="set_reindex_desc">Ponovno naloži glasbeno knjižnico, uporabi predpomnjene oznake, kadar je mogoče</string>
@@ -56,7 +53,6 @@
     <string name="lbl_cancel">Prekliči</string>
     <string name="set_dirs_mode_include">Vključi</string>
     <string name="fmt_def_playlist">Seznam predvajanja %d</string>
-    <string name="set_save_desc">Shrani trenutno stanje predvajanja zdaj</string>
     <string name="desc_skip_prev">Preskoči na zadnjo pesem</string>
     <string name="set_observing_desc">Ponovno naloži glasbeno knjižnico vsakič, ko se zazna sprememba (zahteva vztrajno obvestilo)</string>
     <plurals name="fmt_song_count">
@@ -79,11 +75,9 @@
     <string name="lbl_artist">Izvajalec</string>
     <string name="set_intelligent_sorting_desc">Pravilno razvrsti imena, ki se začnejo z številkami ali besedami, kot so \'the\' (najbolje deluje z angleško glasbo)</string>
     <string name="clr_teal">Zelenkasto modra</string>
-    <string name="set_state">Vztrajnost</string>
     <string name="desc_shuffle_all">Premešaj vse pesmi</string>
     <string name="lng_playlist_created">Seznam predavanja ustvarjen</string>
     <string name="fmt_lib_total_duration">Celoten čas predvajanja: %s</string>
-    <string name="err_did_not_save">Ni mogoče shraniti stanja</string>
     <string name="set_repeat_pause">Pavza ob ponavljanju</string>
     <string name="set_dirs">Mape za glasbo</string>
     <string name="set_keep_shuffle">Zapomni si naključno predvajanje</string>
@@ -100,7 +94,6 @@
     <string name="fmt_lib_genre_count">Naloženih žanrov: %d</string>
     <string name="lbl_playback">Se predvaja</string>
     <string name="desc_remove_song">Odstrani to pesem</string>
-    <string name="lbl_state_saved">Stanje predvajanja shranjeno</string>
     <string name="def_disc">Ni diska</string>
     <string name="lbl_search">Išči</string>
     <string name="set_headset_autoplay_desc">Vedno začnite predvajati, ko se slušalke priključijo (morda ne deluje na vseh napravah)</string>
@@ -109,7 +102,6 @@
     <string name="lbl_queue_add">Dodaj v čakalno vrsto</string>
     <string name="set_pre_amp">Pred-ojačevalnik ReplayGain</string>
     <string name="cdc_mp3">MPEG-1 Audio</string>
-    <string name="err_did_not_restore">Ni mogoče obnoviti stanja</string>
     <string name="set_ui_desc">Spremenite temo in barve aplikacije</string>
     <string name="lbl_retry">Poskusi znova</string>
     <string name="set_audio_desc">Prilagodi zvok in obnašanje predvajanja</string>
@@ -127,7 +119,6 @@
     <string name="set_play_song_from_album">Predvajaj iz albuma</string>
     <string name="set_music">Glasba</string>
     <string name="err_bad_dir">Ta mapa ni podprta</string>
-    <string name="set_restore_desc">Obnovi prej shranjeno stanje predvajanja (če obstaja)</string>
     <string name="lbl_author_name">Razvil Alexander Capehart</string>
     <string name="desc_music_dir_delete">Odstrani mapo</string>
     <string name="lbl_copied">Kopirano</string>
@@ -144,7 +135,6 @@
     <string name="desc_no_cover">Naslovnica albuma</string>
     <string name="lbl_rename">Preimenuj</string>
     <string name="set_separators_plus">Plus (+)</string>
-    <string name="lbl_state_restored">Stanje predvajanja obnovljeno</string>
     <string name="fmt_selected">%d Izbrano</string>
     <string name="def_artist">Neznan izvajatelj</string>
     <string name="set_images">Slike</string>
@@ -154,7 +144,6 @@
         <item quantity="few">%d izvajalci</item>
         <item quantity="other">%d izvajalcev</item>
     </plurals>
-    <string name="lbl_state_wiped">Stanje predvajanja počiščeno</string>
     <string name="set_display">Prikaz</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="cdc_ogg">Ogg Audio</string>
@@ -200,7 +189,6 @@
     <string name="desc_album_cover">Naslovnica albuma za %s</string>
     <string name="lbl_live_group">V živo</string>
     <string name="set_lib_tabs_desc">Spremenite vidnost in vrstni red zavihkov knjižnice</string>
-    <string name="set_wipe_desc">Počisti shranjeno stanje predvajanja (če obstaja)</string>
     <string name="lbl_sort_mode">Sortiraj po</string>
     <string name="lbl_parent_detail">Ogled</string>
     <string name="desc_exit">Ustavi predvajanje</string>
@@ -232,12 +220,10 @@
     <string name="lbl_genre">Žanr</string>
     <string name="set_playback">Predvajanje</string>
     <string name="lbl_ok">Vredu</string>
-    <string name="desc_new_playlist">Ustvari nov seznam predvajanja</string>
     <string name="lbl_single">Singl</string>
     <string name="lng_playlist_deleted">Seznam predvajanja odstranjen</string>
     <string name="lbl_grant">Dovoli</string>
     <string name="set_play_song_from_all">Predvajaj iz vseh pesmi</string>
-    <string name="set_restore_state">Obnovi stanje predvajanja</string>
     <string name="set_pre_amp_with">Prilagoditev z oznakami</string>
     <string name="set_headset_autoplay">Predvajanje ob priključitvi slušalk</string>
     <string name="set_separators_comma">Vejica (,)</string>

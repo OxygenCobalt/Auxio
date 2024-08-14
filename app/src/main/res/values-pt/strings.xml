@@ -108,8 +108,6 @@
     <string name="lbl_shuffle_shortcut_short">Aleatório</string>
     <string name="lbl_shuffle_shortcut_long">Misturar tudo</string>
     <string name="lbl_export">Exportar</string>
-    <string name="lbl_state_restored">Estado restaurado</string>
-    <string name="lbl_state_wiped">Estado limpo</string>
     <string name="lbl_about">Sobre</string>
     <string name="lbl_version">Versão</string>
     <string name="lng_playlist_renamed">Lista de reprodução renomeada</string>

@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.state
 
 import android.net.Uri
 import android.os.SystemClock
-import android.support.v4.media.session.PlaybackStateCompat
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -323,30 +322,6 @@ private constructor(
             // a transient audio focus change.
             initPositionMs
         }
-
-    /**
-     * Load this instance into a [PlaybackStateCompat].
-     *
-     * @param builder The [PlaybackStateCompat.Builder] to mutate.
-     * @return The same [PlaybackStateCompat.Builder] for easy chaining.
-     */
-    fun intoPlaybackState(builder: PlaybackStateCompat.Builder): PlaybackStateCompat.Builder =
-        builder.setState(
-            // State represents the user's preference, not the actual player state.
-            // Doing this produces a better experience in the media control UI.
-            if (isPlaying) {
-                PlaybackStateCompat.STATE_PLAYING
-            } else {
-                PlaybackStateCompat.STATE_PAUSED
-            },
-            initPositionMs,
-            if (isAdvancing) {
-                1f
-            } else {
-                // Not advancing, so don't move the position.
-                0f
-            },
-            creationTime)
 
     // Equality ignores the creation time to prevent functionally identical states
     // from being non-equal.

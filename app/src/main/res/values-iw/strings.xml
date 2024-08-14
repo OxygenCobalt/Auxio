@@ -56,7 +56,6 @@
     <string name="lbl_save">שמירה</string>
     <string name="lbl_reset">אתחול</string>
     <string name="lbl_add">הוספה</string>
-    <string name="lbl_state_saved">המצב נשמר</string>
     <string name="lbl_version">גרסה</string>
     <string name="lbl_code">קוד מקור</string>
     <string name="lbl_wiki">ויקי</string>
@@ -132,7 +131,6 @@
     <string name="lbl_queue">תור</string>
     <string name="lbl_artist_details">מעבר לאומן</string>
     <string name="lbl_shuffle_shortcut_short">ערבוב</string>
-    <string name="lbl_state_restored">המצב שוחזר</string>
     <string name="lbl_about">אודות</string>
     <string name="set_root_title">הגדרות</string>
     <string name="set_theme_auto">אוטומטי</string>
@@ -166,13 +164,10 @@
     <string name="lbl_rename_playlist">שינוי שם רשימת השמעה</string>
     <string name="lbl_confirm_delete_playlist">למחוק את רשימת ההשמעה\?</string>
     <string name="lbl_edit">עריכה</string>
-    <string name="err_did_not_wipe">לא ניתן לנקות את המצב</string>
     <string name="clr_orange">כתום</string>
     <string name="set_dirs">תיקיות מוזיקה</string>
     <string name="set_reindex_desc">טעינה מחדש של ספריית המוזיקה, במידה וניתן ייעשה שימוש בתגיות מהמטמון</string>
     <string name="set_rescan">סריקת מוסיקה מחדש</string>
-    <string name="set_save_state">שמירת מצב הנגינה</string>
-    <string name="err_did_not_save">לא ניתן לשמור את המצב</string>
     <string name="err_no_perms">‏ Auxio צריך הרשאות על מנת לקרוא את ספריית המוזיקה שלך</string>
     <string name="desc_queue_bar">פתיחת התור</string>
     <string name="fmt_lib_total_duration">משך כולל: %s</string>
@@ -181,9 +176,7 @@
     <string name="fmt_lib_song_count">שירים טעונים: %d</string>
     <string name="fmt_lib_album_count">אלבומים טעונים: %d</string>
     <string name="fmt_lib_genre_count">ז\'אנרים טעונים: %d</string>
-    <string name="lbl_state_wiped">המצב נוקה</string>
     <string name="set_library">ספריה</string>
-    <string name="set_save_desc">שמירת מצב הנגינה הנוכחי כעת</string>
     <string name="err_no_app">לא נמצא יישום שיכול לטפל במשימה זו</string>
     <string name="err_no_dirs">אין תיקיות</string>
     <string name="err_bad_dir">תיקייה זו אינה נתמכת</string>
@@ -221,7 +214,6 @@
     <string name="err_no_music">לא נמצאה מוזיקה</string>
     <string name="err_index_failed">אירע כשל בטעינה מוזיקה</string>
     <string name="desc_no_cover">עטיפת אלבום</string>
-    <string name="set_wipe_state">ניקוי מצב הנגינה</string>
     <plurals name="fmt_song_count">
         <item quantity="one">שיר אחד</item>
         <item quantity="two">שני שירים</item>
@@ -241,9 +233,7 @@
     <string name="desc_playlist_image">תמונת רשימת השמעה עבור %s</string>
     <string name="clr_red">אדום</string>
     <string name="clr_green">ירוק</string>
-    <string name="err_did_not_restore">לא ניתן לשחזר את המצב</string>
     <string name="desc_track_number">רצועה %d</string>
-    <string name="desc_new_playlist">יצירת רשימת השמעה חדשה</string>
     <string name="desc_exit">עצירת הנגינה</string>
     <string name="desc_remove_song">הסרת שיר זה</string>
     <string name="lbl_share">שיתוף</string>
@@ -261,7 +251,6 @@
     <string name="lbl_parent_detail">הצגה</string>
     <string name="set_square_covers">הכרחת עטיפות אלבום מרובעות</string>
     <string name="set_rescan_desc">ריקון מטמון התגיות וטעינת ספריית המוזיקה מחדש במלואה (איטי יותר, אך יותר שלם)</string>
-    <string name="set_wipe_desc">ניקוי מצב הנגינה הקודם שנשמר (אם קיים)</string>
     <string name="lbl_sort_mode">מיון על פי</string>
     <string name="lbl_sort_direction">כיוון</string>
     <string name="set_square_covers_desc">חיתוך כל עטיפות האלבומים ליחס של 1:1</string>
@@ -270,7 +259,6 @@
     <string name="lbl_appears_on">מופיע~ה ב-</string>
     <string name="set_play_song_by_itself">ניגון השיר בלבד</string>
     <string name="set_pre_amp_warning">אזהרה: שינוי המגבר לערך חיובי גבוה עלול לגרום לעיוות (דיסטורשן) בחלק מרצועות האודיו.</string>
-    <string name="set_restore_state">שחזור מצב נגינה</string>
     <string name="clr_indigo">אינדיגו</string>
     <string name="cdc_mp3">אודיו MPEG-1</string>
     <string name="cdc_mp4">אודיו MPEG-4</string>
@@ -279,7 +267,6 @@
     <string name="clr_teal">טורקיז</string>
     <string name="clr_brown">חום</string>
     <string name="fmt_selected">%d נבחרו</string>
-    <string name="set_state">התמדה</string>
     <string name="lbl_show_error_info">עוד</string>
     <string name="lbl_selection">בחירה</string>
     <string name="lbl_error_info">מידע על השגיאה</string>
@@ -293,7 +280,6 @@
     <string name="fmt_sample_rate">%d הרץ (Hz)</string>
     <string name="fmt_bitrate">%d קילוביטים לשנייה (kbps)</string>
     <string name="lbl_copied">מועתק</string>
-    <string name="set_restore_desc">שחזור מצב הנגינה שנשמר קודם (אם קיים)</string>
     <string name="cdc_mka">אודיו Matroska</string>
     <string name="cdc_aac">קידוד אודיו מתקדם (AAC)</string>
     <string name="fmt_list">%1$s, %2$s</string>

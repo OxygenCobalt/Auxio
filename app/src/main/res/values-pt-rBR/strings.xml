@@ -110,7 +110,6 @@
     <string name="lbl_size">Tamanho</string>
     <string name="lbl_bitrate">Taxa de bits</string>
     <string name="lbl_sample_rate">Taxa de amostragem</string>
-    <string name="lbl_state_saved">Lista salva</string>
     <string name="set_lib_tabs_desc">Altere a ordem e visibilidade das abas da biblioteca</string>
     <string name="set_black_mode">Tema Amoled</string>
     <string name="set_black_mode_desc">Use um tema Amoled</string>
@@ -118,7 +117,6 @@
     <string name="set_keep_shuffle_desc">Deixa o modo aleatório ativo ao reproduzir uma nova música</string>
     <string name="set_repeat_pause">Pausar ao repetir</string>
     <string name="set_repeat_pause_desc">Pausar quando uma música se repete</string>
-    <string name="set_save_desc">Salva a lista de reprodução atual</string>
     <string name="desc_skip_prev">Pular para a música anterior</string>
     <string name="desc_change_repeat">Alterar o modo de repetição</string>
     <string name="desc_shuffle_all">Aleatorizar todas das músicas</string>
@@ -182,28 +180,20 @@
     <string name="set_lib_tabs">Abas da biblioteca</string>
     <string name="lbl_genre">Gênero</string>
     <string name="set_play_song_from_artist">Reproduzir do artista</string>
-    <string name="set_restore_desc">Restaura a lista de reprodução salva anteriormente (se houver)</string>
     <string name="set_pre_amp_with">Ajuste em faixas com metadados</string>
-    <string name="lbl_state_wiped">Lista limpa</string>
-    <string name="lbl_state_restored">Lista restaurada</string>
     <string name="lbl_indexer">Carregando música</string>
     <string name="lbl_indexing">Carregando música</string>
     <string name="lbl_observing">Monitorando a biblioteca de músicas</string>
     <string name="set_round_mode">Cantos arredondados</string>
     <string name="set_action_mode_next">Pular para o próximo</string>
     <string name="set_play_song_from_album">Reproduzir do álbum</string>
-    <string name="set_save_state">Salvar lista de reprodução</string>
-    <string name="set_wipe_state">Limpar lista de reprodução</string>
-    <string name="set_restore_state">Restaurar lista de reprodução</string>
     <string name="lng_widget">Visualize e controle a reprodução de música</string>
     <string name="set_bar_action">Ação personalizada na barra de reprodução</string>
     <string name="set_action_mode_repeat">Modo de repetição</string>
-    <string name="set_wipe_desc">Limpa a lista de reprodução salva anteriormente (se houver)</string>
     <string name="lbl_eps">EPs</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_singles">Singles</string>
     <string name="lbl_single">Single</string>
-    <string name="err_did_not_restore">Nenhuma lista pode ser restaurada</string>
     <string name="lbl_compilations">Compilações</string>
     <string name="lbl_compilation">Compilação</string>
     <string name="lbl_single_remix">Single remix</string>
@@ -247,8 +237,6 @@
     </plurals>
     <string name="set_rescan">Re-escanear músicas</string>
     <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de música (lento, porém mais completo)</string>
-    <string name="err_did_not_wipe">Não foi possível limpar a lista</string>
-    <string name="err_did_not_save">Não foi possível salvar a lista</string>
     <string name="set_hide_collaborators">Ocultar artistas colaboradores</string>
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
     <string name="fmt_selected">%d Selecionadas</string>
@@ -265,7 +253,6 @@
     <string name="set_content_desc">Controle como as músicas e imagens são carregadas</string>
     <string name="set_replay_gain">Normalização de volume</string>
     <string name="set_library">Biblioteca</string>
-    <string name="set_state">Persistência</string>
     <string name="set_behavior">Comportamento</string>
     <string name="set_dirs_list">Pastas</string>
     <string name="lbl_sort_dsc">Descendente</string>
@@ -287,7 +274,6 @@
     <string name="lbl_sort_mode">Organizar por</string>
     <string name="lbl_song">Música</string>
     <string name="lbl_confirm_delete_playlist">Apagar playlist\?</string>
-    <string name="desc_new_playlist">Criar uma nova playlist</string>
     <string name="lng_playlist_deleted">Playlist deletada</string>
     <string name="lbl_new_playlist">Nova playlist</string>
     <string name="lng_playlist_renamed">Playlist renomeada</string>

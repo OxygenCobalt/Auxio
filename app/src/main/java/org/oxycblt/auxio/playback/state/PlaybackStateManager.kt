@@ -346,7 +346,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val rawQueue: RawQueue
     )
 
-    private val listeners = mutableListOf<PlaybackStateManager.Listener>()
+    private val listeners = mutableListOf<Listener>()
 
     @Volatile
     private var stateMirror =
@@ -387,7 +387,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         get() = stateHolder?.audioSessionId
 
     @Synchronized
-    override fun addListener(listener: PlaybackStateManager.Listener) {
+    override fun addListener(listener: Listener) {
         logD("Adding $listener to listeners")
         listeners.add(listener)
 
@@ -401,7 +401,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     }
 
     @Synchronized
-    override fun removeListener(listener: PlaybackStateManager.Listener) {
+    override fun removeListener(listener: Listener) {
         logD("Removing $listener from listeners")
         if (!listeners.remove(listener)) {
             logW("Listener $listener was not added prior, cannot remove")

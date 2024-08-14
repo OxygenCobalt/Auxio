@@ -32,7 +32,6 @@
     <string name="lng_queue_added">Accodato</string>
     <string name="lbl_artist_details">Vai all\'artista</string>
     <string name="lbl_album_details">Vai all\'album</string>
-    <string name="lbl_state_saved">Stato salvato</string>
     <string name="lbl_add">Aggiungi</string>
     <string name="lbl_save">Salva</string>
     <string name="err_no_dirs">Nessuna cartella</string>
@@ -74,8 +73,6 @@
     <string name="set_repeat_pause">Pausa alla ripetizione</string>
     <string name="set_repeat_pause_desc">Pausa quando un brano si ripete</string>
     <string name="set_content">Contenuti</string>
-    <string name="set_save_state">Salva stato riproduzione</string>
-    <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
     <string name="set_reindex">Aggiorna musica</string>
     <string name="set_reindex_desc">Ricarica la libreria musicale, usando i tag nella cache quando possibile</string>
     <!-- Error Namespace | Error Labels -->
@@ -190,12 +187,8 @@
     <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (richiede notifica persistente)</string>
     <string name="lbl_indexing">Caricamento musica</string>
     <string name="lbl_observing">Monitoraggio libreria musicale</string>
-    <string name="lbl_state_restored">Stato ripristinato</string>
     <string name="lbl_date_added">Data aggiunta</string>
     <string name="set_observing">Ricaricamento automatico</string>
-    <string name="set_restore_state">Ripristina stato riproduzione</string>
-    <string name="set_restore_desc">Ripristina lo stato di riproduzione precedentemente salvato (se disponibile)</string>
-    <string name="err_did_not_restore">Impossibile ripristinare lo stato</string>
     <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_singles">Singoli</string>
@@ -214,12 +207,9 @@
     <string name="lbl_single_remix">Singolo remix</string>
     <string name="lbl_compilations">Raccolte</string>
     <string name="lbl_soundtrack">Colonna sonora</string>
-    <string name="set_wipe_desc">Ripristina lo stato di riproduzione precedentemente salvato (se presente)</string>
-    <string name="set_wipe_state">Ripristina stato riproduzione</string>
     <string name="lbl_equalizer">Equalizzatore</string>
     <string name="desc_queue_bar">Apri la coda</string>
     <string name="lbl_genre">Genere</string>
-    <string name="lbl_state_wiped">Stato ripristinato</string>
     <string name="set_bar_action">Azione personalizzata barra di riproduzione</string>
     <string name="set_action_mode_next">Vai alla prossima</string>
     <string name="set_action_mode_repeat">Modalità ripetizione</string>
@@ -250,9 +240,7 @@
         <item quantity="other">%d artisti</item>
     </plurals>
     <string name="set_rescan">Riscansiona musica</string>
-    <string name="err_did_not_save">Impossibile salvare</string>
     <string name="set_rescan_desc">Svuota la cache dei tag e ricarica completamente la libreria musicale (più lento, ma più completo)</string>
-    <string name="err_did_not_wipe">Impossibile svuotare</string>
     <string name="fmt_selected">%d selezionati</string>
     <string name="set_play_song_from_genre">Riproduci dal genere</string>
     <string name="lbl_wiki">Wiki</string>
@@ -267,7 +255,6 @@
     <string name="set_content_desc">Controlla come vengono caricate musica e immagini</string>
     <string name="set_replay_gain">Normalizzazione del volume</string>
     <string name="set_playback">Riproduzione</string>
-    <string name="set_state">Persistenza</string>
     <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
     <string name="set_audio_desc">Configura comportamento di suono e riproduzione</string>
     <string name="lbl_sort_dsc">Discendente</string>
@@ -275,7 +262,6 @@
     <string name="lbl_playlists">Playlist</string>
     <string name="set_intelligent_sorting">Ordinazione intelligente</string>
     <string name="set_intelligent_sorting_desc">Ordina correttamente i nomi che iniziano con numeri o parole come \"the\" (funziona meglio con i titoli in inglese)</string>
-    <string name="desc_new_playlist">Crea una nuova playlist</string>
     <string name="desc_playlist_image">Immagine della playlist per %s</string>
     <string name="lbl_new_playlist">Nuova playlist</string>
     <string name="lbl_playlist_add">Aggiungi a playlist</string>

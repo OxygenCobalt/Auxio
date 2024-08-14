@@ -43,24 +43,25 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        handleIntent(intent)
+        start(intent)
         return super.onBind(intent)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // TODO: Start command occurring from a foreign service basically implies a detached
         //  service, we might need more handling here.
-        handleIntent(intent)
+        start(intent)
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun handleIntent(intent: Intent?) {
+    private fun start(intent: Intent?) {
         val nativeStart = intent?.getBooleanExtra(INTENT_KEY_NATIVE_START, false) ?: false
         if (!nativeStart) {
             // Some foreign code started us, no guarantees about foreground stability. Figure
             // out what to do.
             mediaSessionFragment.handleNonNativeStart()
         }
+        indexingFragment.start()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {

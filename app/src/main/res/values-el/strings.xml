@@ -118,14 +118,6 @@
     <string name="lbl_sample_rate">Pυθμός δειγματοληψίας</string>
     <string name="lng_indexing">Φόρτωση της μουσικής συλλογής σας…</string>
     <string name="lbl_observing">Παρακολούθηση της μουσικής συλλογής σας</string>
-    <string name="lbl_state_saved">Η κατάσταση αναπαραγωγής αποθηκεύτηκε</string>
-    <string name="set_wipe_state">Εκκαθάριση κατάστασης αναπαραγωγής</string>
-    <string name="set_wipe_desc">Εκκαθάριση της προηγούμενης αποθηκευμένης κατάστασης αναπαραγωγής (αν υπάρχει)</string>
-    <string name="lbl_state_wiped">Η κατάσταση αναπαραγωγής εκκαθαρίστηκε</string>
-    <string name="lbl_state_restored">Η κατάσταση αναπαραγωγής επαναφέρθηκε</string>
-    <string name="set_save_state">Αποθήκευση κατάστασης αναπαραγωγής</string>
-    <string name="set_save_desc">Αποθήκευση της τωρινής κατάστασης αναπαραγωγής τώρα</string>
-    <string name="set_restore_state">Αποκατάσταση κατάσταση αναπαραγωγής</string>
     <string name="set_reindex">Επαναφόρτωση μουσικής</string>
     <string name="lbl_soundtrack">Σάουντρακ</string>
     <string name="lbl_live_group">Ζωντανά</string>

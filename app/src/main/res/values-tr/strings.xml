@@ -77,7 +77,6 @@
     <string name="lbl_album">Albüm</string>
     <string name="lbl_date">Yıl</string>
     <string name="lbl_duration">Süre</string>
-    <string name="lbl_state_saved">Durum kaydedildi</string>
     <string name="lbl_author_name">Alexander Capehart tarafından geliştirildi</string>
     <string name="set_black_mode">Siyah tema</string>
     <string name="lbl_library_counts">Kitaplık istatistikleri</string>
@@ -145,8 +144,6 @@
     <string name="set_rewind_prev_desc">Önceki şarkıya atlamadan önce geri sar</string>
     <string name="set_repeat_pause_desc">Bir şarkı tekrarlandığında duraklat</string>
     <string name="set_content">İçerik</string>
-    <string name="set_save_state">Çalma durumunu kaydet</string>
-    <string name="set_save_desc">Mevcut çalma durumunu şimdi kaydet</string>
     <string name="set_keep_shuffle">Karıştırmayı hatırla</string>
     <string name="set_keep_shuffle_desc">Yeni bir şarkı çalarken karışık çalmayı açık tut</string>
     <string name="set_reindex">Müziği yenile</string>
@@ -176,11 +173,7 @@
     <string name="clr_cyan">Camgöbeği</string>
     <string name="clr_teal">Deniz mavisi</string>
     <string name="set_round_mode_desc">Ek arayüz öğelerinde yuvarlatılmış köşeleri etkinleştirir (Albüm kapaklarının yuvarlatılmış olmasını gerektirir)</string>
-    <string name="lbl_state_restored">Durum geri yüklendi</string>
-    <string name="set_restore_desc">Önceden kayıtlı çalma durumunu geri getir (varsa)</string>
     <string name="set_round_mode">Yuvarlak mod</string>
-    <string name="set_restore_state">Çalma durumunu eski haline getir</string>
-    <string name="err_did_not_restore">Durum geri getirelemedi</string>
     <string name="set_repeat_pause">Tekrarda duraklat</string>
     <string name="lbl_indexing">Müzik yükleniyor</string>
     <string name="lbl_observing">Müzik kitaplığı denetleniyor</string>
@@ -209,7 +202,6 @@
     <string name="lbl_eps">EP\'ler</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_mixtapes">Karışık kasetler</string>
-    <string name="lbl_state_wiped">Durum temizlendi</string>
     <string name="lbl_remix_group">Remiksler</string>
     <string name="lbl_soundtracks">Film Müzikleri</string>
     <string name="lbl_soundtrack">Film Müziği</string>
@@ -219,8 +211,6 @@
     <string name="set_cover_mode">Albüm kapakları</string>
     <string name="set_cover_mode_off">Kapalı</string>
     <string name="set_cover_mode_media_store">Hızlı</string>
-    <string name="set_wipe_state">Çalma durumunu temizle</string>
-    <string name="set_wipe_desc">Önceki kayıtlı çalma durumunu temizle (varsa)</string>
     <string name="fmt_selected">%d Seçili</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d sanatçı</item>
@@ -235,7 +225,6 @@
     <string name="set_separators_semicolon">Noktalı virgül (;)</string>
     <string name="set_separators_plus">Artı (+)</string>
     <string name="set_separators_and">Ve (&amp;)</string>
-    <string name="err_did_not_save">Durum kaydedilemedi</string>
     <string name="desc_exit">Çalmayı durdur</string>
     <string name="lbl_wiki">Viki</string>
     <string name="set_rescan">Müzikleri yeniden tara</string>
@@ -248,7 +237,6 @@
     <string name="set_exclude_non_music_desc">Podcast\'ler gibi müzik olmayan ses dosyalarını yok say</string>
     <string name="set_separators_warning">Uyarı: Bu ayarın kullanılması bazı etiketlerin yanlışlıkla birden fazla değere sahip olarak yorumlanmasına neden olabilir. Bunu, istenmeyen ayırıcı karakterlerin önüne ters eğik çizgi (\\) koyarak çözebilirsiniz.</string>
     <string name="set_exclude_non_music">Müzik olmayanları hariç tut</string>
-    <string name="err_did_not_wipe">Durum temizlenemedi</string>
     <string name="set_replay_gain_mode">ReplayGain stratejisi</string>
     <string name="desc_song_handle">Bu şarkıyı kuyrukta taşı</string>
     <string name="fmt_list">%1$s, %2$s</string>
@@ -258,7 +246,6 @@
     <string name="set_audio_desc">Sesi ve oynatma davranışını yapılandırın</string>
     <string name="set_playback">Oynatma</string>
     <string name="set_library">Kütüphane</string>
-    <string name="set_state">Kalıcılık</string>
     <string name="lbl_sort_dsc">Azalan</string>
     <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
     <string name="set_dirs_list">Klasörler</string>
@@ -270,7 +257,6 @@
     <string name="lbl_playlists">çalma listeleri</string>
     <string name="set_intelligent_sorting">Sıralama yaparken makaleleri yoksay</string>
     <string name="set_intelligent_sorting_desc">Ada göre sıralarken \"the\" gibi kelimeleri yok sayın (en iyi ingilizce müzikle çalışır)</string>
-    <string name="desc_new_playlist">Yeni bir oynatma listesi oluştur</string>
     <string name="lbl_new_playlist">Yeni Oynatma Listesi</string>
     <string name="lbl_delete">Sil</string>
     <string name="lbl_rename">Yeniden Adlandır</string>

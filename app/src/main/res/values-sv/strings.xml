@@ -60,7 +60,6 @@
     <string name="lbl_ok">Okej</string>
     <string name="lbl_cancel">Avbryt</string>
     <string name="lbl_save">Spara</string>
-    <string name="lbl_state_restored">Tillstånd återställt</string>
     <string name="lbl_about">Om</string>
     <string name="lbl_code">Källkod</string>
     <string name="lbl_wiki">Wiki</string>
@@ -99,10 +98,8 @@
     <string name="lbl_sort">Sortera</string>
     <string name="lbl_queue_add">Lägg till i kö</string>
     <string name="lbl_add">Lägg till</string>
-    <string name="lbl_state_wiped">Tillstånd togs bort</string>
     <string name="lbl_bitrate">Överföringskapacitet</string>
     <string name="lbl_reset">Återställ</string>
-    <string name="lbl_state_saved">Tillstånd sparat</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_library_counts">Bibliotekstatistik</string>
     <string name="lng_playlist_renamed">Bytt namn på spellista</string>
@@ -165,8 +162,6 @@
     <string name="set_audio_desc">Konfigurera ljud- och uppspelningsbeteende</string>
     <string name="set_rewind_prev">Spola tillbaka innan spår hoppar tillbaka</string>
     <string name="set_replay_gain_mode">ReplayGain-strategi</string>
-    <string name="set_wipe_desc">Rensa det tidigare sparade uppspelningsläget om det finns</string>
-    <string name="set_restore_state">Återställ uppspelningsläge</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_deletion_info">Ta bort %s? Detta kan inte ångras.</string>
     <string name="set_hide_collaborators_desc">Endast visa artister som är direkt krediterade på ett album (funkar bäst på välmärkta bibliotek)</string>
@@ -176,10 +171,6 @@
     <string name="set_dirs_mode_include">Inkludera</string>
     <string name="set_reindex">Uppdatera musik</string>
     <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade taggar</string>
-    <string name="set_state">Persistens</string>
-    <string name="set_wipe_state">Rensa uppspelningsläge</string>
-    <string name="set_restore_desc">Återställ det tidigare lagrade uppspelningsläget om det finns</string>
-    <string name="err_did_not_save">Misslyckades att spara uppspelningsläget</string>
     <string name="desc_shuffle_all">Blanda alla låtar</string>
     <string name="desc_clear_search">Rensa sökfrågan</string>
     <string name="desc_music_dir_delete">Ta bort mapp</string>
@@ -214,7 +205,6 @@
     <string name="set_dirs_mode">Modus</string>
     <string name="set_dirs_mode_exclude">Utesluta</string>
     <string name="set_dirs_mode_include_desc">Musik laddas <b>endast</b> från mapparna som ni lägger till.</string>
-    <string name="set_save_desc">Spara aktuellt uppspelningsläge</string>
     <string name="set_rescan">Skanna om musik</string>
     <string name="set_rescan_desc">Rensa tagbiblioteket och ladda komplett om musikbiblioteket (långsammare, men mer komplett)</string>
     <string name="err_no_music">Ingen musik på gång</string>
@@ -222,7 +212,6 @@
     <string name="err_no_perms">Auxio måste ges behörighet för att läsa in ditt musikbibliotek</string>
     <string name="err_no_app">Ingen lämplig app kunde hittas</string>
     <string name="err_bad_dir">Denna mapp stöds inte</string>
-    <string name="err_did_not_restore">Misslyckades att återställa uppspelningsläget</string>
     <string name="desc_track_number">Spår %d</string>
     <string name="desc_play_pause">Spela eller pausa</string>
     <string name="desc_song_handle">Flytta detta spår</string>
@@ -262,8 +251,6 @@
     <string name="set_rewind_prev_desc">Spola tillbaka innan att hoppa till föregående låt</string>
     <string name="set_pre_amp_with">Justering med taggar</string>
     <string name="err_no_dirs">Inga mappar</string>
-    <string name="err_did_not_wipe">Misslyckades att rensa uppspelningsläget</string>
-    <string name="desc_new_playlist">Skapa en ny spellista</string>
     <string name="desc_exit">Stoppa uppspelning</string>
     <string name="desc_remove_song">Ta bort låt</string>
     <string name="desc_auxio_icon">Auxio-ikon</string>
@@ -273,7 +260,6 @@
     <string name="clr_deep_purple">Mörklila</string>
     <string name="clr_indigo">Indigo</string>
     <string name="fmt_disc_no">Skiva %d</string>
-    <string name="set_save_state">Spara uppspelningsläge</string>
     <string name="desc_skip_next">Hoppa till nästa låt</string>
     <string name="desc_skip_prev">Hoppa till sista låt</string>
     <string name="desc_change_repeat">Ändra upprepningsläge</string>

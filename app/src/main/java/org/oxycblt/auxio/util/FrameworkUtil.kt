@@ -41,7 +41,6 @@ import androidx.core.view.children
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.MaterialToolbar
 import java.lang.IllegalArgumentException
@@ -133,12 +132,6 @@ fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
         }
     }
 }
-
-/**
- * Compute if this [RecyclerView] can scroll through their items, or if the items can all fit on one
- * screen.
- */
-fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
 
 /**
  * Shortcut to easily set up a [GridLayoutManager.SpanSizeLookup].

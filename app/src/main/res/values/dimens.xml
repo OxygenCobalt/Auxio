@@ -8,12 +8,10 @@
     <dimen name="spacing_mid_large">20dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_mid_huge">28dp</dimen>
-    <dimen name="spacing_huge">32dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_touchable_small">48dp</dimen>
     <dimen name="size_touchable_medium">56dp</dimen>
-    <dimen name="size_touchable_mid_large">60dp</dimen>
     <dimen name="size_touchable_large">64dp</dimen>
     <dimen name="size_touchable_mid_huge">76dp</dimen>
     <dimen name="size_touchable_huge">80dp</dimen>

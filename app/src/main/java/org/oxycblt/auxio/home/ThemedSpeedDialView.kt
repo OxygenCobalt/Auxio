@@ -85,7 +85,7 @@ class ThemedSpeedDialView : SpeedDialView {
             context, MR.attr.motionEasingStandardInterpolator, FastOutSlowInInterpolator())
 
     private val matDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium2, 300)
+        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium2, 350)
 
     init {
         // Work around ripple bug on Android 12 when useCompatPadding = true.
@@ -300,7 +300,7 @@ class ThemedSpeedDialView : SpeedDialView {
 
         private val DRAWABLE_PROPERTY_LEVEL =
             object : Property<Drawable, Int>(Int::class.java, "level") {
-                override fun get(drawable: Drawable): Int? = drawable.level
+                override fun get(drawable: Drawable): Int = drawable.level
 
                 override fun set(drawable: Drawable, value: Int?) {
                     drawable.level = value!!

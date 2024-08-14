@@ -72,11 +72,17 @@ constructor(
 
     fun release() {
         contentObserver.release()
-        musicSettings.registerListener(this)
-        musicRepository.addIndexingListener(this)
-        musicRepository.addUpdateListener(this)
+        musicRepository.unregisterWorker(this)
         musicRepository.removeIndexingListener(this)
+        musicRepository.removeUpdateListener(this)
+        musicSettings.unregisterListener(this)
         foregroundListener = null
+    }
+
+    fun start() {
+        if (musicRepository.indexingState == null) {
+            requestIndex(true)
+        }
     }
 
     fun createNotification(post: (IndexerNotification?) -> Unit) {

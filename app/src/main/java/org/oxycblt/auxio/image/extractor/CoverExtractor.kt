@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.image.extractor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -72,8 +73,8 @@ constructor(
      * @param covers The [Cover]s to load.
      * @param size The [Size] of the image to load.
      * @return If four distinct album covers could be extracted from the [Song]s, a [DrawableResult]
-     *   will be returned of a mosaic composed of four album covers ordered by
-     *   [computeCoverOrdering]. Otherwise, a [SourceResult] of one album cover will be returned.
+     *   will be returned of a mosaic composed of the first four loaded album covers. Otherwise, a
+     *   [SourceResult] of one album cover will be returned.
      */
     suspend fun extract(covers: Collection<Cover>, size: Size): FetchResult? {
         val streams = mutableListOf<InputStream>()
@@ -190,9 +191,11 @@ constructor(
         return findCoverDataInMetadata(metadata)
     }
 
+    @SuppressLint("Recycle")
     private suspend fun extractMediaStoreCover(cover: Cover) =
         // Eliminate any chance that this blocking call might mess up the loading process
         withContext(Dispatchers.IO) {
+            // Coil will recycle this InputStream, so we don't need to worry about it.
             context.contentResolver.openInputStream(cover.mediaStoreCoverUri)
         }
 

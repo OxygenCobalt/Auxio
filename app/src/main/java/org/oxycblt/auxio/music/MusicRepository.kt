@@ -280,9 +280,6 @@ constructor(
         }
         logD("Registering worker $worker")
         indexingWorker = worker
-        if (indexingState == null) {
-            worker.requestIndex(true)
-        }
     }
 
     @Synchronized
