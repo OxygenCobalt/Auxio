@@ -9,7 +9,7 @@
     <string name="lbl_songs">Dalok</string>
     <string name="lbl_all_songs">Összes dal</string>
     <string name="lbl_search">Keresés</string>
-    <string name="lbl_filter">Szűrő</string>
+    <string name="lbl_filter">Szűrés</string>
     <string name="lbl_filter_all">Összes</string>
     <string name="lbl_sort">Rendezés</string>
     <string name="lbl_sort_asc">Növekvő</string>
@@ -45,7 +45,7 @@
     <string name="desc_play_pause">Lejátszás/szünet</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Vörös</string>
-    <string name="clr_pink">Pink</string>
+    <string name="clr_pink">Rózsaszín</string>
     <string name="clr_purple">Bíbor</string>
     <string name="clr_deep_purple">Mély bíbor</string>
     <string name="clr_indigo">Indigókék</string>
@@ -62,11 +62,11 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
         <item quantity="one">%d dal</item>
-        <item quantity="other">%d dal</item>
+        <item quantity="other">%d dalok</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d album</item>
-        <item quantity="other">%d album</item>
+        <item quantity="other">%d albumok</item>
     </plurals>
     <string name="lbl_eps">EP-k</string>
     <string name="lbl_ep">EP</string>
@@ -82,7 +82,7 @@
     <string name="desc_change_repeat">Ismétlő mód módosítása</string>
     <string name="desc_shuffle">Keverés be/ki kapcsolása</string>
     <string name="desc_album_cover">%s album borítója</string>
-    <string name="set_replay_gain">Visszajátszás</string>
+    <string name="set_replay_gain">Hangerő normalizálás</string>
     <string name="desc_music_dir_delete">Mappa eltávolítása</string>
     <string name="lbl_playlist_add">Lejátszólistához ad</string>
     <string name="lbl_format">Formátum</string>
@@ -230,7 +230,7 @@
     <string name="set_separators_slash">Per jel (/)</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d előadó</item>
-        <item quantity="other">%d előadó</item>
+        <item quantity="other">%d előadók</item>
     </plurals>
     <string name="lbl_equalizer">Ekvalizer</string>
     <string name="lbl_library_counts">Könyvtár statisztika</string>
@@ -289,4 +289,31 @@
     <string name="lbl_copied">Másolva</string>
     <string name="lbl_report">Jelentés</string>
     <string name="lbl_error_info">Hiba információ</string>
+    <string name="set_replay_gain_mode_off">Ki</string>
+    <string name="lbl_imported_playlist">Importált lejátszási lista</string>
+    <string name="lng_playlist_exported">Lejátszási lista exportálva</string>
+    <string name="lbl_demo">Demó</string>
+    <string name="lbl_replaygain_track">ReplayGain Track módosítása</string>
+    <string name="lbl_replaygain_album">ReplayGain Album módosítása</string>
+    <string name="lbl_author">Szerző</string>
+    <string name="lbl_donate">Adományozás</string>
+    <string name="lbl_supporters">Támogatók</string>
+    <string name="lng_supporters_promo">Adományozzon a projektnek, hogy itt legyen a neved!</string>
+    <string name="set_remember_pause">Szünet megjegyzése</string>
+    <string name="set_remember_pause_desc">A lejátszás/szünet megmarad a várólista kihagyásakor vagy szerkesztésekor</string>
+    <string name="lbl_path">Cím</string>
+    <string name="def_album_count">Nincsenek albumok</string>
+    <string name="lbl_export_playlist">Lejátszási lista exportálása</string>
+    <string name="lbl_windows_paths">Használja a Windows-kompatibilis útvonalakat</string>
+    <string name="lbl_path_style">Path stílus</string>
+    <string name="lbl_export">Export</string>
+    <string name="lbl_import">Import</string>
+    <string name="lbl_import_playlist">Lejátszási lista importálása</string>
+    <string name="lbl_demos">Demók</string>
+    <string name="lbl_empty_playlist">Üres lejátszási lista</string>
+    <string name="lbl_path_style_absolute">Abszolút</string>
+    <string name="lbl_path_style_relative">Relatív</string>
+    <string name="lng_playlist_imported">Lejátszási lista importálva</string>
+    <string name="err_import_failed">Nem sikerült importálni a lejátszási listát ebből a fájlból</string>
+    <string name="err_export_failed">Nem sikerült exportálni a lejátszási listát ebbe a fájlba</string>
 </resources>
