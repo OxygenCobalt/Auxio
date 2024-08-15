@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.5.3
+
+#### What's Improved
+- Added support for informal singular-spaced tags like `album artist` in
+file metadata
+
+#### What's Fixed
+- Fix "Foregroud not allowed" music loading crash from starting too early
+- Fixed widget not loading on some devices due to the cover being too large
+
 ## 3.5.2
 
 #### What's Fixed
