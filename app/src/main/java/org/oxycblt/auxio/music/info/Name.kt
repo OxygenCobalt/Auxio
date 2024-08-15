@@ -70,9 +70,10 @@ sealed interface Name : Comparable<Name> {
         final override fun compareTo(other: Name) =
             when (other) {
                 is Known -> {
-                    val result = sortTokens.zip(other.sortTokens).fold(0) { acc, (token, otherToken) ->
-                        acc.takeIf { it != 0 } ?: token.compareTo(otherToken)
-                    }
+                    val result =
+                        sortTokens.zip(other.sortTokens).fold(0) { acc, (token, otherToken) ->
+                            acc.takeIf { it != 0 } ?: token.compareTo(otherToken)
+                        }
                     if (result != 0) result else sortTokens.size.compareTo(other.sortTokens.size)
                 }
                 is Unknown -> 1
