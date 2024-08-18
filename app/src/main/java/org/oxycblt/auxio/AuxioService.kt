@@ -55,13 +55,9 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
     }
 
     private fun onHandleForeground(intent: Intent?) {
-        val nativeStart = intent?.getBooleanExtra(INTENT_KEY_NATIVE_START, false) ?: false
+        val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
         indexingFragment.start()
-        if (!nativeStart) {
-            // Some foreign code started us, no guarantees about foreground stability. Figure
-            // out what to do.
-            mediaSessionFragment.handleNonNativeStart()
-        }
+        mediaSessionFragment.start(startId)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -87,6 +83,7 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
             if (change == ForegroundListener.Change.MEDIA_SESSION) {
                 mediaSessionFragment.createNotification {
                     startForeground(it.notificationId, it.notification)
+                    isForeground = true
                 }
             }
             // Nothing changed, but don't show anything music related since we can always
@@ -95,16 +92,21 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
             indexingFragment.createNotification {
                 if (it != null) {
                     startForeground(it.code, it.build())
+                    isForeground = true
                 } else {
                     ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+                    isForeground = false
                 }
             }
         }
     }
 
     companion object {
+        var isForeground = false
+            private set
+
         // This is only meant for Auxio to internally ensure that it's state management will work.
-        const val INTENT_KEY_NATIVE_START = BuildConfig.APPLICATION_ID + ".service.NATIVE_START"
+        const val INTENT_KEY_START_ID = BuildConfig.APPLICATION_ID + ".service.START_ID"
     }
 }
 

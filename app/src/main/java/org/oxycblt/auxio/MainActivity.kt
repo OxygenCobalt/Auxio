@@ -71,11 +71,11 @@ class MainActivity : AppCompatActivity() {
 
         startService(
             Intent(this, AuxioService::class.java)
-                .putExtra(AuxioService.INTENT_KEY_NATIVE_START, true))
+                .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_ACTIVITY))
 
         if (!startIntentAction(intent)) {
             // No intent action to do, just restore the previously saved state.
-            playbackModel.playDeferred(DeferredPlayback.RestoreState)
+            playbackModel.playDeferred(DeferredPlayback.RestoreState(false))
         }
     }
 
