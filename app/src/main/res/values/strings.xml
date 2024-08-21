@@ -153,6 +153,7 @@
     <string name="lbl_shuffle_shortcut_short">Shuffle</string>
     <!-- Limit to 25 characters -->
     <string name="lbl_shuffle_shortcut_long">Shuffle all</string>
+    <string name="lbl_start_playback">Start playback</string>
 
     <string name="lbl_ok">OK</string>
     <string name="lbl_cancel">Cancel</string>

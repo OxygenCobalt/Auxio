@@ -140,7 +140,7 @@
             android:name=".tasker.ActivityConfigStartAction"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
-            android:label="My Tasker Action">
+            android:label="@string/lbl_start_playback">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
