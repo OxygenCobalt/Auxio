@@ -164,17 +164,17 @@ class ExoPlaybackStateHolder(
                 logD("Restoring playback state")
                 restoreScope.launch {
                     val state = persistenceRepository.readState()
-                    if (state != null) {
-                        // Apply the saved state on the main thread to prevent code expecting
-                        // state updates on the main thread from crashing.
-                        withContext(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
+                        if (state != null) {
+                            // Apply the saved state on the main thread to prevent code expecting
+                            // state updates on the main thread from crashing.
                             playbackManager.applySavedState(state, false)
                             if (action.play) {
                                 playbackManager.playing(true)
                             }
+                        } else if (action.fallback != null) {
+                            playbackManager.playDeferred(action.fallback)
                         }
-                    } else if (action.fallback != null) {
-                        playbackManager.playDeferred(action.fallback)
                     }
                 }
             }
