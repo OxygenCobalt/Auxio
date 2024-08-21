@@ -283,7 +283,6 @@
     <string name="lbl_parent_detail">Visualizar</string>
     <string name="lbl_song">Música</string>
     <string name="lbl_confirm_delete_playlist">Apagar lista de reprodução?</string>
-    <string name="lbl_confirm_delete_playlist">Eliminar lista de reprodução</string>
     <string name="lng_playlist_deleted">Lista de reprodução eliminada</string>
     <string name="lbl_report">Relatório</string>
     <string name="lbl_new_playlist">Nova lista de reprodução</string>
