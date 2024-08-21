@@ -32,6 +32,7 @@ import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResult
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultSucess
 import org.oxycblt.auxio.AuxioService
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 
 class StartActionHelper(config: TaskerPluginConfig<Unit>) :
     TaskerPluginConfigHelperNoOutputOrInput<StartActionRunner>(config) {
@@ -39,8 +40,7 @@ class StartActionHelper(config: TaskerPluginConfig<Unit>) :
         get() = StartActionRunner::class.java
 
     override fun addToStringBlurb(input: TaskerInput<Unit>, blurbBuilder: StringBuilder) {
-        blurbBuilder.append(
-            "Starts Auxio using the previously saved state. If no saved state is available, all songs will be shuffled. Playback will start immediately. Be careful controlling this service, if you close it and then try to use it again, you will probably crash the app.")
+        blurbBuilder.append(context.getString(R.string.lng_tasker_start))
     }
 }
 
