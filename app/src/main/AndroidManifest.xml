@@ -137,7 +137,7 @@
 
         <!-- Tasker 'start service' integration -->
         <activity
-            android:name=".ActivityConfigBasicAction"
+            android:name=".tasker.ActivityConfigStartAction"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:label="My Tasker Action">
