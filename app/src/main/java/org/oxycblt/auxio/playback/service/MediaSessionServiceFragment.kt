@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback.service
 import android.app.Notification
 import android.content.Context
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultActionFactory
@@ -49,10 +50,12 @@ import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.service.MediaItemBrowser
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
+import org.oxycblt.auxio.widgets.WidgetComponent
 
 class MediaSessionServiceFragment
 @Inject
@@ -60,6 +63,8 @@ constructor(
     @ApplicationContext private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val actionHandler: PlaybackActionHandler,
+    private val playbackSettings: PlaybackSettings,
+    private val widgetComponent: WidgetComponent,
     private val mediaItemBrowser: MediaItemBrowser,
     exoHolderFactory: ExoPlaybackStateHolder.Factory
 ) :
@@ -86,6 +91,7 @@ constructor(
             .also { it.setSmallIcon(R.drawable.ic_auxio_24) }
     private var foregroundListener: ForegroundListener? = null
 
+    lateinit var systemReceiver: SystemPlaybackReceiver
     lateinit var mediaSession: MediaLibrarySession
         private set
 
@@ -99,6 +105,10 @@ constructor(
         playbackManager.addListener(this)
         exoHolder.attach()
         actionHandler.attach(this)
+        systemReceiver = SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
+        ContextCompat.registerReceiver(
+            context, systemReceiver, systemReceiver.intentFilter, ContextCompat.RECEIVER_EXPORTED)
+        widgetComponent.attach()
         mediaItemBrowser.attach(this)
         return mediaSession
     }
@@ -142,6 +152,8 @@ constructor(
     fun release() {
         waitJob.cancel()
         mediaItemBrowser.release()
+        context.unregisterReceiver(systemReceiver)
+        widgetComponent.release()
         actionHandler.release()
         exoHolder.release()
         playbackManager.removeListener(this)

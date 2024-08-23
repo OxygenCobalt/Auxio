@@ -57,7 +57,7 @@ constructor(
 ) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
     private val widgetProvider = WidgetProvider()
 
-    init {
+    fun attach() {
         playbackManager.addListener(this)
         uiSettings.registerListener(this)
         imageSettings.registerListener(this)
@@ -90,7 +90,7 @@ constructor(
                         } else if (uiSettings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
                             logD("Using default corner radius")
-                            context.getDimenPixels(R.dimen.size_corners_medium)
+                            context.getDimenPixels(R.dimen.spacing_medium)
                         } else {
                             // User did not enable round mode.
                             logD("Using no corner radius")
