@@ -171,8 +171,8 @@
     <string name="lbl_soundtracks">Zvučni zapisi</string>
     <string name="lbl_search">Traži</string>
     <string name="lbl_filter_all">Sve</string>
-    <string name="lbl_queue_add">Dodaj u redoslijed izvođenja</string>
-    <string name="lng_queue_added">Dodano u popis pjesama</string>
+    <string name="lbl_queue_add">Dodaj u redoslijed</string>
+    <string name="lng_queue_added">Dodano u redoslijed</string>
     <string name="lbl_song_detail">Pogledaj svojstva</string>
     <string name="lbl_artist_details">Idi na izvođača</string>
     <string name="lbl_album_details">Idi na album</string>
@@ -197,7 +197,7 @@
     <string name="desc_change_repeat">Promijeni način ponavljanja</string>
     <string name="clr_purple">Ljubičasto</string>
     <string name="cdc_mka">Matroska Zvuk</string>
-    <string name="desc_queue_bar">Otvori popis pjesama</string>
+    <string name="desc_queue_bar">Otvori redoslijed</string>
     <string name="lbl_genre">Žanr</string>
     <string name="set_separators_comma">Zarez (,)</string>
     <string name="set_separators_and">Znak i (&amp;)</string>
@@ -310,6 +310,6 @@
     <string name="lbl_replaygain_track">Podešavanje normalizacije glasnoće pjesme</string>
     <string name="lbl_replaygain_album">Podešavanje normalizacije glasnoće albuma</string>
     <string name="set_remember_pause">Zapamti pauzu</string>
-    <string name="set_remember_pause_desc">Nastavi reprodukciju/pauziranje prilikom preskakanja ili uređivanja slijeda</string>
+    <string name="set_remember_pause_desc">Nastavi reprodukciju/pauziranje prilikom preskakanja ili uređivanja redoslijeda</string>
     <string name="set_replay_gain_mode_off">Isključeno</string>
 </resources>
