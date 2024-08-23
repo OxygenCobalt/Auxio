@@ -321,4 +321,8 @@
     <string name="set_remember_pause">Recordar la pausa</string>
     <string name="set_remember_pause_desc">Permanecer en reproducción/pausa al saltar o editar la cola</string>
     <string name="set_replay_gain_mode_off">Apagar</string>
+    <string name="lbl_start_playback">Iniciar reproducción</string>
+    <string name="lng_tasker_start">Inicia Auxio utilizando el estado previamente guardado. Si no hay ningún estado guardado, todas las canciones se reproducirán aleatoriamente. La reproducción comenzará inmediatamente.
+\n
+\nADVERTENCIA: Ten cuidado al controlar este servicio, si lo cierras y luego intentas usarlo de nuevo, probablemente se bloqueará la aplicación.</string>
 </resources>
