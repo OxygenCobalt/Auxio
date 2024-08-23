@@ -153,6 +153,7 @@
     <string name="lbl_shuffle_shortcut_short">Shuffle</string>
     <!-- Limit to 25 characters -->
     <string name="lbl_shuffle_shortcut_long">Shuffle all</string>
+    <string name="lbl_start_playback">Start playback</string>
 
     <string name="lbl_ok">OK</string>
     <string name="lbl_cancel">Cancel</string>
@@ -205,6 +206,10 @@
     <string name="lng_supporters_promo">Donate to the project to get your name added here!</string>
     <!-- As in music library -->
     <string name="lng_search_library">Search your library…</string>
+    <string name="lng_tasker_start">
+        Starts Auxio using the previously saved state. If no saved state is available, all songs will be shuffled. Playback will start immediately.
+        \n\nWARNING: Be careful controlling this service, if you close it and then try to use it again, you will probably crash the app.
+    </string>
 
     <!-- Settings namespace | Settings-related labels -->
     <eat-comment />

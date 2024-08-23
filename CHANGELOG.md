@@ -15,6 +15,24 @@
 - Excessive CPU no longer spent showing music loading process
 - Fixed playback sheet flickering on warm start
 
+## 3.5.3
+
+#### What's New
+- Basic Tasker integration for safely starting Auxio's service
+
+#### What's Improved
+- Added support for informal singular-spaced tags like `album artist` in
+file metadata
+
+#### What's Fixed
+- Fix "Foreground not allowed" music loading crash from starting too early
+- Fixed widget not loading on some devices due to the cover being too large
+
+## 3.5.2
+
+#### What's Fixed
+- Fixed music loading failure from improper sort systems (For real this time)
+
 ## 3.5.1
 
 #### What's Fixed
