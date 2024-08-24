@@ -315,4 +315,8 @@
     <string name="set_remember_pause_desc">跳过或编辑队列时保留播放/暂停状态</string>
     <string name="set_remember_pause">记住暂停状态</string>
     <string name="set_replay_gain_mode_off">关闭</string>
+    <string name="lbl_start_playback">开始播放</string>
+    <string name="lng_tasker_start">使用之前使用的状态启动 Auxio。如果没有可用的已保存状态，将打乱所有歌曲的顺序。播放将立刻开始。
+\n
+\n警告：请小心控制此服务，如果将其关闭然后试图再次使用可能造成应用崩溃。</string>
 </resources>
