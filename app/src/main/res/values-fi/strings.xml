@@ -287,4 +287,6 @@
     <string name="err_export_failed">Soittolistan vienti tähän tiedostoon ei onnistu</string>
     <string name="desc_selection_image">Valintakuva</string>
     <string name="set_replay_gain_mode_off">Pois</string>
+    <string name="set_bar_action">Mukautettu toistopalkin toiminto</string>
+    <string name="lbl_start_playback">Aloita toisto</string>
 </resources>
