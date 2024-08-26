@@ -19,32 +19,33 @@
 package org.oxycblt.auxio
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.media.MediaBrowserCompat
+import androidx.annotation.StringRes
+import androidx.core.app.NotificationChannelCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
-import androidx.media3.session.MediaLibraryService
-import androidx.media3.session.MediaSession
+import androidx.media.MediaBrowserServiceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import org.oxycblt.auxio.music.service.IndexerServiceFragment
-import org.oxycblt.auxio.playback.service.MediaSessionServiceFragment
+import org.oxycblt.auxio.music.service.MusicServiceFragment
+import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
 
 @AndroidEntryPoint
-class AuxioService : MediaLibraryService(), ForegroundListener {
-    @Inject lateinit var mediaSessionFragment: MediaSessionServiceFragment
+class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
+    @Inject lateinit var mediaSessionFragment: PlaybackServiceFragment
 
-    @Inject lateinit var indexingFragment: IndexerServiceFragment
+    @Inject lateinit var indexingFragment: MusicServiceFragment
 
     @SuppressLint("WrongConstant")
     override fun onCreate() {
         super.onCreate()
-        mediaSessionFragment.attach(this, this)
+        setSessionToken(mediaSessionFragment.attach(this))
         indexingFragment.attach(this)
-    }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        onHandleForeground(intent)
-        return super.onBind(intent)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -52,6 +53,11 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
         //  service, we might need more handling here.
         onHandleForeground(intent)
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        onHandleForeground(intent)
+        return super.onBind(intent)
     }
 
     private fun onHandleForeground(intent: Intent?) {
@@ -71,20 +77,54 @@ class AuxioService : MediaLibraryService(), ForegroundListener {
         mediaSessionFragment.release()
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession =
-        mediaSessionFragment.mediaSession
+    override fun onGetRoot(
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
+    ): BrowserRoot? {
+        TODO("Not yet implemented")
+    }
 
-    override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
-        updateForeground(ForegroundListener.Change.MEDIA_SESSION)
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+    ) = throw NotImplementedError()
+
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
+        options: Bundle
+    ) {
+        super.onLoadChildren(parentId, result, options)
+    }
+
+    override fun onLoadItem(itemId: String, result: Result<MediaBrowserCompat.MediaItem>) {
+        super.onLoadItem(itemId, result)
+    }
+
+    override fun onSearch(
+        query: String,
+        extras: Bundle?,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+    ) {
+        super.onSearch(query, extras, result)
+    }
+
+    @SuppressLint("RestrictedApi")
+    override fun onSubscribe(id: String?, option: Bundle?) {
+        super.onSubscribe(id, option)
+    }
+
+    @SuppressLint("RestrictedApi")
+    override fun onUnsubscribe(id: String?) {
+        super.onUnsubscribe(id)
     }
 
     override fun updateForeground(change: ForegroundListener.Change) {
-        if (mediaSessionFragment.hasNotification()) {
+        val mediaNotification = mediaSessionFragment.notification
+        if (mediaNotification != null) {
             if (change == ForegroundListener.Change.MEDIA_SESSION) {
-                mediaSessionFragment.createNotification {
-                    startForeground(it.notificationId, it.notification)
-                    isForeground = true
-                }
+                startForeground(mediaNotification.code, mediaNotification.build())
             }
             // Nothing changed, but don't show anything music related since we can always
             // index during playback.
@@ -117,4 +157,43 @@ interface ForegroundListener {
         MEDIA_SESSION,
         INDEXER
     }
+}
+
+/**
+ * Wrapper around [NotificationCompat.Builder] intended for use for [NotificationCompat]s that
+ * signal a Service's ongoing foreground state.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+abstract class ForegroundServiceNotification(context: Context, info: ChannelInfo) :
+    NotificationCompat.Builder(context, info.id) {
+    private val notificationManager = NotificationManagerCompat.from(context)
+
+    init {
+        // Set up the notification channel. Foreground notifications are non-substantial, and
+        // thus make no sense to have lights, vibration, or lead to a notification badge.
+        val channel =
+            NotificationChannelCompat.Builder(info.id, NotificationManagerCompat.IMPORTANCE_LOW)
+                .setName(context.getString(info.nameRes))
+                .setLightsEnabled(false)
+                .setVibrationEnabled(false)
+                .setShowBadge(false)
+                .build()
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    /**
+     * The code used to identify this notification.
+     *
+     * @see NotificationManagerCompat.notify
+     */
+    abstract val code: Int
+
+    /**
+     * Reduced representation of a [NotificationChannelCompat].
+     *
+     * @param id The ID of the channel.
+     * @param nameRes A string resource ID corresponding to the human-readable name of this channel.
+     */
+    data class ChannelInfo(val id: String, @StringRes val nameRes: Int)
 }

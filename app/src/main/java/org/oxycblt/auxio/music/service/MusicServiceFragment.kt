@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
+import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -35,7 +36,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
-class IndexerServiceFragment
+class MusicServiceFragment
 @Inject
 constructor(
     @ApplicationContext override val workerContext: Context,
@@ -85,7 +86,7 @@ constructor(
         }
     }
 
-    fun createNotification(post: (IndexerNotification?) -> Unit) {
+    fun createNotification(post: (ForegroundServiceNotification?) -> Unit) {
         val state = musicRepository.indexingState
         if (state is IndexingState.Indexing) {
             // There are a few reasons why we stay in the foreground with automatic rescanning:
