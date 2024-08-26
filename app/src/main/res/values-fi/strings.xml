@@ -289,4 +289,22 @@
     <string name="set_replay_gain_mode_off">Pois</string>
     <string name="set_bar_action">Mukautettu toistopalkin toiminto</string>
     <string name="lbl_start_playback">Aloita toisto</string>
+    <string name="lbl_mixtapes">Mixtapet</string>
+    <string name="lbl_mixtape">Mixtape</string>
+    <string name="set_hide_collaborators_desc">Näytä vain esittäjät, jotka on suoraan osoitettu jonkin albumin tekijäksi (toimii parhaiten hyvin tagatuissa kirjastoissa)</string>
+    <string name="set_rewind_prev">Kelaa ennen takaisinsiirtymistä</string>
+    <string name="set_play_song_by_itself">Toista kappale itsenään</string>
+    <string name="set_separators_warning">Varoitus: Tämän asetuksen käyttäminen voi johtaa joidenkin tagien virheelliseen tulkintaan useina arvoina. Voit ratkaista tämän liittämällä kenoviivan (\\) ei-toivottujen erotinmerkkien eteen.</string>
+    <string name="set_intelligent_sorting_desc">Järjestä nimet, jotka alkavat numerolla tai sanoilla kuten \"the\", oikein (toimii parhaiten englanninkielisellä musiikilla)</string>
+    <string name="set_repeat_pause">Keskeytä uudelleentoistettaessa</string>
+    <string name="set_repeat_pause_desc">Keskeytä kun kappale toistetaan uudelleen</string>
+    <string name="set_play_song_none">Toista näytetystä kohteesta</string>
+    <string name="set_rewind_prev_desc">Kelaa takaisin ennen edelliseen kappaleeseen siirtymistä</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demot</string>
+    <string name="lbl_error_info">Virhetiedot</string>
+    <string name="set_keep_shuffle_desc">Pidä sekoitus päällä kun toistetaan uutta kappaletta</string>
+    <string name="set_remember_pause_desc">Pysy toisto/keskeytystilassa ohittaessa kappaleita tai muokatessa jonoa</string>
+    <string name="set_separators_desc">Valitse merkit, jotka erottavat tagiarvot toisistaan</string>
+    <string name="set_pre_amp_warning">Varoitus: Esivahvistuksen asettaminen korkeaan positiiviseen arvoon saattaa johtaa säröilyyn joissain kappaleissa.</string>
 </resources>
