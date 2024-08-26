@@ -27,7 +27,6 @@ import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import kotlin.math.sqrt
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
@@ -44,24 +43,6 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
     val views = RemoteViews(context.packageName, layoutRes)
     views.setOnClickPendingIntent(android.R.id.background, context.newMainPendingIntent())
     return views
-}
-
-/**
- * Get an image size guaranteed to not exceed the [RemoteViews] bitmap memory limit, assuming that
- * there is only one image.
- *
- * @param context [Context] required to perform calculation.
- * @param reduce Optional multiplier to reduce the image size. Recommended value is 2 to avoid
- *   device-specific variations in memory limit.
- * @return The dimension of a bitmap that can be safely used in [RemoteViews].
- */
-fun getSafeRemoteViewsImageSize(context: Context, reduce: Float = 2f): Int {
-    val metrics = context.resources.displayMetrics
-    val sw = metrics.widthPixels
-    val sh = metrics.heightPixels
-    // Maximum size is 1/3 total screen area * 4 bytes per pixel. Reverse
-    // that to obtain the image size.
-    return sqrt((6f / 4f / reduce) * sw * sh).toInt()
 }
 
 /**

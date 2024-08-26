@@ -109,11 +109,23 @@ constructor(
         }
     }
 
-    fun handleNonNativeStart() {
+    fun start(startedBy: Int) {
         // At minimum we want to ensure an active playback state.
         // TODO: Possibly also force to go foreground?
         logD("Handling non-native start.")
-        playbackManager.playDeferred(DeferredPlayback.RestoreState)
+        val action =
+            when (startedBy) {
+                IntegerTable.START_ID_ACTIVITY -> null
+                IntegerTable.START_ID_TASKER ->
+                    DeferredPlayback.RestoreState(
+                        play = true, fallback = DeferredPlayback.ShuffleAll)
+                // External services using Auxio better know what they are doing.
+                else -> DeferredPlayback.RestoreState(play = false)
+            }
+        if (action != null) {
+            logD("Initing service fragment using action $action")
+            playbackManager.playDeferred(action)
+        }
     }
 
     fun hasNotification(): Boolean = exoHolder.sessionOngoing

@@ -276,7 +276,8 @@ data class QueueChange(val type: Type, val instructions: UpdateInstructions) {
 /** Possible long-running background tasks handled by the background playback task. */
 sealed interface DeferredPlayback {
     /** Restore the previously saved playback state. */
-    data object RestoreState : DeferredPlayback
+    data class RestoreState(val play: Boolean, val fallback: DeferredPlayback? = null) :
+        DeferredPlayback
 
     /**
      * Start shuffled playback of the entire music library. Analogous to the "Shuffle All" shortcut.

@@ -59,6 +59,10 @@ object IntegerTable {
     const val INDEXER_NOTIFICATION_CODE = 0xA0A1
     /** MainActivity Intent request code */
     const val REQUEST_CODE = 0xA0C0
+    /** Activity AuxioService Start ID */
+    const val START_ID_ACTIVITY = 0xA050
+    /** Tasker AuxioService Start ID */
+    const val START_ID_TASKER = 0xA051
     /** RepeatMode.NONE */
     const val REPEAT_MODE_NONE = 0xA100
     /** RepeatMode.ALL */
@@ -133,7 +137,4 @@ object IntegerTable {
     const val PLAY_SONG_FROM_PLAYLIST = 0xA123
     /** PlaySong.ByItself */
     const val PLAY_SONG_BY_ITSELF = 0xA124
-    const val PLAYER_COMMAND_INC_REPEAT_MODE = 0xA125
-    const val PLAYER_COMMAND_TOGGLE_SHUFFLE = 0xA126
-    const val PLAYER_COMMAND_EXIT = 0xA127
 }

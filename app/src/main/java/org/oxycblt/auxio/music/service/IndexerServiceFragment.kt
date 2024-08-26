@@ -79,6 +79,12 @@ constructor(
         foregroundListener = null
     }
 
+    fun start() {
+        if (musicRepository.indexingState == null) {
+            requestIndex(true)
+        }
+    }
+
     fun createNotification(post: (IndexerNotification?) -> Unit) {
         val state = musicRepository.indexingState
         if (state is IndexingState.Indexing) {

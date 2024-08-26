@@ -16,13 +16,13 @@ android {
     // it here so that binary stripping will work.
     // TODO: Eventually you might just want to start vendoring the FFMpeg extension so the
     //  NDK use is unified
-    ndkVersion = "25.2.9519653"
+    ndkVersion "26.3.11579264"
     namespace "org.oxycblt.auxio"
 
     defaultConfig {
         applicationId namespace
-        versionName "3.5.2"
-        versionCode 48
+        versionName "3.5.3"
+        versionCode 49
 
         minSdk 24
         targetSdk 34
@@ -150,6 +150,9 @@ dependencies {
 
     // Speed dial
     implementation "com.leinardi.android:speed-dial:3.3.0"
+
+    // Tasker integration
+    implementation 'com.joaomgcd:taskerpluginlibrary:0.4.10'
 
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
