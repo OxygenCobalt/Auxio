@@ -30,6 +30,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -147,25 +148,25 @@ constructor(
                     deviceLibrary.artists,
                     deviceLibrary.genres,
                     userLibrary.playlists)
-            searchEngine.search(items, query).concat()
+            searchEngine.search(items, query).toMediaItems()
         }
 
-    private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
+    private fun SearchEngine.Items.toMediaItems(): MutableList<MediaItem> {
         val music = mutableListOf<MediaItem>()
         if (songs != null) {
-            music.addAll(songs.map { it.toMediaItem(context, null) })
+            music.addAll(songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) })
         }
         if (albums != null) {
-            music.addAll(albums.map { it.toMediaItem(context) })
+            music.addAll(albums.map { it.toMediaItem(context, null, header(R.string.lbl_albums)) })
         }
         if (artists != null) {
-            music.addAll(artists.map { it.toMediaItem(context) })
+            music.addAll(artists.map { it.toMediaItem(context, header(R.string.lbl_artists)) })
         }
         if (genres != null) {
-            music.addAll(genres.map { it.toMediaItem(context) })
+            music.addAll(genres.map { it.toMediaItem(context, header(R.string.lbl_genres)) })
         }
         if (playlists != null) {
-            music.addAll(playlists.map { it.toMediaItem(context) })
+            music.addAll(playlists.map { it.toMediaItem(context, header(R.string.lbl_playlists)) })
         }
         return music
     }
