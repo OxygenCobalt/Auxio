@@ -163,6 +163,7 @@
     <string name="lbl_reset">Reset</string>
     <!-- As in to add a new folder in the "Music folders" setting -->
     <string name="lbl_add">Add</string>
+    <string name="lbl_more">More</string>
 
     <string name="lbl_path_style">Path style</string>
     <string name="lbl_path_style_absolute">Absolute</string>

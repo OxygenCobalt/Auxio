@@ -109,30 +109,8 @@ constructor(
         foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
     }
 
-    //    override fun onConnect(
-    //        session: MediaSession,
-    //        controller: MediaSession.ControllerInfo
-    //    ): ConnectionResult {
-    //        val sessionCommands =
-    //            actionHandler.withCommands(ConnectionResult.DEFAULT_SESSION_AND_LIBRARY_COMMANDS)
-    //        return ConnectionResult.AcceptedResultBuilder(session)
-    //            .setAvailableSessionCommands(sessionCommands)
-    //            .setCustomLayout(actionHandler.createCustomLayout())
-    //            .build()
-    //    }
-    //
-    //    override fun onCustomCommand(
-    //        session: MediaSession,
-    //        controller: MediaSession.ControllerInfo,
-    //        customCommand: SessionCommand,
-    //        args: Bundle
-    //    ): ListenableFuture<SessionResult> =
-    //        if (actionHandler.handleCommand(customCommand)) {
-    //            Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
-    //        } else {
-    //            super.onCustomCommand(session, controller, customCommand, args)
-    //        }
-    //
+
+
     //    override fun onGetLibraryRoot(
     //        session: MediaLibrarySession,
     //        browser: MediaSession.ControllerInfo,

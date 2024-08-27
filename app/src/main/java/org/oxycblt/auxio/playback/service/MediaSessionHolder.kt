@@ -39,16 +39,25 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.service.PlaybackActions
+import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
@@ -64,6 +73,8 @@ private constructor(
     private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
+    private val commandFactory: PlaybackCommand.Factory,
+    private val musicRepository: MusicRepository,
     private val bitmapProvider: BitmapProvider,
     private val imageSettings: ImageSettings
 ) :
@@ -77,12 +88,14 @@ private constructor(
     constructor(
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings,
+    private val commandFactory: PlaybackCommand.Factory,
+        private val musicRepository: MusicRepository,
         private val bitmapProvider: BitmapProvider,
         private val imageSettings: ImageSettings
     ) {
         fun create(context: Context) =
             MediaSessionHolder(
-                context, playbackManager, playbackSettings, bitmapProvider, imageSettings)
+                context, playbackManager, playbackSettings, commandFactory, musicRepository, bitmapProvider, imageSettings)
     }
 
     private val mediaSession =
@@ -201,27 +214,47 @@ private constructor(
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)
-        // STUB: Unimplemented, no media browser
+        val uid = MediaSessionUID.fromString(mediaId ?: return) ?: return
+        val command = expandIntoCommand(uid)
+        requireNotNull(command) { "Invalid playback configuration" }
+        playbackManager.play(command)
     }
 
     override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
         super.onPlayFromUri(uri, extras)
-        // STUB: Unimplemented, no media browser
+        // STUB
     }
 
     override fun onPlayFromSearch(query: String?, extras: Bundle?) {
         super.onPlayFromSearch(query, extras)
-        // STUB: Unimplemented, no media browser
+        // STUB: Unimplemented, no search engine
     }
 
-    override fun onAddQueueItem(description: MediaDescriptionCompat?) {
+    override fun onAddQueueItem(description: MediaDescriptionCompat) {
         super.onAddQueueItem(description)
-        // STUB: Unimplemented
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
+        val song = when (uid) {
+            is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
+            is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
+            else -> null
+        } ?: return
+        playbackManager.addToQueue(song)
     }
 
-    override fun onRemoveQueueItem(description: MediaDescriptionCompat?) {
+    override fun onRemoveQueueItem(description: MediaDescriptionCompat) {
         super.onRemoveQueueItem(description)
-        // STUB: Unimplemented
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
+        val song = when (uid) {
+            is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
+            is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
+            else -> null
+        } ?: return
+        val queueIndex = playbackManager.queue.indexOf(song)
+        if (queueIndex > -1) {
+            playbackManager.removeQueueItem(queueIndex)
+        }
     }
 
     override fun onPlay() {
@@ -391,6 +424,40 @@ private constructor(
         logD("Uploading ${queueItems.size} songs to MediaSession queue")
         mediaSession.setQueue(queueItems)
     }
+
+    private fun expandIntoCommand(uid: MediaSessionUID): PlaybackCommand? {
+        val music: Music
+        var parent: MusicParent? = null
+        when (uid) {
+            is MediaSessionUID.SingleItem -> {
+                music = musicRepository.find(uid.uid) ?: return null
+            }
+            is MediaSessionUID.ChildItem -> {
+                music = musicRepository.find(uid.childUid) ?: return null
+                parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return null
+            }
+            else -> return null
+        }
+
+        return when (music) {
+            is Song -> inferSongFromParent(music, parent)
+            is Album -> commandFactory.album(music, ShuffleMode.OFF)
+            is Artist -> commandFactory.artist(music, ShuffleMode.OFF)
+            is Genre -> commandFactory.genre(music, ShuffleMode.OFF)
+            is Playlist -> commandFactory.playlist(music, ShuffleMode.OFF)
+        }
+    }
+
+    private fun inferSongFromParent(music: Song, parent: MusicParent?) =
+        when (parent) {
+            is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
+            is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
+                    ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
+            is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
+                    ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
+            is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
+            null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
+        }
 
     /** Invalidate the current [MediaSessionCompat]'s [PlaybackStateCompat]. */
     private fun invalidateSessionState() {

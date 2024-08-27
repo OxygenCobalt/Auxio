@@ -24,6 +24,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -81,31 +82,29 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
         clientPackageName: String,
         clientUid: Int,
         rootHints: Bundle?
-    ): BrowserRoot? {
-        TODO("Not yet implemented")
-    }
+    ): BrowserRoot? = null
 
     override fun onLoadChildren(
         parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+        result: Result<MutableList<MediaItem>>
     ) = throw NotImplementedError()
 
     override fun onLoadChildren(
         parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
+        result: Result<MutableList<MediaItem>>,
         options: Bundle
     ) {
         super.onLoadChildren(parentId, result, options)
     }
 
-    override fun onLoadItem(itemId: String, result: Result<MediaBrowserCompat.MediaItem>) {
+    override fun onLoadItem(itemId: String, result: Result<MediaItem>) {
         super.onLoadItem(itemId, result)
     }
 
     override fun onSearch(
         query: String,
         extras: Bundle?,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+        result: Result<MutableList<MediaItem>>
     ) {
         super.onSearch(query, extras, result)
     }
