@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * IndexerServiceFragment.kt is part of Auxio.
+ * MusicServiceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
@@ -23,6 +23,7 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,7 +36,6 @@ import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.search.SearchEngine
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
-import javax.inject.Inject
 
 class MusicServiceFragment
 @Inject
@@ -75,7 +75,6 @@ constructor(
         indexer.release()
         invalidator = null
     }
-
 
     override fun invalidateMusic(ids: Set<String>) {
         ids.forEach { mediaId ->
@@ -131,8 +130,7 @@ constructor(
     fun getChildren(
         mediaId: String,
         result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>
-    ) =
-        result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
+    ) = result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
 
     fun search(query: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>) =
         result.dispatchAsync {
@@ -148,11 +146,9 @@ constructor(
                     deviceLibrary.albums,
                     deviceLibrary.artists,
                     deviceLibrary.genres,
-                    userLibrary.playlists
-                )
+                    userLibrary.playlists)
             searchEngine.search(items, query).concat()
         }
-
 
     private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
         val music = mutableListOf<MediaItem>()

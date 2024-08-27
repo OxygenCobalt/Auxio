@@ -36,7 +36,8 @@ import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
 
 @AndroidEntryPoint
-class AuxioService : MediaBrowserServiceCompat(), ForegroundListener, MusicServiceFragment.Invalidator {
+class AuxioService :
+    MediaBrowserServiceCompat(), ForegroundListener, MusicServiceFragment.Invalidator {
     @Inject lateinit var playbackFragment: PlaybackServiceFragment
 
     @Inject lateinit var musicFragment: MusicServiceFragment
@@ -88,10 +89,8 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener, MusicServi
         musicFragment.getItem(itemId, result)
     }
 
-    override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaItem>>
-    ) = throw NotImplementedError()
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) =
+        throw NotImplementedError()
 
     override fun onLoadChildren(
         parentId: String,
@@ -99,12 +98,7 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener, MusicServi
         options: Bundle
     ) = musicFragment.getChildren(parentId, result)
 
-
-    override fun onSearch(
-        query: String,
-        extras: Bundle?,
-        result: Result<MutableList<MediaItem>>
-    ) {
+    override fun onSearch(query: String, extras: Bundle?, result: Result<MutableList<MediaItem>>) {
         musicFragment.search(query, result)
     }
 

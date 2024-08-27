@@ -78,16 +78,17 @@ sealed interface MediaSessionUID {
             }
             return when (parts[0]) {
                 ID_CATEGORY ->
-                    CategoryItem(when (parts[1]) {
-                        Category.ROOT.id -> Category.ROOT
-                        Category.MORE.id -> Category.MORE
-                        Category.SONGS.id -> Category.SONGS
-                        Category.ALBUMS.id -> Category.ALBUMS
-                        Category.ARTISTS.id -> Category.ARTISTS
-                        Category.GENRES.id -> Category.GENRES
-                        Category.PLAYLISTS.id -> Category.PLAYLISTS
-                        else -> return null
-                    })
+                    CategoryItem(
+                        when (parts[1]) {
+                            Category.ROOT.id -> Category.ROOT
+                            Category.MORE.id -> Category.MORE
+                            Category.SONGS.id -> Category.SONGS
+                            Category.ALBUMS.id -> Category.ALBUMS
+                            Category.ARTISTS.id -> Category.ARTISTS
+                            Category.GENRES.id -> Category.GENRES
+                            Category.PLAYLISTS.id -> Category.PLAYLISTS
+                            else -> return null
+                        })
                 ID_ITEM -> {
                     val uids = parts[1].split(">", limit = 2)
                     if (uids.size == 1) {
@@ -107,7 +108,8 @@ sealed interface MediaSessionUID {
 typealias Sugar = Bundle.(Context) -> Unit
 
 fun header(@StringRes nameRes: Int): Sugar = {
-    putString(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, it.getString(nameRes))
+    putString(
+        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, it.getString(nameRes))
 }
 
 fun Category.toMediaItem(context: Context): MediaItem {
@@ -119,10 +121,11 @@ fun Category.toMediaItem(context: Context): MediaItem {
                 MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM)
         }
     val mediaSessionUID = MediaSessionUID.CategoryItem(this)
-    val description = MediaDescriptionCompat.Builder()
-        .setMediaId(mediaSessionUID.toString())
-        .setTitle(context.getString(nameRes))
-        .setExtras(extras)
+    val description =
+        MediaDescriptionCompat.Builder()
+            .setMediaId(mediaSessionUID.toString())
+            .setTitle(context.getString(nameRes))
+            .setExtras(extras)
     if (bitmapRes != null) {
         val bitmap = BitmapFactory.decodeResource(context.resources, bitmapRes)
         description.setIconBitmap(bitmap)
@@ -130,7 +133,11 @@ fun Category.toMediaItem(context: Context): MediaItem {
     return MediaItem(description.build(), MediaItem.FLAG_BROWSABLE)
 }
 
-fun Song.toMediaItem(context: Context, parent: MusicParent? = null, vararg sugar: Sugar): MediaItem {
+fun Song.toMediaItem(
+    context: Context,
+    parent: MusicParent? = null,
+    vararg sugar: Sugar
+): MediaItem {
     val mediaSessionUID =
         if (parent == null) {
             MediaSessionUID.SingleItem(uid)
@@ -138,88 +145,97 @@ fun Song.toMediaItem(context: Context, parent: MusicParent? = null, vararg sugar
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
     val extras = Bundle().apply { sugar.forEach { this.it(context) } }
-    val description = MediaDescriptionCompat.Builder()
-        .setMediaId(mediaSessionUID.toString())
-        .setTitle(name.resolve(context))
-        .setSubtitle(artists.resolveNames(context))
-        .setDescription(album.name.resolve(context))
-        .setIconUri(album.cover.single.mediaStoreCoverUri)
-        .setMediaUri(uri)
-        .setExtras(extras)
-        .build()
+    val description =
+        MediaDescriptionCompat.Builder()
+            .setMediaId(mediaSessionUID.toString())
+            .setTitle(name.resolve(context))
+            .setSubtitle(artists.resolveNames(context))
+            .setDescription(album.name.resolve(context))
+            .setIconUri(album.cover.single.mediaStoreCoverUri)
+            .setMediaUri(uri)
+            .setExtras(extras)
+            .build()
     return MediaItem(description, MediaItem.FLAG_PLAYABLE)
 }
 
-fun Album.toMediaItem(context: Context, parent: MusicParent? = null, vararg sugar: Sugar): MediaItem {
+fun Album.toMediaItem(
+    context: Context,
+    parent: MusicParent? = null,
+    vararg sugar: Sugar
+): MediaItem {
     val mediaSessionUID =
         if (parent == null) {
             MediaSessionUID.SingleItem(uid)
         } else {
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
-    val description = MediaDescriptionCompat.Builder()
-        .setMediaId(mediaSessionUID.toString())
-        .setTitle(name.resolve(context))
-        .setSubtitle(artists.resolveNames(context))
-        .setIconUri(cover.single.mediaStoreCoverUri)
-        .build()
+    val description =
+        MediaDescriptionCompat.Builder()
+            .setMediaId(mediaSessionUID.toString())
+            .setTitle(name.resolve(context))
+            .setSubtitle(artists.resolveNames(context))
+            .setIconUri(cover.single.mediaStoreCoverUri)
+            .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }
 
 fun Artist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
     val mediaSessionUID = MediaSessionUID.SingleItem(uid)
     val counts =
-                context.getString(
-                    R.string.fmt_two,
-                    if (explicitAlbums.isNotEmpty()) {
-                        context.getPlural(R.plurals.fmt_album_count, explicitAlbums.size)
-                    } else {
-                        context.getString(R.string.def_album_count)
-                    },
-                    if (songs.isNotEmpty()) {
-                        context.getPlural(R.plurals.fmt_song_count, songs.size)
-                    } else {
-                        context.getString(R.string.def_song_count)
-                    })
-    val description = MediaDescriptionCompat.Builder()
-        .setMediaId(mediaSessionUID.toString())
-        .setTitle(name.resolve(context))
-        .setSubtitle(counts)
-        .setIconUri(cover.single.mediaStoreCoverUri)
-        .build()
+        context.getString(
+            R.string.fmt_two,
+            if (explicitAlbums.isNotEmpty()) {
+                context.getPlural(R.plurals.fmt_album_count, explicitAlbums.size)
+            } else {
+                context.getString(R.string.def_album_count)
+            },
+            if (songs.isNotEmpty()) {
+                context.getPlural(R.plurals.fmt_song_count, songs.size)
+            } else {
+                context.getString(R.string.def_song_count)
+            })
+    val description =
+        MediaDescriptionCompat.Builder()
+            .setMediaId(mediaSessionUID.toString())
+            .setTitle(name.resolve(context))
+            .setSubtitle(counts)
+            .setIconUri(cover.single.mediaStoreCoverUri)
+            .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }
 
 fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
     val mediaSessionUID = MediaSessionUID.SingleItem(uid)
     val counts =
-                if (songs.isNotEmpty()) {
-                    context.getPlural(R.plurals.fmt_song_count, songs.size)
-                } else {
-                    context.getString(R.string.def_song_count)
-                }
-    val description = MediaDescriptionCompat.Builder()
-        .setMediaId(mediaSessionUID.toString())
-        .setTitle(name.resolve(context))
-        .setSubtitle(counts)
-        .setIconUri(cover.single.mediaStoreCoverUri)
-        .build()
+        if (songs.isNotEmpty()) {
+            context.getPlural(R.plurals.fmt_song_count, songs.size)
+        } else {
+            context.getString(R.string.def_song_count)
+        }
+    val description =
+        MediaDescriptionCompat.Builder()
+            .setMediaId(mediaSessionUID.toString())
+            .setTitle(name.resolve(context))
+            .setSubtitle(counts)
+            .setIconUri(cover.single.mediaStoreCoverUri)
+            .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }
 
 fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
     val mediaSessionUID = MediaSessionUID.SingleItem(uid)
     val counts =
-                if (songs.isNotEmpty()) {
-                    context.getPlural(R.plurals.fmt_song_count, songs.size)
-                } else {
-                    context.getString(R.string.def_song_count)
-                }
-    val description = MediaDescriptionCompat.Builder()
-        .setMediaId(mediaSessionUID.toString())
-        .setTitle(name.resolve(context))
-        .setSubtitle(counts)
-        .setIconUri(cover?.single?.mediaStoreCoverUri)
-        .build()
+        if (songs.isNotEmpty()) {
+            context.getPlural(R.plurals.fmt_song_count, songs.size)
+        } else {
+            context.getString(R.string.def_song_count)
+        }
+    val description =
+        MediaDescriptionCompat.Builder()
+            .setMediaId(mediaSessionUID.toString())
+            .setTitle(name.resolve(context))
+            .setSubtitle(counts)
+            .setIconUri(cover?.single?.mediaStoreCoverUri)
+            .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }

@@ -15,20 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
-import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
-import androidx.annotation.StringRes
-import androidx.media.utils.MediaConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
@@ -41,9 +34,6 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
-import org.oxycblt.auxio.search.SearchEngine
-import javax.inject.Inject
-import kotlin.math.min
 
 class MusicBrowser
 @Inject
@@ -112,10 +102,8 @@ constructor(
                 is MediaSessionUID.CategoryItem -> return uid.category.toMediaItem(context)
                 is MediaSessionUID.SingleItem ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
-
                 is MediaSessionUID.ChildItem ->
                     musicRepository.find(uid.childUid)?.let { musicRepository.find(it.uid) }
-
                 null -> null
             }
                 ?: return null
@@ -147,44 +135,33 @@ constructor(
         return when (val mediaSessionUID = MediaSessionUID.fromString(id)) {
             is MediaSessionUID.CategoryItem -> {
                 when (mediaSessionUID.category) {
-                    Category.ROOT ->
-                        Category.IMPORTANT.map { it.toMediaItem(context) }
-
+                    Category.ROOT -> Category.IMPORTANT.map { it.toMediaItem(context) }
                     Category.MORE -> TODO()
-
                     Category.SONGS ->
                         listSettings.songSort.songs(deviceLibrary.songs).map {
                             it.toMediaItem(context, null)
                         }
-
                     Category.ALBUMS ->
                         listSettings.albumSort.albums(deviceLibrary.albums).map {
                             it.toMediaItem(context)
                         }
-
                     Category.ARTISTS ->
                         listSettings.artistSort.artists(deviceLibrary.artists).map {
                             it.toMediaItem(context)
                         }
-
                     Category.GENRES ->
                         listSettings.genreSort.genres(deviceLibrary.genres).map {
                             it.toMediaItem(context)
                         }
-
-                    Category.PLAYLISTS ->
-                        userLibrary.playlists.map { it.toMediaItem(context) }
+                    Category.PLAYLISTS -> userLibrary.playlists.map { it.toMediaItem(context) }
                 }
             }
-
             is MediaSessionUID.SingleItem -> {
                 getChildMediaItems(mediaSessionUID.uid)
             }
-
             is MediaSessionUID.ChildItem -> {
                 getChildMediaItems(mediaSessionUID.childUid)
             }
-
             null -> {
                 return null
             }
@@ -195,117 +172,27 @@ constructor(
         return when (val item = musicRepository.find(uid)) {
             is Album -> {
                 val songs = listSettings.albumSongSort.songs(item.songs)
-                songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs))}
+                songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs)) }
             }
-
             is Artist -> {
                 val albums = ARTIST_ALBUMS_SORT.albums(item.explicitAlbums + item.implicitAlbums)
                 val songs = listSettings.artistSongSort.songs(item.songs)
                 albums.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) } +
-                        songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs)) }
+                    songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs)) }
             }
-
             is Genre -> {
                 val artists = GENRE_ARTISTS_SORT.artists(item.artists)
                 val songs = listSettings.genreSongSort.songs(item.songs)
                 artists.map { it.toMediaItem(context, header(R.string.lbl_songs)) } +
-                        songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) }
+                    songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) }
             }
-
             is Playlist -> {
                 item.songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) }
             }
-
             is Song,
             null -> return null
         }
     }
-
-//    suspend fun prepareSearch(query: String, controller: String) {
-//        searchSubscribers[controller] = query
-//        val existing = searchResults[query]
-//        if (existing == null) {
-//            val new = searchTo(query)
-//            searchResults[query] = new
-//            new.await()
-//        } else {
-//            val items = existing.await()
-//            invalidator?.invalidate(controller, query, items.count())
-//        }
-//    }
-//
-//    suspend fun getSearchResult(
-//        query: String,
-//        page: Int,
-//        pageSize: Int,
-//    ): List<MediaItem>? {
-//        val deferred = searchResults[query] ?: searchTo(query).also { searchResults[query] = it }
-//        return deferred.await().concat().paginate(page, pageSize)
-//    }
-//
-//    private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
-//        val music = mutableListOf<MediaItem>()
-//        if (songs != null) {
-//            music.addAll(songs.map { it.toMediaItem(context, null) })
-//        }
-//        if (albums != null) {
-//            music.addAll(albums.map { it.toMediaItem(context) })
-//        }
-//        if (artists != null) {
-//            music.addAll(artists.map { it.toMediaItem(context) })
-//        }
-//        if (genres != null) {
-//            music.addAll(genres.map { it.toMediaItem(context) })
-//        }
-//        if (playlists != null) {
-//            music.addAll(playlists.map { it.toMediaItem(context) })
-//        }
-//        return music
-//    }
-//
-//    private fun SearchEngine.Items.count(): Int {
-//        var count = 0
-//        if (songs != null) {
-//            count += songs.size
-//        }
-//        if (albums != null) {
-//            count += albums.size
-//        }
-//        if (artists != null) {
-//            count += artists.size
-//        }
-//        if (genres != null) {
-//            count += genres.size
-//        }
-//        if (playlists != null) {
-//            count += playlists.size
-//        }
-//        return count
-//    }
-//
-//    private fun searchTo(query: String) =
-//        searchScope.async {
-//            if (query.isEmpty()) {
-//                return@async SearchEngine.Items()
-//            }
-//            val deviceLibrary = musicRepository.deviceLibrary ?: return@async SearchEngine.Items()
-//            val userLibrary = musicRepository.userLibrary ?: return@async SearchEngine.Items()
-//            val items =
-//                SearchEngine.Items(
-//                    deviceLibrary.songs,
-//                    deviceLibrary.albums,
-//                    deviceLibrary.artists,
-//                    deviceLibrary.genres,
-//                    userLibrary.playlists
-//                )
-//            val results = searchEngine.search(items, query)
-//            for (entry in searchSubscribers.entries) {
-//                if (entry.value == query) {
-//                    invalidator?.invalidate(entry.key, query, results.count())
-//                }
-//            }
-//            results
-//        }
 
     private companion object {
         // TODO: Rely on detail item gen logic?

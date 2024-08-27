@@ -88,14 +88,20 @@ private constructor(
     constructor(
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings,
-    private val commandFactory: PlaybackCommand.Factory,
+        private val commandFactory: PlaybackCommand.Factory,
         private val musicRepository: MusicRepository,
         private val bitmapProvider: BitmapProvider,
         private val imageSettings: ImageSettings
     ) {
         fun create(context: Context) =
             MediaSessionHolder(
-                context, playbackManager, playbackSettings, commandFactory, musicRepository, bitmapProvider, imageSettings)
+                context,
+                playbackManager,
+                playbackSettings,
+                commandFactory,
+                musicRepository,
+                bitmapProvider,
+                imageSettings)
     }
 
     private val mediaSession =
@@ -234,11 +240,13 @@ private constructor(
         super.onAddQueueItem(description)
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
-        val song = when (uid) {
-            is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
-            is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
-            else -> null
-        } ?: return
+        val song =
+            when (uid) {
+                is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
+                is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
+                else -> null
+            }
+                ?: return
         playbackManager.addToQueue(song)
     }
 
@@ -246,11 +254,13 @@ private constructor(
         super.onRemoveQueueItem(description)
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
-        val song = when (uid) {
-            is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
-            is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
-            else -> null
-        } ?: return
+        val song =
+            when (uid) {
+                is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
+                is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
+                else -> null
+            }
+                ?: return
         val queueIndex = playbackManager.queue.indexOf(song)
         if (queueIndex > -1) {
             playbackManager.removeQueueItem(queueIndex)

@@ -46,7 +46,6 @@ import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.service.toMediaItem
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
@@ -141,10 +140,7 @@ class ExoPlaybackStateHolder(
             } else {
                 emptyList()
             }
-        return RawQueue(
-            heap.mapNotNull { it.song },
-            shuffledMapping,
-            player.currentMediaItemIndex)
+        return RawQueue(heap.mapNotNull { it.song }, shuffledMapping, player.currentMediaItemIndex)
     }
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
@@ -533,12 +529,10 @@ class ExoPlaybackStateHolder(
         currentSaveJob = saveScope.launch { block() }
     }
 
-    private fun Song.buildMediaItem() = MediaItem.Builder()
-        .setUri(uri)
-        .setTag(this)
-        .build()
+    private fun Song.buildMediaItem() = MediaItem.Builder().setUri(uri).setTag(this).build()
 
-    private val MediaItem.song: Song? get() = this.localConfiguration?.tag as? Song?
+    private val MediaItem.song: Song?
+        get() = this.localConfiguration?.tag as? Song?
 
     private fun Player.unscrambleQueueIndices(): List<Int> {
         val timeline = currentTimeline

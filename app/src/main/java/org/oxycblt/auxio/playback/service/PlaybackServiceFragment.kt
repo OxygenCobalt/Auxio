@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * MediaSessionServiceFragment.kt is part of Auxio.
+ * PlaybackServiceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,8 +108,6 @@ constructor(
     override fun onSessionEnded() {
         foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
     }
-
-
 
     //    override fun onGetLibraryRoot(
     //        session: MediaLibrarySession,

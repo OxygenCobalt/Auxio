@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * IndexerServiceFragment.kt is part of Auxio.
+ * Indexer.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
-import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
