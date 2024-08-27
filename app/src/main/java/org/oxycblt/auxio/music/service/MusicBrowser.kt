@@ -307,21 +307,6 @@ constructor(
 //            results
 //        }
 
-    private fun List<MediaItem>.paginate(page: Int, pageSize: Int): List<MediaItem>? {
-        if (page == Int.MAX_VALUE) {
-            // I think if someone requests this page it more or less implies that I should
-            // return all of the pages.
-            return this
-        }
-        val start = page * pageSize
-        val end = min((page + 1) * pageSize, size) // Tolerate partial page queries
-        if (pageSize == 0 || start !in indices) {
-            // These pages are probably invalid. Hopefully this won't backfire.
-            return null
-        }
-        return subList(start, end).toMutableList()
-    }
-
     private companion object {
         // TODO: Rely on detail item gen logic?
         val ARTIST_ALBUMS_SORT = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)

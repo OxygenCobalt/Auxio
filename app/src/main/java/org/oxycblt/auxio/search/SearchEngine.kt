@@ -61,7 +61,9 @@ interface SearchEngine {
         val artists: Collection<Artist>? = null,
         val genres: Collection<Genre>? = null,
         val playlists: Collection<Playlist>? = null
-    )
+    ) {
+
+    }
 }
 
 class SearchEngineImpl @Inject constructor(@ApplicationContext private val context: Context) :

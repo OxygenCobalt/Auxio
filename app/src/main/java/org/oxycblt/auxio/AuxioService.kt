@@ -105,7 +105,7 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener, MusicServi
         extras: Bundle?,
         result: Result<MutableList<MediaItem>>
     ) {
-        super.onSearch(query, extras, result)
+        musicFragment.search(query, result)
     }
 
     @SuppressLint("RestrictedApi")

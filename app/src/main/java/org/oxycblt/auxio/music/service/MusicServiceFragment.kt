@@ -15,47 +15,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
-import android.os.Bundle
-import android.os.PowerManager
-import androidx.media.MediaBrowserServiceCompat.BrowserRoot
-import androidx.media.MediaBrowserServiceCompat
-import androidx.media.utils.MediaConstants
 import android.support.v4.media.MediaBrowserCompat.MediaItem
-import coil.ImageLoader
+import androidx.media.MediaBrowserServiceCompat
+import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import org.oxycblt.auxio.BuildConfig
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.util.getSystemServiceCompat
+import org.oxycblt.auxio.search.SearchEngine
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import javax.inject.Inject
 
 class MusicServiceFragment
 @Inject
 constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
     private val indexer: Indexer,
-    private val browser: MusicBrowser,
+    private val musicBrowser: MusicBrowser,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
+    private val searchEngine: SearchEngine,
     private val contentObserver: SystemContentObserver,
 ) : MusicBrowser.Invalidator, MusicSettings.Listener {
     private val indexingNotification = IndexingNotification(context)
     private val observingNotification = ObservingNotification(context)
     private var invalidator: Invalidator? = null
     private var foregroundListener: ForegroundListener? = null
+    private val dispatchJob = Job()
+    private val dispatchScope = CoroutineScope(dispatchJob + Dispatchers.Default)
 
     interface Invalidator {
         fun invalidateMusic(mediaId: String)
@@ -64,7 +62,7 @@ constructor(
     fun attach(foregroundListener: ForegroundListener, invalidator: Invalidator) {
         this.invalidator = invalidator
         indexer.attach(foregroundListener)
-        browser.attach(this)
+        musicBrowser.attach(this)
         contentObserver.attach()
         musicSettings.registerListener(this)
     }
@@ -72,7 +70,8 @@ constructor(
     fun release() {
         musicSettings.unregisterListener(this)
         contentObserver.release()
-        browser.release()
+        dispatchJob.cancel()
+        musicBrowser.release()
         indexer.release()
         invalidator = null
     }
@@ -127,10 +126,53 @@ constructor(
     fun getRoot() = BrowserRoot(Category.ROOT.id, null)
 
     fun getItem(mediaId: String, result: MediaBrowserServiceCompat.Result<MediaItem>) =
-        result.dispatch { browser.getItem(mediaId) }
+        result.dispatch { musicBrowser.getItem(mediaId) }
 
-    fun getChildren(mediaId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>) =
-        result.dispatch { browser.getChildren(mediaId)?.toMutableList() }
+    fun getChildren(
+        mediaId: String,
+        result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>
+    ) =
+        result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
+
+    fun search(query: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>) =
+        result.dispatchAsync {
+            if (query.isEmpty()) {
+                return@dispatchAsync mutableListOf()
+            }
+            val deviceLibrary =
+                musicRepository.deviceLibrary ?: return@dispatchAsync mutableListOf()
+            val userLibrary = musicRepository.userLibrary ?: return@dispatchAsync mutableListOf()
+            val items =
+                SearchEngine.Items(
+                    deviceLibrary.songs,
+                    deviceLibrary.albums,
+                    deviceLibrary.artists,
+                    deviceLibrary.genres,
+                    userLibrary.playlists
+                )
+            searchEngine.search(items, query).concat()
+        }
+
+
+    private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
+        val music = mutableListOf<MediaItem>()
+        if (songs != null) {
+            music.addAll(songs.map { it.toMediaItem(context, null) })
+        }
+        if (albums != null) {
+            music.addAll(albums.map { it.toMediaItem(context) })
+        }
+        if (artists != null) {
+            music.addAll(artists.map { it.toMediaItem(context) })
+        }
+        if (genres != null) {
+            music.addAll(genres.map { it.toMediaItem(context) })
+        }
+        if (playlists != null) {
+            music.addAll(playlists.map { it.toMediaItem(context) })
+        }
+        return music
+    }
 
     private fun <T> MediaBrowserServiceCompat.Result<T>.dispatch(body: () -> T?) {
         try {
@@ -142,6 +184,21 @@ constructor(
         } catch (e: Exception) {
             logD("Error while dispatching: $e")
             sendResult(null)
+        }
+    }
+
+    private fun <T> MediaBrowserServiceCompat.Result<T>.dispatchAsync(body: suspend () -> T?) {
+        dispatchScope.launch {
+            try {
+                val result = body()
+                if (result == null) {
+                    logW("Result is null")
+                }
+                sendResult(result)
+            } catch (e: Exception) {
+                logD("Error while dispatching: $e")
+                sendResult(null)
+            }
         }
     }
 }
