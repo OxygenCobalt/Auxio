@@ -19,7 +19,12 @@
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
+import android.os.Bundle
 import android.os.PowerManager
+import androidx.media.MediaBrowserServiceCompat.BrowserRoot
+import androidx.media.MediaBrowserServiceCompat
+import androidx.media.utils.MediaConstants
+import android.support.v4.media.MediaBrowserCompat.MediaItem
 import coil.ImageLoader
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -35,54 +40,65 @@ import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 class MusicServiceFragment
 @Inject
 constructor(
-    @ApplicationContext override val workerContext: Context,
-    private val playbackManager: PlaybackStateManager,
+    @ApplicationContext context: Context,
+    private val indexer: Indexer,
+    private val browser: MusicBrowser,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
     private val contentObserver: SystemContentObserver,
-    private val imageLoader: ImageLoader
-) :
-    MusicRepository.IndexingWorker,
-    MusicRepository.IndexingListener,
-    MusicRepository.UpdateListener,
-    MusicSettings.Listener {
-    private val indexJob = Job()
-    private val indexScope = CoroutineScope(indexJob + Dispatchers.IO)
-    private var currentIndexJob: Job? = null
-    private val indexingNotification = IndexingNotification(workerContext)
-    private val observingNotification = ObservingNotification(workerContext)
+) : MusicBrowser.Invalidator, MusicSettings.Listener {
+    private val indexingNotification = IndexingNotification(context)
+    private val observingNotification = ObservingNotification(context)
+    private var invalidator: Invalidator? = null
     private var foregroundListener: ForegroundListener? = null
-    private val wakeLock =
-        workerContext
-            .getSystemServiceCompat(PowerManager::class)
-            .newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexingComponent")
 
-    fun attach(listener: ForegroundListener) {
-        foregroundListener = listener
-        musicSettings.registerListener(this)
-        musicRepository.addUpdateListener(this)
-        musicRepository.addIndexingListener(this)
-        musicRepository.registerWorker(this)
+    interface Invalidator {
+        fun invalidateMusic(mediaId: String)
+    }
+
+    fun attach(foregroundListener: ForegroundListener, invalidator: Invalidator) {
+        this.invalidator = invalidator
+        indexer.attach(foregroundListener)
+        browser.attach(this)
         contentObserver.attach()
+        musicSettings.registerListener(this)
     }
 
     fun release() {
+        musicSettings.unregisterListener(this)
         contentObserver.release()
-        musicSettings.registerListener(this)
-        musicRepository.addIndexingListener(this)
-        musicRepository.addUpdateListener(this)
-        musicRepository.removeIndexingListener(this)
-        foregroundListener = null
+        browser.release()
+        indexer.release()
+        invalidator = null
+    }
+
+
+    override fun invalidateMusic(ids: Set<String>) {
+        ids.forEach { mediaId ->
+            requireNotNull(invalidator) { "Invalidator not available" }.invalidateMusic(mediaId)
+        }
+    }
+
+    override fun onObservingChanged() {
+        super.onObservingChanged()
+        // Make sure we don't override the service state with the observing
+        // notification if we were actively loading when the automatic rescanning
+        // setting changed. In such a case, the state will still be updated when
+        // the music loading process ends.
+        if (musicRepository.indexingState == null) {
+            logD("Not loading, updating idle session")
+            foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
+        }
     }
 
     fun start() {
         if (musicRepository.indexingState == null) {
-            requestIndex(true)
+            musicRepository.requestIndex(true)
         }
     }
 
@@ -108,84 +124,24 @@ constructor(
         }
     }
 
-    override fun requestIndex(withCache: Boolean) {
-        logD("Starting new indexing job (previous=${currentIndexJob?.hashCode()})")
-        // Cancel the previous music loading job.
-        currentIndexJob?.cancel()
-        // Start a new music loading job on a co-routine.
-        currentIndexJob = musicRepository.index(this, withCache)
-    }
+    fun getRoot() = BrowserRoot(Category.ROOT.id, null)
 
-    override val scope = indexScope
+    fun getItem(mediaId: String, result: MediaBrowserServiceCompat.Result<MediaItem>) =
+        result.dispatch { browser.getItem(mediaId) }
 
-    override fun onIndexingStateChanged() {
-        foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
-        val state = musicRepository.indexingState
-        if (state is IndexingState.Indexing) {
-            wakeLock.acquireSafe()
-        } else {
-            wakeLock.releaseSafe()
+    fun getChildren(mediaId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>) =
+        result.dispatch { browser.getChildren(mediaId)?.toMutableList() }
+
+    private fun <T> MediaBrowserServiceCompat.Result<T>.dispatch(body: () -> T?) {
+        try {
+            val result = body()
+            if (result == null) {
+                logW("Result is null")
+            }
+            sendResult(result)
+        } catch (e: Exception) {
+            logD("Error while dispatching: $e")
+            sendResult(null)
         }
-    }
-
-    override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        logD("Music changed, updating shared objects")
-        // Wipe possibly-invalidated outdated covers
-        imageLoader.memoryCache?.clear()
-        // Clear invalid models from PlaybackStateManager. This is not connected
-        // to a listener as it is bad practice for a shared object to attach to
-        // the listener system of another.
-        playbackManager.toSavedState()?.let { savedState ->
-            playbackManager.applySavedState(
-                savedState.copy(
-                    heap =
-                        savedState.heap.map { song ->
-                            song?.let { deviceLibrary.findSong(it.uid) }
-                        }),
-                true)
-        }
-    }
-
-    override fun onIndexingSettingChanged() {
-        super.onIndexingSettingChanged()
-        musicRepository.requestIndex(true)
-    }
-
-    override fun onObservingChanged() {
-        super.onObservingChanged()
-        // Make sure we don't override the service state with the observing
-        // notification if we were actively loading when the automatic rescanning
-        // setting changed. In such a case, the state will still be updated when
-        // the music loading process ends.
-        if (currentIndexJob == null) {
-            logD("Not loading, updating idle session")
-            foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
-        }
-    }
-
-    /** Utility to safely acquire a [PowerManager.WakeLock] without crashes/inefficiency. */
-    private fun PowerManager.WakeLock.acquireSafe() {
-        // Avoid unnecessary acquire calls.
-        if (!wakeLock.isHeld) {
-            logD("Acquiring wake lock")
-            // Time out after a minute, which is the average music loading time for a medium-sized
-            // library. If this runs out, we will re-request the lock, and if music loading is
-            // shorter than the timeout, it will be released early.
-            acquire(WAKELOCK_TIMEOUT_MS)
-        }
-    }
-
-    /** Utility to safely release a [PowerManager.WakeLock] without crashes/inefficiency. */
-    private fun PowerManager.WakeLock.releaseSafe() {
-        // Avoid unnecessary release calls.
-        if (wakeLock.isHeld) {
-            logD("Releasing wake lock")
-            release()
-        }
-    }
-
-    companion object {
-        const val WAKELOCK_TIMEOUT_MS = 60 * 1000L
     }
 }

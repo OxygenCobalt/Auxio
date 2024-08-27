@@ -45,24 +45,18 @@ import org.oxycblt.auxio.search.SearchEngine
 import javax.inject.Inject
 import kotlin.math.min
 
-class MediaItemBrowser
+class MusicBrowser
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
     private val musicRepository: MusicRepository,
     private val listSettings: ListSettings
 ) : MusicRepository.UpdateListener {
-    private val browserJob = Job()
-    private val searchScope = CoroutineScope(browserJob + Dispatchers.Default)
-    private val searchSubscribers = mutableMapOf<String, String>()
-    private val searchResults = mutableMapOf<String, Deferred<SearchEngine.Items>>()
-    private var invalidator: Invalidator? = null
-
     interface Invalidator {
-        fun invalidate(ids: Map<String, Int>)
-
-        fun invalidate(controller: String, query: String, itemCount: Int)
+        fun invalidateMusic(ids: Set<String>)
     }
+
+    private var invalidator: Invalidator? = null
 
     fun attach(invalidator: Invalidator) {
         this.invalidator = invalidator
@@ -70,75 +64,52 @@ constructor(
     }
 
     fun release() {
-        browserJob.cancel()
-        invalidator = null
         musicRepository.removeUpdateListener(this)
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary
-        var invalidateSearch = false
-        val invalidate = mutableMapOf<String, Int>()
+        val invalidate = mutableSetOf<String>()
         if (changes.deviceLibrary && deviceLibrary != null) {
-            MediaSessionUID.Category.DEVICE_MUSIC.forEach {
-                invalidate[it.toString()] = getCategorySize(it, musicRepository)
+            Category.DEVICE_MUSIC.forEach {
+                invalidate.add(MediaSessionUID.CategoryItem(it).toString())
             }
 
             deviceLibrary.albums.forEach {
                 val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate[id] = it.songs.size
+                invalidate.add(id)
             }
 
             deviceLibrary.artists.forEach {
                 val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate[id] = it.songs.size + it.explicitAlbums.size + it.implicitAlbums.size
+                invalidate.add(id)
             }
 
             deviceLibrary.genres.forEach {
                 val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate[id] = it.songs.size + it.artists.size
+                invalidate.add(id)
             }
-
-            invalidateSearch = true
         }
         val userLibrary = musicRepository.userLibrary
         if (changes.userLibrary && userLibrary != null) {
-            MediaSessionUID.Category.USER_MUSIC.forEach {
-                invalidate[it.toString()] = getCategorySize(it, musicRepository)
+            Category.USER_MUSIC.forEach {
+                invalidate.add(MediaSessionUID.CategoryItem(it).toString())
             }
             userLibrary.playlists.forEach {
                 val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate[id] = it.songs.size
+                invalidate.add(id)
             }
-            invalidateSearch = true
         }
 
         if (invalidate.isNotEmpty()) {
-            invalidator?.invalidate(invalidate)
-        }
-
-        if (invalidateSearch) {
-            for (entry in searchResults.entries) {
-                searchResults[entry.key]?.cancel()
-            }
-            searchResults.clear()
-
-            for (entry in searchSubscribers.entries) {
-                if (searchResults[entry.value] != null) {
-                    continue
-                }
-                searchResults[entry.value] = searchTo(entry.value)
-            }
+            invalidator?.invalidateMusic(invalidate)
         }
     }
-
-    val root: MediaItem
-        get() = MediaSessionUID.Category.ROOT.toMediaItem(context)
 
     fun getItem(mediaId: String): MediaItem? {
         val music =
             when (val uid = MediaSessionUID.fromString(mediaId)) {
-                is MediaSessionUID.Category -> return uid.toMediaItem(context)
+                is MediaSessionUID.CategoryItem -> return uid.category.toMediaItem(context)
                 is MediaSessionUID.SingleItem ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
 
@@ -158,15 +129,14 @@ constructor(
         }
     }
 
-    fun getChildren(parentId: String, page: Int, pageSize: Int): List<MediaItem>? {
+    fun getChildren(parentId: String): List<MediaItem>? {
         val deviceLibrary = musicRepository.deviceLibrary
         val userLibrary = musicRepository.userLibrary
         if (deviceLibrary == null || userLibrary == null) {
             return listOf()
         }
 
-        val items = getMediaItemList(parentId, deviceLibrary, userLibrary) ?: return null
-        return items.paginate(page, pageSize)
+        return getMediaItemList(parentId, deviceLibrary, userLibrary)
     }
 
     private fun getMediaItemList(
@@ -175,32 +145,34 @@ constructor(
         userLibrary: UserLibrary
     ): List<MediaItem>? {
         return when (val mediaSessionUID = MediaSessionUID.fromString(id)) {
-            is MediaSessionUID.Category -> {
-                when (mediaSessionUID) {
-                    MediaSessionUID.Category.ROOT ->
-                        MediaSessionUID.Category.IMPORTANT.map { it.toMediaItem(context) }
+            is MediaSessionUID.CategoryItem -> {
+                when (mediaSessionUID.category) {
+                    Category.ROOT ->
+                        Category.IMPORTANT.map { it.toMediaItem(context) }
 
-                    MediaSessionUID.Category.SONGS ->
+                    Category.MORE -> TODO()
+
+                    Category.SONGS ->
                         listSettings.songSort.songs(deviceLibrary.songs).map {
                             it.toMediaItem(context, null)
                         }
 
-                    MediaSessionUID.Category.ALBUMS ->
+                    Category.ALBUMS ->
                         listSettings.albumSort.albums(deviceLibrary.albums).map {
                             it.toMediaItem(context)
                         }
 
-                    MediaSessionUID.Category.ARTISTS ->
+                    Category.ARTISTS ->
                         listSettings.artistSort.artists(deviceLibrary.artists).map {
                             it.toMediaItem(context)
                         }
 
-                    MediaSessionUID.Category.GENRES ->
+                    Category.GENRES ->
                         listSettings.genreSort.genres(deviceLibrary.genres).map {
                             it.toMediaItem(context)
                         }
 
-                    MediaSessionUID.Category.PLAYLISTS ->
+                    Category.PLAYLISTS ->
                         userLibrary.playlists.map { it.toMediaItem(context) }
                 }
             }
@@ -223,25 +195,25 @@ constructor(
         return when (val item = musicRepository.find(uid)) {
             is Album -> {
                 val songs = listSettings.albumSongSort.songs(item.songs)
-                songs.map { it.toMediaItem(context, item).withHeader(R.string.lbl_songs) }
+                songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs))}
             }
 
             is Artist -> {
                 val albums = ARTIST_ALBUMS_SORT.albums(item.explicitAlbums + item.implicitAlbums)
                 val songs = listSettings.artistSongSort.songs(item.songs)
-                albums.map { it.toMediaItem(context).withHeader(R.string.lbl_albums) } +
-                        songs.map { it.toMediaItem(context, item).withHeader(R.string.lbl_songs) }
+                albums.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) } +
+                        songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs)) }
             }
 
             is Genre -> {
                 val artists = GENRE_ARTISTS_SORT.artists(item.artists)
                 val songs = listSettings.genreSongSort.songs(item.songs)
-                artists.map { it.toMediaItem(context).withHeader(R.string.lbl_artists) } +
-                        songs.map { it.toMediaItem(context, null).withHeader(R.string.lbl_songs) }
+                artists.map { it.toMediaItem(context, header(R.string.lbl_songs)) } +
+                        songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) }
             }
 
             is Playlist -> {
-                item.songs.map { it.toMediaItem(context, item).withHeader(R.string.lbl_songs) }
+                item.songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) }
             }
 
             is Song,
@@ -249,121 +221,91 @@ constructor(
         }
     }
 
-    private fun MediaItem.withHeader(@StringRes res: Int): MediaItem {
-        val oldExtras = mediaMetadata.extras ?: Bundle()
-        val newExtras =
-            Bundle(oldExtras).apply {
-                putString(
-                    MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                    context.getString(res)
-                )
-            }
-        return buildUpon()
-            .setMediaMetadata(mediaMetadata.buildUpon().setExtras(newExtras).build())
-            .build()
-    }
-
-    private fun getCategorySize(
-        category: MediaSessionUID.Category,
-        musicRepository: MusicRepository
-    ): Int {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return 0
-        val userLibrary = musicRepository.userLibrary ?: return 0
-        return when (category) {
-            MediaSessionUID.Category.ROOT -> MediaSessionUID.Category.IMPORTANT.size
-            MediaSessionUID.Category.SONGS -> deviceLibrary.songs.size
-            MediaSessionUID.Category.ALBUMS -> deviceLibrary.albums.size
-            MediaSessionUID.Category.ARTISTS -> deviceLibrary.artists.size
-            MediaSessionUID.Category.GENRES -> deviceLibrary.genres.size
-            MediaSessionUID.Category.PLAYLISTS -> userLibrary.playlists.size
-        }
-    }
-
-    suspend fun prepareSearch(query: String, controller: ControllerInfo) {
-        searchSubscribers[controller] = query
-        val existing = searchResults[query]
-        if (existing == null) {
-            val new = searchTo(query)
-            searchResults[query] = new
-            new.await()
-        } else {
-            val items = existing.await()
-            invalidator?.invalidate(controller, query, items.count())
-        }
-    }
-
-    suspend fun getSearchResult(
-        query: String,
-        page: Int,
-        pageSize: Int,
-    ): List<MediaItem>? {
-        val deferred = searchResults[query] ?: searchTo(query).also { searchResults[query] = it }
-        return deferred.await().concat().paginate(page, pageSize)
-    }
-
-    private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
-        val music = mutableListOf<MediaItem>()
-        if (songs != null) {
-            music.addAll(songs.map { it.toMediaItem(context, null) })
-        }
-        if (albums != null) {
-            music.addAll(albums.map { it.toMediaItem(context) })
-        }
-        if (artists != null) {
-            music.addAll(artists.map { it.toMediaItem(context) })
-        }
-        if (genres != null) {
-            music.addAll(genres.map { it.toMediaItem(context) })
-        }
-        if (playlists != null) {
-            music.addAll(playlists.map { it.toMediaItem(context) })
-        }
-        return music
-    }
-
-    private fun SearchEngine.Items.count(): Int {
-        var count = 0
-        if (songs != null) {
-            count += songs.size
-        }
-        if (albums != null) {
-            count += albums.size
-        }
-        if (artists != null) {
-            count += artists.size
-        }
-        if (genres != null) {
-            count += genres.size
-        }
-        if (playlists != null) {
-            count += playlists.size
-        }
-        return count
-    }
-
-    private fun searchTo(query: String) =
-        searchScope.async {
-            if (query.isEmpty()) {
-                return@async SearchEngine.Items()
-            }
-            val deviceLibrary = musicRepository.deviceLibrary ?: return@async SearchEngine.Items()
-            val userLibrary = musicRepository.userLibrary ?: return@async SearchEngine.Items()
-            val items =
-                SearchEngine.Items(
-                    deviceLibrary.songs,
-                    deviceLibrary.albums,
-                    deviceLibrary.artists,
-                    deviceLibrary.genres,
-                    userLibrary.playlists
-                )
-            val results = searchEngine.search(items, query)
-            for (entry in searchSubscribers.entries) {
-                if (entry.value == query) {
-                    invalidator?.invalidate(entry.key, query, results.count())
-                }
-            }
-            results
-        }
+//    suspend fun prepareSearch(query: String, controller: String) {
+//        searchSubscribers[controller] = query
+//        val existing = searchResults[query]
+//        if (existing == null) {
+//            val new = searchTo(query)
+//            searchResults[query] = new
+//            new.await()
+//        } else {
+//            val items = existing.await()
+//            invalidator?.invalidate(controller, query, items.count())
+//        }
+//    }
+//
+//    suspend fun getSearchResult(
+//        query: String,
+//        page: Int,
+//        pageSize: Int,
+//    ): List<MediaItem>? {
+//        val deferred = searchResults[query] ?: searchTo(query).also { searchResults[query] = it }
+//        return deferred.await().concat().paginate(page, pageSize)
+//    }
+//
+//    private fun SearchEngine.Items.concat(): MutableList<MediaItem> {
+//        val music = mutableListOf<MediaItem>()
+//        if (songs != null) {
+//            music.addAll(songs.map { it.toMediaItem(context, null) })
+//        }
+//        if (albums != null) {
+//            music.addAll(albums.map { it.toMediaItem(context) })
+//        }
+//        if (artists != null) {
+//            music.addAll(artists.map { it.toMediaItem(context) })
+//        }
+//        if (genres != null) {
+//            music.addAll(genres.map { it.toMediaItem(context) })
+//        }
+//        if (playlists != null) {
+//            music.addAll(playlists.map { it.toMediaItem(context) })
+//        }
+//        return music
+//    }
+//
+//    private fun SearchEngine.Items.count(): Int {
+//        var count = 0
+//        if (songs != null) {
+//            count += songs.size
+//        }
+//        if (albums != null) {
+//            count += albums.size
+//        }
+//        if (artists != null) {
+//            count += artists.size
+//        }
+//        if (genres != null) {
+//            count += genres.size
+//        }
+//        if (playlists != null) {
+//            count += playlists.size
+//        }
+//        return count
+//    }
+//
+//    private fun searchTo(query: String) =
+//        searchScope.async {
+//            if (query.isEmpty()) {
+//                return@async SearchEngine.Items()
+//            }
+//            val deviceLibrary = musicRepository.deviceLibrary ?: return@async SearchEngine.Items()
+//            val userLibrary = musicRepository.userLibrary ?: return@async SearchEngine.Items()
+//            val items =
+//                SearchEngine.Items(
+//                    deviceLibrary.songs,
+//                    deviceLibrary.albums,
+//                    deviceLibrary.artists,
+//                    deviceLibrary.genres,
+//                    userLibrary.playlists
+//                )
+//            val results = searchEngine.search(items, query)
+//            for (entry in searchSubscribers.entries) {
+//                if (entry.value == query) {
+//                    invalidator?.invalidate(entry.key, query, results.count())
+//                }
+//            }
+//            results
+//        }
 
     private fun List<MediaItem>.paginate(page: Int, pageSize: Int): List<MediaItem>? {
         if (page == Int.MAX_VALUE) {

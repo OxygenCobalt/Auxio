@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationChannelCompat
@@ -37,16 +36,16 @@ import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
 
 @AndroidEntryPoint
-class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
-    @Inject lateinit var mediaSessionFragment: PlaybackServiceFragment
+class AuxioService : MediaBrowserServiceCompat(), ForegroundListener, MusicServiceFragment.Invalidator {
+    @Inject lateinit var playbackFragment: PlaybackServiceFragment
 
-    @Inject lateinit var indexingFragment: MusicServiceFragment
+    @Inject lateinit var musicFragment: MusicServiceFragment
 
     @SuppressLint("WrongConstant")
     override fun onCreate() {
         super.onCreate()
-        setSessionToken(mediaSessionFragment.attach(this))
-        indexingFragment.attach(this)
+        sessionToken = playbackFragment.attach(this)
+        musicFragment.attach(this, this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,26 +62,31 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
 
     private fun onHandleForeground(intent: Intent?) {
         val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
-        indexingFragment.start()
-        mediaSessionFragment.start(startId)
+        musicFragment.start()
+        playbackFragment.start(startId)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        mediaSessionFragment.handleTaskRemoved()
+        playbackFragment.handleTaskRemoved()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        indexingFragment.release()
-        mediaSessionFragment.release()
+        musicFragment.release()
+        playbackFragment.release()
+        sessionToken = null
     }
 
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
         rootHints: Bundle?
-    ): BrowserRoot? = null
+    ): BrowserRoot = musicFragment.getRoot()
+
+    override fun onLoadItem(itemId: String, result: Result<MediaItem>) {
+        musicFragment.getItem(itemId, result)
+    }
 
     override fun onLoadChildren(
         parentId: String,
@@ -93,13 +97,8 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
         parentId: String,
         result: Result<MutableList<MediaItem>>,
         options: Bundle
-    ) {
-        super.onLoadChildren(parentId, result, options)
-    }
+    ) = musicFragment.getChildren(parentId, result)
 
-    override fun onLoadItem(itemId: String, result: Result<MediaItem>) {
-        super.onLoadItem(itemId, result)
-    }
 
     override fun onSearch(
         query: String,
@@ -120,7 +119,7 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
     }
 
     override fun updateForeground(change: ForegroundListener.Change) {
-        val mediaNotification = mediaSessionFragment.notification
+        val mediaNotification = playbackFragment.notification
         if (mediaNotification != null) {
             if (change == ForegroundListener.Change.MEDIA_SESSION) {
                 startForeground(mediaNotification.code, mediaNotification.build())
@@ -128,7 +127,7 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
             // Nothing changed, but don't show anything music related since we can always
             // index during playback.
         } else {
-            indexingFragment.createNotification {
+            musicFragment.createNotification {
                 if (it != null) {
                     startForeground(it.code, it.build())
                     isForeground = true
@@ -138,6 +137,10 @@ class AuxioService : MediaBrowserServiceCompat(), ForegroundListener {
                 }
             }
         }
+    }
+
+    override fun invalidateMusic(mediaId: String) {
+        notifyChildrenChanged(mediaId)
     }
 
     companion object {
