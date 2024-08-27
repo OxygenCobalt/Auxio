@@ -169,12 +169,14 @@ fun Album.toMediaItem(
         } else {
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
+    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
             .setTitle(name.resolve(context))
             .setSubtitle(artists.resolveNames(context))
             .setIconUri(cover.single.mediaStoreCoverUri)
+            .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }
@@ -194,12 +196,14 @@ fun Artist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             } else {
                 context.getString(R.string.def_song_count)
             })
+    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
             .setIconUri(cover.single.mediaStoreCoverUri)
+            .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }
@@ -212,6 +216,7 @@ fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
         } else {
             context.getString(R.string.def_song_count)
         }
+    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
@@ -230,12 +235,14 @@ fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
         } else {
             context.getString(R.string.def_song_count)
         }
+    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
             .setIconUri(cover?.single?.mediaStoreCoverUri)
+            .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }
