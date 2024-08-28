@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * MediaSessionInterface.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.playback.service
 
 import android.content.Context
@@ -8,6 +26,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -21,9 +40,10 @@ import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
-import javax.inject.Inject
 
-class MediaSessionInterface @Inject constructor(
+class MediaSessionInterface
+@Inject
+constructor(
     @ApplicationContext private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val commandFactory: PlaybackCommand.Factory,
@@ -130,15 +150,13 @@ class MediaSessionInterface @Inject constructor(
                 PlaybackStateCompat.REPEAT_MODE_GROUP -> RepeatMode.ALL
                 PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.TRACK
                 else -> RepeatMode.NONE
-            }
-        )
+            })
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
         playbackManager.shuffled(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                    shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP
-        )
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
 
     override fun onSkipToQueueItem(id: Long) {
@@ -164,12 +182,10 @@ class MediaSessionInterface @Inject constructor(
             is MediaSessionUID.SingleItem -> {
                 music = musicRepository.find(uid.uid) ?: return null
             }
-
             is MediaSessionUID.ChildItem -> {
                 music = musicRepository.find(uid.childUid) ?: return null
                 parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return null
             }
-
             else -> return null
         }
 
@@ -186,11 +202,9 @@ class MediaSessionInterface @Inject constructor(
         when (parent) {
             is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
             is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
-                ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
-
+                    ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
             is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
-                ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
-
+                    ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
             is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
             null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
         }

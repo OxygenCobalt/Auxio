@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * Category.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.service
 
 import org.oxycblt.auxio.R
@@ -79,6 +97,7 @@ sealed interface Category {
         val MUSIC = arrayOf(Songs, Albums, Artists, Genres, Playlists)
         val DEVICE_MUSIC = arrayOf(Songs, Albums, Artists, Genres)
         val USER_MUSIC = arrayOf(Playlists)
+
         fun fromString(str: String): Category? =
             when {
                 str.startsWith(Root.ID_PREFIX) -> Root.fromString(str)

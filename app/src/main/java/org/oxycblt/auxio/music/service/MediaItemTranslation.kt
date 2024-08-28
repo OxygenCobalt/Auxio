@@ -60,8 +60,7 @@ sealed interface MediaSessionUID {
                 return null
             }
             return when (parts[0]) {
-                ID_CATEGORY ->
-                    CategoryItem(Category.fromString(parts[1]) ?: return null)
+                ID_CATEGORY -> CategoryItem(Category.fromString(parts[1]) ?: return null)
                 ID_ITEM -> {
                     val uids = parts[1].split(">", limit = 2)
                     if (uids.size == 1) {

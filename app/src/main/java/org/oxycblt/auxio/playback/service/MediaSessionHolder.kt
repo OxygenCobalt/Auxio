@@ -21,7 +21,6 @@ package org.oxycblt.auxio.playback.system
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.media.session.MediaSession
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat

@@ -19,8 +19,8 @@
 package org.oxycblt.auxio.music.service
 
 import android.support.v4.media.MediaBrowserCompat.MediaItem
-import androidx.media.MediaBrowserServiceCompat.Result
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
+import androidx.media.MediaBrowserServiceCompat.Result
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,10 +82,8 @@ constructor(
     fun getItem(mediaId: String, result: Result<MediaItem>) =
         result.dispatch { musicBrowser.getItem(mediaId) }
 
-    fun getChildren(
-        mediaId: String,
-        result: Result<MutableList<MediaItem>>
-    ) = result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
+    fun getChildren(mediaId: String, result: Result<MutableList<MediaItem>>) =
+        result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
 
     fun search(query: String, result: Result<MutableList<MediaItem>>) =
         result.dispatchAsync { musicBrowser.search(query) }

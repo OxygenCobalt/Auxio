@@ -86,8 +86,7 @@ class AuxioService :
         rootHints: Bundle?
     ): BrowserRoot {
         val maximumRootChildLimit =
-            rootHints?.getInt(
-                MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4) ?: 4
+            rootHints?.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4) ?: 4
         return musicFragment.getRoot(maximumRootChildLimit)
     }
 
