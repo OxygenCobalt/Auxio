@@ -219,7 +219,7 @@ constructor(
             return commandFactory.all(ShuffleMode.ON)
         }
 
-        val bestCommand = when (extras.getString(MediaStore.EXTRA_MEDIA_FOCUS)) {
+        when (extras.getString(MediaStore.EXTRA_MEDIA_FOCUS)) {
             MediaStore.Audio.Media.ENTRY_CONTENT_TYPE -> {
                 val songQuery = extras.getString(MediaStore.EXTRA_MEDIA_TITLE)
                 val albumQuery = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)
@@ -228,7 +228,9 @@ constructor(
                     fuzzy(it.name, songQuery) + fuzzy(it.album.name, albumQuery) +
                             it.artists.maxOf { artist -> fuzzy(artist.name, artistQuery) }
                 }
-                best?.let { commandFactory.song(it, ShuffleMode.IMPLICIT) }
+                if (best != null) {
+                    return expandSongIntoCommand(best, null)
+                }
             }
 
             MediaStore.Audio.Albums.ENTRY_CONTENT_TYPE -> {
@@ -237,37 +239,42 @@ constructor(
                 val best = deviceLibrary.albums.maxByOrNull {
                     fuzzy(it.name, albumQuery) + it.artists.maxOf { artist -> fuzzy(artist.name, artistQuery) }
                 }
-                best?.let { commandFactory.album(it, ShuffleMode.OFF) }
+                if (best != null) {
+                    return commandFactory.album(best, ShuffleMode.OFF)
+                }
             }
 
             MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE -> {
                 val artistQuery = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
                 val best = deviceLibrary.artists.maxByOrNull { fuzzy(it.name, artistQuery) }
-                best?.let { commandFactory.artist(it, ShuffleMode.OFF) }
+                if (best != null) {
+                    return commandFactory.artist(best, ShuffleMode.OFF)
+                }
             }
 
             MediaStore.Audio.Genres.ENTRY_CONTENT_TYPE -> {
                 val genreQuery = extras.getString(MediaStore.EXTRA_MEDIA_GENRE)
                 val best = deviceLibrary.genres.maxByOrNull { fuzzy(it.name, genreQuery) }
-                best?.let { commandFactory.genre(it, ShuffleMode.OFF) }
+                if (best != null) {
+                    return commandFactory.genre(best, ShuffleMode.OFF)
+                }
             }
 
             MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE -> {
                 val playlistQuery = extras.getString(MediaStore.EXTRA_MEDIA_PLAYLIST)
                 val best = userLibrary.playlists.maxByOrNull { fuzzy(it.name, playlistQuery) }
-                best?.let { commandFactory.playlist(it, ShuffleMode.OFF) }
+                if (best != null) {
+                    return commandFactory.playlist(best, ShuffleMode.OFF)
+                }
             }
 
-            else -> null
-        }
-
-        if (bestCommand != null) {
-            return bestCommand
+            else -> {}
         }
 
         val bestMusic = (deviceLibrary.songs + deviceLibrary.albums + deviceLibrary.artists + deviceLibrary.genres + userLibrary.playlists)
             .maxByOrNull { fuzzy(it.name, query) }
-        return bestMusic?.let { expandMusicIntoCommand(it, null) }
+        // TODO: Error out when we can't correctly resolve the query
+        return bestMusic?.let { expandMusicIntoCommand(it, null) } ?: commandFactory.all(ShuffleMode.ON)
     }
 
     private fun fuzzy(name: Name, query: String?): Double =
