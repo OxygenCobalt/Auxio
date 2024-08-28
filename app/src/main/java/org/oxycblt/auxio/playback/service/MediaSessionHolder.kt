@@ -108,6 +108,7 @@ private constructor(
             isActive = true
             setQueueTitle(context.getString(R.string.lbl_queue))
             setCallback(sessionInterface)
+            setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
         }
         this.foregroundListener = foregroundListener
         playbackManager.addListener(this)

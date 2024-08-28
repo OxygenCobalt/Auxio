@@ -39,6 +39,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.state.PlaybackCommand
@@ -92,14 +93,11 @@ constructor(
         super.onPlayFromSearch(query, extras)
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val userLibrary = musicRepository.userLibrary ?: return
-        val queryBundle =
-            QueryBundle(
-                (extras.getString(MediaStore.EXTRA_MEDIA_TITLE) ?: query).ifBlank { null },
-                extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)?.ifBlank { null },
-                extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)?.ifBlank { null },
-                extras.getString(MediaStore.EXTRA_MEDIA_GENRE)?.ifBlank { null },
-                extras.getString(@Suppress("DEPRECATION") MediaStore.EXTRA_MEDIA_PLAYLIST))
-        val command = expandSearchInfoCommand(queryBundle, deviceLibrary, userLibrary)
+        val command = expandSearchInfoCommand(
+            query.ifBlank { null },
+            extras,
+            deviceLibrary,
+            userLibrary)
         playbackManager.play(requireNotNull(command) { "Invalid playback configuration" })
     }
 
@@ -110,9 +108,6 @@ constructor(
         val genre: String?,
         val playlist: String?
     )
-
-    private fun <T : Music> Collection<T>.fuzzyBest(query: String): T =
-        maxByOrNull { jaroWinkler.apply(it.name.resolve(context), query) } ?: first()
 
     override fun onAddQueueItem(description: MediaDescriptionCompat) {
         super.onAddQueueItem(description)
@@ -209,65 +204,85 @@ constructor(
             else -> return null
         }
 
-        return when (music) {
-            is Song -> inferSongFromParent(music, parent)
+        return expandMusicIntoCommand(music, parent)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun expandSearchInfoCommand(
+        query: String?,
+        extras: Bundle,
+        deviceLibrary: DeviceLibrary,
+        userLibrary: UserLibrary
+    ): PlaybackCommand? {
+        if (query == null) {
+            // User just wanted to 'play some music', shuffle all
+            return commandFactory.all(ShuffleMode.ON)
+        }
+
+        val bestCommand = when (extras.getString(MediaStore.EXTRA_MEDIA_FOCUS)) {
+            MediaStore.Audio.Media.ENTRY_CONTENT_TYPE -> {
+                val songQuery = extras.getString(MediaStore.EXTRA_MEDIA_TITLE)
+                val albumQuery = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)
+                val artistQuery = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
+                val best = deviceLibrary.songs.maxByOrNull {
+                    fuzzy(it.name, songQuery) + fuzzy(it.album.name, albumQuery) +
+                            it.artists.maxOf { artist -> fuzzy(artist.name, artistQuery) }
+                }
+                best?.let { commandFactory.song(it, ShuffleMode.IMPLICIT) }
+            }
+
+            MediaStore.Audio.Albums.ENTRY_CONTENT_TYPE -> {
+                val albumQuery = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)
+                val artistQuery = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
+                val best = deviceLibrary.albums.maxByOrNull {
+                    fuzzy(it.name, albumQuery) + it.artists.maxOf { artist -> fuzzy(artist.name, artistQuery) }
+                }
+                best?.let { commandFactory.album(it, ShuffleMode.OFF) }
+            }
+
+            MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE -> {
+                val artistQuery = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
+                val best = deviceLibrary.artists.maxByOrNull { fuzzy(it.name, artistQuery) }
+                best?.let { commandFactory.artist(it, ShuffleMode.OFF) }
+            }
+
+            MediaStore.Audio.Genres.ENTRY_CONTENT_TYPE -> {
+                val genreQuery = extras.getString(MediaStore.EXTRA_MEDIA_GENRE)
+                val best = deviceLibrary.genres.maxByOrNull { fuzzy(it.name, genreQuery) }
+                best?.let { commandFactory.genre(it, ShuffleMode.OFF) }
+            }
+
+            MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE -> {
+                val playlistQuery = extras.getString(MediaStore.EXTRA_MEDIA_PLAYLIST)
+                val best = userLibrary.playlists.maxByOrNull { fuzzy(it.name, playlistQuery) }
+                best?.let { commandFactory.playlist(it, ShuffleMode.OFF) }
+            }
+
+            else -> null
+        }
+
+        if (bestCommand != null) {
+            return bestCommand
+        }
+
+        val bestMusic = (deviceLibrary.songs + deviceLibrary.albums + deviceLibrary.artists + deviceLibrary.genres + userLibrary.playlists)
+            .maxByOrNull { fuzzy(it.name, query) }
+        return bestMusic?.let { expandMusicIntoCommand(it, null) }
+    }
+
+    private fun fuzzy(name: Name, query: String?): Double =
+        query?.let { jaroWinkler.apply(name.resolve(context), it) } ?: 0.0
+
+    private fun expandMusicIntoCommand(music: Music, parent: MusicParent?) =
+        when (music) {
+            is Song -> expandSongIntoCommand(music, parent)
             is Album -> commandFactory.album(music, ShuffleMode.OFF)
             is Artist -> commandFactory.artist(music, ShuffleMode.OFF)
             is Genre -> commandFactory.genre(music, ShuffleMode.OFF)
             is Playlist -> commandFactory.playlist(music, ShuffleMode.OFF)
         }
-    }
 
-    private fun expandSearchInfoCommand(
-        query: QueryBundle,
-        deviceLibrary: DeviceLibrary,
-        userLibrary: UserLibrary
-    ): PlaybackCommand? {
-        if (query.album != null) {
-            val album = deviceLibrary.albums.fuzzyBest(query.album)
-            if (query.title == null) {
-                return commandFactory.album(album, ShuffleMode.OFF)
-            }
-            val song = album.songs.fuzzyBest(query.title)
-            return commandFactory.songFromAlbum(song, ShuffleMode.OFF)
-        }
-
-        if (query.artist != null) {
-            val artist = deviceLibrary.artists.fuzzyBest(query.artist)
-            if (query.title == null) {
-                return commandFactory.artist(artist, ShuffleMode.OFF)
-            }
-            val song = artist.songs.fuzzyBest(query.title)
-            return commandFactory.songFromArtist(song, artist, ShuffleMode.OFF)
-        }
-
-        if (query.genre != null) {
-            val genre = deviceLibrary.genres.fuzzyBest(query.genre)
-            if (query.title == null) {
-                return commandFactory.genre(genre, ShuffleMode.OFF)
-            }
-            val song = genre.songs.fuzzyBest(query.title)
-            return commandFactory.songFromGenre(song, genre, ShuffleMode.OFF)
-        }
-
-        if (query.playlist != null) {
-            val playlist = userLibrary.playlists.fuzzyBest(query.playlist)
-            if (query.title == null) {
-                return commandFactory.playlist(playlist, ShuffleMode.OFF)
-            }
-            val song = playlist.songs.fuzzyBest(query.title)
-            return commandFactory.songFromPlaylist(song, playlist, ShuffleMode.OFF)
-        }
-
-        if (query.title != null) {
-            val song = deviceLibrary.songs.fuzzyBest(query.title)
-            return commandFactory.songFromAll(song, ShuffleMode.OFF)
-        }
-
-        return commandFactory.all(ShuffleMode.ON)
-    }
-
-    private fun inferSongFromParent(music: Song, parent: MusicParent?) =
+    private fun expandSongIntoCommand(music: Song, parent: MusicParent?) =
         when (parent) {
             is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
             is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
