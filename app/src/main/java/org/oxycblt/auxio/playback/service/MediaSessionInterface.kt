@@ -24,11 +24,14 @@ import org.oxycblt.auxio.playback.state.ShuffleMode
 import javax.inject.Inject
 
 class MediaSessionInterface @Inject constructor(
-    @ApplicationContext  private val context: Context,
+    @ApplicationContext private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val commandFactory: PlaybackCommand.Factory,
     private val musicRepository: MusicRepository,
 ) : MediaSessionCompat.Callback() {
+    override fun onPrepare() {
+        super.onPrepare()
+    }
 
     override fun onPrepareFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPrepareFromMediaId(mediaId, extras)
@@ -127,13 +130,15 @@ class MediaSessionInterface @Inject constructor(
                 PlaybackStateCompat.REPEAT_MODE_GROUP -> RepeatMode.ALL
                 PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.TRACK
                 else -> RepeatMode.NONE
-            })
+            }
+        )
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
         playbackManager.shuffled(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
+                    shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP
+        )
     }
 
     override fun onSkipToQueueItem(id: Long) {
@@ -159,10 +164,12 @@ class MediaSessionInterface @Inject constructor(
             is MediaSessionUID.SingleItem -> {
                 music = musicRepository.find(uid.uid) ?: return null
             }
+
             is MediaSessionUID.ChildItem -> {
                 music = musicRepository.find(uid.childUid) ?: return null
                 parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return null
             }
+
             else -> return null
         }
 
@@ -179,16 +186,19 @@ class MediaSessionInterface @Inject constructor(
         when (parent) {
             is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
             is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
-                    ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
+                ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
+
             is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
-                    ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
+                ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
+
             is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
             null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
         }
 
     companion object {
         const val ACTIONS =
-            PlaybackStateCompat.ACTION_PLAY or
+            PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                PlaybackStateCompat.ACTION_PLAY or
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_PLAY_PAUSE or
                 PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
@@ -197,6 +207,7 @@ class MediaSessionInterface @Inject constructor(
                 PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
                 PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
                 PlaybackStateCompat.ACTION_SEEK_TO or
+                PlaybackStateCompat.ACTION_REWIND or
                 PlaybackStateCompat.ACTION_STOP
     }
 }
