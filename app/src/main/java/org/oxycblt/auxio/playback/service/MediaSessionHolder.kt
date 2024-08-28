@@ -20,10 +20,8 @@ package org.oxycblt.auxio.playback.system
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
-import android.os.Bundle
+import android.media.session.MediaSession
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -39,25 +37,17 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.service.MediaSessionInterface
 import org.oxycblt.auxio.playback.service.PlaybackActions
-import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
@@ -71,10 +61,9 @@ import org.oxycblt.auxio.util.newMainPendingIntent
 class MediaSessionHolder
 private constructor(
     private val context: Context,
+    private val sessionInterface: MediaSessionInterface,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
-    private val commandFactory: PlaybackCommand.Factory,
-    private val musicRepository: MusicRepository,
     private val bitmapProvider: BitmapProvider,
     private val imageSettings: ImageSettings
 ) :
@@ -86,29 +75,23 @@ private constructor(
     class Factory
     @Inject
     constructor(
+        private val sessionInterface: MediaSessionInterface,
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings,
-        private val commandFactory: PlaybackCommand.Factory,
-        private val musicRepository: MusicRepository,
         private val bitmapProvider: BitmapProvider,
-        private val imageSettings: ImageSettings
+        private val imageSettings: ImageSettings,
     ) {
         fun create(context: Context) =
             MediaSessionHolder(
                 context,
+                sessionInterface,
                 playbackManager,
                 playbackSettings,
-                commandFactory,
-                musicRepository,
                 bitmapProvider,
                 imageSettings)
     }
 
-    private val mediaSession =
-        MediaSessionCompat(context, context.packageName).apply {
-            isActive = true
-            setQueueTitle(context.getString(R.string.lbl_queue))
-        }
+    private val mediaSession = MediaSessionCompat(context, context.packageName)
     val token: MediaSessionCompat.Token
         get() = mediaSession.sessionToken
 
@@ -119,6 +102,11 @@ private constructor(
     private var foregroundListener: ForegroundListener? = null
 
     fun attach(foregroundListener: ForegroundListener) {
+        mediaSession.apply {
+            isActive = true
+            setQueueTitle(context.getString(R.string.lbl_queue))
+            setCallback(sessionInterface)
+        }
         this.foregroundListener = foregroundListener
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
@@ -217,116 +205,6 @@ private constructor(
     }
 
     // --- MEDIASESSION OVERRIDES ---
-
-    override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-        super.onPlayFromMediaId(mediaId, extras)
-        val uid = MediaSessionUID.fromString(mediaId ?: return) ?: return
-        val command = expandIntoCommand(uid)
-        requireNotNull(command) { "Invalid playback configuration" }
-        playbackManager.play(command)
-    }
-
-    override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
-        super.onPlayFromUri(uri, extras)
-        // STUB
-    }
-
-    override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-        super.onPlayFromSearch(query, extras)
-        // STUB: Unimplemented, no search engine
-    }
-
-    override fun onAddQueueItem(description: MediaDescriptionCompat) {
-        super.onAddQueueItem(description)
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
-        val song =
-            when (uid) {
-                is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
-                is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
-                else -> null
-            }
-                ?: return
-        playbackManager.addToQueue(song)
-    }
-
-    override fun onRemoveQueueItem(description: MediaDescriptionCompat) {
-        super.onRemoveQueueItem(description)
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
-        val song =
-            when (uid) {
-                is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
-                is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
-                else -> null
-            }
-                ?: return
-        val queueIndex = playbackManager.queue.indexOf(song)
-        if (queueIndex > -1) {
-            playbackManager.removeQueueItem(queueIndex)
-        }
-    }
-
-    override fun onPlay() {
-        playbackManager.playing(true)
-    }
-
-    override fun onPause() {
-        playbackManager.playing(false)
-    }
-
-    override fun onSkipToNext() {
-        playbackManager.next()
-    }
-
-    override fun onSkipToPrevious() {
-        playbackManager.prev()
-    }
-
-    override fun onSeekTo(position: Long) {
-        playbackManager.seekTo(position)
-    }
-
-    override fun onFastForward() {
-        playbackManager.next()
-    }
-
-    override fun onRewind() {
-        playbackManager.seekTo(0)
-        playbackManager.playing(true)
-    }
-
-    override fun onSetRepeatMode(repeatMode: Int) {
-        playbackManager.repeatMode(
-            when (repeatMode) {
-                PlaybackStateCompat.REPEAT_MODE_ALL -> RepeatMode.ALL
-                PlaybackStateCompat.REPEAT_MODE_GROUP -> RepeatMode.ALL
-                PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.TRACK
-                else -> RepeatMode.NONE
-            })
-    }
-
-    override fun onSetShuffleMode(shuffleMode: Int) {
-        playbackManager.shuffled(
-            shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
-    }
-
-    override fun onSkipToQueueItem(id: Long) {
-        playbackManager.goto(id.toInt())
-    }
-
-    override fun onCustomAction(action: String, extras: Bundle?) {
-        super.onCustomAction(action, extras)
-        // Service already handles intents from the old notification actions, easier to
-        // plug into that system.
-        context.sendBroadcast(Intent(action))
-    }
-
-    override fun onStop() {
-        // Get the service to shut down with the ACTION_EXIT intent
-        context.sendBroadcast(Intent(PlaybackActions.ACTION_EXIT))
-    }
 
     // --- INTERNAL ---
 
@@ -435,40 +313,6 @@ private constructor(
         mediaSession.setQueue(queueItems)
     }
 
-    private fun expandIntoCommand(uid: MediaSessionUID): PlaybackCommand? {
-        val music: Music
-        var parent: MusicParent? = null
-        when (uid) {
-            is MediaSessionUID.SingleItem -> {
-                music = musicRepository.find(uid.uid) ?: return null
-            }
-            is MediaSessionUID.ChildItem -> {
-                music = musicRepository.find(uid.childUid) ?: return null
-                parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return null
-            }
-            else -> return null
-        }
-
-        return when (music) {
-            is Song -> inferSongFromParent(music, parent)
-            is Album -> commandFactory.album(music, ShuffleMode.OFF)
-            is Artist -> commandFactory.artist(music, ShuffleMode.OFF)
-            is Genre -> commandFactory.genre(music, ShuffleMode.OFF)
-            is Playlist -> commandFactory.playlist(music, ShuffleMode.OFF)
-        }
-    }
-
-    private fun inferSongFromParent(music: Song, parent: MusicParent?) =
-        when (parent) {
-            is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
-            is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
-                    ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
-            is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
-                    ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
-            is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
-            null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
-        }
-
     /** Invalidate the current [MediaSessionCompat]'s [PlaybackStateCompat]. */
     private fun invalidateSessionState() {
         logD("Updating media session playback state")
@@ -477,7 +321,7 @@ private constructor(
             // InternalPlayer.State handles position/state information.
             playbackManager.progression
                 .intoPlaybackState(PlaybackStateCompat.Builder())
-                .setActions(ACTIONS)
+                .setActions(MediaSessionInterface.ACTIONS)
                 // Active queue ID corresponds to the indices we populated prior, use them here.
                 .setActiveQueueItemId(playbackManager.index.toLong())
 
@@ -543,17 +387,6 @@ private constructor(
 
     companion object {
         private val emptyMetadata = MediaMetadataCompat.Builder().build()
-        private const val ACTIONS =
-            PlaybackStateCompat.ACTION_PLAY or
-                PlaybackStateCompat.ACTION_PAUSE or
-                PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
-                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
-                PlaybackStateCompat.ACTION_SEEK_TO or
-                PlaybackStateCompat.ACTION_STOP
     }
 }
 

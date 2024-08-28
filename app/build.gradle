@@ -153,6 +153,9 @@ dependencies {
     // Tasker integration
     implementation 'com.joaomgcd:taskerpluginlibrary:0.4.10'
 
+    // Fuzzy search
+    implementation 'org.apache.commons:commons-text:1.9'
+
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     testImplementation "junit:junit:4.13.2"

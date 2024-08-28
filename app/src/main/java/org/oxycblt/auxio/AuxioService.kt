@@ -108,16 +108,6 @@ class AuxioService :
         musicFragment.search(query, result)
     }
 
-    @SuppressLint("RestrictedApi")
-    override fun onSubscribe(id: String?, option: Bundle?) {
-        super.onSubscribe(id, option)
-    }
-
-    @SuppressLint("RestrictedApi")
-    override fun onUnsubscribe(id: String?) {
-        super.onUnsubscribe(id)
-    }
-
     override fun updateForeground(change: ForegroundListener.Change) {
         val mediaNotification = playbackFragment.notification
         if (mediaNotification != null) {
