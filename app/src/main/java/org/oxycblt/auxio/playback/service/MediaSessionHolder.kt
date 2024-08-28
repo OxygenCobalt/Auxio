@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback.system
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -303,6 +304,7 @@ private constructor(
                         // MediaStore URI instead of loading a bitmap.
                         .setIconUri(song.album.cover.single.mediaStoreCoverUri)
                         .setMediaUri(song.uri)
+                        .setExtras(Bundle().apply { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
                         .build()
                 // Store the item index so we can then use the analogous index in the
                 // playback state.

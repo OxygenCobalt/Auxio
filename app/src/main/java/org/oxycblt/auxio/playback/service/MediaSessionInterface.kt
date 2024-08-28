@@ -26,6 +26,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.oxycblt.auxio.BuildConfig
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -99,19 +100,8 @@ constructor(
 
     override fun onRemoveQueueItem(description: MediaDescriptionCompat) {
         super.onRemoveQueueItem(description)
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
-        val song =
-            when (uid) {
-                is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
-                is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
-                else -> null
-            }
-                ?: return
-        val queueIndex = playbackManager.queue.indexOf(song)
-        if (queueIndex > -1) {
-            playbackManager.removeQueueItem(queueIndex)
-        }
+        val at = description.extras?.getInt(KEY_QUEUE_POS) ?: return
+        playbackManager.removeQueueItem(at)
     }
 
     override fun onPlay() {
@@ -210,6 +200,7 @@ constructor(
         }
 
     companion object {
+        const val KEY_QUEUE_POS = BuildConfig.APPLICATION_ID + ".metadata.QUEUE_POS"
         const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
                 PlaybackStateCompat.ACTION_PLAY or
