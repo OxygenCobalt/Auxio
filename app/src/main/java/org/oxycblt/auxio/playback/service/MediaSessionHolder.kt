@@ -251,10 +251,15 @@ private constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, album)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
-                .putText(PlaybackNotification.KEY_PARENT,
+                .putText(
+                    PlaybackNotification.KEY_PARENT,
                     parent?.name?.resolve(context) ?: context.getString(R.string.lbl_all_songs))
-                .putText(MetadataExtras.KEY_SUBTITLE_LINK_MEDIA_ID, MediaSessionUID.SingleItem(song.artists[0].uid).toString())
-                .putText(MetadataExtras.KEY_DESCRIPTION_LINK_MEDIA_ID, MediaSessionUID.SingleItem(song.album.uid).toString())
+                .putText(
+                    MetadataExtras.KEY_SUBTITLE_LINK_MEDIA_ID,
+                    MediaSessionUID.SingleItem(song.artists[0].uid).toString())
+                .putText(
+                    MetadataExtras.KEY_DESCRIPTION_LINK_MEDIA_ID,
+                    MediaSessionUID.SingleItem(song.album.uid).toString())
         // These fields are nullable and so we must check first before adding them to the fields.
         song.track?.let {
             logD("Adding track information")
@@ -309,7 +314,8 @@ private constructor(
                         // MediaStore URI instead of loading a bitmap.
                         .setIconUri(song.album.cover.single.mediaStoreCoverUri)
                         .setMediaUri(song.uri)
-                        .setExtras(Bundle().apply { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
+                        .setExtras(
+                            Bundle().apply { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
                         .build()
                 // Store the item index so we can then use the analogous index in the
                 // playback state.

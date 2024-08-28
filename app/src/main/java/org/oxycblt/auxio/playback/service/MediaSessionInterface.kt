@@ -22,12 +22,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.oxycblt.auxio.BuildConfig
 import javax.inject.Inject
+import org.apache.commons.text.similarity.JaroWinklerSimilarity
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -36,7 +38,9 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.service.MediaSessionUID
+import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -50,39 +54,65 @@ constructor(
     private val commandFactory: PlaybackCommand.Factory,
     private val musicRepository: MusicRepository,
 ) : MediaSessionCompat.Callback() {
+    private val jaroWinkler = JaroWinklerSimilarity()
+
     override fun onPrepare() {
         super.onPrepare()
+        // STUB, we already automatically prepare playback.
     }
 
     override fun onPrepareFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPrepareFromMediaId(mediaId, extras)
+        // STUB, can't tell when this is called
+    }
+
+    override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) {
+        super.onPrepareFromUri(uri, extras)
+        // STUB, can't tell when this is called
+    }
+
+    override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
+        super.onPlayFromUri(uri, extras)
+        // STUB, can't tell when this is called
     }
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)
         val uid = MediaSessionUID.fromString(mediaId ?: return) ?: return
-        val command = expandIntoCommand(uid)
-        requireNotNull(command) { "Invalid playback configuration" }
-        playbackManager.play(command)
+        val command = expandUidIntoCommand(uid)
+        playbackManager.play(requireNotNull(command) { "Invalid playback configuration" })
     }
 
     override fun onPrepareFromSearch(query: String?, extras: Bundle?) {
         super.onPrepareFromSearch(query, extras)
+        // STUB, can't tell when this is called
     }
 
-    override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+    override fun onPlayFromSearch(query: String, extras: Bundle) {
         super.onPlayFromSearch(query, extras)
-        // STUB: Unimplemented, no search engine
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val userLibrary = musicRepository.userLibrary ?: return
+        val queryBundle =
+            QueryBundle(
+                (extras.getString(MediaStore.EXTRA_MEDIA_TITLE) ?: query).ifBlank { null },
+                extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)?.ifBlank { null },
+                extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)?.ifBlank { null },
+                extras.getString(MediaStore.EXTRA_MEDIA_GENRE)?.ifBlank { null },
+                extras.getString(@Suppress("DEPRECATION") MediaStore.EXTRA_MEDIA_PLAYLIST))
+        val command = expandSearchInfoCommand(queryBundle, deviceLibrary, userLibrary)
+        playbackManager.play(requireNotNull(command) { "Invalid playback configuration" })
     }
 
-    override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) {
-        super.onPrepareFromUri(uri, extras)
-    }
+    data class QueryBundle(
+        val title: String?,
+        val album: String?,
+        val artist: String?,
+        val genre: String?,
+        val playlist: String?
+    )
 
-    override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
-        super.onPlayFromUri(uri, extras)
-        // STUB
-    }
+    private fun <T : Music> Collection<T>.fuzzyBest(query: String): T =
+        maxByOrNull { jaroWinkler.apply(it.name.resolve(context), query) } ?: first()
 
     override fun onAddQueueItem(description: MediaDescriptionCompat) {
         super.onAddQueueItem(description)
@@ -120,6 +150,10 @@ constructor(
         playbackManager.prev()
     }
 
+    override fun onSkipToQueueItem(id: Long) {
+        playbackManager.goto(id.toInt())
+    }
+
     override fun onSeekTo(position: Long) {
         playbackManager.seekTo(position)
     }
@@ -149,8 +183,9 @@ constructor(
                 shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
 
-    override fun onSkipToQueueItem(id: Long) {
-        playbackManager.goto(id.toInt())
+    override fun onStop() {
+        // Get the service to shut down with the ACTION_EXIT intent
+        context.sendBroadcast(Intent(PlaybackActions.ACTION_EXIT))
     }
 
     override fun onCustomAction(action: String, extras: Bundle?) {
@@ -160,12 +195,7 @@ constructor(
         context.sendBroadcast(Intent(action))
     }
 
-    override fun onStop() {
-        // Get the service to shut down with the ACTION_EXIT intent
-        context.sendBroadcast(Intent(PlaybackActions.ACTION_EXIT))
-    }
-
-    private fun expandIntoCommand(uid: MediaSessionUID): PlaybackCommand? {
+    private fun expandUidIntoCommand(uid: MediaSessionUID): PlaybackCommand? {
         val music: Music
         var parent: MusicParent? = null
         when (uid) {
@@ -188,6 +218,55 @@ constructor(
         }
     }
 
+    private fun expandSearchInfoCommand(
+        query: QueryBundle,
+        deviceLibrary: DeviceLibrary,
+        userLibrary: UserLibrary
+    ): PlaybackCommand? {
+        if (query.album != null) {
+            val album = deviceLibrary.albums.fuzzyBest(query.album)
+            if (query.title == null) {
+                return commandFactory.album(album, ShuffleMode.OFF)
+            }
+            val song = album.songs.fuzzyBest(query.title)
+            return commandFactory.songFromAlbum(song, ShuffleMode.OFF)
+        }
+
+        if (query.artist != null) {
+            val artist = deviceLibrary.artists.fuzzyBest(query.artist)
+            if (query.title == null) {
+                return commandFactory.artist(artist, ShuffleMode.OFF)
+            }
+            val song = artist.songs.fuzzyBest(query.title)
+            return commandFactory.songFromArtist(song, artist, ShuffleMode.OFF)
+        }
+
+        if (query.genre != null) {
+            val genre = deviceLibrary.genres.fuzzyBest(query.genre)
+            if (query.title == null) {
+                return commandFactory.genre(genre, ShuffleMode.OFF)
+            }
+            val song = genre.songs.fuzzyBest(query.title)
+            return commandFactory.songFromGenre(song, genre, ShuffleMode.OFF)
+        }
+
+        if (query.playlist != null) {
+            val playlist = userLibrary.playlists.fuzzyBest(query.playlist)
+            if (query.title == null) {
+                return commandFactory.playlist(playlist, ShuffleMode.OFF)
+            }
+            val song = playlist.songs.fuzzyBest(query.title)
+            return commandFactory.songFromPlaylist(song, playlist, ShuffleMode.OFF)
+        }
+
+        if (query.title != null) {
+            val song = deviceLibrary.songs.fuzzyBest(query.title)
+            return commandFactory.songFromAll(song, ShuffleMode.OFF)
+        }
+
+        return commandFactory.all(ShuffleMode.ON)
+    }
+
     private fun inferSongFromParent(music: Song, parent: MusicParent?) =
         when (parent) {
             is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
@@ -203,6 +282,7 @@ constructor(
         const val KEY_QUEUE_POS = BuildConfig.APPLICATION_ID + ".metadata.QUEUE_POS"
         const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or
                 PlaybackStateCompat.ACTION_PLAY or
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_PLAY_PAUSE or
