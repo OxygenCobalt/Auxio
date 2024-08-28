@@ -223,6 +223,7 @@ fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
             .setIconUri(cover.single.mediaStoreCoverUri)
+            .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
 }
