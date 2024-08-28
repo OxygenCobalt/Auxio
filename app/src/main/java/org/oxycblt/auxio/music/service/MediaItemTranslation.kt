@@ -35,6 +35,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.playback.formatDurationDs
 import org.oxycblt.auxio.util.getPlural
 
 sealed interface MediaSessionUID {
@@ -141,11 +142,13 @@ fun Album.toMediaItem(
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
     val extras = Bundle().apply { sugar.forEach { this.it(context) } }
+    val counts = context.getPlural(R.plurals.fmt_song_count, songs.size)
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
             .setTitle(name.resolve(context))
             .setSubtitle(artists.resolveNames(context))
+            .setDescription(counts)
             .setIconUri(cover.single.mediaStoreCoverUri)
             .setExtras(extras)
             .build()
@@ -173,6 +176,7 @@ fun Artist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setMediaId(mediaSessionUID.toString())
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
+            .setDescription(genres.resolveNames(context))
             .setIconUri(cover.single.mediaStoreCoverUri)
             .setExtras(extras)
             .build()
@@ -213,6 +217,7 @@ fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setMediaId(mediaSessionUID.toString())
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
+            .setDescription(durationMs.formatDurationDs(true))
             .setIconUri(cover?.single?.mediaStoreCoverUri)
             .setExtras(extras)
             .build()
