@@ -172,27 +172,7 @@ constructor(
     ): List<MediaItem>? {
         return when (val mediaSessionUID = MediaSessionUID.fromString(id)) {
             is MediaSessionUID.CategoryItem -> {
-                when (mediaSessionUID.category) {
-                    Category.ROOT -> Category.IMPORTANT.map { it.toMediaItem(context) }
-                    Category.MORE -> TODO()
-                    Category.SONGS ->
-                        listSettings.songSort.songs(deviceLibrary.songs).map {
-                            it.toMediaItem(context, null)
-                        }
-                    Category.ALBUMS ->
-                        listSettings.albumSort.albums(deviceLibrary.albums).map {
-                            it.toMediaItem(context)
-                        }
-                    Category.ARTISTS ->
-                        listSettings.artistSort.artists(deviceLibrary.artists).map {
-                            it.toMediaItem(context)
-                        }
-                    Category.GENRES ->
-                        listSettings.genreSort.genres(deviceLibrary.genres).map {
-                            it.toMediaItem(context)
-                        }
-                    Category.PLAYLISTS -> userLibrary.playlists.map { it.toMediaItem(context) }
-                }
+                getCategoryMediaItems(mediaSessionUID.category, deviceLibrary, userLibrary)
             }
             is MediaSessionUID.SingleItem -> {
                 getChildMediaItems(mediaSessionUID.uid)
@@ -205,6 +185,38 @@ constructor(
             }
         }
     }
+
+    private fun getCategoryMediaItems(category: Category, deviceLibrary: DeviceLibrary, userLibrary: UserLibrary) =
+        when (category) {
+            is Category.Root -> {
+                val base = Category.MUSIC.take(category.amount)
+                if (base.size < Category.MUSIC.size) {
+                    base + Category.More(Category.MUSIC.size - base.size)
+                } else {
+                    base
+                }.map { it.toMediaItem(context) }
+            }
+            is Category.More -> Category.MUSIC.takeLast(category.remainder).map {
+                it.toMediaItem(context)
+            }
+            is Category.Songs ->
+                listSettings.songSort.songs(deviceLibrary.songs).map {
+                    it.toMediaItem(context, null)
+                }
+            is Category.Albums ->
+                listSettings.albumSort.albums(deviceLibrary.albums).map {
+                    it.toMediaItem(context)
+                }
+            is Category.Artists ->
+                listSettings.artistSort.artists(deviceLibrary.artists).map {
+                    it.toMediaItem(context)
+                }
+            is Category.Genres ->
+                listSettings.genreSort.genres(deviceLibrary.genres).map {
+                    it.toMediaItem(context)
+                }
+            is Category.Playlists -> userLibrary.playlists.map { it.toMediaItem(context) }
+        }
 
     private fun getChildMediaItems(uid: Music.UID): List<MediaItem>? {
         return when (val item = musicRepository.find(uid)) {

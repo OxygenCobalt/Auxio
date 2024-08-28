@@ -76,7 +76,8 @@ constructor(
         indexer.createNotification(post)
     }
 
-    fun getRoot() = BrowserRoot(Category.ROOT.id, null)
+    fun getRoot(maxItems: Int) =
+        BrowserRoot(MediaSessionUID.CategoryItem(Category.Root(maxItems)).toString(), null)
 
     fun getItem(mediaId: String, result: Result<MediaItem>) =
         result.dispatch { musicBrowser.getItem(mediaId) }

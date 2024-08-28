@@ -30,6 +30,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media.utils.MediaConstants
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.music.service.MusicServiceFragment
@@ -83,7 +84,12 @@ class AuxioService :
         clientPackageName: String,
         clientUid: Int,
         rootHints: Bundle?
-    ): BrowserRoot = musicFragment.getRoot()
+    ): BrowserRoot {
+        val maximumRootChildLimit =
+            rootHints?.getInt(
+                MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4) ?: 4
+        return musicFragment.getRoot(maximumRootChildLimit)
+    }
 
     override fun onLoadItem(itemId: String, result: Result<MediaItem>) {
         musicFragment.getItem(itemId, result)

@@ -23,7 +23,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.media.utils.MediaConstants
 import org.oxycblt.auxio.BuildConfig
@@ -37,22 +36,6 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.getPlural
-
-enum class Category(val id: String, @StringRes val nameRes: Int, @DrawableRes val bitmapRes: Int?) {
-    ROOT("root", R.string.info_app_name, null),
-    MORE("more", R.string.lbl_more, R.drawable.ic_more_24),
-    SONGS("songs", R.string.lbl_songs, R.drawable.ic_song_bitmap_24),
-    ALBUMS("albums", R.string.lbl_albums, R.drawable.ic_album_bitmap_24),
-    ARTISTS("artists", R.string.lbl_artists, R.drawable.ic_artist_bitmap_24),
-    GENRES("genres", R.string.lbl_genres, R.drawable.ic_genre_bitmap_24),
-    PLAYLISTS("playlists", R.string.lbl_playlists, R.drawable.ic_playlist_bitmap_24);
-
-    companion object {
-        val DEVICE_MUSIC = listOf(ROOT, SONGS, ALBUMS, ARTISTS, GENRES)
-        val USER_MUSIC = listOf(ROOT, PLAYLISTS)
-        val IMPORTANT = listOf(SONGS, ALBUMS, ARTISTS, GENRES, PLAYLISTS)
-    }
-}
 
 sealed interface MediaSessionUID {
     data class CategoryItem(val category: Category) : MediaSessionUID {
@@ -78,17 +61,7 @@ sealed interface MediaSessionUID {
             }
             return when (parts[0]) {
                 ID_CATEGORY ->
-                    CategoryItem(
-                        when (parts[1]) {
-                            Category.ROOT.id -> Category.ROOT
-                            Category.MORE.id -> Category.MORE
-                            Category.SONGS.id -> Category.SONGS
-                            Category.ALBUMS.id -> Category.ALBUMS
-                            Category.ARTISTS.id -> Category.ARTISTS
-                            Category.GENRES.id -> Category.GENRES
-                            Category.PLAYLISTS.id -> Category.PLAYLISTS
-                            else -> return null
-                        })
+                    CategoryItem(Category.fromString(parts[1]) ?: return null)
                 ID_ITEM -> {
                     val uids = parts[1].split(">", limit = 2)
                     if (uids.size == 1) {
@@ -113,7 +86,6 @@ fun header(@StringRes nameRes: Int): Sugar = {
 }
 
 fun Category.toMediaItem(context: Context): MediaItem {
-    // TODO: Make custom overflow menu for compat
     val extras =
         Bundle().apply {
             putInt(
@@ -126,8 +98,8 @@ fun Category.toMediaItem(context: Context): MediaItem {
             .setMediaId(mediaSessionUID.toString())
             .setTitle(context.getString(nameRes))
             .setExtras(extras)
-    if (bitmapRes != null) {
-        val bitmap = BitmapFactory.decodeResource(context.resources, bitmapRes)
+    bitmapRes?.let { res ->
+        val bitmap = BitmapFactory.decodeResource(context.resources, res)
         description.setIconBitmap(bitmap)
     }
     return MediaItem(description.build(), MediaItem.FLAG_BROWSABLE)
