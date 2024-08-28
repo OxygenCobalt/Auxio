@@ -34,12 +34,14 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
+import org.oxycblt.auxio.search.SearchEngine
 
 class MusicBrowser
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
     private val musicRepository: MusicRepository,
+    private val searchEngine: SearchEngine,
     private val listSettings: ListSettings
 ) : MusicRepository.UpdateListener {
     interface Invalidator {
@@ -125,6 +127,43 @@ constructor(
         }
 
         return getMediaItemList(parentId, deviceLibrary, userLibrary)
+    }
+
+    suspend fun search(query: String): MutableList<MediaItem> {
+        if (query.isEmpty()) {
+            return mutableListOf()
+        }
+        val deviceLibrary =
+            musicRepository.deviceLibrary ?: return mutableListOf()
+        val userLibrary = musicRepository.userLibrary ?: return mutableListOf()
+        val items =
+            SearchEngine.Items(
+                deviceLibrary.songs,
+                deviceLibrary.albums,
+                deviceLibrary.artists,
+                deviceLibrary.genres,
+                userLibrary.playlists)
+        return searchEngine.search(items, query).toMediaItems()
+    }
+
+    private fun SearchEngine.Items.toMediaItems(): MutableList<MediaItem> {
+        val music = mutableListOf<MediaItem>()
+        if (songs != null) {
+            music.addAll(songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) })
+        }
+        if (albums != null) {
+            music.addAll(albums.map { it.toMediaItem(context, null, header(R.string.lbl_albums)) })
+        }
+        if (artists != null) {
+            music.addAll(artists.map { it.toMediaItem(context, header(R.string.lbl_artists)) })
+        }
+        if (genres != null) {
+            music.addAll(genres.map { it.toMediaItem(context, header(R.string.lbl_genres)) })
+        }
+        if (playlists != null) {
+            music.addAll(playlists.map { it.toMediaItem(context, header(R.string.lbl_playlists)) })
+        }
+        return music
     }
 
     private fun getMediaItemList(

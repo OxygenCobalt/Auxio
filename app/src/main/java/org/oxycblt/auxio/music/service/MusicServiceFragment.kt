@@ -41,18 +41,11 @@ import org.oxycblt.auxio.util.logW
 class MusicServiceFragment
 @Inject
 constructor(
-    @ApplicationContext private val context: Context,
     private val indexer: Indexer,
     private val musicBrowser: MusicBrowser,
-    private val musicRepository: MusicRepository,
-    private val musicSettings: MusicSettings,
-    private val searchEngine: SearchEngine,
-    private val contentObserver: SystemContentObserver,
-) : MusicBrowser.Invalidator, MusicSettings.Listener {
-    private val indexingNotification = IndexingNotification(context)
-    private val observingNotification = ObservingNotification(context)
+    private val musicRepository: MusicRepository
+) : MusicBrowser.Invalidator {
     private var invalidator: Invalidator? = null
-    private var foregroundListener: ForegroundListener? = null
     private val dispatchJob = Job()
     private val dispatchScope = CoroutineScope(dispatchJob + Dispatchers.Default)
 
@@ -64,13 +57,9 @@ constructor(
         this.invalidator = invalidator
         indexer.attach(foregroundListener)
         musicBrowser.attach(this)
-        contentObserver.attach()
-        musicSettings.registerListener(this)
     }
 
     fun release() {
-        musicSettings.unregisterListener(this)
-        contentObserver.release()
         dispatchJob.cancel()
         musicBrowser.release()
         indexer.release()
@@ -83,17 +72,6 @@ constructor(
         }
     }
 
-    override fun onObservingChanged() {
-        super.onObservingChanged()
-        // Make sure we don't override the service state with the observing
-        // notification if we were actively loading when the automatic rescanning
-        // setting changed. In such a case, the state will still be updated when
-        // the music loading process ends.
-        if (musicRepository.indexingState == null) {
-            logD("Not loading, updating idle session")
-            foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
-        }
-    }
 
     fun start() {
         if (musicRepository.indexingState == null) {
@@ -102,25 +80,7 @@ constructor(
     }
 
     fun createNotification(post: (ForegroundServiceNotification?) -> Unit) {
-        val state = musicRepository.indexingState
-        if (state is IndexingState.Indexing) {
-            // There are a few reasons why we stay in the foreground with automatic rescanning:
-            // 1. Newer versions of Android have become more and more restrictive regarding
-            // how a foreground service starts. Thus, it's best to go foreground now so that
-            // we can go foreground later.
-            // 2. If a non-foreground service is killed, the app will probably still be alive,
-            // and thus the music library will not be updated at all.
-            val changed = indexingNotification.updateIndexingState(state.progress)
-            if (changed) {
-                post(indexingNotification)
-            }
-        } else if (musicSettings.shouldBeObserving) {
-            // Not observing and done loading, exit foreground.
-            logD("Exiting foreground")
-            post(observingNotification)
-        } else {
-            post(null)
-        }
+        indexer.createNotification(post)
     }
 
     fun getRoot() = BrowserRoot(Category.ROOT.id, null)
@@ -134,42 +94,7 @@ constructor(
     ) = result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
 
     fun search(query: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>) =
-        result.dispatchAsync {
-            if (query.isEmpty()) {
-                return@dispatchAsync mutableListOf()
-            }
-            val deviceLibrary =
-                musicRepository.deviceLibrary ?: return@dispatchAsync mutableListOf()
-            val userLibrary = musicRepository.userLibrary ?: return@dispatchAsync mutableListOf()
-            val items =
-                SearchEngine.Items(
-                    deviceLibrary.songs,
-                    deviceLibrary.albums,
-                    deviceLibrary.artists,
-                    deviceLibrary.genres,
-                    userLibrary.playlists)
-            searchEngine.search(items, query).toMediaItems()
-        }
-
-    private fun SearchEngine.Items.toMediaItems(): MutableList<MediaItem> {
-        val music = mutableListOf<MediaItem>()
-        if (songs != null) {
-            music.addAll(songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) })
-        }
-        if (albums != null) {
-            music.addAll(albums.map { it.toMediaItem(context, null, header(R.string.lbl_albums)) })
-        }
-        if (artists != null) {
-            music.addAll(artists.map { it.toMediaItem(context, header(R.string.lbl_artists)) })
-        }
-        if (genres != null) {
-            music.addAll(genres.map { it.toMediaItem(context, header(R.string.lbl_genres)) })
-        }
-        if (playlists != null) {
-            music.addAll(playlists.map { it.toMediaItem(context, header(R.string.lbl_playlists)) })
-        }
-        return music
-    }
+        result.dispatchAsync { musicBrowser.search(query) }
 
     private fun <T> MediaBrowserServiceCompat.Result<T>.dispatch(body: () -> T?) {
         try {
@@ -187,6 +112,7 @@ constructor(
     private fun <T> MediaBrowserServiceCompat.Result<T>.dispatchAsync(body: suspend () -> T?) {
         dispatchScope.launch {
             try {
+                detach()
                 val result = body()
                 if (result == null) {
                     logW("Result is null")

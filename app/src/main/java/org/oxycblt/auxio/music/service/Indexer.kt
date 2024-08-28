@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
+import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -42,7 +43,8 @@ constructor(
     private val playbackManager: PlaybackStateManager,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val contentObserver: SystemContentObserver
 ) :
     MusicRepository.IndexingWorker,
     MusicRepository.IndexingListener,
@@ -52,6 +54,8 @@ constructor(
     private val indexScope = CoroutineScope(indexJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
     private var foregroundListener: ForegroundListener? = null
+    private val indexingNotification = IndexingNotification(workerContext)
+    private val observingNotification = ObservingNotification(workerContext)
     private val wakeLock =
         workerContext
             .getSystemServiceCompat(PowerManager::class)
@@ -64,9 +68,11 @@ constructor(
         musicRepository.addUpdateListener(this)
         musicRepository.addIndexingListener(this)
         musicRepository.registerWorker(this)
+        contentObserver.attach()
     }
 
     fun release() {
+        contentObserver.release()
         musicSettings.registerListener(this)
         musicRepository.addIndexingListener(this)
         musicRepository.addUpdateListener(this)
@@ -116,6 +122,40 @@ constructor(
     override fun onIndexingSettingChanged() {
         super.onIndexingSettingChanged()
         musicRepository.requestIndex(true)
+    }
+
+    override fun onObservingChanged() {
+        super.onObservingChanged()
+        // Make sure we don't override the service state with the observing
+        // notification if we were actively loading when the automatic rescanning
+        // setting changed. In such a case, the state will still be updated when
+        // the music loading process ends.
+        if (musicRepository.indexingState == null) {
+            logD("Not loading, updating idle session")
+            foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
+        }
+    }
+
+    fun createNotification(post: (ForegroundServiceNotification?) -> Unit) {
+        val state = musicRepository.indexingState
+        if (state is IndexingState.Indexing) {
+            // There are a few reasons why we stay in the foreground with automatic rescanning:
+            // 1. Newer versions of Android have become more and more restrictive regarding
+            // how a foreground service starts. Thus, it's best to go foreground now so that
+            // we can go foreground later.
+            // 2. If a non-foreground service is killed, the app will probably still be alive,
+            // and thus the music library will not be updated at all.
+            val changed = indexingNotification.updateIndexingState(state.progress)
+            if (changed) {
+                post(indexingNotification)
+            }
+        } else if (musicSettings.shouldBeObserving) {
+            // Not observing and done loading, exit foreground.
+            logD("Exiting foreground")
+            post(observingNotification)
+        } else {
+            post(null)
+        }
     }
 
     /** Utility to safely acquire a [PowerManager.WakeLock] without crashes/inefficiency. */
