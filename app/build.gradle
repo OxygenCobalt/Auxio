@@ -114,6 +114,9 @@ dependencies {
     // Media
     implementation "androidx.media:media:1.7.0"
 
+    // Android Auto
+    implementation "androidx.car.app:app:1.4.0"
+
     // Preferences
     implementation "androidx.preference:preference-ktx:1.2.1"
 

@@ -27,6 +27,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.DrawableRes
+import androidx.car.app.mediaextensions.MetadataExtras
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import javax.inject.Inject
@@ -40,6 +41,7 @@ import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.service.MediaSessionInterface
@@ -230,10 +232,11 @@ private constructor(
         // several times.
         val title = song.name.resolve(context)
         val artist = song.artists.resolveNames(context)
+        val album = song.album.name.resolve(context)
         val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name.resolve(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
                 // Note: We would leave the artist field null if it didn't exist and let downstream
                 // consumers handle it, but that would break the notification display.
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
@@ -246,11 +249,12 @@ private constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
-                .putText(
-                    MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
-                    parent?.run { name.resolve(context) }
-                        ?: context.getString(R.string.lbl_all_songs))
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, album)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
+                .putText(PlaybackNotification.KEY_PARENT,
+                    parent?.name?.resolve(context) ?: context.getString(R.string.lbl_all_songs))
+                .putText(MetadataExtras.KEY_SUBTITLE_LINK_MEDIA_ID, MediaSessionUID.SingleItem(song.artists[0].uid).toString())
+                .putText(MetadataExtras.KEY_DESCRIPTION_LINK_MEDIA_ID, MediaSessionUID.SingleItem(song.album.uid).toString())
         // These fields are nullable and so we must check first before adding them to the fields.
         song.track?.let {
             logD("Adding track information")
@@ -263,6 +267,7 @@ private constructor(
         song.date?.let {
             logD("Adding date information")
             builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString())
+            builder.putString(MediaMetadataCompat.METADATA_KEY_YEAR, it.year.toString())
         }
 
         // We are normally supposed to use URIs for album art, but that removes some of the
@@ -510,9 +515,11 @@ private class PlaybackNotification(
                 iconRes, actionName, context.newBroadcastPendingIntent(actionName))
             .build()
 
-    private companion object {
+    companion object {
+        const val KEY_PARENT = BuildConfig.APPLICATION_ID + ".metadata.PARENT"
+
         /** Notification channel used by solely the playback notification. */
-        val CHANNEL_INFO =
+        private val CHANNEL_INFO =
             ChannelInfo(
                 id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
                 nameRes = R.string.lbl_playback)
