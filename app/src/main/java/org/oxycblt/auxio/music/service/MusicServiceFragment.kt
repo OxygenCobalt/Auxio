@@ -18,11 +18,9 @@
  
 package org.oxycblt.auxio.music.service
 
-import android.content.Context
 import android.support.v4.media.MediaBrowserCompat.MediaItem
-import androidx.media.MediaBrowserServiceCompat
+import androidx.media.MediaBrowserServiceCompat.Result
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,11 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.search.SearchEngine
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -72,7 +66,6 @@ constructor(
         }
     }
 
-
     fun start() {
         if (musicRepository.indexingState == null) {
             musicRepository.requestIndex(true)
@@ -85,18 +78,18 @@ constructor(
 
     fun getRoot() = BrowserRoot(Category.ROOT.id, null)
 
-    fun getItem(mediaId: String, result: MediaBrowserServiceCompat.Result<MediaItem>) =
+    fun getItem(mediaId: String, result: Result<MediaItem>) =
         result.dispatch { musicBrowser.getItem(mediaId) }
 
     fun getChildren(
         mediaId: String,
-        result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>
+        result: Result<MutableList<MediaItem>>
     ) = result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
 
-    fun search(query: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaItem>>) =
+    fun search(query: String, result: Result<MutableList<MediaItem>>) =
         result.dispatchAsync { musicBrowser.search(query) }
 
-    private fun <T> MediaBrowserServiceCompat.Result<T>.dispatch(body: () -> T?) {
+    private fun <T> Result<T>.dispatch(body: () -> T?) {
         try {
             val result = body()
             if (result == null) {
@@ -109,7 +102,7 @@ constructor(
         }
     }
 
-    private fun <T> MediaBrowserServiceCompat.Result<T>.dispatchAsync(body: suspend () -> T?) {
+    private fun <T> Result<T>.dispatchAsync(body: suspend () -> T?) {
         dispatchScope.launch {
             try {
                 detach()

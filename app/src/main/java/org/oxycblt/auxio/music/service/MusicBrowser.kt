@@ -133,8 +133,7 @@ constructor(
         if (query.isEmpty()) {
             return mutableListOf()
         }
-        val deviceLibrary =
-            musicRepository.deviceLibrary ?: return mutableListOf()
+        val deviceLibrary = musicRepository.deviceLibrary ?: return mutableListOf()
         val userLibrary = musicRepository.userLibrary ?: return mutableListOf()
         val items =
             SearchEngine.Items(
