@@ -42,6 +42,8 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.music.service.MediaSessionUID
+import org.oxycblt.auxio.music.service.toMediaDescription
+import org.oxycblt.auxio.music.service.toMediaItem
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.service.MediaSessionInterface
@@ -304,20 +306,7 @@ private constructor(
     private fun updateQueue(queue: List<Song>) {
         val queueItems =
             queue.mapIndexed { i, song ->
-                val description =
-                    MediaDescriptionCompat.Builder()
-                        // Media ID should not be the item index but rather the UID,
-                        // as it's used to request a song to be played from the queue.
-                        .setMediaId(song.uid.toString())
-                        .setTitle(song.name.resolve(context))
-                        .setSubtitle(song.artists.resolveNames(context))
-                        // Since we usually have to load many songs into the queue, use the
-                        // MediaStore URI instead of loading a bitmap.
-                        .setIconUri(song.album.cover.single.mediaStoreCoverUri)
-                        .setMediaUri(song.uri)
-                        .setExtras(
-                            Bundle().apply { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
-                        .build()
+                val description = song.toMediaDescription(context, null, { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
                 // Store the item index so we can then use the analogous index in the
                 // playback state.
                 MediaSessionCompat.QueueItem(description, i.toLong())

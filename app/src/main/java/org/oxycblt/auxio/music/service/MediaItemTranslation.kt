@@ -105,11 +105,8 @@ fun Category.toMediaItem(context: Context): MediaItem {
     return MediaItem(description.build(), MediaItem.FLAG_BROWSABLE)
 }
 
-fun Song.toMediaItem(
-    context: Context,
-    parent: MusicParent? = null,
-    vararg sugar: Sugar
-): MediaItem {
+fun Song.toMediaDescription(context: Context, parent: MusicParent? = null,
+    vararg sugar: Sugar): MediaDescriptionCompat {
     val mediaSessionUID =
         if (parent == null) {
             MediaSessionUID.SingleItem(uid)
@@ -117,17 +114,23 @@ fun Song.toMediaItem(
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
     val extras = Bundle().apply { sugar.forEach { this.it(context) } }
-    val description =
-        MediaDescriptionCompat.Builder()
-            .setMediaId(mediaSessionUID.toString())
-            .setTitle(name.resolve(context))
-            .setSubtitle(artists.resolveNames(context))
-            .setDescription(album.name.resolve(context))
-            .setIconUri(album.cover.single.mediaStoreCoverUri)
-            .setMediaUri(uri)
-            .setExtras(extras)
-            .build()
-    return MediaItem(description, MediaItem.FLAG_PLAYABLE)
+    return MediaDescriptionCompat.Builder()
+        .setMediaId(mediaSessionUID.toString())
+        .setTitle(name.resolve(context))
+        .setSubtitle(artists.resolveNames(context))
+        .setDescription(album.name.resolve(context))
+        .setIconUri(cover.mediaStoreCoverUri)
+        .setMediaUri(uri)
+        .setExtras(extras)
+        .build()
+}
+
+fun Song.toMediaItem(
+    context: Context,
+    parent: MusicParent? = null,
+    vararg sugar: Sugar
+): MediaItem {
+    return MediaItem(toMediaDescription(context, parent, *sugar), MediaItem.FLAG_PLAYABLE)
 }
 
 fun Album.toMediaItem(
