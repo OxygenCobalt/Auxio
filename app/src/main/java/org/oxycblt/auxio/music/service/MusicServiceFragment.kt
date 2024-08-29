@@ -18,9 +18,13 @@
  
 package org.oxycblt.auxio.music.service
 
+import android.content.Context
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import androidx.media.MediaBrowserServiceCompat.Result
+import androidx.media.utils.MediaConstants
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +39,7 @@ import org.oxycblt.auxio.util.logW
 class MusicServiceFragment
 @Inject
 constructor(
+    @ApplicationContext private val context: Context,
     private val indexer: Indexer,
     private val musicBrowser: MusicBrowser,
     private val musicRepository: MusicRepository
@@ -77,7 +82,22 @@ constructor(
     }
 
     fun getRoot(maxItems: Int) =
-        BrowserRoot(MediaSessionUID.CategoryItem(Category.Root(maxItems)).toString(), null)
+        BrowserRoot(
+            MediaSessionUID.CategoryItem(Category.Root(maxItems)).toString(),
+            Bundle().apply {
+                val actions =
+                    MediaMenuItem.entries.mapTo(ArrayList()) {
+                        Bundle().apply {
+                            putString(MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID, it.id)
+                            putString(
+                                MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_LABEL,
+                                context.getString(it.labelRes))
+                        }
+                    }
+                putParcelableArrayList(
+                    MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ROOT_LIST,
+                    actions)
+            })
 
     fun getItem(mediaId: String, result: Result<MediaItem>) =
         result.dispatch { musicBrowser.getItem(mediaId) }

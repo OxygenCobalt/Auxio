@@ -78,6 +78,22 @@ sealed interface MediaSessionUID {
     }
 }
 
+enum class MediaMenuItem(val id: String, val labelRes: Int, val iconRes: Int) {
+    PLAY(BuildConfig.APPLICATION_ID + ".menu.PLAY", R.string.lbl_play, R.drawable.ic_play_24),
+    SHUFFLE(
+        BuildConfig.APPLICATION_ID + ".menu.SHUFFLE",
+        R.string.lbl_shuffle,
+        R.drawable.ic_shuffle_off_24),
+    PLAY_NEXT(
+        BuildConfig.APPLICATION_ID + ".menu.PLAY_NEXT",
+        R.string.lbl_play_next,
+        R.drawable.ic_play_next_24),
+    ADD_TO_QUEUE(
+        BuildConfig.APPLICATION_ID + ".menu.ADD_TO_QUEUE",
+        R.string.lbl_queue_add,
+        R.drawable.ic_queue_add_24)
+}
+
 typealias Sugar = Bundle.(Context) -> Unit
 
 fun header(@StringRes nameRes: Int): Sugar = {
