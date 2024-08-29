@@ -21,8 +21,6 @@ package org.oxycblt.auxio.playback.system
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Bundle
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -43,7 +41,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.music.service.toMediaDescription
-import org.oxycblt.auxio.music.service.toMediaItem
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.service.MediaSessionInterface
@@ -306,7 +303,9 @@ private constructor(
     private fun updateQueue(queue: List<Song>) {
         val queueItems =
             queue.mapIndexed { i, song ->
-                val description = song.toMediaDescription(context, null, { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
+                val description =
+                    song.toMediaDescription(
+                        context, null, { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
                 // Store the item index so we can then use the analogous index in the
                 // playback state.
                 MediaSessionCompat.QueueItem(description, i.toLong())

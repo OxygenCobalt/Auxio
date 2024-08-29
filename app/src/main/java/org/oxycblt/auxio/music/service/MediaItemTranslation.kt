@@ -105,8 +105,11 @@ fun Category.toMediaItem(context: Context): MediaItem {
     return MediaItem(description.build(), MediaItem.FLAG_BROWSABLE)
 }
 
-fun Song.toMediaDescription(context: Context, parent: MusicParent? = null,
-    vararg sugar: Sugar): MediaDescriptionCompat {
+fun Song.toMediaDescription(
+    context: Context,
+    parent: MusicParent? = null,
+    vararg sugar: Sugar
+): MediaDescriptionCompat {
     val mediaSessionUID =
         if (parent == null) {
             MediaSessionUID.SingleItem(uid)

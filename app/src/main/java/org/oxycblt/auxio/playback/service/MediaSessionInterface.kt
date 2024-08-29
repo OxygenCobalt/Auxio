@@ -102,13 +102,13 @@ constructor(
         super.onAddQueueItem(description)
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
-        val song =
+        val songUid =
             when (uid) {
-                is MediaSessionUID.SingleItem -> deviceLibrary.findSong(uid.uid)
-                is MediaSessionUID.ChildItem -> deviceLibrary.findSong(uid.childUid)
-                else -> null
+                is MediaSessionUID.SingleItem -> uid.uid
+                is MediaSessionUID.ChildItem -> uid.childUid
+                else -> return
             }
-                ?: return
+        val song = deviceLibrary.songs.find { it.uid == songUid } ?: return
         playbackManager.addToQueue(song)
     }
 
@@ -123,11 +123,12 @@ constructor(
         }
         // Non-queue item or queue item lost it's extras in transit, remove the first item
         val uid = MediaSessionUID.fromString(description.mediaId ?: return) ?: return
-        val songUid = when (uid) {
-            is MediaSessionUID.SingleItem -> uid.uid
-            is MediaSessionUID.ChildItem -> uid.childUid
-            else -> return
-        }
+        val songUid =
+            when (uid) {
+                is MediaSessionUID.SingleItem -> uid.uid
+                is MediaSessionUID.ChildItem -> uid.childUid
+                else -> return
+            }
         val firstAt = playbackManager.queue.indexOfFirst { it.uid == songUid }
         playbackManager.removeQueueItem(firstAt)
     }
