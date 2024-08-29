@@ -18,12 +18,17 @@
  
 package org.oxycblt.auxio.music.service
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat
+import android.view.MenuInflater
+import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.children
 import androidx.media.utils.MediaConstants
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -78,7 +83,7 @@ sealed interface MediaSessionUID {
     }
 }
 
-enum class MediaMenuItem(val id: String, val labelRes: Int, val iconRes: Int) {
+enum class BrowserOption(val actionId: String, val labelRes: Int, val iconRes: Int) {
     PLAY(BuildConfig.APPLICATION_ID + ".menu.PLAY", R.string.lbl_play, R.drawable.ic_play_24),
     SHUFFLE(
         BuildConfig.APPLICATION_ID + ".menu.SHUFFLE",
@@ -91,7 +96,31 @@ enum class MediaMenuItem(val id: String, val labelRes: Int, val iconRes: Int) {
     ADD_TO_QUEUE(
         BuildConfig.APPLICATION_ID + ".menu.ADD_TO_QUEUE",
         R.string.lbl_queue_add,
-        R.drawable.ic_queue_add_24)
+        R.drawable.ic_queue_add_24),
+    DETAILS(
+        BuildConfig.APPLICATION_ID + ".menu.DETAILS",
+        R.string.lbl_parent_detail,
+        R.drawable.ic_details_24),
+    ALBUM_DETAILS(
+        BuildConfig.APPLICATION_ID + ".menu.ALBUM_DETAILS",
+        R.string.lbl_album_details,
+        R.drawable.ic_album_24),
+    ARTIST_DETAILS(
+        BuildConfig.APPLICATION_ID + ".menu.ARTIST_DETAILS",
+        R.string.lbl_artist_details,
+        R.drawable.ic_artist_24),
+
+    companion object {
+
+val ITEM_ID_MAP = mapOf(
+    R.id.action_play to BrowserOption.PLAY,
+    R.id.action_shuffle to BrowserOption.SHUFFLE,
+    R.id.action_play_next to BrowserOption.PLAY_NEXT,
+    R.id.action_queue_add to BrowserOption.ADD_TO_QUEUE,
+    R.id.action_detail to BrowserOption.DETAILS,
+    R.id.action_album_details to BrowserOption.ALBUM_DETAILS,
+    R.id.action_artist_details to BrowserOption.ARTIST_DETAILS
+    )}
 }
 
 typealias Sugar = Bundle.(Context) -> Unit
@@ -101,13 +130,29 @@ fun header(@StringRes nameRes: Int): Sugar = {
         MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, it.getString(nameRes))
 }
 
+private fun style(style: Int): Sugar = {
+    putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM, style)
+}
+
+private fun menu(@MenuRes res: Int): Sugar = { context ->
+    @SuppressLint("RestrictedApi") val builder = MenuBuilder(context)
+    MenuInflater(context).inflate(res, builder)
+    val menuIds = builder.children.mapNotNullTo(ArrayList()){
+        BrowserOption.ITEM_ID_MAP[it.itemId]?.actionId
+    }
+    putStringArrayList(
+        MediaConstants.DESCRIPTION_EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID_LIST, menuIds)
+}
+
+private fun makeExtras(context: Context, vararg sugars: Sugar): Bundle {
+    return Bundle().apply { sugars.forEach { this.it(context) } }
+}
+
 fun Category.toMediaItem(context: Context): MediaItem {
     val extras =
-        Bundle().apply {
-            putInt(
-                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM,
-                MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM)
-        }
+        makeExtras(
+            context,
+            style(MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM))
     val mediaSessionUID = MediaSessionUID.CategoryItem(this)
     val description =
         MediaDescriptionCompat.Builder()
@@ -132,7 +177,7 @@ fun Song.toMediaDescription(
         } else {
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
-    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
+    val extras = makeExtras(context, *sugar, menu(R.menu.song))
     return MediaDescriptionCompat.Builder()
         .setMediaId(mediaSessionUID.toString())
         .setTitle(name.resolve(context))
@@ -163,7 +208,7 @@ fun Album.toMediaItem(
         } else {
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
-    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
+    val extras = makeExtras(context, *sugar, menu(R.menu.album))
     val counts = context.getPlural(R.plurals.fmt_song_count, songs.size)
     val description =
         MediaDescriptionCompat.Builder()
@@ -192,7 +237,7 @@ fun Artist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             } else {
                 context.getString(R.string.def_song_count)
             })
-    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
+    val extras = makeExtras(context, *sugar, menu(R.menu.parent))
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
@@ -213,7 +258,7 @@ fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
         } else {
             context.getString(R.string.def_song_count)
         }
-    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
+    val extras = makeExtras(context, *sugar, menu(R.menu.parent))
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
@@ -233,7 +278,7 @@ fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
         } else {
             context.getString(R.string.def_song_count)
         }
-    val extras = Bundle().apply { sugar.forEach { this.it(context) } }
+    val extras = makeExtras(context, *sugar, menu(R.menu.playlist))
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())

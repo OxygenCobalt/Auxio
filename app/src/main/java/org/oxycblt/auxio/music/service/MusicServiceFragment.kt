@@ -86,9 +86,9 @@ constructor(
             MediaSessionUID.CategoryItem(Category.Root(maxItems)).toString(),
             Bundle().apply {
                 val actions =
-                    MediaMenuItem.entries.mapTo(ArrayList()) {
+                    BrowserOption.entries.mapTo(ArrayList()) {
                         Bundle().apply {
-                            putString(MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID, it.id)
+                            putString(MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID, it.actionId)
                             putString(
                                 MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_LABEL,
                                 context.getString(it.labelRes))
