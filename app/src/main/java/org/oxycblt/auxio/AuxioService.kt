@@ -94,14 +94,9 @@ class AuxioService :
         musicFragment.getItem(itemId, result)
     }
 
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) =
-        throw NotImplementedError()
-
-    override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaItem>>,
-        options: Bundle
-    ) = musicFragment.getChildren(parentId, result)
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
+        musicFragment.getChildren(parentId, result)
+    }
 
     override fun onSearch(query: String, extras: Bundle?, result: Result<MutableList<MediaItem>>) {
         musicFragment.search(query, result)
