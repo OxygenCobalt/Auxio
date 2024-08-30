@@ -43,8 +43,6 @@ import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.music.service.toMediaDescription
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.playback.service.MediaSessionInterface
-import org.oxycblt.auxio.playback.service.PlaybackActions
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
@@ -62,34 +60,32 @@ import org.oxycblt.auxio.util.newMainPendingIntent
 class MediaSessionHolder
 private constructor(
     private val context: Context,
-    private val sessionInterface: MediaSessionInterface,
+    private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
     private val bitmapProvider: BitmapProvider,
-    private val imageSettings: ImageSettings
-) :
-    MediaSessionCompat.Callback(),
-    PlaybackStateManager.Listener,
-    ImageSettings.Listener,
-    PlaybackSettings.Listener {
+    private val imageSettings: ImageSettings,
+    private val mediaSessionInterface: MediaSessionInterface
+) : PlaybackStateManager.Listener, ImageSettings.Listener, PlaybackSettings.Listener {
 
     class Factory
     @Inject
     constructor(
-        private val sessionInterface: MediaSessionInterface,
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings,
         private val bitmapProvider: BitmapProvider,
         private val imageSettings: ImageSettings,
+        private val mediaSessionInterface: MediaSessionInterface
     ) {
-        fun create(context: Context) =
+        fun create(context: Context, foregroundListener: ForegroundListener) =
             MediaSessionHolder(
                 context,
-                sessionInterface,
+                foregroundListener,
                 playbackManager,
                 playbackSettings,
                 bitmapProvider,
-                imageSettings)
+                imageSettings,
+                mediaSessionInterface)
     }
 
     private val mediaSession = MediaSessionCompat(context, context.packageName)
@@ -100,20 +96,15 @@ private constructor(
     val notification: ForegroundServiceNotification
         get() = _notification
 
-    private var foregroundListener: ForegroundListener? = null
-
-    fun attach(foregroundListener: ForegroundListener) {
-        mediaSession.apply {
-            isActive = true
-            setQueueTitle(context.getString(R.string.lbl_queue))
-            setCallback(sessionInterface)
-            setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
-        }
-        this.foregroundListener = foregroundListener
+    init {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
         imageSettings.registerListener(this)
-        mediaSession.setCallback(this)
+        mediaSession.apply {
+            isActive = true
+            setQueueTitle(context.getString(R.string.lbl_queue))
+            setCallback(mediaSessionInterface)
+        }
     }
 
     /**
@@ -121,7 +112,6 @@ private constructor(
      * the [NotificationComponent].
      */
     fun release() {
-        foregroundListener = null
         bitmapProvider.release()
         playbackSettings.unregisterListener(this)
         imageSettings.unregisterListener(this)
@@ -179,7 +169,7 @@ private constructor(
         invalidateSessionState()
         _notification.updatePlaying(playbackManager.progression.isPlaying)
         if (!bitmapProvider.isBusy) {
-            foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
+            foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
         }
     }
 
@@ -272,7 +262,7 @@ private constructor(
         song.date?.let {
             logD("Adding date information")
             builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString())
-            builder.putString(MediaMetadataCompat.METADATA_KEY_YEAR, it.year.toString())
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_YEAR, it.year.toLong())
         }
 
         // We are normally supposed to use URIs for album art, but that removes some of the
@@ -290,7 +280,7 @@ private constructor(
                     val metadata = builder.build()
                     mediaSession.setMetadata(metadata)
                     _notification.updateMetadata(metadata)
-                    foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
+                    foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
                 }
             })
     }
@@ -382,7 +372,7 @@ private constructor(
 
         if (!bitmapProvider.isBusy) {
             logD("Not loading a bitmap, post the notification")
-            foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
+            foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
         }
     }
 
