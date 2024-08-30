@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.getPlural
 
 sealed interface MediaSessionUID {
     data class CategoryItem(val category: Category) : MediaSessionUID {
-        override fun toString() = "$ID_CATEGORY:$category"
+        override fun toString() = "$ID_CATEGORY:${category.id}"
     }
 
     data class SingleItem(val uid: Music.UID) : MediaSessionUID {
