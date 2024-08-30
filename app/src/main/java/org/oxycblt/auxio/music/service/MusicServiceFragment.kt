@@ -123,9 +123,9 @@ constructor(
     }
 
     private fun <T> Result<T>.dispatchAsync(body: suspend () -> T?) {
+        detach()
         dispatchScope.launch {
             try {
-                detach()
                 val result = body()
                 if (result == null) {
                     logW("Result is null")
