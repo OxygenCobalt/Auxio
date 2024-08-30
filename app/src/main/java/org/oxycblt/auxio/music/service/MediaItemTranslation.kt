@@ -108,19 +108,19 @@ enum class BrowserOption(val actionId: String, val labelRes: Int, val iconRes: I
     ARTIST_DETAILS(
         BuildConfig.APPLICATION_ID + ".menu.ARTIST_DETAILS",
         R.string.lbl_artist_details,
-        R.drawable.ic_artist_24),
+        R.drawable.ic_artist_24);
 
     companion object {
-
-val ITEM_ID_MAP = mapOf(
-    R.id.action_play to BrowserOption.PLAY,
-    R.id.action_shuffle to BrowserOption.SHUFFLE,
-    R.id.action_play_next to BrowserOption.PLAY_NEXT,
-    R.id.action_queue_add to BrowserOption.ADD_TO_QUEUE,
-    R.id.action_detail to BrowserOption.DETAILS,
-    R.id.action_album_details to BrowserOption.ALBUM_DETAILS,
-    R.id.action_artist_details to BrowserOption.ARTIST_DETAILS
-    )}
+        val ITEM_ID_MAP =
+            mapOf(
+                R.id.action_play to PLAY,
+                R.id.action_shuffle to SHUFFLE,
+                R.id.action_play_next to PLAY_NEXT,
+                R.id.action_queue_add to ADD_TO_QUEUE,
+                R.id.action_detail to DETAILS,
+                R.id.action_album_details to ALBUM_DETAILS,
+                R.id.action_artist_details to ARTIST_DETAILS)
+    }
 }
 
 typealias Sugar = Bundle.(Context) -> Unit
@@ -137,11 +137,11 @@ private fun style(style: Int): Sugar = {
 private fun menu(@MenuRes res: Int): Sugar = { context ->
     @SuppressLint("RestrictedApi") val builder = MenuBuilder(context)
     MenuInflater(context).inflate(res, builder)
-    val menuIds = builder.children.mapNotNullTo(ArrayList()){
-        BrowserOption.ITEM_ID_MAP[it.itemId]?.actionId
-    }
-    putStringArrayList(
-        MediaConstants.DESCRIPTION_EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID_LIST, menuIds)
+    val menuIds =
+        builder.children.mapNotNullTo(ArrayList()) {
+            BrowserOption.ITEM_ID_MAP[it.itemId]?.actionId
+        }
+    putStringArrayList(MediaConstants.DESCRIPTION_EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID_LIST, menuIds)
 }
 
 private fun makeExtras(context: Context, vararg sugars: Sugar): Bundle {

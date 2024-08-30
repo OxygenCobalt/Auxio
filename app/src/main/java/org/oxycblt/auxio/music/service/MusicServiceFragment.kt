@@ -88,7 +88,8 @@ constructor(
                 val actions =
                     BrowserOption.entries.mapTo(ArrayList()) {
                         Bundle().apply {
-                            putString(MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID, it.actionId)
+                            putString(
+                                MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID, it.actionId)
                             putString(
                                 MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_LABEL,
                                 context.getString(it.labelRes))
