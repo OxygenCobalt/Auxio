@@ -193,7 +193,7 @@ constructor(
     ) =
         when (category) {
             is Category.Root -> {
-                val base = Category.MUSIC.take(category.amount)
+                val base = Category.MUSIC.take(category.amount - 1)
                 if (base.size < Category.MUSIC.size) {
                         base + Category.More(Category.MUSIC.size - base.size)
                     } else {
