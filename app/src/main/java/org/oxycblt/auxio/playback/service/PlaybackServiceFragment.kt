@@ -59,7 +59,7 @@ constructor(
         foregroundListener = listener
         playbackManager.addListener(this)
         exoHolder.attach()
-        sessionHolder = sessionHolderFactory.create(context)
+        sessionHolder = sessionHolderFactory.create(context, listener)
         systemReceiver = SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
         ContextCompat.registerReceiver(
             context, systemReceiver, systemReceiver.intentFilter, ContextCompat.RECEIVER_EXPORTED)
