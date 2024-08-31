@@ -313,4 +313,7 @@
     <string name="set_remember_pause_desc">Nastavi reprodukciju/pauziranje prilikom preskakanja ili uređivanja redoslijeda</string>
     <string name="set_replay_gain_mode_off">Isključeno</string>
     <string name="lbl_start_playback">Pokreni reprodukciju</string>
+    <string name="lng_tasker_start">Pokreće Auxio koristeći prethodno spremljeno stanje. Ako nijedno spremljeno stanje nije dostupno, sve će se pjesme nasumično reproducirati. Reprodukcija će započeti odmah.
+\n
+\nUPOZORENJE: Oprez pri upravljanju ovom uslugom. Ako je zatvoriš i zatim je pokušaš ponovo koristiti, aplikacija će se vjerojatno zatvoriti.</string>
 </resources>
