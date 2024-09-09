@@ -315,4 +315,8 @@
     <string name="set_remember_pause">Prisiminti pauzę</string>
     <string name="set_remember_pause_desc">Išlaikyk leidimą / pristabdymą, kai praleidžiama arba redaguojama eilė.</string>
     <string name="set_replay_gain_mode_off">Išjungta</string>
+    <string name="lng_tasker_start">Paleidžia „Auxio“ naudojant anksčiau išsaugotą būseną. Jei nėra išsaugotos būsenos, visos dainos bus išmaišytos. Įrašo perklausa bus pradėta iš karto.
+\n
+\nĮSPĖJIMAS: būk atsargus (-i) valdant šią paslaugą, jei ją uždarysi ir vėl bandysi naudoti, tikriausiai sutriks programėlė.</string>
+    <string name="lbl_start_playback">Paleisti įrašo perklausą</string>
 </resources>
