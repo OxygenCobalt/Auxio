@@ -198,7 +198,7 @@ constructor(
                 val tabs = homeGenerator.tabs()
                 val base = tabs.take(node.amount - 1).map { TabNode.Home(it) }
                 if (base.size < tabs.size) {
-                        base + TabNode.More(Category.MUSIC.size - base.size)
+                        base + TabNode.More(tabs.size - base.size)
                     } else {
                         base
                     }
