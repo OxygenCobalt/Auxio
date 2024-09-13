@@ -38,16 +38,18 @@ import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
 
 @AndroidEntryPoint
 class AuxioService :
-    MediaBrowserServiceCompat(), ForegroundListener, MusicServiceFragment.Invalidator {
-    @Inject lateinit var playbackFragment: PlaybackServiceFragment
+    MediaBrowserServiceCompat(), ForegroundListener, MusicServiceFragment.Invalidator  {
+    @Inject lateinit var playbackFragmentFactory: PlaybackServiceFragment.Factory
+    private lateinit var playbackFragment: PlaybackServiceFragment
 
     @Inject lateinit var musicFragmentFactory: MusicServiceFragment.Factory
-    lateinit var musicFragment: MusicServiceFragment
+    private lateinit var musicFragment: MusicServiceFragment
 
     @SuppressLint("WrongConstant")
     override fun onCreate() {
         super.onCreate()
-        sessionToken = playbackFragment.attach(this)
+        playbackFragment = playbackFragmentFactory.create(this, this)
+        sessionToken = playbackFragment.token
         musicFragment = musicFragmentFactory.create(this, this, this)
     }
 

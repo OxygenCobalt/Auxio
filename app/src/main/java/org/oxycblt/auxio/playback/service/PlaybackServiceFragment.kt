@@ -34,36 +34,38 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 
-class PlaybackServiceFragment
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
+class PlaybackServiceFragment private constructor(
+    private val context: Context,
+    private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
-    private val playbackSettings: PlaybackSettings,
-    private val sessionHolderFactory: MediaSessionHolder.Factory,
-    private val widgetComponent: WidgetComponent,
-    exoHolderFactory: ExoPlaybackStateHolder.Factory
+    exoHolderFactory: ExoPlaybackStateHolder.Factory,
+    sessionHolderFactory: MediaSessionHolder.Factory,
+    widgetComponentFactory: WidgetComponent.Factory,
+    systemReceiverFactory: SystemPlaybackReceiver.Factory,
 ) : MediaSessionCompat.Callback(), PlaybackStateManager.Listener {
+    class Factory @Inject constructor(
+        private val playbackManager: PlaybackStateManager,
+        private val exoHolderFactory: ExoPlaybackStateHolder.Factory,
+        private val sessionHolderFactory: MediaSessionHolder.Factory,
+        private val widgetComponentFactory: WidgetComponent.Factory,
+        private val systemReceiverFactory: SystemPlaybackReceiver.Factory,
+    ) {
+        fun create(context: Context, foregroundListener: ForegroundListener) =
+            PlaybackServiceFragment(context, foregroundListener, playbackManager, exoHolderFactory, sessionHolderFactory, widgetComponentFactory, systemReceiverFactory)
+    }
+
     private val waitJob = Job()
     private val exoHolder = exoHolderFactory.create()
-    private var foregroundListener: ForegroundListener? = null
+    private val sessionHolder = sessionHolderFactory.create(context, foregroundListener)
+    private val widgetComponent = widgetComponentFactory.create(context)
+    private val systemReceiver = systemReceiverFactory.create(context)
 
-    private lateinit var sessionHolder: MediaSessionHolder
-    private lateinit var systemReceiver: SystemPlaybackReceiver
+    val token: MediaSessionCompat.Token get() = sessionHolder.token
 
     // --- MEDIASESSION CALLBACKS ---
 
-    @SuppressLint("WrongConstant")
-    fun attach(listener: ForegroundListener): MediaSessionCompat.Token {
-        foregroundListener = listener
+    init {
         playbackManager.addListener(this)
-        exoHolder.attach()
-        sessionHolder = sessionHolderFactory.create(context, listener)
-        systemReceiver = SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
-        ContextCompat.registerReceiver(
-            context, systemReceiver, systemReceiver.intentFilter, ContextCompat.RECEIVER_EXPORTED)
-        widgetComponent.attach()
-        return sessionHolder.token
     }
 
     fun handleTaskRemoved() {
@@ -101,10 +103,9 @@ constructor(
         sessionHolder.release()
         exoHolder.release()
         playbackManager.removeListener(this)
-        foregroundListener = null
     }
 
     override fun onSessionEnded() {
-        foregroundListener?.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
+        foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
     }
 }

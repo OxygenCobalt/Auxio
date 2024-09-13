@@ -46,18 +46,25 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class WidgetComponent
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
+class WidgetComponent private constructor(
+    private val context: Context,
     private val imageSettings: ImageSettings,
     private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
     private val uiSettings: UISettings
 ) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
+    class Factory @Inject constructor(
+        private val imageSettings: ImageSettings,
+        private val bitmapProvider: BitmapProvider,
+        private val playbackManager: PlaybackStateManager,
+        private val uiSettings: UISettings
+    ) {
+        fun create(context: Context) = WidgetComponent(context, imageSettings, bitmapProvider, playbackManager, uiSettings)
+    }
+
     private val widgetProvider = WidgetProvider()
 
-    fun attach() {
+    init {
         playbackManager.addListener(this)
         uiSettings.registerListener(this)
         imageSettings.registerListener(this)
