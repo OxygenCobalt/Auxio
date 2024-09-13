@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.settings.Settings
 
-interface ListSettings : Settings<Unit> {
+interface ListSettings : Settings<ListSettings.Listener> {
     /** The [Sort] mode used in Song lists. */
     var songSort: Sort
     /** The [Sort] mode used in Album lists. */
@@ -43,10 +43,18 @@ interface ListSettings : Settings<Unit> {
     var artistSongSort: Sort
     /** The [Sort] mode used in a Genre's Song list. */
     var genreSongSort: Sort
+
+    interface Listener {
+        fun onSongSortChanged() {}
+        fun onAlbumSortChanged() {}
+        fun onArtistSortChanged() {}
+        fun onGenreSortChanged() {}
+        fun onPlaylistSortChanged() {}
+    }
 }
 
 class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Context) :
-    Settings.Impl<Unit>(context), ListSettings {
+    Settings.Impl<ListSettings.Listener>(context), ListSettings {
     override var songSort: Sort
         get() =
             Sort.fromIntCode(
@@ -145,4 +153,14 @@ class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Cont
                 apply()
             }
         }
+
+    override fun onSettingChanged(key: String, listener: ListSettings.Listener) {
+        when (key) {
+            getString(R.string.set_key_songs_sort) -> listener.onSongSortChanged()
+            getString(R.string.set_key_albums_sort) -> listener.onAlbumSortChanged()
+            getString(R.string.set_key_artists_sort) -> listener.onArtistSortChanged()
+            getString(R.string.set_key_genres_sort) -> listener.onGenreSortChanged()
+            getString(R.string.set_key_playlists_sort) -> listener.onPlaylistSortChanged()
+        }
+    }
 }

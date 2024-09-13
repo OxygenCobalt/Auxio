@@ -23,13 +23,16 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.home.list.HomeListGenerator
 import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
@@ -42,12 +45,14 @@ constructor(
     @ApplicationContext private val context: Context,
     private val musicRepository: MusicRepository,
     private val searchEngine: SearchEngine,
-    private val listSettings: ListSettings
-) : MusicRepository.UpdateListener {
+    private val listSettings: ListSettings,
+    homeGeneratorFactory: HomeListGenerator.Factory
+) : MusicRepository.UpdateListener, HomeListGenerator.Invalidator {
     interface Invalidator {
         fun invalidateMusic(ids: Set<String>)
     }
 
+    private val generator = homeGeneratorFactory.create(this)
     private var invalidator: Invalidator? = null
 
     fun attach(invalidator: Invalidator) {
@@ -57,6 +62,18 @@ constructor(
 
     fun release() {
         musicRepository.removeUpdateListener(this)
+    }
+
+    override fun invalidate(type: MusicType, instructions: UpdateInstructions) {
+        val category = when (type) {
+            MusicType.SONGS -> Category.Songs
+            MusicType.ALBUMS -> Category.Albums
+            MusicType.ARTISTS -> Category.Artists
+            MusicType.GENRES -> Category.Genres
+            MusicType.PLAYLISTS -> Category.Playlists
+        }
+        val id = MediaSessionUID.CategoryItem(category).toString()
+        invalidator?.invalidateMusic(setOf(id))
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
@@ -126,7 +143,7 @@ constructor(
             return listOf()
         }
 
-        return getMediaItemList(parentId, deviceLibrary, userLibrary)
+        return getMediaItemList(parentId)
     }
 
     suspend fun search(query: String): MutableList<MediaItem> {
@@ -166,13 +183,11 @@ constructor(
     }
 
     private fun getMediaItemList(
-        id: String,
-        deviceLibrary: DeviceLibrary,
-        userLibrary: UserLibrary
+        id: String
     ): List<MediaItem>? {
         return when (val mediaSessionUID = MediaSessionUID.fromString(id)) {
             is MediaSessionUID.CategoryItem -> {
-                getCategoryMediaItems(mediaSessionUID.category, deviceLibrary, userLibrary)
+                getCategoryMediaItems(mediaSessionUID.category)
             }
             is MediaSessionUID.SingleItem -> {
                 getChildMediaItems(mediaSessionUID.uid)
@@ -187,9 +202,7 @@ constructor(
     }
 
     private fun getCategoryMediaItems(
-        category: Category,
-        deviceLibrary: DeviceLibrary,
-        userLibrary: UserLibrary
+        category: Category
     ) =
         when (category) {
             is Category.Root -> {
@@ -203,19 +216,11 @@ constructor(
             }
             is Category.More ->
                 Category.MUSIC.takeLast(category.remainder).map { it.toMediaItem(context) }
-            is Category.Songs ->
-                listSettings.songSort.songs(deviceLibrary.songs).map {
-                    it.toMediaItem(context, null)
-                }
-            is Category.Albums ->
-                listSettings.albumSort.albums(deviceLibrary.albums).map { it.toMediaItem(context) }
-            is Category.Artists ->
-                listSettings.artistSort.artists(deviceLibrary.artists).map {
-                    it.toMediaItem(context)
-                }
-            is Category.Genres ->
-                listSettings.genreSort.genres(deviceLibrary.genres).map { it.toMediaItem(context) }
-            is Category.Playlists -> userLibrary.playlists.map { it.toMediaItem(context) }
+            is Category.Songs -> generator.songs().map { it.toMediaItem(context) }
+            is Category.Albums -> generator.albums().map { it.toMediaItem(context) }
+            is Category.Artists -> generator.artists().map { it.toMediaItem(context) }
+            is Category.Genres -> generator.genres().map { it.toMediaItem(context) }
+            is Category.Playlists -> generator.playlists().map { it.toMediaItem(context) }
         }
 
     private fun getChildMediaItems(uid: Music.UID): List<MediaItem>? {
