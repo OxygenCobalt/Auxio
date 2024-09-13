@@ -1,6 +1,6 @@
-package org.oxycblt.auxio.home.list
+package org.oxycblt.auxio.home
 
-import org.oxycblt.auxio.home.HomeSettings
+import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Album
@@ -10,39 +10,46 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
-import javax.inject.Inject
 
-interface HomeListGenerator {
+interface HomeGenerator {
     fun songs(): List<Song>
     fun albums(): List<Album>
     fun artists(): List<Artist>
     fun genres(): List<Genre>
     fun playlists(): List<Playlist>
+    fun tabs(): List<MusicType>
     fun release()
 
     interface Invalidator {
-        fun invalidate(type: MusicType, instructions: UpdateInstructions)
+        fun invalidateMusic(type: MusicType, instructions: UpdateInstructions)
+        fun invalidateTabs()
     }
 
     interface Factory {
-        fun create(invalidator: Invalidator): HomeListGenerator
+        fun create(invalidator: Invalidator): HomeGenerator
     }
 }
 
-private class HomeListGeneratorImpl(
-    private val invalidator: HomeListGenerator.Invalidator,
+private class HomeGeneratorImpl(
+    private val invalidator: HomeGenerator.Invalidator,
     private val homeSettings: HomeSettings,
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
-) : HomeListGenerator, HomeSettings.Listener, ListSettings.Listener, MusicRepository.UpdateListener {
+) : HomeGenerator, HomeSettings.Listener, ListSettings.Listener, MusicRepository.UpdateListener {
     override fun songs() =
         musicRepository.deviceLibrary?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
     override fun albums() = musicRepository.deviceLibrary?.let { listSettings.albumSort.albums(it.albums) } ?: emptyList()
     override fun artists() = musicRepository.deviceLibrary?.let { listSettings.artistSort.artists(it.artists) } ?: emptyList()
     override fun genres() = musicRepository.deviceLibrary?.let { listSettings.genreSort.genres(it.genres) } ?: emptyList()
     override fun playlists() = musicRepository.userLibrary?.let { listSettings.playlistSort.playlists(it.playlists) } ?: emptyList()
+    override fun tabs() =
+        homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
+
+
+    override fun onTabsChanged() {
+        invalidator.invalidateTabs()
+    }
 
     init {
         homeSettings.registerListener(this)
@@ -51,9 +58,9 @@ private class HomeListGeneratorImpl(
     }
 
     override fun release() {
-        homeSettings.unregisterListener(this)
-        listSettings.unregisterListener(this)
         musicRepository.removeUpdateListener(this)
+        listSettings.unregisterListener(this)
+        homeSettings.unregisterListener(this)
     }
 
     override fun onHideCollaboratorsChanged() {
@@ -65,27 +72,27 @@ private class HomeListGeneratorImpl(
 
     override fun onSongSortChanged() {
         super.onSongSortChanged()
-        invalidator.invalidate(MusicType.SONGS, UpdateInstructions.Replace(0))
+        invalidator.invalidateMusic(MusicType.SONGS, UpdateInstructions.Replace(0))
     }
 
     override fun onAlbumSortChanged() {
         super.onAlbumSortChanged()
-        invalidator.invalidate(MusicType.ALBUMS, UpdateInstructions.Replace(0))
+        invalidator.invalidateMusic(MusicType.ALBUMS, UpdateInstructions.Replace(0))
     }
 
     override fun onArtistSortChanged() {
         super.onArtistSortChanged()
-        invalidator.invalidate(MusicType.ARTISTS, UpdateInstructions.Replace(0))
+        invalidator.invalidateMusic(MusicType.ARTISTS, UpdateInstructions.Replace(0))
     }
 
     override fun onGenreSortChanged() {
         super.onGenreSortChanged()
-        invalidator.invalidate(MusicType.GENRES, UpdateInstructions.Replace(0))
+        invalidator.invalidateMusic(MusicType.GENRES, UpdateInstructions.Replace(0))
     }
 
     override fun onPlaylistSortChanged() {
         super.onPlaylistSortChanged()
-        invalidator.invalidate(MusicType.PLAYLISTS, UpdateInstructions.Replace(0))
+        invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Replace(0))
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
@@ -94,16 +101,16 @@ private class HomeListGeneratorImpl(
             logD("Refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
-            invalidator.invalidate(MusicType.SONGS, UpdateInstructions.Diff)
-            invalidator.invalidate(MusicType.ALBUMS, UpdateInstructions.Diff)
-            invalidator.invalidate(MusicType.ARTISTS, UpdateInstructions.Diff)
-            invalidator.invalidate(MusicType.GENRES, UpdateInstructions.Diff)
+            invalidator.invalidateMusic(MusicType.SONGS, UpdateInstructions.Diff)
+            invalidator.invalidateMusic(MusicType.ALBUMS, UpdateInstructions.Diff)
+            invalidator.invalidateMusic(MusicType.ARTISTS, UpdateInstructions.Diff)
+            invalidator.invalidateMusic(MusicType.GENRES, UpdateInstructions.Diff)
         }
 
         val userLibrary = musicRepository.userLibrary
         if (changes.userLibrary && userLibrary != null) {
             logD("Refreshing playlists")
-            invalidator.invalidate(MusicType.PLAYLISTS, UpdateInstructions.Diff)
+            invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Diff)
         }
     }
 

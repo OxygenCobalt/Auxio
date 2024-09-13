@@ -44,8 +44,8 @@ import org.oxycblt.auxio.playback.formatDurationDs
 import org.oxycblt.auxio.util.getPlural
 
 sealed interface MediaSessionUID {
-    data class CategoryItem(val category: Category) : MediaSessionUID {
-        override fun toString() = "$ID_CATEGORY:${category.id}"
+    data class Tab(val node: TabNode) : MediaSessionUID {
+        override fun toString() = "$ID_CATEGORY:${node.id}"
     }
 
     data class SingleItem(val uid: Music.UID) : MediaSessionUID {
@@ -66,7 +66,7 @@ sealed interface MediaSessionUID {
                 return null
             }
             return when (parts[0]) {
-                ID_CATEGORY -> CategoryItem(Category.fromString(parts[1]) ?: return null)
+                ID_CATEGORY -> Tab(TabNode.fromString(parts[1]) ?: return null)
                 ID_ITEM -> {
                     val uids = parts[1].split(">", limit = 2)
                     if (uids.size == 1) {
@@ -148,12 +148,12 @@ private fun makeExtras(context: Context, vararg sugars: Sugar): Bundle {
     return Bundle().apply { sugars.forEach { this.it(context) } }
 }
 
-fun Category.toMediaItem(context: Context): MediaItem {
+fun TabNode.toMediaItem(context: Context): MediaItem {
     val extras =
         makeExtras(
             context,
             style(MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM))
-    val mediaSessionUID = MediaSessionUID.CategoryItem(this)
+    val mediaSessionUID = MediaSessionUID.Tab(this)
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())

@@ -37,40 +37,23 @@ class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicType>) :
     private val width = context.resources.configuration.smallestScreenWidthDp
 
     override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-        val icon: Int
-        val string: Int
-
-        when (tabs[position]) {
-            MusicType.SONGS -> {
-                icon = R.drawable.ic_song_24
-                string = R.string.lbl_songs
-            }
-            MusicType.ALBUMS -> {
-                icon = R.drawable.ic_album_24
-                string = R.string.lbl_albums
-            }
-            MusicType.ARTISTS -> {
-                icon = R.drawable.ic_artist_24
-                string = R.string.lbl_artists
-            }
-            MusicType.GENRES -> {
-                icon = R.drawable.ic_genre_24
-                string = R.string.lbl_genres
-            }
-            MusicType.PLAYLISTS -> {
-                icon = R.drawable.ic_playlist_24
-                string = R.string.lbl_playlists
-            }
+        val homeTab = tabs[position]
+        val icon = when (homeTab) {
+            MusicType.SONGS -> R.drawable.ic_song_24
+            MusicType.ALBUMS -> R.drawable.ic_album_24
+            MusicType.ARTISTS -> R.drawable.ic_artist_24
+            MusicType.GENRES -> R.drawable.ic_genre_24
+            MusicType.PLAYLISTS -> R.drawable.ic_playlist_24
         }
 
         // Use expected sw* size thresholds when choosing a configuration.
         when {
             // On small screens, only display an icon.
-            width < 370 -> tab.setIcon(icon).setContentDescription(string)
+            width < 370 -> tab.setIcon(icon).setContentDescription(homeTab.nameRes)
             // On large screens, display an icon and text.
-            width < 600 -> tab.setText(string)
+            width < 600 -> tab.setText(homeTab.nameRes).setIcon(icon)
             // On medium-size screens, display text.
-            else -> tab.setIcon(icon).setText(string)
+            else -> tab.setIcon(icon).setText(homeTab.nameRes)
         }
     }
 }

@@ -23,15 +23,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.home.list.HomeListGenerator
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.home.tabs.TabListGenerator
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
@@ -50,12 +49,11 @@ import org.oxycblt.auxio.util.logD
 class HomeViewModel
 @Inject
 constructor(
-    private val homeSettings: HomeSettings,
     private val listSettings: ListSettings,
     private val playbackSettings: PlaybackSettings,
-    homeGeneratorFactory: HomeListGenerator.Factory
-) : ViewModel(), HomeSettings.Listener, HomeListGenerator.Invalidator {
-    private val generator = homeGeneratorFactory.create(this)
+    homeGeneratorFactory: HomeGenerator.Factory
+) : ViewModel(), HomeGenerator.Invalidator {
+    private val homeGenerator = homeGeneratorFactory.create(this)
 
     private val _songList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -138,7 +136,7 @@ constructor(
      * A list of [MusicType] corresponding to the current [Tab] configuration, excluding invisible
      * [Tab]s.
      */
-    var currentTabTypes = makeTabTypes()
+    var currentTabTypes = homeGenerator.tabs()
         private set
 
     private val _currentTabType = MutableStateFlow(currentTabTypes[0])
@@ -166,45 +164,38 @@ constructor(
     val showOuter: Event<Outer>
         get() = _showOuter
 
-    init {
-        homeSettings.registerListener(this)
-    }
-
     override fun onCleared() {
         super.onCleared()
-        homeSettings.unregisterListener(this)
-        generator.release()
+        homeGenerator.release()
     }
 
-    override fun invalidate(type: MusicType, instructions: UpdateInstructions) {
+    override fun invalidateMusic(type: MusicType, instructions: UpdateInstructions) {
         when (type) {
             MusicType.SONGS -> {
-                _songList.value = generator.songs()
+                _songList.value = homeGenerator.songs()
                 _songInstructions.put(instructions)
             }
             MusicType.ALBUMS -> {
-                _albumList.value = generator.albums()
+                _albumList.value = homeGenerator.albums()
                 _albumInstructions.put(instructions)
             }
             MusicType.ARTISTS -> {
-                _artistList.value = generator.artists()
+                _artistList.value = homeGenerator.artists()
                 _artistInstructions.put(instructions)
             }
             MusicType.GENRES -> {
-                _genreList.value = generator.genres()
+                _genreList.value = homeGenerator.genres()
                 _genreInstructions.put(instructions)
             }
             MusicType.PLAYLISTS -> {
-                _playlistList.value = generator.playlists()
+                _playlistList.value = homeGenerator.playlists()
                 _playlistInstructions.put(instructions)
             }
         }
     }
 
-    override fun onTabsChanged() {
-        // Tabs changed, update  the current tabs and set up a re-create event.
-        currentTabTypes = makeTabTypes()
-        logD("Updating tabs: ${currentTabType.value}")
+    override fun invalidateTabs() {
+        currentTabTypes = homeGenerator.tabs()
         _shouldRecreate.put(Unit)
     }
 
@@ -290,15 +281,6 @@ constructor(
     fun showAbout() {
         _showOuter.put(Outer.About)
     }
-
-    /**
-     * Create a list of [MusicType]s representing a simpler version of the [Tab] configuration.
-     *
-     * @return A list of the [MusicType]s for each visible [Tab] in the configuration, ordered in
-     *   the same way as the configuration.
-     */
-    private fun makeTabTypes() =
-        homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
 }
 
 sealed interface Outer {
