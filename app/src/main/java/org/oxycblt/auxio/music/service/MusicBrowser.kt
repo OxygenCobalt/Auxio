@@ -175,9 +175,7 @@ constructor(
         return music
     }
 
-    private fun getMediaItemList(
-        id: String
-    ): List<MediaItem>? {
+    private fun getMediaItemList(id: String): List<MediaItem>? {
         return when (val mediaSessionUID = MediaSessionUID.fromString(id)) {
             is MediaSessionUID.Tab -> {
                 getCategoryMediaItems(mediaSessionUID.node)
@@ -194,9 +192,7 @@ constructor(
         }
     }
 
-    private fun getCategoryMediaItems(
-        node: TabNode
-    ) =
+    private fun getCategoryMediaItems(node: TabNode) =
         when (node) {
             is TabNode.Root -> {
                 val tabs = homeGenerator.tabs()
@@ -210,7 +206,8 @@ constructor(
             }
             is TabNode.More ->
                 homeGenerator.tabs().takeLast(node.remainder).map {
-                    TabNode.Home(it).toMediaItem(context) }
+                    TabNode.Home(it).toMediaItem(context)
+                }
             is TabNode.Home ->
                 when (node.type) {
                     MusicType.SONGS -> homeGenerator.songs().map { it.toMediaItem(context, null) }

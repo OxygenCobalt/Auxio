@@ -27,4 +27,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface HomeModule {
     @Binds fun settings(homeSettings: HomeSettingsImpl): HomeSettings
+
+    @Binds fun homeGeneratorFactory(factory: HomeGeneratorFactoryImpl): HomeGenerator.Factory
 }

@@ -38,13 +38,14 @@ class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicType>) :
 
     override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
         val homeTab = tabs[position]
-        val icon = when (homeTab) {
-            MusicType.SONGS -> R.drawable.ic_song_24
-            MusicType.ALBUMS -> R.drawable.ic_album_24
-            MusicType.ARTISTS -> R.drawable.ic_artist_24
-            MusicType.GENRES -> R.drawable.ic_genre_24
-            MusicType.PLAYLISTS -> R.drawable.ic_playlist_24
-        }
+        val icon =
+            when (homeTab) {
+                MusicType.SONGS -> R.drawable.ic_song_24
+                MusicType.ALBUMS -> R.drawable.ic_album_24
+                MusicType.ARTISTS -> R.drawable.ic_artist_24
+                MusicType.GENRES -> R.drawable.ic_genre_24
+                MusicType.PLAYLISTS -> R.drawable.ic_playlist_24
+            }
 
         // Use expected sw* size thresholds when choosing a configuration.
         when {

@@ -83,7 +83,7 @@ constructor(
 
     fun getRoot(maxItems: Int) =
         BrowserRoot(
-            MediaSessionUID.CategoryItem(Category.Root(maxItems)).toString(),
+            MediaSessionUID.Tab(TabNode.Root(maxItems)).toString(),
             Bundle().apply {
                 val actions =
                     BrowserOption.entries.mapTo(ArrayList()) {

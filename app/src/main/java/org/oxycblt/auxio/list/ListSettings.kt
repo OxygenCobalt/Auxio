@@ -46,9 +46,13 @@ interface ListSettings : Settings<ListSettings.Listener> {
 
     interface Listener {
         fun onSongSortChanged() {}
+
         fun onAlbumSortChanged() {}
+
         fun onArtistSortChanged() {}
+
         fun onGenreSortChanged() {}
+
         fun onPlaylistSortChanged() {}
     }
 }
