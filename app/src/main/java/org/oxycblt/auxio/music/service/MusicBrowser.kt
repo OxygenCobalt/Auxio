@@ -37,24 +37,31 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.search.SearchEngine
 
-class MusicBrowser
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
+class MusicBrowser private constructor(
+    private val context: Context,
+    private val invalidator: Invalidator,
     private val musicRepository: MusicRepository,
     private val searchEngine: SearchEngine,
     private val listSettings: ListSettings,
     homeGeneratorFactory: HomeGenerator.Factory
 ) : MusicRepository.UpdateListener, HomeGenerator.Invalidator {
+
+    class Factory @Inject constructor(
+    private val musicRepository: MusicRepository,
+    private val searchEngine: SearchEngine,
+    private val listSettings: ListSettings,
+        private val homeGeneratorFactory: HomeGenerator.Factory
+    ) {
+        fun create(context: Context, invalidator: Invalidator): MusicBrowser =
+            MusicBrowser(context, invalidator, musicRepository, searchEngine, listSettings, homeGeneratorFactory)
+    }
     interface Invalidator {
         fun invalidateMusic(ids: Set<String>)
     }
 
     private val homeGenerator = homeGeneratorFactory.create(this)
-    private var invalidator: Invalidator? = null
 
-    fun attach(invalidator: Invalidator) {
-        this.invalidator = invalidator
+    init {
         musicRepository.addUpdateListener(this)
     }
 
@@ -64,7 +71,7 @@ constructor(
 
     override fun invalidateMusic(type: MusicType, instructions: UpdateInstructions) {
         val id = MediaSessionUID.Tab(TabNode.Home(type)).toString()
-        invalidator?.invalidateMusic(setOf(id))
+        invalidator.invalidateMusic(setOf(id))
     }
 
     override fun invalidateTabs() {
@@ -72,7 +79,7 @@ constructor(
             // TODO: Temporary bodge, move the amount parameter to a bundle extra
             val rootId = MediaSessionUID.Tab(TabNode.Root(i)).toString()
             val moreId = MediaSessionUID.Tab(TabNode.More(i)).toString()
-            invalidator?.invalidateMusic(setOf(rootId, moreId))
+            invalidator.invalidateMusic(setOf(rootId, moreId))
         }
     }
 

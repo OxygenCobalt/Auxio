@@ -36,10 +36,9 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
-class Indexer
-@Inject
-constructor(
-    @ApplicationContext override val workerContext: Context,
+class Indexer private constructor(
+    override val workerContext: Context,
+    private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
@@ -50,10 +49,21 @@ constructor(
     MusicRepository.IndexingListener,
     MusicRepository.UpdateListener,
     MusicSettings.Listener {
+    class Factory @Inject constructor(
+        private val playbackManager: PlaybackStateManager,
+        private val musicRepository: MusicRepository,
+        private val musicSettings: MusicSettings,
+        private val imageLoader: ImageLoader,
+        private val contentObserver: SystemContentObserver
+    ) {
+        fun create(context: Context, listener: ForegroundListener) =
+            Indexer(context, listener, playbackManager,
+                musicRepository, musicSettings, imageLoader, contentObserver)
+    }
+
     private val indexJob = Job()
     private val indexScope = CoroutineScope(indexJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
-    private var foregroundListener: ForegroundListener? = null
     private val indexingNotification = IndexingNotification(workerContext)
     private val observingNotification = ObservingNotification(workerContext)
     private val wakeLock =
@@ -62,8 +72,7 @@ constructor(
             .newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexingComponent")
 
-    fun attach(listener: ForegroundListener) {
-        foregroundListener = listener
+    init {
         musicSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
         musicRepository.addIndexingListener(this)
@@ -77,7 +86,6 @@ constructor(
         musicRepository.addIndexingListener(this)
         musicRepository.addUpdateListener(this)
         musicRepository.removeIndexingListener(this)
-        foregroundListener = null
     }
 
     override fun requestIndex(withCache: Boolean) {
@@ -91,7 +99,7 @@ constructor(
     override val scope = indexScope
 
     override fun onIndexingStateChanged() {
-        foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
+        foregroundListener.updateForeground(ForegroundListener.Change.INDEXER)
         val state = musicRepository.indexingState
         if (state is IndexingState.Indexing) {
             wakeLock.acquireSafe()
@@ -132,7 +140,7 @@ constructor(
         // the music loading process ends.
         if (musicRepository.indexingState == null) {
             logD("Not loading, updating idle session")
-            foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
+            foregroundListener.updateForeground(ForegroundListener.Change.INDEXER)
         }
     }
 

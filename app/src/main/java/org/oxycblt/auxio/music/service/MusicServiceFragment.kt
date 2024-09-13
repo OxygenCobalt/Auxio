@@ -39,35 +39,40 @@ import org.oxycblt.auxio.util.logW
 class MusicServiceFragment
 @Inject
 constructor(
-    @ApplicationContext private val context: Context,
-    private val indexer: Indexer,
-    private val musicBrowser: MusicBrowser,
+    private val context: Context,
+    foregroundListener: ForegroundListener,
+    private val invalidator: Invalidator,
+    indexerFactory: Indexer.Factory,
+    musicBrowserFactory: MusicBrowser.Factory,
     private val musicRepository: MusicRepository
 ) : MusicBrowser.Invalidator {
-    private var invalidator: Invalidator? = null
+    private val indexer = indexerFactory.create(context, foregroundListener)
+    private val musicBrowser = musicBrowserFactory.create(context, this)
     private val dispatchJob = Job()
     private val dispatchScope = CoroutineScope(dispatchJob + Dispatchers.Default)
 
-    interface Invalidator {
-        fun invalidateMusic(mediaId: String)
+    class Factory @Inject constructor(
+        private val indexerFactory: Indexer.Factory,
+        private val musicBrowserFactory: MusicBrowser.Factory,
+        private val musicRepository: MusicRepository
+    ) {
+        fun create(context: Context, foregroundListener: ForegroundListener, invalidator: Invalidator): MusicServiceFragment =
+            MusicServiceFragment(context, foregroundListener, invalidator, indexerFactory, musicBrowserFactory, musicRepository)
     }
 
-    fun attach(foregroundListener: ForegroundListener, invalidator: Invalidator) {
-        this.invalidator = invalidator
-        indexer.attach(foregroundListener)
-        musicBrowser.attach(this)
+    interface Invalidator {
+        fun invalidateMusic(mediaId: String)
     }
 
     fun release() {
         dispatchJob.cancel()
         musicBrowser.release()
         indexer.release()
-        invalidator = null
     }
 
     override fun invalidateMusic(ids: Set<String>) {
         ids.forEach { mediaId ->
-            requireNotNull(invalidator) { "Invalidator not available" }.invalidateMusic(mediaId)
+            invalidator.invalidateMusic(mediaId)
         }
     }
 

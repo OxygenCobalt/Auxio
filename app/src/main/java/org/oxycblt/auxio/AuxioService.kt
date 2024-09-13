@@ -41,13 +41,14 @@ class AuxioService :
     MediaBrowserServiceCompat(), ForegroundListener, MusicServiceFragment.Invalidator {
     @Inject lateinit var playbackFragment: PlaybackServiceFragment
 
-    @Inject lateinit var musicFragment: MusicServiceFragment
+    @Inject lateinit var musicFragmentFactory: MusicServiceFragment.Factory
+    lateinit var musicFragment: MusicServiceFragment
 
     @SuppressLint("WrongConstant")
     override fun onCreate() {
         super.onCreate()
         sessionToken = playbackFragment.attach(this)
-        musicFragment.attach(this, this)
+        musicFragment = musicFragmentFactory.create(this, this, this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
