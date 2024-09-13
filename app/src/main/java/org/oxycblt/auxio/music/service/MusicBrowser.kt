@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.service
 
 import android.content.Context
 import android.support.v4.media.MediaBrowserCompat.MediaItem
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.HomeGenerator
@@ -37,7 +36,8 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.search.SearchEngine
 
-class MusicBrowser private constructor(
+class MusicBrowser
+private constructor(
     private val context: Context,
     private val invalidator: Invalidator,
     private val musicRepository: MusicRepository,
@@ -46,15 +46,24 @@ class MusicBrowser private constructor(
     homeGeneratorFactory: HomeGenerator.Factory
 ) : MusicRepository.UpdateListener, HomeGenerator.Invalidator {
 
-    class Factory @Inject constructor(
-    private val musicRepository: MusicRepository,
-    private val searchEngine: SearchEngine,
-    private val listSettings: ListSettings,
+    class Factory
+    @Inject
+    constructor(
+        private val musicRepository: MusicRepository,
+        private val searchEngine: SearchEngine,
+        private val listSettings: ListSettings,
         private val homeGeneratorFactory: HomeGenerator.Factory
     ) {
         fun create(context: Context, invalidator: Invalidator): MusicBrowser =
-            MusicBrowser(context, invalidator, musicRepository, searchEngine, listSettings, homeGeneratorFactory)
+            MusicBrowser(
+                context,
+                invalidator,
+                musicRepository,
+                searchEngine,
+                listSettings,
+                homeGeneratorFactory)
     }
+
     interface Invalidator {
         fun invalidateMusic(ids: Set<String>)
     }

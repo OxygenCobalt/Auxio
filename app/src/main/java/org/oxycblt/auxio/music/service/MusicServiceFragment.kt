@@ -24,7 +24,6 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import androidx.media.MediaBrowserServiceCompat.Result
 import androidx.media.utils.MediaConstants
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,13 +50,25 @@ constructor(
     private val dispatchJob = Job()
     private val dispatchScope = CoroutineScope(dispatchJob + Dispatchers.Default)
 
-    class Factory @Inject constructor(
+    class Factory
+    @Inject
+    constructor(
         private val indexerFactory: Indexer.Factory,
         private val musicBrowserFactory: MusicBrowser.Factory,
         private val musicRepository: MusicRepository
     ) {
-        fun create(context: Context, foregroundListener: ForegroundListener, invalidator: Invalidator): MusicServiceFragment =
-            MusicServiceFragment(context, foregroundListener, invalidator, indexerFactory, musicBrowserFactory, musicRepository)
+        fun create(
+            context: Context,
+            foregroundListener: ForegroundListener,
+            invalidator: Invalidator
+        ): MusicServiceFragment =
+            MusicServiceFragment(
+                context,
+                foregroundListener,
+                invalidator,
+                indexerFactory,
+                musicBrowserFactory,
+                musicRepository)
     }
 
     interface Invalidator {
@@ -71,9 +82,7 @@ constructor(
     }
 
     override fun invalidateMusic(ids: Set<String>) {
-        ids.forEach { mediaId ->
-            invalidator.invalidateMusic(mediaId)
-        }
+        ids.forEach { mediaId -> invalidator.invalidateMusic(mediaId) }
     }
 
     fun start() {

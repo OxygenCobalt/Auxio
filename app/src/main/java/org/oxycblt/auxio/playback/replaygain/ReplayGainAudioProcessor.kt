@@ -44,17 +44,20 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ReplayGainAudioProcessor private constructor(
+class ReplayGainAudioProcessor
+private constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings
 ) : BaseAudioProcessor(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
-    class Factory @Inject constructor(
-
-    private val playbackManager: PlaybackStateManager,
-    private val playbackSettings: PlaybackSettings
+    class Factory
+    @Inject
+    constructor(
+        private val playbackManager: PlaybackStateManager,
+        private val playbackSettings: PlaybackSettings
     ) {
         fun create() = ReplayGainAudioProcessor(playbackManager, playbackSettings)
     }
+
     private var volume = 1f
         set(value) {
             field = value

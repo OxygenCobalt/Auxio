@@ -18,23 +18,20 @@
  
 package org.oxycblt.auxio.playback.service
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.media.session.MediaSessionCompat
-import androidx.core.content.ContextCompat
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 
-class PlaybackServiceFragment private constructor(
+class PlaybackServiceFragment
+private constructor(
     private val context: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
@@ -43,7 +40,9 @@ class PlaybackServiceFragment private constructor(
     widgetComponentFactory: WidgetComponent.Factory,
     systemReceiverFactory: SystemPlaybackReceiver.Factory,
 ) : MediaSessionCompat.Callback(), PlaybackStateManager.Listener {
-    class Factory @Inject constructor(
+    class Factory
+    @Inject
+    constructor(
         private val playbackManager: PlaybackStateManager,
         private val exoHolderFactory: ExoPlaybackStateHolder.Factory,
         private val sessionHolderFactory: MediaSessionHolder.Factory,
@@ -51,7 +50,14 @@ class PlaybackServiceFragment private constructor(
         private val systemReceiverFactory: SystemPlaybackReceiver.Factory,
     ) {
         fun create(context: Context, foregroundListener: ForegroundListener) =
-            PlaybackServiceFragment(context, foregroundListener, playbackManager, exoHolderFactory, sessionHolderFactory, widgetComponentFactory, systemReceiverFactory)
+            PlaybackServiceFragment(
+                context,
+                foregroundListener,
+                playbackManager,
+                exoHolderFactory,
+                sessionHolderFactory,
+                widgetComponentFactory,
+                systemReceiverFactory)
     }
 
     private val waitJob = Job()
@@ -60,7 +66,8 @@ class PlaybackServiceFragment private constructor(
     private val widgetComponent = widgetComponentFactory.create(context)
     private val systemReceiver = systemReceiverFactory.create(context)
 
-    val token: MediaSessionCompat.Token get() = sessionHolder.token
+    val token: MediaSessionCompat.Token
+        get() = sessionHolder.token
 
     // --- MEDIASESSION CALLBACKS ---
 

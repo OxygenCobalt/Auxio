@@ -24,32 +24,37 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import androidx.core.content.ContextCompat
+import javax.inject.Inject
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
-import javax.inject.Inject
 
 /**
  * A [BroadcastReceiver] for receiving playback-specific [Intent]s from the system that require an
  * active [IntentFilter] to be registered.
  */
-class SystemPlaybackReceiver private constructor(
+class SystemPlaybackReceiver
+private constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
     private val widgetComponent: WidgetComponent
 ) : BroadcastReceiver() {
     private var initialHeadsetPlugEventHandled = false
 
-    class Factory @Inject constructor(
+    class Factory
+    @Inject
+    constructor(
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings,
         private val widgetComponent: WidgetComponent
     ) {
         fun create(context: Context): SystemPlaybackReceiver {
-            val receiver = SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
-            ContextCompat.registerReceiver(context, receiver, INTENT_FILTER, ContextCompat.RECEIVER_EXPORTED)
+            val receiver =
+                SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
+            ContextCompat.registerReceiver(
+                context, receiver, INTENT_FILTER, ContextCompat.RECEIVER_EXPORTED)
             return receiver
         }
     }
@@ -131,16 +136,16 @@ class SystemPlaybackReceiver private constructor(
     }
 
     private companion object {
-    val INTENT_FILTER =
-        IntentFilter().apply {
-            addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-            addAction(AudioManager.ACTION_HEADSET_PLUG)
-            addAction(PlaybackActions.ACTION_INC_REPEAT_MODE)
-            addAction(PlaybackActions.ACTION_INVERT_SHUFFLE)
-            addAction(PlaybackActions.ACTION_SKIP_PREV)
-            addAction(PlaybackActions.ACTION_PLAY_PAUSE)
-            addAction(PlaybackActions.ACTION_SKIP_NEXT)
-            addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
-        }
+        val INTENT_FILTER =
+            IntentFilter().apply {
+                addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+                addAction(AudioManager.ACTION_HEADSET_PLUG)
+                addAction(PlaybackActions.ACTION_INC_REPEAT_MODE)
+                addAction(PlaybackActions.ACTION_INVERT_SHUFFLE)
+                addAction(PlaybackActions.ACTION_SKIP_PREV)
+                addAction(PlaybackActions.ACTION_PLAY_PAUSE)
+                addAction(PlaybackActions.ACTION_SKIP_NEXT)
+                addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
+            }
     }
 }

@@ -21,7 +21,6 @@ package org.oxycblt.auxio.music.service
 import android.content.Context
 import android.os.PowerManager
 import coil.ImageLoader
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +35,8 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
-class Indexer private constructor(
+class Indexer
+private constructor(
     override val workerContext: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
@@ -49,7 +49,9 @@ class Indexer private constructor(
     MusicRepository.IndexingListener,
     MusicRepository.UpdateListener,
     MusicSettings.Listener {
-    class Factory @Inject constructor(
+    class Factory
+    @Inject
+    constructor(
         private val playbackManager: PlaybackStateManager,
         private val musicRepository: MusicRepository,
         private val musicSettings: MusicSettings,
@@ -57,8 +59,14 @@ class Indexer private constructor(
         private val contentObserver: SystemContentObserver
     ) {
         fun create(context: Context, listener: ForegroundListener) =
-            Indexer(context, listener, playbackManager,
-                musicRepository, musicSettings, imageLoader, contentObserver)
+            Indexer(
+                context,
+                listener,
+                playbackManager,
+                musicRepository,
+                musicSettings,
+                imageLoader,
+                contentObserver)
     }
 
     private val indexJob = Job()
