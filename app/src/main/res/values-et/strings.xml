@@ -169,4 +169,37 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Laadime sinu muusikakogu… (%1$d/%2$d)</string>
+    <string name="lng_tasker_start">Auxio käivitub varem salvestatud olekus. Kui sellist olekut ei leidu, siis segatakse kõikide lugude järjekord ning taasesitus algab koheselt.
+\n
+\nHOIATUS: Ole selle teenuse kasutamisel hoolikas - kui sa ta sulged ja siis proovid uuesti kasutada, siis rakendus ilmselt jookseb kokku.</string>
+    <string name="set_personalize">Kohanda endale sobivaks</string>
+    <string name="set_personalize_desc">Seadista kasutajaliidese juhtnuppe ning käitumist</string>
+    <string name="set_display">Ekraan</string>
+    <string name="set_lib_tabs">Muusikakogu kaardid</string>
+    <string name="set_lib_tabs_desc">Muuda muusikakogu kaartide nähtavust ja järjekorda</string>
+    <string name="set_images">Pildid</string>
+    <string name="set_cover_mode">Kaanepildid</string>
+    <string name="set_cover_mode_off">Pole kasutusel</string>
+    <string name="set_cover_mode_quality">Kuva kõrgekvaliteedilisena</string>
+    <string name="set_cover_mode_media_store">Kuva kiirelt</string>
+    <string name="set_square_covers">Näita kaanepildid teravate nurkadega</string>
+    <string name="set_audio">Heli</string>
+    <string name="set_square_covers_desc">Kadreeri kaanepildid 1:1 küljesuhte alusel</string>
+    <string name="set_audio_desc">Seadista heli ja taasesitust</string>
+    <string name="set_playback">Taasesitus</string>
+    <string name="set_headset_autoplay">Automaatne esitus kõrvaklappidest</string>
+    <string name="set_headset_autoplay_desc">Kõrvaklappide ühendamisel alusta koheselt meedia mängimist (ei pruugi toimida kõikide seadmetega)</string>
+    <string name="set_repeat_pause">Kordamisel tee paus</string>
+    <string name="set_rewind_prev">Enne tagasi hüppamist keri tagasi</string>
+    <string name="set_rewind_prev_desc">Enne eelmise looni tagasi hüppamist keri jooksev lugu tagasi</string>
+    <string name="set_repeat_pause_desc">Loo kordamisel tee esituse paus</string>
+    <string name="set_remember_pause">Jäta paus meelde</string>
+    <string name="set_remember_pause_desc">Esitusjärjekorras vahelejätmisel või selle muutmisel jää senisesse olekusse (mängimine või paus)</string>
+    <string name="set_replay_gain">Helivaljuse normaliseerimine</string>
+    <string name="set_replay_gain_mode">Esitusvaljuse tundlikkuse seadistamise strateegia</string>
+    <string name="set_replay_gain_mode_off">Pole kasutusel</string>
+    <string name="set_replay_gain_mode_track">Eelista palakohast esitusvaljuse tundlikkust</string>
+    <string name="set_replay_gain_mode_album">Eelista albumikohast esitusvaljuse tundlikkust</string>
+    <string name="set_replay_gain_mode_dynamic">Kui album juba on esitamisel, siis eelista albumikohast esitusvaljuse tundlikkust</string>
+    <string name="set_pre_amp">Esitusvaljuse tundlikkuse eelvõimendus</string>
 </resources>
