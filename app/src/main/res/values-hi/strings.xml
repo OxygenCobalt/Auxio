@@ -316,4 +316,8 @@
     <string name="set_remember_pause">विराम याद रखें</string>
     <string name="set_remember_pause_desc">कतार छोड़ते या संपादित करते समय चलता/रोका रखिए</string>
     <string name="set_replay_gain_mode_off">बंद</string>
+    <string name="lbl_start_playback">प्लेबैक शुरू करें</string>
+    <string name="lng_tasker_start">पहले से सहेजे गए स्टेट का उपयोग करके Auxio को शुरू करता है। यदि कोई सहेजा हुआ स्टेट उपलब्ध नहीं है, तो सभी गाने शफल पर चलेंगे और प्लेबैक तुरंत शुरू हो जाएगा।
+\n
+\nचेतावनी: इस सेवा को नियंत्रित करते समय सावधान रहें, यदि आप इसे बंद करके फिर से उपयोग करने का प्रयास करते हैं, तो संभवतः ऐप क्रैश हो जाएगा।</string>
 </resources>

@@ -216,4 +216,5 @@
     <string name="def_playback">Necun musica in reproduction</string>
     <string name="fmt_editing">Modificante %s</string>
     <string name="fmt_def_playlist">Lista de reproduction %d</string>
+    <string name="lbl_start_playback">Initiar le reproduction</string>
 </resources>

@@ -79,7 +79,6 @@
     <string name="lbl_cancel">Cancelar</string>
     <string name="lbl_add">Adicionar</string>
     <string name="lbl_save">Salvar</string>
-    <string name="lbl_state_saved">Estado salvo</string>
     <string name="set_ui_desc">Mudar o tema e cores da app</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_day">Claro</string>
@@ -133,7 +132,6 @@
     </plurals>
     <string name="lbl_demo">Demo</string>
     <string name="set_replay_gain">Normalização de volume</string>
-    <string name="err_did_not_wipe">Não foi possível limpar a lista</string>
     <string name="lbl_replaygain_track">Ajuste de ReplayGain da faixa</string>
     <string name="lbl_replaygain_album">Ajuste de ReplayGain do álbum</string>
     <string name="lbl_author_name">Desenvolvido por Alexander Capehart</string>
@@ -190,12 +188,6 @@
     <string name="set_pre_amp_desc">O pré-amplificador é aplicado ao ajuste existente durante a reprodução</string>
     <string name="set_pre_amp_with">Ajustar com etiquetas</string>
     <string name="set_pre_amp_without">Ajustar sem etiquetas</string>
-    <string name="set_state">Persistência</string>
-    <string name="set_save_state">Gravar estado da reprodução</string>
-    <string name="set_save_desc">Salvar o estado de reprodução atual</string>
-    <string name="set_wipe_state">Limpar estado de reprodução</string>
-    <string name="set_restore_state">Restaurar o estado de reprodução</string>
-    <string name="set_restore_desc">Restaurar o estado de reprodução salvo anteriormente (se houver)</string>
     <string name="err_no_music">Nenhuma música encontrada</string>
     <string name="err_index_failed">Falha ao carregar música</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler a sua biblioteca de músicas</string>
@@ -290,16 +282,12 @@
     <string name="set_reindex_desc">Recarrega a biblioteca de músicas usando metadados salvos em cache quando possível</string>
     <string name="set_rescan">Procurar músicas novamente</string>
     <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de música (lento, porém mais completo)</string>
-    <string name="set_wipe_desc">Limpar o estado de reprodução salvo anteriormente (se houver)</string>
     <string name="err_import_failed">Não foi possível importar uma lista de reprodução deste ficheiro</string>
     <string name="err_export_failed">Incapaz de exportar a lista de reprodução para este ficheiro</string>
     <string name="err_no_app">Nenhuma aplicação encontrada que possa executar esta tarefa</string>
     <string name="err_no_dirs">Sem pastas</string>
     <string name="err_bad_dir">Esta pasta não é compatível</string>
-    <string name="err_did_not_restore">Nenhuma lista pode ser restaurada</string>
-    <string name="err_did_not_save">Não foi possível gravar a lista</string>
     <string name="desc_change_repeat">Alterar o modo de repetição</string>
-    <string name="desc_new_playlist">Criar nova lista de reprodução</string>
     <string name="desc_exit">Parar reprodução</string>
     <string name="desc_remove_song">Remover esta música de fila</string>
     <string name="desc_song_handle">Mover esta música da fila</string>
