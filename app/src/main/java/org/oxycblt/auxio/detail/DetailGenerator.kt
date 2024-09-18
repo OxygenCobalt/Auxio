@@ -125,7 +125,7 @@ private class DetailGeneratorImpl(
         val songs = listSettings.albumSongSort.songs(album.songs)
         val discs = songs.groupBy { it.disc }
         val section =
-            if (discs.size > 1 || discs.keys.first() != null) {
+            if (discs.size > 1) {
                 DetailSection.Discs(discs)
             } else {
                 DetailSection.Songs(songs)
