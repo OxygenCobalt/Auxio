@@ -163,6 +163,10 @@ constructor(
     val showOuter: Event<Outer>
         get() = _showOuter
 
+    init {
+        homeGenerator.attach()
+    }
+
     override fun onCleared() {
         super.onCleared()
         homeGenerator.release()
