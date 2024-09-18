@@ -64,7 +64,7 @@ private constructor(
     private val exoHolder = exoHolderFactory.create()
     private val sessionHolder = sessionHolderFactory.create(context, foregroundListener)
     private val widgetComponent = widgetComponentFactory.create(context)
-    private val systemReceiver = systemReceiverFactory.create(context)
+    private val systemReceiver = systemReceiverFactory.create(context, widgetComponent)
 
     val token: MediaSessionCompat.Token
         get() = sessionHolder.token

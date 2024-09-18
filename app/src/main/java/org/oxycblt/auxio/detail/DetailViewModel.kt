@@ -74,7 +74,6 @@ constructor(
 ) : ViewModel(), DetailGenerator.Invalidator {
     private val detailGenerator = detailGeneratorFactory.create(this)
 
-
     private val _toShow = MutableEvent<Show>()
     /**
      * A [Show] command that is awaiting a view capable of responding to it. Null if none currently.
@@ -208,21 +207,18 @@ constructor(
                 val album = detailGenerator.album(currentAlbum.value?.uid ?: return)
                 refreshDetail(album, _currentAlbum, _albumSongList, _albumSongInstructions, replace)
             }
-
             MusicType.ARTISTS -> {
                 val artist = detailGenerator.artist(currentArtist.value?.uid ?: return)
-                refreshDetail(artist, _currentArtist, _artistSongList, _artistSongInstructions, replace)
+                refreshDetail(
+                    artist, _currentArtist, _artistSongList, _artistSongInstructions, replace)
             }
-
             MusicType.GENRES -> {
                 val genre = detailGenerator.genre(currentGenre.value?.uid ?: return)
                 refreshDetail(genre, _currentGenre, _genreSongList, _genreSongInstructions, replace)
             }
-
             MusicType.PLAYLISTS -> {
                 refreshPlaylist(currentPlaylist.value?.uid ?: return)
             }
-
             else -> error("Unexpected music type $type")
         }
     }
@@ -522,7 +518,6 @@ constructor(
             }
     }
 
-
     private fun <T : MusicParent> refreshDetail(
         detail: Detail<T>?,
         parent: MutableStateFlow<T?>,
@@ -537,24 +532,23 @@ constructor(
         val newList = mutableListOf<Item>()
         var newInstructions: UpdateInstructions = UpdateInstructions.Diff
         for ((i, section) in detail.sections.withIndex()) {
-            val items = when (section) {
-                is DetailSection.PlainSection<*> -> {
-                    val header = if (section is DetailSection.Songs)
-                        SortHeader(section.stringRes) else BasicHeader(section.stringRes)
-                    newList.add(Divider(header))
-                    newList.add(header)
-                    section.items
-                }
-
-                is DetailSection.Discs -> {
-                    val header = BasicHeader(section.stringRes)
-                    newList.add(Divider(header))
-                    newList.add(header)
-                    section.discs.flatMap {
-                        listOf(DiscHeader(it.key)) + it.value
+            val items =
+                when (section) {
+                    is DetailSection.PlainSection<*> -> {
+                        val header =
+                            if (section is DetailSection.Songs) SortHeader(section.stringRes)
+                            else BasicHeader(section.stringRes)
+                        newList.add(Divider(header))
+                        newList.add(header)
+                        section.items
+                    }
+                    is DetailSection.Discs -> {
+                        val header = BasicHeader(section.stringRes)
+                        newList.add(Divider(header))
+                        newList.add(header)
+                        section.discs.flatMap { listOf(DiscHeader(it.key)) + it.value }
                     }
                 }
-            }
             // Currently only the final section (songs, which can be sorted) are invalidatable
             // and thus need to be replaced.
             if (replace == -1 && i == detail.sections.lastIndex) {
@@ -568,12 +562,16 @@ constructor(
         instructions.put(newInstructions)
     }
 
-    private fun refreshPlaylist(uid: Music.UID, instructions: UpdateInstructions = UpdateInstructions.Diff) {
+    private fun refreshPlaylist(
+        uid: Music.UID,
+        instructions: UpdateInstructions = UpdateInstructions.Diff
+    ) {
         logD("Refreshing playlist list")
         val edited = editedPlaylist.value
         if (edited == null) {
             val playlist = detailGenerator.playlist(uid)
-            refreshDetail(playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null)
+            refreshDetail(
+                playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null)
             return
         }
         val list = mutableListOf<Item>()
