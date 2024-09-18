@@ -52,7 +52,7 @@ class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicType>) :
             // On small screens, only display an icon.
             width < 370 -> tab.setIcon(icon).setContentDescription(homeTab.nameRes)
             // On large screens, display an icon and text.
-            width < 600 -> tab.setText(homeTab.nameRes).setIcon(icon)
+            width < 600 -> tab.setText(homeTab.nameRes)
             // On medium-size screens, display text.
             else -> tab.setIcon(icon).setText(homeTab.nameRes)
         }
