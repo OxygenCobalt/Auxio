@@ -35,6 +35,7 @@ import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
+import org.oxycblt.auxio.music.info.resolveNumber
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
@@ -111,16 +112,10 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
      */
     fun bind(discHeader: DiscHeader) {
         val disc = discHeader.inner
-        if (disc != null) {
-            binding.discNumber.text = binding.context.getString(R.string.fmt_disc_no, disc.number)
-            binding.discName.apply {
-                text = disc.name
-                isGone = disc.name == null
-            }
-        } else {
-            logD("Disc is null, defaulting to no disc")
-            binding.discNumber.text = binding.context.getString(R.string.def_disc)
-            binding.discName.isGone = true
+        binding.discNumber.text = disc.resolveNumber(binding.context)
+        binding.discName.apply {
+            text = disc?.name
+            isGone = disc?.name == null
         }
     }
 

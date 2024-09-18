@@ -44,7 +44,9 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ReplayGainAudioProcessor @Inject constructor(
+class ReplayGainAudioProcessor
+@Inject
+constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings
 ) : BaseAudioProcessor(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
