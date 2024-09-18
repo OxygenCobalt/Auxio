@@ -175,24 +175,24 @@ constructor(
     override fun invalidateMusic(type: MusicType, instructions: UpdateInstructions) {
         when (type) {
             MusicType.SONGS -> {
-                _songList.value = homeGenerator.songs()
                 _songInstructions.put(instructions)
+                _songList.value = homeGenerator.songs()
             }
             MusicType.ALBUMS -> {
-                _albumList.value = homeGenerator.albums()
                 _albumInstructions.put(instructions)
+                _albumList.value = homeGenerator.albums()
             }
             MusicType.ARTISTS -> {
-                _artistList.value = homeGenerator.artists()
                 _artistInstructions.put(instructions)
+                _artistList.value = homeGenerator.artists()
             }
             MusicType.GENRES -> {
-                _genreList.value = homeGenerator.genres()
                 _genreInstructions.put(instructions)
+                _genreList.value = homeGenerator.genres()
             }
             MusicType.PLAYLISTS -> {
-                _playlistList.value = homeGenerator.playlists()
                 _playlistInstructions.put(instructions)
+                _playlistList.value = homeGenerator.playlists()
             }
         }
     }
