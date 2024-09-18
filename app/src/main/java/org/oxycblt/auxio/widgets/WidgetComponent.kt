@@ -67,7 +67,7 @@ private constructor(
 
     private val widgetProvider = WidgetProvider()
 
-    init {
+    fun attach() {
         playbackManager.addListener(this)
         uiSettings.registerListener(this)
         imageSettings.registerListener(this)

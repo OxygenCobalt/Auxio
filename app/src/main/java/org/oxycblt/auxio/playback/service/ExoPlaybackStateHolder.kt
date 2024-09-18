@@ -86,7 +86,7 @@ class ExoPlaybackStateHolder(
     var sessionOngoing = false
         private set
 
-    init {
+    fun attach() {
         imageSettings.registerListener(this)
         player.addListener(this)
         playbackManager.registerStateHolder(this)
@@ -581,14 +581,13 @@ class ExoPlaybackStateHolder(
         private val playbackSettings: PlaybackSettings,
         private val commandFactory: PlaybackCommand.Factory,
         private val mediaSourceFactory: MediaSource.Factory,
-        private val replayGainProcessorFactory: ReplayGainAudioProcessor.Factory,
+        private val replayGainProcessor: ReplayGainAudioProcessor,
         private val musicRepository: MusicRepository,
         private val imageSettings: ImageSettings,
     ) {
         fun create(): ExoPlaybackStateHolder {
             // Since Auxio is a music player, only specify an audio renderer to save
-            // battery/apk size/cache size
-            val replayGainProcessor = replayGainProcessorFactory.create()
+            // battery/apk size/cache size]
             val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
                 arrayOf(
                     FfmpegAudioRenderer(handler, audioListener, replayGainProcessor),

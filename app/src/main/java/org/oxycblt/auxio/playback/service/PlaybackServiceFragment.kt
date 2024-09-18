@@ -66,13 +66,15 @@ private constructor(
     private val widgetComponent = widgetComponentFactory.create(context)
     private val systemReceiver = systemReceiverFactory.create(context, widgetComponent)
 
-    val token: MediaSessionCompat.Token
-        get() = sessionHolder.token
-
     // --- MEDIASESSION CALLBACKS ---
 
-    init {
+    fun attach(): MediaSessionCompat.Token {
+        exoHolder.attach()
+        sessionHolder.attach()
+        widgetComponent.attach()
+        systemReceiver.attach()
         playbackManager.addListener(this)
+        return sessionHolder.token
     }
 
     fun handleTaskRemoved() {
