@@ -83,46 +83,6 @@ sealed interface MediaSessionUID {
     }
 }
 
-enum class BrowserOption(val actionId: String, val labelRes: Int, val iconRes: Int) {
-    PLAY(BuildConfig.APPLICATION_ID + ".menu.PLAY", R.string.lbl_play, R.drawable.ic_play_24),
-    SHUFFLE(
-        BuildConfig.APPLICATION_ID + ".menu.SHUFFLE",
-        R.string.lbl_shuffle,
-        R.drawable.ic_shuffle_off_24),
-    PLAY_NEXT(
-        BuildConfig.APPLICATION_ID + ".menu.PLAY_NEXT",
-        R.string.lbl_play_next,
-        R.drawable.ic_play_next_24),
-    ADD_TO_QUEUE(
-        BuildConfig.APPLICATION_ID + ".menu.ADD_TO_QUEUE",
-        R.string.lbl_queue_add,
-        R.drawable.ic_queue_add_24),
-    DETAILS(
-        BuildConfig.APPLICATION_ID + ".menu.DETAILS",
-        R.string.lbl_parent_detail,
-        R.drawable.ic_details_24),
-    ALBUM_DETAILS(
-        BuildConfig.APPLICATION_ID + ".menu.ALBUM_DETAILS",
-        R.string.lbl_album_details,
-        R.drawable.ic_album_24),
-    ARTIST_DETAILS(
-        BuildConfig.APPLICATION_ID + ".menu.ARTIST_DETAILS",
-        R.string.lbl_artist_details,
-        R.drawable.ic_artist_24);
-
-    companion object {
-        val ITEM_ID_MAP =
-            mapOf(
-                R.id.action_play to PLAY,
-                R.id.action_shuffle to SHUFFLE,
-                R.id.action_play_next to PLAY_NEXT,
-                R.id.action_queue_add to ADD_TO_QUEUE,
-                R.id.action_detail to DETAILS,
-                R.id.action_album_details to ALBUM_DETAILS,
-                R.id.action_artist_details to ARTIST_DETAILS)
-    }
-}
-
 typealias Sugar = Bundle.(Context) -> Unit
 
 fun header(@StringRes nameRes: Int): Sugar = {
@@ -136,16 +96,6 @@ fun header(name: String): Sugar = {
 
 private fun style(style: Int): Sugar = {
     putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM, style)
-}
-
-private fun menu(@MenuRes res: Int): Sugar = { context ->
-    @SuppressLint("RestrictedApi") val builder = MenuBuilder(context)
-    MenuInflater(context).inflate(res, builder)
-    val menuIds =
-        builder.children.mapNotNullTo(ArrayList()) {
-            BrowserOption.ITEM_ID_MAP[it.itemId]?.actionId
-        }
-    putStringArrayList(MediaConstants.DESCRIPTION_EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID_LIST, menuIds)
 }
 
 private fun makeExtras(context: Context, vararg sugars: Sugar): Bundle {
@@ -181,7 +131,7 @@ fun Song.toMediaDescription(
         } else {
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
-    val extras = makeExtras(context, *sugar, menu(R.menu.song))
+    val extras = makeExtras(context, *sugar)
     return MediaDescriptionCompat.Builder()
         .setMediaId(mediaSessionUID.toString())
         .setTitle(name.resolve(context))
@@ -212,7 +162,7 @@ fun Album.toMediaItem(
         } else {
             MediaSessionUID.ChildItem(parent.uid, uid)
         }
-    val extras = makeExtras(context, *sugar, menu(R.menu.album))
+    val extras = makeExtras(context, *sugar)
     val counts = context.getPlural(R.plurals.fmt_song_count, songs.size)
     val description =
         MediaDescriptionCompat.Builder()
@@ -241,7 +191,7 @@ fun Artist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             } else {
                 context.getString(R.string.def_song_count)
             })
-    val extras = makeExtras(context, *sugar, menu(R.menu.parent))
+    val extras = makeExtras(context, *sugar)
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
@@ -262,7 +212,7 @@ fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
         } else {
             context.getString(R.string.def_song_count)
         }
-    val extras = makeExtras(context, *sugar, menu(R.menu.parent))
+    val extras = makeExtras(context, *sugar)
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
@@ -282,7 +232,7 @@ fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
         } else {
             context.getString(R.string.def_song_count)
         }
-    val extras = makeExtras(context, *sugar, menu(R.menu.playlist))
+    val extras = makeExtras(context, *sugar)
     val description =
         MediaDescriptionCompat.Builder()
             .setMediaId(mediaSessionUID.toString())
