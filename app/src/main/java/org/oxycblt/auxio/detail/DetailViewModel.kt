@@ -547,7 +547,7 @@ constructor(
                         section.items
                     }
                     is DetailSection.Discs -> {
-                        val header = BasicHeader(section.stringRes)
+                        val header = SortHeader(section.stringRes)
                         newList.add(Divider(header))
                         newList.add(header)
                         section.discs.flatMap { listOf(DiscHeader(it.key)) + it.value }
