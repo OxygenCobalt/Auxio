@@ -562,8 +562,8 @@ constructor(
             newList.addAll(items)
         }
         parent.value = detail.parent
-        list.value = newList
         instructions.put(newInstructions)
+        list.value = newList
     }
 
     private fun refreshPlaylist(
@@ -585,8 +585,8 @@ constructor(
             list.add(header)
             list.addAll(edited)
         }
-        _playlistSongList.value = list
         _playlistSongInstructions.put(instructions)
+        _playlistSongList.value = list
     }
 }
 
