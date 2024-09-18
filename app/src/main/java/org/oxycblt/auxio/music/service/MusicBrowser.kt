@@ -22,7 +22,12 @@ import android.content.Context
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import javax.inject.Inject
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.DetailGenerator
+import org.oxycblt.auxio.detail.DetailSection
+import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.home.HomeGenerator
+import org.oxycblt.auxio.list.BasicHeader
+import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.sort.Sort
@@ -42,17 +47,17 @@ private constructor(
     private val invalidator: Invalidator,
     private val musicRepository: MusicRepository,
     private val searchEngine: SearchEngine,
-    private val listSettings: ListSettings,
-    homeGeneratorFactory: HomeGenerator.Factory
-) : MusicRepository.UpdateListener, HomeGenerator.Invalidator {
+    homeGeneratorFactory: HomeGenerator.Factory,
+    detailGeneratorFactory: DetailGenerator.Factory
+) : HomeGenerator.Invalidator, DetailGenerator.Invalidator {
 
     class Factory
     @Inject
     constructor(
         private val musicRepository: MusicRepository,
         private val searchEngine: SearchEngine,
-        private val listSettings: ListSettings,
-        private val homeGeneratorFactory: HomeGenerator.Factory
+        private val homeGeneratorFactory: HomeGenerator.Factory,
+        private val detailGeneratorFactory: DetailGenerator.Factory
     ) {
         fun create(context: Context, invalidator: Invalidator): MusicBrowser =
             MusicBrowser(
@@ -60,8 +65,8 @@ private constructor(
                 invalidator,
                 musicRepository,
                 searchEngine,
-                listSettings,
-                homeGeneratorFactory)
+                homeGeneratorFactory,
+                detailGeneratorFactory)
     }
 
     interface Invalidator {
@@ -69,13 +74,11 @@ private constructor(
     }
 
     private val homeGenerator = homeGeneratorFactory.create(this)
-
-    init {
-        musicRepository.addUpdateListener(this)
-    }
+    private val detailGenerator = detailGeneratorFactory.create(this)
 
     fun release() {
-        musicRepository.removeUpdateListener(this)
+        homeGenerator.release()
+        detailGenerator.release()
     }
 
     override fun invalidateMusic(type: MusicType, instructions: UpdateInstructions) {
@@ -92,36 +95,21 @@ private constructor(
         }
     }
 
-    override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val deviceLibrary = musicRepository.deviceLibrary
-        val invalidate = mutableSetOf<String>()
-        if (changes.deviceLibrary && deviceLibrary != null) {
-            deviceLibrary.albums.forEach {
-                val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate.add(id)
-            }
-
-            deviceLibrary.artists.forEach {
-                val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate.add(id)
-            }
-
-            deviceLibrary.genres.forEach {
-                val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate.add(id)
-            }
+    override fun invalidate(type: MusicType, replace: Int?) {
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val userLibrary = musicRepository.userLibrary ?: return
+        val music = when (type) {
+            MusicType.ALBUMS -> deviceLibrary.albums
+            MusicType.ARTISTS -> deviceLibrary.artists
+            MusicType.GENRES -> deviceLibrary.genres
+            MusicType.PLAYLISTS -> userLibrary.playlists
+            else -> return
         }
-        val userLibrary = musicRepository.userLibrary
-        if (changes.userLibrary && userLibrary != null) {
-            userLibrary.playlists.forEach {
-                val id = MediaSessionUID.SingleItem(it.uid).toString()
-                invalidate.add(id)
-            }
+        if (music.isEmpty()) {
+            return
         }
-
-        if (invalidate.isNotEmpty()) {
-            invalidator?.invalidateMusic(invalidate)
-        }
+        val ids = music.map { MediaSessionUID.SingleItem(it.uid).toString() }.toSet()
+        invalidator.invalidateMusic(ids)
     }
 
     fun getItem(mediaId: String): MediaItem? {
@@ -235,34 +223,25 @@ private constructor(
         }
 
     private fun getChildMediaItems(uid: Music.UID): List<MediaItem>? {
-        return when (val item = musicRepository.find(uid)) {
-            is Album -> {
-                val songs = listSettings.albumSongSort.songs(item.songs)
-                songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs)) }
+        val detail = detailGenerator.any(uid) ?: return null
+        return detail.sections.flatMap { section ->
+            when (section) {
+                is DetailSection.Songs -> section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
+                is DetailSection.Albums -> section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
+                is DetailSection.Artists -> section.items.map { it.toMediaItem(context, header(section.stringRes)) }
+                is DetailSection.Discs -> section.discs.flatMap {
+                    section.discs.flatMap { entry ->
+                        val disc = entry.key
+                        val discString = if (disc != null) {
+                            context.getString(R.string.fmt_disc_no, disc.number)
+                        } else {
+                            context.getString(R.string.def_disc)
+                        }
+                        entry.value.map { it.toMediaItem(context, null, header(discString)) }
+                    }
+                }
+                else -> error("Unknown section type: $section")
             }
-            is Artist -> {
-                val albums = ARTIST_ALBUMS_SORT.albums(item.explicitAlbums + item.implicitAlbums)
-                val songs = listSettings.artistSongSort.songs(item.songs)
-                albums.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) } +
-                    songs.map { it.toMediaItem(context, item, header(R.string.lbl_songs)) }
-            }
-            is Genre -> {
-                val artists = GENRE_ARTISTS_SORT.artists(item.artists)
-                val songs = listSettings.genreSongSort.songs(item.songs)
-                artists.map { it.toMediaItem(context, header(R.string.lbl_songs)) } +
-                    songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) }
-            }
-            is Playlist -> {
-                item.songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) }
-            }
-            is Song,
-            null -> return null
         }
-    }
-
-    private companion object {
-        // TODO: Rely on detail item gen logic?
-        val ARTIST_ALBUMS_SORT = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
-        val GENRE_ARTISTS_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
     }
 }

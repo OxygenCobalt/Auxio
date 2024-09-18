@@ -130,6 +130,10 @@ fun header(@StringRes nameRes: Int): Sugar = {
         MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, it.getString(nameRes))
 }
 
+fun header(name: String): Sugar = {
+    putString(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, name)
+}
+
 private fun style(style: Int): Sugar = {
     putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM, style)
 }

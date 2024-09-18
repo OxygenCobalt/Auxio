@@ -46,13 +46,12 @@ interface ListSettings : Settings<ListSettings.Listener> {
 
     interface Listener {
         fun onSongSortChanged() {}
-
         fun onAlbumSortChanged() {}
-
+        fun onAlbumSongSortChanged() {}
         fun onArtistSortChanged() {}
-
+        fun onArtistSongSortChanged() {}
         fun onGenreSortChanged() {}
-
+        fun onGenreSongSortChanged() {}
         fun onPlaylistSortChanged() {}
     }
 }
@@ -162,8 +161,11 @@ class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Cont
         when (key) {
             getString(R.string.set_key_songs_sort) -> listener.onSongSortChanged()
             getString(R.string.set_key_albums_sort) -> listener.onAlbumSortChanged()
+            getString(R.string.set_key_album_songs_sort) -> listener.onAlbumSongSortChanged()
             getString(R.string.set_key_artists_sort) -> listener.onArtistSortChanged()
+            getString(R.string.set_key_artist_songs_sort) -> listener.onArtistSongSortChanged()
             getString(R.string.set_key_genres_sort) -> listener.onGenreSortChanged()
+            getString(R.string.set_key_genre_songs_sort) -> listener.onGenreSongSortChanged()
             getString(R.string.set_key_playlists_sort) -> listener.onPlaylistSortChanged()
         }
     }
