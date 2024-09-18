@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import androidx.media.MediaBrowserServiceCompat.Result
-import androidx.media.utils.MediaConstants
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -96,9 +95,7 @@ constructor(
     }
 
     fun getRoot(maxItems: Int) =
-        BrowserRoot(
-            MediaSessionUID.Tab(TabNode.Root(maxItems)).toString(),
-            Bundle())
+        BrowserRoot(MediaSessionUID.Tab(TabNode.Root(maxItems)).toString(), Bundle())
 
     fun getItem(mediaId: String, result: Result<MediaItem>) =
         result.dispatch { musicBrowser.getItem(mediaId) }
