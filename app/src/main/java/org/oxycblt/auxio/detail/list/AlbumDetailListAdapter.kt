@@ -39,7 +39,6 @@ import org.oxycblt.auxio.music.info.resolveNumber
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
 
 /**
  * An [DetailListAdapter] implementing the header and sub-items for the [Album] detail view.

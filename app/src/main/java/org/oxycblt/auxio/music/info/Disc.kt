@@ -37,5 +37,6 @@ class Disc(val number: Int, val name: String?) : Item, Comparable<Disc> {
     override fun compareTo(other: Disc) = number.compareTo(other.number)
 }
 
-
-fun Disc?.resolveNumber(context: Context) = this?.run { context.getString(R.string.fmt_disc_no, number) } ?: context.getString(R.string.def_disc)
+fun Disc?.resolveNumber(context: Context) =
+    this?.run { context.getString(R.string.fmt_disc_no, number) }
+        ?: context.getString(R.string.def_disc)
