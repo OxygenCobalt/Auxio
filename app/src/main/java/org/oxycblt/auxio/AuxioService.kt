@@ -81,7 +81,6 @@ class AuxioService :
         super.onDestroy()
         musicFragment.release()
         playbackFragment.release()
-        sessionToken = null
     }
 
     override fun onGetRoot(
