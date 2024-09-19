@@ -23,37 +23,27 @@ import org.oxycblt.auxio.music.MusicType
 
 sealed class TabNode {
     abstract val id: String
-    abstract val data: Int
     abstract val nameRes: Int
     abstract val bitmapRes: Int?
 
-    override fun toString() = "${id}/${data}"
+    override fun toString() = id
 
-    data class Root(val amount: Int) : TabNode() {
-        override val id = ID
-        override val data = amount
+    data object Root : TabNode() {
+        override val id = "root"
         override val nameRes = R.string.info_app_name
         override val bitmapRes = null
 
-        companion object {
-            const val ID = "root"
-        }
+        override fun toString() = id
     }
 
-    data class More(val remainder: Int) : TabNode() {
-        override val id = ID
-        override val data = remainder
+    data object More : TabNode() {
+        override val id = "more"
         override val nameRes = R.string.lbl_more
         override val bitmapRes = null
-
-        companion object {
-            const val ID = "more"
-        }
     }
 
     data class Home(val type: MusicType) : TabNode() {
-        override val id = ID
-        override val data = type.intCode
+        override val id = "$ID/${type.intCode}"
         override val bitmapRes: Int
             get() =
                 when (type) {
@@ -73,15 +63,15 @@ sealed class TabNode {
 
     companion object {
         fun fromString(str: String): TabNode? {
-            val split = str.split("/", limit = 2)
-            if (split.size != 2) {
-                return null
-            }
-            val data = split[1].toIntOrNull() ?: return null
-            return when (split[0]) {
-                Root.ID -> Root(data)
-                More.ID -> More(data)
-                Home.ID -> Home(MusicType.fromIntCode(data) ?: return null)
+            return when {
+                str == Root.id -> Root
+                str == More.id -> More
+                str.startsWith(Home.ID) -> {
+                    val split = str.split("/")
+                    if (split.size != 2) return null
+                    val intCode = split[1].toIntOrNull() ?: return null
+                    Home(MusicType.fromIntCode(intCode) ?: return null)
+                }
                 else -> null
             }
         }

@@ -89,9 +89,7 @@ class AuxioService :
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot {
-        val maximumRootChildLimit =
-            rootHints?.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4) ?: 4
-        return musicFragment.getRoot(maximumRootChildLimit)
+        return musicFragment.getRoot()
     }
 
     override fun onLoadItem(itemId: String, result: Result<MediaItem>) {
@@ -99,7 +97,10 @@ class AuxioService :
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
-        musicFragment.getChildren(parentId, result)
+        val maximumRootChildLimit =
+            browserRootHints?.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4)
+                ?: 4
+        musicFragment.getChildren(parentId, maximumRootChildLimit, result)
     }
 
     override fun onSearch(query: String, extras: Bundle?, result: Result<MutableList<MediaItem>>) {
