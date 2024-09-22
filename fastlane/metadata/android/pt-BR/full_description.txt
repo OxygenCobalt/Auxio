@@ -1,22 +1,24 @@
-O Auxio é um reprodutor de música local com UI/UX rápido e confiável, sem os muitos recursos inúteis presentes em outros reprodutores de música. Construído a partir do Exoplayer, o Auxio tem uma experiência de audição muito melhor em comparação com outros aplicativos que usam a API MediaPlayer nativa. Resumindo, <b>Toca música.</b>
+Auxio é um reprodutor de música local com uma interface/experiência de usuário rápida e confiável sem os tantos recursos inúteis presentes em outros reprodutores de música. Baseado em bibliotecas modernas de reprodução de mídia, Auxio possui um suporte à biblioteca e qualidade de reprodução superior comparado a outros aplicativos que usam recursos desatualizadas do Android. Em resumo, <b>Auxio toca música</b>.
 
-<b>Recursos</b>
+<b>Recursos:</b>
 
-- Reprodução baseada em ExoPlayer
-- Snappy UI derivada das diretrizes mais recentes do Material Design
-- UX opinativo que prioriza a facilidade de uso
-- Comportamento personalizável
-- Suporte à numeração de músicas nos discos, múltiplos artistas, tipos de lançamento, datas precisas/originais, ordenar tags, e mais
-- Sistema de artistas avançado que unifica artistas e seus álbuns
-- Gerenciamento de pastas com reconhecimento de cartão SD
-- Persistência confiável da lista de reprodução
-- Reprodução automática sem pausas
-- Suporte completo ao ReplayGain (MP3, MP4, FLAC, OGG e OPUS)
-- Funcionalidade de equalizador externo (como o Wavelet)
-- De ponta a ponta
-- Suporte para capas embutidas
-- Funcionalidade de pesquisa
-- Reprodução automática em fones de ouvido
-- Widgets elegantes que se adaptam automaticamente ao seu tamanho
-- Completamente privado e offline
-- Sem capas de álbuns arredondadas (a menos que você as queira. Daí pode.)
+- Reprodução baseada no Media3 ExoPlayer.
+- Interface de usuário rápida derivada das últimas diretrizes do Material Design.
+- Experiência de usuário opinativa que prioriza a facilidade de uso ao invés de priorizar situações incomuns.
+- Comportamento customizável.
+- Suporte a números de disco, vários artistas, tipos de lançamento, datas precisas/originais, metadados organizados e mais.
+- Sistema de artistas avançado que unifica artistas e artistas de álbum.
+- Gerenciamento de pastas com suporte a cartão SD.
+- Funcionalidade confiável de criação de playlists.
+- Persistência do estado de reprodução.
+- Suporte ao Android Auto.
+- Reprodução automática sem interrupções.
+- Suporte completo a ReplayGain (nos arquivos FLAC, MP3, MP4, OGG e OPUS).
+- Suporte externo a equalizador (por exemplo, Wavelet).
+- De ponta a ponta.
+- Suporte a capas embutidas.
+- Função de pesquisa.
+- Reprodução automática em fones de ouvido.
+- Widgets elegantes que se adaptam automaticamente ao tamanho.
+- Completamente privado e off-line.
+- Sem capas de álbuns arredondadas (por padrão).
