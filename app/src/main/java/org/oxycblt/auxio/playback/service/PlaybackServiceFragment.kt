@@ -25,6 +25,7 @@ import kotlinx.coroutines.Job
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.playback.player.PlayerStateHolder
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
@@ -35,7 +36,7 @@ private constructor(
     private val context: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
-    exoHolderFactory: ExoPlaybackStateHolder.Factory,
+    playerHolderFactory: PlayerStateHolder.Factory,
     sessionHolderFactory: MediaSessionHolder.Factory,
     widgetComponentFactory: WidgetComponent.Factory,
     systemReceiverFactory: SystemPlaybackReceiver.Factory,
@@ -44,7 +45,7 @@ private constructor(
     @Inject
     constructor(
         private val playbackManager: PlaybackStateManager,
-        private val exoHolderFactory: ExoPlaybackStateHolder.Factory,
+        private val exoHolderFactory: PlayerStateHolder.Factory,
         private val sessionHolderFactory: MediaSessionHolder.Factory,
         private val widgetComponentFactory: WidgetComponent.Factory,
         private val systemReceiverFactory: SystemPlaybackReceiver.Factory,
@@ -61,7 +62,7 @@ private constructor(
     }
 
     private val waitJob = Job()
-    private val exoHolder = exoHolderFactory.create()
+    private val exoHolder = playerHolderFactory.create(context)
     private val sessionHolder = sessionHolderFactory.create(context, foregroundListener)
     private val widgetComponent = widgetComponentFactory.create(context)
     private val systemReceiver = systemReceiverFactory.create(context, widgetComponent)

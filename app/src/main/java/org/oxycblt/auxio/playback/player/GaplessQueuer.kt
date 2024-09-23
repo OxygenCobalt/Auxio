@@ -1,30 +1,17 @@
-package org.oxycblt.auxio.playback.service
+package org.oxycblt.auxio.playback.player
 
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import org.oxycblt.auxio.playback.PlaybackSettings
 
-class GaplessPlayerKernel(private val exoPlayer: ExoPlayer, private val playbackSettings: PlaybackSettings) : PlayerKernel, PlaybackSettings.Listener {
-    init {
-        playbackSettings.registerListener(this)
+class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer) : Queuer {
+    data object Factory : Queuer.Factory {
+        override fun create(exoPlayer: ExoPlayer) = GaplessQueuer(exoPlayer)
     }
-
-    override val isPlaying: Boolean = exoPlayer.isPlaying
-    override var playWhenReady: Boolean = exoPlayer.playWhenReady
-        set(value) {
-            field = value
-            exoPlayer.playWhenReady = value
-        }
-    override val currentPosition: Long = exoPlayer.currentPosition
-    @get:Player.RepeatMode override var repeatMode: Int = exoPlayer.repeatMode
-        set(value) {
-            field = value
-            exoPlayer.repeatMode = value
-            updatePauseOnRepeat()
-        }
-    override val audioSessionId: Int = exoPlayer.audioSessionId
+    override val currentMediaItem: MediaItem? = exoPlayer.currentMediaItem
+    override val currentMediaItemIndex: Int = exoPlayer.currentMediaItemIndex
+    override val shuffleModeEnabled: Boolean = exoPlayer.shuffleModeEnabled
 
     override fun computeHeap(): List<MediaItem> {
         return (0 until exoPlayer.mediaItemCount).map { exoPlayer.getMediaItemAt(it) }
@@ -72,20 +59,6 @@ class GaplessPlayerKernel(private val exoPlayer: ExoPlayer, private val playback
     override fun computeFirstMediaItemIndex() =
         exoPlayer.currentTimeline.getFirstWindowIndex(exoPlayer.shuffleModeEnabled)
 
-    override fun addListener(player: Player.Listener) = exoPlayer.addListener(player)
-    override fun removeListener(player: Player.Listener) = exoPlayer.removeListener(player)
-    override fun release() {
-        exoPlayer.release()
-        playbackSettings.unregisterListener(this)
-    }
-
-    override val currentMediaItem: MediaItem? = exoPlayer.currentMediaItem
-    override val currentMediaItemIndex: Int = exoPlayer.currentMediaItemIndex
-    override val shuffleModeEnabled: Boolean = exoPlayer.shuffleModeEnabled
-
-    override fun play() = exoPlayer.play()
-    override fun pause() = exoPlayer.pause()
-    override fun seekTo(positionMs: Long) = exoPlayer.seekTo(positionMs)
     override fun goto(mediaItemIndex: Int) = exoPlayer.seekTo(mediaItemIndex, C.TIME_UNSET)
 
     override fun seekToNext() = exoPlayer.seekToNext()
@@ -164,18 +137,9 @@ class GaplessPlayerKernel(private val exoPlayer: ExoPlayer, private val playback
         if (exoPlayer.shuffleModeEnabled) {
             // Have to manually refresh the shuffle seed and anchor it to the new current songs
             exoPlayer.setShuffleOrder(
-                BetterShuffleOrder(exoPlayer.mediaItemCount, exoPlayer.currentMediaItemIndex))
+                BetterShuffleOrder(exoPlayer.mediaItemCount, exoPlayer.currentMediaItemIndex)
+            )
         }
     }
 
-
-    override fun onPauseOnRepeatChanged() {
-        super.onPauseOnRepeatChanged()
-        updatePauseOnRepeat()
-    }
-
-    private fun updatePauseOnRepeat() {
-        exoPlayer.pauseAtEndOfMediaItems =
-            exoPlayer.repeatMode == Player.REPEAT_MODE_ONE && playbackSettings.pauseOnRepeat
-    }
 }

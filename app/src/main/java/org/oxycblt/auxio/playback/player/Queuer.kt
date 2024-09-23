@@ -1,29 +1,13 @@
-package org.oxycblt.auxio.playback.service
+package org.oxycblt.auxio.playback.player
 
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.RawQueue
-import org.oxycblt.auxio.playback.state.RepeatMode
+import androidx.media3.exoplayer.ExoPlayer
 
-interface PlayerKernel {
-    // REPLICAS
-    val isPlaying: Boolean
-    var playWhenReady: Boolean
-    val currentPosition: Long
-    @get:Player.RepeatMode var repeatMode: Int
-    val audioSessionId: Int
+interface Queuer {
     val currentMediaItem: MediaItem?
     val currentMediaItemIndex: Int
     val shuffleModeEnabled: Boolean
 
-    fun addListener(player: Player.Listener)
-    fun removeListener(player: Player.Listener)
-    fun release()
-
-    fun play()
-    fun pause()
-    fun seekTo(positionMs: Long)
     fun goto(mediaItemIndex: Int)
 
     fun seekToNext()
@@ -47,5 +31,8 @@ interface PlayerKernel {
     fun addTopMediaItems(mediaItems: List<MediaItem>)
     fun addBottomMediaItems(mediaItems: List<MediaItem>)
     fun shuffled(shuffled: Boolean)
-}
 
+    interface Factory {
+        fun create(exoPlayer: ExoPlayer): Queuer
+    }
+}

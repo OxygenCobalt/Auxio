@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.service
+package org.oxycblt.auxio.playback.player
 
 import androidx.media3.common.C
 import androidx.media3.exoplayer.source.ShuffleOrder
