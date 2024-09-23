@@ -54,7 +54,7 @@ import org.oxycblt.auxio.util.logE
 
 class PlayerStateHolder(
     private val context: Context,
-    private val playerFactory: PlayerFactory,
+    playerFactory: PlayerFactory,
     private val playbackManager: PlaybackStateManager,
     private val persistenceRepository: PersistenceRepository,
     private val playbackSettings: PlaybackSettings,

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.service
+package org.oxycblt.auxio.playback.player
 
 import android.content.Context
 import androidx.media3.datasource.ContentDataSource
@@ -32,6 +32,7 @@ import androidx.media3.extractor.mp4.Mp4Extractor
 import androidx.media3.extractor.ogg.OggExtractor
 import androidx.media3.extractor.ts.AdtsExtractor
 import androidx.media3.extractor.wav.WavExtractor
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,7 +41,13 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class SystemModule {
+interface PlayerModule {
+    @Binds fun playerFactory(factory: PlayerFactoryImpl): PlayerFactory
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+class ExoPlayerModule {
     @Provides
     fun mediaSourceFactory(
         dataSourceFactory: DataSource.Factory,
