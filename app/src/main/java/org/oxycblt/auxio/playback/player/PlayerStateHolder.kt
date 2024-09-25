@@ -403,18 +403,22 @@ class PlayerStateHolder(
         }
 
         playbackManager.ack(this, StateAck.ProgressionChanged)
+        deferSave()
     }
 
     override fun onIsPlayingChanged() {
         playbackManager.ack(this, StateAck.ProgressionChanged)
+        deferSave()
     }
 
     override fun onPositionDiscontinuity() {
         playbackManager.ack(this, StateAck.ProgressionChanged)
+        deferSave()
     }
 
     override fun onAutoTransition() {
         playbackManager.ack(this, StateAck.IndexMoved)
+        deferSave()
     }
 
     override fun onError(error: PlaybackException) {
