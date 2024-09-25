@@ -217,4 +217,11 @@ private constructor(
             exoPlayer.pause()
         }
     }
+
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        super.onMediaItemTransition(mediaItem, reason)
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+            listener.onAutoTransition()
+        }
+    }
 }
