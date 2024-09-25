@@ -1,12 +1,19 @@
 package org.oxycblt.auxio.playback.player
 
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Player.RepeatMode
 import androidx.media3.exoplayer.ExoPlayer
 
 interface Queuer {
     val currentMediaItem: MediaItem?
     val currentMediaItemIndex: Int
     val shuffleModeEnabled: Boolean
+
+    @get:RepeatMode var repeatMode: Int
+
+    fun attach()
+    fun release()
 
     fun goto(mediaItemIndex: Int)
 
@@ -32,7 +39,11 @@ interface Queuer {
     fun addBottomMediaItems(mediaItems: List<MediaItem>)
     fun shuffled(shuffled: Boolean)
 
+    interface Listener {
+        fun onAutoTransition()
+    }
+
     interface Factory {
-        fun create(exoPlayer: ExoPlayer): Queuer
+        fun create(exoPlayer: ExoPlayer, listener: Listener): Queuer
     }
 }

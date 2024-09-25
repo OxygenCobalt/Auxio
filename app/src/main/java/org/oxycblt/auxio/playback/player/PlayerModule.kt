@@ -42,7 +42,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface PlayerModule {
-    @Binds fun playerFactory(factory: PlayerFactoryImpl): PlayerFactory
+    @Binds fun playerKernelFactory(factory: PlayerKernelFactoryImpl): PlayerKernel.Factory
 }
 
 @Module

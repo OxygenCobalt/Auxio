@@ -3,8 +3,8 @@ package org.oxycblt.auxio.playback.player
 import android.content.Context
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import androidx.media3.common.Player.RepeatMode
 import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.RenderersFactory
@@ -15,31 +15,36 @@ import androidx.media3.exoplayer.source.MediaSource
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import javax.inject.Inject
 
-interface PlayerFactory {
-    fun create(context: Context): ThinPlayer
-
-}
-
-interface ThinPlayer {
+interface PlayerKernel {
     val isPlaying: Boolean
     var playWhenReady: Boolean
     val currentPosition: Long
-    @get:RepeatMode var repeatMode: Int
     val audioSessionId: Int
-    var pauseAtEndOfMediaItems: Boolean
+    val queuer: Queuer
 
-    fun attach(listener: Player.Listener)
+    fun attach()
     fun release()
 
     fun play()
     fun pause()
     fun seekTo(positionMs: Long)
 
-    fun intoQueuer(queuerFactory: Queuer.Factory): Queuer
+    fun replaceQueuer(queuerFactory: Queuer.Factory)
+
+    interface Listener {
+        fun onPlayWhenReadyChanged()
+        fun onIsPlayingChanged()
+        fun onPositionDiscontinuity()
+        fun onError(error: PlaybackException)
+    }
+
+    interface Factory {
+        fun create(context: Context, playerListener: Listener, queuerFactory: Queuer.Factory, queuerListener: Queuer.Listener): PlayerKernel
+    }
 }
 
-class PlayerFactoryImpl(@Inject private val mediaSourceFactory: MediaSource.Factory, @Inject private val replayGainProcessor: ReplayGainAudioProcessor) : PlayerFactory {
-    override fun create(context: Context): ThinPlayer {
+class PlayerKernelFactoryImpl(@Inject private val mediaSourceFactory: MediaSource.Factory, @Inject private val replayGainProcessor: ReplayGainAudioProcessor) : PlayerKernel.Factory {
+    override fun create(context: Context, playerListener: PlayerKernel.Listener, queuerFactory: Queuer.Factory, queuerListener: Queuer.Listener): PlayerKernel {
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
@@ -68,14 +73,18 @@ class PlayerFactoryImpl(@Inject private val mediaSourceFactory: MediaSource.Fact
                     true)
                     .build()
 
-        return ThinPlayerImpl(exoPlayer, replayGainProcessor)
+        return PlayerKernelImpl(exoPlayer, replayGainProcessor, playerListener, queuerListener, queuerFactory)
     }
 }
 
-private class ThinPlayerImpl(
+private class PlayerKernelImpl(
     private val exoPlayer: ExoPlayer,
-    private val replayGainProcessor: ReplayGainAudioProcessor
-) : ThinPlayer {
+    private val replayGainProcessor: ReplayGainAudioProcessor,
+    private val playerListener: PlayerKernel.Listener,
+    private val queuerListener: Queuer.Listener,
+    queuerFactory: Queuer.Factory
+) : PlayerKernel, Player.Listener {
+    override var queuer: Queuer = queuerFactory.create(exoPlayer, queuerListener)
     override val isPlaying: Boolean get() = exoPlayer.isPlaying
     override var playWhenReady: Boolean
         get() = exoPlayer.playWhenReady
@@ -83,24 +92,16 @@ private class ThinPlayerImpl(
             exoPlayer.playWhenReady = value
         }
     override val currentPosition: Long get() = exoPlayer.currentPosition
-    override var repeatMode: Int
-        get() = exoPlayer.repeatMode
-        set(value) {
-            exoPlayer.repeatMode = value
-        }
     override val audioSessionId: Int get() = exoPlayer.audioSessionId
-    override var pauseAtEndOfMediaItems: Boolean
-        get() = exoPlayer.pauseAtEndOfMediaItems
-        set(value) {
-            exoPlayer.pauseAtEndOfMediaItems = value
-        }
 
-    override fun attach(listener: Player.Listener) {
-        exoPlayer.addListener(listener)
+    override fun attach() {
+        exoPlayer.addListener(this)
         replayGainProcessor.attach()
+        queuer.attach()
     }
 
     override fun release() {
+        queuer.release()
         replayGainProcessor.release()
         exoPlayer.release()
     }
@@ -111,5 +112,33 @@ private class ThinPlayerImpl(
 
     override fun seekTo(positionMs: Long) = exoPlayer.seekTo(positionMs)
 
-    override fun intoQueuer(queuerFactory: Queuer.Factory) = queuerFactory.create(exoPlayer)
+    override fun replaceQueuer(queuerFactory: Queuer.Factory) {
+        queuer.release()
+        queuer = queuerFactory.create(exoPlayer, queuerListener)
+        queuer.attach()
+    }
+
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        super.onPlayWhenReadyChanged(playWhenReady, reason)
+        playerListener.onPlayWhenReadyChanged()
+    }
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        super.onIsPlayingChanged(isPlaying)
+        playerListener.onIsPlayingChanged()
+    }
+
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+        playerListener.onPositionDiscontinuity()
+    }
+
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        playerListener.onError(error)
+    }
 }

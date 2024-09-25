@@ -3,15 +3,39 @@ package org.oxycblt.auxio.playback.player
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.Player.RepeatMode
 import androidx.media3.exoplayer.ExoPlayer
+import org.oxycblt.auxio.playback.PlaybackSettings
+import javax.inject.Inject
 
-class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer) : Queuer {
-    data object Factory : Queuer.Factory {
-        override fun create(exoPlayer: ExoPlayer) = GaplessQueuer(exoPlayer)
+/**
+ *
+ */
+class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer, private val listener: Queuer.Listener, private val playbackSettings: PlaybackSettings) : Queuer, PlaybackSettings.Listener, Player.Listener {
+    class Factory @Inject constructor(private val playbackSettings: PlaybackSettings) : Queuer.Factory {
+        override fun create(exoPlayer: ExoPlayer, listener: Queuer.Listener) = GaplessQueuer(exoPlayer, listener, playbackSettings)
     }
+
     override val currentMediaItem: MediaItem? = exoPlayer.currentMediaItem
     override val currentMediaItemIndex: Int = exoPlayer.currentMediaItemIndex
     override val shuffleModeEnabled: Boolean = exoPlayer.shuffleModeEnabled
+    @get:RepeatMode
+    override var repeatMode: Int = exoPlayer.repeatMode
+        set(value) {
+            field = value
+            exoPlayer.repeatMode = value
+            updatePauseOnRepeat()
+        }
+
+    override fun attach() {
+        playbackSettings.registerListener(this)
+        exoPlayer.addListener(this)
+    }
+
+    override fun release() {
+        playbackSettings.unregisterListener(this)
+        exoPlayer.removeListener(this)
+    }
 
     override fun computeHeap(): List<MediaItem> {
         return (0 until exoPlayer.mediaItemCount).map { exoPlayer.getMediaItemAt(it) }
@@ -142,4 +166,22 @@ class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer) : Queu
         }
     }
 
+    override fun onPauseOnRepeatChanged() {
+        super.onPauseOnRepeatChanged()
+        updatePauseOnRepeat()
+    }
+
+    private fun updatePauseOnRepeat() {
+        exoPlayer.pauseAtEndOfMediaItems =
+            exoPlayer.repeatMode == Player.REPEAT_MODE_ONE && playbackSettings.pauseOnRepeat
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+
+        if (playbackState == Player.STATE_ENDED && exoPlayer.repeatMode == Player.REPEAT_MODE_OFF) {
+            goto(0)
+            exoPlayer.pause()
+        }
+    }
 }
