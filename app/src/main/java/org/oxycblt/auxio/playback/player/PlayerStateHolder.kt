@@ -54,7 +54,7 @@ import org.oxycblt.auxio.util.logE
 class PlayerStateHolder(
     private val context: Context,
     playerKernelFactory: PlayerKernel.Factory,
-    gaplessQueuerFactory: Queuer.Factory,
+    gaplessQueuerFactory: GaplessQueuer.Factory,
     private val playbackManager: PlaybackStateManager,
     private val persistenceRepository: PersistenceRepository,
     private val playbackSettings: PlaybackSettings,
@@ -75,7 +75,7 @@ class PlayerStateHolder(
         private val persistenceRepository: PersistenceRepository,
         private val playbackSettings: PlaybackSettings,
         private val playerFactory: PlayerKernel.Factory,
-        private val gaplessQueuerFactory: Queuer.Factory,
+        private val gaplessQueuerFactory: GaplessQueuer.Factory,
         private val commandFactory: PlaybackCommand.Factory,
         private val replayGainProcessor: ReplayGainAudioProcessor,
         private val musicRepository: MusicRepository,
