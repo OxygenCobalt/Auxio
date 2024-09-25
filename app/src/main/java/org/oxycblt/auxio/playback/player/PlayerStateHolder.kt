@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * ExoPlaybackStateHolder.kt is part of Auxio.
+ * PlayerStateHolder.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import android.media.audiofx.AudioEffect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,12 +54,12 @@ import org.oxycblt.auxio.util.logE
 class PlayerStateHolder(
     private val context: Context,
     playerKernelFactory: PlayerKernel.Factory,
+    gaplessQueuerFactory: Queuer.Factory,
     private val playbackManager: PlaybackStateManager,
     private val persistenceRepository: PersistenceRepository,
     private val playbackSettings: PlaybackSettings,
     private val commandFactory: PlaybackCommand.Factory,
     private val replayGainProcessor: ReplayGainAudioProcessor,
-    gaplessQueuerFactory: Queuer.Factory,
     private val musicRepository: MusicRepository,
     private val imageSettings: ImageSettings
 ) :
@@ -76,9 +75,9 @@ class PlayerStateHolder(
         private val persistenceRepository: PersistenceRepository,
         private val playbackSettings: PlaybackSettings,
         private val playerFactory: PlayerKernel.Factory,
+        private val gaplessQueuerFactory: Queuer.Factory,
         private val commandFactory: PlaybackCommand.Factory,
         private val replayGainProcessor: ReplayGainAudioProcessor,
-        private val gaplessQueuerFactory: Queuer.Factory,
         private val musicRepository: MusicRepository,
         private val imageSettings: ImageSettings,
     ) {
@@ -86,12 +85,12 @@ class PlayerStateHolder(
             return PlayerStateHolder(
                 context,
                 playerFactory,
+                gaplessQueuerFactory,
                 playbackManager,
                 persistenceRepository,
                 playbackSettings,
                 commandFactory,
                 replayGainProcessor,
-                gaplessQueuerFactory,
                 musicRepository,
                 imageSettings)
         }
@@ -149,8 +148,10 @@ class PlayerStateHolder(
 
     override fun resolveQueue(): RawQueue {
         val heap = player.queuer.computeHeap()
-        val shuffledMapping = if (player.queuer.shuffleModeEnabled) player.queuer.computeMapping() else emptyList()
-        return RawQueue(heap.mapNotNull { it.song }, shuffledMapping, player.queuer.currentMediaItemIndex)
+        val shuffledMapping =
+            if (player.queuer.shuffleModeEnabled) player.queuer.computeMapping() else emptyList()
+        return RawQueue(
+            heap.mapNotNull { it.song }, shuffledMapping, player.queuer.currentMediaItemIndex)
     }
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
@@ -246,7 +247,8 @@ class PlayerStateHolder(
         // Replicate the old pseudo-circular queue behavior when no repeat option is implemented.
         // Basically, you can't skip back and wrap around the queue, but you can skip forward and
         // wrap around the queue, albeit playback will be paused.
-        if (player.queuer.repeatMode == Player.REPEAT_MODE_ALL || player.queuer.hasNextMediaItem()) {
+        if (player.queuer.repeatMode == Player.REPEAT_MODE_ALL ||
+            player.queuer.hasNextMediaItem()) {
             player.queuer.seekToNext()
             if (!playbackSettings.rememberPause) {
                 player.play()
@@ -346,7 +348,11 @@ class PlayerStateHolder(
             sendEvent = true
         }
         if (rawQueue != resolveQueue()) {
-            player.queuer.prepareSaved(rawQueue.heap.map { it.buildMediaItem() }, rawQueue.shuffledMapping, rawQueue.heapIndex, rawQueue.isShuffled)
+            player.queuer.prepareSaved(
+                rawQueue.heap.map { it.buildMediaItem() },
+                rawQueue.shuffledMapping,
+                rawQueue.heapIndex,
+                rawQueue.isShuffled)
             player.pause()
             sendEvent = true
         }

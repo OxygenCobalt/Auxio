@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * GaplessQueuer.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.playback.player
 
 import androidx.media3.common.C
@@ -5,15 +23,20 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Player.RepeatMode
 import androidx.media3.exoplayer.ExoPlayer
-import org.oxycblt.auxio.playback.PlaybackSettings
 import javax.inject.Inject
+import org.oxycblt.auxio.playback.PlaybackSettings
 
-/**
- *
- */
-class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer, private val listener: Queuer.Listener, private val playbackSettings: PlaybackSettings) : Queuer, PlaybackSettings.Listener, Player.Listener {
-    class Factory @Inject constructor(private val playbackSettings: PlaybackSettings) : Queuer.Factory {
-        override fun create(exoPlayer: ExoPlayer, listener: Queuer.Listener) = GaplessQueuer(exoPlayer, listener, playbackSettings)
+/**  */
+class GaplessQueuer
+private constructor(
+    private val exoPlayer: ExoPlayer,
+    private val listener: Queuer.Listener,
+    private val playbackSettings: PlaybackSettings
+) : Queuer, PlaybackSettings.Listener, Player.Listener {
+    class Factory @Inject constructor(private val playbackSettings: PlaybackSettings) :
+        Queuer.Factory {
+        override fun create(exoPlayer: ExoPlayer, listener: Queuer.Listener) =
+            GaplessQueuer(exoPlayer, listener, playbackSettings)
     }
 
     override val currentMediaItem: MediaItem? = exoPlayer.currentMediaItem
@@ -86,9 +109,13 @@ class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer, privat
     override fun goto(mediaItemIndex: Int) = exoPlayer.seekTo(mediaItemIndex, C.TIME_UNSET)
 
     override fun seekToNext() = exoPlayer.seekToNext()
+
     override fun hasNextMediaItem() = exoPlayer.hasNextMediaItem()
+
     override fun seekToPrevious() = exoPlayer.seekToPrevious()
+
     override fun seekToPreviousMediaItem() = exoPlayer.seekToPreviousMediaItem()
+
     override fun hasPreviousMediaItem() = exoPlayer.hasPreviousMediaItem()
 
     override fun prepareNew(mediaItems: List<MediaItem>, startIndex: Int?, shuffled: Boolean) {
@@ -102,7 +129,12 @@ class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer, privat
         exoPlayer.prepare()
     }
 
-    override fun prepareSaved(mediaItems: List<MediaItem>, mapping: List<Int>, index: Int, shuffled: Boolean) {
+    override fun prepareSaved(
+        mediaItems: List<MediaItem>,
+        mapping: List<Int>,
+        index: Int,
+        shuffled: Boolean
+    ) {
         exoPlayer.setMediaItems(mediaItems)
         if (shuffled) {
             exoPlayer.shuffleModeEnabled = true
@@ -125,7 +157,9 @@ class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer, privat
                 C.INDEX_UNSET
             } else {
                 currTimeline.getNextWindowIndex(
-                    exoPlayer.currentMediaItemIndex, Player.REPEAT_MODE_OFF, exoPlayer.shuffleModeEnabled)
+                    exoPlayer.currentMediaItemIndex,
+                    Player.REPEAT_MODE_OFF,
+                    exoPlayer.shuffleModeEnabled)
             }
 
         if (nextIndex == C.INDEX_UNSET) {
@@ -161,8 +195,7 @@ class GaplessQueuer private constructor(private val exoPlayer: ExoPlayer, privat
         if (exoPlayer.shuffleModeEnabled) {
             // Have to manually refresh the shuffle seed and anchor it to the new current songs
             exoPlayer.setShuffleOrder(
-                BetterShuffleOrder(exoPlayer.mediaItemCount, exoPlayer.currentMediaItemIndex)
-            )
+                BetterShuffleOrder(exoPlayer.mediaItemCount, exoPlayer.currentMediaItemIndex))
         }
     }
 
