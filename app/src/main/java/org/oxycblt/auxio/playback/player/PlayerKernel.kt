@@ -72,9 +72,11 @@ interface PlayerKernel {
     }
 }
 
-class PlayerKernelFactoryImpl(
-    @Inject private val mediaSourceFactory: MediaSource.Factory,
-    @Inject private val replayGainProcessor: ReplayGainAudioProcessor
+class PlayerKernelFactoryImpl
+@Inject
+constructor(
+    private val mediaSourceFactory: MediaSource.Factory,
+    private val replayGainProcessor: ReplayGainAudioProcessor
 ) : PlayerKernel.Factory {
     override fun create(
         context: Context,
