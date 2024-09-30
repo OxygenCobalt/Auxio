@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationChannelCompat
@@ -32,6 +33,7 @@ import androidx.core.app.ServiceCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.utils.MediaConstants
 import dagger.hilt.android.AndroidEntryPoint
+import org.oxycblt.auxio.music.service.MusicBrowser
 import javax.inject.Inject
 import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
@@ -96,14 +98,32 @@ class AuxioService :
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
-        val maximumRootChildLimit =
-            browserRootHints?.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4)
-                ?: 4
-        musicFragment.getChildren(parentId, maximumRootChildLimit, result)
+        val maximumRootChildLimit = getRootChildrenLimit()
+        musicFragment.getChildren(parentId, maximumRootChildLimit, result, null)
+    }
+
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaItem>>,
+        options: Bundle
+    ) {
+        val maximumRootChildLimit = getRootChildrenLimit()
+        musicFragment.getChildren(parentId, maximumRootChildLimit, result, options.getPage())
     }
 
     override fun onSearch(query: String, extras: Bundle?, result: Result<MutableList<MediaItem>>) {
-        musicFragment.search(query, result)
+        musicFragment.search(query, result, extras?.getPage())
+    }
+
+    private fun getRootChildrenLimit(): Int {
+        return browserRootHints?.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4)
+            ?: 4
+    }
+
+    private fun Bundle.getPage(): MusicServiceFragment.Page? {
+        val page = getInt(MediaBrowserCompat.EXTRA_PAGE, -1).takeIf { it >= 0 } ?: return null
+        val pageSize = getInt(MediaBrowserCompat.EXTRA_PAGE_SIZE, -1).takeIf { it > 0 } ?: return null
+        return MusicServiceFragment.Page(page, pageSize)
     }
 
     override fun updateForeground(change: ForegroundListener.Change) {
