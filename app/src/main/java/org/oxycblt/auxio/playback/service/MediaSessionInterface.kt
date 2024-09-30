@@ -292,10 +292,10 @@ constructor(
     private fun expandMusicIntoCommand(music: Music, parent: MusicParent?) =
         when (music) {
             is Song -> expandSongIntoCommand(music, parent)
-            is Album -> commandFactory.album(music, ShuffleMode.OFF)
-            is Artist -> commandFactory.artist(music, ShuffleMode.OFF)
-            is Genre -> commandFactory.genre(music, ShuffleMode.OFF)
-            is Playlist -> commandFactory.playlist(music, ShuffleMode.OFF)
+            is Album -> commandFactory.album(music, ShuffleMode.IMPLICIT)
+            is Artist -> commandFactory.artist(music, ShuffleMode.IMPLICIT)
+            is Genre -> commandFactory.genre(music, ShuffleMode.IMPLICIT)
+            is Playlist -> commandFactory.playlist(music, ShuffleMode.IMPLICIT)
         }
 
     private fun expandSongIntoCommand(music: Song, parent: MusicParent?) =
