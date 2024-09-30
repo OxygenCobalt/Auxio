@@ -47,10 +47,6 @@ sealed interface MediaSessionUID {
         override fun toString() = "$ID_ITEM:$uid"
     }
 
-    data class ChildItem(val parentUid: Music.UID, val childUid: Music.UID) : MediaSessionUID {
-        override fun toString() = "$ID_ITEM:$parentUid>$childUid"
-    }
-
     companion object {
         const val ID_CATEGORY = BuildConfig.APPLICATION_ID + ".category"
         const val ID_ITEM = BuildConfig.APPLICATION_ID + ".item"
@@ -62,16 +58,7 @@ sealed interface MediaSessionUID {
             }
             return when (parts[0]) {
                 ID_CATEGORY -> Tab(TabNode.fromString(parts[1]) ?: return null)
-                ID_ITEM -> {
-                    val uids = parts[1].split(">", limit = 2)
-                    if (uids.size == 1) {
-                        Music.UID.fromString(uids[0])?.let { SingleItem(it) }
-                    } else {
-                        Music.UID.fromString(uids[0])?.let { parent ->
-                            Music.UID.fromString(uids[1])?.let { child -> ChildItem(parent, child) }
-                        }
-                    }
-                }
+                ID_ITEM -> SingleItem(Music.UID.fromString(parts[1]) ?: return null)
                 else -> return null
             }
         }
@@ -87,6 +74,10 @@ fun header(@StringRes nameRes: Int): Sugar = {
 
 fun header(name: String): Sugar = {
     putString(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, name)
+}
+
+fun child(of: MusicParent): Sugar = {
+    putString(MusicBrowser.KEY_CHILD_OF, MediaSessionUID.SingleItem(of.uid).toString())
 }
 
 private fun style(style: Int): Sugar = {
@@ -115,17 +106,8 @@ fun TabNode.toMediaItem(context: Context): MediaItem {
     return MediaItem(description.build(), MediaItem.FLAG_BROWSABLE)
 }
 
-fun Song.toMediaDescription(
-    context: Context,
-    parent: MusicParent? = null,
-    vararg sugar: Sugar
-): MediaDescriptionCompat {
-    val mediaSessionUID =
-        if (parent == null) {
-            MediaSessionUID.SingleItem(uid)
-        } else {
-            MediaSessionUID.ChildItem(parent.uid, uid)
-        }
+fun Song.toMediaDescription(context: Context, vararg sugar: Sugar): MediaDescriptionCompat {
+    val mediaSessionUID = MediaSessionUID.SingleItem(uid)
     val extras = makeExtras(context, *sugar)
     return MediaDescriptionCompat.Builder()
         .setMediaId(mediaSessionUID.toString())
@@ -138,25 +120,12 @@ fun Song.toMediaDescription(
         .build()
 }
 
-fun Song.toMediaItem(
-    context: Context,
-    parent: MusicParent? = null,
-    vararg sugar: Sugar
-): MediaItem {
-    return MediaItem(toMediaDescription(context, parent, *sugar), MediaItem.FLAG_PLAYABLE)
+fun Song.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
+    return MediaItem(toMediaDescription(context, *sugar), MediaItem.FLAG_PLAYABLE)
 }
 
-fun Album.toMediaItem(
-    context: Context,
-    parent: MusicParent? = null,
-    vararg sugar: Sugar
-): MediaItem {
-    val mediaSessionUID =
-        if (parent == null) {
-            MediaSessionUID.SingleItem(uid)
-        } else {
-            MediaSessionUID.ChildItem(parent.uid, uid)
-        }
+fun Album.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
+    val mediaSessionUID = MediaSessionUID.SingleItem(uid)
     val extras = makeExtras(context, *sugar)
     val counts = context.getPlural(R.plurals.fmt_song_count, songs.size)
     val description =

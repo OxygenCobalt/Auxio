@@ -205,7 +205,7 @@ sealed interface DetailSection {
 
     data class Artists(override val items: List<Artist>) : PlainSection<Artist>() {
         override val order = 0
-        override val stringRes = R.string.lbl_songs
+        override val stringRes = R.string.lbl_artists
     }
 
     data class Albums(val category: Category, override val items: List<Album>) :
