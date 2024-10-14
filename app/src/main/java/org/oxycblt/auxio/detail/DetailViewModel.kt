@@ -197,6 +197,10 @@ constructor(
 
     private val detailGenerator = detailGeneratorFactory.create(this)
 
+    init {
+        detailGenerator.attach()
+    }
+
     override fun onCleared() {
         detailGenerator.release()
     }
