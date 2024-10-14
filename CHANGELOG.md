@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.6.0
+
+#### What's New
+- Added support for playback from google assistant
+
+#### What's Improved
+- Home and detail UIs in Android Auto now reflect app sort settings
+- Album view now shows discs in android auto
+
+#### What's Fixed
+- Fixed playback briefly pausing when adding songs to playlist
+- Fixed media lists in Android Auto being truncated in some cases
+- Possibly fixed duplicated song items depending on album/all children
+- Possibly fixed truncated tab lists in android auto
+
+#### Dev/Meta
+- Moved to raw media session apis rather than media3 session
+
 ## 3.5.3
 
 #### What's New

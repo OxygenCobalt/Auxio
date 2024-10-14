@@ -1,0 +1,2 @@
+Auxio 3.6.0 improves support for android auto and fixes several small regressions.
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v3.5.3
