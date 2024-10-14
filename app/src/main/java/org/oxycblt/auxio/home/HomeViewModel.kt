@@ -52,8 +52,6 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     homeGeneratorFactory: HomeGenerator.Factory
 ) : ViewModel(), HomeGenerator.Invalidator {
-    private val homeGenerator = homeGeneratorFactory.create(this)
-
     private val _songList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
     val songList: StateFlow<List<Song>>
@@ -130,6 +128,8 @@ constructor(
     /** The current [Sort] used for [genreList]. */
     val playlistSort: Sort
         get() = listSettings.playlistSort
+
+    private val homeGenerator = homeGeneratorFactory.create(this)
 
     /**
      * A list of [MusicType] corresponding to the current [Tab] configuration, excluding invisible

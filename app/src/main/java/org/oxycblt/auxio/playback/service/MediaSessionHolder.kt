@@ -96,7 +96,7 @@ private constructor(
     val notification: ForegroundServiceNotification
         get() = _notification
 
-    init {
+    fun attach() {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
         imageSettings.registerListener(this)

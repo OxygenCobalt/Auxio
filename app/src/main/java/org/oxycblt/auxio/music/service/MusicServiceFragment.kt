@@ -74,6 +74,11 @@ constructor(
         fun invalidateMusic(mediaId: String)
     }
 
+    fun attach() {
+        indexer.attach()
+        musicBrowser.attach()
+    }
+
     fun release() {
         dispatchJob.cancel()
         musicBrowser.release()

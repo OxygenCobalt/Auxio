@@ -71,6 +71,11 @@ private constructor(
     private val homeGenerator = homeGeneratorFactory.create(this)
     private val detailGenerator = detailGeneratorFactory.create(this)
 
+    fun attach() {
+        homeGenerator.attach()
+        detailGenerator.attach()
+    }
+
     fun release() {
         homeGenerator.release()
         detailGenerator.release()

@@ -32,6 +32,10 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
 
 interface HomeGenerator {
+    fun attach()
+
+    fun release()
+
     fun songs(): List<Song>
 
     fun albums(): List<Album>
@@ -43,8 +47,6 @@ interface HomeGenerator {
     fun playlists(): List<Playlist>
 
     fun tabs(): List<MusicType>
-
-    fun release()
 
     interface Invalidator {
         fun invalidateMusic(type: MusicType, instructions: UpdateInstructions)
@@ -74,41 +76,14 @@ private class HomeGeneratorImpl(
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
 ) : HomeGenerator, HomeSettings.Listener, ListSettings.Listener, MusicRepository.UpdateListener {
-    override fun songs() =
-        musicRepository.deviceLibrary?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
-
-    override fun albums() =
-        musicRepository.deviceLibrary?.let { listSettings.albumSort.albums(it.albums) }
-            ?: emptyList()
-
-    override fun artists() =
-        musicRepository.deviceLibrary?.let { listSettings.artistSort.artists(it.artists) }
-            ?: emptyList()
-
-    override fun genres() =
-        musicRepository.deviceLibrary?.let { listSettings.genreSort.genres(it.genres) }
-            ?: emptyList()
-
-    override fun playlists() =
-        musicRepository.userLibrary?.let { listSettings.playlistSort.playlists(it.playlists) }
-            ?: emptyList()
-
-    override fun tabs() = homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
-
-    override fun onTabsChanged() {
-        invalidator.invalidateTabs()
-    }
-
-    init {
+    override fun attach() {
         homeSettings.registerListener(this)
         listSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
     }
 
-    override fun release() {
-        musicRepository.removeUpdateListener(this)
-        listSettings.unregisterListener(this)
-        homeSettings.unregisterListener(this)
+    override fun onTabsChanged() {
+        invalidator.invalidateTabs()
     }
 
     override fun onHideCollaboratorsChanged() {
@@ -161,4 +136,29 @@ private class HomeGeneratorImpl(
             invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Diff)
         }
     }
+    override fun release() {
+        musicRepository.removeUpdateListener(this)
+        listSettings.unregisterListener(this)
+        homeSettings.unregisterListener(this)
+    }
+    override fun songs() =
+        musicRepository.deviceLibrary?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
+
+    override fun albums() =
+        musicRepository.deviceLibrary?.let { listSettings.albumSort.albums(it.albums) }
+            ?: emptyList()
+
+    override fun artists() =
+        musicRepository.deviceLibrary?.let { listSettings.artistSort.artists(it.artists) }
+            ?: emptyList()
+
+    override fun genres() =
+        musicRepository.deviceLibrary?.let { listSettings.genreSort.genres(it.genres) }
+            ?: emptyList()
+
+    override fun playlists() =
+        musicRepository.userLibrary?.let { listSettings.playlistSort.playlists(it.playlists) }
+            ?: emptyList()
+
+    override fun tabs() = homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
 }

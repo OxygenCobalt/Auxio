@@ -49,8 +49,9 @@ class AuxioService :
     override fun onCreate() {
         super.onCreate()
         playbackFragment = playbackFragmentFactory.create(this, this)
-        sessionToken = playbackFragment.token
+        sessionToken = playbackFragment.attach()
         musicFragment = musicFragmentFactory.create(this, this, this)
+        musicFragment.attach()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

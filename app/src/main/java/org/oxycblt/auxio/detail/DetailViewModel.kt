@@ -72,8 +72,6 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     detailGeneratorFactory: DetailGenerator.Factory
 ) : ViewModel(), DetailGenerator.Invalidator {
-    private val detailGenerator = detailGeneratorFactory.create(this)
-
     private val _toShow = MutableEvent<Show>()
     /**
      * A [Show] command that is awaiting a view capable of responding to it. Null if none currently.
@@ -196,6 +194,8 @@ constructor(
         get() =
             playbackSettings.inParentPlaybackMode
                 ?: PlaySong.FromPlaylist(unlikelyToBeNull(currentPlaylist.value))
+
+    private val detailGenerator = detailGeneratorFactory.create(this)
 
     override fun onCleared() {
         detailGenerator.release()

@@ -47,6 +47,8 @@ interface DetailGenerator {
 
     fun playlist(uid: Music.UID): Detail<Playlist>?
 
+    fun attach()
+
     fun release()
 
     interface Factory {
@@ -71,7 +73,7 @@ private class DetailGeneratorImpl(
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository
 ) : DetailGenerator, MusicRepository.UpdateListener, ListSettings.Listener {
-    init {
+    override fun attach() {
         listSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
     }

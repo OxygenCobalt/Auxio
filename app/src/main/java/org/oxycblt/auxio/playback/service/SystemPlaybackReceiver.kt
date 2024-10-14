@@ -37,6 +37,7 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  */
 class SystemPlaybackReceiver
 private constructor(
+    private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
     private val widgetComponent: WidgetComponent
@@ -49,13 +50,17 @@ private constructor(
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings
     ) {
-        fun create(context: Context, widgetComponent: WidgetComponent): SystemPlaybackReceiver {
-            val receiver =
-                SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
-            ContextCompat.registerReceiver(
-                context, receiver, INTENT_FILTER, ContextCompat.RECEIVER_EXPORTED)
-            return receiver
-        }
+        fun create(context: Context, widgetComponent: WidgetComponent) =
+            SystemPlaybackReceiver(context, playbackManager, playbackSettings, widgetComponent)
+    }
+
+    fun attach() {
+        ContextCompat.registerReceiver(
+            context, this, INTENT_FILTER, ContextCompat.RECEIVER_EXPORTED)
+    }
+
+    fun release() {
+        context.unregisterReceiver(this)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
