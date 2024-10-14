@@ -41,11 +41,13 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.service.MediaSessionUID
+import org.oxycblt.auxio.music.service.MusicBrowser
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
+import org.oxycblt.auxio.util.logD
 
 class MediaSessionInterface
 @Inject
@@ -80,7 +82,10 @@ constructor(
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)
         val uid = MediaSessionUID.fromString(mediaId ?: return) ?: return
-        val command = expandUidIntoCommand(uid)
+        val parentUid =
+            extras?.getString(MusicBrowser.KEY_CHILD_OF)?.let { MediaSessionUID.fromString(it) }
+        val command = expandUidIntoCommand(uid, parentUid)
+        logD(extras?.getString(MusicBrowser.KEY_CHILD_OF))
         playbackManager.play(requireNotNull(command) { "Invalid playback configuration" })
     }
 
@@ -105,7 +110,6 @@ constructor(
         val songUid =
             when (uid) {
                 is MediaSessionUID.SingleItem -> uid.uid
-                is MediaSessionUID.ChildItem -> uid.childUid
                 else -> return
             }
         val song = deviceLibrary.songs.find { it.uid == songUid } ?: return
@@ -126,7 +130,6 @@ constructor(
         val songUid =
             when (uid) {
                 is MediaSessionUID.SingleItem -> uid.uid
-                is MediaSessionUID.ChildItem -> uid.childUid
                 else -> return
             }
         val firstAt = playbackManager.queue.indexOfFirst { it.uid == songUid }
@@ -194,20 +197,14 @@ constructor(
         context.sendBroadcast(Intent(action))
     }
 
-    private fun expandUidIntoCommand(uid: MediaSessionUID): PlaybackCommand? {
-        val music: Music
-        var parent: MusicParent? = null
-        when (uid) {
-            is MediaSessionUID.SingleItem -> {
-                music = musicRepository.find(uid.uid) ?: return null
-            }
-            is MediaSessionUID.ChildItem -> {
-                music = musicRepository.find(uid.childUid) ?: return null
-                parent = musicRepository.find(uid.parentUid) as? MusicParent ?: return null
-            }
-            else -> return null
-        }
-
+    private fun expandUidIntoCommand(
+        uid: MediaSessionUID,
+        parentUid: MediaSessionUID?
+    ): PlaybackCommand? {
+        val unwrappedUid = (uid as? MediaSessionUID.SingleItem)?.uid ?: return null
+        val unwrappedParentUid = (parentUid as? MediaSessionUID.SingleItem)?.uid
+        val music = musicRepository.find(unwrappedUid) ?: return null
+        val parent = unwrappedParentUid?.let { musicRepository.find(it) as? MusicParent }
         return expandMusicIntoCommand(music, parent)
     }
 

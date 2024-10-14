@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.service
 import android.content.Context
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import javax.inject.Inject
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailGenerator
 import org.oxycblt.auxio.detail.DetailSection
@@ -117,8 +118,6 @@ private constructor(
                 is MediaSessionUID.Tab -> return uid.node.toMediaItem(context)
                 is MediaSessionUID.SingleItem ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
-                is MediaSessionUID.ChildItem ->
-                    musicRepository.find(uid.childUid)?.let { musicRepository.find(it.uid) }
                 null -> null
             }
                 ?: return null
@@ -128,7 +127,7 @@ private constructor(
             is Artist -> music.toMediaItem(context)
             is Genre -> music.toMediaItem(context)
             is Playlist -> music.toMediaItem(context)
-            is Song -> music.toMediaItem(context, null)
+            is Song -> music.toMediaItem(context)
         }
     }
 
@@ -160,10 +159,10 @@ private constructor(
     private fun SearchEngine.Items.toMediaItems(): MutableList<MediaItem> {
         val music = mutableListOf<MediaItem>()
         if (songs != null) {
-            music.addAll(songs.map { it.toMediaItem(context, null, header(R.string.lbl_songs)) })
+            music.addAll(songs.map { it.toMediaItem(context, header(R.string.lbl_songs)) })
         }
         if (albums != null) {
-            music.addAll(albums.map { it.toMediaItem(context, null, header(R.string.lbl_albums)) })
+            music.addAll(albums.map { it.toMediaItem(context, header(R.string.lbl_albums)) })
         }
         if (artists != null) {
             music.addAll(artists.map { it.toMediaItem(context, header(R.string.lbl_artists)) })
@@ -185,9 +184,6 @@ private constructor(
             is MediaSessionUID.SingleItem -> {
                 getChildMediaItems(mediaSessionUID.uid)
             }
-            is MediaSessionUID.ChildItem -> {
-                getChildMediaItems(mediaSessionUID.childUid)
-            }
             null -> {
                 return null
             }
@@ -208,11 +204,11 @@ private constructor(
             }
             is TabNode.More -> {
                 val tabs = homeGenerator.tabs()
-                tabs.takeLast(tabs.size - maxTabs).map { TabNode.Home(it).toMediaItem(context) }
+                tabs.takeLast(tabs.size - maxTabs + 1).map { TabNode.Home(it).toMediaItem(context) }
             }
             is TabNode.Home ->
                 when (node.type) {
-                    MusicType.SONGS -> homeGenerator.songs().map { it.toMediaItem(context, null) }
+                    MusicType.SONGS -> homeGenerator.songs().map { it.toMediaItem(context) }
                     MusicType.ALBUMS -> homeGenerator.albums().map { it.toMediaItem(context) }
                     MusicType.ARTISTS -> homeGenerator.artists().map { it.toMediaItem(context) }
                     MusicType.GENRES -> homeGenerator.genres().map { it.toMediaItem(context) }
@@ -225,18 +221,24 @@ private constructor(
         return detail.sections.flatMap { section ->
             when (section) {
                 is DetailSection.Songs ->
-                    section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
+                    section.items.map {
+                        it.toMediaItem(context, header(section.stringRes), child(detail.parent))
+                    }
                 is DetailSection.Albums ->
-                    section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
+                    section.items.map { it.toMediaItem(context, header(section.stringRes)) }
                 is DetailSection.Artists ->
                     section.items.map { it.toMediaItem(context, header(section.stringRes)) }
                 is DetailSection.Discs ->
                     section.discs.flatMap { (disc, songs) ->
                         val discString = disc.resolveNumber(context)
-                        songs.map { it.toMediaItem(context, null, header(discString)) }
+                        songs.map { it.toMediaItem(context, header(discString)) }
                     }
                 else -> error("Unknown section type: $section")
             }
         }
+    }
+
+    companion object {
+        const val KEY_CHILD_OF = BuildConfig.APPLICATION_ID + ".key.CHILD_OF"
     }
 }

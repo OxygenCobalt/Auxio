@@ -295,7 +295,7 @@ private constructor(
             queue.mapIndexed { i, song ->
                 val description =
                     song.toMediaDescription(
-                        context, null, { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
+                        context, { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
                 // Store the item index so we can then use the analogous index in the
                 // playback state.
                 MediaSessionCompat.QueueItem(description, i.toLong())
