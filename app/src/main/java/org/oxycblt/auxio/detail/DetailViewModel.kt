@@ -542,13 +542,17 @@ constructor(
                         val header =
                             if (section is DetailSection.Songs) SortHeader(section.stringRes)
                             else BasicHeader(section.stringRes)
-                        newList.add(Divider(header))
+                        if (newList.isNotEmpty()) {
+                            newList.add(Divider(header))
+                        }
                         newList.add(header)
                         section.items
                     }
                     is DetailSection.Discs -> {
                         val header = SortHeader(section.stringRes)
-                        newList.add(Divider(header))
+                        if (newList.isNotEmpty()) {
+                            newList.add(Divider(header))
+                        }
                         newList.add(header)
                         section.discs.flatMap { listOf(DiscHeader(it.key)) + it.value }
                     }

@@ -65,7 +65,11 @@ class RoundedRectTransformation(
 
         val (outputWidth, outputHeight) = calculateOutputSize(input, size)
 
-        val output = createBitmap(outputWidth, outputHeight, input.config)
+        val output =
+            createBitmap(
+                outputWidth,
+                outputHeight,
+                requireNotNull(input.config) { "unsupported bitmap format" })
         output.applyCanvas {
             drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
