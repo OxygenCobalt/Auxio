@@ -11,6 +11,8 @@ precizni/izvorni datumi, sortiranje oznaka i više
 - Napredni sustav izvođača koji ujedinjuje izvođače i izvođače albuma
 - Upravljanje mapama koje podržava SD karticu
 - Pouzdana funkcija popisa pjesama
+- Automaska podrška za Android
+- Automatska reprodukcija bez prekida
 - Postojanost stanja reprodukcije
 - Puna podrška za ReplayGain (na MP3, FLAC, OGG, OPUS i MP4 datotekama)
 - Podrška za vanjski ekvilizator (npr. Wavelet)

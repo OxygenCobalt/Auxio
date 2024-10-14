@@ -309,4 +309,8 @@
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="def_genre">Неизвестен жанр</string>
+    <string name="lng_tasker_start">Стартира Auxio, използвайки предварително запазеното състояние. Ако няма налично запазено състояние, всички песни ще бъдат разбъркани. Възпроизвеждането ще започне веднага.
+\n
+\nПРЕДУПРЕЖДЕНИЕ: Бъдете внимателни, когато контролирате тази услуга, ако я затворите и след това опитате да я използвате отново, вероятно ще сринете приложението.</string>
+    <string name="lbl_start_playback">Стартирай възпроизвеждането</string>
 </resources>

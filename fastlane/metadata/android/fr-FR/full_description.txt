@@ -12,6 +12,7 @@ les dates précises/originales, le classement par tags, and plus encore
 - Carte SD reconnue par le système de dossiers
 - Fonction de liste de lecture efficace
 - Statut de lecture persistant
+- Support d'Android auto
 - Support complet de ReplayGain (pour les fichiers MP3, FLAC, OGG, OPUS, et MP4)
 - Support pour égaliseur externe (ex. Wavelet)
 - Navigation bord-à-bord

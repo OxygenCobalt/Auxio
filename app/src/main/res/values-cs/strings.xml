@@ -326,4 +326,8 @@
     <string name="set_remember_pause_desc">Zůstat ve stavu přehrávání/pozastavení při přeskakování nebo úpravě fronty</string>
     <string name="set_remember_pause">Zapamatovat pozastavení</string>
     <string name="set_replay_gain_mode_off">Vypnuto</string>
+    <string name="lbl_start_playback">Spustit přehrávání</string>
+    <string name="lng_tasker_start">Spustí Auxio pomocí naposledy uloženého stavu. Pokud není dostupný žádný uložený stav, budou náhodně přehrány všechny skladby. Přehrávání se spustí ihned.
+\n
+\nVAROVÁNÍ: při ovládání této služby buďte opatrní, pokud ji zavřete a pak se ji znovu pokusíte použít, aplikace nejspíše spadne.</string>
 </resources>

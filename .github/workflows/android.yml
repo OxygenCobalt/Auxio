@@ -14,11 +14,11 @@ jobs:
     - name: Install ninja-build
       run: sudo apt-get install -y ninja-build
     - name: Clone repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Clone submodules
       run: git submodule update --init --recursive --remote
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -30,7 +30,7 @@ jobs:
     - name: Build debug APK with Gradle
       run: ./gradlew app:packageDebug
     - name: Upload debug APK artifact
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v4
       with:
         name: Auxio_Canary
         path: ./app/build/outputs/apk/debug/app-debug.apk

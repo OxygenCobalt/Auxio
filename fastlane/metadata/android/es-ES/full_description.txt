@@ -1,22 +1,25 @@
-Auxio es un reproductor de música nativo con una UI/UX rápida y sólida sin las muchas funciones inútiles que se encuentran en otros reproductores de música. En comparación con otras aplicaciones que utilizan la API nativa de MediaPlayer, Auxio se basa en Exoplayer, con una mejor experiencia auditiva y mejor compatibilidad con la biblioteca de música, <b>exactamente como debería ser un reproductor de música</b>.
+Auxio es un reproductor de música local con una interfaz de usuario y una experiencia de usuario rápidas y fiables sin las numerosas funciones inútiles presentes en otros reproductores de música. Creado a partir de bibliotecas de reproducción de medios modernas, Auxio tiene un soporte de biblioteca y una calidad de escucha superiores en comparación con otras aplicaciones que utilizan funciones obsoletas de Android. En resumen, <b>reproduce música</b>.
 
 <b>Características</b>
 
-- Reproducción basada en ExoPlayer
-- Interfaz inteligente derivada de las últimas especificaciones de diseño de Material You
-- Una experiencia de usuario única que prioriza la facilidad de uso
-- Comportamiento del reproductor personalizable
-- Admite número de disco, múltiples artistas, tipo de lanzamiento, fecha exacta/original,
-Clasificación de pestañas y más
-- Sistema avanzado de "Artista" que unifica "Artista" y "Artista del álbum"
-- La función de administración de carpetas admite tarjeta SD
-- Diseño confiable y persistente del progreso de la reproducción.
-- Soporte completo para ReplayGain (incluidos archivos MP3, FLAC, OGG, OPUS y MP4)
-- Soporte para ecualizadores externos (aplicaciones como Wavelet)
-- Diseño de borde a borde
-- Soporte de cubierta integrado
-- buscar función
-- Reproducción automática cuando los auriculares están conectados
-- Widgets estilizados que se adaptan al tamaño de la oficina.
-- Completamente fuera de línea y privado
-- Carátula del álbum sin esquinas redondeadas (también puedes tenerla si quieres)
+- Reproducción basada en ExoPlayer media 3
+- Interfaz de usuario ágil basada en las últimas directrices de Material Design
+- Experiencia de usuario que prioriza la facilidad de uso sobre los casos extremos
+- Comportamiento personalizable
+- Soporte para números de disco, múltiples artistas, tipos de lanzamiento
+fechas precisas/originales, etiquetas de clasificación, etc.
+- Sistema avanzado de artistas que unifica artistas y artistas de álbumes
+- Gestión de carpetas compatible con tarjetas SD
+- Funcionalidad fiable de listas de reproducción
+- Persistencia del estado de reproducción
+- Compatibilidad con Android auto
+- Reproducción automática sin pausas
+- Compatibilidad total con ReplayGain (en archivos MP3, FLAC, OGG, OPUS y MP4)
+- Compatibilidad con ecualizadores externos (por ejemplo, Wavelet)
+- Borde a borde
+- Compatibilidad con carátulas incrustadas
+- Función de búsqueda
+- Reproducción automática con auriculares
+- Widgets elegantes que se adaptan automáticamente a su tamaño
+- Completamente privado y sin conexión
+- Sin carátulas redondeadas (por defecto)

@@ -1,0 +1,23 @@
+Auxio on paikallisen musiikin soitin nopealla ja luotettavalla käyttöliittymällä ilman useita turhia ominaisuuksia kuten muissa soittimissa. Perustuen moderneihin mediantoistokirjastoihin, Auxiolla on parempi tuki kirjastoille ja äänenlaatu verrattuna muihin sovelluksiin, jotka käyttävät vanhentuneita android toimintoja. Lyhyesti, <b>Se soittaa musiikkia.</b>
+
+<b>Ominaisuudet</b>
+
+- Toisto perustuu Media3 ExoPlayeriin
+- Tyylikäs käyttöliittymä johdettu viimeisimmistä Material Design ohjeista
+- Omapäinen käyttökokemus joka asettaa helppokäyttöisyyden etusijalle reunatapauksien sijaan
+- Mukautettava käyttäytyminen
+- Tukee levyjen numeroita, moninkertaisia artisteja, julkaisutyyppejä, tarkkoja/alkuperäisiä päivämääriä, tagijärjestystä ynnä muuta
+- Edistynyt esittäjäjärjestelmä, joka yhdistää artistit ja albumiartistit
+- SD-korttitietoinen kansionhallinta
+- Varmatoimiset soittolistatoiminnot
+- Android auto-tuki
+- Automaattinen katkoton toisto
+- Täysi ReplayGain tuki (MP3, FLAC, OGG, OPUS ja MP4 tiedostoissa)
+- Tuki ulkoiselle taajuuskorjaimelle (esim. Wavelet)
+- Reunasta reunaan
+- Tukee kappaleen sisältämiä kansikuvia
+- Hakutoiminto
+- Automaattinen toisto kuulokkeilla
+- Tyylikkäitä widgettejä, jotka mukautuvat automaattisesti kokoonsa
+- Täysin yksityinen ja verkkoyhteydetön
+- Pyöristämättömät albumin kansikuvat (oletusarvoisesti)
