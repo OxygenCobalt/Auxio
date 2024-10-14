@@ -47,6 +47,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.msToSecs
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.DeferredPlayback
@@ -363,13 +364,15 @@ class ExoPlaybackStateHolder(
     override fun applySavedState(
         parent: MusicParent?,
         rawQueue: RawQueue,
+        positionMs: Long,
+        repeatMode: RepeatMode,
         ack: StateAck.NewPlayback?
     ) {
-        logD("Applying saved state")
-        var sendEvent = false
+        var sendNewPlaybackEvent = false
+        var shouldSeek = false
         if (this.parent != parent) {
             this.parent = parent
-            sendEvent = true
+            sendNewPlaybackEvent = true
         }
         if (rawQueue != resolveQueue()) {
             player.setMediaItems(rawQueue.heap.map { it.buildMediaItem() })
@@ -382,9 +385,18 @@ class ExoPlaybackStateHolder(
             player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
             player.prepare()
             player.pause()
-            sendEvent = true
+            sendNewPlaybackEvent = true
+            shouldSeek = true
         }
-        if (sendEvent) {
+
+        repeatMode(repeatMode)
+        // Positions in milliseconds will drift during tight restores (i.e what the music loader
+        // does to sanitize the state), compare by seconds instead.
+        if (positionMs.msToSecs() != player.currentPosition.msToSecs() || shouldSeek) {
+            player.seekTo(positionMs)
+        }
+
+        if (sendNewPlaybackEvent) {
             ack?.let { playbackManager.ack(this, it) }
         }
     }
