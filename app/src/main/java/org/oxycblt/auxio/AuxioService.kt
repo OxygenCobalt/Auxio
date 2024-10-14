@@ -33,7 +33,6 @@ import androidx.core.app.ServiceCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.utils.MediaConstants
 import dagger.hilt.android.AndroidEntryPoint
-import org.oxycblt.auxio.music.service.MusicBrowser
 import javax.inject.Inject
 import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
@@ -116,13 +115,15 @@ class AuxioService :
     }
 
     private fun getRootChildrenLimit(): Int {
-        return browserRootHints?.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4)
+        return browserRootHints?.getInt(
+            MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4)
             ?: 4
     }
 
     private fun Bundle.getPage(): MusicServiceFragment.Page? {
         val page = getInt(MediaBrowserCompat.EXTRA_PAGE, -1).takeIf { it >= 0 } ?: return null
-        val pageSize = getInt(MediaBrowserCompat.EXTRA_PAGE_SIZE, -1).takeIf { it > 0 } ?: return null
+        val pageSize =
+            getInt(MediaBrowserCompat.EXTRA_PAGE_SIZE, -1).takeIf { it > 0 } ?: return null
         return MusicServiceFragment.Page(page, pageSize)
     }
 

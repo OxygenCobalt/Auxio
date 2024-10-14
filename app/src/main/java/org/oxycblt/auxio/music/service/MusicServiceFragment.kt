@@ -110,9 +110,12 @@ constructor(
             )
         }
 
-    fun getChildren(mediaId: String, maxTabs: Int, result: Result<MutableList<MediaItem>>, page: Page?) =
-        result.dispatch { musicBrowser.getChildren(mediaId, maxTabs)?.expose(page) }
-
+    fun getChildren(
+        mediaId: String,
+        maxTabs: Int,
+        result: Result<MutableList<MediaItem>>,
+        page: Page?
+    ) = result.dispatch { musicBrowser.getChildren(mediaId, maxTabs)?.expose(page) }
 
     fun search(query: String, result: Result<MutableList<MediaItem>>, page: Page?) =
         result.dispatchAsync { musicBrowser.search(query).expose(page) }
