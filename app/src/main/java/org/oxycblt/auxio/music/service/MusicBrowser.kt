@@ -194,17 +194,15 @@ private constructor(
         when (node) {
             is TabNode.Root -> {
                 val tabs = homeGenerator.tabs()
-                val base = tabs.take(maxTabs - 1).map { TabNode.Home(it) }
-                if (base.size < tabs.size) {
-                        base + TabNode.More
-                    } else {
-                        base
-                    }
-                    .map { it.toMediaItem(context) }
+                if (maxTabs < tabs.size) {
+                    tabs.take(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) } +
+                        TabNode.More.toMediaItem(context)
+                } else {
+                    tabs.map { TabNode.Home(it).toMediaItem(context) }
+                }
             }
             is TabNode.More -> {
-                val tabs = homeGenerator.tabs()
-                tabs.takeLast(tabs.size - maxTabs + 1).map { TabNode.Home(it).toMediaItem(context) }
+                homeGenerator.tabs().drop(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) }
             }
             is TabNode.Home ->
                 when (node.type) {
