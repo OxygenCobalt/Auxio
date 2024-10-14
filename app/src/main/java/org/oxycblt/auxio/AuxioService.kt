@@ -155,6 +155,8 @@ class AuxioService :
     }
 
     companion object {
+        const val ACTION_START = BuildConfig.APPLICATION_ID + ".service.START"
+
         var isForeground = false
             private set
 

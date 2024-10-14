@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         startService(
             Intent(this, AuxioService::class.java)
+                .setAction(AuxioService.ACTION_START)
                 .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_ACTIVITY))
 
         if (!startIntentAction(intent)) {

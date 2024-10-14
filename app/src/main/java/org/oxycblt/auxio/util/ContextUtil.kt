@@ -182,7 +182,7 @@ fun Context.newMainPendingIntent(): PendingIntent =
     PendingIntent.getActivity(
         this,
         IntegerTable.REQUEST_CODE,
-        Intent(this, MainActivity::class.java),
+        Intent(this, MainActivity::class.java).setAction(Intent.ACTION_MAIN),
         PendingIntent.FLAG_IMMUTABLE)
 
 /**

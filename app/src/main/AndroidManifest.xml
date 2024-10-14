@@ -48,6 +48,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTask"
+            android:allowCrossUidActivitySwitchFromBelow="false"
             android:roundIcon="@mipmap/ic_launcher"
             android:windowSoftInputMode="adjustPan">
 
