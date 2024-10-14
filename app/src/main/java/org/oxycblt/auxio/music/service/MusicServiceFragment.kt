@@ -99,14 +99,17 @@ constructor(
         indexer.createNotification(post)
     }
 
-    fun getRoot(maxItems: Int) =
-        BrowserRoot(MediaSessionUID.Tab(TabNode.Root(maxItems)).toString(), Bundle())
+    fun getRoot() = BrowserRoot(MediaSessionUID.Tab(TabNode.Root).toString(), Bundle())
 
     fun getItem(mediaId: String, result: Result<MediaItem>) =
-        result.dispatch { musicBrowser.getItem(mediaId) }
+        result.dispatch {
+            musicBrowser.getItem(
+                mediaId,
+            )
+        }
 
-    fun getChildren(mediaId: String, result: Result<MutableList<MediaItem>>) =
-        result.dispatch { musicBrowser.getChildren(mediaId)?.toMutableList() }
+    fun getChildren(mediaId: String, maxTabs: Int, result: Result<MutableList<MediaItem>>) =
+        result.dispatch { musicBrowser.getChildren(mediaId, maxTabs)?.toMutableList() }
 
     fun search(query: String, result: Result<MutableList<MediaItem>>) =
         result.dispatchAsync { musicBrowser.search(query) }

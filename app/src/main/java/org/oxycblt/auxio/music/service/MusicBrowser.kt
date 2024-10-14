@@ -88,12 +88,9 @@ private constructor(
     }
 
     override fun invalidateTabs() {
-        for (i in 0..10) {
-            // TODO: Temporary bodge, move the amount parameter to a bundle extra
-            val rootId = MediaSessionUID.Tab(TabNode.Root(i)).toString()
-            val moreId = MediaSessionUID.Tab(TabNode.More(i)).toString()
-            invalidator.invalidateMusic(setOf(rootId, moreId))
-        }
+        val rootId = MediaSessionUID.Tab(TabNode.Root).toString()
+        val moreId = MediaSessionUID.Tab(TabNode.More).toString()
+        invalidator.invalidateMusic(setOf(rootId, moreId))
     }
 
     override fun invalidate(type: MusicType, replace: Int?) {
@@ -135,14 +132,13 @@ private constructor(
         }
     }
 
-    fun getChildren(parentId: String): List<MediaItem>? {
+    fun getChildren(parentId: String, maxTabs: Int): List<MediaItem>? {
         val deviceLibrary = musicRepository.deviceLibrary
         val userLibrary = musicRepository.userLibrary
         if (deviceLibrary == null || userLibrary == null) {
             return listOf()
         }
-
-        return getMediaItemList(parentId)
+        return getMediaItemList(parentId, maxTabs)
     }
 
     suspend fun search(query: String): MutableList<MediaItem> {
@@ -181,10 +177,10 @@ private constructor(
         return music
     }
 
-    private fun getMediaItemList(id: String): List<MediaItem>? {
+    private fun getMediaItemList(id: String, maxTabs: Int): List<MediaItem>? {
         return when (val mediaSessionUID = MediaSessionUID.fromString(id)) {
             is MediaSessionUID.Tab -> {
-                getCategoryMediaItems(mediaSessionUID.node)
+                getCategoryMediaItems(mediaSessionUID.node, maxTabs)
             }
             is MediaSessionUID.SingleItem -> {
                 getChildMediaItems(mediaSessionUID.uid)
@@ -198,22 +194,22 @@ private constructor(
         }
     }
 
-    private fun getCategoryMediaItems(node: TabNode) =
+    private fun getCategoryMediaItems(node: TabNode, maxTabs: Int) =
         when (node) {
             is TabNode.Root -> {
                 val tabs = homeGenerator.tabs()
-                val base = tabs.take(node.amount - 1).map { TabNode.Home(it) }
+                val base = tabs.take(maxTabs - 1).map { TabNode.Home(it) }
                 if (base.size < tabs.size) {
-                        base + TabNode.More(tabs.size - base.size)
+                        base + TabNode.More
                     } else {
                         base
                     }
                     .map { it.toMediaItem(context) }
             }
-            is TabNode.More ->
-                homeGenerator.tabs().takeLast(node.remainder).map {
-                    TabNode.Home(it).toMediaItem(context)
-                }
+            is TabNode.More -> {
+                val tabs = homeGenerator.tabs()
+                tabs.takeLast(tabs.size - maxTabs).map { TabNode.Home(it).toMediaItem(context) }
+            }
             is TabNode.Home ->
                 when (node.type) {
                     MusicType.SONGS -> homeGenerator.songs().map { it.toMediaItem(context, null) }
