@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * HomeModule.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * DetailModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.home
+package org.oxycblt.auxio.detail
 
 import dagger.Binds
 import dagger.Module
@@ -25,8 +25,6 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface HomeModule {
-    @Binds fun settings(homeSettings: HomeSettingsImpl): HomeSettings
-
-    @Binds fun homeGeneratorFactory(factory: HomeGeneratorFactoryImpl): HomeGenerator.Factory
+interface DetailModule {
+    @Binds fun detailGeneratorFactory(factory: DetailGeneratorFactoryImpl): DetailGenerator.Factory
 }

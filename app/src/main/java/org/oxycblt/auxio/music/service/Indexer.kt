@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * IndexerServiceFragment.kt is part of Auxio.
+ * Indexer.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@ package org.oxycblt.auxio.music.service
 import android.content.Context
 import android.os.PowerManager
 import coil.ImageLoader
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
+import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -35,34 +35,52 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
-class IndexerServiceFragment
-@Inject
-constructor(
-    @ApplicationContext override val workerContext: Context,
+class Indexer
+private constructor(
+    override val workerContext: Context,
+    private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
-    private val contentObserver: SystemContentObserver,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val contentObserver: SystemContentObserver
 ) :
     MusicRepository.IndexingWorker,
     MusicRepository.IndexingListener,
     MusicRepository.UpdateListener,
     MusicSettings.Listener {
+    class Factory
+    @Inject
+    constructor(
+        private val playbackManager: PlaybackStateManager,
+        private val musicRepository: MusicRepository,
+        private val musicSettings: MusicSettings,
+        private val imageLoader: ImageLoader,
+        private val contentObserver: SystemContentObserver
+    ) {
+        fun create(context: Context, listener: ForegroundListener) =
+            Indexer(
+                context,
+                listener,
+                playbackManager,
+                musicRepository,
+                musicSettings,
+                imageLoader,
+                contentObserver)
+    }
+
     private val indexJob = Job()
     private val indexScope = CoroutineScope(indexJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
     private val indexingNotification = IndexingNotification(workerContext)
     private val observingNotification = ObservingNotification(workerContext)
-    private var foregroundListener: ForegroundListener? = null
     private val wakeLock =
         workerContext
             .getSystemServiceCompat(PowerManager::class)
             .newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexingComponent")
 
-    fun attach(listener: ForegroundListener) {
-        foregroundListener = listener
+    fun attach() {
         musicSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
         musicRepository.addIndexingListener(this)
@@ -76,35 +94,6 @@ constructor(
         musicRepository.addIndexingListener(this)
         musicRepository.addUpdateListener(this)
         musicRepository.removeIndexingListener(this)
-        foregroundListener = null
-    }
-
-    fun start() {
-        if (musicRepository.indexingState == null) {
-            requestIndex(true)
-        }
-    }
-
-    fun createNotification(post: (IndexerNotification?) -> Unit) {
-        val state = musicRepository.indexingState
-        if (state is IndexingState.Indexing) {
-            // There are a few reasons why we stay in the foreground with automatic rescanning:
-            // 1. Newer versions of Android have become more and more restrictive regarding
-            // how a foreground service starts. Thus, it's best to go foreground now so that
-            // we can go foreground later.
-            // 2. If a non-foreground service is killed, the app will probably still be alive,
-            // and thus the music library will not be updated at all.
-            val changed = indexingNotification.updateIndexingState(state.progress)
-            if (changed) {
-                post(indexingNotification)
-            }
-        } else if (musicSettings.shouldBeObserving) {
-            // Not observing and done loading, exit foreground.
-            logD("Exiting foreground")
-            post(observingNotification)
-        } else {
-            post(null)
-        }
     }
 
     override fun requestIndex(withCache: Boolean) {
@@ -118,7 +107,7 @@ constructor(
     override val scope = indexScope
 
     override fun onIndexingStateChanged() {
-        foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
+        foregroundListener.updateForeground(ForegroundListener.Change.INDEXER)
         val state = musicRepository.indexingState
         if (state is IndexingState.Indexing) {
             wakeLock.acquireSafe()
@@ -157,9 +146,31 @@ constructor(
         // notification if we were actively loading when the automatic rescanning
         // setting changed. In such a case, the state will still be updated when
         // the music loading process ends.
-        if (currentIndexJob == null) {
+        if (musicRepository.indexingState == null) {
             logD("Not loading, updating idle session")
-            foregroundListener?.updateForeground(ForegroundListener.Change.INDEXER)
+            foregroundListener.updateForeground(ForegroundListener.Change.INDEXER)
+        }
+    }
+
+    fun createNotification(post: (ForegroundServiceNotification?) -> Unit) {
+        val state = musicRepository.indexingState
+        if (state is IndexingState.Indexing) {
+            // There are a few reasons why we stay in the foreground with automatic rescanning:
+            // 1. Newer versions of Android have become more and more restrictive regarding
+            // how a foreground service starts. Thus, it's best to go foreground now so that
+            // we can go foreground later.
+            // 2. If a non-foreground service is killed, the app will probably still be alive,
+            // and thus the music library will not be updated at all.
+            val changed = indexingNotification.updateIndexingState(state.progress)
+            if (changed) {
+                post(indexingNotification)
+            }
+        } else if (musicSettings.shouldBeObserving) {
+            // Not observing and done loading, exit foreground.
+            logD("Exiting foreground")
+            post(observingNotification)
+        } else {
+            post(null)
         }
     }
 

@@ -145,7 +145,13 @@ interface PlaybackStateHolder {
      * @param ack The [StateAck] to return to [PlaybackStateManager]. If null, do not return any
      *   ack.
      */
-    fun applySavedState(parent: MusicParent?, rawQueue: RawQueue, ack: StateAck.NewPlayback?)
+    fun applySavedState(
+        parent: MusicParent?,
+        rawQueue: RawQueue,
+        positionMs: Long,
+        repeatMode: RepeatMode,
+        ack: StateAck.NewPlayback?
+    )
 
     /** End whatever ongoing playback session may be going on */
     fun endSession()

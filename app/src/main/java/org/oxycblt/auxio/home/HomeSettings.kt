@@ -42,9 +42,9 @@ interface HomeSettings : Settings<HomeSettings.Listener> {
 
     interface Listener {
         /** Called when the [homeTabs] configuration changes. */
-        fun onTabsChanged()
+        fun onTabsChanged() {}
         /** Called when the [shouldHideCollaborators] configuration changes. */
-        fun onHideCollaboratorsChanged()
+        fun onHideCollaboratorsChanged() {}
     }
 }
 

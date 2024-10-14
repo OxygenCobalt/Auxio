@@ -30,7 +30,6 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
@@ -49,12 +48,10 @@ import org.oxycblt.auxio.util.logD
 class HomeViewModel
 @Inject
 constructor(
-    private val homeSettings: HomeSettings,
     private val listSettings: ListSettings,
     private val playbackSettings: PlaybackSettings,
-    private val musicRepository: MusicRepository,
-) : ViewModel(), MusicRepository.UpdateListener, HomeSettings.Listener {
-
+    homeGeneratorFactory: HomeGenerator.Factory
+) : ViewModel(), HomeGenerator.Invalidator {
     private val _songList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
     val songList: StateFlow<List<Song>>
@@ -132,11 +129,13 @@ constructor(
     val playlistSort: Sort
         get() = listSettings.playlistSort
 
+    private val homeGenerator = homeGeneratorFactory.create(this)
+
     /**
      * A list of [MusicType] corresponding to the current [Tab] configuration, excluding invisible
      * [Tab]s.
      */
-    var currentTabTypes = makeTabTypes()
+    var currentTabTypes = homeGenerator.tabs()
         private set
 
     private val _currentTabType = MutableStateFlow(currentTabTypes[0])
@@ -165,61 +164,42 @@ constructor(
         get() = _showOuter
 
     init {
-        musicRepository.addUpdateListener(this)
-        homeSettings.registerListener(this)
+        homeGenerator.attach()
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicRepository.removeUpdateListener(this)
-        homeSettings.unregisterListener(this)
+        homeGenerator.release()
     }
 
-    override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val deviceLibrary = musicRepository.deviceLibrary
-        if (changes.deviceLibrary && deviceLibrary != null) {
-            logD("Refreshing library")
-            // Get the each list of items in the library to use as our list data.
-            // Applying the preferred sorting to them.
-            _songInstructions.put(UpdateInstructions.Diff)
-            _songList.value = listSettings.songSort.songs(deviceLibrary.songs)
-            _albumInstructions.put(UpdateInstructions.Diff)
-            _albumList.value = listSettings.albumSort.albums(deviceLibrary.albums)
-            _artistInstructions.put(UpdateInstructions.Diff)
-            _artistList.value =
-                listSettings.artistSort.artists(
-                    if (homeSettings.shouldHideCollaborators) {
-                        logD("Filtering collaborator artists")
-                        // Hide Collaborators is enabled, filter out collaborators.
-                        deviceLibrary.artists.filter { it.explicitAlbums.isNotEmpty() }
-                    } else {
-                        logD("Using all artists")
-                        deviceLibrary.artists
-                    })
-            _genreInstructions.put(UpdateInstructions.Diff)
-            _genreList.value = listSettings.genreSort.genres(deviceLibrary.genres)
-        }
-
-        val userLibrary = musicRepository.userLibrary
-        if (changes.userLibrary && userLibrary != null) {
-            logD("Refreshing playlists")
-            _playlistInstructions.put(UpdateInstructions.Diff)
-            _playlistList.value = listSettings.playlistSort.playlists(userLibrary.playlists)
+    override fun invalidateMusic(type: MusicType, instructions: UpdateInstructions) {
+        when (type) {
+            MusicType.SONGS -> {
+                _songInstructions.put(instructions)
+                _songList.value = homeGenerator.songs()
+            }
+            MusicType.ALBUMS -> {
+                _albumInstructions.put(instructions)
+                _albumList.value = homeGenerator.albums()
+            }
+            MusicType.ARTISTS -> {
+                _artistInstructions.put(instructions)
+                _artistList.value = homeGenerator.artists()
+            }
+            MusicType.GENRES -> {
+                _genreInstructions.put(instructions)
+                _genreList.value = homeGenerator.genres()
+            }
+            MusicType.PLAYLISTS -> {
+                _playlistInstructions.put(instructions)
+                _playlistList.value = homeGenerator.playlists()
+            }
         }
     }
 
-    override fun onTabsChanged() {
-        // Tabs changed, update  the current tabs and set up a re-create event.
-        currentTabTypes = makeTabTypes()
-        logD("Updating tabs: ${currentTabType.value}")
+    override fun invalidateTabs() {
+        currentTabTypes = homeGenerator.tabs()
         _shouldRecreate.put(Unit)
-    }
-
-    override fun onHideCollaboratorsChanged() {
-        // Changes in the hide collaborator setting will change the artist contents
-        // of the library, consider it a library update.
-        logD("Collaborator setting changed, forwarding update")
-        onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
     }
 
     /**
@@ -229,8 +209,6 @@ constructor(
      */
     fun applySongSort(sort: Sort) {
         listSettings.songSort = sort
-        _songInstructions.put(UpdateInstructions.Replace(0))
-        _songList.value = listSettings.songSort.songs(_songList.value)
     }
 
     /**
@@ -240,8 +218,6 @@ constructor(
      */
     fun applyAlbumSort(sort: Sort) {
         listSettings.albumSort = sort
-        _albumInstructions.put(UpdateInstructions.Replace(0))
-        _albumList.value = listSettings.albumSort.albums(_albumList.value)
     }
 
     /**
@@ -251,8 +227,6 @@ constructor(
      */
     fun applyArtistSort(sort: Sort) {
         listSettings.artistSort = sort
-        _artistInstructions.put(UpdateInstructions.Replace(0))
-        _artistList.value = listSettings.artistSort.artists(_artistList.value)
     }
 
     /**
@@ -262,8 +236,6 @@ constructor(
      */
     fun applyGenreSort(sort: Sort) {
         listSettings.genreSort = sort
-        _genreInstructions.put(UpdateInstructions.Replace(0))
-        _genreList.value = listSettings.genreSort.genres(_genreList.value)
     }
 
     /**
@@ -273,8 +245,6 @@ constructor(
      */
     fun applyPlaylistSort(sort: Sort) {
         listSettings.playlistSort = sort
-        _playlistInstructions.put(UpdateInstructions.Replace(0))
-        _playlistList.value = listSettings.playlistSort.playlists(_playlistList.value)
     }
 
     /**
@@ -314,15 +284,6 @@ constructor(
     fun showAbout() {
         _showOuter.put(Outer.About)
     }
-
-    /**
-     * Create a list of [MusicType]s representing a simpler version of the [Tab] configuration.
-     *
-     * @return A list of the [MusicType]s for each visible [Tab] in the configuration, ordered in
-     *   the same way as the configuration.
-     */
-    private fun makeTabTypes() =
-        homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
 }
 
 sealed interface Outer {
