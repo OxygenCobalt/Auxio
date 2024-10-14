@@ -136,11 +136,13 @@ private class HomeGeneratorImpl(
             invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Diff)
         }
     }
+
     override fun release() {
         musicRepository.removeUpdateListener(this)
         listSettings.unregisterListener(this)
         homeSettings.unregisterListener(this)
     }
+
     override fun songs() =
         musicRepository.deviceLibrary?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
 
