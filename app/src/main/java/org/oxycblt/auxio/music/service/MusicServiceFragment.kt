@@ -98,21 +98,7 @@ constructor(
     fun getRoot(maxItems: Int) =
         BrowserRoot(
             MediaSessionUID.Tab(TabNode.Root(maxItems)).toString(),
-            Bundle().apply {
-                val actions =
-                    BrowserOption.entries.mapTo(ArrayList()) {
-                        Bundle().apply {
-                            putString(
-                                MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ID, it.actionId)
-                            putString(
-                                MediaConstants.EXTRAS_KEY_CUSTOM_BROWSER_ACTION_LABEL,
-                                context.getString(it.labelRes))
-                        }
-                    }
-                putParcelableArrayList(
-                    MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_CUSTOM_BROWSER_ACTION_ROOT_LIST,
-                    actions)
-            })
+            Bundle())
 
     fun getItem(mediaId: String, result: Result<MediaItem>) =
         result.dispatch { musicBrowser.getItem(mediaId) }
