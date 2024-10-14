@@ -39,7 +39,7 @@ sealed class TabNode {
     data object More : TabNode() {
         override val id = "more"
         override val nameRes = R.string.lbl_more
-        override val bitmapRes = null
+        override val bitmapRes = R.drawable.ic_more_bitmap_24
     }
 
     data class Home(val type: MusicType) : TabNode() {
