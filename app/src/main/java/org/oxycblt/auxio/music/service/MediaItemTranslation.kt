@@ -18,17 +18,12 @@
  
 package org.oxycblt.auxio.music.service
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat
-import android.view.MenuInflater
-import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.core.view.children
 import androidx.media.utils.MediaConstants
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
