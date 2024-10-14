@@ -24,13 +24,8 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailGenerator
 import org.oxycblt.auxio.detail.DetailSection
-import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.home.HomeGenerator
-import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -98,13 +93,14 @@ private constructor(
     override fun invalidate(type: MusicType, replace: Int?) {
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val userLibrary = musicRepository.userLibrary ?: return
-        val music = when (type) {
-            MusicType.ALBUMS -> deviceLibrary.albums
-            MusicType.ARTISTS -> deviceLibrary.artists
-            MusicType.GENRES -> deviceLibrary.genres
-            MusicType.PLAYLISTS -> userLibrary.playlists
-            else -> return
-        }
+        val music =
+            when (type) {
+                MusicType.ALBUMS -> deviceLibrary.albums
+                MusicType.ARTISTS -> deviceLibrary.artists
+                MusicType.GENRES -> deviceLibrary.genres
+                MusicType.PLAYLISTS -> userLibrary.playlists
+                else -> return
+            }
         if (music.isEmpty()) {
             return
         }
@@ -226,20 +222,23 @@ private constructor(
         val detail = detailGenerator.any(uid) ?: return null
         return detail.sections.flatMap { section ->
             when (section) {
-                is DetailSection.Songs -> section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
-                is DetailSection.Albums -> section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
-                is DetailSection.Artists -> section.items.map { it.toMediaItem(context, header(section.stringRes)) }
-                is DetailSection.Discs -> section.discs.flatMap {
+                is DetailSection.Songs ->
+                    section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
+                is DetailSection.Albums ->
+                    section.items.map { it.toMediaItem(context, null, header(section.stringRes)) }
+                is DetailSection.Artists ->
+                    section.items.map { it.toMediaItem(context, header(section.stringRes)) }
+                is DetailSection.Discs ->
                     section.discs.flatMap { entry ->
                         val disc = entry.key
-                        val discString = if (disc != null) {
-                            context.getString(R.string.fmt_disc_no, disc.number)
-                        } else {
-                            context.getString(R.string.def_disc)
-                        }
+                        val discString =
+                            if (disc != null) {
+                                context.getString(R.string.fmt_disc_no, disc.number)
+                            } else {
+                                context.getString(R.string.def_disc)
+                            }
                         entry.value.map { it.toMediaItem(context, null, header(discString)) }
                     }
-                }
                 else -> error("Unknown section type: $section")
             }
         }

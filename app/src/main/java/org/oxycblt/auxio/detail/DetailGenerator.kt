@@ -1,9 +1,26 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * DetailGenerator.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.detail
 
-import android.content.Context
 import androidx.annotation.StringRes
+import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.list.DiscHeader
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
@@ -18,15 +35,18 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.util.logD
-import java.util.SortedMap
-import javax.inject.Inject
 
 interface DetailGenerator {
     fun any(uid: Music.UID): Detail<out MusicParent>?
+
     fun album(uid: Music.UID): Detail<Album>?
+
     fun artist(uid: Music.UID): Detail<Artist>?
+
     fun genre(uid: Music.UID): Detail<Genre>?
+
     fun playlist(uid: Music.UID): Detail<Playlist>?
+
     fun release()
 
     interface Factory {
@@ -38,10 +58,10 @@ interface DetailGenerator {
     }
 }
 
-class DetailGeneratorFactoryImpl @Inject constructor(
-    private val listSettings: ListSettings,
-    private val musicRepository: MusicRepository
-) : DetailGenerator.Factory {
+class DetailGeneratorFactoryImpl
+@Inject
+constructor(private val listSettings: ListSettings, private val musicRepository: MusicRepository) :
+    DetailGenerator.Factory {
     override fun create(invalidator: DetailGenerator.Invalidator): DetailGenerator =
         DetailGeneratorImpl(invalidator, listSettings, musicRepository)
 }
@@ -102,11 +122,12 @@ private class DetailGeneratorImpl(
         val album = musicRepository.deviceLibrary?.findAlbum(uid) ?: return null
         val songs = listSettings.albumSongSort.songs(album.songs)
         val discs = songs.groupBy { it.disc }
-        val section = if (discs.size > 1 || discs.keys.first() != null) {
-             DetailSection.Discs(discs)
-        } else {
-            DetailSection.Songs(songs)
-        }
+        val section =
+            if (discs.size > 1 || discs.keys.first() != null) {
+                DetailSection.Discs(discs)
+            } else {
+                DetailSection.Songs(songs)
+            }
         return Detail(album, listOf(section))
     }
 
@@ -138,13 +159,14 @@ private class DetailGeneratorImpl(
             // implicit album list into the mapping.
             logD("Implicit albums present, adding to list")
             @Suppress("UNCHECKED_CAST")
-            (grouping as MutableMap<DetailSection.Albums.Category, Collection<Album>>)[DetailSection.Albums.Category.APPEARANCES] =
-                artist.implicitAlbums
+            (grouping as MutableMap<DetailSection.Albums.Category, Collection<Album>>)[
+                DetailSection.Albums.Category.APPEARANCES] = artist.implicitAlbums
         }
 
-        val sections = grouping.mapTo(mutableListOf<DetailSection>()) { (category, albums) ->
-            DetailSection.Albums(category, ARTIST_ALBUM_SORT.albums(albums))
-        }
+        val sections =
+            grouping.mapTo(mutableListOf<DetailSection>()) { (category, albums) ->
+                DetailSection.Albums(category, ARTIST_ALBUM_SORT.albums(albums))
+            }
         val songs = DetailSection.Songs(listSettings.artistSongSort.songs(artist.songs))
         sections.add(songs)
         return Detail(artist, sections)
@@ -184,7 +206,8 @@ sealed interface DetailSection {
         override val stringRes = R.string.lbl_songs
     }
 
-    data class Albums(val category: Category, override val items: List<Album>) : PlainSection<Album>() {
+    data class Albums(val category: Category, override val items: List<Album>) :
+        PlainSection<Album>() {
         override val order = 1 + category.ordinal
         override val stringRes = category.stringRes
 
@@ -202,7 +225,6 @@ sealed interface DetailSection {
             REMIXES(R.string.lbl_remix_group)
         }
     }
-
 
     data class Songs(override val items: List<Song>) : PlainSection<Song>() {
         override val order = 12

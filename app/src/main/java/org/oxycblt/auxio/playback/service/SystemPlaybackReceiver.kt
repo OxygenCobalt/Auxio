@@ -47,10 +47,9 @@ private constructor(
     @Inject
     constructor(
         private val playbackManager: PlaybackStateManager,
-        private val playbackSettings: PlaybackSettings,
-        private val widgetComponent: WidgetComponent
+        private val playbackSettings: PlaybackSettings
     ) {
-        fun create(context: Context): SystemPlaybackReceiver {
+        fun create(context: Context, widgetComponent: WidgetComponent): SystemPlaybackReceiver {
             val receiver =
                 SystemPlaybackReceiver(playbackManager, playbackSettings, widgetComponent)
             ContextCompat.registerReceiver(
