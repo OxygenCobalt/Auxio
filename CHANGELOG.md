@@ -16,6 +16,42 @@
 - Excessive CPU no longer spent showing music loading process
 - Fixed playback sheet flickering on warm start
 
+## 3.6.0
+
+#### What's New
+- Added support for playback from google assistant
+
+#### What's Improved
+- Home and detail UIs in Android Auto now reflect app sort settings
+- Album view now shows discs in android auto
+
+#### What's Fixed
+- Fixed playback briefly pausing when adding songs to playlist
+- Fixed media lists in Android Auto being truncated in some cases
+- Possibly fixed duplicated song items depending on album/all children
+- Possibly fixed truncated tab lists in android auto
+
+#### Dev/Meta
+- Moved to raw media session apis rather than media3 session
+
+## 3.5.3
+
+#### What's New
+- Basic Tasker integration for safely starting Auxio's service
+
+#### What's Improved
+- Added support for informal singular-spaced tags like `album artist` in
+file metadata
+
+#### What's Fixed
+- Fix "Foreground not allowed" music loading crash from starting too early
+- Fixed widget not loading on some devices due to the cover being too large
+
+## 3.5.2
+
+#### What's Fixed
+- Fixed music loading failure from improper sort systems (For real this time)
+
 ## 3.5.1
 
 #### What's Fixed

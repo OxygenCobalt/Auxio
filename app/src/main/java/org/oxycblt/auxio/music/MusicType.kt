@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music
 
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 
 /**
  * General configuration enum to control what kind of music is being worked with.
@@ -50,6 +51,16 @@ enum class MusicType {
                 ARTISTS -> IntegerTable.MUSIC_MODE_ARTISTS
                 GENRES -> IntegerTable.MUSIC_MODE_GENRES
                 PLAYLISTS -> IntegerTable.MUSIC_MODE_PLAYLISTS
+            }
+
+    val nameRes: Int
+        get() =
+            when (this) {
+                SONGS -> R.string.lbl_songs
+                ALBUMS -> R.string.lbl_albums
+                ARTISTS -> R.string.lbl_artists
+                GENRES -> R.string.lbl_genres
+                PLAYLISTS -> R.string.lbl_playlists
             }
 
     companion object {

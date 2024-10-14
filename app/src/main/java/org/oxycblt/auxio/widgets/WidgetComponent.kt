@@ -22,7 +22,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
-import dagger.hilt.android.qualifiers.ApplicationContext
+import coil.size.Size
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
@@ -46,17 +46,28 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetComponent
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
+private constructor(
+    private val context: Context,
     private val imageSettings: ImageSettings,
     private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
     private val uiSettings: UISettings
 ) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
+    class Factory
+    @Inject
+    constructor(
+        private val imageSettings: ImageSettings,
+        private val bitmapProvider: BitmapProvider,
+        private val playbackManager: PlaybackStateManager,
+        private val uiSettings: UISettings
+    ) {
+        fun create(context: Context) =
+            WidgetComponent(context, imageSettings, bitmapProvider, playbackManager, uiSettings)
+    }
+
     private val widgetProvider = WidgetProvider()
 
-    init {
+    fun attach() {
         playbackManager.addListener(this)
         uiSettings.registerListener(this)
         imageSettings.registerListener(this)
@@ -96,24 +107,19 @@ constructor(
                             0
                         }
 
-                    return if (cornerRadius > 0) {
-                        // If rounded, reduce the bitmap size further to obtain more pronounced
-                        // rounded corners.
-                        builder.size(getSafeRemoteViewsImageSize(context, 10f))
-                        val cornersTransformation =
-                            RoundedRectTransformation(cornerRadius.toFloat())
+                    val transformations = buildList {
                         if (imageSettings.forceSquareCovers) {
-                            builder.transformations(
-                                SquareCropTransformation.INSTANCE, cornersTransformation)
+                            add(SquareCropTransformation.INSTANCE)
+                        }
+                        if (cornerRadius > 0) {
+                            add(WidgetBitmapTransformation(15f))
+                            add(RoundedRectTransformation(cornerRadius.toFloat()))
                         } else {
-                            builder.transformations(cornersTransformation)
+                            add(WidgetBitmapTransformation(3f))
                         }
-                    } else {
-                        if (imageSettings.forceSquareCovers) {
-                            builder.transformations(SquareCropTransformation.INSTANCE)
-                        }
-                        builder.size(getSafeRemoteViewsImageSize(context))
                     }
+
+                    return builder.size(Size.ORIGINAL).transformations(transformations)
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {

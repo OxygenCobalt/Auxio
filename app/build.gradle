@@ -16,13 +16,13 @@ android {
     // it here so that binary stripping will work.
     // TODO: Eventually you might just want to start vendoring the FFMpeg extension so the
     //  NDK use is unified
-    ndkVersion = "25.2.9519653"
+    ndkVersion "26.3.11579264"
     namespace "org.oxycblt.auxio"
 
     defaultConfig {
         applicationId namespace
-        versionName "3.5.1"
-        versionCode 47
+        versionName "3.6.0"
+        versionCode 50
 
         minSdk 24
         targetSdk 34
@@ -118,6 +118,9 @@ dependencies {
     // Media
     implementation "androidx.media:media:1.7.0"
 
+    // Android Auto
+    implementation "androidx.car.app:app:1.4.0"
+
     // Preferences
     implementation "androidx.preference:preference-ktx:1.2.1"
 
@@ -130,7 +133,6 @@ dependencies {
     // --- THIRD PARTY ---
 
     // Exoplayer (Vendored)
-    implementation project(":media-lib-session")
     implementation project(":media-lib-exoplayer")
     implementation project(":media-lib-decoder-ffmpeg")
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
@@ -154,6 +156,12 @@ dependencies {
 
     // Speed dial
     implementation "com.leinardi.android:speed-dial:3.3.0"
+
+    // Tasker integration
+    implementation 'com.joaomgcd:taskerpluginlibrary:0.4.10'
+
+    // Fuzzy search
+    implementation 'org.apache.commons:commons-text:1.9'
 
     // Testing
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'

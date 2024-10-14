@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.detail
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,10 +42,11 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -69,8 +69,9 @@ constructor(
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
     private val audioPropertiesFactory: AudioProperties.Factory,
-    private val playbackSettings: PlaybackSettings
-) : ViewModel(), MusicRepository.UpdateListener {
+    private val playbackSettings: PlaybackSettings,
+    detailGeneratorFactory: DetailGenerator.Factory
+) : ViewModel(), DetailGenerator.Invalidator {
     private val _toShow = MutableEvent<Show>()
     /**
      * A [Show] command that is awaiting a view capable of responding to it. Null if none currently.
@@ -133,13 +134,8 @@ constructor(
         get() = _artistSongInstructions
 
     /** The current [Sort] used for [Song]s in [artistSongList]. */
-    var artistSongSort: Sort
+    val artistSongSort: Sort
         get() = listSettings.artistSongSort
-        set(value) {
-            listSettings.artistSongSort = value
-            // Refresh the artist list to reflect the new sort.
-            currentArtist.value?.let { refreshArtistList(it, true) }
-        }
 
     /** The [PlaySong] instructions to use when playing a [Song] from [Artist] details. */
     val playInArtistWith
@@ -162,13 +158,8 @@ constructor(
         get() = _genreSongInstructions
 
     /** The current [Sort] used for [Song]s in [genreSongList]. */
-    var genreSongSort: Sort
+    val genreSongSort: Sort
         get() = listSettings.genreSongSort
-        set(value) {
-            listSettings.genreSongSort = value
-            // Refresh the genre list to reflect the new sort.
-            currentGenre.value?.let { refreshGenreList(it, true) }
-        }
 
     /** The [PlaySong] instructions to use when playing a [Song] from [Genre] details. */
     val playInGenreWith
@@ -204,54 +195,35 @@ constructor(
             playbackSettings.inParentPlaybackMode
                 ?: PlaySong.FromPlaylist(unlikelyToBeNull(currentPlaylist.value))
 
+    private val detailGenerator = detailGeneratorFactory.create(this)
+
     init {
-        musicRepository.addUpdateListener(this)
+        detailGenerator.attach()
     }
 
     override fun onCleared() {
-        musicRepository.removeUpdateListener(this)
+        detailGenerator.release()
     }
 
-    override fun onMusicChanges(changes: MusicRepository.Changes) {
-        // If we are showing any item right now, we will need to refresh it (and any information
-        // related to it) with the new library in order to prevent stale items from showing up
-        // in the UI.
-        val deviceLibrary = musicRepository.deviceLibrary
-        if (changes.deviceLibrary && deviceLibrary != null) {
-            val song = currentSong.value
-            if (song != null) {
-                _currentSong.value = deviceLibrary.findSong(song.uid)?.also(::refreshAudioInfo)
-                logD("Updated song to ${currentSong.value}")
+    override fun invalidate(type: MusicType, replace: Int?) {
+        when (type) {
+            MusicType.ALBUMS -> {
+                val album = detailGenerator.album(currentAlbum.value?.uid ?: return)
+                refreshDetail(album, _currentAlbum, _albumSongList, _albumSongInstructions, replace)
             }
-
-            val album = currentAlbum.value
-            if (album != null) {
-                _currentAlbum.value = deviceLibrary.findAlbum(album.uid)?.also(::refreshAlbumList)
-                logD("Updated album to ${currentAlbum.value}")
+            MusicType.ARTISTS -> {
+                val artist = detailGenerator.artist(currentArtist.value?.uid ?: return)
+                refreshDetail(
+                    artist, _currentArtist, _artistSongList, _artistSongInstructions, replace)
             }
-
-            val artist = currentArtist.value
-            if (artist != null) {
-                _currentArtist.value =
-                    deviceLibrary.findArtist(artist.uid)?.also(::refreshArtistList)
-                logD("Updated artist to ${currentArtist.value}")
+            MusicType.GENRES -> {
+                val genre = detailGenerator.genre(currentGenre.value?.uid ?: return)
+                refreshDetail(genre, _currentGenre, _genreSongList, _genreSongInstructions, replace)
             }
-
-            val genre = currentGenre.value
-            if (genre != null) {
-                _currentGenre.value = deviceLibrary.findGenre(genre.uid)?.also(::refreshGenreList)
-                logD("Updated genre to ${currentGenre.value}")
+            MusicType.PLAYLISTS -> {
+                refreshPlaylist(currentPlaylist.value?.uid ?: return)
             }
-        }
-
-        val userLibrary = musicRepository.userLibrary
-        if (changes.userLibrary && userLibrary != null) {
-            val playlist = currentPlaylist.value
-            if (playlist != null) {
-                _currentPlaylist.value =
-                    userLibrary.findPlaylist(playlist.uid)?.also(::refreshPlaylistList)
-                logD("Updated playlist to ${currentPlaylist.value}")
-            }
+            else -> error("Unexpected music type $type")
         }
     }
 
@@ -356,8 +328,11 @@ constructor(
      */
     fun setAlbum(uid: Music.UID) {
         logD("Opening album $uid")
-        _currentAlbum.value =
-            musicRepository.deviceLibrary?.findAlbum(uid)?.also(::refreshAlbumList)
+        if (uid === _currentAlbum.value?.uid) {
+            return
+        }
+        val album = detailGenerator.album(uid)
+        refreshDetail(album, _currentAlbum, _albumSongList, _albumSongInstructions, null)
         if (_currentAlbum.value == null) {
             logW("Given album UID was invalid")
         }
@@ -370,7 +345,6 @@ constructor(
      */
     fun applyAlbumSongSort(sort: Sort) {
         listSettings.albumSongSort = sort
-        _currentAlbum.value?.let { refreshAlbumList(it, true) }
     }
 
     /**
@@ -381,11 +355,11 @@ constructor(
      */
     fun setArtist(uid: Music.UID) {
         logD("Opening artist $uid")
-        _currentArtist.value =
-            musicRepository.deviceLibrary?.findArtist(uid)?.also(::refreshArtistList)
-        if (_currentArtist.value == null) {
-            logW("Given artist UID was invalid")
+        if (uid === _currentArtist.value?.uid) {
+            return
         }
+        val artist = detailGenerator.artist(uid)
+        refreshDetail(artist, _currentArtist, _artistSongList, _artistSongInstructions, null)
     }
 
     /**
@@ -395,7 +369,6 @@ constructor(
      */
     fun applyArtistSongSort(sort: Sort) {
         listSettings.artistSongSort = sort
-        _currentArtist.value?.let { refreshArtistList(it, true) }
     }
 
     /**
@@ -406,11 +379,11 @@ constructor(
      */
     fun setGenre(uid: Music.UID) {
         logD("Opening genre $uid")
-        _currentGenre.value =
-            musicRepository.deviceLibrary?.findGenre(uid)?.also(::refreshGenreList)
-        if (_currentGenre.value == null) {
-            logW("Given genre UID was invalid")
+        if (uid === _currentGenre.value?.uid) {
+            return
         }
+        val genre = detailGenerator.genre(uid)
+        refreshDetail(genre, _currentGenre, _genreSongList, _genreSongInstructions, null)
     }
 
     /**
@@ -420,7 +393,6 @@ constructor(
      */
     fun applyGenreSongSort(sort: Sort) {
         listSettings.genreSongSort = sort
-        _currentGenre.value?.let { refreshGenreList(it, true) }
     }
 
     /**
@@ -431,11 +403,10 @@ constructor(
      */
     fun setPlaylist(uid: Music.UID) {
         logD("Opening playlist $uid")
-        _currentPlaylist.value =
-            musicRepository.userLibrary?.findPlaylist(uid)?.also(::refreshPlaylistList)
-        if (_currentPlaylist.value == null) {
-            logW("Given playlist UID was invalid")
+        if (uid === _currentPlaylist.value?.uid) {
+            return
         }
+        refreshPlaylist(uid)
     }
 
     /** Start a playlist editing session. Does nothing if a playlist is not being shown. */
@@ -443,7 +414,7 @@ constructor(
         val playlist = _currentPlaylist.value ?: return
         logD("Starting playlist edit")
         _editedPlaylist.value = playlist.songs
-        refreshPlaylistList(playlist)
+        refreshPlaylist(playlist.uid)
     }
 
     /**
@@ -474,9 +445,8 @@ constructor(
             // Nothing to do.
             return false
         }
-        logD("Discarding playlist edits")
         _editedPlaylist.value = null
-        refreshPlaylistList(playlist)
+        refreshPlaylist(playlist.uid)
         return true
     }
 
@@ -488,7 +458,7 @@ constructor(
     fun applyPlaylistSongSort(sort: Sort) {
         val playlist = _currentPlaylist.value ?: return
         _editedPlaylist.value = sort.songs(_editedPlaylist.value ?: return)
-        refreshPlaylistList(playlist, UpdateInstructions.Replace(2))
+        refreshPlaylist(playlist.uid, UpdateInstructions.Replace(2))
     }
 
     /**
@@ -501,15 +471,15 @@ constructor(
     fun movePlaylistSongs(from: Int, to: Int): Boolean {
         val playlist = _currentPlaylist.value ?: return false
         val editedPlaylist = (_editedPlaylist.value ?: return false).toMutableList()
-        val realFrom = from - 2
-        val realTo = to - 2
+        val realFrom = from - 1
+        val realTo = to - 1
         if (realFrom !in editedPlaylist.indices || realTo !in editedPlaylist.indices) {
             return false
         }
         logD("Moving playlist song from $realFrom [$from] to $realTo [$to]")
         editedPlaylist.add(realFrom, editedPlaylist.removeAt(realTo))
         _editedPlaylist.value = editedPlaylist
-        refreshPlaylistList(playlist, UpdateInstructions.Move(from, to))
+        refreshPlaylist(playlist.uid, UpdateInstructions.Move(from, to))
         return true
     }
 
@@ -521,20 +491,20 @@ constructor(
     fun removePlaylistSong(at: Int) {
         val playlist = _currentPlaylist.value ?: return
         val editedPlaylist = (_editedPlaylist.value ?: return).toMutableList()
-        val realAt = at - 2
+        val realAt = at - 1
         if (realAt !in editedPlaylist.indices) {
             return
         }
         logD("Removing playlist song at $realAt [$at]")
         editedPlaylist.removeAt(realAt)
         _editedPlaylist.value = editedPlaylist
-        refreshPlaylistList(
-            playlist,
+        refreshPlaylist(
+            playlist.uid,
             if (editedPlaylist.isNotEmpty()) {
                 UpdateInstructions.Remove(at, 1)
             } else {
                 logD("Playlist will be empty after removal, removing header")
-                UpdateInstructions.Remove(at - 2, 3)
+                UpdateInstructions.Remove(at - 1, 3)
             })
     }
 
@@ -552,172 +522,71 @@ constructor(
             }
     }
 
-    private fun refreshAlbumList(album: Album, replace: Boolean = false) {
-        logD("Refreshing album list")
-        val list = mutableListOf<Item>()
-        val header = SortHeader(R.string.lbl_songs)
-        list.add(header)
-        val instructions =
-            if (replace) {
-                // Intentional so that the header item isn't replaced with the songs
-                UpdateInstructions.Replace(list.size)
-            } else {
-                UpdateInstructions.Diff
-            }
-
-        // To create a good user experience regarding disc numbers, we group the album's
-        // songs up by disc and then delimit the groups by a disc header.
-        val songs = albumSongSort.songs(album.songs)
-        val byDisc = songs.groupBy { it.disc }
-        if (byDisc.size > 1) {
-            logD("Album has more than one disc, interspersing headers")
-            for (entry in byDisc.entries) {
-                list.add(DiscHeader(entry.key))
-                list.addAll(entry.value)
-            }
-        } else {
-            // Album only has one disc, don't add any redundant headers
-            list.addAll(songs)
+    private fun <T : MusicParent> refreshDetail(
+        detail: Detail<T>?,
+        parent: MutableStateFlow<T?>,
+        list: MutableStateFlow<List<Item>>,
+        instructions: MutableEvent<UpdateInstructions>,
+        replace: Int?
+    ) {
+        if (detail == null) {
+            parent.value = null
+            return
         }
-
-        logD("Update album list to ${list.size} items with $instructions")
-        _albumSongInstructions.put(instructions)
-        _albumSongList.value = list
-    }
-
-    private fun refreshArtistList(artist: Artist, replace: Boolean = false) {
-        logD("Refreshing artist list")
-        val list = mutableListOf<Item>()
-
-        val grouping =
-            artist.explicitAlbums.groupByTo(sortedMapOf()) {
-                // Remap the complicated ReleaseType data structure into an easier
-                // "AlbumGrouping" enum that will automatically group and sort
-                // the artist's albums.
-                when (it.releaseType.refinement) {
-                    ReleaseType.Refinement.LIVE -> AlbumGrouping.LIVE
-                    ReleaseType.Refinement.REMIX -> AlbumGrouping.REMIXES
-                    null ->
-                        when (it.releaseType) {
-                            is ReleaseType.Album -> AlbumGrouping.ALBUMS
-                            is ReleaseType.EP -> AlbumGrouping.EPS
-                            is ReleaseType.Single -> AlbumGrouping.SINGLES
-                            is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
-                            is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
-                            is ReleaseType.Mix -> AlbumGrouping.DJMIXES
-                            is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
-                            is ReleaseType.Demo -> AlbumGrouping.DEMOS
-                        }
+        val newList = mutableListOf<Item>()
+        var newInstructions: UpdateInstructions = UpdateInstructions.Diff
+        for ((i, section) in detail.sections.withIndex()) {
+            val items =
+                when (section) {
+                    is DetailSection.PlainSection<*> -> {
+                        val header =
+                            if (section is DetailSection.Songs) SortHeader(section.stringRes)
+                            else BasicHeader(section.stringRes)
+                        newList.add(Divider(header))
+                        newList.add(header)
+                        section.items
+                    }
+                    is DetailSection.Discs -> {
+                        val header = SortHeader(section.stringRes)
+                        newList.add(Divider(header))
+                        newList.add(header)
+                        section.discs.flatMap { listOf(DiscHeader(it.key)) + it.value }
+                    }
                 }
-            }
-
-        if (artist.implicitAlbums.isNotEmpty()) {
-            // groupByTo normally returns a mapping to a MutableList mapping. Since MutableList
-            // inherits list, we can cast upwards and save a copy by directly inserting the
-            // implicit album list into the mapping.
-            logD("Implicit albums present, adding to list")
-            @Suppress("UNCHECKED_CAST")
-            (grouping as MutableMap<AlbumGrouping, Collection<Album>>)[AlbumGrouping.APPEARANCES] =
-                artist.implicitAlbums
-        }
-
-        logD("Release groups for this artist: ${grouping.keys}")
-
-        for ((i, entry) in grouping.entries.withIndex()) {
-            val header = BasicHeader(entry.key.headerTitleRes)
-            if (i > 0) {
-                list.add(Divider(header))
-            }
-            list.add(header)
-            list.addAll(ARTIST_ALBUM_SORT.albums(entry.value))
-        }
-
-        // Artists may not be linked to any songs, only include a header entry if we have any.
-        var instructions: UpdateInstructions = UpdateInstructions.Diff
-        if (artist.songs.isNotEmpty()) {
-            logD("Songs present in this artist, adding header")
-            val header = SortHeader(R.string.lbl_songs)
-            list.add(Divider(header))
-            list.add(header)
-            if (replace) {
+            // Currently only the final section (songs, which can be sorted) are invalidatable
+            // and thus need to be replaced.
+            if (replace == -1 && i == detail.sections.lastIndex) {
                 // Intentional so that the header item isn't replaced with the songs
-                instructions = UpdateInstructions.Replace(list.size)
+                newInstructions = UpdateInstructions.Replace(newList.size)
             }
-            list.addAll(artistSongSort.songs(artist.songs))
+            newList.addAll(items)
         }
-
-        logD("Updating artist list to ${list.size} items with $instructions")
-        _artistSongInstructions.put(instructions)
-        _artistSongList.value = list.toList()
+        parent.value = detail.parent
+        instructions.put(newInstructions)
+        list.value = newList
     }
 
-    private fun refreshGenreList(genre: Genre, replace: Boolean = false) {
-        logD("Refreshing genre list")
-        val list = mutableListOf<Item>()
-        // Genre is guaranteed to always have artists and songs.
-        val artistHeader = BasicHeader(R.string.lbl_artists)
-        list.add(artistHeader)
-        list.addAll(GENRE_ARTIST_SORT.artists(genre.artists))
-
-        val songHeader = SortHeader(R.string.lbl_songs)
-        list.add(Divider(songHeader))
-        list.add(songHeader)
-        val instructions =
-            if (replace) {
-                // Intentional so that the header item isn't replaced alongside the songs
-                UpdateInstructions.Replace(list.size)
-            } else {
-                UpdateInstructions.Diff
-            }
-        list.addAll(genreSongSort.songs(genre.songs))
-
-        logD("Updating genre list to ${list.size} items with $instructions")
-        _genreSongInstructions.put(instructions)
-        _genreSongList.value = list
-    }
-
-    private fun refreshPlaylistList(
-        playlist: Playlist,
+    private fun refreshPlaylist(
+        uid: Music.UID,
         instructions: UpdateInstructions = UpdateInstructions.Diff
     ) {
         logD("Refreshing playlist list")
-        val list = mutableListOf<Item>()
-
-        val songs = editedPlaylist.value ?: playlist.songs
-        if (songs.isNotEmpty()) {
-            val header = EditHeader(R.string.lbl_songs)
-            list.add(header)
-            list.addAll(songs)
+        val edited = editedPlaylist.value
+        if (edited == null) {
+            val playlist = detailGenerator.playlist(uid)
+            refreshDetail(
+                playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null)
+            return
         }
-
-        logD("Updating playlist list to ${list.size} items with $instructions")
+        val list = mutableListOf<Item>()
+        if (edited.isNotEmpty()) {
+            val header = EditHeader(R.string.lbl_songs)
+            list.add(Divider(header))
+            list.add(header)
+            list.addAll(edited)
+        }
         _playlistSongInstructions.put(instructions)
         _playlistSongList.value = list
-    }
-
-    /**
-     * A simpler mapping of [ReleaseType] used for grouping and sorting songs.
-     *
-     * @param headerTitleRes The title string resource to use for a header created out of an
-     *   instance of this enum.
-     */
-    private enum class AlbumGrouping(@StringRes val headerTitleRes: Int) {
-        ALBUMS(R.string.lbl_albums),
-        EPS(R.string.lbl_eps),
-        SINGLES(R.string.lbl_singles),
-        COMPILATIONS(R.string.lbl_compilations),
-        SOUNDTRACKS(R.string.lbl_soundtracks),
-        DJMIXES(R.string.lbl_mixes),
-        MIXTAPES(R.string.lbl_mixtapes),
-        DEMOS(R.string.lbl_demos),
-        APPEARANCES(R.string.lbl_appears_on),
-        LIVE(R.string.lbl_live_group),
-        REMIXES(R.string.lbl_remix_group),
-    }
-
-    private companion object {
-        val ARTIST_ALBUM_SORT = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
-        val GENRE_ARTIST_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
     }
 }
 

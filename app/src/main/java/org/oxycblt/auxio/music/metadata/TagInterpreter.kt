@@ -100,6 +100,7 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
 
     private fun populateWithId3v2(rawSong: RawSong, textFrames: Map<String, List<String>>) {
         // Song
+        logD(textFrames)
         (textFrames["TXXX:musicbrainz release track id"]
                 ?: textFrames["TXXX:musicbrainz_releasetrackid"])
             ?.let { rawSong.musicBrainzId = it.first() }
@@ -147,10 +148,13 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         (textFrames["TXXX:musicbrainz artist id"] ?: textFrames["TXXX:musicbrainz_artistid"])?.let {
             rawSong.artistMusicBrainzIds = it
         }
-        (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { rawSong.artistNames = it }
+        (textFrames["TXXX:artists"] ?: textFrames["TPE1"] ?: textFrames["TXXX:artist"])?.let {
+            rawSong.artistNames = it
+        }
         (textFrames["TXXX:artistssort"]
                 ?: textFrames["TXXX:artists_sort"] ?: textFrames["TXXX:artists sort"]
-                    ?: textFrames["TSOP"])
+                    ?: textFrames["TSOP"] ?: textFrames["artistsort"]
+                    ?: textFrames["TXXX:artist sort"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
@@ -159,13 +163,14 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
             ?.let { rawSong.albumArtistMusicBrainzIds = it }
         (textFrames["TXXX:albumartists"]
                 ?: textFrames["TXXX:album_artists"] ?: textFrames["TXXX:album artists"]
-                    ?: textFrames["TPE2"])
+                    ?: textFrames["TPE2"] ?: textFrames["TXXX:albumartist"]
+                    ?: textFrames["TXXX:album artist"])
             ?.let { rawSong.albumArtistNames = it }
         (textFrames["TXXX:albumartistssort"]
                 ?: textFrames["TXXX:albumartists_sort"] ?: textFrames["TXXX:albumartists sort"]
                     ?: textFrames["TXXX:albumartistsort"]
                 // This is a non-standard iTunes extension
-                ?: textFrames["TSO2"])
+                ?: textFrames["TSO2"] ?: textFrames["TXXX:album artist sort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
@@ -273,7 +278,8 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
         (comments["artistssort"]
-                ?: comments["artists_sort"] ?: comments["artists sort"] ?: comments["artistsort"])
+                ?: comments["artists_sort"] ?: comments["artists sort"] ?: comments["artistsort"]
+                    ?: comments["artist sort"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
@@ -281,12 +287,12 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
             rawSong.albumArtistMusicBrainzIds = it
         }
         (comments["albumartists"]
-                ?: comments["album_artists"] ?: comments["album artists"]
-                    ?: comments["albumartist"])
+                ?: comments["album_artists"] ?: comments["album artists"] ?: comments["albumartist"]
+                    ?: comments["album artist"])
             ?.let { rawSong.albumArtistNames = it }
         (comments["albumartistssort"]
                 ?: comments["albumartists_sort"] ?: comments["albumartists sort"]
-                    ?: comments["albumartistsort"])
+                    ?: comments["albumartistsort"] ?: comments["album artist sort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre

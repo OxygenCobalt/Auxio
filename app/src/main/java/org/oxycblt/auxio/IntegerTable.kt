@@ -59,6 +59,10 @@ object IntegerTable {
     const val INDEXER_NOTIFICATION_CODE = 0xA0A1
     /** MainActivity Intent request code */
     const val REQUEST_CODE = 0xA0C0
+    /** Activity AuxioService Start ID */
+    const val START_ID_ACTIVITY = 0xA050
+    /** Tasker AuxioService Start ID */
+    const val START_ID_TASKER = 0xA051
     /** RepeatMode.NONE */
     const val REPEAT_MODE_NONE = 0xA100
     /** RepeatMode.ALL */

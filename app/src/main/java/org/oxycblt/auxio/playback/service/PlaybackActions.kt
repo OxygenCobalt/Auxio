@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * HomeModule.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * PlaybackActions.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.home
+package org.oxycblt.auxio.playback.service
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import org.oxycblt.auxio.BuildConfig
 
-@Module
-@InstallIn(SingletonComponent::class)
-interface HomeModule {
-    @Binds fun settings(homeSettings: HomeSettingsImpl): HomeSettings
-
-    @Binds fun homeGeneratorFactory(factory: HomeGeneratorFactoryImpl): HomeGenerator.Factory
+object PlaybackActions {
+    const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"
+    const val ACTION_INVERT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
+    const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
+    const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
+    const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
+    const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
 }

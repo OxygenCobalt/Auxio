@@ -94,7 +94,6 @@
             android:exported="true"
             android:roundIcon="@mipmap/ic_launcher">
             <intent-filter>
-                <action android:name="androidx.media3.session.MediaSessionService"/>
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
@@ -135,5 +134,15 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
+        <!-- Tasker 'start service' integration -->
+        <activity
+            android:name=".tasker.ActivityConfigStartAction"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/lbl_start_playback">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
