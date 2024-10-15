@@ -99,7 +99,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
         }
         logD("Updating editing state [old: $isEditing new: $editing]")
         this.isEditing = editing
-        notifyItemRangeChanged(1, currentList.size - 1, PAYLOAD_EDITING_CHANGED)
+        notifyItemRangeChanged(0, currentList.size, PAYLOAD_EDITING_CHANGED)
     }
 
     /** An extended [DetailListAdapter.Listener] for [PlaylistDetailListAdapter]. */
