@@ -321,4 +321,5 @@
     <string name="lng_tasker_start">Startet Auxio mit dem vorher gespeicherten Zustand. Wenn kein gespeicherter Zustand vorhanden ist, werden alle Lieder zufällig abgespielt. Die Wiedergabe startet sofort.
 \n
 \nACHTUNG: Sei vorsichtig bei der Steuerung dieses Dienstes. Wenn du ihn schließt und dann erneut versuchst, ihn zu nutzen, stürzt die App wahrscheinlich ab.</string>
+    <string name="lbl_more">Mehr</string>
 </resources>
