@@ -313,4 +313,5 @@
         <item quantity="one">%d esitaja</item>
         <item quantity="other">%d esitajat</item>
     </plurals>
+    <string name="lbl_more">Veel</string>
 </resources>
