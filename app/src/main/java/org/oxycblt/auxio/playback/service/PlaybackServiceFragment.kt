@@ -107,11 +107,11 @@ private constructor(
 
     fun release() {
         waitJob.cancel()
+        playbackManager.removeListener(this)
+        systemReceiver.release()
         widgetComponent.release()
-        context.unregisterReceiver(systemReceiver)
         sessionHolder.release()
         exoHolder.release()
-        playbackManager.removeListener(this)
     }
 
     override fun onSessionEnded() {

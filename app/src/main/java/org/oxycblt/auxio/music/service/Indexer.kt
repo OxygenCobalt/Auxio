@@ -90,10 +90,10 @@ private constructor(
 
     fun release() {
         contentObserver.release()
-        musicSettings.registerListener(this)
-        musicRepository.addIndexingListener(this)
-        musicRepository.addUpdateListener(this)
+        musicRepository.unregisterWorker(this)
         musicRepository.removeIndexingListener(this)
+        musicRepository.removeUpdateListener(this)
+        musicSettings.unregisterListener(this)
     }
 
     override fun requestIndex(withCache: Boolean) {
