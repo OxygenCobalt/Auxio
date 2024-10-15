@@ -431,6 +431,7 @@ constructor(
             // TODO: The user could probably press some kind of button if they were fast enough.
             //  Think of a better way to handle this state.
             _editedPlaylist.value = null
+            refreshPlaylist(playlist.uid)
         }
     }
 
