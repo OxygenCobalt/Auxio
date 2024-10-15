@@ -149,6 +149,7 @@ private constructor(
                 addAction(PlaybackActions.ACTION_SKIP_PREV)
                 addAction(PlaybackActions.ACTION_PLAY_PAUSE)
                 addAction(PlaybackActions.ACTION_SKIP_NEXT)
+                addAction(PlaybackActions.ACTION_EXIT)
                 addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
             }
     }
