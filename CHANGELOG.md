@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.6.2
+
+#### What's Fixed
+- Fixed broken notification close action
+
 ## 3.6.1
 
 #### What's Fixed
