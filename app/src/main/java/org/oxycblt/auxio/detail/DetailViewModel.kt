@@ -34,6 +34,7 @@ import org.oxycblt.auxio.detail.list.EditHeader
 import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
@@ -522,12 +523,13 @@ constructor(
             }
     }
 
-    private fun <T : MusicParent> refreshDetail(
+    private inline fun <T : MusicParent> refreshDetail(
         detail: Detail<T>?,
         parent: MutableStateFlow<T?>,
         list: MutableStateFlow<List<Item>>,
         instructions: MutableEvent<UpdateInstructions>,
-        replace: Int?
+        replace: Int?,
+        songHeader: (Int) -> Header = { SortHeader(it) }
     ) {
         if (detail == null) {
             parent.value = null
@@ -540,7 +542,7 @@ constructor(
                 when (section) {
                     is DetailSection.PlainSection<*> -> {
                         val header =
-                            if (section is DetailSection.Songs) SortHeader(section.stringRes)
+                            if (section is DetailSection.Songs) songHeader(section.stringRes)
                             else BasicHeader(section.stringRes)
                         newList.add(Divider(header))
                         newList.add(header)
@@ -575,7 +577,9 @@ constructor(
         if (edited == null) {
             val playlist = detailGenerator.playlist(uid)
             refreshDetail(
-                playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null)
+                playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null) {
+                    EditHeader(it)
+                }
             return
         }
         val list = mutableListOf<Item>()
