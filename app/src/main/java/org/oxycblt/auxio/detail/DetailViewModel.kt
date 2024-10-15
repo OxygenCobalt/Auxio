@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.list.DiscDivider
 import org.oxycblt.auxio.detail.list.DiscHeader
 import org.oxycblt.auxio.detail.list.EditHeader
 import org.oxycblt.auxio.detail.list.SortHeader
@@ -554,7 +555,16 @@ constructor(
                             newList.add(Divider(header))
                         }
                         newList.add(header)
-                        section.discs.flatMap { listOf(DiscHeader(it.key)) + it.value }
+                        buildList<Item> {
+                            for (entry in section.discs) {
+                                val discHeader = DiscHeader(inner = entry.key)
+                                if (isNotEmpty()) {
+                                    add(DiscDivider(discHeader))
+                                }
+                                add(discHeader)
+                                addAll(entry.value)
+                            }
+                        }
                     }
                 }
             // Currently only the final section (songs, which can be sorted) are invalidatable

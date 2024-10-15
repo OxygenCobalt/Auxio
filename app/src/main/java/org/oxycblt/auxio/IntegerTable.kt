@@ -49,8 +49,10 @@ object IntegerTable {
     const val VIEW_TYPE_ARTIST_SONG = 0xA00A
     /** DiscHeaderViewHolder */
     const val VIEW_TYPE_DISC_HEADER = 0xA00B
+    /** DiscHeaderViewHolder */
+    const val VIEW_TYPE_DISC_DIVIDER = 0xA00C
     /** EditHeaderViewHolder */
-    const val VIEW_TYPE_EDIT_HEADER = 0xA00C
+    const val VIEW_TYPE_EDIT_HEADER = 0xA00D
     /** PlaylistSongViewHolder */
     const val VIEW_TYPE_PLAYLIST_SONG = 0xA00E
     /** "Music playback" notification code */

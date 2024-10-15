@@ -6,57 +6,49 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingStart="@dimen/spacing_medium"
-    android:paddingTop="@dimen/spacing_mid_medium"
+    android:paddingTop="@dimen/spacing_small"
     android:paddingEnd="@dimen/spacing_medium"
-    android:paddingBottom="@dimen/spacing_mid_medium">
+    android:paddingBottom="@dimen/spacing_small">
 
-    <org.oxycblt.auxio.image.CoverView
-        android:id="@+id/disc_cover"
-        style="@style/Widget.Auxio.Image.Small"
-        android:scaleType="matrix"
-        app:enablePlaybackIndicator="false"
-        app:enableSelectionBadge="false"
+
+    <ImageView
+        android:id="@+id/disc_icon"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_album_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription">
-
-        <ImageView
-            android:id="@+id/disc_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="center"
-            android:src="@drawable/ic_album_24"
-            app:tint="@color/sel_on_cover_bg"
-            tools:ignore="ContentDescription" />
-
-    </org.oxycblt.auxio.image.CoverView>
+        app:tint="@color/sel_on_cover_bg"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/disc_number"
-        style="@style/Widget.Auxio.TextView.Item.Primary"
+        style="@style/Widget.Auxio.TextView.Primary.Compact"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:layout_marginStart="@dimen/spacing_medium"
         android:textColor="@color/sel_selectable_text_primary"
         app:layout_constraintBottom_toTopOf="@+id/disc_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/disc_cover"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/disc_icon"
+        app:layout_constraintTop_toTopOf="@+id/disc_icon"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Disc 1" />
 
     <TextView
         android:id="@+id/disc_name"
-        style="@style/Widget.Auxio.TextView.Item.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Compact"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/spacing_medium"
+        app:layout_constraintBottom_toBottomOf="@+id/disc_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/disc_cover"
+        app:layout_constraintStart_toEndOf="@+id/disc_icon"
         app:layout_constraintTop_toBottomOf="@+id/disc_number"
-        tools:text="Part 1"
-        tools:visibility="gone" />
+        tools:text="Part 1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

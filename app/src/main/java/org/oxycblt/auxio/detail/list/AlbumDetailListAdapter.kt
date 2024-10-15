@@ -24,6 +24,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDivider
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
@@ -38,6 +39,7 @@ import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.resolveNumber
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -52,6 +54,7 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
         when (getItem(position)) {
             // Support sub-headers for each disc, and special album songs.
             is DiscHeader -> DiscHeaderViewHolder.VIEW_TYPE
+            is DiscDivider -> DiscDividerViewHolder.VIEW_TYPE
             is Song -> AlbumSongViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -59,6 +62,7 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
             DiscHeaderViewHolder.VIEW_TYPE -> DiscHeaderViewHolder.from(parent)
+            DiscDividerViewHolder.VIEW_TYPE -> DiscDividerViewHolder.from(parent)
             AlbumSongViewHolder.VIEW_TYPE -> AlbumSongViewHolder.from(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
@@ -79,6 +83,8 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
                     when {
                         oldItem is Disc && newItem is Disc ->
                             DiscHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        oldItem is DiscDivider && newItem is DiscDivider ->
+                            DiscDividerViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
                             AlbumSongViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
 
@@ -95,6 +101,8 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class DiscHeader(val inner: Disc?) : Item
+
+data class DiscDivider(val anchor: DiscHeader?) : Item
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [DiscHeader] to delimit different disc groups. Use
@@ -136,6 +144,42 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
             object : SimpleDiffCallback<Disc>() {
                 override fun areContentsTheSame(oldItem: Disc, newItem: Disc) =
                     oldItem.number == newItem.number && oldItem.name == newItem.name
+            }
+    }
+}
+
+/**
+ * A [RecyclerView.ViewHolder] that displays a [DiscHeader]. Use [from] to create an instance.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class DiscDividerViewHolder private constructor(divider: MaterialDivider) :
+    RecyclerView.ViewHolder(divider) {
+
+    init {
+        divider.dividerColor =
+            divider.context
+                .getAttrColorCompat(com.google.android.material.R.attr.colorOutlineVariant)
+                .defaultColor
+    }
+
+    companion object {
+        /** Unique ID for this ViewHolder type. */
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_DISC_DIVIDER
+
+        /**
+         * Create a new instance.
+         *
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
+        fun from(parent: View) = DiscDividerViewHolder(MaterialDivider(parent.context))
+
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
+            object : SimpleDiffCallback<DiscDivider>() {
+                override fun areContentsTheSame(oldItem: DiscDivider, newItem: DiscDivider) =
+                    oldItem.anchor == newItem.anchor
             }
     }
 }
