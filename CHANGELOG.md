@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.6.1
+
+#### What's Fixed
+- Fixed possible crash from poor service initalization
+- Fixed issue where it was impossible to edit playlists
+- Fixed issue where playlist would revert to older version when re-edited
+
+#### Dev/Meta
+- Fixed service memory leaks
+
 ## 3.6.0
 
 #### What's New
