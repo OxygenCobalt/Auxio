@@ -5,6 +5,9 @@
 #### What's Fixed
 - Fixed broken notification close action
 
+#### Dev/Meta
+- Fixed mismatched NDK versions
+
 ## 3.6.1
 
 #### What's Fixed
