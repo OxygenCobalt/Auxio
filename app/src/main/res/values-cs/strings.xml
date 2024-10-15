@@ -330,4 +330,5 @@
     <string name="lng_tasker_start">Spustí Auxio pomocí naposledy uloženého stavu. Pokud není dostupný žádný uložený stav, budou náhodně přehrány všechny skladby. Přehrávání se spustí ihned.
 \n
 \nVAROVÁNÍ: při ovládání této služby buďte opatrní, pokud ji zavřete a pak se ji znovu pokusíte použít, aplikace nejspíše spadne.</string>
+    <string name="lbl_more">Více</string>
 </resources>
