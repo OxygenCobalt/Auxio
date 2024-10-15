@@ -113,9 +113,9 @@ private constructor(
      */
     fun release() {
         bitmapProvider.release()
+        playbackManager.removeListener(this)
         playbackSettings.unregisterListener(this)
         imageSettings.unregisterListener(this)
-        playbackManager.removeListener(this)
         mediaSession.apply {
             isActive = false
             release()
