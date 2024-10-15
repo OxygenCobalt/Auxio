@@ -51,8 +51,8 @@ class AuxioService :
     override fun onCreate() {
         super.onCreate()
         playbackFragment = playbackFragmentFactory.create(this, this)
-        sessionToken = playbackFragment.attach()
         musicFragment = musicFragmentFactory.create(this, this, this)
+        sessionToken = playbackFragment.attach()
         musicFragment.attach()
     }
 
