@@ -323,4 +323,5 @@
     <string name="lng_tasker_start">Inicia o Auxio usando o estado salvo anteriormente. Se nenhum estado salvo estiver disponível, todas as músicas serão reproduzidas aleatoriamente.
 \n
 \nAVISO: Tenha cuidado ao controlar este serviço. Se você fechá-lo e então tentar usá-lo novamente, provavelmente ocasionará um crash no aplicativo.</string>
+    <string name="lbl_more">Mais</string>
 </resources>
