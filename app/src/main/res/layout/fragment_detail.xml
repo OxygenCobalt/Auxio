@@ -12,6 +12,7 @@
         android:id="@+id/detail_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true"
+        app:layout_behavior="org.oxycblt.auxio.detail.ContinuousAppBarLayoutBehavior"
         app:liftOnScrollTargetViewId="@id/detail_recycler">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout

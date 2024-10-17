@@ -11,6 +11,7 @@
     <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
         android:id="@+id/detail_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
+        app:layout_behavior="org.oxycblt.auxio.detail.ContinuousAppBarLayoutBehavior"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/detail_recycler">
 
