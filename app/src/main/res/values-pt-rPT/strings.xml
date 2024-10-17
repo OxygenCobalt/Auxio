@@ -319,4 +319,6 @@
     <string name="lbl_replaygain_album">Ajuste de ReplayGain do álbum</string>
     <string name="lbl_path_style_relative">Relativo</string>
     <string name="lbl_windows_paths">Usar caminhos compatíveis com Windows</string>
+    <string name="lng_tasker_start">Inicia o Auxio utilizando o estado anteriormente guardado. Se não existir nenhum estado guardado, todas as músicas serão reproduzidas aleatoriamente. A reprodução começará imediatamente.\n\nAVISO: Tenha cuidado ao controlar este serviço. Se o fechar e tentar utilizá-lo novamente, provavelmente irá causar uma falha na aplicação.</string>
+    <string name="lbl_start_playback">Iniciar reprodução</string>
 </resources>
