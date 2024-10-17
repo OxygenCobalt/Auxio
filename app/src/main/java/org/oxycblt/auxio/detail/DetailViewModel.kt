@@ -34,10 +34,10 @@ import org.oxycblt.auxio.detail.list.DiscHeader
 import org.oxycblt.auxio.detail.list.EditHeader
 import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.list.PlainDivider
+import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
@@ -531,7 +531,7 @@ constructor(
         list: MutableStateFlow<List<Item>>,
         instructions: MutableEvent<UpdateInstructions>,
         replace: Int?,
-        songHeader: (Int) -> Header = { SortHeader(it) }
+        songHeader: (Int) -> PlainHeader = { SortHeader(it) }
     ) {
         if (detail == null) {
             parent.value = null
@@ -547,7 +547,7 @@ constructor(
                             if (section is DetailSection.Songs) songHeader(section.stringRes)
                             else BasicHeader(section.stringRes)
                         if (newList.isNotEmpty()) {
-                            newList.add(Divider(header))
+                            newList.add(PlainDivider(header))
                         }
                         newList.add(header)
                         section.items
@@ -555,7 +555,7 @@ constructor(
                     is DetailSection.Discs -> {
                         val header = SortHeader(section.stringRes)
                         if (newList.isNotEmpty()) {
-                            newList.add(Divider(header))
+                            newList.add(PlainDivider(header))
                         }
                         newList.add(header)
                         buildList<Item> {
@@ -600,7 +600,7 @@ constructor(
         val list = mutableListOf<Item>()
         if (edited.isNotEmpty()) {
             val header = EditHeader(R.string.lbl_songs)
-            list.add(Divider(header))
+            list.add(PlainDivider(header))
             list.add(header)
             list.addAll(edited)
         }

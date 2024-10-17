@@ -30,8 +30,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
@@ -152,7 +152,7 @@ constructor(
                 logD("Adding ${it.size} albums to search results")
                 val header = BasicHeader(R.string.lbl_albums)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)
@@ -162,7 +162,7 @@ constructor(
                 logD("Adding ${it.size} playlists to search results")
                 val header = BasicHeader(R.string.lbl_playlists)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)
@@ -172,7 +172,7 @@ constructor(
                 logD("Adding ${it.size} genres to search results")
                 val header = BasicHeader(R.string.lbl_genres)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)
@@ -182,7 +182,7 @@ constructor(
                 logD("Adding ${it.size} songs to search results")
                 val header = BasicHeader(R.string.lbl_songs)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)

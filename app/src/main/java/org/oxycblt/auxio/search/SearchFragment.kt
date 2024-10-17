@@ -38,11 +38,11 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.detail.Show
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.PlainDivider
+import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -153,7 +153,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                     searchModel.searchResults.value.getOrElse(it) {
                         return@setFullWidthLookup false
                     }
-                item is Divider || item is Header
+                item is PlainDivider || item is PlainHeader
             }
         }
 

@@ -24,12 +24,14 @@ import androidx.annotation.StringRes
 /** A marker for something that is a RecyclerView item. Has no functionality on it's own. */
 interface Item
 
+interface Header : Item
+
 /**
  * A "header" used for delimiting groups of data.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface Header : Item {
+interface PlainHeader : Header {
     /** The string resource used for the header's title. */
     val titleRes: Int
 }
@@ -40,12 +42,16 @@ interface Header : Item {
  * @param titleRes The string resource used for the header's title.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class BasicHeader(@StringRes override val titleRes: Int) : Header
+data class BasicHeader(@StringRes override val titleRes: Int) : PlainHeader
+
+interface Divider<T> : Item {
+    val anchor: T?
+}
 
 /**
  * A divider decoration used to delimit groups of data.
  *
- * @param anchor The [Header] this divider should be next to in a list. Used as a way to preserve
- *   divider continuity during list updates.
+ * @param anchor The [PlainHeader] this divider should be next to in a list. Used as a way to
+ *   preserve divider continuity during list updates.
  */
-data class Divider(val anchor: Header?) : Item
+data class PlainDivider(override val anchor: PlainHeader?) : Divider<PlainHeader>

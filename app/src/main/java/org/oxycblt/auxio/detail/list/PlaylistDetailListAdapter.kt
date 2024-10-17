@@ -33,8 +33,8 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemEditHeaderBinding
 import org.oxycblt.auxio.databinding.ItemEditableSongBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -140,12 +140,12 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
 }
 
 /**
- * A [Header] variant that displays an edit button.
+ * A [PlainHeader] variant that displays an edit button.
  *
  * @param titleRes The string resource to use as the header title
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class EditHeader(@StringRes override val titleRes: Int) : Header
+data class EditHeader(@StringRes override val titleRes: Int) : PlainHeader
 
 /**
  * Displays an [EditHeader] and it's actions. Use [from] to create an instance.

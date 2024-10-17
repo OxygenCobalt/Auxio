@@ -27,7 +27,7 @@ import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -360,7 +360,7 @@ class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderB
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Divider]. Use [from] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [PlainDivider]. Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -381,8 +381,8 @@ class DividerViewHolder private constructor(divider: MaterialDivider) :
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleDiffCallback<Divider>() {
-                override fun areContentsTheSame(oldItem: Divider, newItem: Divider) =
+            object : SimpleDiffCallback<PlainDivider>() {
+                override fun areContentsTheSame(oldItem: PlainDivider, newItem: PlainDivider) =
                     oldItem.anchor == newItem.anchor
             }
     }

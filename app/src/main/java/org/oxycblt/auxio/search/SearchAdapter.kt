@@ -21,8 +21,8 @@ package org.oxycblt.auxio.search
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -57,7 +57,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             is Artist -> ArtistViewHolder.VIEW_TYPE
             is Genre -> GenreViewHolder.VIEW_TYPE
             is Playlist -> PlaylistViewHolder.VIEW_TYPE
-            is Divider -> DividerViewHolder.VIEW_TYPE
+            is PlainDivider -> DividerViewHolder.VIEW_TYPE
             is BasicHeader -> BasicHeaderViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -102,7 +102,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
                             GenreViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Playlist && newItem is Playlist ->
                             PlaylistViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
-                        oldItem is Divider && newItem is Divider ->
+                        oldItem is PlainDivider && newItem is PlainDivider ->
                             DividerViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is BasicHeader && newItem is BasicHeader ->
                             BasicHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)

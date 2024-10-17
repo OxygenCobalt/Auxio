@@ -29,6 +29,8 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
@@ -100,9 +102,9 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class DiscHeader(val inner: Disc?) : Item
+data class DiscHeader(val inner: Disc?) : Header
 
-data class DiscDivider(val anchor: DiscHeader?) : Item
+data class DiscDivider(override val anchor: DiscHeader?) : Divider<DiscHeader>
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [DiscHeader] to delimit different disc groups. Use

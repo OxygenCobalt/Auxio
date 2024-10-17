@@ -27,9 +27,9 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.PlainDivider
+import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -55,7 +55,7 @@ abstract class DetailListAdapter(
     override fun getItemViewType(position: Int) =
         when (getItem(position)) {
             // Implement support for headers and sort headers
-            is Divider -> DividerViewHolder.VIEW_TYPE
+            is PlainDivider -> DividerViewHolder.VIEW_TYPE
             is BasicHeader -> BasicHeaderViewHolder.VIEW_TYPE
             is SortHeader -> SortHeaderViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
@@ -91,7 +91,7 @@ abstract class DetailListAdapter(
             object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
-                        oldItem is Divider && newItem is Divider ->
+                        oldItem is PlainDivider && newItem is PlainDivider ->
                             DividerViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is BasicHeader && newItem is BasicHeader ->
                             BasicHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
@@ -110,7 +110,7 @@ abstract class DetailListAdapter(
  * @param titleRes The string resource to use as the header title
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class SortHeader(@StringRes override val titleRes: Int) : Header
+data class SortHeader(@StringRes override val titleRes: Int) : PlainHeader
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [SortHeader] and it's actions. Use [from] to create

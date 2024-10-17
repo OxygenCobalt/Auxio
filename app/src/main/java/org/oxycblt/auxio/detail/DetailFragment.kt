@@ -31,10 +31,10 @@ import kotlin.math.min
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.list.DetailListAdapter
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.PlainDivider
+import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
@@ -91,7 +91,7 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
                         detailModel.artistSongList.value.getOrElse(it - 1) {
                             return@setFullWidthLookup false
                         }
-                    item is Divider || item is Header
+                    item is PlainDivider || item is PlainHeader
                 } else {
                     true
                 }
