@@ -37,7 +37,7 @@ import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.showToast
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Dialog that manages the music dirs setting.
@@ -62,7 +62,7 @@ class MusicDirsDialog :
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val newDirs = MusicDirectories(dirAdapter.dirs, isUiModeInclude(requireBinding()))
                 if (musicSettings.musicDirs != newDirs) {
-                    T.d("Committing changes")
+                    L.d("Committing changes")
                     musicSettings.musicDirs = newDirs
                 }
             }
@@ -76,7 +76,7 @@ class MusicDirsDialog :
         binding.dirsAdd.apply {
             ViewCompat.setTooltipText(this, contentDescription)
             setOnClickListener {
-                T.d("Opening launcher")
+                L.d("Opening launcher")
                 val launcher =
                     requireNotNull(openDocumentTreeLauncher) {
                         "Document tree launcher was not available"
@@ -150,7 +150,7 @@ class MusicDirsDialog :
     private fun addDocumentTreeUriToDirs(uri: Uri?) {
         if (uri == null) {
             // A null URI means that the user left the file picker without picking a directory
-            T.d("No URI given (user closed the dialog)")
+            L.d("No URI given (user closed the dialog)")
             return
         }
 

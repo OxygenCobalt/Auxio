@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.dirs.MusicDirectories
 import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.settings.Settings
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * User configuration specific to music system.
@@ -108,11 +108,11 @@ constructor(
             getString(R.string.set_key_music_dirs_include),
             getString(R.string.set_key_separators),
             getString(R.string.set_key_auto_sort_names) -> {
-                T.d("Dispatching indexing setting change for $key")
+                L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()
             }
             getString(R.string.set_key_observing) -> {
-                T.d("Dispatching observing setting change")
+                L.d("Dispatching observing setting change")
                 listener.onObservingChanged()
             }
         }

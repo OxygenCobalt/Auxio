@@ -36,7 +36,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewModel] that orchestrates menu dialogs and selection state.
@@ -93,16 +93,16 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      */
     fun select(music: Music) {
         if (music is MusicParent && music.songs.isEmpty()) {
-            T.d("Cannot select empty parent, ignoring operation")
+            L.d("Cannot select empty parent, ignoring operation")
             return
         }
 
         val selected = _selected.value.toMutableList()
         if (!selected.remove(music)) {
-            T.d("Adding $music to selection")
+            L.d("Adding $music to selection")
             selected.add(music)
         } else {
-            T.d("Removed $music from selection")
+            L.d("Removed $music from selection")
         }
 
         _selected.value = selected
@@ -130,7 +130,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      * @return A list of [Song]s collated from each item selected.
      */
     fun takeSelection(): List<Song> {
-        T.d("Taking selection")
+        L.d("Taking selection")
         return peekSelection().also { _selected.value = listOf() }
     }
 
@@ -140,7 +140,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      * @return true if the prior selection was non-empty, false otherwise.
      */
     fun dropSelection(): Boolean {
-        T.d("Dropping selection [empty=${_selected.value.isEmpty()}]")
+        L.d("Dropping selection [empty=${_selected.value.isEmpty()}]")
         return _selected.value.isNotEmpty().also { _selected.value = listOf() }
     }
 
@@ -154,7 +154,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      *   should do.
      */
     fun openMenu(@MenuRes menuRes: Int, song: Song, playWith: PlaySong) {
-        T.d("Opening menu for $song")
+        L.d("Opening menu for $song")
         openImpl(Menu.ForSong(menuRes, song, playWith))
     }
 
@@ -166,7 +166,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      * @param album The [Album] to show.
      */
     fun openMenu(@MenuRes menuRes: Int, album: Album) {
-        T.d("Opening menu for $album")
+        L.d("Opening menu for $album")
         openImpl(Menu.ForAlbum(menuRes, album))
     }
 
@@ -178,7 +178,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      * @param artist The [Artist] to show.
      */
     fun openMenu(@MenuRes menuRes: Int, artist: Artist) {
-        T.d("Opening menu for $artist")
+        L.d("Opening menu for $artist")
         openImpl(Menu.ForArtist(menuRes, artist))
     }
 
@@ -190,7 +190,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      * @param genre The [Genre] to show.
      */
     fun openMenu(@MenuRes menuRes: Int, genre: Genre) {
-        T.d("Opening menu for $genre")
+        L.d("Opening menu for $genre")
         openImpl(Menu.ForGenre(menuRes, genre))
     }
 
@@ -202,7 +202,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      * @param playlist The [Playlist] to show.
      */
     fun openMenu(@MenuRes menuRes: Int, playlist: Playlist) {
-        T.d("Opening menu for $playlist")
+        L.d("Opening menu for $playlist")
         openImpl(Menu.ForPlaylist(menuRes, playlist))
     }
 
@@ -214,14 +214,14 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
      * @param songs The [Song] selection to show.
      */
     fun openMenu(@MenuRes menuRes: Int, songs: List<Song>) {
-        T.d("Opening menu for ${songs.size} songs")
+        L.d("Opening menu for ${songs.size} songs")
         openImpl(Menu.ForSelection(menuRes, songs))
     }
 
     private fun openImpl(menu: Menu) {
         val existing = _menu.flow.value
         if (existing != null) {
-            T.w("Already opening $existing, ignoring $menu")
+            L.w("Already opening $existing, ignoring $menu")
             return
         }
         _menu.put(menu)

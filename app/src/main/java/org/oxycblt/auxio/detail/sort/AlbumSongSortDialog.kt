@@ -28,7 +28,7 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.list.sort.SortDialog
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.util.collectImmediately
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [SortDialog] that controls the [Sort] of [DetailViewModel.albumSongSort].
@@ -56,7 +56,7 @@ class AlbumSongSortDialog : SortDialog() {
 
     private fun updateAlbum(album: Album?) {
         if (album == null) {
-            T.d("No album to sort, navigating away")
+            L.d("No album to sort, navigating away")
             findNavController().navigateUp()
         }
     }

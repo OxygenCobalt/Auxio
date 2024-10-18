@@ -23,7 +23,7 @@ import android.content.SharedPreferences
 import androidx.annotation.StringRes
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Abstract user configuration information. This interface has no functionality whatsoever. Concrete
@@ -73,19 +73,19 @@ interface Settings<L> {
         override fun registerListener(listener: L) {
             if (this.listener == null) {
                 // Registering a listener when it was null prior, attach the callback.
-                T.d("Registering shared preference listener")
+                L.d("Registering shared preference listener")
                 sharedPreferences.registerOnSharedPreferenceChangeListener(this)
             }
-            T.d("Registering listener $listener")
+            L.d("Registering listener $listener")
             this.listener = listener
         }
 
         override fun unregisterListener(listener: L) {
             if (this.listener !== listener) {
-                T.w("Given listener was not the current listener.")
+                L.w("Given listener was not the current listener.")
                 return
             }
-            T.d("Unregistering listener $listener")
+            L.d("Unregistering listener $listener")
             this.listener = null
             // No longer have a listener, detach from the preferences instance.
             sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
@@ -96,7 +96,7 @@ interface Settings<L> {
             key: String?
         ) {
             // FIXME: Settings initialization firing the listener.
-            T.d("Dispatching settings change $key")
+            L.d("Dispatching settings change $key")
             onSettingChanged(unlikelyToBeNull(key), unlikelyToBeNull(listener))
         }
 

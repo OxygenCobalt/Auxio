@@ -27,7 +27,7 @@ import org.oxycblt.auxio.image.extractor.CoverExtractor
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.util.nonZeroOrNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * An processing abstraction over the [MetadataRetriever] and [TextTags] workflow that operates on
@@ -82,19 +82,19 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
             //    val gain =
             //        (((header[16]).toInt() and 0xFF) or ((header[17].toInt() shl 8)))
             //        .R128ToLUFS18()
-            //    T.d("Obtained opus base gain: $gain dB")
+            //    L.d("Obtained opus base gain: $gain dB")
             //    if (gain != 0f) {
-            //        T.d("Applying opus base gain")
+            //        L.d("Applying opus base gain")
             //        rawSong.replayGainTrackAdjustment =
             //            (rawSong.replayGainTrackAdjustment ?: 0f) + gain
             //        rawSong.replayGainAlbumAdjustment =
             //            (rawSong.replayGainAlbumAdjustment ?: 0f) + gain
             //    } else {
-            //        T.d("Ignoring opus base gain")
+            //        L.d("Ignoring opus base gain")
             //    }
             // }
         } else {
-            T.d("No metadata could be extracted for ${rawSong.name}")
+            L.d("No metadata could be extracted for ${rawSong.name}")
         }
     }
 
@@ -127,8 +127,8 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         //  isn't known?
         (textFrames["TDOR"]?.run { Date.from(first()) }
                 ?: textFrames["TDRC"]?.run { Date.from(first()) }
-                    ?: textFrames["TDRL"]?.run { Date.from(first()) }
-                    ?: parseId3v23Date(textFrames))
+                ?: textFrames["TDRL"]?.run { Date.from(first()) }
+                ?: parseId3v23Date(textFrames))
             ?.let { rawSong.date = it }
 
         // Album
@@ -138,7 +138,8 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         textFrames["TALB"]?.let { rawSong.albumName = it.first() }
         textFrames["TSOA"]?.let { rawSong.albumSortName = it.first() }
         (textFrames["TXXX:musicbrainz album type"]
-                ?: textFrames["TXXX:releasetype"] ?:
+                ?: textFrames["TXXX:releasetype"]
+                ?:
                 // This is a non-standard iTunes extension
                 textFrames["GRP1"])
             ?.let { rawSong.releaseTypes = it }
@@ -151,9 +152,11 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
             rawSong.artistNames = it
         }
         (textFrames["TXXX:artistssort"]
-                ?: textFrames["TXXX:artists_sort"] ?: textFrames["TXXX:artists sort"]
-                    ?: textFrames["TSOP"] ?: textFrames["artistsort"]
-                    ?: textFrames["TXXX:artist sort"])
+                ?: textFrames["TXXX:artists_sort"]
+                ?: textFrames["TXXX:artists sort"]
+                ?: textFrames["TSOP"]
+                ?: textFrames["artistsort"]
+                ?: textFrames["TXXX:artist sort"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
@@ -161,15 +164,19 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
                 ?: textFrames["TXXX:musicbrainz_albumartistid"])
             ?.let { rawSong.albumArtistMusicBrainzIds = it }
         (textFrames["TXXX:albumartists"]
-                ?: textFrames["TXXX:album_artists"] ?: textFrames["TXXX:album artists"]
-                    ?: textFrames["TPE2"] ?: textFrames["TXXX:albumartist"]
-                    ?: textFrames["TXXX:album artist"])
+                ?: textFrames["TXXX:album_artists"]
+                ?: textFrames["TXXX:album artists"]
+                ?: textFrames["TPE2"]
+                ?: textFrames["TXXX:albumartist"]
+                ?: textFrames["TXXX:album artist"])
             ?.let { rawSong.albumArtistNames = it }
         (textFrames["TXXX:albumartistssort"]
-                ?: textFrames["TXXX:albumartists_sort"] ?: textFrames["TXXX:albumartists sort"]
-                    ?: textFrames["TXXX:albumartistsort"]
+                ?: textFrames["TXXX:albumartists_sort"]
+                ?: textFrames["TXXX:albumartists sort"]
+                ?: textFrames["TXXX:albumartistsort"]
                 // This is a non-standard iTunes extension
-                ?: textFrames["TSO2"] ?: textFrames["TXXX:album artist sort"])
+                ?: textFrames["TSO2"]
+                ?: textFrames["TXXX:album artist sort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
@@ -177,7 +184,7 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
 
         // Compilation Flag
         (textFrames["TCMP"] // This is a non-standard itunes extension
-             ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])
+            ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])
             ?.let {
                 // Ignore invalid instances of this tag
                 if (it.size != 1 || it[0] != "1") return@let
@@ -201,7 +208,8 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         // is present.
         val year =
             textFrames["TORY"]?.run { first().toIntOrNull() }
-                ?: textFrames["TYER"]?.run { first().toIntOrNull() } ?: return null
+                ?: textFrames["TYER"]?.run { first().toIntOrNull() }
+                ?: return null
 
         val tdat = textFrames["TDAT"]
         return if (tdat != null && tdat.first().length == 4 && tdat.first().isDigitsOnly()) {
@@ -258,7 +266,7 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         // date tag that android supports, so it must be 15 years old or more!)
         (comments["originaldate"]?.run { Date.from(first()) }
                 ?: comments["date"]?.run { Date.from(first()) }
-                    ?: comments["year"]?.run { Date.from(first()) })
+                ?: comments["year"]?.run { Date.from(first()) })
             ?.let { rawSong.date = it }
 
         // Album
@@ -277,8 +285,10 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
         }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
         (comments["artistssort"]
-                ?: comments["artists_sort"] ?: comments["artists sort"] ?: comments["artistsort"]
-                    ?: comments["artist sort"])
+                ?: comments["artists_sort"]
+                ?: comments["artists sort"]
+                ?: comments["artistsort"]
+                ?: comments["artist sort"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
@@ -286,12 +296,16 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
             rawSong.albumArtistMusicBrainzIds = it
         }
         (comments["albumartists"]
-                ?: comments["album_artists"] ?: comments["album artists"] ?: comments["albumartist"]
-                    ?: comments["album artist"])
+                ?: comments["album_artists"]
+                ?: comments["album artists"]
+                ?: comments["albumartist"]
+                ?: comments["album artist"])
             ?.let { rawSong.albumArtistNames = it }
         (comments["albumartistssort"]
-                ?: comments["albumartists_sort"] ?: comments["albumartists sort"]
-                    ?: comments["albumartistsort"] ?: comments["album artist sort"])
+                ?: comments["albumartists_sort"]
+                ?: comments["albumartists sort"]
+                ?: comments["albumartistsort"]
+                ?: comments["album artist sort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre

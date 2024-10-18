@@ -33,7 +33,7 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingFragment] that shows the current playback state in a compact manner.
@@ -128,7 +128,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         val binding = requireBinding()
         when (actionMode) {
             ActionMode.NEXT -> {
-                T.d("Using skip next action")
+                L.d("Using skip next action")
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         setIconResource(R.drawable.ic_skip_next_24)
@@ -140,7 +140,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 }
             }
             ActionMode.REPEAT -> {
-                T.d("Using repeat mode action")
+                L.d("Using repeat mode action")
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         contentDescription = getString(R.string.desc_change_repeat)
@@ -153,7 +153,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 }
             }
             ActionMode.SHUFFLE -> {
-                T.d("Using shuffle action")
+                L.d("Using shuffle action")
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         setIconResource(R.drawable.sel_shuffle_state_24)

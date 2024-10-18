@@ -42,7 +42,7 @@ import org.oxycblt.auxio.playback.replaygain.formatDb
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.concatLocalized
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingMaterialDialogFragment] that shows information about a Song.
@@ -76,7 +76,7 @@ class SongDetailDialog : ViewBindingMaterialDialogFragment<DialogSongDetailBindi
 
     private fun updateSong(song: Song?, info: AudioProperties?) {
         if (song == null) {
-            T.d("No song to show, navigating away")
+            L.d("No song to show, navigating away")
             findNavController().navigateUp()
             return
         }

@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewModel] that stores choice information for [ShowArtistDialog], and possibly others in the
@@ -59,7 +59,7 @@ class DetailPickerViewModel @Inject constructor(private val musicRepository: Mus
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         // Need to sanitize different items depending on the current set of choices.
         _artistChoices.value = _artistChoices.value?.sanitize(deviceLibrary)
-        T.d("Updated artist choices: ${_artistChoices.value}")
+        L.d("Updated artist choices: ${_artistChoices.value}")
     }
 
     /**
@@ -68,20 +68,20 @@ class DetailPickerViewModel @Inject constructor(private val musicRepository: Mus
      * @param itemUid The [Music.UID] of the item to show. Must be a [Song] or [Album].
      */
     fun setArtistChoiceUid(itemUid: Music.UID) {
-        T.d("Opening navigation choices for $itemUid")
+        L.d("Opening navigation choices for $itemUid")
         // Support Songs and Albums, which have parent artists.
         _artistChoices.value =
             when (val music = musicRepository.find(itemUid)) {
                 is Song -> {
-                    T.d("Creating navigation choices for song")
+                    L.d("Creating navigation choices for song")
                     ArtistShowChoices.FromSong(music)
                 }
                 is Album -> {
-                    T.d("Creating navigation choices for album")
+                    L.d("Creating navigation choices for album")
                     ArtistShowChoices.FromAlbum(music)
                 }
                 else -> {
-                    T.w("Given song/album UID was invalid")
+                    L.w("Given song/album UID was invalid")
                     null
                 }
             }

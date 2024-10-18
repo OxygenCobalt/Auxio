@@ -48,7 +48,7 @@ import java.lang.IllegalArgumentException
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
@@ -172,8 +172,8 @@ fun NavController.navigateSafe(directions: NavDirections) =
         navigate(directions)
     } catch (e: IllegalArgumentException) {
         // Nothing to do.
-        T.e("Could not navigate from this destination.")
-        T.e(e.stackTraceToString())
+        L.e("Could not navigate from this destination.")
+        L.e(e.stackTraceToString())
     }
 
 /**
@@ -315,7 +315,7 @@ fun Context.share(parent: MusicParent) = share(parent.songs)
  */
 fun Context.share(songs: Collection<Song>) {
     if (songs.isEmpty()) return
-    T.d("Showing sharesheet for ${songs.size} songs")
+    L.d("Showing sharesheet for ${songs.size} songs")
     val builder = ShareCompat.IntentBuilder(this)
     val mimeTypes = mutableSetOf<String>()
     for (song in songs) {
@@ -333,7 +333,7 @@ fun Context.share(songs: Collection<Song>) {
  */
 fun Context.openInBrowser(uri: String) {
     fun openAppChooser(intent: Intent) {
-        T.d("Opening app chooser for ${intent.action}")
+        L.d("Opening app chooser for ${intent.action}")
         val chooserIntent =
             Intent(Intent.ACTION_CHOOSER)
                 .putExtra(Intent.EXTRA_INTENT, intent)
@@ -341,7 +341,7 @@ fun Context.openInBrowser(uri: String) {
         startActivity(chooserIntent)
     }
 
-    T.d("Opening $uri")
+    L.d("Opening $uri")
     val browserIntent =
         Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
@@ -349,7 +349,7 @@ fun Context.openInBrowser(uri: String) {
         // Android 11 seems to now handle the app chooser situations on its own now
         // [along with adding a new permission that breaks the old manual code], so
         // we just do a typical activity launch.
-        T.d("Using API 30+ chooser")
+        L.d("Using API 30+ chooser")
         try {
             startActivity(browserIntent)
         } catch (e: ActivityNotFoundException) {
@@ -361,7 +361,7 @@ fun Context.openInBrowser(uri: String) {
         // not work in all cases, especially when no default app was set. If that is the
         // case, we will try to manually handle these cases before we try to launch the
         // browser.
-        T.d("Resolving browser activity for chooser")
+        L.d("Resolving browser activity for chooser")
         val pkgName =
             packageManager.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)?.run {
                 activityInfo.packageName
@@ -370,9 +370,9 @@ fun Context.openInBrowser(uri: String) {
         if (pkgName != null) {
             if (pkgName == "android") {
                 // No default browser [Must open app chooser, may not be supported]
-                T.d("No default browser found")
+                L.d("No default browser found")
                 openAppChooser(browserIntent)
-            } else T.d("Opening browser intent")
+            } else L.d("Opening browser intent")
             try {
                 browserIntent.setPackage(pkgName)
                 startActivity(browserIntent)

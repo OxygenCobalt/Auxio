@@ -27,7 +27,7 @@ import org.oxycblt.auxio.music.fs.Components
 import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.contentResolverSafe
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Generic playlist file importing abstraction.
@@ -108,7 +108,7 @@ constructor(
                 return ImportedPlaylist(newName, imported.paths)
             }
         } catch (e: Exception) {
-            T.e("Failed to import playlist: $e")
+            L.e("Failed to import playlist: $e")
             null
         }
     }
@@ -124,7 +124,7 @@ constructor(
         return try {
             val outputStream = context.contentResolverSafe.openOutputStream(uri)
             if (outputStream == null) {
-                T.e("Failed to export playlist: Could not open output stream")
+                L.e("Failed to export playlist: Could not open output stream")
                 return false
             }
             outputStream.use {
@@ -132,7 +132,7 @@ constructor(
                 true
             }
         } catch (e: Exception) {
-            T.e("Failed to export playlist: $e")
+            L.e("Failed to export playlist: $e")
             false
         }
     }

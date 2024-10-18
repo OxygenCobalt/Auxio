@@ -39,9 +39,6 @@ import androidx.core.os.BundleCompat
 import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.google.android.material.R as MR
-import com.google.android.material.motion.MotionUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.leinardi.android.speeddial.FabWithLabelView
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -49,6 +46,7 @@ import com.leinardi.android.speeddial.SpeedDialView
 import kotlin.math.roundToInt
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.StationaryAnim
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
@@ -80,12 +78,7 @@ class ThemedSpeedDialView : SpeedDialView {
         @AttrRes defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
-    private val matInterpolator =
-        MotionUtils.resolveThemeInterpolator(
-            context, MR.attr.motionEasingStandardInterpolator, FastOutSlowInInterpolator())
-
-    private val matDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium2, 350)
+    private val inAnim = StationaryAnim.forMediumComponent(context)
 
     init {
         // Work around ripple bug on Android 12 when useCompatPadding = true.
@@ -149,7 +142,7 @@ class ThemedSpeedDialView : SpeedDialView {
     }
 
     private fun createMainFabAnimator(isOpen: Boolean): Animator {
-        val totalDuration = matDuration.toLong()
+        val totalDuration = inAnim.duration
         val partialDuration = totalDuration / 2 // This is half of the total duration
         val delay = totalDuration / 4 // This is one fourth of the total duration
 
@@ -181,7 +174,7 @@ class ThemedSpeedDialView : SpeedDialView {
         val animatorSet =
             AnimatorSet().apply {
                 playTogether(backgroundTintAnimator, imageTintAnimator, levelAnimator)
-                interpolator = matInterpolator
+                interpolator = inAnim.interpolator
             }
         animatorSet.start()
         return animatorSet

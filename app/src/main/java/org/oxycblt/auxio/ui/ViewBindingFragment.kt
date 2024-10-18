@@ -25,7 +25,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A fragment enabling ViewBinding inflation and usage across the fragment lifecycle.
@@ -87,7 +87,7 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Configure binding
         onBindingCreated(requireBinding(), savedInstanceState)
-        T.d("Fragment created")
+        L.d("Fragment created")
     }
 
     final override fun onDestroyView() {
@@ -95,6 +95,6 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
         onDestroyBinding(unlikelyToBeNull(_binding))
         // Clear binding
         _binding = null
-        T.d("Fragment destroyed")
+        L.d("Fragment destroyed")
     }
 }

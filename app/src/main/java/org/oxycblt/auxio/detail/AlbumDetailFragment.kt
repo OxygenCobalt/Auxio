@@ -44,7 +44,7 @@ import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ListFragment] that shows information about an [Album].
@@ -103,7 +103,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
 
     private fun updateAlbum(album: Album?) {
         if (album == null) {
-            T.d("No album to show, navigating away")
+            L.d("No album to show, navigating away")
             findNavController().navigateUp()
             return
         }
@@ -153,7 +153,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         val binding = requireBinding()
         when (show) {
             is Show.SongDetails -> {
-                T.d("Navigating to ${show.song}")
+                L.d("Navigating to ${show.song}")
                 findNavController()
                     .navigateSafe(AlbumDetailFragmentDirections.showSong(show.song.uid))
             }
@@ -162,11 +162,11 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
                 if (unlikelyToBeNull(detailModel.currentAlbum.value) == show.song.album) {
-                    T.d("Navigating to a ${show.song} in this album")
+                    L.d("Navigating to a ${show.song} in this album")
                     scrollToAlbumSong(show.song)
                     detailModel.toShow.consume()
                 } else {
-                    T.d("Navigating to the album of ${show.song}")
+                    L.d("Navigating to the album of ${show.song}")
                     findNavController()
                         .navigateSafe(AlbumDetailFragmentDirections.showAlbum(show.song.album.uid))
                 }
@@ -176,27 +176,27 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             // detail fragment.
             is Show.AlbumDetails -> {
                 if (unlikelyToBeNull(detailModel.currentAlbum.value) == show.album) {
-                    T.d("Navigating to the top of this album")
+                    L.d("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
                     detailModel.toShow.consume()
                 } else {
-                    T.d("Navigating to ${show.album}")
+                    L.d("Navigating to ${show.album}")
                     findNavController()
                         .navigateSafe(AlbumDetailFragmentDirections.showAlbum(show.album.uid))
                 }
             }
             is Show.ArtistDetails -> {
-                T.d("Navigating to ${show.artist}")
+                L.d("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(AlbumDetailFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.song}")
+                L.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(AlbumDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.album}")
+                L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(AlbumDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
@@ -239,7 +239,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         val directions =
             when (decision) {
                 is PlaylistDecision.Add -> {
-                    T.d("Adding ${decision.songs.size} songs to a playlist")
+                    L.d("Adding ${decision.songs.size} songs to a playlist")
                     AlbumDetailFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -268,11 +268,11 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         val directions =
             when (decision) {
                 is PlaybackDecision.PlayFromArtist -> {
-                    T.d("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     AlbumDetailFragmentDirections.playFromArtist(decision.song.uid)
                 }
                 is PlaybackDecision.PlayFromGenre -> {
-                    T.d("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     AlbumDetailFragmentDirections.playFromGenre(decision.song.uid)
                 }
             }

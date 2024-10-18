@@ -79,7 +79,7 @@ import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
@@ -125,11 +125,11 @@ class HomeFragment :
         getContentLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
                 if (uri == null) {
-                    T.w("No URI returned from file picker")
+                    L.w("No URI returned from file picker")
                     return@registerForActivityResult
                 }
 
-                T.d("Received playlist URI $uri")
+                L.d("Received playlist URI $uri")
                 musicModel.importPlaylist(uri, pendingImportTarget)
             }
 
@@ -220,17 +220,17 @@ class HomeFragment :
         return when (item.itemId) {
             // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
-                T.d("Navigating to search")
+                L.d("Navigating to search")
                 findNavController().navigateSafe(HomeFragmentDirections.search())
                 true
             }
             R.id.action_settings -> {
-                T.d("Navigating to preferences")
+                L.d("Navigating to preferences")
                 homeModel.showSettings()
                 true
             }
             R.id.action_about -> {
-                T.d("Navigating to about")
+                L.d("Navigating to about")
                 homeModel.showAbout()
                 true
             }
@@ -250,7 +250,7 @@ class HomeFragment :
                 true
             }
             else -> {
-                T.w("Unexpected menu item selected")
+                L.w("Unexpected menu item selected")
                 false
             }
         }
@@ -264,7 +264,7 @@ class HomeFragment :
         if (homeModel.currentTabTypes.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
-            T.d("Single tab shown, disabling TabLayout")
+            L.d("Single tab shown, disabling TabLayout")
             binding.homeTabs.isVisible = false
             binding.homeAppbar.setExpanded(true, false)
             toolbarParams.scrollFlags = 0
@@ -302,7 +302,7 @@ class HomeFragment :
     private fun handleRecreate(recreate: Unit?) {
         if (recreate == null) return
         val binding = requireBinding()
-        T.d("Recreating ViewPager")
+        L.d("Recreating ViewPager")
         // Move back to position zero, as there must be a tab there.
         binding.homePager.currentItem = 0
         // Make sure tabs are set up to also follow the new ViewPager configuration.
@@ -319,7 +319,7 @@ class HomeFragment :
             is IndexingState.Completed -> setupCompleteState(binding, state.error)
             is IndexingState.Indexing -> setupIndexingState(binding, state.progress)
             null -> {
-                T.d("Indexer is in indeterminate state")
+                L.d("Indexer is in indeterminate state")
                 binding.homeIndexingContainer.visibility = View.INVISIBLE
             }
         }
@@ -327,19 +327,19 @@ class HomeFragment :
 
     private fun setupCompleteState(binding: FragmentHomeBinding, error: Exception?) {
         if (error == null) {
-            T.d("Received ok response")
+            L.d("Received ok response")
             binding.homeIndexingContainer.visibility = View.INVISIBLE
             return
         }
 
-        T.d("Received non-ok response")
+        L.d("Received non-ok response")
         val context = requireContext()
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.INVISIBLE
         binding.homeIndexingActions.visibility = View.VISIBLE
         when (error) {
             is NoAudioPermissionException -> {
-                T.d("Showing permission prompt")
+                L.d("Showing permission prompt")
                 binding.homeIndexingStatus.setText(R.string.err_no_perms)
                 // Configure the action to act as a permission launcher.
                 binding.homeIndexingTry.apply {
@@ -354,7 +354,7 @@ class HomeFragment :
                 binding.homeIndexingMore.visibility = View.GONE
             }
             is NoMusicException -> {
-                T.d("Showing no music error")
+                L.d("Showing no music error")
                 binding.homeIndexingStatus.setText(R.string.err_no_music)
                 // Configure the action to act as a reload trigger.
                 binding.homeIndexingTry.apply {
@@ -365,7 +365,7 @@ class HomeFragment :
                 binding.homeIndexingMore.visibility = View.GONE
             }
             else -> {
-                T.d("Showing generic error")
+                L.d("Showing generic error")
                 binding.homeIndexingStatus.setText(R.string.err_index_failed)
                 // Configure the action to act as a reload trigger.
                 binding.homeIndexingTry.apply {
@@ -411,14 +411,14 @@ class HomeFragment :
         val directions =
             when (decision) {
                 is PlaylistDecision.New -> {
-                    T.d("Creating new playlist")
+                    L.d("Creating new playlist")
                     HomeFragmentDirections.newPlaylist(
                         decision.songs.map { it.uid }.toTypedArray(),
                         decision.template,
                         decision.reason)
                 }
                 is PlaylistDecision.Import -> {
-                    T.d("Importing playlist")
+                    L.d("Importing playlist")
                     pendingImportTarget = decision.target
                     requireNotNull(getContentLauncher) {
                             "Content picker launcher was not available"
@@ -428,7 +428,7 @@ class HomeFragment :
                     return
                 }
                 is PlaylistDecision.Rename -> {
-                    T.d("Renaming ${decision.playlist}")
+                    L.d("Renaming ${decision.playlist}")
                     HomeFragmentDirections.renamePlaylist(
                         decision.playlist.uid,
                         decision.template,
@@ -436,15 +436,15 @@ class HomeFragment :
                         decision.reason)
                 }
                 is PlaylistDecision.Export -> {
-                    T.d("Exporting ${decision.playlist}")
+                    L.d("Exporting ${decision.playlist}")
                     HomeFragmentDirections.exportPlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Delete -> {
-                    T.d("Deleting ${decision.playlist}")
+                    L.d("Deleting ${decision.playlist}")
                     HomeFragmentDirections.deletePlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Add -> {
-                    T.d("Adding ${decision.songs.size} to a playlist")
+                    L.d("Adding ${decision.songs.size} to a playlist")
                     HomeFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -475,38 +475,38 @@ class HomeFragment :
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
-                T.d("Navigating to ${show.song}")
+                L.d("Navigating to ${show.song}")
                 findNavController().navigateSafe(HomeFragmentDirections.showSong(show.song.uid))
             }
             is Show.SongAlbumDetails -> {
-                T.d("Navigating to the album of ${show.song}")
+                L.d("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showAlbum(show.song.album.uid))
             }
             is Show.AlbumDetails -> {
-                T.d("Navigating to ${show.album}")
+                L.d("Navigating to ${show.album}")
                 findNavController().navigateSafe(HomeFragmentDirections.showAlbum(show.album.uid))
             }
             is Show.ArtistDetails -> {
-                T.d("Navigating to ${show.artist}")
+                L.d("Navigating to ${show.artist}")
                 findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.song}")
+                L.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.album}")
+                L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
-                T.d("Navigating to ${show.genre}")
+                L.d("Navigating to ${show.genre}")
                 findNavController().navigateSafe(HomeFragmentDirections.showGenre(show.genre.uid))
             }
             is Show.PlaylistDetails -> {
-                T.d("Navigating to ${show.playlist}")
+                L.d("Navigating to ${show.playlist}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showPlaylist(show.playlist.uid))
             }
@@ -534,7 +534,7 @@ class HomeFragment :
             binding.homeSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
             if (binding.homeToolbar.setVisible(R.id.home_selection_toolbar)) {
                 // New selection started, show the AppBarLayout to indicate the new state.
-                T.d("Significant selection occurred, expanding AppBar")
+                L.d("Significant selection occurred, expanding AppBar")
                 binding.homeAppbar.expandWithScrollingRecycler()
             }
         } else {

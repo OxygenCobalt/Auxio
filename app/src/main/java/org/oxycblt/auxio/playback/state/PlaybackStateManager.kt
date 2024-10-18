@@ -25,7 +25,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager.Listener
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Core playback state controller class.
@@ -387,11 +387,11 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun addListener(listener: Listener) {
-        T.d("Adding $listener to listeners")
+        L.d("Adding $listener to listeners")
         listeners.add(listener)
 
         if (isInitialized) {
-            T.d("Sending initial state to $listener")
+            L.d("Sending initial state to $listener")
             listener.onNewPlayback(
                 stateMirror.parent, stateMirror.queue, stateMirror.index, stateMirror.isShuffled)
             listener.onProgressionChanged(stateMirror.progression)
@@ -401,16 +401,16 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun removeListener(listener: Listener) {
-        T.d("Removing $listener from listeners")
+        L.d("Removing $listener from listeners")
         if (!listeners.remove(listener)) {
-            T.w("Listener $listener was not added prior, cannot remove")
+            L.w("Listener $listener was not added prior, cannot remove")
         }
     }
 
     @Synchronized
     override fun registerStateHolder(stateHolder: PlaybackStateHolder) {
         if (this.stateHolder != null) {
-            T.w("Internal player is already registered")
+            L.w("Internal player is already registered")
             return
         }
 
@@ -429,11 +429,11 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun unregisterStateHolder(stateHolder: PlaybackStateHolder) {
         if (this.stateHolder !== stateHolder) {
-            T.w("Given internal player did not match current internal player")
+            L.w("Given internal player did not match current internal player")
             return
         }
 
-        T.d("Unregistering internal player $stateHolder")
+        L.d("Unregistering internal player $stateHolder")
 
         this.stateHolder = null
     }
@@ -443,7 +443,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun play(command: PlaybackCommand) {
         val stateHolder = stateHolder ?: return
-        T.d("Playing $command")
+        L.d("Playing $command")
         // Played something, so we are initialized now
         isInitialized = true
         stateHolder.newPlayback(command)
@@ -454,32 +454,32 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun next() {
         val stateHolder = stateHolder ?: return
-        T.d("Going to next song")
+        L.d("Going to next song")
         stateHolder.next()
     }
 
     @Synchronized
     override fun prev() {
         val stateHolder = stateHolder ?: return
-        T.d("Going to previous song")
+        L.d("Going to previous song")
         stateHolder.prev()
     }
 
     @Synchronized
     override fun goto(index: Int) {
         val stateHolder = stateHolder ?: return
-        T.d("Going to index $index")
+        L.d("Going to index $index")
         stateHolder.goto(index)
     }
 
     @Synchronized
     override fun playNext(songs: List<Song>) {
         if (currentSong == null) {
-            T.d("Nothing playing, short-circuiting to new playback")
+            L.d("Nothing playing, short-circuiting to new playback")
             play(QueueCommand(songs))
         } else {
             val stateHolder = stateHolder ?: return
-            T.d("Adding ${songs.size} songs to start of queue")
+            L.d("Adding ${songs.size} songs to start of queue")
             stateHolder.playNext(songs, StateAck.PlayNext(stateMirror.index + 1, songs.size))
         }
     }
@@ -487,11 +487,11 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun addToQueue(songs: List<Song>) {
         if (currentSong == null) {
-            T.d("Nothing playing, short-circuiting to new playback")
+            L.d("Nothing playing, short-circuiting to new playback")
             play(QueueCommand(songs))
         } else {
             val stateHolder = stateHolder ?: return
-            T.d("Adding ${songs.size} songs to end of queue")
+            L.d("Adding ${songs.size} songs to end of queue")
             stateHolder.addToQueue(songs, StateAck.AddToQueue(queue.size, songs.size))
         }
     }
@@ -505,21 +505,21 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun moveQueueItem(src: Int, dst: Int) {
         val stateHolder = stateHolder ?: return
-        T.d("Moving item $src to position $dst")
+        L.d("Moving item $src to position $dst")
         stateHolder.move(src, dst, StateAck.Move(src, dst))
     }
 
     @Synchronized
     override fun removeQueueItem(at: Int) {
         val stateHolder = stateHolder ?: return
-        T.d("Removing item at $at")
+        L.d("Removing item at $at")
         stateHolder.remove(at, StateAck.Remove(at))
     }
 
     @Synchronized
     override fun shuffled(shuffled: Boolean) {
         val stateHolder = stateHolder ?: return
-        T.d("Reordering queue [shuffled=$shuffled]")
+        L.d("Reordering queue [shuffled=$shuffled]")
         stateHolder.shuffled(shuffled)
     }
 
@@ -529,7 +529,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun playDeferred(action: DeferredPlayback) {
         val stateHolder = stateHolder
         if (stateHolder == null || !stateHolder.handleDeferred(action)) {
-            T.d("Internal player not present or did not consume action, waiting")
+            L.d("Internal player not present or did not consume action, waiting")
             pendingDeferredPlayback = action
         }
     }
@@ -537,12 +537,12 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun requestAction(stateHolder: PlaybackStateHolder) {
         if (BuildConfig.DEBUG && this.stateHolder !== stateHolder) {
-            T.w("Given internal player did not match current internal player")
+            L.w("Given internal player did not match current internal player")
             return
         }
 
         if (pendingDeferredPlayback?.let(stateHolder::handleDeferred) == true) {
-            T.d("Pending action consumed")
+            L.d("Pending action consumed")
             pendingDeferredPlayback = null
         }
     }
@@ -550,35 +550,35 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun playing(isPlaying: Boolean) {
         val stateHolder = stateHolder ?: return
-        T.d("Updating playing state to $isPlaying")
+        L.d("Updating playing state to $isPlaying")
         stateHolder.playing(isPlaying)
     }
 
     @Synchronized
     override fun repeatMode(repeatMode: RepeatMode) {
         val stateHolder = stateHolder ?: return
-        T.d("Updating repeat mode to $repeatMode")
+        L.d("Updating repeat mode to $repeatMode")
         stateHolder.repeatMode(repeatMode)
     }
 
     @Synchronized
     override fun seekTo(positionMs: Long) {
         val stateHolder = stateHolder ?: return
-        T.d("Seeking to ${positionMs}ms")
+        L.d("Seeking to ${positionMs}ms")
         stateHolder.seekTo(positionMs)
     }
 
     @Synchronized
     override fun endSession() {
         val stateHolder = stateHolder ?: return
-        T.d("Ending session")
+        L.d("Ending session")
         stateHolder.endSession()
     }
 
     @Synchronized
     override fun ack(stateHolder: PlaybackStateHolder, ack: StateAck) {
         if (BuildConfig.DEBUG && this.stateHolder !== stateHolder) {
-            T.w("Given internal player did not match current internal player")
+            L.w("Given internal player did not match current internal player")
             return
         }
 
@@ -729,7 +729,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         destructive: Boolean
     ) {
         if (isInitialized && !destructive) {
-            T.w("Already initialized, cannot apply saved state")
+            L.w("Already initialized, cannot apply saved state")
             return
         }
 
@@ -751,7 +751,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             }
         }
 
-        T.d("Created adjustment mapping [max shift=$currentShift]")
+        L.d("Created adjustment mapping [max shift=$currentShift]")
 
         val shuffledMapping =
             savedState.shuffledMapping.mapNotNullTo(mutableListOf()) { index ->
@@ -775,7 +775,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             index--
         }
 
-        T.d("Corrected index: ${savedState.index} -> $index")
+        L.d("Corrected index: ${savedState.index} -> $index")
 
         check(shuffledMapping.all { it in heap.indices }) {
             "Queue inconsistency detected: Shuffled mapping indices out of heap bounds"

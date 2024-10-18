@@ -29,7 +29,7 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [BroadcastReceiver] for receiving playback-specific [Intent]s from the system that require an
@@ -76,7 +76,7 @@ private constructor(
             // 3. Some internal framework thing that also handles bluetooth headsets
             // Just use ACTION_HEADSET_PLUG.
             AudioManager.ACTION_HEADSET_PLUG -> {
-                T.d("Received headset plug event")
+                L.d("Received headset plug event")
                 when (intent.getIntExtra("state", -1)) {
                     0 -> pauseFromHeadsetPlug()
                     1 -> playFromHeadsetPlug()
@@ -85,37 +85,37 @@ private constructor(
                 initialHeadsetPlugEventHandled = true
             }
             AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                T.d("Received Headset noise event")
+                L.d("Received Headset noise event")
                 pauseFromHeadsetPlug()
             }
 
             // --- AUXIO EVENTS ---
             PlaybackActions.ACTION_PLAY_PAUSE -> {
-                T.d("Received play event")
+                L.d("Received play event")
                 playbackManager.playing(!playbackManager.progression.isPlaying)
             }
             PlaybackActions.ACTION_INC_REPEAT_MODE -> {
-                T.d("Received repeat mode event")
+                L.d("Received repeat mode event")
                 playbackManager.repeatMode(playbackManager.repeatMode.increment())
             }
             PlaybackActions.ACTION_INVERT_SHUFFLE -> {
-                T.d("Received shuffle event")
+                L.d("Received shuffle event")
                 playbackManager.shuffled(!playbackManager.isShuffled)
             }
             PlaybackActions.ACTION_SKIP_PREV -> {
-                T.d("Received skip previous event")
+                L.d("Received skip previous event")
                 playbackManager.prev()
             }
             PlaybackActions.ACTION_SKIP_NEXT -> {
-                T.d("Received skip next event")
+                L.d("Received skip next event")
                 playbackManager.next()
             }
             PlaybackActions.ACTION_EXIT -> {
-                T.d("Received exit event")
+                L.d("Received exit event")
                 playbackManager.endSession()
             }
             WidgetProvider.ACTION_WIDGET_UPDATE -> {
-                T.d("Received widget update event")
+                L.d("Received widget update event")
                 widgetComponent.update()
             }
         }
@@ -128,14 +128,14 @@ private constructor(
         if (playbackSettings.headsetAutoplay &&
             playbackManager.currentSong != null &&
             initialHeadsetPlugEventHandled) {
-            T.d("Device connected, resuming")
+            L.d("Device connected, resuming")
             playbackManager.playing(true)
         }
     }
 
     private fun pauseFromHeadsetPlug() {
         if (playbackManager.currentSong != null) {
-            T.d("Device disconnected, pausing")
+            L.d("Device disconnected, pausing")
             playbackManager.playing(false)
         }
     }

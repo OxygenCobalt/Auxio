@@ -53,7 +53,7 @@ import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.Song
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Provides functionality for extracting album cover information. Meant for internal use only.
@@ -153,13 +153,14 @@ constructor(
                 }
             }
         } catch (e: Exception) {
-            T.e("Unable to extract album cover due to an error: $e")
+            L.e("Unable to extract album cover due to an error: $e")
             null
         }
 
     private suspend fun extractQualityCover(cover: Cover.Embedded) =
         extractExoplayerCover(cover)
-            ?: extractAospMetadataCover(cover) ?: extractMediaStoreCover(cover)
+            ?: extractAospMetadataCover(cover)
+            ?: extractMediaStoreCover(cover)
 
     private fun extractAospMetadataCover(cover: Cover.Embedded): InputStream? =
         MediaMetadataRetriever().run {

@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.ui
 
 import android.animation.AnimatorSet
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
@@ -28,10 +27,7 @@ import androidx.annotation.IdRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.core.view.isInvisible
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.google.android.material.R as MR
-import com.google.android.material.motion.MotionUtils
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 class MultiToolbar
 @JvmOverloads
@@ -39,20 +35,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     FrameLayout(context, attrs, defStyleAttr) {
     private var animator: AnimatorSet? = null
     private var currentlyVisible = 0
-    private val outInterpolator =
-        MotionUtils.resolveThemeInterpolator(
-            context,
-            MR.attr.motionEasingEmphasizedAccelerateInterpolator,
-            FastOutSlowInInterpolator())
-    private val outDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort4, 250).toLong()
-    private val inInterpolator =
-        MotionUtils.resolveThemeInterpolator(
-            context,
-            MR.attr.motionEasingEmphasizedDecelerateInterpolator,
-            FastOutSlowInInterpolator())
-    private val inDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium1, 300).toLong()
+    private val outAnim = OutAnim.forMediumComponent(context)
+    private val inAnim = InAnim.forMediumComponent(context)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -67,7 +51,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     fun setVisible(@IdRes viewId: Int): Boolean {
         val index = children.indexOfFirst { it.id == viewId }
         if (index == currentlyVisible) return false
-        T.d("Switching toolbar visibility from $currentlyVisible -> $index")
+        L.d("Switching toolbar visibility from $currentlyVisible -> $index")
         return animateToolbarsVisibility(currentlyVisible, index).also { currentlyVisible = index }
     }
 
@@ -88,7 +72,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (!isLaidOut) {
             // Not laid out, just change it immediately while are not shown to the user.
             // This is an initialization, so we return false despite changing.
-            T.d("Not laid out, immediately updating visibility")
+            L.d("Not laid out, immediately updating visibility")
             fromView.apply {
                 alpha = 0f
                 isInvisible = true
@@ -100,35 +84,24 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             return false
         }
 
-        T.d("Changing toolbar visibility $from -> 0f, $to -> 1f")
+        L.d("Changing toolbar visibility $from -> 0f, $to -> 1f")
         animator?.cancel()
         val outAnimator =
-            ValueAnimator.ofFloat(fromView.alpha, 0f).apply {
-                duration = outDuration
-                interpolator = outInterpolator
-                addUpdateListener {
-                    val ratio = it.animatedValue as Float
-                    fromView.apply {
-                        scaleX = 1 - 0.05f * (1 - ratio)
-                        scaleY = 1 - 0.05f * (1 - ratio)
-                        alpha = ratio
-                        isInvisible = alpha == 0f
-                    }
+            outAnim.genericFloat(fromView.alpha, 0f) {
+                fromView.apply {
+                    scaleX = 1 - 0.05f * (1 - it)
+                    scaleY = 1 - 0.05f * (1 - it)
+                    alpha = it
+                    isInvisible = alpha == 0f
                 }
             }
         val inAnimator =
-            ValueAnimator.ofFloat(toView.alpha, 1f).apply {
-                duration = inDuration
-                interpolator = inInterpolator
-                startDelay = outDuration
-                addUpdateListener {
-                    val ratio = it.animatedValue as Float
-                    toView.apply {
-                        scaleX = 1 - 0.05f * (1 - ratio)
-                        scaleY = 1 - 0.05f * (1 - ratio)
-                        alpha = ratio
-                        isInvisible = alpha == 0f
-                    }
+            inAnim.genericFloat(toView.alpha, 1f) {
+                toView.apply {
+                    scaleX = 1 - 0.05f * (1 - it)
+                    scaleY = 1 - 0.05f * (1 - it)
+                    alpha = it
+                    isInvisible = alpha == 0f
                 }
             }
         animator =

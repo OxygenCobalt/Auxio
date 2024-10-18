@@ -31,7 +31,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A BottomSheetBehavior that resolves several issues with the default implementation, including:
@@ -96,7 +96,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
         val layout = super.onLayoutChild(parent, child, layoutDirection)
         // Don't repeat redundant initialization.
         if (!initalized) {
-            T.d("Not initialized, setting up child")
+            L.d("Not initialized, setting up child")
             child.apply {
                 // Set up compat elevation attributes. These are only shown below API 28.
                 translationZ = context.getDimen(MR.dimen.m3_sys_elevation_level1)

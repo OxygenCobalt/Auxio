@@ -42,7 +42,7 @@ import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.sendWithTimeout
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 class TagExtractor
 @Inject
@@ -66,7 +66,7 @@ constructor(private val mediaSourceFactory: Factory, private val tagInterpreter:
             songsIn++
         }
 
-        T.d("All incomplete songs exhausted, starting cleanup loop")
+        L.d("All incomplete songs exhausted, starting cleanup loop")
         while (!worker.idle()) {
             val completeRawSong = worker.pull()
             if (completeRawSong != null) {
@@ -152,8 +152,8 @@ private class MetadataWorker(
                 try {
                     tagInterpreter.interpret(job.rawSong, job.future.get())
                 } catch (e: Exception) {
-                    T.e("Failed to extract metadata")
-                    T.e(e.stackTraceToString())
+                    L.e("Failed to extract metadata")
+                    L.e(e.stackTraceToString())
                 }
                 jobs[i] = null
                 return job.rawSong
@@ -176,7 +176,7 @@ private class MetadataWorker(
                         mediaSource = currentMediaSource
                         mediaSourceCaller = currentMediaSourceCaller
                     } else {
-                        T.d("new media source yahoo")
+                        L.d("new media source yahoo")
                         mediaSource = mediaSourceFactory.createMediaSource(job.mediaItem)
                         mediaSourceCaller = MediaSourceCaller(job)
                         mediaSource.prepareSource(
@@ -193,8 +193,8 @@ private class MetadataWorker(
                             mediaPeriod.maybeThrowPrepareError()
                         }
                     } catch (e: Exception) {
-                        T.e("Failed to extract MediaSource")
-                        T.e(e.stackTraceToString())
+                        L.e("Failed to extract MediaSource")
+                        L.e(e.stackTraceToString())
                         job.mediaPeriod?.let(mediaSource::releasePeriod)
                         mediaSource.releaseSource(mediaSourceCaller)
                         job.future.setException(e)
@@ -247,7 +247,7 @@ private class MetadataWorker(
                 // Ignore dynamic updates.
                 return
             }
-            T.d("yay source created")
+            L.d("yay source created")
             mediaPeriodCreated = true
             val mediaPeriod =
                 source.createPeriod(

@@ -59,7 +59,7 @@ import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 class ExoPlaybackStateHolder(
     private val context: Context,
@@ -130,8 +130,8 @@ class ExoPlaybackStateHolder(
     override fun resolveQueue(): RawQueue {
         val deviceLibrary =
             musicRepository.deviceLibrary
-            // No library, cannot do anything.
-            ?: return RawQueue(emptyList(), emptyList(), 0)
+                // No library, cannot do anything.
+                ?: return RawQueue(emptyList(), emptyList(), 0)
         val heap = (0 until player.mediaItemCount).map { player.getMediaItemAt(it) }
         val shuffledMapping =
             if (player.shuffleModeEnabled) {
@@ -145,13 +145,13 @@ class ExoPlaybackStateHolder(
     override fun handleDeferred(action: DeferredPlayback): Boolean {
         val deviceLibrary =
             musicRepository.deviceLibrary
-            // No library, cannot do anything.
-            ?: return false
+                // No library, cannot do anything.
+                ?: return false
 
         when (action) {
             // Restore state -> Start a new restoreState job
             is DeferredPlayback.RestoreState -> {
-                T.d("Restoring playback state")
+                L.d("Restoring playback state")
                 restoreScope.launch {
                     val state = persistenceRepository.readState()
                     withContext(Dispatchers.Main) {
@@ -170,7 +170,7 @@ class ExoPlaybackStateHolder(
             }
             // Shuffle all -> Start new playback from all songs
             is DeferredPlayback.ShuffleAll -> {
-                T.d("Shuffling all tracks")
+                L.d("Shuffling all tracks")
                 playbackManager.play(
                     requireNotNull(commandFactory.all(ShuffleMode.ON)) {
                         "Invalid playback parameters"
@@ -178,7 +178,7 @@ class ExoPlaybackStateHolder(
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
-                T.d("Opening specified file")
+                L.d("Opening specified file")
                 deviceLibrary.findSongForUri(context, action.uri)?.let { song ->
                     playbackManager.play(
                         requireNotNull(commandFactory.song(song, ShuffleMode.IMPLICIT)) {
@@ -427,18 +427,18 @@ class ExoPlaybackStateHolder(
 
         if (player.playWhenReady) {
             // Mark that we have started playing so that the notification can now be posted.
-            T.d("Player has started playing")
+            L.d("Player has started playing")
             sessionOngoing = true
             if (!openAudioEffectSession) {
                 // Convention to start an audioeffect session on play/pause rather than
                 // start/stop
-                T.d("Opening audio effect session")
+                L.d("Opening audio effect session")
                 broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
                 openAudioEffectSession = true
             }
         } else if (openAudioEffectSession) {
             // Make sure to close the audio session when we stop playback.
-            T.d("Closing audio effect session")
+            L.d("Closing audio effect session")
             broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
             openAudioEffectSession = false
         }
@@ -470,7 +470,7 @@ class ExoPlaybackStateHolder(
             Player.EVENT_PLAY_WHEN_READY_CHANGED,
             Player.EVENT_IS_PLAYING_CHANGED,
             Player.EVENT_POSITION_DISCONTINUITY)) {
-            T.d("Player state changed, must synchronize state")
+            L.d("Player state changed, must synchronize state")
             playbackManager.ack(this, StateAck.ProgressionChanged)
         }
     }
@@ -478,13 +478,13 @@ class ExoPlaybackStateHolder(
     override fun onPlayerError(error: PlaybackException) {
         // TODO: Replace with no skipping and a notification instead
         // If there's any issue, just go to the next song.
-        T.e("Player error occurred")
-        T.e(error.stackTraceToString())
+        L.e("Player error occurred")
+        L.e(error.stackTraceToString())
         playbackManager.next()
     }
 
     private fun broadcastAudioEffectAction(event: String) {
-        T.d("Broadcasting AudioEffect event: $event")
+        L.d("Broadcasting AudioEffect event: $event")
         context.sendBroadcast(
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
@@ -497,7 +497,7 @@ class ExoPlaybackStateHolder(
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
             // We now have a library, see if we have anything we need to do.
-            T.d("Library obtained, requesting action")
+            L.d("Library obtained, requesting action")
             playbackManager.requestAction(this)
         }
     }
@@ -523,17 +523,17 @@ class ExoPlaybackStateHolder(
 
     private fun deferSave() {
         saveJob {
-            T.d("Waiting for save buffer")
+            L.d("Waiting for save buffer")
             delay(SAVE_BUFFER)
             yield()
-            T.d("Committing saved state")
+            L.d("Committing saved state")
             persistenceRepository.saveState(playbackManager.toSavedState())
         }
     }
 
     private fun saveJob(block: suspend () -> Unit) {
         currentSaveJob?.let {
-            T.d("Discarding prior save job")
+            L.d("Discarding prior save job")
             it.cancel()
         }
         currentSaveJob = saveScope.launch { block() }

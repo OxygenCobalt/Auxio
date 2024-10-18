@@ -64,7 +64,7 @@ import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.showToast
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * The [ListFragment] providing search functionality for the music library.
@@ -108,11 +108,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         getContentLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
                 if (uri == null) {
-                    T.w("No URI returned from file picker")
+                    L.w("No URI returned from file picker")
                     return@registerForActivityResult
                 }
 
-                T.d("Received playlist URI $uri")
+                L.d("Received playlist URI $uri")
                 musicModel.importPlaylist(uri, pendingImportTarget)
             }
 
@@ -139,7 +139,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
-                T.d("Keyboard is not shown yet")
+                L.d("Keyboard is not shown yet")
                 showKeyboard(this)
                 launchedKeyboard = true
             }
@@ -184,7 +184,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         if (item.itemId != R.id.submenu_filtering) {
             // Is a change in filter mode and not just a junk submenu click, update
             // the filtering within SearchViewModel.
-            T.d("Filter mode selected")
+            L.d("Filter mode selected")
             item.isChecked = true
             searchModel.setFilterOptionId(item.itemId)
             return true
@@ -222,7 +222,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
-            T.d("Update finished, scrolling to top")
+            L.d("Update finished, scrolling to top")
             binding.searchRecycler.scrollToPosition(0)
         }
     }
@@ -230,39 +230,39 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
-                T.d("Navigating to ${show.song}")
+                L.d("Navigating to ${show.song}")
                 findNavController().navigateSafe(SearchFragmentDirections.showSong(show.song.uid))
             }
             is Show.SongAlbumDetails -> {
-                T.d("Navigating to the album of ${show.song}")
+                L.d("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showAlbum(show.song.album.uid))
             }
             is Show.AlbumDetails -> {
-                T.d("Navigating to ${show.album}")
+                L.d("Navigating to ${show.album}")
                 findNavController().navigateSafe(SearchFragmentDirections.showAlbum(show.album.uid))
             }
             is Show.ArtistDetails -> {
-                T.d("Navigating to ${show.artist}")
+                L.d("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.song}")
+                L.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.album}")
+                L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
-                T.d("Navigating to ${show.genre}")
+                L.d("Navigating to ${show.genre}")
                 findNavController().navigateSafe(SearchFragmentDirections.showGenre(show.genre.uid))
             }
             is Show.PlaylistDetails -> {
-                T.d("Navigating to ${show.playlist}")
+                L.d("Navigating to ${show.playlist}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showPlaylist(show.playlist.uid))
             }
@@ -296,7 +296,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             binding.searchSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
             if (binding.searchToolbar.setVisible(R.id.search_selection_toolbar)) {
                 // New selection started, show the keyboard to make selection easier.
-                T.d("Significant selection occurred, hiding keyboard")
+                L.d("Significant selection occurred, hiding keyboard")
                 hideKeyboard()
             }
         } else {
@@ -309,7 +309,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         val directions =
             when (decision) {
                 is PlaylistDecision.Import -> {
-                    T.d("Importing playlist")
+                    L.d("Importing playlist")
                     pendingImportTarget = decision.target
                     requireNotNull(getContentLauncher) {
                             "Content picker launcher was not available"
@@ -319,7 +319,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                     return
                 }
                 is PlaylistDecision.Rename -> {
-                    T.d("Renaming ${decision.playlist}")
+                    L.d("Renaming ${decision.playlist}")
                     SearchFragmentDirections.renamePlaylist(
                         decision.playlist.uid,
                         decision.template,
@@ -327,15 +327,15 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                         decision.reason)
                 }
                 is PlaylistDecision.Delete -> {
-                    T.d("Deleting ${decision.playlist}")
+                    L.d("Deleting ${decision.playlist}")
                     SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Export -> {
-                    T.d("Exporting ${decision.playlist}")
+                    L.d("Exporting ${decision.playlist}")
                     SearchFragmentDirections.exportPlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Add -> {
-                    T.d("Adding ${decision.songs.size} to a playlist")
+                    L.d("Adding ${decision.songs.size} to a playlist")
                     SearchFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -361,11 +361,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         val directions =
             when (decision) {
                 is PlaybackDecision.PlayFromArtist -> {
-                    T.d("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     SearchFragmentDirections.playFromArtist(decision.song.uid)
                 }
                 is PlaybackDecision.PlayFromGenre -> {
-                    T.d("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     SearchFragmentDirections.playFromGenre(decision.song.uid)
                 }
             }
@@ -378,7 +378,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
      * @param view The [View] to focus the keyboard on.
      */
     private fun showKeyboard(view: View) {
-        T.d("Launching keyboard")
+        L.d("Launching keyboard")
         view.apply {
             requestFocus()
             postDelayed(200) {
@@ -390,7 +390,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     /** Safely hide the keyboard from this view. */
     private fun hideKeyboard() {
-        T.d("Hiding keyboard")
+        L.d("Hiding keyboard")
         requireNotNull(imm) { "InputMethodManager was not available" }
             .hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }

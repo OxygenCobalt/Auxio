@@ -31,7 +31,7 @@ import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingMaterialDialogFragment] that allows the user to configure the current [Accent].
@@ -55,7 +55,7 @@ class AccentCustomizeDialog :
                     return@setPositiveButton
                 }
 
-                T.d("Applying new accent")
+                L.d("Applying new accent")
                 uiSettings.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
                 requireActivity().recreate()
                 dismiss()

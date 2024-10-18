@@ -28,7 +28,7 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.list.sort.SortDialog
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.util.collectImmediately
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [SortDialog] that controls the [Sort] of [DetailViewModel.genreSongSort].
@@ -62,7 +62,7 @@ class PlaylistSongSortDialog : SortDialog() {
 
     private fun updatePlaylist(genre: Playlist?) {
         if (genre == null) {
-            T.d("No genre to sort, navigating away")
+            L.d("No genre to sort, navigating away")
             findNavController().navigateUp()
         }
     }

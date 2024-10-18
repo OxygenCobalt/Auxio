@@ -45,7 +45,7 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingFragment] more information about the currently playing song, alongside all
@@ -179,7 +179,7 @@ class PlaybackPanelFragment :
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_open_equalizer) {
             // Launch the system equalizer app, if possible.
-            T.d("Launching equalizer")
+            L.d("Launching equalizer")
             val equalizerIntent =
                 Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                     // Provide audio session ID so the equalizer can show options for this app
@@ -220,7 +220,7 @@ class PlaybackPanelFragment :
 
         val binding = requireBinding()
         val context = requireContext()
-        T.d("Updating song display: $song")
+        L.d("Updating song display: $song")
         binding.playbackCover.bind(song)
         binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)

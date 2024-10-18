@@ -27,7 +27,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.accent.Accent
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * User configuration for the general app UI.
@@ -76,7 +76,7 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {
-            T.d("Migrating $OLD_KEY_ACCENT3")
+            L.d("Migrating $OLD_KEY_ACCENT3")
 
             var accent = sharedPreferences.getInt(OLD_KEY_ACCENT3, 5)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -96,7 +96,7 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
 
     override fun onSettingChanged(key: String, listener: UISettings.Listener) {
         if (key == getString(R.string.set_key_round_mode)) {
-            T.d("Dispatching round mode setting change")
+            L.d("Dispatching round mode setting change")
             listener.onRoundModeChanged()
         }
     }

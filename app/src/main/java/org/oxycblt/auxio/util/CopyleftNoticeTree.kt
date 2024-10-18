@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * CopyleftNoticeTree.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.util
 
 import timber.log.Timber
@@ -14,8 +32,11 @@ class CopyleftNoticeTree : Timber.DebugTree() {
     //
     // Read more: John 3:16, Romans 6:23, Romans 9:10
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        super.log(priority, tag,
+        super.log(
+            priority,
+            tag,
             "Hey! Auxio is an open-source project licensed under the GPLv3 license!" +
-                    "You can fork this project and even add ads, but it still needs to be kept open-source with the same license!", t)
+                "You can fork this project and even add ads, but it still needs to be kept open-source with the same license!",
+            t)
     }
 }

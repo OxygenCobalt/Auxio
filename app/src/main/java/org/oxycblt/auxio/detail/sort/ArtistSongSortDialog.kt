@@ -28,7 +28,7 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.list.sort.SortDialog
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.util.collectImmediately
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [SortDialog] that controls the [Sort] of [DetailViewModel.artistSongSort].
@@ -57,7 +57,7 @@ class ArtistSongSortDialog : SortDialog() {
 
     private fun updateArtist(artist: Artist?) {
         if (artist == null) {
-            T.d("No artist to sort, navigating away")
+            L.d("No artist to sort, navigating away")
             findNavController().navigateUp()
         }
     }

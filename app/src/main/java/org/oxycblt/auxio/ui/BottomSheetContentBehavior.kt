@@ -28,7 +28,7 @@ import kotlin.math.abs
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
@@ -61,12 +61,12 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         val behavior = dependency.coordinatorLayoutBehavior as BackportBottomSheetBehavior
         val consumed = behavior.calculateConsumedByBar()
         if (consumed == Int.MIN_VALUE) {
-            T.d("Not laid out yet, cannot update dependent view")
+            L.d("Not laid out yet, cannot update dependent view")
             return false
         }
 
         if (consumed != lastConsumed) {
-            T.d("Consumed amount changed, re-applying insets")
+            L.d("Consumed amount changed, re-applying insets")
             lastConsumed = consumed
             lastInsets?.let(child::dispatchApplyWindowInsets)
             measureContent(parent, child, consumed)

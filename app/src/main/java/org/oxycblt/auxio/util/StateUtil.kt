@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import org.oxycblt.auxio.BuildConfig
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A wrapper around [StateFlow] exposing a one-time consumable event.
@@ -168,11 +168,11 @@ suspend fun <E> SendChannel<E>.sendWithTimeout(element: E, timeout: Long = DEFAU
     try {
         withTimeout(timeout) { send(element) }
     } catch (e: TimeoutCancellationException) {
-        T.e("Failed to send element to channel $e in ${timeout}ms.")
+        L.e("Failed to send element to channel $e in ${timeout}ms.")
         if (BuildConfig.DEBUG) {
             throw TimeoutException("Timed out sending element to channel: $e")
         } else {
-            T.e(e.stackTraceToString())
+            L.e(e.stackTraceToString())
             send(element)
         }
     }
@@ -211,11 +211,11 @@ suspend fun <E> ReceiveChannel<E>.forEachWithTimeout(
                 subsequent = true
             }
         } catch (e: TimeoutCancellationException) {
-            T.e("Failed to send element to channel $e in ${timeout}ms.")
+            L.e("Failed to send element to channel $e in ${timeout}ms.")
             if (BuildConfig.DEBUG) {
                 throw TimeoutException("Timed out sending element to channel: $e")
             } else {
-                T.e(e.stackTraceToString())
+                L.e(e.stackTraceToString())
                 handler()
             }
         }

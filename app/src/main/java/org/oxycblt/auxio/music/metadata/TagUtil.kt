@@ -170,8 +170,8 @@ private fun String.parseId3v1Genre(): String? {
     // try to index the genre table with such.
     val numeric =
         toIntOrNull()
-        // Not a numeric value, try some other fixed values.
-        ?: return when (this) {
+            // Not a numeric value, try some other fixed values.
+            ?: return when (this) {
                 // CR and RX are not technically ID3v1, but are formatted similarly to a plain
                 // number.
                 "CR" -> "Cover"

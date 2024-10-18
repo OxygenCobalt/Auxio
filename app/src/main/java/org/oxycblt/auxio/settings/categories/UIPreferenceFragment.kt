@@ -29,7 +29,7 @@ import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.navigateSafe
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Display preferences.
@@ -42,7 +42,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
-            T.d("Navigating to accent dialog")
+            L.d("Navigating to accent dialog")
             findNavController().navigateSafe(UIPreferenceFragmentDirections.accentSettings())
         }
     }
@@ -50,25 +50,25 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     override fun onSetupPreference(preference: Preference) {
         when (preference.key) {
             getString(R.string.set_key_theme) -> {
-                T.d("Configuring theme setting")
+                L.d("Configuring theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, value ->
-                        T.d("Theme changed, recreating")
+                        L.d("Theme changed, recreating")
                         AppCompatDelegate.setDefaultNightMode(value as Int)
                         true
                     }
             }
             getString(R.string.set_key_accent) -> {
-                T.d("Configuring accent setting")
+                L.d("Configuring accent setting")
                 preference.summary = getString(uiSettings.accent.name)
             }
             getString(R.string.set_key_black_theme) -> {
-                T.d("Configuring black theme setting")
+                L.d("Configuring black theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, _ ->
                         val activity = requireActivity()
                         if (activity.isNight) {
-                            T.d("Black theme changed in night mode, recreating")
+                            L.d("Black theme changed in night mode, recreating")
                             activity.recreate()
                         }
 

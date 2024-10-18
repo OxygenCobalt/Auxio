@@ -116,8 +116,7 @@ class AuxioService :
 
     private fun getRootChildrenLimit(): Int {
         return browserRootHints?.getInt(
-            MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4)
-            ?: 4
+            MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4) ?: 4
     }
 
     private fun Bundle.getPage(): MusicServiceFragment.Page? {

@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import androidx.media.MediaBrowserServiceCompat.Result
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.MusicRepository
-import javax.inject.Inject
+import timber.log.Timber as L
 
 class MusicServiceFragment
 @Inject
@@ -122,11 +123,11 @@ constructor(
         try {
             val result = body()
             if (result == null) {
-                T.w("Result is null")
+                L.w("Result is null")
             }
             sendResult(result)
         } catch (e: Exception) {
-            T.d("Error while dispatching: $e")
+            L.d("Error while dispatching: $e")
             sendResult(null)
         }
     }
@@ -137,11 +138,11 @@ constructor(
             try {
                 val result = body()
                 if (result == null) {
-                    T.w("Result is null")
+                    L.w("Result is null")
                 }
                 sendResult(result)
             } catch (e: Exception) {
-                T.d("Error while dispatching: $e")
+                L.d("Error while dispatching: $e")
                 sendResult(null)
             }
         }

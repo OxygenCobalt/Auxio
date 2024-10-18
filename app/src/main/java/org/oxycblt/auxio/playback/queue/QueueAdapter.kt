@@ -37,7 +37,7 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.inflater
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
@@ -80,7 +80,7 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
      * @param isPlaying Whether playback is ongoing or paused.
      */
     fun setPosition(index: Int, isPlaying: Boolean) {
-        T.d("Updating index")
+        L.d("Updating index")
         val lastIndex = currentIndex
         currentIndex = index
 
@@ -89,10 +89,10 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
         // TODO: Optimize this by only updating the range between old and new indices?
         // TODO: Don't update when the index has not moved.
         if (currentIndex < lastIndex) {
-            T.d("Moved backwards, must update items above last index")
+            L.d("Moved backwards, must update items above last index")
             notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
         } else {
-            T.d("Moved forwards, update items after index")
+            L.d("Moved forwards, update items after index")
             notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
         }
 

@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.PlaySong
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Manages the state information for [MenuDialogFragment] implementations.
@@ -55,7 +55,7 @@ class MenuViewModel @Inject constructor(private val musicRepository: MusicReposi
     fun setMenu(parcel: Menu.Parcel) {
         _currentMenu.value = unpackParcel(parcel)
         if (_currentMenu.value == null) {
-            T.w("Given menu parcel $parcel was invalid")
+            L.w("Given menu parcel $parcel was invalid")
         }
     }
 

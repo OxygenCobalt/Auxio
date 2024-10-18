@@ -31,15 +31,14 @@ import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.core.view.isInvisible
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.R as MR
-import com.google.android.material.motion.MotionUtils
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.AuxioRecyclerView
+import org.oxycblt.auxio.ui.InAnim
+import org.oxycblt.auxio.ui.OutAnim
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.isRtl
@@ -85,23 +84,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             background = context.getDrawableCompat(R.drawable.ui_scroll_thumb)
         }
 
-    private val thumbEnterInterpolator =
-        MotionUtils.resolveThemeInterpolator(
-            context,
-            MR.attr.motionEasingEmphasizedDecelerateInterpolator,
-            FastOutSlowInInterpolator())
-
-    private val thumbEnterDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort4, 300)
-
-    private val thumbExitInterpolator =
-        MotionUtils.resolveThemeInterpolator(
-            context,
-            MR.attr.motionEasingEmphasizedAccelerateInterpolator,
-            FastOutSlowInInterpolator())
-
-    private val thumbExitDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort2, 100)
+    private val thumbEnter = InAnim.forSmallComponent(context)
+    private val thumbExit = OutAnim.forSmallComponent(context)
 
     private val thumbWidth = thumbView.background.intrinsicWidth
     private val thumbHeight = thumbView.background.intrinsicHeight
@@ -130,23 +114,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     }
         }
 
-    private val popupEnterInterpolator =
-        MotionUtils.resolveThemeInterpolator(
-            context,
-            MR.attr.motionEasingEmphasizedDecelerateInterpolator,
-            FastOutSlowInInterpolator())
-
-    private val popupEnterDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium1, 300)
-
-    private val popupExitInterpolator =
-        MotionUtils.resolveThemeInterpolator(
-            context,
-            MR.attr.motionEasingEmphasizedAccelerateInterpolator,
-            FastOutSlowInInterpolator())
-
-    private val popupExitDuration =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort2, 100)
+    private val popupEnter = InAnim.forSmallComponent(context)
+    private val popupExit = OutAnim.forSmallComponent(context)
 
     private var showingPopup = false
 
@@ -460,8 +429,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         thumbView
             .animate()
             .scaleX(1f)
-            .setInterpolator(thumbEnterInterpolator)
-            .setDuration(thumbEnterDuration.toLong())
+            .setInterpolator(thumbEnter.interpolator)
+            .setDuration(thumbEnter.duration)
             .start()
     }
 
@@ -474,8 +443,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         thumbView
             .animate()
             .scaleX(0f)
-            .setInterpolator(thumbExitInterpolator)
-            .setDuration(thumbExitDuration.toLong())
+            .setInterpolator(thumbExit.interpolator)
+            .setDuration(thumbExit.duration)
             .start()
     }
 
@@ -493,8 +462,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             .animate()
             .scaleX(1f)
             .scaleY(1f)
-            .setInterpolator(popupEnterInterpolator)
-            .setDuration(popupEnterDuration.toLong())
+            .setInterpolator(popupEnter.interpolator)
+            .setDuration(popupEnter.duration)
             .start()
     }
 
@@ -509,8 +478,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             .alpha(0f)
             .scaleX(0.75f)
             .scaleY(0.75f)
-            .setInterpolator(popupExitInterpolator)
-            .setDuration(popupExitDuration.toLong())
+            .setInterpolator(popupExit.interpolator)
+            .setDuration(popupExit.duration)
             .start()
     }
 

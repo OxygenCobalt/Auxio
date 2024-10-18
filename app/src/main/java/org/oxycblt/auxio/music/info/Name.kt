@@ -62,8 +62,7 @@ sealed interface Name : Comparable<Name> {
                 sortTokens
                     .firstOrNull()
                     ?.run { collationKey.sourceString.firstOrNull() }
-                    ?.let { if (it.isDigit()) "#" else it.uppercase() }
-                    ?: "?"
+                    ?.let { if (it.isDigit()) "#" else it.uppercase() } ?: "?"
 
         final override fun resolve(context: Context) = raw
 

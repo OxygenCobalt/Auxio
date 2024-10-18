@@ -30,7 +30,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingMaterialDialogFragment] that allows the user to configure the separator characters
@@ -76,7 +76,7 @@ class SeparatorsDialog : ViewBindingMaterialDialogFragment<DialogSeparatorsBindi
                     Separators.SLASH -> binding.separatorSlash.isChecked = true
                     Separators.PLUS -> binding.separatorPlus.isChecked = true
                     Separators.AND -> binding.separatorAnd.isChecked = true
-                    else -> T.w("Unexpected separator in settings data")
+                    else -> L.w("Unexpected separator in settings data")
                 }
             }
     }

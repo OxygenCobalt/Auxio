@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ListFragment] that shows information for a particular [Genre].
@@ -110,7 +110,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
 
     private fun updateGenre(genre: Genre?) {
         if (genre == null) {
-            T.d("No genre to show, navigating away")
+            L.d("No genre to show, navigating away")
             findNavController().navigateUp()
             return
         }
@@ -144,7 +144,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
-                T.d("Navigating to ${show.song}")
+                L.d("Navigating to ${show.song}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showSong(show.song.uid))
             }
@@ -152,7 +152,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
             // Songs should be scrolled to if the album matches, or a new detail
             // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
-                T.d("Navigating to the album of ${show.song}")
+                L.d("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showAlbum(show.song.album.uid))
             }
@@ -160,29 +160,29 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
             // If the album matches, no need to do anything. Otherwise launch a new
             // detail fragment.
             is Show.AlbumDetails -> {
-                T.d("Navigating to ${show.album}")
+                L.d("Navigating to ${show.album}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showAlbum(show.album.uid))
             }
 
             // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
-                T.d("Navigating to ${show.artist}")
+                L.d("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.song}")
+                L.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                T.d("Navigating to artist choices for ${show.album}")
+                L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
-                T.d("Navigated to this genre")
+                L.d("Navigated to this genre")
                 detailModel.toShow.consume()
             }
             is Show.PlaylistDetails -> {
@@ -223,7 +223,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
         val directions =
             when (decision) {
                 is PlaylistDecision.Add -> {
-                    T.d("Adding ${decision.songs.size} songs to a playlist")
+                    L.d("Adding ${decision.songs.size} songs to a playlist")
                     GenreDetailFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -262,7 +262,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
         val directions =
             when (decision) {
                 is PlaybackDecision.PlayFromArtist -> {
-                    T.d("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     GenreDetailFragmentDirections.playFromArtist(decision.song.uid)
                 }
                 is PlaybackDecision.PlayFromGenre -> error("Unexpected playback decision $decision")

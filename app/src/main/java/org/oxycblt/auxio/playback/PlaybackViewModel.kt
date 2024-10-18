@@ -43,7 +43,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * An [ViewModel] that provides a safe UI frontend for the current playback state.
@@ -129,20 +129,20 @@ constructor(
     }
 
     override fun onIndexMoved(index: Int) {
-        T.d("Index moved, updating current song")
+        L.d("Index moved, updating current song")
         _song.value = playbackManager.currentSong
     }
 
     override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
         // Other types of queue changes preserve the current song.
         if (change.type == QueueChange.Type.SONG) {
-            T.d("Queue changed, updating current song")
+            L.d("Queue changed, updating current song")
             _song.value = playbackManager.currentSong
         }
     }
 
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
-        T.d("Queue completely changed, updating current song")
+        L.d("Queue completely changed, updating current song")
         _isShuffled.value = isShuffled
     }
 
@@ -152,14 +152,14 @@ constructor(
         index: Int,
         isShuffled: Boolean
     ) {
-        T.d("New playback started, updating playback information")
+        L.d("New playback started, updating playback information")
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
     }
 
     override fun onProgressionChanged(progression: Progression) {
-        T.d("Player state changed, starting new position polling")
+        L.d("Player state changed, starting new position polling")
         _isPlaying.value = progression.isPlaying
         // Still need to update the position now due to co-routine launch delays
         _positionDs.value = progression.calculateElapsedPositionMs().msToDs()
@@ -187,7 +187,7 @@ constructor(
     // --- PLAYING FUNCTIONS ---
 
     fun play(song: Song, with: PlaySong) {
-        T.d("Playing $song with $with")
+        L.d("Playing $song with $with")
         playWithImpl(song, with, ShuffleMode.IMPLICIT)
     }
 
@@ -201,7 +201,7 @@ constructor(
 
     /** Shuffle all songs in the music library. */
     fun shuffleAll() {
-        T.d("Shuffling all songs")
+        L.d("Shuffling all songs")
         playFromAllImpl(null, ShuffleMode.ON)
     }
 
@@ -257,7 +257,7 @@ constructor(
     }
 
     private fun playFromAlbumImpl(song: Song, shuffle: ShuffleMode) {
-        T.d("Playing $song from album")
+        L.d("Playing $song from album")
         playImpl(commandFactory.songFromAlbum(song, shuffle))
     }
 
@@ -267,7 +267,7 @@ constructor(
             playbackManager.play(params)
             return
         }
-        T.d(
+        L.d(
             "Cannot use given artist parameter for $song [$artist from ${song.artists}], showing choice dialog")
         startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
     }
@@ -278,20 +278,20 @@ constructor(
             playbackManager.play(params)
             return
         }
-        T.d(
+        L.d(
             "Cannot use given genre parameter for $song [$genre from ${song.genres}], showing choice dialog")
         startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
     }
 
     private fun playFromPlaylistImpl(song: Song, playlist: Playlist, shuffle: ShuffleMode) {
-        T.d("Playing $song from $playlist")
+        L.d("Playing $song from $playlist")
         playImpl(commandFactory.songFromPlaylist(song, playlist, shuffle))
     }
 
     private fun startPlaybackDecision(decision: PlaybackDecision) {
         val existing = _playbackDecision.flow.value
         if (existing != null) {
-            T.d("Already handling decision $existing, ignoring $decision")
+            L.d("Already handling decision $existing, ignoring $decision")
             return
         }
         _playbackDecision.put(decision)
@@ -303,7 +303,7 @@ constructor(
      * @param album The [Album] to play.
      */
     fun play(album: Album) {
-        T.d("Playing $album")
+        L.d("Playing $album")
         playImpl(commandFactory.album(album, ShuffleMode.OFF))
     }
 
@@ -313,7 +313,7 @@ constructor(
      * @param album The [Album] to shuffle.
      */
     fun shuffle(album: Album) {
-        T.d("Shuffling $album")
+        L.d("Shuffling $album")
         playImpl(commandFactory.album(album, ShuffleMode.ON))
     }
 
@@ -323,7 +323,7 @@ constructor(
      * @param artist The [Artist] to play.
      */
     fun play(artist: Artist) {
-        T.d("Playing $artist")
+        L.d("Playing $artist")
         playImpl(commandFactory.artist(artist, ShuffleMode.OFF))
     }
 
@@ -333,7 +333,7 @@ constructor(
      * @param artist The [Artist] to shuffle.
      */
     fun shuffle(artist: Artist) {
-        T.d("Shuffling $artist")
+        L.d("Shuffling $artist")
         playImpl(commandFactory.artist(artist, ShuffleMode.ON))
     }
 
@@ -343,7 +343,7 @@ constructor(
      * @param genre The [Genre] to play.
      */
     fun play(genre: Genre) {
-        T.d("Playing $genre")
+        L.d("Playing $genre")
         playImpl(commandFactory.genre(genre, ShuffleMode.OFF))
     }
 
@@ -353,7 +353,7 @@ constructor(
      * @param genre The [Genre] to shuffle.
      */
     fun shuffle(genre: Genre) {
-        T.d("Shuffling $genre")
+        L.d("Shuffling $genre")
         playImpl(commandFactory.genre(genre, ShuffleMode.ON))
     }
 
@@ -363,7 +363,7 @@ constructor(
      * @param playlist The [Playlist] to play.
      */
     fun play(playlist: Playlist) {
-        T.d("Playing $playlist")
+        L.d("Playing $playlist")
         playImpl(commandFactory.playlist(playlist, ShuffleMode.OFF))
     }
 
@@ -373,7 +373,7 @@ constructor(
      * @param playlist The [Playlist] to shuffle.
      */
     fun shuffle(playlist: Playlist) {
-        T.d("Shuffling $playlist")
+        L.d("Shuffling $playlist")
         playImpl(commandFactory.playlist(playlist, ShuffleMode.ON))
     }
 
@@ -383,7 +383,7 @@ constructor(
      * @param songs The [Song]s to play.
      */
     fun play(songs: List<Song>) {
-        T.d("Playing ${songs.size} songs")
+        L.d("Playing ${songs.size} songs")
         playImpl(commandFactory.songs(songs, ShuffleMode.OFF))
     }
 
@@ -393,7 +393,7 @@ constructor(
      * @param songs The [Song]s to shuffle.
      */
     fun shuffle(songs: List<Song>) {
-        T.d("Shuffling ${songs.size} songs")
+        L.d("Shuffling ${songs.size} songs")
         playImpl(commandFactory.songs(songs, ShuffleMode.ON))
     }
 
@@ -408,7 +408,7 @@ constructor(
      * @param action The [DeferredPlayback] to perform eventually.
      */
     fun playDeferred(action: DeferredPlayback) {
-        T.d("Starting action $action")
+        L.d("Starting action $action")
         playbackManager.playDeferred(action)
     }
 
@@ -420,7 +420,7 @@ constructor(
      * @param positionDs The position to seek to, in deci-seconds (1/10th of a second).
      */
     fun seekTo(positionDs: Long) {
-        T.d("Seeking to ${positionDs}ds")
+        L.d("Seeking to ${positionDs}ds")
         playbackManager.seekTo(positionDs.dsToMs())
     }
 
@@ -428,13 +428,13 @@ constructor(
 
     /** Skip to the next [Song]. */
     fun next() {
-        T.d("Skipping to next song")
+        L.d("Skipping to next song")
         playbackManager.next()
     }
 
     /** Skip to the previous [Song]. */
     fun prev() {
-        T.d("Skipping to previous song")
+        L.d("Skipping to previous song")
         playbackManager.prev()
     }
 
@@ -444,7 +444,7 @@ constructor(
      * @param song The [Song] to add.
      */
     fun playNext(song: Song) {
-        T.d("Playing $song next")
+        L.d("Playing $song next")
         playbackManager.playNext(song)
     }
 
@@ -454,7 +454,7 @@ constructor(
      * @param album The [Album] to add.
      */
     fun playNext(album: Album) {
-        T.d("Playing $album next")
+        L.d("Playing $album next")
         playbackManager.playNext(listSettings.albumSongSort.songs(album.songs))
     }
 
@@ -464,7 +464,7 @@ constructor(
      * @param artist The [Artist] to add.
      */
     fun playNext(artist: Artist) {
-        T.d("Playing $artist next")
+        L.d("Playing $artist next")
         playbackManager.playNext(listSettings.artistSongSort.songs(artist.songs))
     }
 
@@ -474,7 +474,7 @@ constructor(
      * @param genre The [Genre] to add.
      */
     fun playNext(genre: Genre) {
-        T.d("Playing $genre next")
+        L.d("Playing $genre next")
         playbackManager.playNext(listSettings.genreSongSort.songs(genre.songs))
     }
 
@@ -484,7 +484,7 @@ constructor(
      * @param playlist The [Playlist] to add.
      */
     fun playNext(playlist: Playlist) {
-        T.d("Playing $playlist next")
+        L.d("Playing $playlist next")
         playbackManager.playNext(playlist.songs)
     }
 
@@ -494,7 +494,7 @@ constructor(
      * @param songs The [Song]s to add.
      */
     fun playNext(songs: List<Song>) {
-        T.d("Playing ${songs.size} songs next")
+        L.d("Playing ${songs.size} songs next")
         playbackManager.playNext(songs)
     }
 
@@ -504,7 +504,7 @@ constructor(
      * @param song The [Song] to add.
      */
     fun addToQueue(song: Song) {
-        T.d("Adding $song to queue")
+        L.d("Adding $song to queue")
         playbackManager.addToQueue(song)
     }
 
@@ -514,7 +514,7 @@ constructor(
      * @param album The [Album] to add.
      */
     fun addToQueue(album: Album) {
-        T.d("Adding $album to queue")
+        L.d("Adding $album to queue")
         playbackManager.addToQueue(listSettings.albumSongSort.songs(album.songs))
     }
 
@@ -524,7 +524,7 @@ constructor(
      * @param artist The [Artist] to add.
      */
     fun addToQueue(artist: Artist) {
-        T.d("Adding $artist to queue")
+        L.d("Adding $artist to queue")
         playbackManager.addToQueue(listSettings.artistSongSort.songs(artist.songs))
     }
 
@@ -534,7 +534,7 @@ constructor(
      * @param genre The [Genre] to add.
      */
     fun addToQueue(genre: Genre) {
-        T.d("Adding $genre to queue")
+        L.d("Adding $genre to queue")
         playbackManager.addToQueue(listSettings.genreSongSort.songs(genre.songs))
     }
 
@@ -544,7 +544,7 @@ constructor(
      * @param playlist The [Playlist] to add.
      */
     fun addToQueue(playlist: Playlist) {
-        T.d("Adding $playlist to queue")
+        L.d("Adding $playlist to queue")
         playbackManager.addToQueue(playlist.songs)
     }
 
@@ -554,7 +554,7 @@ constructor(
      * @param songs The [Song]s to add.
      */
     fun addToQueue(songs: List<Song>) {
-        T.d("Adding ${songs.size} songs to queue")
+        L.d("Adding ${songs.size} songs to queue")
         playbackManager.addToQueue(songs)
     }
 
@@ -562,13 +562,13 @@ constructor(
 
     /** Toggle [isPlaying] (i.e from playing to paused) */
     fun togglePlaying() {
-        T.d("Toggling playing state")
+        L.d("Toggling playing state")
         playbackManager.playing(!playbackManager.progression.isPlaying)
     }
 
     /** Toggle [isShuffled] (ex. from on to off) */
     fun toggleShuffled() {
-        T.d("Toggling shuffled state")
+        L.d("Toggling shuffled state")
         playbackManager.shuffled(!playbackManager.isShuffled)
     }
 
@@ -578,7 +578,7 @@ constructor(
      * @see RepeatMode.increment
      */
     fun toggleRepeatMode() {
-        T.d("Toggling repeat mode")
+        L.d("Toggling repeat mode")
         playbackManager.repeatMode(playbackManager.repeatMode.increment())
     }
 
@@ -599,7 +599,7 @@ constructor(
     private fun openImpl(panel: OpenPanel) {
         val existing = openPanel.flow.value
         if (existing != null) {
-            T.d("Already opening $existing, ignoring opening $panel")
+            L.d("Already opening $existing, ignoring opening $panel")
             return
         }
         _openPanel.put(panel)

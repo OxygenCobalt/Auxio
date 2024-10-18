@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.service
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.media.MediaDescriptionCompat
@@ -47,7 +46,7 @@ import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 class MediaSessionInterface
 @Inject
@@ -82,7 +81,7 @@ constructor(
         val parentUid =
             extras?.getString(MusicBrowser.KEY_CHILD_OF)?.let { MediaSessionUID.fromString(it) }
         val command = expandUidIntoCommand(uid, parentUid)
-        T.d(extras?.getString(MusicBrowser.KEY_CHILD_OF))
+        L.d(extras?.getString(MusicBrowser.KEY_CHILD_OF))
         playbackManager.play(requireNotNull(command) { "Invalid playback configuration" })
     }
 
@@ -295,9 +294,11 @@ constructor(
     private fun expandSongIntoCommand(music: Song, parent: MusicParent?) =
         when (parent) {
             is Album -> commandFactory.songFromAlbum(music, ShuffleMode.IMPLICIT)
-            is Artist -> commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
+            is Artist ->
+                commandFactory.songFromArtist(music, parent, ShuffleMode.IMPLICIT)
                     ?: commandFactory.songFromArtist(music, music.artists[0], ShuffleMode.IMPLICIT)
-            is Genre -> commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
+            is Genre ->
+                commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
                     ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
             is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
             null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)

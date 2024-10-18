@@ -119,8 +119,7 @@ private constructor(
                 is MediaSessionUID.SingleItem ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
                 null -> null
-            }
-                ?: return null
+            } ?: return null
 
         return when (music) {
             is Album -> music.toMediaItem(context)

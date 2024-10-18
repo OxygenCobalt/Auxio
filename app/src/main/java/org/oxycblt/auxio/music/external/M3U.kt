@@ -34,7 +34,7 @@ import org.oxycblt.auxio.music.fs.VolumeManager
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Minimal M3U file format implementation.
@@ -116,7 +116,7 @@ constructor(
             }
 
             if (path == null) {
-                T.e("Expected a path, instead got an EOF")
+                L.e("Expected a path, instead got an EOF")
                 break@consumeFile
             }
 
@@ -261,7 +261,7 @@ constructor(
             }
             commonIndex == components.size -> {
                 // The working directory is deeper in the path, backtrack.
-                for (i in 0..<workingDirectory.components.size - commonIndex) {
+                for (i in 0 ..< workingDirectory.components.size - commonIndex) {
                     relativeComponents = relativeComponents.child("..")
                 }
             }
@@ -272,7 +272,7 @@ constructor(
             }
             else -> {
                 // The paths are siblings. Backtrack and append as needed.
-                for (i in 0..<workingDirectory.components.size - commonIndex) {
+                for (i in 0 ..< workingDirectory.components.size - commonIndex) {
                     relativeComponents = relativeComponents.child("..")
                 }
                 relativeComponents = relativeComponents.child(depth(commonIndex))

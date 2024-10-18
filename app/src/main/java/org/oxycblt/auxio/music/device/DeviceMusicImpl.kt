@@ -125,8 +125,7 @@ class SongImpl(
                     .toSongCoverUri(),
                 uri,
                 it)
-        }
-            ?: Cover.External(requireNotNull(rawSong.albumMediaStoreId).toAlbumCoverUri())
+        } ?: Cover.External(requireNotNull(rawSong.albumMediaStoreId).toAlbumCoverUri())
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an

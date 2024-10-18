@@ -38,7 +38,7 @@ import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
 import org.oxycblt.auxio.settings.ui.PreferenceHeaderItemDecoration
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Shared [PreferenceFragmentCompat] used across all preference screens.
@@ -82,7 +82,7 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
         preferenceManager.onDisplayPreferenceDialogListener = this
         preferenceScreen.children.forEach(::setupPreference)
 
-        T.d("Fragment created")
+        L.d("Fragment created")
     }
 
     override fun onCreateRecyclerView(

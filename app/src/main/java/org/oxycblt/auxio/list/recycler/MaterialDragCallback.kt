@@ -34,7 +34,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback.ViewHolder
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getInteger
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A highly customized [ItemTouchHelper.Callback] that enables some extra eye candy in editable UIs,
@@ -94,7 +94,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // this is only done once when the item is initially picked up.
         // TODO: I think this is possible to improve with a raw ValueAnimator.
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            T.d("Lifting ViewHolder")
+            L.d("Lifting ViewHolder")
 
             val bg = holder.background
             val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
@@ -136,7 +136,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // This function can be called multiple times, so only start the animation when the view's
         // translationZ is already non-zero.
         if (holder.root.translationZ != 0f) {
-            T.d("Lifting ViewHolder")
+            L.d("Lifting ViewHolder")
 
             val bg = holder.background
             val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)

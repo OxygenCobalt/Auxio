@@ -27,7 +27,7 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * User configuration specific to the home UI.
@@ -68,17 +68,17 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_LIB_TABS)) {
-            T.d("Migrating tab setting")
+            L.d("Migrating tab setting")
             val oldTabs =
                 Tab.fromIntCode(sharedPreferences.getInt(OLD_KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
                     ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
-            T.d("Old tabs: $oldTabs")
+            L.d("Old tabs: $oldTabs")
 
             // The playlist tab is now parsed, but it needs to be made visible.
             val playlistIndex = oldTabs.indexOfFirst { it.type == MusicType.PLAYLISTS }
             check(playlistIndex > -1) // This should exist, otherwise we are in big trouble
             oldTabs[playlistIndex] = Tab.Visible(MusicType.PLAYLISTS)
-            T.d("New tabs: $oldTabs")
+            L.d("New tabs: $oldTabs")
 
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(oldTabs))
@@ -90,11 +90,11 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
     override fun onSettingChanged(key: String, listener: HomeSettings.Listener) {
         when (key) {
             getString(R.string.set_key_home_tabs) -> {
-                T.d("Dispatching tab setting change")
+                L.d("Dispatching tab setting change")
                 listener.onTabsChanged()
             }
             getString(R.string.set_key_hide_collaborators) -> {
-                T.d("Dispatching collaborator setting change")
+                L.d("Dispatching collaborator setting change")
                 listener.onHideCollaboratorsChanged()
             }
         }

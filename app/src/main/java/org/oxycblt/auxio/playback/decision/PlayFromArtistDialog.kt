@@ -37,7 +37,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A picker [ViewBindingMaterialDialogFragment] intended for when [Artist] playback is ambiguous.
@@ -88,7 +88,7 @@ class PlayFromArtistDialog :
 
     private fun updateSong(song: Song?) {
         if (song == null) {
-            T.d("No song to show choices for, navigating away")
+            L.d("No song to show choices for, navigating away")
             findNavController().navigateUp()
             return
         }

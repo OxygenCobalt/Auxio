@@ -44,7 +44,7 @@ import org.oxycblt.auxio.music.user.MutableUserLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.util.DEFAULT_TIMEOUT
 import org.oxycblt.auxio.util.forEachWithTimeout
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Primary manager of music information and loading.
@@ -242,51 +242,51 @@ constructor(
 
     @Synchronized
     override fun addUpdateListener(listener: MusicRepository.UpdateListener) {
-        T.d("Adding $listener to update listeners")
+        L.d("Adding $listener to update listeners")
         updateListeners.add(listener)
         listener.onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = true))
     }
 
     @Synchronized
     override fun removeUpdateListener(listener: MusicRepository.UpdateListener) {
-        T.d("Removing $listener to update listeners")
+        L.d("Removing $listener to update listeners")
         if (!updateListeners.remove(listener)) {
-            T.w("Update listener $listener was not added prior, cannot remove")
+            L.w("Update listener $listener was not added prior, cannot remove")
         }
     }
 
     @Synchronized
     override fun addIndexingListener(listener: MusicRepository.IndexingListener) {
-        T.d("Adding $listener to indexing listeners")
+        L.d("Adding $listener to indexing listeners")
         indexingListeners.add(listener)
         listener.onIndexingStateChanged()
     }
 
     @Synchronized
     override fun removeIndexingListener(listener: MusicRepository.IndexingListener) {
-        T.d("Removing $listener from indexing listeners")
+        L.d("Removing $listener from indexing listeners")
         if (!indexingListeners.remove(listener)) {
-            T.w("Indexing listener $listener was not added prior, cannot remove")
+            L.w("Indexing listener $listener was not added prior, cannot remove")
         }
     }
 
     @Synchronized
     override fun registerWorker(worker: MusicRepository.IndexingWorker) {
         if (indexingWorker != null) {
-            T.w("Worker is already registered")
+            L.w("Worker is already registered")
             return
         }
-        T.d("Registering worker $worker")
+        L.d("Registering worker $worker")
         indexingWorker = worker
     }
 
     @Synchronized
     override fun unregisterWorker(worker: MusicRepository.IndexingWorker) {
         if (indexingWorker !== worker) {
-            T.w("Given worker did not match current worker")
+            L.w("Given worker did not match current worker")
             return
         }
-        T.d("Unregistering worker $worker")
+        L.d("Unregistering worker $worker")
         indexingWorker = null
         currentIndexingState = null
     }
@@ -298,42 +298,42 @@ constructor(
 
     override suspend fun createPlaylist(name: String, songs: List<Song>) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
-        T.d("Creating playlist $name with ${songs.size} songs")
+        L.d("Creating playlist $name with ${songs.size} songs")
         userLibrary.createPlaylist(name, songs)
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
-        T.d("Renaming $playlist to $name")
+        L.d("Renaming $playlist to $name")
         userLibrary.renamePlaylist(playlist, name)
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
-        T.d("Deleting $playlist")
+        L.d("Deleting $playlist")
         userLibrary.deletePlaylist(playlist)
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
-        T.d("Adding ${songs.size} songs to $playlist")
+        L.d("Adding ${songs.size} songs to $playlist")
         userLibrary.addToPlaylist(playlist, songs)
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
-        T.d("Rewriting $playlist with ${songs.size} songs")
+        L.d("Rewriting $playlist with ${songs.size} songs")
         userLibrary.rewritePlaylist(playlist, songs)
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     @Synchronized
     override fun requestIndex(withCache: Boolean) {
-        T.d("Requesting index operation [cache=$withCache]")
+        L.d("Requesting index operation [cache=$withCache]")
         indexingWorker?.requestIndex(withCache)
     }
 
@@ -345,13 +345,13 @@ constructor(
             indexImpl(context, scope, withCache)
         } catch (e: CancellationException) {
             // Got cancelled, propagate upwards to top-level co-routine.
-            T.d("Loading routine was cancelled")
+            L.d("Loading routine was cancelled")
             throw e
         } catch (e: Exception) {
             // Music loading process failed due to something we have not handled.
             // TODO: Still want to display this error eventually
-            T.e("Music indexing failed")
-            T.e(e.stackTraceToString())
+            L.e("Music indexing failed")
+            L.e(e.stackTraceToString())
             emitIndexingCompletion(e)
         }
     }
@@ -364,7 +364,7 @@ constructor(
         // done at the UI level, but that intertwines logic and display too much.
         if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
-            T.e("Permissions were not granted")
+            L.e("Permissions were not granted")
             throw NoAudioPermissionException()
         }
 
@@ -383,7 +383,7 @@ constructor(
         // to figure out what songs are (probably) on the device, and the latter will be needed
         // for discovery (described later). These have no shared state, so they are done in
         // parallel.
-        T.d("Starting MediaStore query")
+        L.d("Starting MediaStore query")
         emitIndexingProgress(IndexingProgress.Indeterminate)
 
         val mediaStoreQueryJob =
@@ -404,18 +404,18 @@ constructor(
         // identical to calling async.
         val cache =
             if (withCache) {
-                T.d("Reading cache")
+                L.d("Reading cache")
                 cacheRepository.readCache()
             } else {
                 null
             }
-        T.d("Awaiting MediaStore query")
+        L.d("Awaiting MediaStore query")
         val query = mediaStoreQueryJob.await().getOrThrow()
 
         // We now have all the information required to start the "discovery" process. This
         // is the point at which Auxio starts scanning each file given from MediaStore and
         // transforming it into a music library. MediaStore normally
-        T.d("Starting discovery")
+        L.d("Starting discovery")
         val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED) // Not fully populated w/metadata
         val completeSongs = Channel<RawSong>(Channel.UNLIMITED) // Populated with quality metadata
         val processedSongs = Channel<RawSong>(Channel.UNLIMITED) // Transformed into SongImpl
@@ -423,7 +423,7 @@ constructor(
         // MediaStoreExtractor discovers all music on the device, and forwards them to either
         // DeviceLibrary if cached metadata exists for it, or TagExtractor if cached metadata
         // does not exist. In the latter situation, it also applies it's own (inferior) metadata.
-        T.d("Starting MediaStore discovery")
+        L.d("Starting MediaStore discovery")
         val mediaStoreJob =
             scope.async {
                 try {
@@ -432,7 +432,7 @@ constructor(
                     // To prevent a deadlock, we want to close the channel with an exception
                     // to cascade to and cancel all other routines before finally bubbling up
                     // to the main extractor loop.
-                    T.e("MediaStore extraction failed: $e")
+                    L.e("MediaStore extraction failed: $e")
                     incompleteSongs.close(
                         Exception("MediaStore extraction failed: ${e.stackTraceToString()}"))
                     return@async
@@ -442,13 +442,13 @@ constructor(
 
         // TagExtractor takes the incomplete songs from MediaStoreExtractor, parses up-to-date
         // metadata for them, and then forwards it to DeviceLibrary.
-        T.d("Starting tag extraction")
+        L.d("Starting tag extraction")
         val tagJob =
             scope.async {
                 try {
                     tagExtractor.consume(incompleteSongs, completeSongs)
                 } catch (e: Exception) {
-                    T.e("Tag extraction failed: $e")
+                    L.e("Tag extraction failed: $e")
                     completeSongs.close(
                         Exception("Tag extraction failed: ${e.stackTraceToString()}"))
                     return@async
@@ -458,7 +458,7 @@ constructor(
 
         // DeviceLibrary constructs music parent instances as song information is provided,
         // and then forwards them to the primary loading loop.
-        T.d("Starting DeviceLibrary creation")
+        L.d("Starting DeviceLibrary creation")
         val deviceLibraryJob =
             scope.async(Dispatchers.Default) {
                 val deviceLibrary =
@@ -466,7 +466,7 @@ constructor(
                         deviceLibraryFactory.create(
                             completeSongs, processedSongs, separators, nameFactory)
                     } catch (e: Exception) {
-                        T.e("DeviceLibrary creation failed: $e")
+                        L.e("DeviceLibrary creation failed: $e")
                         processedSongs.close(
                             Exception("DeviceLibrary creation failed: ${e.stackTraceToString()}"))
                         return@async Result.failure(e)
@@ -497,14 +497,14 @@ constructor(
         // that the short-circuit occurs so quickly as to break the UI.
         // TODO: Do not error, instead just wipe the entire library.
         if (rawSongs.isEmpty()) {
-            T.e("Music library was empty")
+            L.e("Music library was empty")
             throw NoMusicException()
         }
 
         // Now that the library is effectively loaded, we can start the finalization step, which
         // involves writing new cache information and creating more music data that is derived
         // from the library (e.g playlists)
-        T.d("Discovered ${rawSongs.size} songs, starting finalization")
+        L.d("Discovered ${rawSongs.size} songs, starting finalization")
 
         // We have no idea how long the cache will take, and the playlist construction
         // will be too fast to indicate, so switch back to an indeterminate state.
@@ -513,7 +513,7 @@ constructor(
         // The UserLibrary job is split into a query and construction step, a la MediaStore.
         // This way, we can start working on playlists even as DeviceLibrary might still be
         // working on parent information.
-        T.d("Starting UserLibrary query")
+        L.d("Starting UserLibrary query")
         val userLibraryQueryJob =
             scope.async {
                 val rawPlaylists =
@@ -530,20 +530,20 @@ constructor(
         // since the playlist read will probably take some time.
         // TODO: Read/write from the cache incrementally instead of in bulk?
         if (cache == null || cache.invalidated) {
-            T.d("Writing cache [why=${cache?.invalidated}]")
+            L.d("Writing cache [why=${cache?.invalidated}]")
             cacheRepository.writeCache(rawSongs)
         }
 
         // Create UserLibrary once we finally get the required components for it.
-        T.d("Awaiting UserLibrary query")
+        L.d("Awaiting UserLibrary query")
         val rawPlaylists = userLibraryQueryJob.await().getOrThrow()
-        T.d("Awaiting DeviceLibrary creation")
+        L.d("Awaiting DeviceLibrary creation")
         val deviceLibrary = deviceLibraryJob.await().getOrThrow()
-        T.d("Starting UserLibrary creation")
+        L.d("Starting UserLibrary creation")
         val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary, nameFactory)
 
         // Loading process is functionally done, indicate such
-        T.d(
+        L.d(
             "Successfully indexed music library [device=$deviceLibrary " +
                 "user=$userLibrary time=${System.currentTimeMillis() - start}]")
         emitIndexingCompletion(null)
@@ -559,7 +559,7 @@ constructor(
             deviceLibraryChanged = this.deviceLibrary != deviceLibrary
             userLibraryChanged = this.userLibrary != userLibrary
             if (!deviceLibraryChanged && !userLibraryChanged) {
-                T.d("Library has not changed, skipping update")
+                L.d("Library has not changed, skipping update")
                 return
             }
 
@@ -589,7 +589,7 @@ constructor(
         synchronized(this) {
             previousCompletedState = IndexingState.Completed(error)
             currentIndexingState = null
-            T.d("Dispatching completion state [error=$error]")
+            L.d("Dispatching completion state [error=$error]")
             for (listener in indexingListeners) {
                 listener.onIndexingStateChanged()
             }
@@ -599,7 +599,7 @@ constructor(
     @Synchronized
     private fun dispatchLibraryChange(device: Boolean, user: Boolean) {
         val changes = MusicRepository.Changes(device, user)
-        T.d("Dispatching library change [changes=$changes]")
+        L.d("Dispatching library change [changes=$changes]")
         for (listener in updateListeners) {
             listener.onMusicChanges(changes)
         }

@@ -21,6 +21,7 @@ package org.oxycblt.auxio.list.adapter
 import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import timber.log.Timber as L
 
 /**
  * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
@@ -57,7 +58,7 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
      * @param isPlaying Whether playback is ongoing or paused.
      */
     fun setPlaying(item: T?, isPlaying: Boolean) {
-        T.d("Updating playing item [old: $currentItem new: $item]")
+        L.d("Updating playing item [old: $currentItem new: $item]")
 
         var updatedItem = false
         if (currentItem != item) {
@@ -70,7 +71,7 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    T.w("oldItem was not in adapter data")
+                    L.w("oldItem was not in adapter data")
                 }
             }
 
@@ -80,7 +81,7 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    T.w("newItem was not in adapter data")
+                    L.w("newItem was not in adapter data")
                 }
             }
 
@@ -98,7 +99,7 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    T.w("newItem was not in adapter data")
+                    L.w("newItem was not in adapter data")
                 }
             }
         }

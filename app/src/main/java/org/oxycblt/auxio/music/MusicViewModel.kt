@@ -33,7 +33,7 @@ import org.oxycblt.auxio.music.external.ExportConfig
 import org.oxycblt.auxio.music.external.ExternalPlaylistManager
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewModel] providing data specific to the music loading process.
@@ -93,7 +93,7 @@ constructor(
                 deviceLibrary.artists.size,
                 deviceLibrary.genres.size,
                 deviceLibrary.songs.sumOf { it.durationMs })
-        T.d("Updated statistics: ${_statistics.value}")
+        L.d("Updated statistics: ${_statistics.value}")
     }
 
     override fun onIndexingStateChanged() {
@@ -102,13 +102,13 @@ constructor(
 
     /** Requests that the music library should be re-loaded while leveraging the cache. */
     fun refresh() {
-        T.d("Refreshing library")
+        L.d("Refreshing library")
         musicRepository.requestIndex(true)
     }
 
     /** Requests that the music library be re-loaded without the cache. */
     fun rescan() {
-        T.d("Rescanning library")
+        L.d("Rescanning library")
         musicRepository.requestIndex(false)
     }
 
@@ -126,7 +126,7 @@ constructor(
         reason: PlaylistDecision.New.Reason = PlaylistDecision.New.Reason.NEW
     ) {
         if (name != null) {
-            T.d("Creating $name with ${songs.size} songs]")
+            L.d("Creating $name with ${songs.size} songs]")
             viewModelScope.launch(Dispatchers.IO) {
                 musicRepository.createPlaylist(name, songs)
                 val message =
@@ -138,7 +138,7 @@ constructor(
                 _playlistMessage.put(message)
             }
         } else {
-            T.d("Launching creation dialog for ${songs.size} songs")
+            L.d("Launching creation dialog for ${songs.size} songs")
             _playlistDecision.put(PlaylistDecision.New(songs, null, reason))
         }
     }
@@ -157,7 +157,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val importedPlaylist = externalPlaylistManager.import(uri)
                 if (importedPlaylist == null) {
-                    T.e("Could not import playlist")
+                    L.e("Could not import playlist")
                     _playlistMessage.put(PlaylistMessage.ImportFailed)
                     return@launch
                 }
@@ -169,7 +169,7 @@ constructor(
                     }
 
                 if (songs.isEmpty()) {
-                    T.e("No songs found")
+                    L.e("No songs found")
                     _playlistMessage.put(PlaylistMessage.ImportFailed)
                     return@launch
                 }
@@ -193,7 +193,7 @@ constructor(
                 }
             }
         } else {
-            T.d("Launching import picker")
+            L.d("Launching import picker")
             _playlistDecision.put(PlaylistDecision.Import(target))
         }
     }
@@ -206,7 +206,7 @@ constructor(
      */
     fun exportPlaylist(playlist: Playlist, uri: Uri? = null, config: ExportConfig? = null) {
         if (uri != null && config != null) {
-            T.d("Exporting playlist to $uri")
+            L.d("Exporting playlist to $uri")
             viewModelScope.launch(Dispatchers.IO) {
                 if (externalPlaylistManager.export(playlist, uri, config)) {
                     _playlistMessage.put(PlaylistMessage.ExportSuccess)
@@ -215,7 +215,7 @@ constructor(
                 }
             }
         } else {
-            T.d("Launching export dialog")
+            L.d("Launching export dialog")
             _playlistDecision.put(PlaylistDecision.Export(playlist))
         }
     }
@@ -237,7 +237,7 @@ constructor(
         reason: PlaylistDecision.Rename.Reason = PlaylistDecision.Rename.Reason.ACTION
     ) {
         if (name != null) {
-            T.d("Renaming $playlist to $name")
+            L.d("Renaming $playlist to $name")
             viewModelScope.launch(Dispatchers.IO) {
                 musicRepository.renamePlaylist(playlist, name)
                 if (applySongs.isNotEmpty()) {
@@ -251,7 +251,7 @@ constructor(
                 _playlistMessage.put(message)
             }
         } else {
-            T.d("Launching rename dialog for $playlist")
+            L.d("Launching rename dialog for $playlist")
             _playlistDecision.put(PlaylistDecision.Rename(playlist, null, applySongs, reason))
         }
     }
@@ -266,13 +266,13 @@ constructor(
      */
     fun deletePlaylist(playlist: Playlist, rude: Boolean = false) {
         if (rude) {
-            T.d("Deleting $playlist")
+            L.d("Deleting $playlist")
             viewModelScope.launch(Dispatchers.IO) {
                 musicRepository.deletePlaylist(playlist)
                 _playlistMessage.put(PlaylistMessage.DeleteSuccess)
             }
         } else {
-            T.d("Launching deletion dialog for $playlist")
+            L.d("Launching deletion dialog for $playlist")
             _playlistDecision.put(PlaylistDecision.Delete(playlist))
         }
     }
@@ -284,7 +284,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(song: Song, playlist: Playlist? = null) {
-        T.d("Adding $song to playlist")
+        L.d("Adding $song to playlist")
         addToPlaylist(listOf(song), playlist)
     }
 
@@ -295,7 +295,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(album: Album, playlist: Playlist? = null) {
-        T.d("Adding $album to playlist")
+        L.d("Adding $album to playlist")
         addToPlaylist(listSettings.albumSongSort.songs(album.songs), playlist)
     }
 
@@ -306,7 +306,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(artist: Artist, playlist: Playlist? = null) {
-        T.d("Adding $artist to playlist")
+        L.d("Adding $artist to playlist")
         addToPlaylist(listSettings.artistSongSort.songs(artist.songs), playlist)
     }
 
@@ -317,7 +317,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(genre: Genre, playlist: Playlist? = null) {
-        T.d("Adding $genre to playlist")
+        L.d("Adding $genre to playlist")
         addToPlaylist(listSettings.genreSongSort.songs(genre.songs), playlist)
     }
 
@@ -329,13 +329,13 @@ constructor(
      */
     fun addToPlaylist(songs: List<Song>, playlist: Playlist? = null) {
         if (playlist != null) {
-            T.d("Adding ${songs.size} songs to $playlist")
+            L.d("Adding ${songs.size} songs to $playlist")
             viewModelScope.launch(Dispatchers.IO) {
                 musicRepository.addToPlaylist(songs, playlist)
                 _playlistMessage.put(PlaylistMessage.AddSuccess)
             }
         } else {
-            T.d("Launching addition dialog for songs=${songs.size}")
+            L.d("Launching addition dialog for songs=${songs.size}")
             _playlistDecision.put(PlaylistDecision.Add(songs))
         }
     }

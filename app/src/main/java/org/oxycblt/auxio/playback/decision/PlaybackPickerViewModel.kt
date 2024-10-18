@@ -27,7 +27,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * A [ViewModel] that stores the choices shown in the playback picker dialogs.
@@ -63,10 +63,10 @@ class PlaybackPickerViewModel @Inject constructor(private val musicRepository: M
      * @param uid The [Music.UID] of the item to show. Must be a [Song].
      */
     fun setPickerSongUid(uid: Music.UID) {
-        T.d("Opening picker for song $uid")
+        L.d("Opening picker for song $uid")
         _currentPickerSong.value = musicRepository.deviceLibrary?.findSong(uid)
         if (_currentPickerSong.value != null) {
-            T.w("Given song UID was invalid")
+            L.w("Given song UID was invalid")
         }
     }
 }

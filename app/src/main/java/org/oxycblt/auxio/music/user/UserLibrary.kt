@@ -26,7 +26,7 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.info.Name
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * Organized library information controlled by the user.
@@ -143,10 +143,10 @@ class UserLibraryFactoryImpl @Inject constructor(private val playlistDao: Playli
     override suspend fun query() =
         try {
             val rawPlaylists = playlistDao.readRawPlaylists()
-            T.d("Successfully read ${rawPlaylists.size} playlists")
+            L.d("Successfully read ${rawPlaylists.size} playlists")
             rawPlaylists
         } catch (e: Exception) {
-            T.e("Unable to read playlists: $e")
+            L.e("Unable to read playlists: $e")
             listOf()
         }
 
@@ -192,11 +192,11 @@ private class UserLibraryImpl(
 
         return try {
             playlistDao.insertPlaylist(rawPlaylist)
-            T.d("Successfully created playlist $name with ${songs.size} songs")
+            L.d("Successfully created playlist $name with ${songs.size} songs")
             playlistImpl
         } catch (e: Exception) {
-            T.e("Unable to create playlist $name with ${songs.size} songs")
-            T.e(e.stackTraceToString())
+            L.e("Unable to create playlist $name with ${songs.size} songs")
+            L.e(e.stackTraceToString())
             synchronized(this) { playlistMap.remove(playlistImpl.uid) }
             null
         }
@@ -211,11 +211,11 @@ private class UserLibraryImpl(
 
         return try {
             playlistDao.replacePlaylistInfo(PlaylistInfo(playlist.uid, name))
-            T.d("Successfully renamed $playlist to $name")
+            L.d("Successfully renamed $playlist to $name")
             true
         } catch (e: Exception) {
-            T.e("Unable to rename $playlist to $name: $e")
-            T.e(e.stackTraceToString())
+            L.e("Unable to rename $playlist to $name: $e")
+            L.e(e.stackTraceToString())
             synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
             false
         }
@@ -230,11 +230,11 @@ private class UserLibraryImpl(
 
         return try {
             playlistDao.deletePlaylist(playlist.uid)
-            T.d("Successfully deleted $playlist")
+            L.d("Successfully deleted $playlist")
             true
         } catch (e: Exception) {
-            T.e("Unable to delete $playlist: $e")
-            T.e(e.stackTraceToString())
+            L.e("Unable to delete $playlist: $e")
+            L.e(e.stackTraceToString())
             synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
             false
         }
@@ -249,11 +249,11 @@ private class UserLibraryImpl(
 
         return try {
             playlistDao.insertPlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
-            T.d("Successfully added ${songs.size} songs to $playlist")
+            L.d("Successfully added ${songs.size} songs to $playlist")
             true
         } catch (e: Exception) {
-            T.e("Unable to add ${songs.size}  songs to $playlist: $e")
-            T.e(e.stackTraceToString())
+            L.e("Unable to add ${songs.size}  songs to $playlist: $e")
+            L.e(e.stackTraceToString())
             synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
             false
         }
@@ -268,11 +268,11 @@ private class UserLibraryImpl(
 
         return try {
             playlistDao.replacePlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
-            T.d("Successfully rewrote $playlist with ${songs.size} songs")
+            L.d("Successfully rewrote $playlist with ${songs.size} songs")
             true
         } catch (e: Exception) {
-            T.e("Unable to rewrite $playlist with ${songs.size} songs: $e")
-            T.e(e.stackTraceToString())
+            L.e("Unable to rewrite $playlist with ${songs.size} songs: $e")
+            L.e(e.stackTraceToString())
             synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
             false
         }

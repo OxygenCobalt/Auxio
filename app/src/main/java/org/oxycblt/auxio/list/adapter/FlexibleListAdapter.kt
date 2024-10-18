@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executor
+import timber.log.Timber as L
 
 /**
  * A variant of ListDiffer with more flexible updates.
@@ -56,7 +57,7 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
         instructions: UpdateInstructions?,
         callback: (() -> Unit)? = null
     ) {
-        T.d("Updating list to ${newList.size} items with $instructions")
+        L.d("Updating list to ${newList.size} items with $instructions")
         differ.update(newList, instructions, callback)
     }
 }
@@ -170,7 +171,7 @@ private class FlexibleListDiffer<T>(
     ) {
         // fast simple remove all
         if (newList.isEmpty()) {
-            T.d("Short-circuiting diff to remove all")
+            L.d("Short-circuiting diff to remove all")
             val countRemoved = oldList.size
             currentList = emptyList()
             // notify last, after list is updated
@@ -181,7 +182,7 @@ private class FlexibleListDiffer<T>(
 
         // fast simple first insert
         if (oldList.isEmpty()) {
-            T.d("Short-circuiting diff to insert all")
+            L.d("Short-circuiting diff to insert all")
             currentList = newList
             // notify last, after list is updated
             updateCallback.onInserted(0, newList.size)
@@ -243,7 +244,7 @@ private class FlexibleListDiffer<T>(
 
             mainThreadExecutor.execute {
                 if (maxScheduledGeneration == runGeneration) {
-                    T.d("Applying calculated diff")
+                    L.d("Applying calculated diff")
                     currentList = newList
                     result.dispatchUpdatesTo(updateCallback)
                     callback?.invoke()

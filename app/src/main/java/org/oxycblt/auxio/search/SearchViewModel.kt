@@ -40,7 +40,7 @@ import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
-import timber.log.Timber as T
+import timber.log.Timber as L
 
 /**
  * An [ViewModel] that keeps performs search operations and tracks their results.
@@ -79,7 +79,7 @@ constructor(
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (changes.deviceLibrary || changes.userLibrary) {
-            T.d("Music changed, re-searching library")
+            L.d("Music changed, re-searching library")
             search(lastQuery)
         }
     }
@@ -98,13 +98,13 @@ constructor(
         val deviceLibrary = musicRepository.deviceLibrary
         val userLibrary = musicRepository.userLibrary
         if (query.isNullOrEmpty() || deviceLibrary == null || userLibrary == null) {
-            T.d("Cannot search for the current query, aborting")
+            L.d("Cannot search for the current query, aborting")
             _searchResults.value = listOf()
             return
         }
 
         // Searching is time-consuming, so do it in the background.
-        T.d("Searching music library for $query")
+        L.d("Searching music library for $query")
         currentSearchJob =
             viewModelScope.launch {
                 _searchResults.value =
@@ -122,7 +122,7 @@ constructor(
         val items =
             if (filter == null) {
                 // A nulled filter type means to not filter anything.
-                T.d("No filter specified, using entire library")
+                L.d("No filter specified, using entire library")
                 SearchEngine.Items(
                     deviceLibrary.songs,
                     deviceLibrary.albums,
@@ -130,7 +130,7 @@ constructor(
                     deviceLibrary.genres,
                     userLibrary.playlists)
             } else {
-                T.d("Filter specified, reducing library")
+                L.d("Filter specified, reducing library")
                 SearchEngine.Items(
                     songs = if (filter == MusicType.SONGS) deviceLibrary.songs else null,
                     albums = if (filter == MusicType.ALBUMS) deviceLibrary.albums else null,
@@ -143,13 +143,13 @@ constructor(
 
         return buildList {
             results.artists?.let {
-                T.d("Adding ${it.size} artists to search results")
+                L.d("Adding ${it.size} artists to search results")
                 val header = BasicHeader(R.string.lbl_artists)
                 add(header)
                 addAll(SORT.artists(it))
             }
             results.albums?.let {
-                T.d("Adding ${it.size} albums to search results")
+                L.d("Adding ${it.size} albums to search results")
                 val header = BasicHeader(R.string.lbl_albums)
                 if (isNotEmpty()) {
                     add(PlainDivider(header))
@@ -159,7 +159,7 @@ constructor(
                 addAll(SORT.albums(it))
             }
             results.playlists?.let {
-                T.d("Adding ${it.size} playlists to search results")
+                L.d("Adding ${it.size} playlists to search results")
                 val header = BasicHeader(R.string.lbl_playlists)
                 if (isNotEmpty()) {
                     add(PlainDivider(header))
@@ -169,7 +169,7 @@ constructor(
                 addAll(SORT.playlists(it))
             }
             results.genres?.let {
-                T.d("Adding ${it.size} genres to search results")
+                L.d("Adding ${it.size} genres to search results")
                 val header = BasicHeader(R.string.lbl_genres)
                 if (isNotEmpty()) {
                     add(PlainDivider(header))
@@ -179,7 +179,7 @@ constructor(
                 addAll(SORT.genres(it))
             }
             results.songs?.let {
-                T.d("Adding ${it.size} songs to search results")
+                L.d("Adding ${it.size} songs to search results")
                 val header = BasicHeader(R.string.lbl_songs)
                 if (isNotEmpty()) {
                     add(PlainDivider(header))
@@ -225,7 +225,7 @@ constructor(
                 R.id.option_filter_all -> null
                 else -> error("Invalid option ID provided")
             }
-        T.d("Updating filter type to $newFilter")
+        L.d("Updating filter type to $newFilter")
         searchSettings.filterTo = newFilter
         search(lastQuery)
     }
