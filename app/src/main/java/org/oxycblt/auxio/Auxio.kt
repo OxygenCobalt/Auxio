@@ -29,6 +29,7 @@ import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.UISettings
+import org.oxycblt.auxio.util.CopyleftNoticeTree
 import timber.log.Timber
 
 /**
@@ -45,7 +46,10 @@ class Auxio : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        if (BuildConfig.DEBUG) {
+        @Suppress("KotlinConstantConditions")
+        if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" && BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
+            Timber.plant(CopyleftNoticeTree())
+        } else if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
 
