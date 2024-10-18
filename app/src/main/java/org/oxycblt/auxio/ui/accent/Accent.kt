@@ -20,7 +20,7 @@ package org.oxycblt.auxio.ui.accent
 
 import android.os.Build
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.logW
+import timber.log.Timber as T
 
 private val accentNames =
     intArrayOf(
@@ -142,7 +142,7 @@ class Accent private constructor(val index: Int) {
          */
         fun from(index: Int): Accent {
             if (index !in 0 until MAX) {
-                logW("Accent is out of bounds [idx: $index]")
+                T.w("Accent is out of bounds [idx: $index]")
                 return Accent(DEFAULT)
             }
             return Accent(index)

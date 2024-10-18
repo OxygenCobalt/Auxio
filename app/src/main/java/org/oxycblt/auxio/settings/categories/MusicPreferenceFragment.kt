@@ -26,8 +26,8 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as T
 
 /**
  * "Content" settings.
@@ -40,7 +40,7 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_separators)) {
-            logD("Navigating to separator dialog")
+            T.d("Navigating to separator dialog")
             findNavController().navigateSafe(MusicPreferenceFragmentDirections.separatorsSettings())
         }
     }
@@ -48,10 +48,10 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
     override fun onSetupPreference(preference: Preference) {
         if (preference.key == getString(R.string.set_key_cover_mode) ||
             preference.key == getString(R.string.set_key_square_covers)) {
-            logD("Configuring cover mode setting")
+            T.d("Configuring cover mode setting")
             preference.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, _ ->
-                    logD("Cover mode changed, resetting image memory cache")
+                    T.d("Cover mode changed, resetting image memory cache")
                     imageLoader.memoryCache?.clear()
                     true
                 }

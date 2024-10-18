@@ -28,8 +28,8 @@ import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as T
 
 /**
  * Display preferences.
@@ -42,7 +42,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
-            logD("Navigating to accent dialog")
+            T.d("Navigating to accent dialog")
             findNavController().navigateSafe(UIPreferenceFragmentDirections.accentSettings())
         }
     }
@@ -50,25 +50,25 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     override fun onSetupPreference(preference: Preference) {
         when (preference.key) {
             getString(R.string.set_key_theme) -> {
-                logD("Configuring theme setting")
+                T.d("Configuring theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, value ->
-                        logD("Theme changed, recreating")
+                        T.d("Theme changed, recreating")
                         AppCompatDelegate.setDefaultNightMode(value as Int)
                         true
                     }
             }
             getString(R.string.set_key_accent) -> {
-                logD("Configuring accent setting")
+                T.d("Configuring accent setting")
                 preference.summary = getString(uiSettings.accent.name)
             }
             getString(R.string.set_key_black_theme) -> {
-                logD("Configuring black theme setting")
+                T.d("Configuring black theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, _ ->
                         val activity = requireActivity()
                         if (activity.isNight) {
-                            logD("Black theme changed in night mode, recreating")
+                            T.d("Black theme changed in night mode, recreating")
                             activity.recreate()
                         }
 

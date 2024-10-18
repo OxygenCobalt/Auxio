@@ -22,7 +22,7 @@ import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * A [PlayingIndicatorAdapter] that also supports indicating the selection status of a group of
@@ -55,7 +55,7 @@ abstract class SelectionIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
             // Nothing to do.
             return
         }
-        logD("Updating selection [old=${oldSelectedItems.size} new=${newSelectedItems.size}")
+        T.d("Updating selection [old=${oldSelectedItems.size} new=${newSelectedItems.size}")
 
         selectedItems = newSelectedItems
         for (i in currentList.indices) {

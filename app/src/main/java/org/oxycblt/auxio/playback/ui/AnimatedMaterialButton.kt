@@ -26,7 +26,7 @@ import com.google.android.material.R as MR
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.motion.MotionUtils
 import org.oxycblt.auxio.ui.RippleFixMaterialButton
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when
@@ -62,12 +62,12 @@ class AnimatedMaterialButton : RippleFixMaterialButton {
         val targetRadius = if (activated) 0.3f else 0.5f
         if (!isLaidOut) {
             // Not laid out, initialize it without animation before drawing.
-            logD("Not laid out, immediately updating corner radius")
+            T.d("Not laid out, immediately updating corner radius")
             updateCornerRadiusRatio(targetRadius)
             return
         }
 
-        logD("Starting corner radius animation")
+        T.d("Starting corner radius animation")
         animator?.cancel()
         animator =
             ValueAnimator.ofFloat(currentCornerRadiusRatio, targetRadius).apply {

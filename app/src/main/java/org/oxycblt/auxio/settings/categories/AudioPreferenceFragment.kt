@@ -22,8 +22,8 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as T
 
 /**
  * Audio settings interface.
@@ -34,7 +34,7 @@ class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) 
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_pre_amp)) {
-            logD("Navigating to pre-amp dialog")
+            T.d("Navigating to pre-amp dialog")
             findNavController().navigateSafe(AudioPreferenceFragmentDirections.preAmpSettings())
         }
     }

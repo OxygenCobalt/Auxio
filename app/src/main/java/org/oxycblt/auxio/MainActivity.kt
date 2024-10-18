@@ -33,9 +33,8 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import timber.log.Timber as T
 
 /**
  * Auxio's single [AppCompatActivity].
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupEdgeToEdge(binding.root)
-        logD("Activity created")
+        T.d("Activity created")
     }
 
     override fun onResume() {
@@ -91,10 +90,10 @@ class MainActivity : AppCompatActivity() {
         // Apply the color scheme. The black theme requires it's own set of themes since
         // it's not possible to modify the themes at run-time.
         if (isNight && uiSettings.useBlackTheme) {
-            logD("Applying black theme [accent ${uiSettings.accent}]")
+            T.d("Applying black theme [accent ${uiSettings.accent}]")
             setTheme(uiSettings.accent.blackTheme)
         } else {
-            logD("Applying normal theme [accent ${uiSettings.accent}]")
+            T.d("Applying normal theme [accent ${uiSettings.accent}]")
             setTheme(uiSettings.accent.theme)
         }
     }
@@ -121,7 +120,7 @@ class MainActivity : AppCompatActivity() {
     private fun startIntentAction(intent: Intent?): Boolean {
         if (intent == null) {
             // Nothing to do.
-            logD("No intent to handle")
+            T.d("No intent to handle")
             return false
         }
 
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity() {
             // This is because onStart can run multiple times, and thus we really don't
             // want to return false and override the original delayed action with a
             // RestoreState action.
-            logD("Already used this intent")
+            T.d("Already used this intent")
             return true
         }
         intent.putExtra(KEY_INTENT_USED, true)
@@ -140,11 +139,11 @@ class MainActivity : AppCompatActivity() {
                 Intent.ACTION_VIEW -> DeferredPlayback.Open(intent.data ?: return false)
                 Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> DeferredPlayback.ShuffleAll
                 else -> {
-                    logW("Unexpected intent ${intent.action}")
+                    T.w("Unexpected intent ${intent.action}")
                     return false
                 }
             }
-        logD("Translated intent to $action")
+        T.d("Translated intent to $action")
         playbackModel.playDeferred(action)
         return true
     }

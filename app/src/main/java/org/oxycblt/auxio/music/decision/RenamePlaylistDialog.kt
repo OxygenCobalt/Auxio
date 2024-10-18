@@ -32,8 +32,8 @@ import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * A dialog allowing the name of a new playlist to be chosen before committing it to the database.
@@ -94,7 +94,7 @@ class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNam
             val default =
                 pendingRenamePlaylist.template
                     ?: pendingRenamePlaylist.playlist.name.resolve(requireContext())
-            logD("Name input is not initialized, setting to $default")
+            T.d("Name input is not initialized, setting to $default")
             requireBinding().playlistName.setText(default)
             initializedField = true
         }

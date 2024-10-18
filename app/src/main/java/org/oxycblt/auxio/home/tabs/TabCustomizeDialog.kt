@@ -31,7 +31,7 @@ import org.oxycblt.auxio.databinding.DialogTabsBinding
 import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * A [ViewBindingMaterialDialogFragment] that allows the user to modify the home [Tab]
@@ -52,7 +52,7 @@ class TabCustomizeDialog :
         builder
             .setTitle(R.string.set_lib_tabs)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                logD("Committing tab changes")
+                T.d("Committing tab changes")
                 homeSettings.homeTabs = tabAdapter.tabs
             }
             .setNegativeButton(R.string.lbl_cancel, null)
@@ -99,7 +99,7 @@ class TabCustomizeDialog :
                 is Tab.Visible -> Tab.Invisible(old.type)
                 is Tab.Invisible -> Tab.Visible(old.type)
             }
-        logD("Flipping tab visibility [from: $old to: $new]")
+        T.d("Flipping tab visibility [from: $old to: $new]")
         tabAdapter.setTab(index, new)
 
         // Prevent the user from saving if all the tabs are Invisible, as that's an invalid state.

@@ -26,8 +26,8 @@ import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.IndexingProgress
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
+import timber.log.Timber as T
 
 /**
  * A dynamic [ForegroundServiceNotification] that shows the current music loading state.
@@ -66,7 +66,7 @@ class IndexingNotification(private val context: Context) :
                 // Indeterminate state, use a vaguer description and in-determinate progress.
                 // These events are not very frequent, and thus we don't need to safeguard
                 // against rate limiting.
-                logD("Updating state to $progress")
+                T.d("Updating state to $progress")
                 lastUpdateTime = -1
                 setContentText(context.getString(R.string.lng_indexing))
                 setProgress(0, 0, true)
@@ -81,7 +81,7 @@ class IndexingNotification(private val context: Context) :
                     return false
                 }
                 lastUpdateTime = SystemClock.elapsedRealtime()
-                logD("Updating state to $progress")
+                T.d("Updating state to $progress")
                 setContentText(
                     context.getString(R.string.fmt_indexing, progress.current, progress.total))
                 setProgress(progress.total, progress.current, false)

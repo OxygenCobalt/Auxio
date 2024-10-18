@@ -39,7 +39,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * An adapter that displays search results.
@@ -75,7 +75,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        logD(position)
+        T.d(position)
         when (val item = getItem(position)) {
             is Song -> (holder as SongViewHolder).bind(item, listener)
             is Album -> (holder as AlbumViewHolder).bind(item, listener)

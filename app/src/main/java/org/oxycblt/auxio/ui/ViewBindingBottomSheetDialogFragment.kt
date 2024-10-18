@@ -31,8 +31,8 @@ import com.google.android.material.bottomsheet.BackportBottomSheetDialog
 import com.google.android.material.bottomsheet.BackportBottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.util.getDimenPixels
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * A lifecycle-aware [DialogFragment] that automatically manages the [ViewBinding] lifecycle as a
@@ -98,7 +98,7 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onBindingCreated(requireBinding(), savedInstanceState)
-        logD("Fragment created")
+        T.d("Fragment created")
     }
 
     final override fun onDestroyView() {
@@ -106,7 +106,7 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
         onDestroyBinding(unlikelyToBeNull(_binding))
         // Clear binding
         _binding = null
-        logD("Fragment destroyed")
+        T.d("Fragment destroyed")
     }
 
     private inner class TweakedBottomSheetDialog

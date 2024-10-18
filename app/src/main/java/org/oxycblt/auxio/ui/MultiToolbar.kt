@@ -31,7 +31,7 @@ import androidx.core.view.isInvisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.R as MR
 import com.google.android.material.motion.MotionUtils
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 class MultiToolbar
 @JvmOverloads
@@ -67,7 +67,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     fun setVisible(@IdRes viewId: Int): Boolean {
         val index = children.indexOfFirst { it.id == viewId }
         if (index == currentlyVisible) return false
-        logD("Switching toolbar visibility from $currentlyVisible -> $index")
+        T.d("Switching toolbar visibility from $currentlyVisible -> $index")
         return animateToolbarsVisibility(currentlyVisible, index).also { currentlyVisible = index }
     }
 
@@ -88,7 +88,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (!isLaidOut) {
             // Not laid out, just change it immediately while are not shown to the user.
             // This is an initialization, so we return false despite changing.
-            logD("Not laid out, immediately updating visibility")
+            T.d("Not laid out, immediately updating visibility")
             fromView.apply {
                 alpha = 0f
                 isInvisible = true
@@ -100,7 +100,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             return false
         }
 
-        logD("Changing toolbar visibility $from -> 0f, $to -> 1f")
+        T.d("Changing toolbar visibility $from -> 0f, $to -> 1f")
         animator?.cancel()
         val outAnimator =
             ValueAnimator.ofFloat(fromView.alpha, 0f).apply {

@@ -31,8 +31,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import timber.log.Timber as T
 
 class MusicServiceFragment
 @Inject
@@ -124,11 +123,11 @@ constructor(
         try {
             val result = body()
             if (result == null) {
-                logW("Result is null")
+                T.w("Result is null")
             }
             sendResult(result)
         } catch (e: Exception) {
-            logD("Error while dispatching: $e")
+            T.d("Error while dispatching: $e")
             sendResult(null)
         }
     }
@@ -139,11 +138,11 @@ constructor(
             try {
                 val result = body()
                 if (result == null) {
-                    logW("Result is null")
+                    T.w("Result is null")
                 }
                 sendResult(result)
             } catch (e: Exception) {
-                logD("Error while dispatching: $e")
+                T.d("Error while dispatching: $e")
                 sendResult(null)
             }
         }

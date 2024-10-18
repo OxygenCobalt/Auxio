@@ -49,11 +49,10 @@ import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * A [ListFragment] that shows information for a particular [Playlist].
@@ -82,11 +81,11 @@ class PlaylistDetailFragment :
         getContentLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
                 if (uri == null) {
-                    logW("No URI returned from file picker")
+                    T.w("No URI returned from file picker")
                     return@registerForActivityResult
                 }
 
-                logD("Received playlist URI $uri")
+                T.d("Received playlist URI $uri")
                 musicModel.importPlaylist(uri, pendingImportTarget)
             }
 
@@ -194,7 +193,7 @@ class PlaylistDetailFragment :
             getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
 
         if (editedPlaylist != null) {
-            logD("Binding edited playlist image")
+            T.d("Binding edited playlist image")
             binding.detailCover.bind(
                 editedPlaylist,
                 binding.context.getString(R.string.desc_playlist_image, playlist.name),
@@ -223,7 +222,7 @@ class PlaylistDetailFragment :
 
         val playable = playlist.songs.isNotEmpty() && editedPlaylist == null
         if (!playable) {
-            logD("Playlist is being edited or is empty, disabling playback options")
+            T.d("Playlist is being edited or is empty, disabling playback options")
         }
 
         binding.detailPlayButton?.apply {
@@ -249,7 +248,7 @@ class PlaylistDetailFragment :
         listModel.dropSelection()
 
         if (editedPlaylist != null) {
-            logD("Updating save button state")
+            T.d("Updating save button state")
             requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).apply {
                 isEnabled = editedPlaylist != detailModel.currentPlaylist.value?.songs
             }
@@ -261,38 +260,38 @@ class PlaylistDetailFragment :
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
-                logD("Navigating to ${show.song}")
+                T.d("Navigating to ${show.song}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showSong(show.song.uid))
             }
             is Show.SongAlbumDetails -> {
-                logD("Navigating to the album of ${show.song}")
+                T.d("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.song.album.uid))
             }
             is Show.AlbumDetails -> {
-                logD("Navigating to ${show.album}")
+                T.d("Navigating to ${show.album}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.album.uid))
             }
             is Show.ArtistDetails -> {
-                logD("Navigating to ${show.artist}")
+                T.d("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                logD("Navigating to artist choices for ${show.song}")
+                T.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                logD("Navigating to artist choices for ${show.album}")
+                T.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(
                         PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.PlaylistDetails -> {
-                logD("Navigated to this playlist")
+                T.d("Navigated to this playlist")
                 detailModel.toShow.consume()
             }
             is Show.GenreDetails -> {
@@ -333,7 +332,7 @@ class PlaylistDetailFragment :
         val directions =
             when (decision) {
                 is PlaylistDecision.Import -> {
-                    logD("Importing playlist")
+                    T.d("Importing playlist")
                     pendingImportTarget = decision.target
                     requireNotNull(getContentLauncher) {
                             "Content picker launcher was not available"
@@ -343,7 +342,7 @@ class PlaylistDetailFragment :
                     return
                 }
                 is PlaylistDecision.Rename -> {
-                    logD("Renaming ${decision.playlist}")
+                    T.d("Renaming ${decision.playlist}")
                     PlaylistDetailFragmentDirections.renamePlaylist(
                         decision.playlist.uid,
                         decision.template,
@@ -351,15 +350,15 @@ class PlaylistDetailFragment :
                         decision.reason)
                 }
                 is PlaylistDecision.Export -> {
-                    logD("Exporting ${decision.playlist}")
+                    T.d("Exporting ${decision.playlist}")
                     PlaylistDetailFragmentDirections.exportPlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Delete -> {
-                    logD("Deleting ${decision.playlist}")
+                    T.d("Deleting ${decision.playlist}")
                     PlaylistDetailFragmentDirections.deletePlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Add -> {
-                    logD("Adding ${decision.songs.size} songs to a playlist")
+                    T.d("Adding ${decision.songs.size} songs to a playlist")
                     PlaylistDetailFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -385,11 +384,11 @@ class PlaylistDetailFragment :
         val directions =
             when (decision) {
                 is PlaybackDecision.PlayFromArtist -> {
-                    logD("Launching play from artist dialog for $decision")
+                    T.d("Launching play from artist dialog for $decision")
                     PlaylistDetailFragmentDirections.playFromArtist(decision.song.uid)
                 }
                 is PlaybackDecision.PlayFromGenre -> {
-                    logD("Launching play from artist dialog for $decision")
+                    T.d("Launching play from artist dialog for $decision")
                     PlaylistDetailFragmentDirections.playFromGenre(decision.song.uid)
                 }
             }
@@ -400,15 +399,15 @@ class PlaylistDetailFragment :
         val id =
             when {
                 detailModel.editedPlaylist.value != null -> {
-                    logD("Currently editing playlist, showing edit toolbar")
+                    T.d("Currently editing playlist, showing edit toolbar")
                     R.id.detail_edit_toolbar
                 }
                 listModel.selected.value.isNotEmpty() -> {
-                    logD("Currently selecting, showing selection toolbar")
+                    T.d("Currently selecting, showing selection toolbar")
                     R.id.detail_selection_toolbar
                 }
                 else -> {
-                    logD("Using normal toolbar")
+                    T.d("Using normal toolbar")
                     R.id.detail_normal_toolbar
                 }
             }

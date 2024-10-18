@@ -20,6 +20,7 @@ package org.oxycblt.auxio.list.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.list.Item
+import timber.log.Timber as T
 
 /**
  * A [DiffUtil.ItemCallback] that automatically implements the [areItemsTheSame] method. Use this

@@ -32,8 +32,8 @@ import org.oxycblt.auxio.music.dirs.MusicDirectories
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
 import org.oxycblt.auxio.music.metadata.transformPositionField
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.sendWithTimeout
+import timber.log.Timber as T
 
 /**
  * The layer that loads music from the [MediaStore] database. This is an intermediate step in the
@@ -127,7 +127,7 @@ private class MediaStoreExtractorImpl(
 
         // Filter out audio that is not music, if enabled.
         if (constraints.excludeNonMusic) {
-            logD("Excluding non-music")
+            T.d("Excluding non-music")
             uniSelector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
         }
 
@@ -136,10 +136,10 @@ private class MediaStoreExtractorImpl(
             val pathSelector =
                 mediaStorePathInterpreterFactory.createSelector(constraints.musicDirs.dirs)
             if (pathSelector != null) {
-                logD("Must select for directories")
+                T.d("Must select for directories")
                 uniSelector += " AND "
                 if (!constraints.musicDirs.shouldInclude) {
-                    logD("Excluding directories in selector")
+                    T.d("Excluding directories in selector")
                     // Without a NOT, the query will be restricted to the specified paths, resulting
                     // in the "Include" mode. With a NOT, the specified paths will not be included,
                     // resulting in the "Exclude" mode.
@@ -151,7 +151,7 @@ private class MediaStoreExtractorImpl(
         }
 
         // Now we can actually query MediaStore.
-        logD(
+        T.d(
             "Starting song query [proj=${projection.toList()}, selector=$uniSelector, args=$uniArgs]")
         val cursor =
             context.contentResolverSafe.safeQuery(
@@ -159,7 +159,7 @@ private class MediaStoreExtractorImpl(
                 projection,
                 uniSelector,
                 uniArgs.toTypedArray())
-        logD("Successfully queried for ${cursor.count} songs")
+        T.d("Successfully queried for ${cursor.count} songs")
 
         val genreNamesMap = mutableMapOf<Long, String>()
 
@@ -194,8 +194,8 @@ private class MediaStoreExtractorImpl(
                 }
             }
 
-        logD("Read ${genreNamesMap.values.distinct().size} genres from MediaStore")
-        logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
+        T.d("Read ${genreNamesMap.values.distinct().size} genres from MediaStore")
+        T.d("Finished initialization in ${System.currentTimeMillis() - start}ms")
         return QueryImpl(
             cursor,
             mediaStorePathInterpreterFactory.wrap(cursor),

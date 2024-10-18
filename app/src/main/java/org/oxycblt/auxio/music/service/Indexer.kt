@@ -33,7 +33,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 class Indexer
 private constructor(
@@ -117,7 +117,7 @@ private constructor(
             }
         } else if (musicSettings.shouldBeObserving) {
             // Not observing and done loading, exit foreground.
-            logD("Exiting foreground")
+            T.d("Exiting foreground")
             post(observingNotification)
         } else {
             post(null)
@@ -125,7 +125,7 @@ private constructor(
     }
 
     override fun requestIndex(withCache: Boolean) {
-        logD("Starting new indexing job (previous=${currentIndexJob?.hashCode()})")
+        T.d("Starting new indexing job (previous=${currentIndexJob?.hashCode()})")
         // Cancel the previous music loading job.
         currentIndexJob?.cancel()
         // Start a new music loading job on a co-routine.
@@ -146,7 +146,7 @@ private constructor(
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary ?: return
-        logD("Music changed, updating shared objects")
+        T.d("Music changed, updating shared objects")
         // Wipe possibly-invalidated outdated covers
         imageLoader.memoryCache?.clear()
         // Clear invalid models from PlaybackStateManager. This is not connected
@@ -175,7 +175,7 @@ private constructor(
         // setting changed. In such a case, the state will still be updated when
         // the music loading process ends.
         if (musicRepository.indexingState == null) {
-            logD("Not loading, updating idle session")
+            T.d("Not loading, updating idle session")
             foregroundListener.updateForeground(ForegroundListener.Change.INDEXER)
         }
     }
@@ -184,7 +184,7 @@ private constructor(
     private fun PowerManager.WakeLock.acquireSafe() {
         // Avoid unnecessary acquire calls.
         if (!wakeLock.isHeld) {
-            logD("Acquiring wake lock")
+            T.d("Acquiring wake lock")
             // Time out after a minute, which is the average music loading time for a medium-sized
             // library. If this runs out, we will re-request the lock, and if music loading is
             // shorter than the timeout, it will be released early.
@@ -196,7 +196,7 @@ private constructor(
     private fun PowerManager.WakeLock.releaseSafe() {
         // Avoid unnecessary release calls.
         if (wakeLock.isHeld) {
-            logD("Releasing wake lock")
+            T.d("Releasing wake lock")
             release()
         }
     }

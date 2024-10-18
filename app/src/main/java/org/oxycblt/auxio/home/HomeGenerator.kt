@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 interface HomeGenerator {
     fun attach()
@@ -89,7 +89,7 @@ private class HomeGeneratorImpl(
     override fun onHideCollaboratorsChanged() {
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
-        logD("Collaborator setting changed, forwarding update")
+        T.d("Collaborator setting changed, forwarding update")
         onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
     }
 
@@ -121,7 +121,7 @@ private class HomeGeneratorImpl(
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary
         if (changes.deviceLibrary && deviceLibrary != null) {
-            logD("Refreshing library")
+            T.d("Refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
             invalidator.invalidateMusic(MusicType.SONGS, UpdateInstructions.Diff)
@@ -132,7 +132,7 @@ private class HomeGeneratorImpl(
 
         val userLibrary = musicRepository.userLibrary
         if (changes.userLibrary && userLibrary != null) {
-            logD("Refreshing playlists")
+            T.d("Refreshing playlists")
             invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Diff)
         }
     }

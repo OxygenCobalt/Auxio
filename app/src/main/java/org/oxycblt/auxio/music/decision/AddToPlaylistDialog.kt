@@ -36,8 +36,8 @@ import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as T
 
 /**
  * A dialog that allows the user to pick a specific playlist to add song(s) to.
@@ -105,7 +105,7 @@ class AddToPlaylistDialog :
 
     private fun updatePendingSongs(songs: List<Song>?) {
         if (songs == null) {
-            logD("No songs to show choices for, navigating away")
+            T.d("No songs to show choices for, navigating away")
             findNavController().navigateUp()
         }
     }

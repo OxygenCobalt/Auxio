@@ -53,7 +53,7 @@ import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logE
+import timber.log.Timber as T
 
 /**
  * Provides functionality for extracting album cover information. Meant for internal use only.
@@ -153,7 +153,7 @@ constructor(
                 }
             }
         } catch (e: Exception) {
-            logE("Unable to extract album cover due to an error: $e")
+            T.e("Unable to extract album cover due to an error: $e")
             null
         }
 

@@ -24,7 +24,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * User configuration specific to image loading.
@@ -58,7 +58,7 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
         // Show album covers and Ignore MediaStore covers were unified in 3.0.0
         if (sharedPreferences.contains(OLD_KEY_SHOW_COVERS) ||
             sharedPreferences.contains(OLD_KEY_QUALITY_COVERS)) {
-            logD("Migrating cover settings")
+            T.d("Migrating cover settings")
 
             val mode =
                 when {
@@ -79,7 +79,7 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
     override fun onSettingChanged(key: String, listener: ImageSettings.Listener) {
         if (key == getString(R.string.set_key_cover_mode) ||
             key == getString(R.string.set_key_square_covers)) {
-            logD("Dispatching image setting change")
+            T.d("Dispatching image setting change")
             listener.onImageSettingsChanged()
         }
     }

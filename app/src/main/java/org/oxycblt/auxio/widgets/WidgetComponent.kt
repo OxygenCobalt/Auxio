@@ -37,7 +37,7 @@ import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getDimenPixels
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * A component that manages the "Now Playing" state. This is kept separate from the [WidgetProvider]
@@ -77,7 +77,7 @@ private constructor(
     fun update() {
         val song = playbackManager.currentSong
         if (song == null) {
-            logD("No song, resetting widget")
+            T.d("No song, resetting widget")
             widgetProvider.update(context, uiSettings, null)
             return
         }
@@ -87,7 +87,7 @@ private constructor(
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.isShuffled
 
-        logD("Updating widget with new playback state")
+        T.d("Updating widget with new playback state")
         bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
@@ -95,15 +95,15 @@ private constructor(
                     val cornerRadius =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             // Android 12, always round the cover with the widget's inner radius
-                            logD("Using android 12 corner radius")
+                            T.d("Using android 12 corner radius")
                             context.getDimenPixels(android.R.dimen.system_app_widget_inner_radius)
                         } else if (uiSettings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
-                            logD("Using default corner radius")
+                            T.d("Using default corner radius")
                             context.getDimenPixels(R.dimen.m3_shape_corners_large)
                         } else {
                             // User did not enable round mode.
-                            logD("Using no corner radius")
+                            T.d("Using no corner radius")
                             0
                         }
 
@@ -124,7 +124,7 @@ private constructor(
 
                 override fun onCompleted(bitmap: Bitmap?) {
                     val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
-                    logD("Bitmap loaded, uploading state $state")
+                    T.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }
             })

@@ -37,7 +37,7 @@ import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * The ViewModel for managing the tab data and lists of the home view.
@@ -249,7 +249,7 @@ constructor(
      * @param pagerPos The new position of the ViewPager2 instance.
      */
     fun synchronizeTabPosition(pagerPos: Int) {
-        logD("Updating current tab to ${currentTabTypes[pagerPos]}")
+        T.d("Updating current tab to ${currentTabTypes[pagerPos]}")
         _currentTabType.value = currentTabTypes[pagerPos]
     }
 
@@ -259,7 +259,7 @@ constructor(
      * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
      */
     fun setFastScrolling(isFastScrolling: Boolean) {
-        logD("Updating fast scrolling state: $isFastScrolling")
+        T.d("Updating fast scrolling state: $isFastScrolling")
         _isFastScrolling.value = isFastScrolling
     }
 

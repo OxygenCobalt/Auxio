@@ -22,8 +22,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
+import timber.log.Timber as T
 
 /**
  * Manages the persisted playback state in a structured manner.
@@ -60,8 +59,8 @@ constructor(
             heapItems = queueDao.getHeap()
             mappingItems = queueDao.getShuffledMapping()
         } catch (e: Exception) {
-            logE("Unable read playback state")
-            logE(e.stackTraceToString())
+            T.e("Unable read playback state")
+            T.e(e.stackTraceToString())
             return null
         }
 
@@ -85,12 +84,12 @@ constructor(
             queueDao.nukeHeap()
             queueDao.nukeShuffledMapping()
         } catch (e: Exception) {
-            logE("Unable to clear previous state")
-            logE(e.stackTraceToString())
+            T.e("Unable to clear previous state")
+            T.e(e.stackTraceToString())
             return false
         }
 
-        logD("Successfully cleared previous state")
+        T.d("Successfully cleared previous state")
         if (state != null) {
             // Transform saved state into raw state, which can then be written to the database.
             val playbackState =
@@ -114,12 +113,12 @@ constructor(
                 queueDao.insertHeap(heap)
                 queueDao.insertShuffledMapping(shuffledMapping)
             } catch (e: Exception) {
-                logE("Unable to write new state")
-                logE(e.stackTraceToString())
+                T.e("Unable to write new state")
+                T.e(e.stackTraceToString())
                 return false
             }
 
-            logD("Successfully wrote new state")
+            T.d("Successfully wrote new state")
         }
 
         return true

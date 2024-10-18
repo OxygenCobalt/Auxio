@@ -26,7 +26,7 @@ import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * [RecyclerView.Adapter] that manages a list of [Path] music directory instances.
@@ -55,7 +55,7 @@ class DirectoryAdapter(private val listener: Listener) :
      */
     fun add(path: Path) {
         if (_dirs.contains(path)) return
-        logD("Adding $path")
+        T.d("Adding $path")
         _dirs.add(path)
         notifyItemInserted(_dirs.lastIndex)
     }
@@ -66,7 +66,7 @@ class DirectoryAdapter(private val listener: Listener) :
      * @param path The [Path] instances to add.
      */
     fun addAll(path: List<Path>) {
-        logD("Adding ${path.size} directories")
+        T.d("Adding ${path.size} directories")
         val oldLastIndex = path.lastIndex
         _dirs.addAll(path)
         notifyItemRangeInserted(oldLastIndex, path.size)
@@ -78,7 +78,7 @@ class DirectoryAdapter(private val listener: Listener) :
      * @param path The [Path] to remove. Must exist in the list.
      */
     fun remove(path: Path) {
-        logD("Removing $path")
+        T.d("Removing $path")
         val idx = _dirs.indexOf(path)
         _dirs.removeAt(idx)
         notifyItemRemoved(idx)

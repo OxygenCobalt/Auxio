@@ -20,8 +20,7 @@ package org.oxycblt.auxio.music.cache
 
 import javax.inject.Inject
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
+import timber.log.Timber as T
 
 /**
  * A repository allowing access to cached metadata obtained in prior music loading operations.
@@ -51,11 +50,11 @@ class CacheRepositoryImpl @Inject constructor(private val cachedSongsDao: Cached
             // Faster to load the whole database into memory than do a query on each
             // populate call.
             val songs = cachedSongsDao.readSongs()
-            logD("Successfully read ${songs.size} songs from cache")
+            T.d("Successfully read ${songs.size} songs from cache")
             CacheImpl(songs)
         } catch (e: Exception) {
-            logE("Unable to load cache database.")
-            logE(e.stackTraceToString())
+            T.e("Unable to load cache database.")
+            T.e(e.stackTraceToString())
             null
         }
 
@@ -63,12 +62,12 @@ class CacheRepositoryImpl @Inject constructor(private val cachedSongsDao: Cached
         try {
             // Still write out whatever data was extracted.
             cachedSongsDao.nukeSongs()
-            logD("Successfully deleted old cache")
+            T.d("Successfully deleted old cache")
             cachedSongsDao.insertSongs(rawSongs.map(CachedSong::fromRaw))
-            logD("Successfully wrote ${rawSongs.size} songs to cache")
+            T.d("Successfully wrote ${rawSongs.size} songs to cache")
         } catch (e: Exception) {
-            logE("Unable to save cache database.")
-            logE(e.stackTraceToString())
+            T.e("Unable to save cache database.")
+            T.e(e.stackTraceToString())
         }
     }
 }

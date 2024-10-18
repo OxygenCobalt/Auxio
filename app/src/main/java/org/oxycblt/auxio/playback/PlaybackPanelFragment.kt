@@ -43,9 +43,9 @@ import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import timber.log.Timber as T
 
 /**
  * A [ViewBindingFragment] more information about the currently playing song, alongside all
@@ -136,7 +136,7 @@ class PlaybackPanelFragment :
 
     override fun onStart() {
         super.onStart()
-        logD(requireBinding().playbackCover.width)
+        T.d(requireBinding().playbackCover.width)
         playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
         requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
     }
@@ -180,7 +180,7 @@ class PlaybackPanelFragment :
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_open_equalizer) {
             // Launch the system equalizer app, if possible.
-            logD("Launching equalizer")
+            T.d("Launching equalizer")
             val equalizerIntent =
                 Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                     // Provide audio session ID so the equalizer can show options for this app
@@ -221,7 +221,7 @@ class PlaybackPanelFragment :
 
         val binding = requireBinding()
         val context = requireContext()
-        logD("Updating song display: $song")
+        T.d("Updating song display: $song")
         binding.playbackCover.bind(song)
         binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)

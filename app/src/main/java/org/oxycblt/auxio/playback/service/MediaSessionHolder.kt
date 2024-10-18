@@ -47,9 +47,9 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
+import timber.log.Timber as T
 
 /**
  * A component that mirrors the current playback state into the [MediaSessionCompat] and
@@ -210,10 +210,10 @@ private constructor(
      *   playback is currently occuring from all songs.
      */
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
-        logD("Updating media metadata to $song with $parent")
+        T.d("Updating media metadata to $song with $parent")
         if (song == null) {
             // Nothing playing, reset the MediaSession and close the notification.
-            logD("Nothing playing, resetting media session")
+            T.d("Nothing playing, resetting media session")
             mediaSession.setMetadata(emptyMetadata)
             return
         }
@@ -252,15 +252,15 @@ private constructor(
                     MediaSessionUID.SingleItem(song.album.uid).toString())
         // These fields are nullable and so we must check first before adding them to the fields.
         song.track?.let {
-            logD("Adding track information")
+            T.d("Adding track information")
             builder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, it.toLong())
         }
         song.disc?.let {
-            logD("Adding disc information")
+            T.d("Adding disc information")
             builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.number.toLong())
         }
         song.date?.let {
-            logD("Adding date information")
+            T.d("Adding date information")
             builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString())
             builder.putLong(MediaMetadataCompat.METADATA_KEY_YEAR, it.year.toLong())
         }
@@ -272,7 +272,7 @@ private constructor(
             song,
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
-                    logD("Bitmap loaded, applying media session and posting notification")
+                    T.d("Bitmap loaded, applying media session and posting notification")
                     if (bitmap != null) {
                         builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
                         builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
@@ -300,13 +300,13 @@ private constructor(
                 // playback state.
                 MediaSessionCompat.QueueItem(description, i.toLong())
             }
-        logD("Uploading ${queueItems.size} songs to MediaSession queue")
+        T.d("Uploading ${queueItems.size} songs to MediaSession queue")
         mediaSession.setQueue(queueItems)
     }
 
     /** Invalidate the current [MediaSessionCompat]'s [PlaybackStateCompat]. */
     private fun invalidateSessionState() {
-        logD("Updating media session playback state")
+        T.d("Updating media session playback state")
 
         val state =
             // InternalPlayer.State handles position/state information.
@@ -322,7 +322,7 @@ private constructor(
         val secondaryAction =
             when (playbackSettings.notificationAction) {
                 ActionMode.SHUFFLE -> {
-                    logD("Using shuffle MediaSession action")
+                    T.d("Using shuffle MediaSession action")
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackActions.ACTION_INVERT_SHUFFLE,
                         context.getString(R.string.desc_shuffle),
@@ -333,7 +333,7 @@ private constructor(
                         })
                 }
                 else -> {
-                    logD("Using repeat mode MediaSession action")
+                    T.d("Using repeat mode MediaSession action")
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackActions.ACTION_INC_REPEAT_MODE,
                         context.getString(R.string.desc_change_repeat),
@@ -356,22 +356,22 @@ private constructor(
 
     /** Invalidate the "secondary" action (i.e shuffle/repeat mode). */
     private fun invalidateSecondaryAction() {
-        logD("Invalidating secondary action")
+        T.d("Invalidating secondary action")
         invalidateSessionState()
 
         when (playbackSettings.notificationAction) {
             ActionMode.SHUFFLE -> {
-                logD("Using shuffle notification action")
+                T.d("Using shuffle notification action")
                 _notification.updateShuffled(playbackManager.isShuffled)
             }
             else -> {
-                logD("Using repeat mode notification action")
+                T.d("Using repeat mode notification action")
                 _notification.updateRepeatMode(playbackManager.repeatMode)
             }
         }
 
         if (!bitmapProvider.isBusy) {
-            logD("Not loading a bitmap, post the notification")
+            T.d("Not loading a bitmap, post the notification")
             foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
         }
     }
@@ -423,7 +423,7 @@ private class PlaybackNotification(
      * @param metadata The [MediaMetadataCompat] to display in this notification.
      */
     fun updateMetadata(metadata: MediaMetadataCompat) {
-        logD("Updating shown metadata")
+        T.d("Updating shown metadata")
         setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
         setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
@@ -436,7 +436,7 @@ private class PlaybackNotification(
      * @param isPlaying Whether playback should be indicated as ongoing or paused.
      */
     fun updatePlaying(isPlaying: Boolean) {
-        logD("Updating playing state: $isPlaying")
+        T.d("Updating playing state: $isPlaying")
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
@@ -446,7 +446,7 @@ private class PlaybackNotification(
      * @param repeatMode The current [RepeatMode].
      */
     fun updateRepeatMode(repeatMode: RepeatMode) {
-        logD("Applying repeat mode action: $repeatMode")
+        T.d("Applying repeat mode action: $repeatMode")
         mActions[0] = buildRepeatAction(context, repeatMode)
     }
 
@@ -456,7 +456,7 @@ private class PlaybackNotification(
      * @param isShuffled Whether the queue is currently shuffled or not.
      */
     fun updateShuffled(isShuffled: Boolean) {
-        logD("Applying shuffle action: $isShuffled")
+        T.d("Applying shuffle action: $isShuffled")
         mActions[0] = buildShuffleAction(context, isShuffled)
     }
 

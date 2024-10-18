@@ -25,9 +25,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.logW
+import timber.log.Timber as T
 
 /**
  * The properties of a [Song]'s file.
@@ -75,8 +73,8 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
             // Can feasibly fail with invalid file formats. Note that this isn't considered
             // an error condition in the UI, as there is still plenty of other song information
             // that we can show.
-            logW("Unable to extract song attributes.")
-            logW(e.stackTraceToString())
+            T.w("Unable to extract song attributes.")
+            T.w(e.stackTraceToString())
             return AudioProperties(null, null, song.mimeType)
         }
 
@@ -92,7 +90,7 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
                 // Convert bytes-per-second to kilobytes-per-second.
                 format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000
             } catch (e: NullPointerException) {
-                logD("Unable to extract bit rate field")
+                T.d("Unable to extract bit rate field")
                 null
             }
 
@@ -100,7 +98,7 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
             try {
                 format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
             } catch (e: NullPointerException) {
-                logE("Unable to extract sample rate field")
+                T.e("Unable to extract sample rate field")
                 null
             }
 
@@ -110,13 +108,13 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
             try {
                 format.getString(MediaFormat.KEY_MIME)
             } catch (e: NullPointerException) {
-                logE("Unable to extract mime type field")
+                T.e("Unable to extract mime type field")
                 null
             }
 
         extractor.release()
 
-        logD("Finished extracting audio properties")
+        T.d("Finished extracting audio properties")
 
         return AudioProperties(
             bitrate,

@@ -28,7 +28,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.fs.contentResolverSafe
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * A [ContentObserver] that observes the [MediaStore] music database for changes, a behavior known
@@ -68,7 +68,7 @@ constructor(
         // Check here if we should even start a reindex. This is much less bug-prone than
         // registering and de-registering this component as this setting changes.
         if (musicSettings.shouldBeObserving) {
-            logD("MediaStore changed, starting re-index")
+            T.d("MediaStore changed, starting re-index")
             musicRepository.requestIndex(true)
         }
     }

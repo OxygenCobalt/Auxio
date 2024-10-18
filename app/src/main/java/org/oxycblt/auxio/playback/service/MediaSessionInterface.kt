@@ -47,7 +47,7 @@ import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 class MediaSessionInterface
 @Inject
@@ -85,7 +85,7 @@ constructor(
         val parentUid =
             extras?.getString(MusicBrowser.KEY_CHILD_OF)?.let { MediaSessionUID.fromString(it) }
         val command = expandUidIntoCommand(uid, parentUid)
-        logD(extras?.getString(MusicBrowser.KEY_CHILD_OF))
+        T.d(extras?.getString(MusicBrowser.KEY_CHILD_OF))
         playbackManager.play(requireNotNull(command) { "Invalid playback configuration" })
     }
 

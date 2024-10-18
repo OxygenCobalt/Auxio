@@ -29,8 +29,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import timber.log.Timber as T
 
 /**
  * A [ViewModel] that stores choice information for [ShowArtistDialog], and possibly others in the
@@ -60,7 +59,7 @@ class DetailPickerViewModel @Inject constructor(private val musicRepository: Mus
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         // Need to sanitize different items depending on the current set of choices.
         _artistChoices.value = _artistChoices.value?.sanitize(deviceLibrary)
-        logD("Updated artist choices: ${_artistChoices.value}")
+        T.d("Updated artist choices: ${_artistChoices.value}")
     }
 
     /**
@@ -69,20 +68,20 @@ class DetailPickerViewModel @Inject constructor(private val musicRepository: Mus
      * @param itemUid The [Music.UID] of the item to show. Must be a [Song] or [Album].
      */
     fun setArtistChoiceUid(itemUid: Music.UID) {
-        logD("Opening navigation choices for $itemUid")
+        T.d("Opening navigation choices for $itemUid")
         // Support Songs and Albums, which have parent artists.
         _artistChoices.value =
             when (val music = musicRepository.find(itemUid)) {
                 is Song -> {
-                    logD("Creating navigation choices for song")
+                    T.d("Creating navigation choices for song")
                     ArtistShowChoices.FromSong(music)
                 }
                 is Album -> {
-                    logD("Creating navigation choices for album")
+                    T.d("Creating navigation choices for album")
                     ArtistShowChoices.FromAlbum(music)
                 }
                 else -> {
-                    logW("Given song/album UID was invalid")
+                    T.w("Given song/album UID was invalid")
                     null
                 }
             }

@@ -33,7 +33,7 @@ import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.ui.ViewBindingBottomSheetDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * A [ViewBindingBottomSheetDialogFragment] that displays basic music information and a series of
@@ -102,7 +102,7 @@ abstract class MenuDialogFragment<M : Menu> :
 
     private fun updateMenu(menu: Menu?) {
         if (menu == null) {
-            logD("No menu to show, navigating away")
+            T.d("No menu to show, navigating away")
             findNavController().navigateUp()
             return
         }

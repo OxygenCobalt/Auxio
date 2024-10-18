@@ -38,6 +38,7 @@ import org.oxycblt.auxio.list.recycler.DividerViewHolder
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import timber.log.Timber as T
 
 /**
  * A [RecyclerView.Adapter] that implements shared behavior between lists of child items in the

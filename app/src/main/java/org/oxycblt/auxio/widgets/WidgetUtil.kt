@@ -28,8 +28,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.util.isLandscape
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
+import timber.log.Timber as T
 
 /**
  * Create a [RemoteViews] instance with the specified layout and an automatic click handler to open
@@ -103,7 +103,7 @@ fun AppWidgetManager.updateAppWidgetCompat(
                 width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
                 height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
             }
-            logD("Assuming dimens are ${width}x$height")
+            T.d("Assuming dimens are ${width}x$height")
 
             // Find the layout with the greatest area that fits entirely within
             // the app widget. This is what we will use. Fall back to the smallest layout
@@ -113,7 +113,7 @@ fun AppWidgetManager.updateAppWidgetCompat(
                     .filter { it.width <= width && it.height <= height }
                     .maxByOrNull { it.height * it.width }
                     ?: views.minBy { it.key.width * it.key.height }.key
-            logD("Using layout $layout ${views.contains(layout)}")
+            T.d("Using layout $layout ${views.contains(layout)}")
 
             updateAppWidget(id, views[layout])
         }

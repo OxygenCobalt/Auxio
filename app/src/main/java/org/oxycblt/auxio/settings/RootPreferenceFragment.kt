@@ -29,8 +29,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as T
 
 /**
  * The [PreferenceFragmentCompat] that displays the root settings list.
@@ -62,21 +62,21 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         //  do one.
         when (preference.key) {
             getString(R.string.set_key_ui) -> {
-                logD("Navigating to UI preferences")
+                T.d("Navigating to UI preferences")
                 findNavController().navigateSafe(RootPreferenceFragmentDirections.uiPreferences())
             }
             getString(R.string.set_key_personalize) -> {
-                logD("Navigating to personalization preferences")
+                T.d("Navigating to personalization preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.personalizePreferences())
             }
             getString(R.string.set_key_music) -> {
-                logD("Navigating to music preferences")
+                T.d("Navigating to music preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.musicPreferences())
             }
             getString(R.string.set_key_audio) -> {
-                logD("Navigating to audio preferences")
+                T.d("Navigating to audio preferences")
                 findNavController().navigateSafe(RootPreferenceFragmentDirections.audioPeferences())
             }
             getString(R.string.set_key_reindex) -> musicModel.refresh()

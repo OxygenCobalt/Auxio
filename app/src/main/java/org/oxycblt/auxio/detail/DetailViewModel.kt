@@ -54,9 +54,8 @@ import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
@@ -302,7 +301,7 @@ constructor(
     private fun showImpl(show: Show) {
         val existing = toShow.flow.value
         if (existing != null) {
-            logD("Already have pending show command $existing, ignoring $show")
+            T.d("Already have pending show command $existing, ignoring $show")
             return
         }
         _toShow.put(show)
@@ -315,10 +314,10 @@ constructor(
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSong(uid: Music.UID) {
-        logD("Opening song $uid")
+        T.d("Opening song $uid")
         _currentSong.value = musicRepository.deviceLibrary?.findSong(uid)?.also(::refreshAudioInfo)
         if (_currentSong.value == null) {
-            logW("Given song UID was invalid")
+            T.w("Given song UID was invalid")
         }
     }
 
@@ -329,14 +328,14 @@ constructor(
      * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
      */
     fun setAlbum(uid: Music.UID) {
-        logD("Opening album $uid")
+        T.d("Opening album $uid")
         if (uid === _currentAlbum.value?.uid) {
             return
         }
         val album = detailGenerator.album(uid)
         refreshDetail(album, _currentAlbum, _albumSongList, _albumSongInstructions, null)
         if (_currentAlbum.value == null) {
-            logW("Given album UID was invalid")
+            T.w("Given album UID was invalid")
         }
     }
 
@@ -356,7 +355,7 @@ constructor(
      * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
      */
     fun setArtist(uid: Music.UID) {
-        logD("Opening artist $uid")
+        T.d("Opening artist $uid")
         if (uid === _currentArtist.value?.uid) {
             return
         }
@@ -380,7 +379,7 @@ constructor(
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
      */
     fun setGenre(uid: Music.UID) {
-        logD("Opening genre $uid")
+        T.d("Opening genre $uid")
         if (uid === _currentGenre.value?.uid) {
             return
         }
@@ -404,7 +403,7 @@ constructor(
      * @param uid The [Music.UID] of the [Playlist] to update [currentPlaylist] to. Must be valid.
      */
     fun setPlaylist(uid: Music.UID) {
-        logD("Opening playlist $uid")
+        T.d("Opening playlist $uid")
         if (uid === _currentPlaylist.value?.uid) {
             return
         }
@@ -414,7 +413,7 @@ constructor(
     /** Start a playlist editing session. Does nothing if a playlist is not being shown. */
     fun startPlaylistEdit() {
         val playlist = _currentPlaylist.value ?: return
-        logD("Starting playlist edit")
+        T.d("Starting playlist edit")
         _editedPlaylist.value = playlist.songs
         refreshPlaylist(playlist.uid)
     }
@@ -426,7 +425,7 @@ constructor(
     fun savePlaylistEdit() {
         val playlist = _currentPlaylist.value ?: return
         val editedPlaylist = _editedPlaylist.value ?: return
-        logD("Committing playlist edits")
+        T.d("Committing playlist edits")
         viewModelScope.launch {
             musicRepository.rewritePlaylist(playlist, editedPlaylist)
             // TODO: The user could probably press some kind of button if they were fast enough.
@@ -479,7 +478,7 @@ constructor(
         if (realFrom !in editedPlaylist.indices || realTo !in editedPlaylist.indices) {
             return false
         }
-        logD("Moving playlist song from $realFrom [$from] to $realTo [$to]")
+        T.d("Moving playlist song from $realFrom [$from] to $realTo [$to]")
         editedPlaylist.add(realFrom, editedPlaylist.removeAt(realTo))
         _editedPlaylist.value = editedPlaylist
         refreshPlaylist(playlist.uid, UpdateInstructions.Move(from, to))
@@ -498,7 +497,7 @@ constructor(
         if (realAt !in editedPlaylist.indices) {
             return
         }
-        logD("Removing playlist song at $realAt [$at]")
+        T.d("Removing playlist song at $realAt [$at]")
         editedPlaylist.removeAt(realAt)
         _editedPlaylist.value = editedPlaylist
         refreshPlaylist(
@@ -506,13 +505,13 @@ constructor(
             if (editedPlaylist.isNotEmpty()) {
                 UpdateInstructions.Remove(at, 1)
             } else {
-                logD("Playlist will be empty after removal, removing header")
+                T.d("Playlist will be empty after removal, removing header")
                 UpdateInstructions.Remove(at - 1, 3)
             })
     }
 
     private fun refreshAudioInfo(song: Song) {
-        logD("Refreshing audio info")
+        T.d("Refreshing audio info")
         // Clear any previous job in order to avoid stale data from appearing in the UI.
         currentSongJob?.cancel()
         _songAudioProperties.value = null
@@ -520,7 +519,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val info = audioPropertiesFactory.extract(song)
                 yield()
-                logD("Updating audio info to $info")
+                T.d("Updating audio info to $info")
                 _songAudioProperties.value = info
             }
     }
@@ -587,7 +586,7 @@ constructor(
         uid: Music.UID,
         instructions: UpdateInstructions = UpdateInstructions.Diff
     ) {
-        logD("Refreshing playlist list")
+        T.d("Refreshing playlist list")
         val edited = editedPlaylist.value
         if (edited == null) {
             val playlist = detailGenerator.playlist(uid)

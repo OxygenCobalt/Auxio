@@ -27,8 +27,8 @@ import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
+import timber.log.Timber as T
 
 class PlaybackServiceFragment
 private constructor(
@@ -86,7 +86,7 @@ private constructor(
     fun start(startedBy: Int) {
         // At minimum we want to ensure an active playback state.
         // TODO: Possibly also force to go foreground?
-        logD("Handling non-native start.")
+        T.d("Handling non-native start.")
         val action =
             when (startedBy) {
                 IntegerTable.START_ID_ACTIVITY -> null
@@ -97,7 +97,7 @@ private constructor(
                 else -> DeferredPlayback.RestoreState(play = false)
             }
         if (action != null) {
-            logD("Initing service fragment using action $action")
+            T.d("Initing service fragment using action $action")
             playbackManager.playDeferred(action)
         }
     }

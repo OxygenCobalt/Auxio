@@ -28,7 +28,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * aa [ViewBindingMaterialDialogFragment] that allows user configuration of the current
@@ -62,7 +62,7 @@ class PreAmpCustomizeDialog : ViewBindingMaterialDialogFragment<DialogPreAmpBind
             // settings. After this, the sliders save their own state, so we do not need to
             // do any restore behavior.
             val preAmp = playbackSettings.replayGainPreAmp
-            logD("Initializing from $preAmp")
+            T.d("Initializing from $preAmp")
             binding.withTagsSlider.value = preAmp.with
             binding.withoutTagsSlider.value = preAmp.without
         }

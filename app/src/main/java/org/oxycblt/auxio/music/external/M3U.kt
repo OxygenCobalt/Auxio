@@ -33,8 +33,8 @@ import org.oxycblt.auxio.music.fs.Volume
 import org.oxycblt.auxio.music.fs.VolumeManager
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * Minimal M3U file format implementation.
@@ -116,7 +116,7 @@ constructor(
             }
 
             if (path == null) {
-                logE("Expected a path, instead got an EOF")
+                T.e("Expected a path, instead got an EOF")
                 break@consumeFile
             }
 

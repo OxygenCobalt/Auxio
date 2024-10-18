@@ -66,9 +66,9 @@ import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.lazyReflectedMethod
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and high-level navigation.
@@ -145,13 +145,13 @@ class MainFragment :
 
         if (queueSheetBehavior != null) {
             // In portrait mode, set up click listeners on the stacked sheets.
-            logD("Configuring stacked bottom sheets")
+            T.d("Configuring stacked bottom sheets")
             unlikelyToBeNull(binding.queueHandleWrapper).setOnClickListener {
                 playbackModel.openQueue()
             }
         } else {
             // Dual-pane mode, manually style the static queue sheet.
-            logD("Configuring dual-pane bottom sheet")
+            T.d("Configuring dual-pane bottom sheet")
             binding.queueSheet.apply {
                 // Emulate the elevated bottom sheet style.
                 background =
@@ -367,11 +367,11 @@ class MainFragment :
     override fun onActionSelected(actionItem: SpeedDialActionItem): Boolean {
         when (actionItem.id) {
             R.id.action_new_playlist -> {
-                logD("Creating playlist")
+                T.d("Creating playlist")
                 musicModel.createPlaylist()
             }
             R.id.action_import_playlist -> {
-                logD("Importing playlist")
+                T.d("Importing playlist")
                 musicModel.importPlaylist()
             }
             else -> {}
@@ -402,7 +402,7 @@ class MainFragment :
         //  1. Loading placeholder for item lists
         //  2. Rework the "No Music" case to not be an error and instead result in a placeholder
         if (state is IndexingState.Completed && state.error == null) {
-            logD("Received ok response")
+            T.d("Received ok response")
             val binding = requireBinding()
             updateFabVisibility(
                 binding,
@@ -427,7 +427,7 @@ class MainFragment :
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
         // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
         if (shouldHideAllFabs(binding, songs, isFastScrolling)) {
-            logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
+            T.d("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
             forceHideAllFabs()
         } else {
             if (tabType != MusicType.PLAYLISTS) {
@@ -436,7 +436,7 @@ class MainFragment :
                 }
 
                 if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
-                    logD("Animating transition")
+                    T.d("Animating transition")
                     binding.homeNewPlaylistFab.hide(
                         object : FloatingActionButton.OnVisibilityChangedListener() {
                             override fun onHidden(fab: FloatingActionButton) {
@@ -451,17 +451,17 @@ class MainFragment :
                             }
                         })
                 } else {
-                    logD("Showing immediately")
+                    T.d("Showing immediately")
                     binding.homeShuffleFab.show()
                 }
             } else {
-                logD("Showing playlist button")
+                T.d("Showing playlist button")
                 if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
                     return
                 }
 
                 if (binding.homeShuffleFab.isOrWillBeShown) {
-                    logD("Animating transition")
+                    T.d("Animating transition")
                     binding.homeShuffleFab.hide(
                         object : FloatingActionButton.OnVisibilityChangedListener() {
                             override fun onHidden(fab: FloatingActionButton) {
@@ -476,7 +476,7 @@ class MainFragment :
                             }
                         })
                 } else {
-                    logD("Showing immediately")
+                    T.d("Showing immediately")
                     binding.homeNewPlaylistFab.show()
                 }
             }
@@ -551,7 +551,7 @@ class MainFragment :
 
     private fun handlePanel(panel: OpenPanel?) {
         if (panel == null) return
-        logD("Trying to update panel to $panel")
+        T.d("Trying to update panel to $panel")
         when (panel) {
             OpenPanel.MAIN -> tryClosePlaybackPanel()
             OpenPanel.PLAYBACK -> tryOpenPlaybackPanel()
@@ -567,7 +567,7 @@ class MainFragment :
 
         if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
             // Playback sheet is not expanded and not hidden, we can expand it.
-            logD("Expanding playback sheet")
+            T.d("Expanding playback sheet")
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
             return
         }
@@ -578,7 +578,7 @@ class MainFragment :
             queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Queue sheet and playback sheet is expanded, close the queue sheet so the
             // playback panel can shown.
-            logD("Collapsing queue sheet")
+            T.d("Collapsing queue sheet")
             queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
         }
     }
@@ -589,7 +589,7 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Playback sheet (and possibly queue) needs to be collapsed.
-            logD("Collapsing playback and queue sheets")
+            T.d("Collapsing playback and queue sheets")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
@@ -615,7 +615,7 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_HIDDEN) {
-            logD("Unhiding and enabling playback sheet")
+            T.d("Unhiding and enabling playback sheet")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             // Queue sheet behavior is either collapsed or expanded, no hiding needed
@@ -636,7 +636,7 @@ class MainFragment :
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
-            logD("Hiding and disabling playback and queue sheets")
+            T.d("Hiding and disabling playback and queue sheets")
 
             // Make both bottom sheets non-draggable so the user can't halt the hiding event.
             queueSheetBehavior?.apply {
@@ -720,7 +720,7 @@ class MainFragment :
         OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             if (detailModel.dropPlaylistEdit()) {
-                logD("Dropped playlist edits")
+                T.d("Dropped playlist edits")
             }
         }
 
@@ -733,7 +733,7 @@ class MainFragment :
         OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             if (listModel.dropSelection()) {
-                logD("Dropped selection")
+                T.d("Dropped selection")
             }
         }
 

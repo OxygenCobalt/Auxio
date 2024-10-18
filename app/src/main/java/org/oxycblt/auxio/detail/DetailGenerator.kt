@@ -34,7 +34,7 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.ReleaseType
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 interface DetailGenerator {
     fun any(uid: Music.UID): Detail<out MusicParent>?
@@ -159,7 +159,7 @@ private class DetailGeneratorImpl(
             // groupByTo normally returns a mapping to a MutableList mapping. Since MutableList
             // inherits list, we can cast upwards and save a copy by directly inserting the
             // implicit album list into the mapping.
-            logD("Implicit albums present, adding to list")
+            T.d("Implicit albums present, adding to list")
             @Suppress("UNCHECKED_CAST")
             (grouping as MutableMap<DetailSection.Albums.Category, Collection<Album>>)[
                 DetailSection.Albums.Category.APPEARANCES] = artist.implicitAlbums

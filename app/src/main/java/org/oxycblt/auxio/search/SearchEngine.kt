@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * Implements the fuzzy-ish searching algorithm used in the search view.
@@ -67,7 +67,7 @@ interface SearchEngine {
 class SearchEngineImpl @Inject constructor(@ApplicationContext private val context: Context) :
     SearchEngine {
     override suspend fun search(items: SearchEngine.Items, query: String): SearchEngine.Items {
-        logD("Launching search for $query")
+        T.d("Launching search for $query")
         return SearchEngine.Items(
             songs =
                 items.songs?.searchListImpl(query) { q, song ->

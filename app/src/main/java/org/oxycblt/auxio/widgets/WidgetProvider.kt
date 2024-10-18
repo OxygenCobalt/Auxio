@@ -35,9 +35,8 @@ import org.oxycblt.auxio.playback.service.PlaybackActions
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.UISettingsImpl
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
+import timber.log.Timber as T
 
 /**
  * The [AppWidgetProvider] for the "Now Playing" widget. This widget shows the current playback
@@ -82,7 +81,7 @@ class WidgetProvider : AppWidgetProvider() {
     fun update(context: Context, uiSettings: UISettings, state: WidgetComponent.PlaybackState?) {
         if (state == null) {
             // No state, use the default widget.
-            logD("No state provided, returning to default")
+            T.d("No state provided, returning to default")
             reset(context, uiSettings)
             return
         }
@@ -119,7 +118,7 @@ class WidgetProvider : AppWidgetProvider() {
         while (victims.size > 0) {
             try {
                 awm.updateAppWidgetCompat(context, component, views)
-                logD("Successfully updated RemoteViews layout")
+                T.d("Successfully updated RemoteViews layout")
                 return
             } catch (e: IllegalArgumentException) {
                 val msg = e.message ?: return
@@ -139,12 +138,12 @@ class WidgetProvider : AppWidgetProvider() {
                 victims.remove(victim)
             } catch (e: Exception) {
                 // Layout update failed, gracefully degrade to the default widget.
-                logW("Unable to update widget: $e")
+                T.w("Unable to update widget: $e")
                 reset(context, uiSettings)
             }
         }
         // We flat-out cannot fit the bitmap into the widget. Weird.
-        logW("Unable to update widget: Bitmap too large")
+        T.w("Unable to update widget: Bitmap too large")
         reset(context, uiSettings)
     }
 
@@ -154,7 +153,7 @@ class WidgetProvider : AppWidgetProvider() {
      * @param context [Context] required to update the widget layout.
      */
     fun reset(context: Context, uiSettings: UISettings) {
-        logD("Using default layout")
+        T.d("Using default layout")
         AppWidgetManager.getInstance(context)
             .updateAppWidget(
                 ComponentName(context, this::class.java), newDefaultLayout(context, uiSettings))
@@ -168,7 +167,7 @@ class WidgetProvider : AppWidgetProvider() {
      * @param context [Context] required to send update request broadcast.
      */
     private fun requestUpdate(context: Context) {
-        logD("Sending update intent to PlaybackService")
+        T.d("Sending update intent to PlaybackService")
         val intent = Intent(ACTION_WIDGET_UPDATE).addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
         context.sendBroadcast(intent)
     }

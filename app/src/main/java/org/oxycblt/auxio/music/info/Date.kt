@@ -24,8 +24,8 @@ import java.text.SimpleDateFormat
 import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.inRangeOrNull
-import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.positiveOrNull
+import timber.log.Timber as T
 
 /**
  * An ISO-8601/RFC 3339 Date.
@@ -64,7 +64,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
             try {
                 format.parse("$year-$month")
             } catch (e: ParseException) {
-                logE("Unable to parse fine-grained date: $e")
+                T.e("Unable to parse fine-grained date: $e")
                 return null
             }
 

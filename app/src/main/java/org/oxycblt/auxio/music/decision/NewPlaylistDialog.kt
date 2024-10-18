@@ -34,8 +34,8 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * A dialog allowing the name of a new playlist to be chosen before committing it to the database.
@@ -98,7 +98,7 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
 
     private fun updatePendingPlaylist(pendingNewPlaylist: PendingNewPlaylist?) {
         if (pendingNewPlaylist == null) {
-            logD("No playlist to create, leaving")
+            T.d("No playlist to create, leaving")
             findNavController().navigateUp()
             return
         }

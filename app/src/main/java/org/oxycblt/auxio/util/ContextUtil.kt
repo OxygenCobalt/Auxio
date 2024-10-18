@@ -40,6 +40,7 @@ import kotlin.reflect.KClass
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
+import timber.log.Timber as T
 
 /**
  * Get a [LayoutInflater] instance from this [Context].

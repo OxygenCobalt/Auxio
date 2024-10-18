@@ -35,9 +35,9 @@ import org.oxycblt.auxio.music.fs.useQuery
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.util.forEachWithTimeout
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.sendWithTimeout
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * Organized music library information obtained from device storage.
@@ -147,7 +147,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
             // UID is sufficient for something like this, and also prevents collisions from
             // causing severe issues elsewhere.
             if (songGrouping.containsKey(song.uid)) {
-                logW(
+                T.w(
                     "Duplicate song found: ${song.path} " +
                         "collides with ${unlikelyToBeNull(songGrouping[song.uid]).path}")
                 // We still want to say that we "processed" the song so that the user doesn't

@@ -46,7 +46,7 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as T
 
 /**
  * A [DetailListAdapter] implementing the header, sub-items, and editing state for the [Playlist]
@@ -97,7 +97,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
             // Nothing to do.
             return
         }
-        logD("Updating editing state [old: $isEditing new: $editing]")
+        T.d("Updating editing state [old: $isEditing new: $editing]")
         this.isEditing = editing
         notifyItemRangeChanged(0, currentList.size, PAYLOAD_EDITING_CHANGED)
     }

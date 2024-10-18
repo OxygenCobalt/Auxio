@@ -32,8 +32,8 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as T
 
 /**
  * A [ViewBindingMaterialDialogFragment] that asks the user to confirm the deletion of a [Playlist].
@@ -76,7 +76,7 @@ class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlayl
 
     private fun updatePlaylistToDelete(playlist: Playlist?) {
         if (playlist == null) {
-            logD("No playlist to delete, navigating away")
+            T.d("No playlist to delete, navigating away")
             findNavController().navigateUp()
             return
         }

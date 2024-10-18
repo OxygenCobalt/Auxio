@@ -26,8 +26,8 @@ import kotlin.math.min
 import org.oxycblt.auxio.image.extractor.CoverExtractor
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
+import timber.log.Timber as T
 
 /**
  * An processing abstraction over the [MetadataRetriever] and [TextTags] workflow that operates on
@@ -82,25 +82,25 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
             //    val gain =
             //        (((header[16]).toInt() and 0xFF) or ((header[17].toInt() shl 8)))
             //        .R128ToLUFS18()
-            //    logD("Obtained opus base gain: $gain dB")
+            //    T.d("Obtained opus base gain: $gain dB")
             //    if (gain != 0f) {
-            //        logD("Applying opus base gain")
+            //        T.d("Applying opus base gain")
             //        rawSong.replayGainTrackAdjustment =
             //            (rawSong.replayGainTrackAdjustment ?: 0f) + gain
             //        rawSong.replayGainAlbumAdjustment =
             //            (rawSong.replayGainAlbumAdjustment ?: 0f) + gain
             //    } else {
-            //        logD("Ignoring opus base gain")
+            //        T.d("Ignoring opus base gain")
             //    }
             // }
         } else {
-            logD("No metadata could be extracted for ${rawSong.name}")
+            T.d("No metadata could be extracted for ${rawSong.name}")
         }
     }
 
     private fun populateWithId3v2(rawSong: RawSong, textFrames: Map<String, List<String>>) {
         // Song
-        logD(textFrames)
+        T.d(textFrames)
         (textFrames["TXXX:musicbrainz release track id"]
                 ?: textFrames["TXXX:musicbrainz_releasetrackid"])
             ?.let { rawSong.musicBrainzId = it.first() }
