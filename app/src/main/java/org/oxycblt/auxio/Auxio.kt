@@ -47,7 +47,8 @@ class Auxio : Application() {
     override fun onCreate() {
         super.onCreate()
         @Suppress("KotlinConstantConditions")
-        if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" && BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
+        if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
+            BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
             Timber.plant(CopyleftNoticeTree())
         } else if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
