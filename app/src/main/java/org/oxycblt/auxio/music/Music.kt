@@ -22,9 +22,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
 import androidx.room.TypeConverter
-import java.security.MessageDigest
-import java.util.UUID
-import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.image.extractor.Cover
@@ -39,7 +36,9 @@ import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull
-import timber.log.Timber as T
+import java.security.MessageDigest
+import java.util.UUID
+import kotlin.math.max
 
 /**
  * Abstract music data. This contains universal information about all concrete music

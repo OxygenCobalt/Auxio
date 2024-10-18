@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import androidx.media.MediaBrowserServiceCompat.Result
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,12 +30,12 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.MusicRepository
-import timber.log.Timber as T
+import javax.inject.Inject
 
 class MusicServiceFragment
 @Inject
 constructor(
-    private val context: Context,
+    context: Context,
     foregroundListener: ForegroundListener,
     private val invalidator: Invalidator,
     indexerFactory: Indexer.Factory,

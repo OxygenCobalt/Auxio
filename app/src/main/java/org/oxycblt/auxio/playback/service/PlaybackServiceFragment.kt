@@ -32,14 +32,14 @@ import timber.log.Timber as T
 
 class PlaybackServiceFragment
 private constructor(
-    private val context: Context,
+    context: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
     exoHolderFactory: ExoPlaybackStateHolder.Factory,
     sessionHolderFactory: MediaSessionHolder.Factory,
     widgetComponentFactory: WidgetComponent.Factory,
     systemReceiverFactory: SystemPlaybackReceiver.Factory,
-) : MediaSessionCompat.Callback(), PlaybackStateManager.Listener {
+) : PlaybackStateManager.Listener {
     class Factory
     @Inject
     constructor(

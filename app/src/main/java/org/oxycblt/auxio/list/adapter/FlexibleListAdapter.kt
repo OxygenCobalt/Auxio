@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executor
-import timber.log.Timber as T
 
 /**
  * A variant of ListDiffer with more flexible updates.

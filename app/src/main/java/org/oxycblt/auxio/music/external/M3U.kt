@@ -261,7 +261,7 @@ constructor(
             }
             commonIndex == components.size -> {
                 // The working directory is deeper in the path, backtrack.
-                for (i in 0..workingDirectory.components.size - commonIndex - 1) {
+                for (i in 0..<workingDirectory.components.size - commonIndex) {
                     relativeComponents = relativeComponents.child("..")
                 }
             }
@@ -272,7 +272,7 @@ constructor(
             }
             else -> {
                 // The paths are siblings. Backtrack and append as needed.
-                for (i in 0..workingDirectory.components.size - commonIndex - 1) {
+                for (i in 0..<workingDirectory.components.size - commonIndex) {
                     relativeComponents = relativeComponents.child("..")
                 }
                 relativeComponents = relativeComponents.child(depth(commonIndex))

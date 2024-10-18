@@ -53,7 +53,7 @@ import timber.log.Timber as T
 
 /**
  * A component that mirrors the current playback state into the [MediaSessionCompat] and
- * [NotificationComponent].
+ * [PlaybackNotification].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -109,7 +109,7 @@ private constructor(
 
     /**
      * Release this instance, closing the [MediaSessionCompat] and preventing any further updates to
-     * the [NotificationComponent].
+     * the [PlaybackNotification].
      */
     fun release() {
         bitmapProvider.release()
@@ -202,7 +202,7 @@ private constructor(
 
     /**
      * Upload a new [MediaMetadataCompat] based on the current playback state to the
-     * [MediaSessionCompat] and [NotificationComponent].
+     * [MediaSessionCompat] and [PlaybackNotification].
      *
      * @param song The current [Song] to create the [MediaMetadataCompat] from, or null if no [Song]
      *   is currently playing.

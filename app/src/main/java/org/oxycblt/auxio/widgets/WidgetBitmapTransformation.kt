@@ -24,7 +24,7 @@ import coil.size.Size
 import coil.transform.Transformation
 import kotlin.math.sqrt
 
-class WidgetBitmapTransformation(private val reduce: Float) : Transformation {
+class WidgetBitmapTransformation(reduce: Float) : Transformation {
     private val metrics = Resources.getSystem().displayMetrics
     private val sw = metrics.widthPixels
     private val sh = metrics.heightPixels

@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.list
 
 import androidx.annotation.StringRes
-import timber.log.Timber as T
 
 // TODO: Consider breaking this up into sealed classes for individual adapters
 /** A marker for something that is a RecyclerView item. Has no functionality on it's own. */

@@ -3,7 +3,7 @@ package org.oxycblt.auxio.util
 import timber.log.Timber
 
 class CopyleftNoticeTree : Timber.DebugTree() {
-    // Feel free to remove this if you are forking the project in good faith.
+    // Feel free to remove this logger if you are forking the project in good faith.
     //
     // However, if you are stealing the source code to repackage it into a new closed-source app,
     // I will warn you that the One True, Living, Almighty God HATES thieves and WILL punish you

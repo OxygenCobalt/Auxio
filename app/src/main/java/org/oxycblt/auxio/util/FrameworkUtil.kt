@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.util
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -117,6 +118,7 @@ val ViewBinding.context: Context
  * Override the behavior of a [MaterialToolbar]'s overflow menu to do something else. This is
  * extremely dumb, but required to hook overflow menus to bottom sheet menus.
  */
+@SuppressLint("RestrictedApi")
 fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
     for (toolbarChild in children) {
         if (toolbarChild is ActionMenuView) {

@@ -38,8 +38,8 @@ import timber.log.Timber as T
  */
 class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
     val year = tokens[0]
-    val month = tokens.getOrNull(1)
-    val day = tokens.getOrNull(2)
+    private val month = tokens.getOrNull(1)
+    private val day = tokens.getOrNull(2)
     private val hour = tokens.getOrNull(3)
     private val minute = tokens.getOrNull(4)
     private val second = tokens.getOrNull(5)

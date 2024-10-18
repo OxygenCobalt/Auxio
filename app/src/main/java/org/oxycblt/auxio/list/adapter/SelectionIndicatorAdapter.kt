@@ -22,7 +22,6 @@ import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Music
-import timber.log.Timber as T
 
 /**
  * A [PlayingIndicatorAdapter] that also supports indicating the selection status of a group of

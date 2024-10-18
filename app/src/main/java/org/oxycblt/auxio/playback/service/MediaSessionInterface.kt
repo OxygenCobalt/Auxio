@@ -59,25 +59,22 @@ constructor(
 ) : MediaSessionCompat.Callback() {
     private val jaroWinkler = JaroWinklerSimilarity()
 
-    override fun onPrepare() {
-        super.onPrepare()
-        // STUB, we already automatically prepare playback.
-    }
+    //    STUBS: We already automatically prepare playback.
+    //    override fun onPrepare() {
+    //        super.onPrepare()
+    //    }
 
-    override fun onPrepareFromMediaId(mediaId: String?, extras: Bundle?) {
-        super.onPrepareFromMediaId(mediaId, extras)
-        // STUB, can't tell when this is called
-    }
-
-    override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) {
-        super.onPrepareFromUri(uri, extras)
-        // STUB, can't tell when this is called
-    }
-
-    override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
-        super.onPlayFromUri(uri, extras)
-        // STUB, can't tell when this is called
-    }
+    //    override fun onPrepareFromMediaId(mediaId: String?, extras: Bundle?) {
+    //        super.onPrepareFromMediaId(mediaId, extras)
+    //    }
+    //
+    //    override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) {
+    //        super.onPrepareFromUri(uri, extras)
+    //    }
+    //
+    //    override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
+    //        super.onPlayFromUri(uri, extras)
+    //    }
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)

@@ -54,6 +54,7 @@ private constructor(
             SystemPlaybackReceiver(context, playbackManager, playbackSettings, widgetComponent)
     }
 
+    @Suppress("WrongConstant")
     fun attach() {
         ContextCompat.registerReceiver(
             context, this, INTENT_FILTER, ContextCompat.RECEIVER_EXPORTED)

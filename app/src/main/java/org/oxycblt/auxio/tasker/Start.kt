@@ -45,7 +45,7 @@ class StartActionHelper(config: TaskerPluginConfig<Unit>) :
 }
 
 class ActivityConfigStartAction : Activity(), TaskerPluginConfigNoInput {
-    override val context
+    override val context: Context
         get() = applicationContext
 
     private val taskerHelper by lazy { StartActionHelper(this) }

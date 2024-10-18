@@ -21,7 +21,6 @@ package org.oxycblt.auxio.list
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import timber.log.Timber as T
 
 /**
  * A basic listener for list interactions.

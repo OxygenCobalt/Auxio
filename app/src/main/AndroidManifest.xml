@@ -93,7 +93,8 @@
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:exported="true"
-            android:roundIcon="@mipmap/ic_launcher">
+            android:roundIcon="@mipmap/ic_launcher"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>

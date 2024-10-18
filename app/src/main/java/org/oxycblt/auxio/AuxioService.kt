@@ -36,7 +36,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
-import timber.log.Timber as T
 
 @AndroidEntryPoint
 class AuxioService :
@@ -150,7 +149,6 @@ class AuxioService :
     }
 
     override fun invalidateMusic(mediaId: String) {
-        T.d(mediaId)
         notifyChildrenChanged(mediaId)
     }
 

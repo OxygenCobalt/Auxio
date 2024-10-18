@@ -31,7 +31,7 @@ import timber.log.Timber as T
 
 /**
  * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to
- * [MediaSessionServiceFragment].
+ * [PlaybackServiceFragment].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */

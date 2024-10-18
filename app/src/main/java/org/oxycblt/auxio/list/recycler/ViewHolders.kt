@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.list.recycler
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDivider
@@ -382,6 +383,7 @@ class DividerViewHolder private constructor(divider: MaterialDivider) :
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<PlainDivider>() {
+                @SuppressLint("DiffUtilEquals")
                 override fun areContentsTheSame(oldItem: PlainDivider, newItem: PlainDivider) =
                     oldItem.anchor == newItem.anchor
             }

@@ -21,7 +21,6 @@ package org.oxycblt.auxio.list.adapter
 import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import timber.log.Timber as T
 
 /**
  * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
