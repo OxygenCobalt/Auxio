@@ -3,18 +3,22 @@
 ## 4.0.0
 
 #### What's New
+- Android 15 support
 - New app branding and icon
 - Refreshed playback design
+- Live widget preview on Android 15+
 
 #### What's Improved
 - M3U playlist file name is now proposed if one cannot be found within the file
 - Sorting songs by date now uses songs date first, before the earliest album date
 
 #### What's Fixed
-- Playback no longer briefly pauses when adding songs to playlists 
 - Music loader no longer spawns thousands of threads when scanning
 - Excessive CPU no longer spent showing music loading process
 - Fixed playback sheet flickering on warm start
+
+#### Dev/Meta
+- No longer using custom logging setup
 
 ## 3.6.2
 
