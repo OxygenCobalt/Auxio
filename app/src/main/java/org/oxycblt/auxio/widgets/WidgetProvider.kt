@@ -86,16 +86,20 @@ class WidgetProvider : AppWidgetProvider() {
             return
         }
 
+        val awm = AppWidgetManager.getInstance(context)
+
         // Create and configure each possible layout for the widget. These dimensions seem
         // arbitrary, but they are actually the minimum dimensions required to fit all of
         // the widget elements, plus some leeway for text sizing.
+        val defaultLayout = newThinDockedLayout(context, uiSettings, state)
+        awm.setWidgetPreviewCompat(ComponentName(context, this::class.java), defaultLayout)
         val views =
             mapOf(
                 SizeF(180f, 48f) to newThinStickLayout(context, state),
                 SizeF(304f, 48f) to newWideStickLayout(context, state),
                 SizeF(180f, 100f) to newThinWaferLayout(context, uiSettings, state),
                 SizeF(304f, 100f) to newWideWaferLayout(context, uiSettings, state),
-                SizeF(180f, 152f) to newThinDockedLayout(context, uiSettings, state),
+                SizeF(180f, 152f) to defaultLayout,
                 SizeF(304f, 152f) to newWideDockedLayout(context, uiSettings, state),
                 SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state),
                 SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state))
@@ -113,7 +117,6 @@ class WidgetProvider : AppWidgetProvider() {
             )
 
         // Manually update AppWidgetManager with the new views.
-        val awm = AppWidgetManager.getInstance(context)
         val component = ComponentName(context, this::class.java)
         while (victims.size > 0) {
             try {
@@ -154,9 +157,11 @@ class WidgetProvider : AppWidgetProvider() {
      */
     fun reset(context: Context, uiSettings: UISettings) {
         L.d("Using default layout")
-        AppWidgetManager.getInstance(context)
-            .updateAppWidget(
-                ComponentName(context, this::class.java), newDefaultLayout(context, uiSettings))
+        val layout = newDefaultLayout(context, uiSettings)
+        AppWidgetManager.getInstance(context).apply {
+            setWidgetPreviewCompat(ComponentName(context, this::class.java), layout)
+            updateAppWidget(ComponentName(context, this::class.java), layout)
+        }
     }
 
     // --- INTERNAL METHODS ---

@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.widgets
 
 import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProviderInfo
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
@@ -65,6 +66,11 @@ fun RemoteViews.setLayoutDirection(@IdRes viewId: Int, layoutDirection: Int) {
     setInt(viewId, "setLayoutDirection", layoutDirection)
 }
 
+fun AppWidgetManager.setWidgetPreviewCompat(component: ComponentName, remoteViews: RemoteViews) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        setWidgetPreview(component, AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN, remoteViews)
+    }
+}
 /**
  * Update the app widget layouts corresponding to the given [WidgetProvider] [ComponentName] with an
  * adaptive layout, in a version-compatible manner.
