@@ -71,11 +71,6 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         // Set up actions
         binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
 
-        // Load the track color in manually as it's unclear whether the track actually supports
-        // using a ColorStateList in the resources.
-        binding.playbackProgressBar.trackColor =
-            context.getColorCompat(R.color.sel_track).defaultColor
-
         //        binding.playbackProgressBar.wavelength = 48
         //        binding.playbackProgressBar.speed = 20
         //        binding.playbackProgressBar.amplitude = 5

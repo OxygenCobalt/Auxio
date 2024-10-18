@@ -27,7 +27,7 @@
     </style>
 
     <style name="Widget.Auxio.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
-        <item name="trackColor">@color/sel_track</item>
+<!--        <item name="trackColor">@color/sel_track</item>-->
         <item name="trackCornerRadius">@dimen/m3_shape_corners_full</item>
         <item name="trackStopIndicatorSize">0dp</item>
     </style>

@@ -74,7 +74,6 @@ import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.navigateSafe
@@ -140,11 +139,6 @@ class HomeFragment :
             setOnMenuItemClickListener(this@HomeFragment)
             MenuCompat.setGroupDividerEnabled(menu, true)
         }
-
-        // Load the track color in manually as it's unclear whether the track actually supports
-        // using a ColorStateList in the resources
-        binding.homeIndexingProgress.trackColor =
-            requireContext().getColorCompat(R.color.sel_track).defaultColor
 
         binding.homePager.apply {
             // Update HomeViewModel whenever the user swipes through the ViewPager.
