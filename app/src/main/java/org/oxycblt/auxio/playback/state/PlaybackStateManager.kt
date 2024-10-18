@@ -766,7 +766,6 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                 } else {
                     heap.getOrNull(index)
                 }
-            T.d(currentSong)
 
             return currentSong?.uid == savedState.songUid
         }

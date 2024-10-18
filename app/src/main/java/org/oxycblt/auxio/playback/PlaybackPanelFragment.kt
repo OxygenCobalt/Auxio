@@ -136,7 +136,6 @@ class PlaybackPanelFragment :
 
     override fun onStart() {
         super.onStart()
-        T.d(requireBinding().playbackCover.width)
         playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
         requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
     }

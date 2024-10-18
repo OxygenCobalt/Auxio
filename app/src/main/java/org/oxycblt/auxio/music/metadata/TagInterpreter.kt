@@ -100,7 +100,6 @@ class TagInterpreterImpl @Inject constructor(private val coverExtractor: CoverEx
 
     private fun populateWithId3v2(rawSong: RawSong, textFrames: Map<String, List<String>>) {
         // Song
-        T.d(textFrames)
         (textFrames["TXXX:musicbrainz release track id"]
                 ?: textFrames["TXXX:musicbrainz_releasetrackid"])
             ?.let { rawSong.musicBrainzId = it.first() }
