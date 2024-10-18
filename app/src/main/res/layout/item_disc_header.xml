@@ -14,7 +14,7 @@
     <ImageView
         android:id="@+id/disc_icon"
         android:layout_width="48dp"
-        android:layout_height="0dp"
+        android:layout_height="40dp"
         android:scaleType="center"
         android:src="@drawable/ic_album_24"
         app:layout_constraintBottom_toBottomOf="parent"
