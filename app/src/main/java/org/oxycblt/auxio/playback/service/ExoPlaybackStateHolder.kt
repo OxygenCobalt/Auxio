@@ -30,6 +30,7 @@ import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.RenderersFactory
 import androidx.media3.exoplayer.audio.AudioCapabilities
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.MediaSource
@@ -607,8 +608,7 @@ class ExoPlaybackStateHolder(
                         MediaCodecSelector.DEFAULT,
                         handler,
                         audioListener,
-                        AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                        replayGainProcessor))
+                        DefaultAudioSink.Builder(context).setAudioProcessors(arrayOf(replayGainProcessor)).build()))
             }
 
             val exoPlayer =
