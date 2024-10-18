@@ -319,4 +319,5 @@
     <string name="lng_tasker_start">使用之前使用的状态启动 Auxio。如果没有可用的已保存状态，将打乱所有歌曲的顺序。播放将立刻开始。
 \n
 \n警告：请小心控制此服务，如果将其关闭然后试图再次使用可能造成应用崩溃。</string>
+    <string name="lbl_more">更多</string>
 </resources>
