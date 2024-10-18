@@ -96,7 +96,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 }
             }
         val inAnimator =
-            inAnim.genericFloat(toView.alpha, 1f) {
+            inAnim.genericFloat(toView.alpha, 1f, outAnim.duration) {
                 toView.apply {
                     scaleX = 1 - 0.05f * (1 - it)
                     scaleY = 1 - 0.05f * (1 - it)

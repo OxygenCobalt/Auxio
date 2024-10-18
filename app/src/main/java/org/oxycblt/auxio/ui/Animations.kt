@@ -29,11 +29,13 @@ data class Anim(val interpolator: TimeInterpolator, val duration: Long) {
     inline fun genericFloat(
         from: Float,
         to: Float,
+        delayMs: Long = 0,
         crossinline update: (Float) -> Unit
     ): ValueAnimator =
         ValueAnimator.ofFloat(from, to).apply {
-            duration = duration
-            interpolator = interpolator
+            startDelay = delayMs
+            duration = this@Anim.duration
+            interpolator = this@Anim.interpolator
             addUpdateListener { update(animatedValue as Float) }
         }
 }

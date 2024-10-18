@@ -63,7 +63,7 @@ class AnimatedMaterialButton : RippleFixMaterialButton {
         animator?.cancel()
         animator =
             anim
-                .genericFloat(currentCornerRadiusRatio, targetRadius, ::updateCornerRadiusRatio)
+                .genericFloat(currentCornerRadiusRatio, targetRadius, 0, ::updateCornerRadiusRatio)
                 .also { it.start() }
     }
 
