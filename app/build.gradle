@@ -88,8 +88,8 @@ dependencies {
     // General
     implementation "androidx.core:core-ktx:1.13.1"
     implementation "androidx.appcompat:appcompat:1.7.0"
-    implementation "androidx.activity:activity-ktx:1.9.0"
-    // Disabled since 1.7+ has completely broken progressive back gestures.
+    implementation "androidx.activity:activity-ktx:1.9.3"
+    // Disabled until I can be secure that predictive back isn't utterly unstable.
     // noinspection GradleDependency
     implementation "androidx.fragment:fragment-ktx:1.6.2"
 
@@ -105,7 +105,7 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     // Lifecycle
-    def lifecycle_version = "2.8.3"
+    def lifecycle_version = "2.8.6"
     implementation "androidx.lifecycle:lifecycle-common:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -135,7 +135,7 @@ dependencies {
     // Exoplayer (Vendored)
     implementation project(":media-lib-exoplayer")
     implementation project(":media-lib-decoder-ffmpeg")
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.2"
 
     // Image loading
     implementation 'io.coil-kt:coil-base:2.4.0'
@@ -143,7 +143,7 @@ dependencies {
     // Material
     // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
     //  PR a fix.
-    implementation "com.google.android.material:material:1.13.0-alpha04"
+    implementation "com.google.android.material:material:1.13.0-alpha07"
 
     // Dependency Injection
     implementation "com.google.dagger:dagger:$hilt_version"
