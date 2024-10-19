@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.image
 
-import android.animation.ValueAnimator
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -56,12 +56,12 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.ui.MaterialFader
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
-import org.oxycblt.auxio.util.getInteger
 
 /**
  * Auxio's extension of [ImageView] that enables cover art loading and playing indicator and
@@ -93,7 +93,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val selectionBadge: ImageView?
     private val iconSize: Int?
 
-    private var fadeAnimator: ValueAnimator? = null
+    private val fader = MaterialFader.forSmallComponent(context)
+    private var fadeAnimator: Animator? = null
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
@@ -294,43 +295,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun invalidateSelectionIndicatorAlpha(selectionBadge: ImageView) {
-        // Set up a target transition for the selection indicator.
-        val targetAlpha: Float
-        val targetDuration: Long
-
-        if (isActivated) {
-            // View is "activated" (i.e marked as selected), so show the selection indicator.
-            targetAlpha = 1f
-            targetDuration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
-        } else {
-            // View is not "activated", hide the selection indicator.
-            targetAlpha = 0f
-            targetDuration = context.getInteger(R.integer.anim_fade_exit_duration).toLong()
-        }
-
-        if (selectionBadge.alpha == targetAlpha) {
-            // Nothing to do.
-            return
-        }
-
-        if (!isLaidOut) {
-            // Not laid out, initialize it without animation before drawing.
-            selectionBadge.alpha = targetAlpha
-            return
-        }
-
-        if (fadeAnimator != null) {
-            // Cancel any previous animation.
-            fadeAnimator?.cancel()
-            fadeAnimator = null
-        }
-
+        fadeAnimator?.cancel()
         fadeAnimator =
-            ValueAnimator.ofFloat(selectionBadge.alpha, targetAlpha).apply {
-                duration = targetDuration
-                addUpdateListener { selectionBadge.alpha = it.animatedValue as Float }
-                start()
-            }
+            (if (isActivated) fader.fadeIn(selectionBadge) else fader.fadeOut(selectionBadge))
+                .also { it.start() }
     }
 
     /**

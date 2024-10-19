@@ -97,12 +97,21 @@ class MaterialCornerAnim(context: Context) {
     }
 }
 
-class MaterialFader private constructor(context: Context, private val scale: Float) {
-    private val alphaOutConfig =
-        AnimConfig.of(context, AnimConfig.EMPHASIZED_ACCELERATE, AnimConfig.SHORT3)
-    private val scaleOutConfig =
-        AnimConfig.of(context, AnimConfig.EMPHASIZED_ACCELERATE, AnimConfig.MEDIUM1)
-    private val inConfig = AnimConfig.of(context, AnimConfig.EMPHASIZED, AnimConfig.LONG2)
+class MaterialFader
+private constructor(
+    context: Context,
+    private val scale: Float,
+    @AttrRes outInterpolator: Int,
+    alphaOutDuration: Pair<Int, Int>,
+    scaleOutDuration: Pair<Int, Int>,
+    inInterpolator: Int,
+    alphaInDuration: Pair<Int, Int>,
+    scaleInDuration: Pair<Int, Int>
+) {
+    private val alphaOutConfig = AnimConfig.of(context, outInterpolator, alphaOutDuration)
+    private val scaleOutConfig = AnimConfig.of(context, outInterpolator, scaleOutDuration)
+    private val alphaInConfig = AnimConfig.of(context, inInterpolator, alphaInDuration)
+    private val scaleInConfig = AnimConfig.of(context, inInterpolator, scaleInDuration)
 
     fun jumpToFadeOut(view: View) {
         view.apply {
@@ -128,7 +137,11 @@ class MaterialFader private constructor(context: Context, private val scale: Flo
             return AnimatorSet()
         }
 
-        val alphaAnimator = alphaOutConfig.genericFloat(view.alpha, 0f) { view.alpha = it }
+        val alphaAnimator =
+            alphaOutConfig.genericFloat(view.alpha, 0f) {
+                view.alpha = it
+                view.isInvisible = view.alpha == 0f
+            }
         val scaleXAnimator = scaleOutConfig.genericFloat(view.scaleX, scale) { view.scaleX = it }
         val scaleYAnimator = scaleOutConfig.genericFloat(view.scaleY, scale) { view.scaleY = it }
         return AnimatorSet().apply { playTogether(alphaAnimator, scaleXAnimator, scaleYAnimator) }
@@ -140,19 +153,37 @@ class MaterialFader private constructor(context: Context, private val scale: Flo
             return AnimatorSet()
         }
         val alphaAnimator =
-            inConfig.genericFloat(view.alpha, 1f) {
+            alphaInConfig.genericFloat(view.alpha, 1f) {
                 view.alpha = it
                 view.isInvisible = view.alpha == 0f
             }
-        val scaleXAnimator = inConfig.genericFloat(view.scaleX, 1.0f) { view.scaleX = it }
-        val scaleYAnimator = inConfig.genericFloat(view.scaleY, 1.0f) { view.scaleY = it }
+        val scaleXAnimator = scaleInConfig.genericFloat(view.scaleX, 1.0f) { view.scaleX = it }
+        val scaleYAnimator = scaleInConfig.genericFloat(view.scaleY, 1.0f) { view.scaleY = it }
         return AnimatorSet().apply { playTogether(alphaAnimator, scaleXAnimator, scaleYAnimator) }
     }
 
     companion object {
-        fun forSmallComponent(context: Context) = MaterialFader(context, 0.4f)
+        fun forSmallComponent(context: Context) =
+            MaterialFader(
+                context,
+                0.6f,
+                AnimConfig.EMPHASIZED_ACCELERATE,
+                AnimConfig.SHORT1,
+                AnimConfig.SHORT3,
+                AnimConfig.EMPHASIZED_DECELERATE,
+                AnimConfig.SHORT1,
+                AnimConfig.MEDIUM3)
 
-        fun forLargeComponent(context: Context) = MaterialFader(context, 0.9f)
+        fun forLargeComponent(context: Context) =
+            MaterialFader(
+                context,
+                0.9f,
+                AnimConfig.EMPHASIZED_ACCELERATE,
+                AnimConfig.SHORT3,
+                AnimConfig.MEDIUM1,
+                AnimConfig.EMPHASIZED,
+                AnimConfig.LONG2,
+                AnimConfig.LONG2)
     }
 }
 
