@@ -599,7 +599,6 @@ constructor(
         val list = mutableListOf<Item>()
         if (edited.isNotEmpty()) {
             val header = EditHeader(R.string.lbl_songs)
-            list.add(PlainDivider(header))
             list.add(header)
             list.addAll(edited)
         }
