@@ -46,7 +46,7 @@ import com.leinardi.android.speeddial.SpeedDialView
 import kotlin.math.roundToInt
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.StationaryAnim
+import org.oxycblt.auxio.ui.AnimConfig
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
@@ -78,7 +78,7 @@ class ThemedSpeedDialView : SpeedDialView {
         @AttrRes defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
-    private val inAnim = StationaryAnim.forMediumComponent(context)
+    private val stationaryConfig = AnimConfig.of(context, AnimConfig.STANDARD, AnimConfig.MEDIUM2)
 
     init {
         // Work around ripple bug on Android 12 when useCompatPadding = true.
@@ -142,7 +142,7 @@ class ThemedSpeedDialView : SpeedDialView {
     }
 
     private fun createMainFabAnimator(isOpen: Boolean): Animator {
-        val totalDuration = inAnim.duration
+        val totalDuration = stationaryConfig.duration
         val partialDuration = totalDuration / 2 // This is half of the total duration
         val delay = totalDuration / 4 // This is one fourth of the total duration
 
@@ -174,7 +174,7 @@ class ThemedSpeedDialView : SpeedDialView {
         val animatorSet =
             AnimatorSet().apply {
                 playTogether(backgroundTintAnimator, imageTintAnimator, levelAnimator)
-                interpolator = inAnim.interpolator
+                interpolator = stationaryConfig.interpolator
             }
         animatorSet.start()
         return animatorSet

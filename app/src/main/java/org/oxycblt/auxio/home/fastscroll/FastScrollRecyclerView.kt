@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.home.fastscroll
 
+import android.animation.Animator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -37,8 +38,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.AuxioRecyclerView
-import org.oxycblt.auxio.ui.InAnim
-import org.oxycblt.auxio.ui.OutAnim
+import org.oxycblt.auxio.ui.MaterialFader
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.isRtl
@@ -84,9 +84,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             background = context.getDrawableCompat(R.drawable.ui_scroll_thumb)
         }
 
-    private val thumbEnter = InAnim.forSmallComponent(context)
-    private val thumbExit = OutAnim.forSmallComponent(context)
-
     private val thumbWidth = thumbView.background.intrinsicWidth
     private val thumbHeight = thumbView.background.intrinsicHeight
     private val thumbPadding = Rect(0, 0, 0, 0)
@@ -114,8 +111,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     }
         }
 
-    private val popupEnter = InAnim.forSmallComponent(context)
-    private val popupExit = OutAnim.forSmallComponent(context)
+    private val fader = MaterialFader.forSmallComponent(context)
+    private var thumbAnimator: Animator? = null
+    private var popupAnimator: Animator? = null
 
     private var showingPopup = false
 
@@ -426,12 +424,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingThumb = true
-        thumbView
-            .animate()
-            .scaleX(1f)
-            .setInterpolator(thumbEnter.interpolator)
-            .setDuration(thumbEnter.duration)
-            .start()
+        thumbAnimator?.cancel()
+        thumbAnimator = fader.fadeIn(thumbView).also { it.start() }
     }
 
     private fun hideScrollbar() {
@@ -440,12 +434,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingThumb = false
-        thumbView
-            .animate()
-            .scaleX(0f)
-            .setInterpolator(thumbExit.interpolator)
-            .setDuration(thumbExit.duration)
-            .start()
+        thumbAnimator?.cancel()
+        thumbAnimator = fader.fadeOut(thumbView).also { it.start() }
     }
 
     private fun showPopup() {
@@ -458,13 +448,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         popupView.alpha = 1f
         showingPopup = true
-        popupView
-            .animate()
-            .scaleX(1f)
-            .scaleY(1f)
-            .setInterpolator(popupEnter.interpolator)
-            .setDuration(popupEnter.duration)
-            .start()
+        popupAnimator?.cancel()
+        popupAnimator = fader.fadeIn(popupView).also { it.start() }
     }
 
     private fun hidePopup() {
@@ -473,14 +458,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingPopup = false
-        popupView
-            .animate()
-            .alpha(0f)
-            .scaleX(0.75f)
-            .scaleY(0.75f)
-            .setInterpolator(popupExit.interpolator)
-            .setDuration(popupExit.duration)
-            .start()
+        popupAnimator?.cancel()
+        popupAnimator = fader.fadeOut(popupView).also { it.start() }
     }
 
     // --- LAYOUT STATE ---

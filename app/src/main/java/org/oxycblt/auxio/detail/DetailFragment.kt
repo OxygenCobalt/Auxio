@@ -115,8 +115,8 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
 
         val outRatio = min(ratio * 2, 1f)
         val detailHeader = binding.detailHeader
-        detailHeader.scaleX = 1 - 0.05f * outRatio
-        detailHeader.scaleY = 1 - 0.05f * outRatio
+        detailHeader.scaleX = 1 - 0.2f * outRatio / (5f / 3f)
+        detailHeader.scaleY = 1 - 0.2f * outRatio / (5f / 3f)
         detailHeader.alpha = 1 - outRatio
 
         val inRatio = max(ratio - 0.5f, 0f) * 2

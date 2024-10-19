@@ -18,12 +18,12 @@
  
 package org.oxycblt.auxio.playback.ui
 
-import android.animation.ValueAnimator
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.button.MaterialButton
+import org.oxycblt.auxio.ui.MaterialCornerAnim
 import org.oxycblt.auxio.ui.RippleFixMaterialButton
-import org.oxycblt.auxio.ui.StationaryAnim
 import timber.log.Timber as L
 
 /**
@@ -43,9 +43,8 @@ class AnimatedMaterialButton : RippleFixMaterialButton {
         defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
-    private var currentCornerRadiusRatio = 0f
-    private var animator: ValueAnimator? = null
-    private val anim = StationaryAnim.forMediumComponent(context)
+    private var animator: Animator? = null
+    private val anim = MaterialCornerAnim(context)
 
     override fun setActivated(activated: Boolean) {
         super.setActivated(activated)
@@ -55,22 +54,12 @@ class AnimatedMaterialButton : RippleFixMaterialButton {
         if (!isLaidOut) {
             // Not laid out, initialize it without animation before drawing.
             L.d("Not laid out, immediately updating corner radius")
-            updateCornerRadiusRatio(targetRadius)
+            shapeAppearanceModel = shapeAppearanceModel.withCornerSize { it.width() * targetRadius }
             return
         }
 
         L.d("Starting corner radius animation")
         animator?.cancel()
-        animator =
-            anim
-                .genericFloat(currentCornerRadiusRatio, targetRadius, 0, ::updateCornerRadiusRatio)
-                .also { it.start() }
-    }
-
-    private fun updateCornerRadiusRatio(ratio: Float) {
-        currentCornerRadiusRatio = ratio
-        // Can't reproduce the intrinsic ratio corner radius, just manually implement it with
-        // a dimension value.
-        shapeAppearanceModel = shapeAppearanceModel.withCornerSize { it.width() * ratio }
+        animator = anim.animate(this, width * targetRadius).also { it.start() }
     }
 }

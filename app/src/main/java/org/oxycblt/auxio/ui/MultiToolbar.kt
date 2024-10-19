@@ -18,33 +18,27 @@
  
 package org.oxycblt.auxio.ui
 
-import android.animation.AnimatorSet
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
-import androidx.core.view.isInvisible
 import timber.log.Timber as L
 
 class MultiToolbar
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    private var animator: AnimatorSet? = null
+    private var animator: Animator? = null
     private var currentlyVisible = 0
-    private val outAnim = OutAnim.forMediumComponent(context)
-    private val inAnim = InAnim.forMediumComponent(context)
+    private val flipper = MaterialFlipper(context)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         for (i in 1 until childCount) {
-            getChildAt(i).apply {
-                alpha = 0f
-                isInvisible = true
-            }
+            getChildAt(i).apply { flipper.jump(this) }
         }
     }
 
@@ -59,56 +53,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // TODO: Animate nicer Material Fade transitions using animators (Normal transitions
         //  don't work due to translation)
         // Set up the target transitions for both the inner and selection toolbars.
-        val targetFromAlpha = 0f
-        val targetToAlpha = 1f
-        val fromView = getChildAt(from) as Toolbar
-        val toView = getChildAt(to) as Toolbar
-
-        if (fromView.alpha == targetFromAlpha && toView.alpha == targetToAlpha) {
-            // Nothing to do.
-            return false
-        }
-
-        if (!isLaidOut) {
-            // Not laid out, just change it immediately while are not shown to the user.
-            // This is an initialization, so we return false despite changing.
-            L.d("Not laid out, immediately updating visibility")
-            fromView.apply {
-                alpha = 0f
-                isInvisible = true
-            }
-            toView.apply {
-                alpha = 1f
-                isInvisible = false
-            }
-            return false
-        }
-
         L.d("Changing toolbar visibility $from -> 0f, $to -> 1f")
         animator?.cancel()
-        val outAnimator =
-            outAnim.genericFloat(fromView.alpha, 0f) {
-                fromView.apply {
-                    scaleX = 1 - 0.05f * (1 - it)
-                    scaleY = 1 - 0.05f * (1 - it)
-                    alpha = it
-                    isInvisible = alpha == 0f
-                }
-            }
-        val inAnimator =
-            inAnim.genericFloat(toView.alpha, 1f, outAnim.duration) {
-                toView.apply {
-                    scaleX = 1 - 0.05f * (1 - it)
-                    scaleY = 1 - 0.05f * (1 - it)
-                    alpha = it
-                    isInvisible = alpha == 0f
-                }
-            }
-        animator =
-            AnimatorSet().apply {
-                playTogether(outAnimator, inAnimator)
-                start()
-            }
+        animator = flipper.flip(getChildAt(from), getChildAt(to)).also { it.start() }
 
         return true
     }

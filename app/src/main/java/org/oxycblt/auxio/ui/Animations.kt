@@ -18,14 +18,58 @@
  
 package org.oxycblt.auxio.ui
 
+import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Rect
+import android.view.View
+import androidx.annotation.AttrRes
+import androidx.core.graphics.toRectF
+import androidx.core.view.isInvisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.R as MR
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.motion.MotionUtils
 
-data class Anim(val interpolator: TimeInterpolator, val duration: Long) {
+class AnimConfig(
+    context: Context,
+    @AttrRes interpolatorRes: Int,
+    @AttrRes durationRes: Int,
+    defaultDuration: Int
+) {
+    val interpolator: TimeInterpolator =
+        MotionUtils.resolveThemeInterpolator(context, interpolatorRes, FastOutSlowInInterpolator())
+    val duration: Long =
+        MotionUtils.resolveThemeDuration(context, durationRes, defaultDuration).toLong()
+
+    companion object {
+        val STANDARD = MR.attr.motionEasingStandardInterpolator
+        val EMPHASIZED = MR.attr.motionEasingEmphasizedInterpolator
+        val EMPHASIZED_ACCELERATE = MR.attr.motionEasingEmphasizedAccelerateInterpolator
+        val EMPHASIZED_DECELERATE = MR.attr.motionEasingEmphasizedDecelerateInterpolator
+        val SHORT1 = MR.attr.motionDurationShort1 to 50
+        val SHORT2 = MR.attr.motionDurationShort2 to 100
+        val SHORT3 = MR.attr.motionDurationShort3 to 150
+        val SHORT4 = MR.attr.motionDurationShort4 to 200
+        val MEDIUM1 = MR.attr.motionDurationMedium1 to 250
+        val MEDIUM2 = MR.attr.motionDurationMedium2 to 300
+        val MEDIUM3 = MR.attr.motionDurationMedium3 to 350
+        val MEDIUM4 = MR.attr.motionDurationMedium4 to 400
+        val LONG1 = MR.attr.motionDurationLong1 to 450
+        val LONG2 = MR.attr.motionDurationLong2 to 500
+        val LONG3 = MR.attr.motionDurationLong3 to 550
+        val LONG4 = MR.attr.motionDurationLong4 to 600
+        val EXTRA_LONG1 = MR.attr.motionDurationExtraLong1 to 700
+        val EXTRA_LONG2 = MR.attr.motionDurationExtraLong2 to 800
+        val EXTRA_LONG3 = MR.attr.motionDurationExtraLong3 to 900
+        val EXTRA_LONG4 = MR.attr.motionDurationExtraLong4 to 1000
+
+        fun of(context: Context, @AttrRes interpolator: Int, duration: Pair<Int, Int>) =
+            AnimConfig(context, interpolator, duration.first, duration.second)
+    }
+
     inline fun genericFloat(
         from: Float,
         to: Float,
@@ -34,52 +78,94 @@ data class Anim(val interpolator: TimeInterpolator, val duration: Long) {
     ): ValueAnimator =
         ValueAnimator.ofFloat(from, to).apply {
             startDelay = delayMs
-            duration = this@Anim.duration
-            interpolator = this@Anim.interpolator
+            duration = this@AnimConfig.duration
+            interpolator = this@AnimConfig.interpolator
             addUpdateListener { update(animatedValue as Float) }
         }
 }
 
-object StationaryAnim {
-    fun forMediumComponent(context: Context) =
-        Anim(
-            MotionUtils.resolveThemeInterpolator(
-                context, MR.attr.motionEasingStandardInterpolator, FastOutSlowInInterpolator()),
-            MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium2, 300).toLong())
+class MaterialCornerAnim(context: Context) {
+    private val config = AnimConfig.of(context, AnimConfig.STANDARD, AnimConfig.MEDIUM2)
+
+    fun animate(button: MaterialButton, sizeDp: Float): Animator {
+        val shapeModel = button.shapeAppearanceModel
+        val bounds = Rect(0, 0, button.width, button.height)
+        val start = shapeModel.topRightCornerSize.getCornerSize(bounds.toRectF())
+        return config.genericFloat(start, sizeDp) { size ->
+            button.shapeAppearanceModel = shapeModel.withCornerSize { size }
+        }
+    }
 }
 
-object InAnim {
-    fun forSmallComponent(context: Context) =
-        Anim(
-            MotionUtils.resolveThemeInterpolator(
-                context,
-                MR.attr.motionEasingStandardDecelerateInterpolator,
-                FastOutSlowInInterpolator()),
-            MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium1, 300).toLong())
+class MaterialFader private constructor(context: Context, private val scale: Float) {
+    private val alphaOutConfig =
+        AnimConfig.of(context, AnimConfig.EMPHASIZED_ACCELERATE, AnimConfig.SHORT3)
+    private val scaleOutConfig =
+        AnimConfig.of(context, AnimConfig.EMPHASIZED_ACCELERATE, AnimConfig.MEDIUM1)
+    private val inConfig = AnimConfig.of(context, AnimConfig.EMPHASIZED, AnimConfig.LONG2)
 
-    fun forMediumComponent(context: Context) =
-        Anim(
-            MotionUtils.resolveThemeInterpolator(
-                context,
-                MR.attr.motionEasingEmphasizedDecelerateInterpolator,
-                FastOutSlowInInterpolator()),
-            MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationMedium2, 300).toLong())
+    fun jumpToFadeOut(view: View) {
+        view.apply {
+            alpha = 0f
+            scaleX = scale
+            scaleY = scale
+            isInvisible = true
+        }
+    }
+
+    fun jumpToFadeIn(view: View) {
+        view.apply {
+            alpha = 1f
+            scaleX = 1.0f
+            scaleY = 1.0f
+            isInvisible = false
+        }
+    }
+
+    fun fadeOut(view: View): Animator {
+        if (!view.isLaidOut) {
+            jumpToFadeOut(view)
+            return AnimatorSet()
+        }
+
+        val alphaAnimator = alphaOutConfig.genericFloat(view.alpha, 0f) { view.alpha = it }
+        val scaleXAnimator = scaleOutConfig.genericFloat(view.scaleX, scale) { view.scaleX = it }
+        val scaleYAnimator = scaleOutConfig.genericFloat(view.scaleY, scale) { view.scaleY = it }
+        return AnimatorSet().apply { playTogether(alphaAnimator, scaleXAnimator, scaleYAnimator) }
+    }
+
+    fun fadeIn(view: View): Animator {
+        if (!view.isLaidOut) {
+            jumpToFadeIn(view)
+            return AnimatorSet()
+        }
+        val alphaAnimator =
+            inConfig.genericFloat(view.alpha, 1f) {
+                view.alpha = it
+                view.isInvisible = view.alpha == 0f
+            }
+        val scaleXAnimator = inConfig.genericFloat(view.scaleX, 1.0f) { view.scaleX = it }
+        val scaleYAnimator = inConfig.genericFloat(view.scaleY, 1.0f) { view.scaleY = it }
+        return AnimatorSet().apply { playTogether(alphaAnimator, scaleXAnimator, scaleYAnimator) }
+    }
+
+    companion object {
+        fun forSmallComponent(context: Context) = MaterialFader(context, 0.4f)
+
+        fun forLargeComponent(context: Context) = MaterialFader(context, 0.9f)
+    }
 }
 
-object OutAnim {
-    fun forSmallComponent(context: Context) =
-        Anim(
-            MotionUtils.resolveThemeInterpolator(
-                context,
-                MR.attr.motionEasingStandardAccelerateInterpolator,
-                FastOutSlowInInterpolator()),
-            MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort2, 100).toLong())
+class MaterialFlipper(context: Context) {
+    private val fader = MaterialFader.forLargeComponent(context)
 
-    fun forMediumComponent(context: Context) =
-        Anim(
-            MotionUtils.resolveThemeInterpolator(
-                context,
-                MR.attr.motionEasingEmphasizedAccelerateInterpolator,
-                FastOutSlowInInterpolator()),
-            MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort4, 250).toLong())
+    fun jump(from: View) {
+        fader.jumpToFadeOut(from)
+    }
+
+    fun flip(from: View, to: View): Animator {
+        val outAnimator = fader.fadeOut(from)
+        val inAnimator = fader.fadeIn(to).apply { startDelay = outAnimator.totalDuration }
+        return AnimatorSet().apply { playTogether(outAnimator, inAnimator) }
+    }
 }
