@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.6.3
+
+#### What's Fixed
+- Fixed broken replaygain
+- Fixed hide collaborators being broken
+- Fixed crash when navigating to artists w/appearances
+- Fixed headers appearing on empty detail sections
+
 ## 3.6.2
 
 #### What's Fixed
