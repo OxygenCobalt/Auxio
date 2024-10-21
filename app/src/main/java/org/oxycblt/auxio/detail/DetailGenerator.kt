@@ -165,8 +165,10 @@ private class DetailGeneratorImpl(
             grouping.mapTo(mutableListOf<DetailSection>()) { (category, albums) ->
                 DetailSection.Albums(category, ARTIST_ALBUM_SORT.albums(albums))
             }
-        val songs = DetailSection.Songs(listSettings.artistSongSort.songs(artist.songs))
-        sections.add(songs)
+        if (artist.songs.isNotEmpty()) {
+            val songs = DetailSection.Songs(listSettings.artistSongSort.songs(artist.songs))
+            sections.add(songs)
+        }
         return Detail(artist, sections)
     }
 
@@ -179,8 +181,11 @@ private class DetailGeneratorImpl(
 
     override fun playlist(uid: Music.UID): Detail<Playlist>? {
         val playlist = musicRepository.userLibrary?.findPlaylist(uid) ?: return null
-        val songs = DetailSection.Songs(playlist.songs)
-        return Detail(playlist, listOf(songs))
+        if (playlist.songs.isNotEmpty()) {
+            val songs = DetailSection.Songs(playlist.songs)
+            return Detail(playlist, listOf(songs))
+        }
+        return Detail(playlist, listOf())
     }
 
     private companion object {
