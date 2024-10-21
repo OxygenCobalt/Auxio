@@ -156,13 +156,9 @@ private class DetailGeneratorImpl(
             }
 
         if (artist.implicitAlbums.isNotEmpty()) {
-            // groupByTo normally returns a mapping to a MutableList mapping. Since MutableList
-            // inherits list, we can cast upwards and save a copy by directly inserting the
-            // implicit album list into the mapping.
             logD("Implicit albums present, adding to list")
-            @Suppress("UNCHECKED_CAST")
-            (grouping as MutableMap<DetailSection.Albums.Category, Collection<Album>>)[
-                DetailSection.Albums.Category.APPEARANCES] = artist.implicitAlbums
+            grouping[DetailSection.Albums.Category.APPEARANCES] =
+                artist.implicitAlbums.toMutableList()
         }
 
         val sections =
