@@ -143,6 +143,8 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         binding.detailShuffleButton?.setOnClickListener {
             playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
         }
+        updatePlayback(
+            playbackModel.song.value, playbackModel.parent.value, playbackModel.isPlaying.value)
     }
 
     private fun updateList(list: List<Item>) {

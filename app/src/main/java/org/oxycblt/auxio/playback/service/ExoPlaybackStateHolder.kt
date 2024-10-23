@@ -371,6 +371,7 @@ class ExoPlaybackStateHolder(
     ) {
         var sendNewPlaybackEvent = false
         var shouldSeek = false
+        L.d("invalidating parent ${this.parent?.songs} ${parent?.songs}")
         if (this.parent != parent) {
             this.parent = parent
             sendNewPlaybackEvent = true

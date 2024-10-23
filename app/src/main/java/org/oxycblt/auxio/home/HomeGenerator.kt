@@ -158,8 +158,7 @@ private class HomeGeneratorImpl(
             } else {
                 sorted
             }
-        }
-            ?: emptyList()
+        } ?: emptyList()
 
     override fun genres() =
         musicRepository.deviceLibrary?.let { listSettings.genreSort.genres(it.genres) }

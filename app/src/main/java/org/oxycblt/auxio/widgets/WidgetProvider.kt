@@ -157,7 +157,8 @@ class WidgetProvider : AppWidgetProvider() {
     fun reset(context: Context, uiSettings: UISettings) {
         L.d("Using default layout")
         val layout = newDefaultLayout(context, uiSettings)
-        AppWidgetManager.getInstance(context).updateAppWidget(ComponentName(context, this::class.java), layout)
+        AppWidgetManager.getInstance(context)
+            .updateAppWidget(ComponentName(context, this::class.java), layout)
     }
 
     // --- INTERNAL METHODS ---
