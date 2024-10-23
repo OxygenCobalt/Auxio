@@ -90,7 +90,7 @@ private class HomeGeneratorImpl(
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
         L.d("Collaborator setting changed, forwarding update")
-        onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
+        invalidator.invalidateMusic(MusicType.ARTISTS, UpdateInstructions.Diff)
     }
 
     override fun onSongSortChanged() {
@@ -151,7 +151,14 @@ private class HomeGeneratorImpl(
             ?: emptyList()
 
     override fun artists() =
-        musicRepository.deviceLibrary?.let { listSettings.artistSort.artists(it.artists) }
+        musicRepository.deviceLibrary?.let { deviceLibrary ->
+            val sorted = listSettings.artistSort.artists(deviceLibrary.artists)
+            if (homeSettings.shouldHideCollaborators) {
+                sorted.filter { it.explicitAlbums.isNotEmpty() }
+            } else {
+                sorted
+            }
+        }
             ?: emptyList()
 
     override fun genres() =

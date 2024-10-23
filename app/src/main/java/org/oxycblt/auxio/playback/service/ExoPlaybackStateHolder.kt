@@ -87,20 +87,22 @@ class ExoPlaybackStateHolder(
         private set
 
     fun attach() {
-        imageSettings.registerListener(this)
-        player.addListener(this)
         playbackManager.registerStateHolder(this)
-        playbackSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
+        player.addListener(this)
+        replayGainProcessor.attach()
+        playbackSettings.registerListener(this)
+        imageSettings.registerListener(this)
     }
 
     fun release() {
         saveJob.cancel()
-        player.removeListener(this)
         playbackManager.unregisterStateHolder(this)
         musicRepository.removeUpdateListener(this)
+        player.removeListener(this)
         replayGainProcessor.release()
         imageSettings.unregisterListener(this)
+        playbackSettings.unregisterListener(this)
         player.release()
     }
 
