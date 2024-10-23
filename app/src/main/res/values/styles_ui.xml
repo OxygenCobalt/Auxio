@@ -37,8 +37,13 @@
         <item name="marginRightSystemWindowInsets">false</item>
         <item name="paddingBottomSystemWindowInsets">false</item>
         <item name="paddingTopSystemWindowInsets">false</item>
-        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.None</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Auxio.BottomSheet</item>
         <item name="shouldRemoveExpandedCorners">true</item>
+    </style>
+
+    <style name="ShapeAppearance.Auxio.BottomSheet" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
+        <!-- This is really badly off-spec, but is needed to nicely harmonize the corner radii in the playback bar -->
+        <item name="cornerSize">20dp</item>
     </style>
 
     <style name="Widget.Auxio.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
@@ -61,6 +66,10 @@
 
     <style name="Widget.Auxio.BottomSheet.Handle" parent="Widget.Material3.BottomSheet.DragHandle">
         <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Auxio.PlaybackBarCover" parent="">
+        <item name="cornerSize">20dp</item>
     </style>
 
     <style name="Widget.Auxio.Image.Small" parent="">

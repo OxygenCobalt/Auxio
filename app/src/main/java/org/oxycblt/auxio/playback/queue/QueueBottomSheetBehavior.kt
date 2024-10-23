@@ -72,7 +72,7 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
             shapeAppearanceModel =
                 ShapeAppearanceModel.builder(
                         context,
-                        MR.style.ShapeAppearance_Material3_Corner_ExtraLarge,
+                        R.style.ShapeAppearance_Auxio_BottomSheet,
                         MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
                     .build()
         }
