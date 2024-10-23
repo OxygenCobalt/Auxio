@@ -111,7 +111,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     }
         }
 
-    private val fader = MaterialFader.forSmallComponent(context)
+    private val fader = MaterialFader.quickLopsided(context)
     private var thumbAnimator: Animator? = null
     private var popupAnimator: Animator? = null
 

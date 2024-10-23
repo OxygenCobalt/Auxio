@@ -93,7 +93,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val selectionBadge: ImageView?
     private val iconSize: Int?
 
-    private val fader = MaterialFader.forSmallComponent(context)
+    private val fader = MaterialFader.quickLopsided(context)
     private var fadeAnimator: Animator? = null
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()

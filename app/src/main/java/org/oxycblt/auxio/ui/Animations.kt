@@ -163,7 +163,7 @@ private constructor(
     }
 
     companion object {
-        fun forSmallComponent(context: Context) =
+        fun quickLopsided(context: Context) =
             MaterialFader(
                 context,
                 0.6f,
@@ -174,21 +174,21 @@ private constructor(
                 AnimConfig.SHORT1,
                 AnimConfig.MEDIUM3)
 
-        fun forLargeComponent(context: Context) =
+        fun symmetric(context: Context) =
             MaterialFader(
                 context,
                 0.9f,
                 AnimConfig.EMPHASIZED_ACCELERATE,
                 AnimConfig.SHORT3,
                 AnimConfig.MEDIUM1,
-                AnimConfig.EMPHASIZED,
-                AnimConfig.LONG2,
-                AnimConfig.LONG2)
+                AnimConfig.EMPHASIZED_DECELERATE,
+                AnimConfig.SHORT3,
+                AnimConfig.MEDIUM1)
     }
 }
 
 class MaterialFlipper(context: Context) {
-    private val fader = MaterialFader.forLargeComponent(context)
+    private val fader = MaterialFader.symmetric(context)
 
     fun jump(from: View) {
         fader.jumpToFadeOut(from)
