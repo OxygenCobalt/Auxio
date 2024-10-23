@@ -11,11 +11,14 @@
 #### What's Improved
 - M3U playlist file name is now proposed if one cannot be found within the file
 - Sorting songs by date now uses songs date first, before the earliest album date
+- Added working layouts for small split-screen form factors
 
 #### What's Fixed
 - Music loader no longer spawns thousands of threads when scanning
 - Excessive CPU no longer spent showing music loading process
 - Fixed playback sheet flickering on warm start
+- No longer possible to save a sort with no direction specified
+- Fixed inconsistent corner radii in widget
 
 #### Dev/Meta
 - No longer using custom logging setup
