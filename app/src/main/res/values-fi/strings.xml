@@ -175,7 +175,7 @@
     <string name="err_no_music">Musiikkia ei löytynyt</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="clr_grey">Harmaa</string>
-    <string name="set_ui_desc">Muuta sovellukse teemaa ja värejä</string>
+    <string name="set_ui_desc">Muuta sovelluksen teemaa ja värejä</string>
     <string name="set_theme">Teema</string>
     <string name="set_theme_auto">Automaattinen</string>
     <string name="set_theme_day">Vaalea</string>
