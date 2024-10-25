@@ -255,7 +255,7 @@
     <string name="set_library">Biblioteca</string>
     <string name="set_behavior">Comportamento</string>
     <string name="set_dirs_list">Pastas</string>
-    <string name="lbl_sort_dsc">Descendente</string>
+    <string name="lbl_sort_dsc">Decrescente</string>
     <string name="set_intelligent_sorting">Ignorar artigos ao classificar</string>
     <string name="set_intelligent_sorting_desc">Ignore palavras como \"the\" ao classificar por nome (funciona melhor com músicas em inglês)</string>
     <string name="lbl_playlists">Playlists</string>
