@@ -24,4 +24,25 @@
     <string name="lbl_ep">EP</string>
     <string name="lbl_ep_remix">Remiks EP</string>
     <string name="lbl_soundtracks">Səs treklər</string>
+    <string name="lbl_new_playlist">Yeni pleylist</string>
+    <string name="lbl_compilation_remix">Remiks kompilyasiyası</string>
+    <string name="lbl_mixes">DJ Mikslər</string>
+    <string name="lbl_compilation_live">Canlı kompilyasiya</string>
+    <string name="lbl_demo">Demo</string>
+    <string name="lbl_demos">Demos</string>
+    <string name="lbl_live_group">Canlı</string>
+    <string name="lbl_remix_group">Remikslər</string>
+    <string name="lbl_artist">Sənətkar</string>
+    <string name="lbl_artists">Sənətkarlar</string>
+    <string name="lbl_genre">Janr</string>
+    <string name="lbl_show_error_info">Daha çox</string>
+    <string name="lbl_song">Mahnı</string>
+    <string name="lbl_mixtapes">Qarışıq lentlər</string>
+    <string name="lbl_mixtape">Qarışıq lent</string>
+    <string name="lbl_mix">DJ Miks</string>
+    <string name="lbl_genres">Janrlar</string>
+    <string name="lbl_playlist">Pleylist</string>
+    <string name="lbl_playlists">Pleylistlər</string>
+    <string name="lbl_empty_playlist">Boş pleylist</string>
+    <string name="lbl_appears_on">Üzərində Görünür</string>
 </resources>

@@ -255,7 +255,7 @@
     <string name="set_library">Biblioteca</string>
     <string name="set_behavior">Comportamento</string>
     <string name="set_dirs_list">Pastas</string>
-    <string name="lbl_sort_dsc">Descendente</string>
+    <string name="lbl_sort_dsc">Decrescente</string>
     <string name="set_intelligent_sorting">Ignorar artigos ao classificar</string>
     <string name="set_intelligent_sorting_desc">Ignore palavras como \"the\" ao classificar por nome (funciona melhor com músicas em inglês)</string>
     <string name="lbl_playlists">Playlists</string>
@@ -319,4 +319,9 @@
     <string name="desc_playlist_image">Imagem de playlist para %s</string>
     <string name="set_play_song_by_itself">Reproduzir música sozinha</string>
     <string name="desc_selection_image">Imagem de seleção</string>
+    <string name="lbl_start_playback">Iniciar a reprodução</string>
+    <string name="lng_tasker_start">Inicia o Auxio usando o estado salvo anteriormente. Se nenhum estado salvo estiver disponível, todas as músicas serão reproduzidas aleatoriamente.
+\n
+\nAVISO: Tenha cuidado ao controlar este serviço. Se você fechá-lo e então tentar usá-lo novamente, provavelmente ocasionará um crash no aplicativo.</string>
+    <string name="lbl_more">Mais</string>
 </resources>

@@ -321,4 +321,5 @@
     <string name="lng_tasker_start">이전에 저장된 상태에 따라 Auxio를 시작합니다. 저장된 상태가 없으면 모든 곡을 무작위 재생합니다. 재생은 즉시 시작됩니다.
 \n
 \n경고: 이 서비스는 주의하여 사용하세요. 서비스를 닫은 뒤 다시 사용하려고 할 경우 앱이 충돌할 수 있습니다.</string>
+    <string name="lbl_more">더 보기</string>
 </resources>

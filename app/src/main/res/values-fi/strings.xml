@@ -175,7 +175,7 @@
     <string name="err_no_music">Musiikkia ei löytynyt</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="clr_grey">Harmaa</string>
-    <string name="set_ui_desc">Muuta sovellukse teemaa ja värejä</string>
+    <string name="set_ui_desc">Muuta sovelluksen teemaa ja värejä</string>
     <string name="set_theme">Teema</string>
     <string name="set_theme_auto">Automaattinen</string>
     <string name="set_theme_day">Vaalea</string>
@@ -196,7 +196,7 @@
         <item quantity="other">%d esittäjää</item>
     </plurals>
     <string name="lbl_sort_asc">Nousevasti</string>
-    <string name="lbl_play_next">Toista seuraava</string>
+    <string name="lbl_play_next">Toista seuraavaksi</string>
     <string name="lbl_artist_details">Siirry esittäjään</string>
     <string name="set_content">Sisältö</string>
     <string name="set_music">Musiikki</string>
