@@ -71,4 +71,17 @@
     <string name="lbl_sort_direction">Drejtimi</string>
     <string name="lbl_sort_asc">Në ngjitje</string>
     <string name="lbl_sort_dsc">Në zbritje</string>
+    <string name="lbl_shuffle">Përziej</string>
+    <string name="lbl_queue">Radhë</string>
+    <string name="lbl_equalizer">Ekualizues</string>
+    <string name="lbl_play">Luaj</string>
+    <string name="lbl_play_next">Luaj tjetrën</string>
+    <string name="lbl_queue_add">Shto në radhë</string>
+    <string name="lbl_playlist_add">Shto në listën e luajtjes</string>
+    <string name="lbl_album_details">Shko te albumi</string>
+    <string name="lbl_artist_details">Shko te artisti</string>
+    <string name="lbl_song_detail">Shiko vetitë</string>
+    <string name="lbl_parent_detail">Shiko</string>
+    <string name="lbl_share">Shpërndaje</string>
+    <string name="lbl_props">Cilësitë e këngës</string>
 </resources>
