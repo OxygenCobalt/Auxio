@@ -332,6 +332,11 @@ fun Context.share(songs: Collection<Song>) {
  * @param uri The URL to open.
  */
 fun Context.openInBrowser(uri: String) {
+    L.d("Opening $uri")
+    startIntent(Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+}
+
+fun Context.startIntent(intent: Intent) {
     fun openAppChooser(intent: Intent) {
         L.d("Opening app chooser for ${intent.action}")
         val chooserIntent =
@@ -341,17 +346,13 @@ fun Context.openInBrowser(uri: String) {
         startActivity(chooserIntent)
     }
 
-    L.d("Opening $uri")
-    val browserIntent =
-        Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         // Android 11 seems to now handle the app chooser situations on its own now
         // [along with adding a new permission that breaks the old manual code], so
         // we just do a typical activity launch.
         L.d("Using API 30+ chooser")
         try {
-            startActivity(browserIntent)
+            startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             // No app installed to open the link
             showToast(R.string.err_no_app)
@@ -363,7 +364,7 @@ fun Context.openInBrowser(uri: String) {
         // browser.
         L.d("Resolving browser activity for chooser")
         val pkgName =
-            packageManager.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)?.run {
+            packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)?.run {
                 activityInfo.packageName
             }
 
@@ -371,15 +372,15 @@ fun Context.openInBrowser(uri: String) {
             if (pkgName == "android") {
                 // No default browser [Must open app chooser, may not be supported]
                 L.d("No default browser found")
-                openAppChooser(browserIntent)
+                openAppChooser(intent)
             } else L.d("Opening browser intent")
             try {
-                browserIntent.setPackage(pkgName)
-                startActivity(browserIntent)
+                intent.setPackage(pkgName)
+                startActivity(intent)
             } catch (e: ActivityNotFoundException) {
                 // Not a browser but an app chooser
-                browserIntent.setPackage(null)
-                openAppChooser(browserIntent)
+                intent.setPackage(null)
+                openAppChooser(intent)
             }
         } else {
             // No app installed to open the link

@@ -188,6 +188,9 @@
 
     <string name="lbl_author">Author</string>
     <string name="lbl_author_name">Alexander Capehart</string>
+    <string name="lbl_feedback">Feedback</string>
+    <string name="lbl_github">Make an issue on GitHub</string>
+    <string name="lbl_email">Send an email</string>
     <string name="lbl_donate">Donate</string>
     <string name="lbl_supporters">Supporters</string>
 
