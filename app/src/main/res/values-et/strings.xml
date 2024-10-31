@@ -314,4 +314,7 @@
         <item quantity="other">%d esitajat</item>
     </plurals>
     <string name="lbl_more">Veel</string>
+    <string name="lbl_feedback">Tagasiside</string>
+    <string name="lbl_github">Koosta GitHubis veateade või ettepanek</string>
+    <string name="lbl_email">Saada e-kiri</string>
 </resources>
