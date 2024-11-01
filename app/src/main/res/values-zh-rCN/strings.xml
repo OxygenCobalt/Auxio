@@ -320,4 +320,7 @@
 \n
 \n警告：请小心控制此服务，如果将其关闭然后试图再次使用可能造成应用崩溃。</string>
     <string name="lbl_more">更多</string>
+    <string name="lbl_github">在 GithHub 上开 issue</string>
+    <string name="lbl_email">发送电子邮件</string>
+    <string name="lbl_feedback">反馈</string>
 </resources>
