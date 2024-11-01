@@ -322,4 +322,7 @@
 \n
 \nACHTUNG: Sei vorsichtig bei der Steuerung dieses Dienstes. Wenn du ihn schließt und dann erneut versuchst, ihn zu nutzen, stürzt die App wahrscheinlich ab.</string>
     <string name="lbl_more">Mehr</string>
+    <string name="lbl_github">Ein Issue auf GitHub erstellen</string>
+    <string name="lbl_feedback">Rückmeldung</string>
+    <string name="lbl_email">Eine E-Mail senden</string>
 </resources>
