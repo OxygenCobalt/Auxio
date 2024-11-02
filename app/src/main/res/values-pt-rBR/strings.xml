@@ -300,7 +300,7 @@
     <string name="lbl_selection">Seleção</string>
     <string name="lbl_export">Exportar</string>
     <string name="lbl_export_playlist">Exportar playlist</string>
-    <string name="lbl_sort_direction">Direção</string>
+    <string name="lbl_sort_direction">Ordem</string>
     <string name="lbl_path_style">Estilo de caminho</string>
     <string name="lbl_path_style_absolute">Absoluto</string>
     <string name="lbl_path_style_relative">Relativo</string>
@@ -324,4 +324,7 @@
 \n
 \nAVISO: Tenha cuidado ao controlar este serviço. Se você fechá-lo e então tentar usá-lo novamente, provavelmente ocasionará um crash no aplicativo.</string>
     <string name="lbl_more">Mais</string>
+    <string name="lbl_email">Envie um e-mail</string>
+    <string name="lbl_github">Crie uma issue no GitHub</string>
+    <string name="lbl_feedback"></string>
 </resources>
