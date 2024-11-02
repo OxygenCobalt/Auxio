@@ -202,4 +202,9 @@
     <string name="set_cover_mode">Kopertinat e albumeve</string>
     <string name="set_hide_collaborators_desc">Shfaq vetëm artistë që vlerësohen drejtpërdrejt në një album (funksionon më mirë në bibliotekat e etiketuara mirë)</string>
     <string name="set_cover_mode_quality">Cilësi e lartë</string>
+    <string name="set_replay_gain">Normalizimi i volumit</string>
+    <string name="set_remember_pause_desc">Mbajeni duke luajtur/ndërprerë kur kaloni ose redaktoni radhën</string>
+    <string name="set_replay_gain_mode">Strategjia ReplayGain</string>
+    <string name="set_replay_gain_mode_off">Fike</string>
+    <string name="set_replay_gain_mode_track">Muzika e preferuar</string>
 </resources>
