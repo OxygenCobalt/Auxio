@@ -87,7 +87,7 @@ dependencies {
     // --- SUPPORT ---
 
     // General
-    implementation "androidx.core:core-ktx:1.13.1"
+    implementation "androidx.core:core-ktx:1.15.0"
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.activity:activity-ktx:1.9.3"
     implementation "androidx.fragment:fragment-ktx:1.8.5"
@@ -134,7 +134,7 @@ dependencies {
     // Exoplayer (Vendored)
     implementation project(":media-lib-exoplayer")
     implementation project(":media-lib-decoder-ffmpeg")
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.2"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.3"
 
     // Image loading
     implementation 'io.coil-kt:coil-base:2.4.0'
