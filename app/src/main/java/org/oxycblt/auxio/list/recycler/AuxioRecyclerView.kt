@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.list.recycler
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
@@ -38,6 +39,7 @@ open class AuxioRecyclerView
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
     private val initialPaddingBottom = paddingBottom
+    private var savedState: Parcelable? = null
 
     init {
         // Prevent children from being clipped by window insets
@@ -60,6 +62,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Update the RecyclerView's padding such that the bottom insets are applied
         // while still preserving bottom padding.
         updatePadding(bottom = initialPaddingBottom + insets.systemBarInsetsCompat.bottom)
+        if (savedState != null) {
+            // State restore happens before we get insets, so there will be scroll drift unless
+            // we restore the state after the insets are applied.
+            // We must only do this once, otherwise we'll get jumpy behavior.
+            super.onRestoreInstanceState(savedState)
+            savedState = null
+        }
         return insets
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        savedState = state
     }
 }
