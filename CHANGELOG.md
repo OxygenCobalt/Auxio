@@ -7,6 +7,7 @@
 - New app branding and icon
 - Refreshed playback design
 - Live widget preview on Android 15+
+- Added GitHub/email feedback forms to about page
 
 #### What's Improved
 - M3U playlist file name is now proposed if one cannot be found within the file
