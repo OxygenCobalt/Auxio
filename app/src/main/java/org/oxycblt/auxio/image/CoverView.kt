@@ -108,14 +108,19 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         val shapeAppearanceRes = styledAttrs.getResourceId(R.styleable.CoverView_shapeAppearance, 0)
         shapeAppearance =
-            if (shapeAppearanceRes != 0) {
-                ShapeAppearanceModel.builder(context, shapeAppearanceRes, -1).build()
+            if (uiSettings.roundMode) {
+                if (shapeAppearanceRes != 0) {
+                    ShapeAppearanceModel.builder(context, shapeAppearanceRes, -1).build()
+                } else {
+                    ShapeAppearanceModel.builder(
+                            context,
+                            com.google.android.material.R.style
+                                .ShapeAppearance_Material3_Corner_Medium,
+                            -1)
+                        .build()
+                }
             } else {
-                ShapeAppearanceModel.builder(
-                        context,
-                        com.google.android.material.R.style.ShapeAppearance_Material3_Corner_Medium,
-                        -1)
-                    .build()
+                ShapeAppearanceModel.builder().build()
             }
         iconSize =
             styledAttrs.getDimensionPixelSize(R.styleable.CoverView_iconSize, -1).takeIf {

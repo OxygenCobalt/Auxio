@@ -30,6 +30,7 @@ import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.bottomsheet.BackportBottomSheetDialog
 import com.google.android.material.bottomsheet.BackportBottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import javax.inject.Inject
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
@@ -43,6 +44,7 @@ import timber.log.Timber as L
 abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
     BackportBottomSheetDialogFragment() {
     private var _binding: VB? = null
+    @Inject lateinit var uiSettings: UISettings
 
     override fun onCreateDialog(savedInstanceState: Bundle?): BackportBottomSheetDialog =
         TweakedBottomSheetDialog(requireContext(), theme)
@@ -97,6 +99,9 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!uiSettings.roundMode) {
+            (dialog as BackportBottomSheetDialog).behavior.killCorners()
+        }
         onBindingCreated(requireBinding(), savedInstanceState)
         L.d("Fragment created")
     }

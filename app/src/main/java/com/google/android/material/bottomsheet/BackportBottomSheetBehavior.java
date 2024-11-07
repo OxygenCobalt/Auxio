@@ -1390,6 +1390,10 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
     return shouldRemoveExpandedCorners;
   }
 
+  public void killCorners() {
+    materialShapeDrawable.setCornerSize(0f);
+  }
+
   /**
    * Gets the current state of the bottom sheet.
    *

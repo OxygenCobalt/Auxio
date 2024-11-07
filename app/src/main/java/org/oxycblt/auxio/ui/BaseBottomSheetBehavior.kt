@@ -46,6 +46,10 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
     private var initalized = false
     private val idealBottomGestureInsets = context.getDimenPixels(R.dimen.spacing_medium)
 
+    // I can't manually inject this, MainFragment must be the one to do it.
+    // TODO: Just use another library. Tired of Hilt.
+    lateinit var uiSettings: UISettings
+
     init {
         // Disable isFitToContents to make the bottom sheet expand to the top of the screen and
         // not just how much the content takes up.
@@ -58,7 +62,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
      * @param context [Context] that can be used to draw the [Drawable].
      * @return A background drawable.
      */
-    abstract fun createBackground(context: Context): Drawable
+    abstract fun createBackground(context: Context, uiSettings: UISettings): Drawable
 
     /** Get the ideal bar height to use before the bar is properly measured. */
     abstract fun getIdealBarHeight(context: Context): Int
@@ -101,7 +105,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
                 // Set up compat elevation attributes. These are only shown below API 28.
                 translationZ = context.getDimen(MR.dimen.m3_sys_elevation_level1)
                 // Background differs depending on concrete implementation.
-                background = createBackground(context)
+                background = createBackground(context, uiSettings)
                 setOnApplyWindowInsetsListener(::applyWindowInsets)
             }
             initalized = true

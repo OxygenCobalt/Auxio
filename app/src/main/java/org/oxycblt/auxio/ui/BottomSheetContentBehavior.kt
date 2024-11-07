@@ -69,7 +69,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
             L.d("Consumed amount changed, re-applying insets")
             lastConsumed = consumed
             lastInsets?.let(child::dispatchApplyWindowInsets)
-            measureContent(parent, child, consumed)
+            measureContent(parent, child)
             layoutContent(child)
             return true
         }
@@ -85,15 +85,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         parentHeightMeasureSpec: Int,
         heightUsed: Int
     ): Boolean {
-        val dep = dep ?: return false
-        val behavior = dep.coordinatorLayoutBehavior as BackportBottomSheetBehavior
-        val consumed = behavior.calculateConsumedByBar()
-        if (consumed == Int.MIN_VALUE) {
-            return false
-        }
-
-        measureContent(parent, child, consumed)
-
+        measureContent(parent, child)
         return true
     }
 
@@ -123,7 +115,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         return true
     }
 
-    private fun measureContent(parent: View, child: View, consumed: Int) {
+    private fun measureContent(parent: View, child: View) {
         val contentWidthSpec =
             View.MeasureSpec.makeMeasureSpec(parent.measuredWidth, View.MeasureSpec.EXACTLY)
         val contentHeightSpec =

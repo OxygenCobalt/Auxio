@@ -30,6 +30,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
@@ -42,16 +43,24 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  */
 class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     BaseBottomSheetBehavior<V>(context, attributeSet) {
-    val sheetBackgroundDrawable =
-        MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-            fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerLow)
-            shapeAppearanceModel =
-                ShapeAppearanceModel.builder(
-                        context,
-                        R.style.ShapeAppearance_Auxio_BottomSheet,
-                        MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
-                    .build()
-        }
+    lateinit var sheetBackgroundDrawable: MaterialShapeDrawable
+
+    fun makeBackgroundDrawable(context: Context) {
+        sheetBackgroundDrawable =
+            MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+                fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerLow)
+                shapeAppearanceModel =
+                    if (uiSettings.roundMode) {
+                        ShapeAppearanceModel.builder(
+                                context,
+                                R.style.ShapeAppearance_Auxio_BottomSheet,
+                                MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                            .build()
+                    } else {
+                        ShapeAppearanceModel.Builder().build()
+                    }
+            }
+    }
 
     init {
         isHideable = true
@@ -68,7 +77,7 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
     // Note: This is an extension to Auxio's vendored BottomSheetBehavior
     override fun isHideableWhenDragging() = false
 
-    override fun createBackground(context: Context) =
+    override fun createBackground(context: Context, uiSettings: UISettings) =
         LayerDrawable(
             arrayOf(
                 // Add another colored background so that there is always an obscuring

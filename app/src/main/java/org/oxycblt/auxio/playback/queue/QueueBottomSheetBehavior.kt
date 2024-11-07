@@ -28,6 +28,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
@@ -65,16 +66,18 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
         return false
     }
 
-    override fun createBackground(context: Context) =
+    override fun createBackground(context: Context, uiSettings: UISettings) =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             // The queue sheet's background is a static elevated background.
             fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
-            shapeAppearanceModel =
-                ShapeAppearanceModel.builder(
-                        context,
-                        R.style.ShapeAppearance_Auxio_BottomSheet,
-                        MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
-                    .build()
+            if (uiSettings.roundMode) {
+                shapeAppearanceModel =
+                    ShapeAppearanceModel.builder(
+                            context,
+                            R.style.ShapeAppearance_Auxio_BottomSheet,
+                            MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                        .build()
+            }
         }
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
