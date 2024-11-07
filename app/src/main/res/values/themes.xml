@@ -1,486 +1,786 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    All the base themes/accents.
-    -->
     <style name="Theme.Auxio.Red" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/red_primary</item>
-        <item name="colorOnPrimary">@color/red_on_primary</item>
-        <item name="colorPrimaryInverse">@color/red_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/red_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/red_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/red_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/red_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/red_onPrimaryContainer</item>
         <item name="colorSecondary">@color/red_secondary</item>
-        <item name="colorOnSecondary">@color/red_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/red_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/red_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/red_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/red_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/red_onSecondaryContainer</item>
         <item name="colorTertiary">@color/red_tertiary</item>
-        <item name="colorOnTertiary">@color/red_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/red_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/red_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/red_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/red_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/red_onTertiaryContainer</item>
         <item name="colorError">@color/red_error</item>
-        <item name="colorOnError">@color/red_on_error</item>
-        <item name="colorErrorContainer">@color/red_error_container</item>
-        <item name="colorOnErrorContainer">@color/red_on_error_container</item>
-
+        <item name="colorOnError">@color/red_onError</item>
+        <item name="colorErrorContainer">@color/red_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/red_onErrorContainer</item>
+        <item name="android:colorBackground">@color/red_background</item>
+        <item name="colorOnBackground">@color/red_onBackground</item>
         <item name="colorSurface">@color/red_surface</item>
-        <item name="colorOnSurface">@color/red_on_surface</item>
-        <item name="colorSurfaceInverse">@color/red_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/red_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/red_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/red_on_surface_variant</item>
+        <item name="colorOnSurface">@color/red_onSurface</item>
+        <item name="colorSurfaceVariant">@color/red_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/red_onSurfaceVariant</item>
+        <item name="colorOutline">@color/red_outline</item>
+        <item name="colorOutlineVariant">@color/red_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/red_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/red_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/red_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/red_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/red_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/red_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/red_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/red_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/red_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/red_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/red_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/red_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/red_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/red_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/red_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/red_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/red_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/red_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/red_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/red_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/red_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/red_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Pink" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/pink_primary</item>
-        <item name="colorOnPrimary">@color/pink_on_primary</item>
-        <item name="colorPrimaryInverse">@color/pink_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/pink_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/pink_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/pink_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/pink_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/pink_onPrimaryContainer</item>
         <item name="colorSecondary">@color/pink_secondary</item>
-        <item name="colorOnSecondary">@color/pink_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/pink_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/pink_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/pink_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/pink_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/pink_onSecondaryContainer</item>
         <item name="colorTertiary">@color/pink_tertiary</item>
-        <item name="colorOnTertiary">@color/pink_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/pink_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/pink_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/pink_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/pink_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/pink_onTertiaryContainer</item>
         <item name="colorError">@color/pink_error</item>
-        <item name="colorOnError">@color/pink_on_error</item>
-        <item name="colorErrorContainer">@color/pink_error_container</item>
-        <item name="colorOnErrorContainer">@color/pink_on_error_container</item>
-
+        <item name="colorOnError">@color/pink_onError</item>
+        <item name="colorErrorContainer">@color/pink_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/pink_onErrorContainer</item>
+        <item name="android:colorBackground">@color/pink_background</item>
+        <item name="colorOnBackground">@color/pink_onBackground</item>
         <item name="colorSurface">@color/pink_surface</item>
-        <item name="colorOnSurface">@color/pink_on_surface</item>
-        <item name="colorSurfaceInverse">@color/pink_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/pink_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/pink_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/pink_on_surface_variant</item>
+        <item name="colorOnSurface">@color/pink_onSurface</item>
+        <item name="colorSurfaceVariant">@color/pink_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/pink_onSurfaceVariant</item>
+        <item name="colorOutline">@color/pink_outline</item>
+        <item name="colorOutlineVariant">@color/pink_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/pink_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/pink_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/pink_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/pink_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/pink_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/pink_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/pink_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/pink_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/pink_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/pink_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/pink_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/pink_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/pink_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/pink_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/pink_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/pink_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/pink_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/pink_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/pink_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/pink_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/pink_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/pink_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Purple" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/purple_primary</item>
-        <item name="colorOnPrimary">@color/purple_on_primary</item>
-        <item name="colorPrimaryInverse">@color/purple_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/purple_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/purple_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/purple_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/purple_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/purple_onPrimaryContainer</item>
         <item name="colorSecondary">@color/purple_secondary</item>
-        <item name="colorOnSecondary">@color/purple_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/purple_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/purple_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/purple_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/purple_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/purple_onSecondaryContainer</item>
         <item name="colorTertiary">@color/purple_tertiary</item>
-        <item name="colorOnTertiary">@color/purple_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/purple_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/purple_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/purple_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/purple_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/purple_onTertiaryContainer</item>
         <item name="colorError">@color/purple_error</item>
-        <item name="colorOnError">@color/purple_on_error</item>
-        <item name="colorErrorContainer">@color/purple_error_container</item>
-        <item name="colorOnErrorContainer">@color/purple_on_error_container</item>
-
+        <item name="colorOnError">@color/purple_onError</item>
+        <item name="colorErrorContainer">@color/purple_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/purple_onErrorContainer</item>
+        <item name="android:colorBackground">@color/purple_background</item>
+        <item name="colorOnBackground">@color/purple_onBackground</item>
         <item name="colorSurface">@color/purple_surface</item>
-        <item name="colorOnSurface">@color/purple_on_surface</item>
-        <item name="colorSurfaceInverse">@color/purple_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/purple_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/purple_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/purple_on_surface_variant</item>
+        <item name="colorOnSurface">@color/purple_onSurface</item>
+        <item name="colorSurfaceVariant">@color/purple_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/purple_onSurfaceVariant</item>
+        <item name="colorOutline">@color/purple_outline</item>
+        <item name="colorOutlineVariant">@color/purple_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/purple_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/purple_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/purple_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/purple_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/purple_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/purple_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/purple_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/purple_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/purple_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/purple_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/purple_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/purple_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/purple_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/purple_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/purple_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/purple_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/purple_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/purple_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/purple_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/purple_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/purple_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/purple_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.DeepPurple" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/deep_purple_primary</item>
-        <item name="colorOnPrimary">@color/deep_purple_on_primary</item>
-        <item name="colorPrimaryInverse">@color/deep_purple_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/deep_purple_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/deep_purple_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/deep_purple_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/deep_purple_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/deep_purple_onPrimaryContainer</item>
         <item name="colorSecondary">@color/deep_purple_secondary</item>
-        <item name="colorOnSecondary">@color/deep_purple_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/deep_purple_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/deep_purple_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/deep_purple_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/deep_purple_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/deep_purple_onSecondaryContainer</item>
         <item name="colorTertiary">@color/deep_purple_tertiary</item>
-        <item name="colorOnTertiary">@color/deep_purple_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/deep_purple_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/deep_purple_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/deep_purple_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/deep_purple_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/deep_purple_onTertiaryContainer</item>
         <item name="colorError">@color/deep_purple_error</item>
-        <item name="colorOnError">@color/deep_purple_on_error</item>
-        <item name="colorErrorContainer">@color/deep_purple_error_container</item>
-        <item name="colorOnErrorContainer">@color/deep_purple_on_error_container</item>
-
+        <item name="colorOnError">@color/deep_purple_onError</item>
+        <item name="colorErrorContainer">@color/deep_purple_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/deep_purple_onErrorContainer</item>
+        <item name="android:colorBackground">@color/deep_purple_background</item>
+        <item name="colorOnBackground">@color/deep_purple_onBackground</item>
         <item name="colorSurface">@color/deep_purple_surface</item>
-        <item name="colorOnSurface">@color/deep_purple_on_surface</item>
-        <item name="colorSurfaceInverse">@color/deep_purple_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/deep_purple_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/deep_purple_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/deep_purple_on_surface_variant</item>
+        <item name="colorOnSurface">@color/deep_purple_onSurface</item>
+        <item name="colorSurfaceVariant">@color/deep_purple_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/deep_purple_onSurfaceVariant</item>
+        <item name="colorOutline">@color/deep_purple_outline</item>
+        <item name="colorOutlineVariant">@color/deep_purple_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/deep_purple_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/deep_purple_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/deep_purple_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/deep_purple_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/deep_purple_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/deep_purple_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/deep_purple_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/deep_purple_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/deep_purple_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/deep_purple_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/deep_purple_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/deep_purple_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/deep_purple_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/deep_purple_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/deep_purple_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/deep_purple_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/deep_purple_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/deep_purple_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/deep_purple_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/deep_purple_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/deep_purple_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/deep_purple_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Indigo" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/indigo_primary</item>
-        <item name="colorOnPrimary">@color/indigo_on_primary</item>
-        <item name="colorPrimaryInverse">@color/indigo_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/indigo_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/indigo_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/indigo_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/indigo_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/indigo_onPrimaryContainer</item>
         <item name="colorSecondary">@color/indigo_secondary</item>
-        <item name="colorOnSecondary">@color/indigo_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/indigo_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/indigo_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/indigo_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/indigo_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/indigo_onSecondaryContainer</item>
         <item name="colorTertiary">@color/indigo_tertiary</item>
-        <item name="colorOnTertiary">@color/indigo_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/indigo_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/indigo_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/indigo_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/indigo_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/indigo_onTertiaryContainer</item>
         <item name="colorError">@color/indigo_error</item>
-        <item name="colorOnError">@color/indigo_on_error</item>
-        <item name="colorErrorContainer">@color/indigo_error_container</item>
-        <item name="colorOnErrorContainer">@color/indigo_on_error_container</item>
-
+        <item name="colorOnError">@color/indigo_onError</item>
+        <item name="colorErrorContainer">@color/indigo_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/indigo_onErrorContainer</item>
+        <item name="android:colorBackground">@color/indigo_background</item>
+        <item name="colorOnBackground">@color/indigo_onBackground</item>
         <item name="colorSurface">@color/indigo_surface</item>
-        <item name="colorOnSurface">@color/indigo_on_surface</item>
-        <item name="colorSurfaceInverse">@color/indigo_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/indigo_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/indigo_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/indigo_on_surface_variant</item>
+        <item name="colorOnSurface">@color/indigo_onSurface</item>
+        <item name="colorSurfaceVariant">@color/indigo_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/indigo_onSurfaceVariant</item>
+        <item name="colorOutline">@color/indigo_outline</item>
+        <item name="colorOutlineVariant">@color/indigo_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/indigo_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/indigo_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/indigo_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/indigo_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/indigo_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/indigo_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/indigo_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/indigo_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/indigo_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/indigo_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/indigo_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/indigo_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/indigo_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/indigo_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/indigo_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/indigo_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/indigo_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/indigo_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/indigo_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/indigo_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/indigo_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/indigo_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Blue" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/blue_primary</item>
-        <item name="colorOnPrimary">@color/blue_on_primary</item>
-        <item name="colorPrimaryInverse">@color/blue_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/blue_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/blue_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/blue_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/blue_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/blue_onPrimaryContainer</item>
         <item name="colorSecondary">@color/blue_secondary</item>
-        <item name="colorOnSecondary">@color/blue_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/blue_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/blue_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/blue_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/blue_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/blue_onSecondaryContainer</item>
         <item name="colorTertiary">@color/blue_tertiary</item>
-        <item name="colorOnTertiary">@color/blue_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/blue_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/blue_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/blue_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/blue_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/blue_onTertiaryContainer</item>
         <item name="colorError">@color/blue_error</item>
-        <item name="colorOnError">@color/blue_on_error</item>
-        <item name="colorErrorContainer">@color/blue_error_container</item>
-        <item name="colorOnErrorContainer">@color/blue_on_error_container</item>
-
+        <item name="colorOnError">@color/blue_onError</item>
+        <item name="colorErrorContainer">@color/blue_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/blue_onErrorContainer</item>
+        <item name="android:colorBackground">@color/blue_background</item>
+        <item name="colorOnBackground">@color/blue_onBackground</item>
         <item name="colorSurface">@color/blue_surface</item>
-        <item name="colorOnSurface">@color/blue_on_surface</item>
-        <item name="colorSurfaceInverse">@color/blue_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/blue_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/blue_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/blue_on_surface_variant</item>
+        <item name="colorOnSurface">@color/blue_onSurface</item>
+        <item name="colorSurfaceVariant">@color/blue_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/blue_onSurfaceVariant</item>
+        <item name="colorOutline">@color/blue_outline</item>
+        <item name="colorOutlineVariant">@color/blue_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/blue_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/blue_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/blue_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/blue_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/blue_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/blue_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/blue_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/blue_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/blue_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/blue_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/blue_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/blue_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/blue_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/blue_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/blue_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/blue_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/blue_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/blue_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/blue_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/blue_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/blue_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/blue_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.DeepBlue" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/deep_blue_primary</item>
-        <item name="colorOnPrimary">@color/deep_blue_on_primary</item>
-        <item name="colorPrimaryInverse">@color/deep_blue_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/deep_blue_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/deep_blue_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/deep_blue_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/deep_blue_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/deep_blue_onPrimaryContainer</item>
         <item name="colorSecondary">@color/deep_blue_secondary</item>
-        <item name="colorOnSecondary">@color/deep_blue_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/deep_blue_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/deep_blue_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/deep_blue_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/deep_blue_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/deep_blue_onSecondaryContainer</item>
         <item name="colorTertiary">@color/deep_blue_tertiary</item>
-        <item name="colorOnTertiary">@color/deep_blue_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/deep_blue_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/deep_blue_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/deep_blue_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/deep_blue_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/deep_blue_onTertiaryContainer</item>
         <item name="colorError">@color/deep_blue_error</item>
-        <item name="colorOnError">@color/deep_blue_on_error</item>
-        <item name="colorErrorContainer">@color/deep_blue_error_container</item>
-        <item name="colorOnErrorContainer">@color/deep_blue_on_error_container</item>
-
+        <item name="colorOnError">@color/deep_blue_onError</item>
+        <item name="colorErrorContainer">@color/deep_blue_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/deep_blue_onErrorContainer</item>
+        <item name="android:colorBackground">@color/deep_blue_background</item>
+        <item name="colorOnBackground">@color/deep_blue_onBackground</item>
         <item name="colorSurface">@color/deep_blue_surface</item>
-        <item name="colorOnSurface">@color/deep_blue_on_surface</item>
-        <item name="colorSurfaceInverse">@color/deep_blue_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/deep_blue_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/deep_blue_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/deep_blue_on_surface_variant</item>
+        <item name="colorOnSurface">@color/deep_blue_onSurface</item>
+        <item name="colorSurfaceVariant">@color/deep_blue_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/deep_blue_onSurfaceVariant</item>
+        <item name="colorOutline">@color/deep_blue_outline</item>
+        <item name="colorOutlineVariant">@color/deep_blue_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/deep_blue_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/deep_blue_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/deep_blue_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/deep_blue_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/deep_blue_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/deep_blue_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/deep_blue_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/deep_blue_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/deep_blue_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/deep_blue_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/deep_blue_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/deep_blue_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/deep_blue_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/deep_blue_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/deep_blue_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/deep_blue_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/deep_blue_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/deep_blue_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/deep_blue_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/deep_blue_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/deep_blue_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/deep_blue_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Cyan" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/cyan_primary</item>
-        <item name="colorOnPrimary">@color/cyan_on_primary</item>
-        <item name="colorPrimaryInverse">@color/cyan_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/cyan_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/cyan_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/cyan_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/cyan_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/cyan_onPrimaryContainer</item>
         <item name="colorSecondary">@color/cyan_secondary</item>
-        <item name="colorOnSecondary">@color/cyan_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/cyan_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/cyan_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/cyan_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/cyan_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/cyan_onSecondaryContainer</item>
         <item name="colorTertiary">@color/cyan_tertiary</item>
-        <item name="colorOnTertiary">@color/cyan_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/cyan_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/cyan_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/cyan_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/cyan_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/cyan_onTertiaryContainer</item>
         <item name="colorError">@color/cyan_error</item>
-        <item name="colorOnError">@color/cyan_on_error</item>
-        <item name="colorErrorContainer">@color/cyan_error_container</item>
-        <item name="colorOnErrorContainer">@color/cyan_on_error_container</item>
-
+        <item name="colorOnError">@color/cyan_onError</item>
+        <item name="colorErrorContainer">@color/cyan_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/cyan_onErrorContainer</item>
+        <item name="android:colorBackground">@color/cyan_background</item>
+        <item name="colorOnBackground">@color/cyan_onBackground</item>
         <item name="colorSurface">@color/cyan_surface</item>
-        <item name="colorOnSurface">@color/cyan_on_surface</item>
-        <item name="colorSurfaceInverse">@color/cyan_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/cyan_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/cyan_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/cyan_on_surface_variant</item>
+        <item name="colorOnSurface">@color/cyan_onSurface</item>
+        <item name="colorSurfaceVariant">@color/cyan_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/cyan_onSurfaceVariant</item>
+        <item name="colorOutline">@color/cyan_outline</item>
+        <item name="colorOutlineVariant">@color/cyan_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/cyan_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/cyan_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/cyan_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/cyan_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/cyan_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/cyan_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/cyan_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/cyan_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/cyan_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/cyan_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/cyan_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/cyan_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/cyan_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/cyan_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/cyan_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/cyan_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/cyan_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/cyan_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/cyan_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/cyan_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/cyan_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/cyan_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Teal" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/teal_primary</item>
-        <item name="colorOnPrimary">@color/teal_on_primary</item>
-        <item name="colorPrimaryInverse">@color/teal_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/teal_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/teal_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/teal_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/teal_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/teal_onPrimaryContainer</item>
         <item name="colorSecondary">@color/teal_secondary</item>
-        <item name="colorOnSecondary">@color/teal_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/teal_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/teal_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/teal_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/teal_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/teal_onSecondaryContainer</item>
         <item name="colorTertiary">@color/teal_tertiary</item>
-        <item name="colorOnTertiary">@color/teal_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/teal_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/teal_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/teal_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/teal_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/teal_onTertiaryContainer</item>
         <item name="colorError">@color/teal_error</item>
-        <item name="colorOnError">@color/teal_on_error</item>
-        <item name="colorErrorContainer">@color/teal_error_container</item>
-        <item name="colorOnErrorContainer">@color/teal_on_error_container</item>
-
+        <item name="colorOnError">@color/teal_onError</item>
+        <item name="colorErrorContainer">@color/teal_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/teal_onErrorContainer</item>
+        <item name="android:colorBackground">@color/teal_background</item>
+        <item name="colorOnBackground">@color/teal_onBackground</item>
         <item name="colorSurface">@color/teal_surface</item>
-        <item name="colorOnSurface">@color/teal_on_surface</item>
-        <item name="colorSurfaceInverse">@color/teal_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/teal_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/teal_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/teal_on_surface_variant</item>
+        <item name="colorOnSurface">@color/teal_onSurface</item>
+        <item name="colorSurfaceVariant">@color/teal_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/teal_onSurfaceVariant</item>
+        <item name="colorOutline">@color/teal_outline</item>
+        <item name="colorOutlineVariant">@color/teal_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/teal_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/teal_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/teal_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/teal_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/teal_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/teal_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/teal_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/teal_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/teal_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/teal_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/teal_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/teal_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/teal_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/teal_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/teal_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/teal_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/teal_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/teal_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/teal_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/teal_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/teal_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/teal_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Green" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/green_primary</item>
-        <item name="colorOnPrimary">@color/green_on_primary</item>
-        <item name="colorPrimaryInverse">@color/green_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/green_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/green_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/green_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/green_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/green_onPrimaryContainer</item>
         <item name="colorSecondary">@color/green_secondary</item>
-        <item name="colorOnSecondary">@color/green_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/green_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/green_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/green_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/green_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/green_onSecondaryContainer</item>
         <item name="colorTertiary">@color/green_tertiary</item>
-        <item name="colorOnTertiary">@color/green_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/green_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/green_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/green_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/green_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/green_onTertiaryContainer</item>
         <item name="colorError">@color/green_error</item>
-        <item name="colorOnError">@color/green_on_error</item>
-        <item name="colorErrorContainer">@color/green_error_container</item>
-        <item name="colorOnErrorContainer">@color/green_on_error_container</item>
-
+        <item name="colorOnError">@color/green_onError</item>
+        <item name="colorErrorContainer">@color/green_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/green_onErrorContainer</item>
+        <item name="android:colorBackground">@color/green_background</item>
+        <item name="colorOnBackground">@color/green_onBackground</item>
         <item name="colorSurface">@color/green_surface</item>
-        <item name="colorOnSurface">@color/green_on_surface</item>
-        <item name="colorSurfaceInverse">@color/green_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/green_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/green_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/green_on_surface_variant</item>
+        <item name="colorOnSurface">@color/green_onSurface</item>
+        <item name="colorSurfaceVariant">@color/green_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/green_onSurfaceVariant</item>
+        <item name="colorOutline">@color/green_outline</item>
+        <item name="colorOutlineVariant">@color/green_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/green_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/green_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/green_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/green_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/green_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/green_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/green_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/green_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/green_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/green_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/green_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/green_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/green_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/green_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/green_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/green_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/green_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/green_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/green_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/green_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/green_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/green_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.DeepGreen" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/deep_green_primary</item>
-        <item name="colorOnPrimary">@color/deep_green_on_primary</item>
-        <item name="colorPrimaryInverse">@color/deep_green_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/deep_green_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/deep_green_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/deep_green_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/deep_green_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/deep_green_onPrimaryContainer</item>
         <item name="colorSecondary">@color/deep_green_secondary</item>
-        <item name="colorOnSecondary">@color/deep_green_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/deep_green_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/deep_green_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/deep_green_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/deep_green_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/deep_green_onSecondaryContainer</item>
         <item name="colorTertiary">@color/deep_green_tertiary</item>
-        <item name="colorOnTertiary">@color/deep_green_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/deep_green_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/deep_green_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/deep_green_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/deep_green_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/deep_green_onTertiaryContainer</item>
         <item name="colorError">@color/deep_green_error</item>
-        <item name="colorOnError">@color/deep_green_on_error</item>
-        <item name="colorErrorContainer">@color/deep_green_error_container</item>
-        <item name="colorOnErrorContainer">@color/deep_green_on_error_container</item>
-
+        <item name="colorOnError">@color/deep_green_onError</item>
+        <item name="colorErrorContainer">@color/deep_green_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/deep_green_onErrorContainer</item>
+        <item name="android:colorBackground">@color/deep_green_background</item>
+        <item name="colorOnBackground">@color/deep_green_onBackground</item>
         <item name="colorSurface">@color/deep_green_surface</item>
-        <item name="colorOnSurface">@color/deep_green_on_surface</item>
-        <item name="colorSurfaceInverse">@color/deep_green_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/deep_green_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/deep_green_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/deep_green_on_surface_variant</item>
+        <item name="colorOnSurface">@color/deep_green_onSurface</item>
+        <item name="colorSurfaceVariant">@color/deep_green_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/deep_green_onSurfaceVariant</item>
+        <item name="colorOutline">@color/deep_green_outline</item>
+        <item name="colorOutlineVariant">@color/deep_green_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/deep_green_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/deep_green_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/deep_green_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/deep_green_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/deep_green_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/deep_green_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/deep_green_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/deep_green_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/deep_green_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/deep_green_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/deep_green_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/deep_green_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/deep_green_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/deep_green_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/deep_green_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/deep_green_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/deep_green_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/deep_green_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/deep_green_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/deep_green_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/deep_green_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/deep_green_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Lime" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/lime_primary</item>
-        <item name="colorOnPrimary">@color/lime_on_primary</item>
-        <item name="colorPrimaryInverse">@color/lime_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/lime_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/lime_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/lime_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/lime_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/lime_onPrimaryContainer</item>
         <item name="colorSecondary">@color/lime_secondary</item>
-        <item name="colorOnSecondary">@color/lime_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/lime_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/lime_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/lime_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/lime_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/lime_onSecondaryContainer</item>
         <item name="colorTertiary">@color/lime_tertiary</item>
-        <item name="colorOnTertiary">@color/lime_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/lime_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/lime_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/lime_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/lime_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/lime_onTertiaryContainer</item>
         <item name="colorError">@color/lime_error</item>
-        <item name="colorOnError">@color/lime_on_error</item>
-        <item name="colorErrorContainer">@color/lime_error_container</item>
-        <item name="colorOnErrorContainer">@color/lime_on_error_container</item>
-
+        <item name="colorOnError">@color/lime_onError</item>
+        <item name="colorErrorContainer">@color/lime_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/lime_onErrorContainer</item>
+        <item name="android:colorBackground">@color/lime_background</item>
+        <item name="colorOnBackground">@color/lime_onBackground</item>
         <item name="colorSurface">@color/lime_surface</item>
-        <item name="colorOnSurface">@color/lime_on_surface</item>
-        <item name="colorSurfaceInverse">@color/lime_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/lime_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/lime_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/lime_on_surface_variant</item>
+        <item name="colorOnSurface">@color/lime_onSurface</item>
+        <item name="colorSurfaceVariant">@color/lime_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/lime_onSurfaceVariant</item>
+        <item name="colorOutline">@color/lime_outline</item>
+        <item name="colorOutlineVariant">@color/lime_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/lime_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/lime_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/lime_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/lime_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/lime_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/lime_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/lime_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/lime_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/lime_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/lime_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/lime_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/lime_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/lime_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/lime_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/lime_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/lime_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/lime_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/lime_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/lime_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/lime_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/lime_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/lime_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Yellow" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/yellow_primary</item>
-        <item name="colorOnPrimary">@color/yellow_on_primary</item>
-        <item name="colorPrimaryInverse">@color/yellow_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/yellow_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/yellow_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/yellow_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/yellow_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/yellow_onPrimaryContainer</item>
         <item name="colorSecondary">@color/yellow_secondary</item>
-        <item name="colorOnSecondary">@color/yellow_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/yellow_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/yellow_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/yellow_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/yellow_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/yellow_onSecondaryContainer</item>
         <item name="colorTertiary">@color/yellow_tertiary</item>
-        <item name="colorOnTertiary">@color/yellow_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/yellow_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/yellow_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/yellow_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/yellow_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/yellow_onTertiaryContainer</item>
         <item name="colorError">@color/yellow_error</item>
-        <item name="colorOnError">@color/yellow_on_error</item>
-        <item name="colorErrorContainer">@color/yellow_error_container</item>
-        <item name="colorOnErrorContainer">@color/yellow_on_error_container</item>
-
+        <item name="colorOnError">@color/yellow_onError</item>
+        <item name="colorErrorContainer">@color/yellow_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/yellow_onErrorContainer</item>
+        <item name="android:colorBackground">@color/yellow_background</item>
+        <item name="colorOnBackground">@color/yellow_onBackground</item>
         <item name="colorSurface">@color/yellow_surface</item>
-        <item name="colorOnSurface">@color/yellow_on_surface</item>
-        <item name="colorSurfaceInverse">@color/yellow_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/yellow_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/yellow_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/yellow_on_surface_variant</item>
+        <item name="colorOnSurface">@color/yellow_onSurface</item>
+        <item name="colorSurfaceVariant">@color/yellow_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/yellow_onSurfaceVariant</item>
+        <item name="colorOutline">@color/yellow_outline</item>
+        <item name="colorOutlineVariant">@color/yellow_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/yellow_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/yellow_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/yellow_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/yellow_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/yellow_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/yellow_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/yellow_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/yellow_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/yellow_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/yellow_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/yellow_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/yellow_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/yellow_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/yellow_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/yellow_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/yellow_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/yellow_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/yellow_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/yellow_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/yellow_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/yellow_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/yellow_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Orange" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/orange_primary</item>
-        <item name="colorOnPrimary">@color/orange_on_primary</item>
-        <item name="colorPrimaryInverse">@color/orange_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/orange_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/orange_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/orange_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/orange_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/orange_onPrimaryContainer</item>
         <item name="colorSecondary">@color/orange_secondary</item>
-        <item name="colorOnSecondary">@color/orange_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/orange_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/orange_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/orange_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/orange_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/orange_onSecondaryContainer</item>
         <item name="colorTertiary">@color/orange_tertiary</item>
-        <item name="colorOnTertiary">@color/orange_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/orange_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/orange_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/orange_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/orange_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/orange_onTertiaryContainer</item>
         <item name="colorError">@color/orange_error</item>
-        <item name="colorOnError">@color/orange_on_error</item>
-        <item name="colorErrorContainer">@color/orange_error_container</item>
-        <item name="colorOnErrorContainer">@color/orange_on_error_container</item>
-
+        <item name="colorOnError">@color/orange_onError</item>
+        <item name="colorErrorContainer">@color/orange_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/orange_onErrorContainer</item>
+        <item name="android:colorBackground">@color/orange_background</item>
+        <item name="colorOnBackground">@color/orange_onBackground</item>
         <item name="colorSurface">@color/orange_surface</item>
-        <item name="colorOnSurface">@color/orange_on_surface</item>
-        <item name="colorSurfaceInverse">@color/orange_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/orange_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/orange_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/orange_on_surface_variant</item>
+        <item name="colorOnSurface">@color/orange_onSurface</item>
+        <item name="colorSurfaceVariant">@color/orange_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/orange_onSurfaceVariant</item>
+        <item name="colorOutline">@color/orange_outline</item>
+        <item name="colorOutlineVariant">@color/orange_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/orange_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/orange_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/orange_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/orange_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/orange_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/orange_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/orange_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/orange_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/orange_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/orange_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/orange_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/orange_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/orange_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/orange_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/orange_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/orange_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/orange_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/orange_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/orange_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/orange_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/orange_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/orange_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Brown" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/brown_primary</item>
-        <item name="colorOnPrimary">@color/brown_on_primary</item>
-        <item name="colorPrimaryInverse">@color/brown_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/brown_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/brown_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/brown_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/brown_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/brown_onPrimaryContainer</item>
         <item name="colorSecondary">@color/brown_secondary</item>
-        <item name="colorOnSecondary">@color/brown_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/brown_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/brown_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/brown_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/brown_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/brown_onSecondaryContainer</item>
         <item name="colorTertiary">@color/brown_tertiary</item>
-        <item name="colorOnTertiary">@color/brown_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/brown_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/brown_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/brown_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/brown_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/brown_onTertiaryContainer</item>
         <item name="colorError">@color/brown_error</item>
-        <item name="colorOnError">@color/brown_on_error</item>
-        <item name="colorErrorContainer">@color/brown_error_container</item>
-        <item name="colorOnErrorContainer">@color/brown_on_error_container</item>
-
+        <item name="colorOnError">@color/brown_onError</item>
+        <item name="colorErrorContainer">@color/brown_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/brown_onErrorContainer</item>
+        <item name="android:colorBackground">@color/brown_background</item>
+        <item name="colorOnBackground">@color/brown_onBackground</item>
         <item name="colorSurface">@color/brown_surface</item>
-        <item name="colorOnSurface">@color/brown_on_surface</item>
-        <item name="colorSurfaceInverse">@color/brown_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/brown_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/brown_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/brown_on_surface_variant</item>
+        <item name="colorOnSurface">@color/brown_onSurface</item>
+        <item name="colorSurfaceVariant">@color/brown_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/brown_onSurfaceVariant</item>
+        <item name="colorOutline">@color/brown_outline</item>
+        <item name="colorOutlineVariant">@color/brown_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/brown_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/brown_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/brown_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/brown_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/brown_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/brown_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/brown_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/brown_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/brown_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/brown_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/brown_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/brown_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/brown_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/brown_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/brown_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/brown_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/brown_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/brown_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/brown_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/brown_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/brown_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/brown_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Auxio.Grey" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/grey_primary</item>
-        <item name="colorOnPrimary">@color/grey_on_primary</item>
-        <item name="colorPrimaryInverse">@color/grey_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/grey_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/grey_on_primary_container</item>
-
+        <item name="colorOnPrimary">@color/grey_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/grey_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/grey_onPrimaryContainer</item>
         <item name="colorSecondary">@color/grey_secondary</item>
-        <item name="colorOnSecondary">@color/grey_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/grey_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/grey_on_secondary_container</item>
-
+        <item name="colorOnSecondary">@color/grey_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/grey_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/grey_onSecondaryContainer</item>
         <item name="colorTertiary">@color/grey_tertiary</item>
-        <item name="colorOnTertiary">@color/grey_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/grey_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/grey_on_tertiary_container</item>
-
+        <item name="colorOnTertiary">@color/grey_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/grey_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/grey_onTertiaryContainer</item>
         <item name="colorError">@color/grey_error</item>
-        <item name="colorOnError">@color/grey_on_error</item>
-        <item name="colorErrorContainer">@color/grey_error_container</item>
-        <item name="colorOnErrorContainer">@color/grey_on_error_container</item>
-
+        <item name="colorOnError">@color/grey_onError</item>
+        <item name="colorErrorContainer">@color/grey_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/grey_onErrorContainer</item>
+        <item name="android:colorBackground">@color/grey_background</item>
+        <item name="colorOnBackground">@color/grey_onBackground</item>
         <item name="colorSurface">@color/grey_surface</item>
-        <item name="colorOnSurface">@color/grey_on_surface</item>
-        <item name="colorSurfaceInverse">@color/grey_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/grey_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/grey_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/grey_on_surface_variant</item>
+        <item name="colorOnSurface">@color/grey_onSurface</item>
+        <item name="colorSurfaceVariant">@color/grey_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/grey_onSurfaceVariant</item>
+        <item name="colorOutline">@color/grey_outline</item>
+        <item name="colorOutlineVariant">@color/grey_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/grey_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/grey_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/grey_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/grey_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/grey_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/grey_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/grey_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/grey_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/grey_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/grey_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/grey_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/grey_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/grey_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/grey_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/grey_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/grey_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/grey_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/grey_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/grey_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/grey_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/grey_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/grey_surfaceContainerHighest</item>
     </style>
-
 </resources>
