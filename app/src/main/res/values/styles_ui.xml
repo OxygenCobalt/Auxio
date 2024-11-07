@@ -247,9 +247,13 @@
 
     <!-- BUTTON STYLES -->
 
-    <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button" />
+    <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
+        <item name="iconGravity">textStart</item>
+    </style>
 
-    <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.TonalButton" />
+    <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.TonalButton">
+        <item name="iconGravity">textStart</item>
+    </style>
 
     <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.IconButton">
         <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.UncheckableIconButton</item>
