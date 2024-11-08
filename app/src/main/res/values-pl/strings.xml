@@ -314,4 +314,18 @@
     <string name="lbl_path_style_absolute">Absolutna</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Dema</string>
+    <string name="lbl_more">Więcej</string>
+    <string name="lng_tasker_start">Uruchamia Auxio z użyciem poprzednio zapisanego stanu. Jeśli nie ma zapisanego stanu, wszystkie utwory będą odtwarzane w losowej kolejności. Odtwarzanie rozpocznie się natychmiast.\n\nUWAGA: Zachowaj ostrożność przy kontrolowaniu tej usługi, jeśli ją zamkniesz, a następnie spróbujesz ponownie z niej skorzystać, aplikacja może się zawiesić.</string>
+    <string name="err_export_failed">Nie udało się wyeksportować playlisty do tego pliku</string>
+    <string name="lbl_replaygain_track">Dopasowanie głośności utworu (ReplayGain)</string>
+    <string name="lbl_replaygain_album">Dopasowanie głośności albumu (ReplayGain)</string>
+    <string name="lng_supporters_promo">Wesprzyj projekt darowizną, aby Twoje imię pojawiło się tutaj!</string>
+    <string name="set_remember_pause_desc">Pozostań w trakcie odtwarzania/zatrzymania podczas pomijania lub edytowania kolejki</string>
+    <string name="set_remember_pause">Zapamiętaj pauzę</string>
+    <string name="lbl_start_playback">Zacznij odtwarzanie</string>
+    <string name="err_import_failed">Nie udało się zaimportować playlisty z tego pliku</string>
+    <string name="lbl_windows_paths">Używaj ścieżek kompatybilnych z Windows</string>
+    <string name="lbl_email">Wyślij e-maila</string>
+    <string name="lbl_feedback">Informacja zwrotna</string>
+    <string name="lbl_github">Zgłoś problem na GitHubie</string>
 </resources>
