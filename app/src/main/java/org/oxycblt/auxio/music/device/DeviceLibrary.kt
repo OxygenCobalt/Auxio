@@ -21,12 +21,14 @@ package org.oxycblt.auxio.music.device
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.Path
@@ -51,10 +53,13 @@ import timber.log.Timber as L
 interface DeviceLibrary {
     /** All [Song]s in this [DeviceLibrary]. */
     val songs: Collection<Song>
+
     /** All [Album]s in this [DeviceLibrary]. */
     val albums: Collection<Album>
+
     /** All [Artist]s in this [DeviceLibrary]. */
     val artists: Collection<Artist>
+
     /** All [Genre]s in this [DeviceLibrary]. */
     val genres: Collection<Genre>
 
@@ -134,11 +139,9 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
         nameFactory: Name.Known.Factory
     ): DeviceLibraryImpl {
         val songGrouping = mutableMapOf<Music.UID, SongImpl>()
-        val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl>>()
-        val artistGrouping = mutableMapOf<RawArtist.Key, Grouping<RawArtist, Music>>()
-        val genreGrouping = mutableMapOf<RawGenre.Key, Grouping<RawGenre, SongImpl>>()
-
-        // TODO: Use comparators here
+        val albumGrouping = mutableMapOf<String?, MutableMap<UUID?, Grouping<RawAlbum, SongImpl>>>()
+        val artistGrouping = mutableMapOf<String?, MutableMap<UUID?, Grouping<RawArtist, Music>>>()
+        val genreGrouping = mutableMapOf<String?, Grouping<RawGenre, SongImpl>>()
 
         // All music information is grouped as it is indexed by other components.
         rawSongs.forEachWithTimeout { rawSong ->
@@ -159,62 +162,22 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
             songGrouping[song.uid] = song
 
             // Group the new song into an album.
-            val albumKey = song.rawAlbum.key
-            val albumBody = albumGrouping[albumKey]
-            if (albumBody != null) {
-                albumBody.music.add(song)
-                val prioritized = albumBody.raw.src
-                // Since albums are grouped fuzzily, we pick the song with the earliest track to
-                // use for album information to ensure consistent metadata and UIDs. Fall back to
-                // the name otherwise.
-                val higherPriority =
-                    song.track != null &&
-                        (prioritized.track == null ||
-                            song.track < prioritized.track ||
-                            (song.track == prioritized.track && song.name < prioritized.name))
-
-                if (higherPriority) {
-                    albumBody.raw = PrioritizedRaw(song.rawAlbum, song)
-                }
-            } else {
-                // Need to initialize this grouping.
-                albumGrouping[albumKey] =
-                    Grouping(PrioritizedRaw(song.rawAlbum, song), mutableSetOf(song))
+            appendToMusicBrainzIdTree(song, song.rawAlbum, albumGrouping) { old, new ->
+                compareSongTracks(old, new)
             }
-
             // Group the song into each of it's artists.
             for (rawArtist in song.rawArtists) {
-                val artistKey = rawArtist.key
-                val artistBody = artistGrouping[artistKey]
-                if (artistBody != null) {
-                    // Since artists are not guaranteed to have songs, song artist information is
-                    // de-prioritized compared to album artist information.
-                    artistBody.music.add(song)
-                } else {
-                    // Need to initialize this grouping.
-                    artistGrouping[artistKey] =
-                        Grouping(PrioritizedRaw(rawArtist, song), mutableSetOf(song))
+                appendToMusicBrainzIdTree(song, rawArtist, artistGrouping) { old, new ->
+                    // Artist information from earlier dates is prioritized, as it is less likely to
+                    // change with the addition of new tracks. Fall back to the name otherwise.
+                    check(old is SongImpl) // This should always be the case.
+                    compareSongDates(old, new)
                 }
             }
 
             // Group the song into each of it's genres.
             for (rawGenre in song.rawGenres) {
-                val genreKey = rawGenre.key
-                val genreBody = genreGrouping[genreKey]
-                if (genreBody != null) {
-                    genreBody.music.add(song)
-                    // Genre information from higher songs in ascending alphabetical order are
-                    // prioritized.
-                    val prioritized = genreBody.raw.src
-                    val higherPriority = song.name < prioritized.name
-                    if (higherPriority) {
-                        genreBody.raw = PrioritizedRaw(rawGenre, song)
-                    }
-                } else {
-                    // Need to initialize this grouping.
-                    genreGrouping[genreKey] =
-                        Grouping(PrioritizedRaw(rawGenre, song), mutableSetOf(song))
-                }
+                appendToNameTree(song, rawGenre, genreGrouping) { old, new -> new.name < old.name }
             }
 
             processedSongs.sendWithTimeout(rawSong)
@@ -222,47 +185,154 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        val albums = albumGrouping.values.mapTo(mutableSetOf()) { AlbumImpl(it, nameFactory) }
+        pruneMusicBrainzIdTree(albumGrouping) { old, new ->
+            compareSongTracks(old, new)
+        }
+        val albums = flattenMusicBrainzIdTree(albumGrouping) { AlbumImpl(it, nameFactory) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
-                val key = RawArtist.Key(rawArtist)
-                val body = artistGrouping[key]
-                if (body != null) {
-                    body.music.add(album)
-                    when (val prioritized = body.raw.src) {
+                appendToMusicBrainzIdTree(album, rawArtist, artistGrouping) { old, new ->
+                    when (old) {
                         // Immediately replace any songs that initially held the priority position.
-                        is SongImpl -> body.raw = PrioritizedRaw(rawArtist, album)
+                        is SongImpl -> true
                         is AlbumImpl -> {
-                            // Album artist information from earlier dates is prioritized, as it is
-                            // less likely to change with the addition of new tracks. Fall back to
-                            // the name otherwise.
-                            val prioritize =
-                                album.dates != null &&
-                                    (prioritized.dates == null ||
-                                        album.dates < prioritized.dates ||
-                                        (album.dates == prioritized.dates &&
-                                            album.name < prioritized.name))
-
-                            if (prioritize) {
-                                body.raw = PrioritizedRaw(rawArtist, album)
-                            }
+                            compareAlbumDates(old, new)
                         }
                         else -> throw IllegalStateException()
                     }
-                } else {
-                    // Need to initialize this grouping.
-                    artistGrouping[key] =
-                        Grouping(PrioritizedRaw(rawArtist, album), mutableSetOf(album))
                 }
             }
         }
 
         // Artists and genres do not need to be grouped and can be processed immediately.
-        val artists = artistGrouping.values.mapTo(mutableSetOf()) { ArtistImpl(it, nameFactory) }
-        val genres = genreGrouping.values.mapTo(mutableSetOf()) { GenreImpl(it, nameFactory) }
+        pruneMusicBrainzIdTree(artistGrouping) { old, new ->
+            when {
+                // Immediately replace any songs that initially held the priority position.
+                old is SongImpl && new is AlbumImpl -> true
+                old is AlbumImpl && new is SongImpl -> false
+                old is SongImpl && new is SongImpl -> {
+                    compareSongDates(old, new)
+                }
+                old is AlbumImpl && new is AlbumImpl -> {
+                   compareAlbumDates(old, new)
+                }
+                else -> throw IllegalStateException()
+            }
+        }
+        val artists = flattenMusicBrainzIdTree(artistGrouping) { ArtistImpl(it, nameFactory) }
+        val genres = flattenNameTree(genreGrouping) { GenreImpl(it, nameFactory) }
 
         return DeviceLibraryImpl(songGrouping.values.toSet(), albums, artists, genres)
     }
+
+    private inline fun <R : NameGroupable, O : Music, N : O> appendToNameTree(
+        music: N,
+        raw: R,
+        tree: MutableMap<String?, Grouping<R, O>>,
+        prioritize: (old: O, new: N) -> Boolean,
+    ) {
+        val nameKey = raw.name?.lowercase()
+        val body = tree[nameKey]
+        if (body != null) {
+            body.music.add(music)
+            if (prioritize(body.raw.src, music)) {
+                body.raw = PrioritizedRaw(raw, music)
+            }
+        } else {
+            // Need to initialize this grouping.
+            tree[nameKey] = Grouping(PrioritizedRaw(raw, music), mutableSetOf(music))
+        }
+    }
+
+    private inline fun <R : NameGroupable, O : Music, P : MusicParent> flattenNameTree(
+        tree: MutableMap<String?, Grouping<R, O>>,
+        map: (Grouping<R, O>) -> P
+    ): Set<P> = tree.values.mapTo(mutableSetOf()) { map(it) }
+
+    private inline fun <R : MusicBrainzGroupable, O : Music, N : O> appendToMusicBrainzIdTree(
+        music: N,
+        raw: R,
+        tree: MutableMap<String?, MutableMap<UUID?, Grouping<R, O>>>,
+        prioritize: (old: O, new: N) -> Boolean,
+    ) {
+        val nameKey = raw.name?.lowercase()
+        val musicBrainzIdGroups = tree[nameKey]
+        if (musicBrainzIdGroups != null) {
+            val body = musicBrainzIdGroups[raw.musicBrainzId]
+            if (body != null) {
+                body.music.add(music)
+                if (prioritize(body.raw.src, music)) {
+                    body.raw = PrioritizedRaw(raw, music)
+                }
+            } else {
+                // Need to initialize this grouping.
+                musicBrainzIdGroups[raw.musicBrainzId] =
+                    Grouping(PrioritizedRaw(raw, music), mutableSetOf(music))
+            }
+        } else {
+            // Need to initialize this grouping.
+            tree[nameKey] =
+                mutableMapOf(
+                    raw.musicBrainzId to Grouping(PrioritizedRaw(raw, music), mutableSetOf(music)))
+        }
+    }
+
+    private inline fun <R, M : Music> pruneMusicBrainzIdTree(
+        tree: MutableMap<String?, MutableMap<UUID?, Grouping<R, M>>>,
+        prioritize: (old: M, new: M) -> Boolean
+    ) {
+        for ((_, musicBrainzIdGroups) in tree) {
+            var nullGroup = musicBrainzIdGroups[null]
+            if (nullGroup == null) {
+                // Full MusicBrainz ID tagging. Nothing to do.
+                continue
+            }
+            // Only partial MusicBrainz ID tagging. For the sake of basic sanity, just
+            // collapse all of them into the null group.
+            // TODO: More advanced heuristics eventually (tm)
+            musicBrainzIdGroups
+                .filter { it.key != null }
+                .forEach {
+                    val (_, group) = it
+                    nullGroup.music.addAll(group.music)
+                    if (prioritize(group.raw.src, nullGroup.raw.src)) {
+                        nullGroup.raw = group.raw
+                    }
+                    musicBrainzIdGroups.remove(it.key)
+                }
+        }
+    }
+
+    private inline fun <R, M : Music, T : MusicParent> flattenMusicBrainzIdTree(
+        tree: MutableMap<String?, MutableMap<UUID?, Grouping<R, M>>>,
+        map: (Grouping<R, M>) -> T
+    ): Set<T> {
+        val result = mutableSetOf<T>()
+        for ((_, musicBrainzIdGroups) in tree) {
+            for (group in musicBrainzIdGroups.values) {
+                result += map(group)
+            }
+        }
+        return result
+    }
+
+    private fun compareSongTracks(old: SongImpl, new: SongImpl) =
+        new.track != null &&
+            (old.track == null ||
+                new.track < old.track ||
+                (new.track == old.track && new.name < old.name))
+
+    private fun compareAlbumDates(old: AlbumImpl, new: AlbumImpl) =
+        new.dates != null &&
+            (old.dates == null ||
+                new.dates < old.dates ||
+                (new.dates == old.dates && new.name < old.name))
+
+    private fun compareSongDates(old: SongImpl, new: SongImpl) =
+        new.date != null &&
+            (old.date == null ||
+                new.date < old.date ||
+                (new.date == old.date && new.name < old.name))
 }
 
 // TODO: Avoid redundant data creation

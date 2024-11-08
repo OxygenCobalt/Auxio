@@ -160,7 +160,14 @@ class SongImpl(
                         name,
                         artistSortNames.getOrNull(i))
                 }
-                .distinctBy { it.key }
+                // Some songs have the same artist listed multiple times (sometimes with different
+                // casing!),
+                // so we need to deduplicate lest finalization reordering fails.
+                // Since MBID data can wind up clobbered later in the grouper, we can't really
+                // use it to deduplicate. That means that a hypothetical track with two artists
+                // of the same name but different MBIDs will be grouped wrong. That is a bridge
+                // I will cross when I get to it.
+                .distinctBy { it.name?.lowercase() }
 
         val albumArtistMusicBrainzIds = separators.split(rawSong.albumArtistMusicBrainzIds)
         val albumArtistNames = separators.split(rawSong.albumArtistNames)
@@ -173,7 +180,7 @@ class SongImpl(
                         name,
                         albumArtistSortNames.getOrNull(i))
                 }
-                .distinctBy { it.key }
+                .distinctBy { it.name?.lowercase() }
 
         rawAlbum =
             RawAlbum(
@@ -199,7 +206,10 @@ class SongImpl(
         val genreNames =
             (rawSong.genreNames.parseId3GenreNames() ?: separators.split(rawSong.genreNames))
         rawGenres =
-            genreNames.map { RawGenre(it) }.distinctBy { it.key }.ifEmpty { listOf(RawGenre()) }
+            genreNames
+                .map { RawGenre(it) }
+                .distinctBy { it.name?.lowercase() }
+                .ifEmpty { listOf(RawGenre()) }
 
         hashCode = 31 * hashCode + rawSong.hashCode()
         hashCode = 31 * hashCode + nameFactory.hashCode()
@@ -507,7 +517,7 @@ class ArtistImpl(
      * @return The index of the [Artist]'s [RawArtist] within the list.
      */
     fun getOriginalPositionIn(rawArtists: List<RawArtist>) =
-        rawArtists.indexOfFirst { it.key == rawArtist.key }
+        rawArtists.indexOfFirst { it.name?.lowercase() == rawArtist.name?.lowercase() }
 
     /**
      * Perform final validation and organization on this instance.
@@ -600,7 +610,7 @@ class GenreImpl(
      * @return The index of the [Genre]'s [RawGenre] within the list.
      */
     fun getOriginalPositionIn(rawGenres: List<RawGenre>) =
-        rawGenres.indexOfFirst { it.key == rawGenre.key }
+        rawGenres.indexOfFirst { it.name?.lowercase() == rawGenre.name?.lowercase() }
 
     /**
      * Perform final validation and organization on this instance.

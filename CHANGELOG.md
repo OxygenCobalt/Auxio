@@ -10,6 +10,8 @@
 - Added GitHub/email feedback forms to about page
 
 #### What's Improved
+- Album grouping no longer done with artist in mind by default
+- MusicBrainz IDs will no longer split albums/artists in less tagged libraries
 - M3U playlist file name is now proposed if one cannot be found within the file
 - Sorting songs by date now uses songs date first, before the earliest album date
 - Added working layouts for small split-screen form factors
