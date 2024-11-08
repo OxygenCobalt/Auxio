@@ -111,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_mid_medium"
                     android:layout_marginEnd="@dimen/spacing_small"
+                    android:paddingStart="@dimen/spacing_medium"
                     android:layout_marginBottom="@dimen/spacing_mid_medium"
                     android:text="@string/lbl_play"
                     app:icon="@drawable/ic_play_24"

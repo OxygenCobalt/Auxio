@@ -249,10 +249,12 @@
 
     <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
         <item name="iconGravity">textStart</item>
+        <item name="iconSize">@dimen/size_icon_small</item>
     </style>
 
     <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.TonalButton">
         <item name="iconGravity">textStart</item>
+        <item name="iconSize">@dimen/size_icon_small</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.IconButton">
