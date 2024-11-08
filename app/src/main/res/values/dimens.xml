@@ -25,6 +25,9 @@
     <dimen name="size_icon_large">40dp</dimen>
     <dimen name="size_icon_huge">48dp</dimen>
 
+    <dimen name="width_scroll_thumb">48dp</dimen>
+    <dimen name="height_scroll_thumb">48dp</dimen>
+
     <!-- Misc -->
     <dimen name="m3_shape_corners_large">16dp</dimen>
     <dimen name="m3_shape_corners_full">128dp</dimen>

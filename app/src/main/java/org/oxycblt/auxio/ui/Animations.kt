@@ -200,3 +200,25 @@ class MaterialFlipper(context: Context) {
         return AnimatorSet().apply { playTogether(outAnimator, inAnimator) }
     }
 }
+
+class MaterialSlider(context: Context, private val x: Int) {
+    private val outConfig =
+        AnimConfig.of(context, AnimConfig.EMPHASIZED_ACCELERATE, AnimConfig.SHORT3)
+    private val inConfig =
+        AnimConfig.of(context, AnimConfig.EMPHASIZED_DECELERATE, AnimConfig.MEDIUM1)
+
+    fun jumpOut(view: View) {
+        view.translationX = x.toFloat()
+    }
+
+    fun slideOut(view: View): Animator {
+        val animator =
+            outConfig.genericFloat(view.translationX, x.toFloat()) { view.translationX = it }
+        return animator
+    }
+
+    fun slideIn(view: View): Animator {
+        val animator = inConfig.genericFloat(view.translationX, 0f) { view.translationX = it }
+        return animator
+    }
+}
