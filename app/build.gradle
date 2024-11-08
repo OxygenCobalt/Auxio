@@ -90,7 +90,8 @@ dependencies {
     implementation "androidx.core:core-ktx:1.15.0"
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.activity:activity-ktx:1.9.3"
-    implementation "androidx.fragment:fragment-ktx:1.8.5"
+    // noinspection GradleDependency
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
 
     // Components
     // Deliberately kept on 1.2.1 to prevent a bug where the queue sheet will not collapse on
