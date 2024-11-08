@@ -100,4 +100,20 @@
     <string name="lbl_path">Yol</string>
     <string name="lbl_shuffle_shortcut_long">Hamısın Qarışdır</string>
     <string name="lbl_bitrate">Bit sürəti</string>
+    <string name="lbl_about">Haqqında</string>
+    <string name="lbl_copied">Köçürüldü</string>
+    <string name="lbl_report">Hesabat</string>
+    <string name="lbl_error_info">Xəta məlumatı</string>
+    <string name="lbl_author">Yaradıcı</string>
+    <string name="lbl_author_name">Alexander Capehart</string>
+    <string name="lbl_version">Versiya</string>
+    <string name="lbl_code">Mənbə kodu</string>
+    <string name="lbl_wiki">Viki</string>
+    <string name="lbl_library_counts">Kitabxana statistikası</string>
+    <string name="lbl_licenses">Lisenziyalar</string>
+    <string name="lbl_selection">Seçim</string>
+    <string name="lbl_path_style">Yol üsulu</string>
+    <string name="lbl_path_style_absolute">Tam</string>
+    <string name="lbl_path_style_relative">Nisbi</string>
+    <string name="lbl_windows_paths">Windows-a uyuşan yolları istifadə et</string>
 </resources>
