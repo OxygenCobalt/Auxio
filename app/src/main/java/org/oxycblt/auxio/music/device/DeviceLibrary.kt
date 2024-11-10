@@ -127,7 +127,25 @@ interface DeviceLibrary {
             processedSongs: Channel<RawSong>,
             separators: Separators,
             nameFactory: Name.Known.Factory
-        ): DeviceLibraryImpl
+        ): DeviceLibrary
+    }
+}
+
+class DeviceLibraryFactoryImpl2 @Inject constructor(
+    val interpreterFactory: Interpreter.Factory
+) : DeviceLibrary.Factory {
+    override suspend fun create(
+        rawSongs: Channel<RawSong>,
+        processedSongs: Channel<RawSong>,
+        separators: Separators,
+        nameFactory: Name.Known.Factory
+    ): DeviceLibrary {
+        val interpreter = interpreterFactory.create(nameFactory, separators)
+        rawSongs.forEachWithTimeout { rawSong ->
+            interpreter.consume(rawSong)
+            processedSongs.sendWithTimeout(rawSong)
+        }
+        return interpreter.resolve()
     }
 }
 
@@ -137,7 +155,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
         processedSongs: Channel<RawSong>,
         separators: Separators,
         nameFactory: Name.Known.Factory
-    ): DeviceLibraryImpl {
+    ): DeviceLibrary {
         val songGrouping = mutableMapOf<Music.UID, SongImpl>()
         val albumGrouping = mutableMapOf<String?, MutableMap<UUID?, Grouping<RawAlbum, SongImpl>>>()
         val artistGrouping = mutableMapOf<String?, MutableMap<UUID?, Grouping<RawArtist, Music>>>()
@@ -185,9 +203,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        pruneMusicBrainzIdTree(albumGrouping) { old, new ->
-            compareSongTracks(old, new)
-        }
+        pruneMusicBrainzIdTree(albumGrouping) { old, new -> compareSongTracks(old, new) }
         val albums = flattenMusicBrainzIdTree(albumGrouping) { AlbumImpl(it, nameFactory) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
@@ -214,7 +230,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
                     compareSongDates(old, new)
                 }
                 old is AlbumImpl && new is AlbumImpl -> {
-                   compareAlbumDates(old, new)
+                    compareAlbumDates(old, new)
                 }
                 else -> throw IllegalStateException()
             }
