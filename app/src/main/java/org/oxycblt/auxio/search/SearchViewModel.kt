@@ -36,7 +36,7 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.model.DeviceLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings

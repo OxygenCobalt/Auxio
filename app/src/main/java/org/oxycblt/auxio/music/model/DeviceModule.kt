@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.device
+package org.oxycblt.auxio.music.model
 
 import dagger.Binds
 import dagger.Module
@@ -25,6 +25,8 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DeviceModule {
-    @Binds fun deviceLibraryFactory(factory: DeviceLibraryFactoryImpl): DeviceLibrary.Factory
+interface ModelModule {
+    @Binds fun interpreter(factory: InterpreterImpl): Interpreter
+
+    @Binds fun preparer(preparerImpl: SongInterpreterImpl): SongInterpreter
 }

@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
+import org.oxycblt.auxio.music.stack.DeviceFile
 
 interface DeviceFiles {
     fun explore(uris: Flow<Uri>): Flow<DeviceFile>
@@ -107,10 +108,3 @@ constructor(
     }
 }
 
-data class DeviceFile(
-    val uri: Uri,
-    val mimeType: String,
-    val path: Path,
-    val size: Long,
-    val lastModified: Long
-)

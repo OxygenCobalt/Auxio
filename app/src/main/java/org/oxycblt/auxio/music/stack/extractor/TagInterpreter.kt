@@ -21,13 +21,13 @@ package org.oxycblt.auxio.music.stack.extractor
 import androidx.core.text.isDigitsOnly
 import androidx.media3.exoplayer.MetadataRetriever
 import javax.inject.Inject
-import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.stack.AudioFile
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * An processing abstraction over the [MetadataRetriever] and [TextTags] workflow that operates on
- * [RawSong] instances.
+ * [AudioFile] instances.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -35,31 +35,31 @@ interface TagInterpreter {
     /**
      * Poll to see if this worker is done processing.
      *
-     * @return A completed [RawSong] if done, null otherwise.
+     * @return A completed [AudioFile] if done, null otherwise.
      */
-    fun interpretOn(textTags: TextTags, rawSong: RawSong)
+    fun interpretOn(textTags: TextTags, audioFile: AudioFile)
 }
 
 class TagInterpreterImpl @Inject constructor() : TagInterpreter {
-    override fun interpretOn(textTags: TextTags, rawSong: RawSong) {
-        populateWithId3v2(rawSong, textTags.id3v2)
-        populateWithVorbis(rawSong, textTags.vorbis)
+    override fun interpretOn(textTags: TextTags, audioFile: AudioFile) {
+        populateWithId3v2(audioFile, textTags.id3v2)
+        populateWithVorbis(audioFile, textTags.vorbis)
     }
 
-    private fun populateWithId3v2(rawSong: RawSong, textFrames: Map<String, List<String>>) {
+    private fun populateWithId3v2(audioFile: AudioFile, textFrames: Map<String, List<String>>) {
         // Song
         (textFrames["TXXX:musicbrainz release track id"]
                 ?: textFrames["TXXX:musicbrainz_releasetrackid"])
-            ?.let { rawSong.musicBrainzId = it.first() }
-        textFrames["TIT2"]?.let { rawSong.name = it.first() }
-        textFrames["TSOT"]?.let { rawSong.sortName = it.first() }
+            ?.let { audioFile.musicBrainzId = it.first() }
+        textFrames["TIT2"]?.let { audioFile.name = it.first() }
+        textFrames["TSOT"]?.let { audioFile.sortName = it.first() }
 
         // Track.
-        textFrames["TRCK"]?.run { first().parseId3v2PositionField() }?.let { rawSong.track = it }
+        textFrames["TRCK"]?.run { first().parseId3v2PositionField() }?.let { audioFile.track = it }
 
         // Disc and it's subtitle name.
-        textFrames["TPOS"]?.run { first().parseId3v2PositionField() }?.let { rawSong.disc = it }
-        textFrames["TSST"]?.let { rawSong.subtitle = it.first() }
+        textFrames["TPOS"]?.run { first().parseId3v2PositionField() }?.let { audioFile.disc = it }
+        textFrames["TSST"]?.let { audioFile.subtitle = it.first() }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -77,27 +77,27 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
                 ?: textFrames["TDRC"]?.run { Date.from(first()) }
                 ?: textFrames["TDRL"]?.run { Date.from(first()) }
                 ?: parseId3v23Date(textFrames))
-            ?.let { rawSong.date = it }
+            ?.let { audioFile.date = it }
 
         // Album
         (textFrames["TXXX:musicbrainz album id"] ?: textFrames["TXXX:musicbrainz_albumid"])?.let {
-            rawSong.albumMusicBrainzId = it.first()
+            audioFile.albumMusicBrainzId = it.first()
         }
-        textFrames["TALB"]?.let { rawSong.albumName = it.first() }
-        textFrames["TSOA"]?.let { rawSong.albumSortName = it.first() }
+        textFrames["TALB"]?.let { audioFile.albumName = it.first() }
+        textFrames["TSOA"]?.let { audioFile.albumSortName = it.first() }
         (textFrames["TXXX:musicbrainz album type"]
                 ?: textFrames["TXXX:releasetype"]
                 ?:
                 // This is a non-standard iTunes extension
                 textFrames["GRP1"])
-            ?.let { rawSong.releaseTypes = it }
+            ?.let { audioFile.releaseTypes = it }
 
         // Artist
         (textFrames["TXXX:musicbrainz artist id"] ?: textFrames["TXXX:musicbrainz_artistid"])?.let {
-            rawSong.artistMusicBrainzIds = it
+            audioFile.artistMusicBrainzIds = it
         }
         (textFrames["TXXX:artists"] ?: textFrames["TPE1"] ?: textFrames["TXXX:artist"])?.let {
-            rawSong.artistNames = it
+            audioFile.artistNames = it
         }
         (textFrames["TXXX:artistssort"]
                 ?: textFrames["TXXX:artists_sort"]
@@ -105,19 +105,19 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
                 ?: textFrames["TSOP"]
                 ?: textFrames["artistsort"]
                 ?: textFrames["TXXX:artist sort"])
-            ?.let { rawSong.artistSortNames = it }
+            ?.let { audioFile.artistSortNames = it }
 
         // Album artist
         (textFrames["TXXX:musicbrainz album artist id"]
                 ?: textFrames["TXXX:musicbrainz_albumartistid"])
-            ?.let { rawSong.albumArtistMusicBrainzIds = it }
+            ?.let { audioFile.albumArtistMusicBrainzIds = it }
         (textFrames["TXXX:albumartists"]
                 ?: textFrames["TXXX:album_artists"]
                 ?: textFrames["TXXX:album artists"]
                 ?: textFrames["TPE2"]
                 ?: textFrames["TXXX:albumartist"]
                 ?: textFrames["TXXX:album artist"])
-            ?.let { rawSong.albumArtistNames = it }
+            ?.let { audioFile.albumArtistNames = it }
         (textFrames["TXXX:albumartistssort"]
                 ?: textFrames["TXXX:albumartists_sort"]
                 ?: textFrames["TXXX:albumartists sort"]
@@ -125,10 +125,10 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
                 // This is a non-standard iTunes extension
                 ?: textFrames["TSO2"]
                 ?: textFrames["TXXX:album artist sort"])
-            ?.let { rawSong.albumArtistSortNames = it }
+            ?.let { audioFile.albumArtistSortNames = it }
 
         // Genre
-        textFrames["TCON"]?.let { rawSong.genreNames = it }
+        textFrames["TCON"]?.let { audioFile.genreNames = it }
 
         // Compilation Flag
         (textFrames["TCMP"] // This is a non-standard itunes extension
@@ -137,17 +137,17 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
                 // Ignore invalid instances of this tag
                 if (it.size != 1 || it[0] != "1") return@let
                 // Change the metadata to be a compilation album made by "Various Artists"
-                rawSong.albumArtistNames =
-                    rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
-                rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
+                audioFile.albumArtistNames =
+                    audioFile.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
+                audioFile.releaseTypes = audioFile.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
             }
 
         // ReplayGain information
         textFrames["TXXX:replaygain_track_gain"]?.parseReplayGainAdjustment()?.let {
-            rawSong.replayGainTrackAdjustment = it
+            audioFile.replayGainTrackAdjustment = it
         }
         textFrames["TXXX:replaygain_album_gain"]?.parseReplayGainAdjustment()?.let {
-            rawSong.replayGainAlbumAdjustment = it
+            audioFile.replayGainAlbumAdjustment = it
         }
     }
 
@@ -185,26 +185,26 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
         }
     }
 
-    private fun populateWithVorbis(rawSong: RawSong, comments: Map<String, List<String>>) {
+    private fun populateWithVorbis(audioFile: AudioFile, comments: Map<String, List<String>>) {
         // Song
         (comments["musicbrainz_releasetrackid"] ?: comments["musicbrainz release track id"])?.let {
-            rawSong.musicBrainzId = it.first()
+            audioFile.musicBrainzId = it.first()
         }
-        comments["title"]?.let { rawSong.name = it.first() }
-        comments["titlesort"]?.let { rawSong.sortName = it.first() }
+        comments["title"]?.let { audioFile.name = it.first() }
+        comments["titlesort"]?.let { audioFile.sortName = it.first() }
 
         // Track.
         parseVorbisPositionField(
                 comments["tracknumber"]?.first(),
                 (comments["totaltracks"] ?: comments["tracktotal"] ?: comments["trackc"])?.first())
-            ?.let { rawSong.track = it }
+            ?.let { audioFile.track = it }
 
         // Disc and it's subtitle name.
         parseVorbisPositionField(
                 comments["discnumber"]?.first(),
                 (comments["totaldiscs"] ?: comments["disctotal"] ?: comments["discc"])?.first())
-            ?.let { rawSong.disc = it }
-        comments["discsubtitle"]?.let { rawSong.subtitle = it.first() }
+            ?.let { audioFile.disc = it }
+        comments["discsubtitle"]?.let { audioFile.subtitle = it.first() }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -215,58 +215,58 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
         (comments["originaldate"]?.run { Date.from(first()) }
                 ?: comments["date"]?.run { Date.from(first()) }
                 ?: comments["year"]?.run { Date.from(first()) })
-            ?.let { rawSong.date = it }
+            ?.let { audioFile.date = it }
 
         // Album
         (comments["musicbrainz_albumid"] ?: comments["musicbrainz album id"])?.let {
-            rawSong.albumMusicBrainzId = it.first()
+            audioFile.albumMusicBrainzId = it.first()
         }
-        comments["album"]?.let { rawSong.albumName = it.first() }
-        comments["albumsort"]?.let { rawSong.albumSortName = it.first() }
+        comments["album"]?.let { audioFile.albumName = it.first() }
+        comments["albumsort"]?.let { audioFile.albumSortName = it.first() }
         (comments["releasetype"] ?: comments["musicbrainz album type"])?.let {
-            rawSong.releaseTypes = it
+            audioFile.releaseTypes = it
         }
 
         // Artist
         (comments["musicbrainz_artistid"] ?: comments["musicbrainz artist id"])?.let {
-            rawSong.artistMusicBrainzIds = it
+            audioFile.artistMusicBrainzIds = it
         }
-        (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
+        (comments["artists"] ?: comments["artist"])?.let { audioFile.artistNames = it }
         (comments["artistssort"]
                 ?: comments["artists_sort"]
                 ?: comments["artists sort"]
                 ?: comments["artistsort"]
                 ?: comments["artist sort"])
-            ?.let { rawSong.artistSortNames = it }
+            ?.let { audioFile.artistSortNames = it }
 
         // Album artist
         (comments["musicbrainz_albumartistid"] ?: comments["musicbrainz album artist id"])?.let {
-            rawSong.albumArtistMusicBrainzIds = it
+            audioFile.albumArtistMusicBrainzIds = it
         }
         (comments["albumartists"]
                 ?: comments["album_artists"]
                 ?: comments["album artists"]
                 ?: comments["albumartist"]
                 ?: comments["album artist"])
-            ?.let { rawSong.albumArtistNames = it }
+            ?.let { audioFile.albumArtistNames = it }
         (comments["albumartistssort"]
                 ?: comments["albumartists_sort"]
                 ?: comments["albumartists sort"]
                 ?: comments["albumartistsort"]
                 ?: comments["album artist sort"])
-            ?.let { rawSong.albumArtistSortNames = it }
+            ?.let { audioFile.albumArtistSortNames = it }
 
         // Genre
-        comments["genre"]?.let { rawSong.genreNames = it }
+        comments["genre"]?.let { audioFile.genreNames = it }
 
         // Compilation Flag
         (comments["compilation"] ?: comments["itunescompilation"])?.let {
             // Ignore invalid instances of this tag
             if (it.size != 1 || it[0] != "1") return@let
             // Change the metadata to be a compilation album made by "Various Artists"
-            rawSong.albumArtistNames =
-                rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
-            rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
+            audioFile.albumArtistNames =
+                audioFile.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
+            audioFile.releaseTypes = audioFile.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
         }
 
         // ReplayGain information
@@ -278,10 +278,10 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
         // tags anyway.
         (comments["r128_track_gain"]?.parseR128Adjustment()
                 ?: comments["replaygain_track_gain"]?.parseReplayGainAdjustment())
-            ?.let { rawSong.replayGainTrackAdjustment = it }
+            ?.let { audioFile.replayGainTrackAdjustment = it }
         (comments["r128_album_gain"]?.parseR128Adjustment()
                 ?: comments["replaygain_album_gain"]?.parseReplayGainAdjustment())
-            ?.let { rawSong.replayGainAlbumAdjustment = it }
+            ?.let { audioFile.replayGainAlbumAdjustment = it }
     }
 
     private fun List<String>.parseR128Adjustment() =

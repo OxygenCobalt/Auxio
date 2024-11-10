@@ -31,7 +31,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.stack.AudioFile
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.stack.cache.TagDao
 import org.oxycblt.auxio.music.stack.cache.Tags
@@ -48,13 +48,13 @@ class CacheRepositoryTest {
         coVerifyAll { dao.readSongs() }
         assertFalse(cache.invalidated)
 
-        val songA = RawSong(mediaStoreId = 0, dateAdded = 1, dateModified = 2)
+        val songA = AudioFile(mediaStoreId = 0, dateAdded = 1, dateModified = 2)
         assertTrue(cache.populate(songA))
         assertEquals(RAW_SONG_A, songA)
 
         assertFalse(cache.invalidated)
 
-        val songB = RawSong(mediaStoreId = 9, dateAdded = 10, dateModified = 11)
+        val songB = AudioFile(mediaStoreId = 9, dateAdded = 10, dateModified = 11)
         assertTrue(cache.populate(songB))
         assertEquals(RAW_SONG_B, songB)
 
@@ -72,14 +72,14 @@ class CacheRepositoryTest {
         coVerifyAll { dao.readSongs() }
         assertFalse(cache.invalidated)
 
-        val nullStart = RawSong(mediaStoreId = 0, dateAdded = 0, dateModified = 0)
-        val nullEnd = RawSong(mediaStoreId = 0, dateAdded = 0, dateModified = 0)
+        val nullStart = AudioFile(mediaStoreId = 0, dateAdded = 0, dateModified = 0)
+        val nullEnd = AudioFile(mediaStoreId = 0, dateAdded = 0, dateModified = 0)
         assertFalse(cache.populate(nullStart))
         assertEquals(nullStart, nullEnd)
 
         assertTrue(cache.invalidated)
 
-        val songB = RawSong(mediaStoreId = 9, dateAdded = 10, dateModified = 11)
+        val songB = AudioFile(mediaStoreId = 9, dateAdded = 10, dateModified = 11)
         assertTrue(cache.populate(songB))
         assertEquals(RAW_SONG_B, songB)
 
@@ -179,7 +179,7 @@ class CacheRepositoryTest {
             )
 
         val RAW_SONG_A =
-            RawSong(
+            AudioFile(
                 mediaStoreId = 0,
                 dateAdded = 1,
                 dateModified = 2,
@@ -237,7 +237,7 @@ class CacheRepositoryTest {
             )
 
         val RAW_SONG_B =
-            RawSong(
+            AudioFile(
                 mediaStoreId = 9,
                 dateAdded = 10,
                 dateModified = 11,

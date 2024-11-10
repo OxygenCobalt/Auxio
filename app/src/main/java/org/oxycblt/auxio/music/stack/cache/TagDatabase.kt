@@ -28,7 +28,7 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.stack.AudioFile
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.stack.extractor.correctWhitespace
 import org.oxycblt.auxio.music.stack.extractor.splitEscaped
@@ -50,84 +50,84 @@ interface TagDao {
 @TypeConverters(Tags.Converters::class)
 data class Tags(
     /**
-     * The Uri of the [RawSong]'s audio file, obtained from SAF. This should ideally be a black box
+     * The Uri of the [AudioFile]'s audio file, obtained from SAF. This should ideally be a black box
      * only used for comparison.
      */
     @PrimaryKey val uri: String,
-    /** The latest date the [RawSong]'s audio file was modified, as a unix epoch timestamp. */
+    /** The latest date the [AudioFile]'s audio file was modified, as a unix epoch timestamp. */
     val dateModified: Long,
-    /** @see RawSong */
+    /** @see AudioFile */
     val durationMs: Long,
-    /** @see RawSong.replayGainTrackAdjustment */
+    /** @see AudioFile.replayGainTrackAdjustment */
     val replayGainTrackAdjustment: Float? = null,
-    /** @see RawSong.replayGainAlbumAdjustment */
+    /** @see AudioFile.replayGainAlbumAdjustment */
     val replayGainAlbumAdjustment: Float? = null,
-    /** @see RawSong.musicBrainzId */
+    /** @see AudioFile.musicBrainzId */
     var musicBrainzId: String? = null,
-    /** @see RawSong.name */
+    /** @see AudioFile.name */
     var name: String,
-    /** @see RawSong.sortName */
+    /** @see AudioFile.sortName */
     var sortName: String? = null,
-    /** @see RawSong.track */
+    /** @see AudioFile.track */
     var track: Int? = null,
-    /** @see RawSong.name */
+    /** @see AudioFile.name */
     var disc: Int? = null,
-    /** @See RawSong.subtitle */
+    /** @See AudioFile.subtitle */
     var subtitle: String? = null,
-    /** @see RawSong.date */
+    /** @see AudioFile.date */
     var date: Date? = null,
-    /** @see RawSong.albumMusicBrainzId */
+    /** @see AudioFile.albumMusicBrainzId */
     var albumMusicBrainzId: String? = null,
-    /** @see RawSong.albumName */
+    /** @see AudioFile.albumName */
     var albumName: String,
-    /** @see RawSong.albumSortName */
+    /** @see AudioFile.albumSortName */
     var albumSortName: String? = null,
-    /** @see RawSong.releaseTypes */
+    /** @see AudioFile.releaseTypes */
     var releaseTypes: List<String> = listOf(),
-    /** @see RawSong.artistMusicBrainzIds */
+    /** @see AudioFile.artistMusicBrainzIds */
     var artistMusicBrainzIds: List<String> = listOf(),
-    /** @see RawSong.artistNames */
+    /** @see AudioFile.artistNames */
     var artistNames: List<String> = listOf(),
-    /** @see RawSong.artistSortNames */
+    /** @see AudioFile.artistSortNames */
     var artistSortNames: List<String> = listOf(),
-    /** @see RawSong.albumArtistMusicBrainzIds */
+    /** @see AudioFile.albumArtistMusicBrainzIds */
     var albumArtistMusicBrainzIds: List<String> = listOf(),
-    /** @see RawSong.albumArtistNames */
+    /** @see AudioFile.albumArtistNames */
     var albumArtistNames: List<String> = listOf(),
-    /** @see RawSong.albumArtistSortNames */
+    /** @see AudioFile.albumArtistSortNames */
     var albumArtistSortNames: List<String> = listOf(),
-    /** @see RawSong.genreNames */
+    /** @see AudioFile.genreNames */
     var genreNames: List<String> = listOf()
 ) {
-    fun copyToRaw(rawSong: RawSong) {
-        rawSong.musicBrainzId = musicBrainzId
-        rawSong.name = name
-        rawSong.sortName = sortName
+    fun copyToRaw(audioFile: AudioFile) {
+        audioFile.musicBrainzId = musicBrainzId
+        audioFile.name = name
+        audioFile.sortName = sortName
 
-        rawSong.durationMs = durationMs
+        audioFile.durationMs = durationMs
 
-        rawSong.replayGainTrackAdjustment = replayGainTrackAdjustment
-        rawSong.replayGainAlbumAdjustment = replayGainAlbumAdjustment
+        audioFile.replayGainTrackAdjustment = replayGainTrackAdjustment
+        audioFile.replayGainAlbumAdjustment = replayGainAlbumAdjustment
 
-        rawSong.track = track
-        rawSong.disc = disc
-        rawSong.subtitle = subtitle
-        rawSong.date = date
+        audioFile.track = track
+        audioFile.disc = disc
+        audioFile.subtitle = subtitle
+        audioFile.date = date
 
-        rawSong.albumMusicBrainzId = albumMusicBrainzId
-        rawSong.albumName = albumName
-        rawSong.albumSortName = albumSortName
-        rawSong.releaseTypes = releaseTypes
+        audioFile.albumMusicBrainzId = albumMusicBrainzId
+        audioFile.albumName = albumName
+        audioFile.albumSortName = albumSortName
+        audioFile.releaseTypes = releaseTypes
 
-        rawSong.artistMusicBrainzIds = artistMusicBrainzIds
-        rawSong.artistNames = artistNames
-        rawSong.artistSortNames = artistSortNames
+        audioFile.artistMusicBrainzIds = artistMusicBrainzIds
+        audioFile.artistNames = artistNames
+        audioFile.artistSortNames = artistSortNames
 
-        rawSong.albumArtistMusicBrainzIds = albumArtistMusicBrainzIds
-        rawSong.albumArtistNames = albumArtistNames
-        rawSong.albumArtistSortNames = albumArtistSortNames
+        audioFile.albumArtistMusicBrainzIds = albumArtistMusicBrainzIds
+        audioFile.albumArtistNames = albumArtistNames
+        audioFile.albumArtistSortNames = albumArtistSortNames
 
-        rawSong.genreNames = genreNames
+        audioFile.genreNames = genreNames
     }
 
     object Converters {
@@ -144,30 +144,30 @@ data class Tags(
     }
 
     companion object {
-        fun fromRaw(rawSong: RawSong) =
+        fun fromRaw(audioFile: AudioFile) =
             Tags(
-                uri = rawSong.file.uri.toString(),
-                dateModified = rawSong.file.lastModified,
-                musicBrainzId = rawSong.musicBrainzId,
-                name = requireNotNull(rawSong.name) { "Invalid raw: No name" },
-                sortName = rawSong.sortName,
-                durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" },
-                replayGainTrackAdjustment = rawSong.replayGainTrackAdjustment,
-                replayGainAlbumAdjustment = rawSong.replayGainAlbumAdjustment,
-                track = rawSong.track,
-                disc = rawSong.disc,
-                subtitle = rawSong.subtitle,
-                date = rawSong.date,
-                albumMusicBrainzId = rawSong.albumMusicBrainzId,
-                albumName = requireNotNull(rawSong.albumName) { "Invalid raw: No album name" },
-                albumSortName = rawSong.albumSortName,
-                releaseTypes = rawSong.releaseTypes,
-                artistMusicBrainzIds = rawSong.artistMusicBrainzIds,
-                artistNames = rawSong.artistNames,
-                artistSortNames = rawSong.artistSortNames,
-                albumArtistMusicBrainzIds = rawSong.albumArtistMusicBrainzIds,
-                albumArtistNames = rawSong.albumArtistNames,
-                albumArtistSortNames = rawSong.albumArtistSortNames,
-                genreNames = rawSong.genreNames)
+                uri = audioFile.deviceFile.uri.toString(),
+                dateModified = audioFile.deviceFile.lastModified,
+                musicBrainzId = audioFile.musicBrainzId,
+                name = requireNotNull(audioFile.name) { "Invalid raw: No name" },
+                sortName = audioFile.sortName,
+                durationMs = requireNotNull(audioFile.durationMs) { "Invalid raw: No duration" },
+                replayGainTrackAdjustment = audioFile.replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = audioFile.replayGainAlbumAdjustment,
+                track = audioFile.track,
+                disc = audioFile.disc,
+                subtitle = audioFile.subtitle,
+                date = audioFile.date,
+                albumMusicBrainzId = audioFile.albumMusicBrainzId,
+                albumName = requireNotNull(audioFile.albumName) { "Invalid raw: No album name" },
+                albumSortName = audioFile.albumSortName,
+                releaseTypes = audioFile.releaseTypes,
+                artistMusicBrainzIds = audioFile.artistMusicBrainzIds,
+                artistNames = audioFile.artistNames,
+                artistSortNames = audioFile.artistSortNames,
+                albumArtistMusicBrainzIds = audioFile.albumArtistMusicBrainzIds,
+                albumArtistNames = audioFile.albumArtistNames,
+                albumArtistSortNames = audioFile.albumArtistSortNames,
+                genreNames = audioFile.genreNames)
     }
 }

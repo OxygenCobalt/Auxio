@@ -23,7 +23,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.model.DeviceLibrary
 import org.oxycblt.auxio.music.info.Name
 
 class PlaylistImpl

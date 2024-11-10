@@ -28,12 +28,12 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.music.stack.fs.DeviceFile
+import org.oxycblt.auxio.music.stack.AudioFile
+import org.oxycblt.auxio.music.stack.DeviceFile
 import timber.log.Timber as L
 
 interface TagResult {
-    class Hit(val rawSong: RawSong) : TagResult
+    class Hit(val audioFile: AudioFile) : TagResult
 
     class Miss(val file: DeviceFile) : TagResult
 }
@@ -76,9 +76,9 @@ constructor(
                 return
             }
             val textTags = TextTags(metadata)
-            val rawSong = RawSong(file = input)
-            tagInterpreter2.interpretOn(textTags, rawSong)
-            collector.emit(TagResult.Hit(rawSong))
+            val audioFile = AudioFile(deviceFile = input)
+            tagInterpreter2.interpretOn(textTags, audioFile)
+            collector.emit(TagResult.Hit(audioFile))
         }
 
         private suspend fun noMetadata(input: DeviceFile) {

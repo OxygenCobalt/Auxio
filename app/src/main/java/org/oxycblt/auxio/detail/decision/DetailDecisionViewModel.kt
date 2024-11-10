@@ -28,7 +28,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.model.DeviceLibrary
 import timber.log.Timber as L
 
 /**
