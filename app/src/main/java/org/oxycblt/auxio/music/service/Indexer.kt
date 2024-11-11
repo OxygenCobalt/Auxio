@@ -20,7 +20,7 @@ package org.oxycblt.auxio.music.service
 
 import android.content.Context
 import android.os.PowerManager
-import coil.ImageLoader
+import coil3.ImageLoader
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -20,7 +20,7 @@ package org.oxycblt.auxio.settings.categories
 
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R

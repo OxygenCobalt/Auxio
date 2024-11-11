@@ -18,11 +18,11 @@
  
 package org.oxycblt.auxio.image.extractor
 
-import coil.ImageLoader
-import coil.fetch.Fetcher
-import coil.key.Keyer
-import coil.request.Options
-import coil.size.Size
+import coil3.ImageLoader
+import coil3.fetch.Fetcher
+import coil3.key.Keyer
+import coil3.request.Options
+import coil3.size.Size
 import javax.inject.Inject
 
 class CoverKeyer @Inject constructor() : Keyer<Collection<Cover>> {

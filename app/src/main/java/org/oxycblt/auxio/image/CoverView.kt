@@ -39,9 +39,12 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
 import androidx.core.view.updateMarginsRelative
 import androidx.core.widget.ImageViewCompat
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.util.CoilUtils
+import coil3.ImageLoader
+import coil3.asImage
+import coil3.request.ImageRequest
+import coil3.request.target
+import coil3.request.transformations
+import coil3.util.CoilUtils
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -375,7 +378,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val request =
             ImageRequest.Builder(context)
                 .data(covers)
-                .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize))
+                .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize).asImage())
                 .target(image)
 
         val cornersTransformation =

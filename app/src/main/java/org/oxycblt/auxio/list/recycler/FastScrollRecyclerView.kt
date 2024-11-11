@@ -99,6 +99,21 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var dragStartY = 0f
     private var dragStartThumbOffset = 0
 
+    private var thumbEnabled = false
+        set(value) {
+            if (field == value) {
+                return
+            }
+
+            field = value
+            if (value) {
+                removeCallbacks(hideThumbRunnable)
+                hideScrollbar()
+            }
+
+            listener?.onFastScrollingChanged(field)
+        }
+
     private var dragging = false
         set(value) {
             if (field == value) {

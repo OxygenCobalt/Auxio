@@ -20,11 +20,11 @@ package org.oxycblt.auxio.widgets
 
 import android.content.res.Resources
 import android.graphics.Bitmap
-import coil.size.Size
-import coil.transform.Transformation
+import coil3.size.Size
+import coil3.transform.Transformation
 import kotlin.math.sqrt
 
-class WidgetBitmapTransformation(reduce: Float) : Transformation {
+class WidgetBitmapTransformation(reduce: Float) : Transformation() {
     private val metrics = Resources.getSystem().displayMetrics
     private val sw = metrics.widthPixels
     private val sh = metrics.heightPixels

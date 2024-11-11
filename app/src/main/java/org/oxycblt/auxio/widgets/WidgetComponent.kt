@@ -21,8 +21,9 @@ package org.oxycblt.auxio.widgets
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
-import coil.request.ImageRequest
-import coil.size.Size
+import coil3.request.ImageRequest
+import coil3.request.transformations
+import coil3.size.Size
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider

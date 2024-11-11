@@ -33,14 +33,16 @@ import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.extractor.metadata.flac.PictureFrame
 import androidx.media3.extractor.metadata.id3.ApicFrame
-import coil.decode.DataSource
-import coil.decode.ImageSource
-import coil.fetch.DrawableResult
-import coil.fetch.FetchResult
-import coil.fetch.SourceResult
-import coil.size.Dimension
-import coil.size.Size
-import coil.size.pxOrElse
+import coil3.DrawableImage
+import coil3.asImage
+import coil3.decode.DataSource
+import coil3.decode.ImageSource
+import coil3.fetch.FetchResult
+import coil3.fetch.ImageFetchResult
+import coil3.fetch.SourceFetchResult
+import coil3.size.Dimension
+import coil3.size.Size
+import coil3.size.pxOrElse
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -48,6 +50,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.asDeferred
 import kotlinx.coroutines.withContext
+import okio.FileSystem
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.image.CoverMode
@@ -101,8 +104,8 @@ constructor(
             }
         }
 
-        return SourceResult(
-            source = ImageSource(first.source().buffer(), context),
+        return SourceFetchResult(
+            source = ImageSource(first.source().buffer(), FileSystem.SYSTEM, null),
             mimeType = null,
             dataSource = DataSource.DISK)
     }
@@ -238,8 +241,8 @@ constructor(
         // It's way easier to map this into a drawable then try to serialize it into an
         // BufferedSource. Just make sure we mark it as "sampled" so Coil doesn't try to
         // load low-res mosaics into high-res ImageViews.
-        return DrawableResult(
-            drawable = mosaicBitmap.toDrawable(context.resources),
+        return ImageFetchResult(
+            image = mosaicBitmap.toDrawable(context.resources).asImage(),
             isSampled = true,
             dataSource = DataSource.DISK)
     }

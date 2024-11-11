@@ -19,9 +19,9 @@
 package org.oxycblt.auxio.image.extractor
 
 import android.graphics.Bitmap
-import coil.size.Size
-import coil.size.pxOrElse
-import coil.transform.Transformation
+import coil3.size.Size
+import coil3.size.pxOrElse
+import coil3.transform.Transformation
 import kotlin.math.min
 
 /**
@@ -30,7 +30,7 @@ import kotlin.math.min
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SquareCropTransformation : Transformation {
+class SquareCropTransformation : Transformation() {
     override val cacheKey: String
         get() = "SquareCropTransformation"
 

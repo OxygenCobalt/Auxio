@@ -18,13 +18,13 @@
  
 package org.oxycblt.auxio.image.extractor
 
-import coil.decode.DataSource
-import coil.drawable.CrossfadeDrawable
-import coil.request.ImageResult
-import coil.request.SuccessResult
-import coil.transition.CrossfadeTransition
-import coil.transition.Transition
-import coil.transition.TransitionTarget
+import coil3.decode.DataSource
+import coil3.request.ImageResult
+import coil3.request.SuccessResult
+import coil3.transition.CrossfadeDrawable
+import coil3.transition.CrossfadeTransition
+import coil3.transition.Transition
+import coil3.transition.TransitionTarget
 
 /**
  * A copy of [CrossfadeTransition.Factory] that also applies a transition to error results.

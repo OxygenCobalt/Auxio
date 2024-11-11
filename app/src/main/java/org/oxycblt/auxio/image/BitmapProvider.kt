@@ -21,10 +21,11 @@ package org.oxycblt.auxio.image
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.core.graphics.drawable.toBitmap
-import coil.ImageLoader
-import coil.request.Disposable
-import coil.request.ImageRequest
-import coil.size.Size
+import coil3.ImageLoader
+import coil3.request.Disposable
+import coil3.request.ImageRequest
+import coil3.size.Size
+import coil3.toBitmap
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Song
