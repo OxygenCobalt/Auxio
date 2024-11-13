@@ -378,7 +378,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val request =
             ImageRequest.Builder(context)
                 .data(covers)
-                .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize).asImage())
+                .error(
+                    StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize)
+                        .asImage())
                 .target(image)
 
         val cornersTransformation =

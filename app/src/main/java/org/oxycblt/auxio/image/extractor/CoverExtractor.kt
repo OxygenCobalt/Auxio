@@ -33,7 +33,6 @@ import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.extractor.metadata.flac.PictureFrame
 import androidx.media3.extractor.metadata.id3.ApicFrame
-import coil3.DrawableImage
 import coil3.asImage
 import coil3.decode.DataSource
 import coil3.decode.ImageSource

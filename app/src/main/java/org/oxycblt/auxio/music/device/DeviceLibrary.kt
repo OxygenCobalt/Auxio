@@ -185,9 +185,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        pruneMusicBrainzIdTree(albumGrouping) { old, new ->
-            compareSongTracks(old, new)
-        }
+        pruneMusicBrainzIdTree(albumGrouping) { old, new -> compareSongTracks(old, new) }
         val albums = flattenMusicBrainzIdTree(albumGrouping) { AlbumImpl(it, nameFactory) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
@@ -214,7 +212,7 @@ class DeviceLibraryFactoryImpl @Inject constructor() : DeviceLibrary.Factory {
                     compareSongDates(old, new)
                 }
                 old is AlbumImpl && new is AlbumImpl -> {
-                   compareAlbumDates(old, new)
+                    compareAlbumDates(old, new)
                 }
                 else -> throw IllegalStateException()
             }
