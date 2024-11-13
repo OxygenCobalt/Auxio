@@ -82,6 +82,20 @@ inline fun <reified R> ContentResolver.useQuery(
     block: (Cursor) -> R
 ) = safeQuery(uri, projection, selector, args).use(block)
 
+inline fun <reified R> ContentResolver.mapQuery(
+    uri: Uri,
+    projection: Array<out String>,
+    selector: String? = null,
+    args: Array<String>? = null,
+    crossinline transform: Cursor.() -> R
+) = useQuery(uri, projection, selector, args) {
+    sequence<R> {
+        while (it.moveToNext()) {
+            yield(it.transform())
+        }
+    }
+}
+
 /** Album art [MediaStore] database is not a built-in constant, have to define it ourselves. */
 private val externalCoversUri = Uri.parse("content://media/external/audio/albumart")
 
