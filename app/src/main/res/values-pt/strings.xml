@@ -66,7 +66,7 @@
     <string name="lbl_songs">Músicas</string>
     <string name="lbl_album_live">Álbum ao vivo</string>
     <string name="lbl_album_remix">Álbum remix</string>
-    <string name="lbl_single">Single</string>
+    <string name="lbl_single">Solteiro</string>
     <string name="lbl_compilation">Compilação</string>
     <string name="lbl_artist">Artista</string>
     <string name="lbl_rename">Renomear</string>
@@ -166,7 +166,7 @@
     <string name="lbl_ep">EP</string>
     <string name="lbl_ep_live">EP ao vivo</string>
     <string name="lbl_ep_remix">Álbum de Remix</string>
-    <string name="lbl_singles">Singles</string>
+    <string name="lbl_singles">Solteiros</string>
     <string name="lbl_single_live">Single ao vivo</string>
     <string name="lbl_single_remix">Single remix</string>
     <string name="lbl_compilation_live">Compilação ao vivo</string>
@@ -312,4 +312,10 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="fmt_selected">%d Selecionadas</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
+    <string name="lbl_more">Mais</string>
+    <string name="lbl_start_playback">Iniciar a reprodução</string>
+    <string name="lng_tasker_start">Inicia o Auxio usando o estado salvo anteriormente. Se nenhum estado salvo estiver disponível, todas as músicas serão embaralhadas. A reprodução começará imediatamente.\n\nAVISO: Tenha cuidado ao controlar este serviço, se você fechá-lo e tentar usá-lo novamente, provavelmente irá travar o aplicativo.</string>
+    <string name="lbl_feedback">Opinião</string>
+    <string name="lbl_github">Crie um problema no GitHub</string>
+    <string name="lbl_email">Envie um e-mail</string>
 </resources>
