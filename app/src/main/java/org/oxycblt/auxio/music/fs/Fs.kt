@@ -161,6 +161,8 @@ value class Components private constructor(val components: List<String>) {
     fun containing(other: Components) = Components(other.components.drop(components.size))
 
     companion object {
+        fun nil() = Components(listOf())
+
         /**
          * Parses a path string into a [Components] instance by the unix path separator (/).
          *
