@@ -63,9 +63,9 @@
     <string name="lbl_share">Del</string>
     <string name="lbl_size">Størrelse</string>
     <string name="lbl_bitrate">Bitrate</string>
-    <string name="lbl_sample_rate">Samplerate</string>
-    <string name="lbl_shuffle_shortcut_short">Omstokking</string>
-    <string name="lbl_shuffle_shortcut_long">Omstokk alt</string>
+    <string name="lbl_sample_rate">Samplingsfrekvens</string>
+    <string name="lbl_shuffle_shortcut_short">Omstokk</string>
+    <string name="lbl_shuffle_shortcut_long">Omstokk alle</string>
     <string name="lbl_cancel">Avbryt</string>
     <string name="lbl_about">Om</string>
     <string name="lng_widget">Vis og kontroller musikkavspilling</string>
@@ -140,7 +140,7 @@
     <string name="set_reindex_desc">Last inn musikkbiblioteket igjen, ved bruk av hurtiglagrede etiketter når mulig</string>
     <string name="err_no_dirs">Ingen mapper</string>
     <string name="fmt_lib_album_count">Album innlastet: %d</string>
-    <string name="lbl_library_counts">Biblioteksstatistikk</string>
+    <string name="lbl_library_counts">Bibliotekstatistikk</string>
     <string name="set_cover_mode_off">Av</string>
     <string name="set_round_mode">Avrundede hjørner</string>
     <string name="set_pre_amp">ReplayGain-forforsterkning</string>
@@ -174,11 +174,11 @@
     <string name="lbl_mix">DJ-miks</string>
     <string name="lbl_live_group">Live</string>
     <string name="lbl_playback">Spilles nå</string>
-    <string name="lbl_shuffle">Omstokking</string>
+    <string name="lbl_shuffle">Omstokk</string>
     <string name="lbl_sort_asc">Stigende</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_song_detail">Vis egenskaper</string>
-    <string name="lbl_props">Spor-egenskaper</string>
+    <string name="lbl_props">Sporegenskaper</string>
     <string name="set_repeat_pause">Pause ved gjentagelse</string>
     <string name="clr_red">Rød</string>
     <plurals name="fmt_album_count">
@@ -278,7 +278,7 @@
     <string name="lbl_path">Bane</string>
     <string name="lbl_selection">Utvalg</string>
     <string name="lbl_export_playlist">Eksportér spilleliste</string>
-    <string name="lbl_replaygain_track">ReplayGain sporjustering</string>
+    <string name="lbl_replaygain_track">ReplayGain-sporjustering</string>
     <string name="lbl_path_style_absolute">Absolutt</string>
     <string name="lbl_windows_paths">Bruk Windows-kompatible baner</string>
     <string name="lbl_path_style">Banestil</string>
@@ -294,7 +294,7 @@
     <string name="lbl_show_error_info">Vis mer</string>
     <string name="lbl_error_info">Feilopplysninger</string>
     <string name="lbl_copied">Kopiert</string>
-    <string name="lbl_replaygain_album">ReplayGain albumjustering</string>
+    <string name="lbl_replaygain_album">ReplayGain-albumjustering</string>
     <string name="lbl_author">Forfatter</string>
     <string name="lbl_donate">Donér</string>
     <string name="lbl_supporters">Støttespillere</string>
