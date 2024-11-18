@@ -309,4 +309,10 @@
     <string name="lbl_sort_direction">Retning</string>
     <string name="lbl_import">Importér</string>
     <string name="lbl_export">Eksportér</string>
+    <string name="lbl_more">Mer</string>
+    <string name="lng_tasker_start">Begynner Auxio med den forrige lagrede tilstanden. Dersom ingen lagrede tilstand er tilgjengelig, skal sangene omstokkes. Avspilling begynner med én gang.\n\nADVARSEL: Vær varsom med å kontrollere denne tjenesten, hvis du lukker den og så prøver å bruke den igjen, skal det nok få appen til å krasje.</string>
+    <string name="lbl_start_playback">Begynn avspilling</string>
+    <string name="lbl_github">Opprett en sak på GitHub</string>
+    <string name="lbl_feedback">Gi tilbakemelding</string>
+    <string name="lbl_email">Send en e-post</string>
 </resources>
