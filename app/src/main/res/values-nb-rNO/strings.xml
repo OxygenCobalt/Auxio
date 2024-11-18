@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_queue_add">Legg til i kø</string>
-    <string name="set_personalize">Personaliser</string>
+    <string name="set_personalize">Personalisér</string>
     <string name="fmt_lib_artist_count">Artister innlastet: %d</string>
     <string name="lbl_playlist_add">Legg til i spilleliste</string>
     <string name="lbl_code">Kildekode</string>
     <string name="lbl_licenses">Lisenser</string>
     <string name="set_theme_day">Lys</string>
     <string name="set_theme_auto">Automatisk</string>
-    <string name="set_replay_gain">Volymnormalisering</string>
+    <string name="set_replay_gain">Volumnormalisering</string>
     <string name="set_reindex">Gjenoppfrisk musikk</string>
     <string name="set_pre_amp_without">Justering uten etiketter</string>
     <string name="desc_tab_handle">Flytt denne fanen</string>
@@ -29,14 +29,14 @@
     <string name="lbl_artist">Artist</string>
     <string name="lbl_artists">Artister</string>
     <string name="lbl_genre">Sjanger</string>
-    <string name="lbl_genres">Sjangere</string>
+    <string name="lbl_genres">Sjangrer</string>
     <string name="lbl_new_playlist">Ny spilleliste</string>
     <string name="lbl_search">Søk</string>
     <string name="lbl_compilations">Sammenstillinger</string>
     <string name="lbl_compilation">Sammenstilling</string>
     <string name="lbl_compilation_live">Live-sammenstilling</string>
     <string name="lbl_compilation_remix">Remiks-kompilasjon</string>
-    <string name="lbl_appears_on">Bidrar på</string>
+    <string name="lbl_appears_on">Fremtrer på</string>
     <string name="lbl_filter_all">Alle</string>
     <string name="lbl_name">Navn</string>
     <string name="lbl_duration">Varighet</string>
@@ -56,7 +56,7 @@
     <string name="lbl_playlist">Spilleliste</string>
     <string name="lbl_playlists">Spillelister</string>
     <string name="lbl_delete">Slett</string>
-    <string name="lbl_disc">Disk</string>
+    <string name="lbl_disc">Platenummer</string>
     <string name="lbl_artist_details">Gå til artist</string>
     <string name="lbl_album_details">Gå til album</string>
     <string name="lbl_parent_detail">Vis</string>
@@ -96,8 +96,8 @@
     <string name="desc_shuffle">Skru omstokking på eller av</string>
     <string name="desc_remove_song">Fjern dette sporet</string>
     <string name="desc_song_handle">Flytt dette sporet</string>
-    <string name="def_disc">Ingen disk</string>
-    <string name="def_track">Ingen spor</string>
+    <string name="def_disc">Ingen plate</string>
+    <string name="def_track">Intet spor</string>
     <string name="cdc_aac">Avansert audio-koding (AAC)</string>
     <string name="clr_dynamic">Dynamisk</string>
     <string name="fmt_selected">%d valgt</string>
@@ -123,7 +123,7 @@
     <string name="lbl_add">Legg til</string>
     <string name="set_accent">Fargedrakt</string>
     <string name="set_black_mode">Svart drakt</string>
-    <string name="set_black_mode_desc">Ifør helsvart drakt</string>
+    <string name="set_black_mode_desc">Bruk en helsvart mørk drakt</string>
     <string name="set_theme">Drakt</string>
     <string name="set_theme_night">Mørk</string>
     <string name="set_music">Musikk</string>
@@ -134,7 +134,7 @@
     <string name="set_exclude_non_music_desc">Ignorer lydfiler som ikke er musikk, som f-eks. nettradioopptak</string>
     <string name="set_separators">Multiverdi-inndelere</string>
     <string name="set_separators_desc">Sett opp tegn for inndeling av flere etikett-verdier</string>
-    <string name="set_hide_collaborators_desc">Kun vis artister som er kreditert direkte på album (fungerer best med godt etikettmerkede bibliotek)</string>
+    <string name="set_hide_collaborators_desc">Vis kun artister som er kreditert direkte på album (fungerer best med velmerkede bibliotek)</string>
     <string name="set_rescan">Reskann musikk</string>
     <string name="set_dirs_mode_include_desc">Musikk vil <b>kun</b> innlastes fra mappene du legger til.</string>
     <string name="set_reindex_desc">Last inn musikkbiblioteket igjen, ved bruk av hurtiglagrede etiketter når mulig</string>
@@ -185,10 +185,10 @@
         <item quantity="one">%d album</item>
         <item quantity="other">%d album</item>
     </plurals>
-    <string name="lbl_sort_dsc">Synkende</string>
+    <string name="lbl_sort_dsc">Fallende</string>
     <string name="lbl_track">Spor</string>
     <string name="lbl_date_added">Dato tillagt</string>
-    <string name="lbl_sort">Sorter</string>
+    <string name="lbl_sort">Sortér</string>
     <string name="lbl_author_name">Utviklet av Alexander Capehart</string>
     <string name="lng_search_library">Søk i biblioteket ditt …</string>
     <string name="set_root_title">Innstillinger</string>
@@ -205,7 +205,7 @@
     <string name="set_rewind_prev_desc">Spol tilbake før hopp til forrige spor</string>
     <string name="set_pre_amp_warning">Advarsel: Endring av forforsterkning til høy positiv verdi kan resultere i forvrengning ved høyt lydtrykk på noen spor.</string>
     <string name="set_playback">Avspilling</string>
-    <string name="fmt_disc_no">Disk %d</string>
+    <string name="fmt_disc_no">Plate %d</string>
     <string name="set_display">Skjerm</string>
     <string name="set_lib_tabs">Biblioteksfaner</string>
     <string name="set_lib_tabs_desc">Endre synlighet og rekkefølgen på biblioteksfaner</string>
@@ -244,7 +244,7 @@
     <string name="lbl_single_live">Live-singel</string>
     <string name="lbl_indexing">Laster inn musikk</string>
     <string name="lbl_observing">Holder øye med musikkbiblioteket</string>
-    <string name="lbl_grant">Innvilg</string>
+    <string name="lbl_grant">Bevilge</string>
     <string name="lbl_singles">Singler</string>
     <string name="lbl_songs">Spor</string>
     <string name="lbl_album">Album</string>
@@ -283,7 +283,7 @@
     <string name="lbl_windows_paths">Bruk Windows-kompatible baner</string>
     <string name="lbl_path_style">Banestil</string>
     <string name="lbl_path_style_relative">Relativt</string>
-    <string name="set_remember_pause_desc">Hold avspilling eller pausing når man hopper over eller redigerer køen</string>
+    <string name="set_remember_pause_desc">Forbli spillende/pauset ved sporbytting eller køredigering</string>
     <string name="lng_playlist_imported">Spilleliste importert</string>
     <string name="lbl_imported_playlist">Importert spilleliste</string>
     <string name="lng_playlist_exported">Spilleliste eksportert</string>
