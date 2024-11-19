@@ -33,6 +33,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.stack.cache.TagDao
+import org.oxycblt.auxio.music.stack.cache.Tags
 
 class CacheRepositoryTest {
     @Test

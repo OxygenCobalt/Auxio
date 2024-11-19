@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music.metadata
+package org.oxycblt.auxio.music.stack.extractor
 
 import android.os.HandlerThread
 import androidx.media3.common.MediaItem
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.music.fs.DeviceFile
+import org.oxycblt.auxio.music.stack.fs.DeviceFile
 import java.util.concurrent.Future
 import javax.inject.Inject
 import timber.log.Timber as L

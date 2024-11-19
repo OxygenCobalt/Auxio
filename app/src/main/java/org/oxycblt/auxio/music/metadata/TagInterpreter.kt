@@ -26,6 +26,7 @@ import kotlin.math.min
 import org.oxycblt.auxio.image.extractor.CoverExtractor
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.stack.extractor.TextTags
 import org.oxycblt.auxio.util.nonZeroOrNull
 import timber.log.Timber as L
 

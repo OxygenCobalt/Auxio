@@ -27,6 +27,7 @@ import androidx.media3.extractor.metadata.vorbis.VorbisComment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.oxycblt.auxio.music.stack.extractor.TextTags
 
 class TextTagsTest {
     @Test

@@ -22,6 +22,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.oxycblt.auxio.music.stack.extractor.ExoPlayerTagExtractor
+import org.oxycblt.auxio.music.stack.extractor.ExoPlayerTagExtractorImpl
+import org.oxycblt.auxio.music.stack.extractor.TagInterpreter2
+import org.oxycblt.auxio.music.stack.extractor.TagInterpreter2Impl
 
 @Module
 @InstallIn(SingletonComponent::class)

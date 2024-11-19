@@ -22,8 +22,7 @@ import java.util.UUID
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.fs.DeviceFile
-import org.oxycblt.auxio.music.fs.Path
+import org.oxycblt.auxio.music.stack.fs.DeviceFile
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.ReleaseType
 

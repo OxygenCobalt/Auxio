@@ -1,11 +1,10 @@
-package org.oxycblt.auxio.music.cache
+package org.oxycblt.auxio.music.stack.cache
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.transform
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.music.fs.DeviceFile
-import org.oxycblt.auxio.music.metadata.TagResult
+import org.oxycblt.auxio.music.stack.fs.DeviceFile
+import org.oxycblt.auxio.music.stack.extractor.TagResult
 import javax.inject.Inject
 
 interface TagCache {

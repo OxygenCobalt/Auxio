@@ -16,12 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.metadata
+package org.oxycblt.auxio.music.stack.extractor
 
 import androidx.media3.common.Metadata
 import androidx.media3.extractor.metadata.id3.InternalFrame
 import androidx.media3.extractor.metadata.id3.TextInformationFrame
 import androidx.media3.extractor.metadata.vorbis.VorbisComment
+import org.oxycblt.auxio.music.metadata.correctWhitespace
 
 /**
  * Processing wrapper for [Metadata] that allows organized access to text-based audio tags.

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.cache
+package org.oxycblt.auxio.music.stack.cache
 
 import android.content.Context
 import androidx.room.Room
