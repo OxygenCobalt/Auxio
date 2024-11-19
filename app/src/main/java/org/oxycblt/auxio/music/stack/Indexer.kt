@@ -14,27 +14,33 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.toList
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.stack.cache.TagCache
 import org.oxycblt.auxio.music.stack.extractor.ExoPlayerTagExtractor
 import org.oxycblt.auxio.music.stack.extractor.TagResult
 import org.oxycblt.auxio.music.stack.fs.DeviceFile
 import org.oxycblt.auxio.music.stack.fs.DeviceFiles
-import org.oxycblt.auxio.music.stack.interpreter.Interpreter
+import org.oxycblt.auxio.music.user.UserLibrary
 import javax.inject.Inject
 
 interface Indexer {
-    suspend fun run(uris: List<Uri>): DeviceLibrary
+    suspend fun run(uris: List<Uri>, separators: Separators, nameFactory: Name.Known.Factory): LibraryResult
 }
+
+data class LibraryResult(val deviceLibrary: DeviceLibrary, val userLibrary: UserLibrary)
 
 class IndexerImpl @Inject constructor(
     private val deviceFiles: DeviceFiles,
     private val tagCache: TagCache,
     private val tagExtractor: ExoPlayerTagExtractor,
-    private val interpreter: Interpreter
+    private val deviceLibraryFactory: DeviceLibrary.Factory,
+    private val userLibraryFactory: UserLibrary.Factory
 ) : Indexer {
-    override suspend fun run(uris: List<Uri>) = coroutineScope {
+    override suspend fun run(uris: List<Uri>, separators: Separators, nameFactory: Name.Known.Factory) = coroutineScope {
         val deviceFiles = deviceFiles.explore(uris.asFlow())
             .flowOn(Dispatchers.IO)
             .buffer()
@@ -52,10 +58,12 @@ class IndexerImpl @Inject constructor(
             started = SharingStarted.WhileSubscribed(),
             replay = Int.MAX_VALUE
         )
-        val tagWrite = async { tagCache.write(merge(cacheSongs, sharedExtractorSongs)) }
-        val deviceLibrary = async { interpreter.interpret(sharedExtractorSongs) }.await()
+        val tagWrite = async(Dispatchers.IO) { tagCache.write(merge(cacheSongs, sharedExtractorSongs)) }
+        val rawPlaylists = async(Dispatchers.IO) { userLibraryFactory.query() }
+        val deviceLibrary = deviceLibraryFactory.create(merge(cacheSongs, sharedExtractorSongs), {}, separators, nameFactory)
+        val userLibrary = userLibraryFactory.create(rawPlaylists.await(), deviceLibrary, nameFactory)
         tagWrite.await()
-        deviceLibrary
+        LibraryResult(deviceLibrary, userLibrary)
     }
 
     private fun Flow<TagResult>.split(): Pair<Flow<DeviceFile>, Flow<RawSong>> {

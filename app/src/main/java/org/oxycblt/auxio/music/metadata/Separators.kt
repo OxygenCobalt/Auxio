@@ -1,7 +1,5 @@
-package org.oxycblt.auxio.music.stack.interpreter
+package org.oxycblt.auxio.music.metadata
 
-import org.oxycblt.auxio.music.metadata.CharSeparators
-import org.oxycblt.auxio.music.metadata.NoSeparators
 import org.oxycblt.auxio.music.stack.extractor.correctWhitespace
 import org.oxycblt.auxio.music.stack.extractor.splitEscaped
 

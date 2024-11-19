@@ -36,7 +36,7 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
-import org.oxycblt.auxio.music.stack.interpreter.Separators
+import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.stack.extractor.parseId3GenreNames
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.positiveOrNull
