@@ -22,6 +22,7 @@ import java.util.UUID
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.fs.DeviceFile
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.ReleaseType
@@ -32,23 +33,9 @@ import org.oxycblt.auxio.music.info.ReleaseType
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class RawSong(
-    /**
-     * The ID of the [SongImpl]'s audio file, obtained from MediaStore. Note that this ID is highly
-     * unstable and should only be used for accessing the audio file.
-     */
-    var mediaStoreId: Long? = null,
-    /** @see Song.dateAdded */
-    var dateAdded: Long? = null,
-    /** The latest date the [SongImpl]'s audio file was modified, as a unix epoch timestamp. */
-    var dateModified: Long? = null,
-    /** @see Song.path */
-    var path: Path? = null,
-    /** @see Song.size */
-    var size: Long? = null,
+    val file: DeviceFile,
     /** @see Song.durationMs */
     var durationMs: Long? = null,
-    /** @see Song.mimeType */
-    var extensionMimeType: String? = null,
     /** @see Song.replayGainAdjustment */
     var replayGainTrackAdjustment: Float? = null,
     /** @see Song.replayGainAdjustment */
