@@ -1,0 +1,25 @@
+Ang Auxio ay isang na lokal ng manunugtog at meron siya ng malakas, at maaasahan ng "UI" o "UX" ay walang dami ng mga walang-halaga sa mga iba pang ng mga manunugtog. Ito ay gumawa ng mga bago ng "media playback libraries", at ang Auxio naman ay meron ng superyor ng "library support" at ang mahusay na pakikinig ng mga musika mo at kaysa sa mga iba ng mga "manunugtog na apps" ng gamit ng mga obseleto ng mga tungkulin. Madaling salita, <b>Tumugtog ito ng mga musika.</b>
+
+<b>Mga Tampok</b>
+
+- Pag-playback batay sa Media3 ExoPlayer
+- Snappy UI na nagmula sa pinakabagong mga alituntunin sa Material Design
+- Opinionated UX na inuuna ang kadalian ng paggamit kaysa sa mga edge case
+- Nako-customize na pag-uugali
+- Suporta para sa mga numero ng disc, maramihang mga artist, mga uri ng release,
+tumpak/orihinal na mga petsa, pag-uuri ng mga tag, at higit pa
+- Advanced na sistema ng artist na pinag-iisa ang mga artist at album artist
+- Pamamahala ng folder na may kamalayan sa SD Card
+- Maaasahang pag-andar ng playlist
+- Pagpapatuloy ng estado ng pag-playback
+- Suporta sa Android auto
+- Awtomatikong walang gap na pag-playback
+- Buong suporta sa ReplayGain (Sa mga MP3, FLAC, OGG, OPUS, at MP4 na mga file)
+- Panlabas na suporta sa equalizer (hal. Wavelet)
+- Gilid-sa-gilid
+- Naka-embed na sumasaklaw sa suporta
+- Pag-andar ng paghahanap
+- Autoplay ng headset
+- Mga naka-istilong widget na awtomatikong umaangkop sa kanilang laki
+- Ganap na pribado at offline
+- Walang mga bilugan na cover ng album (bilang default).
