@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.metadata
+package org.oxycblt.auxio.music.stack.extractor
 
 import org.oxycblt.auxio.util.positiveOrNull
 

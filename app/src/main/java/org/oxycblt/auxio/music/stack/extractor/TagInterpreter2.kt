@@ -24,8 +24,6 @@ import javax.inject.Inject
 import org.oxycblt.auxio.image.extractor.CoverExtractor
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
-import org.oxycblt.auxio.music.metadata.parseVorbisPositionField
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**

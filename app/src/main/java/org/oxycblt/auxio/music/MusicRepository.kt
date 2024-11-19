@@ -37,8 +37,7 @@ import org.oxycblt.auxio.music.cache.CacheRepository
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.metadata.Separators
-import org.oxycblt.auxio.music.metadata.TagExtractor
+import org.oxycblt.auxio.music.stack.interpreter.Separators
 import org.oxycblt.auxio.music.user.MutableUserLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.util.DEFAULT_TIMEOUT

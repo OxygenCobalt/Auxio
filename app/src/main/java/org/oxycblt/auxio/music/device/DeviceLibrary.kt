@@ -35,7 +35,7 @@ import org.oxycblt.auxio.music.stack.fs.Path
 import org.oxycblt.auxio.music.stack.fs.contentResolverSafe
 import org.oxycblt.auxio.music.stack.fs.useQuery
 import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.metadata.Separators
+import org.oxycblt.auxio.music.stack.interpreter.Separators
 import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.sendWithTimeout
 import org.oxycblt.auxio.util.unlikelyToBeNull

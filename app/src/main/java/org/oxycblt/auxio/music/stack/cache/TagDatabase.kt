@@ -30,8 +30,8 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.music.metadata.correctWhitespace
-import org.oxycblt.auxio.music.metadata.splitEscaped
+import org.oxycblt.auxio.music.stack.extractor.correctWhitespace
+import org.oxycblt.auxio.music.stack.extractor.splitEscaped
 
 @Database(entities = [Tags::class], version = 50, exportSchema = false)
 abstract class TagDatabase : RoomDatabase() {

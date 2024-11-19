@@ -31,7 +31,7 @@ import org.oxycblt.auxio.music.stack.fs.Components
 import org.oxycblt.auxio.music.stack.fs.Path
 import org.oxycblt.auxio.music.stack.fs.Volume
 import org.oxycblt.auxio.music.stack.fs.VolumeManager
-import org.oxycblt.auxio.music.metadata.correctWhitespace
+import org.oxycblt.auxio.music.stack.extractor.correctWhitespace
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
