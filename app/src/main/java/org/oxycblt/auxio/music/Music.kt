@@ -30,8 +30,8 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.image.extractor.ParentCover
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.fs.MimeType
-import org.oxycblt.auxio.music.fs.Path
+import org.oxycblt.auxio.music.stack.fs.MimeType
+import org.oxycblt.auxio.music.stack.fs.Path
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name

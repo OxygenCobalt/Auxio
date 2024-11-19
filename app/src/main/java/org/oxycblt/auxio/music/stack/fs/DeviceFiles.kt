@@ -31,9 +31,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.auxio.music.fs.Components
-import org.oxycblt.auxio.music.fs.contentResolverSafe
-import org.oxycblt.auxio.music.fs.useQuery
 
 interface DeviceFiles {
     fun explore(uris: Flow<Uri>): Flow<DeviceFile>

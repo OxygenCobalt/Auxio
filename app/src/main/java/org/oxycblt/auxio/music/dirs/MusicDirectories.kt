@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.music.dirs
 
-import org.oxycblt.auxio.music.fs.Path
+import org.oxycblt.auxio.music.stack.fs.Path
 
 /**
  * Represents the configuration for specific directories to filter to/from when loading music.

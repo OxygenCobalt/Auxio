@@ -31,9 +31,9 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.fs.Path
-import org.oxycblt.auxio.music.fs.contentResolverSafe
-import org.oxycblt.auxio.music.fs.useQuery
+import org.oxycblt.auxio.music.stack.fs.Path
+import org.oxycblt.auxio.music.stack.fs.contentResolverSafe
+import org.oxycblt.auxio.music.stack.fs.useQuery
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.util.forEachWithTimeout

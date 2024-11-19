@@ -27,7 +27,6 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.util.Clock
 import androidx.media3.common.util.HandlerWrapper
 import androidx.media3.exoplayer.LoadingInfo
-import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.analytics.PlayerId
 import androidx.media3.exoplayer.source.MediaPeriod
 import androidx.media3.exoplayer.source.MediaSource
@@ -40,7 +39,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.music.fs.toAudioUri
+import org.oxycblt.auxio.music.stack.fs.toAudioUri
 import org.oxycblt.auxio.util.forEachWithTimeout
 import org.oxycblt.auxio.util.sendWithTimeout
 import timber.log.Timber as L

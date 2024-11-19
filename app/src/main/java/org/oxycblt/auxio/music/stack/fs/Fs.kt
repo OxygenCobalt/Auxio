@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.stack.fs
 
 import android.content.Context
 import android.media.MediaFormat
@@ -221,7 +221,7 @@ class VolumeManagerImpl @Inject constructor(private val storageManager: StorageM
             get() = storageVolume.mediaStoreVolumeNameCompat
 
         override val components
-            get() = storageVolume.directoryCompat?.let(Components::parseUnix)
+            get() = storageVolume.directoryCompat?.let(Components.Companion::parseUnix)
 
         override fun resolveName(context: Context) = storageVolume.getDescriptionCompat(context)
     }
@@ -234,7 +234,7 @@ class VolumeManagerImpl @Inject constructor(private val storageManager: StorageM
             get() = storageVolume.mediaStoreVolumeNameCompat
 
         override val components
-            get() = storageVolume.directoryCompat?.let(Components::parseUnix)
+            get() = storageVolume.directoryCompat?.let(Components.Companion::parseUnix)
 
         override fun resolveName(context: Context) = storageVolume.getDescriptionCompat(context)
     }

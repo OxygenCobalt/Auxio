@@ -28,10 +28,10 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.fs.MimeType
-import org.oxycblt.auxio.music.fs.toAlbumCoverUri
-import org.oxycblt.auxio.music.fs.toAudioUri
-import org.oxycblt.auxio.music.fs.toSongCoverUri
+import org.oxycblt.auxio.music.stack.fs.MimeType
+import org.oxycblt.auxio.music.stack.fs.toAlbumCoverUri
+import org.oxycblt.auxio.music.stack.fs.toAudioUri
+import org.oxycblt.auxio.music.stack.fs.toSongCoverUri
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name

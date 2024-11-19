@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.stack.fs
 
 import android.content.ContentUris
 import android.content.Context

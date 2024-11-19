@@ -31,8 +31,8 @@ import org.oxycblt.auxio.music.device.ArtistImpl
 import org.oxycblt.auxio.music.device.DeviceLibraryImpl
 import org.oxycblt.auxio.music.device.GenreImpl
 import org.oxycblt.auxio.music.device.SongImpl
-import org.oxycblt.auxio.music.fs.Components
-import org.oxycblt.auxio.music.fs.Path
+import org.oxycblt.auxio.music.stack.fs.Components
+import org.oxycblt.auxio.music.stack.fs.Path
 
 class DeviceLibraryTest {
 

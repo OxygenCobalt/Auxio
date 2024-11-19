@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.stack.fs
 
 import android.content.ContentResolver
 import android.content.Context
@@ -35,12 +35,6 @@ class FsModule {
     @Provides
     fun volumeManager(@ApplicationContext context: Context): VolumeManager =
         VolumeManagerImpl(context.getSystemServiceCompat(StorageManager::class))
-
-    @Provides
-    fun mediaStoreExtractor(
-        @ApplicationContext context: Context,
-        mediaStorePathInterpreterFactory: MediaStorePathInterpreter.Factory
-    ) = MediaStoreExtractor.from(context, mediaStorePathInterpreterFactory)
 
     @Provides
     fun mediaStorePathInterpreterFactory(

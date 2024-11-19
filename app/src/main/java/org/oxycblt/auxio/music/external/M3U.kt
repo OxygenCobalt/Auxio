@@ -27,10 +27,10 @@ import java.io.InputStreamReader
 import java.io.OutputStream
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.fs.Components
-import org.oxycblt.auxio.music.fs.Path
-import org.oxycblt.auxio.music.fs.Volume
-import org.oxycblt.auxio.music.fs.VolumeManager
+import org.oxycblt.auxio.music.stack.fs.Components
+import org.oxycblt.auxio.music.stack.fs.Path
+import org.oxycblt.auxio.music.stack.fs.Volume
+import org.oxycblt.auxio.music.stack.fs.VolumeManager
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.unlikelyToBeNull
