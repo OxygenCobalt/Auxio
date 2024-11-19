@@ -27,6 +27,7 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.util.Clock
 import androidx.media3.common.util.HandlerWrapper
 import androidx.media3.exoplayer.LoadingInfo
+import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.analytics.PlayerId
 import androidx.media3.exoplayer.source.MediaPeriod
 import androidx.media3.exoplayer.source.MediaSource

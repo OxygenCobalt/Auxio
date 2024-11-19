@@ -28,5 +28,9 @@ import dagger.hilt.components.SingletonComponent
 interface MetadataModule {
     @Binds fun tagInterpreter(interpreter: TagInterpreterImpl): TagInterpreter
 
+    @Binds fun tagInterpreter2(interpreter: TagInterpreter2Impl): TagInterpreter2
+
+    @Binds fun exoPlayerTagExtractor(extractor: ExoPlayerTagExtractorImpl): ExoPlayerTagExtractor
+
     @Binds fun audioPropertiesFactory(factory: AudioPropertiesFactoryImpl): AudioProperties.Factory
 }
