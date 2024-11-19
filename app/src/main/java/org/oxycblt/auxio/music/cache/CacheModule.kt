@@ -30,20 +30,20 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface CacheModule {
-    @Binds fun cacheRepository(cacheRepository: CacheRepositoryImpl): CacheRepository
+interface TagCacheModule {
+    @Binds fun tagCache(cacheRepository: TagCacheImpl): TagCache
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-class CacheRoomModule {
+class TagDatabaseModule {
     @Singleton
     @Provides
     fun database(@ApplicationContext context: Context) =
         Room.databaseBuilder(
-                context.applicationContext, CacheDatabase::class.java, "music_cache.db")
+                context.applicationContext, TagDatabase::class.java, "music_cache.db")
             .fallbackToDestructiveMigration()
             .build()
 
-    @Provides fun cachedSongsDao(database: CacheDatabase) = database.cachedSongsDao()
+    @Provides fun tagsDao(database: TagDatabase) = database.cachedSongsDao()
 }

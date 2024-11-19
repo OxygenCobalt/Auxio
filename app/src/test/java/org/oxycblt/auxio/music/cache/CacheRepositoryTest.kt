@@ -38,7 +38,7 @@ class CacheRepositoryTest {
     @Test
     fun cache_read_noInvalidate() {
         val dao =
-            mockk<CachedSongsDao> {
+            mockk<TagDao> {
                 coEvery { readSongs() }.returnsMany(listOf(CACHED_SONG_A, CACHED_SONG_B))
             }
         val cacheRepository = CacheRepositoryImpl(dao)
@@ -62,7 +62,7 @@ class CacheRepositoryTest {
     @Test
     fun cache_read_invalidate() {
         val dao =
-            mockk<CachedSongsDao> {
+            mockk<TagDao> {
                 coEvery { readSongs() }.returnsMany(listOf(CACHED_SONG_A, CACHED_SONG_B))
             }
         val cacheRepository = CacheRepositoryImpl(dao)
@@ -86,7 +86,7 @@ class CacheRepositoryTest {
 
     @Test
     fun cache_read_crashes() {
-        val dao = mockk<CachedSongsDao> { coEvery { readSongs() } throws IllegalStateException() }
+        val dao = mockk<TagDao> { coEvery { readSongs() } throws IllegalStateException() }
         val cacheRepository = CacheRepositoryImpl(dao)
         assertEquals(null, runBlocking { cacheRepository.readCache() })
         coVerifyAll { dao.readSongs() }
@@ -94,10 +94,10 @@ class CacheRepositoryTest {
 
     @Test
     fun cache_write() {
-        var currentlyStoredSongs = listOf<CachedSong>()
-        val insertSongsArg = slot<List<CachedSong>>()
+        var currentlyStoredSongs = listOf<Tags>()
+        val insertSongsArg = slot<List<Tags>>()
         val dao =
-            mockk<CachedSongsDao> {
+            mockk<TagDao> {
                 coEvery { nukeSongs() } answers { currentlyStoredSongs = listOf() }
 
                 coEvery { insertSongs(capture(insertSongsArg)) } answers
@@ -122,7 +122,7 @@ class CacheRepositoryTest {
     @Test
     fun cache_write_nukeCrashes() {
         val dao =
-            mockk<CachedSongsDao> {
+            mockk<TagDao> {
                 coEvery { nukeSongs() } throws IllegalStateException()
                 coEvery { insertSongs(listOf()) } just Runs
             }
@@ -134,7 +134,7 @@ class CacheRepositoryTest {
     @Test
     fun cache_write_insertCrashes() {
         val dao =
-            mockk<CachedSongsDao> {
+            mockk<TagDao> {
                 coEvery { nukeSongs() } just Runs
                 coEvery { insertSongs(listOf()) } throws IllegalStateException()
             }
@@ -148,7 +148,7 @@ class CacheRepositoryTest {
 
     private companion object {
         val CACHED_SONG_A =
-            CachedSong(
+            Tags(
                 mediaStoreId = 0,
                 dateAdded = 1,
                 dateModified = 2,
@@ -206,7 +206,7 @@ class CacheRepositoryTest {
             )
 
         val CACHED_SONG_B =
-            CachedSong(
+            Tags(
                 mediaStoreId = 9,
                 dateAdded = 10,
                 dateModified = 11,

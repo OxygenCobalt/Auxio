@@ -22,6 +22,7 @@ import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
@@ -32,36 +33,32 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 49, exportSchema = false)
-abstract class CacheDatabase : RoomDatabase() {
-    abstract fun cachedSongsDao(): CachedSongsDao
+@Database(entities = [Tags::class], version = 50, exportSchema = false)
+abstract class TagDatabase : RoomDatabase() {
+    abstract fun cachedSongsDao(): TagDao
 }
 
 @Dao
-interface CachedSongsDao {
-    @Query("SELECT * FROM CachedSong") suspend fun readSongs(): List<CachedSong>
+interface TagDao {
+    @Query("SELECT * FROM Tags WHERE uri = :uri AND dateModified = :dateModified")
+    suspend fun selectTags(uri: String, dateModified: Long): Tags?
 
-    @Query("DELETE FROM CachedSong") suspend fun nukeSongs()
-
-    @Insert suspend fun insertSongs(songs: List<CachedSong>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateTags(tags: Tags)
 }
 
 @Entity
-@TypeConverters(CachedSong.Converters::class)
-data class CachedSong(
+@TypeConverters(Tags.Converters::class)
+data class Tags(
     /**
-     * The ID of the [RawSong]'s audio file, obtained from MediaStore. Note that this ID is highly
-     * unstable and should only be used for accessing the audio file.
+     * The Uri of the [RawSong]'s audio file, obtained from SAF.
+     * This should ideally be a black box only used for comparison.
      */
-    @PrimaryKey var mediaStoreId: Long,
-    /** @see RawSong.dateAdded */
-    var dateAdded: Long,
+    @PrimaryKey val uri: String,
     /** The latest date the [RawSong]'s audio file was modified, as a unix epoch timestamp. */
-    var dateModified: Long,
-    /** @see RawSong.size */
-    var size: Long? = null,
+    val dateModified: Long,
     /** @see RawSong */
-    var durationMs: Long,
+    val durationMs: Long,
     /** @see RawSong.replayGainTrackAdjustment */
     val replayGainTrackAdjustment: Float? = null,
     /** @see RawSong.replayGainAlbumAdjustment */
@@ -110,7 +107,6 @@ data class CachedSong(
         rawSong.name = name
         rawSong.sortName = sortName
 
-        rawSong.size = size
         rawSong.durationMs = durationMs
 
         rawSong.replayGainTrackAdjustment = replayGainTrackAdjustment
@@ -154,16 +150,12 @@ data class CachedSong(
 
     companion object {
         fun fromRaw(rawSong: RawSong) =
-            CachedSong(
-                mediaStoreId =
-                    requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No MediaStore ID" },
-                dateAdded = requireNotNull(rawSong.dateAdded) { "Invalid raw: No date added" },
-                dateModified =
-                    requireNotNull(rawSong.dateModified) { "Invalid raw: No date modified" },
+            Tags(
+                uri = rawSong.file.uri.toString(),
+                dateModified = rawSong.file.lastModified,
                 musicBrainzId = rawSong.musicBrainzId,
                 name = requireNotNull(rawSong.name) { "Invalid raw: No name" },
                 sortName = rawSong.sortName,
-                size = rawSong.size,
                 durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" },
                 replayGainTrackAdjustment = rawSong.replayGainTrackAdjustment,
                 replayGainAlbumAdjustment = rawSong.replayGainAlbumAdjustment,

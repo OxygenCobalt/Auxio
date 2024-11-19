@@ -77,7 +77,7 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
                     // rather than just being a glorified async.
                     val lastModified = cursor.getLong(lastModifiedIndex)
                     val size = cursor.getLong(sizeIndex)
-                    emit(DeviceFile(childUri, mimeType, path, lastModified))
+                    emit(DeviceFile(childUri, mimeType, path, size, lastModified))
                 }
             }
             // Hypothetically, we could just emitAll as we recurse into a new directory,
@@ -96,7 +96,7 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED,
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED
             )
     }
 }
