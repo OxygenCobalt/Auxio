@@ -39,11 +39,11 @@ constructor(
     context: Context,
     foregroundListener: ForegroundListener,
     private val invalidator: Invalidator,
-    indexerFactory: Indexer.Factory,
+    indexingHolderFactory: IndexingHolder.Factory,
     musicBrowserFactory: MusicBrowser.Factory,
     private val musicRepository: MusicRepository
 ) : MusicBrowser.Invalidator {
-    private val indexer = indexerFactory.create(context, foregroundListener)
+    private val indexer = indexingHolderFactory.create(context, foregroundListener)
     private val musicBrowser = musicBrowserFactory.create(context, this)
     private val dispatchJob = Job()
     private val dispatchScope = CoroutineScope(dispatchJob + Dispatchers.Default)
@@ -53,7 +53,7 @@ constructor(
     class Factory
     @Inject
     constructor(
-        private val indexerFactory: Indexer.Factory,
+        private val indexingHolderFactory: IndexingHolder.Factory,
         private val musicBrowserFactory: MusicBrowser.Factory,
         private val musicRepository: MusicRepository
     ) {
@@ -66,7 +66,7 @@ constructor(
                 context,
                 foregroundListener,
                 invalidator,
-                indexerFactory,
+                indexingHolderFactory,
                 musicBrowserFactory,
                 musicRepository)
     }

@@ -36,7 +36,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import timber.log.Timber as L
 
-class Indexer
+class IndexingHolder
 private constructor(
     override val workerContext: Context,
     private val foregroundListener: ForegroundListener,
@@ -60,7 +60,7 @@ private constructor(
         private val contentObserver: SystemContentObserver
     ) {
         fun create(context: Context, listener: ForegroundListener) =
-            Indexer(
+            IndexingHolder(
                 context,
                 listener,
                 playbackManager,
