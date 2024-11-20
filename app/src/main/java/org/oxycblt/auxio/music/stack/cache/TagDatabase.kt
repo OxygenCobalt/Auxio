@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * CacheDatabase.kt is part of Auxio.
+ * TagDatabase.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,16 +43,15 @@ interface TagDao {
     @Query("SELECT * FROM Tags WHERE uri = :uri AND dateModified = :dateModified")
     suspend fun selectTags(uri: String, dateModified: Long): Tags?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateTags(tags: Tags)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateTags(tags: Tags)
 }
 
 @Entity
 @TypeConverters(Tags.Converters::class)
 data class Tags(
     /**
-     * The Uri of the [RawSong]'s audio file, obtained from SAF.
-     * This should ideally be a black box only used for comparison.
+     * The Uri of the [RawSong]'s audio file, obtained from SAF. This should ideally be a black box
+     * only used for comparison.
      */
     @PrimaryKey val uri: String,
     /** The latest date the [RawSong]'s audio file was modified, as a unix epoch timestamp. */
@@ -77,8 +76,6 @@ data class Tags(
     var subtitle: String? = null,
     /** @see RawSong.date */
     var date: Date? = null,
-    /** @see RawSong.coverPerceptualHash */
-    var coverPerceptualHash: String? = null,
     /** @see RawSong.albumMusicBrainzId */
     var albumMusicBrainzId: String? = null,
     /** @see RawSong.albumName */
@@ -116,8 +113,6 @@ data class Tags(
         rawSong.disc = disc
         rawSong.subtitle = subtitle
         rawSong.date = date
-
-        rawSong.coverPerceptualHash = coverPerceptualHash
 
         rawSong.albumMusicBrainzId = albumMusicBrainzId
         rawSong.albumName = albumName
@@ -163,7 +158,6 @@ data class Tags(
                 disc = rawSong.disc,
                 subtitle = rawSong.subtitle,
                 date = rawSong.date,
-                coverPerceptualHash = rawSong.coverPerceptualHash,
                 albumMusicBrainzId = rawSong.albumMusicBrainzId,
                 albumName = requireNotNull(rawSong.albumName) { "Invalid raw: No album name" },
                 albumSortName = rawSong.albumSortName,

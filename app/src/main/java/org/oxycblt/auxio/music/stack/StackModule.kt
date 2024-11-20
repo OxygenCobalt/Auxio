@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * MetadataModule.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * StackModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.metadata
+package org.oxycblt.auxio.music.stack
 
 import dagger.Binds
 import dagger.Module
@@ -25,7 +25,6 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface MetadataModule {
-    @Binds
-    fun audioPropertiesFactory(interpreter: AudioPropertiesFactoryImpl): AudioProperties.Factory
+interface StackModule {
+    @Binds fun indexer(impl: IndexerImpl): Indexer
 }

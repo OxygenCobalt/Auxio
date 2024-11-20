@@ -40,8 +40,7 @@ class TagDatabaseModule {
     @Singleton
     @Provides
     fun database(@ApplicationContext context: Context) =
-        Room.databaseBuilder(
-                context.applicationContext, TagDatabase::class.java, "music_cache.db")
+        Room.databaseBuilder(context.applicationContext, TagDatabase::class.java, "music_cache.db")
             .fallbackToDestructiveMigration()
             .build()
 

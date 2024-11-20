@@ -22,9 +22,9 @@ import java.util.UUID
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.stack.fs.DeviceFile
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.music.stack.fs.DeviceFile
 
 /**
  * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.
@@ -53,10 +53,6 @@ data class RawSong(
     var subtitle: String? = null,
     /** @see Song.date */
     var date: Date? = null,
-    /** @see Song.cover */
-    var coverPerceptualHash: String? = null,
-    /** @see RawAlbum.mediaStoreId */
-    var albumMediaStoreId: Long? = null,
     /** @see RawAlbum.musicBrainzId */
     var albumMusicBrainzId: String? = null,
     /** @see RawAlbum.name */
@@ -87,11 +83,6 @@ data class RawSong(
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class RawAlbum(
-    /**
-     * The ID of the [AlbumImpl]'s grouping, obtained from MediaStore. Note that this ID is highly
-     * unstable and should only be used for accessing the system-provided cover art.
-     */
-    val mediaStoreId: Long,
     /** @see Music.uid */
     override val musicBrainzId: UUID?,
     /** @see Music.name */

@@ -51,4 +51,6 @@ class FsModule {
 interface FsBindsModule {
     @Binds
     fun documentPathFactory(documentTreePathFactory: DocumentPathFactoryImpl): DocumentPathFactory
+
+    @Binds fun deviceFiles(deviceFilesImpl: DeviceFilesImpl): DeviceFiles
 }

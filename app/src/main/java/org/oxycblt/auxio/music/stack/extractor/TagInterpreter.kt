@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.stack.extractor
 
 import androidx.core.text.isDigitsOnly
 import androidx.media3.exoplayer.MetadataRetriever
 import javax.inject.Inject
-import org.oxycblt.auxio.image.extractor.CoverExtractor
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -32,7 +31,7 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface TagInterpreter2 {
+interface TagInterpreter {
     /**
      * Poll to see if this worker is done processing.
      *
@@ -41,8 +40,7 @@ interface TagInterpreter2 {
     fun interpretOn(textTags: TextTags, rawSong: RawSong)
 }
 
-class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverExtractor) :
-    TagInterpreter2 {
+class TagInterpreterImpl @Inject constructor() : TagInterpreter {
     override fun interpretOn(textTags: TextTags, rawSong: RawSong) {
         populateWithId3v2(rawSong, textTags.id3v2)
         populateWithVorbis(rawSong, textTags.vorbis)
@@ -51,7 +49,7 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
     private fun populateWithId3v2(rawSong: RawSong, textFrames: Map<String, List<String>>) {
         // Song
         (textFrames["TXXX:musicbrainz release track id"]
-            ?: textFrames["TXXX:musicbrainz_releasetrackid"])
+                ?: textFrames["TXXX:musicbrainz_releasetrackid"])
             ?.let { rawSong.musicBrainzId = it.first() }
         textFrames["TIT2"]?.let { rawSong.name = it.first() }
         textFrames["TSOT"]?.let { rawSong.sortName = it.first() }
@@ -76,9 +74,9 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
         // TODO: Handle dates that are in "January" because the actual specific release date
         //  isn't known?
         (textFrames["TDOR"]?.run { Date.from(first()) }
-            ?: textFrames["TDRC"]?.run { Date.from(first()) }
-            ?: textFrames["TDRL"]?.run { Date.from(first()) }
-            ?: parseId3v23Date(textFrames))
+                ?: textFrames["TDRC"]?.run { Date.from(first()) }
+                ?: textFrames["TDRL"]?.run { Date.from(first()) }
+                ?: parseId3v23Date(textFrames))
             ?.let { rawSong.date = it }
 
         // Album
@@ -88,10 +86,10 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
         textFrames["TALB"]?.let { rawSong.albumName = it.first() }
         textFrames["TSOA"]?.let { rawSong.albumSortName = it.first() }
         (textFrames["TXXX:musicbrainz album type"]
-            ?: textFrames["TXXX:releasetype"]
-            ?:
-            // This is a non-standard iTunes extension
-            textFrames["GRP1"])
+                ?: textFrames["TXXX:releasetype"]
+                ?:
+                // This is a non-standard iTunes extension
+                textFrames["GRP1"])
             ?.let { rawSong.releaseTypes = it }
 
         // Artist
@@ -102,31 +100,31 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
             rawSong.artistNames = it
         }
         (textFrames["TXXX:artistssort"]
-            ?: textFrames["TXXX:artists_sort"]
-            ?: textFrames["TXXX:artists sort"]
-            ?: textFrames["TSOP"]
-            ?: textFrames["artistsort"]
-            ?: textFrames["TXXX:artist sort"])
+                ?: textFrames["TXXX:artists_sort"]
+                ?: textFrames["TXXX:artists sort"]
+                ?: textFrames["TSOP"]
+                ?: textFrames["artistsort"]
+                ?: textFrames["TXXX:artist sort"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
         (textFrames["TXXX:musicbrainz album artist id"]
-            ?: textFrames["TXXX:musicbrainz_albumartistid"])
+                ?: textFrames["TXXX:musicbrainz_albumartistid"])
             ?.let { rawSong.albumArtistMusicBrainzIds = it }
         (textFrames["TXXX:albumartists"]
-            ?: textFrames["TXXX:album_artists"]
-            ?: textFrames["TXXX:album artists"]
-            ?: textFrames["TPE2"]
-            ?: textFrames["TXXX:albumartist"]
-            ?: textFrames["TXXX:album artist"])
+                ?: textFrames["TXXX:album_artists"]
+                ?: textFrames["TXXX:album artists"]
+                ?: textFrames["TPE2"]
+                ?: textFrames["TXXX:albumartist"]
+                ?: textFrames["TXXX:album artist"])
             ?.let { rawSong.albumArtistNames = it }
         (textFrames["TXXX:albumartistssort"]
-            ?: textFrames["TXXX:albumartists_sort"]
-            ?: textFrames["TXXX:albumartists sort"]
-            ?: textFrames["TXXX:albumartistsort"]
-            // This is a non-standard iTunes extension
-            ?: textFrames["TSO2"]
-            ?: textFrames["TXXX:album artist sort"])
+                ?: textFrames["TXXX:albumartists_sort"]
+                ?: textFrames["TXXX:albumartists sort"]
+                ?: textFrames["TXXX:albumartistsort"]
+                // This is a non-standard iTunes extension
+                ?: textFrames["TSO2"]
+                ?: textFrames["TXXX:album artist sort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
@@ -197,16 +195,14 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
 
         // Track.
         parseVorbisPositionField(
-            comments["tracknumber"]?.first(),
-            (comments["totaltracks"] ?: comments["tracktotal"] ?: comments["trackc"])?.first()
-        )
+                comments["tracknumber"]?.first(),
+                (comments["totaltracks"] ?: comments["tracktotal"] ?: comments["trackc"])?.first())
             ?.let { rawSong.track = it }
 
         // Disc and it's subtitle name.
         parseVorbisPositionField(
-            comments["discnumber"]?.first(),
-            (comments["totaldiscs"] ?: comments["disctotal"] ?: comments["discc"])?.first()
-        )
+                comments["discnumber"]?.first(),
+                (comments["totaldiscs"] ?: comments["disctotal"] ?: comments["discc"])?.first())
             ?.let { rawSong.disc = it }
         comments["discsubtitle"]?.let { rawSong.subtitle = it.first() }
 
@@ -217,8 +213,8 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // date tag that android supports, so it must be 15 years old or more!)
         (comments["originaldate"]?.run { Date.from(first()) }
-            ?: comments["date"]?.run { Date.from(first()) }
-            ?: comments["year"]?.run { Date.from(first()) })
+                ?: comments["date"]?.run { Date.from(first()) }
+                ?: comments["year"]?.run { Date.from(first()) })
             ?.let { rawSong.date = it }
 
         // Album
@@ -237,10 +233,10 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
         }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
         (comments["artistssort"]
-            ?: comments["artists_sort"]
-            ?: comments["artists sort"]
-            ?: comments["artistsort"]
-            ?: comments["artist sort"])
+                ?: comments["artists_sort"]
+                ?: comments["artists sort"]
+                ?: comments["artistsort"]
+                ?: comments["artist sort"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
@@ -248,16 +244,16 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
             rawSong.albumArtistMusicBrainzIds = it
         }
         (comments["albumartists"]
-            ?: comments["album_artists"]
-            ?: comments["album artists"]
-            ?: comments["albumartist"]
-            ?: comments["album artist"])
+                ?: comments["album_artists"]
+                ?: comments["album artists"]
+                ?: comments["albumartist"]
+                ?: comments["album artist"])
             ?.let { rawSong.albumArtistNames = it }
         (comments["albumartistssort"]
-            ?: comments["albumartists_sort"]
-            ?: comments["albumartists sort"]
-            ?: comments["albumartistsort"]
-            ?: comments["album artist sort"])
+                ?: comments["albumartists_sort"]
+                ?: comments["albumartists sort"]
+                ?: comments["albumartistsort"]
+                ?: comments["album artist sort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
@@ -281,10 +277,10 @@ class TagInterpreter2Impl @Inject constructor(private val coverExtractor: CoverE
         // normally the only tag used for opus files, but some software still writes replay gain
         // tags anyway.
         (comments["r128_track_gain"]?.parseR128Adjustment()
-            ?: comments["replaygain_track_gain"]?.parseReplayGainAdjustment())
+                ?: comments["replaygain_track_gain"]?.parseReplayGainAdjustment())
             ?.let { rawSong.replayGainTrackAdjustment = it }
         (comments["r128_album_gain"]?.parseR128Adjustment()
-            ?: comments["replaygain_album_gain"]?.parseReplayGainAdjustment())
+                ?: comments["replaygain_album_gain"]?.parseReplayGainAdjustment())
             ?.let { rawSong.replayGainAlbumAdjustment = it }
     }
 

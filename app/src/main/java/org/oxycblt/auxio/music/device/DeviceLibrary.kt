@@ -20,10 +20,8 @@ package org.oxycblt.auxio.music.device
 
 import android.content.Context
 import android.net.Uri
-import android.provider.OpenableColumns
 import java.util.UUID
 import javax.inject.Inject
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -32,13 +30,9 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.stack.fs.Path
-import org.oxycblt.auxio.music.stack.fs.contentResolverSafe
-import org.oxycblt.auxio.music.stack.fs.useQuery
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
-import org.oxycblt.auxio.util.forEachWithTimeout
-import org.oxycblt.auxio.util.sendWithTimeout
+import org.oxycblt.auxio.music.stack.fs.Path
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
 
@@ -341,7 +335,7 @@ class DeviceLibraryImpl(
 ) : DeviceLibrary {
     // Use a mapping to make finding information based on it's UID much faster.
     private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }
-//    private val songPathMap = buildMap { songs.forEach { put(it.path, it) } }
+    //    private val songPathMap = buildMap { songs.forEach { put(it.path, it) } }
     private val albumUidMap = buildMap { albums.forEach { put(it.uid, it.finalize()) } }
     private val artistUidMap = buildMap { artists.forEach { put(it.uid, it.finalize()) } }
     private val genreUidMap = buildMap { genres.forEach { put(it.uid, it.finalize()) } }
@@ -366,14 +360,15 @@ class DeviceLibraryImpl(
     override fun findSongByPath(path: Path) = null
 
     override fun findSongForUri(context: Context, uri: Uri) = null
-//        context.contentResolverSafe.useQuery(
-//            uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)) { cursor ->
-//                cursor.moveToFirst()
-//                // We are weirdly limited to DISPLAY_NAME and SIZE when trying to locate a
-//                // song. Do what we can to hopefully find the song the user wanted to open.
-//                val displayName =
-//                    cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-//                val size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
-//                songs.find { it.path.name == displayName && it.size == size }
-//            }
+    //        context.contentResolverSafe.useQuery(
+    //            uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)) { cursor ->
+    //                cursor.moveToFirst()
+    //                // We are weirdly limited to DISPLAY_NAME and SIZE when trying to locate a
+    //                // song. Do what we can to hopefully find the song the user wanted to open.
+    //                val displayName =
+    //
+    // cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+    //                val size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
+    //                songs.find { it.path.name == displayName && it.size == size }
+    //            }
 }

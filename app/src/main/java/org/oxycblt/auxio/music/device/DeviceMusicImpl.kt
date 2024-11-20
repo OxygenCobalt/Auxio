@@ -28,16 +28,13 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.stack.fs.MimeType
-import org.oxycblt.auxio.music.stack.fs.toAlbumCoverUri
-import org.oxycblt.auxio.music.stack.fs.toAudioUri
-import org.oxycblt.auxio.music.stack.fs.toSongCoverUri
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.stack.extractor.parseId3GenreNames
+import org.oxycblt.auxio.music.stack.fs.MimeType
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.positiveOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
@@ -76,31 +73,28 @@ class SongImpl(
             }
     override val name =
         nameFactory.parse(
-            requireNotNull(rawSong.name) { "Invalid raw ${rawSong.path}: No title" },
+            requireNotNull(rawSong.name) { "Invalid raw ${rawSong.file.path}: No title" },
             rawSong.sortName)
 
     override val track = rawSong.track
     override val disc = rawSong.disc?.let { Disc(it, rawSong.subtitle) }
     override val date = rawSong.date
-    override val uri =
-        requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.path}: No id" }.toAudioUri()
-    override val path = requireNotNull(rawSong.path) { "Invalid raw ${rawSong.path}: No path" }
-    override val mimeType =
-        MimeType(
-            fromExtension =
-                requireNotNull(rawSong.extensionMimeType) {
-                    "Invalid raw ${rawSong.path}: No mime type"
-                },
-            fromFormat = null)
-    override val size = requireNotNull(rawSong.size) { "Invalid raw ${rawSong.path}: No size" }
+    override val uri = rawSong.file.uri
+    override val path = rawSong.file.path
+    override val mimeType = MimeType(fromExtension = rawSong.file.mimeType, fromFormat = null)
+    override val size =
+        requireNotNull(rawSong.file.size) { "Invalid raw ${rawSong.file.path}: No size" }
     override val durationMs =
-        requireNotNull(rawSong.durationMs) { "Invalid raw ${rawSong.path}: No duration" }
+        requireNotNull(rawSong.durationMs) { "Invalid raw ${rawSong.file.path}: No duration" }
     override val replayGainAdjustment =
         ReplayGainAdjustment(
             track = rawSong.replayGainTrackAdjustment, album = rawSong.replayGainAlbumAdjustment)
 
+    // TODO: See what we want to do with date added now that we can't get it anymore.
     override val dateAdded =
-        requireNotNull(rawSong.dateAdded) { "Invalid raw ${rawSong.path}: No date added" }
+        requireNotNull(rawSong.file.lastModified) {
+            "Invalid raw ${rawSong.file.path}: No date added"
+        }
 
     private var _album: AlbumImpl? = null
     override val album: Album
@@ -114,18 +108,8 @@ class SongImpl(
     override val genres: List<Genre>
         get() = _genres
 
-    override val cover =
-        rawSong.coverPerceptualHash?.let {
-            // We were able to confirm that the song had a parsable cover and can be used on
-            // a per-song basis. Otherwise, just fall back to a per-album cover instead, as
-            // it implies either a cover.jpg pattern is used (likely) or ExoPlayer does not
-            // support the cover metadata of a given spec (unlikely).
-            Cover.Embedded(
-                requireNotNull(rawSong.mediaStoreId) { "Invalid raw ${rawSong.path}: No id" }
-                    .toSongCoverUri(),
-                uri,
-                it)
-        } ?: Cover.External(requireNotNull(rawSong.albumMediaStoreId).toAlbumCoverUri())
+    // TODO: Rebuild cover system
+    override val cover = Cover.External(rawSong.file.uri)
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
@@ -184,14 +168,10 @@ class SongImpl(
 
         rawAlbum =
             RawAlbum(
-                mediaStoreId =
-                    requireNotNull(rawSong.albumMediaStoreId) {
-                        "Invalid raw ${rawSong.path}: No album id"
-                    },
                 musicBrainzId = rawSong.albumMusicBrainzId?.toUuidOrNull(),
                 name =
                     requireNotNull(rawSong.albumName) {
-                        "Invalid raw ${rawSong.path}: No album name"
+                        "Invalid raw ${rawSong.file.path}: No album name"
                     },
                 sortName = rawSong.albumSortName,
                 releaseType = ReleaseType.parse(separators.split(rawSong.releaseTypes)),

@@ -37,8 +37,12 @@ interface DeviceFiles {
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DeviceFilesImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    DeviceFiles {
+class DeviceFilesImpl
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val volumeManager: VolumeManager
+) : DeviceFiles {
     private val contentResolver = context.contentResolverSafe
 
     override fun explore(uris: Flow<Uri>): Flow<DeviceFile> =
@@ -49,6 +53,9 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
         uri: Uri,
         relativePath: Components
     ): Flow<DeviceFile> = flow {
+        // TODO: Temporary to maintain path api parity
+        // Figure out what we actually want to do to paths now in saf world.
+        val external = volumeManager.getInternalVolume()
         contentResolver.useQuery(uri, PROJECTION) { cursor ->
             val childUriIndex =
                 cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
@@ -77,7 +84,7 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
                     // rather than just being a glorified async.
                     val lastModified = cursor.getLong(lastModifiedIndex)
                     val size = cursor.getLong(sizeIndex)
-                    emit(DeviceFile(childUri, mimeType, path, size, lastModified))
+                    emit(DeviceFile(childUri, mimeType, Path(external, path), size, lastModified))
                 }
             }
             // Hypothetically, we could just emitAll as we recurse into a new directory,
@@ -96,9 +103,14 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED
-            )
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED)
     }
 }
 
-data class DeviceFile(val uri: Uri, val mimeType: String, val path: Components, val size: Long, val lastModified: Long)
+data class DeviceFile(
+    val uri: Uri,
+    val mimeType: String,
+    val path: Path,
+    val size: Long,
+    val lastModified: Long
+)
