@@ -321,4 +321,6 @@
     <string name="lbl_replaygain_album">Regolazione album ReplayGain</string>
     <string name="set_remember_pause">Ricorda pausa</string>
     <string name="set_remember_pause_desc">Mantiene riproduzione/pausa durante il cambio di brano e la modifica della coda di riproduzione</string>
+    <string name="lbl_start_playback">Avvia la riproduzione</string>
+    <string name="lng_tasker_start">Avvia Auxio utilizzando le ultime impostazioni di riproduzione salvate. Se non è disponibile alcuna impostazione di riproduzione, i brani verranno riprodotti in ordine casuale. La riproduzione inizierà immediatamente.\n\nATTENZIONE: stare attenti quando si usa questa impostazione, se viene chiusa e poi si cerca di usarla nuovamente, si rischia di mandare l\'applicazione in blocco.</string>
 </resources>

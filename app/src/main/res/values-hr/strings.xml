@@ -283,7 +283,7 @@
     <string name="lbl_selection">Odabir</string>
     <string name="lbl_show_error_info">Više</string>
     <string name="lbl_error_info">Podaci greške</string>
-    <string name="lbl_report">Prijavi grešku</string>
+    <string name="lbl_report">Prijavi</string>
     <string name="lbl_copied">Kopirano</string>
     <string name="def_album_count">Nema albuma</string>
     <string name="lbl_imported_playlist">Uvezen popis pjesama</string>
@@ -316,4 +316,8 @@
     <string name="lng_tasker_start">Pokreće Auxio koristeći prethodno spremljeno stanje. Ako nijedno spremljeno stanje nije dostupno, sve će se pjesme nasumično reproducirati. Reprodukcija će započeti odmah.
 \n
 \nUPOZORENJE: Oprez pri upravljanju ovom uslugom. Ako je zatvoriš i zatim je pokušaš ponovo koristiti, aplikacija će se vjerojatno zatvoriti.</string>
+    <string name="lbl_more">Više</string>
+    <string name="lbl_feedback">Povratne informacije</string>
+    <string name="lbl_github">Prijavi problem na GitHubu</string>
+    <string name="lbl_email">Pošalji e-mail</string>
 </resources>

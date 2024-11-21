@@ -321,4 +321,8 @@
     <string name="set_replay_gain_mode_off">Désactivé</string>
     <string name="lbl_start_playback">Démarrer la lecture</string>
     <string name="lng_tasker_start">Démarre Auxio en utilisant l\'état précédemment sauvegardé. Si aucun \nn\'est disponible, toutes les chansons seront mélangées. La lecture commencera immédiatement.\n\nAVERTISSEMENT : Faites attention en contrôlant ce service, si vous le fermez et essayez ensuite de l\'utiliser à nouveau, vous ferez probablement planter l\'application.</string>
+    <string name="lbl_more">Plus</string>
+    <string name="lbl_feedback">Avis</string>
+    <string name="lbl_github">Faire un ticket sur GitHub</string>
+    <string name="lbl_email">Envoyer un courriel</string>
 </resources>

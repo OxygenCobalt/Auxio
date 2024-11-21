@@ -166,7 +166,7 @@
     <string name="set_separators_semicolon">Точка и запетая (;)</string>
     <string name="set_separators_slash">Наклонена черта (/)</string>
     <string name="set_separators_plus">Плюс (+)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">Амперсанд (&amp;)</string>
     <string name="set_intelligent_sorting">Интелигентно сортиране</string>
     <string name="set_cover_mode">Обложки на албум</string>
     <string name="set_cover_mode_off">Изключено</string>
@@ -312,4 +312,7 @@
     <string name="lng_tasker_start">Стартирай Auxio, използвайки предварително запазеното състояние. Ако няма налично запазено състояние, всички песни ще бъдат разбъркани. Възпроизвеждането ще започне веднага. \n \nПРЕДУПРЕЖДЕНИЕ: Бъдете внимателни, когато контролирате тази услуга, ако я затворите и след това опитате да я използвате отново, вероятно ще сринете приложението.</string>
     <string name="lbl_start_playback">Стартирай възпроизвеждане</string>
     <string name="lbl_more">Още</string>
+    <string name="lbl_feedback">Обратна връзка</string>
+    <string name="lbl_github">Направете проблем в GitHub</string>
+    <string name="lbl_email">Изпратете имейл</string>
 </resources>

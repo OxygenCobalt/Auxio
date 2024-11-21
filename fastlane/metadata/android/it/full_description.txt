@@ -1,4 +1,4 @@
-Auxio è un lettore musicale locale con un'interfaccia ed espereinza utente veloce e affidabile, senza le numerose funzioni inutili presenti in altri lettori musicali. Basato su moderne librerie di riproduzione multimediale, Auxio ha un supporto di libreria e una qualità di ascolto superiore rispetto ad altre applicazioni che utilizzano funzionalità Android obsolete. In breve, <b>riproduce musica</b>.
+Auxio è un lettore musicale locale veloce e con un'interfaccia immediata, senza le numerose funzioni inutili presenti in altri lettori musicali. Basato su moderne librerie di riproduzione multimediale, Auxio ha un supporto di libreria e una qualità di ascolto superiore rispetto ad altre applicazioni che utilizzano funzionalità Android obsolete. In breve, <b>riproduce musica</b>.
 
 <b>Caratteristiche</b>
 
@@ -13,6 +13,7 @@ date precise/originali, tag di ordinamento e altro ancora
 - Gestione affidabile delle playlist
 - Persistenza dello stato di riproduzione
 - Riproduzione automatica senza silenzio
+- Supporto Android Auto
 - Supporto completo di ReplayGain (su file MP3, FLAC, OGG, OPUS e MP4)
 - Supporto di equalizzatori esterni (es. Wavelet)
 - Edge-to-edge

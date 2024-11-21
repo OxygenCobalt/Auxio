@@ -331,4 +331,7 @@
 \n
 \nVAROVÁNÍ: při ovládání této služby buďte opatrní, pokud ji zavřete a pak se ji znovu pokusíte použít, aplikace nejspíše spadne.</string>
     <string name="lbl_more">Více</string>
+    <string name="lbl_feedback">Zpětná vazba</string>
+    <string name="lbl_github">Vytvořit problém na GitHubu</string>
+    <string name="lbl_email">Poslat e-mail</string>
 </resources>

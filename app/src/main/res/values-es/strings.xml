@@ -326,4 +326,7 @@
 \n
 \nADVERTENCIA: Ten cuidado al controlar este servicio, si lo cierras y luego intentas usarlo de nuevo, probablemente se bloqueará la aplicación.</string>
     <string name="lbl_more">Más</string>
+    <string name="lbl_github">Crear una incidencia en GitHub</string>
+    <string name="lbl_email">Enviar un correo electrónico</string>
+    <string name="lbl_feedback">Retroalimentación</string>
 </resources>

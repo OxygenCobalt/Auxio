@@ -269,4 +269,27 @@
     <string name="lbl_song">曲</string>
     <string name="set_square_covers">フォーススクエアのアルバムカバー</string>
     <string name="set_square_covers_desc">すべてのアルバム カバーを 1:1 のアスペクト比にトリミングします</string>
+    <string name="lbl_windows_paths">Windows互換パスを使用する</string>
+    <string name="lbl_donate">寄付</string>
+    <string name="lbl_supporters">サポーター</string>
+    <string name="lbl_demo">デモ</string>
+    <string name="lbl_demos">デモ</string>
+    <string name="def_album_count">アルバムがありません</string>
+    <string name="lbl_import_playlist">プレイリストをインポート</string>
+    <string name="lbl_path">パス</string>
+    <string name="lbl_start_playback">再生開始</string>
+    <string name="lbl_error_info">エラー情報</string>
+    <string name="lbl_copied">コピーしました</string>
+    <string name="lbl_path_style">パススタイル</string>
+    <string name="lbl_import">インポート</string>
+    <string name="lbl_export">エクスポート</string>
+    <string name="lbl_export_playlist">プレイリストをエクスポート</string>
+    <string name="lbl_feedback">フィードバック</string>
+    <string name="lbl_email">メールを送信</string>
+    <string name="lng_playlist_imported">プレイリストをインポートしました</string>
+    <string name="lng_playlist_exported">プレイリストをエクスポートしました</string>
+    <string name="lng_supporters_promo">プロジェクトに寄付して、ここにあなたの名前を追加します！</string>
+    <string name="set_replay_gain_mode_off">オフ</string>
+    <string name="err_import_failed">このファイルからプレイリストをインポートできません</string>
+    <string name="err_export_failed">このファイルにプレイリストをエクスポートできません</string>
 </resources>
