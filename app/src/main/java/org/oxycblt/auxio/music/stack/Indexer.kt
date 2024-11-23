@@ -20,29 +20,15 @@ package org.oxycblt.auxio.music.stack
 
 import android.net.Uri
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.shareIn
-import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.metadata.Separators
-import org.oxycblt.auxio.music.model.Interpretation
-import org.oxycblt.auxio.music.model.Interpreter
-import org.oxycblt.auxio.music.model.MutableLibrary
-import org.oxycblt.auxio.music.stack.cache.TagCache
-import org.oxycblt.auxio.music.stack.extractor.ExoPlayerTagExtractor
-import org.oxycblt.auxio.music.stack.extractor.TagResult
-import org.oxycblt.auxio.music.stack.fs.DeviceFiles
+import org.oxycblt.auxio.music.stack.explore.Explorer
+import org.oxycblt.auxio.music.stack.interpret.Interpretation
+import org.oxycblt.auxio.music.stack.interpret.Interpreter
+import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
 
 interface Indexer {
     suspend fun run(
@@ -55,37 +41,14 @@ interface Indexer {
 class IndexerImpl
 @Inject
 constructor(
-    private val deviceFiles: DeviceFiles,
-    private val tagCache: TagCache,
-    private val tagExtractor: ExoPlayerTagExtractor,
+    private val explorer: Explorer,
     private val interpreter: Interpreter
 ) : Indexer {
     override suspend fun run(
         uris: List<Uri>,
         interpretation: Interpretation
     ) = coroutineScope {
-        val deviceFiles = deviceFiles.explore(uris.asFlow()).flowOn(Dispatchers.IO).buffer()
-        val tagRead = tagCache.read(deviceFiles).flowOn(Dispatchers.IO).buffer()
-        val (cacheFiles, cacheSongs) = tagRead.results()
-        val tagExtractor = tagExtractor.process(cacheFiles).flowOn(Dispatchers.IO).buffer()
-        val (_, extractorSongs) = tagExtractor.results()
-        val sharedExtractorSongs =
-            extractorSongs.shareIn(
-                CoroutineScope(Dispatchers.Main),
-                started = SharingStarted.WhileSubscribed(),
-                replay = Int.MAX_VALUE)
-        val tagWrite =
-            async(Dispatchers.IO) { tagCache.write(sharedExtractorSongs) }
-        val library = async(Dispatchers.Main) { interpreter.interpret(
-            merge(cacheSongs, sharedExtractorSongs), emptyFlow(), interpretation
-        )}
-        tagWrite.await()
-        library.await()
-    }
-
-    private fun Flow<TagResult>.results(): Pair<Flow<DeviceFile>, Flow<AudioFile>> {
-        val files = filterIsInstance<TagResult.Miss>().map { it.file }
-        val songs = filterIsInstance<TagResult.Hit>().map { it.audioFile }
-        return files to songs
+        val audioFiles = explorer.explore(uris).flowOn(Dispatchers.Main).buffer()
+        interpreter.interpret(audioFiles, emptyFlow(), interpretation)
     }
 }

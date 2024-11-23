@@ -31,10 +31,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.stack.AudioFile
+import org.oxycblt.auxio.music.stack.explore.AudioFile
 import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.music.stack.cache.TagDao
-import org.oxycblt.auxio.music.stack.cache.Tags
+import org.oxycblt.auxio.music.stack.explore.cache.TagDao
+import org.oxycblt.auxio.music.stack.explore.cache.Tags
 
 class CacheRepositoryTest {
     @Test

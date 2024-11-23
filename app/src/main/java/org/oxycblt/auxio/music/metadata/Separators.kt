@@ -18,8 +18,8 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import org.oxycblt.auxio.music.stack.extractor.correctWhitespace
-import org.oxycblt.auxio.music.stack.extractor.splitEscaped
+import org.oxycblt.auxio.music.stack.explore.extractor.correctWhitespace
+import org.oxycblt.auxio.music.stack.explore.extractor.splitEscaped
 
 /**
  * Defines the user-specified parsing of multi-value tags. This should be used to parse any tags

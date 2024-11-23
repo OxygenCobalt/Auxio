@@ -28,11 +28,11 @@ import java.io.OutputStream
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.music.stack.extractor.correctWhitespace
-import org.oxycblt.auxio.music.stack.fs.Components
-import org.oxycblt.auxio.music.stack.fs.Path
-import org.oxycblt.auxio.music.stack.fs.Volume
-import org.oxycblt.auxio.music.stack.fs.VolumeManager
+import org.oxycblt.auxio.music.stack.explore.extractor.correctWhitespace
+import org.oxycblt.auxio.music.stack.explore.fs.Components
+import org.oxycblt.auxio.music.stack.explore.fs.Path
+import org.oxycblt.auxio.music.stack.explore.fs.Volume
+import org.oxycblt.auxio.music.stack.explore.fs.VolumeManager
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
 
@@ -151,7 +151,8 @@ constructor(
             else ->
                 listOf(
                     InterpretedPath(Components.parseUnix(path), false),
-                    InterpretedPath(Components.parseWindows(path), true))
+                    InterpretedPath(Components.parseWindows(path), true)
+                )
         }
 
     private fun expandInterpretation(

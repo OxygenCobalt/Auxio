@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * MusicDirectories.kt is part of Auxio.
+ * InterpretModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.dirs
+package org.oxycblt.auxio.music.stack.interpret
 
-import org.oxycblt.auxio.music.stack.explore.fs.Path
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-/**
- * Represents the configuration for specific directories to filter to/from when loading music.
- *
- * @param dirs A list of directory [Path] instances. How these are interpreted depends on
- *   [shouldInclude]
- * @param shouldInclude True if the library should only load from the [Path] instances, false if the
- *   library should not load from the [Path] instances.
- * @author Alexander Capehart (OxygenCobalt)
- */
-data class MusicDirectories(val dirs: List<Path>, val shouldInclude: Boolean)
+@Module
+@InstallIn(SingletonComponent::class)
+interface InterpretModule {
+    @Binds fun interpreter(factory: InterpreterImpl): Interpreter
+}

@@ -24,7 +24,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.dirs.MusicDirectories
-import org.oxycblt.auxio.music.stack.fs.DocumentPathFactory
+import org.oxycblt.auxio.music.stack.explore.fs.DocumentPathFactory
 import org.oxycblt.auxio.settings.Settings
 import timber.log.Timber as L
 

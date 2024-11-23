@@ -20,11 +20,11 @@ package org.oxycblt.auxio.music.metadata
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.oxycblt.auxio.music.stack.extractor.correctWhitespace
-import org.oxycblt.auxio.music.stack.extractor.parseId3GenreNames
-import org.oxycblt.auxio.music.stack.extractor.parseId3v2PositionField
-import org.oxycblt.auxio.music.stack.extractor.parseVorbisPositionField
-import org.oxycblt.auxio.music.stack.extractor.splitEscaped
+import org.oxycblt.auxio.music.stack.explore.extractor.correctWhitespace
+import org.oxycblt.auxio.music.stack.explore.extractor.parseId3GenreNames
+import org.oxycblt.auxio.music.stack.explore.extractor.parseId3v2PositionField
+import org.oxycblt.auxio.music.stack.explore.extractor.parseVorbisPositionField
+import org.oxycblt.auxio.music.stack.explore.extractor.splitEscaped
 
 class TagUtilTest {
     @Test

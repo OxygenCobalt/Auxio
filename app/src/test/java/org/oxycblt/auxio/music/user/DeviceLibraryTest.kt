@@ -26,13 +26,13 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.model.AlbumImpl
-import org.oxycblt.auxio.music.model.ArtistImpl
+import org.oxycblt.auxio.music.stack.interpret.model.AlbumImpl
+import org.oxycblt.auxio.music.stack.interpret.model.ArtistImpl
 import org.oxycblt.auxio.music.model.DeviceLibraryImpl
-import org.oxycblt.auxio.music.model.GenreImpl
-import org.oxycblt.auxio.music.model.SongImpl
-import org.oxycblt.auxio.music.stack.fs.Components
-import org.oxycblt.auxio.music.stack.fs.Path
+import org.oxycblt.auxio.music.stack.interpret.model.GenreImpl
+import org.oxycblt.auxio.music.stack.interpret.model.SongImpl
+import org.oxycblt.auxio.music.stack.explore.fs.Components
+import org.oxycblt.auxio.music.stack.explore.fs.Path
 
 class DeviceLibraryTest {
 

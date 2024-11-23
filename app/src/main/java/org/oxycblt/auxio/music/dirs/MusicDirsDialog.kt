@@ -33,8 +33,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.stack.fs.DocumentPathFactory
-import org.oxycblt.auxio.music.stack.fs.Path
+import org.oxycblt.auxio.music.stack.explore.fs.DocumentPathFactory
+import org.oxycblt.auxio.music.stack.explore.fs.Path
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.showToast
 import timber.log.Timber as L
