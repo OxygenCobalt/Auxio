@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.user
+package org.oxycblt.auxio.music.stack.explore.playlists
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -27,7 +27,7 @@ import androidx.room.Relation
 import org.oxycblt.auxio.music.Music
 
 /**
- * Raw playlist information persisted to [UserMusicDatabase].
+ * Raw playlist information persisted to [PlaylistDatabase].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */

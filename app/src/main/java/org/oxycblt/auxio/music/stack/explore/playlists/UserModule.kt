@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.user
+package org.oxycblt.auxio.music.stack.explore.playlists
 
 import android.content.Context
 import androidx.room.Room
@@ -29,19 +29,19 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface UserModule {
-    @Binds fun userLibraryFactory(factory: UserLibraryFactoryImpl): UserLibrary.Factory
+interface PlaylistModule {
+    @Binds fun storedPlaylists(impl: StoredPlaylistsImpl): StoredPlaylists
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-class UserRoomModule {
-    @Provides fun playlistDao(database: UserMusicDatabase) = database.playlistDao()
+class PlaylistRoomModule {
+    @Provides fun playlistDao(database: PlaylistDatabase) = database.playlistDao()
 
     @Provides
-    fun userMusicDatabase(@ApplicationContext context: Context) =
+    fun playlistDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
-                context.applicationContext, UserMusicDatabase::class.java, "user_music.db")
+                context.applicationContext, PlaylistDatabase::class.java, "user_music.db")
             .fallbackToDestructiveMigration()
             .build()
 }

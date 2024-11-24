@@ -6,12 +6,12 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.music.stack.explore.PlaylistFile
+import org.oxycblt.auxio.music.stack.explore.PlaylistHandle
 import org.oxycblt.auxio.music.stack.explore.fs.MimeType
 import org.oxycblt.auxio.music.stack.explore.fs.Path
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import java.util.UUID
-
-interface PrePlaylist
 
 data class PreSong(
     val musicBrainzId: UUID?,
@@ -50,4 +50,10 @@ data class PreArtist(
 data class PreGenre(
     val name: Name,
     val rawName: String?,
+)
+
+data class PrePlaylist(
+    val name: Name.Known,
+    val rawName: String?,
+    val handle: PlaylistHandle
 )

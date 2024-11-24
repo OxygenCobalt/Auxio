@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.user
+package org.oxycblt.auxio.music.stack.explore.playlists
 
 import androidx.room.Dao
 import androidx.room.Database
@@ -38,7 +38,7 @@ import org.oxycblt.auxio.music.Music
     version = 30,
     exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
-abstract class UserMusicDatabase : RoomDatabase() {
+abstract class PlaylistDatabase : RoomDatabase() {
     abstract fun playlistDao(): PlaylistDao
 }
 

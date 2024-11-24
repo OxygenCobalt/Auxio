@@ -19,6 +19,8 @@
 package org.oxycblt.auxio.music.stack.explore
 
 import android.net.Uri
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.stack.interpret.model.SongImpl
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.stack.explore.fs.Path
@@ -61,6 +63,21 @@ data class AudioFile(
     var genreNames: List<String> = listOf()
 )
 
-interface PlaylistFile {
-    val name: String
+data class PlaylistFile(
+    val name: String,
+    val songPointers: List<SongPointer>,
+    val editor: PlaylistHandle
+)
+
+interface PlaylistHandle {
+    val uid: Music.UID
+    suspend fun rename(name: String)
+    suspend fun add(songs: List<Song>)
+    suspend fun rewrite(songs: List<Song>)
+    suspend fun delete()
+}
+
+sealed interface SongPointer {
+    data class UID(val uid: Music.UID) : SongPointer
+//    data class Path(val options: List<Path>) : SongPointer
 }
