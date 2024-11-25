@@ -16,7 +16,7 @@ import java.util.UUID
 data class PreSong(
     val musicBrainzId: UUID?,
     val name: Name,
-    val rawName: String?,
+    val rawName: String,
     val track: Int?,
     val disc: Disc?,
     val date: Date?,
