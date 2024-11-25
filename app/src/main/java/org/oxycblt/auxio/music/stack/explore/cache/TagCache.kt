@@ -23,28 +23,29 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 import org.oxycblt.auxio.music.stack.explore.AudioFile
-import org.oxycblt.auxio.music.stack.explore.extractor.TagResult
 import org.oxycblt.auxio.music.stack.explore.DeviceFile
 
+sealed interface CacheResult {
+    data class Hit(val audioFile: AudioFile) : CacheResult
+    data class Miss(val deviceFile: DeviceFile) : CacheResult
+}
 interface TagCache {
-    fun read(files: Flow<DeviceFile>): Flow<TagResult>
+    fun read(files: Flow<DeviceFile>): Flow<CacheResult>
 
     fun write(rawSongs: Flow<AudioFile>): Flow<AudioFile>
 }
 
 class TagCacheImpl @Inject constructor(private val tagDao: TagDao) : TagCache {
     override fun read(files: Flow<DeviceFile>) =
-        files.transform<DeviceFile, TagResult> { file ->
+        files.transform<DeviceFile, CacheResult> { file ->
             val tags = tagDao.selectTags(file.uri.toString(), file.lastModified)
             if (tags != null) {
-                val audioFile = AudioFile(deviceFile = file)
-                tags.copyToRaw(audioFile)
-                TagResult.Hit(audioFile)
+                CacheResult.Hit(tags.toAudioFile(file))
             } else {
-                TagResult.Miss(file)
+                CacheResult.Miss(file)
             }
         }
 
     override fun write(rawSongs: Flow<AudioFile>) =
-        rawSongs.onEach { rawSong -> tagDao.updateTags(Tags.fromRaw(rawSong)) }
+        rawSongs.onEach { file -> tagDao.updateTags(Tags.fromAudioFile(file)) }
 }
