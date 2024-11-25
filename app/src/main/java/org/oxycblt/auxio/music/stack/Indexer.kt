@@ -48,7 +48,9 @@ constructor(
         uris: List<Uri>,
         interpretation: Interpretation
     ) = coroutineScope {
-        val audioFiles = explorer.explore(uris).flowOn(Dispatchers.Main).buffer()
-        interpreter.interpret(audioFiles, emptyFlow(), interpretation)
+        val files = explorer.explore(uris)
+        val audioFiles = files.audios.flowOn(Dispatchers.IO).buffer()
+        val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer()
+        interpreter.interpret(audioFiles, playlistFiles, interpretation)
     }
 }
