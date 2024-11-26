@@ -50,7 +50,7 @@ constructor(
 ) : PersistenceRepository {
 
     override suspend fun readState(): PlaybackStateManager.SavedState? {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return null
+        val library = musicRepository.library ?: return null
         val playbackState: PlaybackState
         val heapItems: List<QueueHeapItem>
         val mappingItems: List<QueueShuffledMappingItem>
@@ -64,7 +64,7 @@ constructor(
             return null
         }
 
-        val heap = heapItems.map { deviceLibrary.findSong(it.uid) }
+        val heap = heapItems.map { library.findSong(it.uid) }
         val shuffledMapping = mappingItems.map { it.index }
         val parent = playbackState.parentUid?.let { musicRepository.find(it) as? MusicParent }
 

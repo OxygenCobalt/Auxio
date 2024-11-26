@@ -151,8 +151,7 @@ constructor(
             else ->
                 listOf(
                     InterpretedPath(Components.parseUnix(path), false),
-                    InterpretedPath(Components.parseWindows(path), true)
-                )
+                    InterpretedPath(Components.parseWindows(path), true))
         }
 
     private fun expandInterpretation(

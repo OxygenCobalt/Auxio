@@ -48,8 +48,8 @@ class PlaybackPickerViewModel @Inject constructor(private val musicRepository: M
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (!changes.deviceLibrary) return
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        _currentPickerSong.value = _currentPickerSong.value?.run { deviceLibrary.findSong(uid) }
+        val library = musicRepository.library ?: return
+        _currentPickerSong.value = _currentPickerSong.value?.run { library.findSong(uid) }
     }
 
     override fun onCleared() {
@@ -64,7 +64,7 @@ class PlaybackPickerViewModel @Inject constructor(private val musicRepository: M
      */
     fun setPickerSongUid(uid: Music.UID) {
         L.d("Opening picker for song $uid")
-        _currentPickerSong.value = musicRepository.deviceLibrary?.findSong(uid)
+        _currentPickerSong.value = musicRepository.library?.findSong(uid)
         if (_currentPickerSong.value != null) {
             L.w("Given song UID was invalid")
         }

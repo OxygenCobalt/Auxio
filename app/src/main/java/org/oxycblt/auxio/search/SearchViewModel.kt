@@ -33,11 +33,10 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.sort.Sort
+import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.model.DeviceLibrary
-import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import timber.log.Timber as L
@@ -95,9 +94,8 @@ constructor(
         currentSearchJob?.cancel()
         lastQuery = query
 
-        val deviceLibrary = musicRepository.deviceLibrary
-        val userLibrary = musicRepository.userLibrary
-        if (query.isNullOrEmpty() || deviceLibrary == null || userLibrary == null) {
+        val library = musicRepository.library
+        if (query.isNullOrEmpty() || library == null) {
             L.d("Cannot search for the current query, aborting")
             _searchResults.value = listOf()
             return
@@ -107,16 +105,11 @@ constructor(
         L.d("Searching music library for $query")
         currentSearchJob =
             viewModelScope.launch {
-                _searchResults.value =
-                    searchImpl(deviceLibrary, userLibrary, query).also { yield() }
+                _searchResults.value = searchImpl(library, query).also { yield() }
             }
     }
 
-    private suspend fun searchImpl(
-        deviceLibrary: DeviceLibrary,
-        userLibrary: UserLibrary,
-        query: String
-    ): List<Item> {
+    private suspend fun searchImpl(library: Library, query: String): List<Item> {
         val filter = searchSettings.filterTo
 
         val items =
@@ -124,19 +117,19 @@ constructor(
                 // A nulled filter type means to not filter anything.
                 L.d("No filter specified, using entire library")
                 SearchEngine.Items(
-                    deviceLibrary.songs,
-                    deviceLibrary.albums,
-                    deviceLibrary.artists,
-                    deviceLibrary.genres,
-                    userLibrary.playlists)
+                    library.songs,
+                    library.albums,
+                    library.artists,
+                    library.genres,
+                    library.playlists)
             } else {
                 L.d("Filter specified, reducing library")
                 SearchEngine.Items(
-                    songs = if (filter == MusicType.SONGS) deviceLibrary.songs else null,
-                    albums = if (filter == MusicType.ALBUMS) deviceLibrary.albums else null,
-                    artists = if (filter == MusicType.ARTISTS) deviceLibrary.artists else null,
-                    genres = if (filter == MusicType.GENRES) deviceLibrary.genres else null,
-                    playlists = if (filter == MusicType.PLAYLISTS) userLibrary.playlists else null)
+                    songs = if (filter == MusicType.SONGS) library.songs else null,
+                    albums = if (filter == MusicType.ALBUMS) library.albums else null,
+                    artists = if (filter == MusicType.ARTISTS) library.artists else null,
+                    genres = if (filter == MusicType.GENRES) library.genres else null,
+                    playlists = if (filter == MusicType.PLAYLISTS) library.playlists else null)
             }
 
         val results = searchEngine.search(items, query)

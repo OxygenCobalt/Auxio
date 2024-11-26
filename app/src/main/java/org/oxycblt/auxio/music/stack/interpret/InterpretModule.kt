@@ -26,5 +26,5 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface InterpretModule {
-    @Binds fun interpreter(factory: InterpreterImpl): Interpreter
+    @Binds fun interpreter(interpreter: InterpreterImpl): Interpreter
 }

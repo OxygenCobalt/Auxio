@@ -40,6 +40,28 @@ import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull
 
+interface Library {
+    val songs: Collection<Song>
+    val albums: Collection<Album>
+    val artists: Collection<Artist>
+    val genres: Collection<Genre>
+    val playlists: Collection<Playlist>
+
+    fun findSong(uid: Music.UID): Song?
+
+    fun findSongByPath(path: Path): Song?
+
+    fun findAlbum(uid: Music.UID): Album?
+
+    fun findArtist(uid: Music.UID): Artist?
+
+    fun findGenre(uid: Music.UID): Genre?
+
+    fun findPlaylist(uid: Music.UID): Playlist?
+
+    fun findPlaylistByName(name: String): Playlist?
+}
+
 /**
  * Abstract music data. This contains universal information about all concrete music
  * implementations, such as identification information and names.

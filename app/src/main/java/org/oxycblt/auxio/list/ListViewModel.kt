@@ -64,18 +64,17 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val userLibrary = musicRepository.userLibrary ?: return
+        val library = musicRepository.library ?: return
         // Sanitize the selection to remove items that no longer exist and thus
         // won't appear in any list.
         _selected.value =
             _selected.value.mapNotNull {
                 when (it) {
-                    is Song -> deviceLibrary.findSong(it.uid)
-                    is Album -> deviceLibrary.findAlbum(it.uid)
-                    is Artist -> deviceLibrary.findArtist(it.uid)
-                    is Genre -> deviceLibrary.findGenre(it.uid)
-                    is Playlist -> userLibrary.findPlaylist(it.uid)
+                    is Song -> library.findSong(it.uid)
+                    is Album -> library.findAlbum(it.uid)
+                    is Artist -> library.findArtist(it.uid)
+                    is Genre -> library.findGenre(it.uid)
+                    is Playlist -> library.findPlaylist(it.uid)
                 }
             }
     }

@@ -95,14 +95,13 @@ private constructor(
     }
 
     override fun invalidate(type: MusicType, replace: Int?) {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val userLibrary = musicRepository.userLibrary ?: return
+        val library = musicRepository.library ?: return
         val music =
             when (type) {
-                MusicType.ALBUMS -> deviceLibrary.albums
-                MusicType.ARTISTS -> deviceLibrary.artists
-                MusicType.GENRES -> deviceLibrary.genres
-                MusicType.PLAYLISTS -> userLibrary.playlists
+                MusicType.ALBUMS -> library.albums
+                MusicType.ARTISTS -> library.artists
+                MusicType.GENRES -> library.genres
+                MusicType.PLAYLISTS -> library.playlists
                 else -> return
             }
         if (music.isEmpty()) {
@@ -131,9 +130,7 @@ private constructor(
     }
 
     fun getChildren(parentId: String, maxTabs: Int): List<MediaItem>? {
-        val deviceLibrary = musicRepository.deviceLibrary
-        val userLibrary = musicRepository.userLibrary
-        if (deviceLibrary == null || userLibrary == null) {
+        if (musicRepository.library == null) {
             return listOf()
         }
         return getMediaItemList(parentId, maxTabs)
@@ -143,15 +140,10 @@ private constructor(
         if (query.isEmpty()) {
             return mutableListOf()
         }
-        val deviceLibrary = musicRepository.deviceLibrary ?: return mutableListOf()
-        val userLibrary = musicRepository.userLibrary ?: return mutableListOf()
+        val library = musicRepository.library ?: return mutableListOf()
         val items =
             SearchEngine.Items(
-                deviceLibrary.songs,
-                deviceLibrary.albums,
-                deviceLibrary.artists,
-                deviceLibrary.genres,
-                userLibrary.playlists)
+                library.songs, library.albums, library.artists, library.genres, library.playlists)
         return searchEngine.search(items, query).toMediaItems()
     }
 

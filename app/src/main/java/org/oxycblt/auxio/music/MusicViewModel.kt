@@ -85,14 +85,14 @@ constructor(
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (!changes.deviceLibrary) return
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val library = musicRepository.library ?: return
         _statistics.value =
             Statistics(
-                deviceLibrary.songs.size,
-                deviceLibrary.albums.size,
-                deviceLibrary.artists.size,
-                deviceLibrary.genres.size,
-                deviceLibrary.songs.sumOf { it.durationMs })
+                library.songs.size,
+                library.albums.size,
+                library.artists.size,
+                library.genres.size,
+                library.songs.sumOf { it.durationMs })
         L.d("Updated statistics: ${_statistics.value}")
     }
 
@@ -162,10 +162,10 @@ constructor(
                     return@launch
                 }
 
-                val deviceLibrary = musicRepository.deviceLibrary ?: return@launch
+                val library = musicRepository.library ?: return@launch
                 val songs =
                     importedPlaylist.paths.mapNotNull {
-                        it.firstNotNullOfOrNull(deviceLibrary::findSongByPath)
+                        it.firstNotNullOfOrNull(library::findSongByPath)
                     }
 
                 if (songs.isEmpty()) {

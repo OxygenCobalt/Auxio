@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * ID3Genre.kt is part of Auxio.
+ * TagUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,7 +116,6 @@ fun String.parseId3v2PositionField() =
  */
 fun parseVorbisPositionField(pos: String?, total: String?) =
     transformPositionField(pos?.toIntOrNull(), total?.toIntOrNull())
-
 
 /**
  * Transform a raw position + total field into a position a way that tolerates placeholder values.

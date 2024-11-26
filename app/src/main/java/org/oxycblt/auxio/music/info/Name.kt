@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Auxio Prct
+ * Copyright (c) 2023 Auxio Project
  * Name.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify

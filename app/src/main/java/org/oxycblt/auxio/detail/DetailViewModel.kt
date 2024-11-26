@@ -315,7 +315,7 @@ constructor(
      */
     fun setSong(uid: Music.UID) {
         L.d("Opening song $uid")
-        _currentSong.value = musicRepository.deviceLibrary?.findSong(uid)?.also(::refreshAudioInfo)
+        _currentSong.value = musicRepository.library?.findSong(uid)?.also(::refreshAudioInfo)
         if (_currentSong.value == null) {
             L.w("Given song UID was invalid")
         }

@@ -1,5 +1,24 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * Interpreter.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.stack.interpret
 
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
@@ -30,17 +49,14 @@ interface Interpreter {
     ): MutableLibrary
 }
 
-class InterpreterImpl(
-    private val preparer: Preparer
-) : Interpreter {
+class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Interpreter {
     override suspend fun interpret(
         audioFiles: Flow<AudioFile>,
         playlistFiles: Flow<PlaylistFile>,
         interpretation: Interpretation
     ): MutableLibrary {
         val preSongs =
-            preparer.prepare(audioFiles, interpretation).flowOn(Dispatchers.Main)
-                .buffer()
+            preparer.prepare(audioFiles, interpretation).flowOn(Dispatchers.Main).buffer()
         val genreLinker = GenreLinker()
         val genreLinkedSongs = genreLinker.register(preSongs).flowOn(Dispatchers.Main).buffer()
         val artistLinker = ArtistLinker()
@@ -53,7 +69,8 @@ class InterpreterImpl(
         val artists = artistLinker.resolve()
         val albumLinker = AlbumLinker()
         val albumLinkedSongs =
-            albumLinker.register(artistLinkedSongs)
+            albumLinker
+                .register(artistLinkedSongs)
                 .flowOn(Dispatchers.Main)
                 .map { LinkedSongImpl(it) }
                 .toList()
@@ -62,13 +79,18 @@ class InterpreterImpl(
         return LibraryImpl(songs, albums, artists, genres)
     }
 
+    private data class LinkedSongImpl(private val albumLinkedSong: AlbumLinker.LinkedSong) :
+        LinkedSong {
+        override val preSong: PreSong
+            get() = albumLinkedSong.linkedArtistSong.linkedGenreSong.preSong
 
-    private data class LinkedSongImpl(
-        private val albumLinkedSong: AlbumLinker.LinkedSong
-    ) : LinkedSong {
-        override val preSong: PreSong get() = albumLinkedSong.linkedArtistSong.linkedGenreSong.preSong
-        override val album: Linked<AlbumImpl, SongImpl> get() = albumLinkedSong.album
-        override val artists: Linked<List<ArtistImpl>, SongImpl> get() = albumLinkedSong.linkedArtistSong.artists
-        override val genres: Linked<List<GenreImpl>, SongImpl> get() = albumLinkedSong.linkedArtistSong.linkedGenreSong.genres
+        override val album: Linked<AlbumImpl, SongImpl>
+            get() = albumLinkedSong.album
+
+        override val artists: Linked<List<ArtistImpl>, SongImpl>
+            get() = albumLinkedSong.linkedArtistSong.artists
+
+        override val genres: Linked<List<GenreImpl>, SongImpl>
+            get() = albumLinkedSong.linkedArtistSong.linkedGenreSong.genres
     }
 }

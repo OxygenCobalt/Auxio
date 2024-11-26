@@ -119,7 +119,6 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
         return AudioProperties(
             bitrate,
             sampleRate,
-            MimeType(fromExtension = song.mimeType.fromExtension, fromFormat = formatMimeType)
-        )
+            MimeType(fromExtension = song.mimeType.fromExtension, fromFormat = formatMimeType))
     }
 }

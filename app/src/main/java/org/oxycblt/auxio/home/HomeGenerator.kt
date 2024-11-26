@@ -119,8 +119,8 @@ private class HomeGeneratorImpl(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val deviceLibrary = musicRepository.deviceLibrary
-        if (changes.deviceLibrary && deviceLibrary != null) {
+        val library = musicRepository.library
+        if (changes.deviceLibrary && library != null) {
             L.d("Refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
@@ -130,8 +130,7 @@ private class HomeGeneratorImpl(
             invalidator.invalidateMusic(MusicType.GENRES, UpdateInstructions.Diff)
         }
 
-        val userLibrary = musicRepository.userLibrary
-        if (changes.userLibrary && userLibrary != null) {
+        if (changes.userLibrary && library != null) {
             L.d("Refreshing playlists")
             invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Diff)
         }
@@ -144,14 +143,13 @@ private class HomeGeneratorImpl(
     }
 
     override fun songs() =
-        musicRepository.deviceLibrary?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
+        musicRepository.library?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
 
     override fun albums() =
-        musicRepository.deviceLibrary?.let { listSettings.albumSort.albums(it.albums) }
-            ?: emptyList()
+        musicRepository.library?.let { listSettings.albumSort.albums(it.albums) } ?: emptyList()
 
     override fun artists() =
-        musicRepository.deviceLibrary?.let { deviceLibrary ->
+        musicRepository.library?.let { deviceLibrary ->
             val sorted = listSettings.artistSort.artists(deviceLibrary.artists)
             if (homeSettings.shouldHideCollaborators) {
                 sorted.filter { it.explicitAlbums.isNotEmpty() }
@@ -161,11 +159,10 @@ private class HomeGeneratorImpl(
         } ?: emptyList()
 
     override fun genres() =
-        musicRepository.deviceLibrary?.let { listSettings.genreSort.genres(it.genres) }
-            ?: emptyList()
+        musicRepository.library?.let { listSettings.genreSort.genres(it.genres) } ?: emptyList()
 
     override fun playlists() =
-        musicRepository.userLibrary?.let { listSettings.playlistSort.playlists(it.playlists) }
+        musicRepository.library?.let { listSettings.playlistSort.playlists(it.playlists) }
             ?: emptyList()
 
     override fun tabs() = homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }

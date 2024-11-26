@@ -23,7 +23,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import org.oxycblt.auxio.music.stack.explore.Explorer
 import org.oxycblt.auxio.music.stack.interpret.Interpretation
@@ -31,23 +30,13 @@ import org.oxycblt.auxio.music.stack.interpret.Interpreter
 import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
 
 interface Indexer {
-    suspend fun run(
-        uris: List<Uri>,
-        interpretation: Interpretation
-    ): MutableLibrary
+    suspend fun run(uris: List<Uri>, interpretation: Interpretation): MutableLibrary
 }
-
 
 class IndexerImpl
 @Inject
-constructor(
-    private val explorer: Explorer,
-    private val interpreter: Interpreter
-) : Indexer {
-    override suspend fun run(
-        uris: List<Uri>,
-        interpretation: Interpretation
-    ) = coroutineScope {
+constructor(private val explorer: Explorer, private val interpreter: Interpreter) : Indexer {
+    override suspend fun run(uris: List<Uri>, interpretation: Interpretation) = coroutineScope {
         val files = explorer.explore(uris)
         val audioFiles = files.audios.flowOn(Dispatchers.IO).buffer()
         val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer()

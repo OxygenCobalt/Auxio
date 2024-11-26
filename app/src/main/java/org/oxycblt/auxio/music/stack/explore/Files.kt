@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * Preparer.kt is part of Auxio.
+ * Files.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@ package org.oxycblt.auxio.music.stack.explore
 import android.net.Uri
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.stack.interpret.model.SongImpl
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.stack.explore.fs.Path
+import org.oxycblt.auxio.music.stack.interpret.model.SongImpl
 
 data class DeviceFile(
     val uri: Uri,
@@ -71,13 +71,17 @@ data class PlaylistFile(
 
 interface PlaylistHandle {
     val uid: Music.UID
+
     suspend fun rename(name: String)
+
     suspend fun add(songs: List<Song>)
+
     suspend fun rewrite(songs: List<Song>)
+
     suspend fun delete()
 }
 
 sealed interface SongPointer {
     data class UID(val uid: Music.UID) : SongPointer
-//    data class Path(val options: List<Path>) : SongPointer
+    //    data class Path(val options: List<Path>) : SongPointer
 }

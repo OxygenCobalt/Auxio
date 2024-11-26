@@ -121,7 +121,7 @@ private class DetailGeneratorImpl(
     }
 
     override fun album(uid: Music.UID): Detail<Album>? {
-        val album = musicRepository.deviceLibrary?.findAlbum(uid) ?: return null
+        val album = musicRepository.library?.findAlbum(uid) ?: return null
         val songs = listSettings.albumSongSort.songs(album.songs)
         val discs = songs.groupBy { it.disc }
         val section =
@@ -134,7 +134,7 @@ private class DetailGeneratorImpl(
     }
 
     override fun artist(uid: Music.UID): Detail<Artist>? {
-        val artist = musicRepository.deviceLibrary?.findArtist(uid) ?: return null
+        val artist = musicRepository.library?.findArtist(uid) ?: return null
         val grouping =
             artist.explicitAlbums.groupByTo(sortedMapOf()) {
                 // Remap the complicated ReleaseType data structure into detail sections
@@ -173,14 +173,14 @@ private class DetailGeneratorImpl(
     }
 
     override fun genre(uid: Music.UID): Detail<Genre>? {
-        val genre = musicRepository.deviceLibrary?.findGenre(uid) ?: return null
+        val genre = musicRepository.library?.findGenre(uid) ?: return null
         val artists = DetailSection.Artists(GENRE_ARTIST_SORT.artists(genre.artists))
         val songs = DetailSection.Songs(listSettings.genreSongSort.songs(genre.songs))
         return Detail(genre, listOf(artists, songs))
     }
 
     override fun playlist(uid: Music.UID): Detail<Playlist>? {
-        val playlist = musicRepository.userLibrary?.findPlaylist(uid) ?: return null
+        val playlist = musicRepository.library?.findPlaylist(uid) ?: return null
         if (playlist.songs.isNotEmpty()) {
             val songs = DetailSection.Songs(playlist.songs)
             return Detail(playlist, listOf(songs))

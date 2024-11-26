@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.stack.interpret.model
 
+import kotlin.math.min
 import org.oxycblt.auxio.image.extractor.ParentCover
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
@@ -32,7 +33,6 @@ import org.oxycblt.auxio.music.stack.interpret.linker.LinkedSong
 import org.oxycblt.auxio.music.stack.interpret.prepare.PreArtist
 import org.oxycblt.auxio.music.stack.interpret.prepare.PreGenre
 import org.oxycblt.auxio.util.update
-import kotlin.math.min
 
 /**
  * Library-backed implementation of [Song].
@@ -81,9 +81,7 @@ class SongImpl(linkedSong: LinkedSong) : Song {
     override fun hashCode() = hashCode
 
     override fun equals(other: Any?) =
-        other is SongImpl &&
-                uid == other.uid &&
-                preSong == other.preSong
+        other is SongImpl && uid == other.uid && preSong == other.preSong
 
     override fun toString() = "Song(uid=$uid, name=$name)"
 }
@@ -123,10 +121,7 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
     // Since equality on public-facing music models is not identical to the tag equality,
     // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
-        other is AlbumImpl &&
-                uid == other.uid &&
-                preAlbum == other.preAlbum &&
-                songs == other.songs
+        other is AlbumImpl && uid == other.uid && preAlbum == other.preAlbum && songs == other.songs
 
     override fun toString() = "Album(uid=$uid, name=$name)"
 
@@ -135,11 +130,11 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
         durationMs += song.durationMs
         dateAdded = min(dateAdded, song.dateAdded)
         if (song.date != null) {
-            dates = dates?.let {
-                if (song.date < it.min) Date.Range(song.date, it.max)
-                else if (song.date > it.max) Date.Range(it.min, song.date)
-                else it
-            } ?: Date.Range(song.date, song.date)
+            dates =
+                dates?.let {
+                    if (song.date < it.min) Date.Range(song.date, it.max)
+                    else if (song.date > it.max) Date.Range(it.min, song.date) else it
+                } ?: Date.Range(song.date, song.date)
         }
         hashCode = 31 * hashCode + song.hashCode()
     }
@@ -173,7 +168,6 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
     override lateinit var explicitAlbums: Set<Album>
     override lateinit var implicitAlbums: Set<Album>
 
-
     override lateinit var genres: List<Genre>
 
     override var durationMs = 0L
@@ -189,9 +183,9 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
     // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
         other is ArtistImpl &&
-                uid == other.uid &&
-                preArtist == other.preArtist &&
-                songs == other.songs
+            uid == other.uid &&
+            preArtist == other.preArtist &&
+            songs == other.songs
 
     override fun toString() = "Artist(uid=$uid, name=$name)"
 
@@ -240,9 +234,7 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(
-    private val preGenre: PreGenre
-) : Genre {
+class GenreImpl(private val preGenre: PreGenre) : Genre {
     override val uid = Music.UID.auxio(MusicType.GENRES) { update(preGenre.rawName) }
     override val name = preGenre.name
 
@@ -256,10 +248,7 @@ class GenreImpl(
     override fun hashCode() = hashCode
 
     override fun equals(other: Any?) =
-        other is GenreImpl &&
-                uid == other.uid &&
-                preGenre == other.preGenre &&
-                songs == other.songs
+        other is GenreImpl && uid == other.uid && preGenre == other.preGenre && songs == other.songs
 
     override fun toString() = "Genre(uid=$uid, name=$name)"
 

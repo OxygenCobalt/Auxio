@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * TagFields.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.stack.explore.extractor
 
 import androidx.core.text.isDigitsOnly
@@ -6,28 +24,31 @@ import org.oxycblt.auxio.util.nonZeroOrNull
 
 // Song
 fun TextTags.musicBrainzId() =
-    (vorbis["musicbrainz_releasetrackid"] ?: vorbis["musicbrainz release track id"]
-    ?: id3v2["TXXX:musicbrainz release track id"]
-    ?: id3v2["TXXX:musicbrainz_releasetrackid"])?.first()
+    (vorbis["musicbrainz_releasetrackid"]
+            ?: vorbis["musicbrainz release track id"]
+            ?: id3v2["TXXX:musicbrainz release track id"]
+            ?: id3v2["TXXX:musicbrainz_releasetrackid"])
+        ?.first()
 
 fun TextTags.name() = (vorbis["title"] ?: id3v2["TIT2"])?.first()
+
 fun TextTags.sortName() = (vorbis["titlesort"] ?: id3v2["TSOT"])?.first()
 
 // Track.
-fun TextTags.track() = (parseVorbisPositionField(
-    vorbis["tracknumber"]?.first(),
-    (vorbis["totaltracks"] ?: vorbis["tracktotal"] ?: vorbis["trackc"])?.first()
-)
-    ?: id3v2["TRCK"]?.run { first().parseId3v2PositionField() })
+fun TextTags.track() =
+    (parseVorbisPositionField(
+        vorbis["tracknumber"]?.first(),
+        (vorbis["totaltracks"] ?: vorbis["tracktotal"] ?: vorbis["trackc"])?.first())
+        ?: id3v2["TRCK"]?.run { first().parseId3v2PositionField() })
 
 // Disc and it's subtitle name.
-fun TextTags.disc() = (parseVorbisPositionField(
-    vorbis["discnumber"]?.first(),
-    (vorbis["totaldiscs"] ?: vorbis["disctotal"] ?: vorbis["discc"])?.run { first() })
-    ?: id3v2["TPOS"]?.run { first().parseId3v2PositionField() })
+fun TextTags.disc() =
+    (parseVorbisPositionField(
+        vorbis["discnumber"]?.first(),
+        (vorbis["totaldiscs"] ?: vorbis["disctotal"] ?: vorbis["discc"])?.run { first() })
+        ?: id3v2["TPOS"]?.run { first().parseId3v2PositionField() })
 
-fun TextTags.subtitle() =
-    (vorbis["discsubtitle"] ?: id3v2["TSST"])?.first()
+fun TextTags.subtitle() = (vorbis["discsubtitle"] ?: id3v2["TSST"])?.first()
 
 // Dates are somewhat complicated, as not only did their semantics change from a flat year
 // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -41,111 +62,129 @@ fun TextTags.subtitle() =
 // TODO: Show original and normal dates side-by-side
 // TODO: Handle dates that are in "January" because the actual specific release date
 //  isn't known?
-fun TextTags.date() = (vorbis["originaldate"]?.run { Date.from(first()) }
-    ?: vorbis["date"]?.run { Date.from(first()) }
-    ?: vorbis["year"]?.run { Date.from(first()) } ?:
+fun TextTags.date() =
+    (vorbis["originaldate"]?.run { Date.from(first()) }
+        ?: vorbis["date"]?.run { Date.from(first()) }
+        ?: vorbis["year"]?.run { Date.from(first()) }
+        ?:
 
-    // Vorbis dates are less complicated, but there are still several types
-    // Our hierarchy for dates is as such:
-    // 1. Original Date, as it solves the "Released in X, Remastered in Y" issue
-    // 2. Date, as it is the most common date type
-    // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
-    // date tag that android supports, so it must be 15 years old or more!)
-    id3v2["TDOR"]?.run { Date.from(first()) }
-    ?: id3v2["TDRC"]?.run { Date.from(first()) }
-    ?: id3v2["TDRL"]?.run { Date.from(first()) }
-    ?: parseId3v23Date())
+        // Vorbis dates are less complicated, but there are still several types
+        // Our hierarchy for dates is as such:
+        // 1. Original Date, as it solves the "Released in X, Remastered in Y" issue
+        // 2. Date, as it is the most common date type
+        // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
+        // date tag that android supports, so it must be 15 years old or more!)
+        id3v2["TDOR"]?.run { Date.from(first()) }
+        ?: id3v2["TDRC"]?.run { Date.from(first()) }
+        ?: id3v2["TDRL"]?.run { Date.from(first()) }
+        ?: parseId3v23Date())
 
 // Album
 fun TextTags.albumMusicBrainzId() =
-    (vorbis["musicbrainz_albumid"] ?: vorbis["musicbrainz album id"]
-    ?: id3v2["TXXX:musicbrainz album id"] ?: id3v2["TXXX:musicbrainz_albumid"])?.first()
+    (vorbis["musicbrainz_albumid"]
+            ?: vorbis["musicbrainz album id"]
+            ?: id3v2["TXXX:musicbrainz album id"]
+            ?: id3v2["TXXX:musicbrainz_albumid"])
+        ?.first()
 
 fun TextTags.albumName() = (vorbis["album"] ?: id3v2["TALB"])?.first()
+
 fun TextTags.albumSortName() = (vorbis["albumsort"] ?: id3v2["TSOA"])?.first()
-fun TextTags.releaseTypes() = (
-        vorbis["releasetype"] ?: vorbis["musicbrainz album type"]
+
+fun TextTags.releaseTypes() =
+    (vorbis["releasetype"]
+        ?: vorbis["musicbrainz album type"]
         ?: id3v2["TXXX:musicbrainz album type"]
         ?: id3v2["TXXX:releasetype"]
         ?:
         // This is a non-standard iTunes extension
-        id3v2["GRP1"]
-        )
+        id3v2["GRP1"])
 
 // Artist
 fun TextTags.artistMusicBrainzIds() =
-    (vorbis["musicbrainz_artistid"] ?: vorbis["musicbrainz artist id"]
-    ?: id3v2["TXXX:musicbrainz artist id"] ?: id3v2["TXXX:musicbrainz_artistid"])
+    (vorbis["musicbrainz_artistid"]
+        ?: vorbis["musicbrainz artist id"]
+        ?: id3v2["TXXX:musicbrainz artist id"]
+        ?: id3v2["TXXX:musicbrainz_artistid"])
 
-fun TextTags.artistNames() = (vorbis["artists"] ?: vorbis["artist"] ?: id3v2["TXXX:artists"]
-?: id3v2["TPE1"] ?: id3v2["TXXX:artist"])
+fun TextTags.artistNames() =
+    (vorbis["artists"]
+        ?: vorbis["artist"]
+        ?: id3v2["TXXX:artists"]
+        ?: id3v2["TPE1"]
+        ?: id3v2["TXXX:artist"])
 
-fun TextTags.artistSortNames() = (vorbis["artistssort"]
-    ?: vorbis["artists_sort"]
-    ?: vorbis["artists sort"]
-    ?: vorbis["artistsort"]
-    ?: vorbis["artist sort"] ?: id3v2["TXXX:artistssort"]
-    ?: id3v2["TXXX:artists_sort"]
-    ?: id3v2["TXXX:artists sort"]
-    ?: id3v2["TSOP"]
-    ?: id3v2["artistsort"]
-    ?: id3v2["TXXX:artist sort"]
-        )
+fun TextTags.artistSortNames() =
+    (vorbis["artistssort"]
+        ?: vorbis["artists_sort"]
+        ?: vorbis["artists sort"]
+        ?: vorbis["artistsort"]
+        ?: vorbis["artist sort"]
+        ?: id3v2["TXXX:artistssort"]
+        ?: id3v2["TXXX:artists_sort"]
+        ?: id3v2["TXXX:artists sort"]
+        ?: id3v2["TSOP"]
+        ?: id3v2["artistsort"]
+        ?: id3v2["TXXX:artist sort"])
 
-fun TextTags.albumArtistMusicBrainzIds() = (
-        vorbis["musicbrainz_albumartistid"] ?: vorbis["musicbrainz album artist id"]
+fun TextTags.albumArtistMusicBrainzIds() =
+    (vorbis["musicbrainz_albumartistid"]
+        ?: vorbis["musicbrainz album artist id"]
         ?: id3v2["TXXX:musicbrainz album artist id"]
-        ?: id3v2["TXXX:musicbrainz_albumartistid"]
-        )
+        ?: id3v2["TXXX:musicbrainz_albumartistid"])
 
-fun TextTags.albumArtistNames() = (
-        vorbis["albumartists"]
-            ?: vorbis["album_artists"]
-            ?: vorbis["album artists"]
-            ?: vorbis["albumartist"]
-            ?: vorbis["album artist"]
-            ?: id3v2["TXXX:albumartists"]
-            ?: id3v2["TXXX:album_artists"]
-            ?: id3v2["TXXX:album artists"]
-            ?: id3v2["TPE2"]
-            ?: id3v2["TXXX:albumartist"]
-            ?: id3v2["TXXX:album artist"]
-        )
+fun TextTags.albumArtistNames() =
+    (vorbis["albumartists"]
+        ?: vorbis["album_artists"]
+        ?: vorbis["album artists"]
+        ?: vorbis["albumartist"]
+        ?: vorbis["album artist"]
+        ?: id3v2["TXXX:albumartists"]
+        ?: id3v2["TXXX:album_artists"]
+        ?: id3v2["TXXX:album artists"]
+        ?: id3v2["TPE2"]
+        ?: id3v2["TXXX:albumartist"]
+        ?: id3v2["TXXX:album artist"])
 
-fun TextTags.albumArtistSortNames() = (vorbis["albumartistssort"]
-    ?: vorbis["albumartists_sort"]
-    ?: vorbis["albumartists sort"]
-    ?: vorbis["albumartistsort"]
-    ?: vorbis["album artist sort"] ?: id3v2["TXXX:albumartistssort"]
-    ?: id3v2["TXXX:albumartists_sort"]
-    ?: id3v2["TXXX:albumartists sort"]
-    ?: id3v2["TXXX:albumartistsort"]
-    // This is a non-standard iTunes extension
-    ?: id3v2["TSO2"]
-    ?: id3v2["TXXX:album artist sort"]
-        )
+fun TextTags.albumArtistSortNames() =
+    (vorbis["albumartistssort"]
+        ?: vorbis["albumartists_sort"]
+        ?: vorbis["albumartists sort"]
+        ?: vorbis["albumartistsort"]
+        ?: vorbis["album artist sort"]
+        ?: id3v2["TXXX:albumartistssort"]
+        ?: id3v2["TXXX:albumartists_sort"]
+        ?: id3v2["TXXX:albumartists sort"]
+        ?: id3v2["TXXX:albumartistsort"]
+        // This is a non-standard iTunes extension
+        ?: id3v2["TSO2"]
+        ?: id3v2["TXXX:album artist sort"])
 
 // Genre
 fun TextTags.genreNames() = vorbis["genre"] ?: id3v2["TCON"]
 
 // Compilation Flag
-fun TextTags.isCompilation() = (vorbis["compilation"] ?: vorbis["itunescompilation"]
-?: id3v2["TCMP"] // This is a non-standard itunes extension
-?: id3v2["TXXX:compilation"] ?: id3v2["TXXX:itunescompilation"]
-        )
-    ?.let {
-        // Ignore invalid instances of this tag
-        it == listOf("1")
-    }
+fun TextTags.isCompilation() =
+    (vorbis["compilation"]
+            ?: vorbis["itunescompilation"]
+            ?: id3v2["TCMP"] // This is a non-standard itunes extension
+            ?: id3v2["TXXX:compilation"]
+            ?: id3v2["TXXX:itunescompilation"])
+        ?.let {
+            // Ignore invalid instances of this tag
+            it == listOf("1")
+        }
 
 // ReplayGain information
-fun TextTags.replayGainTrackAdjustment() = (vorbis["r128_track_gain"]?.parseR128Adjustment()
-    ?: vorbis["replaygain_track_gain"]?.parseReplayGainAdjustment()
-    ?: id3v2["TXXX:replaygain_track_gain"]?.parseReplayGainAdjustment())
+fun TextTags.replayGainTrackAdjustment() =
+    (vorbis["r128_track_gain"]?.parseR128Adjustment()
+        ?: vorbis["replaygain_track_gain"]?.parseReplayGainAdjustment()
+        ?: id3v2["TXXX:replaygain_track_gain"]?.parseReplayGainAdjustment())
 
-fun TextTags.replayGainAlbumAdjustment() = (vorbis["r128_album_gain"]?.parseR128Adjustment()
-    ?: vorbis["replaygain_album_gain"]?.parseReplayGainAdjustment()
-    ?: id3v2["TXXX:replaygain_album_gain"]?.parseReplayGainAdjustment())
+fun TextTags.replayGainAlbumAdjustment() =
+    (vorbis["r128_album_gain"]?.parseR128Adjustment()
+        ?: vorbis["replaygain_album_gain"]?.parseReplayGainAdjustment()
+        ?: id3v2["TXXX:replaygain_album_gain"]?.parseReplayGainAdjustment())
 
 private fun TextTags.parseId3v23Date(): Date? {
     // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
@@ -182,14 +221,10 @@ private fun TextTags.parseId3v23Date(): Date? {
 }
 
 private fun List<String>.parseR128Adjustment() =
-    first()
-        .replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "")
-        .toFloatOrNull()
-        ?.nonZeroOrNull()
-        ?.run {
-            // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
-            this / 256f + 5
-        }
+    first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()?.run {
+        // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
+        this / 256f + 5
+    }
 
 /**
  * Parse a ReplayGain adjustment into a float value.
@@ -198,7 +233,6 @@ private fun List<String>.parseR128Adjustment() =
  */
 private fun List<String>.parseReplayGainAdjustment() =
     first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
-
 
 val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")
 val COMPILATION_RELEASE_TYPES = listOf("compilation")

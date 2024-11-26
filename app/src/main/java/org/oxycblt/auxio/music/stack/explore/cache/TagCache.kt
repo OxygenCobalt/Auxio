@@ -27,8 +27,10 @@ import org.oxycblt.auxio.music.stack.explore.DeviceFile
 
 sealed interface CacheResult {
     data class Hit(val audioFile: AudioFile) : CacheResult
+
     data class Miss(val deviceFile: DeviceFile) : CacheResult
 }
+
 interface TagCache {
     fun read(files: Flow<DeviceFile>): Flow<CacheResult>
 

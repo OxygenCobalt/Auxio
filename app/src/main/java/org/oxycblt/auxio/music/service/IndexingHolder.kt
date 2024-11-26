@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * Indexer.kt is part of Auxio.
+ * IndexingHolder.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ private constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val library = musicRepository.library ?: return
         L.d("Music changed, updating shared objects")
         // Wipe possibly-invalidated outdated covers
         imageLoader.memoryCache?.clear()
@@ -158,10 +158,7 @@ private constructor(
                 savedState.copy(
                     parent =
                         savedState.parent?.let { musicRepository.find(it.uid) as? MusicParent? },
-                    heap =
-                        savedState.heap.map { song ->
-                            song?.let { deviceLibrary.findSong(it.uid) }
-                        }),
+                    heap = savedState.heap.map { song -> song?.let { library.findSong(it.uid) } }),
                 true)
         }
     }

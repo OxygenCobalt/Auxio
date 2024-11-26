@@ -147,8 +147,8 @@ constructor(
     }
 
     private fun newCommand(song: Song?, shuffle: ShuffleMode): PlaybackCommand? {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return null
-        return newCommand(song, null, deviceLibrary.songs, listSettings.songSort, shuffle)
+        val library = musicRepository.library ?: return null
+        return newCommand(song, null, library.songs, listSettings.songSort, shuffle)
     }
 
     private fun newCommand(

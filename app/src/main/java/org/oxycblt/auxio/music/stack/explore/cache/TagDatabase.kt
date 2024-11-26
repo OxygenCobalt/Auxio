@@ -28,8 +28,8 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.auxio.music.stack.explore.AudioFile
 import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.stack.explore.AudioFile
 import org.oxycblt.auxio.music.stack.explore.DeviceFile
 import org.oxycblt.auxio.music.stack.explore.extractor.correctWhitespace
 import org.oxycblt.auxio.music.stack.explore.extractor.splitEscaped
@@ -51,8 +51,8 @@ interface TagDao {
 @TypeConverters(Tags.Converters::class)
 data class Tags(
     /**
-     * The Uri of the [AudioFile]'s audio file, obtained from SAF. This should ideally be a black box
-     * only used for comparison.
+     * The Uri of the [AudioFile]'s audio file, obtained from SAF. This should ideally be a black
+     * box only used for comparison.
      */
     @PrimaryKey val uri: String,
     /** The latest date the [AudioFile]'s audio file was modified, as a unix epoch timestamp. */

@@ -25,10 +25,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.model.DeviceLibrary
 import timber.log.Timber as L
 
 /**
@@ -56,9 +56,9 @@ class DetailPickerViewModel @Inject constructor(private val musicRepository: Mus
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (!changes.deviceLibrary) return
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val library = musicRepository.library ?: return
         // Need to sanitize different items depending on the current set of choices.
-        _artistChoices.value = _artistChoices.value?.sanitize(deviceLibrary)
+        _artistChoices.value = _artistChoices.value?.sanitize(library)
         L.d("Updated artist choices: ${_artistChoices.value}")
     }
 
@@ -99,15 +99,14 @@ sealed interface ArtistShowChoices {
     /** The current [Artist] choices. */
     val choices: List<Artist>
     /** Sanitize this instance with a [DeviceLibrary]. */
-    fun sanitize(newLibrary: DeviceLibrary): ArtistShowChoices?
+    fun sanitize(newLibrary: Library): ArtistShowChoices?
 
     /** Backing implementation of [ArtistShowChoices] that is based on a [Song]. */
     class FromSong(val song: Song) : ArtistShowChoices {
         override val uid = song.uid
         override val choices = song.artists
 
-        override fun sanitize(newLibrary: DeviceLibrary) =
-            newLibrary.findSong(uid)?.let { FromSong(it) }
+        override fun sanitize(newLibrary: Library) = newLibrary.findSong(uid)?.let { FromSong(it) }
     }
 
     /** Backing implementation of [ArtistShowChoices] that is based on an [Album]. */
@@ -115,7 +114,7 @@ sealed interface ArtistShowChoices {
         override val uid = album.uid
         override val choices = album.artists
 
-        override fun sanitize(newLibrary: DeviceLibrary) =
+        override fun sanitize(newLibrary: Library) =
             newLibrary.findAlbum(uid)?.let { FromAlbum(it) }
     }
 }

@@ -19,13 +19,8 @@
 package org.oxycblt.auxio.music.stack.interpret.model
 
 import org.oxycblt.auxio.image.extractor.ParentCover
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.stack.explore.PlaylistFile
-import org.oxycblt.auxio.music.stack.explore.playlists.RawPlaylist
 import org.oxycblt.auxio.music.stack.interpret.linker.LinkedPlaylist
 
 class PlaylistImpl(linkedPlaylist: LinkedPlaylist) : Playlist {

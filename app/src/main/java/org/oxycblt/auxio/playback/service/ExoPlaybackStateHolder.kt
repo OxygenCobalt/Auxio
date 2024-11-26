@@ -130,8 +130,8 @@ class ExoPlaybackStateHolder(
         get() = player.audioSessionId
 
     override fun resolveQueue(): RawQueue {
-        val deviceLibrary =
-            musicRepository.deviceLibrary
+        val library =
+            musicRepository.library
                 // No library, cannot do anything.
                 ?: return RawQueue(emptyList(), emptyList(), 0)
         val heap = (0 until player.mediaItemCount).map { player.getMediaItemAt(it) }
@@ -145,8 +145,8 @@ class ExoPlaybackStateHolder(
     }
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
-        val deviceLibrary =
-            musicRepository.deviceLibrary
+        val library =
+            musicRepository.library
                 // No library, cannot do anything.
                 ?: return false
 
@@ -181,12 +181,13 @@ class ExoPlaybackStateHolder(
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
                 L.d("Opening specified file")
-                deviceLibrary.findSongForUri(context, action.uri)?.let { song ->
-                    playbackManager.play(
-                        requireNotNull(commandFactory.song(song, ShuffleMode.IMPLICIT)) {
-                            "Invalid playback parameters"
-                        })
-                }
+                //                library.findSongForUri(context, action.uri)?.let { song ->
+                //                    playbackManager.play(
+                //                        requireNotNull(commandFactory.song(song,
+                // ShuffleMode.IMPLICIT)) {
+                //                            "Invalid playback parameters"
+                //                        })
+                //                }
             }
         }
 
@@ -498,7 +499,7 @@ class ExoPlaybackStateHolder(
     // --- MUSICREPOSITORY METHODS ---
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
+        if (changes.deviceLibrary && musicRepository.library != null) {
             // We now have a library, see if we have anything we need to do.
             L.d("Library obtained, requesting action")
             playbackManager.requestAction(this)

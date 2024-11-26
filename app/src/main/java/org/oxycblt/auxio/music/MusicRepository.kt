@@ -29,12 +29,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import org.oxycblt.auxio.music.model.DeviceLibrary
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.stack.Indexer
-import org.oxycblt.auxio.music.user.MutableUserLibrary
-import org.oxycblt.auxio.music.user.UserLibrary
+import org.oxycblt.auxio.music.stack.interpret.Interpretation
+import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
 import timber.log.Timber as L
 
 /**
@@ -49,10 +48,7 @@ import timber.log.Timber as L
  *   configurations
  */
 interface MusicRepository {
-    /** The current music information found on the device. */
-    val deviceLibrary: DeviceLibrary?
-    /** The current user-defined music information. */
-    val userLibrary: UserLibrary?
+    val library: Library?
     /** The current state of music loading. Null if no load has occurred yet. */
     val indexingState: IndexingState?
 
@@ -182,7 +178,7 @@ interface MusicRepository {
      * Flags indicating which kinds of music information changed.
      *
      * @param deviceLibrary Whether the current [DeviceLibrary] has changed.
-     * @param userLibrary Whether the current [Playlist]s have changed.
+     * @param library Whether the current [Playlist]s have changed.
      */
     data class Changes(val deviceLibrary: Boolean, val userLibrary: Boolean)
 
@@ -212,18 +208,13 @@ interface MusicRepository {
 
 class MusicRepositoryImpl
 @Inject
-constructor(
-    private val indexer: Indexer,
-    private val deviceLibraryFactory: DeviceLibrary.Factory,
-    private val userLibraryFactory: UserLibrary.Factory,
-    private val musicSettings: MusicSettings
-) : MusicRepository {
+constructor(private val indexer: Indexer, private val musicSettings: MusicSettings) :
+    MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
     @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
 
-    @Volatile override var deviceLibrary: DeviceLibrary? = null
-    @Volatile override var userLibrary: MutableUserLibrary? = null
+    @Volatile override var library: MutableLibrary? = null
     @Volatile private var previousCompletedState: IndexingState.Completed? = null
     @Volatile private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
@@ -282,41 +273,50 @@ constructor(
 
     @Synchronized
     override fun find(uid: Music.UID) =
-        (deviceLibrary?.run { findSong(uid) ?: findAlbum(uid) ?: findArtist(uid) ?: findGenre(uid) }
-            ?: userLibrary?.findPlaylist(uid))
+        (library?.run {
+            findSong(uid)
+                ?: findAlbum(uid)
+                ?: findArtist(uid)
+                ?: findGenre(uid)
+                ?: findPlaylist(uid)
+        })
 
     override suspend fun createPlaylist(name: String, songs: List<Song>) {
-        val userLibrary = synchronized(this) { userLibrary ?: return }
+        val library = synchronized(this) { library ?: return }
         L.d("Creating playlist $name with ${songs.size} songs")
-        userLibrary.createPlaylist(name, songs)
+        val newLibrary = library.createPlaylist(name, songs)
+        synchronized(this) { this.library = newLibrary }
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String) {
-        val userLibrary = synchronized(this) { userLibrary ?: return }
+        val library = synchronized(this) { library ?: return }
         L.d("Renaming $playlist to $name")
-        userLibrary.renamePlaylist(playlist, name)
+        val newLibrary = library.renamePlaylist(playlist, name)
+        synchronized(this) { this.library = newLibrary }
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
-        val userLibrary = synchronized(this) { userLibrary ?: return }
+        val library = synchronized(this) { library ?: return }
         L.d("Deleting $playlist")
-        userLibrary.deletePlaylist(playlist)
+        val newLibrary = library.deletePlaylist(playlist)
+        synchronized(this) { this.library = newLibrary }
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
-        val userLibrary = synchronized(this) { userLibrary ?: return }
+        val library = synchronized(this) { library ?: return }
         L.d("Adding ${songs.size} songs to $playlist")
-        userLibrary.addToPlaylist(playlist, songs)
+        val newLibrary = library.addToPlaylist(playlist, songs)
+        synchronized(this) { this.library = newLibrary }
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
-        val userLibrary = synchronized(this) { userLibrary ?: return }
+        val library = synchronized(this) { library ?: return }
         L.d("Rewriting $playlist with ${songs.size} songs")
-        userLibrary.rewritePlaylist(playlist, songs)
+        library.rewritePlaylist(playlist, songs)
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
@@ -363,25 +363,28 @@ constructor(
                 Name.Known.SimpleFactory
             }
 
-        val (deviceLibrary, userLibrary) = indexer.run(listOf(), separators, nameFactory)
+        val newLibrary = indexer.run(listOf(), Interpretation(nameFactory, separators))
 
-        val deviceLibraryChanged: Boolean
-        val userLibraryChanged: Boolean
         // We want to make sure that all reads and writes are synchronized due to the sheer
         // amount of consumers of MusicRepository.
         // TODO: Would Atomics not be a better fit here?
+        val deviceLibraryChanged: Boolean
+        val userLibraryChanged: Boolean
         synchronized(this) {
             // It's possible that this reload might have changed nothing, so make sure that
             // hasn't happened before dispatching a change to all consumers.
-            deviceLibraryChanged = this.deviceLibrary != deviceLibrary
-            userLibraryChanged = this.userLibrary != userLibrary
+            deviceLibraryChanged =
+                this.library?.songs != newLibrary.songs ||
+                    this.library?.albums != newLibrary.albums ||
+                    this.library?.artists != newLibrary.artists ||
+                    this.library?.genres != newLibrary.genres
+            userLibraryChanged = this.library?.playlists != newLibrary.playlists
             if (!deviceLibraryChanged && !userLibraryChanged) {
                 L.d("Library has not changed, skipping update")
                 return
             }
 
-            this.deviceLibrary = deviceLibrary
-            this.userLibrary = userLibrary
+            this.library = newLibrary
         }
 
         // Consumers expect their updates to be on the main thread (notably PlaybackService),

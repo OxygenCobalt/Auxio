@@ -107,4 +107,3 @@ constructor(
                 DocumentsContract.Document.COLUMN_LAST_MODIFIED)
     }
 }
-
