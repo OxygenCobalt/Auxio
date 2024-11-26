@@ -209,7 +209,6 @@
         <item quantity="two">שני אומנים</item>
         <item quantity="other">%d אומנים</item>
     </plurals>
-    <string name="set_dirs_mode_include">לכלול</string>
     <string name="set_reindex">רענון מוזיקה</string>
     <string name="err_no_music">לא נמצאה מוזיקה</string>
     <string name="err_index_failed">אירע כשל בטעינה מוזיקה</string>
@@ -237,8 +236,6 @@
     <string name="desc_exit">עצירת הנגינה</string>
     <string name="desc_remove_song">הסרת שיר זה</string>
     <string name="lbl_share">שיתוף</string>
-    <string name="set_dirs_mode">מצב</string>
-    <string name="set_dirs_mode_exclude">החרגה</string>
     <string name="desc_song_handle">העברת שיר זה</string>
     <string name="desc_tab_handle">העברת לשונית זו</string>
     <string name="desc_clear_search">ניקוי תור החיפוש</string>
@@ -254,8 +251,6 @@
     <string name="lbl_sort_mode">מיון על פי</string>
     <string name="lbl_sort_direction">כיוון</string>
     <string name="set_square_covers_desc">חיתוך כל עטיפות האלבומים ליחס של 1:1</string>
-    <string name="set_dirs_mode_exclude_desc">מוזיקה <b>לא</b> תיטען מהתיקיות שנוספו.</string>
-    <string name="set_dirs_mode_include_desc">מוזיקה תיטען <b>רק</b> מהתיקיות שנוספו.</string>
     <string name="lbl_appears_on">מופיע~ה ב-</string>
     <string name="set_play_song_by_itself">ניגון השיר בלבד</string>
     <string name="set_pre_amp_warning">אזהרה: שינוי המגבר לערך חיובי גבוה עלול לגרום לעיוות (דיסטורשן) בחלק מרצועות האודיו.</string>

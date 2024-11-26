@@ -140,7 +140,6 @@
     <string name="set_remember_pause">Rememorar le pausa</string>
     <string name="set_locations">Dossieres de musica</string>
     <string name="set_locations_list">Dossieres</string>
-    <string name="set_dirs_mode">Modo</string>
     <string name="set_reindex">Actualisar le musica</string>
     <string name="err_no_music">Nulle musica trovate</string>
     <string name="err_index_failed">Falleva le carga del musica</string>

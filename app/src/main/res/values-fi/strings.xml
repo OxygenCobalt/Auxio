@@ -88,10 +88,6 @@
     <string name="set_locations">Musiikkikansiot</string>
     <string name="set_locations_desc">Määritä mistä musiikki tulee ladata</string>
     <string name="set_rescan">Läpikäy musiikki uudelleen</string>
-    <string name="set_dirs_mode">Tila</string>
-    <string name="set_dirs_mode_exclude">Ohita</string>
-    <string name="set_dirs_mode_include">Sisällytä</string>
-    <string name="set_dirs_mode_include_desc">Musiikkia ladataan <b>vain</b> lisäämistäsi kansioista.</string>
     <string name="err_no_app">Tähän tehtävään kykenevää sovellusta ei löytynyt</string>
     <string name="err_no_locations">Ei kansioita</string>
     <string name="desc_track_number">Raita %d</string>
@@ -223,7 +219,6 @@
     <string name="def_playback">Musiikkia ei toisteta</string>
     <string name="set_play_song_from_artist">Toista esittäjältä</string>
     <string name="set_exclude_non_music">Ohita muu kuin musiikki</string>
-    <string name="set_dirs_mode_exclude_desc">Musiikkia <b>ei</b> ladata valitsemistasi kansioista.</string>
     <string name="set_replay_gain_mode_dynamic">Suosi albumia, jos sellaista toistetaan</string>
     <string name="lbl_new_playlist">Uusi soittolista</string>
     <string name="fmt_def_playlist">Soittolista %d</string>

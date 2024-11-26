@@ -203,15 +203,12 @@
     <string name="set_locations_list">Dossiers</string>
     <string name="set_replay_gain_mode_dynamic">Par album si un album est en lecture</string>
     <string name="set_library">Bibliothèque</string>
-    <string name="set_dirs_mode_include_desc">La musique sera <b>uniquement</b> chargée des dossiers ajoutés.</string>
-    <string name="set_dirs_mode_include">Inclure</string>
     <string name="set_reindex">Actualiser la musique</string>
     <string name="set_rescan_desc">Effacer le cache des étiquettes et recharger entièrement la bibliothèque musicale (lent, mais plus complet)</string>
     <string name="err_no_app">Aucune application trouvée qui puisse gérer cette tâche</string>
     <string name="err_no_perms">Auxio a besoin de permissions pour lire votre bibliothèque musicale</string>
     <string name="set_intelligent_sorting">Tri intelligent</string>
     <string name="set_intelligent_sorting_desc">Ignorer les nombres ou certains mots comme \"the\" en début de nom lors du tri (fonctionne au mieux avec de la musique en anglais)</string>
-    <string name="set_dirs_mode_exclude_desc">Les dossiers de musique ajoutés ne seront <b>pas</b> chargés.</string>
     <string name="set_rescan">Scanner à nouveau la musique</string>
     <string name="set_pre_amp_without">Ajustement sans étiquettes</string>
     <string name="set_replay_gain">Volume normalisé</string>
@@ -219,8 +216,6 @@
     <string name="set_headset_autoplay">Lecture automatique avec casque audio</string>
     <string name="set_pre_amp">Normalisation de volume par préampli</string>
     <string name="set_reindex_desc">Recharger la bibliothèque musicale en utilisant si possible les étiquettes en cache</string>
-    <string name="set_dirs_mode">Mode</string>
-    <string name="set_dirs_mode_exclude">Exclure</string>
     <string name="lbl_new_playlist">Nouvelle liste de lecture</string>
     <string name="desc_skip_next">Passer à la chanson suivante</string>
     <string name="desc_shuffle">Activer ou désactiver la lecture aléatoire</string>

@@ -211,10 +211,6 @@
     <string name="set_locations">Музикални папки</string>
     <string name="set_locations_desc">Управлявайте откъде да се зарежда музиката</string>
     <string name="set_locations_list">Папки</string>
-    <string name="set_dirs_mode">Режим</string>
-    <string name="set_dirs_mode_exclude">Изключете</string>
-    <string name="set_dirs_mode_exclude_desc">Музиката <b>няма</b> да се зарежда от папките, които добавяте.</string>
-    <string name="set_dirs_mode_include_desc">Музиката ще се зарежда <b>само</b> от папките, които добавите.</string>
     <string name="set_reindex">Обновяване на музика</string>
     <string name="err_no_music">Няма намерена музика</string>
     <string name="err_index_failed">Неуспешно зареждане на музика</string>
@@ -241,7 +237,6 @@
     <string name="err_bad_location">Тази папка не се поддържа</string>
     <string name="desc_auxio_icon">Auxio икона</string>
     <string name="desc_no_cover">Обложка на албум</string>
-    <string name="set_dirs_mode_include">Включете</string>
     <string name="desc_album_cover">Обложка на албум за %s</string>
     <string name="desc_artist_image">Изображение на изпълнител за %s</string>
     <string name="set_reindex_desc">Презареди музикалната библиотека, като използвате кеширани етикети, когато е възможно</string>

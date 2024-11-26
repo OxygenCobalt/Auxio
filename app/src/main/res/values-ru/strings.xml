@@ -165,9 +165,7 @@
     <string name="lbl_date_added">Дата добавления</string>
     <string name="lbl_singles">Синглы</string>
     <string name="set_pre_amp">Предусиление ReplayGain</string>
-    <string name="set_dirs_mode_exclude">Исключить</string>
     <string name="cdc_aac">AAC</string>
-    <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будет загружена из указанных папок.</string>
     <string name="set_locations_desc">Укажите, откуда надо загружать музыку</string>
     <string name="fmt_bitrate">%d кбит/с</string>
     <string name="set_observing">Автоматическая перезагрузка</string>
@@ -184,7 +182,6 @@
     <string name="lbl_live_group">Концертный</string>
     <string name="lng_observing">Мониторинг изменений в музыкальной библиотеке…</string>
     <string name="set_locations">Папки с музыкой</string>
-    <string name="set_dirs_mode_include">Включить</string>
     <string name="lbl_album_remix">Альбом ремиксов</string>
     <string name="lbl_ep_live">Концертный мини-альбом</string>
     <string name="lbl_ep_remix">Мини-альбом ремиксов</string>
@@ -195,8 +192,6 @@
     <string name="set_observing_desc">Перезагружать библиотеку при изменении (требует постоянное уведомление)</string>
     <string name="fmt_db_neg">−%.1f дБ</string>
     <string name="fmt_lib_genre_count">Жанров загружено: %d</string>
-    <string name="set_dirs_mode">Режим</string>
-    <string name="set_dirs_mode_include_desc">Музыка будет загружена <b>только</b> из указанных папок.</string>
     <string name="def_track">Нет трека</string>
     <string name="fmt_sample_rate">%d Гц</string>
     <string name="fmt_lib_artist_count">Исполнителей загружено: %d</string>

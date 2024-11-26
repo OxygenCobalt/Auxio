@@ -164,11 +164,6 @@
     </plurals>
     <string name="lbl_shuffle_shortcut_short">Náhodně</string>
     <string name="lbl_shuffle_shortcut_long">Vše náhodně</string>
-    <string name="set_dirs_mode">Režim</string>
-    <string name="set_dirs_mode_exclude">Vyloučit</string>
-    <string name="set_dirs_mode_exclude_desc">Z přidaných složek <b>nebude</b> načtena hudba.</string>
-    <string name="set_dirs_mode_include">Zahrnout</string>
-    <string name="set_dirs_mode_include_desc">Hudba bude načtena <b>pouze</b> z přidaných složek.</string>
     <string name="cdc_mp3">Zvuk MPEG-1</string>
     <string name="cdc_mp4">Zvuk MPEG-4</string>
     <string name="cdc_ogg">Zvuk Ogg</string>

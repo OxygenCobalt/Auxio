@@ -141,9 +141,6 @@
     <string name="set_pre_amp_warning">警告：将前置增益更改为正向高数值或导致某些音轨峰值过高。</string>
     <string name="set_locations">音乐文件夹</string>
     <string name="set_locations_desc">管理音乐的加载位置</string>
-    <string name="set_dirs_mode">模式</string>
-    <string name="set_dirs_mode_exclude">排除</string>
-    <string name="set_dirs_mode_include">包含</string>
     <string name="cdc_mp3">MPEG-1 音频</string>
     <string name="cdc_mp4">MPEG-4 音频</string>
     <string name="cdc_ogg">Ogg 音频</string>
@@ -160,9 +157,7 @@
     <string name="fmt_lib_genre_count">已加载流派数量：%d</string>
     <string name="fmt_lib_total_duration">总计时长：%s</string>
     <string name="set_play_song_none">从展示的项目播放</string>
-    <string name="set_dirs_mode_include_desc">将<b>仅从</b>您添加的目录中加载音乐。</string>
     <string name="set_play_in_parent_with">从项目详情中选择播放时</string>
-    <string name="set_dirs_mode_exclude_desc">将 <b>不会</b>从您添加的目录中加载音乐。</string>
     <string name="cdc_aac">高级音乐编码 (AAC)</string>
     <string name="fmt_lib_album_count">已加载专辑数量：%d</string>
     <string name="lbl_indexer">音乐加载中</string>

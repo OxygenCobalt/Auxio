@@ -93,7 +93,6 @@
     <string name="set_play_song_from_all">Tüm şarkılardan çal</string>
     <string name="set_play_song_from_album">Albümden çal</string>
     <string name="set_locations">Müzik klasörleri</string>
-    <string name="set_dirs_mode_include_desc">Müzik <b>yalnızca</b> eklediğiniz klasörlerden yüklenecektir.</string>
     <string name="desc_album_cover">%s Albümünün kapağı</string>
     <string name="desc_artist_image">%s Sanatçısının resmi</string>
     <string name="def_track">Parça yok</string>
@@ -164,10 +163,6 @@
     <string name="desc_no_cover">Albüm kapağı</string>
     <string name="desc_clear_search">Arama sorgusunu temizle</string>
     <string name="set_locations_desc">Müziğin nereden yükleneceğini yönetin</string>
-    <string name="set_dirs_mode">Mod</string>
-    <string name="set_dirs_mode_exclude">Hariç tut</string>
-    <string name="set_dirs_mode_exclude_desc">Eklediğiniz klasörlerden müzik <b>yüklenmeyecek</b>.</string>
-    <string name="set_dirs_mode_include">Dahil et</string>
     <string name="def_date">Tarih yok</string>
     <string name="clr_deep_blue">Koyu mavi</string>
     <string name="clr_cyan">Camgöbeği</string>

@@ -154,11 +154,6 @@
     <string name="set_play_song_none">Vom dargestellten Element abspielen</string>
     <string name="set_locations">Musikordner</string>
     <string name="set_locations_desc">Verwalten, von wo die Musik geladen werden soll</string>
-    <string name="set_dirs_mode">Modus</string>
-    <string name="set_dirs_mode_exclude">Ausschließen</string>
-    <string name="set_dirs_mode_exclude_desc">Musik wird <b>nicht</b> aus den von dir hinzugefügten Ordnern geladen.</string>
-    <string name="set_dirs_mode_include">Einschließen</string>
-    <string name="set_dirs_mode_include_desc">Musik wird <b>nur</b> aus den von dir hinzugefügten Ordnern geladen.</string>
     <string name="def_track">Kein Titel</string>
     <string name="cdc_ogg">Ogg-Audio</string>
     <string name="cdc_mp4">MPEG-4-Audio</string>

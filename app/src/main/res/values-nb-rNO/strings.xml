@@ -89,7 +89,6 @@
     <string name="set_replay_gain_mode">ReplayGain-strategi</string>
     <string name="set_locations_desc">Håndter hvor musikk lastes inn fra</string>
     <string name="set_pre_amp_desc">Forforsterkning brukes for eksisterende justering under avspilling</string>
-    <string name="set_dirs_mode">Modus</string>
     <string name="set_rescan_desc">Tøm etiketthurtiglager og last inn hele musikkbiblioteket igjen (tregere, men mer fullstendig)</string>
     <string name="desc_track_number">Spor %d</string>
     <string name="desc_no_cover">Albumomslag</string>
@@ -136,7 +135,6 @@
     <string name="set_separators_desc">Sett opp tegn for inndeling av flere etikett-verdier</string>
     <string name="set_hide_collaborators_desc">Vis kun artister som er kreditert direkte på album (fungerer best med velmerkede bibliotek)</string>
     <string name="set_rescan">Reskann musikk</string>
-    <string name="set_dirs_mode_include_desc">Musikk vil <b>kun</b> innlastes fra mappene du legger til.</string>
     <string name="set_reindex_desc">Last inn musikkbiblioteket igjen, ved bruk av hurtiglagrede etiketter når mulig</string>
     <string name="err_no_locations">Ingen mapper</string>
     <string name="fmt_lib_album_count">Album innlastet: %d</string>
@@ -210,9 +208,6 @@
     <string name="set_lib_tabs">Bibliotekfaner</string>
     <string name="set_lib_tabs_desc">Endre synlighet og rekkefølgen på bibliotekfaner</string>
     <string name="set_bar_action">Egendefinert avspillingsfelt-handling</string>
-    <string name="set_dirs_mode_exclude">Utelat</string>
-    <string name="set_dirs_mode_include">Inkluder</string>
-    <string name="set_dirs_mode_exclude_desc">Musikk vil <b>ikke</b> innlastes fra mappene du legger til.</string>
     <string name="def_song_count">Ingen spor</string>
     <string name="def_playback">Ingen musikk spilles</string>
     <string name="clr_orange">Oransje</string>

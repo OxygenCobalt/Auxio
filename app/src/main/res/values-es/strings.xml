@@ -147,10 +147,6 @@
     <string name="set_pre_amp_without">Ajuste sin etiquetas</string>
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
     <string name="set_play_song_none">Reproducir desde el elemento que se muestra</string>
-    <string name="set_dirs_mode">Modo</string>
-    <string name="set_dirs_mode_exclude">Excluir</string>
-    <string name="set_dirs_mode_exclude_desc">La música<b>no</b> se cargará de las carpetas que añadas.</string>
-    <string name="set_dirs_mode_include">Incluir</string>
     <string name="cdc_mka">Audio matroska</string>
     <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
@@ -174,7 +170,6 @@
     <string name="set_headset_autoplay">Reproducción automática con auriculares</string>
     <string name="set_locations">Carpetas de música</string>
     <string name="set_locations_desc">Gestionar de dónde se cargará la música</string>
-    <string name="set_dirs_mode_include_desc">La música <b>solo</b> se cargará de las carpetas que añadas.</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="lbl_eps">Reproducción extendidas (EPs)</string>

@@ -125,7 +125,6 @@
     <string name="set_pre_amp_desc">De voorversterker wordt toegepast op de bestaande afstelling tijdens weergave</string>
     <string name="set_locations">Muziek mappen</string>
     <string name="set_pre_amp">ReplayGain voorversterker</string>
-    <string name="set_dirs_mode">Modus</string>
     <string name="set_locations_desc">Beheer waarvan muziek moet worden geladen</string>
     <string name="fmt_lib_total_duration">Totale duur: %s</string>
     <string name="lbl_shuffle_shortcut_long">Shuffle alles</string>
@@ -134,13 +133,9 @@
     <string name="desc_shuffle">Schakel shuffle aan of uit</string>
     <string name="set_reindex_desc">Laad de muziekbibliotheek opnieuw, indien mogelijk met behulp van gecashte tags</string>
     <string name="fmt_indexing">Uw muziekbibliotheek wordt geladen… (%1$d/%2$d)</string>
-    <string name="set_dirs_mode_exclude">Sluit uit</string>
     <string name="desc_shuffle_all">Shuffle alle nummers</string>
-    <string name="set_dirs_mode_include">Sluit in</string>
     <string name="set_repeat_pause_desc">Pauze wanneer een nummer wordt herhaald</string>
-    <string name="set_dirs_mode_exclude_desc">Muziek wordt <b>niet</b> niet geladen uit de mappen die u toevoegt.</string>
     <string name="set_reindex">Muziek opnieuw laden</string>
-    <string name="set_dirs_mode_include_desc">Muziek wordt <b>alleen</b> geladen uit de mappen die u toevoegt.</string>
     <string name="set_pre_amp_with">Aanpassing met tags</string>
     <string name="set_pre_amp_without">Aanpassing zonder tags</string>
     <string name="def_playback">Geen muziek wordt afgespeeld</string>

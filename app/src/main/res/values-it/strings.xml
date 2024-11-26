@@ -140,10 +140,6 @@
         <item quantity="many">%d album</item>
         <item quantity="other">%d album</item>
     </plurals>
-    <string name="set_dirs_mode">Modo</string>
-    <string name="set_dirs_mode_exclude_desc">La musica <b>non</b> sarà caricata dalle cartelle che aggiungi.</string>
-    <string name="set_dirs_mode_include">Includi</string>
-    <string name="set_dirs_mode_include_desc">La musica sarà caricata <b>solo</b> dalle cartelle che aggiungi.</string>
     <string name="cdc_mp3">MPEG-1 audio</string>
     <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="cdc_ogg">Ogg audio</string>
@@ -161,7 +157,6 @@
     <string name="set_play_song_none">Riproduci dall\'elemento mostrato</string>
     <string name="set_locations_desc">Gestisci le cartelle da dove caricare la musica</string>
     <string name="set_locations">Cartelle musica</string>
-    <string name="set_dirs_mode_exclude">Escludi</string>
     <string name="cdc_mka">Matroska audio</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>

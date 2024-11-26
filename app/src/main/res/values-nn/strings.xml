@@ -188,8 +188,6 @@
     <string name="set_library">Bibliotek</string>
     <string name="set_locations_desc">Handsam kvar musikk skal lastast inn ifrå</string>
     <string name="set_locations_list">Mapper</string>
-    <string name="set_dirs_mode">Modus</string>
-    <string name="set_dirs_mode_include">Inkluder</string>
     <string name="set_reindex">Gjenoppfrisk musikk</string>
     <string name="err_import_failed">Kan ikkje importere ei speleliste frå denne fila</string>
     <string name="desc_skip_next">Hopp til neste spor</string>
@@ -258,9 +256,6 @@
     <string name="set_repeat_pause_desc">Pause når eit spor vert gjenteke</string>
     <string name="set_pre_amp_warning">Åtvaring: Å endre forforsterkninga til høge positive verdier, kan forårsake forvrengning ved høge ljodtrykk på nokre spor.</string>
     <string name="set_locations">Musikkmapper</string>
-    <string name="set_dirs_mode_include_desc">Musikk vil <b>kun</b> verte lasta inn frå mappene du legg til.</string>
-    <string name="set_dirs_mode_exclude">Utelat</string>
-    <string name="set_dirs_mode_exclude_desc">Musikk vil <b>ikkje</b> verte lasta inn frå mappene du legg til.</string>
     <string name="set_reindex_desc">Last inn musikkbiblioteket på nytt og bruk hurtiglagra etikettar når mogleg</string>
     <string name="err_no_music">Fann ikkje musikk</string>
     <string name="set_rescan">Skann musikk på nytt</string>

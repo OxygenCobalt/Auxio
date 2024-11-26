@@ -180,7 +180,6 @@
     <string name="lbl_singles">أغاني فردية</string>
     <string name="set_separators_plus">الرمز زائد (+)</string>
     <string name="set_intelligent_sorting">الفرز الذكي</string>
-    <string name="set_dirs_mode">وضع</string>
     <string name="clr_red">أحمر</string>
     <string name="clr_deep_blue">ازرق غامق</string>
     <string name="set_observing">إعادة التحميل التلقائي</string>
@@ -227,8 +226,6 @@
     <string name="set_library">مكتبة</string>
     <string name="set_locations">مجلدات الموسيقى</string>
     <string name="set_locations_desc">إدارة موقع تحميل الموسيقى</string>
-    <string name="set_dirs_mode_exclude_desc">الموسيقى لن تتم تحميلها من المجلدات التي تقوم بإضافتها.</string>
-    <string name="set_dirs_mode_include_desc">الموسيقى ستتم تحميلها فقط من المجلدات التي تقوم بإضافتها.</string>
     <string name="desc_skip_prev">الانتقال إلى الأغنية الأخيرة</string>
     <string name="desc_change_repeat">تغيير وضع التكرار</string>
     <string name="desc_queue_bar">افتح قائمة الانتظار</string>
@@ -250,7 +247,6 @@
     <string name="set_replay_gain_mode_album">تفضيل الألبوم</string>
     <string name="set_pre_amp_desc">يتم تطبيق مكبر الصوت المسبق على التعديل الحالي أثناء التشغيل</string>
     <string name="set_pre_amp_with">ضبط مع العلامات</string>
-    <string name="set_dirs_mode_exclude">استثناء</string>
     <string name="set_reindex">تحديث الموسيقى</string>
     <string name="err_no_music">لم يتم العثور على موسيقى</string>
     <string name="def_track">لا مسار</string>
@@ -261,7 +257,6 @@
     <string name="clr_pink">لون القرنفل</string>
     <string name="set_intelligent_sorting_desc">الفرز الصحيح للأسماء التي تبدأ بأرقام أو بكلمات مثل \"the\" (يعمل بشكل أفضل مع الموسيقى باللغة الإنجليزية)</string>
     <string name="set_cover_mode_off">إيقاف</string>
-    <string name="set_dirs_mode_include">تتضمن</string>
     <string name="clr_brown">بني</string>
     <string name="fmt_lib_song_count">الأغاني التي تم تحميلها: %d</string>
     <string name="fmt_lib_album_count">الألبومات المحملة: %d</string>

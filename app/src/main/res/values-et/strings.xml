@@ -244,11 +244,6 @@
     <string name="set_locations">Muusika kaustad</string>
     <string name="set_locations_desc">Halda kaustu, kust otsime ja laadime muusikat</string>
     <string name="set_locations_list">Kaustad</string>
-    <string name="set_dirs_mode">Kaustade loogika</string>
-    <string name="set_dirs_mode_exclude">Välista</string>
-    <string name="set_dirs_mode_exclude_desc">Sinu määratud kaustadest <b>ei laadita</b> muusikat.</string>
-    <string name="set_dirs_mode_include">Kaasa</string>
-    <string name="set_dirs_mode_include_desc">Muusikat laadime <b>ainult</b> sinu näidatud kaustadest.</string>
     <string name="set_reindex">Värskenda muusika andmed</string>
     <string name="set_reindex_desc">Laadi muusikakogu uuesti ning kui võimalik, siis kasuta puhverdatud silte</string>
     <string name="set_rescan">Laadi muusikakogu uuesti</string>
