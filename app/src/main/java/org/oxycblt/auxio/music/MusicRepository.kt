@@ -366,7 +366,6 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
 
         var explored = 0
         var loaded = 0
-        var interpreted = 0
         val newLibrary = indexer.run(listOf(), Interpretation(nameFactory, separators)) {
             when (it) {
                 is Indexer.Event.Discovered -> {
@@ -378,9 +377,8 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
                     emitIndexingProgress(IndexingProgress.Songs(loaded, explored))
                 }
                 is Indexer.Event.Interpret -> {
-                    interpreted = it.amount
                     if (explored == loaded) {
-                        emitIndexingProgress(IndexingProgress.Songs(loaded, explored))
+                        emitIndexingProgress(IndexingProgress.Indeterminate)
                     }
                 }
             }
