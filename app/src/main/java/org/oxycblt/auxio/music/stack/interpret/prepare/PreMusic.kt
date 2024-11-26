@@ -54,20 +54,20 @@ data class PreSong(
 ) {
     fun computeUid() =
         musicBrainzId?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
-        ?: Music.UID.auxio(MusicType.SONGS) {
-            // Song UIDs are based on the raw data without parsing so that they remain
-            // consistent across music setting changes. Parents are not held up to the
-            // same standard since grouping is already inherently linked to settings.
-            update(rawName)
-            update(preAlbum.rawName)
-            update(date)
+            ?: Music.UID.auxio(MusicType.SONGS) {
+                // Song UIDs are based on the raw data without parsing so that they remain
+                // consistent across music setting changes. Parents are not held up to the
+                // same standard since grouping is already inherently linked to settings.
+                update(rawName)
+                update(preAlbum.rawName)
+                update(date)
 
-            update(track)
-            update(disc?.number)
+                update(track)
+                update(disc?.number)
 
-            update(preArtists.map { artist -> artist.rawName })
-            update(preAlbum.preArtists.map { artist -> artist.rawName })
-        }
+                update(preArtists.map { artist -> artist.rawName })
+                update(preAlbum.preArtists.map { artist -> artist.rawName })
+            }
 }
 
 data class PreAlbum(

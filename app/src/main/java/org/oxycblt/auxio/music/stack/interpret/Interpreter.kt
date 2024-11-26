@@ -83,7 +83,7 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
                 .register(artistLinkedSongs)
                 .flowOn(Dispatchers.Main)
                 .onEach {
-                    interpreted++;
+                    interpreted++
                     eventHandler(Indexer.Event.Interpret(interpreted))
                 }
                 .map { LinkedSongImpl(it) }
@@ -91,16 +91,17 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
         val albums = albumLinker.resolve()
 
         val uidMap = mutableMapOf<Music.UID, SongImpl>()
-        val songs = albumLinkedSongs.mapNotNull {
-            val uid = it.preSong.computeUid()
-            val other = uidMap[uid]
-            if (other == null) {
-                SongImpl(it)
-            } else {
-                L.d("Song @ $uid already exists at ${other.path}, ignoring")
-                null
+        val songs =
+            albumLinkedSongs.mapNotNull {
+                val uid = it.preSong.computeUid()
+                val other = uidMap[uid]
+                if (other == null) {
+                    SongImpl(it)
+                } else {
+                    L.d("Song @ $uid already exists at ${other.path}, ignoring")
+                    null
+                }
             }
-        }
         return LibraryImpl(
             songs,
             albums.onEach { it.finalize() },

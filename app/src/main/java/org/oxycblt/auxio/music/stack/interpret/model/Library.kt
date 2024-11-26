@@ -18,9 +18,6 @@
  
 package org.oxycblt.auxio.music.stack.interpret.model
 
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
@@ -47,53 +44,43 @@ class LibraryImpl(
 ) : MutableLibrary {
     override val playlists = emptySet<Playlist>()
 
-    private val songUidMap = songs.associ { it.uid }
+    private val songUidMap = songs.associateBy { it.uid }
+    private val albumUidMap = albums.associateBy { it.uid }
+    private val artistUidMap = artists.associateBy { it.uid }
+    private val genreUidMap = genres.associateBy { it.uid }
+    private val playlistUidMap = playlists.associateBy { it.uid }
 
-    override fun findSong(uid: Music.UID): Song? {
-        TODO("Not yet implemented")
-    }
+    override fun findSong(uid: Music.UID) = songUidMap[uid]
 
-    override fun findSongByPath(path: Path): Song? {
-        TODO("Not yet implemented")
-    }
+    override fun findSongByPath(path: Path) = songs.find { it.path == path }
 
-    override fun findAlbum(uid: Music.UID): Album? {
-        TODO("Not yet implemented")
-    }
+    override fun findAlbum(uid: Music.UID) = albumUidMap[uid]
 
-    override fun findArtist(uid: Music.UID): Artist? {
-        TODO("Not yet implemented")
-    }
+    override fun findArtist(uid: Music.UID) = artistUidMap[uid]
 
-    override fun findGenre(uid: Music.UID): Genre? {
-        TODO("Not yet implemented")
-    }
+    override fun findGenre(uid: Music.UID) = genreUidMap[uid]
 
-    override fun findPlaylist(uid: Music.UID): Playlist? {
-        TODO("Not yet implemented")
-    }
+    override fun findPlaylist(uid: Music.UID) = playlistUidMap[uid]
 
-    override fun findPlaylistByName(name: String): Playlist? {
-        TODO("Not yet implemented")
-    }
+    override fun findPlaylistByName(name: String) = playlists.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>): MutableLibrary {
-        TODO("Not yet implemented")
+        return this
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String): MutableLibrary {
-        TODO("Not yet implemented")
+        return this
     }
 
     override suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary {
-        TODO("Not yet implemented")
+        return this
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary {
-        TODO("Not yet implemented")
+        return this
     }
 
     override suspend fun deletePlaylist(playlist: Playlist): MutableLibrary {
-        TODO("Not yet implemented")
+        return this
     }
 }

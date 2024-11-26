@@ -31,27 +31,31 @@ import org.oxycblt.auxio.music.stack.interpret.Interpreter
 import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
 
 interface Indexer {
-    suspend fun run(uris: List<Uri>, interpretation: Interpretation, eventHandler: suspend (Event) -> Unit = {}): MutableLibrary
+    suspend fun run(
+        uris: List<Uri>,
+        interpretation: Interpretation,
+        eventHandler: suspend (Event) -> Unit = {}
+    ): MutableLibrary
 
     sealed interface Event {
         data class Discovered(
             val amount: Int,
         ) : Event
 
-        data class Extracted(
-            val amount: Int
-        )  : Event
+        data class Extracted(val amount: Int) : Event
 
-        data class Interpret(
-            val amount: Int
-        ) : Event
+        data class Interpret(val amount: Int) : Event
     }
 }
 
 class IndexerImpl
 @Inject
 constructor(private val explorer: Explorer, private val interpreter: Interpreter) : Indexer {
-    override suspend fun run(uris: List<Uri>, interpretation: Interpretation, eventHandler: suspend (Event) -> Unit) = coroutineScope {
+    override suspend fun run(
+        uris: List<Uri>,
+        interpretation: Interpretation,
+        eventHandler: suspend (Event) -> Unit
+    ) = coroutineScope {
         val files = explorer.explore(uris, eventHandler)
         val audioFiles = files.audios.flowOn(Dispatchers.IO).buffer()
         val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer()

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.stack.explore
 
 import android.net.Uri
@@ -60,13 +60,15 @@ constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun explore(uris: List<Uri>, eventHandler: suspend (Indexer.Event) -> Unit): Files {
         var discovered = 0
-        val deviceFiles = deviceFiles.explore(uris.asFlow())
-            .onEach {
-                discovered++
-                eventHandler(Indexer.Event.Discovered(discovered))
-            }
-            .flowOn(Dispatchers.IO)
-            .buffer()
+        val deviceFiles =
+            deviceFiles
+                .explore(uris.asFlow())
+                .onEach {
+                    discovered++
+                    eventHandler(Indexer.Event.Discovered(discovered))
+                }
+                .flowOn(Dispatchers.IO)
+                .buffer()
         val tagRead = tagCache.read(deviceFiles).flowOn(Dispatchers.IO).buffer()
         val (uncachedDeviceFiles, cachedAudioFiles) = tagRead.results()
         val extractedAudioFiles =
@@ -77,10 +79,11 @@ constructor(
                 .flattenMerge()
         val writtenAudioFiles = tagCache.write(extractedAudioFiles).flowOn(Dispatchers.IO).buffer()
         var loaded = 0
-        val audioFiles = merge(cachedAudioFiles, writtenAudioFiles).onEach {
-            loaded++
-            eventHandler(Indexer.Event.Extracted(loaded))
-        }
+        val audioFiles =
+            merge(cachedAudioFiles, writtenAudioFiles).onEach {
+                loaded++
+                eventHandler(Indexer.Event.Extracted(loaded))
+            }
         val playlistFiles = storedPlaylists.read()
         return Files(audioFiles, playlistFiles)
     }
@@ -97,8 +100,7 @@ constructor(
         val indexed = withIndex()
         val shared =
             indexed.shareIn(
-                CoroutineScope(Dispatchers.Main), SharingStarted.WhileSubscribed(), replay = 0
-            )
+                CoroutineScope(Dispatchers.Main), SharingStarted.WhileSubscribed(), replay = 0)
         return Array(n) { shared.filter { it.index % n == 0 }.map { it.value } }
     }
 }
