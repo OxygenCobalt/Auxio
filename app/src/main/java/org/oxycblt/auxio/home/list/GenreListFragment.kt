@@ -77,9 +77,7 @@ class GenreListFragment :
 
         binding.homeNoMusicMsg.text = getString(R.string.lng_no_genres)
 
-        binding.homeChooseMusicSources.setOnClickListener {
-            homeModel.startChooseMusicLocations()
-        }
+        binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
 
         collectImmediately(homeModel.genreList, musicModel.indexingState, ::updateGenres)
         collectImmediately(listModel.selected, ::updateSelection)

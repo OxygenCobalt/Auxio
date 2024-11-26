@@ -34,7 +34,7 @@
     <string name="lbl_album_details">Перейти к альбому</string>
     <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>
-    <string name="err_no_dirs">Нет папок</string>
+    <string name="err_no_locations">Нет папок</string>
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
     <string name="lbl_code">Исходный код</string>
@@ -79,7 +79,7 @@
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
     <string name="err_no_perms">Auxio требуется разрешение на чтение музыкальной библиотеки</string>
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
-    <string name="err_bad_dir">Эта папка не поддерживается</string>
+    <string name="err_bad_location">Эта папка не поддерживается</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Найти в библиотеке…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -94,7 +94,7 @@
     <string name="desc_song_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
     <string name="desc_clear_search">Очистить поисковый запрос</string>
-    <string name="desc_music_dir_delete">Удалить папку</string>
+    <string name="desc_music_location_delete">Удалить папку</string>
     <string name="desc_auxio_icon">Иконка Auxio</string>
     <string name="desc_no_cover">Обложка альбома</string>
     <string name="desc_album_cover">Обложка альбома %s</string>
@@ -168,7 +168,7 @@
     <string name="set_dirs_mode_exclude">Исключить</string>
     <string name="cdc_aac">AAC</string>
     <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будет загружена из указанных папок.</string>
-    <string name="set_dirs_desc">Укажите, откуда надо загружать музыку</string>
+    <string name="set_locations_desc">Укажите, откуда надо загружать музыку</string>
     <string name="fmt_bitrate">%d кбит/с</string>
     <string name="set_observing">Автоматическая перезагрузка</string>
     <string name="cdc_mp3">MPEG-1</string>
@@ -183,7 +183,7 @@
     <string name="lbl_album_live">Концертный альбом</string>
     <string name="lbl_live_group">Концертный</string>
     <string name="lng_observing">Мониторинг изменений в музыкальной библиотеке…</string>
-    <string name="set_dirs">Папки с музыкой</string>
+    <string name="set_locations">Папки с музыкой</string>
     <string name="set_dirs_mode_include">Включить</string>
     <string name="lbl_album_remix">Альбом ремиксов</string>
     <string name="lbl_ep_live">Концертный мини-альбом</string>
@@ -259,7 +259,7 @@
     <string name="set_content_desc">Управляйте загрузкой музыки и изображений</string>
     <string name="set_audio_desc">Настройка звука и поведения при воспроизведении</string>
     <string name="set_playback">Воспроизведение</string>
-    <string name="set_dirs_list">Папки</string>
+    <string name="set_locations_list">Папки</string>
     <string name="lbl_sort_dsc">По убыванию</string>
     <string name="lbl_playlist">Плейлист</string>
     <string name="lbl_playlists">Плейлисты</string>

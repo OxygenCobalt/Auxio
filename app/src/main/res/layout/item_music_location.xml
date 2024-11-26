@@ -10,7 +10,7 @@
     android:paddingBottom="@dimen/spacing_small">
 
     <TextView
-        android:id="@+id/dir_path"
+        android:id="@+id/location_path"
         style="@style/Widget.Auxio.TextView.Item.Primary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -23,13 +23,13 @@
         tools:text="primary:path/to/music" />
 
     <org.oxycblt.auxio.ui.RippleFixMaterialButton
-        android:id="@+id/dir_delete"
+        android:id="@+id/location_delete"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/spacing_mid_large"
-        android:contentDescription="@string/desc_music_dir_delete"
+        android:contentDescription="@string/desc_music_location_delete"
         app:icon="@drawable/ic_delete_24"
         app:tint="?attr/colorControlNormal" />
 

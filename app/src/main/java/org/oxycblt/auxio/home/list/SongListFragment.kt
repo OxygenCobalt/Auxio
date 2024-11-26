@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
@@ -81,15 +81,12 @@ class SongListFragment :
 
         binding.homeNoMusicMsg.text = getString(R.string.lng_no_songs)
 
-        binding.homeChooseMusicSources.setOnClickListener {
-            homeModel.startChooseMusicLocations()
-        }
+        binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
 
         collectImmediately(homeModel.songList, musicModel.indexingState, ::updateSongs)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -127,12 +124,11 @@ class SongListFragment :
                 val dateAddedMillis = song.dateAdded.secsToMs()
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
-                    context,
-                    formatter,
-                    dateAddedMillis,
-                    dateAddedMillis,
-                    DateUtils.FORMAT_ABBREV_ALL
-                )
+                        context,
+                        formatter,
+                        dateAddedMillis,
+                        dateAddedMillis,
+                        DateUtils.FORMAT_ABBREV_ALL)
                     .toString()
             }
 
@@ -159,7 +155,6 @@ class SongListFragment :
             homeNoMusic.isInvisible = songs.isEmpty()
         }
         songAdapter.update(songs, homeModel.songInstructions.consume())
-
     }
 
     private fun updateSelection(selection: List<Music>) {

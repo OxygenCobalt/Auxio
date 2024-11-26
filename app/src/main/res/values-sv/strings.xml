@@ -173,7 +173,7 @@
     <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade taggar</string>
     <string name="desc_shuffle_all">Blanda alla låtar</string>
     <string name="desc_clear_search">Rensa sökfrågan</string>
-    <string name="desc_music_dir_delete">Ta bort mapp</string>
+    <string name="desc_music_location_delete">Ta bort mapp</string>
     <string name="desc_genre_image">Genrebild för %s</string>
     <string name="desc_playlist_image">Spellistabild för %s</string>
     <string name="cdc_mp3">MPEG-1-ljud</string>
@@ -198,10 +198,10 @@
     <string name="set_repeat_pause">Pausa vid upprepning</string>
     <string name="set_pre_amp">ReplayGain försteg</string>
     <string name="set_pre_amp_without">Justering utan taggar</string>
-    <string name="set_dirs">Musikmappar</string>
+    <string name="set_locations">Musikmappar</string>
     <string name="set_pre_amp_warning">Varning: Om man ändrar förförstärkaren till ett högt positivt värde kan det leda till toppning på vissa ljudspår.</string>
-    <string name="set_dirs_desc">Hantera vart musik läses in ifrån</string>
-    <string name="set_dirs_list">Mappar</string>
+    <string name="set_locations_desc">Hantera vart musik läses in ifrån</string>
+    <string name="set_locations_list">Mappar</string>
     <string name="set_dirs_mode">Modus</string>
     <string name="set_dirs_mode_exclude">Utesluta</string>
     <string name="set_dirs_mode_include_desc">Musik laddas <b>endast</b> från mapparna som ni lägger till.</string>
@@ -211,7 +211,7 @@
     <string name="err_index_failed">Läsa in musik misslyckades</string>
     <string name="err_no_perms">Auxio måste ges behörighet för att läsa in ditt musikbibliotek</string>
     <string name="err_no_app">Ingen lämplig app kunde hittas</string>
-    <string name="err_bad_dir">Denna mapp stöds inte</string>
+    <string name="err_bad_location">Denna mapp stöds inte</string>
     <string name="desc_track_number">Spår %d</string>
     <string name="desc_play_pause">Spela eller pausa</string>
     <string name="desc_song_handle">Flytta detta spår</string>
@@ -250,7 +250,7 @@
     <string name="set_square_covers_desc">Beskär alla albumomslag till ett 1:1 sidförhållande</string>
     <string name="set_rewind_prev_desc">Spola tillbaka innan att hoppa till föregående låt</string>
     <string name="set_pre_amp_with">Justering med taggar</string>
-    <string name="err_no_dirs">Inga mappar</string>
+    <string name="err_no_locations">Inga mappar</string>
     <string name="desc_exit">Stoppa uppspelning</string>
     <string name="desc_remove_song">Ta bort låt</string>
     <string name="desc_auxio_icon">Auxio-ikon</string>

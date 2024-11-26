@@ -87,7 +87,7 @@
     <string name="set_audio_desc">Sett opp lyd- og avspillingsadferd</string>
     <string name="set_audio">Lyd</string>
     <string name="set_replay_gain_mode">ReplayGain-strategi</string>
-    <string name="set_dirs_desc">Håndter hvor musikk lastes inn fra</string>
+    <string name="set_locations_desc">Håndter hvor musikk lastes inn fra</string>
     <string name="set_pre_amp_desc">Forforsterkning brukes for eksisterende justering under avspilling</string>
     <string name="set_dirs_mode">Modus</string>
     <string name="set_rescan_desc">Tøm etiketthurtiglager og last inn hele musikkbiblioteket igjen (tregere, men mer fullstendig)</string>
@@ -110,7 +110,7 @@
     <string name="fmt_lib_song_count">Spor innlastet: %d</string>
     <string name="lbl_date">Dato</string>
     <string name="set_ui_desc">Endre drakten og programfargene</string>
-    <string name="set_dirs_list">Mapper</string>
+    <string name="set_locations_list">Mapper</string>
     <string name="clr_yellow">Gul</string>
     <string name="set_intelligent_sorting">Intelligent sortering</string>
     <string name="lbl_rename">Gi nytt navn</string>
@@ -138,7 +138,7 @@
     <string name="set_rescan">Reskann musikk</string>
     <string name="set_dirs_mode_include_desc">Musikk vil <b>kun</b> innlastes fra mappene du legger til.</string>
     <string name="set_reindex_desc">Last inn musikkbiblioteket igjen, ved bruk av hurtiglagrede etiketter når mulig</string>
-    <string name="err_no_dirs">Ingen mapper</string>
+    <string name="err_no_locations">Ingen mapper</string>
     <string name="fmt_lib_album_count">Album innlastet: %d</string>
     <string name="lbl_library_counts">Bibliotekstatistikk</string>
     <string name="set_cover_mode_off">Av</string>
@@ -147,14 +147,14 @@
     <string name="set_pre_amp_with">Justering med etiketter</string>
     <string name="set_behavior">Adferd</string>
     <string name="set_content">Innhold</string>
-    <string name="set_dirs">Musikkmapper</string>
+    <string name="set_locations">Musikkmapper</string>
     <string name="set_observing_desc">Gjeninnlast musikkbibliotek når det endrer seg (krever vedvarende varsling)</string>
     <string name="err_index_failed">Klarte ikke laste inn musikk</string>
-    <string name="err_bad_dir">Denne mappen støttes ikke</string>
+    <string name="err_bad_location">Denne mappen støttes ikke</string>
     <string name="desc_skip_next">Hopp til neste spor</string>
     <string name="desc_skip_prev">Hopp til siste spor</string>
     <string name="desc_shuffle_all">Omstokk alle spor</string>
-    <string name="desc_music_dir_delete">Fjern mappe</string>
+    <string name="desc_music_location_delete">Fjern mappe</string>
     <string name="def_genre">Ukjent sjanger</string>
     <string name="desc_genre_image">Sjangerbilde for %s</string>
     <string name="def_artist">Ukjent artist</string>

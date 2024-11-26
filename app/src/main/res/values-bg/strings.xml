@@ -208,9 +208,9 @@
     <string name="set_pre_amp_with">Регулиране с етикети</string>
     <string name="set_pre_amp_without">Корекция без етикети</string>
     <string name="set_library">Библиотека</string>
-    <string name="set_dirs">Музикални папки</string>
-    <string name="set_dirs_desc">Управлявайте откъде да се зарежда музиката</string>
-    <string name="set_dirs_list">Папки</string>
+    <string name="set_locations">Музикални папки</string>
+    <string name="set_locations_desc">Управлявайте откъде да се зарежда музиката</string>
+    <string name="set_locations_list">Папки</string>
     <string name="set_dirs_mode">Режим</string>
     <string name="set_dirs_mode_exclude">Изключете</string>
     <string name="set_dirs_mode_exclude_desc">Музиката <b>няма</b> да се зарежда от папките, които добавяте.</string>
@@ -221,7 +221,7 @@
     <string name="err_no_perms">Auxio се нуждае от разрешение, за да чете вашата музикална библиотека</string>
     <string name="err_export_failed">Плейлиста не може да се изнесе в този файл</string>
     <string name="err_no_app">Няма намерено приложение, което да може да се справи с тази задача</string>
-    <string name="err_no_dirs">Няма папки</string>
+    <string name="err_no_locations">Няма папки</string>
     <string name="desc_play_pause">Изпълни или пауза</string>
     <string name="desc_skip_next">Премини към следваща песен</string>
     <string name="desc_skip_prev">Премини към последна песен</string>
@@ -236,9 +236,9 @@
     <string name="desc_tab_handle">Премести този раздел</string>
     <string name="set_pre_amp_warning">Предупреждение: Промяната на пред усилвателя на висока положителна стойност може да доведе до пикове на някои аудио записи.</string>
     <string name="desc_clear_search">Изчисти заявката за търсене</string>
-    <string name="desc_music_dir_delete">Премахни папка</string>
+    <string name="desc_music_location_delete">Премахни папка</string>
     <string name="err_import_failed">Не може да се внесе плейлист от този файл</string>
-    <string name="err_bad_dir">Тази папка не се поддържа</string>
+    <string name="err_bad_location">Тази папка не се поддържа</string>
     <string name="desc_auxio_icon">Auxio икона</string>
     <string name="desc_no_cover">Обложка на албум</string>
     <string name="set_dirs_mode_include">Включете</string>

@@ -195,7 +195,7 @@
     <string name="cdc_aac">उन्नत ऑडियो कोडिंग (AAC)</string>
     <string name="clr_deep_green">गहरा हरा</string>
     <string name="clr_purple">बैंगनी</string>
-    <string name="set_dirs">संगीत फ़ोल्डर</string>
+    <string name="set_locations">संगीत फ़ोल्डर</string>
     <string name="set_repeat_pause">दोहराने पर विराम</string>
     <string name="set_cover_mode_off">बंद</string>
     <string name="set_square_covers_desc">सभी एल्बम को 1: 1 पहलू अनुपात में कवर करें</string>
@@ -203,10 +203,10 @@
     <string name="set_repeat_pause_desc">जब कोई गीत दोहराया जाता है तो रुक जाएं</string>
     <string name="set_pre_amp">रीप्लेगेन प्री-एम्प</string>
     <string name="set_pre_amp_with">टैग के साथ समायोजन</string>
-    <string name="set_dirs_list">फ़ोल्डर</string>
+    <string name="set_locations_list">फ़ोल्डर</string>
     <string name="set_dirs_mode_exclude">बाहर करें</string>
     <string name="err_index_failed">संगीत लोड करना विफल रहा</string>
-    <string name="err_bad_dir">यह फ़ोल्डर समर्थित नहीं है</string>
+    <string name="err_bad_location">यह फ़ोल्डर समर्थित नहीं है</string>
     <string name="desc_change_repeat">रिपीट मोड बदलें</string>
     <string name="desc_shuffle">शफ़ल चालू या बंद करें</string>
     <string name="desc_shuffle_all">सभी गीत शफ़ल करें</string>
@@ -227,7 +227,7 @@
     <string name="def_date">तिथि नहीं</string>
     <string name="set_dirs_mode_exclude_desc">आपके द्वारा जोड़े गए फ़ोल्डरों से संगीत लोड <b>नहीं</b> किया जाएगा।</string>
     <string name="set_dirs_mode_include_desc">संगीत <b>केवल</b> आपके द्वारा जोड़े गए फ़ोल्डरों से लोड किया जाएगा।</string>
-    <string name="set_dirs_desc">प्रबंधित करें कि संगीत कहाँ से लोड किया जाना चाहिए</string>
+    <string name="set_locations_desc">प्रबंधित करें कि संगीत कहाँ से लोड किया जाना चाहिए</string>
     <string name="desc_artist_image">%s के लिए कलाकार छवि</string>
     <string name="cdc_mp4">MPEG-4 ऑडियो</string>
     <string name="set_images">छवियां</string>
@@ -246,7 +246,7 @@
     <string name="set_hide_collaborators_desc">केवल उन कलाकारों को दिखाएँ जिन्हें सीधे एल्बम पर श्रेय दिया जाता है (अच्छी तरह से टैग की गई लाइब्रेरी पर अच्छा काम करता है)</string>
     <string name="set_cover_mode_media_store">तेज</string>
     <string name="set_cover_mode_quality">उच्च गुणवत्ता</string>
-    <string name="desc_music_dir_delete">फ़ोल्डर हटाएँ</string>
+    <string name="desc_music_location_delete">फ़ोल्डर हटाएँ</string>
     <string name="desc_remove_song">यह गीत हटाओ</string>
     <string name="def_disc">डिस्क नहीं</string>
     <string name="cdc_flac">निःशुल्क दोषरहित ऑडियो कोडेक (FLAC)</string>
@@ -267,7 +267,7 @@
     <string name="set_replay_gain_mode_track">ट्रैक को प्राथमिकता दें</string>
     <string name="set_rescan_desc">टैग कैश साफ़ करें और संगीत लाइब्रेरी को पूरी तरह पुनः लोड करें (धीमी, लेकिन अधिक पूर्ण)</string>
     <string name="err_no_perms">Auxio को आपकी संगीत लाइब्रेरी पढ़ने के लिए अनुमति की आवश्यकता है</string>
-    <string name="err_no_dirs">कोई फ़ोल्डर नहीं</string>
+    <string name="err_no_locations">कोई फ़ोल्डर नहीं</string>
     <string name="clr_brown">भूरा</string>
     <string name="clr_yellow">पीला</string>
     <string name="clr_lime">नींबू रंग</string>

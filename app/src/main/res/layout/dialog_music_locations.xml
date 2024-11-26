@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Auxio.Dialog.NestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/locations_list_header"
+            style="@style/Widget.Auxio.TextView.Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingEnd="@dimen/spacing_large"
+            android:text="@string/set_locations_list"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+            android:id="@+id/locations_add"
+            style="@style/Widget.Auxio.Button.Icon.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:contentDescription="@string/lbl_add"
+            app:icon="@drawable/ic_add_24"
+            app:layout_constraintBottom_toTopOf="@+id/locations_recycler"
+            app:layout_constraintEnd_toEndOf="@+id/locations_list_header"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/locations_recycler"
+            style="@style/Widget.Auxio.RecyclerView.Linear"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@+id/locations_list_header"
+            tools:listitem="@layout/item_music_location" />
+
+        <TextView
+            android:id="@+id/locations_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingEnd="@dimen/spacing_large"
+            android:paddingBottom="@dimen/spacing_medium"
+            android:text="@string/err_no_locations"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintTop_toTopOf="@+id/locations_recycler" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>

@@ -113,8 +113,8 @@
     <string name="lng_playlist_deleted">Lista de reprodução eliminada</string>
     <string name="lng_search_library">Procurar na biblioteca…</string>
     <string name="set_replay_gain_mode_off">Desligado</string>
-    <string name="set_dirs_desc">Configurar onde a música deve ser carregada</string>
-    <string name="set_dirs_list">Pastas</string>
+    <string name="set_locations_desc">Configurar onde a música deve ser carregada</string>
+    <string name="set_locations_list">Pastas</string>
     <string name="set_dirs_mode">Modo</string>
     <string name="desc_shuffle">Ativar ou desativar a reprodução aleatória</string>
     <string name="desc_selection_image">Seleção de imagem</string>
@@ -146,7 +146,7 @@
     <string name="set_rewind_prev_desc">Retrocede a música antes de voltar para a anterior</string>
     <string name="set_repeat_pause">Pausar na repetição</string>
     <string name="set_repeat_pause_desc">Pausar quando uma música é repetida</string>
-    <string name="set_dirs">Pastas de música</string>
+    <string name="set_locations">Pastas de música</string>
     <string name="set_remember_pause">Lembrar pausa</string>
     <string name="set_remember_pause_desc">Continuar a reproduzir/pausado quando ao pular ou editar a fila</string>
     <string name="set_replay_gain_mode">Estratégia do ganho de repetição</string>
@@ -285,8 +285,8 @@
     <string name="err_import_failed">Não foi possível importar uma lista de reprodução deste ficheiro</string>
     <string name="err_export_failed">Incapaz de exportar a lista de reprodução para este ficheiro</string>
     <string name="err_no_app">Nenhuma aplicação encontrada que possa executar esta tarefa</string>
-    <string name="err_no_dirs">Sem pastas</string>
-    <string name="err_bad_dir">Esta pasta não é compatível</string>
+    <string name="err_no_locations">Sem pastas</string>
+    <string name="err_bad_location">Esta pasta não é compatível</string>
     <string name="desc_change_repeat">Alterar o modo de repetição</string>
     <string name="desc_exit">Parar reprodução</string>
     <string name="desc_remove_song">Remover esta música de fila</string>
@@ -294,7 +294,7 @@
     <string name="desc_queue_bar">Abra a fila</string>
     <string name="desc_tab_handle">Mover esta guia</string>
     <string name="desc_clear_search">Limpar consulta de pesquisa</string>
-    <string name="desc_music_dir_delete">Remover pasta</string>
+    <string name="desc_music_location_delete">Remover pasta</string>
     <string name="desc_album_cover">Capa do álbum para %s</string>
     <string name="desc_artist_image">Imagem do artista para %s</string>
     <string name="desc_genre_image">Imagem de gênero para %s</string>

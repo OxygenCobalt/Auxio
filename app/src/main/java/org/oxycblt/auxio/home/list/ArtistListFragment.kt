@@ -78,9 +78,7 @@ class ArtistListFragment :
 
         binding.homeNoMusicMsg.text = getString(R.string.lng_no_artists)
 
-        binding.homeChooseMusicSources.setOnClickListener {
-            homeModel.startChooseMusicLocations()
-        }
+        binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
 
         collectImmediately(homeModel.artistList, musicModel.indexingState, ::updateArtists)
         collectImmediately(listModel.selected, ::updateSelection)

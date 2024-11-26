@@ -89,7 +89,7 @@
             app:destination="@id/error_details_dialog" />
         <action
             android:id="@+id/choose_locations"
-            app:destination="@id/music_dirs_dialog" />
+            app:destination="@id/music_locations_dialog" />
     </fragment>
 
     <dialog
@@ -569,8 +569,8 @@
     </dialog>
 
     <dialog
-        android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.dirs.MusicDirsDialog"
-        android:label="music_dirs_dialog"
-        tools:layout="@layout/dialog_music_dirs" />
+        android:id="@+id/music_locations_dialog"
+        android:name="org.oxycblt.auxio.music.locations.MusicSourcesDialog"
+        android:label="music_locations_dialog"
+        tools:layout="@layout/dialog_music_locations" />
 </navigation>

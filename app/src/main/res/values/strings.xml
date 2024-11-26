@@ -311,17 +311,9 @@
     <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
     <string name="set_library">Library</string>
-    <string name="set_dirs">Music folders</string>
-    <string name="set_dirs_desc">Manage where music should be loaded from</string>
-    <string name="set_dirs_list">Folders</string>
-    <!-- As in the mode to be used with the music folders setting -->
-    <string name="set_dirs_mode">Mode</string>
-    <!-- Exclude folders from music loading -->
-    <string name="set_dirs_mode_exclude">Exclude</string>
-    <string name="set_dirs_mode_exclude_desc">Music will <b>not</b> be loaded from the folders you add.</string>
-    <!-- Restrict music loading to selected folders -->
-    <string name="set_dirs_mode_include">Include</string>
-    <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
+    <string name="set_locations">Music folders</string>
+    <string name="set_locations_desc">Manage where music should be loaded from</string>
+    <string name="set_locations_list">Folders</string>
     <string name="set_reindex">Refresh music</string>
     <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
     <!-- Different from "Reload music" -->
@@ -336,8 +328,8 @@
     <string name="err_export_failed">Unable to export the playlist to this file</string>
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
-    <string name="err_no_dirs">No folders</string>
-    <string name="err_bad_dir">This folder is not supported</string>
+    <string name="err_no_locations">No folders</string>
+    <string name="err_bad_location">This folder is not supported</string>
 
     <!-- Description Namespace | Accessibility Strings -->
 
@@ -356,7 +348,7 @@
     <string name="desc_queue_bar">Open the queue</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
-    <string name="desc_music_dir_delete">Remove folder</string>
+    <string name="desc_music_location_delete">Remove folder</string>
 
     <string name="desc_auxio_icon">Auxio icon</string>
     <string name="desc_no_cover">Album cover</string>

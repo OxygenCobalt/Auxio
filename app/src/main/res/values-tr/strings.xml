@@ -92,7 +92,7 @@
     <string name="set_play_song_none">Gösterilen öğeden çal</string>
     <string name="set_play_song_from_all">Tüm şarkılardan çal</string>
     <string name="set_play_song_from_album">Albümden çal</string>
-    <string name="set_dirs">Müzik klasörleri</string>
+    <string name="set_locations">Müzik klasörleri</string>
     <string name="set_dirs_mode_include_desc">Müzik <b>yalnızca</b> eklediğiniz klasörlerden yüklenecektir.</string>
     <string name="desc_album_cover">%s Albümünün kapağı</string>
     <string name="desc_artist_image">%s Sanatçısının resmi</string>
@@ -148,8 +148,8 @@
     <string name="set_keep_shuffle_desc">Yeni bir şarkı çalarken karışık çalmayı açık tut</string>
     <string name="set_reindex">Müziği yenile</string>
     <string name="set_reindex_desc">Mümkün olduğunda önbelleğe alınmış etiketleri kullanarak müzik kitaplığını yeniden yükleyin</string>
-    <string name="err_no_dirs">Klasör yok</string>
-    <string name="err_bad_dir">Bu klasör desteklenmiyor</string>
+    <string name="err_no_locations">Klasör yok</string>
+    <string name="err_bad_location">Bu klasör desteklenmiyor</string>
     <string name="desc_skip_next">Sonraki şarkıya geç</string>
     <string name="desc_skip_prev">Son şarkıya geç</string>
     <string name="desc_change_repeat">Tekrarlama modunu değiştir</string>
@@ -157,13 +157,13 @@
     <string name="err_no_perms">Auxio\'nun müzik kitaplığınızı görüntülemek için izne ihtiyacı var</string>
     <string name="err_no_app">Bu görevi yerine getirebilecek bir uygulama bulunamadı</string>
     <string name="desc_shuffle">Karıştırmayı açın veya kapatın</string>
-    <string name="desc_music_dir_delete">Klasörü kaldır</string>
+    <string name="desc_music_location_delete">Klasörü kaldır</string>
     <string name="desc_shuffle_all">Bütün şarkıları karıştır</string>
     <string name="desc_auxio_icon">Auxio simgesi</string>
     <string name="desc_tab_handle">Bu sekmeyi taşı</string>
     <string name="desc_no_cover">Albüm kapağı</string>
     <string name="desc_clear_search">Arama sorgusunu temizle</string>
-    <string name="set_dirs_desc">Müziğin nereden yükleneceğini yönetin</string>
+    <string name="set_locations_desc">Müziğin nereden yükleneceğini yönetin</string>
     <string name="set_dirs_mode">Mod</string>
     <string name="set_dirs_mode_exclude">Hariç tut</string>
     <string name="set_dirs_mode_exclude_desc">Eklediğiniz klasörlerden müzik <b>yüklenmeyecek</b>.</string>
@@ -248,7 +248,7 @@
     <string name="set_library">Kütüphane</string>
     <string name="lbl_sort_dsc">Azalan</string>
     <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
-    <string name="set_dirs_list">Klasörler</string>
+    <string name="set_locations_list">Klasörler</string>
     <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>
     <string name="set_behavior">Davranış</string>
     <string name="set_replay_gain">Ses yüksekliği dengesi ReplayGain</string>

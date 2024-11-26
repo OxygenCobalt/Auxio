@@ -34,7 +34,7 @@
     <string name="lbl_album_details">查看专辑</string>
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
-    <string name="err_no_dirs">没有文件夹</string>
+    <string name="err_no_locations">没有文件夹</string>
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
     <string name="lbl_code">源代码</string>
@@ -79,7 +79,7 @@
     <string name="err_index_failed">加载音乐失败</string>
     <string name="err_no_perms">Auxio 需要权限来读取音乐库</string>
     <string name="err_no_app">未找到可以处理此任务的应用</string>
-    <string name="err_bad_dir">该目录不受支持</string>
+    <string name="err_bad_location">该目录不受支持</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">在曲库中搜索…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -94,7 +94,7 @@
     <string name="desc_song_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
     <string name="desc_clear_search">清除搜索队列</string>
-    <string name="desc_music_dir_delete">移除文件夹</string>
+    <string name="desc_music_location_delete">移除文件夹</string>
     <string name="desc_auxio_icon">Auxio 图标</string>
     <string name="desc_no_cover">专辑封面</string>
     <string name="desc_album_cover">%s 的专辑封面</string>
@@ -139,8 +139,8 @@
     <string name="set_pre_amp_with">带有标签的调节项</string>
     <string name="set_pre_amp_without">没有标签的调节项</string>
     <string name="set_pre_amp_warning">警告：将前置增益更改为正向高数值或导致某些音轨峰值过高。</string>
-    <string name="set_dirs">音乐文件夹</string>
-    <string name="set_dirs_desc">管理音乐的加载位置</string>
+    <string name="set_locations">音乐文件夹</string>
+    <string name="set_locations_desc">管理音乐的加载位置</string>
     <string name="set_dirs_mode">模式</string>
     <string name="set_dirs_mode_exclude">排除</string>
     <string name="set_dirs_mode_include">包含</string>
@@ -248,7 +248,7 @@
     <string name="set_images">图片</string>
     <string name="set_playback">播放</string>
     <string name="set_library">曲库</string>
-    <string name="set_dirs_list">文件夹</string>
+    <string name="set_locations_list">文件夹</string>
     <string name="set_music">音乐</string>
     <string name="set_audio_desc">配置声音和播放行为</string>
     <string name="lbl_sort_dsc">降序</string>

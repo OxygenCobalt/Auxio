@@ -83,8 +83,8 @@
     <string name="set_play_song_from_all">Reproduciraj iz svih pjesama</string>
     <string name="set_reindex">Aktualiziraj glazbu</string>
     <string name="set_reindex_desc">Ponovo učitaj glazbenu biblioteku, koristeći predmemorirane oznake kada je to moguće</string>
-    <string name="set_dirs">Mape glazbe</string>
-    <string name="set_dirs_desc">Upravljaj odakle će se glazba učitati</string>
+    <string name="set_locations">Mape glazbe</string>
+    <string name="set_locations_desc">Upravljaj odakle će se glazba učitati</string>
     <string name="set_dirs_mode">Način</string>
     <string name="set_dirs_mode_exclude">Isključi</string>
     <string name="set_dirs_mode_exclude_desc">Glazba se <b>neće</b> učitati iz dodanih mapa.</string>
@@ -96,8 +96,8 @@
     <string name="err_index_failed">Greška u učitvanju glazbe</string>
     <string name="err_no_perms">Auxio treba dozvolu za čitanje tvoje zbirke glazbe</string>
     <string name="err_no_app">Nijedna aplikacija ne može obraditi ovaj zadatak</string>
-    <string name="err_no_dirs">Nema mapa</string>
-    <string name="err_bad_dir">Ova mapa nije podržana</string>
+    <string name="err_no_locations">Nema mapa</string>
+    <string name="err_bad_location">Ova mapa nije podržana</string>
     <string name="lng_search_library">Pretraži svoju zbirku …</string>
     <string name="desc_track_number">Zvučni zapis %d</string>
     <string name="desc_shuffle">Omogućite ili onemogućite miješanje</string>
@@ -106,7 +106,7 @@
     <string name="desc_song_handle">Premjesti ovu pjesmu u popisu pjesama</string>
     <string name="desc_tab_handle">Pomakni ovu pločicu</string>
     <string name="desc_clear_search">Izbriši pretražene pojmove</string>
-    <string name="desc_music_dir_delete">Ukloni mapu</string>
+    <string name="desc_music_location_delete">Ukloni mapu</string>
     <string name="desc_auxio_icon">Auxio logotip</string>
     <string name="desc_no_cover">Omot albuma</string>
     <string name="desc_album_cover">Omot albuma za %s</string>
@@ -238,7 +238,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Resetiraj</string>
     <string name="set_replay_gain">Normalizacija glasnoće</string>
-    <string name="set_dirs_list">Mape</string>
+    <string name="set_locations_list">Mape</string>
     <string name="lbl_sort_dsc">Silazno</string>
     <string name="set_ui_desc">Promijenite temu i boje aplikacije</string>
     <string name="set_personalize_desc">Prilagodite kontrole i ponašanje korisničkog sučelja</string>

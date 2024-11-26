@@ -165,7 +165,7 @@
     <string name="lbl_confirm_delete_playlist">למחוק את רשימת ההשמעה\?</string>
     <string name="lbl_edit">עריכה</string>
     <string name="clr_orange">כתום</string>
-    <string name="set_dirs">תיקיות מוזיקה</string>
+    <string name="set_locations">תיקיות מוזיקה</string>
     <string name="set_reindex_desc">טעינה מחדש של ספריית המוזיקה, במידה וניתן ייעשה שימוש בתגיות מהמטמון</string>
     <string name="set_rescan">סריקת מוסיקה מחדש</string>
     <string name="err_no_perms">‏ Auxio צריך הרשאות על מנת לקרוא את ספריית המוזיקה שלך</string>
@@ -178,8 +178,8 @@
     <string name="fmt_lib_genre_count">ז\'אנרים טעונים: %d</string>
     <string name="set_library">ספריה</string>
     <string name="err_no_app">לא נמצא יישום שיכול לטפל במשימה זו</string>
-    <string name="err_no_dirs">אין תיקיות</string>
-    <string name="err_bad_dir">תיקייה זו אינה נתמכת</string>
+    <string name="err_no_locations">אין תיקיות</string>
+    <string name="err_bad_location">תיקייה זו אינה נתמכת</string>
     <string name="desc_skip_prev">דילוג לשיר האחרון</string>
     <string name="desc_change_repeat">שינוי מצב חזרה</string>
     <string name="desc_play_pause">ניגון או השהיה</string>
@@ -199,11 +199,11 @@
     <string name="clr_dynamic">דינמי</string>
     <string name="fmt_indexing">המוזיקה שלך בטעינה… (‎%1$d/%2$d)</string>
     <string name="fmt_disc_no">דיסק %d</string>
-    <string name="set_dirs_desc">ניהול המקומות שמהם תיטען מוזיקה</string>
+    <string name="set_locations_desc">ניהול המקומות שמהם תיטען מוזיקה</string>
     <string name="def_song_count">אין שירים</string>
     <string name="clr_pink">ורוד</string>
     <string name="lng_playlist_created">נוצרה רשימת השמעה</string>
-    <string name="set_dirs_list">תיקיות</string>
+    <string name="set_locations_list">תיקיות</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">אומן אחד</item>
         <item quantity="two">שני אומנים</item>
@@ -229,7 +229,7 @@
     <string name="lng_playlist_added">נוסף לרשימת השמעה</string>
     <string name="desc_shuffle_all">ערבוב כל השירים</string>
     <string name="desc_auxio_icon">סמל Auxio</string>
-    <string name="desc_music_dir_delete">הסרת תיקייה</string>
+    <string name="desc_music_location_delete">הסרת תיקייה</string>
     <string name="desc_playlist_image">תמונת רשימת השמעה עבור %s</string>
     <string name="clr_red">אדום</string>
     <string name="clr_green">ירוק</string>

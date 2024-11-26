@@ -79,7 +79,7 @@
     <string name="lng_playlist_created">Seznam predavanja ustvarjen</string>
     <string name="fmt_lib_total_duration">Celoten čas predvajanja: %s</string>
     <string name="set_repeat_pause">Pavza ob ponavljanju</string>
-    <string name="set_dirs">Mape za glasbo</string>
+    <string name="set_locations">Mape za glasbo</string>
     <string name="set_keep_shuffle">Zapomni si naključno predvajanje</string>
     <string name="lbl_artist_details">Pojdi na izvajalca</string>
     <string name="fmt_lib_song_count">Naloženih pesmi: %d</string>
@@ -118,9 +118,9 @@
     <string name="set_pre_amp_desc">Pred-ojačevalec se uporablja na obstoječi prilagoditvi med predvajanjem</string>
     <string name="set_play_song_from_album">Predvajaj iz albuma</string>
     <string name="set_music">Glasba</string>
-    <string name="err_bad_dir">Ta mapa ni podprta</string>
+    <string name="err_bad_location">Ta mapa ni podprta</string>
     <string name="lbl_author_name">Razvil Alexander Capehart</string>
-    <string name="desc_music_dir_delete">Odstrani mapo</string>
+    <string name="desc_music_location_delete">Odstrani mapo</string>
     <string name="lbl_copied">Kopirano</string>
     <string name="err_index_failed">Nalaganje glasbe ni uspelo</string>
     <string name="lbl_album">Album</string>
@@ -154,7 +154,7 @@
     <string name="def_song_count">Ni pesmi</string>
     <string name="lbl_ep">Podaljšano</string>
     <string name="lbl_songs">Pesmi</string>
-    <string name="set_dirs_list">Mape</string>
+    <string name="set_locations_list">Mape</string>
     <string name="set_square_covers_desc">Prireži vse naslovnice albumov v razmerje 1:1</string>
     <string name="set_bar_action">Prilagojeno dejanje na vrstici za predvajanje</string>
     <string name="clr_indigo">Indigo modra</string>
@@ -204,7 +204,7 @@
     <string name="desc_tab_handle">Premakni ta zavihek</string>
     <string name="lbl_song">Pesem</string>
     <string name="desc_genre_image">Slika žanra za %s</string>
-    <string name="set_dirs_desc">Nastavitev virov za nalaganje glasbe</string>
+    <string name="set_locations_desc">Nastavitev virov za nalaganje glasbe</string>
     <string name="lbl_mixes">DJ Miksi</string>
     <string name="lbl_confirm_delete_playlist">Odstrani seznam predvajanja\?</string>
     <string name="clr_blue">Modra</string>
@@ -262,7 +262,7 @@
     <string name="set_replay_gain_mode">ReplayGain strategija</string>
     <string name="lbl_code">Izvorna koda</string>
     <string name="set_play_song_from_artist">Predvajaj iz izvajalca</string>
-    <string name="err_no_dirs">Ni map</string>
+    <string name="err_no_locations">Ni map</string>
     <string name="set_personalize_desc">Prilagoditev kontrol uporabniškega vmesnika in obnašanja</string>
     <string name="lbl_sample_rate">Hitrost vzorčenja</string>
     <string name="lbl_queue">Čakalna vrsta</string>

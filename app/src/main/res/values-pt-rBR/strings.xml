@@ -80,13 +80,13 @@
     <string name="set_notif_action">Usar player de notificação alternativo</string>
     <string name="set_pre_amp_desc">A pré-amplificação é aplicada em cima da normalização de volume</string>
     <string name="set_pre_amp_warning">Aviso: Alterar a pré-amplificação para um valor positivo muito alto pode resultar em picos de volume em algumas faixas.</string>
-    <string name="set_dirs">Pastas de música</string>
-    <string name="set_dirs_desc">Gerencia de onde as músicas devem ser carregadas</string>
+    <string name="set_locations">Pastas de música</string>
+    <string name="set_locations_desc">Gerencia de onde as músicas devem ser carregadas</string>
     <string name="set_dirs_mode_include">Incluir</string>
     <string name="err_index_failed">Falha ao carregar músicas</string>
     <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
-    <string name="err_no_dirs">Sem pastas</string>
-    <string name="err_bad_dir">Esta pasta não é compatível</string>
+    <string name="err_no_locations">Sem pastas</string>
+    <string name="err_bad_location">Esta pasta não é compatível</string>
     <string name="set_reindex_desc">Recarrega a biblioteca de músicas usando metadados salvos em cache quando possível</string>
     <string name="set_rewind_prev">Retroceder antes de voltar</string>
     <string name="set_reindex">Recarregar música</string>
@@ -127,7 +127,7 @@
     <string name="desc_no_cover">Capa do álbum</string>
     <string name="desc_skip_next">Pular para a próxima música</string>
     <string name="desc_shuffle">Ativa ou desativa o modo aleatório</string>
-    <string name="desc_music_dir_delete">Remover pasta</string>
+    <string name="desc_music_location_delete">Remover pasta</string>
     <string name="clr_cyan">Ciano</string>
     <string name="clr_deep_purple">Roxo escuro</string>
     <string name="clr_indigo">Índigo</string>
@@ -254,7 +254,7 @@
     <string name="set_replay_gain">Normalização de volume</string>
     <string name="set_library">Biblioteca</string>
     <string name="set_behavior">Comportamento</string>
-    <string name="set_dirs_list">Pastas</string>
+    <string name="set_locations_list">Pastas</string>
     <string name="lbl_sort_dsc">Decrescente</string>
     <string name="set_intelligent_sorting">Ignorar artigos ao classificar</string>
     <string name="set_intelligent_sorting_desc">Ignore palavras como \"the\" ao classificar por nome (funciona melhor com músicas em inglês)</string>

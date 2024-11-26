@@ -92,8 +92,8 @@
     <string name="err_index_failed">음악 불러오기 실패</string>
     <string name="err_no_perms">앱에서 음악 라이브러리를 읽을 수 있는 권한이 필요합니다.</string>
     <string name="err_no_app">이 작업을 처리할 수 있는 앱을 찾을 수 없습니다.</string>
-    <string name="err_no_dirs">폴더 없음</string>
-    <string name="err_bad_dir">지원하지 않는 폴더입니다.</string>
+    <string name="err_no_locations">폴더 없음</string>
+    <string name="err_bad_location">지원하지 않는 폴더입니다.</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">라이브러리에서 검색…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -108,7 +108,7 @@
     <string name="desc_song_handle">이 곡 이동</string>
     <string name="desc_tab_handle">이 탭 이동</string>
     <string name="desc_clear_search">검색 기록 삭제</string>
-    <string name="desc_music_dir_delete">폴더 제거</string>
+    <string name="desc_music_location_delete">폴더 제거</string>
     <string name="desc_auxio_icon">Auxio 아이콘</string>
     <string name="desc_no_cover">앨범 커버</string>
     <string name="desc_album_cover">%s의 앨범 커버</string>
@@ -175,8 +175,8 @@
     <string name="lbl_shuffle_shortcut_short">무작위 재생</string>
     <string name="set_play_song_none">표시된 항목에서 재생</string>
     <string name="lng_indexing">음악 라이브러리 불러오는 중…</string>
-    <string name="set_dirs">음악 폴더</string>
-    <string name="set_dirs_desc">음악을 불러오는 위치 관리</string>
+    <string name="set_locations">음악 폴더</string>
+    <string name="set_locations_desc">음악을 불러오는 위치 관리</string>
     <string name="set_dirs_mode_exclude_desc">추가한 폴더에서 음악을 <b>불러오지 않습니다</b>.</string>
     <string name="set_dirs_mode_include">포함</string>
     <string name="set_separators">다중 값 구분 기호</string>
@@ -245,7 +245,7 @@
     <string name="set_replay_gain">ReplayGain 볼륨 조정</string>
     <string name="set_audio_desc">사운드 및 재생 동작 구성</string>
     <string name="set_playback">재생</string>
-    <string name="set_dirs_list">폴더</string>
+    <string name="set_locations_list">폴더</string>
     <string name="set_ui_desc">앱 테마 및 색상 변경</string>
     <string name="set_music">음악</string>
     <string name="set_library">라이브러리</string>

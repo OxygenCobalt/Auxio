@@ -122,8 +122,8 @@
     <string name="cdc_ogg">Ogg garsas</string>
     <string name="lbl_author_name">Aleksandras Keiphartas (angl. Alexander Capehart)</string>
     <string name="set_replay_gain_mode_track">Pageidauti takeliui</string>
-    <string name="err_no_dirs">Nėra aplankų</string>
-    <string name="err_bad_dir">Šis aplankas nepalaikomas.</string>
+    <string name="err_no_locations">Nėra aplankų</string>
+    <string name="err_bad_location">Šis aplankas nepalaikomas.</string>
     <string name="desc_play_pause">Leisti arba pristabdyti</string>
     <string name="desc_skip_next">Praleisti į kitą dainą</string>
     <string name="desc_skip_prev">Praleisti į paskutinę dainą</string>
@@ -154,7 +154,7 @@
     <string name="set_repeat_pause">Pauzė ant kartojimo</string>
     <string name="set_play_in_list_with">Kai leidžiant iš bibliotekos</string>
     <string name="set_play_in_parent_with">Kai leidžiant iš elemento informacijos</string>
-    <string name="desc_music_dir_delete">Pašalinti aplanką</string>
+    <string name="desc_music_location_delete">Pašalinti aplanką</string>
     <string name="lbl_genre">Žanras</string>
     <string name="lng_search_library">Ieškok savo bibliotekoje…</string>
     <string name="lbl_equalizer">Ekvalaizeris</string>
@@ -192,12 +192,12 @@
     <string name="def_playback">Nėra leidžiamos muzikos</string>
     <string name="set_repeat_pause_desc">Sustabdyk, kai daina kartojasi.</string>
     <string name="set_content">Turinys</string>
-    <string name="set_dirs">Muzikos aplankai</string>
+    <string name="set_locations">Muzikos aplankai</string>
     <string name="set_reindex">Atnaujinti muziką</string>
     <string name="set_reindex_desc">Perkrauk muzikos biblioteką, naudojant podėlio žymes, kai įmanoma.</string>
     <string name="set_bar_action">Pasirinktinis įrašo perklausos juostos veiksmas</string>
     <string name="set_pre_amp">„ReplayGain“ išankstinis stiprintuvas</string>
-    <string name="set_dirs_desc">Tvarkyk, kur muzika turėtų būti įkeliama iš.</string>
+    <string name="set_locations_desc">Tvarkyk, kur muzika turėtų būti įkeliama iš.</string>
     <string name="desc_genre_image">Žanro vaizdas %s</string>
     <string name="desc_shuffle">Įjungti arba išjungti maišymą</string>
     <string name="desc_track_number">%d takelis</string>
@@ -250,7 +250,7 @@
     <string name="set_images">Vaizdai</string>
     <string name="set_playback">Įrašo perklausa</string>
     <string name="set_replay_gain">Garso normalizavimas</string>
-    <string name="set_dirs_list">Aplankai</string>
+    <string name="set_locations_list">Aplankai</string>
     <string name="lbl_sort_dsc">Mažėjantis</string>
     <string name="set_intelligent_sorting_desc">Teisingai surūšiuok pavadinimus, kurie prasideda skaičiais arba žodžiais, tokiais kaip „the“ (geriausiai veikia su anglų kalbos muzika).</string>
     <string name="set_intelligent_sorting">Išmanusis rūšiavimas</string>

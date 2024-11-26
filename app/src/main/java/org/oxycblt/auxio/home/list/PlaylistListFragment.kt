@@ -75,9 +75,7 @@ class PlaylistListFragment :
 
         binding.homeNoMusicMsg.text = getString(R.string.lng_no_playlists)
 
-        binding.homeChooseMusicSources.setOnClickListener {
-            homeModel.startChooseMusicLocations()
-        }
+        binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
 
         collectImmediately(homeModel.playlistList, musicModel.indexingState, ::updatePlaylists)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -126,7 +124,8 @@ class PlaylistListFragment :
 
     private fun updatePlaylists(playlists: List<Playlist>, indexingState: IndexingState?) {
         requireBinding().apply {
-            homeRecycler.isInvisible = indexingState is IndexingState.Indexing || playlists.isEmpty()
+            homeRecycler.isInvisible =
+                indexingState is IndexingState.Indexing || playlists.isEmpty()
             homeNoMusic.isInvisible = playlists.isEmpty()
         }
         playlistAdapter.update(playlists, homeModel.playlistInstructions.consume())

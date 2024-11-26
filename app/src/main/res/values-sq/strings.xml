@@ -213,8 +213,8 @@
         <item quantity="one">%d album</item>
         <item quantity="other">%d albume</item>
     </plurals>
-    <string name="set_dirs">Dosjet e muzikës</string>
-    <string name="err_bad_dir">Kjo dosje nuk mbështetet</string>
+    <string name="set_locations">Dosjet e muzikës</string>
+    <string name="err_bad_location">Kjo dosje nuk mbështetet</string>
     <string name="desc_change_repeat">Ndryshoni mënyrën e përsëritjes</string>
     <string name="desc_remove_song">Hiq këtë këngë</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
@@ -244,8 +244,8 @@
     <string name="set_pre_amp_without">Rregullim pa etiketa</string>
     <string name="set_pre_amp_warning">Kujdes: Ndryshimi i pre-amplitudës në një vlerë të lartë pozitive mund të shkaktojë teprim në disa shtegtarë audio.</string>
     <string name="set_library">Biblioteka</string>
-    <string name="set_dirs_desc">Menaxho se nga ku duhet të ngarkohet muzika</string>
-    <string name="set_dirs_list">Dosjet</string>
+    <string name="set_locations_desc">Menaxho se nga ku duhet të ngarkohet muzika</string>
+    <string name="set_locations_list">Dosjet</string>
     <string name="set_dirs_mode">Mënyrë</string>
     <string name="set_dirs_mode_exclude">Përjashtoni</string>
     <string name="set_dirs_mode_exclude_desc">Muzika <b>nuk</b> do të ngarkohet nga dosjet që shtoni.</string>
@@ -261,7 +261,7 @@
     <string name="err_import_failed">Nuk mund të importoni një listë këngësh nga ky skedar</string>
     <string name="err_export_failed">Nuk mund të eksportoni listën e këngëve në këtë skedar</string>
     <string name="err_no_app">Nuk u gjet asnjë aplikacion që mund ta përballojë këtë detyrë</string>
-    <string name="err_no_dirs">Nuk ka dosje</string>
+    <string name="err_no_locations">Nuk ka dosje</string>
     <string name="desc_track_number">Kënga %d</string>
     <string name="desc_play_pause">Luaj ose ndalo</string>
     <string name="desc_skip_next">Kaloni te kënga tjetër</string>
@@ -272,7 +272,7 @@
     <string name="desc_song_handle">Lëviz këtë këngë</string>
     <string name="desc_queue_bar">Hap radhën</string>
     <string name="desc_clear_search">Pastro kërkimin</string>
-    <string name="desc_music_dir_delete">Hiq dosjen</string>
+    <string name="desc_music_location_delete">Hiq dosjen</string>
     <string name="desc_auxio_icon">Ikona e Auxio</string>
     <string name="desc_no_cover">Kopertina e albumit</string>
     <string name="desc_album_cover">Kopertina e albumit për %s</string>

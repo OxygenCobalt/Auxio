@@ -186,8 +186,8 @@
     <string name="set_pre_amp_with">Justering med etikettar</string>
     <string name="set_pre_amp_without">Justering utan etikettar</string>
     <string name="set_library">Bibliotek</string>
-    <string name="set_dirs_desc">Handsam kvar musikk skal lastast inn ifrå</string>
-    <string name="set_dirs_list">Mapper</string>
+    <string name="set_locations_desc">Handsam kvar musikk skal lastast inn ifrå</string>
+    <string name="set_locations_list">Mapper</string>
     <string name="set_dirs_mode">Modus</string>
     <string name="set_dirs_mode_include">Inkluder</string>
     <string name="set_reindex">Gjenoppfrisk musikk</string>
@@ -257,7 +257,7 @@
     <string name="set_headset_autoplay_desc">Alltid byrj avspeling når hovudtelefonar vert tilkopla (verkar kanskje ikkje på alle einingar)</string>
     <string name="set_repeat_pause_desc">Pause når eit spor vert gjenteke</string>
     <string name="set_pre_amp_warning">Åtvaring: Å endre forforsterkninga til høge positive verdier, kan forårsake forvrengning ved høge ljodtrykk på nokre spor.</string>
-    <string name="set_dirs">Musikkmapper</string>
+    <string name="set_locations">Musikkmapper</string>
     <string name="set_dirs_mode_include_desc">Musikk vil <b>kun</b> verte lasta inn frå mappene du legg til.</string>
     <string name="set_dirs_mode_exclude">Utelat</string>
     <string name="set_dirs_mode_exclude_desc">Musikk vil <b>ikkje</b> verte lasta inn frå mappene du legg til.</string>
@@ -269,12 +269,12 @@
     <string name="desc_artist_image">Artistbilete for %s</string>
     <string name="err_index_failed">Klarte ikkje å laste inn musikk</string>
     <string name="err_export_failed">Kan ikkje eksportere spelelista til denne fila</string>
-    <string name="err_bad_dir">Denne mappa er ikkje støtta</string>
+    <string name="err_bad_location">Denne mappa er ikkje støtta</string>
     <string name="err_no_app">Ingen app funne som kan handsama denne oppgåva</string>
     <string name="desc_play_pause">Spel av eller pause</string>
     <string name="desc_auxio_icon">Auxio-ikon</string>
     <string name="desc_track_number">Spor %d</string>
-    <string name="err_no_dirs">Ingen mapper</string>
+    <string name="err_no_locations">Ingen mapper</string>
     <string name="desc_shuffle_all">Bland alle spor</string>
     <string name="desc_remove_song">Fjern dette sporet</string>
     <string name="desc_song_handle">Flytt dette sporet</string>
@@ -283,7 +283,7 @@
     <string name="desc_tab_handle">Flytt denne fana</string>
     <string name="desc_clear_search">Tøm søket</string>
     <string name="def_genre">Ukjend sjanger</string>
-    <string name="desc_music_dir_delete">Fjern mappe</string>
+    <string name="desc_music_location_delete">Fjern mappe</string>
     <string name="desc_selection_image">Utvalsbilete</string>
     <string name="def_date">Ingen dato</string>
     <string name="fmt_db_pos">+%.1f dB</string>

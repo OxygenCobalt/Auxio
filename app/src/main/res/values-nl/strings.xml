@@ -29,7 +29,7 @@
     <string name="lbl_album_details">Ga naar album</string>
     <string name="lbl_add">Voeg toe</string>
     <string name="lbl_save">Bewaar</string>
-    <string name="err_no_dirs">Geen mappen</string>
+    <string name="err_no_locations">Geen mappen</string>
     <string name="lbl_about">Over</string>
     <string name="lbl_version">Versie</string>
     <string name="lbl_code">Broncode</string>
@@ -58,7 +58,7 @@
     <string name="err_index_failed">Laden van muziek mislukt</string>
     <string name="err_no_perms">Auxio heeft toestemming nodig om uw muziekbibliotheek te lezen</string>
     <string name="err_no_app">Geen app gevonden die deze taak kan uitvoeren</string>
-    <string name="err_bad_dir">Deze map wordt niet ondersteund</string>
+    <string name="err_bad_location">Deze map wordt niet ondersteund</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Zoek in uw bibliotheek…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -68,7 +68,7 @@
     <string name="desc_skip_prev">Ga naar laatste nummer</string>
     <string name="desc_change_repeat">Wijzig herhaalmodus</string>
     <string name="desc_clear_search">Wis zoekopdracht</string>
-    <string name="desc_music_dir_delete">Verwijder map</string>
+    <string name="desc_music_location_delete">Verwijder map</string>
     <string name="desc_auxio_icon">Auxio icoon</string>
     <string name="desc_album_cover">Albumhoes voor %s</string>
     <string name="desc_artist_image">Artiest afbeelding voor %s</string>
@@ -123,10 +123,10 @@
     <string name="set_replay_gain_mode_track">Voorkeur track</string>
     <string name="set_replay_gain_mode_album">Voorkeur album</string>
     <string name="set_pre_amp_desc">De voorversterker wordt toegepast op de bestaande afstelling tijdens weergave</string>
-    <string name="set_dirs">Muziek mappen</string>
+    <string name="set_locations">Muziek mappen</string>
     <string name="set_pre_amp">ReplayGain voorversterker</string>
     <string name="set_dirs_mode">Modus</string>
-    <string name="set_dirs_desc">Beheer waarvan muziek moet worden geladen</string>
+    <string name="set_locations_desc">Beheer waarvan muziek moet worden geladen</string>
     <string name="fmt_lib_total_duration">Totale duur: %s</string>
     <string name="lbl_shuffle_shortcut_long">Shuffle alles</string>
     <string name="lbl_ok">OK</string>
@@ -223,7 +223,7 @@
     <string name="lbl_rename_playlist">Hernoem afspeellijst</string>
     <string name="lbl_confirm_delete_playlist">Verwijder afspeellijst?</string>
     <string name="set_action_mode_repeat">Herhaalmodus</string>
-    <string name="set_dirs_list">Mappen</string>
+    <string name="set_locations_list">Mappen</string>
     <string name="desc_queue_bar">Open de wachtrij</string>
     <string name="fmt_deletion_info">%s verwijderen\? Dit kan niet ongedaan worden gemaakt.</string>
     <string name="set_cover_mode_off">Uit</string>

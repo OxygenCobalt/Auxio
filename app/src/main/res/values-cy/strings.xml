@@ -34,7 +34,7 @@
     <string name="lbl_track">Trac</string>
     <string name="lbl_sort">Didoli</string>
     <string name="lbl_sort_mode">Didoli gan</string>
-    <string name="set_dirs_list">Ffolderi</string>
+    <string name="set_locations_list">Ffolderi</string>
     <string name="set_dirs_mode_exclude">Allgáu</string>
     <string name="lbl_playlists">Rhestri chwarae</string>
     <string name="lbl_new_playlist">Rhestr chwarae newydd</string>
@@ -87,7 +87,7 @@
     <string name="set_audio">Sain</string>
     <string name="set_replay_gain_mode_off">I ffwrdd</string>
     <string name="set_library">Llyfrgell</string>
-    <string name="set_dirs">Ffolderi cerddoriaeth</string>
+    <string name="set_locations">Ffolderi cerddoriaeth</string>
     <string name="set_dirs_mode">Modd</string>
     <string name="set_dirs_mode_include">Cynnwys</string>
     <string name="set_reindex">Adnewyddu cerddoriaeth</string>
@@ -206,7 +206,7 @@
     <string name="err_index_failed">Methwyd llwytho cerddoriaeth</string>
     <string name="err_no_perms">Mae ar Auxio angen caniatâd i ddarllen eich llyfrgell gerddoriaeth</string>
     <string name="err_no_app">Methwyd dod o hyd ap sydd yn gallu gwneud y tasg hon</string>
-    <string name="err_no_dirs">Dim ffolderi</string>
+    <string name="err_no_locations">Dim ffolderi</string>
     <string name="desc_skip_next">Neidio i\'r gân nesaf</string>
     <string name="desc_skip_prev">Neidio i\'r gân ddiwethaf</string>
     <string name="desc_change_repeat">Newid y modd ail-chwarae</string>
@@ -237,7 +237,7 @@
     <string name="err_export_failed">Methwyd allforio\'r rhestr chwarae i\'r ffeil hon</string>
     <string name="desc_tab_handle">Symud y tab hwn</string>
     <string name="desc_clear_search">Clirio\'r ymholiad chwilio</string>
-    <string name="desc_music_dir_delete">Tynnu ffolder</string>
+    <string name="desc_music_location_delete">Tynnu ffolder</string>
     <string name="desc_auxio_icon">Eicon Auxio</string>
     <string name="desc_album_cover">Clawr albwm %s</string>
     <string name="desc_artist_image">Llun artist %s</string>
@@ -291,7 +291,7 @@
     <string name="set_headset_autoplay">Chwarae\'n awtomatig gyda chlustffon</string>
     <string name="set_rescan">Ail-sganio cerddoriaeth</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="set_dirs_desc">Rheoli o ble i lwytho cerddoriaeth</string>
+    <string name="set_locations_desc">Rheoli o ble i lwytho cerddoriaeth</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="set_personalize_desc">Addasu rheolaethau\'r UI ac ymarweddiad</string>
     <string name="set_bar_action">Gweithred addasedig ar y bar chwarae</string>
@@ -303,7 +303,7 @@
     <string name="set_dirs_mode_include_desc">Bydd cerddoriaeth yn cael ei llwytho <b>dim ond</b> o\'r ffolderi rydych yn eu hychwanegu.</string>
     <string name="set_reindex_desc">Ail-lwytho\'r llyfrgell cerddoriaeth, gan ddefnyddio tagiau wedi\'u cadw\'n barod pan fo modd</string>
     <string name="set_rescan_desc">Dileu\'r tagiau wedi\'u cadw\'n barod ac ail-lwytho\'r llyfrgell gerddoriaeth yn llawn (yn arafach, ond yn fwy cyflawn)</string>
-    <string name="err_bad_dir">Ni chefnogir y ffolder hon</string>
+    <string name="err_bad_location">Ni chefnogir y ffolder hon</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="lbl_replaygain_album">Addasu Albwm ReplayGain</string>
     <string name="lbl_replaygain_track">Addasu Trac ReplayGain</string>

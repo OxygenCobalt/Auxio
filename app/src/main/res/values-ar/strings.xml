@@ -109,7 +109,7 @@
     </plurals>
     <string name="set_hide_collaborators_desc">إظهار فقط الفنانين المُعتمدين مباشرة على الألبوم (يعمل بشكل أفضل في المكتبات المعروفة بتوسيماتها الجيدة)</string>
     <string name="set_content">المحتوى</string>
-    <string name="set_dirs_list">مجلدات</string>
+    <string name="set_locations_list">مجلدات</string>
     <string name="set_hide_collaborators">إخفاء المتعاونين</string>
     <string name="set_audio_desc">ضبط سلوك وصوت التشغيل</string>
     <string name="set_rewind_prev">إعادة التشغيل قبل الانتقال للوراء</string>
@@ -130,7 +130,7 @@
     <string name="set_action_mode_next">الانتقال إلى التالي</string>
     <string name="desc_no_cover">غلاف الألبوم</string>
     <string name="err_export_failed">غير قادر على تصدير قائمة التشغيل إلى هذا الملف</string>
-    <string name="desc_music_dir_delete">إزالة المجلد</string>
+    <string name="desc_music_location_delete">إزالة المجلد</string>
     <string name="desc_auxio_icon">رمز مساعد</string>
     <string name="fmt_list">%1$s، %2$s</string>
     <string name="clr_dynamic">متحرك</string>
@@ -169,8 +169,8 @@
     <string name="lbl_single_remix">اغنية فردية ريميكس</string>
     <string name="set_images">الصور</string>
     <string name="set_reindex_desc">إعادة تحميل مكتبة الموسيقى، باستخدام العلامات المخزنة مؤقتًا عند الإمكان</string>
-    <string name="err_no_dirs">لا توجد مجلدات</string>
-    <string name="err_bad_dir">هذا المجلد غير مدعوم</string>
+    <string name="err_no_locations">لا توجد مجلدات</string>
+    <string name="err_bad_location">هذا المجلد غير مدعوم</string>
     <string name="desc_shuffle_all">خلط جميع الأغاني</string>
     <string name="clr_cyan">ازرق سماوي</string>
     <string name="fmt_editing">تحرير %s</string>
@@ -225,8 +225,8 @@
     <string name="set_audio">صوت</string>
     <string name="set_pre_amp_warning">تحذير: تغيير مكبر الصوت المسبق إلى قيمة إيجابية عالية قد يؤدي إلى ظهور ذروات صوتية على بعض المسارات الصوتية.</string>
     <string name="set_library">مكتبة</string>
-    <string name="set_dirs">مجلدات الموسيقى</string>
-    <string name="set_dirs_desc">إدارة موقع تحميل الموسيقى</string>
+    <string name="set_locations">مجلدات الموسيقى</string>
+    <string name="set_locations_desc">إدارة موقع تحميل الموسيقى</string>
     <string name="set_dirs_mode_exclude_desc">الموسيقى لن تتم تحميلها من المجلدات التي تقوم بإضافتها.</string>
     <string name="set_dirs_mode_include_desc">الموسيقى ستتم تحميلها فقط من المجلدات التي تقوم بإضافتها.</string>
     <string name="desc_skip_prev">الانتقال إلى الأغنية الأخيرة</string>

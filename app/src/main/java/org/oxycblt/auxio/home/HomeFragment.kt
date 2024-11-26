@@ -306,9 +306,7 @@ class HomeFragment :
         if (unit == null) {
             return
         }
-        findNavController().navigateSafe(
-            HomeFragmentDirections.chooseLocations()
-        )
+        findNavController().navigateSafe(HomeFragmentDirections.chooseLocations())
         homeModel.chooseMusicLocations.consume()
     }
 

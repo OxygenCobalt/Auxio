@@ -34,7 +34,7 @@
     <string name="lbl_album_details">Ir al álbum</string>
     <string name="lbl_add">Agregar</string>
     <string name="lbl_save">Guardar</string>
-    <string name="err_no_dirs">Sin carpetas</string>
+    <string name="err_no_locations">Sin carpetas</string>
     <string name="lbl_about">Acerca de</string>
     <string name="lbl_version">Versión</string>
     <string name="lbl_code">Código fuente</string>
@@ -77,7 +77,7 @@
     <string name="err_index_failed">Falló la carga de música</string>
     <string name="err_no_perms">Auxio necesita permiso para leer su biblioteca de música</string>
     <string name="err_no_app">No se encontró ninguna aplicación que pueda manejar esta tarea</string>
-    <string name="err_bad_dir">Directorio no soportado</string>
+    <string name="err_bad_location">Directorio no soportado</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Buscar en la biblioteca…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -92,7 +92,7 @@
     <string name="desc_song_handle">Mover canción en la cola</string>
     <string name="desc_tab_handle">Mover pestaña</string>
     <string name="desc_clear_search">Borrar búsqueda</string>
-    <string name="desc_music_dir_delete">Quitar carpeta</string>
+    <string name="desc_music_location_delete">Quitar carpeta</string>
     <string name="desc_auxio_icon">Icono de Auxio</string>
     <string name="desc_no_cover">Carátula de álbum</string>
     <string name="desc_album_cover">Carátula de álbum para %s</string>
@@ -172,8 +172,8 @@
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
     <string name="lbl_cancel">Cancelar</string>
     <string name="set_headset_autoplay">Reproducción automática con auriculares</string>
-    <string name="set_dirs">Carpetas de música</string>
-    <string name="set_dirs_desc">Gestionar de dónde se cargará la música</string>
+    <string name="set_locations">Carpetas de música</string>
+    <string name="set_locations_desc">Gestionar de dónde se cargará la música</string>
     <string name="set_dirs_mode_include_desc">La música <b>solo</b> se cargará de las carpetas que añadas.</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
@@ -253,7 +253,7 @@
     <string name="set_images">Imágenes</string>
     <string name="set_audio_desc">Configurar el comportamiento del sonido y la reproducción</string>
     <string name="set_playback">Reproducción</string>
-    <string name="set_dirs_list">Carpetas</string>
+    <string name="set_locations_list">Carpetas</string>
     <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>

@@ -97,7 +97,7 @@
     <string name="set_cover_mode_quality">Падвышанай якасці (павольная загрузка)</string>
     <string name="set_replay_gain_mode_dynamic">Аддайце перавагу альбому, калі ён гучыць</string>
     <string name="set_pre_amp_without">Карэкціроўка без тэгаў</string>
-    <string name="set_dirs">Тэчкі з музыкай</string>
+    <string name="set_locations">Тэчкі з музыкай</string>
     <string name="set_headset_autoplay">Аўтапрайграванне гарнітуры</string>
     <string name="set_audio_desc">Наладзьце гук і паводзіны прайгравання</string>
     <string name="set_headset_autoplay_desc">Заўсёды пачынаць гульню, калі падключана гарнітура (можа працаваць не на ўсіх прыладах)</string>
@@ -113,8 +113,8 @@
     <string name="set_replay_gain_mode_album">Аддайце перавагу альбому</string>
     <string name="set_pre_amp">Папярэдні ўзмацняльнік ReplayGain</string>
     <string name="set_library">Бібліятэка</string>
-    <string name="set_dirs_desc">Кіруйце месцам загрузкі музыкі</string>
-    <string name="set_dirs_list">Тэчкі</string>
+    <string name="set_locations_desc">Кіруйце месцам загрузкі музыкі</string>
+    <string name="set_locations_list">Тэчкі</string>
     <string name="set_dirs_mode">Рэжым</string>
     <string name="set_dirs_mode_exclude">Выключэнні</string>
     <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будзе загружана з выбраных тэчак.</string>
@@ -126,8 +126,8 @@
     <string name="err_no_perms">Auxio патрабуецца дазвол на чытанне вашай музычнай бібліятэкі</string>
     <string name="err_no_music">Музыка не знойдзена</string>
     <string name="err_index_failed">Памылка загрузкі музыкі</string>
-    <string name="err_no_dirs">Няма тэчак</string>
-    <string name="err_bad_dir">Гэтая папка не падтрымліваецца</string>
+    <string name="err_no_locations">Няма тэчак</string>
+    <string name="err_bad_location">Гэтая папка не падтрымліваецца</string>
     <string name="desc_track_number">Кампазіцыя %d</string>
     <string name="desc_song_handle">Перамясціць песню ў чаргу</string>
     <string name="err_no_app">Не знойдзена прыкладання, якое можа справіцца з гэтай задачай</string>
@@ -142,7 +142,7 @@
     <string name="desc_exit">Спыніць прайграванне</string>
     <string name="desc_queue_bar">Адкрыйце чаргу</string>
     <string name="desc_clear_search">Ачысціць пошукавы запыт</string>
-    <string name="desc_music_dir_delete">Выдаліць тэчку</string>
+    <string name="desc_music_location_delete">Выдаліць тэчку</string>
     <string name="desc_no_cover">Вокладка альбома</string>
     <string name="desc_album_cover">Вокладка альбома %s</string>
     <string name="desc_artist_image">Выява выканаўцы для %s</string>

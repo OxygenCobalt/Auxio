@@ -22,7 +22,7 @@ import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.stack.explore.fs.Pathi
+import org.oxycblt.auxio.music.stack.explore.fs.Path
 
 interface MutableLibrary : Library {
     suspend fun createPlaylist(name: String, songs: List<Song>): MutableLibrary

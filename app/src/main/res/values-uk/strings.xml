@@ -85,7 +85,7 @@
     <string name="set_cover_mode_off">Вимкнено</string>
     <string name="set_action_mode_next">Перейти до наступної</string>
     <string name="set_cover_mode_media_store">Швидкі</string>
-    <string name="set_dirs_desc">Вкажіть звідки слід завантажувати музику</string>
+    <string name="set_locations_desc">Вкажіть звідки слід завантажувати музику</string>
     <string name="set_dirs_mode_exclude">Виключити</string>
     <string name="fmt_lib_total_duration">Загальна тривалість: %s</string>
     <string name="lbl_mixtapes">Мікстейпи</string>
@@ -104,7 +104,7 @@
     <string name="set_reindex">Оновити музику</string>
     <string name="lbl_remix_group">Ремікси</string>
     <string name="lbl_mixtape">Мікстейп</string>
-    <string name="set_dirs">Папки з музикою</string>
+    <string name="set_locations">Папки з музикою</string>
     <string name="lbl_reset">Скинути</string>
     <string name="set_black_mode">Чорна тема</string>
     <string name="set_lib_tabs_desc">Зміна видимості та порядку вкладок бібліотеки</string>
@@ -180,11 +180,11 @@
     <string name="set_separators_plus">Плюс (+)</string>
     <string name="set_separators_comma">Кома (,)</string>
     <string name="set_separators_semicolon">Крапка з комою (;)</string>
-    <string name="err_bad_dir">Ця папка не підтримується</string>
+    <string name="err_bad_location">Ця папка не підтримується</string>
     <string name="def_artist">Невідомий виконавець</string>
     <string name="clr_lime">Лаймовий</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
-    <string name="err_no_dirs">Немає папок</string>
+    <string name="err_no_locations">Немає папок</string>
     <string name="desc_skip_next">Перейти до наступної пісні</string>
     <string name="desc_shuffle">Ввімкніть або вимкніть перемішування</string>
     <string name="desc_exit">Зупинити відтворення</string>
@@ -241,7 +241,7 @@
     <string name="clr_grey">Сірий</string>
     <string name="fmt_disc_no">Диск %d</string>
     <string name="err_index_failed">Не вдалося завантажити музику</string>
-    <string name="desc_music_dir_delete">Видалити папку</string>
+    <string name="desc_music_location_delete">Видалити папку</string>
     <string name="cdc_aac">Розширене кодування звуку (AAC)</string>
     <string name="cdc_mka">Звук Matroska</string>
     <string name="fmt_list">%1$s, %2$s</string>
@@ -256,7 +256,7 @@
     <string name="set_replay_gain">Вирівнювання гучності</string>
     <string name="set_library">Бібліотека</string>
     <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
-    <string name="set_dirs_list">Папки</string>
+    <string name="set_locations_list">Папки</string>
     <string name="lbl_sort_dsc">За спаданням</string>
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
     <string name="lbl_playlist">Список відтворення</string>

@@ -207,7 +207,7 @@
         <item quantity="other">%d de artiști</item>
     </plurals>
     <string name="set_hide_collaborators_desc">Arată doar artiști care sunt creditați direct pe albun (Funcționează mai bine pe bibloteci cu taguri puse bine)</string>
-    <string name="err_bad_dir">Dosarul ăsta nu e suportat</string>
+    <string name="err_bad_location">Dosarul ăsta nu e suportat</string>
     <string name="desc_no_cover">Copertă album</string>
     <string name="set_library">Bibliotecă</string>
     <string name="set_separators_slash">Slash (/)</string>
@@ -217,8 +217,8 @@
     <string name="def_artist">Artist necunoscut</string>
     <string name="lbl_show_error_info">Vezi mai mult</string>
     <string name="set_separators_desc">Configurează caracterele care denotă mai multe valori de taguri</string>
-    <string name="set_dirs">Foldere cu muzică</string>
-    <string name="set_dirs_list">Foldere</string>
+    <string name="set_locations">Foldere cu muzică</string>
+    <string name="set_locations_list">Foldere</string>
     <string name="set_dirs_mode_exclude">Exclude</string>
     <string name="set_dirs_mode_exclude_desc">Muzica <b>nu<b> va fi încărcată din dosarele pe care le adaugi aici.</b></b></string>
     <string name="def_song_count">Fără cântece</string>
@@ -239,7 +239,7 @@
     <string name="set_repeat_pause">Pauză la repetare</string>
     <string name="set_audio_desc">Configurează comportamentul sunetului și redării</string>
     <string name="def_track">Fără track</string>
-    <string name="set_dirs_desc">Configurează de unde se încarcă muzica</string>
+    <string name="set_locations_desc">Configurează de unde se încarcă muzica</string>
     <string name="set_reindex">Reîncarcă muzica</string>
     <string name="desc_album_cover">Copertă album pentru %s</string>
     <string name="def_genre">Gen necunoscut</string>
@@ -248,7 +248,7 @@
     <string name="clr_deep_purple">Mov închis</string>
     <string name="set_remember_pause">Ține minte pauza</string>
     <string name="set_remember_pause_desc">Ține minte pauza atunci când dai skip printre cântece</string>
-    <string name="desc_music_dir_delete">Elimină dosarul</string>
+    <string name="desc_music_location_delete">Elimină dosarul</string>
     <string name="desc_selection_image">Imagine selecție</string>
     <string name="clr_indigo">Indigo</string>
     <string name="fmt_selected">%d Selectate</string>
@@ -265,7 +265,7 @@
     <string name="err_index_failed">Încărcarea muzicii a eșuat</string>
     <string name="err_no_perms">Auxio are nevoie de permisiune ca să-ți acceseze biblioteca de muzică</string>
     <string name="desc_song_handle">Mută acest cântec</string>
-    <string name="err_no_dirs">Niciun dosar</string>
+    <string name="err_no_locations">Niciun dosar</string>
     <string name="desc_shuffle">Pornește sau oprește amestecarea</string>
     <string name="desc_exit">Oprește redarea</string>
     <string name="desc_remove_song">Elimină acest cântec</string>

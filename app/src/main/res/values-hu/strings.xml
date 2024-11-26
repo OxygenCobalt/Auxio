@@ -83,7 +83,7 @@
     <string name="desc_shuffle">Keverés be/ki kapcsolása</string>
     <string name="desc_album_cover">%s album borítója</string>
     <string name="set_replay_gain">Hangerő normalizálás</string>
-    <string name="desc_music_dir_delete">Mappa eltávolítása</string>
+    <string name="desc_music_location_delete">Mappa eltávolítása</string>
     <string name="lbl_playlist_add">Lejátszólistához ad</string>
     <string name="lbl_format">Formátum</string>
     <string name="lbl_wiki">Wiki</string>
@@ -95,7 +95,7 @@
     <string name="set_replay_gain_mode">Visszajátszás stratégia</string>
     <string name="set_replay_gain_mode_album">Inkább album</string>
     <string name="set_replay_gain_mode_track">Inkább hangsáv</string>
-    <string name="err_bad_dir">Ez a mappa nem támogatott</string>
+    <string name="err_bad_location">Ez a mappa nem támogatott</string>
     <string name="desc_playlist_image">%s playlista képe</string>
     <string name="def_track">Nincs hangsáv</string>
     <string name="def_song_count">Nincs dal</string>
@@ -112,7 +112,7 @@
     <string name="lbl_mix">DJ Mix</string>
     <string name="lbl_genre">Műfaj</string>
     <string name="lbl_props">Dal tulajdonságai</string>
-    <string name="err_no_dirs">Nincs mappa</string>
+    <string name="err_no_locations">Nincs mappa</string>
     <string name="set_black_mode_desc">Tiszta fekete sötét téma használata</string>
     <string name="clr_dynamic">Dinamikus</string>
     <string name="set_cover_mode">Album borítók</string>
@@ -163,7 +163,7 @@
     <string name="lbl_rename_playlist">Lejátszólista átnevezés</string>
     <string name="lbl_rename">Átnevez</string>
     <string name="lbl_date_added">Hozzáadás dátuma</string>
-    <string name="set_dirs_list">Mappák</string>
+    <string name="set_locations_list">Mappák</string>
     <string name="lbl_save">Ment</string>
     <string name="lbl_reset">Alaphelyzet</string>
     <string name="lbl_author_name">Fejlesztő Alexander Capehart</string>
@@ -171,7 +171,7 @@
     <string name="set_play_song_from_genre">Lejátszás műfajból</string>
     <string name="set_content">Tartalom</string>
     <string name="set_observing_desc">A zenei könyvtár újratöltése, ha változik (állandó értesítést igényel)</string>
-    <string name="set_dirs">Zene könyvtárak</string>
+    <string name="set_locations">Zene könyvtárak</string>
     <string name="set_dirs_mode_exclude_desc">A zene <b>nem</b> töltődik be a hozzáadott mappákból.</string>
     <string name="set_dirs_mode_exclude">Kizárva</string>
     <string name="err_index_failed">A zene betöltése sikertelen</string>
@@ -253,7 +253,7 @@
     <string name="set_playback">Lejátszás</string>
     <string name="set_headset_autoplay">Fejhallgató auto. lejátszás</string>
     <string name="set_pre_amp_without">Beállítás címkék nélkül</string>
-    <string name="set_dirs_desc">Kezelje, hogy honnan töltsön be zenét</string>
+    <string name="set_locations_desc">Kezelje, hogy honnan töltsön be zenét</string>
     <string name="set_rescan">Zene újraolvasása</string>
     <string name="set_rescan_desc">A címkék gyorsítótárának törlése és a zenei könyvtár teljes újratöltése (lassabb, de teljesebb)</string>
     <string name="set_dirs_mode_include_desc">A zene <b>csak</b> az Ön által hozzáadott mappákból töltődik be.</string>

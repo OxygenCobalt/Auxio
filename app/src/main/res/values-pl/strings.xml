@@ -129,7 +129,7 @@
     <string name="def_track">Brak utworu</string>
     <string name="lbl_equalizer">Korektor</string>
     <string name="lbl_size">Rozmiar</string>
-    <string name="err_no_dirs">Brak folderów</string>
+    <string name="err_no_locations">Brak folderów</string>
     <string name="set_play_song_from_all">Odtwórz wszystkie utwory</string>
     <string name="set_play_song_from_album">Odtwórz album</string>
     <string name="set_headset_autoplay_desc">Automatycznie odtwórz muzykę po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
@@ -164,7 +164,7 @@
     <string name="cdc_mp4">MPEG-4</string>
     <string name="cdc_ogg">Ogg</string>
     <string name="info_app_desc">Prosty i praktyczny odtwarzacz muzyki na Androida.</string>
-    <string name="desc_music_dir_delete">Usuń folder</string>
+    <string name="desc_music_location_delete">Usuń folder</string>
     <string name="desc_queue_bar">Pokaż kolejkę</string>
     <string name="cdc_aac">AAC</string>
     <string name="set_observing_desc">Automatycznie odśwież bibliotekę po wykryciu zmian (wymaga stałego powiadomienia)</string>
@@ -182,8 +182,8 @@
     <string name="clr_dynamic">Material You</string>
     <string name="fmt_bitrate">%d kb/s</string>
     <string name="cdc_mka">Matroska</string>
-    <string name="set_dirs">Foldery z muzyką</string>
-    <string name="set_dirs_desc">Wybierz z których folderów importowane są utwory</string>
+    <string name="set_locations">Foldery z muzyką</string>
+    <string name="set_locations_desc">Wybierz z których folderów importowane są utwory</string>
     <string name="set_dirs_mode">Tryb</string>
     <string name="set_rewind_prev">Przewiń przed odtworzeniem poprzedniego utworu</string>
     <string name="set_rewind_prev_desc">Przewiń do początku obecnie odtwarzanego utworu zamiast odtworzenia poprzedniego</string>
@@ -210,7 +210,7 @@
     <string name="set_separators">Znaki oddzielające wartości</string>
     <string name="set_separators_desc">Wybierz znaki oddzielające poszczególne wartości w metadanych</string>
     <string name="err_no_perms">Auxio wymaga zgody na dostęp do twojej biblioteki muzycznej</string>
-    <string name="err_bad_dir">Ten folder nie jest wspierany</string>
+    <string name="err_bad_location">Ten folder nie jest wspierany</string>
     <string name="def_playback">Utwory nie są odtwarzane</string>
     <string name="fmt_indexing">Importuję bibliotekę muzyczną… (%1$d/%2$d)</string>
     <string name="fmt_lib_album_count">Zaimportowane albumy: %d</string>
@@ -239,7 +239,7 @@
     <string name="set_personalize_desc">Dostosuj elementy i funkcje interfejsu</string>
     <string name="set_hide_collaborators_desc">Pokaż tylko artystów bezpośrednio przypisanych do albumu (działa najlepiej w przypadku dobrze otagowanych bibliotek)</string>
     <string name="set_playback">Odtwarzanie</string>
-    <string name="set_dirs_list">Foldery</string>
+    <string name="set_locations_list">Foldery</string>
     <string name="set_images">Obrazy</string>
     <string name="set_audio_desc">Zarządzaj dźwiękiem i odtwarzaniem muzyki</string>
     <string name="fmt_selected">Wybrano %d</string>

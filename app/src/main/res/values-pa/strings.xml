@@ -119,14 +119,14 @@
     <string name="set_replay_gain_mode_track">ਟਰੈਕ ਨੂੰ ਤਰਜੀਹ</string>
     <string name="set_replay_gain_mode_album">ਐਲਬਮ ਨੂੰ ਤਰਜੀਹ</string>
     <string name="set_pre_amp_without">ਬਿਨਾਂ ਟੈਗਾਂ ਦੇ ਐਡਜਸਟਮੈਂਟ</string>
-    <string name="set_dirs_desc">ਪ੍ਰਬੰਧਿਤ ਕਰੋ ਕਿ ਸੰਗੀਤ ਕਿੱਥੋਂ ਲੋਡ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ</string>
-    <string name="set_dirs_list">ਫੋਲਡਰ</string>
+    <string name="set_locations_desc">ਪ੍ਰਬੰਧਿਤ ਕਰੋ ਕਿ ਸੰਗੀਤ ਕਿੱਥੋਂ ਲੋਡ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ</string>
+    <string name="set_locations_list">ਫੋਲਡਰ</string>
     <string name="set_dirs_mode_exclude">ਬਾਹਰ ਰੱਖੋ</string>
     <string name="set_dirs_mode_include">ਸ਼ਾਮਿਲ ਕਰੋ</string>
     <string name="set_reindex">ਸੰਗੀਤ ਤਾਜ਼ਾ-ਤਰੀਨ ਕਰੋ</string>
     <string name="err_no_app">ਕੋਈ ਐਪ ਨਹੀਂ ਮਿਲੀ ਜੋ ਇਸ ਕਾਰਜ ਨੂੰ ਸੰਭਾਲ ਸਕਦੀ ਹੈ</string>
-    <string name="err_no_dirs">ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ</string>
-    <string name="err_bad_dir">ਇਹ ਫੋਲਡਰ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ</string>
+    <string name="err_no_locations">ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ</string>
+    <string name="err_bad_location">ਇਹ ਫੋਲਡਰ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ</string>
     <string name="desc_play_pause">ਚਲਾਓ ਜਾਂ ਰੋਕੋ</string>
     <string name="desc_skip_next">ਅਗਲੇ ਗੀਤ \'ਤੇ ਜਾਓ</string>
     <string name="desc_skip_prev">ਆਖਰੀ ਗੀਤ \'ਤੇ ਜਾਓ</string>
@@ -177,7 +177,7 @@
     <string name="set_rewind_prev_desc">ਪਿਛਲੇ ਗੀਤ \'ਤੇ ਜਾਣ ਤੋਂ ਪਹਿਲਾਂ ਰੀਵਾਈਂਡ ਕਰੋ</string>
     <string name="set_repeat_pause">ਦੁਹਰਾਉਣ \'ਤੇ ਰੁਕੋ</string>
     <string name="set_library">ਲਾਇਬ੍ਰੇਰੀ</string>
-    <string name="set_dirs">ਸੰਗੀਤ ਫੋਲਡਰ</string>
+    <string name="set_locations">ਸੰਗੀਤ ਫੋਲਡਰ</string>
     <string name="desc_queue_bar">ਕਤਾਰ ਖੋਲ੍ਹੋ</string>
     <string name="desc_remove_song">ਇਸ ਕਤਾਰ ਗੀਤ ਨੂੰ ਹਟਾਓ</string>
     <string name="desc_song_handle">ਇਸ ਕਤਾਰ ਗੀਤ ਨੂੰ ਮੂਵ ਕਰੋ</string>
@@ -259,7 +259,7 @@
     </plurals>
     <string name="clr_grey">ਸਲੇਟੀ</string>
     <string name="fmt_lib_total_duration">ਕੁੱਲ ਮਿਆਦ: %s</string>
-    <string name="desc_music_dir_delete">ਫੋਲਡਰ ਹਟਾਓ</string>
+    <string name="desc_music_location_delete">ਫੋਲਡਰ ਹਟਾਓ</string>
     <string name="desc_auxio_icon">Auxio ਆਈਕਾਨ</string>
     <string name="lbl_appears_on">ਉੱਤੇ ਵਿਖਾਈ ਦਿੰਦਾ ਹੈ</string>
     <string name="lbl_playlists">ਪਲੇਅ-ਲਿਸਟਾਂ</string>

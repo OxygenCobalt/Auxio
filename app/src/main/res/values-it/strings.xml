@@ -34,7 +34,7 @@
     <string name="lbl_album_details">Vai all\'album</string>
     <string name="lbl_add">Aggiungi</string>
     <string name="lbl_save">Salva</string>
-    <string name="err_no_dirs">Nessuna cartella</string>
+    <string name="err_no_locations">Nessuna cartella</string>
     <string name="lbl_about">Informazioni</string>
     <string name="lbl_version">Versione</string>
     <string name="lbl_code">Codice sorgente</string>
@@ -80,7 +80,7 @@
     <string name="err_index_failed">Caricamento musica fallito</string>
     <string name="err_no_perms">Auxio ha bisogno del permesso per leggere la tua libreria musicale</string>
     <string name="err_no_app">Nessuna app può completare questa azione</string>
-    <string name="err_bad_dir">Questa cartella non è supportata</string>
+    <string name="err_bad_location">Questa cartella non è supportata</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Cerca nella libreria…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -95,7 +95,7 @@
     <string name="desc_song_handle">Sposta questo brano</string>
     <string name="desc_tab_handle">Muove questa scheda</string>
     <string name="desc_clear_search">Cancella la query di ricerca</string>
-    <string name="desc_music_dir_delete">Rimuovi cartella</string>
+    <string name="desc_music_location_delete">Rimuovi cartella</string>
     <string name="desc_auxio_icon">Icona Auxio</string>
     <string name="desc_no_cover">Copertina album</string>
     <string name="desc_album_cover">Copertina album per %s</string>
@@ -159,8 +159,8 @@
     <string name="set_pre_amp_with">Regolazione con tag</string>
     <string name="set_pre_amp_desc">Il pre-amp è applicato alla regolazione esistente durante la riproduzione</string>
     <string name="set_play_song_none">Riproduci dall\'elemento mostrato</string>
-    <string name="set_dirs_desc">Gestisci le cartelle da dove caricare la musica</string>
-    <string name="set_dirs">Cartelle musica</string>
+    <string name="set_locations_desc">Gestisci le cartelle da dove caricare la musica</string>
+    <string name="set_locations">Cartelle musica</string>
     <string name="set_dirs_mode_exclude">Escludi</string>
     <string name="cdc_mka">Matroska audio</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
@@ -247,7 +247,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Ripristina</string>
     <string name="set_behavior">Comportamento</string>
-    <string name="set_dirs_list">Cartelle</string>
+    <string name="set_locations_list">Cartelle</string>
     <string name="set_music">Musica</string>
     <string name="set_images">Immagini</string>
     <string name="set_library">Collezione</string>

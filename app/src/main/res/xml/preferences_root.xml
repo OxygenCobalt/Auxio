@@ -30,8 +30,8 @@
 
         <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
             app:key="@string/set_key_music_dirs"
-            app:summary="@string/set_dirs_desc"
-            app:title="@string/set_dirs" />
+            app:summary="@string/set_locations_desc"
+            app:title="@string/set_locations" />
 
         <Preference
             app:key="@string/set_key_reindex"

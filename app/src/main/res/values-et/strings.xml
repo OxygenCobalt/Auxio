@@ -241,9 +241,9 @@
     <string name="set_pre_amp_without">Kohandamine ilma siltides leiduvate väärtusteta</string>
     <string name="set_pre_amp_warning">Hoiatus: kui muudad eelvõimenduse väärtuse suureks positiivseks väärtuseks, siis mõnede lugude puhul võib see tähendada liiga kõrgeid toone.</string>
     <string name="set_library">Muusikakogu</string>
-    <string name="set_dirs">Muusika kaustad</string>
-    <string name="set_dirs_desc">Halda kaustu, kust otsime ja laadime muusikat</string>
-    <string name="set_dirs_list">Kaustad</string>
+    <string name="set_locations">Muusika kaustad</string>
+    <string name="set_locations_desc">Halda kaustu, kust otsime ja laadime muusikat</string>
+    <string name="set_locations_list">Kaustad</string>
     <string name="set_dirs_mode">Kaustade loogika</string>
     <string name="set_dirs_mode_exclude">Välista</string>
     <string name="set_dirs_mode_exclude_desc">Sinu määratud kaustadest <b>ei laadita</b> muusikat.</string>
@@ -260,8 +260,8 @@
     <string name="err_export_failed">Sellesse faili ei õnnestu esitusloendit eksportida</string>
     <string name="err_no_app">Ei leidu selle ülesande täitmiseks sobilikku rakendust</string>
     <string name="desc_track_number">Lugu %d</string>
-    <string name="err_no_dirs">Kaustu pole määratud</string>
-    <string name="err_bad_dir">See kaust pole toetatud</string>
+    <string name="err_no_locations">Kaustu pole määratud</string>
+    <string name="err_bad_location">See kaust pole toetatud</string>
     <string name="desc_play_pause">Esita või peata</string>
     <string name="desc_change_repeat">Muuda kordamise režiimi</string>
     <string name="desc_skip_next">Hüppa järgmise pala juurde</string>
@@ -274,7 +274,7 @@
     <string name="desc_remove_song">Eemalda see pala</string>
     <string name="desc_song_handle">Tõsta see pala teise kohta</string>
     <string name="desc_clear_search">Tühjenda otsinguajalugu</string>
-    <string name="desc_music_dir_delete">Eemalda kaust</string>
+    <string name="desc_music_location_delete">Eemalda kaust</string>
     <string name="desc_auxio_icon">Auxio ikoon</string>
     <string name="desc_no_cover">Albumi kaanepilt</string>
     <string name="desc_album_cover">%s albumi kaanepilt</string>
