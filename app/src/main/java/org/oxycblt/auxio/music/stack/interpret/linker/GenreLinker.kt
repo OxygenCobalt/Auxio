@@ -9,7 +9,7 @@ import org.oxycblt.auxio.music.stack.interpret.model.SongImpl
 import org.oxycblt.auxio.music.stack.interpret.prepare.PreGenre
 import org.oxycblt.auxio.music.stack.interpret.prepare.PreSong
 
-class GenreTree {
+class GenreLinker {
     private val tree = mutableMapOf<String?, GenreLink>()
 
     fun register(preSong: Flow<PreSong>): Flow<LinkedSong> = preSong.map {
@@ -42,7 +42,9 @@ class GenreTree {
         var node: GenreNode
     ) : Linked<GenreImpl, SongImpl> {
         override fun resolve(child: SongImpl): GenreImpl {
-            return requireNotNull(node.genreImpl) { "Link" }
+            return requireNotNull(node.genreImpl) { "Genre not resolved yet" }.also {
+                it.link(child)
+            }
         }
     }
 
