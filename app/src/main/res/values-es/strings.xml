@@ -329,4 +329,10 @@
     <string name="lbl_github">Crear una incidencia en GitHub</string>
     <string name="lbl_email">Enviar un correo electrónico</string>
     <string name="lbl_feedback">Retroalimentación</string>
+    <string name="lbl_music_sources">Seleccionar carpetas</string>
+    <string name="lng_no_playlists">Tus listas de reproducción aparecerán aquí una vez que agregues música.</string>
+    <string name="lng_no_songs">Tus canciones aparecerán aquí una vez que agregues algo de música.</string>
+    <string name="lng_no_albums">Tus álbumes aparecerán aquí una vez que agregues algo de música.</string>
+    <string name="lng_no_artists">Tus artistas aparecerán aquí una vez que agregues algo de música.</string>
+    <string name="lng_no_genres">Tus géneros musicales aparecerán aquí una vez que agregues algo de música.</string>
 </resources>
