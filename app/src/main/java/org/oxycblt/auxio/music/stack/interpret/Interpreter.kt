@@ -46,14 +46,17 @@ class InterpreterImpl(
         val artistLinker = ArtistLinker()
         val artistLinkedSongs =
             artistLinker.register(genreLinkedSongs).flowOn(Dispatchers.Main).buffer()
+        // This is intentional. Song and album instances are dependent on artist
+        // data, so we need to ensure that all of the linked artist data is resolved
+        // before we go any further.
+        val genres = genreLinker.resolve()
+        val artists = artistLinker.resolve()
         val albumLinker = AlbumLinker()
         val albumLinkedSongs =
             albumLinker.register(artistLinkedSongs)
                 .flowOn(Dispatchers.Main)
                 .map { LinkedSongImpl(it) }
                 .toList()
-        val genres = genreLinker.resolve()
-        val artists = artistLinker.resolve()
         val albums = albumLinker.resolve()
         val songs = albumLinkedSongs.map { SongImpl(it) }
         return LibraryImpl(songs, albums, artists, genres)
