@@ -24,22 +24,37 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
+import org.oxycblt.auxio.music.stack.Indexer.Event
 import org.oxycblt.auxio.music.stack.explore.Explorer
 import org.oxycblt.auxio.music.stack.interpret.Interpretation
 import org.oxycblt.auxio.music.stack.interpret.Interpreter
 import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
 
 interface Indexer {
-    suspend fun run(uris: List<Uri>, interpretation: Interpretation): MutableLibrary
+    suspend fun run(uris: List<Uri>, interpretation: Interpretation, eventHandler: suspend (Event) -> Unit = {}): MutableLibrary
+
+    sealed interface Event {
+        data class Discovered(
+            val amount: Int,
+        ) : Event
+
+        data class Extracted(
+            val amount: Int
+        )  : Event
+
+        data class Interpret(
+            val amount: Int
+        ) : Event
+    }
 }
 
 class IndexerImpl
 @Inject
 constructor(private val explorer: Explorer, private val interpreter: Interpreter) : Indexer {
-    override suspend fun run(uris: List<Uri>, interpretation: Interpretation) = coroutineScope {
-        val files = explorer.explore(uris)
+    override suspend fun run(uris: List<Uri>, interpretation: Interpretation, eventHandler: suspend (Event) -> Unit) = coroutineScope {
+        val files = explorer.explore(uris, eventHandler)
         val audioFiles = files.audios.flowOn(Dispatchers.IO).buffer()
         val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer()
-        interpreter.interpret(audioFiles, playlistFiles, interpretation)
+        interpreter.interpret(audioFiles, playlistFiles, interpretation, eventHandler)
     }
 }

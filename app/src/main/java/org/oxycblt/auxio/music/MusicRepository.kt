@@ -34,6 +34,7 @@ import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.stack.Indexer
 import org.oxycblt.auxio.music.stack.interpret.Interpretation
 import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
+import kotlin.math.exp
 import timber.log.Timber as L
 
 /**
@@ -363,7 +364,27 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
                 Name.Known.SimpleFactory
             }
 
-        val newLibrary = indexer.run(listOf(), Interpretation(nameFactory, separators))
+        var explored = 0
+        var loaded = 0
+        var interpreted = 0
+        val newLibrary = indexer.run(listOf(), Interpretation(nameFactory, separators)) {
+            when (it) {
+                is Indexer.Event.Discovered -> {
+                    explored = it.amount
+                    emitIndexingProgress(IndexingProgress.Songs(loaded, explored))
+                }
+                is Indexer.Event.Extracted -> {
+                    loaded = it.amount
+                    emitIndexingProgress(IndexingProgress.Songs(loaded, explored))
+                }
+                is Indexer.Event.Interpret -> {
+                    interpreted = it.amount
+                    if (explored == loaded) {
+                        emitIndexingProgress(IndexingProgress.Songs(loaded, explored))
+                    }
+                }
+            }
+        }
 
         // We want to make sure that all reads and writes are synchronized due to the sheer
         // amount of consumers of MusicRepository.
