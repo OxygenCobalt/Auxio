@@ -26,7 +26,5 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface MetadataModule {
-    @Binds fun tagInterpreter(interpreter: TagInterpreterImpl): TagInterpreter
-
-    @Binds fun exoPlayerTagExtractor(extractor: ExoPlayerTagExtractorImpl): ExoPlayerTagExtractor
+    @Binds fun tagExtractor(impl: TagExtractorImpl): TagExtractor
 }
