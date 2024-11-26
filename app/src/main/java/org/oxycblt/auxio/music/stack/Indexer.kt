@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
-import org.oxycblt.auxio.music.stack.Indexer.Event
 import org.oxycblt.auxio.music.stack.explore.Explorer
 import org.oxycblt.auxio.music.stack.interpret.Interpretation
 import org.oxycblt.auxio.music.stack.interpret.Interpreter
@@ -34,19 +33,16 @@ interface Indexer {
     suspend fun run(
         uris: List<Uri>,
         interpretation: Interpretation,
-        eventHandler: suspend (Event) -> Unit = {}
+        onProgress: suspend (IndexingProgress) -> Unit = {}
     ): MutableLibrary
-
-    sealed interface Event {
-        data class Discovered(
-            val amount: Int,
-        ) : Event
-
-        data class Extracted(val amount: Int) : Event
-
-        data class Interpret(val amount: Int) : Event
-    }
 }
+
+/**
+ * Represents the current progress of music loading.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+data class IndexingProgress(val interpreted: Int, val explored: Int)
 
 class IndexerImpl
 @Inject
@@ -54,11 +50,21 @@ constructor(private val explorer: Explorer, private val interpreter: Interpreter
     override suspend fun run(
         uris: List<Uri>,
         interpretation: Interpretation,
-        eventHandler: suspend (Event) -> Unit
+        onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
-        val files = explorer.explore(uris, eventHandler)
+        var interpreted = 0
+        var explored = 0
+        val files =
+            explorer.explore(uris) {
+                explored++
+                onProgress(IndexingProgress(interpreted, explored))
+            }
         val audioFiles = files.audios.flowOn(Dispatchers.IO).buffer()
         val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer()
-        interpreter.interpret(audioFiles, playlistFiles, interpretation, eventHandler)
+
+        interpreter.interpret(audioFiles, playlistFiles, interpretation) {
+            interpreted++
+            onProgress(IndexingProgress(interpreted, explored))
+        }
     }
 }

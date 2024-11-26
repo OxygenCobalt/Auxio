@@ -42,21 +42,19 @@ class DeviceFilesImpl
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val volumeManager: VolumeManager
+    @Inject private val documentPathFactory: DocumentPathFactory
 ) : DeviceFiles {
     private val contentResolver = context.contentResolverSafe
 
     override fun explore(uris: Flow<Uri>): Flow<DeviceFile> =
-        uris.flatMapMerge { rootUri -> exploreImpl(contentResolver, rootUri, Components.nil()) }
+        uris.flatMapMerge { rootUri -> exploreImpl(contentResolver, rootUri,
+            requireNotNull(documentPathFactory.unpackDocumentTreeUri(rootUri))) }
 
     private fun exploreImpl(
         contentResolver: ContentResolver,
         uri: Uri,
-        relativePath: Components
+        relativePath: Path
     ): Flow<DeviceFile> = flow {
-        // TODO: Temporary to maintain path api parity
-        // Figure out what we actually want to do to paths now in saf world.
-        val external = volumeManager.getInternalVolume()
         contentResolver.useQuery(uri, PROJECTION) { cursor ->
             val childUriIndex =
                 cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
@@ -73,7 +71,7 @@ constructor(
                 val childId = cursor.getString(childUriIndex)
                 val childUri = DocumentsContract.buildDocumentUriUsingTree(uri, childId)
                 val displayName = cursor.getString(displayNameIndex)
-                val path = relativePath.child(displayName)
+                val path = relativePath.file(displayName)
                 val mimeType = cursor.getString(mimeTypeIndex)
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
                     // This does NOT block the current coroutine. Instead, we will
@@ -85,7 +83,7 @@ constructor(
                     // rather than just being a glorified async.
                     val lastModified = cursor.getLong(lastModifiedIndex)
                     val size = cursor.getLong(sizeIndex)
-                    emit(DeviceFile(childUri, mimeType, Path(external, path), size, lastModified))
+                    emit(DeviceFile(childUri, mimeType, path, size, lastModified))
                 }
             }
             // Hypothetically, we could just emitAll as we recurse into a new directory,

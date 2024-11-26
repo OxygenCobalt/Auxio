@@ -36,7 +36,6 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.withIndex
-import org.oxycblt.auxio.music.stack.Indexer
 import org.oxycblt.auxio.music.stack.explore.cache.CacheResult
 import org.oxycblt.auxio.music.stack.explore.cache.TagCache
 import org.oxycblt.auxio.music.stack.explore.extractor.TagExtractor
@@ -44,7 +43,7 @@ import org.oxycblt.auxio.music.stack.explore.fs.DeviceFiles
 import org.oxycblt.auxio.music.stack.explore.playlists.StoredPlaylists
 
 interface Explorer {
-    fun explore(uris: List<Uri>, eventHandler: suspend (Indexer.Event) -> Unit): Files
+    fun explore(uris: List<Uri>, onExplored: suspend () -> Unit): Files
 }
 
 data class Files(val audios: Flow<AudioFile>, val playlists: Flow<PlaylistFile>)
@@ -58,14 +57,14 @@ constructor(
     private val storedPlaylists: StoredPlaylists
 ) : Explorer {
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun explore(uris: List<Uri>, eventHandler: suspend (Indexer.Event) -> Unit): Files {
+    override fun explore(uris: List<Uri>, onExplored: suspend () -> Unit): Files {
         var discovered = 0
         val deviceFiles =
             deviceFiles
                 .explore(uris.asFlow())
                 .onEach {
                     discovered++
-                    eventHandler(Indexer.Event.Discovered(discovered))
+                    onExplored()
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer()
@@ -75,15 +74,9 @@ constructor(
             uncachedDeviceFiles
                 .split(8)
                 .map { tagExtractor.extract(it).flowOn(Dispatchers.IO).buffer() }
-                .asFlow()
                 .flattenMerge()
         val writtenAudioFiles = tagCache.write(extractedAudioFiles).flowOn(Dispatchers.IO).buffer()
-        var loaded = 0
-        val audioFiles =
-            merge(cachedAudioFiles, writtenAudioFiles).onEach {
-                loaded++
-                eventHandler(Indexer.Event.Extracted(loaded))
-            }
+        val audioFiles = merge(cachedAudioFiles, writtenAudioFiles)
         val playlistFiles = storedPlaylists.read()
         return Files(audioFiles, playlistFiles)
     }
@@ -96,11 +89,11 @@ constructor(
         return files to songs
     }
 
-    private fun <T> Flow<T>.split(n: Int): Array<Flow<T>> {
+    private fun <T> Flow<T>.split(n: Int): Flow<Flow<T>> {
         val indexed = withIndex()
         val shared =
             indexed.shareIn(
                 CoroutineScope(Dispatchers.Main), SharingStarted.WhileSubscribed(), replay = 0)
-        return Array(n) { shared.filter { it.index % n == 0 }.map { it.value } }
+        return Array(n) { shared.filter { it.index % n == 0 }.map { it.value } }.asFlow()
     }
 }

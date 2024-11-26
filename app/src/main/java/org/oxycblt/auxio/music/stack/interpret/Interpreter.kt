@@ -21,13 +21,12 @@ package org.oxycblt.auxio.music.stack.interpret
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.stack.Indexer
 import org.oxycblt.auxio.music.stack.explore.AudioFile
 import org.oxycblt.auxio.music.stack.explore.PlaylistFile
 import org.oxycblt.auxio.music.stack.interpret.linker.AlbumLinker
@@ -50,7 +49,7 @@ interface Interpreter {
         audioFiles: Flow<AudioFile>,
         playlistFiles: Flow<PlaylistFile>,
         interpretation: Interpretation,
-        eventHandler: suspend (Indexer.Event) -> Unit
+        onInterpret: suspend () -> Unit
     ): MutableLibrary
 }
 
@@ -59,7 +58,7 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
         audioFiles: Flow<AudioFile>,
         playlistFiles: Flow<PlaylistFile>,
         interpretation: Interpretation,
-        eventHandler: suspend (Indexer.Event) -> Unit
+        onInterpret: suspend () -> Unit
     ): MutableLibrary {
         val preSongs =
             preparer.prepare(audioFiles, interpretation).flowOn(Dispatchers.Main).buffer()
@@ -69,24 +68,19 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
 
         val artistLinker = ArtistLinker()
         val artistLinkedSongs =
-            artistLinker.register(genreLinkedSongs).flowOn(Dispatchers.Main).buffer()
+            artistLinker.register(genreLinkedSongs).flowOn(Dispatchers.Main).toList()
         // This is intentional. Song and album instances are dependent on artist
         // data, so we need to ensure that all of the linked artist data is resolved
         // before we go any further.
         val genres = genreLinker.resolve()
         val artists = artistLinker.resolve()
 
-        var interpreted = 0
         val albumLinker = AlbumLinker()
         val albumLinkedSongs =
             albumLinker
-                .register(artistLinkedSongs)
-                .flowOn(Dispatchers.Main)
-                .onEach {
-                    interpreted++
-                    eventHandler(Indexer.Event.Interpret(interpreted))
-                }
+                .register(artistLinkedSongs.asFlow())
                 .map { LinkedSongImpl(it) }
+                .flowOn(Dispatchers.Main)
                 .toList()
         val albums = albumLinker.resolve()
 
@@ -96,17 +90,13 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
                 val uid = it.preSong.computeUid()
                 val other = uidMap[uid]
                 if (other == null) {
-                    SongImpl(it)
+                    SongImpl(it).also { onInterpret() }
                 } else {
                     L.d("Song @ $uid already exists at ${other.path}, ignoring")
                     null
                 }
             }
-        return LibraryImpl(
-            songs,
-            albums.onEach { it.finalize() },
-            artists.onEach { it.finalize() },
-            genres.onEach { it.finalize() })
+        return LibraryImpl(songs, albums, artists, genres)
     }
 
     private data class LinkedSongImpl(private val albumLinkedSong: AlbumLinker.LinkedSong) :

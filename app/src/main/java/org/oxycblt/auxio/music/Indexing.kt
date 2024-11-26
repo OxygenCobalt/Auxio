@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music
 
 import android.os.Build
+import org.oxycblt.auxio.music.stack.IndexingProgress
 
 /** Version-aware permission identifier for reading audio files. */
 val PERMISSION_READ_AUDIO =
@@ -48,24 +49,6 @@ sealed interface IndexingState {
      *   will be null.
      */
     data class Completed(val error: Exception?) : IndexingState
-}
-
-/**
- * Represents the current progress of music loading.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-sealed interface IndexingProgress {
-    /** Other work is being done that does not have a defined progress. */
-    data object Indeterminate : IndexingProgress
-
-    /**
-     * Songs are currently being loaded.
-     *
-     * @param current The current amount of songs loaded.
-     * @param total The projected total amount of songs.
-     */
-    data class Songs(val current: Int, val total: Int) : IndexingProgress
 }
 
 /**

@@ -23,7 +23,6 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.stack.explore.fs.Path
-import org.oxycblt.auxio.music.stack.interpret.model.SongImpl
 
 data class DeviceFile(
     val uri: Uri,
@@ -33,11 +32,6 @@ data class DeviceFile(
     val lastModified: Long
 )
 
-/**
- * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
 data class AudioFile(
     val deviceFile: DeviceFile,
     val durationMs: Long,

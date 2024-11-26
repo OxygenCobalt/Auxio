@@ -122,15 +122,6 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
         }
         hashCode = 31 * hashCode + song.hashCode()
     }
-
-    /**
-     * Perform final validation and organization on this instance.
-     *
-     * @return This instance upcasted to [Album].
-     */
-    fun finalize(): Album {
-        return this
-    }
 }
 
 /**
@@ -147,12 +138,15 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
 
     override val songs = mutableSetOf<Song>()
 
-    private val albums = mutableSetOf<Album>()
-    private val albumMap = mutableMapOf<Album, Boolean>()
-    override lateinit var explicitAlbums: Set<Album>
-    override lateinit var implicitAlbums: Set<Album>
+    override var explicitAlbums = mutableSetOf<Album>()
+    override var implicitAlbums = mutableSetOf<Album>()
 
-    override lateinit var genres: List<Genre>
+    override val genres: List<Genre> by lazy {
+        // TODO: Not sure how to integrate this into music loading.
+        Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+            .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
+            .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
+    }
 
     override var durationMs = 0L
     override lateinit var cover: ParentCover
@@ -176,40 +170,15 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
     fun link(song: SongImpl) {
         songs.add(song)
         durationMs += song.durationMs
-        if (albumMap[song.album] == null) {
-            albumMap[song.album] = false
+        if (!explicitAlbums.contains(song.album)) {
+            implicitAlbums.add(song.album)
         }
         hashCode = 31 * hashCode + song.hashCode()
     }
 
     fun link(album: AlbumImpl) {
-        albums.add(album)
-        albumMap[album] = true
-    }
-
-    /**
-     * Perform final validation and organization on this instance.
-     *
-     * @return This instance upcasted to [Artist].
-     */
-    fun finalize(): Artist {
-        // There are valid artist configurations:
-        // 1. No songs, no implicit albums, some explicit albums
-        // 2. Some songs, no implicit albums, some explicit albums
-        // 3. Some songs, some implicit albums, no implicit albums
-        // 4. Some songs, some implicit albums, some explicit albums
-        // I'm pretty sure the latter check could be reduced to just explicitAlbums.isNotEmpty,
-        // but I can't be 100% certain.
-        check(songs.isNotEmpty() || (implicitAlbums.size + explicitAlbums.size) > 0) {
-            "Malformed artist $name: Empty"
-        }
-        explicitAlbums = albums.filterTo(mutableSetOf()) { albumMap[it] == true }
-        implicitAlbums = albums.filterNotTo(mutableSetOf()) { albumMap[it] == true }
-        genres =
-            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-                .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
-                .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
-        return this
+        explicitAlbums.add(album)
+        implicitAlbums.remove(album)
     }
 }
 
@@ -241,14 +210,5 @@ class GenreImpl(private val preGenre: PreGenre) : Genre {
         artists.addAll(song.artists)
         durationMs += song.durationMs
         hashCode = 31 * hashCode + song.hashCode()
-    }
-
-    /**
-     * Perform final validation and organization on this instance.
-     *
-     * @return This instance upcasted to [Genre].
-     */
-    fun finalize(): Genre {
-        return this
     }
 }

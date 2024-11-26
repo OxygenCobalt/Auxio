@@ -58,7 +58,6 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectionFragment
 import org.oxycblt.auxio.list.menu.Menu
-import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
@@ -70,6 +69,7 @@ import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.music.external.M3U
+import org.oxycblt.auxio.music.stack.IndexingProgress
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
@@ -384,19 +384,12 @@ class HomeFragment :
         binding.homeIndexingActions.visibility = View.INVISIBLE
 
         binding.homeIndexingStatus.setText(R.string.lng_indexing)
-        when (progress) {
-            is IndexingProgress.Indeterminate -> {
-                // In a query/initialization state, show a generic loading status.
-                binding.homeIndexingProgress.isIndeterminate = true
-            }
-            is IndexingProgress.Songs -> {
-                // Actively loading songs, show the current progress.
-                binding.homeIndexingProgress.apply {
-                    isIndeterminate = false
-                    max = progress.total
-                    this.progress = progress.current
-                }
-            }
+
+        // Actively loading songs, show the current progress.
+        binding.homeIndexingProgress.apply {
+            isIndeterminate = false
+            max = progress.explored
+            this.progress = progress.interpreted
         }
     }
 
