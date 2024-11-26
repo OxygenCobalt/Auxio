@@ -21,6 +21,7 @@ package org.oxycblt.auxio.home.list
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
@@ -33,6 +34,7 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.recycler.PlaylistViewHolder
 import org.oxycblt.auxio.list.sort.Sort
+import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
@@ -71,7 +73,13 @@ class PlaylistListFragment :
             listener = this@PlaylistListFragment
         }
 
-        collectImmediately(homeModel.playlistList, ::updatePlaylists)
+        binding.homeNoMusicMsg.text = getString(R.string.lng_no_playlists)
+
+        binding.homeChooseMusicSources.setOnClickListener {
+            homeModel.startChooseMusicLocations()
+        }
+
+        collectImmediately(homeModel.playlistList, musicModel.indexingState, ::updatePlaylists)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -116,7 +124,11 @@ class PlaylistListFragment :
         listModel.openMenu(R.menu.playlist, item)
     }
 
-    private fun updatePlaylists(playlists: List<Playlist>) {
+    private fun updatePlaylists(playlists: List<Playlist>, indexingState: IndexingState?) {
+        requireBinding().apply {
+            homeRecycler.isInvisible = indexingState is IndexingState.Indexing || playlists.isEmpty()
+            homeNoMusic.isInvisible = playlists.isEmpty()
+        }
         playlistAdapter.update(playlists, homeModel.playlistInstructions.consume())
     }
 

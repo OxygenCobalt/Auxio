@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Formatter
@@ -37,6 +38,7 @@ import org.oxycblt.auxio.list.recycler.AlbumViewHolder
 import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
@@ -79,7 +81,13 @@ class AlbumListFragment :
             listener = this@AlbumListFragment
         }
 
-        collectImmediately(homeModel.albumList, ::updateAlbums)
+        binding.homeNoMusicMsg.text = getString(R.string.lng_no_albums)
+
+        binding.homeChooseMusicSources.setOnClickListener {
+            homeModel.startChooseMusicLocations()
+        }
+
+        collectImmediately(homeModel.albumList, musicModel.indexingState, ::updateAlbums)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -143,7 +151,11 @@ class AlbumListFragment :
         listModel.openMenu(R.menu.album, item)
     }
 
-    private fun updateAlbums(albums: List<Album>) {
+    private fun updateAlbums(albums: List<Album>, indexingState: IndexingState?) {
+        requireBinding().apply {
+            homeRecycler.isInvisible = indexingState is IndexingState.Indexing || albums.isEmpty()
+            homeNoMusic.isInvisible = albums.isEmpty()
+        }
         albumAdapter.update(albums, homeModel.albumInstructions.consume())
     }
 

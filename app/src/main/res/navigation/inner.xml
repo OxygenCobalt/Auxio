@@ -87,6 +87,9 @@
         <action
             android:id="@+id/report_error"
             app:destination="@id/error_details_dialog" />
+        <action
+            android:id="@+id/choose_locations"
+            app:destination="@id/music_dirs_dialog" />
     </fragment>
 
     <dialog
@@ -564,4 +567,10 @@
             android:name="parcel"
             app:argType="org.oxycblt.auxio.list.menu.Menu$ForSelection$Parcel" />
     </dialog>
+
+    <dialog
+        android:id="@+id/music_dirs_dialog"
+        android:name="org.oxycblt.auxio.music.dirs.MusicDirsDialog"
+        android:label="music_dirs_dialog"
+        tools:layout="@layout/dialog_music_dirs" />
 </navigation>

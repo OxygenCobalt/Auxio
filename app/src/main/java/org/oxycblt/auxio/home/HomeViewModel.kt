@@ -159,6 +159,10 @@ constructor(
     val showOuter: Event<Outer>
         get() = _showOuter
 
+    private val _chooseMusicLocations = MutableEvent<Unit>()
+    val chooseMusicLocations: Event<Unit>
+        get() = _chooseMusicLocations
+
     init {
         homeGenerator.attach()
     }
@@ -261,6 +265,10 @@ constructor(
     fun setFastScrolling(isFastScrolling: Boolean) {
         L.d("Updating fast scrolling state: $isFastScrolling")
         _isFastScrolling.value = isFastScrolling
+    }
+
+    fun startChooseMusicLocations() {
+        _chooseMusicLocations.put(Unit)
     }
 
     fun showSettings() {

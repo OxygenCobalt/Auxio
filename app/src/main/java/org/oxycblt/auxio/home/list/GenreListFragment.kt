@@ -21,6 +21,7 @@ package org.oxycblt.auxio.home.list
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
@@ -73,7 +75,13 @@ class GenreListFragment :
             listener = this@GenreListFragment
         }
 
-        collectImmediately(homeModel.genreList, ::updateGenres)
+        binding.homeNoMusicMsg.text = getString(R.string.lng_no_genres)
+
+        binding.homeChooseMusicSources.setOnClickListener {
+            homeModel.startChooseMusicLocations()
+        }
+
+        collectImmediately(homeModel.genreList, musicModel.indexingState, ::updateGenres)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -118,7 +126,11 @@ class GenreListFragment :
         listModel.openMenu(R.menu.parent, item)
     }
 
-    private fun updateGenres(genres: List<Genre>) {
+    private fun updateGenres(genres: List<Genre>, indexingState: IndexingState?) {
+        requireBinding().apply {
+            homeRecycler.isInvisible = indexingState is IndexingState.Indexing || genres.isEmpty()
+            homeNoMusic.isInvisible = genres.isEmpty()
+        }
         genreAdapter.update(genres, homeModel.genreInstructions.consume())
     }
 

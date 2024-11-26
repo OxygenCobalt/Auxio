@@ -120,9 +120,7 @@ constructor(
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
         when (key) {
-            getString(R.string.set_key_exclude_non_music),
-            getString(R.string.set_key_music_dirs),
-            getString(R.string.set_key_music_dirs_include),
+            getString(R.string.set_key_music_locations),
             getString(R.string.set_key_separators),
             getString(R.string.set_key_auto_sort_names) -> {
                 L.d("Dispatching indexing setting change for $key")

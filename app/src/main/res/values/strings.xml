@@ -16,6 +16,7 @@
     <string name="lbl_observing">Monitoring music library</string>
     <!-- As in to retry loading music -->
     <string name="lbl_retry">Retry</string>
+    <string name="lbl_music_sources">Pick folders</string>
     <!-- As in to show additional information about a music loading error -->
     <string name="lbl_show_error_info">More</string>
     <!-- As in grant permission -->
@@ -214,6 +215,11 @@
         Starts Auxio using the previously saved state. If no saved state is available, all songs will be shuffled. Playback will start immediately.
         \n\nWARNING: Be careful controlling this service, if you close it and then try to use it again, you will probably crash the app.
     </string>
+    <string name="lng_no_songs">Your songs will show up here once you add some music.</string>
+    <string name="lng_no_albums">Your albums will show up here once you add some music.</string>
+    <string name="lng_no_artists">Your artists will show up here once you add some music.</string>
+    <string name="lng_no_genres">Your genres will show up here once you add some music.</string>
+    <string name="lng_no_playlists">Your playlists will show up here once you add some music.</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <eat-comment />

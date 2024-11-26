@@ -175,6 +175,7 @@ class HomeFragment :
 
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
+        collect(homeModel.chooseMusicLocations.flow, ::handleChooseFolders)
         collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
@@ -299,6 +300,16 @@ class HomeFragment :
         // Make sure tabs are set up to also follow the new ViewPager configuration.
         setupPager(binding)
         homeModel.recreateTabs.consume()
+    }
+
+    private fun handleChooseFolders(unit: Unit?) {
+        if (unit == null) {
+            return
+        }
+        findNavController().navigateSafe(
+            HomeFragmentDirections.chooseLocations()
+        )
+        homeModel.chooseMusicLocations.consume()
     }
 
     private fun updateIndexerState(state: IndexingState?) {
