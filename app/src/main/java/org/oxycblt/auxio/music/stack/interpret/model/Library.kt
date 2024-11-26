@@ -47,6 +47,8 @@ class LibraryImpl(
 ) : MutableLibrary {
     override val playlists = emptySet<Playlist>()
 
+    private val songUidMap = songs.associ { it.uid }
+
     override fun findSong(uid: Music.UID): Song? {
         TODO("Not yet implemented")
     }

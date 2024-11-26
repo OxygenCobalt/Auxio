@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.stack.Indexer
 import org.oxycblt.auxio.music.stack.explore.AudioFile
 import org.oxycblt.auxio.music.stack.explore.PlaylistFile
@@ -42,6 +43,7 @@ import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
 import org.oxycblt.auxio.music.stack.interpret.model.SongImpl
 import org.oxycblt.auxio.music.stack.interpret.prepare.PreSong
 import org.oxycblt.auxio.music.stack.interpret.prepare.Preparer
+import timber.log.Timber as L
 
 interface Interpreter {
     suspend fun interpret(
@@ -88,8 +90,22 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
                 .toList()
         val albums = albumLinker.resolve()
 
-        val songs = albumLinkedSongs.map { SongImpl(it) }
-        return LibraryImpl(songs, albums, artists, genres)
+        val uidMap = mutableMapOf<Music.UID, SongImpl>()
+        val songs = albumLinkedSongs.mapNotNull {
+            val uid = it.preSong.computeUid()
+            val other = uidMap[uid]
+            if (other == null) {
+                SongImpl(it)
+            } else {
+                L.d("Song @ $uid already exists at ${other.path}, ignoring")
+                null
+            }
+        }
+        return LibraryImpl(
+            songs,
+            albums.onEach { it.finalize() },
+            artists.onEach { it.finalize() },
+            genres.onEach { it.finalize() })
     }
 
     private data class LinkedSongImpl(private val albumLinkedSong: AlbumLinker.LinkedSong) :

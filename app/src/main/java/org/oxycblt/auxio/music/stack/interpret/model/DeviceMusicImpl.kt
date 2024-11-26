@@ -43,23 +43,7 @@ import org.oxycblt.auxio.util.update
 class SongImpl(linkedSong: LinkedSong) : Song {
     private val preSong = linkedSong.preSong
 
-    override val uid =
-        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-        preSong.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
-            ?: Music.UID.auxio(MusicType.SONGS) {
-                // Song UIDs are based on the raw data without parsing so that they remain
-                // consistent across music setting changes. Parents are not held up to the
-                // same standard since grouping is already inherently linked to settings.
-                update(preSong.rawName)
-                update(preSong.preAlbum.rawName)
-                update(preSong.date)
-
-                update(preSong.track)
-                update(preSong.disc?.number)
-
-                update(preSong.preArtists.map { it.rawName })
-                update(preSong.preAlbum.preArtists.map { it.rawName })
-            }
+    override val uid = preSong.computeUid()
     override val name = preSong.name
     override val track = preSong.track
     override val disc = preSong.disc

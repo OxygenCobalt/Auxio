@@ -21,6 +21,8 @@ package org.oxycblt.auxio.music.stack.interpret.prepare
 import android.net.Uri
 import java.util.UUID
 import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
@@ -29,6 +31,7 @@ import org.oxycblt.auxio.music.stack.explore.PlaylistHandle
 import org.oxycblt.auxio.music.stack.explore.fs.MimeType
 import org.oxycblt.auxio.music.stack.explore.fs.Path
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
+import org.oxycblt.auxio.util.update
 
 data class PreSong(
     val musicBrainzId: UUID?,
@@ -48,7 +51,24 @@ data class PreSong(
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>
-)
+) {
+    fun computeUid() =
+        musicBrainzId?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
+        ?: Music.UID.auxio(MusicType.SONGS) {
+            // Song UIDs are based on the raw data without parsing so that they remain
+            // consistent across music setting changes. Parents are not held up to the
+            // same standard since grouping is already inherently linked to settings.
+            update(rawName)
+            update(preAlbum.rawName)
+            update(date)
+
+            update(track)
+            update(disc?.number)
+
+            update(preArtists.map { artist -> artist.rawName })
+            update(preAlbum.preArtists.map { artist -> artist.rawName })
+        }
+}
 
 data class PreAlbum(
     val musicBrainzId: UUID?,
