@@ -25,6 +25,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
@@ -38,7 +39,7 @@ import timber.log.Timber as L
 
 class IndexingHolder
 private constructor(
-    override val workerContext: Context,
+    private val workerContext: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
     private val musicRepository: MusicRepository,
@@ -130,10 +131,9 @@ private constructor(
         // Cancel the previous music loading job.
         currentIndexJob?.cancel()
         // Start a new music loading job on a co-routine.
-        currentIndexJob = musicRepository.index(this, withCache)
+        currentIndexJob =
+            indexScope.launch { musicRepository.index(this@IndexingHolder, withCache) }
     }
-
-    override val scope = indexScope
 
     override fun onIndexingStateChanged() {
         foregroundListener.updateForeground(ForegroundListener.Change.INDEXER)

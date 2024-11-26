@@ -18,17 +18,13 @@
  
 package org.oxycblt.auxio.music
 
-import android.content.Context
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
 import org.oxycblt.auxio.music.stack.Indexer
@@ -163,7 +159,7 @@ interface MusicRepository {
      * @param withCache Whether to load with the music cache or not.
      * @return The top-level music loading [Job] started.
      */
-    fun index(worker: IndexingWorker, withCache: Boolean): Job
+    suspend fun index(worker: IndexingWorker, withCache: Boolean)
 
     /** A listener for changes to the stored music information. */
     interface UpdateListener {
@@ -191,12 +187,6 @@ interface MusicRepository {
 
     /** A persistent worker that can load music in the background. */
     interface IndexingWorker {
-        /** A [Context] required to read device storage */
-        val workerContext: Context
-
-        /** The [CoroutineScope] to perform coroutine music loading work on. */
-        val scope: CoroutineScope
-
         /**
          * Request that the music loading process ([index]) should be started. Any prior loads
          * should be canceled.
@@ -327,12 +317,9 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
         indexingWorker?.requestIndex(withCache)
     }
 
-    override fun index(worker: MusicRepository.IndexingWorker, withCache: Boolean) =
-        worker.scope.launch { indexWrapper(worker.workerContext, this, withCache) }
-
-    private suspend fun indexWrapper(context: Context, scope: CoroutineScope, withCache: Boolean) {
+    override suspend fun index(worker: IndexingWorker, withCache: Boolean) {
         try {
-            indexImpl(context, scope, withCache)
+            indexImpl(withCache)
         } catch (e: CancellationException) {
             // Got cancelled, propagate upwards to top-level co-routine.
             L.d("Loading routine was cancelled")
@@ -346,15 +333,7 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
         }
     }
 
-    private suspend fun indexImpl(context: Context, scope: CoroutineScope, withCache: Boolean) {
-        // Make sure we have permissions before going forward. Theoretically this would be better
-        // done at the UI level, but that intertwines logic and display too much.
-        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
-            PackageManager.PERMISSION_DENIED) {
-            L.e("Permissions were not granted")
-            throw NoAudioPermissionException()
-        }
-
+    private suspend fun indexImpl(withCache: Boolean) {
         // Obtain configuration information
         val separators = Separators.from(musicSettings.separators)
         val nameFactory =
@@ -363,9 +342,10 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
             } else {
                 Name.Known.SimpleFactory
             }
+        val uris = musicSettings.musicLocations
 
         val newLibrary =
-            indexer.run(listOf(), Interpretation(nameFactory, separators), ::emitIndexingProgress)
+            indexer.run(uris, Interpretation(nameFactory, separators), ::emitIndexingProgress)
 
         // We want to make sure that all reads and writes are synchronized due to the sheer
         // amount of consumers of MusicRepository.

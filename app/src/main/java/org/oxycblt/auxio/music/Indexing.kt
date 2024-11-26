@@ -50,21 +50,3 @@ sealed interface IndexingState {
      */
     data class Completed(val error: Exception?) : IndexingState
 }
-
-/**
- * Thrown by the music loader when [PERMISSION_READ_AUDIO] was not granted.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class NoAudioPermissionException : Exception() {
-    override val message = "Storage permissions are required to load music"
-}
-
-/**
- * Thrown when no music was found.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class NoMusicException : Exception() {
-    override val message = "No music was found on the device"
-}

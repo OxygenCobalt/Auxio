@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
+import android.net.Uri
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -36,6 +37,7 @@ import timber.log.Timber as L
 interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The configuration on how to handle particular directories in the music library. */
     var musicDirs: MusicDirectories
+    var musicLocations: List<Uri>
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to be actively watching for changes in the music library. */
@@ -75,6 +77,21 @@ constructor(
                     getString(R.string.set_key_music_dirs),
                     value.dirs.map(documentPathFactory::toDocumentId).toSet())
                 putBoolean(getString(R.string.set_key_music_dirs_include), value.shouldInclude)
+                apply()
+            }
+        }
+
+    override var musicLocations: List<Uri>
+        get() {
+            val dirs =
+                sharedPreferences.getStringSet(getString(R.string.set_key_music_locations), null)
+                    ?: emptySet()
+            return dirs.map { Uri.parse(it) }
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putStringSet(
+                    getString(R.string.set_key_music_locations), value.map(Uri::toString).toSet())
                 apply()
             }
         }

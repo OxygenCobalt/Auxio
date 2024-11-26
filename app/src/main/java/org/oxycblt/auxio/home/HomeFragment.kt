@@ -62,9 +62,6 @@ import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.NoAudioPermissionException
-import org.oxycblt.auxio.music.NoMusicException
-import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
@@ -331,48 +328,19 @@ class HomeFragment :
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.INVISIBLE
         binding.homeIndexingActions.visibility = View.VISIBLE
-        when (error) {
-            is NoAudioPermissionException -> {
-                L.d("Showing permission prompt")
-                binding.homeIndexingStatus.setText(R.string.err_no_perms)
-                // Configure the action to act as a permission launcher.
-                binding.homeIndexingTry.apply {
-                    text = context.getString(R.string.lbl_grant)
-                    setOnClickListener {
-                        requireNotNull(storagePermissionLauncher) {
-                                "Permission launcher was not available"
-                            }
-                            .launch(PERMISSION_READ_AUDIO)
-                    }
-                }
-                binding.homeIndexingMore.visibility = View.GONE
-            }
-            is NoMusicException -> {
-                L.d("Showing no music error")
-                binding.homeIndexingStatus.setText(R.string.err_no_music)
-                // Configure the action to act as a reload trigger.
-                binding.homeIndexingTry.apply {
-                    visibility = View.VISIBLE
-                    text = context.getString(R.string.lbl_retry)
-                    setOnClickListener { musicModel.refresh() }
-                }
-                binding.homeIndexingMore.visibility = View.GONE
-            }
-            else -> {
-                L.d("Showing generic error")
-                binding.homeIndexingStatus.setText(R.string.err_index_failed)
-                // Configure the action to act as a reload trigger.
-                binding.homeIndexingTry.apply {
-                    visibility = View.VISIBLE
-                    text = context.getString(R.string.lbl_retry)
-                    setOnClickListener { musicModel.rescan() }
-                }
-                binding.homeIndexingMore.apply {
-                    visibility = View.VISIBLE
-                    setOnClickListener {
-                        findNavController().navigateSafe(HomeFragmentDirections.reportError(error))
-                    }
-                }
+
+        L.d("Showing generic error")
+        binding.homeIndexingStatus.setText(R.string.err_index_failed)
+        // Configure the action to act as a reload trigger.
+        binding.homeIndexingTry.apply {
+            visibility = View.VISIBLE
+            text = context.getString(R.string.lbl_retry)
+            setOnClickListener { musicModel.rescan() }
+        }
+        binding.homeIndexingMore.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                findNavController().navigateSafe(HomeFragmentDirections.reportError(error))
             }
         }
     }
