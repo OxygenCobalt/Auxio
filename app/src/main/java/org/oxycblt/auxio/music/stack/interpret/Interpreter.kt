@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.stack.explore.AudioFile
@@ -68,7 +69,11 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
 
         val artistLinker = ArtistLinker()
         val artistLinkedSongs =
-            artistLinker.register(genreLinkedSongs).flowOn(Dispatchers.Main).toList()
+            artistLinker
+                .register(genreLinkedSongs)
+                .onEach { onInterpret() }
+                .flowOn(Dispatchers.Main)
+                .toList()
         // This is intentional. Song and album instances are dependent on artist
         // data, so we need to ensure that all of the linked artist data is resolved
         // before we go any further.
@@ -90,7 +95,7 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
                 val uid = it.preSong.computeUid()
                 val other = uidMap[uid]
                 if (other == null) {
-                    SongImpl(it).also { onInterpret() }
+                    SongImpl(it)
                 } else {
                     L.d("Song @ $uid already exists at ${other.path}, ignoring")
                     null
