@@ -318,4 +318,10 @@
     <string name="lbl_github">在 GithHub 上开 issue</string>
     <string name="lbl_email">发送电子邮件</string>
     <string name="lbl_feedback">反馈</string>
+    <string name="lbl_music_sources">选择文件夹</string>
+    <string name="lng_no_artists">一旦添加了一些音乐，艺术家会显示在此处。</string>
+    <string name="lng_no_songs">一旦添加了一些音乐，歌曲会显示在此处。</string>
+    <string name="lng_no_albums">一旦添加了一些音乐，专辑会显示在此处。</string>
+    <string name="lng_no_genres">一旦添加了一些音乐，流派会显示在此处。</string>
+    <string name="lng_no_playlists">一旦添加了一些音乐，播放列表会显示在此处。</string>
 </resources>
