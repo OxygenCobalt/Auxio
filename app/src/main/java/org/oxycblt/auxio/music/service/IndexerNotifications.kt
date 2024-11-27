@@ -61,19 +61,33 @@ class IndexingNotification(private val context: Context) :
      * @return true if the notification updated, false otherwise
      */
     fun updateIndexingState(progress: IndexingProgress): Boolean {
-        // Determinate state, show an active progress meter. Since these updates arrive
-        // highly rapidly, only update every 1.5 seconds to prevent notification rate
-        // limiting.
-        val now = SystemClock.elapsedRealtime()
-        if (lastUpdateTime > -1 && (now - lastUpdateTime) < 1500) {
-            return false
+        when (progress) {
+            is IndexingProgress.Indeterminate -> {
+                // Indeterminate state, use a vaguer description and in-determinate progress.
+                // These events are not very frequent, and thus we don't need to safeguard
+                // against rate limiting.
+                L.d("Updating state to $progress")
+                lastUpdateTime = -1
+                setContentText(context.getString(R.string.lng_indexing))
+                setProgress(0, 0, true)
+                return true
+            }
+            is IndexingProgress.Songs -> {
+                // Determinate state, show an active progress meter. Since these updates arrive
+                // highly rapidly, only update every 1.5 seconds to prevent notification rate
+                // limiting.
+                val now = SystemClock.elapsedRealtime()
+                if (lastUpdateTime > -1 && (now - lastUpdateTime) < 1500) {
+                    return false
+                }
+                lastUpdateTime = SystemClock.elapsedRealtime()
+                L.d("Updating state to $progress")
+                setContentText(
+                    context.getString(R.string.fmt_indexing, progress.loaded, progress.explored))
+                setProgress(progress.loaded, progress.explored, false)
+                return true
+            }
         }
-        lastUpdateTime = SystemClock.elapsedRealtime()
-        L.d("Updating state to $progress")
-        setContentText(
-            context.getString(R.string.fmt_indexing, progress.interpreted, progress.explored))
-        setProgress(progress.explored, progress.interpreted, false)
-        return true
     }
 }
 

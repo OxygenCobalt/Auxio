@@ -360,13 +360,22 @@ class HomeFragment :
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingActions.visibility = View.INVISIBLE
 
-        binding.homeIndexingStatus.setText(R.string.lng_indexing)
-
-        // Actively loading songs, show the current progress.
-        binding.homeIndexingProgress.apply {
-            isIndeterminate = false
-            max = progress.explored
-            this.progress = progress.interpreted
+        when (progress) {
+            is IndexingProgress.Indeterminate -> {
+                // In a query/initialization state, show a generic loading status.
+                binding.homeIndexingStatus.text = getString(R.string.lng_indexing)
+                binding.homeIndexingProgress.isIndeterminate = true
+            }
+            is IndexingProgress.Songs -> {
+                // Actively loading songs, show the current progress.
+                binding.homeIndexingStatus.text =
+                    getString(R.string.fmt_indexing, progress.loaded, progress.explored)
+                binding.homeIndexingProgress.apply {
+                    isIndeterminate = false
+                    max = progress.explored
+                    this.progress = progress.loaded
+                }
+            }
         }
     }
 

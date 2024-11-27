@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.stack.explore.AudioFile
@@ -49,8 +48,7 @@ interface Interpreter {
     suspend fun interpret(
         audioFiles: Flow<AudioFile>,
         playlistFiles: Flow<PlaylistFile>,
-        interpretation: Interpretation,
-        onInterpret: suspend () -> Unit
+        interpretation: Interpretation
     ): MutableLibrary
 }
 
@@ -58,8 +56,7 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
     override suspend fun interpret(
         audioFiles: Flow<AudioFile>,
         playlistFiles: Flow<PlaylistFile>,
-        interpretation: Interpretation,
-        onInterpret: suspend () -> Unit
+        interpretation: Interpretation
     ): MutableLibrary {
         val preSongs =
             preparer.prepare(audioFiles, interpretation).flowOn(Dispatchers.Main).buffer()
@@ -69,11 +66,7 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
 
         val artistLinker = ArtistLinker()
         val artistLinkedSongs =
-            artistLinker
-                .register(genreLinkedSongs)
-                .onEach { onInterpret() }
-                .flowOn(Dispatchers.Main)
-                .toList()
+            artistLinker.register(genreLinkedSongs).flowOn(Dispatchers.Main).toList()
         // This is intentional. Song and album instances are dependent on artist
         // data, so we need to ensure that all of the linked artist data is resolved
         // before we go any further.

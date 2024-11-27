@@ -22,7 +22,9 @@ import android.net.Uri
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.oxycblt.auxio.music.stack.explore.Explorer
 import org.oxycblt.auxio.music.stack.interpret.Interpretation
@@ -42,7 +44,11 @@ interface Indexer {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class IndexingProgress(val interpreted: Int, val explored: Int)
+sealed interface IndexingProgress {
+    data class Songs(val loaded: Int, val explored: Int) : IndexingProgress
+
+    data object Indeterminate : IndexingProgress
+}
 
 class IndexerImpl
 @Inject
@@ -52,20 +58,25 @@ constructor(private val explorer: Explorer, private val interpreter: Interpreter
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
-        var interpreted = 0
-        var explored = 0
-        onProgress(IndexingProgress(interpreted, explored))
-        val files =
-            explorer.explore(uris) {
-                explored++
-                onProgress(IndexingProgress(interpreted, explored))
-            }
-        val audioFiles = files.audios.flowOn(Dispatchers.IO).buffer()
+        val files = explorer.explore(uris, onProgress)
+        val audioFiles =
+            files.audios
+                .cap(
+                    start = { onProgress(IndexingProgress.Songs(0, 0)) },
+                    end = { onProgress(IndexingProgress.Indeterminate) })
+                .flowOn(Dispatchers.IO)
+                .buffer()
         val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer()
-
-        interpreter.interpret(audioFiles, playlistFiles, interpretation) {
-            interpreted++
-            onProgress(IndexingProgress(interpreted, explored))
-        }
+        interpreter.interpret(audioFiles, playlistFiles, interpretation)
     }
+
+    private fun <T> Flow<T>.cap(start: suspend () -> Unit, end: suspend () -> Unit): Flow<T> =
+        flow {
+            start()
+            try {
+                collect { emit(it) }
+            } finally {
+                end()
+            }
+        }
 }

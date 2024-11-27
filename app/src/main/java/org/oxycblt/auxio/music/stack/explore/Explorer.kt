@@ -34,13 +34,14 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
+import org.oxycblt.auxio.music.stack.IndexingProgress
 import org.oxycblt.auxio.music.stack.explore.cache.TagCache
 import org.oxycblt.auxio.music.stack.explore.extractor.TagExtractor
 import org.oxycblt.auxio.music.stack.explore.fs.DeviceFiles
 import org.oxycblt.auxio.music.stack.explore.playlists.StoredPlaylists
 
 interface Explorer {
-    fun explore(uris: List<Uri>, onExplored: suspend () -> Unit): Files
+    fun explore(uris: List<Uri>, onProgress: suspend (IndexingProgress.Songs) -> Unit): Files
 }
 
 data class Files(val audios: Flow<AudioFile>, val playlists: Flow<PlaylistFile>)
@@ -54,14 +55,18 @@ constructor(
     private val storedPlaylists: StoredPlaylists
 ) : Explorer {
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun explore(uris: List<Uri>, onExplored: suspend () -> Unit): Files {
-        var discovered = 0
+    override fun explore(
+        uris: List<Uri>,
+        onProgress: suspend (IndexingProgress.Songs) -> Unit
+    ): Files {
+        var loaded = 0
+        var explored = 0
         val deviceFiles =
             deviceFiles
                 .explore(uris.asFlow())
                 .onEach {
-                    discovered++
-                    onExplored()
+                    explored++
+                    onProgress(IndexingProgress.Songs(loaded, explored))
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer()
@@ -73,8 +78,13 @@ constructor(
         //        val writtenAudioFiles =
         // tagCache.write(extractedAudioFiles).flowOn(Dispatchers.IO).buffer()
         //        val audioFiles = merge(cachedAudioFiles, writtenAudioFiles)
+        val audioFiles =
+            extractedAudioFiles.onEach {
+                loaded++
+                onProgress(IndexingProgress.Songs(loaded, explored))
+            }
         val playlistFiles = storedPlaylists.read()
-        return Files(extractedAudioFiles, playlistFiles)
+        return Files(audioFiles, playlistFiles)
     }
 
     /** Temporarily split a flow into 8 parallel threads and then */
