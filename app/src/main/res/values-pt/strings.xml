@@ -313,4 +313,10 @@
     <string name="lbl_feedback">Opinião</string>
     <string name="lbl_github">Crie um problema no GitHub</string>
     <string name="lbl_email">Envie um e-mail</string>
+    <string name="lng_no_artists">Seus artistas aparecerão aqui assim que você adicionar alguma música.</string>
+    <string name="lng_no_genres">Seus gêneros aparecerão aqui assim que você adicionar alguma música.</string>
+    <string name="lng_no_playlists">Suas playlists aparecerão aqui assim que você adicionar alguma música.</string>
+    <string name="lbl_music_sources">Escolha pastas</string>
+    <string name="lng_no_albums">Seus álbuns aparecerão aqui assim que você adicionar alguma música.</string>
+    <string name="lng_no_songs">Suas músicas aparecerão aqui assim que você adicionar alguma música.</string>
 </resources>
