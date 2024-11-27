@@ -121,6 +121,7 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
                 } ?: Date.Range(song.date, song.date)
         }
         hashCode = 31 * hashCode + song.hashCode()
+        cover = ParentCover(song.cover, emptyList())
     }
 }
 
@@ -174,6 +175,7 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
             implicitAlbums.add(song.album)
         }
         hashCode = 31 * hashCode + song.hashCode()
+        cover = ParentCover(song.cover, emptyList())
     }
 
     fun link(album: AlbumImpl) {
@@ -210,5 +212,6 @@ class GenreImpl(private val preGenre: PreGenre) : Genre {
         artists.addAll(song.artists)
         durationMs += song.durationMs
         hashCode = 31 * hashCode + song.hashCode()
+        cover = ParentCover(song.cover, emptyList())
     }
 }
