@@ -120,8 +120,10 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
                     else if (song.date > it.max) Date.Range(it.min, song.date) else it
                 } ?: Date.Range(song.date, song.date)
         }
-        hashCode = 31 * hashCode + song.hashCode()
-        cover = ParentCover(song.cover, emptyList())
+    }
+
+    fun finalize() {
+        cover = ParentCover(songs.first().cover, songs.map { it.cover })
     }
 }
 
@@ -139,16 +141,11 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
 
     override val songs = mutableSetOf<Song>()
 
+    private val albums = mutableListOf<Album>()
     override var explicitAlbums = mutableSetOf<Album>()
     override var implicitAlbums = mutableSetOf<Album>()
 
-    override val genres: List<Genre> by lazy {
-        // TODO: Not sure how to integrate this into music loading.
-        Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-            .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
-            .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
-    }
-
+    override var genres = listOf<Genre>()
     override var durationMs = 0L
     override lateinit var cover: ParentCover
 
@@ -171,16 +168,21 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
     fun link(song: SongImpl) {
         songs.add(song)
         durationMs += song.durationMs
-        if (!explicitAlbums.contains(song.album)) {
-            implicitAlbums.add(song.album)
-        }
         hashCode = 31 * hashCode + song.hashCode()
-        cover = ParentCover(song.cover, emptyList())
     }
 
     fun link(album: AlbumImpl) {
-        explicitAlbums.add(album)
-        implicitAlbums.remove(album)
+        albums.add(album)
+    }
+
+    fun finalize() {
+        explicitAlbums.addAll(albums)
+        implicitAlbums.addAll(songs.mapTo(mutableSetOf()) { it.album } - albums.toSet())
+        cover = ParentCover(songs.first().cover, songs.map { it.cover })
+        genres =
+            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+                .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
+                .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
     }
 }
 
@@ -209,9 +211,12 @@ class GenreImpl(private val preGenre: PreGenre) : Genre {
 
     fun link(song: SongImpl) {
         songs.add(song)
-        artists.addAll(song.artists)
         durationMs += song.durationMs
         hashCode = 31 * hashCode + song.hashCode()
         cover = ParentCover(song.cover, emptyList())
+    }
+
+    fun finalize() {
+        artists.addAll(songs.flatMapTo(mutableSetOf()) { it.artists })
     }
 }

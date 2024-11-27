@@ -99,7 +99,11 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
                     null
                 }
             }
-        return LibraryImpl(songs, albums, artists, genres)
+        return LibraryImpl(
+            songs,
+            albums.onEach { it.finalize() },
+            artists.onEach { it.finalize() },
+            genres.onEach { it.finalize() })
     }
 
     private data class LinkedSongImpl(private val albumLinkedSong: AlbumLinker.LinkedSong) :
