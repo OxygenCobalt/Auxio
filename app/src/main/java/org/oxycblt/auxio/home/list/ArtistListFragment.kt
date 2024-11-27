@@ -127,8 +127,8 @@ class ArtistListFragment :
 
     private fun updateArtists(artists: List<Artist>, indexingState: IndexingState?) {
         requireBinding().apply {
-            homeRecycler.isInvisible = indexingState is IndexingState.Indexing || artists.isEmpty()
-            homeNoMusic.isInvisible = artists.isEmpty()
+            homeRecycler.isInvisible = indexingState == null || artists.isEmpty()
+            homeNoMusic.isInvisible = indexingState != null || artists.isNotEmpty()
         }
         artistAdapter.update(artists, homeModel.artistInstructions.consume())
     }
