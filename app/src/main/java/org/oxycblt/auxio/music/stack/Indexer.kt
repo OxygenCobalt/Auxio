@@ -54,6 +54,7 @@ constructor(private val explorer: Explorer, private val interpreter: Interpreter
     ) = coroutineScope {
         var interpreted = 0
         var explored = 0
+        onProgress(IndexingProgress(interpreted, explored))
         val files =
             explorer.explore(uris) {
                 explored++
