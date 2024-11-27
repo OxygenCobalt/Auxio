@@ -329,4 +329,10 @@
     <string name="lbl_feedback">Zpětná vazba</string>
     <string name="lbl_github">Vytvořit problém na GitHubu</string>
     <string name="lbl_email">Poslat e-mail</string>
+    <string name="lng_no_artists">Vaši umělci se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_genres">Vaše žánry se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_playlists">Vaše seznamy skladeb se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_songs">Vaše skladby se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_albums">Vaše alba se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lbl_music_sources">Vybrat složky</string>
 </resources>
