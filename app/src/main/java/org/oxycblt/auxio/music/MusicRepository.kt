@@ -347,6 +347,8 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
         val newLibrary =
             indexer.run(uris, Interpretation(nameFactory, separators), ::emitIndexingProgress)
 
+        emitIndexingCompletion(null)
+
         // We want to make sure that all reads and writes are synchronized due to the sheer
         // amount of consumers of MusicRepository.
         // TODO: Would Atomics not be a better fit here?
