@@ -42,57 +42,65 @@ class DeviceFilesImpl
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    @Inject private val documentPathFactory: DocumentPathFactory
+    private val documentPathFactory: DocumentPathFactory
 ) : DeviceFiles {
     private val contentResolver = context.contentResolverSafe
 
     override fun explore(uris: Flow<Uri>): Flow<DeviceFile> =
-        uris.flatMapMerge { rootUri -> exploreImpl(contentResolver, rootUri,
-            requireNotNull(documentPathFactory.unpackDocumentTreeUri(rootUri))) }
+        uris.flatMapMerge { rootUri ->
+            Timber.d("$rootUri")
+            exploreImpl(
+                contentResolver,
+                rootUri,
+                DocumentsContract.getTreeDocumentId(rootUri),
+                requireNotNull(documentPathFactory.unpackDocumentTreeUri(rootUri)))
+        }
 
     private fun exploreImpl(
         contentResolver: ContentResolver,
-        uri: Uri,
+        rootUri: Uri,
+        treeDocumentId: String,
         relativePath: Path
     ): Flow<DeviceFile> = flow {
-        contentResolver.useQuery(uri, PROJECTION) { cursor ->
-            val childUriIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
-            val displayNameIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
-            val mimeTypeIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
-            val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
-            val lastModifiedIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-            // Recurse into sub-directories as another flow
-            val recursions = mutableListOf<Flow<DeviceFile>>()
-            while (cursor.moveToNext()) {
-                val childId = cursor.getString(childUriIndex)
-                val childUri = DocumentsContract.buildDocumentUriUsingTree(uri, childId)
-                val displayName = cursor.getString(displayNameIndex)
-                val path = relativePath.file(displayName)
-                val mimeType = cursor.getString(mimeTypeIndex)
-                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                    // This does NOT block the current coroutine. Instead, we will
-                    // evaluate this flow in parallel later to maximize throughput.
-                    recursions.add(exploreImpl(contentResolver, childUri, path))
-                } else {
-                    // Immediately emit all files given that it's just an O(1) op.
-                    // This also just makes sure the outer flow has a reason to exist
-                    // rather than just being a glorified async.
-                    val lastModified = cursor.getLong(lastModifiedIndex)
-                    val size = cursor.getLong(sizeIndex)
-                    emit(DeviceFile(childUri, mimeType, path, size, lastModified))
+        contentResolver.useQuery(
+            DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
+            PROJECTION) { cursor ->
+                val childUriIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+                val displayNameIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+                val mimeTypeIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
+                val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
+                val lastModifiedIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+                val recursive = mutableListOf<Flow<DeviceFile>>()
+                while (cursor.moveToNext()) {
+                    val childId = cursor.getString(childUriIndex)
+                    val displayName = cursor.getString(displayNameIndex)
+                    val newPath = relativePath.file(displayName)
+                    val mimeType = cursor.getString(mimeTypeIndex)
+                    if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                        // This does NOT block the current coroutine. Instead, we will
+                        // evaluate this flow in parallel later to maximize throughput.
+                        recursive.add(exploreImpl(contentResolver, rootUri, childId, newPath))
+                    } else if (mimeType.startsWith("audio/") && mimeType != "audio/x-mpegurl") {
+                        // Immediately emit all files given that it's just an O(1) op.
+                        // This also just makes sure the outer flow has a reason to exist
+                        // rather than just being a glorified async.
+                        val lastModified = cursor.getLong(lastModifiedIndex)
+                        val size = cursor.getLong(sizeIndex)
+                        emit(
+                            DeviceFile(
+                                DocumentsContract.buildDocumentUriUsingTree(rootUri, childId),
+                                mimeType,
+                                newPath,
+                                size,
+                                lastModified))
+                    }
                 }
+                emitAll(recursive.asFlow().flattenMerge())
             }
-            // Hypothetically, we could just emitAll as we recurse into a new directory,
-            // but this will block the flow and force the tree search to be sequential.
-            // Instead, try to leverage flow parallelism  and do all recursive calls in parallel.
-            // Kotlin coroutines can handle doing possibly thousands of parallel calls, it'll
-            // be fine. I hope.
-            emitAll(recursions.asFlow().flattenMerge())
-        }
     }
 
     private companion object {
