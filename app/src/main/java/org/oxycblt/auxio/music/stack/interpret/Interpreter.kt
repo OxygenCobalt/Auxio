@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.stack.interpret
 
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
@@ -59,10 +60,14 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
         interpretation: Interpretation
     ): MutableLibrary {
         val preSongs =
-            preparer.prepare(audioFiles, interpretation).flowOn(Dispatchers.Main).buffer()
+            preparer
+                .prepare(audioFiles, interpretation)
+                .flowOn(Dispatchers.Main)
+                .buffer(Channel.UNLIMITED)
 
         val genreLinker = GenreLinker()
-        val genreLinkedSongs = genreLinker.register(preSongs).flowOn(Dispatchers.Main).buffer()
+        val genreLinkedSongs =
+            genreLinker.register(preSongs).flowOn(Dispatchers.Main).buffer(Channel.UNLIMITED)
 
         val artistLinker = ArtistLinker()
         val artistLinkedSongs =

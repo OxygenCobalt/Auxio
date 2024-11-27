@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.stack
 import android.net.Uri
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
@@ -65,8 +66,8 @@ constructor(private val explorer: Explorer, private val interpreter: Interpreter
                     start = { onProgress(IndexingProgress.Songs(0, 0)) },
                     end = { onProgress(IndexingProgress.Indeterminate) })
                 .flowOn(Dispatchers.IO)
-                .buffer()
-        val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer()
+                .buffer(Channel.UNLIMITED)
+        val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer(Channel.UNLIMITED)
         interpreter.interpret(audioFiles, playlistFiles, interpretation)
     }
 

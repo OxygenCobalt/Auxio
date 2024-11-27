@@ -69,7 +69,7 @@ constructor(
                     onProgress(IndexingProgress.Songs(loaded, explored))
                 }
                 .flowOn(Dispatchers.IO)
-                .buffer()
+                .buffer(Channel.UNLIMITED)
         //        val cacheResults = tagCache.read(deviceFiles).flowOn(Dispatchers.IO).buffer()
 
         //        val (handle, uncachedDeviceFiles, cachedAudioFiles) = tagRead.results()
@@ -89,7 +89,7 @@ constructor(
 
     /** Temporarily split a flow into 8 parallel threads and then */
     private fun <T, R> Flow<T>.stretch(n: Int, creator: (Flow<T>) -> Flow<R>): Flow<R> {
-        val posChannels = Array(n) { Channel<T>(Channel.BUFFERED) }
+        val posChannels = Array(n) { Channel<T>(Channel.UNLIMITED) }
         val divert: Flow<R> = flow {
             withIndex().collect {
                 val index = it.index % n
@@ -99,7 +99,8 @@ constructor(
                 channel.close()
             }
         }
-        val handle = posChannels.map { creator(it.receiveAsFlow()).buffer() }.asFlow()
+        val handle =
+            posChannels.map { creator(it.receiveAsFlow()).buffer(Channel.UNLIMITED) }.asFlow()
         return merge(divert, handle.flattenMerge())
     }
 }
