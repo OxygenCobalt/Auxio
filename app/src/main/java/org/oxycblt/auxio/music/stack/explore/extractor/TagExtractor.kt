@@ -61,7 +61,10 @@ constructor(
     override fun extract(deviceFiles: Flow<DeviceFile>) = flow {
         val retriever = ChunkedMetadataRetriever(mediaSourceFactory)
         deviceFiles.collect { deviceFile ->
-            val exoPlayerMetadataFuture = retriever.push(deviceFile.uri)
+            //            val exoPlayerMetadataFuture =
+            //                MetadataRetriever.retrieveMetadata(
+            //                    mediaSourceFactory, MediaItem.fromUri(deviceFile.uri))
+            val exoPlayerMetadataFuture = retriever.retrieve(deviceFile.uri)
             val mediaMetadataRetriever = MediaMetadataRetriever()
             mediaMetadataRetriever.setDataSource(context, deviceFile.uri)
             val exoPlayerMetadata = exoPlayerMetadataFuture.asDeferred().await()
@@ -69,7 +72,7 @@ constructor(
             mediaMetadataRetriever.close()
             emit(result)
         }
-        retriever.stop()
+        retriever.release()
     }
 
     private fun extractTags(
@@ -132,10 +135,10 @@ constructor(
         requireNotNull(a) { "Invalid tag, missing $called" }
 }
 
-private const val MESSAGE_CHECK_JOBS = 0
+private const val MESSAGE_PREPARE = 0
 private const val MESSAGE_CONTINUE_LOADING = 1
-private const val MESSAGE_RELEASE = 2
-private const val MESSAGE_RELEASE_ALL = 3
+private const val MESSAGE_CHECK_FAILURE = 2
+private const val MESSAGE_RELEASE = 3
 private const val CHECK_INTERVAL_MS = 100
 
 /**
@@ -150,95 +153,85 @@ private class ChunkedMetadataRetriever(private val mediaSourceFactory: MediaSour
     private val mediaSourceHandler: HandlerWrapper
     private var job: MetadataJob? = null
 
-    private class MetadataJob(
-        val mediaItem: MediaItem,
-        val future: SettableFuture<TrackGroupArray>,
-        var mediaSource: MediaSource?,
+    private data class JobParams(val uri: Uri, val future: SettableFuture<TrackGroupArray>)
+
+    private class JobData(
+        val params: JobParams,
+        val mediaSource: MediaSource,
         var mediaPeriod: MediaPeriod?,
-        var mediaSourceCaller: MediaSourceCaller?
     )
+
+    private class MetadataJob(val data: JobData, val mediaSourceCaller: MediaSourceCaller)
 
     init {
         mediaSourceThread.start()
         mediaSourceHandler = Clock.DEFAULT.createHandler(mediaSourceThread.looper, this)
     }
 
-    fun push(uri: Uri): ListenableFuture<TrackGroupArray> {
+    fun retrieve(uri: Uri): ListenableFuture<TrackGroupArray> {
         val job = job
-        check(job == null || job.future.isDone) { "Already working on something: $job" }
+        check(job == null || job.data.params.future.isDone) { "Already working on something: $job" }
         val future = SettableFuture.create<TrackGroupArray>()
-        this.job = MetadataJob(MediaItem.fromUri(uri), future, null, null, null)
-        mediaSourceHandler.sendEmptyMessage(MESSAGE_CHECK_JOBS)
+        mediaSourceHandler.obtainMessage(MESSAGE_PREPARE, JobParams(uri, future)).sendToTarget()
         return future
     }
 
-    fun stop() {
-        mediaSourceHandler.sendEmptyMessage(MESSAGE_RELEASE_ALL)
+    fun release() {
+        mediaSourceHandler.removeCallbacksAndMessages(null)
+        mediaSourceThread.quit()
     }
 
     override fun handleMessage(msg: Message): Boolean {
         when (msg.what) {
-            MESSAGE_CHECK_JOBS -> {
-                //                L.d("checking jobs")
-                val job = job
-                if (job != null) {
-                    val currentMediaSource = job.mediaSource
-                    val currentMediaSourceCaller = job.mediaSourceCaller
-                    val mediaSource: MediaSource
-                    val mediaSourceCaller: MediaSourceCaller
-                    if (currentMediaSource != null && currentMediaSourceCaller != null) {
-                        mediaSource = currentMediaSource
-                        mediaSourceCaller = currentMediaSourceCaller
-                    } else {
-                        mediaSource = mediaSourceFactory.createMediaSource(job.mediaItem)
-                        mediaSourceCaller = MediaSourceCaller(job)
-                        mediaSource.prepareSource(
-                            mediaSourceCaller, /* mediaTransferListener= */ null, PlayerId.UNSET)
-                        job.mediaSource = mediaSource
-                        job.mediaSourceCaller = mediaSourceCaller
-                    }
+            MESSAGE_PREPARE -> {
+                val params = msg.obj as JobParams
 
-                    try {
-                        val mediaPeriod = job.mediaPeriod
-                        if (mediaPeriod == null) {
-                            mediaSource.maybeThrowSourceInfoRefreshError()
-                        } else {
-                            mediaPeriod.maybeThrowPrepareError()
-                        }
-                    } catch (e: Exception) {
-                        L.e("Failed to extract MediaSource")
-                        L.e(e.stackTraceToString())
-                        job.mediaPeriod?.let(mediaSource::releasePeriod)
-                        mediaSource.releaseSource(mediaSourceCaller)
-                        job.future.setException(e)
-                    }
-                }
+                val mediaSource =
+                    mediaSourceFactory.createMediaSource(MediaItem.fromUri(params.uri))
+                val data = JobData(params, mediaSource, null)
+                val mediaSourceCaller = MediaSourceCaller(data)
+                mediaSource.prepareSource(
+                    mediaSourceCaller, /* mediaTransferListener= */ null, PlayerId.UNSET)
+                job = MetadataJob(data, mediaSourceCaller)
 
                 mediaSourceHandler.sendEmptyMessageDelayed(
-                    MESSAGE_CHECK_JOBS, /* delayMs= */ CHECK_INTERVAL_MS)
+                    MESSAGE_CHECK_FAILURE, /* delayMs= */ CHECK_INTERVAL_MS)
 
                 return true
             }
             MESSAGE_CONTINUE_LOADING -> {
-                checkNotNull((msg.obj as MetadataJob).mediaPeriod)
+                val job = job ?: return true
+                checkNotNull(job.data.mediaPeriod)
                     .continueLoading(LoadingInfo.Builder().setPlaybackPositionUs(0).build())
                 return true
             }
-            MESSAGE_RELEASE -> {
-                val job = msg.obj as MetadataJob
-                job.mediaPeriod?.let { job.mediaSource?.releasePeriod(it) }
-                job.mediaSourceCaller?.let { job.mediaSource?.releaseSource(it) }
-                this.job = null
+            MESSAGE_CHECK_FAILURE -> {
+                val job = job ?: return true
+                val mediaPeriod = job.data.mediaPeriod
+                val mediaSource = job.data.mediaSource
+                val mediaSourceCaller = job.mediaSourceCaller
+                try {
+                    if (mediaPeriod == null) {
+                        mediaSource.maybeThrowSourceInfoRefreshError()
+                    } else {
+                        mediaPeriod.maybeThrowPrepareError()
+                    }
+                } catch (e: Exception) {
+                    L.e("Failed to extract MediaSource")
+                    L.e(e.stackTraceToString())
+                    mediaPeriod?.let(mediaSource::releasePeriod)
+                    mediaSource.releaseSource(mediaSourceCaller)
+                    job.data.params.future.setException(e)
+                }
                 return true
             }
-            MESSAGE_RELEASE_ALL -> {
-                val job = job
-                if (job != null) {
-                    job.mediaPeriod?.let { job.mediaSource?.releasePeriod(it) }
-                    job.mediaSourceCaller?.let { job.mediaSource?.releaseSource(it) }
-                }
-                mediaSourceHandler.removeCallbacksAndMessages(/* token= */ null)
-                mediaSourceThread.quit()
+            MESSAGE_RELEASE -> {
+                val job = job ?: return true
+                val mediaPeriod = job.data.mediaPeriod
+                val mediaSource = job.data.mediaSource
+                val mediaSourceCaller = job.mediaSourceCaller
+                mediaPeriod?.let { mediaSource.releasePeriod(it) }
+                mediaSource.releaseSource(mediaSourceCaller)
                 this.job = null
                 return true
             }
@@ -246,10 +239,11 @@ private class ChunkedMetadataRetriever(private val mediaSourceFactory: MediaSour
         }
     }
 
-    private inner class MediaSourceCaller(private val job: MetadataJob) :
+    private inner class MediaSourceCaller(private val data: JobData) :
         MediaSource.MediaSourceCaller {
 
-        private val mediaPeriodCallback: MediaPeriodCallback = MediaPeriodCallback(job)
+        private val mediaPeriodCallback: MediaPeriodCallback =
+            MediaPeriodCallback(data.params.future)
         private val allocator: Allocator =
             DefaultAllocator(
                 /* trimOnReset= */ true,
@@ -268,20 +262,21 @@ private class ChunkedMetadataRetriever(private val mediaSourceFactory: MediaSour
                     MediaSource.MediaPeriodId(timeline.getUidOfPeriod(/* periodIndex= */ 0)),
                     allocator,
                     /* startPositionUs= */ 0)
-            job.mediaPeriod = mediaPeriod
+            data.mediaPeriod = mediaPeriod
             mediaPeriod.prepare(mediaPeriodCallback, /* positionUs= */ 0)
         }
 
-        private inner class MediaPeriodCallback(private val job: MetadataJob) :
-            MediaPeriod.Callback {
+        private inner class MediaPeriodCallback(
+            private val future: SettableFuture<TrackGroupArray>
+        ) : MediaPeriod.Callback {
             override fun onPrepared(mediaPeriod: MediaPeriod) {
-                job.future.set(mediaPeriod.getTrackGroups())
-                mediaSourceHandler.obtainMessage(MESSAGE_RELEASE, job).sendToTarget()
+                future.set(mediaPeriod.getTrackGroups())
+                mediaSourceHandler.sendEmptyMessage(MESSAGE_RELEASE)
             }
 
             @Override
             override fun onContinueLoadingRequested(source: MediaPeriod) {
-                mediaSourceHandler.obtainMessage(MESSAGE_CONTINUE_LOADING, job).sendToTarget()
+                mediaSourceHandler.sendEmptyMessage(MESSAGE_CONTINUE_LOADING)
             }
         }
     }
