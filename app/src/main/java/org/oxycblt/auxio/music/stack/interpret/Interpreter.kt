@@ -85,7 +85,7 @@ class InterpreterImpl @Inject constructor(private val preparer: Preparer) : Inte
         val uidMap = mutableMapOf<Music.UID, SongImpl>()
         val songs =
             albumLinkedSongs.mapNotNull {
-                val uid = it.preSong.computeUid()
+                val uid = it.preSong.uid
                 val other = uidMap[uid]
                 if (other == null) {
                     SongImpl(it)

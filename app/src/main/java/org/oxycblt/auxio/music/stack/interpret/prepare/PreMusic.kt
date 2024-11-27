@@ -52,7 +52,7 @@ data class PreSong(
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>
 ) {
-    fun computeUid() =
+    val uid =
         musicBrainzId?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
             ?: Music.UID.auxio(MusicType.SONGS) {
                 // Song UIDs are based on the raw data without parsing so that they remain

@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.update
 class SongImpl(linkedSong: LinkedSong) : Song {
     private val preSong = linkedSong.preSong
 
-    override val uid = preSong.computeUid()
+    override val uid = preSong.uid
     override val name = preSong.name
     override val track = preSong.track
     override val disc = preSong.disc
