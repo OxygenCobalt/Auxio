@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * CacheModule.kt is part of Auxio.
+ * ExtractorModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,36 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image.stack.cache
+package org.oxycblt.auxio.image.stack.extractor
 
-import android.content.Context
-import androidx.room.Room
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface StackModule {
-    @Binds fun appFiles(impl: AppFilesImpl): AppFiles
-
-    @Binds fun perceptualHash(perceptualHash: PerceptualHashImpl): PerceptualHash
-
-    @Binds fun coverCache(cache: CoverCacheImpl): CoverCache
+interface ExtractorModule {
+    @Binds fun coverExtractor(impl: CoverExtractorImpl): CoverExtractor
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-class StoredCoversDatabaseModule {
-    @Singleton
+class CoverSourcesModule {
     @Provides
-    fun database(@ApplicationContext context: Context) =
-        Room.databaseBuilder(
-                context.applicationContext, StoredCoversDatabase::class.java, "stored_covers.db")
-            .fallbackToDestructiveMigration()
-            .build()
+    fun coverSources(exoPlayerCoverSource: ExoPlayerCoverSource, aospCoverSource: AOSPCoverSource) =
+        CoverSources(listOf(exoPlayerCoverSource, aospCoverSource))
 }

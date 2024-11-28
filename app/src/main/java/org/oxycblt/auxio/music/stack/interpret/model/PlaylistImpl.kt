@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.music.stack.interpret.model
 
-import org.oxycblt.auxio.image.extractor.ParentCover
+import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.stack.interpret.linker.LinkedPlaylist
@@ -29,7 +29,7 @@ class PlaylistImpl(linkedPlaylist: LinkedPlaylist) : Playlist {
     override val name: Name.Known = prePlaylist.name
     override val songs = linkedPlaylist.songs.resolve(this)
     override val durationMs = songs.sumOf { it.durationMs }
-    override val cover = songs.takeIf { it.isNotEmpty() }?.let { ParentCover.from(it.first(), it) }
+    override val cover = Cover.multi(songs)
     private var hashCode = uid.hashCode()
 
     init {

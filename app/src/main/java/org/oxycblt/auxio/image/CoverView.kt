@@ -316,7 +316,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(song: Song) =
         bindImpl(
-            listOf(song.cover),
+            song.cover,
             context.getString(R.string.desc_album_cover, song.album.name),
             R.drawable.ic_album_24)
 
@@ -327,7 +327,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(album: Album) =
         bindImpl(
-            album.cover.all,
+            album.cover,
             context.getString(R.string.desc_album_cover, album.name),
             R.drawable.ic_album_24)
 
@@ -338,7 +338,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(artist: Artist) =
         bindImpl(
-            artist.cover.all,
+            artist.cover,
             context.getString(R.string.desc_artist_image, artist.name),
             R.drawable.ic_artist_24)
 
@@ -349,7 +349,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(genre: Genre) =
         bindImpl(
-            genre.cover.all,
+            genre.cover,
             context.getString(R.string.desc_genre_image, genre.name),
             R.drawable.ic_genre_24)
 
@@ -360,7 +360,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(playlist: Playlist) =
         bindImpl(
-            playlist.cover?.all ?: emptyList(),
+            playlist.cover ?: Cover.nil(),
             context.getString(R.string.desc_playlist_image, playlist.name),
             R.drawable.ic_playlist_24)
 
@@ -372,12 +372,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param errorRes The resource of the error drawable to use if the cover cannot be loaded.
      */
     fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) =
-        bindImpl(Cover.order(songs), desc, errorRes)
+        bindImpl(Cover.multi(songs), desc, errorRes)
 
-    private fun bindImpl(covers: List<Cover>, desc: String, @DrawableRes errorRes: Int) {
+    private fun bindImpl(cover: Cover, desc: String, @DrawableRes errorRes: Int) {
         val request =
             ImageRequest.Builder(context)
-                .data(covers)
+                .data(cover)
                 .error(
                     StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize)
                         .asImage())

@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.stack.interpret.prepare
 
 import android.net.Uri
 import java.util.UUID
-import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.info.Date
@@ -41,7 +40,6 @@ data class PreSong(
     val disc: Disc?,
     val date: Date?,
     val uri: Uri,
-    val cover: Cover,
     val path: Path,
     val mimeType: MimeType,
     val size: Long,

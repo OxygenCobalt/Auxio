@@ -18,49 +18,35 @@
  
 package org.oxycblt.auxio.image.extractor
 
-import android.net.Uri
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Song
 
 sealed interface Cover {
     val key: String
-    val mediaStoreCoverUri: Uri
 
-    /**
-     * The song has an embedded cover art we support, so we can operate with it on a per-song basis.
-     */
-    data class Embedded(val songCoverUri: Uri, val songUri: Uri, val perceptualHash: String) :
-        Cover {
-        override val mediaStoreCoverUri = songCoverUri
-        override val key = perceptualHash
+    class Single(song: Song) : Cover {
+        override val key = "${song.uid}@${song.lastModified}"
+        val uri = song.uri
     }
 
-    /**
-     * We couldn't find any embedded cover art ourselves, but the android system might have some
-     * through a cover.jpg file or something similar.
-     */
-    data class External(val albumCoverUri: Uri) : Cover {
-        override val mediaStoreCoverUri = albumCoverUri
-        override val key = albumCoverUri.toString()
+    class Multi(val all: List<Single>) : Cover {
+        override val key = "multi@${all.map { it.key }.hashCode()}"
     }
 
     companion object {
         private val FALLBACK_SORT = Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
 
-        fun order(songs: Collection<Song>) =
+        fun nil() = Multi(listOf())
+
+        fun single(song: Song) = Single(song)
+
+        fun multi(songs: Collection<Song>) = order(songs).run { Multi(this) }
+
+        private fun order(songs: Collection<Song>) =
             FALLBACK_SORT.songs(songs)
-                .map { it.cover }
-                .groupBy { it.key }
+                .groupBy { it.album }
                 .entries
                 .sortedByDescending { it.value.size }
-                .map { it.value.first() }
-    }
-}
-
-data class ParentCover(val single: Cover, val all: List<Cover>) {
-    companion object {
-        fun from(song: Song, songs: Collection<Song>) = from(song.cover, songs)
-
-        fun from(src: Cover, songs: Collection<Song>) = ParentCover(src, Cover.order(songs))
+                .map { it.value.first().cover }
     }
 }

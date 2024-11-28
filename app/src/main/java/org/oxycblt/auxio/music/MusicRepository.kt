@@ -318,6 +318,7 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
     }
 
     override suspend fun index(worker: IndexingWorker, withCache: Boolean) {
+        L.d("Begin index [cache=$withCache]")
         try {
             indexImpl(withCache)
         } catch (e: CancellationException) {

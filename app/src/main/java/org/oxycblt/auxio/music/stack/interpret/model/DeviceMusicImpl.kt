@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music.stack.interpret.model
 
 import kotlin.math.min
-import org.oxycblt.auxio.image.extractor.ParentCover
+import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -49,7 +49,6 @@ class SongImpl(linkedSong: LinkedSong) : Song {
     override val disc = preSong.disc
     override val date = preSong.date
     override val uri = preSong.uri
-    override val cover = preSong.cover
     override val path = preSong.path
     override val mimeType = preSong.mimeType
     override val size = preSong.size
@@ -57,6 +56,7 @@ class SongImpl(linkedSong: LinkedSong) : Song {
     override val replayGainAdjustment = preSong.replayGainAdjustment
     override val lastModified = preSong.lastModified
     override val dateAdded = preSong.dateAdded
+    override val cover = Cover.single(this)
     override val album = linkedSong.album.resolve(this)
     override val artists = linkedSong.artists.resolve(this)
     override val genres = linkedSong.genres.resolve(this)
@@ -93,7 +93,7 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
     override val releaseType = preAlbum.releaseType
     override var durationMs = 0L
     override var dateAdded = 0L
-    override lateinit var cover: ParentCover
+    override var cover = Cover.nil()
     override var dates: Date.Range? = null
 
     override val artists = linkedAlbum.artists.resolve(this)
@@ -123,9 +123,7 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
         }
     }
 
-    fun finalize() {
-        cover = ParentCover(songs.first().cover, songs.map { it.cover })
-    }
+    fun finalize() {}
 }
 
 /**
@@ -148,7 +146,7 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
 
     override var genres = listOf<Genre>()
     override var durationMs = 0L
-    override lateinit var cover: ParentCover
+    override var cover = Cover.nil()
 
     private var hashCode = 31 * uid.hashCode() + preArtist.hashCode()
 
@@ -179,7 +177,7 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
     fun finalize() {
         explicitAlbums.addAll(albums)
         implicitAlbums.addAll(songs.mapTo(mutableSetOf()) { it.album } - albums.toSet())
-        cover = ParentCover(songs.first().cover, songs.map { it.cover })
+        cover = Cover.multi(songs)
         genres =
             Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
                 .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
@@ -199,7 +197,7 @@ class GenreImpl(private val preGenre: PreGenre) : Genre {
     override val songs = mutableSetOf<Song>()
     override val artists = mutableSetOf<Artist>()
     override var durationMs = 0L
-    override lateinit var cover: ParentCover
+    override var cover = Cover.nil()
 
     private var hashCode = uid.hashCode()
 
@@ -214,10 +212,10 @@ class GenreImpl(private val preGenre: PreGenre) : Genre {
         songs.add(song)
         durationMs += song.durationMs
         hashCode = 31 * hashCode + song.hashCode()
-        cover = ParentCover(song.cover, emptyList())
     }
 
     fun finalize() {
+        cover = Cover.multi(songs)
         artists.addAll(songs.flatMapTo(mutableSetOf()) { it.artists })
     }
 }

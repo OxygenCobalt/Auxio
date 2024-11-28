@@ -22,7 +22,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
@@ -70,7 +69,6 @@ class PreparerImpl @Inject constructor() : Preparer {
                 disc = audioFile.disc?.let { Disc(it, audioFile.subtitle) },
                 date = audioFile.date,
                 uri = uri,
-                cover = inferCover(audioFile),
                 path = need(audioFile, "path", audioFile.deviceFile.path),
                 mimeType =
                     MimeType(need(audioFile, "mime type", audioFile.deviceFile.mimeType), null),
@@ -91,10 +89,6 @@ class PreparerImpl @Inject constructor() : Preparer {
 
     private fun <T> need(audioFile: AudioFile, what: String, value: T?) =
         requireNotNull(value) { "Invalid $what for song ${audioFile.deviceFile.path}: No $what" }
-
-    private fun inferCover(audioFile: AudioFile): Cover {
-        return Cover.Embedded(audioFile.deviceFile.uri, audioFile.deviceFile.uri, "")
-    }
 
     private fun makePreAlbum(
         audioFile: AudioFile,
