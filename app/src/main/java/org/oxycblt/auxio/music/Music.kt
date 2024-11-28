@@ -284,6 +284,7 @@ interface Song : Music {
     val durationMs: Long
     /** The ReplayGain adjustment to apply during playback. */
     val replayGainAdjustment: ReplayGainAdjustment
+    val lastModified: Long
     /** The date the audio file was added to the device, as a unix epoch timestamp. */
     val dateAdded: Long
     /**

@@ -55,6 +55,7 @@ class SongImpl(linkedSong: LinkedSong) : Song {
     override val size = preSong.size
     override val durationMs = preSong.durationMs
     override val replayGainAdjustment = preSong.replayGainAdjustment
+    override val lastModified = preSong.lastModified
     override val dateAdded = preSong.dateAdded
     override val album = linkedSong.album.resolve(this)
     override val artists = linkedSong.artists.resolve(this)

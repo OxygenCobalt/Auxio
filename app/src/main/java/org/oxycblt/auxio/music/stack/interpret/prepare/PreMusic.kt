@@ -47,6 +47,7 @@ data class PreSong(
     val size: Long,
     val durationMs: Long,
     val replayGainAdjustment: ReplayGainAdjustment,
+    val lastModified: Long,
     val dateAdded: Long,
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,

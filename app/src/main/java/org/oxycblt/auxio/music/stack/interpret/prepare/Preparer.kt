@@ -81,6 +81,7 @@ class PreparerImpl @Inject constructor() : Preparer {
                         audioFile.replayGainTrackAdjustment,
                         audioFile.replayGainAlbumAdjustment,
                     ),
+                lastModified = audioFile.deviceFile.lastModified,
                 // TODO: Figure out what to do with date added
                 dateAdded = audioFile.deviceFile.lastModified,
                 preAlbum = preAlbum,
