@@ -151,8 +151,9 @@ class AlbumListFragment :
 
     private fun updateAlbums(albums: List<Album>, indexingState: IndexingState?) {
         requireBinding().apply {
-            homeRecycler.isInvisible = indexingState == null || albums.isEmpty()
-            homeNoMusic.isInvisible = indexingState != null || albums.isNotEmpty()
+            homeRecycler.isInvisible = indexingState !is IndexingState.Completed || albums.isEmpty()
+            homeNoMusic.isInvisible =
+                indexingState !is IndexingState.Completed || albums.isNotEmpty()
         }
         albumAdapter.update(albums, homeModel.albumInstructions.consume())
     }

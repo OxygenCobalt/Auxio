@@ -126,8 +126,9 @@ class GenreListFragment :
 
     private fun updateGenres(genres: List<Genre>, indexingState: IndexingState?) {
         requireBinding().apply {
-            homeRecycler.isInvisible = indexingState == null || genres.isEmpty()
-            homeNoMusic.isInvisible = indexingState != null || genres.isNotEmpty()
+            homeRecycler.isInvisible = indexingState !is IndexingState.Completed || genres.isEmpty()
+            homeNoMusic.isInvisible =
+                indexingState !is IndexingState.Completed || genres.isNotEmpty()
         }
         genreAdapter.update(genres, homeModel.genreInstructions.consume())
     }
