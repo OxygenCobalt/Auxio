@@ -20,8 +20,8 @@ package org.oxycblt.auxio.music.stack.explore.cache
 
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.transform
 import org.oxycblt.auxio.music.stack.explore.AudioFile
 import org.oxycblt.auxio.music.stack.explore.DeviceFile
 
@@ -39,7 +39,7 @@ interface TagCache {
 
 class TagCacheImpl @Inject constructor(private val tagDao: TagDao) : TagCache {
     override fun read(files: Flow<DeviceFile>) =
-        files.transform<DeviceFile, CacheResult> { file ->
+        files.map { file ->
             val tags = tagDao.selectTags(file.uri.toString(), file.lastModified)
             if (tags != null) {
                 CacheResult.Hit(tags.toAudioFile(file))

@@ -35,10 +35,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
 import org.oxycblt.auxio.music.stack.IndexingProgress
+import org.oxycblt.auxio.music.stack.explore.cache.CacheResult
 import org.oxycblt.auxio.music.stack.explore.cache.TagCache
 import org.oxycblt.auxio.music.stack.explore.extractor.TagExtractor
 import org.oxycblt.auxio.music.stack.explore.fs.DeviceFiles
 import org.oxycblt.auxio.music.stack.explore.playlists.StoredPlaylists
+import timber.log.Timber
 
 interface Explorer {
     fun explore(uris: List<Uri>, onProgress: suspend (IndexingProgress.Songs) -> Unit): Files
@@ -65,24 +67,26 @@ constructor(
             deviceFiles
                 .explore(uris.asFlow())
                 .onEach {
+                    Timber.d("File explored: $it")
                     explored++
                     onProgress(IndexingProgress.Songs(loaded, explored))
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
-        //        val cacheResults = tagCache.read(deviceFiles).flowOn(Dispatchers.IO).buffer()
-
-        //        val (handle, uncachedDeviceFiles, cachedAudioFiles) = tagRead.results()
-        val extractedAudioFiles =
-            deviceFiles.stretch(8) { tagExtractor.extract(it).flowOn(Dispatchers.IO) }
-        //        val writtenAudioFiles =
-        // tagCache.write(extractedAudioFiles).flowOn(Dispatchers.IO).buffer()
-        //        val audioFiles = merge(cachedAudioFiles, writtenAudioFiles)
+        val cacheResults = tagCache.read(deviceFiles).flowOn(Dispatchers.IO).buffer()
         val audioFiles =
-            extractedAudioFiles.onEach {
-                loaded++
-                onProgress(IndexingProgress.Songs(loaded, explored))
-            }
+            cacheResults
+                .handleMisses {
+                    val extracted =
+                        it.stretch(8) { tagExtractor.extract(it).flowOn(Dispatchers.IO) }.buffer()
+                    val written = tagCache.write(extracted).flowOn(Dispatchers.IO).buffer()
+                    written
+                }
+                .onEach {
+                    loaded++
+                    onProgress(IndexingProgress.Songs(loaded, explored))
+                    Timber.d("File extracted: $it")
+                }
         val playlistFiles = storedPlaylists.read()
         return Files(audioFiles, playlistFiles)
     }
@@ -102,5 +106,25 @@ constructor(
         val handle =
             posChannels.map { creator(it.receiveAsFlow()).buffer(Channel.UNLIMITED) }.asFlow()
         return merge(divert, handle.flattenMerge())
+    }
+
+    private fun Flow<CacheResult>.handleMisses(
+        uncached: (Flow<DeviceFile>) -> Flow<AudioFile>
+    ): Flow<AudioFile> {
+        val uncachedChannel = Channel<DeviceFile>()
+        val cachedChannel = Channel<AudioFile>()
+        val divert: Flow<AudioFile> = flow {
+            collect {
+                when (it) {
+                    is CacheResult.Hit -> cachedChannel.send(it.audioFile)
+                    is CacheResult.Miss -> uncachedChannel.send(it.deviceFile)
+                }
+            }
+            cachedChannel.close()
+            uncachedChannel.close()
+        }
+        val uncached = uncached(uncachedChannel.receiveAsFlow())
+        val cached = cachedChannel.receiveAsFlow()
+        return merge(divert, uncached, cached)
     }
 }
