@@ -95,7 +95,7 @@ constructor(
             target
                 .onConfigRequest(
                     ImageRequest.Builder(context)
-                        .data(listOf(song.cover))
+                        .data(song.cover)
                         // Use ORIGINAL sizing, as we are not loading into any View-like component.
                         .size(Size.ORIGINAL))
                 .target(
