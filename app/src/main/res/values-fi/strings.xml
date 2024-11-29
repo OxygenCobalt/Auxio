@@ -307,4 +307,5 @@
     <string name="lbl_email">Lähetä sähköpostia</string>
     <string name="lbl_more">Lisää</string>
     <string name="lbl_feedback">Palaute</string>
+    <string name="lng_tasker_start">Käynnistä Auxio aikaisemmin tallennetussa tilassa. Jos tallennettua tilaa ei ole saatavilla, kaikki kappaleet sekoitetaan. Toisto alkaa välittömästi.\n\nVAROITUS: Ole varovainen hallinnoidessasi tätä palvelua, jos suljet sen ja yrität käyttää sitä uudestaan, sovellus todennäköisimmin kaatuu.</string>
 </resources>
