@@ -33,8 +33,6 @@ import javax.inject.Singleton
 interface StackModule {
     @Singleton @Binds fun appFiles(impl: AppFilesImpl): AppFiles
 
-    @Binds fun perceptualHash(perceptualHash: PerceptualHashImpl): PerceptualHash
-
     @Binds fun coverCache(cache: CoverCacheImpl): CoverCache
 }
 

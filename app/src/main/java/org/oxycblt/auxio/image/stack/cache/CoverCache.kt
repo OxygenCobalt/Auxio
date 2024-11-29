@@ -72,12 +72,5 @@ constructor(private val storedCoversDao: StoredCoversDao, private val appFiles: 
 
     private companion object {
         const val COVER_KEY_SAMPLE = 32
-        @Suppress("DEPRECATION")
-        val COVER_CACHE_FORMAT =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Bitmap.CompressFormat.WEBP_LOSSY
-            } else {
-                Bitmap.CompressFormat.WEBP
-            }
     }
 }
