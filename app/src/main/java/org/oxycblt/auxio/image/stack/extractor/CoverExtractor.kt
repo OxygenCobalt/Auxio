@@ -21,7 +21,7 @@ package org.oxycblt.auxio.image.stack.extractor
 import android.net.Uri
 import java.io.InputStream
 import javax.inject.Inject
-import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.Cover
 
 interface CoverExtractor {
     suspend fun extract(cover: Cover.Single): InputStream?

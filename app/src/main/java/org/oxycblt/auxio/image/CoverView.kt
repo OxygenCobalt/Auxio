@@ -51,9 +51,8 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.extractor.Cover
-import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
-import org.oxycblt.auxio.image.extractor.SquareCropTransformation
+import org.oxycblt.auxio.image.coil.RoundedRectTransformation
+import org.oxycblt.auxio.image.coil.SquareCropTransformation
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre

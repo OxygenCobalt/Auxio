@@ -20,7 +20,7 @@ package org.oxycblt.auxio.image.stack
 
 import java.io.InputStream
 import javax.inject.Inject
-import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.image.stack.cache.CoverCache
 import org.oxycblt.auxio.image.stack.extractor.CoverExtractor
 

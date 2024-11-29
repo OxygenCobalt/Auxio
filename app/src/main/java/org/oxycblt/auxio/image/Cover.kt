@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image.extractor
+package org.oxycblt.auxio.image
 
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Song

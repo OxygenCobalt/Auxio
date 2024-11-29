@@ -27,7 +27,7 @@ import java.util.UUID
 import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc

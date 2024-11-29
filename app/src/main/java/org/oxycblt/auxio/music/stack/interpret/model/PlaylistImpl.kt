@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.music.stack.interpret.model
 
-import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.stack.interpret.linker.LinkedPlaylist

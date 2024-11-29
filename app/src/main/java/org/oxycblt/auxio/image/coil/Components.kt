@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image.extractor
+package org.oxycblt.auxio.image.coil
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -43,6 +43,7 @@ import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.buffer
 import okio.source
+import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.image.stack.CoverRetriever
 
 class CoverKeyer @Inject constructor() : Keyer<Cover> {

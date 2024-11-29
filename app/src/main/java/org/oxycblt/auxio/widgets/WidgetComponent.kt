@@ -28,8 +28,8 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
-import org.oxycblt.auxio.image.extractor.SquareCropTransformation
+import org.oxycblt.auxio.image.coil.RoundedRectTransformation
+import org.oxycblt.auxio.image.coil.SquareCropTransformation
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager

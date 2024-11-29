@@ -25,7 +25,7 @@ import javax.inject.Inject
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.Cover
 
 interface CoverCache {
     suspend fun read(cover: Cover.Single): InputStream?

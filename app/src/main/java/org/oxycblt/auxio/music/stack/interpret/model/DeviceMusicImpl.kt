@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music.stack.interpret.model
 
 import kotlin.math.min
-import org.oxycblt.auxio.image.extractor.Cover
+import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist

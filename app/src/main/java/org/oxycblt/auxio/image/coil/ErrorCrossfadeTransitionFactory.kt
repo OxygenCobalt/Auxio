@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image.extractor
+package org.oxycblt.auxio.image.coil
 
 import coil3.decode.DataSource
 import coil3.request.ImageResult

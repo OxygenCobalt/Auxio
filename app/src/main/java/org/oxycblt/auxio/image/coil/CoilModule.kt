@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image.extractor
+package org.oxycblt.auxio.image.coil
 
 import android.content.Context
 import coil3.ImageLoader
@@ -31,7 +31,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ExtractorModule {
+class CoilModule {
     @Singleton
     @Provides
     fun imageLoader(
