@@ -19,56 +19,49 @@
 package org.oxycblt.auxio.image.stack.cache
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import javax.inject.Inject
+import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.image.extractor.Cover
 
 interface CoverCache {
-    suspend fun read(song: Song): InputStream?
+    suspend fun read(cover: Cover.Single): InputStream?
 
-    suspend fun write(song: Song, inputStream: InputStream): Boolean
+    suspend fun write(cover: Cover.Single, inputStream: InputStream): Boolean
 }
 
 class CoverCacheImpl
 @Inject
-constructor(
-    private val storedCoversDao: StoredCoversDao,
-    private val appFiles: AppFiles,
-    private val perceptualHash: PerceptualHash
-) : CoverCache {
+constructor(private val storedCoversDao: StoredCoversDao, private val appFiles: AppFiles) :
+    CoverCache {
 
-    override suspend fun read(song: Song): InputStream? {
+    override suspend fun read(cover: Cover.Single): InputStream? {
         val perceptualHash =
-            storedCoversDao.getCoverFile(song.uid, song.lastModified) ?: return null
+            storedCoversDao.getCoverFile(cover.uid, cover.lastModified) ?: return null
 
         return appFiles.read(fileName(perceptualHash))
     }
 
-    override suspend fun write(song: Song, inputStream: InputStream): Boolean =
+    override suspend fun write(cover: Cover.Single, inputStream: InputStream): Boolean =
         withContext(Dispatchers.IO) {
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            val perceptualHash = perceptualHash.hash(bitmap)
+            val available = inputStream.available()
+            val skip = min(available / 2L, available - COVER_KEY_SAMPLE.toLong())
+            inputStream.skip(skip)
+            val bytes = ByteArray(COVER_KEY_SAMPLE)
+            inputStream.read(bytes)
+            inputStream.reset()
 
-            // Compress bitmap down to webp into another inputstream
-            val compressedStream =
-                ByteArrayOutputStream().use { outputStream ->
-                    bitmap.compress(COVER_CACHE_FORMAT, 80, outputStream)
-                    ByteArrayInputStream(outputStream.toByteArray())
-                }
-
-            val writeSuccess = appFiles.write(fileName(perceptualHash), compressedStream)
+            @OptIn(ExperimentalStdlibApi::class) val perceptualHash = bytes.toHexString()
+            val writeSuccess = appFiles.write(fileName(perceptualHash), inputStream)
 
             if (writeSuccess) {
                 storedCoversDao.setCoverFile(
                     StoredCover(
-                        uid = song.uid,
-                        lastModified = song.lastModified,
+                        uid = cover.uid,
+                        lastModified = cover.lastModified,
                         perceptualHash = perceptualHash))
             }
 
@@ -78,6 +71,7 @@ constructor(
     private fun fileName(perceptualHash: String) = "cover_$perceptualHash.png"
 
     private companion object {
+        const val COVER_KEY_SAMPLE = 32
         @Suppress("DEPRECATION")
         val COVER_CACHE_FORMAT =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

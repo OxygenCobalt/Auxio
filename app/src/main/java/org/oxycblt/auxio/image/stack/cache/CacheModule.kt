@@ -31,7 +31,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface StackModule {
-    @Binds fun appFiles(impl: AppFilesImpl): AppFiles
+    @Singleton @Binds fun appFiles(impl: AppFilesImpl): AppFiles
 
     @Binds fun perceptualHash(perceptualHash: PerceptualHashImpl): PerceptualHash
 
