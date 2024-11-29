@@ -34,6 +34,8 @@ interface StackModule {
     @Singleton @Binds fun appFiles(impl: AppFilesImpl): AppFiles
 
     @Binds fun coverCache(cache: CoverCacheImpl): CoverCache
+
+    @Binds fun coverIdentifier(identifierImpl: CoverIdentifierImpl): CoverIdentifier
 }
 
 @Module

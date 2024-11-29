@@ -36,18 +36,14 @@ abstract class StoredCoversDatabase : RoomDatabase() {
 
 @Dao
 interface StoredCoversDao {
-    @Query(
-        "SELECT perceptualHash FROM StoredCover WHERE uid = :uid AND lastModified = :lastModified")
+    @Query("SELECT coverId FROM StoredCover WHERE uid = :uid AND lastModified = :lastModified")
     @TypeConverters(Music.UID.TypeConverters::class)
-    fun getCoverFile(uid: Music.UID, lastModified: Long): String?
+    suspend fun getStoredCover(uid: Music.UID, lastModified: Long): String?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) fun setCoverFile(storedCover: StoredCover)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun setStoredCover(storedCover: StoredCover)
 }
 
 @Entity
 @TypeConverters(Music.UID.TypeConverters::class)
-data class StoredCover(
-    @PrimaryKey val uid: Music.UID,
-    val lastModified: Long,
-    val perceptualHash: String
-)
+data class StoredCover(@PrimaryKey val uid: Music.UID, val lastModified: Long, val coverId: String)

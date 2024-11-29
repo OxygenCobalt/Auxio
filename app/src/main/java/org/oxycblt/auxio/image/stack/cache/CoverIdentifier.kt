@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * AOSPCoverSource.kt is part of Auxio.
+ * CoverIdentifier.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,23 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image.stack.extractor
+package org.oxycblt.auxio.image.stack.cache
 
-import android.content.Context
-import android.media.MediaMetadataRetriever
-import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext
+import java.security.MessageDigest
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
-class AOSPCoverSource @Inject constructor(@ApplicationContext private val context: Context) :
-    CoverSource {
-    override suspend fun extract(fileUri: Uri): ByteArray? {
-        val mediaMetadataRetriever = MediaMetadataRetriever()
-        return withContext(Dispatchers.IO) {
-            mediaMetadataRetriever.setDataSource(context, fileUri)
-            mediaMetadataRetriever.embeddedPicture
-        }
+interface CoverIdentifier {
+    suspend fun identify(data: ByteArray): String
+}
+
+class CoverIdentifierImpl @Inject constructor() : CoverIdentifier {
+    @OptIn(ExperimentalStdlibApi::class)
+    override suspend fun identify(data: ByteArray): String {
+        val digest =
+            MessageDigest.getInstance("MD5").run {
+                update(data)
+                digest()
+            }
+        return digest.toHexString()
     }
 }

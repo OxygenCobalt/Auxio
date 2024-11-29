@@ -25,73 +25,60 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import javax.inject.Inject
-import kotlin.math.min
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.image.Cover
 
 interface CoverCache {
     suspend fun read(cover: Cover.Single): InputStream?
 
-    suspend fun write(cover: Cover.Single, inputStream: InputStream): InputStream?
+    suspend fun write(cover: Cover.Single, data: ByteArray): InputStream?
 }
 
 class CoverCacheImpl
 @Inject
-constructor(private val storedCoversDao: StoredCoversDao, private val appFiles: AppFiles) :
-    CoverCache {
+constructor(
+    private val coverIdentifier: CoverIdentifier,
+    private val storedCoversDao: StoredCoversDao,
+    private val appFiles: AppFiles
+) : CoverCache {
 
     override suspend fun read(cover: Cover.Single): InputStream? {
         val perceptualHash =
-            storedCoversDao.getCoverFile(cover.uid, cover.lastModified) ?: return null
+            storedCoversDao.getStoredCover(cover.uid, cover.lastModified) ?: return null
 
         return appFiles.read(fileName(perceptualHash))
     }
 
-    override suspend fun write(cover: Cover.Single, inputStream: InputStream): InputStream? {
-        val id =
-            withContext(Dispatchers.IO) {
-                val available = inputStream.available()
-                val skip = min(available / 2L, available - COVER_KEY_SAMPLE.toLong())
-                inputStream.skip(skip)
-                val bytes = ByteArray(COVER_KEY_SAMPLE)
-                inputStream.read(bytes)
-                inputStream.reset()
-                @OptIn(ExperimentalStdlibApi::class) bytes.toHexString()
-            }
+    override suspend fun write(cover: Cover.Single, data: ByteArray): InputStream? {
+        val id = coverIdentifier.identify(data)
         val file = fileName(id)
         if (!appFiles.exists(file)) {
-            val transcoded = transcodeImage(inputStream, FORMAT_WEBP)
+            val transcoded = transcodeImage(data, FORMAT_WEBP)
             val writeSuccess = appFiles.write(fileName(id), transcoded)
             if (!writeSuccess) {
                 return null
             }
         }
 
-        storedCoversDao.setCoverFile(
-            StoredCover(uid = cover.uid, lastModified = cover.lastModified, perceptualHash = id))
+        storedCoversDao.setStoredCover(
+            StoredCover(uid = cover.uid, lastModified = cover.lastModified, coverId = id))
 
         return appFiles.read(file)
     }
 
     private fun fileName(id: String) = "cover_$id"
 
-    private fun transcodeImage(
-        inputStream: InputStream,
-        targetFormat: Bitmap.CompressFormat
-    ): InputStream {
+    private fun transcodeImage(data: ByteArray, targetFormat: Bitmap.CompressFormat): InputStream {
         val options =
             BitmapFactory.Options().apply {
                 inJustDecodeBounds = true
-                BitmapFactory.decodeStream(inputStream, null, this)
+                BitmapFactory.decodeByteArray(data, 0, data.size, this)
             }
 
         options.inSampleSize = calculateInSampleSize(options, 750, 750)
-        inputStream.reset()
 
         val bitmap =
-            BitmapFactory.decodeStream(
-                inputStream, null, options.apply { inJustDecodeBounds = false })
+            BitmapFactory.decodeByteArray(
+                data, 0, data.size, options.apply { inJustDecodeBounds = false })
 
         return ByteArrayOutputStream().use { outputStream ->
             bitmap?.compress(targetFormat, 80, outputStream)
@@ -119,7 +106,6 @@ constructor(private val storedCoversDao: StoredCoversDao, private val appFiles: 
     }
 
     private companion object {
-        const val COVER_KEY_SAMPLE = 32
         val FORMAT_WEBP =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 Bitmap.CompressFormat.WEBP_LOSSY

@@ -19,23 +19,22 @@
 package org.oxycblt.auxio.image.stack.extractor
 
 import android.net.Uri
-import java.io.InputStream
 import javax.inject.Inject
 import org.oxycblt.auxio.image.Cover
 
 interface CoverExtractor {
-    suspend fun extract(cover: Cover.Single): InputStream?
+    suspend fun extract(cover: Cover.Single): ByteArray?
 }
 
 data class CoverSources(val sources: List<CoverSource>)
 
 interface CoverSource {
-    suspend fun extract(fileUri: Uri): InputStream?
+    suspend fun extract(fileUri: Uri): ByteArray?
 }
 
 class CoverExtractorImpl @Inject constructor(private val coverSources: CoverSources) :
     CoverExtractor {
-    override suspend fun extract(cover: Cover.Single): InputStream? {
+    override suspend fun extract(cover: Cover.Single): ByteArray? {
         for (coverSource in coverSources.sources) {
             val stream = coverSource.extract(cover.uri)
             if (stream != null) {

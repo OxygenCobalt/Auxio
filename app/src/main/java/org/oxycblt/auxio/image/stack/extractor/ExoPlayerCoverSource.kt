@@ -26,15 +26,13 @@ import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.extractor.metadata.flac.PictureFrame
 import androidx.media3.extractor.metadata.id3.ApicFrame
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 import javax.inject.Inject
 import kotlinx.coroutines.guava.asDeferred
 
 class ExoPlayerCoverSource
 @Inject
 constructor(private val mediaSourceFactory: MediaSource.Factory) : CoverSource {
-    override suspend fun extract(fileUri: Uri): InputStream? {
+    override suspend fun extract(fileUri: Uri): ByteArray? {
         val tracks =
             MetadataRetriever.retrieveMetadata(mediaSourceFactory, MediaItem.fromUri(fileUri))
                 .asDeferred()
@@ -52,8 +50,8 @@ constructor(private val mediaSourceFactory: MediaSource.Factory) : CoverSource {
         return findCoverDataInMetadata(metadata)
     }
 
-    private fun findCoverDataInMetadata(metadata: Metadata): InputStream? {
-        var stream: ByteArrayInputStream? = null
+    private fun findCoverDataInMetadata(metadata: Metadata): ByteArray? {
+        var fallbackPic: ByteArray? = null
 
         for (i in 0 until metadata.length()) {
             // We can only extract pictures from two tags with this method, ID3v2's APIC or
@@ -74,13 +72,12 @@ constructor(private val mediaSourceFactory: MediaSource.Factory) : CoverSource {
             }
 
             if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
-                stream = ByteArrayInputStream(pic)
-                break
-            } else if (stream == null) {
-                stream = ByteArrayInputStream(pic)
+                return pic
+            } else if (fallbackPic == null) {
+                fallbackPic = pic
             }
         }
 
-        return stream
+        return fallbackPic
     }
 }
