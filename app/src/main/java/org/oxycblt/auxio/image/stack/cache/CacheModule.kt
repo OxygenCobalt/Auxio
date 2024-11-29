@@ -41,6 +41,8 @@ interface StackModule {
 @Module
 @InstallIn(SingletonComponent::class)
 class StoredCoversDatabaseModule {
+    @Provides fun storedCoversDao(database: StoredCoversDatabase) = database.storedCoversDao()
+
     @Singleton
     @Provides
     fun database(@ApplicationContext context: Context) =

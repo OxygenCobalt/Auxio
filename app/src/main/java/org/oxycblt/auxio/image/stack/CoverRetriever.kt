@@ -20,17 +20,22 @@ package org.oxycblt.auxio.image.stack
 
 import java.io.InputStream
 import javax.inject.Inject
+import org.oxycblt.auxio.image.extractor.Cover
 import org.oxycblt.auxio.image.stack.cache.CoverCache
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.image.stack.extractor.CoverExtractor
 
 interface CoverRetriever {
-    suspend fun retrieve(song: Song): InputStream?
+    suspend fun retrieve(cover: Cover.Single): InputStream?
 }
 
 class CoverRetrieverImpl
 @Inject
-constructor(private val coverCache: CoverCache, private val coverRetriever: CoverRetriever) :
+constructor(private val coverCache: CoverCache, private val coverExtractor: CoverExtractor) :
     CoverRetriever {
-    override suspend fun retrieve(song: Song) =
-        coverCache.read(song) ?: coverRetriever.retrieve(song)?.also { coverCache.write(song, it) }
+    override suspend fun retrieve(cover: Cover.Single) =
+        coverCache.read(cover)
+            ?: coverExtractor.extract(cover)?.also {
+                coverCache.write(cover, it)
+                it.reset()
+            }
 }

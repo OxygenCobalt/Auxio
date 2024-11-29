@@ -26,7 +26,9 @@ sealed interface Cover {
 
     class Single(song: Song) : Cover {
         override val key = "${song.uid}@${song.lastModified}"
+        val uid = song.uid
         val uri = song.uri
+        val lastModified = song.lastModified
     }
 
     class Multi(val all: List<Single>) : Cover {

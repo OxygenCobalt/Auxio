@@ -43,7 +43,7 @@ import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.buffer
 import okio.source
-import org.oxycblt.auxio.image.stack.extractor.CoverExtractor
+import org.oxycblt.auxio.image.stack.CoverRetriever
 
 class CoverKeyer @Inject constructor() : Keyer<Cover> {
     override fun key(data: Cover, options: Options) = "${data.key}&${options.size}"
@@ -54,16 +54,16 @@ private constructor(
     private val context: Context,
     private val cover: Cover,
     private val size: Size,
-    private val coverExtractor: CoverExtractor,
+    private val coverRetriever: CoverRetriever,
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
         val streams =
             when (val cover = cover) {
-                is Cover.Single -> listOfNotNull(coverExtractor.extract(cover))
+                is Cover.Single -> listOfNotNull(coverRetriever.retrieve(cover))
                 is Cover.Multi ->
                     buildList {
                         for (single in cover.all) {
-                            coverExtractor.extract(single)?.let { add(it) }
+                            coverRetriever.retrieve(single)?.let { add(it) }
                             if (size == 4) {
                                 break
                             }
@@ -147,9 +147,9 @@ private constructor(
         return if (size.mod(2) > 0) size + 1 else size
     }
 
-    class Factory @Inject constructor(private val coverExtractor: CoverExtractor) :
+    class Factory @Inject constructor(private val coverRetriever: CoverRetriever) :
         Fetcher.Factory<Cover> {
         override fun create(data: Cover, options: Options, imageLoader: ImageLoader) =
-            CoverFetcher(options.context, data, options.size, coverExtractor)
+            CoverFetcher(options.context, data, options.size, coverRetriever)
     }
 }
