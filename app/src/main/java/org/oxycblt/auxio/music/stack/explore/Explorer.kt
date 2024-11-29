@@ -73,13 +73,17 @@ constructor(
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
-        val cacheResults = tagCache.read(deviceFiles).flowOn(Dispatchers.IO).buffer()
+        val cacheResults =
+            tagCache.read(deviceFiles).flowOn(Dispatchers.IO).buffer(Channel.UNLIMITED)
         val audioFiles =
             cacheResults
-                .handleMisses {
+                .handleMisses { misses ->
                     val extracted =
-                        it.stretch(8) { tagExtractor.extract(it).flowOn(Dispatchers.IO) }.buffer()
-                    val written = tagCache.write(extracted).flowOn(Dispatchers.IO).buffer()
+                        misses
+                            .stretch(8) { tagExtractor.extract(it).flowOn(Dispatchers.IO) }
+                            .buffer(Channel.UNLIMITED)
+                    val written =
+                        tagCache.write(extracted).flowOn(Dispatchers.IO).buffer(Channel.UNLIMITED)
                     written
                 }
                 .onEach {
