@@ -307,5 +307,13 @@
     <string name="lbl_email">Lähetä sähköpostia</string>
     <string name="lbl_more">Lisää</string>
     <string name="lbl_feedback">Palaute</string>
-    <string name="lng_tasker_start">Käynnistä Auxio aikaisemmin tallennetussa tilassa. Jos tallennettua tilaa ei ole saatavilla, kaikki kappaleet sekoitetaan. Toisto alkaa välittömästi.\n\nVAROITUS: Ole varovainen hallinnoidessasi tätä palvelua, jos suljet sen ja yrität käyttää sitä uudestaan, sovellus todennäköisimmin kaatuu.</string>
+    <string name="lng_tasker_start">Käynnistää Auxion käyttämällä aiemmin tallennettua tilaa. Jos tallennettua tilaa ei ole saatavilla, kaikki kappaleet sekoitetaan. Toisto alkaa välittömästi.\n\nVaroitus: Ole varovainen tämän palvelun hallinnassa. Jos suljet sen ja yrität sitten käyttää sitä uudelleen, sovellus todennäköisesti kaatuu.</string>
+    <string name="lng_no_songs">Kappaleesi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="lng_no_artists">Artistisi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="lng_no_playlists">Soittolistasi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="set_pre_amp_without">Säätö ilman tunnisteita</string>
+    <string name="lng_no_albums">Albumisi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="lng_no_genres">Tyylilajisi näkyvät tässä, kun lisäät musiikkia.</string>
+    <string name="set_pre_amp_desc">Esivahvistinta käytetään olemassa olevaan säätöön toiston aikana</string>
+    <string name="set_pre_amp_with">Säätö tunnisteilla</string>
 </resources>
