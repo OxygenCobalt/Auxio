@@ -35,5 +35,5 @@ interface ExtractorModule {
 class CoverSourcesModule {
     @Provides
     fun coverSources(exoPlayerCoverSource: ExoPlayerCoverSource, aospCoverSource: AOSPCoverSource) =
-        CoverSources(listOf(exoPlayerCoverSource, aospCoverSource))
+        CoverSources(listOf(aospCoverSource, exoPlayerCoverSource))
 }

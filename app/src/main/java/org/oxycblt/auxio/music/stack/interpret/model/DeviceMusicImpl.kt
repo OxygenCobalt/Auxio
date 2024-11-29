@@ -93,7 +93,7 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
     override val releaseType = preAlbum.releaseType
     override var durationMs = 0L
     override var dateAdded = 0L
-    override var cover = Cover.nil()
+    override var cover: Cover = Cover.nil()
     override var dates: Date.Range? = null
 
     override val artists = linkedAlbum.artists.resolve(this)
@@ -123,7 +123,9 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
         }
     }
 
-    fun finalize() {}
+    fun finalize() {
+        cover = Cover.single(Sort(Sort.Mode.ByTrack, Sort.Direction.ASCENDING).songs(songs).first())
+    }
 }
 
 /**

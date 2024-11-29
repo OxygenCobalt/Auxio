@@ -18,19 +18,22 @@
  
 package org.oxycblt.auxio.image.stack.extractor
 
+import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.InputStream
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AOSPCoverSource @Inject constructor() : CoverSource {
+class AOSPCoverSource @Inject constructor(@ApplicationContext private val context: Context) :
+    CoverSource {
     override suspend fun extract(fileUri: Uri): InputStream? {
         val mediaMetadataRetriever = MediaMetadataRetriever()
         val cover =
             withContext(Dispatchers.IO) {
-                mediaMetadataRetriever.setDataSource(fileUri.toString())
+                mediaMetadataRetriever.setDataSource(context, fileUri)
                 mediaMetadataRetriever.embeddedPicture
             } ?: return null
         return cover.inputStream()
