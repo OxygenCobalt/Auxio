@@ -23,6 +23,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.image.stack.cache.CoverCache
 import org.oxycblt.auxio.image.stack.extractor.CoverExtractor
+import timber.log.Timber
 
 interface CoverRetriever {
     suspend fun retrieve(cover: Cover.Single): InputStream?
@@ -33,5 +34,12 @@ class CoverRetrieverImpl
 constructor(private val coverCache: CoverCache, private val coverExtractor: CoverExtractor) :
     CoverRetriever {
     override suspend fun retrieve(cover: Cover.Single) =
-        coverCache.read(cover) ?: coverExtractor.extract(cover)?.let { coverCache.write(cover, it) }
+        try {
+            coverCache.read(cover)
+                ?: coverExtractor.extract(cover)?.let { coverCache.write(cover, it) }
+        } catch (e: Exception) {
+            Timber.e("Image extraction failed!")
+            Timber.e(e.stackTraceToString())
+            throw e
+        }
 }

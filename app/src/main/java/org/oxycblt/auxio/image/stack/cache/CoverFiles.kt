@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * AppFiles.kt is part of Auxio.
+ * CoverFiles.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,22 +24,23 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import javax.inject.Inject
-import kotlin.concurrent.withLock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-interface AppFiles {
-    suspend fun read(file: String): InputStream?
+interface CoverFiles {
+    suspend fun read(id: String): InputStream?
 
-    suspend fun write(file: String, inputStream: InputStream): Boolean
-
-    suspend fun exists(file: String): Boolean
+    suspend fun write(id: String, data: ByteArray)
 }
 
-class AppFilesImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    AppFiles {
+class CoverFilesImpl
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val coverFormat: CoverFormat
+) : CoverFiles {
     private val fileMutexes = mutableMapOf<String, Mutex>()
     private val mapMutex = Mutex()
 
@@ -47,39 +48,38 @@ class AppFilesImpl @Inject constructor(@ApplicationContext private val context: 
         return mapMutex.withLock { fileMutexes.getOrPut(file) { Mutex() } }
     }
 
-    override suspend fun read(file: String): InputStream? =
+    override suspend fun read(id: String): InputStream? =
         withContext(Dispatchers.IO) {
             try {
-                context.openFileInput(file)
+                context.openFileInput(getTargetFilePath(id))
             } catch (e: IOException) {
                 null
             }
         }
 
-    override suspend fun write(file: String, inputStream: InputStream): Boolean =
-        withContext(Dispatchers.IO) {
-            val fileMutex = getMutexForFile(file)
+    override suspend fun write(id: String, data: ByteArray) {
+        val fileMutex = getMutexForFile(id)
 
-            fileMutex.withLock {
-                val tempFile = File(context.filesDir, "$file.tmp")
-                val targetFile = File(context.filesDir, file)
+        fileMutex.withLock {
+            val targetFile = File(context.filesDir, getTargetFilePath(id))
+            if (targetFile.exists()) {
+                return
+            }
+            withContext(Dispatchers.IO) {
+                val tempFile = File(context.filesDir, getTempFilePath(id))
 
                 try {
-                    tempFile.outputStream().use { fileOutputStream ->
-                        inputStream.copyTo(fileOutputStream)
-                    }
+                    tempFile.outputStream().use { coverFormat.transcodeInto(data, it) }
 
                     tempFile.renameTo(targetFile)
-                    true
                 } catch (e: IOException) {
                     tempFile.delete()
-                    false
-                } finally {
-                    inputStream.close()
                 }
             }
         }
+    }
 
-    override suspend fun exists(file: String): Boolean =
-        withContext(Dispatchers.IO) { File(context.filesDir, file).exists() }
+    private fun getTargetFilePath(name: String) = "cover_${name}.${coverFormat.extension}"
+
+    private fun getTempFilePath(name: String) = "${getTargetFilePath(name)}.tmp"
 }

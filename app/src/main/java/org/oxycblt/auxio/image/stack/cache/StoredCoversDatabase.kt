@@ -38,7 +38,7 @@ abstract class StoredCoversDatabase : RoomDatabase() {
 interface StoredCoversDao {
     @Query("SELECT coverId FROM StoredCover WHERE uid = :uid AND lastModified = :lastModified")
     @TypeConverters(Music.UID.TypeConverters::class)
-    suspend fun getStoredCover(uid: Music.UID, lastModified: Long): String?
+    suspend fun getStoredCoverId(uid: Music.UID, lastModified: Long): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setStoredCover(storedCover: StoredCover)

@@ -31,11 +31,13 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface StackModule {
-    @Singleton @Binds fun appFiles(impl: AppFilesImpl): AppFiles
+    @Singleton @Binds fun appFiles(impl: CoverFilesImpl): CoverFiles
 
     @Binds fun coverCache(cache: CoverCacheImpl): CoverCache
 
     @Binds fun coverIdentifier(identifierImpl: CoverIdentifierImpl): CoverIdentifier
+
+    @Binds fun coverFormat(coverFormatImpl: CoverFormatImpl): CoverFormat
 }
 
 @Module
