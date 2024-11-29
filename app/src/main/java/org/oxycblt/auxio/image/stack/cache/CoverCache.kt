@@ -18,8 +18,6 @@
  
 package org.oxycblt.auxio.image.stack.cache
 
-import android.graphics.Bitmap
-import android.os.Build
 import java.io.InputStream
 import javax.inject.Inject
 import kotlin.math.min
@@ -68,7 +66,7 @@ constructor(private val storedCoversDao: StoredCoversDao, private val appFiles: 
             writeSuccess
         }
 
-    private fun fileName(perceptualHash: String) = "cover_$perceptualHash.png"
+    private fun fileName(perceptualHash: String) = "cover_$perceptualHash"
 
     private companion object {
         const val COVER_KEY_SAMPLE = 32
