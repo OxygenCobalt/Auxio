@@ -34,6 +34,8 @@ interface AppFiles {
     suspend fun read(file: String): InputStream?
 
     suspend fun write(file: String, inputStream: InputStream): Boolean
+
+    suspend fun exists(file: String): Boolean
 }
 
 class AppFilesImpl @Inject constructor(@ApplicationContext private val context: Context) :
@@ -77,4 +79,7 @@ class AppFilesImpl @Inject constructor(@ApplicationContext private val context: 
                 }
             }
         }
+
+    override suspend fun exists(file: String): Boolean =
+        withContext(Dispatchers.IO) { File(context.filesDir, file).exists() }
 }

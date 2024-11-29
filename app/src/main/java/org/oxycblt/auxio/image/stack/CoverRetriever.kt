@@ -33,9 +33,5 @@ class CoverRetrieverImpl
 constructor(private val coverCache: CoverCache, private val coverExtractor: CoverExtractor) :
     CoverRetriever {
     override suspend fun retrieve(cover: Cover.Single) =
-        coverCache.read(cover)
-            ?: coverExtractor.extract(cover)?.also {
-                coverCache.write(cover, it)
-                it.reset()
-            }
+        coverCache.read(cover) ?: coverExtractor.extract(cover)?.let { coverCache.write(cover, it) }
 }
