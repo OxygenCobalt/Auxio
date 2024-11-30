@@ -28,11 +28,11 @@ import java.io.OutputStream
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.music.stack.explore.extractor.correctWhitespace
-import org.oxycblt.auxio.music.stack.explore.fs.Components
-import org.oxycblt.auxio.music.stack.explore.fs.Path
-import org.oxycblt.auxio.music.stack.explore.fs.Volume
-import org.oxycblt.auxio.music.stack.explore.fs.VolumeManager
+import org.oxycblt.auxio.musikr.explore.extractor.correctWhitespace
+import org.oxycblt.auxio.musikr.explore.fs.Components
+import org.oxycblt.auxio.musikr.explore.fs.Path
+import org.oxycblt.auxio.musikr.explore.fs.Volume
+import org.oxycblt.auxio.musikr.explore.fs.VolumeManager
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
 

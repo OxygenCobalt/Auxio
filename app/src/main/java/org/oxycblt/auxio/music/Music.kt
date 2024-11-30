@@ -33,8 +33,8 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
-import org.oxycblt.auxio.music.stack.explore.fs.MimeType
-import org.oxycblt.auxio.music.stack.explore.fs.Path
+import org.oxycblt.auxio.musikr.explore.fs.MimeType
+import org.oxycblt.auxio.musikr.explore.fs.Path
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull

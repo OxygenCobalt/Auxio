@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music
 
 import android.os.Build
-import org.oxycblt.auxio.music.stack.IndexingProgress
+import org.oxycblt.auxio.musikr.IndexingProgress
 
 /** Version-aware permission identifier for reading audio files. */
 val PERMISSION_READ_AUDIO =

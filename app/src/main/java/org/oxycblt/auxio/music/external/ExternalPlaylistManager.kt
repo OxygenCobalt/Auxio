@@ -23,10 +23,10 @@ import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.stack.explore.fs.Components
-import org.oxycblt.auxio.music.stack.explore.fs.DocumentPathFactory
-import org.oxycblt.auxio.music.stack.explore.fs.Path
-import org.oxycblt.auxio.music.stack.explore.fs.contentResolverSafe
+import org.oxycblt.auxio.musikr.explore.fs.Components
+import org.oxycblt.auxio.musikr.explore.fs.DocumentPathFactory
+import org.oxycblt.auxio.musikr.explore.fs.Path
+import org.oxycblt.auxio.musikr.explore.fs.contentResolverSafe
 import timber.log.Timber as L
 
 /**

@@ -27,10 +27,10 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.metadata.Separators
-import org.oxycblt.auxio.music.stack.Indexer
-import org.oxycblt.auxio.music.stack.IndexingProgress
-import org.oxycblt.auxio.music.stack.interpret.Interpretation
-import org.oxycblt.auxio.music.stack.interpret.model.MutableLibrary
+import org.oxycblt.auxio.musikr.Indexer
+import org.oxycblt.auxio.musikr.IndexingProgress
+import org.oxycblt.auxio.musikr.interpret.Interpretation
+import org.oxycblt.auxio.musikr.interpret.model.MutableLibrary
 import timber.log.Timber as L
 
 /**

@@ -24,7 +24,7 @@ import android.media.MediaFormat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.stack.explore.fs.MimeType
+import org.oxycblt.auxio.musikr.explore.fs.MimeType
 import timber.log.Timber as L
 
 /**
@@ -119,6 +119,7 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
         return AudioProperties(
             bitrate,
             sampleRate,
-            MimeType(fromExtension = song.mimeType.fromExtension, fromFormat = formatMimeType))
+            MimeType(fromExtension = song.mimeType.fromExtension, fromFormat = formatMimeType)
+        )
     }
 }

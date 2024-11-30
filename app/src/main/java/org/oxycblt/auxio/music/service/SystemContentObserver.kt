@@ -27,7 +27,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.stack.explore.fs.contentResolverSafe
+import org.oxycblt.auxio.musikr.explore.fs.contentResolverSafe
 import timber.log.Timber as L
 
 /**
