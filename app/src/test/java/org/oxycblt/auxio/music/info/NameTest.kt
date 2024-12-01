@@ -21,6 +21,8 @@ package org.oxycblt.auxio.music.info
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
+import org.oxycblt.auxio.musikr.model.Name
+import org.oxycblt.auxio.musikr.model.SortToken
 
 class NameTest {
     @Test

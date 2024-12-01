@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.info
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.oxycblt.auxio.musikr.model.Date
 
 class DateTest {
     @Test

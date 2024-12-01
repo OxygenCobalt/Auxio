@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.musikr.tag.extractor
 
 import androidx.core.text.isDigitsOnly
-import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.musikr.model.Date
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 // Song

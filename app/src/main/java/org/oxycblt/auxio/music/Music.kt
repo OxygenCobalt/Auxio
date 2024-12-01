@@ -29,10 +29,10 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.music.info.Disc
-import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.musikr.model.Date
+import org.oxycblt.auxio.musikr.model.Disc
+import org.oxycblt.auxio.musikr.model.Name
+import org.oxycblt.auxio.musikr.model.ReleaseType
 import org.oxycblt.auxio.musikr.fs.MimeType
 import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment

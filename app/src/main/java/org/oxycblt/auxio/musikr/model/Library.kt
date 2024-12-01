@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.impl
+package org.oxycblt.auxio.musikr.model
 
 import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.Music

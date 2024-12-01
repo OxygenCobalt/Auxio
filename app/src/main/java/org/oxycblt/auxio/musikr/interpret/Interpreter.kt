@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * Modeler.kt is part of Auxio.
+ * Interpreter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model
+package org.oxycblt.auxio.musikr.interpret
 
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -30,19 +30,19 @@ import kotlinx.coroutines.flow.toList
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.musikr.tag.AudioFile
 import org.oxycblt.auxio.musikr.playlist.PlaylistFile
-import org.oxycblt.auxio.musikr.model.link.AlbumLinker
-import org.oxycblt.auxio.musikr.model.link.ArtistLinker
-import org.oxycblt.auxio.musikr.model.link.GenreLinker
-import org.oxycblt.auxio.musikr.model.link.Linked
-import org.oxycblt.auxio.musikr.model.link.LinkedSong
-import org.oxycblt.auxio.musikr.model.impl.AlbumImpl
-import org.oxycblt.auxio.musikr.model.impl.ArtistImpl
-import org.oxycblt.auxio.musikr.model.impl.GenreImpl
-import org.oxycblt.auxio.musikr.model.impl.LibraryImpl
-import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
-import org.oxycblt.auxio.musikr.model.impl.SongImpl
-import org.oxycblt.auxio.musikr.model.interpret.PreSong
-import org.oxycblt.auxio.musikr.model.interpret.Interpreter
+import org.oxycblt.auxio.musikr.interpret.link.AlbumLinker
+import org.oxycblt.auxio.musikr.interpret.link.ArtistLinker
+import org.oxycblt.auxio.musikr.interpret.link.GenreLinker
+import org.oxycblt.auxio.musikr.interpret.link.Linked
+import org.oxycblt.auxio.musikr.interpret.link.LinkedSong
+import org.oxycblt.auxio.musikr.model.AlbumImpl
+import org.oxycblt.auxio.musikr.model.ArtistImpl
+import org.oxycblt.auxio.musikr.model.GenreImpl
+import org.oxycblt.auxio.musikr.model.LibraryImpl
+import org.oxycblt.auxio.musikr.model.MutableLibrary
+import org.oxycblt.auxio.musikr.model.SongImpl
+import org.oxycblt.auxio.musikr.interpret.prepare.PreSong
+import org.oxycblt.auxio.musikr.interpret.prepare.Preparer
 import timber.log.Timber as L
 
 interface Modeler {
@@ -53,14 +53,14 @@ interface Modeler {
     ): MutableLibrary
 }
 
-class ModelerImpl @Inject constructor(private val interpreter: Interpreter) : Modeler {
+class ModelerImpl @Inject constructor(private val preparer: Preparer) : Modeler {
     override suspend fun model(
         audioFiles: Flow<AudioFile>,
         playlistFiles: Flow<PlaylistFile>,
         interpretation: Interpretation
     ): MutableLibrary {
         val preSongs =
-            interpreter
+            preparer
                 .interpret(audioFiles, interpretation)
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)

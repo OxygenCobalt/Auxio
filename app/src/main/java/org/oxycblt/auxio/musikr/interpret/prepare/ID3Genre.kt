@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.interpret
+package org.oxycblt.auxio.musikr.interpret.prepare
 
 /// --- ID3v2 PARSING ---
 

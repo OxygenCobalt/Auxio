@@ -16,26 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.interpret
+package org.oxycblt.auxio.musikr.interpret.prepare
 
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.info.Disc
-import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.musikr.model.Disc
+import org.oxycblt.auxio.musikr.model.Name
+import org.oxycblt.auxio.musikr.model.ReleaseType
 import org.oxycblt.auxio.musikr.tag.AudioFile
 import org.oxycblt.auxio.musikr.fs.MimeType
-import org.oxycblt.auxio.musikr.model.Interpretation
+import org.oxycblt.auxio.musikr.interpret.Interpretation
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.toUuidOrNull
 
-interface Interpreter {
+interface Preparer {
     fun interpret(audioFiles: Flow<AudioFile>, interpretation: Interpretation): Flow<PreSong>
 }
 
-class InterpreterImpl @Inject constructor() : Interpreter {
+class PreparerImpl @Inject constructor() : Preparer {
     override fun interpret(audioFiles: Flow<AudioFile>, interpretation: Interpretation) =
         audioFiles.map { audioFile ->
             val individualPreArtists =

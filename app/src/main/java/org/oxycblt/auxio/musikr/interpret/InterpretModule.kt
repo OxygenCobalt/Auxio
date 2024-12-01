@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2024 Auxio Project
- * Contribution.kt is part of Auxio.
+ * Copyright (c) 2023 Auxio Project
+ * InterpretModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.link
+package org.oxycblt.auxio.musikr.interpret
 
-class Contribution<T> {
-    private val map = mutableMapOf<T, Int>()
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-    val candidates: Collection<T>
-        get() = map.keys
-
-    fun contribute(key: T) {
-        map[key] = map.getOrDefault(key, 0) + 1
-    }
-
-    fun contribute(keys: Collection<T>) {
-        keys.forEach { contribute(it) }
-    }
-
-    fun resolve() = map.maxByOrNull { it.value }?.key ?: error("Nothing was contributed")
+@Module
+@InstallIn(SingletonComponent::class)
+interface InterpretModule {
+    @Binds fun interpreter(interpreter: ModelerImpl): Modeler
 }

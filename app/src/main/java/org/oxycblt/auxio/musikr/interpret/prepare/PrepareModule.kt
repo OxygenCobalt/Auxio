@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * PlaylistLinker.kt is part of Auxio.
+ * PrepareModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.link
+package org.oxycblt.auxio.musikr.interpret.prepare
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import org.oxycblt.auxio.musikr.playlist.PlaylistFile
-import org.oxycblt.auxio.musikr.model.impl.PlaylistImpl
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-class PlaylistLinker {
-    fun register(
-        playlists: Flow<PlaylistFile>,
-        linkedSongs: Flow<AlbumLinker.LinkedSong>
-    ): Flow<LinkedPlaylist> = emptyFlow()
-
-    fun resolve(): Collection<PlaylistImpl> = setOf()
+@Module
+@InstallIn(SingletonComponent::class)
+interface PrepareModule {
+    @Binds fun prepare(factory: PreparerImpl): Preparer
 }

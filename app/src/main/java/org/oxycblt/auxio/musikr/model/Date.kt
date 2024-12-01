@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.info
+package org.oxycblt.auxio.musikr.model
 
 import android.content.Context
 import java.text.ParseException

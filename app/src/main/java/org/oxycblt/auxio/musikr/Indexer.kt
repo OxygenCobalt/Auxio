@@ -28,9 +28,9 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.oxycblt.auxio.musikr.explore.Explorer
-import org.oxycblt.auxio.musikr.model.Interpretation
-import org.oxycblt.auxio.musikr.model.Modeler
-import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
+import org.oxycblt.auxio.musikr.interpret.Interpretation
+import org.oxycblt.auxio.musikr.interpret.Modeler
+import org.oxycblt.auxio.musikr.model.MutableLibrary
 
 interface Indexer {
     suspend fun run(

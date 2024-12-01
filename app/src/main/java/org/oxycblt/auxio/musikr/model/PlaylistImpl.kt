@@ -16,12 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.impl
+package org.oxycblt.auxio.musikr.model
 
 import org.oxycblt.auxio.image.Cover
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.musikr.model.link.LinkedPlaylist
+import org.oxycblt.auxio.musikr.interpret.link.LinkedPlaylist
 
 class PlaylistImpl(linkedPlaylist: LinkedPlaylist) : Playlist {
     private val prePlaylist = linkedPlaylist.prePlaylist

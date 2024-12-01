@@ -32,8 +32,8 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.Disc
-import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.musikr.model.Disc
+import org.oxycblt.auxio.musikr.model.ReleaseType
 import timber.log.Timber as L
 
 interface DetailGenerator {

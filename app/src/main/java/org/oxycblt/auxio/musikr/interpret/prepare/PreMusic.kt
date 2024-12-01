@@ -16,16 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.interpret
+package org.oxycblt.auxio.musikr.interpret.prepare
 
 import android.net.Uri
 import java.util.UUID
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.music.info.Disc
-import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.musikr.model.Date
+import org.oxycblt.auxio.musikr.model.Disc
+import org.oxycblt.auxio.musikr.model.Name
+import org.oxycblt.auxio.musikr.model.ReleaseType
 import org.oxycblt.auxio.musikr.playlist.PlaylistHandle
 import org.oxycblt.auxio.musikr.fs.MimeType
 import org.oxycblt.auxio.musikr.fs.Path

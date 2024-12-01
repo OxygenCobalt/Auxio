@@ -28,7 +28,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.musikr.model.Name
 import timber.log.Timber as L
 
 /**

@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.info
+package org.oxycblt.auxio.musikr.model
 
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.info.ReleaseType.Album
+import org.oxycblt.auxio.musikr.model.ReleaseType.Album
 
 /**
  * The type of release an [Album] is considered. This includes EPs, Singles, Compilations, etc.

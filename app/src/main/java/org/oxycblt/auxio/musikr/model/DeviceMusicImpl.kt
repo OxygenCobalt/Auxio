@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.impl
+package org.oxycblt.auxio.musikr.model
 
 import kotlin.math.min
 import org.oxycblt.auxio.image.Cover
@@ -27,11 +27,10 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.Date
-import org.oxycblt.auxio.musikr.model.link.LinkedAlbum
-import org.oxycblt.auxio.musikr.model.link.LinkedSong
-import org.oxycblt.auxio.musikr.model.interpret.PreArtist
-import org.oxycblt.auxio.musikr.model.interpret.PreGenre
+import org.oxycblt.auxio.musikr.interpret.link.LinkedAlbum
+import org.oxycblt.auxio.musikr.interpret.link.LinkedSong
+import org.oxycblt.auxio.musikr.interpret.prepare.PreArtist
+import org.oxycblt.auxio.musikr.interpret.prepare.PreGenre
 import org.oxycblt.auxio.util.update
 
 /**

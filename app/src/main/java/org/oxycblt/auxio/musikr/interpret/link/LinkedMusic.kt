@@ -16,16 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.link
+package org.oxycblt.auxio.musikr.interpret.link
 
-import org.oxycblt.auxio.musikr.model.impl.AlbumImpl
-import org.oxycblt.auxio.musikr.model.impl.ArtistImpl
-import org.oxycblt.auxio.musikr.model.impl.GenreImpl
-import org.oxycblt.auxio.musikr.model.impl.PlaylistImpl
-import org.oxycblt.auxio.musikr.model.impl.SongImpl
-import org.oxycblt.auxio.musikr.model.interpret.PreAlbum
-import org.oxycblt.auxio.musikr.model.interpret.PrePlaylist
-import org.oxycblt.auxio.musikr.model.interpret.PreSong
+import org.oxycblt.auxio.musikr.model.AlbumImpl
+import org.oxycblt.auxio.musikr.model.ArtistImpl
+import org.oxycblt.auxio.musikr.model.GenreImpl
+import org.oxycblt.auxio.musikr.model.PlaylistImpl
+import org.oxycblt.auxio.musikr.model.SongImpl
+import org.oxycblt.auxio.musikr.interpret.prepare.PreAlbum
+import org.oxycblt.auxio.musikr.interpret.prepare.PrePlaylist
+import org.oxycblt.auxio.musikr.interpret.prepare.PreSong
 
 interface LinkedSong {
     val preSong: PreSong

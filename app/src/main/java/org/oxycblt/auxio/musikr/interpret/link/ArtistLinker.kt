@@ -16,17 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.link
+package org.oxycblt.auxio.musikr.interpret.link
 
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.musikr.model.impl.AlbumImpl
-import org.oxycblt.auxio.musikr.model.impl.ArtistImpl
-import org.oxycblt.auxio.musikr.model.impl.SongImpl
-import org.oxycblt.auxio.musikr.model.interpret.PreAlbum
-import org.oxycblt.auxio.musikr.model.interpret.PreArtist
+import org.oxycblt.auxio.musikr.model.AlbumImpl
+import org.oxycblt.auxio.musikr.model.ArtistImpl
+import org.oxycblt.auxio.musikr.model.SongImpl
+import org.oxycblt.auxio.musikr.interpret.prepare.PreAlbum
+import org.oxycblt.auxio.musikr.interpret.prepare.PreArtist
 
 class ArtistLinker {
     private val tree = mutableMapOf<String?, MutableMap<UUID?, ArtistLink>>()

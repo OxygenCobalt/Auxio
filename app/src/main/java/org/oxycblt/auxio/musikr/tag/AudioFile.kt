@@ -1,6 +1,6 @@
 package org.oxycblt.auxio.musikr.tag
 
-import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.musikr.model.Date
 import org.oxycblt.auxio.musikr.fs.DeviceFile
 
 data class AudioFile(

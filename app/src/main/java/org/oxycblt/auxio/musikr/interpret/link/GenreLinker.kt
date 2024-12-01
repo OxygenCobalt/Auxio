@@ -16,14 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.link
+package org.oxycblt.auxio.musikr.interpret.link
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.oxycblt.auxio.musikr.model.impl.GenreImpl
-import org.oxycblt.auxio.musikr.model.impl.SongImpl
-import org.oxycblt.auxio.musikr.model.interpret.PreGenre
-import org.oxycblt.auxio.musikr.model.interpret.PreSong
+import org.oxycblt.auxio.musikr.model.GenreImpl
+import org.oxycblt.auxio.musikr.model.SongImpl
+import org.oxycblt.auxio.musikr.interpret.prepare.PreGenre
+import org.oxycblt.auxio.musikr.interpret.prepare.PreSong
 
 class GenreLinker {
     private val tree = mutableMapOf<String?, GenreLink>()

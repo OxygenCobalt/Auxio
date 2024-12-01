@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * Interpretation.kt is part of Auxio.
+ * PlaylistLinker.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model
+package org.oxycblt.auxio.musikr.interpret.link
 
-import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.metadata.Separators
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import org.oxycblt.auxio.musikr.playlist.PlaylistFile
+import org.oxycblt.auxio.musikr.model.PlaylistImpl
 
-data class Interpretation(val nameFactory: Name.Known.Factory, val separators: Separators)
+class PlaylistLinker {
+    fun register(
+        playlists: Flow<PlaylistFile>,
+        linkedSongs: Flow<AlbumLinker.LinkedSong>
+    ): Flow<LinkedPlaylist> = emptyFlow()
+
+    fun resolve(): Collection<PlaylistImpl> = setOf()
+}
