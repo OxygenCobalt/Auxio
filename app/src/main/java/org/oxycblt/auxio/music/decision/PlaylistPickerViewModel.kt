@@ -32,7 +32,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.external.ExportConfig
+import org.oxycblt.auxio.musikr.playlist.ExportConfig
 import timber.log.Timber as L
 
 /**

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.external
+package org.oxycblt.auxio.musikr.playlist.m3u
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,6 +33,9 @@ import org.oxycblt.auxio.musikr.fs.Components
 import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.musikr.fs.Volume
 import org.oxycblt.auxio.musikr.fs.VolumeManager
+import org.oxycblt.auxio.musikr.playlist.ExportConfig
+import org.oxycblt.auxio.musikr.playlist.ImportedPlaylist
+import org.oxycblt.auxio.musikr.playlist.PossiblePaths
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
 
@@ -151,7 +154,8 @@ constructor(
             else ->
                 listOf(
                     InterpretedPath(Components.parseUnix(path), false),
-                    InterpretedPath(Components.parseWindows(path), true))
+                    InterpretedPath(Components.parseWindows(path), true)
+                )
         }
 
     private fun expandInterpretation(

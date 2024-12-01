@@ -29,8 +29,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.ListSettings
-import org.oxycblt.auxio.music.external.ExportConfig
-import org.oxycblt.auxio.music.external.ExternalPlaylistManager
+import org.oxycblt.auxio.musikr.playlist.ExportConfig
+import org.oxycblt.auxio.musikr.playlist.ExternalPlaylistManager
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import timber.log.Timber as L

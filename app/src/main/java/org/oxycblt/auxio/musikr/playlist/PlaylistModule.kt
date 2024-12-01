@@ -16,20 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.external
+package org.oxycblt.auxio.musikr.playlist
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.oxycblt.auxio.musikr.playlist.m3u.M3U
+import org.oxycblt.auxio.musikr.playlist.m3u.M3UImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface ExternalModule {
+interface PlaylistModule {
     @Binds
     fun externalPlaylistManager(
         externalPlaylistManager: ExternalPlaylistManagerImpl
     ): ExternalPlaylistManager
-
-    @Binds fun m3u(m3u: M3UImpl): M3U
 }

@@ -32,8 +32,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistExportBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.external.ExportConfig
-import org.oxycblt.auxio.music.external.M3U
+import org.oxycblt.auxio.musikr.playlist.ExportConfig
+import org.oxycblt.auxio.musikr.playlist.m3u.M3U
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.unlikelyToBeNull
