@@ -19,6 +19,5 @@
 package org.oxycblt.auxio.musikr.interpret
 
 import org.oxycblt.auxio.musikr.model.Name
-import org.oxycblt.auxio.music.metadata.Separators
 
 data class Interpretation(val nameFactory: Name.Known.Factory, val separators: Separators)

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.metadata
+package org.oxycblt.auxio.musikr.interpret
 
 import org.oxycblt.auxio.musikr.tag.extractor.correctWhitespace
 import org.oxycblt.auxio.musikr.tag.extractor.splitEscaped
