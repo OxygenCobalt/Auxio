@@ -58,6 +58,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.ui.MaterialFader
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat

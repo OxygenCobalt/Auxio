@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.musikr.model
 
-import org.oxycblt.auxio.image.Cover
+import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.musikr.interpret.link.LinkedPlaylist
 

@@ -58,7 +58,6 @@ constructor(
     private val tagExtractor: TagExtractor,
     private val storedPlaylists: StoredPlaylists
 ) : Explorer {
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun explore(
         uris: List<Uri>,
         onProgress: suspend (IndexingProgress.Songs) -> Unit

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image
+package org.oxycblt.auxio.musikr.cover
 
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Song

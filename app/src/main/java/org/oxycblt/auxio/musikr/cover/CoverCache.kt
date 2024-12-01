@@ -16,11 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image.stack.cache
+package org.oxycblt.auxio.musikr.cover
 
 import java.io.InputStream
 import javax.inject.Inject
-import org.oxycblt.auxio.image.Cover
 
 interface CoverCache {
     suspend fun read(cover: Cover.Single): InputStream?
@@ -45,7 +44,8 @@ constructor(
         val id = coverIdentifier.identify(data)
         coverFiles.write(id, data)
         storedCoversDao.setStoredCover(
-            StoredCover(uid = cover.uid, lastModified = cover.lastModified, coverId = id))
+            StoredCover(uid = cover.uid, lastModified = cover.lastModified, coverId = id)
+        )
         return coverFiles.read(id)
     }
 }
