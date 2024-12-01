@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicLocationBinding
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
-import org.oxycblt.auxio.musikr.explore.fs.Path
+import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 import timber.log.Timber as L

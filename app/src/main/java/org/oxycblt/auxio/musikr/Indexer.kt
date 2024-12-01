@@ -28,9 +28,9 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.oxycblt.auxio.musikr.explore.Explorer
-import org.oxycblt.auxio.musikr.interpret.Interpretation
-import org.oxycblt.auxio.musikr.interpret.Interpreter
-import org.oxycblt.auxio.musikr.interpret.model.MutableLibrary
+import org.oxycblt.auxio.musikr.model.Interpretation
+import org.oxycblt.auxio.musikr.model.Modeler
+import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
 
 interface Indexer {
     suspend fun run(
@@ -53,7 +53,7 @@ sealed interface IndexingProgress {
 
 class IndexerImpl
 @Inject
-constructor(private val explorer: Explorer, private val interpreter: Interpreter) : Indexer {
+constructor(private val explorer: Explorer, private val modeler: Modeler) : Indexer {
     override suspend fun run(
         uris: List<Uri>,
         interpretation: Interpretation,
@@ -68,7 +68,7 @@ constructor(private val explorer: Explorer, private val interpreter: Interpreter
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
         val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer(Channel.UNLIMITED)
-        interpreter.interpret(audioFiles, playlistFiles, interpretation)
+        modeler.model(audioFiles, playlistFiles, interpretation)
     }
 
     private fun <T> Flow<T>.cap(start: suspend () -> Unit, end: suspend () -> Unit): Flow<T> =

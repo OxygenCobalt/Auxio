@@ -34,11 +34,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
 import org.oxycblt.auxio.musikr.IndexingProgress
-import org.oxycblt.auxio.musikr.explore.cache.CacheResult
-import org.oxycblt.auxio.musikr.explore.cache.TagCache
-import org.oxycblt.auxio.musikr.explore.extractor.TagExtractor
-import org.oxycblt.auxio.musikr.explore.fs.DeviceFiles
-import org.oxycblt.auxio.musikr.explore.playlists.StoredPlaylists
+import org.oxycblt.auxio.musikr.fs.DeviceFile
+import org.oxycblt.auxio.musikr.tag.cache.CacheResult
+import org.oxycblt.auxio.musikr.tag.cache.TagCache
+import org.oxycblt.auxio.musikr.tag.extractor.TagExtractor
+import org.oxycblt.auxio.musikr.fs.DeviceFiles
+import org.oxycblt.auxio.musikr.playlist.db.StoredPlaylists
+import org.oxycblt.auxio.musikr.playlist.PlaylistFile
+import org.oxycblt.auxio.musikr.tag.AudioFile
 import timber.log.Timber
 
 interface Explorer {
