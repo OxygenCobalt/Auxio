@@ -49,5 +49,5 @@ class TagCacheImpl @Inject constructor(private val tagDao: TagDao) : TagCache {
         }
 
     override fun write(rawSongs: Flow<AudioFile>) =
-        rawSongs.onEach { file -> tagDao.updateTags(Tags.fromAudioFile(file)) }
+        rawSongs.onEach { file -> tagDao.updateTags(CachedTags.fromAudioFile(file)) }
 }

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * MetadataModule.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * PlaylistLinker.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.metadata
+package org.oxycblt.auxio.musikr.model.graph
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import org.oxycblt.auxio.musikr.playlist.PlaylistFile
+import org.oxycblt.auxio.musikr.model.impl.PlaylistImpl
 
-@Module
-@InstallIn(SingletonComponent::class)
-interface MetadataModule {
-    @Binds
-    fun audioPropertiesFactory(interpreter: AudioPropertiesFactoryImpl): AudioProperties.Factory
+class PlaylistLinker {
+    fun register(
+        playlists: Flow<PlaylistFile>,
+        linkedSongs: Flow<AlbumLinker.LinkedSong>
+    ): Flow<LinkedPlaylist> = emptyFlow()
 
-    @Binds
-    fun metadataExtractor(extractor: MetadataExtractorImpl): MetadataExtractor
+    fun resolve(): Collection<PlaylistImpl> = setOf()
 }

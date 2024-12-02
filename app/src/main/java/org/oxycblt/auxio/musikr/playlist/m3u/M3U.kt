@@ -28,7 +28,7 @@ import java.io.OutputStream
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.musikr.tag.extractor.correctWhitespace
+import org.oxycblt.auxio.musikr.tag.util.correctWhitespace
 import org.oxycblt.auxio.musikr.fs.Components
 import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.musikr.fs.Volume

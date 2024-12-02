@@ -24,15 +24,10 @@ import org.oxycblt.auxio.music.Song
 sealed interface Cover {
     val key: String
 
-    class Single(song: Song) : Cover {
-        override val key = "${song.uid}@${song.lastModified}"
-        val uid = song.uid
-        val uri = song.uri
-        val lastModified = song.lastModified
-    }
+    data class Single(override val key: String) : Cover
 
     class Multi(val all: List<Single>) : Cover {
-        override val key = "multi@${all.map { it.key }.hashCode()}"
+        override val key = "multi@${all.hashCode()}"
     }
 
     companion object {
@@ -40,15 +35,16 @@ sealed interface Cover {
 
         fun nil() = Multi(listOf())
 
-        fun single(song: Song) = Single(song)
+        fun single(key: String) = Single(key)
 
         fun multi(songs: Collection<Song>) = order(songs).run { Multi(this) }
 
         private fun order(songs: Collection<Song>) =
             FALLBACK_SORT.songs(songs)
-                .groupBy { it.album }
+                .map { it.cover }
+                .groupBy { it.key }
                 .entries
                 .sortedByDescending { it.value.size }
-                .map { it.value.first().cover }
+                .map { it.value.first() }
     }
 }

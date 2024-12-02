@@ -28,28 +28,28 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.auxio.musikr.model.Date
+import org.oxycblt.auxio.musikr.tag.Date
 import org.oxycblt.auxio.musikr.tag.AudioFile
 import org.oxycblt.auxio.musikr.fs.DeviceFile
-import org.oxycblt.auxio.musikr.tag.extractor.correctWhitespace
-import org.oxycblt.auxio.musikr.tag.extractor.splitEscaped
+import org.oxycblt.auxio.musikr.tag.util.correctWhitespace
+import org.oxycblt.auxio.musikr.tag.util.splitEscaped
 
-@Database(entities = [Tags::class], version = 50, exportSchema = false)
+@Database(entities = [CachedTags::class], version = 50, exportSchema = false)
 abstract class TagDatabase : RoomDatabase() {
     abstract fun cachedSongsDao(): TagDao
 }
 
 @Dao
 interface TagDao {
-    @Query("SELECT * FROM Tags WHERE uri = :uri AND dateModified = :dateModified")
-    suspend fun selectTags(uri: String, dateModified: Long): Tags?
+    @Query("SELECT * FROM CachedTags WHERE uri = :uri AND dateModified = :dateModified")
+    suspend fun selectTags(uri: String, dateModified: Long): CachedTags?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateTags(tags: Tags)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateTags(cachedTags: CachedTags)
 }
 
 @Entity
-@TypeConverters(Tags.Converters::class)
-data class Tags(
+@TypeConverters(CachedTags.Converters::class)
+data class CachedTags(
     /**
      * The Uri of the [AudioFile]'s audio file, obtained from SAF. This should ideally be a black
      * box only used for comparison.
@@ -140,7 +140,7 @@ data class Tags(
 
     companion object {
         fun fromAudioFile(audioFile: AudioFile) =
-            Tags(
+            CachedTags(
                 uri = audioFile.deviceFile.uri.toString(),
                 dateModified = audioFile.deviceFile.lastModified,
                 musicBrainzId = audioFile.musicBrainzId,

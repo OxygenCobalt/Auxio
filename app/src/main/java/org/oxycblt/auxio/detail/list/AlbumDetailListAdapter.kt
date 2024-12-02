@@ -37,8 +37,8 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.musikr.model.Disc
-import org.oxycblt.auxio.musikr.model.resolveNumber
+import org.oxycblt.auxio.musikr.tag.Disc
+import org.oxycblt.auxio.musikr.tag.resolveNumber
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat

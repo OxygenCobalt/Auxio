@@ -35,7 +35,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.musikr.model.resolveNumber
+import org.oxycblt.auxio.musikr.tag.resolveNumber
 import org.oxycblt.auxio.search.SearchEngine
 
 class MusicBrowser

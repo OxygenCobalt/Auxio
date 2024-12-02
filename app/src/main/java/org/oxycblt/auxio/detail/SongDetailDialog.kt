@@ -34,7 +34,7 @@ import org.oxycblt.auxio.detail.list.SongPropertyAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.musikr.model.Name
+import org.oxycblt.auxio.musikr.tag.Name
 import org.oxycblt.auxio.musikr.metadata.AudioProperties
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs

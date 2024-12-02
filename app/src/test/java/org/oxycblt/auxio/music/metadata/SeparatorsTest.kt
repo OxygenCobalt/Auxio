@@ -20,7 +20,7 @@ package org.oxycblt.auxio.music.metadata
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.oxycblt.auxio.musikr.interpret.Separators
+import org.oxycblt.auxio.musikr.tag.interpret.Separators
 
 class SeparatorsTest {
     @Test

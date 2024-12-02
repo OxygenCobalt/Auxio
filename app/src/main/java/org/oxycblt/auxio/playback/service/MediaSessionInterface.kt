@@ -38,7 +38,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.musikr.model.Name
+import org.oxycblt.auxio.musikr.tag.Name
 import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.music.service.MusicBrowser
 import org.oxycblt.auxio.playback.state.PlaybackCommand
