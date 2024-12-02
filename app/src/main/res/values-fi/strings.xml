@@ -62,7 +62,7 @@
     <string name="set_lib_tabs_desc">Muuta kirjastovälilehtien näkyvyyttä ja järjestystä</string>
     <string name="set_action_mode_next">Siirry seuraavaan</string>
     <string name="set_action_mode_repeat">Kertaustila</string>
-    <string name="set_play_in_list_with">Kirjastosta toistettaessa</string>
+    <string name="set_play_in_list_with">Kun toistetaan kirjastosta</string>
     <string name="set_play_in_parent_with">Kohteen tiedoista toistettaessa</string>
     <string name="set_keep_shuffle">Muista sekoitus</string>
     <string name="set_play_song_from_all">Toista kaikista kappaleista</string>
