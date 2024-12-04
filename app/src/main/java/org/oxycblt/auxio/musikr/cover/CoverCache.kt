@@ -44,8 +44,7 @@ constructor(
         val id = coverIdentifier.identify(data)
         coverFiles.write(id, data)
         storedCoversDao.setStoredCover(
-            StoredCover(uid = cover.uid, lastModified = cover.lastModified, coverId = id)
-        )
+            StoredCover(uid = cover.uid, lastModified = cover.lastModified, coverId = id))
         return coverFiles.read(id)
     }
 }

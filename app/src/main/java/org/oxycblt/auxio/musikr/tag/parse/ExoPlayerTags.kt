@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * TextTags.kt is part of Auxio.
+ * ExoPlayerTags.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import org.oxycblt.auxio.musikr.tag.util.correctWhitespace
  * @param metadata The [Metadata] to wrap.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class TextTags(metadata: Metadata) {
+class ExoPlayerTags(metadata: Metadata) {
     private val _id3v2 = mutableMapOf<String, MutableList<String>>()
     /** The ID3v2 text identification frames found in the file. Can have more than one value. */
     val id3v2: Map<String, List<String>>

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * DeviceFile.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * MediaMetadataTagFields.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,15 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.fs
+package org.oxycblt.auxio.musikr.tag.parse
 
-import android.net.Uri
+import android.media.MediaMetadataRetriever
 
-data class DeviceFile(
-    val uri: Uri,
-    val mimeType: String,
-    val path: Path,
-    val size: Long,
-    val lastModified: Long
-)
-
+fun MediaMetadataRetriever.durationMs() =
+    extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong()

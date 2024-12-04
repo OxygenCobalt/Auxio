@@ -29,6 +29,5 @@ interface MetadataModule {
     @Binds
     fun audioPropertiesFactory(interpreter: AudioPropertiesFactoryImpl): AudioProperties.Factory
 
-    @Binds
-    fun metadataExtractor(extractor: MetadataExtractorImpl): MetadataExtractor
+    @Binds fun metadataExtractor(extractor: MetadataExtractorImpl): MetadataExtractor
 }

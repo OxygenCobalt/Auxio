@@ -23,11 +23,11 @@ import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.musikr.playlist.m3u.M3U
 import org.oxycblt.auxio.musikr.fs.Components
-import org.oxycblt.auxio.musikr.fs.DocumentPathFactory
 import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.musikr.fs.contentResolverSafe
+import org.oxycblt.auxio.musikr.fs.path.DocumentPathFactory
+import org.oxycblt.auxio.musikr.playlist.m3u.M3U
 import timber.log.Timber as L
 
 /**
@@ -39,8 +39,7 @@ import timber.log.Timber as L
  */
 interface ExternalPlaylistManager {
     /**
-     * Import the playli                L.d("Unable to extract bit rate field")
-st file at the given [uri].
+     * Import the playli L.d("Unable to extract bit rate field") st file at the given [uri].
      *
      * @param uri The [Uri] of the playlist file to import.
      * @return An [ImportedPlaylist] containing the paths to the files listed in the playlist file,

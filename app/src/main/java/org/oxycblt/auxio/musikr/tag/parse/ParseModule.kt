@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * ModelModule.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * ParseModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model
+package org.oxycblt.auxio.musikr.tag.parse
 
 import dagger.Binds
 import dagger.Module
@@ -25,6 +25,6 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface InterpretModule {
-    @Binds fun interpreter(interpreter: ModelerImpl): Modeler
+interface ParseModule {
+    @Binds fun tagParser(factory: TagParserImpl): TagParser
 }

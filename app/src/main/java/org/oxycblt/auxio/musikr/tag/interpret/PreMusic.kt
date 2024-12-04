@@ -22,13 +22,13 @@ import android.net.Uri
 import java.util.UUID
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
+import org.oxycblt.auxio.musikr.fs.MimeType
+import org.oxycblt.auxio.musikr.fs.Path
+import org.oxycblt.auxio.musikr.playlist.PlaylistHandle
 import org.oxycblt.auxio.musikr.tag.Date
 import org.oxycblt.auxio.musikr.tag.Disc
 import org.oxycblt.auxio.musikr.tag.Name
 import org.oxycblt.auxio.musikr.tag.ReleaseType
-import org.oxycblt.auxio.musikr.playlist.PlaylistHandle
-import org.oxycblt.auxio.musikr.fs.MimeType
-import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.update
 
@@ -51,7 +51,7 @@ data class PreSong(
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>
 ) {
-    val uid =
+    fun computeUid() =
         musicBrainzId?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
             ?: Music.UID.auxio(MusicType.SONGS) {
                 // Song UIDs are based on the raw data without parsing so that they remain
@@ -77,11 +77,7 @@ data class PreAlbum(
     val preArtists: List<PreArtist>
 )
 
-data class PreArtist(
-    val musicBrainzId: UUID?,
-    val name: Name,
-    val rawName: String?,
-)
+data class PreArtist(val musicBrainzId: UUID?, val name: Name, val rawName: String?)
 
 data class PreGenre(
     val name: Name,

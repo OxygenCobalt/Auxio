@@ -65,8 +65,8 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
-import org.oxycblt.auxio.musikr.playlist.m3u.M3U
 import org.oxycblt.auxio.musikr.IndexingProgress
+import org.oxycblt.auxio.musikr.playlist.m3u.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * TagFields.kt is part of Auxio.
+ * ExoPlayerTagFields.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,32 +25,32 @@ import org.oxycblt.auxio.musikr.tag.util.parseVorbisPositionField
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 // Song
-fun TextTags.musicBrainzId() =
+fun ExoPlayerTags.musicBrainzId() =
     (vorbis["musicbrainz_releasetrackid"]
             ?: vorbis["musicbrainz release track id"]
             ?: id3v2["TXXX:musicbrainz release track id"]
             ?: id3v2["TXXX:musicbrainz_releasetrackid"])
         ?.first()
 
-fun TextTags.name() = (vorbis["title"] ?: id3v2["TIT2"])?.first()
+fun ExoPlayerTags.name() = (vorbis["title"] ?: id3v2["TIT2"])?.first()
 
-fun TextTags.sortName() = (vorbis["titlesort"] ?: id3v2["TSOT"])?.first()
+fun ExoPlayerTags.sortName() = (vorbis["titlesort"] ?: id3v2["TSOT"])?.first()
 
 // Track.
-fun TextTags.track() =
+fun ExoPlayerTags.track() =
     (parseVorbisPositionField(
         vorbis["tracknumber"]?.first(),
         (vorbis["totaltracks"] ?: vorbis["tracktotal"] ?: vorbis["trackc"])?.first())
         ?: id3v2["TRCK"]?.run { first().parseId3v2PositionField() })
 
 // Disc and it's subtitle name.
-fun TextTags.disc() =
+fun ExoPlayerTags.disc() =
     (parseVorbisPositionField(
         vorbis["discnumber"]?.first(),
         (vorbis["totaldiscs"] ?: vorbis["disctotal"] ?: vorbis["discc"])?.run { first() })
         ?: id3v2["TPOS"]?.run { first().parseId3v2PositionField() })
 
-fun TextTags.subtitle() = (vorbis["discsubtitle"] ?: id3v2["TSST"])?.first()
+fun ExoPlayerTags.subtitle() = (vorbis["discsubtitle"] ?: id3v2["TSST"])?.first()
 
 // Dates are somewhat complicated, as not only did their semantics change from a flat year
 // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -64,7 +64,7 @@ fun TextTags.subtitle() = (vorbis["discsubtitle"] ?: id3v2["TSST"])?.first()
 // TODO: Show original and normal dates side-by-side
 // TODO: Handle dates that are in "January" because the actual specific release date
 //  isn't known?
-fun TextTags.date() =
+fun ExoPlayerTags.date() =
     (vorbis["originaldate"]?.run { Date.from(first()) }
         ?: vorbis["date"]?.run { Date.from(first()) }
         ?: vorbis["year"]?.run { Date.from(first()) }
@@ -82,18 +82,18 @@ fun TextTags.date() =
         ?: parseId3v23Date())
 
 // Album
-fun TextTags.albumMusicBrainzId() =
+fun ExoPlayerTags.albumMusicBrainzId() =
     (vorbis["musicbrainz_albumid"]
             ?: vorbis["musicbrainz album id"]
             ?: id3v2["TXXX:musicbrainz album id"]
             ?: id3v2["TXXX:musicbrainz_albumid"])
         ?.first()
 
-fun TextTags.albumName() = (vorbis["album"] ?: id3v2["TALB"])?.first()
+fun ExoPlayerTags.albumName() = (vorbis["album"] ?: id3v2["TALB"])?.first()
 
-fun TextTags.albumSortName() = (vorbis["albumsort"] ?: id3v2["TSOA"])?.first()
+fun ExoPlayerTags.albumSortName() = (vorbis["albumsort"] ?: id3v2["TSOA"])?.first()
 
-fun TextTags.releaseTypes() =
+fun ExoPlayerTags.releaseTypes() =
     (vorbis["releasetype"]
         ?: vorbis["musicbrainz album type"]
         ?: id3v2["TXXX:musicbrainz album type"]
@@ -103,20 +103,20 @@ fun TextTags.releaseTypes() =
         id3v2["GRP1"])
 
 // Artist
-fun TextTags.artistMusicBrainzIds() =
+fun ExoPlayerTags.artistMusicBrainzIds() =
     (vorbis["musicbrainz_artistid"]
         ?: vorbis["musicbrainz artist id"]
         ?: id3v2["TXXX:musicbrainz artist id"]
         ?: id3v2["TXXX:musicbrainz_artistid"])
 
-fun TextTags.artistNames() =
+fun ExoPlayerTags.artistNames() =
     (vorbis["artists"]
         ?: vorbis["artist"]
         ?: id3v2["TXXX:artists"]
         ?: id3v2["TPE1"]
         ?: id3v2["TXXX:artist"])
 
-fun TextTags.artistSortNames() =
+fun ExoPlayerTags.artistSortNames() =
     (vorbis["artistssort"]
         ?: vorbis["artists_sort"]
         ?: vorbis["artists sort"]
@@ -129,13 +129,13 @@ fun TextTags.artistSortNames() =
         ?: id3v2["artistsort"]
         ?: id3v2["TXXX:artist sort"])
 
-fun TextTags.albumArtistMusicBrainzIds() =
+fun ExoPlayerTags.albumArtistMusicBrainzIds() =
     (vorbis["musicbrainz_albumartistid"]
         ?: vorbis["musicbrainz album artist id"]
         ?: id3v2["TXXX:musicbrainz album artist id"]
         ?: id3v2["TXXX:musicbrainz_albumartistid"])
 
-fun TextTags.albumArtistNames() =
+fun ExoPlayerTags.albumArtistNames() =
     (vorbis["albumartists"]
         ?: vorbis["album_artists"]
         ?: vorbis["album artists"]
@@ -148,7 +148,7 @@ fun TextTags.albumArtistNames() =
         ?: id3v2["TXXX:albumartist"]
         ?: id3v2["TXXX:album artist"])
 
-fun TextTags.albumArtistSortNames() =
+fun ExoPlayerTags.albumArtistSortNames() =
     (vorbis["albumartistssort"]
         ?: vorbis["albumartists_sort"]
         ?: vorbis["albumartists sort"]
@@ -163,10 +163,10 @@ fun TextTags.albumArtistSortNames() =
         ?: id3v2["TXXX:album artist sort"])
 
 // Genre
-fun TextTags.genreNames() = vorbis["genre"] ?: id3v2["TCON"]
+fun ExoPlayerTags.genreNames() = vorbis["genre"] ?: id3v2["TCON"]
 
 // Compilation Flag
-fun TextTags.isCompilation() =
+fun ExoPlayerTags.isCompilation() =
     (vorbis["compilation"]
             ?: vorbis["itunescompilation"]
             ?: id3v2["TCMP"] // This is a non-standard itunes extension
@@ -178,17 +178,17 @@ fun TextTags.isCompilation() =
         }
 
 // ReplayGain information
-fun TextTags.replayGainTrackAdjustment() =
+fun ExoPlayerTags.replayGainTrackAdjustment() =
     (vorbis["r128_track_gain"]?.parseR128Adjustment()
         ?: vorbis["replaygain_track_gain"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:replaygain_track_gain"]?.parseReplayGainAdjustment())
 
-fun TextTags.replayGainAlbumAdjustment() =
+fun ExoPlayerTags.replayGainAlbumAdjustment() =
     (vorbis["r128_album_gain"]?.parseR128Adjustment()
         ?: vorbis["replaygain_album_gain"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:replaygain_album_gain"]?.parseReplayGainAdjustment())
 
-private fun TextTags.parseId3v23Date(): Date? {
+private fun ExoPlayerTags.parseId3v23Date(): Date? {
     // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
     // is present.
     val year =

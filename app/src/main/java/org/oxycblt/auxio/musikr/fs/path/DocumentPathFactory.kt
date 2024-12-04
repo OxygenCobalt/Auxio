@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.fs
+package org.oxycblt.auxio.musikr.fs.path
 
 import android.content.ContentUris
 import android.content.Context
@@ -25,6 +25,12 @@ import android.provider.DocumentsContract
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
+import org.oxycblt.auxio.musikr.fs.Components
+import org.oxycblt.auxio.musikr.fs.Path
+import org.oxycblt.auxio.musikr.fs.Volume
+import org.oxycblt.auxio.musikr.fs.VolumeManager
+import org.oxycblt.auxio.musikr.fs.contentResolverSafe
+import org.oxycblt.auxio.musikr.fs.useQuery
 
 /**
  * A factory for parsing the reverse-engineered format of the URIs obtained from document picker.

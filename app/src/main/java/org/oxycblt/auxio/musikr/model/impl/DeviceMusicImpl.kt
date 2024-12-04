@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.musikr.model.impl
 
 import kotlin.math.min
-import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -27,6 +26,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.musikr.model.graph.LinkedAlbum
 import org.oxycblt.auxio.musikr.model.graph.LinkedSong
 import org.oxycblt.auxio.musikr.tag.Date
@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.update
 class SongImpl(linkedSong: LinkedSong) : Song {
     private val preSong = linkedSong.preSong
 
-    override val uid = preSong.uid
+    override val uid = preSong.computeUid()
     override val name = preSong.name
     override val track = preSong.track
     override val disc = preSong.disc

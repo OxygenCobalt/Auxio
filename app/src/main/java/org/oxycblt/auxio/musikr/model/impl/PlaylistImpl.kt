@@ -18,8 +18,8 @@
  
 package org.oxycblt.auxio.musikr.model.impl
 
-import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.musikr.model.graph.LinkedPlaylist
 import org.oxycblt.auxio.musikr.tag.Name
 

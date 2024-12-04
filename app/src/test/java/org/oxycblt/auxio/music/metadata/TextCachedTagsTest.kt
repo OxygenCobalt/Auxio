@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * TextTagsTest.kt is part of Auxio.
+ * TextCachedTagsTest.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,66 +27,67 @@ import androidx.media3.extractor.metadata.vorbis.VorbisComment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.musikr.tag.parse.TextTags
+import org.oxycblt.auxio.musikr.tag.parse.ExoPlayerTags
 
 class TextCachedTagsTest {
     @Test
     fun textTags_vorbis() {
-        val textTags = TextTags(VORBIS_METADATA)
-        assertTrue(textTags.id3v2.isEmpty())
-        assertEquals(listOf("Wheel"), textTags.vorbis["title"])
-        assertEquals(listOf("Paraglow"), textTags.vorbis["album"])
-        assertEquals(listOf("Parannoul", "Asian Glow"), textTags.vorbis["artist"])
-        assertEquals(listOf("2022"), textTags.vorbis["date"])
-        assertEquals(listOf("ep"), textTags.vorbis["releasetype"])
-        assertEquals(listOf("+2 dB"), textTags.vorbis["replaygain_track_gain"])
-        assertEquals(null, textTags.id3v2["APIC"])
+        val exoPlayerTags = ExoPlayerTags(VORBIS_METADATA)
+        assertTrue(exoPlayerTags.id3v2.isEmpty())
+        assertEquals(listOf("Wheel"), exoPlayerTags.vorbis["title"])
+        assertEquals(listOf("Paraglow"), exoPlayerTags.vorbis["album"])
+        assertEquals(listOf("Parannoul", "Asian Glow"), exoPlayerTags.vorbis["artist"])
+        assertEquals(listOf("2022"), exoPlayerTags.vorbis["date"])
+        assertEquals(listOf("ep"), exoPlayerTags.vorbis["releasetype"])
+        assertEquals(listOf("+2 dB"), exoPlayerTags.vorbis["replaygain_track_gain"])
+        assertEquals(null, exoPlayerTags.id3v2["APIC"])
     }
 
     @Test
     fun textTags_id3v2() {
-        val textTags = TextTags(ID3V2_METADATA)
-        assertTrue(textTags.vorbis.isEmpty())
-        assertEquals(listOf("Wheel"), textTags.id3v2["TIT2"])
-        assertEquals(listOf("Paraglow"), textTags.id3v2["TALB"])
-        assertEquals(listOf("Parannoul", "Asian Glow"), textTags.id3v2["TPE1"])
-        assertEquals(listOf("2022"), textTags.id3v2["TDRC"])
-        assertEquals(listOf("ep"), textTags.id3v2["TXXX:musicbrainz album type"])
-        assertEquals(listOf("+2 dB"), textTags.id3v2["TXXX:replaygain_track_gain"])
-        assertEquals(null, textTags.id3v2["metadata_block_picture"])
+        val exoPlayerTags = ExoPlayerTags(ID3V2_METADATA)
+        assertTrue(exoPlayerTags.vorbis.isEmpty())
+        assertEquals(listOf("Wheel"), exoPlayerTags.id3v2["TIT2"])
+        assertEquals(listOf("Paraglow"), exoPlayerTags.id3v2["TALB"])
+        assertEquals(listOf("Parannoul", "Asian Glow"), exoPlayerTags.id3v2["TPE1"])
+        assertEquals(listOf("2022"), exoPlayerTags.id3v2["TDRC"])
+        assertEquals(listOf("ep"), exoPlayerTags.id3v2["TXXX:musicbrainz album type"])
+        assertEquals(listOf("+2 dB"), exoPlayerTags.id3v2["TXXX:replaygain_track_gain"])
+        assertEquals(null, exoPlayerTags.id3v2["metadata_block_picture"])
     }
 
     @Test
     fun textTags_mp4() {
-        val textTags = TextTags(MP4_METADATA)
-        assertTrue(textTags.vorbis.isEmpty())
-        assertEquals(listOf("Wheel"), textTags.id3v2["TIT2"])
-        assertEquals(listOf("Paraglow"), textTags.id3v2["TALB"])
-        assertEquals(listOf("Parannoul", "Asian Glow"), textTags.id3v2["TPE1"])
-        assertEquals(listOf("2022"), textTags.id3v2["TDRC"])
-        assertEquals(listOf("ep"), textTags.id3v2["TXXX:musicbrainz album type"])
-        assertEquals(listOf("+2 dB"), textTags.id3v2["TXXX:replaygain_track_gain"])
-        assertEquals(null, textTags.id3v2["metadata_block_picture"])
+        val exoPlayerTags = ExoPlayerTags(MP4_METADATA)
+        assertTrue(exoPlayerTags.vorbis.isEmpty())
+        assertEquals(listOf("Wheel"), exoPlayerTags.id3v2["TIT2"])
+        assertEquals(listOf("Paraglow"), exoPlayerTags.id3v2["TALB"])
+        assertEquals(listOf("Parannoul", "Asian Glow"), exoPlayerTags.id3v2["TPE1"])
+        assertEquals(listOf("2022"), exoPlayerTags.id3v2["TDRC"])
+        assertEquals(listOf("ep"), exoPlayerTags.id3v2["TXXX:musicbrainz album type"])
+        assertEquals(listOf("+2 dB"), exoPlayerTags.id3v2["TXXX:replaygain_track_gain"])
+        assertEquals(null, exoPlayerTags.id3v2["metadata_block_picture"])
     }
 
     @Test
     fun textTags_id3v2_vorbis_combined() {
-        val textTags = TextTags(VORBIS_METADATA.copyWithAppendedEntriesFrom(ID3V2_METADATA))
-        assertEquals(listOf("Wheel"), textTags.vorbis["title"])
-        assertEquals(listOf("Paraglow"), textTags.vorbis["album"])
-        assertEquals(listOf("Parannoul", "Asian Glow"), textTags.vorbis["artist"])
-        assertEquals(listOf("2022"), textTags.vorbis["date"])
-        assertEquals(listOf("ep"), textTags.vorbis["releasetype"])
-        assertEquals(listOf("+2 dB"), textTags.vorbis["replaygain_track_gain"])
-        assertEquals(null, textTags.id3v2["metadata_block_picture"])
+        val exoPlayerTags =
+            ExoPlayerTags(VORBIS_METADATA.copyWithAppendedEntriesFrom(ID3V2_METADATA))
+        assertEquals(listOf("Wheel"), exoPlayerTags.vorbis["title"])
+        assertEquals(listOf("Paraglow"), exoPlayerTags.vorbis["album"])
+        assertEquals(listOf("Parannoul", "Asian Glow"), exoPlayerTags.vorbis["artist"])
+        assertEquals(listOf("2022"), exoPlayerTags.vorbis["date"])
+        assertEquals(listOf("ep"), exoPlayerTags.vorbis["releasetype"])
+        assertEquals(listOf("+2 dB"), exoPlayerTags.vorbis["replaygain_track_gain"])
+        assertEquals(null, exoPlayerTags.id3v2["metadata_block_picture"])
 
-        assertEquals(listOf("Wheel"), textTags.id3v2["TIT2"])
-        assertEquals(listOf("Paraglow"), textTags.id3v2["TALB"])
-        assertEquals(listOf("Parannoul", "Asian Glow"), textTags.id3v2["TPE1"])
-        assertEquals(listOf("2022"), textTags.id3v2["TDRC"])
-        assertEquals(null, textTags.id3v2["APIC"])
-        assertEquals(listOf("ep"), textTags.id3v2["TXXX:musicbrainz album type"])
-        assertEquals(listOf("+2 dB"), textTags.id3v2["TXXX:replaygain_track_gain"])
+        assertEquals(listOf("Wheel"), exoPlayerTags.id3v2["TIT2"])
+        assertEquals(listOf("Paraglow"), exoPlayerTags.id3v2["TALB"])
+        assertEquals(listOf("Parannoul", "Asian Glow"), exoPlayerTags.id3v2["TPE1"])
+        assertEquals(listOf("2022"), exoPlayerTags.id3v2["TDRC"])
+        assertEquals(null, exoPlayerTags.id3v2["APIC"])
+        assertEquals(listOf("ep"), exoPlayerTags.id3v2["TXXX:musicbrainz album type"])
+        assertEquals(listOf("+2 dB"), exoPlayerTags.id3v2["TXXX:replaygain_track_gain"])
     }
 
     companion object {

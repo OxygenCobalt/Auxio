@@ -1,6 +1,23 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * ReusableMetadataRetriever.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.musikr.metadata
 
-import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
@@ -16,11 +33,10 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.TrackGroupArray
 import androidx.media3.exoplayer.upstream.Allocator
 import androidx.media3.exoplayer.upstream.DefaultAllocator
-import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import timber.log.Timber
 import java.util.concurrent.Future
 import javax.inject.Inject
+import timber.log.Timber
 
 private const val MESSAGE_PREPARE = 0
 private const val MESSAGE_CONTINUE_LOADING = 1
@@ -32,6 +48,7 @@ private const val CHECK_INTERVAL_MS = 100
 
 interface MetadataRetrieverExt {
     fun retrieveMetadata(mediaItem: MediaItem): Future<TrackGroupArray>
+
     fun retrieve()
 
     interface Factory {
@@ -39,13 +56,18 @@ interface MetadataRetrieverExt {
     }
 }
 
-class ReusableMetadataRetrieverImpl @Inject constructor(private val mediaSourceFactory: MediaSource.Factory) :
+class ReusableMetadataRetrieverImpl
+@Inject
+constructor(private val mediaSourceFactory: MediaSource.Factory) :
     MetadataRetrieverExt, Handler.Callback {
     private val mediaSourceThread = HandlerThread("Auxio:ChunkedMetadataRetriever:${hashCode()}")
     private val mediaSourceHandler: HandlerWrapper
     private var job: MetadataJob? = null
 
-    private data class JobParams(val mediaItem: MediaItem, val future: SettableFuture<TrackGroupArray>)
+    private data class JobParams(
+        val mediaItem: MediaItem,
+        val future: SettableFuture<TrackGroupArray>
+    )
 
     private class JobData(
         val params: JobParams,
@@ -64,7 +86,9 @@ class ReusableMetadataRetrieverImpl @Inject constructor(private val mediaSourceF
         val job = job
         check(job == null || job.data.params.future.isDone) { "Already working on something: $job" }
         val future = SettableFuture.create<TrackGroupArray>()
-        mediaSourceHandler.obtainMessage(MESSAGE_PREPARE, JobParams(mediaItem, future)).sendToTarget()
+        mediaSourceHandler
+            .obtainMessage(MESSAGE_PREPARE, JobParams(mediaItem, future))
+            .sendToTarget()
         return future
     }
 
@@ -78,8 +102,7 @@ class ReusableMetadataRetrieverImpl @Inject constructor(private val mediaSourceF
             MESSAGE_PREPARE -> {
                 val params = msg.obj as JobParams
 
-                val mediaSource =
-                    mediaSourceFactory.createMediaSource(params.mediaItem)
+                val mediaSource = mediaSourceFactory.createMediaSource(params.mediaItem)
                 val data = JobData(params, mediaSource, null)
                 val mediaSourceCaller = MediaSourceCaller(data)
                 mediaSource.prepareSource(
@@ -87,8 +110,7 @@ class ReusableMetadataRetrieverImpl @Inject constructor(private val mediaSourceF
                 job = MetadataJob(data, mediaSourceCaller)
 
                 mediaSourceHandler.sendEmptyMessageDelayed(
-                    MESSAGE_CHECK_FAILURE, /* delayMs= */ CHECK_INTERVAL_MS
-                )
+                    MESSAGE_CHECK_FAILURE, /* delayMs= */ CHECK_INTERVAL_MS)
 
                 return true
             }

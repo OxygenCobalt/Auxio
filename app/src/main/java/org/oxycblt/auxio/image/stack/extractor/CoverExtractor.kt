@@ -35,6 +35,7 @@ interface CoverSource {
 class CoverExtractorImpl @Inject constructor(private val coverSources: CoverSources) :
     CoverExtractor {
     override suspend fun extract(cover: Cover.Single): ByteArray? {
+        return null
         for (coverSource in coverSources.sources) {
             val stream = coverSource.extract(cover.uri)
             if (stream != null) {

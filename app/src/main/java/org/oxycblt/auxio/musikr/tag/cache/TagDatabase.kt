@@ -28,9 +28,9 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.auxio.musikr.tag.Date
-import org.oxycblt.auxio.musikr.tag.AudioFile
 import org.oxycblt.auxio.musikr.fs.DeviceFile
+import org.oxycblt.auxio.musikr.tag.Date
+import org.oxycblt.auxio.musikr.tag.parse.ParsedTags
 import org.oxycblt.auxio.musikr.tag.util.correctWhitespace
 import org.oxycblt.auxio.musikr.tag.util.splitEscaped
 
@@ -100,9 +100,8 @@ data class CachedTags(
     /** @see AudioFile.genreNames */
     val genreNames: List<String> = listOf()
 ) {
-    fun toAudioFile(deviceFile: DeviceFile) =
-        AudioFile(
-            deviceFile = deviceFile,
+    fun intoParsedTags() =
+        ParsedTags(
             musicBrainzId = musicBrainzId,
             name = name,
             sortName = sortName,
@@ -139,30 +138,30 @@ data class CachedTags(
     }
 
     companion object {
-        fun fromAudioFile(audioFile: AudioFile) =
+        fun fromParsedTags(deviceFile: DeviceFile, parsedTags: ParsedTags) =
             CachedTags(
-                uri = audioFile.deviceFile.uri.toString(),
-                dateModified = audioFile.deviceFile.lastModified,
-                musicBrainzId = audioFile.musicBrainzId,
-                name = audioFile.name,
-                sortName = audioFile.sortName,
-                durationMs = audioFile.durationMs,
-                replayGainTrackAdjustment = audioFile.replayGainTrackAdjustment,
-                replayGainAlbumAdjustment = audioFile.replayGainAlbumAdjustment,
-                track = audioFile.track,
-                disc = audioFile.disc,
-                subtitle = audioFile.subtitle,
-                date = audioFile.date,
-                albumMusicBrainzId = audioFile.albumMusicBrainzId,
-                albumName = audioFile.albumName,
-                albumSortName = audioFile.albumSortName,
-                releaseTypes = audioFile.releaseTypes,
-                artistMusicBrainzIds = audioFile.artistMusicBrainzIds,
-                artistNames = audioFile.artistNames,
-                artistSortNames = audioFile.artistSortNames,
-                albumArtistMusicBrainzIds = audioFile.albumArtistMusicBrainzIds,
-                albumArtistNames = audioFile.albumArtistNames,
-                albumArtistSortNames = audioFile.albumArtistSortNames,
-                genreNames = audioFile.genreNames)
+                uri = deviceFile.uri.toString(),
+                dateModified = deviceFile.lastModified,
+                musicBrainzId = parsedTags.musicBrainzId,
+                name = parsedTags.name,
+                sortName = parsedTags.sortName,
+                durationMs = parsedTags.durationMs,
+                replayGainTrackAdjustment = parsedTags.replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = parsedTags.replayGainAlbumAdjustment,
+                track = parsedTags.track,
+                disc = parsedTags.disc,
+                subtitle = parsedTags.subtitle,
+                date = parsedTags.date,
+                albumMusicBrainzId = parsedTags.albumMusicBrainzId,
+                albumName = parsedTags.albumName,
+                albumSortName = parsedTags.albumSortName,
+                releaseTypes = parsedTags.releaseTypes,
+                artistMusicBrainzIds = parsedTags.artistMusicBrainzIds,
+                artistNames = parsedTags.artistNames,
+                artistSortNames = parsedTags.artistSortNames,
+                albumArtistMusicBrainzIds = parsedTags.albumArtistMusicBrainzIds,
+                albumArtistNames = parsedTags.albumArtistNames,
+                albumArtistSortNames = parsedTags.albumArtistSortNames,
+                genreNames = parsedTags.genreNames)
     }
 }

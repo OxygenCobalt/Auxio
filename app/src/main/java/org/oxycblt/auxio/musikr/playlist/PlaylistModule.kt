@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * ExternalModule.kt is part of Auxio.
+ * PlaylistModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.auxio.musikr.playlist.m3u.M3U
-import org.oxycblt.auxio.musikr.playlist.m3u.M3UImpl
 
 @Module
 @InstallIn(SingletonComponent::class)

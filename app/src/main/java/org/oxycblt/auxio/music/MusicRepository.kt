@@ -25,12 +25,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
-import org.oxycblt.auxio.musikr.tag.Name
-import org.oxycblt.auxio.musikr.tag.interpret.Separators
 import org.oxycblt.auxio.musikr.Indexer
 import org.oxycblt.auxio.musikr.IndexingProgress
-import org.oxycblt.auxio.musikr.tag.Interpretation
 import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
+import org.oxycblt.auxio.musikr.tag.Interpretation
+import org.oxycblt.auxio.musikr.tag.Name
+import org.oxycblt.auxio.musikr.tag.interpret.Separators
 import timber.log.Timber as L
 
 /**

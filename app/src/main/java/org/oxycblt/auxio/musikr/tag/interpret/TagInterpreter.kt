@@ -19,91 +19,88 @@
 package org.oxycblt.auxio.musikr.tag.interpret
 
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.musikr.fs.DeviceFile
+import org.oxycblt.auxio.musikr.fs.MimeType
 import org.oxycblt.auxio.musikr.tag.Disc
+import org.oxycblt.auxio.musikr.tag.Interpretation
 import org.oxycblt.auxio.musikr.tag.Name
 import org.oxycblt.auxio.musikr.tag.ReleaseType
-import org.oxycblt.auxio.musikr.tag.AudioFile
-import org.oxycblt.auxio.musikr.fs.MimeType
-import org.oxycblt.auxio.musikr.tag.Interpretation
+import org.oxycblt.auxio.musikr.tag.parse.ParsedTags
 import org.oxycblt.auxio.musikr.tag.util.parseId3GenreNames
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.toUuidOrNull
 
 interface TagInterpreter {
-    fun interpret(audioFiles: Flow<AudioFile>, interpretation: Interpretation): Flow<PreSong>
+    fun interpret(file: DeviceFile, parsedTags: ParsedTags, interpretation: Interpretation): PreSong
 }
 
 class TagInterpreterImpl @Inject constructor() : TagInterpreter {
-    override fun interpret(audioFiles: Flow<AudioFile>, interpretation: Interpretation) =
-        audioFiles.map { audioFile ->
-            val individualPreArtists =
-                makePreArtists(
-                    audioFile.artistMusicBrainzIds,
-                    audioFile.artistNames,
-                    audioFile.artistSortNames,
-                    interpretation)
-            val albumPreArtists =
-                makePreArtists(
-                    audioFile.albumArtistMusicBrainzIds,
-                    audioFile.albumArtistNames,
-                    audioFile.albumArtistSortNames,
-                    interpretation)
-            val preAlbum =
-                makePreAlbum(audioFile, individualPreArtists, albumPreArtists, interpretation)
-            val rawArtists =
-                individualPreArtists
-                    .ifEmpty { albumPreArtists }
-                    .ifEmpty { listOf(unknownPreArtist()) }
-            val rawGenres =
-                makePreGenres(audioFile, interpretation).ifEmpty { listOf(unknownPreGenre()) }
-            val uri = audioFile.deviceFile.uri
-            PreSong(
-                musicBrainzId = audioFile.musicBrainzId?.toUuidOrNull(),
-                name =
-                    interpretation.nameFactory.parse(
-                        need(audioFile, "name", audioFile.name), audioFile.sortName),
-                rawName = audioFile.name,
-                track = audioFile.track,
-                disc = audioFile.disc?.let { Disc(it, audioFile.subtitle) },
-                date = audioFile.date,
-                uri = uri,
-                path = need(audioFile, "path", audioFile.deviceFile.path),
-                mimeType =
-                    MimeType(need(audioFile, "mime type", audioFile.deviceFile.mimeType), null),
-                size = audioFile.deviceFile.size,
-                durationMs = need(audioFile, "duration", audioFile.durationMs),
-                replayGainAdjustment =
-                    ReplayGainAdjustment(
-                        audioFile.replayGainTrackAdjustment,
-                        audioFile.replayGainAlbumAdjustment,
-                    ),
-                lastModified = audioFile.deviceFile.lastModified,
-                // TODO: Figure out what to do with date added
-                dateAdded = audioFile.deviceFile.lastModified,
-                preAlbum = preAlbum,
-                preArtists = rawArtists,
-                preGenres = rawGenres)
-        }
-
-    private fun <T> need(audioFile: AudioFile, what: String, value: T?) =
-        requireNotNull(value) { "Invalid $what for song ${audioFile.deviceFile.path}: No $what" }
+    override fun interpret(
+        file: DeviceFile,
+        parsedTags: ParsedTags,
+        interpretation: Interpretation
+    ): PreSong {
+        val individualPreArtists =
+            makePreArtists(
+                parsedTags.artistMusicBrainzIds,
+                parsedTags.artistNames,
+                parsedTags.artistSortNames,
+                interpretation)
+        val albumPreArtists =
+            makePreArtists(
+                parsedTags.albumArtistMusicBrainzIds,
+                parsedTags.albumArtistNames,
+                parsedTags.albumArtistSortNames,
+                interpretation)
+        val preAlbum =
+            makePreAlbum(file, parsedTags, individualPreArtists, albumPreArtists, interpretation)
+        val rawArtists =
+            individualPreArtists.ifEmpty { albumPreArtists }.ifEmpty { listOf(unknownPreArtist()) }
+        val rawGenres =
+            makePreGenres(parsedTags, interpretation).ifEmpty { listOf(unknownPreGenre()) }
+        val uri = file.uri
+        return PreSong(
+            musicBrainzId = parsedTags.musicBrainzId?.toUuidOrNull(),
+            name = interpretation.nameFactory.parse(parsedTags.name, parsedTags.sortName),
+            rawName = parsedTags.name,
+            track = parsedTags.track,
+            disc = parsedTags.disc?.let { Disc(it, parsedTags.subtitle) },
+            date = parsedTags.date,
+            uri = uri,
+            path = file.path,
+            mimeType = MimeType(file.mimeType, null),
+            size = file.size,
+            durationMs = parsedTags.durationMs,
+            replayGainAdjustment =
+                ReplayGainAdjustment(
+                    parsedTags.replayGainTrackAdjustment,
+                    parsedTags.replayGainAlbumAdjustment,
+                ),
+            lastModified = file.lastModified,
+            // TODO: Figure out what to do with date added
+            dateAdded = file.lastModified,
+            preAlbum = preAlbum,
+            preArtists = rawArtists,
+            preGenres = rawGenres)
+    }
 
     private fun makePreAlbum(
-        audioFile: AudioFile,
+        file: DeviceFile,
+        parsedTags: ParsedTags,
         individualPreArtists: List<PreArtist>,
         albumPreArtists: List<PreArtist>,
         interpretation: Interpretation
     ): PreAlbum {
-        val rawAlbumName = need(audioFile, "album name", audioFile.albumName)
+        // TODO: Make fallbacks for this!
+        val rawAlbumName = requireNotNull(parsedTags.albumName)
         return PreAlbum(
-            musicBrainzId = audioFile.albumMusicBrainzId?.toUuidOrNull(),
-            name = interpretation.nameFactory.parse(rawAlbumName, audioFile.albumSortName),
+            musicBrainzId = parsedTags.albumMusicBrainzId?.toUuidOrNull(),
+            name = interpretation.nameFactory.parse(rawAlbumName, parsedTags.albumSortName),
             rawName = rawAlbumName,
             releaseType =
-                ReleaseType.parse(interpretation.separators.split(audioFile.releaseTypes))
+                ReleaseType.parse(interpretation.separators.split(parsedTags.releaseTypes))
                     ?: ReleaseType.Album(null),
             preArtists =
                 albumPreArtists
@@ -141,12 +138,12 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
     private fun unknownPreArtist() = PreArtist(null, Name.Unknown(R.string.def_artist), null)
 
     private fun makePreGenres(
-        audioFile: AudioFile,
+        parsedTags: ParsedTags,
         interpretation: Interpretation
     ): List<PreGenre> {
         val genreNames =
-            audioFile.genreNames.parseId3GenreNames()
-                ?: interpretation.separators.split(audioFile.genreNames)
+            parsedTags.genreNames.parseId3GenreNames()
+                ?: interpretation.separators.split(parsedTags.genreNames)
         return genreNames.map { makePreGenre(it, interpretation) }
     }
 

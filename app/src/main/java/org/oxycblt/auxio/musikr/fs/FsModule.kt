@@ -27,6 +27,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.oxycblt.auxio.musikr.fs.path.DocumentPathFactory
+import org.oxycblt.auxio.musikr.fs.path.DocumentPathFactoryImpl
+import org.oxycblt.auxio.musikr.fs.path.MediaStorePathInterpreter
 import org.oxycblt.auxio.util.getSystemServiceCompat
 
 @Module

@@ -16,11 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.fs
+package org.oxycblt.auxio.musikr.fs.path
 
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
+import org.oxycblt.auxio.musikr.fs.Components
+import org.oxycblt.auxio.musikr.fs.Path
+import org.oxycblt.auxio.musikr.fs.VolumeManager
 import timber.log.Timber as L
 
 /**

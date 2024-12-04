@@ -20,17 +20,16 @@ package org.oxycblt.auxio.musikr
 
 import android.net.Uri
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import org.oxycblt.auxio.musikr.explore.Explorer
-import org.oxycblt.auxio.musikr.tag.Interpretation
-import org.oxycblt.auxio.musikr.model.Modeler
 import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
+import org.oxycblt.auxio.musikr.pipeline.EvaluateStep
+import org.oxycblt.auxio.musikr.pipeline.ExploreStep
+import org.oxycblt.auxio.musikr.pipeline.ExtractStep
+import org.oxycblt.auxio.musikr.tag.Interpretation
 
 interface Indexer {
     suspend fun run(
@@ -53,22 +52,19 @@ sealed interface IndexingProgress {
 
 class IndexerImpl
 @Inject
-constructor(private val explorer: Explorer, private val modeler: Modeler) : Indexer {
+constructor(
+    private val exploreStep: ExploreStep,
+    private val extractStep: ExtractStep,
+    private val evaluateStep: EvaluateStep
+) : Indexer {
     override suspend fun run(
         uris: List<Uri>,
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
-        val files = explorer.explore(uris, onProgress)
-        val audioFiles =
-            files.audios
-                .cap(
-                    start = { onProgress(IndexingProgress.Songs(0, 0)) },
-                    end = { onProgress(IndexingProgress.Indeterminate) })
-                .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED)
-        val playlistFiles = files.playlists.flowOn(Dispatchers.IO).buffer(Channel.UNLIMITED)
-        modeler.model(audioFiles, playlistFiles, interpretation)
+        val explored = exploreStep.explore(uris).buffer(Channel.UNLIMITED)
+        val extracted = extractStep.extract(explored).buffer(Channel.UNLIMITED)
+        evaluateStep.evaluate(interpretation, extracted)
     }
 
     private fun <T> Flow<T>.cap(start: suspend () -> Unit, end: suspend () -> Unit): Flow<T> =

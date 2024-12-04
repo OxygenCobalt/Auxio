@@ -20,9 +20,9 @@ package org.oxycblt.auxio.image.stack
 
 import java.io.InputStream
 import javax.inject.Inject
+import org.oxycblt.auxio.image.stack.extractor.CoverExtractor
 import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.musikr.cover.CoverCache
-import org.oxycblt.auxio.image.stack.extractor.CoverExtractor
 import timber.log.Timber
 
 interface CoverRetriever {

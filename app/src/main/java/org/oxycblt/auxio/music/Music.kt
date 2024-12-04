@@ -27,14 +27,14 @@ import java.util.UUID
 import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.musikr.cover.Cover
+import org.oxycblt.auxio.musikr.fs.MimeType
+import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.musikr.tag.Date
 import org.oxycblt.auxio.musikr.tag.Disc
 import org.oxycblt.auxio.musikr.tag.Name
 import org.oxycblt.auxio.musikr.tag.ReleaseType
-import org.oxycblt.auxio.musikr.fs.MimeType
-import org.oxycblt.auxio.musikr.fs.Path
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull

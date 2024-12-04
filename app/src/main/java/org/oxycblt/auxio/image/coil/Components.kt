@@ -43,8 +43,8 @@ import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.buffer
 import okio.source
-import org.oxycblt.auxio.musikr.cover.Cover
 import org.oxycblt.auxio.image.stack.CoverRetriever
+import org.oxycblt.auxio.musikr.cover.Cover
 
 class CoverKeyer @Inject constructor() : Keyer<Cover> {
     override fun key(data: Cover, options: Options) = "${data.key}&${options.size}"

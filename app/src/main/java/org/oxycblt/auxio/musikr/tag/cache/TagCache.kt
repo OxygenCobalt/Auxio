@@ -19,35 +19,19 @@
 package org.oxycblt.auxio.musikr.tag.cache
 
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import org.oxycblt.auxio.musikr.tag.AudioFile
 import org.oxycblt.auxio.musikr.fs.DeviceFile
-
-sealed interface CacheResult {
-    data class Hit(val audioFile: AudioFile) : CacheResult
-
-    data class Miss(val deviceFile: DeviceFile) : CacheResult
-}
+import org.oxycblt.auxio.musikr.tag.parse.ParsedTags
 
 interface TagCache {
-    fun read(files: Flow<DeviceFile>): Flow<CacheResult>
+    suspend fun read(file: DeviceFile): ParsedTags?
 
-    fun write(rawSongs: Flow<AudioFile>): Flow<AudioFile>
+    suspend fun write(file: DeviceFile, tags: ParsedTags)
 }
 
 class TagCacheImpl @Inject constructor(private val tagDao: TagDao) : TagCache {
-    override fun read(files: Flow<DeviceFile>) =
-        files.map { file ->
-            val tags = tagDao.selectTags(file.uri.toString(), file.lastModified)
-            if (tags != null) {
-                CacheResult.Hit(tags.toAudioFile(file))
-            } else {
-                CacheResult.Miss(file)
-            }
-        }
+    override suspend fun read(file: DeviceFile) =
+        tagDao.selectTags(file.uri.toString(), file.lastModified)?.intoParsedTags()
 
-    override fun write(rawSongs: Flow<AudioFile>) =
-        rawSongs.onEach { file -> tagDao.updateTags(CachedTags.fromAudioFile(file)) }
+    override suspend fun write(file: DeviceFile, tags: ParsedTags) =
+        tagDao.updateTags(CachedTags.fromParsedTags(file, tags))
 }

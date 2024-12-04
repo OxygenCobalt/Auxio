@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * Modeler.kt is part of Auxio.
+ * EvaluateStep.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model
+package org.oxycblt.auxio.musikr.pipeline
 
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +24,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.musikr.tag.AudioFile
-import org.oxycblt.auxio.musikr.playlist.PlaylistFile
 import org.oxycblt.auxio.musikr.model.graph.AlbumLinker
 import org.oxycblt.auxio.musikr.model.graph.ArtistLinker
 import org.oxycblt.auxio.musikr.model.graph.GenreLinker
@@ -44,25 +43,28 @@ import org.oxycblt.auxio.musikr.model.impl.SongImpl
 import org.oxycblt.auxio.musikr.tag.Interpretation
 import org.oxycblt.auxio.musikr.tag.interpret.PreSong
 import org.oxycblt.auxio.musikr.tag.interpret.TagInterpreter
-import timber.log.Timber as L
+import timber.log.Timber
 
-interface Modeler {
-    suspend fun model(
-        audioFiles: Flow<AudioFile>,
-        playlistFiles: Flow<PlaylistFile>,
-        interpretation: Interpretation
+interface EvaluateStep {
+    suspend fun evaluate(
+        interpretation: Interpretation,
+        extractedMusic: Flow<ExtractedMusic>
     ): MutableLibrary
 }
 
-class ModelerImpl @Inject constructor(private val tagInterpreter: TagInterpreter) : Modeler {
-    override suspend fun model(
-        audioFiles: Flow<AudioFile>,
-        playlistFiles: Flow<PlaylistFile>,
-        interpretation: Interpretation
+class EvaluateStepImpl
+@Inject
+constructor(
+    private val tagInterpreter: TagInterpreter,
+) : EvaluateStep {
+    override suspend fun evaluate(
+        interpretation: Interpretation,
+        extractedMusic: Flow<ExtractedMusic>
     ): MutableLibrary {
         val preSongs =
-            tagInterpreter
-                .interpret(audioFiles, interpretation)
+            extractedMusic
+                .filterIsInstance<ExtractedMusic.Song>()
+                .map { tagInterpreter.interpret(it.file, it.tags, interpretation) }
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)
 
@@ -91,12 +93,12 @@ class ModelerImpl @Inject constructor(private val tagInterpreter: TagInterpreter
         val uidMap = mutableMapOf<Music.UID, SongImpl>()
         val songs =
             albumLinkedSongs.mapNotNull {
-                val uid = it.preSong.uid
+                val uid = it.preSong.computeUid()
                 val other = uidMap[uid]
                 if (other == null) {
                     SongImpl(it)
                 } else {
-                    L.d("Song @ $uid already exists at ${other.path}, ignoring")
+                    Timber.d("Song @ $uid already exists at ${other.path}, ignoring")
                     null
                 }
             }

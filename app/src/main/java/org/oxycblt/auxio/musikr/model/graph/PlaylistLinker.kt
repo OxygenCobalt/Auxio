@@ -20,8 +20,8 @@ package org.oxycblt.auxio.musikr.model.graph
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import org.oxycblt.auxio.musikr.playlist.PlaylistFile
 import org.oxycblt.auxio.musikr.model.impl.PlaylistImpl
+import org.oxycblt.auxio.musikr.playlist.PlaylistFile
 
 class PlaylistLinker {
     fun register(

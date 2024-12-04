@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * ExploreModule.kt is part of Auxio.
+ * PipelineModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.explore
+package org.oxycblt.auxio.musikr.pipeline
 
 import dagger.Binds
 import dagger.Module
@@ -25,6 +25,10 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface ExploreModule {
-    @Binds fun explorer(impl: ExplorerImpl): Explorer
+interface InterpretModule {
+    @Binds fun exploreStep(step: ExploreStepImpl): ExploreStep
+
+    @Binds fun extractStep(step: ExtractStepImpl): ExtractStep
+
+    @Binds fun evaluateStep(step: EvaluateStepImpl): EvaluateStep
 }
