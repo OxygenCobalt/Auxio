@@ -315,9 +315,15 @@
     <string name="lbl_windows_paths">Utiliser les chemins compatibles Windows</string>
     <string name="set_replay_gain_mode_off">Désactivé</string>
     <string name="lbl_start_playback">Démarrer la lecture</string>
-    <string name="lng_tasker_start">Démarre Auxio en utilisant l\'état précédemment sauvegardé. Si aucun \nn\'est disponible, toutes les chansons seront mélangées. La lecture commencera immédiatement.\n\nAVERTISSEMENT : Faites attention en contrôlant ce service, si vous le fermez et essayez ensuite de l\'utiliser à nouveau, vous ferez probablement planter l\'application.</string>
+    <string name="lng_tasker_start">Démarre Auxio en utilisant le dernier état enregistré. S\'il n\'y en a aucun, tous les titres seront remélangés et la lecture commencera immédiatement.\n\nAVERTISSEMENT : Faites attention en contrôlant ce service, si vous le fermez puis essayez de l\'utiliser à nouveau, vous ferez probablement planter l\'appli.</string>
     <string name="lbl_more">Plus</string>
     <string name="lbl_feedback">Avis</string>
     <string name="lbl_github">Faire un ticket sur GitHub</string>
     <string name="lbl_email">Envoyer un courriel</string>
+    <string name="lbl_music_sources">Choisir des dossiers</string>
+    <string name="lng_no_songs">Vos titres apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
+    <string name="lng_no_albums">Vos albums apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
+    <string name="lng_no_artists">Vos artistes apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
+    <string name="lng_no_genres">Vos genres apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
+    <string name="lng_no_playlists">Vos listes de lecture apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
 </resources>
