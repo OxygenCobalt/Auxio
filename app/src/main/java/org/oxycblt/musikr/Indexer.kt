@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.model.MutableLibrary
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
@@ -34,7 +35,7 @@ import org.oxycblt.musikr.tag.Interpretation
 
 interface Indexer {
     suspend fun run(
-        uris: List<Uri>,
+        locations: MusicLocation,
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): MutableLibrary
@@ -59,7 +60,7 @@ constructor(
     private val evaluateStep: EvaluateStep
 ) : Indexer {
     override suspend fun run(
-        uris: List<Uri>,
+        locations: MusicLocation,
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {

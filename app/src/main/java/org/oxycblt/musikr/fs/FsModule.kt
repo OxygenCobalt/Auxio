@@ -56,4 +56,6 @@ interface FsBindsModule {
     fun documentPathFactory(documentTreePathFactory: DocumentPathFactoryImpl): DocumentPathFactory
 
     @Binds fun deviceFiles(deviceFilesImpl: DeviceFilesImpl): DeviceFiles
+
+    @Binds fun musicLocationFactory(musicLocationFactoryImpl: MusicLocationFactoryImpl): MusicLocation.Factory
 }

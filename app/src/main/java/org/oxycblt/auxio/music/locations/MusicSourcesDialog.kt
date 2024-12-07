@@ -36,9 +36,9 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicLocationsBinding
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.musikr.fs.MusicLocation
 import timber.log.Timber as L
 
 /**
@@ -51,7 +51,7 @@ class MusicSourcesDialog :
     ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(), LocationAdapter.Listener {
     private val locationAdapter = LocationAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    @Inject lateinit var documentPathFactory: DocumentPathFactory
+    @Inject lateinit var musicLocationFactory: MusicLocation.Factory
     @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -76,17 +76,7 @@ class MusicSourcesDialog :
     ) {
         openDocumentTreeLauncher =
             registerForActivityResult(
-                object : ActivityResultContracts.OpenDocumentTree() {
-                    override fun createIntent(context: Context, input: Uri?): Intent {
-                        return super.createIntent(context, input).apply {
-                            flags =
-                                Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
-                                    Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
-                                    Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
-                        }
-                    }
-                },
+                ActivityResultContracts.OpenDocumentTree(),
                 ::addDocumentTreeUriToDirs)
 
         binding.locationsAdd.apply {
@@ -117,8 +107,7 @@ class MusicSourcesDialog :
                 ?: musicSettings.musicLocations
         val locations =
             locationUris.mapNotNull {
-                MusicLocation(
-                    it, documentPathFactory.unpackDocumentTreeUri(it) ?: return@mapNotNull null)
+                musicLocationFactory.create(it)
             }
 
         locationAdapter.addAll(locations)
@@ -160,10 +149,10 @@ class MusicSourcesDialog :
             Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, takeFlags)
 
-        val path = documentPathFactory.unpackDocumentTreeUri(uri)
+        val location = musicLocationFactory.create(uri)
 
-        if (path != null) {
-            locationAdapter.add(MusicLocation(uri, path))
+        if (location != null) {
+            locationAdapter.add(location)
             requireBinding().locationsEmpty.isVisible = false
         } else {
             requireContext().showToast(R.string.err_bad_location)

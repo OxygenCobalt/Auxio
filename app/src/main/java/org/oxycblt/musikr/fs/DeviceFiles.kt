@@ -35,7 +35,7 @@ import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import timber.log.Timber
 
 interface DeviceFiles {
-    fun explore(uris: Flow<Uri>): Flow<DeviceFile>
+    fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
 }
 
 data class DeviceFile(
@@ -50,19 +50,17 @@ data class DeviceFile(
 class DeviceFilesImpl
 @Inject
 constructor(
-    @ApplicationContext private val context: Context,
-    private val documentPathFactory: DocumentPathFactory
+    @ApplicationContext private val context: Context
 ) : DeviceFiles {
     private val contentResolver = context.contentResolverSafe
 
-    override fun explore(uris: Flow<Uri>): Flow<DeviceFile> =
-        uris.flatMapMerge { rootUri ->
-            Timber.d("$rootUri")
+    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
+        locations.flatMapMerge { location ->
             exploreImpl(
                 contentResolver,
-                rootUri,
-                DocumentsContract.getTreeDocumentId(rootUri),
-                requireNotNull(documentPathFactory.unpackDocumentTreeUri(rootUri)))
+                location.uri,
+                DocumentsContract.getTreeDocumentId(location.uri),
+                location.path)
         }
 
     private fun exploreImpl(
