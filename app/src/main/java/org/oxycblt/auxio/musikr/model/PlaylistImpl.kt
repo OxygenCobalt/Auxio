@@ -16,29 +16,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.impl
+package org.oxycblt.auxio.musikr.model
 
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.musikr.cover.Cover
-import org.oxycblt.auxio.musikr.model.graph.LinkedPlaylist
+import org.oxycblt.auxio.musikr.playlist.PlaylistHandle
 import org.oxycblt.auxio.musikr.tag.Name
+import org.oxycblt.auxio.musikr.tag.interpret.PrePlaylist
 
-class PlaylistImpl(linkedPlaylist: LinkedPlaylist) : Playlist {
-    private val prePlaylist = linkedPlaylist.prePlaylist
-    override val uid = prePlaylist.handle.uid
-    override val name: Name.Known = prePlaylist.name
-    override val songs = linkedPlaylist.songs.resolve(this)
-    override val durationMs = songs.sumOf { it.durationMs }
-    override val cover = Cover.multi(songs)
-    private var hashCode = uid.hashCode()
+interface PlaylistCore {
+    val prePlaylist: PrePlaylist
+    val handle: PlaylistHandle
+    val songs: List<Song>
+}
 
-    init {
-        hashCode = 31 * hashCode + prePlaylist.hashCode()
-        hashCode = 31 * hashCode + songs.hashCode()
-    }
+class PlaylistImpl(private val core: PlaylistCore) : Playlist {
+    override val uid = core.handle.uid
+    override val name: Name.Known = core.prePlaylist.name
+    override val durationMs = core.songs.sumOf { it.durationMs }
+    override val cover = Cover.multi(core.songs)
+    override val songs = core.songs
+
+    private var hashCode =
+        31 * (31 * uid.hashCode() + core.prePlaylist.hashCode()) + songs.hashCode()
 
     override fun equals(other: Any?) =
-        other is PlaylistImpl && prePlaylist == other.prePlaylist && songs == other.songs
+        other is PlaylistImpl && core.prePlaylist == other.core.prePlaylist && songs == other.songs
 
     override fun hashCode() = hashCode
 

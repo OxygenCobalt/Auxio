@@ -22,28 +22,16 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.musikr.model.graph.AlbumLinker
-import org.oxycblt.auxio.musikr.model.graph.ArtistLinker
-import org.oxycblt.auxio.musikr.model.graph.GenreLinker
-import org.oxycblt.auxio.musikr.model.graph.Linked
-import org.oxycblt.auxio.musikr.model.graph.LinkedSong
-import org.oxycblt.auxio.musikr.model.impl.AlbumImpl
-import org.oxycblt.auxio.musikr.model.impl.ArtistImpl
-import org.oxycblt.auxio.musikr.model.impl.GenreImpl
-import org.oxycblt.auxio.musikr.model.impl.LibraryImpl
-import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
-import org.oxycblt.auxio.musikr.model.impl.SongImpl
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.musikr.graph.MusicGraph
+import org.oxycblt.auxio.musikr.model.LibraryFactory
+import org.oxycblt.auxio.musikr.model.MutableLibrary
 import org.oxycblt.auxio.musikr.tag.Interpretation
-import org.oxycblt.auxio.musikr.tag.interpret.PreSong
 import org.oxycblt.auxio.musikr.tag.interpret.TagInterpreter
-import timber.log.Timber
 
 interface EvaluateStep {
     suspend fun evaluate(
@@ -56,6 +44,8 @@ class EvaluateStepImpl
 @Inject
 constructor(
     private val tagInterpreter: TagInterpreter,
+    private val musicGraphFactory: MusicGraph.Factory,
+    private val libraryFactory: LibraryFactory
 ) : EvaluateStep {
     override suspend fun evaluate(
         interpretation: Interpretation,
@@ -67,60 +57,9 @@ constructor(
                 .map { tagInterpreter.interpret(it.file, it.tags, interpretation) }
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)
-
-        val genreLinker = GenreLinker()
-        val genreLinkedSongs =
-            genreLinker.register(preSongs).flowOn(Dispatchers.Main).buffer(Channel.UNLIMITED)
-
-        val artistLinker = ArtistLinker()
-        val artistLinkedSongs =
-            artistLinker.register(genreLinkedSongs).flowOn(Dispatchers.Main).toList()
-        // This is intentional. Song and album instances are dependent on artist
-        // data, so we need to ensure that all of the linked artist data is resolved
-        // before we go any further.
-        val genres = genreLinker.resolve()
-        val artists = artistLinker.resolve()
-
-        val albumLinker = AlbumLinker()
-        val albumLinkedSongs =
-            albumLinker
-                .register(artistLinkedSongs.asFlow())
-                .map { LinkedSongImpl(it) }
-                .flowOn(Dispatchers.Main)
-                .toList()
-        val albums = albumLinker.resolve()
-
-        val uidMap = mutableMapOf<Music.UID, SongImpl>()
-        val songs =
-            albumLinkedSongs.mapNotNull {
-                val uid = it.preSong.computeUid()
-                val other = uidMap[uid]
-                if (other == null) {
-                    SongImpl(it)
-                } else {
-                    Timber.d("Song @ $uid already exists at ${other.path}, ignoring")
-                    null
-                }
-            }
-        return LibraryImpl(
-            songs,
-            albums.onEach { it.finalize() },
-            artists.onEach { it.finalize() },
-            genres.onEach { it.finalize() })
-    }
-
-    private data class LinkedSongImpl(private val albumLinkedSong: AlbumLinker.LinkedSong) :
-        LinkedSong {
-        override val preSong: PreSong
-            get() = albumLinkedSong.linkedArtistSong.linkedGenreSong.preSong
-
-        override val album: Linked<AlbumImpl, SongImpl>
-            get() = albumLinkedSong.album
-
-        override val artists: Linked<List<ArtistImpl>, SongImpl>
-            get() = albumLinkedSong.linkedArtistSong.artists
-
-        override val genres: Linked<List<GenreImpl>, SongImpl>
-            get() = albumLinkedSong.linkedArtistSong.linkedGenreSong.genres
+        val graphBuilder = musicGraphFactory.builder()
+        preSongs.collect { graphBuilder.add(it) }
+        val graph = graphBuilder.build()
+        return libraryFactory.create(graph)
     }
 }

@@ -16,10 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.musikr.model.impl
+package org.oxycblt.auxio.musikr.model
 
-import kotlin.math.min
-import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -27,21 +25,30 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.musikr.cover.Cover
-import org.oxycblt.auxio.musikr.model.graph.LinkedAlbum
-import org.oxycblt.auxio.musikr.model.graph.LinkedSong
 import org.oxycblt.auxio.musikr.tag.Date
+import org.oxycblt.auxio.musikr.tag.interpret.PreAlbum
 import org.oxycblt.auxio.musikr.tag.interpret.PreArtist
 import org.oxycblt.auxio.musikr.tag.interpret.PreGenre
+import org.oxycblt.auxio.musikr.tag.interpret.PreSong
 import org.oxycblt.auxio.util.update
+
+interface SongHandle {
+    val preSong: PreSong
+
+    fun resolveAlbum(): Album
+
+    fun resolveArtists(): List<Artist>
+
+    fun resolveGenres(): List<Genre>
+}
 
 /**
  * Library-backed implementation of [Song].
  *
- * @param linkedSong The completed [LinkedSong] all metadata van be inferred from
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SongImpl(linkedSong: LinkedSong) : Song {
-    private val preSong = linkedSong.preSong
+class SongImpl(private val handle: SongHandle) : Song {
+    private val preSong = handle.preSong
 
     override val uid = preSong.computeUid()
     override val name = preSong.name
@@ -57,9 +64,14 @@ class SongImpl(linkedSong: LinkedSong) : Song {
     override val lastModified = preSong.lastModified
     override val dateAdded = preSong.dateAdded
     override val cover = Cover.single(this)
-    override val album = linkedSong.album.resolve(this)
-    override val artists = linkedSong.artists.resolve(this)
-    override val genres = linkedSong.genres.resolve(this)
+    override val album: Album
+        get() = handle.resolveAlbum()
+
+    override val artists: List<Artist>
+        get() = handle.resolveArtists()
+
+    override val genres: List<Genre>
+        get() = handle.resolveGenres()
 
     private val hashCode = 31 * uid.hashCode() + preSong.hashCode()
 
@@ -71,13 +83,20 @@ class SongImpl(linkedSong: LinkedSong) : Song {
     override fun toString() = "Song(uid=$uid, name=$name)"
 }
 
+interface AlbumHandle {
+    val preAlbum: PreAlbum
+    val songs: List<Song>
+
+    fun resolveArtists(): List<Artist>
+}
+
 /**
  * Library-backed implementation of [Album].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
-    private val preAlbum = linkedAlbum.preAlbum
+class AlbumImpl(private val handle: AlbumHandle) : Album {
+    private val preAlbum = handle.preAlbum
 
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
@@ -91,41 +110,33 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
             }
     override val name = preAlbum.name
     override val releaseType = preAlbum.releaseType
-    override var durationMs = 0L
-    override var dateAdded = 0L
-    override var cover: Cover = Cover.nil()
-    override var dates: Date.Range? = null
+    override val durationMs = handle.songs.sumOf { it.durationMs }
+    override val dateAdded = handle.songs.minOf { it.dateAdded }
+    override val cover = Cover.multi(handle.songs)
+    override val dates: Date.Range? =
+        handle.songs.mapNotNull { it.date }.ifEmpty { null }?.run { Date.Range(min(), max()) }
 
-    override val artists = linkedAlbum.artists.resolve(this)
-    override val songs = mutableSetOf<Song>()
+    override val artists: List<Artist>
+        get() = handle.resolveArtists()
 
-    private var hashCode = 31 * uid.hashCode() + preAlbum.hashCode()
+    override val songs = handle.songs
+
+    private val hashCode = 31 * (31 * uid.hashCode() + preAlbum.hashCode()) + songs.hashCode()
 
     override fun hashCode() = hashCode
 
-    // Since equality on public-facing music models is not identical to the tag equality,
-    // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
         other is AlbumImpl && uid == other.uid && preAlbum == other.preAlbum && songs == other.songs
 
     override fun toString() = "Album(uid=$uid, name=$name)"
+}
 
-    fun link(song: SongImpl) {
-        songs.add(song)
-        durationMs += song.durationMs
-        dateAdded = min(dateAdded, song.dateAdded)
-        if (song.date != null) {
-            dates =
-                dates?.let {
-                    if (song.date < it.min) Date.Range(song.date, it.max)
-                    else if (song.date > it.max) Date.Range(it.min, song.date) else it
-                } ?: Date.Range(song.date, song.date)
-        }
-    }
+interface ArtistHandle {
+    val preArtist: PreArtist
+    val songs: Set<Song>
+    val albums: Set<Album>
 
-    fun finalize() {
-        cover = Cover.single(Sort(Sort.Mode.ByTrack, Sort.Direction.ASCENDING).songs(songs).first())
-    }
+    fun resolveGenres(): Set<Genre>
 }
 
 /**
@@ -133,58 +144,41 @@ class AlbumImpl(linkedAlbum: LinkedAlbum) : Album {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistImpl(private val preArtist: PreArtist) : Artist {
+class ArtistImpl(private val handle: ArtistHandle) : Artist {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-        preArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ARTISTS, it) }
-            ?: Music.UID.auxio(MusicType.ARTISTS) { update(preArtist.rawName) }
-    override val name = preArtist.name
+        handle.preArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ARTISTS, it) }
+            ?: Music.UID.auxio(MusicType.ARTISTS) { update(handle.preArtist.rawName) }
+    override val name = handle.preArtist.name
 
-    override val songs = mutableSetOf<Song>()
+    override val songs = handle.songs
+    override var explicitAlbums = handle.albums
+    override var implicitAlbums = handle.songs.mapTo(mutableSetOf()) { it.album } - handle.albums
 
-    private val albums = mutableListOf<Album>()
-    override var explicitAlbums = mutableSetOf<Album>()
-    override var implicitAlbums = mutableSetOf<Album>()
+    override val genres: List<Genre>
+        get() = handle.resolveGenres().toList()
 
-    override var genres = listOf<Genre>()
-    override var durationMs = 0L
-    override var cover = Cover.nil()
+    override val durationMs = handle.songs.sumOf { it.durationMs }
+    override val cover = Cover.multi(handle.songs)
 
-    private var hashCode = 31 * uid.hashCode() + preArtist.hashCode()
+    private val hashCode =
+        31 * (31 * uid.hashCode() + handle.preArtist.hashCode()) * handle.songs.hashCode()
 
-    // Note: Append song contents to MusicParent equality so that artists with
-    // the same UID but different songs are not equal.
     override fun hashCode() = hashCode
 
-    // Since equality on public-facing music models is not identical to the tag equality,
-    // we just compare raw instances and how they are interpreted.
     override fun equals(other: Any?) =
         other is ArtistImpl &&
             uid == other.uid &&
-            preArtist == other.preArtist &&
+            handle.preArtist == other.handle.preArtist &&
             songs == other.songs
 
     override fun toString() = "Artist(uid=$uid, name=$name)"
+}
 
-    fun link(song: SongImpl) {
-        songs.add(song)
-        durationMs += song.durationMs
-        hashCode = 31 * hashCode + song.hashCode()
-    }
-
-    fun link(album: AlbumImpl) {
-        albums.add(album)
-    }
-
-    fun finalize() {
-        explicitAlbums.addAll(albums)
-        implicitAlbums.addAll(songs.mapTo(mutableSetOf()) { it.album } - albums.toSet())
-        cover = Cover.multi(songs)
-        genres =
-            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-                .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
-                .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
-    }
+interface GenreHandle {
+    val preGenre: PreGenre
+    val songs: Set<Song>
+    val artists: Set<Artist>
 }
 
 /**
@@ -192,32 +186,25 @@ class ArtistImpl(private val preArtist: PreArtist) : Artist {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(private val preGenre: PreGenre) : Genre {
-    override val uid = Music.UID.auxio(MusicType.GENRES) { update(preGenre.rawName) }
-    override val name = preGenre.name
+class GenreImpl(private val handle: GenreHandle) : Genre {
+    override val uid = Music.UID.auxio(MusicType.GENRES) { update(handle.preGenre.rawName) }
+    override val name = handle.preGenre.name
 
     override val songs = mutableSetOf<Song>()
     override val artists = mutableSetOf<Artist>()
-    override var durationMs = 0L
-    override var cover = Cover.nil()
+    override val durationMs = handle.songs.sumOf { it.durationMs }
+    override val cover = Cover.multi(handle.songs)
 
-    private var hashCode = uid.hashCode()
+    private val hashCode =
+        31 * (31 * uid.hashCode() + handle.preGenre.hashCode()) + songs.hashCode()
 
     override fun hashCode() = hashCode
 
     override fun equals(other: Any?) =
-        other is GenreImpl && uid == other.uid && preGenre == other.preGenre && songs == other.songs
+        other is GenreImpl &&
+            uid == other.uid &&
+            handle.preGenre == other.handle.preGenre &&
+            songs == other.songs
 
     override fun toString() = "Genre(uid=$uid, name=$name)"
-
-    fun link(song: SongImpl) {
-        songs.add(song)
-        durationMs += song.durationMs
-        hashCode = 31 * hashCode + song.hashCode()
-    }
-
-    fun finalize() {
-        cover = Cover.multi(songs)
-        artists.addAll(songs.flatMapTo(mutableSetOf()) { it.artists })
-    }
 }

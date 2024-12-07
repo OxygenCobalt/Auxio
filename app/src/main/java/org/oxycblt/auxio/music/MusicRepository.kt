@@ -27,7 +27,7 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
 import org.oxycblt.auxio.musikr.Indexer
 import org.oxycblt.auxio.musikr.IndexingProgress
-import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
+import org.oxycblt.auxio.musikr.model.MutableLibrary
 import org.oxycblt.auxio.musikr.tag.Interpretation
 import org.oxycblt.auxio.musikr.tag.Name
 import org.oxycblt.auxio.musikr.tag.interpret.Separators
