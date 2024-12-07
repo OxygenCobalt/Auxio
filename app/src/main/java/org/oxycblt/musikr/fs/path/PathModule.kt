@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Auxio Project
+ * Copyright (c) 2024 Auxio Project
  * FsModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
-package org.oxycblt.musikr.fs
+
+package org.oxycblt.musikr.fs.path
 
 import android.content.ContentResolver
 import android.content.Context
@@ -36,16 +36,20 @@ import org.oxycblt.musikr.fs.path.VolumeManagerImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-class FsProvidesModule {
+class PathModule {
     @Provides
-    fun contentResolver(@ApplicationContext context: Context): ContentResolver =
-        context.contentResolverSafe
+    fun volumeManager(@ApplicationContext context: Context): VolumeManager =
+        VolumeManagerImpl(context.getSystemServiceCompat(StorageManager::class))
+
+    @Provides
+    fun mediaStorePathInterpreterFactory(
+        volumeManager: VolumeManager
+    ): MediaStorePathInterpreter.Factory = MediaStorePathInterpreter.Factory.from(volumeManager)
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface FsBindsModule {
-    @Binds fun deviceFiles(deviceFilesImpl: DeviceFilesImpl): DeviceFiles
-
-    @Binds fun musicLocationFactory(musicLocationFactoryImpl: MusicLocationFactoryImpl): MusicLocation.Factory
+interface PathBindsModule {
+    @Binds
+    fun documentPathFactory(documentTreePathFactory: DocumentPathFactoryImpl): DocumentPathFactory
 }

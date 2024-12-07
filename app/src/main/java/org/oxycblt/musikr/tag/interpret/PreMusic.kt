@@ -22,7 +22,7 @@ import android.net.Uri
 import java.util.UUID
 import org.oxycblt.musikr.Music
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.musikr.fs.MimeType
+import org.oxycblt.musikr.MimeType
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.tag.Date

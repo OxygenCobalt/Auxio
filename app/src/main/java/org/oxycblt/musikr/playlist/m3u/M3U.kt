@@ -31,7 +31,7 @@ import org.oxycblt.musikr.resolveNames
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.fs.Volume
-import org.oxycblt.musikr.fs.VolumeManager
+import org.oxycblt.musikr.fs.path.VolumeManager
 import org.oxycblt.musikr.playlist.ExportConfig
 import org.oxycblt.musikr.playlist.ImportedPlaylist
 import org.oxycblt.musikr.playlist.PossiblePaths

@@ -21,7 +21,7 @@ package org.oxycblt.musikr.tag.interpret
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.musikr.fs.DeviceFile
-import org.oxycblt.musikr.fs.MimeType
+import org.oxycblt.musikr.MimeType
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Interpretation
 import org.oxycblt.musikr.tag.Name

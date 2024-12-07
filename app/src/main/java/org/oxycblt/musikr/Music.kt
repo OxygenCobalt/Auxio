@@ -30,7 +30,6 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.fs.MimeType
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Disc
