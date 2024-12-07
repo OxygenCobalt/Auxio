@@ -33,10 +33,10 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Library
+import org.oxycblt.musikr.Library
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.Song
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import timber.log.Timber as L

@@ -46,8 +46,8 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.MaterialToolbar
 import java.lang.IllegalArgumentException
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
 /**

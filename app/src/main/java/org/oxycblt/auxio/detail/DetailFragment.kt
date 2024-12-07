@@ -35,8 +35,8 @@ import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.PlainHeader
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.getDimenPixels

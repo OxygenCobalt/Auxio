@@ -35,9 +35,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.SwipeCoverView

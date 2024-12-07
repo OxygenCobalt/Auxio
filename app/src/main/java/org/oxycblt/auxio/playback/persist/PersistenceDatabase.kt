@@ -28,7 +28,7 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.musikr.Music
 import org.oxycblt.auxio.playback.state.RepeatMode
 
 /**

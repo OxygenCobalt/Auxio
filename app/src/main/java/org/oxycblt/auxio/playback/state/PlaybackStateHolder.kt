@@ -22,8 +22,8 @@ import android.net.Uri
 import android.os.SystemClock
 import android.support.v4.media.session.PlaybackStateCompat
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 
 /**
  * The designated "source of truth" for the current playback state. Should only be used by

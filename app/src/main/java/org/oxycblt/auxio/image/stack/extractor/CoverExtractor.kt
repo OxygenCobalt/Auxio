@@ -20,7 +20,7 @@ package org.oxycblt.auxio.image.stack.extractor
 
 import android.net.Uri
 import javax.inject.Inject
-import org.oxycblt.auxio.musikr.cover.Cover
+import org.oxycblt.musikr.cover.Cover
 
 interface CoverExtractor {
     suspend fun extract(cover: Cover.Single): ByteArray?

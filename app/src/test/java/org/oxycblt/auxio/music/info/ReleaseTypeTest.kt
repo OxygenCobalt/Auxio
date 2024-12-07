@@ -20,7 +20,7 @@ package org.oxycblt.auxio.music.info
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.oxycblt.auxio.musikr.tag.ReleaseType
+import org.oxycblt.musikr.tag.ReleaseType
 
 class ReleaseTypeTest {
     @Test

@@ -22,7 +22,7 @@ import java.security.MessageDigest
 import java.util.UUID
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.musikr.tag.Date
+import org.oxycblt.musikr.tag.Date
 
 /**
  * Sanitizes a value that is unlikely to be null. On debug builds, this aliases to [requireNotNull],

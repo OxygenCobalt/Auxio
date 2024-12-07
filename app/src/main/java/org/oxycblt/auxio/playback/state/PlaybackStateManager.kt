@@ -21,9 +21,9 @@ package org.oxycblt.auxio.playback.state
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager.Listener
 import timber.log.Timber as L
 

@@ -43,9 +43,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.musikr.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.msToSecs
 import org.oxycblt.auxio.playback.persist.PersistenceRepository

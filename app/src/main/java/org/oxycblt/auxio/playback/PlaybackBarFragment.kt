@@ -26,8 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately

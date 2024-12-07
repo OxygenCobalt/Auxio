@@ -23,10 +23,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Music
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
 /**
