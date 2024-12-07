@@ -22,10 +22,11 @@ import android.net.Uri
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.flow
-import org.oxycblt.auxio.musikr.model.impl.MutableLibrary
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import org.oxycblt.auxio.musikr.model.MutableLibrary
 import org.oxycblt.auxio.musikr.pipeline.EvaluateStep
 import org.oxycblt.auxio.musikr.pipeline.ExploreStep
 import org.oxycblt.auxio.musikr.pipeline.ExtractStep
@@ -62,18 +63,20 @@ constructor(
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
-        val explored = exploreStep.explore(uris).buffer(Channel.UNLIMITED)
-        val extracted = extractStep.extract(explored).buffer(Channel.UNLIMITED)
+        var exploredCount = 0
+        val explored =
+            exploreStep
+                .explore(uris)
+                .buffer(Channel.UNLIMITED)
+                .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
+                .onEach { onProgress(IndexingProgress.Songs(0, ++exploredCount)) }
+        var extractedCount = 0
+        val extracted =
+            extractStep
+                .extract(explored)
+                .buffer(Channel.UNLIMITED)
+                .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
+                .onCompletion { onProgress(IndexingProgress.Indeterminate) }
         evaluateStep.evaluate(interpretation, extracted)
     }
-
-    private fun <T> Flow<T>.cap(start: suspend () -> Unit, end: suspend () -> Unit): Flow<T> =
-        flow {
-            start()
-            try {
-                collect { emit(it) }
-            } finally {
-                end()
-            }
-        }
 }
