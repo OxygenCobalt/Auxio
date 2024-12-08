@@ -24,8 +24,8 @@ import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.musikr.fs.MusicLocation
 import timber.log.Timber as L
 
 /**
@@ -35,7 +35,7 @@ import timber.log.Timber as L
  */
 interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The locations of music to load. */
-    var musicLocations: List<Uri>
+    var musicLocations: List<MusicLocation>
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to be actively watching for changes in the music library. */
@@ -57,41 +57,19 @@ class MusicSettingsImpl
 @Inject
 constructor(
     @ApplicationContext context: Context,
-    private val documentPathFactory: DocumentPathFactory
+    private val musicLocationFactory: MusicLocation.Factory
 ) : Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
-    //    override var musicDirs: MusicDirectories
-    //        get() {
-    //            val dirs =
-    //                (sharedPreferences.getStringSet(getString(R.string.set_key_music_dirs), null)
-    //                        ?: emptySet())
-    //                    .mapNotNull(documentPathFactory::fromDocumentId)
-    //            return MusicDirectories(
-    //                dirs,
-    //                sharedPreferences.getBoolean(getString(R.string.set_key_music_dirs_include),
-    // false))
-    //        }
-    //        set(value) {
-    //            sharedPreferences.edit {
-    //                putStringSet(
-    //                    getString(R.string.set_key_music_dirs),
-    //                    value.dirs.map(documentPathFactory::toDocumentId).toSet())
-    //                putBoolean(getString(R.string.set_key_music_dirs_include),
-    // value.shouldInclude)
-    //                apply()
-    //            }
-    //        }
-
-    override var musicLocations: List<Uri>
+    override var musicLocations: List<MusicLocation>
         get() {
             val dirs =
                 sharedPreferences.getStringSet(getString(R.string.set_key_music_locations), null)
                     ?: emptySet()
-            return dirs.map { Uri.parse(it) }
+            return dirs.mapNotNull { musicLocationFactory.existing(Uri.parse(it)) }
         }
         set(value) {
             sharedPreferences.edit {
                 putStringSet(
-                    getString(R.string.set_key_music_locations), value.map(Uri::toString).toSet())
+                    getString(R.string.set_key_music_locations), value.map { it.toString() }.toSet())
                 apply()
             }
         }

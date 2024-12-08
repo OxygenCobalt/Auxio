@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.locations
 
 import android.content.ActivityNotFoundException
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -51,8 +50,10 @@ class MusicSourcesDialog :
     ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(), LocationAdapter.Listener {
     private val locationAdapter = LocationAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    @Inject lateinit var musicLocationFactory: MusicLocation.Factory
-    @Inject lateinit var musicSettings: MusicSettings
+    @Inject
+    lateinit var musicLocationFactory: MusicLocation.Factory
+    @Inject
+    lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicLocationsBinding.inflate(inflater)
@@ -62,7 +63,7 @@ class MusicSourcesDialog :
             .setTitle(R.string.set_locations)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                val newDirs = locationAdapter.locations.map { it.uri }
+                val newDirs = locationAdapter.locations
                 if (musicSettings.musicLocations != newDirs) {
                     L.d("Committing changes")
                     musicSettings.musicLocations = newDirs
@@ -77,7 +78,8 @@ class MusicSourcesDialog :
         openDocumentTreeLauncher =
             registerForActivityResult(
                 ActivityResultContracts.OpenDocumentTree(),
-                ::addDocumentTreeUriToDirs)
+                ::addDocumentTreeUriToDirs
+            )
 
         binding.locationsAdd.apply {
             ViewCompat.setTooltipText(this, contentDescription)
@@ -102,13 +104,11 @@ class MusicSourcesDialog :
             itemAnimator = null
         }
 
-        val locationUris =
-            savedInstanceState?.getStringArrayList(KEY_PENDING_LOCATIONS)?.map { Uri.parse(it) }
-                ?: musicSettings.musicLocations
         val locations =
-            locationUris.mapNotNull {
-                musicLocationFactory.create(it)
+            savedInstanceState?.getStringArrayList(KEY_PENDING_LOCATIONS)?.mapNotNull {
+                musicLocationFactory.existing(Uri.parse(it))
             }
+                ?: musicSettings.musicLocations
 
         locationAdapter.addAll(locations)
         requireBinding().locationsEmpty.isVisible = locations.isEmpty()
@@ -117,7 +117,8 @@ class MusicSourcesDialog :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_LOCATIONS, ArrayList(locationAdapter.locations.map { it.uri.toString() }))
+            KEY_PENDING_LOCATIONS, ArrayList(locationAdapter.locations.map { it.uri.toString() })
+        )
     }
 
     override fun onDestroyBinding(binding: DialogMusicLocationsBinding) {
@@ -131,7 +132,8 @@ class MusicSourcesDialog :
         requireBinding().locationsEmpty.isVisible = locationAdapter.locations.isEmpty()
     }
 
-    @Inject lateinit var contentResolver: ContentResolver
+    @Inject
+    lateinit var contentResolver: ContentResolver
 
     /**
      * Add a Document Tree [Uri] chosen by the user to the current [MusicLocation]s.
@@ -149,7 +151,7 @@ class MusicSourcesDialog :
             Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, takeFlags)
 
-        val location = musicLocationFactory.create(uri)
+        val location = musicLocationFactory.new(uri)
 
         if (location != null) {
             locationAdapter.add(location)
