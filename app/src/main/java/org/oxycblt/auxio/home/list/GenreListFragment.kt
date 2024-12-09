@@ -35,15 +35,15 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.musikr.Genre
 import org.oxycblt.auxio.music.IndexingState
-import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.musikr.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 
 /**
  * A [ListFragment] that shows a list of [Genre]s.

@@ -35,9 +35,9 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.BasicHeaderViewHolder
 import org.oxycblt.auxio.list.recycler.DividerViewHolder
-import org.oxycblt.musikr.Music
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.musikr.Music
 
 /**
  * A [RecyclerView.Adapter] that implements shared behavior between lists of child items in the

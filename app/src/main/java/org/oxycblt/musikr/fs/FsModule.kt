@@ -20,19 +20,12 @@ package org.oxycblt.musikr.fs
 
 import android.content.ContentResolver
 import android.content.Context
-import android.os.storage.StorageManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.musikr.fs.path.DocumentPathFactory
-import org.oxycblt.musikr.fs.path.DocumentPathFactoryImpl
-import org.oxycblt.musikr.fs.path.MediaStorePathInterpreter
-import org.oxycblt.auxio.util.getSystemServiceCompat
-import org.oxycblt.musikr.fs.path.VolumeManager
-import org.oxycblt.musikr.fs.path.VolumeManagerImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -47,5 +40,8 @@ class FsProvidesModule {
 interface FsBindsModule {
     @Binds fun deviceFiles(deviceFilesImpl: DeviceFilesImpl): DeviceFiles
 
-    @Binds fun musicLocationFactory(musicLocationFactoryImpl: MusicLocationFactoryImpl): MusicLocation.Factory
+    @Binds
+    fun musicLocationFactory(
+        musicLocationFactoryImpl: MusicLocationFactoryImpl
+    ): MusicLocation.Factory
 }

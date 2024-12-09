@@ -27,16 +27,16 @@ import org.oxycblt.auxio.detail.DetailGenerator
 import org.oxycblt.auxio.detail.DetailSection
 import org.oxycblt.auxio.home.HomeGenerator
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicType
+import org.oxycblt.auxio.search.SearchEngine
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
-import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.tag.resolveNumber
-import org.oxycblt.auxio.search.SearchEngine
 
 class MusicBrowser
 private constructor(

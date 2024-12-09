@@ -35,14 +35,14 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
-import org.oxycblt.musikr.Album
-import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.tag.Disc
-import org.oxycblt.musikr.tag.resolveNumber
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.tag.Disc
+import org.oxycblt.musikr.tag.resolveNumber
 
 /**
  * An [DetailListAdapter] implementing the header and sub-items for the [Album] detail view.

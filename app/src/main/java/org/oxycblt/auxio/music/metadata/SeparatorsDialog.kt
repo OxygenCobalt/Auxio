@@ -29,8 +29,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.musikr.tag.interpret.Separators
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
+import org.oxycblt.musikr.tag.interpret.Separators
 import timber.log.Timber as L
 
 /**

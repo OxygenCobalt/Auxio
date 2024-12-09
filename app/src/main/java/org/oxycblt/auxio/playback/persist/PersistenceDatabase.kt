@@ -28,8 +28,8 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
-import org.oxycblt.musikr.Music
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.musikr.Music
 
 /**
  * Provides raw access to the database storing the persisted playback state.

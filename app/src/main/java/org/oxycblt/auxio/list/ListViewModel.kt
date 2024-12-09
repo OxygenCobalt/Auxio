@@ -25,17 +25,17 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.list.menu.Menu
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.playback.PlaySong
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
-import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.auxio.playback.PlaySong
-import org.oxycblt.auxio.util.Event
-import org.oxycblt.auxio.util.MutableEvent
 import timber.log.Timber as L
 
 /**

@@ -59,14 +59,10 @@ import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectionFragment
 import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.IndexingState
-import org.oxycblt.musikr.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.musikr.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
-import org.oxycblt.musikr.IndexingProgress
-import org.oxycblt.musikr.playlist.m3u.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
@@ -75,6 +71,10 @@ import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.musikr.IndexingProgress
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.playlist.m3u.M3U
 import timber.log.Timber as L
 
 /**

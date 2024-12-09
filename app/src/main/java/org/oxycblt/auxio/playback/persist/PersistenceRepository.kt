@@ -19,9 +19,9 @@
 package org.oxycblt.auxio.playback.persist
 
 import javax.inject.Inject
-import org.oxycblt.musikr.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.musikr.MusicParent
 import timber.log.Timber as L
 
 /**

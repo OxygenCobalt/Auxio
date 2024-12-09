@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * FsModule.kt is part of Auxio.
+ * PathModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.fs.path
 
-import android.content.ContentResolver
 import android.content.Context
 import android.os.storage.StorageManager
 import dagger.Binds
@@ -27,12 +26,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.musikr.fs.path.DocumentPathFactory
-import org.oxycblt.musikr.fs.path.DocumentPathFactoryImpl
-import org.oxycblt.musikr.fs.path.MediaStorePathInterpreter
 import org.oxycblt.auxio.util.getSystemServiceCompat
-import org.oxycblt.musikr.fs.path.VolumeManager
-import org.oxycblt.musikr.fs.path.VolumeManagerImpl
 
 @Module
 @InstallIn(SingletonComponent::class)

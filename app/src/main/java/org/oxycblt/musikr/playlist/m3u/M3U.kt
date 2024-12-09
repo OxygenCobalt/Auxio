@@ -26,8 +26,8 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
 import javax.inject.Inject
+import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Playlist
-import org.oxycblt.musikr.resolveNames
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.fs.Volume
@@ -35,8 +35,8 @@ import org.oxycblt.musikr.fs.path.VolumeManager
 import org.oxycblt.musikr.playlist.ExportConfig
 import org.oxycblt.musikr.playlist.ImportedPlaylist
 import org.oxycblt.musikr.playlist.PossiblePaths
+import org.oxycblt.musikr.resolveNames
 import org.oxycblt.musikr.tag.util.correctWhitespace
-import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
 
 /**
@@ -154,8 +154,7 @@ constructor(
             else ->
                 listOf(
                     InterpretedPath(Components.parseUnix(path), false),
-                    InterpretedPath(Components.parseWindows(path), true)
-                )
+                    InterpretedPath(Components.parseWindows(path), true))
         }
 
     private fun expandInterpretation(

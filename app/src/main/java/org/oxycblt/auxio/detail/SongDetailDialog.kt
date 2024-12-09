@@ -32,16 +32,16 @@ import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.detail.list.SongProperty
 import org.oxycblt.auxio.detail.list.SongPropertyAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.resolveNames
-import org.oxycblt.musikr.metadata.AudioProperties
-import org.oxycblt.musikr.tag.Name
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.replaygain.formatDb
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.concatLocalized
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.metadata.AudioProperties
+import org.oxycblt.musikr.resolveNames
+import org.oxycblt.musikr.tag.Name
 import timber.log.Timber as L
 
 /**

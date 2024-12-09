@@ -26,8 +26,8 @@ import org.oxycblt.auxio.databinding.DialogSortBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.list.sort.SortDialog
-import org.oxycblt.musikr.Album
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.musikr.Album
 import timber.log.Timber as L
 
 /**

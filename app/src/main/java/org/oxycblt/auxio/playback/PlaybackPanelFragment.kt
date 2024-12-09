@@ -35,9 +35,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.musikr.MusicParent
-import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.SwipeCoverView
@@ -45,6 +42,9 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.resolveNames
 import timber.log.Timber as L
 
 /**

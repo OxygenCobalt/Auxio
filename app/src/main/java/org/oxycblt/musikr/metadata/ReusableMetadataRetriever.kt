@@ -110,8 +110,7 @@ constructor(private val mediaSourceFactory: MediaSource.Factory) :
                 job = MetadataJob(data, mediaSourceCaller)
 
                 mediaSourceHandler.sendEmptyMessageDelayed(
-                    MESSAGE_CHECK_FAILURE, /* delayMs= */ CHECK_INTERVAL_MS
-                )
+                    MESSAGE_CHECK_FAILURE, /* delayMs= */ CHECK_INTERVAL_MS)
 
                 return true
             }

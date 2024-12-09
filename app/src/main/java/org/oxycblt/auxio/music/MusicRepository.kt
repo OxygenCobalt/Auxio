@@ -347,10 +347,10 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
             } else {
                 Name.Known.SimpleFactory
             }
-        val uris = musicSettings.musicLocations
+        val locations = musicSettings.musicLocations
 
         val newLibrary =
-            indexer.run(uris, Interpretation(nameFactory, separators), ::emitIndexingProgress)
+            indexer.run(locations, Interpretation(nameFactory, separators), ::emitIndexingProgress)
 
         emitIndexingCompletion(null)
 

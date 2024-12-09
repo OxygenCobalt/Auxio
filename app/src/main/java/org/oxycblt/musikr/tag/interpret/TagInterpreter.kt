@@ -20,16 +20,16 @@ package org.oxycblt.musikr.tag.interpret
 
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
+import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.musikr.MimeType
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Interpretation
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.util.parseId3GenreNames
-import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
-import org.oxycblt.auxio.util.toUuidOrNull
 
 interface TagInterpreter {
     fun interpret(file: DeviceFile, parsedTags: ParsedTags, interpretation: Interpretation): PreSong

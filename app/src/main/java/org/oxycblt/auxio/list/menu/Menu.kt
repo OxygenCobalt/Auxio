@@ -21,13 +21,13 @@ package org.oxycblt.auxio.list.menu
 import android.os.Parcelable
 import androidx.annotation.MenuRes
 import kotlinx.parcelize.Parcelize
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.auxio.playback.PlaySong
 
 /**
  * Command to navigate to a specific menu dialog configuration.

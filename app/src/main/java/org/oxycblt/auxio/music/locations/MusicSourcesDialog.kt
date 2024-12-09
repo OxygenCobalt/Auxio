@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.locations
 
 import android.content.ActivityNotFoundException
@@ -50,10 +50,8 @@ class MusicSourcesDialog :
     ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(), LocationAdapter.Listener {
     private val locationAdapter = LocationAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    @Inject
-    lateinit var musicLocationFactory: MusicLocation.Factory
-    @Inject
-    lateinit var musicSettings: MusicSettings
+    @Inject lateinit var musicLocationFactory: MusicLocation.Factory
+    @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicLocationsBinding.inflate(inflater)
@@ -77,9 +75,7 @@ class MusicSourcesDialog :
     ) {
         openDocumentTreeLauncher =
             registerForActivityResult(
-                ActivityResultContracts.OpenDocumentTree(),
-                ::addDocumentTreeUriToDirs
-            )
+                ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
 
         binding.locationsAdd.apply {
             ViewCompat.setTooltipText(this, contentDescription)
@@ -107,8 +103,7 @@ class MusicSourcesDialog :
         val locations =
             savedInstanceState?.getStringArrayList(KEY_PENDING_LOCATIONS)?.mapNotNull {
                 musicLocationFactory.existing(Uri.parse(it))
-            }
-                ?: musicSettings.musicLocations
+            } ?: musicSettings.musicLocations
 
         locationAdapter.addAll(locations)
         requireBinding().locationsEmpty.isVisible = locations.isEmpty()
@@ -117,8 +112,7 @@ class MusicSourcesDialog :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_LOCATIONS, ArrayList(locationAdapter.locations.map { it.uri.toString() })
-        )
+            KEY_PENDING_LOCATIONS, ArrayList(locationAdapter.locations.map { it.uri.toString() }))
     }
 
     override fun onDestroyBinding(binding: DialogMusicLocationsBinding) {
@@ -132,8 +126,7 @@ class MusicSourcesDialog :
         requireBinding().locationsEmpty.isVisible = locationAdapter.locations.isEmpty()
     }
 
-    @Inject
-    lateinit var contentResolver: ContentResolver
+    @Inject lateinit var contentResolver: ContentResolver
 
     /**
      * Add a Document Tree [Uri] chosen by the user to the current [MusicLocation]s.

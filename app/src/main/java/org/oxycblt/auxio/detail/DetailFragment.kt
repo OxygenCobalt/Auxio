@@ -35,13 +35,13 @@ import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.PlainHeader
-import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
 
 abstract class DetailFragment<P : MusicParent, C : Music> :
     ListFragment<C, FragmentDetailBinding>(),

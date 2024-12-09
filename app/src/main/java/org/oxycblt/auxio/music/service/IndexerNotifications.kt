@@ -25,8 +25,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.auxio.util.newMainPendingIntent
+import org.oxycblt.musikr.IndexingProgress
 import timber.log.Timber as L
 
 /**

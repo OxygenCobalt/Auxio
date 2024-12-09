@@ -21,14 +21,14 @@ package org.oxycblt.auxio.playback.state
 import javax.inject.Inject
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.MusicParent
-import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.auxio.playback.PlaybackSettings
 
 /**
  * A playback command that can be passed to [PlaybackStateManager] to start new playback.

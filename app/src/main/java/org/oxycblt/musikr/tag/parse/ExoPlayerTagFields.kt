@@ -19,10 +19,10 @@
 package org.oxycblt.musikr.tag.parse
 
 import androidx.core.text.isDigitsOnly
+import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.util.parseId3v2PositionField
 import org.oxycblt.musikr.tag.util.parseVorbisPositionField
-import org.oxycblt.auxio.util.nonZeroOrNull
 
 // Song
 fun ExoPlayerTags.musicBrainzId() =

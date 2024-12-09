@@ -22,11 +22,11 @@ import javax.inject.Inject
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
-import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L

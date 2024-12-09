@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.pipeline
 
-import android.net.Uri
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -27,16 +26,17 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapNotNull
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.DeviceFiles
+import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 interface ExploreStep {
-    fun explore(uris: List<Uri>): Flow<ExploreNode>
+    fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
 }
 
 class ExploreStepImpl @Inject constructor(private val deviceFiles: DeviceFiles) : ExploreStep {
-    override fun explore(uris: List<Uri>) =
+    override fun explore(locations: List<MusicLocation>) =
         deviceFiles
-            .explore(uris.asFlow())
+            .explore(locations.asFlow())
             .mapNotNull {
                 when {
                     it.mimeType == M3U.MIME_TYPE -> null

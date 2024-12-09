@@ -31,8 +31,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.musikr.fs.path.DocumentPathFactory
-import timber.log.Timber
 
 interface DeviceFiles {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
@@ -47,11 +45,8 @@ data class DeviceFile(
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DeviceFilesImpl
-@Inject
-constructor(
-    @ApplicationContext private val context: Context
-) : DeviceFiles {
+class DeviceFilesImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    DeviceFiles {
     private val contentResolver = context.contentResolverSafe
 
     override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
@@ -71,8 +66,7 @@ constructor(
     ): Flow<DeviceFile> = flow {
         contentResolver.useQuery(
             DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
-            PROJECTION
-        ) { cursor ->
+            PROJECTION) { cursor ->
                 val childUriIndex =
                     cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
                 val displayNameIndex =
@@ -104,8 +98,7 @@ constructor(
                                 mimeType,
                                 newPath,
                                 size,
-                                lastModified)
-                        )
+                                lastModified))
                     }
                 }
                 emitAll(recursive.asFlow().flattenMerge())

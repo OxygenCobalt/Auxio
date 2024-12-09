@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr
 
-import android.net.Uri
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
@@ -35,7 +34,7 @@ import org.oxycblt.musikr.tag.Interpretation
 
 interface Indexer {
     suspend fun run(
-        locations: MusicLocation,
+        locations: List<MusicLocation>,
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): MutableLibrary
@@ -60,14 +59,14 @@ constructor(
     private val evaluateStep: EvaluateStep
 ) : Indexer {
     override suspend fun run(
-        locations: MusicLocation,
+        locations: List<MusicLocation>,
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
         var exploredCount = 0
         val explored =
             exploreStep
-                .explore(uris)
+                .explore(locations)
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
                 .onEach { onProgress(IndexingProgress.Songs(0, ++exploredCount)) }

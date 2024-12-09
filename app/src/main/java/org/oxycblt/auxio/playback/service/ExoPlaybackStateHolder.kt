@@ -43,9 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.musikr.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.musikr.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.msToSecs
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
@@ -59,6 +57,8 @@ import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
 class ExoPlaybackStateHolder(

@@ -69,7 +69,8 @@ constructor(
         set(value) {
             sharedPreferences.edit {
                 putStringSet(
-                    getString(R.string.set_key_music_locations), value.map { it.toString() }.toSet())
+                    getString(R.string.set_key_music_locations),
+                    value.map { it.toString() }.toSet())
                 apply()
             }
         }
