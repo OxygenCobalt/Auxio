@@ -26,6 +26,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.oxycblt.musikr.fs.util.contentResolverSafe
 
 @Module
 @InstallIn(SingletonComponent::class)
