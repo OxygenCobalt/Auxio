@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.oxycblt.musikr.fs.MusicLocation
-import org.oxycblt.musikr.model.MutableLibrary
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.ExtractStep

@@ -61,6 +61,18 @@ interface Library {
     fun findPlaylistByName(name: String): Playlist?
 }
 
+interface MutableLibrary : Library {
+    suspend fun createPlaylist(name: String, songs: List<Song>): MutableLibrary
+
+    suspend fun renamePlaylist(playlist: Playlist, name: String): MutableLibrary
+
+    suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary
+
+    suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary
+
+    suspend fun deletePlaylist(playlist: Playlist): MutableLibrary
+}
+
 /**
  * Abstract music data. This contains universal information about all concrete music
  * implementations, such as identification information and names.

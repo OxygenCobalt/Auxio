@@ -29,9 +29,9 @@ import org.oxycblt.musikr.Indexer
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.model.MutableLibrary
 import org.oxycblt.musikr.tag.Interpretation
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.interpret.Separators
