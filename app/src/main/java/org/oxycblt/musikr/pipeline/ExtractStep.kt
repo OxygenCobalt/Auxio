@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.cache.TagCache
@@ -34,22 +35,21 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
 
 interface ExtractStep {
-    fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
+    fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
 }
 
 class ExtractStepImpl
 @Inject
 constructor(
-    private val tagCache: TagCache,
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser
 ) : ExtractStep {
-    override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
+    override fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val cacheResults =
             nodes
                 .filterIsInstance<ExploreNode.Audio>()
                 .map {
-                    val tags = tagCache.read(it.file)
+                    val tags = storage.tagCache.read(it.file)
                     MaybeCachedSong(it.file, tags)
                 }
                 .flowOn(Dispatchers.IO)

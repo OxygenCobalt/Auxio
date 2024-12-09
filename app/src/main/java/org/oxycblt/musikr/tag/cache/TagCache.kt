@@ -28,9 +28,16 @@ interface TagCache {
     suspend fun write(file: DeviceFile, tags: ParsedTags)
 }
 
-class TagCacheImpl @Inject constructor(private val tagDao: TagDao) : TagCache {
+class FullTagCache @Inject constructor(private val tagDao: TagDao) : TagCache {
     override suspend fun read(file: DeviceFile) =
         tagDao.selectTags(file.uri.toString(), file.lastModified)?.intoParsedTags()
+
+    override suspend fun write(file: DeviceFile, tags: ParsedTags) =
+        tagDao.updateTags(CachedTags.fromParsedTags(file, tags))
+}
+
+class WriteOnlyTagCache @Inject constructor(private val tagDao: TagDao) : TagCache {
+    override suspend fun read(file: DeviceFile) = null
 
     override suspend fun write(file: DeviceFile, tags: ParsedTags) =
         tagDao.updateTags(CachedTags.fromParsedTags(file, tags))

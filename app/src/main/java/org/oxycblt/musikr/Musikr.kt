@@ -29,11 +29,11 @@ import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.ExtractStep
-import org.oxycblt.musikr.tag.Interpretation
 
 interface Musikr {
     suspend fun run(
         locations: List<MusicLocation>,
+        storage: Storage,
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): MutableLibrary
@@ -59,6 +59,7 @@ constructor(
 ) : Musikr {
     override suspend fun run(
         locations: List<MusicLocation>,
+        storage: Storage,
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
@@ -72,7 +73,7 @@ constructor(
                 .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
         val extracted =
             extractStep
-                .extract(explored)
+                .extract(storage, explored)
                 .buffer(Channel.UNLIMITED)
                 .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
                 .onCompletion { onProgress(IndexingProgress.Indeterminate) }

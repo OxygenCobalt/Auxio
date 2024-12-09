@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.map
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
-import org.oxycblt.musikr.tag.Interpretation
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
 interface EvaluateStep {

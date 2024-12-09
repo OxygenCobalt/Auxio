@@ -32,8 +32,13 @@ import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.tag.Interpretation
+import org.oxycblt.musikr.Interpretation
+import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.tag.Name
+import org.oxycblt.musikr.tag.cache.FullTagCache
+import org.oxycblt.musikr.tag.cache.WriteOnlyTagCache
 import org.oxycblt.musikr.tag.interpret.Separators
 import timber.log.Timber as L
 
@@ -203,7 +208,7 @@ interface MusicRepository {
 
 class MusicRepositoryImpl
 @Inject
-constructor(private val musikr: Musikr, private val musicSettings: MusicSettings) :
+constructor(private val musikr: Musikr, private val fullTagCache: FullTagCache, private val writeOnlyTagCache: WriteOnlyTagCache, private val musicSettings: MusicSettings) :
     MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
@@ -349,8 +354,23 @@ constructor(private val musikr: Musikr, private val musicSettings: MusicSettings
             }
         val locations = musicSettings.musicLocations
 
+        val fakeCoverEditorTemporary = object : StoredCovers.Editor {
+            override suspend fun write(data: ByteArray): Cover.Single? {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun apply() {
+                TODO("Not yet implemented")
+            }
+        }
+
+        val storage = if (withCache) {
+            Storage(fullTagCache, fakeCoverEditorTemporary)
+        } else {
+            Storage(writeOnlyTagCache, fakeCoverEditorTemporary)
+        }
         val newLibrary =
-            musikr.run(locations, Interpretation(nameFactory, separators), ::emitIndexingProgress)
+            musikr.run(locations,  storage, Interpretation(nameFactory, separators), ::emitIndexingProgress)
 
         emitIndexingCompletion(null)
 
