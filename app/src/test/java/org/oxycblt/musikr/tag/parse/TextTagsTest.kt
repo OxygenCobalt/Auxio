@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * TextCachedTagsTest.kt is part of Auxio.
+ * TextTagsTest.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.metadata
+package org.oxycblt.musikr.tag.parse
 
 import androidx.media3.common.Metadata
 import androidx.media3.extractor.metadata.flac.PictureFrame
@@ -27,9 +27,8 @@ import androidx.media3.extractor.metadata.vorbis.VorbisComment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.musikr.tag.parse.ExoPlayerTags
 
-class TextCachedTagsTest {
+class TextTagsTest {
     @Test
     fun textTags_vorbis() {
         val exoPlayerTags = ExoPlayerTags(VORBIS_METADATA)

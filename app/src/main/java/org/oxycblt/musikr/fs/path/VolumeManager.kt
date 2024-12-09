@@ -24,12 +24,6 @@ import android.os.storage.StorageVolume
 import javax.inject.Inject
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Volume
-import org.oxycblt.musikr.fs.directoryCompat
-import org.oxycblt.musikr.fs.getDescriptionCompat
-import org.oxycblt.musikr.fs.isInternalCompat
-import org.oxycblt.musikr.fs.mediaStoreVolumeNameCompat
-import org.oxycblt.musikr.fs.storageVolumesCompat
-import org.oxycblt.musikr.fs.uuidCompat
 
 /** A wrapper around [StorageManager] that provides instances of the [Volume] interface. */
 interface VolumeManager {
