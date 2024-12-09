@@ -25,7 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
-import org.oxycblt.musikr.Indexer
+import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.Music
@@ -203,7 +203,7 @@ interface MusicRepository {
 
 class MusicRepositoryImpl
 @Inject
-constructor(private val indexer: Indexer, private val musicSettings: MusicSettings) :
+constructor(private val musikr: Musikr, private val musicSettings: MusicSettings) :
     MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
@@ -350,7 +350,7 @@ constructor(private val indexer: Indexer, private val musicSettings: MusicSettin
         val locations = musicSettings.musicLocations
 
         val newLibrary =
-            indexer.run(locations, Interpretation(nameFactory, separators), ::emitIndexingProgress)
+            musikr.run(locations, Interpretation(nameFactory, separators), ::emitIndexingProgress)
 
         emitIndexingCompletion(null)
 

@@ -18,17 +18,10 @@
  
 package org.oxycblt.musikr.fs
 
-import android.content.ContentResolver
-import android.content.Context
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.musikr.fs.query.DeviceFiles
-import org.oxycblt.musikr.fs.query.DeviceFilesImpl
-import org.oxycblt.musikr.fs.query.contentResolverSafe
 
 @Module
 @InstallIn(SingletonComponent::class)

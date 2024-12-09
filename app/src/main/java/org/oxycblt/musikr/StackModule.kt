@@ -25,6 +25,6 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface StackModule {
-    @Binds fun indexer(impl: IndexerImpl): Indexer
+interface MusikrModule {
+    @Binds fun musikr(impl: MusikrImpl): Musikr
 }

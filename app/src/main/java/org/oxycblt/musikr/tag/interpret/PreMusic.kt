@@ -23,8 +23,8 @@ import java.util.UUID
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.update
-import org.oxycblt.musikr.fs.MimeType
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.fs.MimeType
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.tag.Date

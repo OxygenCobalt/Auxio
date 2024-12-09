@@ -68,8 +68,7 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
     ): Flow<DeviceFile> = flow {
         contentResolver.useQuery(
             DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
-            PROJECTION
-        ) { cursor ->
+            PROJECTION) { cursor ->
                 val childUriIndex =
                     cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
                 val displayNameIndex =
@@ -101,8 +100,7 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
                                 mimeType,
                                 newPath,
                                 size,
-                                lastModified)
-                        )
+                                lastModified))
                     }
                 }
                 emitAll(recursive.asFlow().flattenMerge())

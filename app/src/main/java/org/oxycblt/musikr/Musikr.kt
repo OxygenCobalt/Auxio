@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * Indexer.kt is part of Auxio.
+ * Musikr.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.ExtractStep
 import org.oxycblt.musikr.tag.Interpretation
 
-interface Indexer {
+interface Musikr {
     suspend fun run(
         locations: List<MusicLocation>,
         interpretation: Interpretation,
@@ -50,13 +50,13 @@ sealed interface IndexingProgress {
     data object Indeterminate : IndexingProgress
 }
 
-class IndexerImpl
+class MusikrImpl
 @Inject
 constructor(
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
-) : Indexer {
+) : Musikr {
     override suspend fun run(
         locations: List<MusicLocation>,
         interpretation: Interpretation,
