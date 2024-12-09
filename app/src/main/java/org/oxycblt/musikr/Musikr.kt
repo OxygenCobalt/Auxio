@@ -63,13 +63,13 @@ constructor(
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
         var exploredCount = 0
+        var extractedCount = 0
         val explored =
             exploreStep
                 .explore(locations)
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
-                .onEach { onProgress(IndexingProgress.Songs(0, ++exploredCount)) }
-        var extractedCount = 0
+                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
         val extracted =
             extractStep
                 .extract(explored)

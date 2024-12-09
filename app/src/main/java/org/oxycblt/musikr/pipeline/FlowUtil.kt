@@ -40,6 +40,7 @@ inline fun <T, R> Flow<T>.mapPartition(crossinline predicate: (T) -> R?): HotCol
                 emit(it)
             }
         }
+        passChannel.close()
     }
     return HotCold(passFlow, failFlow)
 }

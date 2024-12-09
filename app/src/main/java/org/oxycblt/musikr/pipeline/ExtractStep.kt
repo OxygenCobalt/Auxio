@@ -70,10 +70,18 @@ constructor(
                     .flowOn(Dispatchers.IO)
                     .buffer(Channel.UNLIMITED)
             }
+        val writtenSongs =
+            merge(*extractedSongs)
+                .map {
+                    tagCache.write(it.file, it.tags)
+                    it
+                }
+                .flowOn(Dispatchers.IO)
+                .buffer(Channel.UNLIMITED)
         return merge<ExtractedMusic>(
             cachedSongs,
             split.cold,
-            *extractedSongs,
+            writtenSongs,
         )
     }
 

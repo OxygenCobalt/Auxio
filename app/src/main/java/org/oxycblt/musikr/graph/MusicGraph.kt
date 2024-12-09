@@ -211,7 +211,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         // Link all songs and albums from the irrelevant artist to the relevant artist.
         dst.songVertices.addAll(src.songVertices)
         dst.albumVertices.addAll(src.albumVertices)
-        // Update all songs and albums to point to the relevant artist.
+        // Update all songs, albums, and genres to point to the relevant artist.
         src.songVertices.forEach {
             val index = it.artistVertices.indexOf(src)
             check(index >= 0) { "Illegal state: directed edge between artist and song" }
@@ -222,6 +222,11 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             check(index >= 0) { "Illegal state: directed edge between artist and album" }
             it.artistVertices[index] = dst
         }
+        src.genreVertices.forEach {
+            it.artistVertices.remove(src)
+            it.artistVertices.add(dst)
+        }
+
         // Remove the irrelevant artist from the graph.
         artistVertices.remove(src.preArtist)
     }

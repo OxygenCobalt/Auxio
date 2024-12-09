@@ -25,10 +25,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
-import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song

@@ -38,7 +38,7 @@ sealed interface Cover {
     }
 
     companion object {
-        private val FALLBACK_SORT = Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
+        private val FALLBACK_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
 
         fun nil() = Multi(listOf())
 
