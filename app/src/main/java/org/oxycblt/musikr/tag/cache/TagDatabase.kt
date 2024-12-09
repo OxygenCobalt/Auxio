@@ -28,7 +28,7 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.util.correctWhitespace

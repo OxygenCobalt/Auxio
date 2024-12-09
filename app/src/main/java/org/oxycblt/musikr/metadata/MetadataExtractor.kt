@@ -28,7 +28,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.withContext
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.query.DeviceFile
 
 interface MetadataExtractor {
     suspend fun extract(file: DeviceFile): AudioMetadata

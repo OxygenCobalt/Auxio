@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.cache.TagCache
 import org.oxycblt.musikr.tag.parse.ParsedTags

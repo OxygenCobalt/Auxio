@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.tag.parse
 
 import javax.inject.Inject
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.metadata.AudioMetadata
 
 interface TagParser {

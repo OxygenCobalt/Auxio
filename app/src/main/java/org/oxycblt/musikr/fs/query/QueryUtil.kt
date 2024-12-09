@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs.util
+package org.oxycblt.musikr.fs.query
 
 import android.content.ContentResolver
 import android.content.Context

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr
+package org.oxycblt.musikr.fs
 
 import android.content.Context
 import android.media.MediaFormat

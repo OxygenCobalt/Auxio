@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.tag.cache
 
 import javax.inject.Inject
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
 interface TagCache {

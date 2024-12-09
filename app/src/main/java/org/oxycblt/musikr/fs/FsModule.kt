@@ -26,21 +26,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.musikr.fs.util.contentResolverSafe
+import org.oxycblt.musikr.fs.query.DeviceFiles
+import org.oxycblt.musikr.fs.query.DeviceFilesImpl
+import org.oxycblt.musikr.fs.query.contentResolverSafe
 
 @Module
 @InstallIn(SingletonComponent::class)
-class FsProvidesModule {
-    @Provides
-    fun contentResolver(@ApplicationContext context: Context): ContentResolver =
-        context.contentResolverSafe
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-interface FsBindsModule {
-    @Binds fun deviceFiles(deviceFilesImpl: DeviceFilesImpl): DeviceFiles
-
+interface FsModule {
     @Binds
     fun musicLocationFactory(
         musicLocationFactoryImpl: MusicLocationFactoryImpl

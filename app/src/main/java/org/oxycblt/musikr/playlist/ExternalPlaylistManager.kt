@@ -26,7 +26,7 @@ import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
-import org.oxycblt.musikr.fs.util.contentResolverSafe
+import org.oxycblt.musikr.fs.query.contentResolverSafe
 import org.oxycblt.musikr.playlist.m3u.M3U
 import timber.log.Timber as L
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs
+package org.oxycblt.musikr.fs.query
 
 import android.content.ContentResolver
 import android.content.Context
@@ -31,8 +31,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.musikr.fs.util.contentResolverSafe
-import org.oxycblt.musikr.fs.util.useQuery
+import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.fs.Path
 
 interface DeviceFiles {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
@@ -68,7 +68,8 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
     ): Flow<DeviceFile> = flow {
         contentResolver.useQuery(
             DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
-            PROJECTION) { cursor ->
+            PROJECTION
+        ) { cursor ->
                 val childUriIndex =
                     cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
                 val displayNameIndex =
@@ -100,7 +101,8 @@ class DeviceFilesImpl @Inject constructor(@ApplicationContext private val contex
                                 mimeType,
                                 newPath,
                                 size,
-                                lastModified))
+                                lastModified)
+                        )
                     }
                 }
                 emitAll(recursive.asFlow().flattenMerge())

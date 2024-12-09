@@ -25,7 +25,7 @@ import android.provider.DocumentsContract
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
-import org.oxycblt.musikr.fs.util.contentResolverSafe
+import org.oxycblt.musikr.fs.query.contentResolverSafe
 
 class MusicLocation internal constructor(val uri: Uri, val path: Path) {
     override fun equals(other: Any?) =
