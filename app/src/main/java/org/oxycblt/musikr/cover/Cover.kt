@@ -24,14 +24,7 @@ import org.oxycblt.musikr.Song
 sealed interface Cover {
     val key: String
 
-    data class Single(val song: Song) : Cover {
-        override val key: String
-            get() = "${song.uid}@${song.lastModified}"
-
-        val uid = song.uid
-        val uri = song.uri
-        val lastModified = song.lastModified
-    }
+    data class Single(override val key: String) : Cover
 
     class Multi(val all: List<Single>) : Cover {
         override val key = "multi@${all.hashCode()}"
@@ -42,7 +35,7 @@ sealed interface Cover {
 
         fun nil() = Multi(listOf())
 
-        fun single(song: Song) = Single(song)
+        fun single(key: String) = Single(key)
 
         fun multi(songs: Collection<Song>) = order(songs).run { Multi(this) }
 

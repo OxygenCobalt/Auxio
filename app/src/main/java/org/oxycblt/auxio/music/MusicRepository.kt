@@ -354,20 +354,10 @@ constructor(private val musikr: Musikr, private val fullTagCache: FullTagCache, 
             }
         val locations = musicSettings.musicLocations
 
-        val fakeCoverEditorTemporary = object : StoredCovers.Editor {
-            override suspend fun write(data: ByteArray): Cover.Single? {
-                TODO("Not yet implemented")
-            }
-
-            override suspend fun apply() {
-                TODO("Not yet implemented")
-            }
-        }
-
         val storage = if (withCache) {
-            Storage(fullTagCache, fakeCoverEditorTemporary)
+            Storage(fullTagCache, StoredCovers.buildOn())
         } else {
-            Storage(writeOnlyTagCache, fakeCoverEditorTemporary)
+            Storage(writeOnlyTagCache, StoredCovers.new())
         }
         val newLibrary =
             musikr.run(locations,  storage, Interpretation(nameFactory, separators), ::emitIndexingProgress)

@@ -7,7 +7,10 @@ interface StoredCovers {
 
     interface Editor {
         suspend fun write(data: ByteArray): Cover.Single?
+    }
 
-        suspend fun apply()
+    companion object {
+        suspend fun buildOn(): Editor = TODO()
+        fun new(): Editor = TODO()
     }
 }

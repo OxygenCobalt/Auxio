@@ -28,9 +28,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverParser
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
-import org.oxycblt.musikr.tag.cache.TagCache
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
 
@@ -42,7 +43,8 @@ class ExtractStepImpl
 @Inject
 constructor(
     private val metadataExtractor: MetadataExtractor,
-    private val tagParser: TagParser
+    private val tagParser: TagParser,
+    private val coverParser: CoverParser
 ) : ExtractStep {
     override fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val cacheResults =
@@ -56,16 +58,18 @@ constructor(
                 .buffer(Channel.UNLIMITED)
         val (cachedSongs, uncachedSongs) =
             cacheResults.mapPartition {
-                it.tags?.let { tags -> ExtractedMusic.Song(it.file, tags) }
+                it.tags?.let { tags -> ExtractedMusic.Song(it.file, tags, null) }
             }
         val split = uncachedSongs.distribute(8)
         val extractedSongs =
             Array(split.hot.size) { i ->
                 split.hot[i]
-                    .map {
-                        val metadata = metadataExtractor.extract(it.file)
-                        val tags = tagParser.parse(it.file, metadata)
-                        ExtractedMusic.Song(it.file, tags)
+                    .map { node ->
+                        val metadata = metadataExtractor.extract(node.file)
+                        val tags = tagParser.parse(node.file, metadata)
+                        val coverData = coverParser.extract(metadata)
+                        val cover = coverData?.let { storage.coverEditor.write(it) }
+                        ExtractedMusic.Song(node.file, tags, cover)
                     }
                     .flowOn(Dispatchers.IO)
                     .buffer(Channel.UNLIMITED)
@@ -73,7 +77,7 @@ constructor(
         val writtenSongs =
             merge(*extractedSongs)
                 .map {
-                    tagCache.write(it.file, it.tags)
+                    storage.tagCache.write(it.file, it.tags)
                     it
                 }
                 .flowOn(Dispatchers.IO)
@@ -89,5 +93,5 @@ constructor(
 }
 
 sealed interface ExtractedMusic {
-    data class Song(val file: DeviceFile, val tags: ParsedTags) : ExtractedMusic
+    data class Song(val file: DeviceFile, val tags: ParsedTags, val cover: Cover?) : ExtractedMusic
 }

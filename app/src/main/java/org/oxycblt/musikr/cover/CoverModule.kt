@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * CacheModule.kt is part of Auxio.
+ * CoverModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,26 +30,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface StackModule {
+interface CoverModule {
     @Singleton @Binds fun appFiles(impl: CoverFilesImpl): CoverFiles
-
-    @Binds fun coverCache(cache: CoverCacheImpl): CoverCache
 
     @Binds fun coverIdentifier(identifierImpl: CoverIdentifierImpl): CoverIdentifier
 
     @Binds fun coverFormat(coverFormatImpl: CoverFormatImpl): CoverFormat
-}
 
-@Module
-@InstallIn(SingletonComponent::class)
-class StoredCoversDatabaseModule {
-    @Provides fun storedCoversDao(database: StoredCoversDatabase) = database.storedCoversDao()
-
-    @Singleton
-    @Provides
-    fun database(@ApplicationContext context: Context) =
-        Room.databaseBuilder(
-                context.applicationContext, StoredCoversDatabase::class.java, "stored_covers.db")
-            .fallbackToDestructiveMigration()
-            .build()
+    @Binds fun coverExtractor(coverExtractor: CoverParserImpl): CoverParser
 }
