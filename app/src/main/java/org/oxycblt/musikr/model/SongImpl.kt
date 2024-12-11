@@ -56,7 +56,7 @@ class SongImpl(private val handle: SongCore) : Song {
     override val replayGainAdjustment = preSong.replayGainAdjustment
     override val lastModified = preSong.lastModified
     override val dateAdded = preSong.dateAdded
-    override val cover = Cover.single(this)
+    override val cover = Cover.single("")
     override val album: Album
         get() = handle.resolveAlbum()
 

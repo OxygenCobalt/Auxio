@@ -23,14 +23,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import androidx.core.graphics.drawable.toDrawable
-import coil3.ImageLoader
 import coil3.asImage
 import coil3.decode.DataSource
-import coil3.decode.ImageSource
 import coil3.fetch.FetchResult
 import coil3.fetch.Fetcher
 import coil3.fetch.ImageFetchResult
-import coil3.fetch.SourceFetchResult
 import coil3.key.Keyer
 import coil3.request.Options
 import coil3.size.Dimension
@@ -38,12 +35,6 @@ import coil3.size.Size
 import coil3.size.pxOrElse
 import java.io.InputStream
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okio.FileSystem
-import okio.buffer
-import okio.source
-import org.oxycblt.auxio.image.stack.CoverRetriever
 import org.oxycblt.musikr.cover.Cover
 
 class CoverKeyer @Inject constructor() : Keyer<Cover> {
@@ -55,46 +46,61 @@ private constructor(
     private val context: Context,
     private val cover: Cover,
     private val size: Size,
-    private val coverRetriever: CoverRetriever,
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
-        val streams =
-            when (val cover = cover) {
-                is Cover.Single -> listOfNotNull(coverRetriever.retrieve(cover))
-                is Cover.Multi ->
-                    buildList {
-                        for (single in cover.all) {
-                            coverRetriever.retrieve(single)?.let { add(it) }
-                            if (size == 4) {
-                                break
-                            }
-                        }
-                    }
-            }
+        return null
+        //        val streams =
+        //            when (val cover = cover) {
+        //                is Cover.Single -> listOfNotNull(coverRetriever.retrieve(cover))
+        //                is Cover.Multi ->
+        //                    buildList {
+        //                        for (single in cover.all) {
+        //                            coverRetriever.retrieve(single)?.let { add(it) }
+        //                            if (size == 4) {
+        //                                break
+        //                            }
+        //                        }
+        //                    }
+        //            }
         // We don't immediately check for mosaic feasibility from album count alone, as that
         // does not factor in InputStreams failing to load. Instead, only check once we
         // definitely have image data to use.
-        if (streams.size == 4) {
-            // Make sure we free the InputStreams once we've transformed them into a mosaic.
-            return createMosaic(streams, size).also {
-                withContext(Dispatchers.IO) { streams.forEach(InputStream::close) }
-            }
-        }
+        //        if (streams.size == 4) {
+        //            // Make sure we free the InputStreams once we've transformed them into a
+        // mosaic.
+        //            return createMosaic(streams, size).also {
+        //                withContext(Dispatchers.IO) { streams.forEach(InputStream::close) }
+        //            }      // Not enough covers for a mosaic, take the first one (if that even
+        // exists)
+        //        val first = streams.firstOrNull() ?: return null
+        //
+        //        // All but the first stream will be unused, free their resources
+        //        withContext(Dispatchers.IO) {
+        //            for (i in 1 until streams.size) {
+        //                streams[i].close()
+        //            }
+        //        }
+        //
+        //        return SourceFetchResult(
+        //            source = ImageSource(first.source().buffer(), FileSystem.SYSTEM, null),
+        //            mimeType = null,
+        //            dataSource = DataSource.DISK)
+        //        }
 
-        // Not enough covers for a mosaic, take the first one (if that even exists)
-        val first = streams.firstOrNull() ?: return null
-
-        // All but the first stream will be unused, free their resources
-        withContext(Dispatchers.IO) {
-            for (i in 1 until streams.size) {
-                streams[i].close()
-            }
-        }
-
-        return SourceFetchResult(
-            source = ImageSource(first.source().buffer(), FileSystem.SYSTEM, null),
-            mimeType = null,
-            dataSource = DataSource.DISK)
+        //        // Not enough covers for a mosaic, take the first one (if that even exists)
+        //        val first = streams.firstOrNull() ?: return null
+        //
+        //        // All but the first stream will be unused, free their resources
+        //        withContext(Dispatchers.IO) {
+        //            for (i in 1 until streams.size) {
+        //                streams[i].close()
+        //            }
+        //        }
+        //
+        //        return SourceFetchResult(
+        //            source = ImageSource(first.source().buffer(), FileSystem.SYSTEM, null),
+        //            mimeType = null,
+        //            dataSource = DataSource.DISK)
     }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
@@ -148,9 +154,9 @@ private constructor(
         return if (size.mod(2) > 0) size + 1 else size
     }
 
-    class Factory @Inject constructor(private val coverRetriever: CoverRetriever) :
-        Fetcher.Factory<Cover> {
-        override fun create(data: Cover, options: Options, imageLoader: ImageLoader) =
-            CoverFetcher(options.context, data, options.size, coverRetriever)
-    }
+    //    class Factory @Inject constructor(private val coverRetriever: CoverRetriever) :
+    //        Fetcher.Factory<Cover> {
+    //        override fun create(data: Cover, options: Options, imageLoader: ImageLoader) =
+    //            CoverFetcher(options.context, data, options.size, coverRetriever)
+    //    }
 }
