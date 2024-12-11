@@ -26,19 +26,18 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
 import org.oxycblt.musikr.IndexingProgress
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.tag.Name
-import org.oxycblt.musikr.tag.cache.FullTagCache
-import org.oxycblt.musikr.tag.cache.WriteOnlyTagCache
+import org.oxycblt.musikr.tag.cache.TagCache
+import org.oxycblt.musikr.tag.cache.TagDatabase
 import org.oxycblt.musikr.tag.interpret.Separators
 import timber.log.Timber as L
 
@@ -208,8 +207,11 @@ interface MusicRepository {
 
 class MusicRepositoryImpl
 @Inject
-constructor(private val musikr: Musikr, private val fullTagCache: FullTagCache, private val writeOnlyTagCache: WriteOnlyTagCache, private val musicSettings: MusicSettings) :
-    MusicRepository {
+constructor(
+    private val musikr: Musikr,
+    private val tagDatabase: TagDatabase,
+    private val musicSettings: MusicSettings
+) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
     @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
@@ -354,13 +356,15 @@ constructor(private val musikr: Musikr, private val fullTagCache: FullTagCache, 
             }
         val locations = musicSettings.musicLocations
 
-        val storage = if (withCache) {
-            Storage(fullTagCache, StoredCovers.buildOn())
-        } else {
-            Storage(writeOnlyTagCache, StoredCovers.new())
-        }
+        val storage =
+            if (withCache) {
+                Storage(TagCache.full(tagDatabase), StoredCovers.buildOn())
+            } else {
+                Storage(TagCache.writeOnly(tagDatabase), StoredCovers.new())
+            }
         val newLibrary =
-            musikr.run(locations,  storage, Interpretation(nameFactory, separators), ::emitIndexingProgress)
+            musikr.run(
+                locations, storage, Interpretation(nameFactory, separators), ::emitIndexingProgress)
 
         emitIndexingCompletion(null)
 

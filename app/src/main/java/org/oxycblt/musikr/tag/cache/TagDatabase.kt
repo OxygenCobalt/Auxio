@@ -18,6 +18,7 @@
  
 package org.oxycblt.musikr.tag.cache
 
+import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
@@ -25,6 +26,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
@@ -36,11 +38,19 @@ import org.oxycblt.musikr.tag.util.splitEscaped
 
 @Database(entities = [CachedTags::class], version = 50, exportSchema = false)
 abstract class TagDatabase : RoomDatabase() {
-    abstract fun cachedSongsDao(): TagDao
+    internal abstract fun cachedSongsDao(): TagDao
+
+    companion object {
+        fun from(context: Context) =
+            Room.databaseBuilder(
+                    context.applicationContext, TagDatabase::class.java, "music_cache.db")
+                .fallbackToDestructiveMigration()
+                .build()
+    }
 }
 
 @Dao
-interface TagDao {
+internal interface TagDao {
     @Query("SELECT * FROM CachedTags WHERE uri = :uri AND dateModified = :dateModified")
     suspend fun selectTags(uri: String, dateModified: Long): CachedTags?
 
@@ -49,7 +59,7 @@ interface TagDao {
 
 @Entity
 @TypeConverters(CachedTags.Converters::class)
-data class CachedTags(
+internal data class CachedTags(
     /**
      * The Uri of the [AudioFile]'s audio file, obtained from SAF. This should ideally be a black
      * box only used for comparison.

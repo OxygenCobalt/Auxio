@@ -22,10 +22,10 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.toUuidOrNull
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.fs.MimeType
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.Disc
-import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
 import org.oxycblt.musikr.tag.parse.ParsedTags

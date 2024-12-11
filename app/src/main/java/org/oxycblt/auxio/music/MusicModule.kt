@@ -18,11 +18,15 @@
  
 package org.oxycblt.auxio.music
 
+import android.content.Context
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import org.oxycblt.musikr.tag.cache.TagDatabase
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,4 +34,12 @@ interface MusicModule {
     @Singleton @Binds fun repository(musicRepository: MusicRepositoryImpl): MusicRepository
 
     @Binds fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+class MusikrShimModule {
+    @Singleton
+    @Provides
+    fun tagDatabase(@ApplicationContext context: Context) = TagDatabase.from(context)
 }

@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.tag.cache
 
-import javax.inject.Inject
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
@@ -26,9 +25,15 @@ interface TagCache {
     suspend fun read(file: DeviceFile): ParsedTags?
 
     suspend fun write(file: DeviceFile, tags: ParsedTags)
+
+    companion object {
+        fun full(db: TagDatabase): TagCache = FullTagCache(db.cachedSongsDao())
+
+        fun writeOnly(db: TagDatabase): TagCache = WriteOnlyTagCache(db.cachedSongsDao())
+    }
 }
 
-class FullTagCache @Inject constructor(private val tagDao: TagDao) : TagCache {
+private class FullTagCache(private val tagDao: TagDao) : TagCache {
     override suspend fun read(file: DeviceFile) =
         tagDao.selectTags(file.uri.toString(), file.lastModified)?.intoParsedTags()
 
@@ -36,7 +41,7 @@ class FullTagCache @Inject constructor(private val tagDao: TagDao) : TagCache {
         tagDao.updateTags(CachedTags.fromParsedTags(file, tags))
 }
 
-class WriteOnlyTagCache @Inject constructor(private val tagDao: TagDao) : TagCache {
+private class WriteOnlyTagCache(private val tagDao: TagDao) : TagCache {
     override suspend fun read(file: DeviceFile) = null
 
     override suspend fun write(file: DeviceFile, tags: ParsedTags) =
