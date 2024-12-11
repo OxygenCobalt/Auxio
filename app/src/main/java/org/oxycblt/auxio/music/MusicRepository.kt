@@ -18,6 +18,8 @@
  
 package org.oxycblt.auxio.music
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -209,6 +211,7 @@ class MusicRepositoryImpl
 @Inject
 constructor(
     private val musikr: Musikr,
+    @ApplicationContext private val context: Context,
     private val tagDatabase: TagDatabase,
     private val musicSettings: MusicSettings
 ) : MusicRepository {
@@ -358,9 +361,10 @@ constructor(
 
         val storage =
             if (withCache) {
-                Storage(TagCache.full(tagDatabase), StoredCovers.buildOn())
+                Storage(TagCache.full(tagDatabase), StoredCovers.from(context, "covers"))
             } else {
-                Storage(TagCache.writeOnly(tagDatabase), StoredCovers.new())
+                // TODO: Revisioned covers
+                Storage(TagCache.writeOnly(tagDatabase), StoredCovers.from(context, "covers"))
             }
         val newLibrary =
             musikr.run(

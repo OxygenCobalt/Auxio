@@ -68,7 +68,7 @@ constructor(
                         val metadata = metadataExtractor.extract(node.file)
                         val tags = tagParser.parse(node.file, metadata)
                         val coverData = coverParser.extract(metadata)
-                        val cover = coverData?.let { storage.coverEditor.write(it) }
+                        val cover = coverData?.let { storage.storedCovers.write(it) }
                         ExtractedMusic.Song(node.file, tags, cover)
                     }
                     .flowOn(Dispatchers.IO)

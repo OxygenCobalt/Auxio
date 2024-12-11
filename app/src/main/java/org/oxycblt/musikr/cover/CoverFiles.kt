@@ -19,26 +19,28 @@
 package org.oxycblt.musikr.cover
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-interface CoverFiles {
+internal interface CoverFiles {
     suspend fun read(id: String): InputStream?
 
     suspend fun write(id: String, data: ByteArray)
+
+    companion object {
+        fun from(context: Context, path: String, format: CoverFormat): CoverFiles =
+            CoverFilesImpl(context, File(context.filesDir, path), format)
+    }
 }
 
-class CoverFilesImpl
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
+private class CoverFilesImpl(
+    private val context: Context,
+    private val dir: File,
     private val coverFormat: CoverFormat
 ) : CoverFiles {
     private val fileMutexes = mutableMapOf<String, Mutex>()
@@ -61,12 +63,12 @@ constructor(
         val fileMutex = getMutexForFile(id)
 
         fileMutex.withLock {
-            val targetFile = File(context.filesDir, getTargetFilePath(id))
+            val targetFile = File(dir, getTargetFilePath(id))
             if (targetFile.exists()) {
                 return
             }
             withContext(Dispatchers.IO) {
-                val tempFile = File(context.filesDir, getTempFilePath(id))
+                val tempFile = File(dir, getTempFilePath(id))
 
                 try {
                     tempFile.outputStream().use { coverFormat.transcodeInto(data, it) }

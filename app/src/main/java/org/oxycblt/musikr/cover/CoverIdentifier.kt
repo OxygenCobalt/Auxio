@@ -19,13 +19,16 @@
 package org.oxycblt.musikr.cover
 
 import java.security.MessageDigest
-import javax.inject.Inject
 
 interface CoverIdentifier {
     suspend fun identify(data: ByteArray): String
+
+    companion object {
+        fun md5(): CoverIdentifier = MD5CoverIdentifier()
+    }
 }
 
-class CoverIdentifierImpl @Inject constructor() : CoverIdentifier {
+private class MD5CoverIdentifier() : CoverIdentifier {
     @OptIn(ExperimentalStdlibApi::class)
     override suspend fun identify(data: ByteArray): String {
         val digest =

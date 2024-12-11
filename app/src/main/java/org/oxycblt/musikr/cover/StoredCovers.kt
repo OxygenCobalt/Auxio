@@ -18,18 +18,30 @@
  
 package org.oxycblt.musikr.cover
 
+import android.content.Context
 import java.io.InputStream
 
 interface StoredCovers {
     suspend fun read(cover: Cover.Single): InputStream?
 
-    interface Editor {
-        suspend fun write(data: ByteArray): Cover.Single?
-    }
+    suspend fun write(data: ByteArray): Cover.Single?
 
     companion object {
-        suspend fun buildOn(): Editor = TODO()
-
-        fun new(): Editor = TODO()
+        fun from(context: Context, path: String): StoredCovers =
+            FileStoredCovers(
+                CoverIdentifier.md5(), CoverFiles.from(context, path, CoverFormat.webp()))
     }
+}
+
+private class FileStoredCovers(
+    private val coverIdentifier: CoverIdentifier,
+    private val coverFiles: CoverFiles
+) : StoredCovers {
+    override suspend fun read(cover: Cover.Single) = coverFiles.read(cover.key)
+
+    override suspend fun write(data: ByteArray) =
+        coverIdentifier.identify(data).let { key ->
+            coverFiles.write(key, data)
+            Cover.Single(key)
+        }
 }

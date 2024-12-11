@@ -22,15 +22,18 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import java.io.OutputStream
-import javax.inject.Inject
 
-interface CoverFormat {
+internal interface CoverFormat {
     val extension: String
 
     fun transcodeInto(data: ByteArray, output: OutputStream): Boolean
+
+    companion object {
+        fun webp(): CoverFormat = WebpCoverFormat()
+    }
 }
 
-class CoverFormatImpl @Inject constructor() : CoverFormat {
+private class WebpCoverFormat() : CoverFormat {
     override val extension = EXTENSION
 
     override fun transcodeInto(data: ByteArray, output: OutputStream) =

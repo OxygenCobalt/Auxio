@@ -22,16 +22,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface CoverModule {
-    @Singleton @Binds fun appFiles(impl: CoverFilesImpl): CoverFiles
-
-    @Binds fun coverIdentifier(identifierImpl: CoverIdentifierImpl): CoverIdentifier
-
-    @Binds fun coverFormat(coverFormatImpl: CoverFormatImpl): CoverFormat
-
-    @Binds fun coverExtractor(coverExtractor: CoverParserImpl): CoverParser
+    @Binds fun coverParser(impl: CoverParserImpl): CoverParser
 }
