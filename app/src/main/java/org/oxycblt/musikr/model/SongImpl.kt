@@ -22,7 +22,6 @@ import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.tag.interpret.PreSong
 
 interface SongCore {
@@ -56,7 +55,7 @@ class SongImpl(private val handle: SongCore) : Song {
     override val replayGainAdjustment = preSong.replayGainAdjustment
     override val lastModified = preSong.lastModified
     override val dateAdded = preSong.dateAdded
-    override val cover = Cover.single("")
+    override val cover = preSong.cover
     override val album: Album
         get() = handle.resolveAlbum()
 

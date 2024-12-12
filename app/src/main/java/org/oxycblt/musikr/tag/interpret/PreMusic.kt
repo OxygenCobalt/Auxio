@@ -48,7 +48,7 @@ data class PreSong(
     val replayGainAdjustment: ReplayGainAdjustment,
     val lastModified: Long,
     val dateAdded: Long,
-    val cover: Cover?,
+    val cover: Cover.Single?,
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>

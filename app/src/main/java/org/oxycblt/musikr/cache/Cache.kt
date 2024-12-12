@@ -34,7 +34,7 @@ interface Cache {
     }
 }
 
-data class CachedSong(val parsedTags: ParsedTags, val cover: Cover?)
+data class CachedSong(val parsedTags: ParsedTags, val cover: Cover.Single?)
 
 private class FullCache(private val cacheInfoDao: CacheInfoDao) : Cache {
     override suspend fun read(file: DeviceFile) =

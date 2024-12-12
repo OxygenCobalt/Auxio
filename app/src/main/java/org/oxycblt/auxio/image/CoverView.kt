@@ -374,7 +374,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) =
         bindImpl(Cover.multi(songs), desc, errorRes)
 
-    private fun bindImpl(cover: Cover, desc: String, @DrawableRes errorRes: Int) {
+    private fun bindImpl(cover: Cover?, desc: String, @DrawableRes errorRes: Int) {
         val request =
             ImageRequest.Builder(context)
                 .data(cover)

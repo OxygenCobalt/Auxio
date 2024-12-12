@@ -96,5 +96,6 @@ constructor(
 }
 
 sealed interface ExtractedMusic {
-    data class Song(val file: DeviceFile, val tags: ParsedTags, val cover: Cover?) : ExtractedMusic
+    data class Song(val file: DeviceFile, val tags: ParsedTags, val cover: Cover.Single?) :
+        ExtractedMusic
 }

@@ -88,7 +88,7 @@ internal data class CachedInfo(
     val albumArtistNames: List<String>,
     val albumArtistSortNames: List<String>,
     val genreNames: List<String>,
-    val cover: Cover? = null
+    val cover: Cover.Single? = null
 ) {
     fun intoCachedSong() =
         CachedSong(
@@ -128,7 +128,7 @@ internal data class CachedInfo(
 
         @TypeConverter fun toDate(string: String?) = string?.let(Date::from)
 
-        @TypeConverter fun fromCover(cover: Cover?) = cover?.key
+        @TypeConverter fun fromCover(cover: Cover.Single?) = cover?.key
 
         @TypeConverter fun toCover(key: String?) = key?.let { Cover.Single(it) }
     }

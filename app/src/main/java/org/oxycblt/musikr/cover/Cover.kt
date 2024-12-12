@@ -41,7 +41,7 @@ sealed interface Cover {
 
         private fun order(songs: Collection<Song>) =
             FALLBACK_SORT.songs(songs)
-                .map { it.cover }
+                .mapNotNull { it.cover }
                 .groupBy { it.key }
                 .entries
                 .sortedByDescending { it.value.size }

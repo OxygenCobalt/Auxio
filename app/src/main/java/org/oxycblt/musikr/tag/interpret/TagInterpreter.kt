@@ -36,7 +36,7 @@ interface TagInterpreter {
     fun interpret(
         file: DeviceFile,
         parsedTags: ParsedTags,
-        cover: Cover?,
+        cover: Cover.Single?,
         interpretation: Interpretation
     ): PreSong
 }
@@ -45,7 +45,7 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
     override fun interpret(
         file: DeviceFile,
         parsedTags: ParsedTags,
-        cover: Cover?,
+        cover: Cover.Single?,
         interpretation: Interpretation
     ): PreSong {
         val individualPreArtists =

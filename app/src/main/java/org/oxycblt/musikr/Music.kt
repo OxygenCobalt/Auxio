@@ -265,7 +265,7 @@ interface Song : Music {
     /** The date the audio file was added to the device, as a unix epoch timestamp. */
     val dateAdded: Long
     /** Useful information to quickly obtain the album cover. */
-    val cover: Cover.Single
+    val cover: Cover.Single?
     /**
      * The parent [Album]. If the metadata did not specify an album, it's parent directory is used
      * instead.
