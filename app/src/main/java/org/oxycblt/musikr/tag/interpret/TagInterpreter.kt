@@ -23,6 +23,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.musikr.Interpretation
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.MimeType
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.Disc
@@ -32,13 +33,19 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.util.parseId3GenreNames
 
 interface TagInterpreter {
-    fun interpret(file: DeviceFile, parsedTags: ParsedTags, interpretation: Interpretation): PreSong
+    fun interpret(
+        file: DeviceFile,
+        parsedTags: ParsedTags,
+        cover: Cover?,
+        interpretation: Interpretation
+    ): PreSong
 }
 
 class TagInterpreterImpl @Inject constructor() : TagInterpreter {
     override fun interpret(
         file: DeviceFile,
         parsedTags: ParsedTags,
+        cover: Cover?,
         interpretation: Interpretation
     ): PreSong {
         val individualPreArtists =
@@ -82,7 +89,8 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
             dateAdded = file.lastModified,
             preAlbum = preAlbum,
             preArtists = rawArtists,
-            preGenres = rawGenres)
+            preGenres = rawGenres,
+            cover = null)
     }
 
     private fun makePreAlbum(

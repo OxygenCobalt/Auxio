@@ -53,7 +53,7 @@ constructor(
         val preSongs =
             extractedMusic
                 .filterIsInstance<ExtractedMusic.Song>()
-                .map { tagInterpreter.interpret(it.file, it.tags, interpretation) }
+                .map { tagInterpreter.interpret(it.file, it.tags, it.cover, interpretation) }
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)
         val graphBuilder = musicGraphFactory.builder()

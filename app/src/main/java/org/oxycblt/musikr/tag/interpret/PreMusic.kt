@@ -24,6 +24,7 @@ import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.MimeType
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.playlist.PlaylistHandle
@@ -47,6 +48,7 @@ data class PreSong(
     val replayGainAdjustment: ReplayGainAdjustment,
     val lastModified: Long,
     val dateAdded: Long,
+    val cover: Cover?,
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>
