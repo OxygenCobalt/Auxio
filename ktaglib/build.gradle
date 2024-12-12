@@ -50,7 +50,7 @@ task assembleTaglib(type: Exec) {
         commandLine "true"
         return
     }
-    commandLine "sh", "-c", "$jniDir/build_taglib.sh $android.ndkDirectory"
+    commandLine "sh", "-c", "$jniDir/build_taglib.sh $jniDir $android.ndkDirectory"
 }
 
 afterEvaluate {
@@ -60,4 +60,5 @@ afterEvaluate {
 
 clean {
     delete "$projectDir/src/main/cpp/taglib/pkg"
+    delete "$projectDir/src/main/cpp/taglib/build"
 }

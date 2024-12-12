@@ -1,10 +1,13 @@
 set -e
-SRC_DIR=$(pwd)
-TAGLIB_SRC_DIR=${SRC_DIR}/taglib
-TAGLIB_DST_DIR=${SRC_DIR}/taglib/build
-TAGLIB_PKG_DIR=${SRC_DIR}/taglib/pkg
-NDK_TOOLCHAIN=${SRC_DIR}/android.toolchain.cmake
-NDK_PATH=$1
+WORKING_DIR=$1
+echo "Working directory is at $WORKING_DIR"
+cd "$WORKING_DIR"
+
+TAGLIB_SRC_DIR=${WORKING_DIR}/taglib
+TAGLIB_DST_DIR=${WORKING_DIR}/taglib/build
+TAGLIB_PKG_DIR=${WORKING_DIR}/taglib/pkg
+NDK_TOOLCHAIN=${WORKING_DIR}/android.toolchain.cmake
+NDK_PATH=$2
 echo "Taglib source is at $TAGLIB_SRC_DIR"
 echo "Taglib build is at $TAGLIB_DST_DIR"
 echo "Taglib package is at $TAGLIB_PKG_DIR"
@@ -26,7 +29,7 @@ build_for_arch() {
     -DANDROID_ABI=$ARCH -DBUILD_SHARED_LIBS=OFF -DVISIBILITY_HIDDEN=ON -DBUILD_TESTING=OFF \
     -DBUILD_EXAMPLES=OFF -DBUILD_BINDINGS=OFF -DWITH_ZLIB=OFF -DCMAKE_BUILD_TYPE=Release
   cmake --build $DST_DIR --config Release
-  cd $SRC_DIR
+  cd $WORKING_DIR
 
   cmake --install $DST_DIR --config Release --prefix $PKG_DIR --strip
 }
