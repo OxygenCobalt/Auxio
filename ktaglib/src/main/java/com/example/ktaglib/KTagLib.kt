@@ -11,4 +11,4 @@ object KTagLib {
      * which is packaged with this application.
      */
     external fun stringFromJNI(): String
-}b
+}

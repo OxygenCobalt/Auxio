@@ -25,7 +25,7 @@ project("ktaglib")
 # for GameActivity/NativeActivity derived applications, the same library name must be
 # used in the AndroidManifest.xml file.
 set(taglib_location "${CMAKE_CURRENT_SOURCE_DIR}/taglib")
-set(taglib_pkg "${taglib_location}/android-libs/${ANDROID_ABI}")
+set(taglib_pkg "${taglib_location}/pkg/${ANDROID_ABI}")
 set(taglib_lib "${taglib_pkg}/lib")
 set(taglib_include "${taglib_pkg}/include")
 
