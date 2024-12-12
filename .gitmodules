@@ -1,3 +1,7 @@
 [submodule "media"]
 	path = media
 	url = https://github.com/OxygenCobalt/media.git
+[submodule "taglib"]
+	path = ktaglib/src/main/cpp/taglib
+	url = https://github.com/taglib/taglib.git
+	tag = v2.0.2
