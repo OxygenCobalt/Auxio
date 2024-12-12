@@ -1,4 +1,6 @@
-package com.example.ktaglib
+package org.oxycblt.ktaglib
+
+import java.io.InputStream
 
 object KTagLib {
     // Used to load the 'ktaglib' library on application startup.
@@ -10,5 +12,5 @@ object KTagLib {
      * A native method that is implemented by the 'ktaglib' native library,
      * which is packaged with this application.
      */
-    external fun stringFromJNI(): String
+    external fun load(): String
 }

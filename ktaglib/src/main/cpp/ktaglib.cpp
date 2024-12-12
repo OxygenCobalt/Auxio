@@ -4,7 +4,7 @@
 #include "taglib/tag.h"
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_org_oxycblt_ktaglib_NativeLib_stringFromJNI(
+Java_org_oxycblt_ktaglib_KTagLib_load(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
