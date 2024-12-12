@@ -34,7 +34,7 @@ internal interface CoverFiles {
 
     companion object {
         fun from(context: Context, path: String, format: CoverFormat): CoverFiles =
-            CoverFilesImpl(context, File(context.filesDir, path), format)
+            CoverFilesImpl(context, File(context.filesDir, path).also { it.mkdirs() }, format)
     }
 }
 
