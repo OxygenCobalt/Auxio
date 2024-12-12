@@ -1,16 +1,16 @@
 #include <jni.h>
 #include <string>
 
-#include "AndroidIOStream.h"
+#include "JVMInputStream.h"
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 
 extern "C" JNIEXPORT jobject JNICALL
-Java_org_oxycblt_ktaglib_KTagLib_load(
+Java_org_oxycblt_ktaglib_KTagLib_openNative(
         JNIEnv* env,
         jobject /* this */,
-        jobject fileRef) {
-    AndroidIOStream stream { env, fileRef };
+        jobject inputStream) {
+    JVMInputStream stream { env, inputStream };
     TagLib::FileRef file { &stream };
     if (file.isNull()) {
         return nullptr;
@@ -27,7 +27,8 @@ Java_org_oxycblt_ktaglib_KTagLib_load(
 
     jclass tagClass = env->FindClass("org/oxycblt/ktaglib/Tag");
     jmethodID tagInit = env->GetMethodID(tagClass, "<init>", "(Ljava/util/Map;Ljava/util/Map;[B)V");
-    // Create tag
+
     jobject tagObj = env->NewObject(tagClass, tagInit, id3v2, vorbis, coverData);
+
     return tagObj;
 }

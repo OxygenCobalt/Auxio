@@ -2,21 +2,21 @@
 // Created by oxycblt on 12/12/24.
 //
 
-#ifndef AUXIO_ANDROIDIOSTREAM_H
-#define AUXIO_ANDROIDIOSTREAM_H
+#ifndef AUXIO_JVMINPUTSTREAM_H
+#define AUXIO_JVMINPUTSTREAM_H
 
 #include <jni.h>
 
 #include "taglib/tiostream.h"
 
-class AndroidIOStream : public  TagLib::IOStream {
+class JVMInputStream : public  TagLib::IOStream {
 public:
-    AndroidIOStream(JNIEnv *env, jobject &fileRef);
+    JVMInputStream(JNIEnv *env, jobject inputStream);
 
-    ~AndroidIOStream();
+    ~JVMInputStream();
 
-    AndroidIOStream(const AndroidIOStream &) = delete;
-    AndroidIOStream &operator=(const AndroidIOStream &) = delete;
+    JVMInputStream(const JVMInputStream &) = delete;
+    JVMInputStream &operator=(const JVMInputStream &) = delete;
 
     /*!
      * Returns the stream name in the local file system encoding.
@@ -99,8 +99,18 @@ public:
 
 private:
     JNIEnv *env;
-    jobject &fileRef;
+    jobject inputStream;
+    jmethodID inputStreamNameMethod;
+    jmethodID inputStreamReadBlockMethod;
+    jmethodID inputStreamIsOpenMethod;
+    jmethodID inputStreamSeekFromBeginningMethod;
+    jmethodID inputStreamSeekFromCurrentMethod;
+    jmethodID inputStreamSeekFromEndMethod;
+    jmethodID inputStreamClearMethod;
+    jmethodID inputStreamTellMethod;
+    jmethodID inputStreamLengthMethod;
+
 };
 
 
-#endif //AUXIO_ANDROIDIOSTREAM_H
+#endif //AUXIO_JVMINPUTSTREAM_H

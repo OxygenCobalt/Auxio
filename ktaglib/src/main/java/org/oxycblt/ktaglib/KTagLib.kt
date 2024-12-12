@@ -1,23 +1,32 @@
 package org.oxycblt.ktaglib
 
-import java.io.InputStream
+import android.content.Context
+import android.net.Uri
 
 object KTagLib {
-    // Used to load the 'ktaglib' library on application startup.
     init {
         System.loadLibrary("ktaglib")
     }
 
     /**
-     * A native method that is implemented by the 'ktaglib' native library,
-     * which is packaged with this application.
+     * Open a file and extract a tag.
+     *
+     * Note: This method is blocking and should be handled as such if
+     * calling from a coroutine.
      */
-    external fun load(fileRef: FileRef): Tag?
+    fun open(context: Context, ref: FileRef): Tag? {
+        val inputStream = AndroidInputStream(context, ref)
+        val tag = openNative(inputStream)
+        inputStream.close()
+        return tag
+    }
+
+    private external fun openNative(ioStream: AndroidInputStream): Tag?
 }
 
 data class FileRef(
     val fileName: String,
-    val inputStream: InputStream
+    val uri: Uri
 )
 
 data class Tag(
