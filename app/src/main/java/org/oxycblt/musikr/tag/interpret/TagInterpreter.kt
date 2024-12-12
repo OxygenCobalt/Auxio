@@ -90,7 +90,7 @@ class TagInterpreterImpl @Inject constructor() : TagInterpreter {
             preAlbum = preAlbum,
             preArtists = rawArtists,
             preGenres = rawGenres,
-            cover = null)
+            cover = cover)
     }
 
     private fun makePreAlbum(
