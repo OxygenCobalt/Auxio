@@ -93,7 +93,7 @@
     <string name="err_no_perms">앱에서 음악 라이브러리를 읽을 수 있는 권한이 필요합니다.</string>
     <string name="err_no_app">이 작업을 처리할 수 있는 앱을 찾을 수 없습니다.</string>
     <string name="err_no_locations">폴더 없음</string>
-    <string name="err_bad_location">지원하지 않는 폴더입니다.</string>
+    <string name="err_bad_location">지원하지 않는 폴더입니다</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">라이브러리에서 검색…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -317,4 +317,13 @@
 \n
 \n경고: 이 서비스는 주의하여 사용하세요. 서비스를 닫은 뒤 다시 사용하려고 할 경우 앱이 충돌할 수 있습니다.</string>
     <string name="lbl_more">더 보기</string>
+    <string name="lbl_music_sources">폴더 선택</string>
+    <string name="lbl_email">전자우편을 전송합니다</string>
+    <string name="lng_no_albums">당신이 음악을 추가하면 여기에 자신의 앨범이 표시됩니다.</string>
+    <string name="lng_no_artists">당신이 음악을 추가하면 여기에 자신의 음악가가 표시됩니다.</string>
+    <string name="lbl_github">깃허브에 문제를 제기합니다</string>
+    <string name="lbl_feedback">응답</string>
+    <string name="lng_no_songs">당신이 음악을 추가하면 여기에 표시됩니다.</string>
+    <string name="lng_no_playlists">당신이 음악을 여기에 추가하면 자신의 재생목록이 표시됩니다.</string>
+    <string name="lng_no_genres">당신이 음악을 추가하면 여기에 자신의 장르가 표시됩니다.</string>
 </resources>
