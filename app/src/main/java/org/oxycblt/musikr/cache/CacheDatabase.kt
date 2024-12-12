@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * TagDatabase.kt is part of Auxio.
+ * CacheDatabase.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.tag.cache
+package org.oxycblt.musikr.cache
 
 import android.content.Context
 import androidx.room.Dao
@@ -30,36 +30,37 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.util.correctWhitespace
 import org.oxycblt.musikr.tag.util.splitEscaped
 
-@Database(entities = [CachedTags::class], version = 50, exportSchema = false)
-abstract class TagDatabase : RoomDatabase() {
-    internal abstract fun cachedSongsDao(): TagDao
+@Database(entities = [CachedInfo::class], version = 50, exportSchema = false)
+abstract class CacheDatabase : RoomDatabase() {
+    internal abstract fun cachedSongsDao(): CacheInfoDao
 
     companion object {
         fun from(context: Context) =
             Room.databaseBuilder(
-                    context.applicationContext, TagDatabase::class.java, "music_cache.db")
+                    context.applicationContext, CacheDatabase::class.java, "music_cache.db")
                 .fallbackToDestructiveMigration()
                 .build()
     }
 }
 
 @Dao
-internal interface TagDao {
-    @Query("SELECT * FROM CachedTags WHERE uri = :uri AND dateModified = :dateModified")
-    suspend fun selectTags(uri: String, dateModified: Long): CachedTags?
+internal interface CacheInfoDao {
+    @Query("SELECT * FROM CachedInfo WHERE uri = :uri AND dateModified = :dateModified")
+    suspend fun selectInfo(uri: String, dateModified: Long): CachedInfo?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateTags(cachedTags: CachedTags)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateInfo(cachedInfo: CachedInfo)
 }
 
 @Entity
-@TypeConverters(CachedTags.Converters::class)
-internal data class CachedTags(
+@TypeConverters(CachedInfo.Converters::class)
+internal data class CachedInfo(
     /**
      * The Uri of the [AudioFile]'s audio file, obtained from SAF. This should ideally be a black
      * box only used for comparison.
@@ -108,31 +109,34 @@ internal data class CachedTags(
     /** @see AudioFile.albumArtistSortNames */
     val albumArtistSortNames: List<String> = listOf(),
     /** @see AudioFile.genreNames */
-    val genreNames: List<String> = listOf()
+    val genreNames: List<String> = listOf(),
+    val cover: Cover? = null
 ) {
-    fun intoParsedTags() =
-        ParsedTags(
-            musicBrainzId = musicBrainzId,
-            name = name,
-            sortName = sortName,
-            durationMs = durationMs,
-            replayGainTrackAdjustment = replayGainTrackAdjustment,
-            replayGainAlbumAdjustment = replayGainAlbumAdjustment,
-            track = track,
-            disc = disc,
-            subtitle = subtitle,
-            date = date,
-            albumMusicBrainzId = albumMusicBrainzId,
-            albumName = albumName,
-            albumSortName = albumSortName,
-            releaseTypes = releaseTypes,
-            artistMusicBrainzIds = artistMusicBrainzIds,
-            artistNames = artistNames,
-            artistSortNames = artistSortNames,
-            albumArtistMusicBrainzIds = albumArtistMusicBrainzIds,
-            albumArtistNames = albumArtistNames,
-            albumArtistSortNames = albumArtistSortNames,
-            genreNames = genreNames)
+    fun intoCachedSong() =
+        CachedSong(
+            ParsedTags(
+                musicBrainzId = musicBrainzId,
+                name = name,
+                sortName = sortName,
+                durationMs = durationMs,
+                replayGainTrackAdjustment = replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = replayGainAlbumAdjustment,
+                track = track,
+                disc = disc,
+                subtitle = subtitle,
+                date = date,
+                albumMusicBrainzId = albumMusicBrainzId,
+                albumName = albumName,
+                albumSortName = albumSortName,
+                releaseTypes = releaseTypes,
+                artistMusicBrainzIds = artistMusicBrainzIds,
+                artistNames = artistNames,
+                artistSortNames = artistSortNames,
+                albumArtistMusicBrainzIds = albumArtistMusicBrainzIds,
+                albumArtistNames = albumArtistNames,
+                albumArtistSortNames = albumArtistSortNames,
+                genreNames = genreNames),
+            cover)
 
     object Converters {
         @TypeConverter
@@ -145,33 +149,38 @@ internal data class CachedTags(
         @TypeConverter fun fromDate(date: Date?) = date?.toString()
 
         @TypeConverter fun toDate(string: String?) = string?.let(Date::from)
+
+        @TypeConverter fun fromCover(cover: Cover?) = cover?.key
+
+        @TypeConverter fun toCover(key: String?) = key?.let { Cover.Single(it) }
     }
 
     companion object {
-        fun fromParsedTags(deviceFile: DeviceFile, parsedTags: ParsedTags) =
-            CachedTags(
+        fun fromCachedSong(deviceFile: DeviceFile, cachedSong: CachedSong) =
+            CachedInfo(
                 uri = deviceFile.uri.toString(),
                 dateModified = deviceFile.lastModified,
-                musicBrainzId = parsedTags.musicBrainzId,
-                name = parsedTags.name,
-                sortName = parsedTags.sortName,
-                durationMs = parsedTags.durationMs,
-                replayGainTrackAdjustment = parsedTags.replayGainTrackAdjustment,
-                replayGainAlbumAdjustment = parsedTags.replayGainAlbumAdjustment,
-                track = parsedTags.track,
-                disc = parsedTags.disc,
-                subtitle = parsedTags.subtitle,
-                date = parsedTags.date,
-                albumMusicBrainzId = parsedTags.albumMusicBrainzId,
-                albumName = parsedTags.albumName,
-                albumSortName = parsedTags.albumSortName,
-                releaseTypes = parsedTags.releaseTypes,
-                artistMusicBrainzIds = parsedTags.artistMusicBrainzIds,
-                artistNames = parsedTags.artistNames,
-                artistSortNames = parsedTags.artistSortNames,
-                albumArtistMusicBrainzIds = parsedTags.albumArtistMusicBrainzIds,
-                albumArtistNames = parsedTags.albumArtistNames,
-                albumArtistSortNames = parsedTags.albumArtistSortNames,
-                genreNames = parsedTags.genreNames)
+                musicBrainzId = cachedSong.parsedTags.musicBrainzId,
+                name = cachedSong.parsedTags.name,
+                sortName = cachedSong.parsedTags.sortName,
+                durationMs = cachedSong.parsedTags.durationMs,
+                replayGainTrackAdjustment = cachedSong.parsedTags.replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = cachedSong.parsedTags.replayGainAlbumAdjustment,
+                track = cachedSong.parsedTags.track,
+                disc = cachedSong.parsedTags.disc,
+                subtitle = cachedSong.parsedTags.subtitle,
+                date = cachedSong.parsedTags.date,
+                albumMusicBrainzId = cachedSong.parsedTags.albumMusicBrainzId,
+                albumName = cachedSong.parsedTags.albumName,
+                albumSortName = cachedSong.parsedTags.albumSortName,
+                releaseTypes = cachedSong.parsedTags.releaseTypes,
+                artistMusicBrainzIds = cachedSong.parsedTags.artistMusicBrainzIds,
+                artistNames = cachedSong.parsedTags.artistNames,
+                artistSortNames = cachedSong.parsedTags.artistSortNames,
+                albumArtistMusicBrainzIds = cachedSong.parsedTags.albumArtistMusicBrainzIds,
+                albumArtistNames = cachedSong.parsedTags.albumArtistNames,
+                albumArtistSortNames = cachedSong.parsedTags.albumArtistSortNames,
+                genreNames = cachedSong.parsedTags.genreNames,
+                cover = cachedSong.cover)
     }
 }

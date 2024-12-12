@@ -18,11 +18,11 @@
  
 package org.oxycblt.musikr
 
+import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.tag.Name
-import org.oxycblt.musikr.tag.cache.TagCache
 import org.oxycblt.musikr.tag.interpret.Separators
 
-data class Storage(val tagCache: TagCache, val storedCovers: StoredCovers)
+data class Storage(val cache: Cache, val storedCovers: StoredCovers)
 
 data class Interpretation(val nameFactory: Name.Known.Factory, val separators: Separators)

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverParser
 import org.oxycblt.musikr.fs.query.DeviceFile
@@ -51,14 +52,16 @@ constructor(
             nodes
                 .filterIsInstance<ExploreNode.Audio>()
                 .map {
-                    val tags = storage.tagCache.read(it.file)
+                    val tags = storage.cache.read(it.file)
                     MaybeCachedSong(it.file, tags)
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
         val (cachedSongs, uncachedSongs) =
             cacheResults.mapPartition {
-                it.tags?.let { tags -> ExtractedMusic.Song(it.file, tags, null) }
+                it.cachedSong?.let { song ->
+                    ExtractedMusic.Song(it.file, song.parsedTags, song.cover)
+                }
             }
         val split = uncachedSongs.distribute(8)
         val extractedSongs =
@@ -77,7 +80,7 @@ constructor(
         val writtenSongs =
             merge(*extractedSongs)
                 .map {
-                    storage.tagCache.write(it.file, it.tags)
+                    storage.cache.write(it.file, CachedSong(it.tags, it.cover))
                     it
                 }
                 .flowOn(Dispatchers.IO)
@@ -89,7 +92,7 @@ constructor(
         )
     }
 
-    data class MaybeCachedSong(val file: DeviceFile, val tags: ParsedTags?)
+    data class MaybeCachedSong(val file: DeviceFile, val cachedSong: CachedSong?)
 }
 
 sealed interface ExtractedMusic {
