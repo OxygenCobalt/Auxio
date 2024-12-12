@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.example.ktaglib'
+    namespace 'org.oxycblt.ktaglib'
     compileSdk 34
     ndkVersion "26.3.11579264"
 
