@@ -360,7 +360,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(playlist: Playlist) =
         bindImpl(
-            playlist.cover ?: Cover.nil(),
+            playlist.cover,
             context.getString(R.string.desc_playlist_image, playlist.name),
             R.drawable.ic_playlist_24)
 
