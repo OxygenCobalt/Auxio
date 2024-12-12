@@ -66,50 +66,28 @@ internal data class CachedInfo(
      * box only used for comparison.
      */
     @PrimaryKey val uri: String,
-    /** The latest date the [AudioFile]'s audio file was modified, as a unix epoch timestamp. */
     val dateModified: Long,
-    /** @see AudioFile */
     val durationMs: Long,
-    /** @see AudioFile.replayGainTrackAdjustment */
     val replayGainTrackAdjustment: Float?,
-    /** @see AudioFile.replayGainAlbumAdjustment */
     val replayGainAlbumAdjustment: Float?,
-    /** @see AudioFile.musicBrainzId */
     val musicBrainzId: String?,
-    /** @see AudioFile.name */
     val name: String,
-    /** @see AudioFile.sortName */
     val sortName: String?,
-    /** @see AudioFile.track */
     val track: Int?,
-    /** @see AudioFile.name */
     val disc: Int?,
-    /** @See AudioFile.subtitle */
     val subtitle: String?,
-    /** @see AudioFile.date */
     val date: Date?,
-    /** @see AudioFile.albumMusicBrainzId */
     val albumMusicBrainzId: String?,
-    /** @see AudioFile.albumName */
     val albumName: String?,
-    /** @see AudioFile.albumSortName */
     val albumSortName: String?,
-    /** @see AudioFile.releaseTypes */
-    val releaseTypes: List<String> = listOf(),
-    /** @see AudioFile.artistMusicBrainzIds */
-    val artistMusicBrainzIds: List<String> = listOf(),
-    /** @see AudioFile.artistNames */
-    val artistNames: List<String> = listOf(),
-    /** @see AudioFile.artistSortNames */
-    val artistSortNames: List<String> = listOf(),
-    /** @see AudioFile.albumArtistMusicBrainzIds */
-    val albumArtistMusicBrainzIds: List<String> = listOf(),
-    /** @see AudioFile.albumArtistNames */
-    val albumArtistNames: List<String> = listOf(),
-    /** @see AudioFile.albumArtistSortNames */
-    val albumArtistSortNames: List<String> = listOf(),
-    /** @see AudioFile.genreNames */
-    val genreNames: List<String> = listOf(),
+    val releaseTypes: List<String>,
+    val artistMusicBrainzIds: List<String>,
+    val artistNames: List<String>,
+    val artistSortNames: List<String>,
+    val albumArtistMusicBrainzIds: List<String>,
+    val albumArtistNames: List<String>,
+    val albumArtistSortNames: List<String>,
+    val genreNames: List<String>,
     val cover: Cover? = null
 ) {
     fun intoCachedSong() =
