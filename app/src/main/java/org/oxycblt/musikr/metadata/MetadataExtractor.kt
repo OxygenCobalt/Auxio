@@ -19,43 +19,24 @@
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
-import android.media.MediaMetadataRetriever
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.MetadataRetriever
-import androidx.media3.exoplayer.source.MediaSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.ktaglib.FileRef
+import org.oxycblt.ktaglib.KTagLib
+import org.oxycblt.ktaglib.Metadata
 import org.oxycblt.musikr.fs.query.DeviceFile
 
 interface MetadataExtractor {
-    suspend fun extract(file: DeviceFile): AudioMetadata
+    suspend fun extract(file: DeviceFile): Metadata?
 }
 
-class MetadataExtractorImpl
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
-    private val mediaSourceFactory: MediaSource.Factory
-) : MetadataExtractor {
-    override suspend fun extract(file: DeviceFile): AudioMetadata {
-        val exoPlayerMetadataFuture =
-            MetadataRetriever.retrieveMetadata(mediaSourceFactory, MediaItem.fromUri(file.uri))
-        val mediaMetadataRetriever =
-            MediaMetadataRetriever().apply {
-                withContext(Dispatchers.IO) { setDataSource(context, file.uri) }
-            }
-        val trackGroupArray = exoPlayerMetadataFuture.await()
-        if (trackGroupArray.isEmpty) {
-            return AudioMetadata(null, mediaMetadataRetriever)
+class MetadataExtractorImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    MetadataExtractor {
+    override suspend fun extract(file: DeviceFile) =
+        withContext(Dispatchers.IO) {
+            KTagLib.open(context, FileRef(unlikelyToBeNull(file.path.name), file.uri))
         }
-        val trackGroup = trackGroupArray.get(0)
-        if (trackGroup.length == 0) {
-            return AudioMetadata(null, mediaMetadataRetriever)
-        }
-        val format = trackGroup.getFormat(0)
-        return AudioMetadata(format, mediaMetadataRetriever)
-    }
 }

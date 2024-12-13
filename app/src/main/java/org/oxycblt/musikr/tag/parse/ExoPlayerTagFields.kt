@@ -20,37 +20,38 @@ package org.oxycblt.musikr.tag.parse
 
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.util.nonZeroOrNull
+import org.oxycblt.ktaglib.Metadata
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.util.parseId3v2PositionField
-import org.oxycblt.musikr.tag.util.parseVorbisPositionField
+import org.oxycblt.musikr.tag.util.parseXiphPositionField
 
 // Song
-fun ExoPlayerTags.musicBrainzId() =
-    (vorbis["musicbrainz_releasetrackid"]
-            ?: vorbis["musicbrainz release track id"]
+fun Metadata.musicBrainzId() =
+    (xiph["musicbrainz_releasetrackid"]
+            ?: xiph["musicbrainz release track id"]
             ?: id3v2["TXXX:musicbrainz release track id"]
             ?: id3v2["TXXX:musicbrainz_releasetrackid"])
         ?.first()
 
-fun ExoPlayerTags.name() = (vorbis["title"] ?: id3v2["TIT2"])?.first()
+fun Metadata.name() = (xiph["title"] ?: id3v2["TIT2"])?.first()
 
-fun ExoPlayerTags.sortName() = (vorbis["titlesort"] ?: id3v2["TSOT"])?.first()
+fun Metadata.sortName() = (xiph["titlesort"] ?: id3v2["TSOT"])?.first()
 
 // Track.
-fun ExoPlayerTags.track() =
-    (parseVorbisPositionField(
-        vorbis["tracknumber"]?.first(),
-        (vorbis["totaltracks"] ?: vorbis["tracktotal"] ?: vorbis["trackc"])?.first())
+fun Metadata.track() =
+    (parseXiphPositionField(
+        xiph["tracknumber"]?.first(),
+        (xiph["totaltracks"] ?: xiph["tracktotal"] ?: xiph["trackc"])?.first())
         ?: id3v2["TRCK"]?.run { first().parseId3v2PositionField() })
 
 // Disc and it's subtitle name.
-fun ExoPlayerTags.disc() =
-    (parseVorbisPositionField(
-        vorbis["discnumber"]?.first(),
-        (vorbis["totaldiscs"] ?: vorbis["disctotal"] ?: vorbis["discc"])?.run { first() })
+fun Metadata.disc() =
+    (parseXiphPositionField(
+        xiph["discnumber"]?.first(),
+        (xiph["totaldiscs"] ?: xiph["disctotal"] ?: xiph["discc"])?.run { first() })
         ?: id3v2["TPOS"]?.run { first().parseId3v2PositionField() })
 
-fun ExoPlayerTags.subtitle() = (vorbis["discsubtitle"] ?: id3v2["TSST"])?.first()
+fun Metadata.subtitle() = (xiph["discsubtitle"] ?: id3v2["TSST"])?.first()
 
 // Dates are somewhat complicated, as not only did their semantics change from a flat year
 // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -64,17 +65,17 @@ fun ExoPlayerTags.subtitle() = (vorbis["discsubtitle"] ?: id3v2["TSST"])?.first(
 // TODO: Show original and normal dates side-by-side
 // TODO: Handle dates that are in "January" because the actual specific release date
 //  isn't known?
-fun ExoPlayerTags.date() =
-    (vorbis["originaldate"]?.run { Date.from(first()) }
-        ?: vorbis["date"]?.run { Date.from(first()) }
-        ?: vorbis["year"]?.run { Date.from(first()) }
+fun Metadata.date() =
+    (xiph["originaldate"]?.run { Date.from(first()) }
+        ?: xiph["date"]?.run { Date.from(first()) }
+        ?: xiph["year"]?.run { Date.from(first()) }
         ?:
 
-        // Vorbis dates are less complicated, but there are still several types
+        // xiph dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
         // 1. Original Date, as it solves the "Released in X, Remastered in Y" issue
         // 2. Date, as it is the most common date type
-        // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
+        // 3. Year, as old xiph tags tended to use this (I know this because it's the only
         // date tag that android supports, so it must be 15 years old or more!)
         id3v2["TDOR"]?.run { Date.from(first()) }
         ?: id3v2["TDRC"]?.run { Date.from(first()) }
@@ -82,20 +83,20 @@ fun ExoPlayerTags.date() =
         ?: parseId3v23Date())
 
 // Album
-fun ExoPlayerTags.albumMusicBrainzId() =
-    (vorbis["musicbrainz_albumid"]
-            ?: vorbis["musicbrainz album id"]
+fun Metadata.albumMusicBrainzId() =
+    (xiph["musicbrainz_albumid"]
+            ?: xiph["musicbrainz album id"]
             ?: id3v2["TXXX:musicbrainz album id"]
             ?: id3v2["TXXX:musicbrainz_albumid"])
         ?.first()
 
-fun ExoPlayerTags.albumName() = (vorbis["album"] ?: id3v2["TALB"])?.first()
+fun Metadata.albumName() = (xiph["album"] ?: id3v2["TALB"])?.first()
 
-fun ExoPlayerTags.albumSortName() = (vorbis["albumsort"] ?: id3v2["TSOA"])?.first()
+fun Metadata.albumSortName() = (xiph["albumsort"] ?: id3v2["TSOA"])?.first()
 
-fun ExoPlayerTags.releaseTypes() =
-    (vorbis["releasetype"]
-        ?: vorbis["musicbrainz album type"]
+fun Metadata.releaseTypes() =
+    (xiph["releasetype"]
+        ?: xiph["musicbrainz album type"]
         ?: id3v2["TXXX:musicbrainz album type"]
         ?: id3v2["TXXX:releasetype"]
         ?:
@@ -103,25 +104,25 @@ fun ExoPlayerTags.releaseTypes() =
         id3v2["GRP1"])
 
 // Artist
-fun ExoPlayerTags.artistMusicBrainzIds() =
-    (vorbis["musicbrainz_artistid"]
-        ?: vorbis["musicbrainz artist id"]
+fun Metadata.artistMusicBrainzIds() =
+    (xiph["musicbrainz_artistid"]
+        ?: xiph["musicbrainz artist id"]
         ?: id3v2["TXXX:musicbrainz artist id"]
         ?: id3v2["TXXX:musicbrainz_artistid"])
 
-fun ExoPlayerTags.artistNames() =
-    (vorbis["artists"]
-        ?: vorbis["artist"]
+fun Metadata.artistNames() =
+    (xiph["artists"]
+        ?: xiph["artist"]
         ?: id3v2["TXXX:artists"]
         ?: id3v2["TPE1"]
         ?: id3v2["TXXX:artist"])
 
-fun ExoPlayerTags.artistSortNames() =
-    (vorbis["artistssort"]
-        ?: vorbis["artists_sort"]
-        ?: vorbis["artists sort"]
-        ?: vorbis["artistsort"]
-        ?: vorbis["artist sort"]
+fun Metadata.artistSortNames() =
+    (xiph["artistssort"]
+        ?: xiph["artists_sort"]
+        ?: xiph["artists sort"]
+        ?: xiph["artistsort"]
+        ?: xiph["artist sort"]
         ?: id3v2["TXXX:artistssort"]
         ?: id3v2["TXXX:artists_sort"]
         ?: id3v2["TXXX:artists sort"]
@@ -129,18 +130,18 @@ fun ExoPlayerTags.artistSortNames() =
         ?: id3v2["artistsort"]
         ?: id3v2["TXXX:artist sort"])
 
-fun ExoPlayerTags.albumArtistMusicBrainzIds() =
-    (vorbis["musicbrainz_albumartistid"]
-        ?: vorbis["musicbrainz album artist id"]
+fun Metadata.albumArtistMusicBrainzIds() =
+    (xiph["musicbrainz_albumartistid"]
+        ?: xiph["musicbrainz album artist id"]
         ?: id3v2["TXXX:musicbrainz album artist id"]
         ?: id3v2["TXXX:musicbrainz_albumartistid"])
 
-fun ExoPlayerTags.albumArtistNames() =
-    (vorbis["albumartists"]
-        ?: vorbis["album_artists"]
-        ?: vorbis["album artists"]
-        ?: vorbis["albumartist"]
-        ?: vorbis["album artist"]
+fun Metadata.albumArtistNames() =
+    (xiph["albumartists"]
+        ?: xiph["album_artists"]
+        ?: xiph["album artists"]
+        ?: xiph["albumartist"]
+        ?: xiph["album artist"]
         ?: id3v2["TXXX:albumartists"]
         ?: id3v2["TXXX:album_artists"]
         ?: id3v2["TXXX:album artists"]
@@ -148,12 +149,12 @@ fun ExoPlayerTags.albumArtistNames() =
         ?: id3v2["TXXX:albumartist"]
         ?: id3v2["TXXX:album artist"])
 
-fun ExoPlayerTags.albumArtistSortNames() =
-    (vorbis["albumartistssort"]
-        ?: vorbis["albumartists_sort"]
-        ?: vorbis["albumartists sort"]
-        ?: vorbis["albumartistsort"]
-        ?: vorbis["album artist sort"]
+fun Metadata.albumArtistSortNames() =
+    (xiph["albumartistssort"]
+        ?: xiph["albumartists_sort"]
+        ?: xiph["albumartists sort"]
+        ?: xiph["albumartistsort"]
+        ?: xiph["album artist sort"]
         ?: id3v2["TXXX:albumartistssort"]
         ?: id3v2["TXXX:albumartists_sort"]
         ?: id3v2["TXXX:albumartists sort"]
@@ -163,12 +164,12 @@ fun ExoPlayerTags.albumArtistSortNames() =
         ?: id3v2["TXXX:album artist sort"])
 
 // Genre
-fun ExoPlayerTags.genreNames() = vorbis["genre"] ?: id3v2["TCON"]
+fun Metadata.genreNames() = xiph["genre"] ?: id3v2["TCON"]
 
 // Compilation Flag
-fun ExoPlayerTags.isCompilation() =
-    (vorbis["compilation"]
-            ?: vorbis["itunescompilation"]
+fun Metadata.isCompilation() =
+    (xiph["compilation"]
+            ?: xiph["itunescompilation"]
             ?: id3v2["TCMP"] // This is a non-standard itunes extension
             ?: id3v2["TXXX:compilation"]
             ?: id3v2["TXXX:itunescompilation"])
@@ -178,17 +179,17 @@ fun ExoPlayerTags.isCompilation() =
         }
 
 // ReplayGain information
-fun ExoPlayerTags.replayGainTrackAdjustment() =
-    (vorbis["r128_track_gain"]?.parseR128Adjustment()
-        ?: vorbis["replaygain_track_gain"]?.parseReplayGainAdjustment()
+fun Metadata.replayGainTrackAdjustment() =
+    (xiph["r128_track_gain"]?.parseR128Adjustment()
+        ?: xiph["replaygain_track_gain"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:replaygain_track_gain"]?.parseReplayGainAdjustment())
 
-fun ExoPlayerTags.replayGainAlbumAdjustment() =
-    (vorbis["r128_album_gain"]?.parseR128Adjustment()
-        ?: vorbis["replaygain_album_gain"]?.parseReplayGainAdjustment()
+fun Metadata.replayGainAlbumAdjustment() =
+    (xiph["r128_album_gain"]?.parseR128Adjustment()
+        ?: xiph["replaygain_album_gain"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:replaygain_album_gain"]?.parseReplayGainAdjustment())
 
-private fun ExoPlayerTags.parseId3v23Date(): Date? {
+private fun Metadata.parseId3v23Date(): Date? {
     // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
     // is present.
     val year =

@@ -26,15 +26,16 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.CoverParser
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
+import timber.log.Timber as L
 
 interface ExtractStep {
     fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
@@ -42,11 +43,8 @@ interface ExtractStep {
 
 class ExtractStepImpl
 @Inject
-constructor(
-    private val metadataExtractor: MetadataExtractor,
-    private val tagParser: TagParser,
-    private val coverParser: CoverParser
-) : ExtractStep {
+constructor(private val metadataExtractor: MetadataExtractor, private val tagParser: TagParser) :
+    ExtractStep {
     override fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val cacheResults =
             nodes
@@ -63,15 +61,16 @@ constructor(
                     ExtractedMusic.Song(it.file, song.parsedTags, song.cover)
                 }
             }
-        val split = uncachedSongs.distribute(8)
+        val split = uncachedSongs.distribute(16)
         val extractedSongs =
             Array(split.hot.size) { i ->
                 split.hot[i]
-                    .map { node ->
-                        val metadata = metadataExtractor.extract(node.file)
+                    .mapNotNull { node ->
+                        val metadata =
+                            metadataExtractor.extract(node.file) ?: return@mapNotNull null
+                        L.d("Extracted tags for ${metadata.id3v2}")
                         val tags = tagParser.parse(node.file, metadata)
-                        val coverData = coverParser.extract(metadata)
-                        val cover = coverData?.let { storage.storedCovers.write(it) }
+                        val cover = metadata.cover?.let { storage.storedCovers.write(it) }
                         ExtractedMusic.Song(node.file, tags, cover)
                     }
                     .flowOn(Dispatchers.IO)

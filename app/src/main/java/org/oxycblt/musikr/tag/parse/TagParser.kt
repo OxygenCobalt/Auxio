@@ -19,48 +19,38 @@
 package org.oxycblt.musikr.tag.parse
 
 import javax.inject.Inject
+import org.oxycblt.ktaglib.Metadata
 import org.oxycblt.musikr.fs.query.DeviceFile
-import org.oxycblt.musikr.metadata.AudioMetadata
 
 interface TagParser {
-    fun parse(file: DeviceFile, metadata: AudioMetadata): ParsedTags
+    fun parse(file: DeviceFile, metadata: Metadata): ParsedTags
 }
 
 class MissingTagError(what: String) : Error("missing tag: $what")
 
 class TagParserImpl @Inject constructor() : TagParser {
-    override fun parse(file: DeviceFile, metadata: AudioMetadata): ParsedTags {
-        val exoPlayerMetadata =
-            metadata.exoPlayerFormat?.metadata
-                ?: return ParsedTags(
-                    durationMs =
-                        metadata.mediaMetadataRetriever.durationMs()
-                            ?: throw MissingTagError("durationMs"),
-                    name = file.path.name ?: throw MissingTagError("name"),
-                )
-        val exoPlayerTags = ExoPlayerTags(exoPlayerMetadata)
+    override fun parse(file: DeviceFile, metadata: Metadata): ParsedTags {
         return ParsedTags(
-            durationMs =
-                metadata.mediaMetadataRetriever.durationMs() ?: throw MissingTagError("durationMs"),
-            replayGainTrackAdjustment = exoPlayerTags.replayGainTrackAdjustment(),
-            replayGainAlbumAdjustment = exoPlayerTags.replayGainAlbumAdjustment(),
-            musicBrainzId = exoPlayerTags.musicBrainzId(),
-            name = exoPlayerTags.name() ?: file.path.name ?: throw MissingTagError("name"),
-            sortName = exoPlayerTags.sortName(),
-            track = exoPlayerTags.track(),
-            disc = exoPlayerTags.disc(),
-            subtitle = exoPlayerTags.subtitle(),
-            date = exoPlayerTags.date(),
-            albumMusicBrainzId = exoPlayerTags.albumMusicBrainzId(),
-            albumName = exoPlayerTags.albumName(),
-            albumSortName = exoPlayerTags.albumSortName(),
-            releaseTypes = exoPlayerTags.releaseTypes() ?: listOf(),
-            artistMusicBrainzIds = exoPlayerTags.artistMusicBrainzIds() ?: listOf(),
-            artistNames = exoPlayerTags.artistNames() ?: listOf(),
-            artistSortNames = exoPlayerTags.artistSortNames() ?: listOf(),
-            albumArtistMusicBrainzIds = exoPlayerTags.albumArtistMusicBrainzIds() ?: listOf(),
-            albumArtistNames = exoPlayerTags.albumArtistNames() ?: listOf(),
-            albumArtistSortNames = exoPlayerTags.albumArtistSortNames() ?: listOf(),
-            genreNames = exoPlayerTags.genreNames() ?: listOf())
+            durationMs = metadata.properties.durationMs,
+            replayGainTrackAdjustment = metadata.replayGainTrackAdjustment(),
+            replayGainAlbumAdjustment = metadata.replayGainAlbumAdjustment(),
+            musicBrainzId = metadata.musicBrainzId(),
+            name = metadata.name() ?: file.path.name ?: throw MissingTagError("name"),
+            sortName = metadata.sortName(),
+            track = metadata.track(),
+            disc = metadata.disc(),
+            subtitle = metadata.subtitle(),
+            date = metadata.date(),
+            albumMusicBrainzId = metadata.albumMusicBrainzId(),
+            albumName = metadata.albumName(),
+            albumSortName = metadata.albumSortName(),
+            releaseTypes = metadata.releaseTypes() ?: listOf(),
+            artistMusicBrainzIds = metadata.artistMusicBrainzIds() ?: listOf(),
+            artistNames = metadata.artistNames() ?: listOf(),
+            artistSortNames = metadata.artistSortNames() ?: listOf(),
+            albumArtistMusicBrainzIds = metadata.albumArtistMusicBrainzIds() ?: listOf(),
+            albumArtistNames = metadata.albumArtistNames() ?: listOf(),
+            albumArtistSortNames = metadata.albumArtistSortNames() ?: listOf(),
+            genreNames = metadata.genreNames() ?: listOf())
     }
 }

@@ -47,7 +47,7 @@ fun String.parseId3v2PositionField() =
  *
  * @see transformPositionField
  */
-fun parseVorbisPositionField(pos: String?, total: String?) =
+fun parseXiphPositionField(pos: String?, total: String?) =
     transformPositionField(pos?.toIntOrNull(), total?.toIntOrNull())
 
 /**
