@@ -17,12 +17,11 @@ void JVMMetadataBuilder::setMimeType(const std::string_view mimeType) {
 void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
     for (auto frame: tag.frameList()) {
         if (auto txxxFrame = dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame *>(frame)) {
-            TagLib::String desc = std::string(txxxFrame->description().toCString(true));
-            // Make desc lowercase
-            std::transform(desc.begin(), desc.end(), desc.begin(), ::tolower);
-            TagLib::String key = TagLib::String(frame->frameID()) + ":" + desc;
             TagLib::StringList frameText = txxxFrame->fieldList();
-            frameText.erase(frameText.begin()); // Remove description that exists for some insane reason
+            // Frame text starts with the description then the remaining values
+            auto begin = frameText.begin();
+            TagLib::String key = TagLib::String(frame->frameID()) + ":" + begin->upper();
+            frameText.erase(begin);
             id3v2.add(key, frameText);
         } else if (auto textFrame = dynamic_cast<TagLib::ID3v2::TextIdentificationFrame *>(frame)) {
             TagLib::String key = frame->frameID();
@@ -36,11 +35,9 @@ void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
 
 void JVMMetadataBuilder::setXiph(const TagLib::Ogg::XiphComment &tag) {
     for (auto field: tag.fieldListMap()) {
-        auto fieldName = std::string(field.first.toCString(true));
-        std::transform(fieldName.begin(), fieldName.end(), fieldName.begin(), ::tolower);
-        auto taglibFieldName = TagLib::String(fieldName);
-        auto fieldValue = field.second;
-        xiph.add(taglibFieldName, fieldValue);
+        auto key = field.first.upper();
+        auto values = field.second;
+        xiph.add(key, values);
     }
 }
 
@@ -49,6 +46,8 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
         auto itemName = TagLib::String(item.first);
         auto itemValue = item.second;
         auto type = itemValue.type();
+
+        // TODO: Handle internal atoms
 
         // Only read out the atoms for the reasonable tags we are expecting.
         // None of the crazy binary atoms.
@@ -125,7 +124,7 @@ jobject JVMMetadataBuilder::build() {
     jobject mp4Map = mp4.getObject();
     jbyteArray coverArray = nullptr;
     if (cover.has_value()) {
-        coverArray = env->NewByteArray(cover->size());
+        coverArray = env->NewByteArray(static_cast<jsize>(cover->size());
         env->SetByteArrayRegion(coverArray, 0, cover->size(), reinterpret_cast<const jbyte *>(cover->data()));
     }
     jobject metadataObj = env->NewObject(metadataClass, metadataInit, id3v2Map, xiphMap, mp4Map, coverArray, propertiesObj);
