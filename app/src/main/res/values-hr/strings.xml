@@ -315,4 +315,10 @@
     <string name="lbl_feedback">Povratne informacije</string>
     <string name="lbl_github">Prijavi problem na GitHubu</string>
     <string name="lbl_email">Pošalji e-mail</string>
+    <string name="lbl_music_sources">Odaberi mape</string>
+    <string name="lng_no_albums">Tvoji albumi će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_artists">Tvoji izvođači će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_playlists">Tvoj popis pjesama će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_genres">Tvoji žanri će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_songs">Tvoje pjesme će se ovdje prikazati kada dodaš neku glazbu.</string>
 </resources>
