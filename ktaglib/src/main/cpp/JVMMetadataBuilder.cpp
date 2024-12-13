@@ -5,6 +5,7 @@
 #include "JVMMetadataBuilder.h"
 
 #include <taglib/mp4tag.h>
+#include <taglib/textidentificationframe.h>
 
 JVMMetadataBuilder::JVMMetadataBuilder(JNIEnv *env) : env(env), id3v2(env), xiph(env), mp4(env),
                                                       cover(), properties(nullptr) {}
@@ -15,28 +16,37 @@ void JVMMetadataBuilder::setMimeType(const std::string_view mimeType) {
 
 void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
     for (auto frame: tag.frameList()) {
-        auto frameId = TagLib::String(frame->frameID());
-        auto frameText = frame->toStringList();
-        id3v2.add(frameId, frameText);
+        if (auto txxxFrame = dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame *>(frame)) {
+            TagLib::String desc = std::string(txxxFrame->description().toCString(true));
+            // Make desc lowercase
+            std::transform(desc.begin(), desc.end(), desc.begin(), ::tolower);
+            TagLib::String key = TagLib::String(frame->frameID()) + ":" + desc;
+            TagLib::StringList frameText = txxxFrame->fieldList();
+            frameText.erase(frameText.begin()); // Remove description that exists for some insane reason
+            id3v2.add(key, frameText);
+        } else if (auto textFrame = dynamic_cast<TagLib::ID3v2::TextIdentificationFrame *>(frame)) {
+            TagLib::String key = frame->frameID();
+            TagLib::StringList frameText = textFrame->fieldList();
+            id3v2.add(key, frameText);
+        } else {
+            continue;
+        }
     }
 }
 
 void JVMMetadataBuilder::setXiph(const TagLib::Ogg::XiphComment &tag) {
     for (auto field: tag.fieldListMap()) {
-        auto fieldName = TagLib::String(field.first);
+        auto fieldName = std::string(field.first.toCString(true));
+        std::transform(fieldName.begin(), fieldName.end(), fieldName.begin(), ::tolower);
+        auto taglibFieldName = TagLib::String(fieldName);
         auto fieldValue = field.second;
-        xiph.add(fieldName, fieldValue);
+        xiph.add(taglibFieldName, fieldValue);
     }
 }
 
 void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
     for (auto item: tag.itemMap()) {
-        auto atomName = item.first;
-        // Strip out ID Padding
-        while (atomName.startsWith("\251")) {
-            atomName = atomName.substr(1);
-        }
-        auto itemName = TagLib::String(atomName);
+        auto itemName = TagLib::String(item.first);
         auto itemValue = item.second;
         auto type = itemValue.type();
 

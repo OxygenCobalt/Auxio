@@ -30,9 +30,9 @@ data class FileRef(
 )
 
 data class Metadata(
-    val id3v2: Map<String, String>,
-    val xiph: Map<String, String>,
-    val mp4: Map<String, String>,
+    val id3v2: Map<String, List<String>>,
+    val xiph: Map<String, List<String>>,
+    val mp4: Map<String, List<String>>,
     val cover: ByteArray?,
     val properties: Properties
 ) {
