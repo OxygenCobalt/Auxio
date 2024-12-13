@@ -25,9 +25,13 @@ JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream) :
     inputStreamClearMethod = env->GetMethodID(inputStreamClass, "clear", "()V");
     inputStreamTellMethod = env->GetMethodID(inputStreamClass, "tell", "()J");
     inputStreamLengthMethod = env->GetMethodID(inputStreamClass, "length", "()J");
+    env->DeleteLocalRef(inputStreamClass);
 }
 
-JVMInputStream::~JVMInputStream() {}
+JVMInputStream::~JVMInputStream() {
+    // The implicit assumption is that inputStream is managed by the owner,
+    // so we don't need to delete any references here
+}
 
 TagLib::FileName JVMInputStream::name() const {
     auto name = (jstring) env->CallObjectMethod(inputStream, inputStreamNameMethod);
