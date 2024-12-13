@@ -22,9 +22,9 @@ JVMTagMap::~JVMTagMap() {
     env->DeleteLocalRef(hashMap);
 }
 
-void JVMTagMap::add(TagLib::String &key, TagLib::String &value) {
+void JVMTagMap::add(TagLib::String &key, std::string_view value) {
     jstring jKey = env->NewStringUTF(key.toCString(true));
-    jstring jValue = env->NewStringUTF(value.toCString(true));
+    jstring jValue = env->NewStringUTF(value.data());
 
     // check if theres already a value arraylist in the map
     jobject existingValue = env->CallObjectMethod(hashMap, hashMapGetMethod, jKey);

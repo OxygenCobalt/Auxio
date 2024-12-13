@@ -18,7 +18,7 @@ public:
     JVMTagMap(const JVMTagMap &) = delete;
     JVMTagMap &operator=(const JVMTagMap &) = delete;
 
-    void add(TagLib::String &key, TagLib::String &value);
+    void add(TagLib::String &key, std::string_view value);
     void add(TagLib::String &key, TagLib::StringList &value);
 
     jobject getObject();

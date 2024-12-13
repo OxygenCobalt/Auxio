@@ -49,5 +49,7 @@ Java_org_oxycblt_ktaglib_KTagLib_openNative(
         return nullptr;
     }
 
+    builder.setProperties(file->audioProperties());
+
     return builder.build();
 }

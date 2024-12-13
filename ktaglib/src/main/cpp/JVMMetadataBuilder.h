@@ -25,7 +25,7 @@ public:
     void setXiph(const TagLib::Ogg::XiphComment &tag);
     void setMp4(const TagLib::MP4::Tag &tag);
     void setCover(const TagLib::List<TagLib::VariantMap> covers);
-    void setProperties(const TagLib::AudioProperties &properties);
+    void setProperties(TagLib::AudioProperties *properties);
 
     jobject build();
 
@@ -34,8 +34,8 @@ private:
 
     std::string_view mimeType;
 
-    TagLib::ByteVector cover;
-    TagLib::AudioProperties &properties;
+    std::optional<TagLib::ByteVector> cover;
+    TagLib::AudioProperties *properties;
 
     JVMTagMap id3v2;
     JVMTagMap xiph;
