@@ -18,6 +18,8 @@
  
 package org.oxycblt.musikr.pipeline
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -33,9 +35,10 @@ interface ExploreStep {
     fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
 }
 
-class ExploreStepImpl @Inject constructor(private val deviceFiles: DeviceFiles) : ExploreStep {
+class ExploreStepImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    ExploreStep {
     override fun explore(locations: List<MusicLocation>) =
-        deviceFiles
+        DeviceFiles.from(context)
             .explore(locations.asFlow())
             .mapNotNull {
                 when {

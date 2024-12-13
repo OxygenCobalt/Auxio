@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.graph
 
-import javax.inject.Inject
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.tag.interpret.PreAlbum
@@ -39,13 +38,9 @@ data class MusicGraph(
         fun build(): MusicGraph
     }
 
-    interface Factory {
-        fun builder(): Builder
+    companion object {
+        fun builder(): Builder = MusicGraphBuilderImpl()
     }
-}
-
-class MusicGraphFactoryImpl @Inject constructor() : MusicGraph.Factory {
-    override fun builder(): MusicGraph.Builder = MusicGraphBuilderImpl()
 }
 
 private class MusicGraphBuilderImpl : MusicGraph.Builder {

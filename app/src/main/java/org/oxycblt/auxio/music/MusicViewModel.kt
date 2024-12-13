@@ -18,10 +18,12 @@
  
 package org.oxycblt.auxio.music
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,10 +51,11 @@ import timber.log.Timber as L
 class MusicViewModel
 @Inject
 constructor(
+    @ApplicationContext context: Context,
     private val listSettings: ListSettings,
-    private val musicRepository: MusicRepository,
-    private val externalPlaylistManager: ExternalPlaylistManager
+    private val musicRepository: MusicRepository
 ) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
+    private val externalPlaylistManager = ExternalPlaylistManager.from(context)
 
     private val _indexingState = MutableStateFlow<IndexingState?>(null)
 

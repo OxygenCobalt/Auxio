@@ -22,8 +22,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -36,6 +34,10 @@ import org.oxycblt.musikr.fs.Path
 
 interface DeviceFiles {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
+
+    companion object {
+        fun from(context: Context): DeviceFiles = DeviceFilesImpl(context.contentResolverSafe)
+    }
 }
 
 data class DeviceFile(
@@ -47,10 +49,7 @@ data class DeviceFile(
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DeviceFilesImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    DeviceFiles {
-    private val contentResolver = context.contentResolverSafe
-
+private class DeviceFilesImpl(private val contentResolver: ContentResolver) : DeviceFiles {
     override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
         locations.flatMapMerge { location ->
             exploreImpl(

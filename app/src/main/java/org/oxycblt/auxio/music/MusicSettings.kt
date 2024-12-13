@@ -53,18 +53,14 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     }
 }
 
-class MusicSettingsImpl
-@Inject
-constructor(
-    @ApplicationContext context: Context,
-    private val musicLocationFactory: MusicLocation.Factory
-) : Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
+class MusicSettingsImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
     override var musicLocations: List<MusicLocation>
         get() {
             val dirs =
                 sharedPreferences.getStringSet(getString(R.string.set_key_music_locations), null)
                     ?: emptySet()
-            return dirs.mapNotNull { musicLocationFactory.existing(Uri.parse(it)) }
+            return dirs.mapNotNull { MusicLocation.existing(context, Uri.parse(it)) }
         }
         set(value) {
             sharedPreferences.edit {

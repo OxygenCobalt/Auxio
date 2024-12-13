@@ -22,8 +22,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.musikr.fs.query.contentResolverSafe
 
@@ -42,43 +40,34 @@ class MusicLocation internal constructor(val uri: Uri, val path: Path) {
         return "$uri=${volumeId}:${path.components.unixString}"
     }
 
-    interface Factory {
-        fun new(uri: Uri): MusicLocation?
-
-        fun existing(uri: Uri): MusicLocation?
-    }
-}
-
-class MusicLocationFactoryImpl
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
-    private val documentPathFactory: DocumentPathFactory
-) : MusicLocation.Factory {
-    override fun new(uri: Uri): MusicLocation? {
-        if (!DocumentsContract.isTreeUri(uri)) return null
-        val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
-        val notPersisted =
-            context.contentResolverSafe.persistedUriPermissions.none {
-                it.uri == uri && it.isReadPermission && it.isWritePermission
+    companion object {
+        fun new(context: Context, uri: Uri): MusicLocation? {
+            if (!DocumentsContract.isTreeUri(uri)) return null
+            val documentPathFactory = DocumentPathFactory.from(context)
+            val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
+            val notPersisted =
+                context.contentResolverSafe.persistedUriPermissions.none {
+                    it.uri == uri && it.isReadPermission && it.isWritePermission
+                }
+            if (notPersisted) {
+                context.contentResolverSafe.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             }
-        if (notPersisted) {
-            context.contentResolverSafe.takePersistableUriPermission(
-                uri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            return MusicLocation(uri, path)
         }
-        return MusicLocation(uri, path)
-    }
 
-    override fun existing(uri: Uri): MusicLocation? {
-        if (!DocumentsContract.isTreeUri(uri)) return null
-        val notPersisted =
-            context.contentResolverSafe.persistedUriPermissions.none {
-                it.uri == uri && it.isReadPermission && it.isWritePermission
-            }
-        if (notPersisted) return null
-        val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
-        return MusicLocation(uri, path)
+        fun existing(context: Context, uri: Uri): MusicLocation? {
+            val documentPathFactory = DocumentPathFactory.from(context)
+            if (!DocumentsContract.isTreeUri(uri)) return null
+            val notPersisted =
+                context.contentResolverSafe.persistedUriPermissions.none {
+                    it.uri == uri && it.isReadPermission && it.isWritePermission
+                }
+            if (notPersisted) return null
+            val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
+            return MusicLocation(uri, path)
+        }
     }
 }
 

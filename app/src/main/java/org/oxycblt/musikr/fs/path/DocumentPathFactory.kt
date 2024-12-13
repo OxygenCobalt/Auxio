@@ -24,7 +24,6 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
-import javax.inject.Inject
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.fs.Volume
@@ -68,11 +67,17 @@ interface DocumentPathFactory {
      * @return The [Path] instance, or null if the path could not be deserialized.
      */
     fun fromDocumentId(path: String): Path?
+
+    companion object {
+        fun from(context: Context): DocumentPathFactory {
+            val volumeManager = VolumeManager.from(context)
+            val pathInterpreter = MediaStorePathInterpreter.Factory.from(volumeManager)
+            return DocumentPathFactoryImpl(context, volumeManager, pathInterpreter)
+        }
+    }
 }
 
-class DocumentPathFactoryImpl
-@Inject
-constructor(
+private class DocumentPathFactoryImpl(
     @ApplicationContext private val context: Context,
     private val volumeManager: VolumeManager,
     private val mediaStorePathInterpreterFactory: MediaStorePathInterpreter.Factory

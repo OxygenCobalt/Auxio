@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import org.oxycblt.ktaglib.KTagLib
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cover.Cover
@@ -36,7 +35,6 @@ import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
-import timber.log.Timber
 
 interface ExtractStep {
     fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic>

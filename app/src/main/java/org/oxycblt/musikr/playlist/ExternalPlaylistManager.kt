@@ -20,8 +20,6 @@ package org.oxycblt.musikr.playlist
 
 import android.content.Context
 import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
@@ -56,6 +54,12 @@ interface ExternalPlaylistManager {
      * @return True if the playlist was successfully exported, false otherwise.
      */
     suspend fun export(playlist: Playlist, uri: Uri, config: ExportConfig): Boolean
+
+    companion object {
+        fun from(context: Context): ExternalPlaylistManager =
+            ExternalPlaylistManagerImpl(
+                context, DocumentPathFactory.from(context), M3U.from(context))
+    }
 }
 
 /**
@@ -81,10 +85,8 @@ data class ImportedPlaylist(val name: String?, val paths: List<PossiblePaths>)
 
 typealias PossiblePaths = List<Path>
 
-class ExternalPlaylistManagerImpl
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
+class ExternalPlaylistManagerImpl(
+    private val context: Context,
     private val documentPathFactory: DocumentPathFactory,
     private val m3u: M3U
 ) : ExternalPlaylistManager {

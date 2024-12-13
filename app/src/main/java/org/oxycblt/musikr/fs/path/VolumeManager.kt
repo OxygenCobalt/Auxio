@@ -21,7 +21,6 @@ package org.oxycblt.musikr.fs.path
 import android.content.Context
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
-import javax.inject.Inject
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Volume
 
@@ -40,10 +39,14 @@ interface VolumeManager {
      * @see StorageManager.getStorageVolumes
      */
     fun getVolumes(): List<Volume>
+
+    companion object {
+        fun from(context: Context): VolumeManager =
+            VolumeManagerImpl(context.getSystemService(StorageManager::class.java))
+    }
 }
 
-class VolumeManagerImpl @Inject constructor(private val storageManager: StorageManager) :
-    VolumeManager {
+private class VolumeManagerImpl(private val storageManager: StorageManager) : VolumeManager {
     override fun getInternalVolume(): Volume.Internal =
         InternalVolumeImpl(storageManager.primaryStorageVolume)
 

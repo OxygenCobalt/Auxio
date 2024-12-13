@@ -19,8 +19,6 @@
 package org.oxycblt.auxio.music.locations
 
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -50,7 +48,6 @@ class MusicSourcesDialog :
     ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(), LocationAdapter.Listener {
     private val locationAdapter = LocationAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    @Inject lateinit var musicLocationFactory: MusicLocation.Factory
     @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -102,7 +99,7 @@ class MusicSourcesDialog :
 
         val locations =
             savedInstanceState?.getStringArrayList(KEY_PENDING_LOCATIONS)?.mapNotNull {
-                musicLocationFactory.existing(Uri.parse(it))
+                MusicLocation.existing(requireContext(), Uri.parse(it))
             } ?: musicSettings.musicLocations
 
         locationAdapter.addAll(locations)
@@ -126,8 +123,6 @@ class MusicSourcesDialog :
         requireBinding().locationsEmpty.isVisible = locationAdapter.locations.isEmpty()
     }
 
-    @Inject lateinit var contentResolver: ContentResolver
-
     /**
      * Add a Document Tree [Uri] chosen by the user to the current [MusicLocation]s.
      *
@@ -140,11 +135,7 @@ class MusicSourcesDialog :
             L.d("No URI given (user closed the dialog)")
             return
         }
-        val takeFlags: Int =
-            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        contentResolver.takePersistableUriPermission(uri, takeFlags)
-
-        val location = musicLocationFactory.new(uri)
+        val location = MusicLocation.new(requireContext(), uri)
 
         if (location != null) {
             locationAdapter.add(location)

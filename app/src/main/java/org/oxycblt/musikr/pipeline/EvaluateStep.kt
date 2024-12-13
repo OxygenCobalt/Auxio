@@ -43,7 +43,6 @@ class EvaluateStepImpl
 @Inject
 constructor(
     private val tagInterpreter: TagInterpreter,
-    private val musicGraphFactory: MusicGraph.Factory,
     private val libraryFactory: LibraryFactory
 ) : EvaluateStep {
     override suspend fun evaluate(
@@ -56,7 +55,7 @@ constructor(
                 .map { tagInterpreter.interpret(it.file, it.tags, it.cover, interpretation) }
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)
-        val graphBuilder = musicGraphFactory.builder()
+        val graphBuilder = MusicGraph.builder()
         preSongs.collect { graphBuilder.add(it) }
         val graph = graphBuilder.build()
         return libraryFactory.create(graph)

@@ -75,6 +75,8 @@ interface M3U {
     companion object {
         /** The mime type used for M3U files by the android system. */
         const val MIME_TYPE = "audio/x-mpegurl"
+
+        fun from(context: Context): M3U = M3UImpl(context, VolumeManager.from(context))
     }
 }
 
