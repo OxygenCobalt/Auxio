@@ -31,7 +31,7 @@ import timber.log.Timber as L
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface Settings<L> {
+interface Settings<Listener> {
     /**
      * Migrate any settings fields from older versions into their new counterparts.
      *
@@ -46,41 +46,45 @@ interface Settings<L> {
      *
      * @param listener The listener to add.
      */
-    fun registerListener(listener: L)
+    fun registerListener(listener: Listener)
 
     /**
      * Unregister a listener, preventing any further settings updates from being sent to it.
      *
      * @param listener The listener to unregister, must be the same as the current listener.
      */
-    fun unregisterListener(listener: L)
+    fun unregisterListener(listener: Listener)
 
     /**
      * A framework-backed [Settings] implementation.
      *
      * @param context [Context] required.
      */
-    abstract class Impl<L>(private val context: Context) :
-        Settings<L>, SharedPreferences.OnSharedPreferenceChangeListener {
+    abstract class Impl<Listener>(private val context: Context) :
+        Settings<Listener>, SharedPreferences.OnSharedPreferenceChangeListener {
+        init {
+            L.d(this::class.simpleName)
+        }
+
         protected val sharedPreferences: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
 
         /** @see [Context.getString] */
         protected fun getString(@StringRes stringRes: Int) = context.getString(stringRes)
 
-        private var listener: L? = null
+        private var listener: Listener? = null
 
-        override fun registerListener(listener: L) {
+        override fun registerListener(listener: Listener) {
             if (this.listener == null) {
                 // Registering a listener when it was null prior, attach the callback.
-                L.d("Registering shared preference listener")
+                L.d("Registering shared preference listener for ${this::class.simpleName}")
                 sharedPreferences.registerOnSharedPreferenceChangeListener(this)
             }
-            L.d("Registering listener $listener")
+            L.d("Registering listener $listener for ${this::class.simpleName}")
             this.listener = listener
         }
 
-        override fun unregisterListener(listener: L) {
+        override fun unregisterListener(listener: Listener) {
             if (this.listener !== listener) {
                 L.w("Given listener was not the current listener.")
                 return
@@ -106,6 +110,6 @@ interface Settings<L> {
          * @param key The key of the changed setting.
          * @param listener The implementation's listener that updates should be applied to.
          */
-        protected open fun onSettingChanged(key: String, listener: L) {}
+        protected open fun onSettingChanged(key: String, listener: Listener) {}
     }
 }

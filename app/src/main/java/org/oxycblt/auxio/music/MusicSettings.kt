@@ -58,9 +58,11 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
     override var musicLocations: List<MusicLocation>
         get() {
             val dirs =
-                sharedPreferences.getStringSet(getString(R.string.set_key_music_locations), null)
-                    ?: emptySet()
-            return dirs.mapNotNull { MusicLocation.existing(context, Uri.parse(it)) }
+                sharedPreferences.getStringSet(getString(R.string.set_key_music_locations), null) ?:
+                emptySet()
+            return dirs.mapNotNull {
+                MusicLocation.existing(context, Uri.parse(it))
+            }
         }
         set(value) {
             sharedPreferences.edit {

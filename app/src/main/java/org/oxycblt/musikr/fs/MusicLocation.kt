@@ -26,19 +26,11 @@ import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.musikr.fs.query.contentResolverSafe
 
 class MusicLocation internal constructor(val uri: Uri, val path: Path) {
-    override fun equals(other: Any?) =
-        other is MusicLocation && uri == other.uri && path == other.path
+    override fun equals(other: Any?) = other is MusicLocation && uri == other.uri
 
-    override fun hashCode() = 31 * uri.hashCode() + path.hashCode()
+    override fun hashCode() = 31 * uri.hashCode()
 
-    override fun toString(): String {
-        val volumeId =
-            when (path.volume) {
-                is Volume.Internal -> VOLUME_INTERNAL
-                is Volume.External -> path.volume.id
-            }
-        return "$uri=${volumeId}:${path.components.unixString}"
-    }
+    override fun toString(): String = uri.toString()
 
     companion object {
         fun new(context: Context, uri: Uri): MusicLocation? {
