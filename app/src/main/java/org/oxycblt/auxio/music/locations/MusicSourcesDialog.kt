@@ -59,10 +59,7 @@ class MusicSourcesDialog :
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val newDirs = locationAdapter.locations
-                if (musicSettings.musicLocations != newDirs) {
-                    L.d("Committing changes")
-                    musicSettings.musicLocations = newDirs
-                }
+                musicSettings.musicLocations = newDirs
             }
     }
 

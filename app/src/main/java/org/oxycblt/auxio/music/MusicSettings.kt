@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
-import android.net.Uri
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -55,21 +54,19 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
 
 class MusicSettingsImpl @Inject constructor(@ApplicationContext private val context: Context) :
     Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
+
     override var musicLocations: List<MusicLocation>
         get() {
-            val dirs =
-                sharedPreferences.getStringSet(getString(R.string.set_key_music_locations), null) ?:
-                emptySet()
-            return dirs.mapNotNull {
-                MusicLocation.existing(context, Uri.parse(it))
-            }
+            val locations =
+                sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
+                    ?: return emptyList()
+            return MusicLocation.existing(context, locations)
         }
         set(value) {
             sharedPreferences.edit {
-                putStringSet(
-                    getString(R.string.set_key_music_locations),
-                    value.map { it.toString() }.toSet())
-                apply()
+                putString(
+                    getString(R.string.set_key_music_locations), MusicLocation.toString(value))
+                this@edit.apply()
             }
         }
 

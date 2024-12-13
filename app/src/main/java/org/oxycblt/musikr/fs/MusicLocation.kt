@@ -60,7 +60,12 @@ class MusicLocation internal constructor(val uri: Uri, val path: Path) {
             val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
             return MusicLocation(uri, path)
         }
+
+        fun toString(list: List<MusicLocation>) =
+            list.joinToString(";") { it.uri.toString().replace(";", "\\;") }
+
+        fun existing(context: Context, string: String): List<MusicLocation> {
+            return string.splitEscaped { it == ';' }.mapNotNull { existing(context, Uri.parse(it)) }
+        }
     }
 }
-
-private const val VOLUME_INTERNAL = "internal"
