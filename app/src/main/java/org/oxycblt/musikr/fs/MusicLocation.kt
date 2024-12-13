@@ -24,6 +24,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.musikr.fs.query.contentResolverSafe
+import org.oxycblt.musikr.tag.util.splitEscaped
 
 class MusicLocation internal constructor(val uri: Uri, val path: Path) {
     override fun equals(other: Any?) = other is MusicLocation && uri == other.uri
