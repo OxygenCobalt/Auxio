@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import timber.log.Timber as L
 
 internal interface CoverFiles {
     suspend fun read(id: String): InputStream?
@@ -34,12 +35,11 @@ internal interface CoverFiles {
 
     companion object {
         fun from(context: Context, path: String, format: CoverFormat): CoverFiles =
-            CoverFilesImpl(context, File(context.filesDir, path).also { it.mkdirs() }, format)
+            CoverFilesImpl(File(context.filesDir, path).also { it.mkdirs() }, format)
     }
 }
 
 private class CoverFilesImpl(
-    private val context: Context,
     private val dir: File,
     private val coverFormat: CoverFormat
 ) : CoverFiles {
@@ -53,7 +53,7 @@ private class CoverFilesImpl(
     override suspend fun read(id: String): InputStream? =
         withContext(Dispatchers.IO) {
             try {
-                context.openFileInput(getTargetFilePath(id))
+                File(dir, getTargetFilePath(id)).inputStream()
             } catch (e: IOException) {
                 null
             }
@@ -72,7 +72,6 @@ private class CoverFilesImpl(
 
                 try {
                     tempFile.outputStream().use { coverFormat.transcodeInto(data, it) }
-
                     tempFile.renameTo(targetFile)
                 } catch (e: IOException) {
                     tempFile.delete()
