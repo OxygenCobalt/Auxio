@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import timber.log.Timber as L
 
 internal interface CoverFiles {
     suspend fun read(id: String): InputStream?
@@ -39,10 +38,8 @@ internal interface CoverFiles {
     }
 }
 
-private class CoverFilesImpl(
-    private val dir: File,
-    private val coverFormat: CoverFormat
-) : CoverFiles {
+private class CoverFilesImpl(private val dir: File, private val coverFormat: CoverFormat) :
+    CoverFiles {
     private val fileMutexes = mutableMapOf<String, Mutex>()
     private val mapMutex = Mutex()
 

@@ -68,7 +68,7 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
         if (type == TagLib::MP4::Item::Type::IntPair) {
             // It's inefficient going from the integer representation back into
             // a string, but I fully expect taggers to just write "NN/TT" strings
-            // anyway.
+            // anyway, and musikr doesn't have to do as much fiddly variant handling.
             auto value = std::to_string(itemValue.toIntPair().first) + "/" +
                          std::to_string(itemValue.toIntPair().second);
             id3v2.add(itemName, value);
