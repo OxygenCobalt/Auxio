@@ -50,6 +50,7 @@ Java_org_oxycblt_ktaglib_KTagLib_openNative(
     }
 
     builder.setProperties(file->audioProperties());
+    builder.setCover(file->tag()->complexProperties("PICTURE"));
 
     return builder.build();
 }
