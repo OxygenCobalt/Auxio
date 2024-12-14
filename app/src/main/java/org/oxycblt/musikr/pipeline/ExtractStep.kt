@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.pipeline
 
-import javax.inject.Inject
+import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -39,12 +39,17 @@ import timber.log.Timber as L
 
 interface ExtractStep {
     fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
+
+    companion object {
+        fun from(context: Context): ExtractStep =
+            ExtractStepImpl(MetadataExtractor.from(context), TagParser.new())
+    }
 }
 
-class ExtractStepImpl
-@Inject
-constructor(private val metadataExtractor: MetadataExtractor, private val tagParser: TagParser) :
-    ExtractStep {
+private class ExtractStepImpl(
+    private val metadataExtractor: MetadataExtractor,
+    private val tagParser: TagParser
+) : ExtractStep {
     override fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val cacheResults =
             nodes

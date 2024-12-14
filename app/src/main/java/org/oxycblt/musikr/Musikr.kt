@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr
 
-import javax.inject.Inject
+import android.content.Context
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
@@ -37,6 +37,11 @@ interface Musikr {
         interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): MutableLibrary
+
+    companion object {
+        fun new(context: Context): Musikr =
+            MusikrImpl(ExploreStep.from(context), ExtractStep.from(context), EvaluateStep.new())
+    }
 }
 
 /**
@@ -50,9 +55,7 @@ sealed interface IndexingProgress {
     data object Indeterminate : IndexingProgress
 }
 
-class MusikrImpl
-@Inject
-constructor(
+class MusikrImpl(
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep

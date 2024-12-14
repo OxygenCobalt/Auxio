@@ -18,11 +18,13 @@
  
 package org.oxycblt.musikr.playlist.db
 
+import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverters
@@ -39,7 +41,15 @@ import org.oxycblt.musikr.Music
     exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
 abstract class PlaylistDatabase : RoomDatabase() {
-    abstract fun playlistDao(): PlaylistDao
+    internal abstract fun playlistDao(): PlaylistDao
+
+    companion object {
+        fun from(context: Context) =
+            Room.databaseBuilder(
+                    context.applicationContext, PlaylistDatabase::class.java, "user_music.db")
+                .fallbackToDestructiveMigration()
+                .build()
+    }
 }
 
 // TODO: Handle playlist defragmentation? I really don't want dead songs to accumulate in this
@@ -51,7 +61,7 @@ abstract class PlaylistDatabase : RoomDatabase() {
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Dao
-abstract class PlaylistDao {
+internal abstract class PlaylistDao {
     /**
      * Read out all playlists stored in the database.
      *

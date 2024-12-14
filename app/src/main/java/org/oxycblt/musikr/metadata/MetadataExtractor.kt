@@ -19,8 +19,6 @@
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -31,10 +29,13 @@ import org.oxycblt.musikr.fs.query.DeviceFile
 
 interface MetadataExtractor {
     suspend fun extract(file: DeviceFile): Metadata?
+
+    companion object {
+        fun from(context: Context): MetadataExtractor = MetadataExtractorImpl(context)
+    }
 }
 
-class MetadataExtractorImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    MetadataExtractor {
+private class MetadataExtractorImpl(private val context: Context) : MetadataExtractor {
     override suspend fun extract(file: DeviceFile) =
         withContext(Dispatchers.IO) {
             KTagLib.open(context, FileRef(unlikelyToBeNull(file.path.name), file.uri))

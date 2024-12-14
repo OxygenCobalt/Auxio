@@ -25,7 +25,6 @@ import java.io.BufferedWriter
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
-import javax.inject.Inject
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.fs.Components
@@ -80,9 +79,7 @@ interface M3U {
     }
 }
 
-class M3UImpl
-@Inject
-constructor(
+private class M3UImpl(
     @ApplicationContext private val context: Context,
     private val volumeManager: VolumeManager
 ) : M3U {

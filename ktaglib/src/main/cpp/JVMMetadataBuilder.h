@@ -20,7 +20,7 @@ class JVMMetadataBuilder {
 public:
     JVMMetadataBuilder(JNIEnv *env);
 
-    void setMimeType(const std::string_view mimeType);
+    void setMimeType(const std::string_view type);
     void setId3v2(const TagLib::ID3v2::Tag &tag);
     void setXiph(const TagLib::Ogg::XiphComment &tag);
     void setMp4(const TagLib::MP4::Tag &tag);

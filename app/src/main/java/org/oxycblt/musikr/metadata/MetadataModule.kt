@@ -28,6 +28,4 @@ import dagger.hilt.components.SingletonComponent
 interface MetadataModule {
     @Binds
     fun audioPropertiesFactory(interpreter: AudioPropertiesFactoryImpl): AudioProperties.Factory
-
-    @Binds fun metadataExtractor(extractor: MetadataExtractorImpl): MetadataExtractor
 }

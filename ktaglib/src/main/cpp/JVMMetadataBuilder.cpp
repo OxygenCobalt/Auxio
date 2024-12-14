@@ -10,8 +10,8 @@
 JVMMetadataBuilder::JVMMetadataBuilder(JNIEnv *env) : env(env), id3v2(env), xiph(env), mp4(env),
                                                       cover(), properties(nullptr) {}
 
-void JVMMetadataBuilder::setMimeType(const std::string_view mimeType) {
-    this->mimeType = mimeType;
+void JVMMetadataBuilder::setMimeType(const std::string_view type) {
+    this->mimeType = type;
 }
 
 void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
@@ -124,8 +124,9 @@ jobject JVMMetadataBuilder::build() {
     jobject mp4Map = mp4.getObject();
     jbyteArray coverArray = nullptr;
     if (cover.has_value()) {
-        coverArray = env->NewByteArray(static_cast<jsize>(cover->size());
-        env->SetByteArrayRegion(coverArray, 0, cover->size(), reinterpret_cast<const jbyte *>(cover->data()));
+        auto coverSize = static_cast<jsize>(cover->size());
+        coverArray = env->NewByteArray(coverSize);
+        env->SetByteArrayRegion(coverArray, 0, coverSize, reinterpret_cast<const jbyte *>(cover->data()));
     }
     jobject metadataObj = env->NewObject(metadataClass, metadataInit, id3v2Map, xiphMap, mp4Map, coverArray, propertiesObj);
     env->DeleteLocalRef(metadataClass);

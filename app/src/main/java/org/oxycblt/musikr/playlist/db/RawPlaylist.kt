@@ -31,7 +31,7 @@ import org.oxycblt.musikr.Music
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class RawPlaylist(
+internal data class RawPlaylist(
     @Embedded val playlistInfo: PlaylistInfo,
     @Relation(
         parentColumn = "playlistUid",
@@ -45,14 +45,14 @@ data class RawPlaylist(
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-@Entity data class PlaylistInfo(@PrimaryKey val playlistUid: Music.UID, val name: String)
+@Entity internal data class PlaylistInfo(@PrimaryKey val playlistUid: Music.UID, val name: String)
 
 /**
  * Song information corresponding to a [RawPlaylist] entry.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-@Entity data class PlaylistSong(@PrimaryKey val songUid: Music.UID)
+@Entity internal data class PlaylistSong(@PrimaryKey val songUid: Music.UID)
 
 /**
  * Links individual songs to a playlist entry.
@@ -60,7 +60,7 @@ data class RawPlaylist(
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Entity
-data class PlaylistSongCrossRef(
+internal data class PlaylistSongCrossRef(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(index = true) val playlistUid: Music.UID,
     @ColumnInfo(index = true) val songUid: Music.UID

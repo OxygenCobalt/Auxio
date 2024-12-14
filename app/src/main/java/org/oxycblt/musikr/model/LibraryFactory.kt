@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.model
 
-import javax.inject.Inject
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
@@ -32,9 +31,13 @@ import org.oxycblt.musikr.graph.SongVertex
 
 interface LibraryFactory {
     fun create(graph: MusicGraph): MutableLibrary
+
+    companion object {
+        fun new(): LibraryFactory = LibraryFactoryImpl()
+    }
 }
 
-class LibraryFactoryImpl @Inject constructor() : LibraryFactory {
+private class LibraryFactoryImpl() : LibraryFactory {
     override fun create(graph: MusicGraph): MutableLibrary {
         val songs =
             graph.songVertex.mapTo(mutableSetOf()) { vertex ->

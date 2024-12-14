@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.pipeline
 
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -37,11 +36,13 @@ interface EvaluateStep {
         interpretation: Interpretation,
         extractedMusic: Flow<ExtractedMusic>
     ): MutableLibrary
+
+    companion object {
+        fun new(): EvaluateStep = EvaluateStepImpl(TagInterpreter.new(), LibraryFactory.new())
+    }
 }
 
-class EvaluateStepImpl
-@Inject
-constructor(
+private class EvaluateStepImpl(
     private val tagInterpreter: TagInterpreter,
     private val libraryFactory: LibraryFactory
 ) : EvaluateStep {

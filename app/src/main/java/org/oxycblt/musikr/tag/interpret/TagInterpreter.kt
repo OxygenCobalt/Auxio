@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.tag.interpret
 
-import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.toUuidOrNull
@@ -39,9 +38,13 @@ interface TagInterpreter {
         cover: Cover.Single?,
         interpretation: Interpretation
     ): PreSong
+
+    companion object {
+        fun new(): TagInterpreter = TagInterpreterImpl
+    }
 }
 
-class TagInterpreterImpl @Inject constructor() : TagInterpreter {
+private data object TagInterpreterImpl : TagInterpreter {
     override fun interpret(
         file: DeviceFile,
         parsedTags: ParsedTags,

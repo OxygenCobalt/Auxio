@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.playlist.db
 
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
@@ -28,9 +27,13 @@ import org.oxycblt.musikr.playlist.PlaylistFile
 
 interface StoredPlaylists {
     fun read(): Flow<PlaylistFile>
+
+    companion object {
+        fun from(database: PlaylistDatabase): StoredPlaylists =
+            StoredPlaylistsImpl(database.playlistDao())
+    }
 }
 
-class StoredPlaylistsImpl @Inject constructor(private val playlistDao: PlaylistDao) :
-    StoredPlaylists {
+private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : StoredPlaylists {
     override fun read() = flow { emitAll(playlistDao.readRawPlaylists().asFlow().map { TODO() }) }
 }

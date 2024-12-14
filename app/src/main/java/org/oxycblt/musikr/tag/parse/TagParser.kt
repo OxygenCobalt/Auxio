@@ -18,17 +18,20 @@
  
 package org.oxycblt.musikr.tag.parse
 
-import javax.inject.Inject
 import org.oxycblt.ktaglib.Metadata
 import org.oxycblt.musikr.fs.query.DeviceFile
 
 interface TagParser {
     fun parse(file: DeviceFile, metadata: Metadata): ParsedTags
+
+    companion object {
+        fun new(): TagParser = TagParserImpl
+    }
 }
 
 class MissingTagError(what: String) : Error("missing tag: $what")
 
-class TagParserImpl @Inject constructor() : TagParser {
+private data object TagParserImpl : TagParser {
     override fun parse(file: DeviceFile, metadata: Metadata): ParsedTags {
         return ParsedTags(
             durationMs = metadata.properties.durationMs,

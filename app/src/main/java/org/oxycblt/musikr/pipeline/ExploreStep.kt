@@ -19,8 +19,6 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -33,12 +31,15 @@ import org.oxycblt.musikr.playlist.m3u.M3U
 
 interface ExploreStep {
     fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
+
+    companion object {
+        fun from(context: Context): ExploreStep = ExploreStepImpl(DeviceFiles.from(context))
+    }
 }
 
-class ExploreStepImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    ExploreStep {
+private class ExploreStepImpl(private val deviceFiles: DeviceFiles) : ExploreStep {
     override fun explore(locations: List<MusicLocation>) =
-        DeviceFiles.from(context)
+        deviceFiles
             .explore(locations.asFlow())
             .mapNotNull {
                 when {
