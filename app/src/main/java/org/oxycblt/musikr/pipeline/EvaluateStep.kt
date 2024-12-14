@@ -53,10 +53,7 @@ private class EvaluateStepImpl(
         val preSongs =
             extractedMusic
                 .filterIsInstance<ExtractedMusic.Song>()
-                .map {
-                    tagInterpreter.interpret(
-                        it.file, it.tags, it.cover, it.properties, interpretation)
-                }
+                .map { tagInterpreter.interpret(it.song, interpretation) }
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)
         val graphBuilder = MusicGraph.builder()

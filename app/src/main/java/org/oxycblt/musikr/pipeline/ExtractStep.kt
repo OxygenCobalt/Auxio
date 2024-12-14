@@ -30,13 +30,12 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.ktaglib.Properties
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cache.CachedSong
+import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
-import timber.log.Timber as L
 
 interface ExtractStep {
     fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
@@ -55,28 +54,27 @@ private class ExtractStepImpl(
         val cacheResults =
             nodes
                 .filterIsInstance<ExploreNode.Audio>()
-                .map {
-                    val tags = storage.cache.read(it.file)
-                    MaybeCachedSong(it.file, tags)
-                }
+                .map { storage.cache.read(it.file) }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
-        val (cachedSongs, uncachedSongs) =
-            cacheResults.mapPartition {
-                it.cachedSong?.let { song ->
-                    ExtractedMusic.Song(it.file, song.properties, song.parsedTags, song.cover)
+        val divertedFlow =
+            cacheResults.divert {
+                when (it) {
+                    is CacheResult.Hit -> Divert.Left(it.song)
+                    is CacheResult.Miss -> Divert.Right(it.file)
                 }
             }
-        val split = uncachedSongs.distribute(16)
+        val cachedSongs = divertedFlow.left.map { ExtractedMusic.Song(it) }
+        val uncachedSongs = divertedFlow.right
+        val distributedFlow = uncachedSongs.distribute(16)
         val extractedSongs =
-            Array(split.hot.size) { i ->
-                split.hot[i]
-                    .mapNotNull { node ->
-                        val metadata =
-                            metadataExtractor.extract(node.file) ?: return@mapNotNull null
-                        val tags = tagParser.parse(node.file, metadata)
+            Array(distributedFlow.flows.size) { i ->
+                distributedFlow.flows[i]
+                    .mapNotNull { file ->
+                        val metadata = metadataExtractor.extract(file) ?: return@mapNotNull null
+                        val tags = tagParser.parse(file, metadata)
                         val cover = metadata.cover?.let { storage.storedCovers.write(it) }
-                        ExtractedMusic.Song(node.file, metadata.properties, tags, cover)
+                        RawSong(file, metadata.properties, tags, cover)
                     }
                     .flowOn(Dispatchers.IO)
                     .buffer(Channel.UNLIMITED)
@@ -84,26 +82,23 @@ private class ExtractStepImpl(
         val writtenSongs =
             merge(*extractedSongs)
                 .map {
-                    storage.cache.write(it.file, CachedSong(it.tags, it.cover, it.properties))
-                    it
+                    storage.cache.write(it)
+                    ExtractedMusic.Song(it)
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
         return merge<ExtractedMusic>(
-            cachedSongs,
-            split.cold,
-            writtenSongs,
-        )
+            divertedFlow.manager, cachedSongs, distributedFlow.manager, writtenSongs)
     }
-
-    data class MaybeCachedSong(val file: DeviceFile, val cachedSong: CachedSong?)
 }
 
+data class RawSong(
+    val file: DeviceFile,
+    val properties: Properties,
+    val tags: ParsedTags,
+    val cover: Cover.Single?
+)
+
 sealed interface ExtractedMusic {
-    data class Song(
-        val file: DeviceFile,
-        val properties: Properties,
-        val tags: ParsedTags,
-        val cover: Cover.Single?
-    ) : ExtractedMusic
+    data class Song(val song: RawSong) : ExtractedMusic
 }

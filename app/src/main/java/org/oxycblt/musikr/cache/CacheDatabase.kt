@@ -33,12 +33,13 @@ import androidx.room.TypeConverters
 import org.oxycblt.ktaglib.Properties
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.util.correctWhitespace
 import org.oxycblt.musikr.tag.util.splitEscaped
 
-@Database(entities = [CachedInfo::class], version = 50, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 50, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {
     internal abstract fun cachedSongsDao(): CacheInfoDao
 
@@ -53,23 +54,21 @@ abstract class CacheDatabase : RoomDatabase() {
 
 @Dao
 internal interface CacheInfoDao {
-    @Query("SELECT * FROM CachedInfo WHERE uri = :uri AND dateModified = :dateModified")
-    suspend fun selectInfo(uri: String, dateModified: Long): CachedInfo?
+    @Query("SELECT * FROM CachedSong WHERE uri = :uri AND dateModified = :dateModified")
+    suspend fun selectSong(uri: String, dateModified: Long): CachedSong?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateInfo(cachedInfo: CachedInfo)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(cachedSong: CachedSong)
 }
 
 @Entity
-@TypeConverters(CachedInfo.Converters::class)
-internal data class CachedInfo(
-    /**
-     * The Uri of the [AudioFile]'s audio file, obtained from SAF. This should ideally be a black
-     * box only used for comparison.
-     */
+@TypeConverters(CachedSong.Converters::class)
+internal data class CachedSong(
     @PrimaryKey val uri: String,
     val dateModified: Long,
-    val replayGainTrackAdjustment: Float?,
-    val replayGainAlbumAdjustment: Float?,
+    val mimeType: String,
+    val durationMs: Long,
+    val bitrate: Int,
+    val sampleRate: Int,
     val musicBrainzId: String?,
     val name: String,
     val sortName: String?,
@@ -88,21 +87,19 @@ internal data class CachedInfo(
     val albumArtistNames: List<String>,
     val albumArtistSortNames: List<String>,
     val genreNames: List<String>,
+    val replayGainTrackAdjustment: Float?,
+    val replayGainAlbumAdjustment: Float?,
     val cover: Cover.Single?,
-    val mimeType: String,
-    val durationMs: Long,
-    val bitrate: Int,
-    val sampleRate: Int,
 ) {
-    fun intoCachedSong() =
-        CachedSong(
+    fun intoRawSong(file: DeviceFile) =
+        RawSong(
+            file,
+            Properties(mimeType, durationMs, bitrate, sampleRate),
             ParsedTags(
                 musicBrainzId = musicBrainzId,
                 name = name,
                 sortName = sortName,
                 durationMs = durationMs,
-                replayGainTrackAdjustment = replayGainTrackAdjustment,
-                replayGainAlbumAdjustment = replayGainAlbumAdjustment,
                 track = track,
                 disc = disc,
                 subtitle = subtitle,
@@ -117,9 +114,10 @@ internal data class CachedInfo(
                 albumArtistMusicBrainzIds = albumArtistMusicBrainzIds,
                 albumArtistNames = albumArtistNames,
                 albumArtistSortNames = albumArtistSortNames,
-                genreNames = genreNames),
-            cover,
-            Properties(mimeType, durationMs, bitrate, sampleRate))
+                genreNames = genreNames,
+                replayGainTrackAdjustment = replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = replayGainAlbumAdjustment),
+            cover)
 
     object Converters {
         @TypeConverter
@@ -139,34 +137,34 @@ internal data class CachedInfo(
     }
 
     companion object {
-        fun fromCachedSong(deviceFile: DeviceFile, cachedSong: CachedSong) =
-            CachedInfo(
-                uri = deviceFile.uri.toString(),
-                dateModified = deviceFile.lastModified,
-                musicBrainzId = cachedSong.parsedTags.musicBrainzId,
-                name = cachedSong.parsedTags.name,
-                sortName = cachedSong.parsedTags.sortName,
-                durationMs = cachedSong.parsedTags.durationMs,
-                replayGainTrackAdjustment = cachedSong.parsedTags.replayGainTrackAdjustment,
-                replayGainAlbumAdjustment = cachedSong.parsedTags.replayGainAlbumAdjustment,
-                track = cachedSong.parsedTags.track,
-                disc = cachedSong.parsedTags.disc,
-                subtitle = cachedSong.parsedTags.subtitle,
-                date = cachedSong.parsedTags.date,
-                albumMusicBrainzId = cachedSong.parsedTags.albumMusicBrainzId,
-                albumName = cachedSong.parsedTags.albumName,
-                albumSortName = cachedSong.parsedTags.albumSortName,
-                releaseTypes = cachedSong.parsedTags.releaseTypes,
-                artistMusicBrainzIds = cachedSong.parsedTags.artistMusicBrainzIds,
-                artistNames = cachedSong.parsedTags.artistNames,
-                artistSortNames = cachedSong.parsedTags.artistSortNames,
-                albumArtistMusicBrainzIds = cachedSong.parsedTags.albumArtistMusicBrainzIds,
-                albumArtistNames = cachedSong.parsedTags.albumArtistNames,
-                albumArtistSortNames = cachedSong.parsedTags.albumArtistSortNames,
-                genreNames = cachedSong.parsedTags.genreNames,
-                cover = cachedSong.cover,
-                mimeType = cachedSong.properties.mimeType,
-                bitrate = cachedSong.properties.bitrate,
-                sampleRate = cachedSong.properties.sampleRate)
+        fun fromRawSong(rawSong: RawSong) =
+            CachedSong(
+                uri = rawSong.file.uri.toString(),
+                dateModified = rawSong.file.lastModified,
+                musicBrainzId = rawSong.tags.musicBrainzId,
+                name = rawSong.tags.name,
+                sortName = rawSong.tags.sortName,
+                durationMs = rawSong.tags.durationMs,
+                track = rawSong.tags.track,
+                disc = rawSong.tags.disc,
+                subtitle = rawSong.tags.subtitle,
+                date = rawSong.tags.date,
+                albumMusicBrainzId = rawSong.tags.albumMusicBrainzId,
+                albumName = rawSong.tags.albumName,
+                albumSortName = rawSong.tags.albumSortName,
+                releaseTypes = rawSong.tags.releaseTypes,
+                artistMusicBrainzIds = rawSong.tags.artistMusicBrainzIds,
+                artistNames = rawSong.tags.artistNames,
+                artistSortNames = rawSong.tags.artistSortNames,
+                albumArtistMusicBrainzIds = rawSong.tags.albumArtistMusicBrainzIds,
+                albumArtistNames = rawSong.tags.albumArtistNames,
+                albumArtistSortNames = rawSong.tags.albumArtistSortNames,
+                genreNames = rawSong.tags.genreNames,
+                replayGainTrackAdjustment = rawSong.tags.replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = rawSong.tags.replayGainAlbumAdjustment,
+                cover = rawSong.cover,
+                mimeType = rawSong.properties.mimeType,
+                bitrate = rawSong.properties.bitrate,
+                sampleRate = rawSong.properties.sampleRate)
     }
 }

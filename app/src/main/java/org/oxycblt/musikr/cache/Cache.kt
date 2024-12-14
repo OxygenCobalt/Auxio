@@ -18,15 +18,13 @@
  
 package org.oxycblt.musikr.cache
 
-import org.oxycblt.ktaglib.Properties
-import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.query.DeviceFile
-import org.oxycblt.musikr.tag.parse.ParsedTags
+import org.oxycblt.musikr.pipeline.RawSong
 
 interface Cache {
-    suspend fun read(file: DeviceFile): CachedSong?
+    suspend fun read(file: DeviceFile): CacheResult
 
-    suspend fun write(file: DeviceFile, song: CachedSong)
+    suspend fun write(song: RawSong)
 
     companion object {
         fun full(db: CacheDatabase): Cache = FullCache(db.cachedSongsDao())
@@ -35,23 +33,25 @@ interface Cache {
     }
 }
 
-data class CachedSong(
-    val parsedTags: ParsedTags,
-    val cover: Cover.Single?,
-    val properties: Properties
-)
+sealed interface CacheResult {
+    data class Hit(val song: RawSong) : CacheResult
+
+    data class Miss(val file: DeviceFile) : CacheResult
+}
 
 private class FullCache(private val cacheInfoDao: CacheInfoDao) : Cache {
     override suspend fun read(file: DeviceFile) =
-        cacheInfoDao.selectInfo(file.uri.toString(), file.lastModified)?.intoCachedSong()
+        cacheInfoDao.selectSong(file.uri.toString(), file.lastModified)?.let {
+            CacheResult.Hit(it.intoRawSong(file))
+        } ?: CacheResult.Miss(file)
 
-    override suspend fun write(file: DeviceFile, song: CachedSong) =
-        cacheInfoDao.updateInfo(CachedInfo.fromCachedSong(file, song))
+    override suspend fun write(song: RawSong) =
+        cacheInfoDao.updateSong(CachedSong.fromRawSong(song))
 }
 
 private class WriteOnlyCache(private val cacheInfoDao: CacheInfoDao) : Cache {
-    override suspend fun read(file: DeviceFile) = null
+    override suspend fun read(file: DeviceFile) = CacheResult.Miss(file)
 
-    override suspend fun write(file: DeviceFile, song: CachedSong) =
-        cacheInfoDao.updateInfo(CachedInfo.fromCachedSong(file, song))
+    override suspend fun write(song: RawSong) =
+        cacheInfoDao.updateSong(CachedSong.fromRawSong(song))
 }

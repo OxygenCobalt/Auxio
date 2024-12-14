@@ -21,11 +21,10 @@ package org.oxycblt.musikr.tag.interpret
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.toUuidOrNull
-import org.oxycblt.ktaglib.Properties
 import org.oxycblt.musikr.Interpretation
-import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
@@ -33,13 +32,7 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.util.parseId3GenreNames
 
 interface TagInterpreter {
-    fun interpret(
-        file: DeviceFile,
-        parsedTags: ParsedTags,
-        cover: Cover.Single?,
-        properties: Properties,
-        interpretation: Interpretation
-    ): PreSong
+    fun interpret(song: RawSong, interpretation: Interpretation): PreSong
 
     companion object {
         fun new(): TagInterpreter = TagInterpreterImpl
@@ -47,56 +40,51 @@ interface TagInterpreter {
 }
 
 private data object TagInterpreterImpl : TagInterpreter {
-    override fun interpret(
-        file: DeviceFile,
-        parsedTags: ParsedTags,
-        cover: Cover.Single?,
-        properties: Properties,
-        interpretation: Interpretation
-    ): PreSong {
+    override fun interpret(song: RawSong, interpretation: Interpretation): PreSong {
         val individualPreArtists =
             makePreArtists(
-                parsedTags.artistMusicBrainzIds,
-                parsedTags.artistNames,
-                parsedTags.artistSortNames,
+                song.tags.artistMusicBrainzIds,
+                song.tags.artistNames,
+                song.tags.artistSortNames,
                 interpretation)
         val albumPreArtists =
             makePreArtists(
-                parsedTags.albumArtistMusicBrainzIds,
-                parsedTags.albumArtistNames,
-                parsedTags.albumArtistSortNames,
+                song.tags.albumArtistMusicBrainzIds,
+                song.tags.albumArtistNames,
+                song.tags.albumArtistSortNames,
                 interpretation)
         val preAlbum =
-            makePreAlbum(file, parsedTags, individualPreArtists, albumPreArtists, interpretation)
+            makePreAlbum(
+                song.file, song.tags, individualPreArtists, albumPreArtists, interpretation)
         val rawArtists =
             individualPreArtists.ifEmpty { albumPreArtists }.ifEmpty { listOf(unknownPreArtist()) }
         val rawGenres =
-            makePreGenres(parsedTags, interpretation).ifEmpty { listOf(unknownPreGenre()) }
-        val uri = file.uri
+            makePreGenres(song.tags, interpretation).ifEmpty { listOf(unknownPreGenre()) }
+        val uri = song.file.uri
         return PreSong(
-            musicBrainzId = parsedTags.musicBrainzId?.toUuidOrNull(),
-            name = interpretation.nameFactory.parse(parsedTags.name, parsedTags.sortName),
-            rawName = parsedTags.name,
-            track = parsedTags.track,
-            disc = parsedTags.disc?.let { Disc(it, parsedTags.subtitle) },
-            date = parsedTags.date,
             uri = uri,
-            path = file.path,
-            size = file.size,
-            durationMs = parsedTags.durationMs,
+            path = song.file.path,
+            size = song.file.size,
+            format = Format.infer(song.file.mimeType, song.properties.mimeType),
+            lastModified = song.file.lastModified,
+            // TODO: Figure out what to do with date added
+            dateAdded = song.file.lastModified,
+            musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull(),
+            name = interpretation.nameFactory.parse(song.tags.name, song.tags.sortName),
+            rawName = song.tags.name,
+            track = song.tags.track,
+            disc = song.tags.disc?.let { Disc(it, song.tags.subtitle) },
+            date = song.tags.date,
+            durationMs = song.tags.durationMs,
             replayGainAdjustment =
                 ReplayGainAdjustment(
-                    parsedTags.replayGainTrackAdjustment,
-                    parsedTags.replayGainAlbumAdjustment,
+                    song.tags.replayGainTrackAdjustment,
+                    song.tags.replayGainAlbumAdjustment,
                 ),
-            format = Format.infer(file.mimeType, properties.mimeType),
-            lastModified = file.lastModified,
-            // TODO: Figure out what to do with date added
-            dateAdded = file.lastModified,
             preAlbum = preAlbum,
             preArtists = rawArtists,
             preGenres = rawGenres,
-            cover = cover)
+            cover = song.cover)
     }
 
     private fun makePreAlbum(

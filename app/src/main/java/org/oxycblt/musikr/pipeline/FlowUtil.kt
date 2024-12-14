@@ -20,30 +20,39 @@ package org.oxycblt.musikr.pipeline
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
 
-data class HotCold<H, C>(val hot: H, val cold: Flow<C>)
+sealed interface Divert<L, R> {
+    data class Left<L, R>(val value: L) : Divert<L, R>
 
-inline fun <T, R> Flow<T>.mapPartition(crossinline predicate: (T) -> R?): HotCold<Flow<R>, T> {
-    val passChannel = Channel<R>(Channel.UNLIMITED)
-    val passFlow = passChannel.consumeAsFlow()
-    val failFlow = flow {
-        collect {
-            val result = predicate(it)
-            if (result != null) {
-                passChannel.send(result)
-            } else {
-                emit(it)
-            }
-        }
-        passChannel.close()
-    }
-    return HotCold(passFlow, failFlow)
+    data class Right<L, R>(val value: R) : Divert<L, R>
 }
+
+class DivertedFlow<L, R>(val manager: Flow<Nothing>, val left: Flow<L>, val right: Flow<R>)
+
+inline fun <T, L, R> Flow<T>.divert(
+    crossinline predicate: (T) -> Divert<L, R>
+): DivertedFlow<L, R> {
+    val leftChannel = Channel<L>(Channel.UNLIMITED)
+    val rightChannel = Channel<R>(Channel.UNLIMITED)
+    val managedFlow =
+        flow<Nothing> {
+            collect {
+                when (val result = predicate(it)) {
+                    is Divert.Left -> leftChannel.send(result.value)
+                    is Divert.Right -> rightChannel.send(result.value)
+                }
+            }
+            leftChannel.close()
+            rightChannel.close()
+        }
+    return DivertedFlow(managedFlow, leftChannel.receiveAsFlow(), rightChannel.receiveAsFlow())
+}
+
+class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Array<Flow<T>>)
 
 /**
  * Equally "distributes" the values of some flow across n new flows.
@@ -51,7 +60,7 @@ inline fun <T, R> Flow<T>.mapPartition(crossinline predicate: (T) -> R?): HotCol
  * Note that this function requires the "manager" flow to be consumed alongside the split flows in
  * order to function. Without this, all of the newly split flows will simply block.
  */
-fun <T> Flow<T>.distribute(n: Int): HotCold<Array<Flow<T>>, Nothing> {
+fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
     val posChannels = Array(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
@@ -64,5 +73,5 @@ fun <T> Flow<T>.distribute(n: Int): HotCold<Array<Flow<T>>, Nothing> {
             }
         }
     val hotFlows = posChannels.map { it.receiveAsFlow() }.toTypedArray()
-    return HotCold(hotFlows, managerFlow)
+    return DistributedFlow(managerFlow, hotFlows)
 }
