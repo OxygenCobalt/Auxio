@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * Config.kt is part of Auxio.
+ * ListUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr
+package org.oxycblt.auxio.home.list
 
-import org.oxycblt.musikr.cache.Cache
-import org.oxycblt.musikr.cover.StoredCovers
-import org.oxycblt.musikr.tag.interpret.Naming
-import org.oxycblt.musikr.tag.interpret.Separators
+import androidx.core.text.isDigitsOnly
+import org.oxycblt.musikr.tag.Name
 
-data class Storage(val cache: Cache, val storedCovers: StoredCovers)
-
-data class Interpretation(val naming: Naming, val separators: Separators)
+fun Name.thumb() =
+    when (this) {
+        is Name.Known ->
+            tokens.firstOrNull()?.let {
+                val value = it.collationKey.sourceString
+                if (value.isDigitsOnly()) "#" else value
+            }
+        is Name.Unknown -> "?"
+    }

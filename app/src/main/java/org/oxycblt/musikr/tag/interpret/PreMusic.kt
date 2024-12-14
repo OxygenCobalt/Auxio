@@ -73,7 +73,7 @@ data class PreSong(
 data class PreAlbum(
     val musicBrainzId: UUID?,
     val name: Name,
-    val rawName: String,
+    val rawName: String?,
     val releaseType: ReleaseType,
     val preArtists: List<PreArtist>
 )

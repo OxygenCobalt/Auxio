@@ -20,8 +20,22 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import kotlin.math.max
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.tag.Name
+import org.oxycblt.musikr.tag.Placeholder
+
+fun Name.resolve(context: Context) =
+    when (this) {
+        is Name.Known -> raw
+        is Name.Unknown ->
+            when (placeholder) {
+                Placeholder.ALBUM -> context.getString(R.string.def_album)
+                Placeholder.ARTIST -> context.getString(R.string.def_artist)
+                Placeholder.GENRE -> context.getString(R.string.def_genre)
+            }
+    }
 
 /**
  * Run [Name.resolve] on each instance in the given list and concatenate them into a [String] in a

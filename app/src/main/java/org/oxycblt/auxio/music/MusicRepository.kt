@@ -39,7 +39,7 @@ import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheDatabase
 import org.oxycblt.musikr.cover.StoredCovers
-import org.oxycblt.musikr.tag.Name
+import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
 import timber.log.Timber as L
 
@@ -353,9 +353,9 @@ constructor(
         val separators = Separators.from(musicSettings.separators)
         val nameFactory =
             if (musicSettings.intelligentSorting) {
-                Name.Known.IntelligentFactory
+                Naming.intelligent()
             } else {
-                Name.Known.SimpleFactory
+                Naming.simple()
             }
         val locations = musicSettings.musicLocations
 

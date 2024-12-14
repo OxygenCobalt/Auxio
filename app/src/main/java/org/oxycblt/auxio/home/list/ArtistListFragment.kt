@@ -100,7 +100,7 @@ class ArtistListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.artistSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> artist.name.thumb
+            is Sort.Mode.ByName -> artist.name.thumb()
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> artist.durationMs?.formatDurationMs(false)

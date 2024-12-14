@@ -115,7 +115,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             simplifyArtistCluster(cluster)
         }
 
-        val albumClusters = albumVertices.values.groupBy { it.preAlbum.rawName.lowercase() }
+        val albumClusters = albumVertices.values.groupBy { it.preAlbum.rawName?.lowercase() }
         for (cluster in albumClusters.values) {
             simplifyAlbumCluster(cluster)
         }

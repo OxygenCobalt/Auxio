@@ -28,6 +28,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.PlaylistDecision
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song

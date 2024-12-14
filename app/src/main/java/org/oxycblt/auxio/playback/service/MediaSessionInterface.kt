@@ -30,6 +30,7 @@ import javax.inject.Inject
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.music.service.MusicBrowser
 import org.oxycblt.auxio.playback.state.PlaybackCommand

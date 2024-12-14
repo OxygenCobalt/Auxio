@@ -20,9 +20,9 @@ package org.oxycblt.musikr.util
 
 import java.security.MessageDigest
 import java.util.UUID
+import kotlin.reflect.KClass
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.musikr.tag.Date
-import kotlin.reflect.KClass
 
 /**
  * Sanitizes a value that is unlikely to be null. On debug builds, this aliases to [requireNotNull],

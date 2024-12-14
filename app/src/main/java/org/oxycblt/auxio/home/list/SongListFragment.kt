@@ -105,13 +105,13 @@ class SongListFragment :
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.songSort.mode) {
             // Name -> Use name
-            is Sort.Mode.ByName -> song.name.thumb
+            is Sort.Mode.ByName -> song.name.thumb()
 
             // Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> song.album.artists[0].name.thumb
+            is Sort.Mode.ByArtist -> song.album.artists[0].name.thumb()
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum -> song.album.name.thumb
+            is Sort.Mode.ByAlbum -> song.album.name.thumb()
 
             // Year -> Use Full Year
             is Sort.Mode.ByDate -> song.album.dates?.resolveDate(requireContext())

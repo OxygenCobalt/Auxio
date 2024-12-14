@@ -27,6 +27,7 @@ import androidx.annotation.StringRes
 import androidx.media.utils.MediaConstants
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationDs
 import org.oxycblt.auxio.util.getPlural

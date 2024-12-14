@@ -97,7 +97,7 @@ class PlaylistListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.playlistSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> playlist.name.thumb
+            is Sort.Mode.ByName -> playlist.name.thumb()
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> playlist.durationMs.formatDurationMs(false)

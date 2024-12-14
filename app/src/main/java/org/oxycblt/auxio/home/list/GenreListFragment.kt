@@ -99,7 +99,7 @@ class GenreListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.genreSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> genre.name.thumb
+            is Sort.Mode.ByName -> genre.name.thumb()
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> genre.durationMs.formatDurationMs(false)

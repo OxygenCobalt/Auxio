@@ -361,6 +361,7 @@
     <!-- Default Namespace | Placeholder values -->
     <eat-comment />
 
+    <string name="def_album">Unknown album</string>
     <string name="def_artist">Unknown artist</string>
     <string name="def_genre">Unknown genre</string>
     <string name="def_date">No date</string>

@@ -105,10 +105,10 @@ class AlbumListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.albumSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> album.name.thumb
+            is Sort.Mode.ByName -> album.name.thumb()
 
             // By Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> album.artists[0].name.thumb
+            is Sort.Mode.ByArtist -> album.artists[0].name.thumb()
 
             // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
             is Sort.Mode.ByDate -> album.dates?.run { min.resolve(requireContext()) }

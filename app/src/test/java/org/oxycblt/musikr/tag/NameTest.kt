@@ -31,7 +31,7 @@ class NameTest {
         assertEquals("L", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("Loveless", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test
@@ -42,7 +42,7 @@ class NameTest {
         assertEquals("A", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("altJ", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test
@@ -53,7 +53,7 @@ class NameTest {
         assertEquals("!", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("!!!", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test
@@ -64,7 +64,7 @@ class NameTest {
         assertEquals("Y", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Yet  Yet", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
     }
 
     @Test
@@ -75,7 +75,7 @@ class NameTest {
         assertEquals("S", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("Smile", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test
@@ -86,7 +86,7 @@ class NameTest {
         assertEquals("L", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("Loveless", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test
@@ -97,10 +97,10 @@ class NameTest {
         assertEquals("#", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("15", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, first.type)
+        assertEquals(Token.Type.NUMERIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("Step", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, second.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, second.type)
     }
 
     @Test
@@ -111,10 +111,10 @@ class NameTest {
         assertEquals("#", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("23", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, first.type)
+        assertEquals(Token.Type.NUMERIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("Kid", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, second.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, second.type)
     }
 
     @Test
@@ -125,19 +125,19 @@ class NameTest {
         assertEquals("F", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Foo", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("1", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, second.type)
+        assertEquals(Token.Type.NUMERIC, second.type)
         val third = name.sortTokens[2]
         assertEquals(" ", third.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, third.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, third.type)
         val fourth = name.sortTokens[3]
         assertEquals("2", fourth.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, fourth.type)
+        assertEquals(Token.Type.NUMERIC, fourth.type)
         val fifth = name.sortTokens[4]
         assertEquals("Bar", fifth.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, fifth.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, fifth.type)
     }
 
     @Test
@@ -148,13 +148,13 @@ class NameTest {
         assertEquals("F", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Foo", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("12", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, second.type)
+        assertEquals(Token.Type.NUMERIC, second.type)
         val third = name.sortTokens[2]
         assertEquals("Bar", third.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, third.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, third.type)
     }
 
     @Test
@@ -165,10 +165,10 @@ class NameTest {
         assertEquals("F", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Foo", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("1", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, second.type)
+        assertEquals(Token.Type.NUMERIC, second.type)
     }
 
     @Test
@@ -179,10 +179,10 @@ class NameTest {
         assertEquals("E", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Error", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("404", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, second.type)
+        assertEquals(Token.Type.NUMERIC, second.type)
     }
 
     @Test
@@ -193,7 +193,7 @@ class NameTest {
         assertEquals("N", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("National Anthem", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
     }
 
     @Test
@@ -204,7 +204,7 @@ class NameTest {
         assertEquals("E", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Eagle in Your Mind", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
     }
 
     @Test
@@ -215,7 +215,7 @@ class NameTest {
         assertEquals("S", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Song For Our Fathers", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
     }
 
     @Test
@@ -226,7 +226,7 @@ class NameTest {
         assertEquals("A", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("altJ", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test
@@ -237,7 +237,7 @@ class NameTest {
         assertEquals("!", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("!!!", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test
@@ -248,7 +248,7 @@ class NameTest {
         assertEquals("#", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("1", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, first.type)
+        assertEquals(Token.Type.NUMERIC, first.type)
     }
 
     @Test
@@ -259,7 +259,7 @@ class NameTest {
         assertEquals("Y", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Yet  Yet", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
     }
 
     @Test
@@ -270,16 +270,16 @@ class NameTest {
         assertEquals("D", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("Design", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, first.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("2", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, second.type)
+        assertEquals(Token.Type.NUMERIC, second.type)
         val third = name.sortTokens[2]
         assertEquals("  ", third.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, third.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, third.type)
         val fourth = name.sortTokens[3]
         assertEquals("3", fourth.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, fourth.type)
+        assertEquals(Token.Type.NUMERIC, fourth.type)
     }
 
     @Test
@@ -290,19 +290,19 @@ class NameTest {
         assertEquals("#", name.thumb)
         val first = name.sortTokens[0]
         assertEquals("2", first.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, first.type)
+        assertEquals(Token.Type.NUMERIC, first.type)
         val second = name.sortTokens[1]
         assertEquals("  ", second.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, second.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, second.type)
         val third = name.sortTokens[2]
         assertEquals("2", third.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, third.type)
+        assertEquals(Token.Type.NUMERIC, third.type)
         val fourth = name.sortTokens[3]
         assertEquals("  ", fourth.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, fourth.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, fourth.type)
         val fifth = name.sortTokens[4]
         assertEquals("5", fifth.collationKey.sourceString)
-        assertEquals(SortToken.Type.NUMERIC, fifth.type)
+        assertEquals(Token.Type.NUMERIC, fifth.type)
     }
 
     @Test
@@ -313,7 +313,7 @@ class NameTest {
         assertEquals("S", name.thumb)
         val only = name.sortTokens.single()
         assertEquals("Smile", only.collationKey.sourceString)
-        assertEquals(SortToken.Type.LEXICOGRAPHIC, only.type)
+        assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
     @Test

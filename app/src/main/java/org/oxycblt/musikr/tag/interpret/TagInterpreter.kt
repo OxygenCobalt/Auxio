@@ -18,13 +18,12 @@
  
 package org.oxycblt.musikr.tag.interpret
 
-import org.oxycblt.auxio.R
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.fs.Format
-import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
+import org.oxycblt.musikr.tag.Placeholder
 import org.oxycblt.musikr.tag.ReleaseType
 import org.oxycblt.musikr.tag.ReplayGainAdjustment
 import org.oxycblt.musikr.tag.parse.ParsedTags
@@ -54,8 +53,7 @@ private data object TagInterpreterImpl : TagInterpreter {
                 song.tags.albumArtistSortNames,
                 interpretation)
         val preAlbum =
-            makePreAlbum(
-                song.file, song.tags, individualPreArtists, albumPreArtists, interpretation)
+            makePreAlbum(song.tags, individualPreArtists, albumPreArtists, interpretation)
         val rawArtists =
             individualPreArtists.ifEmpty { albumPreArtists }.ifEmpty { listOf(unknownPreArtist()) }
         val rawGenres =
@@ -70,7 +68,7 @@ private data object TagInterpreterImpl : TagInterpreter {
             // TODO: Figure out what to do with date added
             dateAdded = song.file.lastModified,
             musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull(),
-            name = interpretation.nameFactory.parse(song.tags.name, song.tags.sortName),
+            name = interpretation.naming.name(song.tags.name, song.tags.sortName),
             rawName = song.tags.name,
             track = song.tags.track,
             disc = song.tags.disc?.let { Disc(it, song.tags.subtitle) },
@@ -88,18 +86,17 @@ private data object TagInterpreterImpl : TagInterpreter {
     }
 
     private fun makePreAlbum(
-        file: DeviceFile,
         parsedTags: ParsedTags,
         individualPreArtists: List<PreArtist>,
         albumPreArtists: List<PreArtist>,
         interpretation: Interpretation
     ): PreAlbum {
-        // TODO: Make fallbacks for this!
-        val rawAlbumName = requireNotNull(parsedTags.albumName)
         return PreAlbum(
             musicBrainzId = parsedTags.albumMusicBrainzId?.toUuidOrNull(),
-            name = interpretation.nameFactory.parse(rawAlbumName, parsedTags.albumSortName),
-            rawName = rawAlbumName,
+            name =
+                interpretation.naming.name(
+                    parsedTags.albumName, parsedTags.albumSortName, Placeholder.ALBUM),
+            rawName = parsedTags.albumName,
             releaseType =
                 ReleaseType.parse(interpretation.separators.split(parsedTags.releaseTypes))
                     ?: ReleaseType.Album(null),
@@ -129,14 +126,12 @@ private data object TagInterpreterImpl : TagInterpreter {
         sortName: String?,
         interpretation: Interpretation
     ): PreArtist {
-        val name =
-            rawName?.let { interpretation.nameFactory.parse(it, sortName) }
-                ?: Name.Unknown(R.string.def_artist)
+        val name = interpretation.naming.name(rawName, null, Placeholder.ARTIST)
         val musicBrainzId = musicBrainzId?.toUuidOrNull()
         return PreArtist(musicBrainzId, name, rawName)
     }
 
-    private fun unknownPreArtist() = PreArtist(null, Name.Unknown(R.string.def_artist), null)
+    private fun unknownPreArtist() = PreArtist(null, Name.Unknown(Placeholder.GENRE), null)
 
     private fun makePreGenres(
         parsedTags: ParsedTags,
@@ -149,10 +144,7 @@ private data object TagInterpreterImpl : TagInterpreter {
     }
 
     private fun makePreGenre(rawName: String?, interpretation: Interpretation) =
-        PreGenre(
-            rawName?.let { interpretation.nameFactory.parse(it, null) }
-                ?: Name.Unknown(R.string.def_genre),
-            rawName)
+        PreGenre(interpretation.naming.name(rawName, null, Placeholder.GENRE), rawName)
 
-    private fun unknownPreGenre() = PreGenre(Name.Unknown(R.string.def_genre), null)
+    private fun unknownPreGenre() = PreGenre(Name.Unknown(Placeholder.GENRE), null)
 }
