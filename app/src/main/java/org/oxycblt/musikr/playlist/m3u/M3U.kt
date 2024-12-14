@@ -25,8 +25,6 @@ import java.io.BufferedWriter
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
-import org.oxycblt.auxio.music.resolve
-import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
@@ -35,6 +33,7 @@ import org.oxycblt.musikr.fs.path.VolumeManager
 import org.oxycblt.musikr.playlist.ExportConfig
 import org.oxycblt.musikr.playlist.ImportedPlaylist
 import org.oxycblt.musikr.playlist.PossiblePaths
+import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.util.correctWhitespace
 import org.oxycblt.musikr.util.unlikelyToBeNull
 import timber.log.Timber as L
@@ -190,12 +189,26 @@ private class M3UImpl(
         // I imagine other players will use.
         writer.writeLine("#EXTM3U")
         writer.writeLine("#EXTENC:UTF-8")
-        writer.writeLine("#PLAYLIST:${playlist.name.resolve(context)}")
+        writer.writeLine("#PLAYLIST:${playlist.name.raw}")
         for (song in playlist.songs) {
-            writer.writeLine("#EXTINF:${song.durationMs},${song.name.resolve(context)}")
-            writer.writeLine("#EXTALB:${song.album.name.resolve(context)}")
-            writer.writeLine("#EXTART:${song.artists.resolveNames(context)}")
-            writer.writeLine("#EXTGEN:${song.genres.resolveNames(context)}")
+            writer.writeLine("#EXTINF:${song.durationMs},${song.name.raw}")
+            val albumName = song.album.name
+            if (albumName is Name.Known) {
+                writer.writeLine("#EXTALB:${albumName.raw}")
+            }
+            // TODO: See if repeating #EXTART and #EXTGEN is legal
+            for (artist in song.artists) {
+                val name = artist.name
+                if (name is Name.Known) {
+                    writer.writeLine("#EXTART:${name.raw}")
+                }
+            }
+            for (genre in song.genres) {
+                val name = genre.name
+                if (name is Name.Known) {
+                    writer.writeLine("#EXTGEN:${name.raw}")
+                }
+            }
 
             val formattedPath =
                 if (config.absolute) {
