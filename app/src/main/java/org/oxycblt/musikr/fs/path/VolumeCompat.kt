@@ -27,7 +27,7 @@ import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.provider.MediaStore
 import java.lang.reflect.Method
-import org.oxycblt.auxio.util.lazyReflectedMethod
+import org.oxycblt.musikr.util.lazyReflectedMethod
 
 // Largely derived from Material Files: https://github.com/zhanghai/MaterialFiles
 
