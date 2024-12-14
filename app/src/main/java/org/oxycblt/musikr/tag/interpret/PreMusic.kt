@@ -25,7 +25,7 @@ import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.fs.MimeType
+import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.tag.Date
@@ -42,7 +42,7 @@ data class PreSong(
     val date: Date?,
     val uri: Uri,
     val path: Path,
-    val mimeType: MimeType,
+    val format: Format,
     val size: Long,
     val durationMs: Long,
     val replayGainAdjustment: ReplayGainAdjustment,

@@ -49,7 +49,7 @@ class SongImpl(private val handle: SongCore) : Song {
     override val date = preSong.date
     override val uri = preSong.uri
     override val path = preSong.path
-    override val mimeType = preSong.mimeType
+    override val format = preSong.format
     override val size = preSong.size
     override val durationMs = preSong.durationMs
     override val replayGainAdjustment = preSong.replayGainAdjustment

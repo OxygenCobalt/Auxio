@@ -18,6 +18,7 @@
  
 package org.oxycblt.musikr.cache
 
+import org.oxycblt.ktaglib.Properties
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.parse.ParsedTags
@@ -34,7 +35,11 @@ interface Cache {
     }
 }
 
-data class CachedSong(val parsedTags: ParsedTags, val cover: Cover.Single?)
+data class CachedSong(
+    val parsedTags: ParsedTags,
+    val cover: Cover.Single?,
+    val properties: Properties
+)
 
 private class FullCache(private val cacheInfoDao: CacheInfoDao) : Cache {
     override suspend fun read(file: DeviceFile) =

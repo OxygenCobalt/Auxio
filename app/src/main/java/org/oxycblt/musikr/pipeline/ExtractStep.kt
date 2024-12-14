@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
+import org.oxycblt.ktaglib.Properties
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cover.Cover
@@ -63,7 +64,7 @@ private class ExtractStepImpl(
         val (cachedSongs, uncachedSongs) =
             cacheResults.mapPartition {
                 it.cachedSong?.let { song ->
-                    ExtractedMusic.Song(it.file, song.parsedTags, song.cover)
+                    ExtractedMusic.Song(it.file, song.properties, song.parsedTags, song.cover)
                 }
             }
         val split = uncachedSongs.distribute(16)
@@ -73,10 +74,9 @@ private class ExtractStepImpl(
                     .mapNotNull { node ->
                         val metadata =
                             metadataExtractor.extract(node.file) ?: return@mapNotNull null
-                        L.d("Extracted tags for ${metadata.id3v2}")
                         val tags = tagParser.parse(node.file, metadata)
                         val cover = metadata.cover?.let { storage.storedCovers.write(it) }
-                        ExtractedMusic.Song(node.file, tags, cover)
+                        ExtractedMusic.Song(node.file, metadata.properties, tags, cover)
                     }
                     .flowOn(Dispatchers.IO)
                     .buffer(Channel.UNLIMITED)
@@ -84,7 +84,7 @@ private class ExtractStepImpl(
         val writtenSongs =
             merge(*extractedSongs)
                 .map {
-                    storage.cache.write(it.file, CachedSong(it.tags, it.cover))
+                    storage.cache.write(it.file, CachedSong(it.tags, it.cover, it.properties))
                     it
                 }
                 .flowOn(Dispatchers.IO)
@@ -100,6 +100,10 @@ private class ExtractStepImpl(
 }
 
 sealed interface ExtractedMusic {
-    data class Song(val file: DeviceFile, val tags: ParsedTags, val cover: Cover.Single?) :
-        ExtractedMusic
+    data class Song(
+        val file: DeviceFile,
+        val properties: Properties,
+        val tags: ParsedTags,
+        val cover: Cover.Single?
+    ) : ExtractedMusic
 }

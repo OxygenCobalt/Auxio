@@ -24,7 +24,6 @@ import android.media.MediaFormat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.fs.MimeType
 import timber.log.Timber as L
 
 /**
@@ -32,14 +31,9 @@ import timber.log.Timber as L
  *
  * @param bitrateKbps The bit rate, in kilobytes-per-second. Null if it could not be parsed.
  * @param sampleRateHz The sample rate, in hertz.
- * @param resolvedMimeType The known mime type of the [Song] after it's file format was determined.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class AudioProperties(
-    val bitrateKbps: Int?,
-    val sampleRateHz: Int?,
-    val resolvedMimeType: MimeType
-) {
+data class AudioProperties(val bitrateKbps: Int?, val sampleRateHz: Int?) {
     /** Implements the process of extracting [AudioProperties] from a given [Song]. */
     interface Factory {
         /**
@@ -75,7 +69,7 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
             // that we can show.
             L.w("Unable to extract song attributes.")
             L.w(e.stackTraceToString())
-            return AudioProperties(null, null, song.mimeType)
+            return AudioProperties(null, null)
         }
 
         // Get the first track from the extractor (This is basically always the only
@@ -102,23 +96,10 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
                 null
             }
 
-        // The song's mime type won't have a populated format field right now, try to
-        // extract it ourselves.
-        val formatMimeType =
-            try {
-                format.getString(MediaFormat.KEY_MIME)
-            } catch (e: NullPointerException) {
-                L.e("Unable to extract mime type field")
-                null
-            }
-
         extractor.release()
 
         L.d("Finished extracting audio properties")
 
-        return AudioProperties(
-            bitrate,
-            sampleRate,
-            MimeType(fromExtension = song.mimeType.fromExtension, fromFormat = formatMimeType))
+        return AudioProperties(bitrate, sampleRate)
     }
 }

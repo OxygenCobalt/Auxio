@@ -33,7 +33,7 @@ import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.fs.MimeType
+import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Disc
@@ -252,8 +252,8 @@ interface Song : Music {
      * instead for accessing the audio file.
      */
     val path: Path
-    /** The [MimeType] of the audio file. Only intended for display. */
-    val mimeType: MimeType
+    /** The [Format] of the audio file. Only intended for display. */
+    val format: Format
     /** The size of the audio file, in bytes. */
     val size: Long
     /** The duration of the audio file, in milliseconds. */

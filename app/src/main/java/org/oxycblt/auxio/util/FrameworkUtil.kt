@@ -320,7 +320,7 @@ fun Context.share(songs: Collection<Song>) {
     val mimeTypes = mutableSetOf<String>()
     for (song in songs) {
         builder.addStream(song.uri)
-        mimeTypes.add(song.mimeType.fromFormat ?: song.mimeType.fromExtension)
+        mimeTypes.add(song.format.mimeType)
     }
 
     builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()

@@ -30,6 +30,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import org.oxycblt.ktaglib.Properties
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.Date
@@ -67,7 +68,6 @@ internal data class CachedInfo(
      */
     @PrimaryKey val uri: String,
     val dateModified: Long,
-    val durationMs: Long,
     val replayGainTrackAdjustment: Float?,
     val replayGainAlbumAdjustment: Float?,
     val musicBrainzId: String?,
@@ -88,7 +88,11 @@ internal data class CachedInfo(
     val albumArtistNames: List<String>,
     val albumArtistSortNames: List<String>,
     val genreNames: List<String>,
-    val cover: Cover.Single? = null
+    val cover: Cover.Single?,
+    val mimeType: String,
+    val durationMs: Long,
+    val bitrate: Int,
+    val sampleRate: Int,
 ) {
     fun intoCachedSong() =
         CachedSong(
@@ -114,7 +118,8 @@ internal data class CachedInfo(
                 albumArtistNames = albumArtistNames,
                 albumArtistSortNames = albumArtistSortNames,
                 genreNames = genreNames),
-            cover)
+            cover,
+            Properties(mimeType, durationMs, bitrate, sampleRate))
 
     object Converters {
         @TypeConverter
@@ -159,6 +164,9 @@ internal data class CachedInfo(
                 albumArtistNames = cachedSong.parsedTags.albumArtistNames,
                 albumArtistSortNames = cachedSong.parsedTags.albumArtistSortNames,
                 genreNames = cachedSong.parsedTags.genreNames,
-                cover = cachedSong.cover)
+                cover = cachedSong.cover,
+                mimeType = cachedSong.properties.mimeType,
+                bitrate = cachedSong.properties.bitrate,
+                sampleRate = cachedSong.properties.sampleRate)
     }
 }

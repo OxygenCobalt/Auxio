@@ -21,9 +21,10 @@ package org.oxycblt.musikr.tag.interpret
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.toUuidOrNull
+import org.oxycblt.ktaglib.Properties
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.fs.MimeType
+import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
@@ -36,6 +37,7 @@ interface TagInterpreter {
         file: DeviceFile,
         parsedTags: ParsedTags,
         cover: Cover.Single?,
+        properties: Properties,
         interpretation: Interpretation
     ): PreSong
 
@@ -49,6 +51,7 @@ private data object TagInterpreterImpl : TagInterpreter {
         file: DeviceFile,
         parsedTags: ParsedTags,
         cover: Cover.Single?,
+        properties: Properties,
         interpretation: Interpretation
     ): PreSong {
         val individualPreArtists =
@@ -79,7 +82,6 @@ private data object TagInterpreterImpl : TagInterpreter {
             date = parsedTags.date,
             uri = uri,
             path = file.path,
-            mimeType = MimeType(file.mimeType, null),
             size = file.size,
             durationMs = parsedTags.durationMs,
             replayGainAdjustment =
@@ -87,6 +89,7 @@ private data object TagInterpreterImpl : TagInterpreter {
                     parsedTags.replayGainTrackAdjustment,
                     parsedTags.replayGainAlbumAdjustment,
                 ),
+            format = Format.infer(file.mimeType, properties.mimeType),
             lastModified = file.lastModified,
             // TODO: Figure out what to do with date added
             dateAdded = file.lastModified,
