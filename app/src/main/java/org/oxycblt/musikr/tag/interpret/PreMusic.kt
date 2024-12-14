@@ -20,7 +20,6 @@ package org.oxycblt.musikr.tag.interpret
 
 import android.net.Uri
 import java.util.UUID
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Music
@@ -54,8 +53,8 @@ data class PreSong(
     val preGenres: List<PreGenre>
 ) {
     fun computeUid() =
-        musicBrainzId?.let { Music.UID.musicBrainz(MusicType.SONGS, it) }
-            ?: Music.UID.auxio(MusicType.SONGS) {
+        musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
+            ?: Music.UID.auxio(Music.UID.Item.SONG) {
                 // Song UIDs are based on the raw data without parsing so that they remain
                 // consistent across music setting changes. Parents are not held up to the
                 // same standard since grouping is already inherently linked to settings.

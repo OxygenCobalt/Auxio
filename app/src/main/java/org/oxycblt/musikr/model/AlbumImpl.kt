@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.model
 
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
@@ -45,8 +44,8 @@ class AlbumImpl(private val core: AlbumCore) : Album {
 
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-        preAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ALBUMS, it) }
-            ?: Music.UID.auxio(MusicType.ALBUMS) {
+        preAlbum.musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.ALBUM, it) }
+            ?: Music.UID.auxio(Music.UID.Item.ALBUM) {
                 // Hash based on only names despite the presence of a date to increase stability.
                 // I don't know if there is any situation where an artist will have two albums with
                 // the exact same name, but if there is, I would love to know.

@@ -81,23 +81,34 @@ sealed interface Music : Item {
     class UID
     private constructor(
         private val format: Format,
-        private val type: MusicType,
+        private val item: Item,
         private val uuid: UUID
     ) : Parcelable {
         // Cache the hashCode for HashMap efficiency.
         @IgnoredOnParcel private var hashCode = format.hashCode()
 
         init {
-            hashCode = 31 * hashCode + type.hashCode()
+            hashCode = 31 * hashCode + item.hashCode()
             hashCode = 31 * hashCode + uuid.hashCode()
         }
 
         override fun hashCode() = hashCode
 
         override fun equals(other: Any?) =
-            other is UID && format == other.format && type == other.type && uuid == other.uuid
+            other is UID && format == other.format && item == other.item && uuid == other.uuid
 
-        override fun toString() = "${format.namespace}:${type.intCode.toString(16)}-$uuid"
+        override fun toString() = "${format.namespace}:${item.intCode.toString(16)}-$uuid"
+
+        enum class Item(val intCode: Int) {
+            // Item used to be MusicType back when the music module was
+            // part of Auxio, so these old integer codes remain.
+            // TODO: Introduce new UID format that removes these.
+            SONG(0xA10B),
+            ALBUM(0xA10A),
+            ARTIST(0xA109),
+            GENRE(0xA108),
+            PLAYLIST(0xA107)
+        }
 
         /**
          * Internal marker of [Music.UID] format type.
@@ -125,23 +136,23 @@ sealed interface Music : Item {
              * Creates an Auxio-style [UID] of random composition. Used if there is no
              * non-subjective, unlikely-to-change metadata of the music.
              *
-             * @param type The analogous [MusicType] of the item that created this [UID].
+             * @param item The type of [Item] that created this [UID].
              */
-            fun auxio(type: MusicType): UID {
-                return UID(Format.AUXIO, type, UUID.randomUUID())
+            fun auxio(item: Item): UID {
+                return UID(Format.AUXIO, item, UUID.randomUUID())
             }
 
             /**
              * Creates an Auxio-style [UID] with a [UUID] composed of a hash of the non-subjective,
              * unlikely-to-change metadata of the music.
              *
-             * @param type The analogous [MusicType] of the item that created this [UID].
+             * @param item The type of [Item] that created this [UID].
              * @param updates Block to update the [MessageDigest] hash with the metadata of the
              *   item. Make sure the metadata hashed semantically aligns with the format
              *   specification.
              * @return A new auxio-style [UID].
              */
-            fun auxio(type: MusicType, updates: MessageDigest.() -> Unit): UID {
+            fun auxio(item: Item, updates: MessageDigest.() -> Unit): UID {
                 val digest =
                     MessageDigest.getInstance("SHA-256").run {
                         updates()
@@ -171,19 +182,19 @@ sealed interface Music : Item {
                             .or(digest[13].toLong().and(0xFF).shl(16))
                             .or(digest[14].toLong().and(0xFF).shl(8))
                             .or(digest[15].toLong().and(0xFF)))
-                return UID(Format.AUXIO, type, uuid)
+                return UID(Format.AUXIO, item, uuid)
             }
 
             /**
              * Creates a MusicBrainz-style [UID] with a [UUID] derived from the MusicBrainz ID
              * extracted from a file.
              *
-             * @param type The analogous [MusicType] of the item that created this [UID].
+             * @param item The analogous [MusicType] of the item that created this [UID].
              * @param mbid The analogous MusicBrainz ID for this item that was extracted from a
              *   file.
              * @return A new MusicBrainz-style [UID].
              */
-            fun musicBrainz(type: MusicType, mbid: UUID) = UID(Format.MUSICBRAINZ, type, mbid)
+            fun musicBrainz(item: Item, mbid: UUID) = UID(Format.MUSICBRAINZ, item, mbid)
 
             /**
              * Convert a [UID]'s string representation back into a concrete [UID] instance.
@@ -211,8 +222,8 @@ sealed interface Music : Item {
                     return null
                 }
 
-                val type =
-                    MusicType.fromIntCode(ids[0].toIntOrNull(16) ?: return null) ?: return null
+                val intCode = ids[0].toIntOrNull(16) ?: return null
+                val type = Item.entries.firstOrNull { it.intCode == intCode } ?: return null
                 val uuid = ids[1].toUuidOrNull() ?: return null
                 return UID(format, type, uuid)
             }

@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.model
 
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
@@ -44,8 +43,8 @@ interface ArtistCore {
 class ArtistImpl(private val core: ArtistCore) : Artist {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-        core.preArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicType.ARTISTS, it) }
-            ?: Music.UID.auxio(MusicType.ARTISTS) { update(core.preArtist.rawName) }
+        core.preArtist.musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.ARTIST, it) }
+            ?: Music.UID.auxio(Music.UID.Item.ARTIST) { update(core.preArtist.rawName) }
     override val name = core.preArtist.name
 
     override val songs = core.songs

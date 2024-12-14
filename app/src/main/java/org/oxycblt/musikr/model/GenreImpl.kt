@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.model
 
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
@@ -39,7 +38,7 @@ interface GenreCore {
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreImpl(private val core: GenreCore) : Genre {
-    override val uid = Music.UID.auxio(MusicType.GENRES) { update(core.preGenre.rawName) }
+    override val uid = Music.UID.auxio(Music.UID.Item.GENRE) { update(core.preGenre.rawName) }
     override val name = core.preGenre.name
 
     override val songs = mutableSetOf<Song>()
