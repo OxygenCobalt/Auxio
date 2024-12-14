@@ -103,3 +103,18 @@ private fun Date.resolveFineGrained(): String? {
 fun Disc?.resolve(context: Context) =
     this?.run { context.getString(R.string.fmt_disc_no, number) }
         ?: context.getString(R.string.def_disc)
+
+/**
+ * Resolve this instance into a human-readable date range.
+ *
+ * @param context [Context] required to get human-readable names.
+ * @return If the date has a maximum value, then a `min - max` formatted string will be returned
+ *   with the formatted [Date]s of the minimum and maximum dates respectively. Otherwise, the
+ *   formatted name of the minimum [Date] will be returned.
+ */
+fun Date.Range.resolve(context: Context) =
+    if (min != max) {
+        context.getString(R.string.fmt_date_range, min.resolve(context), max.resolve(context))
+    } else {
+        min.resolve(context)
+    }

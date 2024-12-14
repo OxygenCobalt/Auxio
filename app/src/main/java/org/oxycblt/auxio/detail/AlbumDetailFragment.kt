@@ -132,7 +132,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         // Date, song count, and duration map to the info text
         binding.detailInfo.apply {
             // Fall back to a friendlier "No date" text if the album doesn't have date information
-            val date = album.dates?.resolveDate(context) ?: context.getString(R.string.def_date)
+            val date = album.dates?.resolve(context) ?: context.getString(R.string.def_date)
             val songCount = context.getPlural(R.plurals.fmt_song_count, album.songs.size)
             val duration = album.durationMs.formatDurationMs(true)
             text = context.getString(R.string.fmt_three, date, songCount, duration)

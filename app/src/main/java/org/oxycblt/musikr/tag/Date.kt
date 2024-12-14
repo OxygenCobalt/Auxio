@@ -18,10 +18,7 @@
  
 package org.oxycblt.musikr.tag
 
-import android.content.Context
 import kotlin.math.max
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.resolve
 import org.oxycblt.musikr.util.inRangeOrNull
 import org.oxycblt.musikr.util.positiveOrNull
 
@@ -97,22 +94,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         init {
             check(min <= max) { "Min date must be <= max date" }
         }
-
-        /**
-         * Resolve this instance into a human-readable date range.
-         *
-         * @param context [Context] required to get human-readable names.
-         * @return If the date has a maximum value, then a `min - max` formatted string will be
-         *   returned with the formatted [Date]s of the minimum and maximum dates respectively.
-         *   Otherwise, the formatted name of the minimum [Date] will be returned.
-         */
-        fun resolveDate(context: Context) =
-            if (min != max) {
-                context.getString(
-                    R.string.fmt_date_range, min.resolve(context), max.resolve(context))
-            } else {
-                min.resolve(context)
-            }
 
         override fun equals(other: Any?) = other is Range && min == other.min && max == other.max
 

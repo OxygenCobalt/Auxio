@@ -105,8 +105,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         binding.parentName.text = album.name.resolve(binding.context)
         binding.parentInfo.text =
             // Fall back to a friendlier "No date" text if the album doesn't have date information
-            album.dates?.resolveDate(binding.context)
-                ?: binding.context.getString(R.string.def_date)
+            album.dates?.resolve(binding.context) ?: binding.context.getString(R.string.def_date)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
