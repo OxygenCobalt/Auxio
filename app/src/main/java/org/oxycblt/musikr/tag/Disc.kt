@@ -18,9 +18,6 @@
  
 package org.oxycblt.musikr.tag
 
-import android.content.Context
-import org.oxycblt.auxio.R
-
 /**
  * A disc identifier for a song.
  *
@@ -35,7 +32,3 @@ class Disc(val number: Int, val name: String?) : Comparable<Disc> {
 
     override fun compareTo(other: Disc) = number.compareTo(other.number)
 }
-
-fun Disc?.resolveNumber(context: Context) =
-    this?.run { context.getString(R.string.fmt_disc_no, number) }
-        ?: context.getString(R.string.def_disc)

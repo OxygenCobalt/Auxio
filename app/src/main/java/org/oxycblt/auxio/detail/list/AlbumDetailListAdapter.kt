@@ -43,7 +43,6 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.tag.Disc
-import org.oxycblt.musikr.tag.resolveNumber
 
 /**
  * An [DetailListAdapter] implementing the header and sub-items for the [Album] detail view.
@@ -122,7 +121,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
      */
     fun bind(discHeader: DiscHeader) {
         val disc = discHeader.inner
-        binding.discNumber.text = disc.resolveNumber(binding.context)
+        binding.discNumber.text = disc.resolve(binding.context)
         binding.discName.apply {
             text = disc?.name
             isGone = disc?.name == null

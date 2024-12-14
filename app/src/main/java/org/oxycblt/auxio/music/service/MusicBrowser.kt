@@ -29,6 +29,7 @@ import org.oxycblt.auxio.home.HomeGenerator
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.search.SearchEngine
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
@@ -36,7 +37,6 @@ import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.tag.resolveNumber
 
 class MusicBrowser
 private constructor(
@@ -219,7 +219,7 @@ private constructor(
                     section.items.map { it.toMediaItem(context, header(section.stringRes)) }
                 is DetailSection.Discs ->
                     section.discs.flatMap { (disc, songs) ->
-                        val discString = disc.resolveNumber(context)
+                        val discString = disc.resolve(context)
                         songs.map { it.toMediaItem(context, header(discString)) }
                     }
                 else -> error("Unknown section type: $section")

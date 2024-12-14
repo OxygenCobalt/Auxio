@@ -26,6 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.tag.Date
+import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.Placeholder
 import timber.log.Timber
@@ -98,3 +99,7 @@ private fun Date.resolveFineGrained(): String? {
     format.applyPattern("MMM yyyy")
     return format.format(date)
 }
+
+fun Disc?.resolve(context: Context) =
+    this?.run { context.getString(R.string.fmt_disc_no, number) }
+        ?: context.getString(R.string.def_disc)
