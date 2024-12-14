@@ -242,6 +242,7 @@ sealed interface MusicParent : Music {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Song : Music {
+    override val name: Name.Known
     /** The track number. Will be null if no valid track number was present in the metadata. */
     val track: Int?
     /** The [Disc] number. Will be null if no valid disc number was present in the metadata. */

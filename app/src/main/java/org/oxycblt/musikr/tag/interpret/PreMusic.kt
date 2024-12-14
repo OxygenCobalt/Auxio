@@ -34,7 +34,7 @@ import org.oxycblt.musikr.util.update
 
 data class PreSong(
     val musicBrainzId: UUID?,
-    val name: Name,
+    val name: Name.Known,
     val rawName: String,
     val track: Int?,
     val disc: Disc?,
