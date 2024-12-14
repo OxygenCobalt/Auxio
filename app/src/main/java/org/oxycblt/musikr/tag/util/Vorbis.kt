@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.tag.util
 
-import org.oxycblt.auxio.util.positiveOrNull
+import org.oxycblt.musikr.util.positiveOrNull
 
 /**
  * Parse an ID3v2-style position + total [String] field. These fields consist of a number and an

@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.fs
 
 import android.webkit.MimeTypeMap
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.musikr.util.unlikelyToBeNull
 
 sealed interface Format {
     val mimeType: String

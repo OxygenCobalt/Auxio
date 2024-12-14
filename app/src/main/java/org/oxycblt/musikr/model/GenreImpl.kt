@@ -18,13 +18,13 @@
  
 package org.oxycblt.musikr.model
 
-import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.tag.interpret.PreGenre
+import org.oxycblt.musikr.util.update
 
 interface GenreCore {
     val preGenre: PreGenre

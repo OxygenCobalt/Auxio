@@ -20,8 +20,6 @@ package org.oxycblt.musikr.tag.interpret
 
 import android.net.Uri
 import java.util.UUID
-import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
-import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.Format
@@ -31,6 +29,8 @@ import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
+import org.oxycblt.musikr.tag.ReplayGainAdjustment
+import org.oxycblt.musikr.util.update
 
 data class PreSong(
     val musicBrainzId: UUID?,

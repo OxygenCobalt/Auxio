@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2022 Auxio Project
- * ReplayGain.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * ReplayGainMode.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,7 @@
  
 package org.oxycblt.auxio.playback.replaygain
 
-import android.content.Context
-import kotlin.math.abs
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.R
 
 /**
  * The current ReplayGain configuration.
@@ -55,34 +52,3 @@ enum class ReplayGainMode {
             }
     }
 }
-
-/**
- * Represents a ReplayGain adjustment to apply during song playback.
- *
- * @param track The track-specific adjustment that should be applied. Null if not available.
- * @param album A more general album-specific adjustment that should be applied. Null if not
- *   available.
- */
-data class ReplayGainAdjustment(val track: Float?, val album: Float?)
-
-/**
- * The current ReplayGain pre-amp configuration.
- *
- * @param with The pre-amp (in dB) to use when ReplayGain tags are present.
- * @param without The pre-amp (in dB) to use when ReplayGain tags are not present.
- * @author Alexander Capehart (OxygenCobalt)
- */
-data class ReplayGainPreAmp(val with: Float, val without: Float)
-
-/**
- * Format a decibel value in a human-readable format.
- *
- * @param context The context to resolve resources from.
- * @return A formatted decibel value. Will be prefixed by a + or - sign.
- */
-fun Float.formatDb(context: Context) =
-    if (this >= 0) {
-        context.getString(R.string.fmt_db_pos, this)
-    } else {
-        context.getString(R.string.fmt_db_neg, abs(this))
-    }

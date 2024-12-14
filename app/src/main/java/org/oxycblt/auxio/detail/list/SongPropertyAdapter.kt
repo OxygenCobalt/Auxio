@@ -23,7 +23,6 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemSongPropertyBinding
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
@@ -53,7 +52,7 @@ class SongPropertyAdapter :
  * @param value The value of the property.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class SongProperty(@StringRes val name: Int, val value: String) : Item
+data class SongProperty(@StringRes val name: Int, val value: String)
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [SongProperty]. Use [from] to create an instance.

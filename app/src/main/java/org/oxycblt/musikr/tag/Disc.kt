@@ -20,7 +20,6 @@ package org.oxycblt.musikr.tag
 
 import android.content.Context
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.Item
 
 /**
  * A disc identifier for a song.
@@ -28,7 +27,7 @@ import org.oxycblt.auxio.list.Item
  * @param number The disc number.
  * @param name The name of the disc group, if any. Null if not present.
  */
-class Disc(val number: Int, val name: String?) : Item, Comparable<Disc> {
+class Disc(val number: Int, val name: String?) : Comparable<Disc> {
     // We don't want to group discs by differing subtitles, so only compare by the number
     override fun equals(other: Any?) = other is Disc && number == other.number
 

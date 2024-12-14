@@ -19,8 +19,6 @@
 package org.oxycblt.musikr.tag.interpret
 
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
-import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.query.DeviceFile
@@ -28,8 +26,10 @@ import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
+import org.oxycblt.musikr.tag.ReplayGainAdjustment
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.util.parseId3GenreNames
+import org.oxycblt.musikr.util.toUuidOrNull
 
 interface TagInterpreter {
     fun interpret(song: RawSong, interpretation: Interpretation): PreSong

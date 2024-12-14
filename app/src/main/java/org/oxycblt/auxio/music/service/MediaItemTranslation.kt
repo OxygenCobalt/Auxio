@@ -27,6 +27,7 @@ import androidx.annotation.StringRes
 import androidx.media.utils.MediaConstants
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationDs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.musikr.Album
@@ -36,7 +37,6 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.resolveNames
 
 sealed interface MediaSessionUID {
     data class Tab(val node: TabNode) : MediaSessionUID {

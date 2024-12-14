@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.cover
 
-import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.musikr.Song
 
 sealed interface Cover {
@@ -31,8 +30,6 @@ sealed interface Cover {
     }
 
     companion object {
-        private val FALLBACK_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-
         fun nil() = Multi(listOf())
 
         fun single(key: String) = Single(key)
@@ -40,10 +37,11 @@ sealed interface Cover {
         fun multi(songs: Collection<Song>) = order(songs).run { Multi(this) }
 
         private fun order(songs: Collection<Song>) =
-            FALLBACK_SORT.songs(songs)
+            songs
                 .mapNotNull { it.cover }
                 .groupBy { it.key }
                 .entries
+                .sortedByDescending { it.key }
                 .sortedByDescending { it.value.size }
                 .map { it.value.first() }
     }

@@ -36,6 +36,7 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.music.service.toMediaDescription
 import org.oxycblt.auxio.playback.ActionMode
@@ -48,7 +49,6 @@ import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.resolveNames
 import timber.log.Timber as L
 
 /**

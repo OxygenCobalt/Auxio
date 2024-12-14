@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.model
 
-import org.oxycblt.auxio.util.update
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
@@ -26,6 +25,7 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.tag.interpret.PreArtist
+import org.oxycblt.musikr.util.update
 
 interface ArtistCore {
     val preArtist: PreArtist

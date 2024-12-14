@@ -23,8 +23,8 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import kotlin.math.max
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.inRangeOrNull
-import org.oxycblt.auxio.util.positiveOrNull
+import org.oxycblt.musikr.util.inRangeOrNull
+import org.oxycblt.musikr.util.positiveOrNull
 import timber.log.Timber as L
 
 /**

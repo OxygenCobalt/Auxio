@@ -18,12 +18,12 @@
  
 package org.oxycblt.musikr.graph
 
-import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.tag.interpret.PreGenre
 import org.oxycblt.musikr.tag.interpret.PreSong
+import org.oxycblt.musikr.util.unlikelyToBeNull
 import timber.log.Timber as L
 
 data class MusicGraph(

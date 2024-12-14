@@ -18,20 +18,13 @@
  
 package org.oxycblt.musikr
 
-import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
 import androidx.room.TypeConverter
 import java.security.MessageDigest
 import java.util.UUID
-import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
-import org.oxycblt.auxio.util.concatLocalized
-import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
@@ -39,6 +32,8 @@ import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
+import org.oxycblt.musikr.tag.ReplayGainAdjustment
+import org.oxycblt.musikr.util.toUuidOrNull
 
 /**
  * Abstract music data. This contains universal information about all concrete music
@@ -46,7 +41,7 @@ import org.oxycblt.musikr.tag.ReleaseType
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed interface Music : Item {
+sealed interface Music {
     /**
      * A unique identifier for this music item.
      *
@@ -189,7 +184,7 @@ sealed interface Music : Item {
              * Creates a MusicBrainz-style [UID] with a [UUID] derived from the MusicBrainz ID
              * extracted from a file.
              *
-             * @param item The analogous [MusicType] of the item that created this [UID].
+             * @param item The [Item] that created this [UID].
              * @param mbid The analogous MusicBrainz ID for this item that was extracted from a
              *   file.
              * @return A new MusicBrainz-style [UID].
@@ -371,33 +366,4 @@ interface Playlist : MusicParent {
     val durationMs: Long
     /** Useful information to quickly obtain a (single) cover for a Genre. */
     val cover: Cover
-}
-
-/**
- * Run [Name.resolve] on each instance in the given list and concatenate them into a [String] in a
- * localized manner.
- *
- * @param context [Context] required
- * @return A concatenated string.
- */
-fun <T : Music> List<T>.resolveNames(context: Context) =
-    concatLocalized(context) { it.name.resolve(context) }
-
-/**
- * Returns if [Music.name] matches for each item in a list. Useful for scenarios where the display
- * information of an item must be compared without a context.
- *
- * @param other The list of items to compare to.
- * @return True if they are the same (by [Music.name]), false otherwise.
- */
-fun <T : Music> List<T>.areNamesTheSame(other: List<T>): Boolean {
-    for (i in 0 until max(size, other.size)) {
-        val a = getOrNull(i) ?: return false
-        val b = other.getOrNull(i) ?: return false
-        if (a.name != b.name) {
-            return false
-        }
-    }
-
-    return true
 }

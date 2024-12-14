@@ -21,11 +21,11 @@ package org.oxycblt.musikr.metadata
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.ktaglib.FileRef
 import org.oxycblt.ktaglib.KTagLib
 import org.oxycblt.ktaglib.Metadata
 import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.util.unlikelyToBeNull
 
 interface MetadataExtractor {
     suspend fun extract(file: DeviceFile): Metadata?

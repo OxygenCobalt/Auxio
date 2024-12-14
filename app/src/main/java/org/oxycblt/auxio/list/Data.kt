@@ -22,9 +22,9 @@ import androidx.annotation.StringRes
 
 // TODO: Consider breaking this up into sealed classes for individual adapters
 /** A marker for something that is a RecyclerView item. Has no functionality on it's own. */
-interface Item
+typealias Item = Any
 
-interface Header : Item
+interface Header
 
 /**
  * A "header" used for delimiting groups of data.
@@ -44,7 +44,7 @@ interface PlainHeader : Header {
  */
 data class BasicHeader(@StringRes override val titleRes: Int) : PlainHeader
 
-interface Divider<T> : Item {
+interface Divider<T> {
     val anchor: T?
 }
 

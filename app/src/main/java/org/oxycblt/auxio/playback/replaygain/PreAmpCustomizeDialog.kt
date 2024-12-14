@@ -26,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
+import org.oxycblt.auxio.music.ReplayGainPreAmp
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import timber.log.Timber as L

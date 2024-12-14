@@ -25,7 +25,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.PlaylistDecision
@@ -354,4 +353,4 @@ sealed interface ChosenName {
  *   [Playlist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class PlaylistChoice(val playlist: Playlist, val alreadyAdded: Boolean) : Item
+data class PlaylistChoice(val playlist: Playlist, val alreadyAdded: Boolean)
