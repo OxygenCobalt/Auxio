@@ -19,12 +19,16 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.Placeholder
+import timber.log.Timber
 
 fun Name.resolve(context: Context) =
     when (this) {
@@ -64,4 +68,33 @@ fun <T : Music> List<T>.areNamesTheSame(other: List<T>): Boolean {
     }
 
     return true
+}
+
+/**
+ * Resolve this instance into a human-readable date.
+ *
+ * @param context [Context] required to get human-readable names.
+ * @return If the [Date] has a valid month and year value, a more fine-grained date (ex. "Jan 2020")
+ *   will be returned. Otherwise, a plain year value (ex. "2020") is returned. Dates will be
+ *   properly localized.
+ */
+fun Date.resolve(context: Context) =
+    // Unable to create fine-grained date, just format as a year.
+    month?.let { resolveFineGrained() } ?: context.getString(R.string.fmt_number, year)
+
+private fun Date.resolveFineGrained(): String? {
+    // We can't directly load a date with our own
+    val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
+    format.applyPattern("yyyy-MM")
+    val date =
+        try {
+            format.parse("$year-$month")
+        } catch (e: ParseException) {
+            Timber.e("Unable to parse fine-grained date: $e")
+            return null
+        }
+
+    // Reformat as a readable month and year
+    format.applyPattern("MMM yyyy")
+    return format.format(date)
 }

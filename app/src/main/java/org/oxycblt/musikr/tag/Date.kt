@@ -19,13 +19,11 @@
 package org.oxycblt.musikr.tag
 
 import android.content.Context
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import kotlin.math.max
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.musikr.util.inRangeOrNull
 import org.oxycblt.musikr.util.positiveOrNull
-import timber.log.Timber as L
 
 /**
  * An ISO-8601/RFC 3339 Date.
@@ -38,40 +36,11 @@ import timber.log.Timber as L
  */
 class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
     val year = tokens[0]
-    private val month = tokens.getOrNull(1)
-    private val day = tokens.getOrNull(2)
-    private val hour = tokens.getOrNull(3)
-    private val minute = tokens.getOrNull(4)
-    private val second = tokens.getOrNull(5)
-
-    /**
-     * Resolve this instance into a human-readable date.
-     *
-     * @param context [Context] required to get human-readable names.
-     * @return If the [Date] has a valid month and year value, a more fine-grained date (ex. "Jan
-     *   2020") will be returned. Otherwise, a plain year value (ex. "2020") is returned. Dates will
-     *   be properly localized.
-     */
-    fun resolve(context: Context) =
-        // Unable to create fine-grained date, just format as a year.
-        month?.let { resolveFineGrained() } ?: context.getString(R.string.fmt_number, year)
-
-    private fun resolveFineGrained(): String? {
-        // We can't directly load a date with our own
-        val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
-        format.applyPattern("yyyy-MM")
-        val date =
-            try {
-                format.parse("$year-$month")
-            } catch (e: ParseException) {
-                L.e("Unable to parse fine-grained date: $e")
-                return null
-            }
-
-        // Reformat as a readable month and year
-        format.applyPattern("MMM yyyy")
-        return format.format(date)
-    }
+    val month = tokens.getOrNull(1)
+    val day = tokens.getOrNull(2)
+    val hour = tokens.getOrNull(3)
+    val minute = tokens.getOrNull(4)
+    val second = tokens.getOrNull(5)
 
     override fun equals(other: Any?) = other is Date && compareTo(other) == 0
 
