@@ -24,7 +24,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.ReplayGainPreAmp
+import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.settings.Settings
 import timber.log.Timber as L
