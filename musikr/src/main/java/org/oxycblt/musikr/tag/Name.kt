@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.tag
 
-import org.oxycblt.musikr.tag.interpret.Token
+import java.text.CollationKey
 
 /**
  * The name of a music item.
@@ -63,6 +63,36 @@ sealed interface Name : Comparable<Name> {
                 // Unknown names always come before known names.
                 is Known -> -1
             }
+    }
+}
+
+/** An individual part of a name string that can be compared intelligently. */
+data class Token(internal val collationKey: CollationKey, internal val type: Type) : Comparable<Token> {
+    val value: String get() = collationKey.sourceString
+
+    override fun compareTo(other: Token): Int {
+        // Numeric tokens should always be lower than lexicographic tokens.
+        val modeComp = type.compareTo(other.type)
+        if (modeComp != 0) {
+            return modeComp
+        }
+
+        // Numeric strings must be ordered by magnitude, thus immediately short-circuit
+        // the comparison if the lengths do not match.
+        if (type == Type.NUMERIC &&
+            collationKey.sourceString.length != other.collationKey.sourceString.length) {
+            return collationKey.sourceString.length - other.collationKey.sourceString.length
+        }
+
+        return collationKey.compareTo(other.collationKey)
+    }
+
+    /** Denotes the type of comparison to be performed with this token. */
+    enum class Type {
+        /** Compare as a digit string, like "65". */
+        NUMERIC,
+        /** Compare as a standard alphanumeric string, like "65daysofstatic" */
+        LEXICOGRAPHIC
     }
 }
 

@@ -22,7 +22,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.oxycblt.musikr.tag.interpret.Naming
-import org.oxycblt.musikr.tag.interpret.Token
 
 class NameTest {
     @Test
