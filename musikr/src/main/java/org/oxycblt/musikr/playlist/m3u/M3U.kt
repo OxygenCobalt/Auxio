@@ -77,9 +77,7 @@ interface M3U {
     }
 }
 
-private class M3UImpl(
-    private val volumeManager: VolumeManager
-) : M3U {
+private class M3UImpl(private val volumeManager: VolumeManager) : M3U {
     override fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist? {
         val volumes = volumeManager.getVolumes()
         val reader = BufferedReader(InputStreamReader(stream))

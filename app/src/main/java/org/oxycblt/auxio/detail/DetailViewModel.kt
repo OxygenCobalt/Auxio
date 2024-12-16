@@ -22,12 +22,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.list.DiscDivider
 import org.oxycblt.auxio.detail.list.DiscHeader
@@ -302,8 +300,8 @@ constructor(
     }
 
     /**
-     * Set a new [currentSong] from it's [Music.UID]. [currentSong] will
-     * be updated to align with the new [Song].
+     * Set a new [currentSong] from it's [Music.UID]. [currentSong] will be updated to align with
+     * the new [Song].
      *
      * @param uid The UID of the [Song] to load. Must be valid.
      */
@@ -504,9 +502,7 @@ constructor(
             })
     }
 
-    private fun refreshAudioInfo(song: Song) {
-
-    }
+    private fun refreshAudioInfo(song: Song) {}
 
     private inline fun <T : MusicParent> refreshDetail(
         detail: Detail<T>?,

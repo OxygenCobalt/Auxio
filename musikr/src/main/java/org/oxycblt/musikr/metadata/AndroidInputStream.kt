@@ -1,17 +1,33 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * AndroidInputStream.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 
-class AndroidInputStream(
-    context: Context,
-    fileRef: FileRef
-) : NativeInputStream {
+class AndroidInputStream(context: Context, fileRef: FileRef) : NativeInputStream {
     private val fileName = fileRef.fileName
-    private val fd = requireNotNull(context.contentResolver.openFileDescriptor(fileRef.uri, "r")) {
-        "Failed to open file descriptor for ${fileRef.fileName}"
-    }
+    private val fd =
+        requireNotNull(context.contentResolver.openFileDescriptor(fileRef.uri, "r")) {
+            "Failed to open file descriptor for ${fileRef.fileName}"
+        }
     private val fis = FileInputStream(fd.fileDescriptor)
     private val channel = fis.channel
 
