@@ -1,4 +1,4 @@
-package org.oxycblt.ktaglib
+package org.oxycblt.musikr.metadata
 
 /**
  * Java interface for the read-only methods in TagLib's IOStream API.

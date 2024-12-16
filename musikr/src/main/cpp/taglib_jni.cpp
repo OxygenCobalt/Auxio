@@ -13,7 +13,7 @@
 #include "taglib/wavfile.h"
 
 extern "C" JNIEXPORT jobject JNICALL
-Java_org_oxycblt_ktaglib_KTagLib_openNative(
+Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(
         JNIEnv* env,
         jobject /* this */,
         jobject inputStream) {

@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.tag.parse
 
-import org.oxycblt.ktaglib.Metadata
+import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.fs.query.DeviceFile
 
 interface TagParser {

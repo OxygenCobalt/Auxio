@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.tag.parse
 
 import androidx.core.text.isDigitsOnly
-import org.oxycblt.ktaglib.Metadata
+import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.util.parseId3v2PositionField
 import org.oxycblt.musikr.tag.util.parseXiphPositionField

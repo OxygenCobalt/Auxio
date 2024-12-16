@@ -1,4 +1,4 @@
-package org.oxycblt.ktaglib
+package org.oxycblt.musikr.metadata
 
 import android.content.Context
 import java.io.FileInputStream

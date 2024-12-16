@@ -30,7 +30,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.ktaglib.Properties
+import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.query.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong

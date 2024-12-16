@@ -1,11 +1,11 @@
-package org.oxycblt.ktaglib
+package org.oxycblt.musikr.metadata
 
 import android.content.Context
 import android.net.Uri
 
-object KTagLib {
+object TagLibJNI {
     init {
-        System.loadLibrary("ktaglib")
+        System.loadLibrary("taglib_jni")
     }
 
     /**
