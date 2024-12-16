@@ -137,6 +137,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 
     private fun simplifyGenreCluster(cluster: Collection<GenreVertex>) {
+        if (cluster.size == 1) {
+            // Nothing to do.
+            return
+        }
         // All of these genres are semantically equivalent. Pick the most popular variation
         // and merge all the others into it.
         val clusterSet = cluster.toMutableSet()
@@ -166,6 +170,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 
     private fun simplifyArtistCluster(cluster: Collection<ArtistVertex>) {
+        if (cluster.size == 1) {
+            // Nothing to do.
+            return
+        }
         val fullMusicBrainzIdCoverage = cluster.all { it.preArtist.musicBrainzId != null }
         if (fullMusicBrainzIdCoverage) {
             // All artists have MBIDs, nothing needs to be merged.
@@ -225,6 +233,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 
     private fun simplifyAlbumCluster(cluster: Collection<AlbumVertex>) {
+        if (cluster.size == 1) {
+            // Nothing to do.
+            return;
+        }
         val fullMusicBrainzIdCoverage = cluster.all { it.preAlbum.musicBrainzId != null }
         if (fullMusicBrainzIdCoverage) {
             // All albums have MBIDs, nothing needs to be merged.
@@ -251,6 +263,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private fun simplifyAlbumClusterImpl(cluster: Collection<AlbumVertex>) {
         // All of these albums are semantically equivalent. Pick the most popular variation
         // and merge all the others into it.
+        if (cluster.size == 1) {
+            // Nothing to do.
+            return
+        }
         val clusterSet = cluster.toMutableSet()
         val dst = clusterSet.maxBy { it.songVertices.size }
         clusterSet.remove(dst)
