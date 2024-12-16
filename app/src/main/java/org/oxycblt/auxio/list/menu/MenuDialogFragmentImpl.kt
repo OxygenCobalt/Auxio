@@ -113,7 +113,7 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Menu.ForAlbum>() {
     override fun updateMenu(binding: DialogMenuBinding, menu: Menu.ForAlbum) {
         val context = requireContext()
         binding.menuCover.bind(menu.album)
-        binding.menuType.text = getString(menu.album.releaseType.stringRes)
+        binding.menuType.text = menu.album.releaseType.resolve(context)
         binding.menuName.text = menu.album.name.resolve(context)
         binding.menuInfo.text = menu.album.artists.resolveNames(context)
     }

@@ -29,6 +29,8 @@ import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.Placeholder
+import org.oxycblt.musikr.tag.ReleaseType
+import org.oxycblt.musikr.tag.ReleaseType.Refinement
 import timber.log.Timber
 
 fun Name.resolve(context: Context) =
@@ -117,4 +119,36 @@ fun Date.Range.resolve(context: Context) =
         context.getString(R.string.fmt_date_range, min.resolve(context), max.resolve(context))
     } else {
         min.resolve(context)
+    }
+
+fun ReleaseType.resolve(context: Context) =
+    when (this) {
+        is ReleaseType.Album ->
+            when (refinement) {
+                null -> context.getString(R.string.lbl_album)
+                Refinement.LIVE -> context.getString(R.string.lbl_album_live)
+                Refinement.REMIX -> context.getString(R.string.lbl_album_remix)
+            }
+        is ReleaseType.EP ->
+            when (refinement) {
+                null -> context.getString(R.string.lbl_ep)
+                Refinement.LIVE -> context.getString(R.string.lbl_ep_live)
+                Refinement.REMIX -> context.getString(R.string.lbl_ep_remix)
+            }
+        is ReleaseType.Single ->
+            when (refinement) {
+                null -> context.getString(R.string.lbl_single)
+                Refinement.LIVE -> context.getString(R.string.lbl_single_live)
+                Refinement.REMIX -> context.getString(R.string.lbl_single_remix)
+            }
+        is ReleaseType.Compilation ->
+            when (refinement) {
+                null -> context.getString(R.string.lbl_compilation)
+                Refinement.LIVE -> context.getString(R.string.lbl_compilation_live)
+                Refinement.REMIX -> context.getString(R.string.lbl_compilation_remix)
+            }
+        is ReleaseType.Soundtrack -> context.getString(R.string.lbl_soundtrack)
+        is ReleaseType.Mix -> context.getString(R.string.lbl_mix)
+        is ReleaseType.Mixtape -> context.getString(R.string.lbl_mixtape)
+        is ReleaseType.Demo -> context.getString(R.string.lbl_demo)
     }

@@ -18,9 +18,6 @@
  
 package org.oxycblt.musikr.tag
 
-import org.oxycblt.auxio.R
-import org.oxycblt.musikr.tag.ReleaseType.Album
-
 /**
  * The type of release an [Album] is considered. This includes EPs, Singles, Compilations, etc.
  *
@@ -36,25 +33,13 @@ sealed interface ReleaseType {
      */
     val refinement: Refinement?
 
-    /** The string resource corresponding to the name of this release type to show in the UI. */
-    val stringRes: Int
-
     /**
      * A plain album.
      *
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class Album(override val refinement: Refinement?) : ReleaseType {
-        override val stringRes: Int
-            get() =
-                when (refinement) {
-                    null -> R.string.lbl_album
-                    // If present, include the refinement in the name of this release type.
-                    Refinement.LIVE -> R.string.lbl_album_live
-                    Refinement.REMIX -> R.string.lbl_album_remix
-                }
-    }
+    data class Album(override val refinement: Refinement?) : ReleaseType
 
     /**
      * A "Extended Play", or EP. Usually a smaller release consisting of 4-5 songs.
@@ -62,16 +47,7 @@ sealed interface ReleaseType {
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class EP(override val refinement: Refinement?) : ReleaseType {
-        override val stringRes: Int
-            get() =
-                when (refinement) {
-                    null -> R.string.lbl_ep
-                    // If present, include the refinement in the name of this release type.
-                    Refinement.LIVE -> R.string.lbl_ep_live
-                    Refinement.REMIX -> R.string.lbl_ep_remix
-                }
-    }
+    data class EP(override val refinement: Refinement?) : ReleaseType
 
     /**
      * A single. Usually a release consisting of 1-2 songs.
@@ -79,16 +55,7 @@ sealed interface ReleaseType {
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class Single(override val refinement: Refinement?) : ReleaseType {
-        override val stringRes: Int
-            get() =
-                when (refinement) {
-                    null -> R.string.lbl_single
-                    // If present, include the refinement in the name of this release type.
-                    Refinement.LIVE -> R.string.lbl_single_live
-                    Refinement.REMIX -> R.string.lbl_single_remix
-                }
-    }
+    data class Single(override val refinement: Refinement?) : ReleaseType
 
     /**
      * A compilation. Usually consists of many songs from a variety of artists.
@@ -96,16 +63,7 @@ sealed interface ReleaseType {
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class Compilation(override val refinement: Refinement?) : ReleaseType {
-        override val stringRes: Int
-            get() =
-                when (refinement) {
-                    null -> R.string.lbl_compilation
-                    // If present, include the refinement in the name of this release type.
-                    Refinement.LIVE -> R.string.lbl_compilation_live
-                    Refinement.REMIX -> R.string.lbl_compilation_remix
-                }
-    }
+    data class Compilation(override val refinement: Refinement?) : ReleaseType
 
     /**
      * A soundtrack. Similar to a [Compilation], but created for a specific piece of (usually
@@ -114,9 +72,6 @@ sealed interface ReleaseType {
     data object Soundtrack : ReleaseType {
         override val refinement: Refinement?
             get() = null
-
-        override val stringRes: Int
-            get() = R.string.lbl_soundtrack
     }
 
     /**
@@ -126,9 +81,6 @@ sealed interface ReleaseType {
     data object Mix : ReleaseType {
         override val refinement: Refinement?
             get() = null
-
-        override val stringRes: Int
-            get() = R.string.lbl_mix
     }
 
     /**
@@ -138,9 +90,6 @@ sealed interface ReleaseType {
     data object Mixtape : ReleaseType {
         override val refinement: Refinement?
             get() = null
-
-        override val stringRes: Int
-            get() = R.string.lbl_mixtape
     }
 
     /**
@@ -150,9 +99,6 @@ sealed interface ReleaseType {
     data object Demo : ReleaseType {
         override val refinement: Refinement?
             get() = null
-
-        override val stringRes: Int
-            get() = R.string.lbl_demo
     }
 
     /** A specification of what kind of performance a particular release is. */

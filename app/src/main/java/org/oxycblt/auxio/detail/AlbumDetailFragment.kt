@@ -116,7 +116,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         binding.detailToolbarTitle.text = name
         binding.detailCover.bind(album)
         // The type text depends on the release type (Album, EP, Single, etc.)
-        binding.detailType.text = getString(album.releaseType.stringRes)
+        binding.detailType.text = album.releaseType.resolve(context)
         binding.detailName.text = name
         // Artist name maps to the subhead text
         binding.detailSubhead.apply {
