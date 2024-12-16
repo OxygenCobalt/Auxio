@@ -23,7 +23,7 @@ import org.junit.Test
 import org.oxycblt.musikr.tag.util.correctWhitespace
 import org.oxycblt.musikr.tag.util.parseId3GenreNames
 import org.oxycblt.musikr.tag.util.parseId3v2PositionField
-import org.oxycblt.musikr.tag.util.parseVorbisPositionField
+import org.oxycblt.musikr.tag.util.parseXiphPositionField
 import org.oxycblt.musikr.tag.util.splitEscaped
 
 class TagUtilTest {
@@ -97,20 +97,20 @@ class TagUtilTest {
 
     @Test
     fun parseVorbisPositionField_correct() {
-        assertEquals(16, parseVorbisPositionField("16", "32"))
-        assertEquals(16, parseVorbisPositionField("16", null))
+        assertEquals(16, parseXiphPositionField("16", "32"))
+        assertEquals(16, parseXiphPositionField("16", null))
     }
 
     @Test
     fun parseVorbisPositionField_zeroed() {
-        assertEquals(null, parseVorbisPositionField("0", null))
-        assertEquals(0, parseVorbisPositionField("0", "32"))
+        assertEquals(null, parseXiphPositionField("0", null))
+        assertEquals(0, parseXiphPositionField("0", "32"))
     }
 
     @Test
     fun parseVorbisPositionField_wack() {
-        assertEquals(null, parseVorbisPositionField("a", null))
-        assertEquals(null, parseVorbisPositionField("a", "b"))
+        assertEquals(null, parseXiphPositionField("a", null))
+        assertEquals(null, parseXiphPositionField("a", "b"))
     }
 
     @Test
