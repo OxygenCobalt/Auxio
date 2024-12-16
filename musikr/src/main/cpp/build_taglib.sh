@@ -29,7 +29,8 @@ build_for_arch() {
     -DANDROID_ABI=$ARCH -DBUILD_SHARED_LIBS=OFF -DVISIBILITY_HIDDEN=ON -DBUILD_TESTING=OFF \
     -DBUILD_EXAMPLES=OFF -DBUILD_BINDINGS=OFF -DWITH_ZLIB=OFF -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_FLAGS="-fPIC"
-  cmake --build $DST_DIR --config Release -j$(nproc)
+  # Try to parallelize the build
+  cmake --build $DST_DIR --config Release -j$(( $(nproc) / 4 ))
   cd $WORKING_DIR
 
   cmake --install $DST_DIR --config Release --prefix $PKG_DIR --strip
