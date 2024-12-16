@@ -20,7 +20,7 @@ package org.oxycblt.musikr.cover
 
 import java.security.MessageDigest
 
-interface CoverIdentifier {
+internal interface CoverIdentifier {
     suspend fun identify(data: ByteArray): String
 
     companion object {

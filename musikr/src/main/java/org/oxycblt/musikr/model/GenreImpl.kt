@@ -26,7 +26,7 @@ import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.tag.interpret.PreGenre
 import org.oxycblt.musikr.util.update
 
-interface GenreCore {
+internal interface GenreCore {
     val preGenre: PreGenre
     val songs: Set<Song>
     val artists: Set<Artist>
@@ -37,7 +37,7 @@ interface GenreCore {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(private val core: GenreCore) : Genre {
+internal class GenreImpl(private val core: GenreCore) : Genre {
     override val uid = Music.UID.auxio(Music.UID.Item.GENRE) { update(core.preGenre.rawName) }
     override val name = core.preGenre.name
 

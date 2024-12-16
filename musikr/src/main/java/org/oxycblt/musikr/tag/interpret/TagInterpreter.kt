@@ -30,7 +30,7 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.format.parseId3GenreNames
 import org.oxycblt.musikr.util.toUuidOrNull
 
-interface TagInterpreter {
+internal interface TagInterpreter {
     fun interpret(song: RawSong, interpretation: Interpretation): PreSong
 
     companion object {

@@ -55,7 +55,7 @@ sealed interface IndexingProgress {
     data object Indeterminate : IndexingProgress
 }
 
-class MusikrImpl(
+private class MusikrImpl(
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep

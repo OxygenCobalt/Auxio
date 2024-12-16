@@ -21,10 +21,10 @@ package org.oxycblt.musikr.metadata
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.util.unlikelyToBeNull
 
-interface MetadataExtractor {
+internal interface MetadataExtractor {
     suspend fun extract(file: DeviceFile): Metadata?
 
     companion object {

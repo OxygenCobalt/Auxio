@@ -27,7 +27,7 @@ import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.util.update
 
-interface ArtistCore {
+internal interface ArtistCore {
     val preArtist: PreArtist
     val songs: Set<Song>
     val albums: Set<Album>
@@ -40,7 +40,7 @@ interface ArtistCore {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistImpl(private val core: ArtistCore) : Artist {
+internal class ArtistImpl(private val core: ArtistCore) : Artist {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         core.preArtist.musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.ARTIST, it) }

@@ -29,24 +29,17 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
-interface DeviceFiles {
+internal interface DeviceFiles {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
 
     companion object {
         fun from(context: Context): DeviceFiles = DeviceFilesImpl(context.contentResolverSafe)
     }
 }
-
-data class DeviceFile(
-    val uri: Uri,
-    val mimeType: String,
-    val path: Path,
-    val size: Long,
-    val lastModified: Long
-)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private class DeviceFilesImpl(private val contentResolver: ContentResolver) : DeviceFiles {
@@ -99,7 +92,8 @@ private class DeviceFilesImpl(private val contentResolver: ContentResolver) : De
                                 mimeType,
                                 newPath,
                                 size,
-                                lastModified))
+                                lastModified)
+                        )
                     }
                 }
                 emitAll(recursive.asFlow().flattenMerge())

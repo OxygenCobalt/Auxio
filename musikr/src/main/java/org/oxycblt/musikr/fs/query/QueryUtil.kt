@@ -27,7 +27,7 @@ import android.net.Uri
  * Get a content resolver that will not mangle MediaStore queries on certain devices. See
  * https://github.com/OxygenCobalt/Auxio/issues/50 for more info.
  */
-val Context.contentResolverSafe: ContentResolver
+internal val Context.contentResolverSafe: ContentResolver
     get() = applicationContext.contentResolver
 
 /**
@@ -42,7 +42,7 @@ val Context.contentResolverSafe: ContentResolver
  * @throws IllegalStateException If the [ContentResolver] did not return the queried [Cursor].
  * @see ContentResolver.query
  */
-fun ContentResolver.safeQuery(
+internal fun ContentResolver.safeQuery(
     uri: Uri,
     projection: Array<out String>,
     selector: String? = null,
@@ -63,7 +63,7 @@ fun ContentResolver.safeQuery(
  * @throws IllegalStateException If the [ContentResolver] did not return the queried [Cursor].
  * @see ContentResolver.query
  */
-inline fun <reified R> ContentResolver.useQuery(
+internal inline fun <reified R> ContentResolver.useQuery(
     uri: Uri,
     projection: Array<out String>,
     selector: String? = null,

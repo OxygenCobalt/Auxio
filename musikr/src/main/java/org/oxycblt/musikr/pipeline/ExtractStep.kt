@@ -31,13 +31,13 @@ import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
 
-interface ExtractStep {
+internal interface ExtractStep {
     fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
 
     companion object {
@@ -99,6 +99,6 @@ data class RawSong(
     val cover: Cover.Single?
 )
 
-sealed interface ExtractedMusic {
+internal sealed interface ExtractedMusic {
     data class Song(val song: RawSong) : ExtractedMusic
 }

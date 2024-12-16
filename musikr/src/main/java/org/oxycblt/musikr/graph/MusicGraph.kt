@@ -25,7 +25,7 @@ import org.oxycblt.musikr.tag.interpret.PreGenre
 import org.oxycblt.musikr.tag.interpret.PreSong
 import org.oxycblt.musikr.util.unlikelyToBeNull
 
-data class MusicGraph(
+internal data class MusicGraph(
     val songVertex: List<SongVertex>,
     val albumVertex: List<AlbumVertex>,
     val artistVertex: List<ArtistVertex>,
@@ -274,7 +274,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 }
 
-class SongVertex(
+internal class SongVertex(
     val preSong: PreSong,
     var albumVertex: AlbumVertex,
     var artistVertices: MutableList<ArtistVertex>,
@@ -283,12 +283,12 @@ class SongVertex(
     var tag: Any? = null
 }
 
-class AlbumVertex(val preAlbum: PreAlbum, var artistVertices: MutableList<ArtistVertex>) {
+internal class AlbumVertex(val preAlbum: PreAlbum, var artistVertices: MutableList<ArtistVertex>) {
     val songVertices = mutableSetOf<SongVertex>()
     var tag: Any? = null
 }
 
-class ArtistVertex(
+internal class ArtistVertex(
     val preArtist: PreArtist,
 ) {
     val songVertices = mutableSetOf<SongVertex>()
@@ -297,7 +297,7 @@ class ArtistVertex(
     var tag: Any? = null
 }
 
-class GenreVertex(val preGenre: PreGenre) {
+internal class GenreVertex(val preGenre: PreGenre) {
     val songVertices = mutableSetOf<SongVertex>()
     val artistVertices = mutableSetOf<ArtistVertex>()
     var tag: Any? = null

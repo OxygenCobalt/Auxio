@@ -21,7 +21,9 @@ package org.oxycblt.musikr.tag.interpret
 import java.text.CollationKey
 
 /** An individual part of a name string that can be compared intelligently. */
-data class Token(val collationKey: CollationKey, val type: Type) : Comparable<Token> {
+data class Token(internal val collationKey: CollationKey, internal val type: Type) : Comparable<Token> {
+    val value: String get() = collationKey.sourceString
+
     override fun compareTo(other: Token): Int {
         // Numeric tokens should always be lower than lexicographic tokens.
         val modeComp = type.compareTo(other.type)

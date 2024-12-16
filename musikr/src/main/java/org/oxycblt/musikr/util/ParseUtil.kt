@@ -7,7 +7,7 @@ package org.oxycblt.musikr.util
  * @param selector A block that determines if the string should be split at a given character.
  * @return One or more [String]s split by the selector.
  */
-inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
+internal inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
     val split = mutableListOf<String>()
     var currentString = ""
     var i = 0
@@ -53,11 +53,11 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
  * @return A string with trailing whitespace remove,d or null if the [String] was all whitespace or
  *   empty.
  */
-fun String.correctWhitespace() = trim().ifBlank { null }
+internal fun String.correctWhitespace() = trim().ifBlank { null }
 
 /**
  * Fix trailing whitespace or blank contents within a list of [String]s.
  *
  * @return A list of non-blank strings with trailing whitespace removed.
  */
-fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
+internal fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }

@@ -24,7 +24,7 @@ import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.fs.Path
 
-class LibraryImpl(
+internal class LibraryImpl(
     override val songs: Collection<SongImpl>,
     override val albums: Collection<AlbumImpl>,
     override val artists: Collection<ArtistImpl>,

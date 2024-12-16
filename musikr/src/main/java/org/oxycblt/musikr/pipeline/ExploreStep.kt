@@ -25,11 +25,11 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapNotNull
 import org.oxycblt.musikr.fs.MusicLocation
-import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.query.DeviceFiles
 import org.oxycblt.musikr.playlist.m3u.M3U
 
-interface ExploreStep {
+internal interface ExploreStep {
     fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
 
     companion object {
@@ -51,6 +51,6 @@ private class ExploreStepImpl(private val deviceFiles: DeviceFiles) : ExploreSte
             .flowOn(Dispatchers.IO)
 }
 
-sealed interface ExploreNode {
+internal sealed interface ExploreNode {
     data class Audio(val file: DeviceFile) : ExploreNode
 }

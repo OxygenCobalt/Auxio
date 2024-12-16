@@ -18,10 +18,10 @@
  
 package org.oxycblt.musikr.tag.parse
 
-import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-interface TagParser {
+internal interface TagParser {
     fun parse(file: DeviceFile, metadata: Metadata): ParsedTags
 
     companion object {

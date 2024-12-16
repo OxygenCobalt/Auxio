@@ -28,7 +28,7 @@ package org.oxycblt.musikr.tag.format
  * @return A list of one or more genre names, or null if this multi-value list has no valid
  *   formatting.
  */
-fun List<String>.parseId3GenreNames() =
+internal fun List<String>.parseId3GenreNames() =
     if (size == 1) {
         first().parseId3MultiValueGenre()
     } else {

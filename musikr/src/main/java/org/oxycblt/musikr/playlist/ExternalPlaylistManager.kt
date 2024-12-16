@@ -84,7 +84,7 @@ data class ImportedPlaylist(val name: String?, val paths: List<PossiblePaths>)
 
 typealias PossiblePaths = List<Path>
 
-class ExternalPlaylistManagerImpl(
+private class ExternalPlaylistManagerImpl(
     private val context: Context,
     private val documentPathFactory: DocumentPathFactory,
     private val m3u: M3U

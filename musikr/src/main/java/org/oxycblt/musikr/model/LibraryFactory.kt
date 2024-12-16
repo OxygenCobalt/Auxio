@@ -29,7 +29,7 @@ import org.oxycblt.musikr.graph.GenreVertex
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.graph.SongVertex
 
-interface LibraryFactory {
+internal interface LibraryFactory {
     fun create(graph: MusicGraph): MutableLibrary
 
     companion object {

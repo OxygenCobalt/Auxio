@@ -25,7 +25,7 @@ import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Volume
 
 /** A wrapper around [StorageManager] that provides instances of the [Volume] interface. */
-interface VolumeManager {
+internal interface VolumeManager {
     /**
      * The internal storage volume of the device.
      *

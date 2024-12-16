@@ -25,13 +25,13 @@ import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.interpret.PrePlaylist
 
-interface PlaylistCore {
+internal interface PlaylistCore {
     val prePlaylist: PrePlaylist
     val handle: PlaylistHandle
     val songs: List<Song>
 }
 
-class PlaylistImpl(private val core: PlaylistCore) : Playlist {
+internal class PlaylistImpl(private val core: PlaylistCore) : Playlist {
     override val uid = core.handle.uid
     override val name: Name.Known = core.prePlaylist.name
     override val durationMs = core.songs.sumOf { it.durationMs }

@@ -30,7 +30,7 @@ import org.oxycblt.musikr.util.positiveOrNull
  *
  * @see transformPositionField
  */
-fun String.parseId3v2PositionField() =
+internal fun String.parseId3v2PositionField() =
     split('/', limit = 2).let {
         transformPositionField(it[0].toIntOrNull(), it.getOrNull(1)?.toIntOrNull())
     }
@@ -47,7 +47,7 @@ fun String.parseId3v2PositionField() =
  *
  * @see transformPositionField
  */
-fun parseXiphPositionField(pos: String?, total: String?) =
+internal fun parseXiphPositionField(pos: String?, total: String?) =
     transformPositionField(pos?.toIntOrNull(), total?.toIntOrNull())
 
 /**
@@ -59,7 +59,7 @@ fun parseXiphPositionField(pos: String?, total: String?) =
  * - The position could not be parsed
  * - The position was zeroed AND the total value was not present/zeroed
  */
-fun transformPositionField(pos: Int?, total: Int?) =
+internal fun transformPositionField(pos: Int?, total: Int?) =
     if (pos != null && (pos > 0 || (total?.positiveOrNull() != null))) {
         pos
     } else {

@@ -22,7 +22,7 @@ import android.content.Context
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 
-class AndroidInputStream(context: Context, fileRef: FileRef) : NativeInputStream {
+internal class AndroidInputStream(context: Context, fileRef: FileRef) : NativeInputStream {
     private val fileName = fileRef.fileName
     private val fd =
         requireNotNull(context.contentResolver.openFileDescriptor(fileRef.uri, "r")) {

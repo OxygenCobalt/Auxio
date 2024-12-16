@@ -32,7 +32,7 @@ import org.oxycblt.musikr.tag.ReleaseType
 import org.oxycblt.musikr.tag.ReplayGainAdjustment
 import org.oxycblt.musikr.util.update
 
-data class PreSong(
+internal data class PreSong(
     val musicBrainzId: UUID?,
     val name: Name.Known,
     val rawName: String,
@@ -70,7 +70,7 @@ data class PreSong(
             }
 }
 
-data class PreAlbum(
+internal data class PreAlbum(
     val musicBrainzId: UUID?,
     val name: Name,
     val rawName: String?,
@@ -78,11 +78,11 @@ data class PreAlbum(
     val preArtists: List<PreArtist>
 )
 
-data class PreArtist(val musicBrainzId: UUID?, val name: Name, val rawName: String?)
+internal data class PreArtist(val musicBrainzId: UUID?, val name: Name, val rawName: String?)
 
-data class PreGenre(
+internal data class PreGenre(
     val name: Name,
     val rawName: String?,
 )
 
-data class PrePlaylist(val name: Name.Known, val rawName: String?, val handle: PlaylistHandle)
+internal data class PrePlaylist(val name: Name.Known, val rawName: String?, val handle: PlaylistHandle)

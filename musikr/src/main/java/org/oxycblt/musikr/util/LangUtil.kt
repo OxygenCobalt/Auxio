@@ -29,7 +29,7 @@ import org.oxycblt.musikr.tag.Date
  * otherwise, it aliases to the unchecked dereference operator (!!). This can be used as a minor
  * optimization in certain cases.
  */
-fun <T> unlikelyToBeNull(value: T?) =
+internal fun <T> unlikelyToBeNull(value: T?) =
     if (BuildConfig.DEBUG) {
         requireNotNull(value)
     } else {
@@ -41,14 +41,14 @@ fun <T> unlikelyToBeNull(value: T?) =
  *
  * @return The given number if it's non-zero, null otherwise.
  */
-fun Int.positiveOrNull() = if (this > 0) this else null
+internal fun Int.positiveOrNull() = if (this > 0) this else null
 
 /**
  * Aliases a check to ensure that the given number is non-zero.
  *
  * @return The same number if it's non-zero, null otherwise.
  */
-fun Float.nonZeroOrNull() = if (this != 0f) this else null
+internal fun Float.nonZeroOrNull() = if (this != 0f) this else null
 
 /**
  * Aliases a check to ensure a given value is in a specified range.
@@ -56,7 +56,7 @@ fun Float.nonZeroOrNull() = if (this != 0f) this else null
  * @param range The valid range of values for this number.
  * @return The same number if it is in the range, null otherwise.
  */
-fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
+internal fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
 
 /**
  * Convert a [String] to a [UUID].
@@ -64,7 +64,7 @@ fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else nul
  * @return A [UUID] converted from the [String] value, or null if the value was not valid.
  * @see UUID.fromString
  */
-fun String.toUuidOrNull(): UUID? =
+internal fun String.toUuidOrNull(): UUID? =
     try {
         UUID.fromString(this)
     } catch (e: IllegalArgumentException) {
@@ -76,7 +76,7 @@ fun String.toUuidOrNull(): UUID? =
  *
  * @param string The [String] to hash. If null, it will not be hashed.
  */
-fun MessageDigest.update(string: String?) {
+internal fun MessageDigest.update(string: String?) {
     if (string != null) {
         update(string.lowercase().toByteArray())
     } else {
@@ -89,7 +89,7 @@ fun MessageDigest.update(string: String?) {
  *
  * @param date The [Date] to hash. If null, nothing will be done.
  */
-fun MessageDigest.update(date: Date?) {
+internal fun MessageDigest.update(date: Date?) {
     if (date != null) {
         update(date.toString().toByteArray())
     } else {
@@ -102,7 +102,7 @@ fun MessageDigest.update(date: Date?) {
  *
  * @param strings The [String]s to hash. If a [String] is null, it will not be hashed.
  */
-fun MessageDigest.update(strings: List<String?>) {
+internal fun MessageDigest.update(strings: List<String?>) {
     strings.forEach(::update)
 }
 
@@ -111,7 +111,7 @@ fun MessageDigest.update(strings: List<String?>) {
  *
  * @param n The [Int] to write. If null, nothing will be done.
  */
-fun MessageDigest.update(n: Int?) {
+internal fun MessageDigest.update(n: Int?) {
     if (n != null) {
         update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
     } else {
@@ -126,7 +126,7 @@ fun MessageDigest.update(n: Int?) {
  * @param clazz The [KClass] to reflect into.
  * @param method The name of the method to obtain.
  */
-fun lazyReflectedMethod(clazz: KClass<*>, method: String, vararg params: KClass<*>) = lazy {
+internal fun lazyReflectedMethod(clazz: KClass<*>, method: String, vararg params: KClass<*>) = lazy {
     clazz.java.getDeclaredMethod(method, *params.map { it.java }.toTypedArray()).also {
         it.isAccessible = true
     }

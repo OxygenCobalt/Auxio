@@ -84,7 +84,7 @@ sealed interface Format {
                 "audio/wave" to Wav,
             )
 
-        fun infer(containerMimeType: String, codecMimeType: String): Format {
+        internal fun infer(containerMimeType: String, codecMimeType: String): Format {
             val codecFormat = CODEC_MAP[codecMimeType]
             if (codecFormat != null) {
                 // Codec found, possibly wrap in container.

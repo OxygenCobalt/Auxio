@@ -46,7 +46,7 @@ private val svApi21GetPathMethod: Method by lazyReflectedMethod(StorageVolume::c
  *
  * @see StorageManager.getStorageVolumes
  */
-val StorageManager.storageVolumesCompat: List<StorageVolume>
+internal val StorageManager.storageVolumesCompat: List<StorageVolume>
     get() = storageVolumes.toList()
 
 /**
@@ -55,7 +55,7 @@ val StorageManager.storageVolumesCompat: List<StorageVolume>
  *
  * @see StorageVolume.getDirectory
  */
-val StorageVolume.directoryCompat: String?
+internal val StorageVolume.directoryCompat: String?
     @SuppressLint("NewApi")
     get() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -76,7 +76,7 @@ val StorageVolume.directoryCompat: String?
  * @return A human-readable name for this volume.
  */
 @SuppressLint("NewApi")
-fun StorageVolume.getDescriptionCompat(context: Context): String = getDescription(context)
+internal fun StorageVolume.getDescriptionCompat(context: Context): String = getDescription(context)
 
 /**
  * If this [StorageVolume] is considered the "Primary" volume where the Android System is kept. May
@@ -84,7 +84,7 @@ fun StorageVolume.getDescriptionCompat(context: Context): String = getDescriptio
  *
  * @see StorageVolume.isPrimary
  */
-val StorageVolume.isPrimaryCompat: Boolean
+internal val StorageVolume.isPrimaryCompat: Boolean
     @SuppressLint("NewApi") get() = isPrimary
 
 /**
@@ -93,14 +93,14 @@ val StorageVolume.isPrimaryCompat: Boolean
  *
  * @see StorageVolume.isEmulated
  */
-val StorageVolume.isEmulatedCompat: Boolean
+internal val StorageVolume.isEmulatedCompat: Boolean
     @SuppressLint("NewApi") get() = isEmulated
 
 /**
  * If this [StorageVolume] represents the "Internal Shared Storage" volume, also known as "primary"
  * to [MediaStore] and Document [Uri]s, obtained in a version compatible manner.
  */
-val StorageVolume.isInternalCompat: Boolean
+internal val StorageVolume.isInternalCompat: Boolean
     // Must contain the android system AND be an emulated drive, as non-emulated system
     // volumes use their UUID instead of primary in MediaStore/Document URIs.
     get() = isPrimaryCompat && isEmulatedCompat
@@ -111,7 +111,7 @@ val StorageVolume.isInternalCompat: Boolean
  *
  * @see StorageVolume.getUuid
  */
-val StorageVolume.uuidCompat: String?
+internal val StorageVolume.uuidCompat: String?
     @SuppressLint("NewApi") get() = uuid
 
 /**
@@ -120,7 +120,7 @@ val StorageVolume.uuidCompat: String?
  *
  * @see StorageVolume.getState
  */
-val StorageVolume.stateCompat: String
+internal val StorageVolume.stateCompat: String
     @SuppressLint("NewApi") get() = state
 
 /**
@@ -129,7 +129,7 @@ val StorageVolume.stateCompat: String
  *
  * @see StorageVolume.getMediaStoreVolumeName
  */
-val StorageVolume.mediaStoreVolumeNameCompat: String?
+internal val StorageVolume.mediaStoreVolumeNameCompat: String?
     get() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             mediaStoreVolumeName

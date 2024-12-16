@@ -29,7 +29,7 @@ import org.oxycblt.musikr.fs.Path
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed interface MediaStorePathInterpreter {
+internal sealed interface MediaStorePathInterpreter {
     /**
      * Extract a [Path] from the wrapped [Cursor]. This should be called after the cursor has been
      * moved to the row that should be interpreted.

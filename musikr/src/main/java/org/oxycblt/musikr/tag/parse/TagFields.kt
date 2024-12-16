@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * ExoPlayerTagFields.kt is part of Auxio.
+ * TagFields.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,32 +26,32 @@ import org.oxycblt.musikr.tag.format.parseXiphPositionField
 import org.oxycblt.musikr.util.nonZeroOrNull
 
 // Song
-fun Metadata.musicBrainzId() =
+internal fun Metadata.musicBrainzId() =
     (xiph["MUSICBRAINZ_RELEASETRACKID"]
             ?: xiph["MUSICBRAINZ RELEASE TRACK ID"]
             ?: id3v2["TXXX:MUSICBRAINZ RELEASE TRACK ID"]
             ?: id3v2["TXXX:MUSICBRAINZ_RELEASETRACKID"])
         ?.first()
 
-fun Metadata.name() = (xiph["TITLE"] ?: id3v2["TIT2"])?.first()
+internal fun Metadata.name() = (xiph["TITLE"] ?: id3v2["TIT2"])?.first()
 
-fun Metadata.sortName() = (xiph["TITLESORT"] ?: id3v2["TSOT"])?.first()
+internal fun Metadata.sortName() = (xiph["TITLESORT"] ?: id3v2["TSOT"])?.first()
 
 // Track.
-fun Metadata.track() =
+internal fun Metadata.track() =
     (parseXiphPositionField(
         xiph["TRACKNUMBER"]?.first(),
         (xiph["TOTALTRACKS"] ?: xiph["TRACKTOTAL"] ?: xiph["TRACKC"])?.first())
         ?: id3v2["TRCK"]?.run { first().parseId3v2PositionField() })
 
 // Disc and it's subtitle name.
-fun Metadata.disc() =
+internal fun Metadata.disc() =
     (parseXiphPositionField(
         xiph["DISCNUMBER"]?.first(),
         (xiph["TOTALDISCS"] ?: xiph["DISCTOTAL"] ?: xiph["DISCC"])?.run { first() })
         ?: id3v2["TPOS"]?.run { first().parseId3v2PositionField() })
 
-fun Metadata.subtitle() = (xiph["DISCSUBTITLE"] ?: id3v2["TSST"])?.first()
+internal fun Metadata.subtitle() = (xiph["DISCSUBTITLE"] ?: id3v2["TSST"])?.first()
 
 // Dates are somewhat complicated, as not only did their semantics change from a flat year
 // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -65,7 +65,7 @@ fun Metadata.subtitle() = (xiph["DISCSUBTITLE"] ?: id3v2["TSST"])?.first()
 // TODO: Show original and normal dates side-by-side
 // TODO: Handle dates that are in "January" because the actual specific release date
 //  isn't known?
-fun Metadata.date() =
+internal fun Metadata.date() =
     (xiph["ORIGINALDATE"]?.run { Date.from(first()) }
         ?: xiph["DATE"]?.run { Date.from(first()) }
         ?: xiph["YEAR"]?.run { Date.from(first()) }
@@ -83,18 +83,18 @@ fun Metadata.date() =
         ?: parseId3v23Date())
 
 // Album
-fun Metadata.albumMusicBrainzId() =
+internal fun Metadata.albumMusicBrainzId() =
     (xiph["MUSICBRAINZ_ALBUMID"]
             ?: xiph["MUSICBRAINZ ALBUM ID"]
             ?: id3v2["TXXX:MUSICBRAINZ ALBUM ID"]
             ?: id3v2["TXXX:MUSICBRAINZ_ALBUMID"])
         ?.first()
 
-fun Metadata.albumName() = (xiph["ALBUM"] ?: id3v2["TALB"])?.first()
+internal fun Metadata.albumName() = (xiph["ALBUM"] ?: id3v2["TALB"])?.first()
 
-fun Metadata.albumSortName() = (xiph["ALBUMSORT"] ?: id3v2["TSOA"])?.first()
+internal fun Metadata.albumSortName() = (xiph["ALBUMSORT"] ?: id3v2["TSOA"])?.first()
 
-fun Metadata.releaseTypes() =
+internal fun Metadata.releaseTypes() =
     (xiph["RELEASETYPE"]
         ?: xiph["MUSICBRAINZ ALBUM TYPE"]
         ?: id3v2["TXXX:MUSICBRAINZ ALBUM TYPE"]
@@ -104,20 +104,20 @@ fun Metadata.releaseTypes() =
         id3v2["GRP1"])
 
 // Artist
-fun Metadata.artistMusicBrainzIds() =
+internal fun Metadata.artistMusicBrainzIds() =
     (xiph["MUSICBRAINZ_ARTISTID"]
         ?: xiph["MUSICBRAINZ ARTIST ID"]
         ?: id3v2["TXXX:MUSICBRAINZ ARTIST ID"]
         ?: id3v2["TXXX:MUSICBRAINZ_ARTISTID"])
 
-fun Metadata.artistNames() =
+internal fun Metadata.artistNames() =
     (xiph["ARTISTS"]
         ?: xiph["ARTIST"]
         ?: id3v2["TXXX:ARTISTS"]
         ?: id3v2["TPE1"]
         ?: id3v2["TXXX:ARTIST"])
 
-fun Metadata.artistSortNames() =
+internal fun Metadata.artistSortNames() =
     (xiph["ARTISTSSORT"]
         ?: xiph["ARTISTS_SORT"]
         ?: xiph["ARTISTS SORT"]
@@ -130,13 +130,13 @@ fun Metadata.artistSortNames() =
         ?: id3v2["TXXX:ARTISTSORT"]
         ?: id3v2["TXXX:ARTIST SORT"])
 
-fun Metadata.albumArtistMusicBrainzIds() =
+internal fun Metadata.albumArtistMusicBrainzIds() =
     (xiph["MUSICBRAINZ_ALBUMARTISTID"]
         ?: xiph["MUSICBRAINZ ALBUM ARTIST ID"]
         ?: id3v2["TXXX:MUSICBRAINZ ALBUM ARTIST ID"]
         ?: id3v2["TXXX:MUSICBRAINZ_ALBUMARTISTID"])
 
-fun Metadata.albumArtistNames() =
+internal fun Metadata.albumArtistNames() =
     (xiph["ALBUMARTISTS"]
         ?: xiph["ALBUM_ARTISTS"]
         ?: xiph["ALBUM ARTISTS"]
@@ -149,7 +149,7 @@ fun Metadata.albumArtistNames() =
         ?: id3v2["TXXX:ALBUMARTIST"]
         ?: id3v2["TXXX:ALBUM ARTIST"])
 
-fun Metadata.albumArtistSortNames() =
+internal fun Metadata.albumArtistSortNames() =
     (xiph["ALBUMARTISTSSORT"]
         ?: xiph["ALBUMARTISTS_SORT"]
         ?: xiph["ALBUMARTISTS SORT"]
@@ -164,10 +164,10 @@ fun Metadata.albumArtistSortNames() =
         ?: id3v2["TXXX:ALBUM ARTIST SORT"])
 
 // Genre
-fun Metadata.genreNames() = xiph["GENRE"] ?: id3v2["TCON"]
+internal fun Metadata.genreNames() = xiph["GENRE"] ?: id3v2["TCON"]
 
 // Compilation Flag
-fun Metadata.isCompilation() =
+internal fun Metadata.isCompilation() =
     (xiph["COMPILATION"]
             ?: xiph["ITUNESCOMPILATION"]
             ?: id3v2["TCMP"] // This is a non-standard itunes extension
@@ -179,15 +179,35 @@ fun Metadata.isCompilation() =
         }
 
 // ReplayGain information
-fun Metadata.replayGainTrackAdjustment() =
+internal fun Metadata.replayGainTrackAdjustment() =
     (xiph["R128_TRACK_GAIN"]?.parseR128Adjustment()
         ?: xiph["REPLAYGAIN_TRACK_GAIN"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:REPLAYGAIN_TRACK_GAIN"]?.parseReplayGainAdjustment())
 
-fun Metadata.replayGainAlbumAdjustment() =
+internal fun Metadata.replayGainAlbumAdjustment() =
     (xiph["R128_ALBUM_GAIN"]?.parseR128Adjustment()
         ?: xiph["REPLAYGAIN_ALBUM_GAIN"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:REPLAYGAIN_ALBUM_GAIN"]?.parseReplayGainAdjustment())
+
+private fun List<String>.parseR128Adjustment() =
+    first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()?.run {
+        // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
+        this / 256f + 5
+    }
+
+/**
+ * Parse a ReplayGain adjustment into a float value.
+ *
+ * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
+ */
+private fun List<String>.parseReplayGainAdjustment() =
+    first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
+
+/**
+ * Matches non-float information from ReplayGain adjustments. Derived from vanilla music:
+ * https://github.com/vanilla-music/vanilla
+ */
+private val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }
 
 private fun Metadata.parseId3v23Date(): Date? {
     // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
@@ -222,23 +242,3 @@ private fun Metadata.parseId3v23Date(): Date? {
         return Date.from(year)
     }
 }
-
-private fun List<String>.parseR128Adjustment() =
-    first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()?.run {
-        // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
-        this / 256f + 5
-    }
-
-/**
- * Parse a ReplayGain adjustment into a float value.
- *
- * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
- */
-private fun List<String>.parseReplayGainAdjustment() =
-    first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
-
-/**
- * Matches non-float information from ReplayGain adjustments. Derived from vanilla music:
- * https://github.com/vanilla-music/vanilla
- */
-val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }

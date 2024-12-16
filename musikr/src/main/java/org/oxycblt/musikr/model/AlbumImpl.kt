@@ -27,7 +27,7 @@ import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.util.update
 
-interface AlbumCore {
+internal interface AlbumCore {
     val preAlbum: PreAlbum
     val songs: List<Song>
 
@@ -39,7 +39,7 @@ interface AlbumCore {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumImpl(private val core: AlbumCore) : Album {
+internal class AlbumImpl(private val core: AlbumCore) : Album {
     private val preAlbum = core.preAlbum
 
     override val uid =

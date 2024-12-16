@@ -31,7 +31,7 @@ import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
-interface EvaluateStep {
+internal interface EvaluateStep {
     suspend fun evaluate(
         interpretation: Interpretation,
         extractedMusic: Flow<ExtractedMusic>

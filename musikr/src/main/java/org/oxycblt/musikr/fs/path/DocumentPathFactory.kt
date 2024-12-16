@@ -34,7 +34,7 @@ import org.oxycblt.musikr.fs.query.useQuery
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface DocumentPathFactory {
+internal interface DocumentPathFactory {
     /**
      * Unpacks a document URI into a [Path] instance, using [fromDocumentId].
      *

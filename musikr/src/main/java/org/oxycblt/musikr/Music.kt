@@ -94,7 +94,7 @@ sealed interface Music {
 
         override fun toString() = "${format.namespace}:${item.intCode.toString(16)}-$uuid"
 
-        enum class Item(val intCode: Int) {
+        internal enum class Item(val intCode: Int) {
             // Item used to be MusicType back when the music module was
             // part of Auxio, so these old integer codes remain.
             // TODO: Introduce new UID format that removes these.
@@ -126,7 +126,7 @@ sealed interface Music {
             @TypeConverter fun toMusicUid(string: String?) = string?.let(Companion::fromString)
         }
 
-        companion object {
+        internal companion object {
             /**
              * Creates an Auxio-style [UID] of random composition. Used if there is no
              * non-subjective, unlikely-to-change metadata of the music.

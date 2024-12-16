@@ -47,14 +47,14 @@ data class Path(
      * @param fileName The name of the file to append to the path.
      * @return The new [Path] instance.
      */
-    fun file(fileName: String) = Path(volume, components.child(fileName))
+    internal fun file(fileName: String) = Path(volume, components.child(fileName))
 
     /**
      * Resolves the [Path] in a human-readable format.
      *
      * @param context [Context] required to obtain human-readable strings.
      */
-    fun resolve(context: Context) = "${volume.resolveName(context)}/$components"
+    internal fun resolve(context: Context) = "${volume.resolveName(context)}/$components"
 }
 
 sealed interface Volume {
@@ -154,9 +154,7 @@ value class Components private constructor(val components: List<String>) {
 
     fun containing(other: Components) = Components(other.components.drop(components.size))
 
-    companion object {
-        fun nil() = Components(listOf())
-
+    internal companion object {
         /**
          * Parses a path string into a [Components] instance by the unix path separator (/).
          *

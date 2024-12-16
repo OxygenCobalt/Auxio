@@ -24,7 +24,7 @@ import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.tag.interpret.PreSong
 
-interface SongCore {
+internal interface SongCore {
     val preSong: PreSong
 
     fun resolveAlbum(): Album
@@ -39,7 +39,7 @@ interface SongCore {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SongImpl(private val handle: SongCore) : Song {
+internal class SongImpl(private val handle: SongCore) : Song {
     private val preSong = handle.preSong
 
     override val uid = preSong.computeUid()

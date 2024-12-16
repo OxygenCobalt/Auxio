@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.cache
 
-import org.oxycblt.musikr.fs.query.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 
 interface Cache {

@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
 
-sealed interface Divert<L, R> {
+internal sealed interface Divert<L, R> {
     data class Left<L, R>(val value: L) : Divert<L, R>
 
     data class Right<L, R>(val value: R) : Divert<L, R>
@@ -33,7 +33,7 @@ sealed interface Divert<L, R> {
 
 class DivertedFlow<L, R>(val manager: Flow<Nothing>, val left: Flow<L>, val right: Flow<R>)
 
-inline fun <T, L, R> Flow<T>.divert(
+internal inline fun <T, L, R> Flow<T>.divert(
     crossinline predicate: (T) -> Divert<L, R>
 ): DivertedFlow<L, R> {
     val leftChannel = Channel<L>(Channel.UNLIMITED)
@@ -52,7 +52,7 @@ inline fun <T, L, R> Flow<T>.divert(
     return DivertedFlow(managedFlow, leftChannel.receiveAsFlow(), rightChannel.receiveAsFlow())
 }
 
-class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Array<Flow<T>>)
+internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Array<Flow<T>>)
 
 /**
  * Equally "distributes" the values of some flow across n new flows.
@@ -60,7 +60,7 @@ class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Array<Flow<T>>)
  * Note that this function requires the "manager" flow to be consumed alongside the split flows in
  * order to function. Without this, all of the newly split flows will simply block.
  */
-fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
+internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
     val posChannels = Array(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
