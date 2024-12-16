@@ -16,6 +16,7 @@ buildscript {
     dependencies {
         // Hilt isn't compatible with the new plugin syntax yet.
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
     }
 }
 

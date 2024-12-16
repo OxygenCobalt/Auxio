@@ -6,6 +6,7 @@ plugins {
     id "com.google.devtools.ksp"
     id "com.diffplug.spotless"
     id "kotlin-parcelize"
+    id "org.jetbrains.dokka"
 }
 
 android {
