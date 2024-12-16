@@ -178,7 +178,7 @@
     <string name="err_bad_location">Ця папка не підтримується</string>
     <string name="def_artist">Невідомий виконавець</string>
     <string name="clr_lime">Лаймовий</string>
-    <string name="set_separators_and">Амперсанд (&amp;)</string>
+    <string name="set_separators_and">Амперсанд &amp;</string>
     <string name="err_no_locations">Немає папок</string>
     <string name="desc_skip_next">Перейти до наступної пісні</string>
     <string name="desc_shuffle">Ввімкніть або вимкніть перемішування</string>
@@ -330,4 +330,5 @@
     <string name="lbl_email">Надіслати електронний лист</string>
     <string name="lng_no_playlists">Ваші списки відтворення з’являться тут, коли ви додасте музику.</string>
     <string name="lng_no_albums">Ваші альбоми з’являться тут, коли ви додасте музику.</string>
+    <string name="def_album">Невідомий альбом</string>
 </resources>
