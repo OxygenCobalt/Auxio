@@ -39,8 +39,8 @@ spotless {
     }
 
     cpp {
-        target "*/src/**/*.cpp"
-        clangFormat()
+        target "*/src/**/cpp/*.cpp"
+        clangFormat("18.1.8")
         licenseHeaderFile("NOTICE")
     }
 }
