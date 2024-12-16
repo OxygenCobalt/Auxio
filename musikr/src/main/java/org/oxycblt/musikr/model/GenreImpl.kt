@@ -41,8 +41,8 @@ internal class GenreImpl(private val core: GenreCore) : Genre {
     override val uid = Music.UID.auxio(Music.UID.Item.GENRE) { update(core.preGenre.rawName) }
     override val name = core.preGenre.name
 
-    override val songs = mutableSetOf<Song>()
-    override val artists = mutableSetOf<Artist>()
+    override val songs = core.songs
+    override val artists = core.artists
     override val durationMs = core.songs.sumOf { it.durationMs }
     override val cover = Cover.multi(core.songs)
 
