@@ -78,7 +78,7 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
 <p align="center">
     <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
     <a href="https://github.com/dmint789"><img src="https://avatars.githubusercontent.com/u/53250435?v=4" width=50 /></a>
-    <a href="https://github.com/yrliet"><img src="https://avatars.githubusercontent.com/u/151430565?v=4" width=50 /></a>
+    <a href="https://github.com/adventure-tense"><img src="https://avatars.githubusercontent.com/u/123326084?v=4" width=50 /></a>
 </p>
 
 ## Building
