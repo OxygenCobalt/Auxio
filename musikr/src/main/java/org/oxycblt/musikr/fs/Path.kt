@@ -47,14 +47,14 @@ data class Path(
      * @param fileName The name of the file to append to the path.
      * @return The new [Path] instance.
      */
-    internal fun file(fileName: String) = Path(volume, components.child(fileName))
+    fun file(fileName: String) = Path(volume, components.child(fileName))
 
     /**
      * Resolves the [Path] in a human-readable format.
      *
      * @param context [Context] required to obtain human-readable strings.
      */
-    internal fun resolve(context: Context) = "${volume.resolveName(context)}/$components"
+    fun resolve(context: Context) = "${volume.resolveName(context)}/$components"
 }
 
 sealed interface Volume {

@@ -67,7 +67,7 @@ sealed interface Name : Comparable<Name> {
 }
 
 /** An individual part of a name string that can be compared intelligently. */
-data class Token(internal val collationKey: CollationKey, internal val type: Type) : Comparable<Token> {
+data class Token internal constructor(internal val collationKey: CollationKey, internal val type: Type) : Comparable<Token> {
     val value: String get() = collationKey.sourceString
 
     override fun compareTo(other: Token): Int {
@@ -88,7 +88,7 @@ data class Token(internal val collationKey: CollationKey, internal val type: Typ
     }
 
     /** Denotes the type of comparison to be performed with this token. */
-    enum class Type {
+    internal enum class Type {
         /** Compare as a digit string, like "65". */
         NUMERIC,
         /** Compare as a standard alphanumeric string, like "65daysofstatic" */

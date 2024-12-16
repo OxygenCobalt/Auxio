@@ -27,7 +27,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.musikr.fs.query.contentResolverSafe
 import timber.log.Timber as L
 
 /**
@@ -45,7 +44,7 @@ constructor(
     private val handler = Handler(Looper.getMainLooper())
 
     fun attach() {
-        context.contentResolverSafe.registerContentObserver(
+        context.applicationContext.contentResolver.registerContentObserver(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, this)
     }
 
@@ -55,7 +54,7 @@ constructor(
      */
     fun release() {
         handler.removeCallbacks(this)
-        context.contentResolverSafe.unregisterContentObserver(this)
+        context.applicationContext.contentResolver.unregisterContentObserver(this)
     }
 
     override fun onChange(selfChange: Boolean) {

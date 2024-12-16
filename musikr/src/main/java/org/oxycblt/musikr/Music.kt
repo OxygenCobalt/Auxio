@@ -126,14 +126,14 @@ sealed interface Music {
             @TypeConverter fun toMusicUid(string: String?) = string?.let(Companion::fromString)
         }
 
-        internal companion object {
+        companion object {
             /**
              * Creates an Auxio-style [UID] of random composition. Used if there is no
              * non-subjective, unlikely-to-change metadata of the music.
              *
              * @param item The type of [Item] that created this [UID].
              */
-            fun auxio(item: Item): UID {
+            internal fun auxio(item: Item): UID {
                 return UID(Format.AUXIO, item, UUID.randomUUID())
             }
 
@@ -147,7 +147,7 @@ sealed interface Music {
              *   specification.
              * @return A new auxio-style [UID].
              */
-            fun auxio(item: Item, updates: MessageDigest.() -> Unit): UID {
+            internal fun auxio(item: Item, updates: MessageDigest.() -> Unit): UID {
                 val digest =
                     MessageDigest.getInstance("SHA-256").run {
                         updates()
@@ -189,7 +189,7 @@ sealed interface Music {
              *   file.
              * @return A new MusicBrainz-style [UID].
              */
-            fun musicBrainz(item: Item, mbid: UUID) = UID(Format.MUSICBRAINZ, item, mbid)
+            internal fun musicBrainz(item: Item, mbid: UUID) = UID(Format.MUSICBRAINZ, item, mbid)
 
             /**
              * Convert a [UID]'s string representation back into a concrete [UID] instance.

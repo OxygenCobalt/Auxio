@@ -26,7 +26,7 @@ import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.musikr.fs.query.contentResolverSafe
 import org.oxycblt.musikr.util.splitEscaped
 
-class MusicLocation private constructor(internal val uri: Uri, internal val path: Path) {
+class MusicLocation private constructor(val uri: Uri, val path: Path) {
     override fun equals(other: Any?) = other is MusicLocation && uri == other.uri
 
     override fun hashCode() = 31 * uri.hashCode()

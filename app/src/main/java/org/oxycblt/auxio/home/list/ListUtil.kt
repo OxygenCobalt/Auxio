@@ -25,8 +25,7 @@ fun Name.thumb() =
     when (this) {
         is Name.Known ->
             tokens.firstOrNull()?.let {
-                val value = it.collationKey.sourceString
-                if (value.isDigitsOnly()) "#" else value
+                if (it.value.isDigitsOnly()) "#" else it.value
             }
         is Name.Unknown -> "?"
     }
