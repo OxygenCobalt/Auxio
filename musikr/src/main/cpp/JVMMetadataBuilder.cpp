@@ -129,7 +129,7 @@ void JVMMetadataBuilder::setProperties(TagLib::AudioProperties *properties) {
 }
 
 jobject JVMMetadataBuilder::build() {
-  jclass propertiesClass = env->FindClass("org/oxycblt/ktaglib/Properties");
+  jclass propertiesClass = env->FindClass("org/oxycblt/musikr/metadata/Properties");
   jmethodID propertiesInit =
       env->GetMethodID(propertiesClass, "<init>", "(Ljava/lang/String;JII)V");
   jobject propertiesObj = env->NewObject(
@@ -138,11 +138,11 @@ jobject JVMMetadataBuilder::build() {
       properties->sampleRate());
   env->DeleteLocalRef(propertiesClass);
 
-  jclass metadataClass = env->FindClass("org/oxycblt/ktaglib/Metadata");
+  jclass metadataClass = env->FindClass("org/oxycblt/musikr/metadata/Metadata");
   jmethodID metadataInit =
       env->GetMethodID(metadataClass, "<init>",
                        "(Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;[BLorg/"
-                       "oxycblt/ktaglib/Properties;)V");
+                       "oxycblt/musikr/metadata/Properties;)V");
   jobject id3v2Map = id3v2.getObject();
   jobject xiphMap = xiph.getObject();
   jobject mp4Map = mp4.getObject();

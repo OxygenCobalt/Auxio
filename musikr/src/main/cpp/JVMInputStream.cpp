@@ -26,11 +26,11 @@ JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream)
     : env(env), inputStream(inputStream) {
   if (!env->IsInstanceOf(
           inputStream,
-          env->FindClass("org/oxycblt/ktaglib/NativeInputStream"))) {
+          env->FindClass("org/oxycblt/musikr/metadata/NativeInputStream"))) {
     throw std::runtime_error("oStream is not an instance of TagLibOStream");
   }
   jclass inputStreamClass =
-      env->FindClass("org/oxycblt/ktaglib/NativeInputStream");
+      env->FindClass("org/oxycblt/musikr/metadata/NativeInputStream");
   inputStreamNameMethod =
       env->GetMethodID(inputStreamClass, "name", "()Ljava/lang/String;");
   inputStreamReadBlockMethod =
