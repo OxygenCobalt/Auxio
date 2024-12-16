@@ -18,8 +18,8 @@
  
 package org.oxycblt.musikr.tag.interpret
 
-import org.oxycblt.musikr.tag.util.correctWhitespace
-import org.oxycblt.musikr.tag.util.splitEscaped
+import org.oxycblt.musikr.util.correctWhitespace
+import org.oxycblt.musikr.util.splitEscaped
 
 /**
  * Defines the user-specified parsing of multi-value tags. This should be used to parse any tags

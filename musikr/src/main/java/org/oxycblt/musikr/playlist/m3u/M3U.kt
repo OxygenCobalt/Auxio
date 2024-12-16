@@ -33,7 +33,7 @@ import org.oxycblt.musikr.playlist.ExportConfig
 import org.oxycblt.musikr.playlist.ImportedPlaylist
 import org.oxycblt.musikr.playlist.PossiblePaths
 import org.oxycblt.musikr.tag.Name
-import org.oxycblt.musikr.tag.util.correctWhitespace
+import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.unlikelyToBeNull
 
 /**

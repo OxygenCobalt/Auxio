@@ -36,8 +36,8 @@ import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.parse.ParsedTags
-import org.oxycblt.musikr.tag.util.correctWhitespace
-import org.oxycblt.musikr.tag.util.splitEscaped
+import org.oxycblt.musikr.util.correctWhitespace
+import org.oxycblt.musikr.util.splitEscaped
 
 @Database(entities = [CachedSong::class], version = 50, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {

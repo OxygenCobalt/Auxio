@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.tag.util
+package org.oxycblt.musikr.tag.format
 
 /// --- ID3v2 PARSING ---
 
