@@ -160,7 +160,7 @@
     <string name="desc_exit">Stopp avspilling</string>
     <string name="clr_green">Grønn</string>
     <string name="clr_deep_green">Mørkegrønn</string>
-    <string name="clr_teal">Turkis</string>
+    <string name="clr_teal">Blågrønn</string>
     <string name="lbl_edit">Rediger</string>
     <string name="desc_album_cover">Albumomslag for %s</string>
     <string name="clr_purple">Lilla</string>
@@ -260,7 +260,7 @@
     <string name="err_no_music">Fant ikke noe musikk</string>
     <string name="cdc_mka">Matroska-lyd</string>
     <string name="set_play_song_none">Spill fra vist element</string>
-    <string name="cdc_ogg">Ogg-lyd</string>
+    <string name="cdc_ogg">OGG-lyd</string>
     <string name="clr_deep_blue">Mørkeblå</string>
     <string name="set_replay_gain_mode_dynamic">Foretrekk album hvis et album spilles av</string>
     <string name="set_headset_autoplay">Automatisk avspilling med headsett</string>
@@ -310,4 +310,10 @@
     <string name="lbl_github">Opprett en sak på GitHub</string>
     <string name="lbl_feedback">Gi tilbakemelding</string>
     <string name="lbl_email">Send en e-post</string>
+    <string name="lbl_music_sources">Velg mapper</string>
+    <string name="lng_no_genres">Sjangrene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
+    <string name="lng_no_playlists">Spillelistene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
+    <string name="lng_no_artists">Artistene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
+    <string name="lng_no_songs">Sporene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
+    <string name="lng_no_albums">Albumene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
 </resources>
