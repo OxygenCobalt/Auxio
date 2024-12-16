@@ -24,7 +24,7 @@ import org.oxycblt.musikr.Song
 data class PlaylistFile(
     val name: String,
     val songPointers: List<SongPointer>,
-    val editor: PlaylistHandle
+    val handle: PlaylistHandle
 )
 
 sealed interface SongPointer {

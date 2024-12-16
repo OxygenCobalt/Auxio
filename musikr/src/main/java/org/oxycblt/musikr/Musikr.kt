@@ -70,7 +70,7 @@ private class MusikrImpl(
         var extractedCount = 0
         val explored =
             exploreStep
-                .explore(locations)
+                .explore(locations, storage)
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
                 .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }

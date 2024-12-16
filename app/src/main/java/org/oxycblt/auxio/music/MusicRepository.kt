@@ -39,6 +39,8 @@ import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheDatabase
 import org.oxycblt.musikr.cover.StoredCovers
+import org.oxycblt.musikr.playlist.db.PlaylistDatabase
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
 import timber.log.Timber as L
@@ -213,6 +215,7 @@ constructor(
     private val musikr: Musikr,
     @ApplicationContext private val context: Context,
     private val cacheDatabase: CacheDatabase,
+    private val playlistDatabase: PlaylistDatabase,
     private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
@@ -361,10 +364,10 @@ constructor(
 
         val storage =
             if (withCache) {
-                Storage(Cache.full(cacheDatabase), StoredCovers.from(context, "covers"))
+                Storage(Cache.full(cacheDatabase), StoredCovers.from(context, "covers"), StoredPlaylists.from(playlistDatabase))
             } else {
-                // TODO: Revisioned covers
-                Storage(Cache.writeOnly(cacheDatabase), StoredCovers.from(context, "covers"))
+                // TODO: Revisioned cache (as a stateful extension of musikr)
+                Storage(Cache.writeOnly(cacheDatabase), StoredCovers.from(context, "covers"), StoredPlaylists.from(playlistDatabase))
             }
         val newLibrary =
             musikr.run(

@@ -18,15 +18,11 @@
  
 package org.oxycblt.musikr.playlist.db
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import org.oxycblt.musikr.playlist.PlaylistFile
+import org.oxycblt.musikr.playlist.SongPointer
 
 interface StoredPlaylists {
-    fun read(): Flow<PlaylistFile>
+    suspend fun read(): List<PlaylistFile>
 
     companion object {
         fun from(database: PlaylistDatabase): StoredPlaylists =
@@ -35,5 +31,11 @@ interface StoredPlaylists {
 }
 
 private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : StoredPlaylists {
-    override fun read() = flow { emitAll(playlistDao.readRawPlaylists().asFlow().map { TODO() }) }
+    override suspend fun read() = playlistDao.readRawPlaylists().map {
+        PlaylistFile(
+            it.playlistInfo.name,
+            it.songs.map { song -> SongPointer.UID(song.songUid) },
+            StoredPlaylistHandle(it.playlistInfo, playlistDao)
+        )
+    }
 }

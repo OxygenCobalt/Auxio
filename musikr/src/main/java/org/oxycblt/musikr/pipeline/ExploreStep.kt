@@ -15,42 +15,64 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.merge
+import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.query.DeviceFiles
+import org.oxycblt.musikr.playlist.PlaylistFile
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
+    fun explore(locations: List<MusicLocation>, storage: Storage): Flow<ExploreNode>
 
     companion object {
-        fun from(context: Context): ExploreStep = ExploreStepImpl(DeviceFiles.from(context))
+        fun from(context: Context): ExploreStep =
+            ExploreStepImpl(DeviceFiles.from(context))
     }
 }
 
-private class ExploreStepImpl(private val deviceFiles: DeviceFiles) : ExploreStep {
-    override fun explore(locations: List<MusicLocation>) =
-        deviceFiles
-            .explore(locations.asFlow())
-            .mapNotNull {
-                when {
-                    it.mimeType == M3U.MIME_TYPE -> null
-                    it.mimeType.startsWith("audio/") -> ExploreNode.Audio(it)
-                    else -> null
+private class ExploreStepImpl(
+    private val deviceFiles: DeviceFiles
+) : ExploreStep {
+    override fun explore(locations: List<MusicLocation>, storage: Storage): Flow<ExploreNode> {
+        val audios =
+            deviceFiles
+                .explore(locations.asFlow())
+                .mapNotNull {
+                    when {
+                        it.mimeType == M3U.MIME_TYPE -> null
+                        it.mimeType.startsWith("audio/") -> ExploreNode.Audio(it)
+                        else -> null
+                    }
                 }
-            }
-            .flowOn(Dispatchers.IO)
+                .flowOn(Dispatchers.IO)
+                .buffer()
+        val playlists =
+            flow { emitAll(storage.storedPlaylists.read().asFlow()) }
+                .map { ExploreNode.Playlist(it) }
+                .flowOn(Dispatchers.IO)
+                .buffer()
+        return merge(audios, playlists)
+    }
 }
 
 internal sealed interface ExploreNode {
     data class Audio(val file: DeviceFile) : ExploreNode
+
+    data class Playlist(val file: PlaylistFile) : ExploreNode
 }
