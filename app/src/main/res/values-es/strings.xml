@@ -330,4 +330,5 @@
     <string name="lng_no_albums">Tus álbumes aparecerán aquí una vez que agregues algo de música.</string>
     <string name="lng_no_artists">Tus artistas aparecerán aquí una vez que agregues algo de música.</string>
     <string name="lng_no_genres">Tus géneros musicales aparecerán aquí una vez que agregues algo de música.</string>
+    <string name="def_album">Álbum desconocido</string>
 </resources>
