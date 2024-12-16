@@ -364,10 +364,16 @@ constructor(
 
         val storage =
             if (withCache) {
-                Storage(Cache.full(cacheDatabase), StoredCovers.from(context, "covers"), StoredPlaylists.from(playlistDatabase))
+                Storage(
+                    Cache.full(cacheDatabase),
+                    StoredCovers.from(context, "covers"),
+                    StoredPlaylists.from(playlistDatabase))
             } else {
                 // TODO: Revisioned cache (as a stateful extension of musikr)
-                Storage(Cache.writeOnly(cacheDatabase), StoredCovers.from(context, "covers"), StoredPlaylists.from(playlistDatabase))
+                Storage(
+                    Cache.writeOnly(cacheDatabase),
+                    StoredCovers.from(context, "covers"),
+                    StoredPlaylists.from(playlistDatabase))
             }
         val newLibrary =
             musikr.run(

@@ -20,10 +20,10 @@ package org.oxycblt.musikr.tag.parse
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.tag.format.parseId3GenreNames
 import org.oxycblt.musikr.tag.format.parseId3v2PositionField
 import org.oxycblt.musikr.tag.format.parseXiphPositionField
+import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.splitEscaped
 
 class TagUtilTest {

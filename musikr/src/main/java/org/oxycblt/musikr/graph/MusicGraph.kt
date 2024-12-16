@@ -235,7 +235,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private fun simplifyAlbumCluster(cluster: Collection<AlbumVertex>) {
         if (cluster.size == 1) {
             // Nothing to do.
-            return;
+            return
         }
         val fullMusicBrainzIdCoverage = cluster.all { it.preAlbum.musicBrainzId != null }
         if (fullMusicBrainzIdCoverage) {

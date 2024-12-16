@@ -31,11 +31,11 @@ interface StoredPlaylists {
 }
 
 private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : StoredPlaylists {
-    override suspend fun read() = playlistDao.readRawPlaylists().map {
-        PlaylistFile(
-            it.playlistInfo.name,
-            it.songs.map { song -> SongPointer.UID(song.songUid) },
-            StoredPlaylistHandle(it.playlistInfo, playlistDao)
-        )
-    }
+    override suspend fun read() =
+        playlistDao.readRawPlaylists().map {
+            PlaylistFile(
+                it.playlistInfo.name,
+                it.songs.map { song -> SongPointer.UID(song.songUid) },
+                StoredPlaylistHandle(it.playlistInfo, playlistDao))
+        }
 }

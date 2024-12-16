@@ -92,8 +92,7 @@ private class DeviceFilesImpl(private val contentResolver: ContentResolver) : De
                                 mimeType,
                                 newPath,
                                 size,
-                                lastModified)
-                        )
+                                lastModified))
                     }
                 }
                 emitAll(recursive.asFlow().flattenMerge())

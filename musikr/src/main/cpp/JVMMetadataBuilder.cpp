@@ -129,7 +129,8 @@ void JVMMetadataBuilder::setProperties(TagLib::AudioProperties *properties) {
 }
 
 jobject JVMMetadataBuilder::build() {
-  jclass propertiesClass = env->FindClass("org/oxycblt/musikr/metadata/Properties");
+  jclass propertiesClass =
+      env->FindClass("org/oxycblt/musikr/metadata/Properties");
   jmethodID propertiesInit =
       env->GetMethodID(propertiesClass, "<init>", "(Ljava/lang/String;JII)V");
   jobject propertiesObj = env->NewObject(

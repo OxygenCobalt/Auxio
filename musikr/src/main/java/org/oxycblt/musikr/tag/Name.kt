@@ -67,8 +67,11 @@ sealed interface Name : Comparable<Name> {
 }
 
 /** An individual part of a name string that can be compared intelligently. */
-data class Token internal constructor(internal val collationKey: CollationKey, internal val type: Type) : Comparable<Token> {
-    val value: String get() = collationKey.sourceString
+data class Token
+internal constructor(internal val collationKey: CollationKey, internal val type: Type) :
+    Comparable<Token> {
+    val value: String
+        get() = collationKey.sourceString
 
     override fun compareTo(other: Token): Int {
         // Numeric tokens should always be lower than lexicographic tokens.

@@ -31,7 +31,11 @@ internal sealed interface Divert<L, R> {
     data class Right<L, R>(val value: R) : Divert<L, R>
 }
 
-internal class DivertedFlow<L, R>(val manager: Flow<Nothing>, val left: Flow<L>, val right: Flow<R>)
+internal class DivertedFlow<L, R>(
+    val manager: Flow<Nothing>,
+    val left: Flow<L>,
+    val right: Flow<R>
+)
 
 internal inline fun <T, L, R> Flow<T>.divert(
     crossinline predicate: (T) -> Divert<L, R>

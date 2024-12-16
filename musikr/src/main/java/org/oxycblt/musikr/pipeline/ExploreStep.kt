@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
@@ -30,25 +30,21 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.query.DeviceFiles
 import org.oxycblt.musikr.playlist.PlaylistFile
-import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
     fun explore(locations: List<MusicLocation>, storage: Storage): Flow<ExploreNode>
 
     companion object {
-        fun from(context: Context): ExploreStep =
-            ExploreStepImpl(DeviceFiles.from(context))
+        fun from(context: Context): ExploreStep = ExploreStepImpl(DeviceFiles.from(context))
     }
 }
 
-private class ExploreStepImpl(
-    private val deviceFiles: DeviceFiles
-) : ExploreStep {
+private class ExploreStepImpl(private val deviceFiles: DeviceFiles) : ExploreStep {
     override fun explore(locations: List<MusicLocation>, storage: Storage): Flow<ExploreNode> {
         val audios =
             deviceFiles

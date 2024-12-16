@@ -126,8 +126,9 @@ internal fun MessageDigest.update(n: Int?) {
  * @param clazz The [KClass] to reflect into.
  * @param method The name of the method to obtain.
  */
-internal fun lazyReflectedMethod(clazz: KClass<*>, method: String, vararg params: KClass<*>) = lazy {
-    clazz.java.getDeclaredMethod(method, *params.map { it.java }.toTypedArray()).also {
-        it.isAccessible = true
+internal fun lazyReflectedMethod(clazz: KClass<*>, method: String, vararg params: KClass<*>) =
+    lazy {
+        clazz.java.getDeclaredMethod(method, *params.map { it.java }.toTypedArray()).also {
+            it.isAccessible = true
+        }
     }
-}
