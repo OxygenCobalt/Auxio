@@ -80,7 +80,7 @@ public:
     /*!
      * Reset the end-of-stream and error flags on the stream.
      */
-    void clear();
+    void clear() override;
 
     /*!
      * Returns the current offset within the stream.

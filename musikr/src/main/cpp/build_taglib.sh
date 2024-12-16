@@ -27,14 +27,16 @@ build_for_arch() {
   cd $TAGLIB_SRC_DIR
   cmake -B $DST_DIR -DANDROID_NDK_PATH=${NDK_PATH} -DCMAKE_TOOLCHAIN_FILE=${NDK_TOOLCHAIN}  \
     -DANDROID_ABI=$ARCH -DBUILD_SHARED_LIBS=OFF -DVISIBILITY_HIDDEN=ON -DBUILD_TESTING=OFF \
-    -DBUILD_EXAMPLES=OFF -DBUILD_BINDINGS=OFF -DWITH_ZLIB=OFF -DCMAKE_BUILD_TYPE=Release
-  cmake --build $DST_DIR --config Release
+    -DBUILD_EXAMPLES=OFF -DBUILD_BINDINGS=OFF -DWITH_ZLIB=OFF -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_FLAGS="-fPIC"
+  cmake --build $DST_DIR --config Release -j$(nproc)
   cd $WORKING_DIR
 
   cmake --install $DST_DIR --config Release --prefix $PKG_DIR --strip
 }
 
-build_for_arch $X86_ARCH
-build_for_arch $X86_64_ARCH
-build_for_arch $ARMV7_ARCH
-build_for_arch $ARMV8_ARCH
+build_for_arch $X86_ARCH&
+build_for_arch $X86_64_ARCH&
+build_for_arch $ARMV7_ARCH&
+build_for_arch $ARMV8_ARCH&
+wait

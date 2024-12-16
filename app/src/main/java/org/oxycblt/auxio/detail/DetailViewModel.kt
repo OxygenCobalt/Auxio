@@ -54,7 +54,6 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.metadata.AudioProperties
 import timber.log.Timber as L
 
 /**
@@ -69,7 +68,6 @@ class DetailViewModel
 constructor(
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
-    private val audioPropertiesFactory: AudioProperties.Factory,
     private val playbackSettings: PlaybackSettings,
     detailGeneratorFactory: DetailGenerator.Factory
 ) : ViewModel(), DetailGenerator.Invalidator {
@@ -88,10 +86,6 @@ constructor(
     /** The current [Song] to display. Null if there is nothing to show. */
     val currentSong: StateFlow<Song?>
         get() = _currentSong
-
-    private val _songAudioProperties = MutableStateFlow<AudioProperties?>(null)
-    /** The [AudioProperties] of the currently shown [Song]. Null if not loaded yet. */
-    val songAudioProperties: StateFlow<AudioProperties?> = _songAudioProperties
 
     // --- ALBUM ---
 
@@ -308,7 +302,7 @@ constructor(
     }
 
     /**
-     * Set a new [currentSong] from it's [Music.UID]. [currentSong] and [songAudioProperties] will
+     * Set a new [currentSong] from it's [Music.UID]. [currentSong] will
      * be updated to align with the new [Song].
      *
      * @param uid The UID of the [Song] to load. Must be valid.
@@ -511,17 +505,7 @@ constructor(
     }
 
     private fun refreshAudioInfo(song: Song) {
-        L.d("Refreshing audio info")
-        // Clear any previous job in order to avoid stale data from appearing in the UI.
-        currentSongJob?.cancel()
-        _songAudioProperties.value = null
-        currentSongJob =
-            viewModelScope.launch(Dispatchers.IO) {
-                val info = audioPropertiesFactory.extract(song)
-                yield()
-                L.d("Updating audio info to $info")
-                _songAudioProperties.value = info
-            }
+
     }
 
     private inline fun <T : MusicParent> refreshDetail(

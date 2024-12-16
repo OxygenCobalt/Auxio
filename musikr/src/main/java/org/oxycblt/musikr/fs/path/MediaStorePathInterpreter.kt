@@ -23,7 +23,6 @@ import android.os.Build
 import android.provider.MediaStore
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
-import timber.log.Timber as L
 
 /**
  * Wrapper around a [Cursor] that interprets path information on a per-API/manufacturer basis.
@@ -114,8 +113,6 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
             }
         }
 
-        L.e("Could not find volume for $data [tried: ${volumes.map { it.components }}]")
-
         return null
     }
 
@@ -183,8 +180,6 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
         val displayName = cursor.getString(displayNameIndex)
         val volume = volumes.find { it.mediaStoreName == volumeName }
         if (volume == null) {
-            L.e(
-                "Could not find volume for $volumeName:$relativePath/$displayName [tried: ${volumes.map { it.mediaStoreName }}]")
             return null
         }
         val components = Components.parseUnix(relativePath).child(displayName)

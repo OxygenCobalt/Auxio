@@ -20,4 +20,4 @@ apply from: file("media/core_settings.gradle")
 
 rootProject.name = "Auxio"
 include ':app'
-include ':ktaglib'
+include ':musikr'

@@ -22,7 +22,6 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
@@ -78,7 +77,7 @@ interface DocumentPathFactory {
 }
 
 private class DocumentPathFactoryImpl(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
     private val volumeManager: VolumeManager,
     private val mediaStorePathInterpreterFactory: MediaStorePathInterpreter.Factory
 ) : DocumentPathFactory {

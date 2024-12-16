@@ -21,7 +21,7 @@ package org.oxycblt.musikr.util
 import java.security.MessageDigest
 import java.util.UUID
 import kotlin.reflect.KClass
-import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.musikr.BuildConfig
 import org.oxycblt.musikr.tag.Date
 
 /**

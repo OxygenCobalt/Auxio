@@ -24,7 +24,6 @@ import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.tag.interpret.PreGenre
 import org.oxycblt.musikr.tag.interpret.PreSong
 import org.oxycblt.musikr.util.unlikelyToBeNull
-import timber.log.Timber as L
 
 data class MusicGraph(
     val songVertex: List<SongVertex>,
@@ -52,7 +51,6 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     override fun add(preSong: PreSong) {
         val uid = preSong.computeUid()
         if (songVertices.containsKey(uid)) {
-            L.d("Song ${preSong.path} already in graph at ${songVertices[uid]?.preSong?.path}")
             return
         }
 

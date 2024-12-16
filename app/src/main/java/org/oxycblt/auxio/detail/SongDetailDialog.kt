@@ -41,7 +41,6 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.metadata.AudioProperties
 import org.oxycblt.musikr.tag.Name
 import timber.log.Timber as L
 
@@ -72,63 +71,63 @@ class SongDetailDialog : ViewBindingMaterialDialogFragment<DialogSongDetailBindi
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setSong(args.songUid)
         detailModel.toShow.consume()
-        collectImmediately(detailModel.currentSong, detailModel.songAudioProperties, ::updateSong)
+        collectImmediately(detailModel.currentSong, ::updateSong)
     }
 
-    private fun updateSong(song: Song?, info: AudioProperties?) {
-        if (song == null) {
+    private fun updateSong(song: Song?) {
+//        if (song == null) {
             L.d("No song to show, navigating away")
             findNavController().navigateUp()
             return
-        }
-
-        if (info != null) {
-            val context = requireContext()
-            detailAdapter.update(
-                buildList {
-                    add(SongProperty(R.string.lbl_name, song.zipName(context)))
-                    add(SongProperty(R.string.lbl_album, song.album.zipName(context)))
-                    add(SongProperty(R.string.lbl_artists, song.artists.zipNames(context)))
-                    add(SongProperty(R.string.lbl_genres, song.genres.resolveNames(context)))
-                    song.date?.let { add(SongProperty(R.string.lbl_date, it.resolve(context))) }
-                    song.track?.let {
-                        add(SongProperty(R.string.lbl_track, getString(R.string.fmt_number, it)))
-                    }
-                    song.disc?.let {
-                        val formattedNumber = getString(R.string.fmt_number, it.number)
-                        val zipped =
-                            if (it.name != null) {
-                                getString(R.string.fmt_zipped_names, formattedNumber, it.name)
-                            } else {
-                                formattedNumber
-                            }
-                        add(SongProperty(R.string.lbl_disc, zipped))
-                    }
-                    add(SongProperty(R.string.lbl_path, song.path.resolve(context)))
-                    //                    info.format.resolveName(context)?.let {
-                    //                        add(SongProperty(R.string.lbl_format, it))
-                    //                    }
-                    add(
-                        SongProperty(
-                            R.string.lbl_size, Formatter.formatFileSize(context, song.size)))
-                    add(SongProperty(R.string.lbl_duration, song.durationMs.formatDurationMs(true)))
-                    info.bitrateKbps?.let {
-                        add(SongProperty(R.string.lbl_bitrate, getString(R.string.fmt_bitrate, it)))
-                    }
-                    info.sampleRateHz?.let {
-                        add(
-                            SongProperty(
-                                R.string.lbl_sample_rate, getString(R.string.fmt_sample_rate, it)))
-                    }
-                    song.replayGainAdjustment.track?.let {
-                        add(SongProperty(R.string.lbl_replaygain_track, it.formatDb(context)))
-                    }
-                    song.replayGainAdjustment.album?.let {
-                        add(SongProperty(R.string.lbl_replaygain_album, it.formatDb(context)))
-                    }
-                },
-                UpdateInstructions.Replace(0))
-        }
+//        }
+//
+//        if (info != null) {
+//            val context = requireContext()
+//            detailAdapter.update(
+//                buildList {
+//                    add(SongProperty(R.string.lbl_name, song.zipName(context)))
+//                    add(SongProperty(R.string.lbl_album, song.album.zipName(context)))
+//                    add(SongProperty(R.string.lbl_artists, song.artists.zipNames(context)))
+//                    add(SongProperty(R.string.lbl_genres, song.genres.resolveNames(context)))
+//                    song.date?.let { add(SongProperty(R.string.lbl_date, it.resolve(context))) }
+//                    song.track?.let {
+//                        add(SongProperty(R.string.lbl_track, getString(R.string.fmt_number, it)))
+//                    }
+//                    song.disc?.let {
+//                        val formattedNumber = getString(R.string.fmt_number, it.number)
+//                        val zipped =
+//                            if (it.name != null) {
+//                                getString(R.string.fmt_zipped_names, formattedNumber, it.name)
+//                            } else {
+//                                formattedNumber
+//                            }
+//                        add(SongProperty(R.string.lbl_disc, zipped))
+//                    }
+//                    add(SongProperty(R.string.lbl_path, song.path.resolve(context)))
+//                    //                    info.format.resolveName(context)?.let {
+//                    //                        add(SongProperty(R.string.lbl_format, it))
+//                    //                    }
+//                    add(
+//                        SongProperty(
+//                            R.string.lbl_size, Formatter.formatFileSize(context, song.size)))
+//                    add(SongProperty(R.string.lbl_duration, song.durationMs.formatDurationMs(true)))
+//                    info.bitrateKbps?.let {
+//                        add(SongProperty(R.string.lbl_bitrate, getString(R.string.fmt_bitrate, it)))
+//                    }
+//                    info.sampleRateHz?.let {
+//                        add(
+//                            SongProperty(
+//                                R.string.lbl_sample_rate, getString(R.string.fmt_sample_rate, it)))
+//                    }
+//                    song.replayGainAdjustment.track?.let {
+//                        add(SongProperty(R.string.lbl_replaygain_track, it.formatDb(context)))
+//                    }
+//                    song.replayGainAdjustment.album?.let {
+//                        add(SongProperty(R.string.lbl_replaygain_album, it.formatDb(context)))
+//                    }
+//                },
+//                UpdateInstructions.Replace(0))
+//        }
     }
 
     private fun <T : Music> T.zipName(context: Context): String {

@@ -19,7 +19,6 @@
 package org.oxycblt.musikr.playlist.m3u
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStream
@@ -36,7 +35,6 @@ import org.oxycblt.musikr.playlist.PossiblePaths
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.util.correctWhitespace
 import org.oxycblt.musikr.util.unlikelyToBeNull
-import timber.log.Timber as L
 
 /**
  * Minimal M3U file format implementation.
@@ -75,12 +73,11 @@ interface M3U {
         /** The mime type used for M3U files by the android system. */
         const val MIME_TYPE = "audio/x-mpegurl"
 
-        fun from(context: Context): M3U = M3UImpl(context, VolumeManager.from(context))
+        fun from(context: Context): M3U = M3UImpl(VolumeManager.from(context))
     }
 }
 
 private class M3UImpl(
-    @ApplicationContext private val context: Context,
     private val volumeManager: VolumeManager
 ) : M3U {
     override fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist? {
@@ -117,15 +114,10 @@ private class M3UImpl(
                 }
             }
 
-            if (path == null) {
-                L.e("Expected a path, instead got an EOF")
-                break@consumeFile
-            }
-
             // There is basically no formal specification of file paths in M3U, and it differs
             // based on the programs that generated it. I more or less have to consider any possible
             // interpretation as valid.
-            val interpretations = interpretPath(path)
+            val interpretations = interpretPath(unlikelyToBeNull(path))
             val possibilities =
                 interpretations.flatMap { expandInterpretation(it, workingDirectory, volumes) }
 

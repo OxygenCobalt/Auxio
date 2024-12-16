@@ -26,7 +26,6 @@ import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.musikr.fs.query.contentResolverSafe
 import org.oxycblt.musikr.playlist.m3u.M3U
-import timber.log.Timber as L
 
 /**
  * Generic playlist file importing abstraction.
@@ -111,7 +110,6 @@ class ExternalPlaylistManagerImpl(
                 return ImportedPlaylist(newName, imported.paths)
             }
         } catch (e: Exception) {
-            L.e("Failed to import playlist: $e")
             null
         }
     }
@@ -125,17 +123,12 @@ class ExternalPlaylistManagerImpl(
                 filePath.directory
             }
         return try {
-            val outputStream = context.contentResolverSafe.openOutputStream(uri)
-            if (outputStream == null) {
-                L.e("Failed to export playlist: Could not open output stream")
-                return false
-            }
+            val outputStream = context.contentResolverSafe.openOutputStream(uri) ?: return false
             outputStream.use {
                 m3u.write(playlist, it, workingDirectory, config)
                 true
             }
         } catch (e: Exception) {
-            L.e("Failed to export playlist: $e")
             false
         }
     }
