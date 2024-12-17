@@ -378,14 +378,20 @@
     <string name="cdc_mp3">MPEG-1 audio</string>
     <!-- "Audio" can optionally be translated -->
     <string name="cdc_mp4">MPEG-4 audio</string>
+    <!-- i.e MPEG-4 containing some codec -->
+    <string name="cnt_mp4">MPEG-4 containing %s</string>
+    <!-- "Advanced Audio Coding" can optionally be translated -->
+    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <!-- "Apple Lossless Audio Codec" can optionally be translated -->
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <!-- "Audio" can optionally be translated -->
     <string name="cdc_ogg">Ogg audio</string>
     <!-- "Audio" can optionally be translated -->
     <string name="cdc_mka">Matroska audio</string>
-    <!-- "Advanced Audio Coding" can optionally be translated -->
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <!-- "Free Lossless Audio Codec" can optionally be translated -->
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <!-- As in unknown format -->
+    <string name="cdc_unknown">Unknown</string>
 
     <!-- Color Label namespace | Accent names -->
     <eat-comment />

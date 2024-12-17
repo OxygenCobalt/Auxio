@@ -25,6 +25,7 @@ import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
@@ -151,4 +152,20 @@ fun ReleaseType.resolve(context: Context) =
         is ReleaseType.Mix -> context.getString(R.string.lbl_mix)
         is ReleaseType.Mixtape -> context.getString(R.string.lbl_mixtape)
         is ReleaseType.Demo -> context.getString(R.string.lbl_demo)
+    }
+
+fun Format.resolve(context: Context): String =
+    when (this) {
+        is Format.MPEG3 -> context.getString(R.string.cdc_mp3)
+        is Format.MPEG4 -> containing?.let { context.getString(R.string.cnt_mp4, it.resolve(context)) }
+            ?: context.getString(R.string.cdc_mp4)
+        is Format.AAC -> context.getString(R.string.cdc_aac)
+        is Format.ALAC -> context.getString(R.string.cdc_alac)
+        is Format.Ogg -> containing?.let { context.getString(R.string.cnt_ogg, it.resolve(context)) }
+            ?: context.getString(R.string.cdc_ogg)
+        is Format.Opus -> context.getString(R.string.cdc_opus)
+        is Format.Vorbis -> context.getString(R.string.cdc_vorbis)
+        is Format.FLAC -> context.getString(R.string.cdc_flac)
+        is Format.Wav -> context.getString(R.string.cdc_wav)
+        is Format.Unknown -> extension ?: context.getString(R.string.cdc_unknown)
     }

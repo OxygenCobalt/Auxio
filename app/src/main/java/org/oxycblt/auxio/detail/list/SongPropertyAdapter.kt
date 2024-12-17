@@ -18,16 +18,28 @@
  
 package org.oxycblt.auxio.detail.list
 
+import android.text.Editable
+import android.text.format.Formatter
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemSongPropertyBinding
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
+import org.oxycblt.auxio.music.resolve
+import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.playback.replaygain.formatDb
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.fs.Format
+import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.tag.Date
+import org.oxycblt.musikr.tag.Name
 
 /**
  * An adapter for [SongProperty] instances.
@@ -52,7 +64,21 @@ class SongPropertyAdapter :
  * @param value The value of the property.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class SongProperty(@StringRes val name: Int, val value: String)
+data class SongProperty(@StringRes val name: Int, val value: Value) {
+    sealed interface Value {
+        data class MusicName(val music: Music) : Value
+        data class MusicNames(val name: List<Music>) : Value
+        data class Number(val value: Int, val subtitle: String?) : Value
+        data class ItemDate(val date: Date) : Value
+        data class ItemPath(val path: Path) : Value
+        data class Size(val sizeBytes: Long) : Value
+        data class Duration(val durationMs: Long) : Value
+        data class ItemFormat(val format: Format) : Value
+        data class Bitrate(val kbps: Int) : Value
+        data class SampleRate(val hz: Int) : Value
+        data class Decibels(val value: Float) : Value
+    }
+}
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [SongProperty]. Use [from] to create an instance.
@@ -64,7 +90,57 @@ class SongPropertyViewHolder private constructor(private val binding: ItemSongPr
     fun bind(property: SongProperty) {
         val context = binding.context
         binding.propertyName.hint = context.getString(property.name)
-        binding.propertyValue.setText(property.value)
+        when (property.value) {
+            is SongProperty.Value.MusicName -> {
+                val music = property.value.music
+                binding.propertyValue.setText(music.name.resolve(context))
+            }
+            is SongProperty.Value.MusicNames -> {
+                val names = property.value.name.resolveNames(context)
+                binding.propertyValue.setText(names)
+            }
+            is SongProperty.Value.Number -> {
+                val value = context.getString(R.string.fmt_number, property.value.value)
+                val subtitle = property.value.subtitle
+                binding.propertyValue.setText(if (subtitle != null) {
+                    context.getString(R.string.fmt_zipped_names, value, subtitle)
+                } else {
+                    value
+                })
+            }
+            is SongProperty.Value.ItemDate -> {
+                val date = property.value.date
+                binding.propertyValue.setText(date.resolve(context))
+            }
+            is SongProperty.Value.ItemPath -> {
+                val path = property.value.path
+                binding.propertyValue.setText(path.resolve(context))
+            }
+            is SongProperty.Value.Size -> {
+                val size = property.value.sizeBytes
+                binding.propertyValue.setText(Formatter.formatFileSize(context, size))
+            }
+            is SongProperty.Value.Duration -> {
+                val duration = property.value.durationMs
+                binding.propertyValue.setText(duration.formatDurationMs(true))
+            }
+            is SongProperty.Value.ItemFormat -> {
+                val format = property.value.format
+                binding.propertyValue.setText(format.resolve(context))
+            }
+            is SongProperty.Value.Bitrate -> {
+                val kbps = property.value.kbps
+                binding.propertyValue.setText(context.getString(R.string.fmt_bitrate, kbps))
+            }
+            is SongProperty.Value.SampleRate -> {
+                val hz = property.value.hz
+                binding.propertyValue.setText(context.getString(R.string.fmt_sample_rate, hz))
+            }
+            is SongProperty.Value.Decibels -> {
+                val value = property.value.value
+                binding.propertyValue.setText(value.formatDb(context))
+            }
+        }
     }
 
     companion object {

@@ -14,6 +14,7 @@
     <string name="cdc_vorbis">Vorbis</string>
     <string name="cdc_opus">Opus</string>
     <string name="cdc_wav">Microsoft WAVE</string>
+    <string name="cnt_ogg">Ogg %s</string>
 
     <!-- Supporter Namespace | Sponsor usernames  -->
 </resources>
