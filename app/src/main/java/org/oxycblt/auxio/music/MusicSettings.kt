@@ -21,11 +21,11 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.musikr.fs.MusicLocation
-import java.util.UUID
 import timber.log.Timber as L
 
 /**
@@ -59,9 +59,10 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
     Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
 
     override var revision: UUID
-        get() = UUID.fromString(
-            sharedPreferences.getString(getString(R.string.set_key_library_revision), null)
-                ?: UUID.randomUUID().toString())
+        get() =
+            UUID.fromString(
+                sharedPreferences.getString(getString(R.string.set_key_library_revision), null)
+                    ?: UUID.randomUUID().toString())
         set(value) {
             sharedPreferences.edit {
                 putString(getString(R.string.set_key_library_revision), value.toString())

@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024 Auxio Project
+ * PipelineException.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.musikr.pipeline
 
 import org.oxycblt.musikr.fs.DeviceFile
@@ -5,10 +23,7 @@ import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreSong
 
-class PipelineException(
-    val processing: WhileProcessing,
-    val error: Exception
-) : Exception() {
+class PipelineException(val processing: WhileProcessing, val error: Exception) : Exception() {
     override val cause = error
 
     override val message = "Error while processing ${processing}: $error"
@@ -31,7 +46,8 @@ sealed interface WhileProcessing {
         override fun toString() = "Pre Song @ ${preSong.path}"
     }
 
-    class APrePlaylist internal constructor(private val prePlaylist: PrePlaylist) : WhileProcessing {
+    class APrePlaylist internal constructor(private val prePlaylist: PrePlaylist) :
+        WhileProcessing {
         override fun toString() = "Pre Playlist @ ${prePlaylist.name}"
     }
 }

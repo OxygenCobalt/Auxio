@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
@@ -48,8 +48,7 @@ internal interface ExtractStep {
                 MetadataExtractor.from(context),
                 TagParser.new(),
                 storage.cache,
-                storage.storedCovers
-            )
+                storage.storedCovers)
     }
 }
 
@@ -71,7 +70,9 @@ private class ExtractStepImpl(
         val playlistNodes = filterFlow.left.map { ExtractedMusic.Playlist(it) }
 
         val cacheResults =
-            audioNodes.map { wrap(it, cache::read) }.flowOn(Dispatchers.IO)
+            audioNodes
+                .map { wrap(it, cache::read) }
+                .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
         val cacheFlow =
             cacheResults.divert {
@@ -111,8 +112,7 @@ private class ExtractStepImpl(
             cachedSongs,
             distributedFlow.manager,
             writtenSongs,
-            playlistNodes
-        )
+            playlistNodes)
     }
 }
 

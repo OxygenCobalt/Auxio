@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,8 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
-import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Musikr
-import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
@@ -43,7 +42,6 @@ import org.oxycblt.musikr.playlist.db.PlaylistDatabase
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
-import java.util.UUID
 import timber.log.Timber as L
 
 /**
@@ -366,27 +364,28 @@ constructor(
 
         val revision: UUID
         val storage: Storage
-            if (withCache) {
-                revision = this.library?.revision ?: musicSettings.revision
-                storage = Storage(
+        if (withCache) {
+            revision = this.library?.revision ?: musicSettings.revision
+            storage =
+                Storage(
                     Cache.full(cacheDatabase),
                     StoredCovers.from(context, "covers_$revision"),
                     StoredPlaylists.from(playlistDatabase))
-            } else {
-                revision = UUID.randomUUID()
-                storage = Storage(
+        } else {
+            revision = UUID.randomUUID()
+            storage =
+                Storage(
                     Cache.writeOnly(cacheDatabase),
                     StoredCovers.from(context, "covers_$revision"),
                     StoredPlaylists.from(playlistDatabase))
-            }
+        }
 
         val interpretation = Interpretation(nameFactory, separators)
 
         val newLibrary =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
 
-        val revisionedLibrary =
-            MutableRevisionedLibrary(revision, newLibrary)
+        val revisionedLibrary = MutableRevisionedLibrary(revision, newLibrary)
 
         emitIndexingCompletion(null)
 
