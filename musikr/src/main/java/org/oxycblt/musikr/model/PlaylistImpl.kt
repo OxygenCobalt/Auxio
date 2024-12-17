@@ -21,6 +21,7 @@ package org.oxycblt.musikr.model
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.playlist.interpret.PrePlaylistInfo
 import org.oxycblt.musikr.tag.Name
 
@@ -36,6 +37,8 @@ internal class PlaylistImpl(private val core: PlaylistCore) : Playlist {
     override val cover = Cover.multi(core.songs)
     override val songs = core.songs
 
+    val handle = core.prePlaylist.handle
+
     private var hashCode =
         31 * (31 * uid.hashCode() + core.prePlaylist.hashCode()) + songs.hashCode()
 
@@ -45,4 +48,5 @@ internal class PlaylistImpl(private val core: PlaylistCore) : Playlist {
     override fun hashCode() = hashCode
 
     override fun toString() = "Playlist(uid=$uid, name=$name)"
+
 }

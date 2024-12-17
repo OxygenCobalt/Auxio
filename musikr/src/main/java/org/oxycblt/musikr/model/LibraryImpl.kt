@@ -32,7 +32,7 @@ internal data class LibraryImpl(
     override val albums: Collection<AlbumImpl>,
     override val artists: Collection<ArtistImpl>,
     override val genres: Collection<GenreImpl>,
-    override val playlists: Collection<Playlist>,
+    override val playlists: Collection<PlaylistImpl>,
     private val storedPlaylists: StoredPlaylists,
     private val playlistInterpreter: PlaylistInterpreter
 ) : MutableLibrary {
@@ -58,14 +58,21 @@ internal data class LibraryImpl(
 
     override suspend fun createPlaylist(name: String, songs: List<Song>): MutableLibrary {
         val handle = storedPlaylists.new(name, songs)
-        val prePlaylist = playlistInterpreter.interpret(name, handle)
-        val core = NewPlaylistCore(prePlaylist, songs)
+        val postPlaylist = playlistInterpreter.interpret(name, handle)
+        val core = NewPlaylistCore(postPlaylist, songs)
         val playlist = PlaylistImpl(core)
         return copy(playlists = playlists + playlist)
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String): MutableLibrary {
-        return this
+        val playlistImpl = requireNotNull(playlistUidMap[playlist.uid]) {
+            "Playlist to rename is not in this library"
+        }
+        playlistImpl.handle.rename(name)
+        val postPlaylist = playlistInterpreter.interpret(name, playlistImpl.handle)
+        val core = NewPlaylistCore(postPlaylist, playlist.songs)
+        val newPlaylist = PlaylistImpl(core)
+        return copy(playlists = playlists - playlistImpl + newPlaylist)
     }
 
     override suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary {
