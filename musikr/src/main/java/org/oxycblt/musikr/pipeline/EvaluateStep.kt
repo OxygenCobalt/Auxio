@@ -22,13 +22,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
+import org.oxycblt.musikr.model.PlaylistImpl
+import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
 internal interface EvaluateStep {
@@ -50,14 +55,25 @@ private class EvaluateStepImpl(
         interpretation: Interpretation,
         extractedMusic: Flow<ExtractedMusic>
     ): MutableLibrary {
+        val filterFlow = extractedMusic.divert {
+            when (it) {
+                is ExtractedMusic.Song -> Divert.Right(it.song)
+                is ExtractedMusic.Playlist -> Divert.Left(it.file)
+            }
+        }
+        val rawSongs = filterFlow.right
         val preSongs =
-            extractedMusic
-                .filterIsInstance<ExtractedMusic.Song>()
-                .map { tagInterpreter.interpret(it.song, interpretation) }
+            rawSongs
+                .map { tagInterpreter.interpret(it, interpretation) }
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)
+        val playlistFiles = filterFlow.left
         val graphBuilder = MusicGraph.builder()
-        preSongs.collect { graphBuilder.add(it) }
+        val graphBuild = merge(
+            preSongs.onEach { graphBuilder.add(it) },
+            playlistFiles.onEach { graphBuilder.add(it) }
+        )
+        graphBuild.collect()
         val graph = graphBuilder.build()
         return libraryFactory.create(graph)
     }

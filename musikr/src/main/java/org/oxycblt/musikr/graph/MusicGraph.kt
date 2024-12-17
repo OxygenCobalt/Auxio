@@ -19,6 +19,9 @@
 package org.oxycblt.musikr.graph
 
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.playlist.PlaylistFile
+import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.tag.interpret.PreGenre
@@ -34,6 +37,8 @@ internal data class MusicGraph(
     interface Builder {
         fun add(preSong: PreSong)
 
+        fun add(file: PlaylistFile)
+
         fun build(): MusicGraph
     }
 
@@ -47,6 +52,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private val albumVertices = mutableMapOf<PreAlbum, AlbumVertex>()
     private val artistVertices = mutableMapOf<PreArtist, ArtistVertex>()
     private val genreVertices = mutableMapOf<PreGenre, GenreVertex>()
+    private val playlistVertices = mutableSetOf<PlaylistVertex>()
 
     override fun add(preSong: PreSong) {
         val uid = preSong.computeUid()
@@ -102,6 +108,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         songVertices[uid] = songVertex
     }
 
+    override fun add(file: PlaylistFile) {
+        playlistVertices.add(PlaylistVertex(file))
+    }
+
     override fun build(): MusicGraph {
         val genreClusters = genreVertices.values.groupBy { it.preGenre.rawName?.lowercase() }
         for (cluster in genreClusters.values) {
@@ -124,9 +134,18 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             it.artistVertices = it.artistVertices.distinct().toMutableList()
         }
 
-        songVertices.values.forEach {
-            it.artistVertices = it.artistVertices.distinct().toMutableList()
-            it.genreVertices = it.genreVertices.distinct().toMutableList()
+        songVertices.entries.forEach { entry ->
+            val vertex = entry.value
+            vertex.artistVertices = vertex.artistVertices.distinct().toMutableList()
+            vertex.genreVertices = vertex.genreVertices.distinct().toMutableList()
+
+            playlistVertices.forEach {
+                val pointer = SongPointer.UID(entry.key)
+                val index = it.pointerMap[pointer]
+                if (index != null) {
+                    it.songVertices[index] = vertex
+                }
+            }
         }
 
         return MusicGraph(
@@ -317,4 +336,10 @@ internal class GenreVertex(val preGenre: PreGenre) {
     val songVertices = mutableSetOf<SongVertex>()
     val artistVertices = mutableSetOf<ArtistVertex>()
     var tag: Any? = null
+}
+
+internal class PlaylistVertex(val file: PlaylistFile) {
+    val songVertices = mutableListOf<SongVertex?>()
+    val pointerMap = mutableMapOf<SongPointer, Int>()
+    val tag: Any? = null
 }

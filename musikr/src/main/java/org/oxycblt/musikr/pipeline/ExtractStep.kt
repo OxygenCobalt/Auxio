@@ -34,6 +34,7 @@ import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.metadata.Properties
+import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
 
@@ -51,21 +52,29 @@ private class ExtractStepImpl(
     private val tagParser: TagParser
 ) : ExtractStep {
     override fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
+        val filterFlow = nodes.divert {
+            when (it) {
+                is ExploreNode.Audio -> Divert.Right(it.file)
+                is ExploreNode.Playlist -> Divert.Left(it.file)
+            }
+        }
+        val audioNodes = filterFlow.right
+        val playlistNodes = filterFlow.left.map { ExtractedMusic.Playlist(it) }
+
         val cacheResults =
-            nodes
-                .filterIsInstance<ExploreNode.Audio>()
-                .map { storage.cache.read(it.file) }
+            audioNodes
+                .map { storage.cache.read(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
-        val divertedFlow =
+        val cacheFlow =
             cacheResults.divert {
                 when (it) {
                     is CacheResult.Hit -> Divert.Left(it.song)
                     is CacheResult.Miss -> Divert.Right(it.file)
                 }
             }
-        val cachedSongs = divertedFlow.left.map { ExtractedMusic.Song(it) }
-        val uncachedSongs = divertedFlow.right
+        val cachedSongs = cacheFlow.left.map { ExtractedMusic.Song(it) }
+        val uncachedSongs = cacheFlow.right
         val distributedFlow = uncachedSongs.distribute(16)
         val extractedSongs =
             Array(distributedFlow.flows.size) { i ->
@@ -87,8 +96,13 @@ private class ExtractStepImpl(
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
-        return merge<ExtractedMusic>(
-            divertedFlow.manager, cachedSongs, distributedFlow.manager, writtenSongs)
+        return merge(
+            filterFlow.manager,
+            cacheFlow.manager,
+            cachedSongs,
+            distributedFlow.manager,
+            writtenSongs,
+            playlistNodes)
     }
 }
 
@@ -101,4 +115,6 @@ data class RawSong(
 
 internal sealed interface ExtractedMusic {
     data class Song(val song: RawSong) : ExtractedMusic
+
+    data class Playlist(val file: PlaylistFile) : ExtractedMusic
 }
