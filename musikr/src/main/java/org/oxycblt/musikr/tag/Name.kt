@@ -67,9 +67,12 @@ sealed interface Name : Comparable<Name> {
 }
 
 /** An individual part of a name string that can be compared intelligently. */
-data class Token
+class Token
 internal constructor(internal val collationKey: CollationKey, internal val type: Type) :
     Comparable<Token> {
+    override fun equals(other: Any?) =
+        other is Token && collationKey == other.collationKey && type == other.type
+    override fun hashCode() = 31 * collationKey.hashCode() + type.hashCode()
     val value: String
         get() = collationKey.sourceString
 
