@@ -56,6 +56,6 @@ internal data class Metadata(
 data class Properties(
     val mimeType: String,
     val durationMs: Long,
-    val bitrate: Int,
-    val sampleRate: Int,
+    val bitrateKbps: Int,
+    val sampleRateHz: Int,
 )

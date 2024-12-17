@@ -52,6 +52,8 @@ internal class SongImpl(private val handle: SongCore) : Song {
     override val format = preSong.format
     override val size = preSong.size
     override val durationMs = preSong.durationMs
+    override val bitrateKbps = preSong.bitrateKbps
+    override val sampleRateHz = preSong.sampleRateHz
     override val replayGainAdjustment = preSong.replayGainAdjustment
     override val lastModified = preSong.lastModified
     override val dateAdded = preSong.dateAdded

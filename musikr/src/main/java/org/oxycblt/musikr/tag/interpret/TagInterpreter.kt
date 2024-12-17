@@ -74,6 +74,8 @@ private data object TagInterpreterImpl : TagInterpreter {
             disc = song.tags.disc?.let { Disc(it, song.tags.subtitle) },
             date = song.tags.date,
             durationMs = song.tags.durationMs,
+            bitrateKbps = song.properties.bitrateKbps,
+            sampleRateHz = song.properties.sampleRateHz,
             replayGainAdjustment =
                 ReplayGainAdjustment(
                     song.tags.replayGainTrackAdjustment,

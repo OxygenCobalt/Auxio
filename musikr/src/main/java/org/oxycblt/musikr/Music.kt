@@ -265,6 +265,10 @@ interface Song : Music {
     val size: Long
     /** The duration of the audio file, in milliseconds. */
     val durationMs: Long
+    /** The bitrate of the audio file, in kbps. */
+    val bitrateKbps: Int
+    /** The sample rate of the audio file, in Hz. */
+    val sampleRateHz: Int
     /** The ReplayGain adjustment to apply during playback. */
     val replayGainAdjustment: ReplayGainAdjustment
     /** The date last modified the audio file was last modified, as a unix epoch timestamp. */

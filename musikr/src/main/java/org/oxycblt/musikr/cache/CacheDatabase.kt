@@ -67,8 +67,8 @@ internal data class CachedSong(
     val dateModified: Long,
     val mimeType: String,
     val durationMs: Long,
-    val bitrate: Int,
-    val sampleRate: Int,
+    val bitrateHz: Int,
+    val sampleRateHz: Int,
     val musicBrainzId: String?,
     val name: String,
     val sortName: String?,
@@ -94,7 +94,7 @@ internal data class CachedSong(
     fun intoRawSong(file: DeviceFile) =
         RawSong(
             file,
-            Properties(mimeType, durationMs, bitrate, sampleRate),
+            Properties(mimeType, durationMs, bitrateHz, sampleRateHz),
             ParsedTags(
                 musicBrainzId = musicBrainzId,
                 name = name,
@@ -164,7 +164,7 @@ internal data class CachedSong(
                 replayGainAlbumAdjustment = rawSong.tags.replayGainAlbumAdjustment,
                 cover = rawSong.cover,
                 mimeType = rawSong.properties.mimeType,
-                bitrate = rawSong.properties.bitrate,
-                sampleRate = rawSong.properties.sampleRate)
+                bitrateHz = rawSong.properties.bitrateKbps,
+                sampleRateHz = rawSong.properties.sampleRateHz)
     }
 }
