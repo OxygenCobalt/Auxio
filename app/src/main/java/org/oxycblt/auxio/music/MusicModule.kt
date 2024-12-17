@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music
 
 import android.content.Context
@@ -28,13 +28,17 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.cache.CacheDatabase
+import org.oxycblt.musikr.playlist.db.PlaylistDatabase
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface MusicModule {
-    @Singleton @Binds fun repository(musicRepository: MusicRepositoryImpl): MusicRepository
+    @Singleton
+    @Binds
+    fun repository(musicRepository: MusicRepositoryImpl): MusicRepository
 
-    @Binds fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
+    @Binds
+    fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
 }
 
 @Module
@@ -44,5 +48,10 @@ class MusikrShimModule {
     @Provides
     fun tagDatabase(@ApplicationContext context: Context) = CacheDatabase.from(context)
 
-    @Provides fun musikr(@ApplicationContext context: Context) = Musikr.new(context)
+    @Singleton
+    @Provides
+    fun playlistDatabase(@ApplicationContext context: Context) = PlaylistDatabase.from(context)
+
+    @Provides
+    fun musikr(@ApplicationContext context: Context) = Musikr.new(context)
 }
