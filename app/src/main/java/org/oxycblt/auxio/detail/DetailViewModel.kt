@@ -15,14 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -43,7 +42,6 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -225,23 +223,18 @@ constructor(
                 val album = detailGenerator.album(currentAlbum.value?.uid ?: return)
                 refreshDetail(album, _currentAlbum, _albumSongList, _albumSongInstructions, replace)
             }
-
             MusicType.ARTISTS -> {
                 val artist = detailGenerator.artist(currentArtist.value?.uid ?: return)
                 refreshDetail(
-                    artist, _currentArtist, _artistSongList, _artistSongInstructions, replace
-                )
+                    artist, _currentArtist, _artistSongList, _artistSongInstructions, replace)
             }
-
             MusicType.GENRES -> {
                 val genre = detailGenerator.genre(currentGenre.value?.uid ?: return)
                 refreshDetail(genre, _currentGenre, _genreSongList, _genreSongInstructions, replace)
             }
-
             MusicType.PLAYLISTS -> {
                 refreshPlaylist(currentPlaylist.value?.uid ?: return)
             }
-
             else -> error("Unexpected music type $type")
         }
     }
@@ -279,8 +272,7 @@ constructor(
                 Show.SongArtistDecision(song)
             } else {
                 Show.ArtistDetails(song.artists.first())
-            }
-        )
+            })
 
     /**
      * Navigate to the details of one of the [Artist]s of an [Album] using the corresponding choice
@@ -294,8 +286,7 @@ constructor(
                 Show.AlbumArtistDecision(album)
             } else {
                 Show.ArtistDetails(album.artists.first())
-            }
-        )
+            })
 
     /**
      * Navigate to the details of an [Artist].
@@ -527,103 +518,37 @@ constructor(
             } else {
                 L.d("Playlist will be empty after removal, removing header")
                 UpdateInstructions.Remove(at - 1, 3)
-            }
-        )
+            })
     }
 
     private fun refreshAudioInfo(song: Song) {
-        _currentSongProperties.value =
-            buildList {
-                add(SongProperty(R.string.lbl_name, SongProperty.Value.MusicName(song)))
-                add(SongProperty(R.string.lbl_album, SongProperty.Value.MusicName(song.album)))
-                add(
-                    SongProperty(
-                        R.string.lbl_artists,
-                        SongProperty.Value.MusicNames(song.artists)
-                    )
-                )
-                add(
-                    SongProperty(
-                        R.string.lbl_genres,
-                        SongProperty.Value.MusicNames(song.genres)
-                    )
-                )
-                song.date?.let {
-                    add(
-                        SongProperty(
-                            R.string.lbl_date,
-                            SongProperty.Value.ItemDate(it)
-                        )
-                    )
-                }
-                song.track?.let {
-                    add(
-                        SongProperty(
-                            R.string.lbl_track,
-                            SongProperty.Value.Number(it, null)
-                        )
-                    )
-                }
-                song.disc?.let {
-                    add(
-                        SongProperty(
-                            R.string.lbl_disc,
-                            SongProperty.Value.Number(it.number, it.name)
-                        )
-                    )
-                }
-                add(
-                    SongProperty(
-                        R.string.lbl_path,
-                        SongProperty.Value.ItemPath(song.path)
-                    )
-                )
-                add(
-                    SongProperty(
-                        R.string.lbl_size, SongProperty.Value.Size(song.size)
-                    )
-                )
-                add(
-                    SongProperty(
-                        R.string.lbl_duration,
-                        SongProperty.Value.Duration(song.durationMs)
-                    )
-                )
-                add(
-                    SongProperty(
-                        R.string.lbl_format,
-                        SongProperty.Value.ItemFormat(song.format)
-                    )
-                )
-                add(
-                    SongProperty(
-                        R.string.lbl_bitrate,
-                        SongProperty.Value.Bitrate(song.bitrateKbps)
-                    )
-                )
-                add(
-                    SongProperty(
-                        R.string.lbl_sample_rate,
-                        SongProperty.Value.SampleRate(song.sampleRateHz)
-                    )
-                )
-                song.replayGainAdjustment.track?.let {
-                    add(
-                        SongProperty(
-                            R.string.lbl_replaygain_track,
-                            SongProperty.Value.Decibels(it)
-                        )
-                    )
-                }
-                song.replayGainAdjustment.album?.let {
-                    add(
-                        SongProperty(
-                            R.string.lbl_replaygain_album,
-                            SongProperty.Value.Decibels(it)
-                        )
-                    )
-                }
+        _currentSongProperties.value = buildList {
+            add(SongProperty(R.string.lbl_name, SongProperty.Value.MusicName(song)))
+            add(SongProperty(R.string.lbl_album, SongProperty.Value.MusicName(song.album)))
+            add(SongProperty(R.string.lbl_artists, SongProperty.Value.MusicNames(song.artists)))
+            add(SongProperty(R.string.lbl_genres, SongProperty.Value.MusicNames(song.genres)))
+            song.date?.let { add(SongProperty(R.string.lbl_date, SongProperty.Value.ItemDate(it))) }
+            song.track?.let {
+                add(SongProperty(R.string.lbl_track, SongProperty.Value.Number(it, null)))
             }
+            song.disc?.let {
+                add(SongProperty(R.string.lbl_disc, SongProperty.Value.Number(it.number, it.name)))
+            }
+            add(SongProperty(R.string.lbl_path, SongProperty.Value.ItemPath(song.path)))
+            add(SongProperty(R.string.lbl_size, SongProperty.Value.Size(song.size)))
+            add(SongProperty(R.string.lbl_duration, SongProperty.Value.Duration(song.durationMs)))
+            add(SongProperty(R.string.lbl_format, SongProperty.Value.ItemFormat(song.format)))
+            add(SongProperty(R.string.lbl_bitrate, SongProperty.Value.Bitrate(song.bitrateKbps)))
+            add(
+                SongProperty(
+                    R.string.lbl_sample_rate, SongProperty.Value.SampleRate(song.sampleRateHz)))
+            song.replayGainAdjustment.track?.let {
+                add(SongProperty(R.string.lbl_replaygain_track, SongProperty.Value.Decibels(it)))
+            }
+            song.replayGainAdjustment.album?.let {
+                add(SongProperty(R.string.lbl_replaygain_album, SongProperty.Value.Decibels(it)))
+            }
+        }
     }
 
     private inline fun <T : MusicParent> refreshDetail(
@@ -653,7 +578,6 @@ constructor(
                         newList.add(header)
                         section.items
                     }
-
                     is DetailSection.Discs -> {
                         val header = SortHeader(section.stringRes)
                         if (newList.isNotEmpty()) {
@@ -694,10 +618,9 @@ constructor(
         if (edited == null) {
             val playlist = detailGenerator.playlist(uid)
             refreshDetail(
-                playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null
-            ) {
-                EditHeader(it)
-            }
+                playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null) {
+                    EditHeader(it)
+                }
             return
         }
         val list = mutableListOf<Item>()

@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.detail.list
 
-import android.text.Editable
 import android.text.format.Formatter
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +38,6 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.tag.Date
-import org.oxycblt.musikr.tag.Name
 
 /**
  * An adapter for [SongProperty] instances.
@@ -67,15 +65,25 @@ class SongPropertyAdapter :
 data class SongProperty(@StringRes val name: Int, val value: Value) {
     sealed interface Value {
         data class MusicName(val music: Music) : Value
+
         data class MusicNames(val name: List<Music>) : Value
+
         data class Number(val value: Int, val subtitle: String?) : Value
+
         data class ItemDate(val date: Date) : Value
+
         data class ItemPath(val path: Path) : Value
+
         data class Size(val sizeBytes: Long) : Value
+
         data class Duration(val durationMs: Long) : Value
+
         data class ItemFormat(val format: Format) : Value
+
         data class Bitrate(val kbps: Int) : Value
+
         data class SampleRate(val hz: Int) : Value
+
         data class Decibels(val value: Float) : Value
     }
 }
@@ -102,11 +110,12 @@ class SongPropertyViewHolder private constructor(private val binding: ItemSongPr
             is SongProperty.Value.Number -> {
                 val value = context.getString(R.string.fmt_number, property.value.value)
                 val subtitle = property.value.subtitle
-                binding.propertyValue.setText(if (subtitle != null) {
-                    context.getString(R.string.fmt_zipped_names, value, subtitle)
-                } else {
-                    value
-                })
+                binding.propertyValue.setText(
+                    if (subtitle != null) {
+                        context.getString(R.string.fmt_zipped_names, value, subtitle)
+                    } else {
+                        value
+                    })
             }
             is SongProperty.Value.ItemDate -> {
                 val date = property.value.date

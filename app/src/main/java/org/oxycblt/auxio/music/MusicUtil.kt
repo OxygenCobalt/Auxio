@@ -157,12 +157,14 @@ fun ReleaseType.resolve(context: Context) =
 fun Format.resolve(context: Context): String =
     when (this) {
         is Format.MPEG3 -> context.getString(R.string.cdc_mp3)
-        is Format.MPEG4 -> containing?.let { context.getString(R.string.cnt_mp4, it.resolve(context)) }
-            ?: context.getString(R.string.cdc_mp4)
+        is Format.MPEG4 ->
+            containing?.let { context.getString(R.string.cnt_mp4, it.resolve(context)) }
+                ?: context.getString(R.string.cdc_mp4)
         is Format.AAC -> context.getString(R.string.cdc_aac)
         is Format.ALAC -> context.getString(R.string.cdc_alac)
-        is Format.Ogg -> containing?.let { context.getString(R.string.cnt_ogg, it.resolve(context)) }
-            ?: context.getString(R.string.cdc_ogg)
+        is Format.Ogg ->
+            containing?.let { context.getString(R.string.cnt_ogg, it.resolve(context)) }
+                ?: context.getString(R.string.cdc_ogg)
         is Format.Opus -> context.getString(R.string.cdc_opus)
         is Format.Vorbis -> context.getString(R.string.cdc_vorbis)
         is Format.FLAC -> context.getString(R.string.cdc_flac)

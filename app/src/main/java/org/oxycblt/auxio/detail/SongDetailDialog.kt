@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.detail
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
@@ -31,13 +30,9 @@ import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.detail.list.SongProperty
 import org.oxycblt.auxio.detail.list.SongPropertyAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.concatLocalized
-import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.tag.Name
 import timber.log.Timber as L
 
 /**
