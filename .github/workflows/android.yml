@@ -25,8 +25,10 @@ jobs:
         cache: gradle
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Test app with Gradle
-      run: ./gradlew app:testDebug
+    - name: Check formatting with spotless
+      run: ./gradlew spotlessCheck
+    - name: Test musikr with Gradle
+      run: ./gradlew musikr:testDebug
     - name: Build debug APK with Gradle
       run: ./gradlew app:packageDebug
     - name: Upload debug APK artifact
