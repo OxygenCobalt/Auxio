@@ -89,7 +89,13 @@ internal data class LibraryImpl(
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary {
-        return this
+        val playlistImpl = requireNotNull(playlistUidMap[playlist.uid]) {
+            "Playlist to rewrite is not in this library"
+        }
+        playlistImpl.core.prePlaylist.handle.rewrite(songs)
+        val core = NewPlaylistCore(playlistImpl.core.prePlaylist, songs)
+        val newPlaylist = PlaylistImpl(core)
+        return copy(playlists = playlists - playlistImpl + newPlaylist)
     }
 
     override suspend fun deletePlaylist(playlist: Playlist): MutableLibrary {
