@@ -100,7 +100,12 @@ internal data class LibraryImpl(
     }
 
     override suspend fun deletePlaylist(playlist: Playlist): MutableLibrary {
-        return this
+        val playlistImpl =
+            requireNotNull(playlistUidMap[playlist.uid]) {
+                "Playlist to delete is not in this library"
+            }
+        playlistImpl.core.prePlaylist.handle.delete()
+        return copy(playlists = playlists - playlistImpl)
     }
 
     private class NewPlaylistCore(
