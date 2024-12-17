@@ -60,6 +60,10 @@ void JVMTagMap::add(TagLib::String &key, std::string_view value) {
 }
 
 void JVMTagMap::add(TagLib::String &key, TagLib::StringList &value) {
+	if (value.isEmpty()) {
+		// Nothing to add
+		return;
+	}
 	jstring jKey = env->NewStringUTF(key.toCString(true));
 
 	// check if theres already a value arraylist in the map
