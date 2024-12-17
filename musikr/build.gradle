@@ -63,7 +63,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
 
     // AndroidX
-    implementation "androidx.core:core-ktx:1.15.0"
+    implementation "androidx.core:core-ktx:$core_version"
 
     // Database
     implementation "androidx.room:room-runtime:$room_version"
