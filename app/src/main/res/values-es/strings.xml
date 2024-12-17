@@ -331,4 +331,6 @@
     <string name="lng_no_artists">Tus artistas aparecerán aquí una vez que agregues algo de música.</string>
     <string name="lng_no_genres">Tus géneros musicales aparecerán aquí una vez que agregues algo de música.</string>
     <string name="def_album">Álbum desconocido</string>
+    <string name="cdc_unknown">Desconocido</string>
+    <string name="cnt_mp4">El MPEG-4 contiene %s</string>
 </resources>
