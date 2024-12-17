@@ -318,4 +318,5 @@
     <string name="lng_no_artists">Kui oled muusikat lisanud, siis on sinu esitajad siin näha.</string>
     <string name="lng_no_genres">Kui oled muusikat lisanud, siis on žanrid siin näha.</string>
     <string name="lng_no_playlists">Kui oled muusikat lisanud, siis on sinu esitusloendid siin näha.</string>
+    <string name="def_album">Tundmatu album</string>
 </resources>
