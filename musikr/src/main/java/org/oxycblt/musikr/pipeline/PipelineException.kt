@@ -26,7 +26,7 @@ import org.oxycblt.musikr.tag.interpret.PreSong
 class PipelineException(val processing: WhileProcessing, val error: Exception) : Exception() {
     override val cause = error
 
-    override val message = "Error while processing ${processing}: $error"
+    override val message = "Error while processing ${processing}: ${error.stackTraceToString()}"
 }
 
 sealed interface WhileProcessing {
