@@ -69,16 +69,17 @@ private class EvaluateStepImpl(
         val preSongs =
             rawSongs
                 .map { tagInterpreter.interpret(it, interpretation) }
-                .flowOn(Dispatchers.Main)
+                .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val prePlaylists =
             filterFlow.left
                 .map { playlistInterpreter.interpret(it, interpretation) }
-                .flowOn(Dispatchers.Main)
+                .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val graphBuilder = MusicGraph.builder()
         val graphBuild =
             merge(
+                filterFlow.manager,
                 preSongs.onEach { graphBuilder.add(it) },
                 prePlaylists.onEach { graphBuilder.add(it) })
         graphBuild.collect()
