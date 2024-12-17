@@ -57,7 +57,11 @@ internal data class LibraryImpl(
     override fun findPlaylistByName(name: String) = playlists.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>): MutableLibrary {
-        return this
+        val handle = storedPlaylists.new(name, songs)
+        val prePlaylist = playlistInterpreter.interpret(name, handle)
+        val core = NewPlaylistCore(prePlaylist, songs)
+        val playlist = PlaylistImpl(core)
+        return copy(playlists = playlists + playlist)
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String): MutableLibrary {
