@@ -30,14 +30,12 @@ internal interface PlaylistCore {
     val songs: List<Song>
 }
 
-internal class PlaylistImpl(private val core: PlaylistCore) : Playlist {
+internal class PlaylistImpl(val core: PlaylistCore) : Playlist {
     override val uid = core.prePlaylist.handle.uid
     override val name: Name.Known = core.prePlaylist.name
     override val durationMs = core.songs.sumOf { it.durationMs }
     override val cover = Cover.multi(core.songs)
     override val songs = core.songs
-
-    val handle = core.prePlaylist.handle
 
     private var hashCode =
         31 * (31 * uid.hashCode() + core.prePlaylist.hashCode()) + songs.hashCode()

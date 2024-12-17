@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.model
 
 import org.oxycblt.musikr.Music
@@ -23,9 +23,11 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.playlist.interpret.PostPlaylist
+import org.oxycblt.musikr.playlist.interpret.PrePlaylistInfo
 
 internal data class LibraryImpl(
     override val songs: Collection<SongImpl>,
@@ -68,15 +70,22 @@ internal data class LibraryImpl(
         val playlistImpl = requireNotNull(playlistUidMap[playlist.uid]) {
             "Playlist to rename is not in this library"
         }
-        playlistImpl.handle.rename(name)
-        val postPlaylist = playlistInterpreter.interpret(name, playlistImpl.handle)
+        val prePlaylist = playlistImpl.core.prePlaylist
+        prePlaylist.handle.rename(name)
+        val postPlaylist = playlistInterpreter.interpret(name, prePlaylist.handle)
         val core = NewPlaylistCore(postPlaylist, playlist.songs)
         val newPlaylist = PlaylistImpl(core)
         return copy(playlists = playlists - playlistImpl + newPlaylist)
     }
 
     override suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary {
-        return this
+        val playlistImpl = requireNotNull(playlistUidMap[playlist.uid]) {
+            "Playlist to add to is not in this library"
+        }
+        playlistImpl.core.prePlaylist.handle.add(songs)
+        val core = NewPlaylistCore(playlistImpl.core.prePlaylist, playlistImpl.songs + songs)
+        val newPlaylist = PlaylistImpl(core)
+        return copy(playlists = playlists - playlistImpl + newPlaylist)
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>): MutableLibrary {
@@ -88,7 +97,7 @@ internal data class LibraryImpl(
     }
 
     private class NewPlaylistCore(
-        override val prePlaylist: PostPlaylist,
+        override val prePlaylist: PrePlaylistInfo,
         override val songs: List<Song>
     ) : PlaylistCore
 }
