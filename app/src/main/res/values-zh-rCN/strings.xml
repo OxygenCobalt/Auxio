@@ -324,4 +324,5 @@
     <string name="lng_no_albums">一旦添加了一些音乐，专辑会显示在此处。</string>
     <string name="lng_no_genres">一旦添加了一些音乐，流派会显示在此处。</string>
     <string name="lng_no_playlists">一旦添加了一些音乐，播放列表会显示在此处。</string>
+    <string name="def_album">未知专辑</string>
 </resources>
