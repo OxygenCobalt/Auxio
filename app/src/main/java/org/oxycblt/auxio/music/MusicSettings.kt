@@ -25,6 +25,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.musikr.fs.MusicLocation
+import java.util.UUID
 import timber.log.Timber as L
 
 /**
@@ -33,6 +34,8 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface MusicSettings : Settings<MusicSettings.Listener> {
+    /** The current library revision. */
+    var revision: UUID
     /** The locations of music to load. */
     var musicLocations: List<MusicLocation>
     /** Whether to exclude non-music audio files from the music library. */
@@ -54,6 +57,17 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
 
 class MusicSettingsImpl @Inject constructor(@ApplicationContext private val context: Context) :
     Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
+
+    override var revision: UUID
+        get() = UUID.fromString(
+            sharedPreferences.getString(getString(R.string.set_key_library_revision), null)
+                ?: UUID.randomUUID().toString())
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_library_revision), value.toString())
+                apply()
+            }
+        }
 
     override var musicLocations: List<MusicLocation>
         get() {

@@ -53,6 +53,8 @@
     <string name="set_key_artist_songs_sort" translatable="false">auxio_artist_sort</string>
     <string name="set_key_genre_songs_sort" translatable="false">auxio_genre_sort</string>
 
+    <string name="set_key_library_revision" translatable="false">auxio_library_revision</string>
+
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>
         <item>@string/set_theme_day</item>

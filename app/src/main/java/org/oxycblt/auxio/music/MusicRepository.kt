@@ -43,6 +43,7 @@ import org.oxycblt.musikr.playlist.db.PlaylistDatabase
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
+import java.util.UUID
 import timber.log.Timber as L
 
 /**
@@ -57,7 +58,8 @@ import timber.log.Timber as L
  *   configurations
  */
 interface MusicRepository {
-    val library: Library?
+    /** The current library */
+    val library: RevisionedLibrary?
 
     /** The current state of music loading. Null if no load has occurred yet. */
     val indexingState: IndexingState?
@@ -222,7 +224,7 @@ constructor(
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
     @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
 
-    @Volatile override var library: MutableLibrary? = null
+    @Volatile override var library: MutableRevisionedLibrary? = null
     @Volatile private var previousCompletedState: IndexingState.Completed? = null
     @Volatile private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
@@ -362,17 +364,19 @@ constructor(
             }
         val locations = musicSettings.musicLocations
 
-        val storage =
+        val revision: UUID
+        val storage: Storage
             if (withCache) {
-                Storage(
+                revision = this.library?.revision ?: musicSettings.revision
+                storage = Storage(
                     Cache.full(cacheDatabase),
-                    StoredCovers.from(context, "covers"),
+                    StoredCovers.from(context, "covers_$revision"),
                     StoredPlaylists.from(playlistDatabase))
             } else {
-                // TODO: Revisioned cache (as a stateful extension of musikr)
-                Storage(
+                revision = UUID.randomUUID()
+                storage = Storage(
                     Cache.writeOnly(cacheDatabase),
-                    StoredCovers.from(context, "covers"),
+                    StoredCovers.from(context, "covers_$revision"),
                     StoredPlaylists.from(playlistDatabase))
             }
 
@@ -380,6 +384,9 @@ constructor(
 
         val newLibrary =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
+
+        val revisionedLibrary =
+            MutableRevisionedLibrary(revision, newLibrary)
 
         emitIndexingCompletion(null)
 
@@ -402,13 +409,18 @@ constructor(
                 return
             }
 
-            this.library = newLibrary
+            this.library = revisionedLibrary
         }
 
         // Consumers expect their updates to be on the main thread (notably PlaybackService),
         // so switch to it.
         withContext(Dispatchers.Main) {
             dispatchLibraryChange(deviceLibraryChanged, userLibraryChanged)
+        }
+
+        // Quietly update the revision if needed (this way we don't disrupt any new loads)
+        if (!withCache) {
+            musicSettings.revision = revisionedLibrary.revision
         }
     }
 
