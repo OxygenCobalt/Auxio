@@ -340,7 +340,11 @@ internal class GenreVertex(val preGenre: PreGenre) {
 }
 
 internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
-    val songVertices = Array<SongVertex?>(prePlaylist.songPointers.size) { null}
-    val pointerMap = prePlaylist.songPointers.withIndex().associateBy { it.value }.mapValuesTo(mutableMapOf()) { it.value.index }
+    val songVertices = Array<SongVertex?>(prePlaylist.songPointers.size) { null }
+    val pointerMap =
+        prePlaylist.songPointers
+            .withIndex()
+            .associateBy { it.value }
+            .mapValuesTo(mutableMapOf()) { it.value.index }
     val tag: Any? = null
 }
