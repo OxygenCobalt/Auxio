@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
@@ -48,7 +48,8 @@ internal interface ExtractStep {
                 MetadataExtractor.from(context),
                 TagParser.new(),
                 storage.cache,
-                storage.storedCovers)
+                storage.storedCovers
+            )
     }
 }
 
@@ -70,7 +71,8 @@ private class ExtractStepImpl(
         val playlistNodes = filterFlow.left.map { ExtractedMusic.Playlist(it) }
 
         val cacheResults =
-            audioNodes.map { cache.read(it) }.flowOn(Dispatchers.IO).buffer(Channel.UNLIMITED)
+            audioNodes.map { wrap(it, cache::read) }.flowOn(Dispatchers.IO)
+                .buffer(Channel.UNLIMITED)
         val cacheFlow =
             cacheResults.divert {
                 when (it) {
@@ -84,11 +86,13 @@ private class ExtractStepImpl(
         val extractedSongs =
             Array(distributedFlow.flows.size) { i ->
                 distributedFlow.flows[i]
-                    .mapNotNull { file ->
-                        val metadata = metadataExtractor.extract(file) ?: return@mapNotNull null
-                        val tags = tagParser.parse(file, metadata)
-                        val cover = metadata.cover?.let { storedCovers.write(it) }
-                        RawSong(file, metadata.properties, tags, cover)
+                    .mapNotNull { it ->
+                        wrap(it) { file ->
+                            val metadata = metadataExtractor.extract(file) ?: return@wrap null
+                            val tags = tagParser.parse(file, metadata)
+                            val cover = metadata.cover?.let { storedCovers.write(it) }
+                            RawSong(file, metadata.properties, tags, cover)
+                        }
                     }
                     .flowOn(Dispatchers.IO)
                     .buffer(Channel.UNLIMITED)
@@ -96,7 +100,7 @@ private class ExtractStepImpl(
         val writtenSongs =
             merge(*extractedSongs)
                 .map {
-                    cache.write(it)
+                    wrap(it, cache::write)
                     ExtractedMusic.Song(it)
                 }
                 .flowOn(Dispatchers.IO)
@@ -107,7 +111,8 @@ private class ExtractStepImpl(
             cachedSongs,
             distributedFlow.manager,
             writtenSongs,
-            playlistNodes)
+            playlistNodes
+        )
     }
 }
 
