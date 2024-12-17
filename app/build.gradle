@@ -164,13 +164,4 @@ dependencies {
 
     // Fuzzy search
     implementation 'org.apache.commons:commons-text:1.9'
-
-    // Testing
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
-    testImplementation "junit:junit:4.13.2"
-    testImplementation "io.mockk:mockk:1.13.7"
-    testImplementation "org.robolectric:robolectric:4.11"
-    testImplementation 'androidx.test:core-ktx:1.6.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }
