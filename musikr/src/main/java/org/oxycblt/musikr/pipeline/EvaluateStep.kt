@@ -30,28 +30,33 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
+import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
 import org.oxycblt.musikr.model.PlaylistImpl
 import org.oxycblt.musikr.playlist.SongPointer
+import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
 internal interface EvaluateStep {
     suspend fun evaluate(
+        storage: Storage,
         interpretation: Interpretation,
         extractedMusic: Flow<ExtractedMusic>
     ): MutableLibrary
 
     companion object {
-        fun new(): EvaluateStep = EvaluateStepImpl(TagInterpreter.new(), LibraryFactory.new())
+        fun new(): EvaluateStep = EvaluateStepImpl(TagInterpreter.new(), PlaylistInterpreter.new(), LibraryFactory.new())
     }
 }
 
 private class EvaluateStepImpl(
     private val tagInterpreter: TagInterpreter,
+    private val playlistInterpreter: PlaylistInterpreter,
     private val libraryFactory: LibraryFactory
 ) : EvaluateStep {
     override suspend fun evaluate(
+        storage: Storage,
         interpretation: Interpretation,
         extractedMusic: Flow<ExtractedMusic>
     ): MutableLibrary {
@@ -67,14 +72,17 @@ private class EvaluateStepImpl(
                 .map { tagInterpreter.interpret(it, interpretation) }
                 .flowOn(Dispatchers.Main)
                 .buffer(Channel.UNLIMITED)
-        val playlistFiles = filterFlow.left
+        val prePlaylists = filterFlow.left
+            .map { playlistInterpreter.interpret(it, interpretation) }
+            .flowOn(Dispatchers.Main)
+            .buffer(Channel.UNLIMITED)
         val graphBuilder = MusicGraph.builder()
         val graphBuild = merge(
             preSongs.onEach { graphBuilder.add(it) },
-            playlistFiles.onEach { graphBuilder.add(it) }
+            prePlaylists.onEach { graphBuilder.add(it) }
         )
         graphBuild.collect()
         val graph = graphBuilder.build()
-        return libraryFactory.create(graph)
+        return libraryFactory.create(graph, storage, interpretation)
     }
 }

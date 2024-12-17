@@ -84,9 +84,3 @@ internal data class PreGenre(
     val name: Name,
     val rawName: String?,
 )
-
-internal data class PrePlaylist(
-    val name: Name.Known,
-    val rawName: String?,
-    val handle: PlaylistHandle
-)

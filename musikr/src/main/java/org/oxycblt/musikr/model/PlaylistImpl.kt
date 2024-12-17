@@ -22,17 +22,16 @@ import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.playlist.PlaylistHandle
+import org.oxycblt.musikr.playlist.interpret.PrePlaylistInfo
 import org.oxycblt.musikr.tag.Name
-import org.oxycblt.musikr.tag.interpret.PrePlaylist
 
 internal interface PlaylistCore {
-    val prePlaylist: PrePlaylist
-    val handle: PlaylistHandle
+    val prePlaylist: PrePlaylistInfo
     val songs: List<Song>
 }
 
 internal class PlaylistImpl(private val core: PlaylistCore) : Playlist {
-    override val uid = core.handle.uid
+    override val uid = core.prePlaylist.handle.uid
     override val name: Name.Known = core.prePlaylist.name
     override val durationMs = core.songs.sumOf { it.durationMs }
     override val cover = Cover.multi(core.songs)

@@ -18,25 +18,34 @@
  
 package org.oxycblt.musikr.model
 
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.playlist.PlaylistHandle
+import org.oxycblt.musikr.playlist.db.PlaylistInfo
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
 
-internal class LibraryImpl(
+internal data class LibraryImpl(
     override val songs: Collection<SongImpl>,
     override val albums: Collection<AlbumImpl>,
     override val artists: Collection<ArtistImpl>,
-    override val genres: Collection<GenreImpl>
+    override val genres: Collection<GenreImpl>,
+    override val playlists: Collection<Playlist>,
+    private val storage: Storage,
+    private val interpretation: Interpretation
 ) : MutableLibrary {
-    override val playlists = emptySet<Playlist>()
-
     private val songUidMap = songs.associateBy { it.uid }
     private val albumUidMap = albums.associateBy { it.uid }
     private val artistUidMap = artists.associateBy { it.uid }
     private val genreUidMap = genres.associateBy { it.uid }
     private val playlistUidMap = playlists.associateBy { it.uid }
+
+    override val storedCovers = storage.storedCovers
 
     override fun findSong(uid: Music.UID) = songUidMap[uid]
 

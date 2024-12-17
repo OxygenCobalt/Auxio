@@ -22,6 +22,7 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.SongPointer
+import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.tag.interpret.PreGenre
@@ -32,12 +33,13 @@ internal data class MusicGraph(
     val songVertex: List<SongVertex>,
     val albumVertex: List<AlbumVertex>,
     val artistVertex: List<ArtistVertex>,
-    val genreVertex: List<GenreVertex>
+    val genreVertex: List<GenreVertex>,
+    val playlistVertex: Set<PlaylistVertex>
 ) {
     interface Builder {
         fun add(preSong: PreSong)
 
-        fun add(file: PlaylistFile)
+        fun add(prePlaylist: PrePlaylist)
 
         fun build(): MusicGraph
     }
@@ -108,8 +110,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         songVertices[uid] = songVertex
     }
 
-    override fun add(file: PlaylistFile) {
-        playlistVertices.add(PlaylistVertex(file))
+    override fun add(prePlaylist: PrePlaylist) {
+        playlistVertices.add(PlaylistVertex(prePlaylist))
     }
 
     override fun build(): MusicGraph {
@@ -152,7 +154,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             songVertices.values.toList(),
             albumVertices.values.toList(),
             artistVertices.values.toList(),
-            genreVertices.values.toList())
+            genreVertices.values.toList(),
+            playlistVertices)
     }
 
     private fun simplifyGenreCluster(cluster: Collection<GenreVertex>) {
@@ -338,7 +341,7 @@ internal class GenreVertex(val preGenre: PreGenre) {
     var tag: Any? = null
 }
 
-internal class PlaylistVertex(val file: PlaylistFile) {
+internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
     val songVertices = mutableListOf<SongVertex?>()
     val pointerMap = mutableMapOf<SongPointer, Int>()
     val tag: Any? = null

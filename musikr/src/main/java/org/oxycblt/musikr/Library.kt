@@ -18,6 +18,7 @@
  
 package org.oxycblt.musikr
 
+import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.Path
 
 interface Library {
@@ -26,6 +27,8 @@ interface Library {
     val artists: Collection<Artist>
     val genres: Collection<Genre>
     val playlists: Collection<Playlist>
+
+    val storedCovers: StoredCovers
 
     fun findSong(uid: Music.UID): Song?
 

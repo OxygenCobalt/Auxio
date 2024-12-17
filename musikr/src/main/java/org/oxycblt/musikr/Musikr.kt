@@ -80,6 +80,6 @@ private class MusikrImpl(
                 .buffer(Channel.UNLIMITED)
                 .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
                 .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-        evaluateStep.evaluate(interpretation, extracted)
+        evaluateStep.evaluate(storage, interpretation, extracted)
     }
 }
