@@ -41,7 +41,7 @@ spotless {
 
     cpp {
         target "*/src/**/cpp/*.cpp"
-        clangFormat("18.1.8").
+        eclipseCdt()
         licenseHeaderFile("NOTICE")
     }
 }

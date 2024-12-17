@@ -21,7 +21,6 @@ package org.oxycblt.musikr.model
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.playlist.interpret.PrePlaylistInfo
 import org.oxycblt.musikr.tag.Name
 

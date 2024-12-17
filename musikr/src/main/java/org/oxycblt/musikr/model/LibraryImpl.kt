@@ -24,11 +24,7 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.Path
-import org.oxycblt.musikr.playlist.PlaylistHandle
-import org.oxycblt.musikr.playlist.db.PlaylistInfo
-import org.oxycblt.musikr.playlist.db.StoredPlaylists
 
 internal data class LibraryImpl(
     override val songs: Collection<SongImpl>,

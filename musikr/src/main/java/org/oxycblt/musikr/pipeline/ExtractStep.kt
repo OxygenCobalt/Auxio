@@ -23,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -52,12 +51,13 @@ private class ExtractStepImpl(
     private val tagParser: TagParser
 ) : ExtractStep {
     override fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
-        val filterFlow = nodes.divert {
-            when (it) {
-                is ExploreNode.Audio -> Divert.Right(it.file)
-                is ExploreNode.Playlist -> Divert.Left(it.file)
+        val filterFlow =
+            nodes.divert {
+                when (it) {
+                    is ExploreNode.Audio -> Divert.Right(it.file)
+                    is ExploreNode.Playlist -> Divert.Left(it.file)
+                }
             }
-        }
         val audioNodes = filterFlow.right
         val playlistNodes = filterFlow.left.map { ExtractedMusic.Playlist(it) }
 

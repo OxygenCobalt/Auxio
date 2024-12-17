@@ -19,8 +19,6 @@
 package org.oxycblt.musikr.graph
 
 import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.Playlist
-import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreAlbum

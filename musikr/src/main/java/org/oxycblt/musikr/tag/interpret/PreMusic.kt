@@ -24,7 +24,6 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
-import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name

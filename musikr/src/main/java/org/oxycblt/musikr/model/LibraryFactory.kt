@@ -41,7 +41,11 @@ internal interface LibraryFactory {
 }
 
 private class LibraryFactoryImpl() : LibraryFactory {
-    override fun create(graph: MusicGraph, storage: Storage, interpretation: Interpretation): MutableLibrary {
+    override fun create(
+        graph: MusicGraph,
+        storage: Storage,
+        interpretation: Interpretation
+    ): MutableLibrary {
         val songs =
             graph.songVertex.mapTo(mutableSetOf()) { vertex ->
                 SongImpl(SongVertexCore(vertex)).also { vertex.tag = it }
@@ -105,8 +109,7 @@ private class LibraryFactoryImpl() : LibraryFactory {
     private class PlaylistVertexCore(vertex: PlaylistVertex) : PlaylistCore {
         override val prePlaylist = vertex.prePlaylist
 
-        override val songs = vertex.songVertices.mapNotNull { vertex ->
-            vertex?.let { it.tag as Song }
-        }
+        override val songs =
+            vertex.songVertices.mapNotNull { vertex -> vertex?.let { it.tag as Song } }
     }
 }
