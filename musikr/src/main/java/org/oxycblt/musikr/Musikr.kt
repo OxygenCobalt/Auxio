@@ -33,14 +33,15 @@ import org.oxycblt.musikr.pipeline.ExtractStep
 interface Musikr {
     suspend fun run(
         locations: List<MusicLocation>,
-        storage: Storage,
-        interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): MutableLibrary
 
     companion object {
-        fun new(context: Context): Musikr =
-            MusikrImpl(ExploreStep.from(context), ExtractStep.from(context), EvaluateStep.new())
+        fun new(context: Context, storage: Storage, interpretation: Interpretation): Musikr =
+            MusikrImpl(
+                ExploreStep.from(context, storage),
+                ExtractStep.from(context, storage),
+                EvaluateStep.new(storage, interpretation))
     }
 }
 
@@ -62,24 +63,22 @@ private class MusikrImpl(
 ) : Musikr {
     override suspend fun run(
         locations: List<MusicLocation>,
-        storage: Storage,
-        interpretation: Interpretation,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
         var exploredCount = 0
         var extractedCount = 0
         val explored =
             exploreStep
-                .explore(locations, storage)
+                .explore(locations)
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
                 .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
         val extracted =
             extractStep
-                .extract(storage, explored)
+                .extract(explored)
                 .buffer(Channel.UNLIMITED)
                 .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
                 .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-        evaluateStep.evaluate(storage, interpretation, extracted)
+        evaluateStep.evaluate(extracted)
     }
 }

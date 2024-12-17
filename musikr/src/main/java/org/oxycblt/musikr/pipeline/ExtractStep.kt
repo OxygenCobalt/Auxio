@@ -28,8 +28,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.metadata.Properties
@@ -38,19 +40,25 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.tag.parse.TagParser
 
 internal interface ExtractStep {
-    fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
+    fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic>
 
     companion object {
-        fun from(context: Context): ExtractStep =
-            ExtractStepImpl(MetadataExtractor.from(context), TagParser.new())
+        fun from(context: Context, storage: Storage): ExtractStep =
+            ExtractStepImpl(
+                MetadataExtractor.from(context),
+                TagParser.new(),
+                storage.cache,
+                storage.storedCovers)
     }
 }
 
 private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
-    private val tagParser: TagParser
+    private val tagParser: TagParser,
+    private val cache: Cache,
+    private val storedCovers: StoredCovers
 ) : ExtractStep {
-    override fun extract(storage: Storage, nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
+    override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val filterFlow =
             nodes.divert {
                 when (it) {
@@ -62,10 +70,7 @@ private class ExtractStepImpl(
         val playlistNodes = filterFlow.left.map { ExtractedMusic.Playlist(it) }
 
         val cacheResults =
-            audioNodes
-                .map { storage.cache.read(it) }
-                .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED)
+            audioNodes.map { cache.read(it) }.flowOn(Dispatchers.IO).buffer(Channel.UNLIMITED)
         val cacheFlow =
             cacheResults.divert {
                 when (it) {
@@ -82,7 +87,7 @@ private class ExtractStepImpl(
                     .mapNotNull { file ->
                         val metadata = metadataExtractor.extract(file) ?: return@mapNotNull null
                         val tags = tagParser.parse(file, metadata)
-                        val cover = metadata.cover?.let { storage.storedCovers.write(it) }
+                        val cover = metadata.cover?.let { storedCovers.write(it) }
                         RawSong(file, metadata.properties, tags, cover)
                     }
                     .flowOn(Dispatchers.IO)
@@ -91,7 +96,7 @@ private class ExtractStepImpl(
         val writtenSongs =
             merge(*extractedSongs)
                 .map {
-                    storage.cache.write(it)
+                    cache.write(it)
                     ExtractedMusic.Song(it)
                 }
                 .flowOn(Dispatchers.IO)

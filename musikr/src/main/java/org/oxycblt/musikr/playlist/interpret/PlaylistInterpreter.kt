@@ -21,33 +21,27 @@ package org.oxycblt.musikr.playlist.interpret
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.PlaylistHandle
+import org.oxycblt.musikr.tag.interpret.Naming
 
 internal interface PlaylistInterpreter {
-    fun interpret(file: PlaylistFile, interpretation: Interpretation): PrePlaylist
+    fun interpret(file: PlaylistFile): PrePlaylist
 
-    fun interpret(
-        name: String,
-        handle: PlaylistHandle,
-        interpretation: Interpretation
-    ): PostPlaylist
+    fun interpret(name: String, handle: PlaylistHandle): PostPlaylist
 
     companion object {
-        fun new(): PlaylistInterpreter = PlaylistInterpreterImpl
+        fun new(interpretation: Interpretation): PlaylistInterpreter =
+            PlaylistInterpreterImpl(interpretation.naming)
     }
 }
 
-private data object PlaylistInterpreterImpl : PlaylistInterpreter {
-    override fun interpret(file: PlaylistFile, interpretation: Interpretation) =
+private class PlaylistInterpreterImpl(private val naming: Naming) : PlaylistInterpreter {
+    override fun interpret(file: PlaylistFile) =
         PrePlaylist(
-            name = interpretation.naming.name(file.name, null),
+            name = naming.name(file.name, null),
             rawName = file.name,
             handle = file.handle,
             songPointers = file.songPointers)
 
-    override fun interpret(
-        name: String,
-        handle: PlaylistHandle,
-        interpretation: Interpretation
-    ): PostPlaylist =
-        PostPlaylist(name = interpretation.naming.name(name, null), rawName = name, handle = handle)
+    override fun interpret(name: String, handle: PlaylistHandle): PostPlaylist =
+        PostPlaylist(name = naming.name(name, null), rawName = name, handle = handle)
 }

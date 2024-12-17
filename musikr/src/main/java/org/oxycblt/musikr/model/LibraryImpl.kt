@@ -18,13 +18,14 @@
  
 package org.oxycblt.musikr.model
 
-import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
+import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
+import org.oxycblt.musikr.playlist.interpret.PostPlaylist
 
 internal data class LibraryImpl(
     override val songs: Collection<SongImpl>,
@@ -32,16 +33,14 @@ internal data class LibraryImpl(
     override val artists: Collection<ArtistImpl>,
     override val genres: Collection<GenreImpl>,
     override val playlists: Collection<Playlist>,
-    private val storage: Storage,
-    private val interpretation: Interpretation
+    private val storedPlaylists: StoredPlaylists,
+    private val playlistInterpreter: PlaylistInterpreter
 ) : MutableLibrary {
     private val songUidMap = songs.associateBy { it.uid }
     private val albumUidMap = albums.associateBy { it.uid }
     private val artistUidMap = artists.associateBy { it.uid }
     private val genreUidMap = genres.associateBy { it.uid }
     private val playlistUidMap = playlists.associateBy { it.uid }
-
-    override val storedCovers = storage.storedCovers
 
     override fun findSong(uid: Music.UID) = songUidMap[uid]
 
@@ -76,4 +75,9 @@ internal data class LibraryImpl(
     override suspend fun deletePlaylist(playlist: Playlist): MutableLibrary {
         return this
     }
+
+    private class NewPlaylistCore(
+        override val prePlaylist: PostPlaylist,
+        override val songs: List<Song>
+    ) : PlaylistCore
 }

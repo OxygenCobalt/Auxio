@@ -21,19 +21,23 @@ package org.oxycblt.musikr.model
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
-import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.graph.AlbumVertex
 import org.oxycblt.musikr.graph.ArtistVertex
 import org.oxycblt.musikr.graph.GenreVertex
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.graph.PlaylistVertex
 import org.oxycblt.musikr.graph.SongVertex
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
+import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 
 internal interface LibraryFactory {
-    fun create(graph: MusicGraph, storage: Storage, interpretation: Interpretation): MutableLibrary
+    fun create(
+        graph: MusicGraph,
+        storedPlaylists: StoredPlaylists,
+        playlistInterpreter: PlaylistInterpreter
+    ): MutableLibrary
 
     companion object {
         fun new(): LibraryFactory = LibraryFactoryImpl()
@@ -43,8 +47,8 @@ internal interface LibraryFactory {
 private class LibraryFactoryImpl() : LibraryFactory {
     override fun create(
         graph: MusicGraph,
-        storage: Storage,
-        interpretation: Interpretation
+        storedPlaylists: StoredPlaylists,
+        playlistInterpreter: PlaylistInterpreter
     ): MutableLibrary {
         val songs =
             graph.songVertex.mapTo(mutableSetOf()) { vertex ->
@@ -66,7 +70,8 @@ private class LibraryFactoryImpl() : LibraryFactory {
             graph.playlistVertex.mapTo(mutableSetOf()) { vertex ->
                 PlaylistImpl(PlaylistVertexCore(vertex))
             }
-        return LibraryImpl(songs, albums, artists, genres, playlists, storage, interpretation)
+        return LibraryImpl(
+            songs, albums, artists, genres, playlists, storedPlaylists, playlistInterpreter)
     }
 
     private class SongVertexCore(private val vertex: SongVertex) : SongCore {

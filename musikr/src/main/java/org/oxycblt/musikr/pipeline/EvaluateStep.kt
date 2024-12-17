@@ -32,32 +32,30 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
 internal interface EvaluateStep {
-    suspend fun evaluate(
-        storage: Storage,
-        interpretation: Interpretation,
-        extractedMusic: Flow<ExtractedMusic>
-    ): MutableLibrary
+    suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary
 
     companion object {
-        fun new(): EvaluateStep =
-            EvaluateStepImpl(TagInterpreter.new(), PlaylistInterpreter.new(), LibraryFactory.new())
+        fun new(storage: Storage, interpretation: Interpretation): EvaluateStep =
+            EvaluateStepImpl(
+                TagInterpreter.new(interpretation),
+                PlaylistInterpreter.new(interpretation),
+                storage.storedPlaylists,
+                LibraryFactory.new())
     }
 }
 
 private class EvaluateStepImpl(
     private val tagInterpreter: TagInterpreter,
     private val playlistInterpreter: PlaylistInterpreter,
+    private val storedPlaylists: StoredPlaylists,
     private val libraryFactory: LibraryFactory
 ) : EvaluateStep {
-    override suspend fun evaluate(
-        storage: Storage,
-        interpretation: Interpretation,
-        extractedMusic: Flow<ExtractedMusic>
-    ): MutableLibrary {
+    override suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary {
         val filterFlow =
             extractedMusic.divert {
                 when (it) {
@@ -68,12 +66,12 @@ private class EvaluateStepImpl(
         val rawSongs = filterFlow.right
         val preSongs =
             rawSongs
-                .map { tagInterpreter.interpret(it, interpretation) }
+                .map { tagInterpreter.interpret(it) }
                 .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val prePlaylists =
             filterFlow.left
-                .map { playlistInterpreter.interpret(it, interpretation) }
+                .map { playlistInterpreter.interpret(it) }
                 .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val graphBuilder = MusicGraph.builder()
@@ -84,6 +82,6 @@ private class EvaluateStepImpl(
                 prePlaylists.onEach { graphBuilder.add(it) })
         graphBuild.collect()
         val graph = graphBuilder.build()
-        return libraryFactory.create(graph, storage, interpretation)
+        return libraryFactory.create(graph, storedPlaylists, playlistInterpreter)
     }
 }

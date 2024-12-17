@@ -58,6 +58,7 @@ import timber.log.Timber as L
  */
 interface MusicRepository {
     val library: Library?
+
     /** The current state of music loading. Null if no load has occurred yet. */
     val indexingState: IndexingState?
 
@@ -212,7 +213,6 @@ interface MusicRepository {
 class MusicRepositoryImpl
 @Inject
 constructor(
-    private val musikr: Musikr,
     @ApplicationContext private val context: Context,
     private val cacheDatabase: CacheDatabase,
     private val playlistDatabase: PlaylistDatabase,
@@ -375,9 +375,11 @@ constructor(
                     StoredCovers.from(context, "covers"),
                     StoredPlaylists.from(playlistDatabase))
             }
+
+        val interpretation = Interpretation(nameFactory, separators)
+
         val newLibrary =
-            musikr.run(
-                locations, storage, Interpretation(nameFactory, separators), ::emitIndexingProgress)
+            Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
 
         emitIndexingCompletion(null)
 

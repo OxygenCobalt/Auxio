@@ -34,18 +34,23 @@ import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.query.DeviceFiles
 import org.oxycblt.musikr.playlist.PlaylistFile
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(locations: List<MusicLocation>, storage: Storage): Flow<ExploreNode>
+    fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
 
     companion object {
-        fun from(context: Context): ExploreStep = ExploreStepImpl(DeviceFiles.from(context))
+        fun from(context: Context, storage: Storage): ExploreStep =
+            ExploreStepImpl(DeviceFiles.from(context), storage.storedPlaylists)
     }
 }
 
-private class ExploreStepImpl(private val deviceFiles: DeviceFiles) : ExploreStep {
-    override fun explore(locations: List<MusicLocation>, storage: Storage): Flow<ExploreNode> {
+private class ExploreStepImpl(
+    private val deviceFiles: DeviceFiles,
+    private val storedPlaylists: StoredPlaylists
+) : ExploreStep {
+    override fun explore(locations: List<MusicLocation>): Flow<ExploreNode> {
         val audios =
             deviceFiles
                 .explore(locations.asFlow())
@@ -59,7 +64,7 @@ private class ExploreStepImpl(private val deviceFiles: DeviceFiles) : ExploreSte
                 .flowOn(Dispatchers.IO)
                 .buffer()
         val playlists =
-            flow { emitAll(storage.storedPlaylists.read().asFlow()) }
+            flow { emitAll(storedPlaylists.read().asFlow()) }
                 .map { ExploreNode.Playlist(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer()
