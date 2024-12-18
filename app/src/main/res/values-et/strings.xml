@@ -211,7 +211,7 @@
     <string name="set_music">Muusika</string>
     <string name="set_observing">Muusikakogu automaatne uuendamine</string>
     <string name="set_exclude_non_music">Välista failid, kus pole muusikat</string>
-    <string name="set_intelligent_sorting_desc">Järjesta muusikat nii, et arvesse ei lähe numbrid ja artiklid nagu „the“ (toimib kõige paremini ingliskeelse muusika puhul)</string>
+    <string name="set_intelligent_sorting_desc">"Järjesta muusikat nii, et arvesse ei lähe numbrid ja artiklid nagu  \the (toimib kõige paremini ingliskeelse muusika puhul)"</string>
     <string name="set_hide_collaborators">Peida kaasautorid</string>
     <string name="set_action_mode_next">Hüppa järgmise juurde</string>
     <string name="set_action_mode_repeat">Taasesituse viis</string>
@@ -319,4 +319,7 @@
     <string name="lng_no_genres">Kui oled muusikat lisanud, siis on žanrid siin näha.</string>
     <string name="lng_no_playlists">Kui oled muusikat lisanud, siis on sinu esitusloendid siin näha.</string>
     <string name="def_album">Tundmatu album</string>
+    <string name="cnt_mp4">MPEG-4 %s koodekiga</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Teadmata</string>
 </resources>
