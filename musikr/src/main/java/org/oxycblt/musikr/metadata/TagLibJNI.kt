@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
-import android.net.Uri
+import java.io.FileInputStream
 
 internal object TagLibJNI {
     init {
@@ -31,8 +31,8 @@ internal object TagLibJNI {
      *
      * Note: This method is blocking and should be handled as such if calling from a coroutine.
      */
-    fun open(context: Context, uri: Uri): Metadata? {
-        val inputStream = AndroidInputStream(context, uri)
+    fun open(context: Context, fis: FileInputStream): Metadata? {
+        val inputStream = AndroidInputStream(context, fis)
         val tag = openNative(inputStream)
         inputStream.close()
         return tag

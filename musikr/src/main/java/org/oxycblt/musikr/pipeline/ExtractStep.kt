@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
@@ -45,6 +46,7 @@ internal interface ExtractStep {
     companion object {
         fun from(context: Context, storage: Storage): ExtractStep =
             ExtractStepImpl(
+                context,
                 MetadataExtractor.from(context),
                 TagParser.new(),
                 storage.cache,
@@ -53,6 +55,7 @@ internal interface ExtractStep {
 }
 
 private class ExtractStepImpl(
+    private val context: Context,
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
     private val cache: Cache,
@@ -83,37 +86,58 @@ private class ExtractStepImpl(
             }
         val cachedSongs = cacheFlow.left.map { ExtractedMusic.Song(it) }
         val uncachedSongs = cacheFlow.right
-        val distributedFlow = uncachedSongs.distribute(16)
-        val extractedSongs =
-            Array(distributedFlow.flows.size) { i ->
-                distributedFlow.flows[i]
-                    .mapNotNull { it ->
-                        wrap(it) { file ->
-                            val metadata = metadataExtractor.extract(file) ?: return@wrap null
-                            val tags = tagParser.parse(file, metadata)
-                            val cover = metadata.cover?.let { storedCovers.write(it) }
-                            RawSong(file, metadata.properties, tags, cover)
+
+        val fds =
+            uncachedSongs
+                .mapNotNull {
+                    wrap(it) { file ->
+                        withContext(Dispatchers.IO) {
+                            context.contentResolver.openFileDescriptor(file.uri, "r")?.let { fd ->
+                                FileWith(file, fd)
+                            }
                         }
                     }
-                    .flowOn(Dispatchers.IO)
-                    .buffer(Channel.UNLIMITED)
-            }
+                }
+                .flowOn(Dispatchers.IO)
+                .buffer(Channel.UNLIMITED)
+
+        val metadata =
+            fds.mapNotNull { fileWith ->
+                    wrap(fileWith.file) { _ ->
+                        metadataExtractor
+                            .extract(fileWith.with)
+                            ?.let { FileWith(fileWith.file, it) }
+                            .also { withContext(Dispatchers.IO) { fileWith.with.close() } }
+                    }
+                }
+                .flowOn(Dispatchers.IO)
+                // Covers are pretty big, so cap the amount of parsed metadata in-memory to at most
+                // 8 to minimize GCs.
+                .buffer(8)
+
+        val extractedSongs =
+            metadata
+                .mapNotNull { fileWith ->
+                    val tags = tagParser.parse(fileWith.file, fileWith.with)
+                    val cover = fileWith.with.cover?.let { storedCovers.write(it) }
+                    RawSong(fileWith.file, fileWith.with.properties, tags, cover)
+                }
+                .flowOn(Dispatchers.IO)
+                .buffer(Channel.UNLIMITED)
+
         val writtenSongs =
-            merge(*extractedSongs)
+            extractedSongs
                 .map {
                     wrap(it, cache::write)
                     ExtractedMusic.Song(it)
                 }
                 .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED)
+
         return merge(
-            filterFlow.manager,
-            cacheFlow.manager,
-            cachedSongs,
-            distributedFlow.manager,
-            writtenSongs,
-            playlistNodes)
+            filterFlow.manager, cacheFlow.manager, cachedSongs, writtenSongs, playlistNodes)
     }
+
+    private data class FileWith<T>(val file: DeviceFile, val with: T)
 }
 
 data class RawSong(

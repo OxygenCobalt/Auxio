@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
+import android.os.ParcelFileDescriptor
+import java.io.FileInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.musikr.fs.DeviceFile
-import org.oxycblt.musikr.util.unlikelyToBeNull
 
 internal interface MetadataExtractor {
-    suspend fun extract(file: DeviceFile): Metadata?
+    suspend fun extract(fd: ParcelFileDescriptor): Metadata?
 
     companion object {
         fun from(context: Context): MetadataExtractor = MetadataExtractorImpl(context)
@@ -33,8 +33,9 @@ internal interface MetadataExtractor {
 }
 
 private class MetadataExtractorImpl(private val context: Context) : MetadataExtractor {
-    override suspend fun extract(file: DeviceFile) =
+    override suspend fun extract(fd: ParcelFileDescriptor) =
         withContext(Dispatchers.IO) {
-            TagLibJNI.open(context, file.uri)
+            val fis = FileInputStream(fd.fileDescriptor)
+            TagLibJNI.open(context, fis).also { fis.close() }
         }
 }

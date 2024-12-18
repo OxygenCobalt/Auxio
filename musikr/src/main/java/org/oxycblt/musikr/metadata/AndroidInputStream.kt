@@ -19,16 +19,10 @@
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
-import android.net.Uri
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 
-internal class AndroidInputStream(context: Context, uri: Uri) : NativeInputStream {
-    private val fd =
-        requireNotNull(context.contentResolver.openFileDescriptor(uri, "r")) {
-            "Failed to open file descriptor for $uri"
-        }
-    private val fis = FileInputStream(fd.fileDescriptor)
+internal class AndroidInputStream(context: Context, fis: FileInputStream) : NativeInputStream {
     private val channel = fis.channel
 
     override fun readBlock(length: Long): ByteArray {
@@ -63,7 +57,5 @@ internal class AndroidInputStream(context: Context, uri: Uri) : NativeInputStrea
 
     fun close() {
         channel.close()
-        fis.close()
-        fd.close()
     }
 }
