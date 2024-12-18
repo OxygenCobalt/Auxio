@@ -333,4 +333,5 @@
     <string name="def_album">Álbum desconocido</string>
     <string name="cdc_unknown">Desconocido</string>
     <string name="cnt_mp4">El MPEG-4 contiene %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
 </resources>
