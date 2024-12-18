@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
@@ -35,6 +35,6 @@ internal interface MetadataExtractor {
 private class MetadataExtractorImpl(private val context: Context) : MetadataExtractor {
     override suspend fun extract(file: DeviceFile) =
         withContext(Dispatchers.IO) {
-            TagLibJNI.open(context, FileRef(unlikelyToBeNull(file.path.name), file.uri))
+            TagLibJNI.open(context, file.uri)
         }
 }

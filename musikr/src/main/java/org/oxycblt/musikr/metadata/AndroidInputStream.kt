@@ -19,19 +19,17 @@
 package org.oxycblt.musikr.metadata
 
 import android.content.Context
+import android.net.Uri
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 
-internal class AndroidInputStream(context: Context, fileRef: FileRef) : NativeInputStream {
-    private val fileName = fileRef.fileName
+internal class AndroidInputStream(context: Context, uri: Uri) : NativeInputStream {
     private val fd =
-        requireNotNull(context.contentResolver.openFileDescriptor(fileRef.uri, "r")) {
-            "Failed to open file descriptor for ${fileRef.fileName}"
+        requireNotNull(context.contentResolver.openFileDescriptor(uri, "r")) {
+            "Failed to open file descriptor for $uri"
         }
     private val fis = FileInputStream(fd.fileDescriptor)
     private val channel = fis.channel
-
-    override fun name() = fileName
 
     override fun readBlock(length: Long): ByteArray {
         val buffer = ByteBuffer.allocate(length.toInt())

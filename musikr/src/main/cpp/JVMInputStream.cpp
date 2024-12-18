@@ -30,8 +30,6 @@ JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream) : env(env), inp
 	}
 	jclass inputStreamClass = env->FindClass(
 			"org/oxycblt/musikr/metadata/NativeInputStream");
-	inputStreamNameMethod = env->GetMethodID(inputStreamClass, "name",
-			"()Ljava/lang/String;");
 	inputStreamReadBlockMethod = env->GetMethodID(inputStreamClass, "readBlock",
 			"(J)[B");
 	inputStreamIsOpenMethod = env->GetMethodID(inputStreamClass, "isOpen",
@@ -55,12 +53,8 @@ JVMInputStream::~JVMInputStream() {
 }
 
 TagLib::FileName JVMInputStream::name() const {
-	auto name = (jstring) env->CallObjectMethod(inputStream,
-			inputStreamNameMethod);
-	const char *nameChars = env->GetStringUTFChars(name, nullptr);
-	auto fileName = TagLib::FileName(nameChars);
-	env->ReleaseStringUTFChars(name, nameChars);
-	return fileName;
+	// Not actually used except in FileRef, can safely ignore.
+	return "";
 }
 
 TagLib::ByteVector JVMInputStream::readBlock(size_t length) {

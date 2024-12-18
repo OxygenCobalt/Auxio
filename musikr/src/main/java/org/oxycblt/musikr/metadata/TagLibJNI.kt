@@ -31,8 +31,8 @@ internal object TagLibJNI {
      *
      * Note: This method is blocking and should be handled as such if calling from a coroutine.
      */
-    fun open(context: Context, ref: FileRef): Metadata? {
-        val inputStream = AndroidInputStream(context, ref)
+    fun open(context: Context, uri: Uri): Metadata? {
+        val inputStream = AndroidInputStream(context, uri)
         val tag = openNative(inputStream)
         inputStream.close()
         return tag
@@ -40,5 +40,3 @@ internal object TagLibJNI {
 
     private external fun openNative(ioStream: AndroidInputStream): Metadata?
 }
-
-internal data class FileRef(val fileName: String, val uri: Uri)

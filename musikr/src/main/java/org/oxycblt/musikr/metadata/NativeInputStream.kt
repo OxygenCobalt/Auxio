@@ -24,8 +24,6 @@ package org.oxycblt.musikr.metadata
  * The vast majority of IO shim between Taglib/KTaglib should occur here to minimize JNI calls.
  */
 internal interface NativeInputStream {
-    fun name(): String
-
     fun readBlock(length: Long): ByteArray
 
     fun isOpen(): Boolean
