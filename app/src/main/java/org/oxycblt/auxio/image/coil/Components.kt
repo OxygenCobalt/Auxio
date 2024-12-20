@@ -47,7 +47,7 @@ import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.StoredCovers
 
 class CoverKeyer @Inject constructor() : Keyer<Cover> {
-    override fun key(data: Cover, options: Options) = "${data.key}&${options.size}"
+    override fun key(data: Cover, options: Options) = "${data.id}&${options.size}"
 }
 
 class CoverFetcher
@@ -56,16 +56,14 @@ private constructor(
     private val cover: Cover,
     private val size: Size,
 ) : Fetcher {
-    private val storedCovers = StoredCovers.from(context, "covers")
-
     override suspend fun fetch(): FetchResult? {
         val streams =
             when (val cover = cover) {
-                is Cover.Single -> listOfNotNull(storedCovers.read(cover))
+                is Cover.Single -> listOfNotNull(cover.resolve())
                 is Cover.Multi ->
                     buildList {
                         for (single in cover.all) {
-                            storedCovers.read(single)?.let { add(it) }
+                            single.resolve()?.let { add(it) }
                             if (size == 4) {
                                 break
                             }

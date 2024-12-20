@@ -18,11 +18,12 @@
  
 package org.oxycblt.musikr.cache
 
+import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 
 interface Cache {
-    suspend fun read(file: DeviceFile): CacheResult
+    suspend fun read(file: DeviceFile, storedCovers: StoredCovers): CacheResult
 
     suspend fun write(song: RawSong)
 
@@ -40,9 +41,9 @@ sealed interface CacheResult {
 }
 
 private class FullCache(private val cacheInfoDao: CacheInfoDao) : Cache {
-    override suspend fun read(file: DeviceFile) =
+    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers): CacheResult =
         cacheInfoDao.selectSong(file.uri.toString(), file.lastModified)?.let {
-            CacheResult.Hit(it.intoRawSong(file))
+            CacheResult.Hit(it.intoRawSong(file, storedCovers))
         } ?: CacheResult.Miss(file)
 
     override suspend fun write(song: RawSong) =
@@ -50,7 +51,8 @@ private class FullCache(private val cacheInfoDao: CacheInfoDao) : Cache {
 }
 
 private class WriteOnlyCache(private val cacheInfoDao: CacheInfoDao) : Cache {
-    override suspend fun read(file: DeviceFile) = CacheResult.Miss(file)
+    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers)  =
+        CacheResult.Miss(file)
 
     override suspend fun write(song: RawSong) =
         cacheInfoDao.updateSong(CachedSong.fromRawSong(song))

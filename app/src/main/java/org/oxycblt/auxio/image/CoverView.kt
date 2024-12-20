@@ -372,7 +372,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param errorRes The resource of the error drawable to use if the cover cannot be loaded.
      */
     fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) =
-        bindImpl(Cover.multi(songs), desc, errorRes)
+        bindImpl(Cover.Multi.from(songs.mapNotNull { it.cover }), desc, errorRes)
 
     private fun bindImpl(cover: Cover?, desc: String, @DrawableRes errorRes: Int) {
         val request =

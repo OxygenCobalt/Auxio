@@ -15,33 +15,63 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.cover
 
 import android.content.Context
+import android.util.Log
+import org.oxycblt.musikr.fs.Components
+import java.io.File
 import java.io.InputStream
 
 interface StoredCovers {
-    suspend fun read(cover: Cover.Single): InputStream?
+    suspend fun find(id: String): Cover.Single?
 
-    suspend fun write(data: ByteArray): Cover.Single?
+    interface Editor : StoredCovers {
+        suspend fun add(data: ByteArray): Cover.Single?
+    }
 
     companion object {
-        fun from(context: Context, path: String): StoredCovers =
-            FileStoredCovers(
-                CoverIdentifier.md5(), CoverFiles.from(context, path, CoverFormat.webp()))
+        fun from(context: Context): StoredCovers =
+            FileStoredCovers(AppFiles.from(context))
+
+        fun editor(context: Context, path: Components): Editor =
+            FileStoredCoversEditor(
+                path,
+                AppFiles.from(context),
+                CoverIdentifier.md5(),
+                CoverFormat.webp()
+            )
     }
 }
 
-private class FileStoredCovers(
-    private val coverIdentifier: CoverIdentifier,
-    private val coverFiles: CoverFiles
+private open class FileStoredCovers(
+    private val appFiles: AppFiles
 ) : StoredCovers {
-    override suspend fun read(cover: Cover.Single) = coverFiles.read(cover.key)
+    override suspend fun find(id: String) =
+        appFiles.read(Components.parseUnix(id))?.let { FileCover(it) }
+}
 
-    override suspend fun write(data: ByteArray) =
-        coverIdentifier.identify(data).let { key ->
-            coverFiles.write(key, data)
-            Cover.Single(key)
+private class FileStoredCoversEditor(
+    val root: Components,
+    val appFiles: AppFiles,
+    val coverIdentifier: CoverIdentifier,
+    val coverFormat: CoverFormat
+) : FileStoredCovers(appFiles), StoredCovers.Editor {
+    override suspend fun add(data: ByteArray): Cover.Single? {
+        val id = coverIdentifier.identify(data)
+        val path = getTargetPath(id)
+        val file = appFiles.write(path) {
+            coverFormat.transcodeInto(data, it)
         }
+        return file?.let { FileCover(it) }
+    }
+
+    private fun getTargetPath(id: String) = root.child("$id.${coverFormat.extension}")
+}
+
+private class FileCover(private val file: AppFile) : Cover.Single {
+    override val id: String = file.path.unixString
+
+    override suspend fun resolve() = file.open()
 }

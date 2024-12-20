@@ -15,34 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.cover
 
 import org.oxycblt.musikr.Song
+import java.io.InputStream
 
 sealed interface Cover {
-    val key: String
+    val id: String
 
-    data class Single(override val key: String) : Cover
-
-    class Multi(val all: List<Single>) : Cover {
-        override val key = "multi@${all.hashCode()}"
+    interface Single : Cover {
+        suspend fun resolve(): InputStream?
     }
 
-    companion object {
-        fun nil() = Multi(listOf())
+    class Multi private constructor(val all: List<Single>) : Cover {
+        override val id = "multi@${all.hashCode()}"
 
-        fun single(key: String) = Single(key)
-
-        fun multi(songs: Collection<Song>) = order(songs).run { Multi(this) }
-
-        private fun order(songs: Collection<Song>) =
-            songs
-                .mapNotNull { it.cover }
-                .groupBy { it.key }
-                .entries
-                .sortedByDescending { it.key }
-                .sortedByDescending { it.value.size }
-                .map { it.value.first() }
+        companion object {
+            fun from(covers: Collection<Single>) =
+                Multi(
+                    covers
+                    .groupBy { it.id }
+                    .entries
+                    .sortedByDescending { it.key }
+                    .sortedByDescending { it.value.size }
+                    .map { it.value.first() })
+        }
     }
 }

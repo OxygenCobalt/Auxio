@@ -55,7 +55,7 @@ internal class ArtistImpl(private val core: ArtistCore) : Artist {
         get() = core.resolveGenres().toList()
 
     override val durationMs = core.songs.sumOf { it.durationMs }
-    override val cover = Cover.multi(core.songs)
+    override val cover = Cover.Multi.from(core.songs.mapNotNull { it.cover })
 
     private val hashCode =
         31 * (31 * uid.hashCode() + core.preArtist.hashCode()) * core.songs.hashCode()

@@ -19,6 +19,7 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +51,7 @@ internal interface ExtractStep {
                 MetadataExtractor.from(context),
                 TagParser.new(),
                 storage.cache,
-                storage.storedCovers)
+                storage.coverEditor)
     }
 }
 
@@ -59,7 +60,7 @@ private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
     private val cache: Cache,
-    private val storedCovers: StoredCovers
+    private val coverEditor: StoredCovers.Editor
 ) : ExtractStep {
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val filterFlow =
@@ -74,7 +75,7 @@ private class ExtractStepImpl(
 
         val cacheResults =
             audioNodes
-                .map { wrap(it, cache::read) }
+                .map { wrap(it) { cache.read(it, coverEditor) } }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
         val cacheFlow =
@@ -120,7 +121,9 @@ private class ExtractStepImpl(
             metadata
                 .mapNotNull { fileWith ->
                     val tags = tagParser.parse(fileWith.file, fileWith.with)
-                    val cover = fileWith.with.cover?.let { storedCovers.write(it) }
+                    val cover = fileWith.with.cover?.let {
+                        coverEditor.add(it)
+                    }
                     RawSong(fileWith.file, fileWith.with.properties, tags, cover)
                 }
                 .flowOn(Dispatchers.IO)
