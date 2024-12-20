@@ -44,7 +44,7 @@ internal class GenreImpl(private val core: GenreCore) : Genre {
     override val songs = core.songs
     override val artists = core.artists
     override val durationMs = core.songs.sumOf { it.durationMs }
-    override val cover = Cover.Multi.from(core.songs.mapNotNull { it.cover })
+    override val cover = Cover.multi(core.songs)
 
     private val hashCode = 31 * (31 * uid.hashCode() + core.preGenre.hashCode()) + songs.hashCode()
 

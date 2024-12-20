@@ -26,7 +26,7 @@ import org.oxycblt.musikr.tag.interpret.Separators
 
 data class Storage(
     val cache: Cache,
-    val coverEditor: StoredCovers.Editor,
+    val storedCovers: StoredCovers,
     val storedPlaylists: StoredPlaylists
 )
 

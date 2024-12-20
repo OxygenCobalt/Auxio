@@ -33,7 +33,7 @@ internal class PlaylistImpl(val core: PlaylistCore) : Playlist {
     override val uid = core.prePlaylist.handle.uid
     override val name: Name.Known = core.prePlaylist.name
     override val durationMs = core.songs.sumOf { it.durationMs }
-    override val cover = Cover.Multi.from(core.songs.mapNotNull { it.cover })
+    override val cover = Cover.multi(core.songs)
     override val songs = core.songs
 
     private var hashCode =

@@ -18,8 +18,6 @@
  
 package org.oxycblt.auxio.music
 
-import org.oxycblt.musikr.Album
-import org.oxycblt.musikr.Artist
 import java.util.UUID
 import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.MutableLibrary

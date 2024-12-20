@@ -38,7 +38,6 @@ import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheDatabase
 import org.oxycblt.musikr.cover.StoredCovers
-import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.playlist.db.PlaylistDatabase
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
@@ -369,15 +368,15 @@ constructor(
             revision = this.library?.revision ?: musicSettings.revision
             storage =
                 Storage(
-                    Cache.writeOnly(cacheDatabase),
-                    StoredCovers.editor(context, Components.parseUnix("covers_${UUID.randomUUID()}")),
+                    Cache.full(cacheDatabase),
+                    StoredCovers.from(context, "covers_$revision"),
                     StoredPlaylists.from(playlistDatabase))
         } else {
             revision = UUID.randomUUID()
             storage =
                 Storage(
                     Cache.writeOnly(cacheDatabase),
-                    StoredCovers.editor(context, Components.parseUnix("covers_$revision")),
+                    StoredCovers.from(context, "covers_$revision"),
                     StoredPlaylists.from(playlistDatabase))
         }
 

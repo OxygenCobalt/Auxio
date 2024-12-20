@@ -31,7 +31,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
@@ -90,9 +89,9 @@ internal data class CachedSong(
     val genreNames: List<String>,
     val replayGainTrackAdjustment: Float?,
     val replayGainAlbumAdjustment: Float?,
-    val coverId: String?,
+    val cover: Cover.Single?,
 ) {
-    suspend fun intoRawSong(file: DeviceFile, storedCovers: StoredCovers) =
+    fun intoRawSong(file: DeviceFile) =
         RawSong(
             file,
             Properties(mimeType, durationMs, bitrateHz, sampleRateHz),
@@ -118,7 +117,7 @@ internal data class CachedSong(
                 genreNames = genreNames,
                 replayGainTrackAdjustment = replayGainTrackAdjustment,
                 replayGainAlbumAdjustment = replayGainAlbumAdjustment),
-            coverId?.let { storedCovers.find(it) })
+            cover)
 
     object Converters {
         @TypeConverter
@@ -131,6 +130,10 @@ internal data class CachedSong(
         @TypeConverter fun fromDate(date: Date?) = date?.toString()
 
         @TypeConverter fun toDate(string: String?) = string?.let(Date::from)
+
+        @TypeConverter fun fromCover(cover: Cover.Single?) = cover?.key
+
+        @TypeConverter fun toCover(key: String?) = key?.let { Cover.Single(it) }
     }
 
     companion object {
@@ -159,9 +162,9 @@ internal data class CachedSong(
                 genreNames = rawSong.tags.genreNames,
                 replayGainTrackAdjustment = rawSong.tags.replayGainTrackAdjustment,
                 replayGainAlbumAdjustment = rawSong.tags.replayGainAlbumAdjustment,
+                cover = rawSong.cover,
                 mimeType = rawSong.properties.mimeType,
                 bitrateHz = rawSong.properties.bitrateKbps,
-                sampleRateHz = rawSong.properties.sampleRateHz,
-                coverId = rawSong.cover?.id)
+                sampleRateHz = rawSong.properties.sampleRateHz)
     }
 }
