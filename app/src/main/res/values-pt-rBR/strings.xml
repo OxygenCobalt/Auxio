@@ -321,4 +321,15 @@
     <string name="lbl_more">Mais</string>
     <string name="lbl_email">Envie um e-mail</string>
     <string name="lbl_github">Crie uma issue no GitHub</string>
+    <string name="lbl_music_sources">Escolher pastas</string>
+    <string name="lng_no_albums">Os seus álbuns aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lng_no_songs">As suas músicas aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lng_no_genres">Os seus gêneros aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lng_no_playlists">As suas playlists aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="cnt_mp4">MPEG-4 contendo %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Desconhecido</string>
+    <string name="def_album">Álbum desconhecido</string>
+    <string name="lng_no_artists">Os seus artistas aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lbl_feedback">Feedback</string>
 </resources>
