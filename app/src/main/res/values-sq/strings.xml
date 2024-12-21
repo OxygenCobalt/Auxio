@@ -246,11 +246,6 @@
     <string name="set_library">Biblioteka</string>
     <string name="set_locations_desc">Menaxho se nga ku duhet të ngarkohet muzika</string>
     <string name="set_locations_list">Dosjet</string>
-    <string name="set_dirs_mode">Mënyrë</string>
-    <string name="set_dirs_mode_exclude">Përjashtoni</string>
-    <string name="set_dirs_mode_exclude_desc">Muzika <b>nuk</b> do të ngarkohet nga dosjet që shtoni.</string>
-    <string name="set_dirs_mode_include">Përfshijnë</string>
-    <string name="set_dirs_mode_include_desc">Muzika <b>vetëm</b> do të ngarkohet nga dosjet që shtoni.</string>
     <string name="set_reindex">Rifresko muzikën</string>
     <string name="set_reindex_desc">Rifreskoni bibliotekën muzikore, duke përdorur etiketat e ruajtura kur është e mundur</string>
     <string name="set_rescan">Rikërkoni muzikën</string>

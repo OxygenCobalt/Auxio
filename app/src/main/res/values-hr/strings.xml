@@ -85,11 +85,6 @@
     <string name="set_reindex_desc">Ponovo učitaj glazbenu biblioteku, koristeći predmemorirane oznake kada je to moguće</string>
     <string name="set_locations">Mape glazbe</string>
     <string name="set_locations_desc">Upravljaj odakle će se glazba učitati</string>
-    <string name="set_dirs_mode">Način</string>
-    <string name="set_dirs_mode_exclude">Isključi</string>
-    <string name="set_dirs_mode_exclude_desc">Glazba se <b>neće</b> učitati iz dodanih mapa.</string>
-    <string name="set_dirs_mode_include">Uključi</string>
-    <string name="set_dirs_mode_include_desc">Glazba će se učitati <b>samo</b> iz dodanih mapa.</string>
     <string name="set_observing">Automatsko ponovno učitavanje</string>
     <string name="set_observing_desc">Ponovo učitaj svoju zbirku glazbe čim se dogode promjene (zahtijeva stalno obavještavanje)</string>
     <string name="err_no_music">Nijedna glazba nije pronađena</string>
@@ -320,4 +315,10 @@
     <string name="lbl_feedback">Povratne informacije</string>
     <string name="lbl_github">Prijavi problem na GitHubu</string>
     <string name="lbl_email">Pošalji e-mail</string>
+    <string name="lbl_music_sources">Odaberi mape</string>
+    <string name="lng_no_albums">Tvoji albumi će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_artists">Tvoji izvođači će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_playlists">Tvoj popis pjesama će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_genres">Tvoji žanri će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="lng_no_songs">Tvoje pjesme će se ovdje prikazati kada dodaš neku glazbu.</string>
 </resources>

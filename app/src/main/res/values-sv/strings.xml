@@ -149,7 +149,6 @@
     <string name="set_cover_mode_off">Av</string>
     <string name="set_headset_autoplay">Autouppspelning med hörlurar</string>
     <string name="set_repeat_pause_desc">Pausa när en låt upprepas</string>
-    <string name="set_dirs_mode_exclude_desc">Musik laddas <b>inte</b> från mapparna som ni lägger till.</string>
     <string name="desc_queue_bar">Öppna kön</string>
     <string name="clr_dynamic">Dynamisk</string>
     <string name="fmt_lib_artist_count">Inlästa artister: %d</string>
@@ -168,7 +167,6 @@
     <string name="set_cover_mode">Albumomslag</string>
     <string name="set_cover_mode_media_store">Snabbt</string>
     <string name="set_library">Bibliotek</string>
-    <string name="set_dirs_mode_include">Inkludera</string>
     <string name="set_reindex">Uppdatera musik</string>
     <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade taggar</string>
     <string name="desc_shuffle_all">Blanda alla låtar</string>
@@ -202,9 +200,6 @@
     <string name="set_pre_amp_warning">Varning: Om man ändrar förförstärkaren till ett högt positivt värde kan det leda till toppning på vissa ljudspår.</string>
     <string name="set_locations_desc">Hantera vart musik läses in ifrån</string>
     <string name="set_locations_list">Mappar</string>
-    <string name="set_dirs_mode">Modus</string>
-    <string name="set_dirs_mode_exclude">Utesluta</string>
-    <string name="set_dirs_mode_include_desc">Musik laddas <b>endast</b> från mapparna som ni lägger till.</string>
     <string name="set_rescan">Skanna om musik</string>
     <string name="set_rescan_desc">Rensa tagbiblioteket och ladda komplett om musikbiblioteket (långsammare, men mer komplett)</string>
     <string name="err_no_music">Ingen musik på gång</string>

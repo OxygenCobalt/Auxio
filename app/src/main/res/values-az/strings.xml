@@ -116,4 +116,12 @@
     <string name="lbl_path_style_absolute">Tam</string>
     <string name="lbl_path_style_relative">Nisbi</string>
     <string name="lbl_windows_paths">Windows-a uyuşan yolları istifadə et</string>
+    <string name="lng_widget">Musiqi səslənməsinə bax və idarə et</string>
+    <string name="lbl_donate">İanə ver</string>
+    <string name="lbl_supporters">Dəstəkçilər</string>
+    <string name="lng_indexing">Musiqi kitabxananız yüklənir…</string>
+    <string name="lng_observing">Musiqi kitabxananız dəyişikliklər üçün yoxlanılır…</string>
+    <string name="lbl_feedback">Əks Əlaqə</string>
+    <string name="lbl_email">E-poçt göndər</string>
+    <string name="lbl_github">GitHub-da problem yarat</string>
 </resources>

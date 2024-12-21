@@ -145,11 +145,6 @@
     <string name="cdc_mp3">Áudio MPEG-1</string>
     <string name="set_observing">Recarregamento automático</string>
     <string name="set_locations">Pastas de música</string>
-    <string name="set_dirs_mode">Modo</string>
-    <string name="set_dirs_mode_exclude">Excluir</string>
-    <string name="set_dirs_mode_exclude_desc">A música <b>não</b> será carregada das pastas que adicionar.</string>
-    <string name="set_dirs_mode_include">Incluir</string>
-    <string name="set_dirs_mode_include_desc">A música será <b>somente</b> carregada das pastas que adicionar.</string>
     <string name="set_exclude_non_music">Excluir não-música</string>
     <string name="set_exclude_non_music_desc">Ignorar ficheiros de áudio que não são música, tal como podcasts</string>
     <string name="set_separators_desc">Configurar caracteres que denotam múltiplos valores de etiqueta</string>

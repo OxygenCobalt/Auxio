@@ -77,10 +77,8 @@
     <string name="set_replay_gain_mode_album">アルバムを優先</string>
     <string name="set_replay_gain_mode_track">トラックを優先</string>
     <string name="set_locations_desc">音楽の読み込み元を管理</string>
-    <string name="set_dirs_mode_exclude">除外</string>
     <string name="set_reindex">音楽の再読み込み</string>
     <string name="err_no_perms">Auxio は音楽ライブラリを読む許可を必要とします</string>
-    <string name="set_dirs_mode_include">追加</string>
     <string name="err_no_locations">フォルダがありません</string>
     <string name="err_bad_location">このフォルダはサポートされていません</string>
     <string name="desc_track_number">トラック %d</string>
@@ -148,7 +146,6 @@
     <string name="set_play_in_list_with">ライブラリからの再生時</string>
     <string name="set_play_in_parent_with">アイテム詳細からの再生時</string>
     <string name="set_exclude_non_music">音楽以外を除外</string>
-    <string name="set_dirs_mode_include_desc">ここに追加したフォルダから<b>のみ</b>音楽が読み込まれます。</string>
     <string name="err_no_app">このタスクを実行できるアプリが見つかりません</string>
     <string name="set_content">コンテンツ</string>
     <string name="set_rescan">音楽の再スキャン</string>
@@ -177,7 +174,6 @@
     <string name="set_audio">オーディオ</string>
     <string name="set_playback">再生</string>
     <string name="set_repeat_pause">ポーズと繰り返し</string>
-    <string name="set_dirs_mode_exclude_desc">ここに追加したフォルダはからは音楽が<b>読み込まれません</b>。</string>
     <string name="set_library">ライブラリ</string>
     <string name="set_pre_amp_without">タグ無しで調整</string>
     <string name="set_locations_list">フォルダ</string>
@@ -224,7 +220,6 @@
     <string name="fmt_db_pos">+%.1f デシベル</string>
     <string name="set_round_mode_desc">追加の UI 要素で角丸を有効にします (アルバム カバーを丸める必要があります)</string>
     <string name="set_ui">外観</string>
-    <string name="set_dirs_mode">モード</string>
     <string name="set_separators_desc">複数のタグ値を表す文字を構成する</string>
     <string name="set_bar_action">カスタム再生バー アクション</string>
     <string name="set_intelligent_sorting">ソート時に記事を無視する</string>

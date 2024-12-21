@@ -108,7 +108,6 @@
     <string name="set_audio">Son</string>
     <string name="set_cover_mode_quality">Alta calidade</string>
     <string name="set_locations">Cartafois de música</string>
-    <string name="set_dirs_mode_exclude">Excluír</string>
     <string name="err_bad_location">Este cartafol non está soportado</string>
     <string name="desc_play_pause">Reproducir ou pausar</string>
     <string name="desc_skip_next">Saltar á seguinte canción</string>
@@ -156,10 +155,7 @@
     <string name="set_pre_amp_with">Axuste con etiquetas</string>
     <string name="set_pre_amp_without">Axuste sen etiquetas</string>
     <string name="set_pre_amp_warning">Advertencia: O cambio do pre-amp a un valor alto positivo pode resultar en picos en nalgunhas pistas.</string>
-    <string name="set_dirs_mode_include_desc">A música <b>só</b> se cargará dende os cartafois que engadas.</string>
     <string name="set_library">Biblioteca</string>
-    <string name="set_dirs_mode_exclude_desc">A música <b>non</b> se cargará dende os cartafois que engadas.</string>
-    <string name="set_dirs_mode_include">Incluír</string>
     <string name="set_reindex">Actualizar música</string>
     <string name="set_reindex_desc">Recargar a biblioteca de música, utilizando as etiquetas na caché cando sexa posible</string>
     <string name="set_rescan">Volver a escanear a música</string>
@@ -229,7 +225,6 @@
     </plurals>
     <string name="set_separators_plus">Máis (+)</string>
     <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" ao ordenar por nome (funciona mellor con música en inglés)</string>
-    <string name="set_dirs_mode">Modo</string>
     <string name="set_locations_desc">Xestionar dende onde se carga a música</string>
     <string name="set_repeat_pause_desc">Pausar cando se repite unha canción</string>
     <string name="set_locations_list">Cartafois</string>

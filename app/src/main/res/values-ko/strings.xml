@@ -93,7 +93,7 @@
     <string name="err_no_perms">앱에서 음악 라이브러리를 읽을 수 있는 권한이 필요합니다.</string>
     <string name="err_no_app">이 작업을 처리할 수 있는 앱을 찾을 수 없습니다.</string>
     <string name="err_no_locations">폴더 없음</string>
-    <string name="err_bad_location">지원하지 않는 폴더입니다.</string>
+    <string name="err_bad_location">지원하지 않는 폴더입니다</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">라이브러리에서 검색…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -155,8 +155,6 @@
     </plurals>
     <string name="cdc_mp4">MPEG-4 오디오</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
-    <string name="set_dirs_mode_exclude">제외</string>
-    <string name="set_dirs_mode_include_desc"><b>추가한 폴더에서만</b> 음악을 불러옵니다.</string>
     <string name="lbl_props">곡 속성</string>
     <string name="lbl_song_detail">속성 보기</string>
     <string name="lbl_sample_rate">샘플 속도</string>
@@ -177,8 +175,6 @@
     <string name="lng_indexing">음악 라이브러리 불러오는 중…</string>
     <string name="set_locations">음악 폴더</string>
     <string name="set_locations_desc">음악을 불러오는 위치 관리</string>
-    <string name="set_dirs_mode_exclude_desc">추가한 폴더에서 음악을 <b>불러오지 않습니다</b>.</string>
-    <string name="set_dirs_mode_include">포함</string>
     <string name="set_separators">다중 값 구분 기호</string>
     <string name="set_separators_desc">태그 값이 여러 개일 때 태그를 구분할 기호를 설정합니다.</string>
     <string name="set_separators_comma">콤마 (,)</string>
@@ -222,7 +218,6 @@
     <string name="lbl_mixtape">믹스테이프</string>
     <string name="lbl_remix_group">리믹스</string>
     <string name="set_observing">자동 새로고침</string>
-    <string name="set_dirs_mode">모드</string>
     <string name="fmt_indexing">음악 라이브러리를 불러오는 중… (%1$d/%2$d)</string>
     <string name="lbl_genre">장르</string>
     <string name="set_separators_warning">경고: 이 설정을 사용하면 몇몇 태그가 다중 값을 가진 것으로 잘못 나타날 수 있습니다. 태그에서 구분 기호 앞에 백슬래시(\\)를 붙이면 구분 기호로 인식하지 않습니다.</string>
@@ -322,4 +317,13 @@
 \n
 \n경고: 이 서비스는 주의하여 사용하세요. 서비스를 닫은 뒤 다시 사용하려고 할 경우 앱이 충돌할 수 있습니다.</string>
     <string name="lbl_more">더 보기</string>
+    <string name="lbl_music_sources">폴더 선택</string>
+    <string name="lbl_email">전자우편을 전송합니다</string>
+    <string name="lng_no_albums">당신이 음악을 추가하면 여기에 자신의 앨범이 표시됩니다.</string>
+    <string name="lng_no_artists">당신이 음악을 추가하면 여기에 자신의 음악가가 표시됩니다.</string>
+    <string name="lbl_github">깃허브에 문제를 제기합니다</string>
+    <string name="lbl_feedback">응답</string>
+    <string name="lng_no_songs">당신이 음악을 추가하면 여기에 표시됩니다.</string>
+    <string name="lng_no_playlists">당신이 음악을 여기에 추가하면 자신의 재생목록이 표시됩니다.</string>
+    <string name="lng_no_genres">당신이 음악을 추가하면 여기에 자신의 장르가 표시됩니다.</string>
 </resources>

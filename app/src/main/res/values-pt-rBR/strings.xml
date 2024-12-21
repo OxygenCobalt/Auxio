@@ -82,7 +82,6 @@
     <string name="set_pre_amp_warning">Aviso: Alterar a pré-amplificação para um valor positivo muito alto pode resultar em picos de volume em algumas faixas.</string>
     <string name="set_locations">Pastas de música</string>
     <string name="set_locations_desc">Gerencia de onde as músicas devem ser carregadas</string>
-    <string name="set_dirs_mode_include">Incluir</string>
     <string name="err_index_failed">Falha ao carregar músicas</string>
     <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
     <string name="err_no_locations">Sem pastas</string>
@@ -91,10 +90,6 @@
     <string name="set_rewind_prev">Retroceder antes de voltar</string>
     <string name="set_reindex">Recarregar música</string>
     <string name="set_rewind_prev_desc">Retroceder a música antes de voltar para a anterior</string>
-    <string name="set_dirs_mode_include_desc">As músicas serão carregadas <b>somente</b> das pastas que você adicionar.</string>
-    <string name="set_dirs_mode_exclude">Excluir</string>
-    <string name="set_dirs_mode_exclude_desc">As músicas <b>não</b> serão carregadas das pastas que você adicionar.</string>
-    <string name="set_dirs_mode">Modo</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para android.</string>
     <string name="lng_indexing">Carregando a sua biblioteca de músicas…</string>
@@ -326,4 +321,15 @@
     <string name="lbl_more">Mais</string>
     <string name="lbl_email">Envie um e-mail</string>
     <string name="lbl_github">Crie uma issue no GitHub</string>
+    <string name="lbl_music_sources">Escolher pastas</string>
+    <string name="lng_no_albums">Os seus álbuns aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lng_no_songs">As suas músicas aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lng_no_genres">Os seus gêneros aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lng_no_playlists">As suas playlists aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="cnt_mp4">MPEG-4 contendo %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Desconhecido</string>
+    <string name="def_album">Álbum desconhecido</string>
+    <string name="lng_no_artists">Os seus artistas aparecerão aqui quando você adicionar um pouco de música.</string>
+    <string name="lbl_feedback">Feedback</string>
 </resources>

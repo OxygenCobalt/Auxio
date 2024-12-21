@@ -211,7 +211,7 @@
     <string name="set_music">Muusika</string>
     <string name="set_observing">Muusikakogu automaatne uuendamine</string>
     <string name="set_exclude_non_music">Välista failid, kus pole muusikat</string>
-    <string name="set_intelligent_sorting_desc">Järjesta muusikat nii, et arvesse ei lähe numbrid ja artiklid nagu „the“ (toimib kõige paremini ingliskeelse muusika puhul)</string>
+    <string name="set_intelligent_sorting_desc">"Järjesta muusikat nii, et arvesse ei lähe numbrid ja artiklid nagu  \the (toimib kõige paremini ingliskeelse muusika puhul)"</string>
     <string name="set_hide_collaborators">Peida kaasautorid</string>
     <string name="set_action_mode_next">Hüppa järgmise juurde</string>
     <string name="set_action_mode_repeat">Taasesituse viis</string>
@@ -244,11 +244,6 @@
     <string name="set_locations">Muusika kaustad</string>
     <string name="set_locations_desc">Halda kaustu, kust otsime ja laadime muusikat</string>
     <string name="set_locations_list">Kaustad</string>
-    <string name="set_dirs_mode">Kaustade loogika</string>
-    <string name="set_dirs_mode_exclude">Välista</string>
-    <string name="set_dirs_mode_exclude_desc">Sinu määratud kaustadest <b>ei laadita</b> muusikat.</string>
-    <string name="set_dirs_mode_include">Kaasa</string>
-    <string name="set_dirs_mode_include_desc">Muusikat laadime <b>ainult</b> sinu näidatud kaustadest.</string>
     <string name="set_reindex">Värskenda muusika andmed</string>
     <string name="set_reindex_desc">Laadi muusikakogu uuesti ning kui võimalik, siis kasuta puhverdatud silte</string>
     <string name="set_rescan">Laadi muusikakogu uuesti</string>
@@ -317,4 +312,14 @@
     <string name="lbl_feedback">Tagasiside</string>
     <string name="lbl_github">Koosta GitHubis veateade või ettepanek</string>
     <string name="lbl_email">Saada e-kiri</string>
+    <string name="lbl_music_sources">Vali kaustad</string>
+    <string name="lng_no_songs">Kui oled muusikat lisanud, siis on sinu palad siin näha.</string>
+    <string name="lng_no_albums">Kui oled muusikat lisanud, siis on sinu albumid siin näha.</string>
+    <string name="lng_no_artists">Kui oled muusikat lisanud, siis on sinu esitajad siin näha.</string>
+    <string name="lng_no_genres">Kui oled muusikat lisanud, siis on žanrid siin näha.</string>
+    <string name="lng_no_playlists">Kui oled muusikat lisanud, siis on sinu esitusloendid siin näha.</string>
+    <string name="def_album">Tundmatu album</string>
+    <string name="cnt_mp4">MPEG-4 %s koodekiga</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Teadmata</string>
 </resources>

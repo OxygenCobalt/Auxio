@@ -158,7 +158,6 @@
     <string name="lbl_genre">Žanras</string>
     <string name="lng_search_library">Ieškok savo bibliotekoje…</string>
     <string name="lbl_equalizer">Ekvalaizeris</string>
-    <string name="set_dirs_mode">Režimas</string>
     <string name="set_observing">Automatinis perkėlimas</string>
     <string name="err_no_music">Muzika nerasta.</string>
     <string name="desc_exit">Sustabdyti įrašo perklausą</string>
@@ -168,15 +167,11 @@
     <string name="set_action_mode_repeat">Kartojimo režimas</string>
     <string name="desc_queue_bar">Atidaryti eilę</string>
     <string name="desc_clear_search">Išvalyti paieškos užklausą</string>
-    <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> įkeliama iš pridėtų aplankų, kurių tu pridėsi.</string>
-    <string name="set_dirs_mode_include">Įtraukti</string>
     <string name="desc_remove_song">Pašalinti šią dainą</string>
     <string name="set_play_song_from_all">Leisti iš visų dainų</string>
     <string name="set_play_song_none">Leisti iš parodyto elemento</string>
     <string name="set_play_song_from_album">Leisti iš albumo</string>
     <string name="set_play_song_from_artist">Leisti iš atlikėjo</string>
-    <string name="set_dirs_mode_exclude">Neįtraukti</string>
-    <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkeliama iš aplankų, kurių tu pridėsi.</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="set_observing_desc">Perkelk muzikos biblioteką, kai ji pasikeičia (reikia nuolatinio pranešimo).</string>
     <string name="fmt_lib_song_count">Įkeltos dainos: %d</string>

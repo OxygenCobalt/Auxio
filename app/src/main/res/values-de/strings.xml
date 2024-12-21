@@ -154,11 +154,6 @@
     <string name="set_play_song_none">Vom dargestellten Element abspielen</string>
     <string name="set_locations">Musikordner</string>
     <string name="set_locations_desc">Verwalten, von wo die Musik geladen werden soll</string>
-    <string name="set_dirs_mode">Modus</string>
-    <string name="set_dirs_mode_exclude">Ausschließen</string>
-    <string name="set_dirs_mode_exclude_desc">Musik wird <b>nicht</b> aus den von dir hinzugefügten Ordnern geladen.</string>
-    <string name="set_dirs_mode_include">Einschließen</string>
-    <string name="set_dirs_mode_include_desc">Musik wird <b>nur</b> aus den von dir hinzugefügten Ordnern geladen.</string>
     <string name="def_track">Kein Titel</string>
     <string name="cdc_ogg">Ogg-Audio</string>
     <string name="cdc_mp4">MPEG-4-Audio</string>
@@ -258,7 +253,7 @@
     <string name="lbl_playlist">Wiedergabeliste</string>
     <string name="lbl_playlists">Wiedergabelisten</string>
     <string name="set_intelligent_sorting">Intelligente Sortierung</string>
-    <string name="set_intelligent_sorting_desc">Korrekte Sortierung von Namen, die mit Nummern oder Wörtern wie „the“ beginnen (funktioniert am besten mit englischsprachiger Musik)</string>
+    <string name="set_intelligent_sorting_desc">Korrekte Sortierung von Namen, die mit Nummern oder Wörtern wie \the beginnen (funktioniert am besten mit englischsprachiger Musik)</string>
     <string name="lbl_new_playlist">Neue Wiedergabeliste</string>
     <string name="lng_playlist_added">Zur Wiedergabeliste hinzugefügt</string>
     <string name="lbl_playlist_add">Zur Wiedergabeliste hinzufügen</string>
@@ -325,4 +320,14 @@
     <string name="lbl_github">Ein Issue auf GitHub erstellen</string>
     <string name="lbl_feedback">Rückmeldung</string>
     <string name="lbl_email">Eine E-Mail senden</string>
+    <string name="lng_no_albums">Deine Alben werden hier angezeigt, sobald du Musik hinzufügst.</string>
+    <string name="lbl_music_sources">Ordner auswählen</string>
+    <string name="lng_no_songs">Deine Lieder werden hier angezeigt, sobald du Musik hinzufügst.</string>
+    <string name="lng_no_artists">Deine Künstler werden hier angezeigt, sobald du Musik hinzufügst.</string>
+    <string name="lng_no_playlists">Deine Wiedergabelisten werden hier angezeigt, sobald du Musik hinzufügst.</string>
+    <string name="lng_no_genres">Deine Genres werden hier angezeigt, sobald du Musik hinzufügst.</string>
+    <string name="cnt_mp4">MPEG-4, enthält %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Unbekannt</string>
+    <string name="def_album">Unbekanntes Album</string>
 </resources>

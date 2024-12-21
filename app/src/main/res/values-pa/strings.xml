@@ -121,8 +121,6 @@
     <string name="set_pre_amp_without">ਬਿਨਾਂ ਟੈਗਾਂ ਦੇ ਐਡਜਸਟਮੈਂਟ</string>
     <string name="set_locations_desc">ਪ੍ਰਬੰਧਿਤ ਕਰੋ ਕਿ ਸੰਗੀਤ ਕਿੱਥੋਂ ਲੋਡ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ</string>
     <string name="set_locations_list">ਫੋਲਡਰ</string>
-    <string name="set_dirs_mode_exclude">ਬਾਹਰ ਰੱਖੋ</string>
-    <string name="set_dirs_mode_include">ਸ਼ਾਮਿਲ ਕਰੋ</string>
     <string name="set_reindex">ਸੰਗੀਤ ਤਾਜ਼ਾ-ਤਰੀਨ ਕਰੋ</string>
     <string name="err_no_app">ਕੋਈ ਐਪ ਨਹੀਂ ਮਿਲੀ ਜੋ ਇਸ ਕਾਰਜ ਨੂੰ ਸੰਭਾਲ ਸਕਦੀ ਹੈ</string>
     <string name="err_no_locations">ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ</string>
@@ -138,9 +136,6 @@
     <string name="set_pre_amp_desc">ਪ੍ਰੀ-ਐਂਪ ਨੂੰ ਪਲੇਬੈਕ ਦੌਰਾਨ ਮੌਜੂਦਾ ਵਿਵਸਥਾ \'ਤੇ ਲਾਗੂ ਕੀਤਾ ਜਾਂਦਾ ਹੈ</string>
     <string name="set_pre_amp_with">ਟੈਗਸ ਨਾਲ ਐਡਜਸਟਮੈਂਟ</string>
     <string name="set_pre_amp_warning">ਚੇਤਾਵਨੀ: ਪ੍ਰੀ-ਐਂਪ ਨੂੰ ਉੱਚ ਸਕਾਰਾਤਮਕ ਮੁੱਲ ਵਿੱਚ ਬਦਲਣ ਦੇ ਨਤੀਜੇ ਵਜੋਂ ਕੁਝ ਆਡੀਓ ਟਰੈਕਾਂ \'ਤੇ ਸਿਖਰ ਹੋ ਸਕਦਾ ਹੈ।</string>
-    <string name="set_dirs_mode_exclude_desc">ਤੁਹਾਡੇ ਦੁਆਰਾ ਸ਼ਾਮਲ ਕੀਤੇ ਫੋਲਡਰਾਂ ਤੋਂ ਸੰਗੀਤ ਨੂੰ ਲੋਡ ਕੀਤਾ <b>ਨਹੀਂ</b> ਜਾਵੇਗਾ।</string>
-    <string name="set_dirs_mode_include_desc">ਤੁਹਾਡੇ ਦੁਆਰਾ ਸ਼ਾਮਲ ਕੀਤੇ ਫੋਲਡਰਾਂ ਤੋਂ ਸੰਗੀਤ <b>ਸਿਰਫ਼</b> ਲੋਡ ਕੀਤਾ ਜਾਵੇਗਾ।</string>
-    <string name="set_dirs_mode">ਮੋਡ</string>
     <string name="set_rescan_desc">ਟੈਗ ਕੈਸ਼ ਨੂੰ ਸਾਫ਼ ਕਰੋ ਅਤੇ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਨੂੰ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੀਲੋਡ ਕਰੋ (ਹੌਲੀ, ਪਰ ਵਧੇਰੇ ਸੰਪੂਰਨ)</string>
     <string name="err_no_music">ਕੋਈ ਸੰਗੀਤ ਨਹੀਂ ਮਿਲਿਆ</string>
     <string name="err_index_failed">ਸੰਗੀਤ ਲੋਡ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ</string>

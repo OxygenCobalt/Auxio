@@ -62,7 +62,7 @@
     <string name="set_lib_tabs_desc">Muuta kirjastovälilehtien näkyvyyttä ja järjestystä</string>
     <string name="set_action_mode_next">Siirry seuraavaan</string>
     <string name="set_action_mode_repeat">Kertaustila</string>
-    <string name="set_play_in_list_with">Kirjastosta toistettaessa</string>
+    <string name="set_play_in_list_with">Kun toistetaan kirjastosta</string>
     <string name="set_play_in_parent_with">Kohteen tiedoista toistettaessa</string>
     <string name="set_keep_shuffle">Muista sekoitus</string>
     <string name="set_play_song_from_all">Toista kaikista kappaleista</string>
@@ -88,10 +88,6 @@
     <string name="set_locations">Musiikkikansiot</string>
     <string name="set_locations_desc">Määritä mistä musiikki tulee ladata</string>
     <string name="set_rescan">Läpikäy musiikki uudelleen</string>
-    <string name="set_dirs_mode">Tila</string>
-    <string name="set_dirs_mode_exclude">Ohita</string>
-    <string name="set_dirs_mode_include">Sisällytä</string>
-    <string name="set_dirs_mode_include_desc">Musiikkia ladataan <b>vain</b> lisäämistäsi kansioista.</string>
     <string name="err_no_app">Tähän tehtävään kykenevää sovellusta ei löytynyt</string>
     <string name="err_no_locations">Ei kansioita</string>
     <string name="desc_track_number">Raita %d</string>
@@ -223,7 +219,6 @@
     <string name="def_playback">Musiikkia ei toisteta</string>
     <string name="set_play_song_from_artist">Toista esittäjältä</string>
     <string name="set_exclude_non_music">Ohita muu kuin musiikki</string>
-    <string name="set_dirs_mode_exclude_desc">Musiikkia <b>ei</b> ladata valitsemistasi kansioista.</string>
     <string name="set_replay_gain_mode_dynamic">Suosi albumia, jos sellaista toistetaan</string>
     <string name="lbl_new_playlist">Uusi soittolista</string>
     <string name="fmt_def_playlist">Soittolista %d</string>
@@ -307,4 +302,18 @@
     <string name="set_remember_pause_desc">Pysy toisto/keskeytystilassa ohittaessa kappaleita tai muokatessa jonoa</string>
     <string name="set_separators_desc">Valitse merkit, jotka erottavat tagiarvot toisistaan</string>
     <string name="set_pre_amp_warning">Varoitus: Esivahvistuksen asettaminen korkeaan positiiviseen arvoon saattaa johtaa säröilyyn joissain kappaleissa.</string>
+    <string name="lbl_music_sources">Valitse kansiot</string>
+    <string name="lbl_github">Ilmoita viasta GitHubissa</string>
+    <string name="lbl_email">Lähetä sähköpostia</string>
+    <string name="lbl_more">Lisää</string>
+    <string name="lbl_feedback">Palaute</string>
+    <string name="lng_tasker_start">Käynnistää Auxion käyttämällä aiemmin tallennettua tilaa. Jos tallennettua tilaa ei ole saatavilla, kaikki kappaleet sekoitetaan. Toisto alkaa välittömästi.\n\nVaroitus: Ole varovainen tämän palvelun hallinnassa. Jos suljet sen ja yrität sitten käyttää sitä uudelleen, sovellus todennäköisesti kaatuu.</string>
+    <string name="lng_no_songs">Kappaleesi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="lng_no_artists">Artistisi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="lng_no_playlists">Soittolistasi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="set_pre_amp_without">Säätö ilman tunnisteita</string>
+    <string name="lng_no_albums">Albumisi näkyvät täällä, kun lisäät musiikkia.</string>
+    <string name="lng_no_genres">Tyylilajisi näkyvät tässä, kun lisäät musiikkia.</string>
+    <string name="set_pre_amp_desc">Esivahvistinta käytetään olemassa olevaan säätöön toiston aikana</string>
+    <string name="set_pre_amp_with">Säätö tunnisteilla</string>
 </resources>

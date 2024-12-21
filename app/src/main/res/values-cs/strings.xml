@@ -164,11 +164,6 @@
     </plurals>
     <string name="lbl_shuffle_shortcut_short">Náhodně</string>
     <string name="lbl_shuffle_shortcut_long">Vše náhodně</string>
-    <string name="set_dirs_mode">Režim</string>
-    <string name="set_dirs_mode_exclude">Vyloučit</string>
-    <string name="set_dirs_mode_exclude_desc">Z přidaných složek <b>nebude</b> načtena hudba.</string>
-    <string name="set_dirs_mode_include">Zahrnout</string>
-    <string name="set_dirs_mode_include_desc">Hudba bude načtena <b>pouze</b> z přidaných složek.</string>
     <string name="cdc_mp3">Zvuk MPEG-1</string>
     <string name="cdc_mp4">Zvuk MPEG-4</string>
     <string name="cdc_ogg">Zvuk Ogg</string>
@@ -267,7 +262,7 @@
     <string name="desc_playlist_image">Obrázek seznamu skladeb pro %s</string>
     <string name="lbl_playlist">Seznam skladeb</string>
     <string name="set_intelligent_sorting">Při řazení ignorovat předložky</string>
-    <string name="set_intelligent_sorting_desc">Ignorovat slova jako „the“ při řazení podle názvu (funguje nejlépe u hudby v angličtině)</string>
+    <string name="set_intelligent_sorting_desc">Ignorovat slova jako \the při řazení podle názvu (funguje nejlépe u hudby v angličtině)</string>
     <string name="lbl_playlist_add">Přidat do seznamu skladeb</string>
     <string name="lng_playlist_added">Přidáno do seznamu skladeb</string>
     <string name="lng_playlist_created">Seznam skladeb vytvořen</string>
@@ -334,4 +329,14 @@
     <string name="lbl_feedback">Zpětná vazba</string>
     <string name="lbl_github">Vytvořit problém na GitHubu</string>
     <string name="lbl_email">Poslat e-mail</string>
+    <string name="lng_no_artists">Vaši umělci se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_genres">Vaše žánry se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_playlists">Vaše seznamy skladeb se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_songs">Vaše skladby se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lng_no_albums">Vaše alba se zobrazí zde, jakmile přidáte nějakou hudbu.</string>
+    <string name="lbl_music_sources">Vybrat složky</string>
+    <string name="def_album">Neznámé album</string>
+    <string name="cnt_mp4">MPEG-4 obsahující %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Neznámý</string>
 </resources>

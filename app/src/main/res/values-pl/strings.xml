@@ -168,8 +168,6 @@
     <string name="desc_queue_bar">Pokaż kolejkę</string>
     <string name="cdc_aac">AAC</string>
     <string name="set_observing_desc">Automatycznie odśwież bibliotekę po wykryciu zmian (wymaga stałego powiadomienia)</string>
-    <string name="set_dirs_mode_exclude">Wyklucz</string>
-    <string name="set_dirs_mode_include">Zawrzyj</string>
     <string name="desc_song_handle">Zmień pozycję utworu w kolejce</string>
     <string name="desc_tab_handle">Przesuń kartę</string>
     <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
@@ -184,7 +182,6 @@
     <string name="cdc_mka">Matroska</string>
     <string name="set_locations">Foldery z muzyką</string>
     <string name="set_locations_desc">Wybierz z których folderów importowane są utwory</string>
-    <string name="set_dirs_mode">Tryb</string>
     <string name="set_rewind_prev">Przewiń przed odtworzeniem poprzedniego utworu</string>
     <string name="set_rewind_prev_desc">Przewiń do początku obecnie odtwarzanego utworu zamiast odtworzenia poprzedniego</string>
     <string name="set_pre_amp">Preamplifier ReplayGain</string>
@@ -206,7 +203,6 @@
     <string name="set_play_in_parent_with">Odtwarzanie z widoku szczegółowego</string>
     <string name="set_play_song_none">Odtwórz tylko wybrane</string>
     <string name="set_repeat_pause_desc">Zatrzymaj odtwarzanie, kiedy utwór się powtórzy</string>
-    <string name="set_dirs_mode_include_desc">Muzyka będzie importowana <b>tylko</b> z wybranych folderów.</string>
     <string name="set_separators">Znaki oddzielające wartości</string>
     <string name="set_separators_desc">Wybierz znaki oddzielające poszczególne wartości w metadanych</string>
     <string name="err_no_perms">Auxio wymaga zgody na dostęp do twojej biblioteki muzycznej</string>
@@ -216,7 +212,6 @@
     <string name="fmt_lib_album_count">Zaimportowane albumy: %d</string>
     <string name="fmt_lib_genre_count">Zaimportowane gatunki: %d</string>
     <string name="fmt_lib_total_duration">Łączny czas trwania: %s</string>
-    <string name="set_dirs_mode_exclude_desc">Muzyka <b>nie</b> będzie importowana z wybranych folderów.</string>
     <string name="desc_change_repeat">Zmień tryb powtarzania</string>
     <string name="desc_shuffle_all">Odtwórz losowo wszystkie utwory</string>
     <string name="lng_observing">Monitoruję zmiany w bibliotece muzycznej…</string>

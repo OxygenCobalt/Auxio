@@ -182,7 +182,6 @@
     <string name="fmt_editing">संपादन %s</string>
     <string name="set_separators_plus">पलॅस (+)</string>
     <string name="set_separators_and">ऐंपरसैंड (&amp;)</string>
-    <string name="set_dirs_mode">मोड</string>
     <string name="desc_no_cover">एल्बम कवर</string>
     <string name="desc_album_cover">%s के लिए एल्बम कवर</string>
     <string name="clr_cyan">नीला हरा</string>
@@ -204,7 +203,6 @@
     <string name="set_pre_amp">रीप्लेगेन प्री-एम्प</string>
     <string name="set_pre_amp_with">टैग के साथ समायोजन</string>
     <string name="set_locations_list">फ़ोल्डर</string>
-    <string name="set_dirs_mode_exclude">बाहर करें</string>
     <string name="err_index_failed">संगीत लोड करना विफल रहा</string>
     <string name="err_bad_location">यह फ़ोल्डर समर्थित नहीं है</string>
     <string name="desc_change_repeat">रिपीट मोड बदलें</string>
@@ -225,8 +223,6 @@
     <string name="clr_grey">स्लेटी</string>
     <string name="desc_playlist_image">%s के लिए प्लेलिस्ट छवि</string>
     <string name="def_date">तिथि नहीं</string>
-    <string name="set_dirs_mode_exclude_desc">आपके द्वारा जोड़े गए फ़ोल्डरों से संगीत लोड <b>नहीं</b> किया जाएगा।</string>
-    <string name="set_dirs_mode_include_desc">संगीत <b>केवल</b> आपके द्वारा जोड़े गए फ़ोल्डरों से लोड किया जाएगा।</string>
     <string name="set_locations_desc">प्रबंधित करें कि संगीत कहाँ से लोड किया जाना चाहिए</string>
     <string name="desc_artist_image">%s के लिए कलाकार छवि</string>
     <string name="cdc_mp4">MPEG-4 ऑडियो</string>
@@ -255,7 +251,6 @@
     <string name="set_square_covers">वर्गीकृत एल्बम कवर फोर्स करें</string>
     <string name="set_audio_desc">ध्वनि और प्लेबैक व्यवहार कॉन्फ़िगर करें</string>
     <string name="set_pre_amp_warning">चेतावनी: प्री-एम्प को उच्च सकारात्मक मान में बदलने से कुछ ऑडियो ट्रैक पर आवाज फट सकती है।</string>
-    <string name="set_dirs_mode_include">शामिल करें</string>
     <string name="set_reindex_desc">जब संभव हो तो कैश्ड टैग का उपयोग करके संगीत लाइब्रेरी को पुनः लोड करें</string>
     <string name="err_no_app">कोई ऐप नहीं मिला जो इस कार्य को संभाल सके</string>
     <string name="def_artist">अज्ञात कलाकार</string>

@@ -172,8 +172,6 @@
     <string name="set_content">Tartalom</string>
     <string name="set_observing_desc">A zenei könyvtár újratöltése, ha változik (állandó értesítést igényel)</string>
     <string name="set_locations">Zene könyvtárak</string>
-    <string name="set_dirs_mode_exclude_desc">A zene <b>nem</b> töltődik be a hozzáadott mappákból.</string>
-    <string name="set_dirs_mode_exclude">Kizárva</string>
     <string name="err_index_failed">A zene betöltése sikertelen</string>
     <string name="set_separators_plus">Plusz (+)</string>
     <string name="err_no_app">Nem találtunk olyan alkalmazást, amely képes lenne kezelni ezt a feladatot</string>
@@ -197,7 +195,6 @@
     <string name="set_black_mode">Fekete téma</string>
     <string name="set_round_mode_desc">Lekerekített sarkok engedélyezése további UI elemeken (az albumborítók lekerekítése szükséges)</string>
     <string name="set_lib_tabs">Könyvtár fülek</string>
-    <string name="set_dirs_mode">Mód</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="set_pre_amp_with">Beállítás címkékkel</string>
     <string name="set_play_in_list_with">A könyvtárból történő lejátszáskor</string>
@@ -256,7 +253,6 @@
     <string name="set_locations_desc">Kezelje, hogy honnan töltsön be zenét</string>
     <string name="set_rescan">Zene újraolvasása</string>
     <string name="set_rescan_desc">A címkék gyorsítótárának törlése és a zenei könyvtár teljes újratöltése (lassabb, de teljesebb)</string>
-    <string name="set_dirs_mode_include_desc">A zene <b>csak</b> az Ön által hozzáadott mappákból töltődik be.</string>
     <string name="set_reindex_desc">A zenei könyvtár újratöltése, lehetőség szerint a gyorstárazott címkék használatával</string>
     <string name="fmt_selected">%d kiválasztott</string>
     <string name="fmt_disc_no">%d lemez</string>
@@ -270,7 +266,6 @@
     <string name="lbl_appears_on">Megjelenik itt,</string>
     <string name="lbl_share">Megoszt</string>
     <string name="lbl_confirm_delete_playlist">Lejátszólista törlése\?</string>
-    <string name="set_dirs_mode_include">Tartalmaz</string>
     <string name="err_no_perms">Az Auxio engedélyt kér a zenei könyvtár olvasásához</string>
     <string name="desc_remove_song">Távolítsa el ezt a dalt</string>
     <string name="desc_auxio_icon">Auxio ikon</string>

@@ -16,7 +16,6 @@
     <string name="set_separators_comma">Коска (,)</string>
     <string name="set_separators_plus">Плюс (+)</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
-    <string name="set_dirs_mode_include">Ўключыць</string>
     <string name="set_ui">Афармленне</string>
     <string name="lbl_retry">Паўтарыць</string>
     <string name="lng_search_library">Пошук у вашай бібліятэцы…</string>
@@ -115,10 +114,6 @@
     <string name="set_library">Бібліятэка</string>
     <string name="set_locations_desc">Кіруйце месцам загрузкі музыкі</string>
     <string name="set_locations_list">Тэчкі</string>
-    <string name="set_dirs_mode">Рэжым</string>
-    <string name="set_dirs_mode_exclude">Выключэнні</string>
-    <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будзе загружана з выбраных тэчак.</string>
-    <string name="set_dirs_mode_include_desc">Музыка будзе загружана <b>толькі</b> з выбраных тэчак.</string>
     <string name="set_rescan">Перасканаваць музыку</string>
     <string name="set_reindex">Абнавіць музыку</string>
     <string name="set_reindex_desc">Перазагрузіце музычную бібліятэку, выкарыстоўваючы па магчымасці кэшаваныя тэгі</string>

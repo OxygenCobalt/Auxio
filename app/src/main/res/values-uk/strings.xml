@@ -86,7 +86,6 @@
     <string name="set_action_mode_next">Перейти до наступної</string>
     <string name="set_cover_mode_media_store">Швидкі</string>
     <string name="set_locations_desc">Вкажіть звідки слід завантажувати музику</string>
-    <string name="set_dirs_mode_exclude">Виключити</string>
     <string name="fmt_lib_total_duration">Загальна тривалість: %s</string>
     <string name="lbl_mixtapes">Мікстейпи</string>
     <string name="lbl_artist">Виконавець</string>
@@ -117,7 +116,6 @@
     <string name="lbl_song_detail">Переглянути властивості</string>
     <string name="set_exclude_non_music_desc">Ігнорувати аудіо файли які не являються музикою, наприклад, подкасти</string>
     <string name="set_exclude_non_music">Виключити інші звукові файли</string>
-    <string name="set_dirs_mode_include">Включити</string>
     <string name="fmt_lib_album_count">Завантажено альбомів: %d</string>
     <string name="lbl_compilation_live">Концертна збірка</string>
     <string name="lbl_ep">Мініальбом</string>
@@ -137,7 +135,6 @@
     <string name="set_lib_tabs">Вкладки бібліотеки</string>
     <string name="set_headset_autoplay">Автовідтворення в навушниках</string>
     <string name="set_action_mode_repeat">Режим повторення</string>
-    <string name="set_dirs_mode">Режим</string>
     <string name="set_pre_amp">Попередній підсилювач ReplayGain</string>
     <string name="set_play_song_from_album">Відтворити альбом</string>
     <string name="set_play_in_list_with">При відтворенні з бібліотеки</string>
@@ -149,7 +146,6 @@
     <string name="set_rescan_desc">Очистити кеш тегів і повністю перезавантажити музичну бібліотеку (повільніше, але ефективніше)</string>
     <string name="set_observing">Автоматичне перезавантаження</string>
     <string name="set_observing_desc">Перезавантажувати бібліотеку при виявленні змін (потрібне постійне сповіщення)</string>
-    <string name="set_dirs_mode_exclude_desc">Музика <b>не</b> буде завантажена з вибраних папок.</string>
     <string name="set_separators_desc">Налаштуйте символи, які позначають кілька значень тегів</string>
     <string name="set_replay_gain_mode_album">За альбомом</string>
     <string name="set_replay_gain_mode_track">За піснею</string>
@@ -166,7 +162,6 @@
     <string name="set_separators_warning">Попередження: Використання цього параметра може призвести до того, що деякі теги будуть неправильно інтерпретовані як такі, що мають кілька значень. Ви можете вирішити це, додавши перед небажаними символами-роздільниками зворотну скісну риску (\\).</string>
     <string name="set_notif_action">Кнопка в сповіщенні</string>
     <string name="set_separators">Багатозначні роздільники</string>
-    <string name="set_dirs_mode_include_desc">Музика буде завантажена <b>тільки</b> з вибраних папок.</string>
     <string name="set_pre_amp_with">Регулювання на основі тегів</string>
     <string name="set_replay_gain_mode">Налаштування ReplayGain</string>
     <string name="lbl_track">Пісня</string>
@@ -183,7 +178,7 @@
     <string name="err_bad_location">Ця папка не підтримується</string>
     <string name="def_artist">Невідомий виконавець</string>
     <string name="clr_lime">Лаймовий</string>
-    <string name="set_separators_and">Амперсанд (&amp;)</string>
+    <string name="set_separators_and">Амперсанд &amp;</string>
     <string name="err_no_locations">Немає папок</string>
     <string name="desc_skip_next">Перейти до наступної пісні</string>
     <string name="desc_shuffle">Ввімкніть або вимкніть перемішування</string>
@@ -326,4 +321,17 @@
 \n
 \nПопередження: будьте обережні при керуванні цією службою, якщо ви закриєте її, а потім спробуєте використовувати знову, ви, ймовірно, призведе до збою застосунка.</string>
     <string name="lbl_more">Більше</string>
+    <string name="lbl_music_sources">Виберіть папки</string>
+    <string name="lbl_feedback">Зворотній зв\'язок</string>
+    <string name="lng_no_artists">Ваші виконавці з’являться тут, коли ви додасте музику.</string>
+    <string name="lng_no_genres">Ваші жанри з’являться тут, коли ви додасте музику.</string>
+    <string name="lng_no_songs">Ваші пісні з’являться тут, коли ви додасте музику.</string>
+    <string name="lbl_github">Зробіть випуск на GitHub</string>
+    <string name="lbl_email">Надіслати електронний лист</string>
+    <string name="lng_no_playlists">Ваші списки відтворення з’являться тут, коли ви додасте музику.</string>
+    <string name="lng_no_albums">Ваші альбоми з’являться тут, коли ви додасте музику.</string>
+    <string name="def_album">Невідомий альбом</string>
+    <string name="cnt_mp4">MPEG-4, що містить %s</string>
+    <string name="cdc_unknown">Невідомий</string>
+    <string name="cdc_alac">Аудіокодек Apple без втрат (ALAC)</string>
 </resources>

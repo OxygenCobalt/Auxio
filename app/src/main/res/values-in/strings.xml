@@ -101,8 +101,6 @@
     <string name="set_reindex">Muat ulang musik</string>
     <string name="set_reindex_desc">Muat ulang perpustakaan musik, menggunakan tag yang di-cache jika memungkinkan</string>
     <string name="set_locations_desc">Kelola dari mana musik dimuat</string>
-    <string name="set_dirs_mode_exclude">Kecualikan</string>
-    <string name="set_dirs_mode_include">Termasuk</string>
     <string name="err_no_app">Tidak ada aplikasi yang bisa membuka tugas ini</string>
     <string name="err_bad_location">Folder ini tidak didukung</string>
     <string name="desc_tab_handle">Pindahkan tab ini</string>
@@ -133,18 +131,15 @@
     <string name="desc_change_repeat">Ubah mode pengulangan</string>
     <string name="desc_artist_image">Gambar artis untuk %s</string>
     <string name="set_play_in_parent_with">Saat diputar dari keterangan item</string>
-    <string name="set_dirs_mode_exclude_desc">Musik <b>tidak</b> akan dimuat dari folder yang Anda tambahkan.</string>
     <string name="desc_remove_song">Hapus lagu antrian ini</string>
     <string name="desc_clear_search">Hapus kueri pencarian</string>
     <string name="set_pre_amp_without">Penyesuaian tanpa tag</string>
     <string name="set_locations">Folder musik</string>
     <string name="set_play_song_from_artist">Putar dari artis</string>
-    <string name="set_dirs_mode">Mode</string>
     <string name="err_no_perms">Auxio memerlukan izin untuk membaca perpustakaan musik Anda</string>
     <string name="desc_skip_prev">Loncat ke lagu terakhir</string>
     <string name="desc_shuffle_all">Acak semua lagu</string>
     <string name="def_date">Tidak ada tanggal</string>
-    <string name="set_dirs_mode_include_desc">Musik <b>hanya</b> akan dimuat dari folder yang Anda tambahkan.</string>
     <string name="err_index_failed">Pemuatan musik gagal</string>
     <string name="desc_album_cover">Sampul album untuk %s</string>
     <string name="def_artist">Artis tidak dikenal</string>

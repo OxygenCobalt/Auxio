@@ -51,7 +51,6 @@
     <string name="set_reindex_desc">Ponovno naloži glasbeno knjižnico, uporabi predpomnjene oznake, kadar je mogoče</string>
     <string name="err_no_app">Najdena ni bila nobena aplikacija, ki bi lahko opravila to nalogo</string>
     <string name="lbl_cancel">Prekliči</string>
-    <string name="set_dirs_mode_include">Vključi</string>
     <string name="fmt_def_playlist">Seznam predvajanja %d</string>
     <string name="desc_skip_prev">Preskoči na zadnjo pesem</string>
     <string name="set_observing_desc">Ponovno naloži glasbeno knjižnico vsakič, ko se zazna sprememba (zahteva vztrajno obvestilo)</string>
@@ -107,7 +106,6 @@
     <string name="set_audio_desc">Prilagodi zvok in obnašanje predvajanja</string>
     <string name="set_content_desc">Nadzorujte kako se glasba in slike nalagajo</string>
     <string name="set_ui">Izgled in občutek</string>
-    <string name="set_dirs_mode_exclude">Izključi</string>
     <string name="cdc_mka">Matroska Audio</string>
     <string name="set_repeat_pause_desc">Začasna prekinitev ob ponavljanju</string>
     <string name="lbl_play">Predvajaj</string>
@@ -193,8 +191,6 @@
     <string name="lbl_parent_detail">Ogled</string>
     <string name="desc_exit">Ustavi predvajanje</string>
     <string name="lbl_mixtape">Mežanica</string>
-    <string name="set_dirs_mode_include_desc">Glasba se bo nalagala <b>samo</b> iz map, ki jih dodate.</string>
-    <string name="set_dirs_mode">Način</string>
     <string name="lbl_single_remix">Remiks singla</string>
     <string name="err_no_perms">Auxio potrebuje dovoljenje za branje vaše glasbene knjižnice</string>
     <string name="set_theme">Tema</string>
@@ -212,7 +208,6 @@
     <string name="set_round_mode">Zaobljen način</string>
     <string name="fmt_lib_artist_count">Naloženih izvajalcev: %d</string>
     <string name="set_audio">Zvok</string>
-    <string name="set_dirs_mode_exclude_desc">Glasba se <b>ne</b> bo nalagala iz the map, ki jih dodate.</string>
     <string name="clr_red">Rdeča</string>
     <string name="clr_dynamic">Dinamično</string>
     <string name="set_theme_night">Temno</string>
