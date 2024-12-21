@@ -159,7 +159,7 @@ private class ExtractStepImpl(
     private data class FileWith<T>(val file: DeviceFile, val with: T)
 }
 
-data class RawSong(
+internal data class RawSong(
     val file: DeviceFile,
     val properties: Properties,
     val tags: ParsedTags,

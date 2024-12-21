@@ -24,10 +24,10 @@ import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.playlist.SongPointer
 
-interface StoredPlaylists {
-    suspend fun new(name: String, songs: List<Song>): PlaylistHandle
+abstract class StoredPlaylists {
+    internal abstract suspend fun new(name: String, songs: List<Song>): PlaylistHandle
 
-    suspend fun read(): List<PlaylistFile>
+    internal abstract suspend fun read(): List<PlaylistFile>
 
     companion object {
         fun from(database: PlaylistDatabase): StoredPlaylists =
@@ -35,7 +35,7 @@ interface StoredPlaylists {
     }
 }
 
-private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : StoredPlaylists {
+private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : StoredPlaylists() {
     override suspend fun new(name: String, songs: List<Song>): PlaylistHandle {
         val info = PlaylistInfo(Music.UID.auxio(Music.UID.Item.PLAYLIST), name)
         playlistDao.insertPlaylist(RawPlaylist(info, songs.map { PlaylistSong(it.uid) }))

@@ -24,8 +24,8 @@ interface StoredCovers {
     suspend fun obtain(id: String): Cover.Single?
 
     companion object {
-        fun at(context: Context, path: String): MutableStoredCovers =
-            FileStoredCovers(CoverIdentifier.md5(), CoverFiles.at(context, path))
+        fun from(context: Context, path: String, format: CoverFormat): MutableStoredCovers =
+            FileStoredCovers(CoverIdentifier.md5(), CoverFiles.at(context, path, format))
     }
 }
 

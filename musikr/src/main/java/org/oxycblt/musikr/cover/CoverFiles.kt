@@ -27,18 +27,18 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-interface CoverFiles {
+internal interface CoverFiles {
     suspend fun find(id: String): CoverFile?
 
     suspend fun write(id: String, data: ByteArray): CoverFile?
 
     companion object {
-        fun at(context: Context, path: String): CoverFiles =
-            CoverFilesImpl(File(context.filesDir, path).also { it.mkdirs() }, CoverFormat.jpeg())
+        fun at(context: Context, path: String, format: CoverFormat): CoverFiles =
+            CoverFilesImpl(File(context.filesDir, path).also { it.mkdirs() }, format)
     }
 }
 
-interface CoverFile {
+internal interface CoverFile {
     suspend fun open(): InputStream?
 }
 

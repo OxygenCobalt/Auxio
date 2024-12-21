@@ -22,10 +22,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import java.io.OutputStream
 
-internal interface CoverFormat {
-    val extension: String
+abstract class CoverFormat {
+    internal abstract val extension: String
 
-    fun transcodeInto(data: ByteArray, output: OutputStream): Boolean
+    internal abstract fun transcodeInto(data: ByteArray, output: OutputStream): Boolean
 
     companion object {
         // Enable if perhaps you want to try other formats.
@@ -50,7 +50,7 @@ private class CoverFormatImpl(
     val size: Int,
     val quality: Int,
     val format: Bitmap.CompressFormat,
-) : CoverFormat {
+) : CoverFormat() {
     override fun transcodeInto(data: ByteArray, output: OutputStream) =
         BitmapFactory.Options().run {
             inJustDecodeBounds = true

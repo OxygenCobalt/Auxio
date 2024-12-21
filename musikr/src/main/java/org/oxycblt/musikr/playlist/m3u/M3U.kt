@@ -41,7 +41,7 @@ import org.oxycblt.musikr.util.unlikelyToBeNull
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface M3U {
+abstract class M3U {
     /**
      * Reads an M3U file from the given [stream] and returns a [ImportedPlaylist] containing the
      * paths to the files listed in the M3U file.
@@ -51,7 +51,7 @@ interface M3U {
      *   resolve relative paths.
      * @return An [ImportedPlaylist] containing the paths to the files listed in the M3U file,
      */
-    fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist?
+    internal abstract fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist?
 
     /**
      * Writes the given [playlist] to the given [outputStream] in the M3U format,.
@@ -62,7 +62,7 @@ interface M3U {
      *   create relative paths to where the M3U file is assumed to be stored.
      * @param config The configuration to use when exporting the playlist.
      */
-    fun write(
+    internal abstract fun write(
         playlist: Playlist,
         outputStream: OutputStream,
         workingDirectory: Path,
@@ -73,11 +73,11 @@ interface M3U {
         /** The mime type used for M3U files by the android system. */
         const val MIME_TYPE = "audio/x-mpegurl"
 
-        fun from(context: Context): M3U = M3UImpl(VolumeManager.from(context))
+        internal fun from(context: Context): M3U = M3UImpl(VolumeManager.from(context))
     }
 }
 
-private class M3UImpl(private val volumeManager: VolumeManager) : M3U {
+private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
     override fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist? {
         val volumes = volumeManager.getVolumes()
         val reader = BufferedReader(InputStreamReader(stream))

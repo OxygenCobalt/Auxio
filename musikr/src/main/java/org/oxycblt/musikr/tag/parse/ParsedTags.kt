@@ -20,7 +20,7 @@ package org.oxycblt.musikr.tag.parse
 
 import org.oxycblt.musikr.tag.Date
 
-data class ParsedTags(
+internal data class ParsedTags(
     val durationMs: Long,
     val replayGainTrackAdjustment: Float? = null,
     val replayGainAlbumAdjustment: Float? = null,
