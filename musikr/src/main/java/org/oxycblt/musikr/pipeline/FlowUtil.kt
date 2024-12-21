@@ -59,7 +59,7 @@ internal inline fun <T, L, R> Flow<T>.divert(
     return DivertedFlow(managedFlow, leftChannel.receiveAsFlow(), rightChannel.receiveAsFlow())
 }
 
-internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Array<Flow<T>>)
+internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Flow<Flow<T>>)
 
 /**
  * Equally "distributes" the values of some flow across n new flows.
@@ -68,7 +68,7 @@ internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Array<F
  * order to function. Without this, all of the newly split flows will simply block.
  */
 internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
-    val posChannels = Array(n) { Channel<T>(Channel.UNLIMITED) }
+    val posChannels = List(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
             withIndex().collect {
@@ -79,6 +79,6 @@ internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
                 channel.close()
             }
         }
-    val hotFlows = posChannels.map { it.receiveAsFlow() }.toTypedArray()
+    val hotFlows = posChannels.asFlow().map { it.receiveAsFlow() }
     return DistributedFlow(managerFlow, hotFlows)
 }
