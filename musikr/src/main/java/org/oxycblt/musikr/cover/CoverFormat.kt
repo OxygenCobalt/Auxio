@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.cover
 
 import android.graphics.Bitmap
@@ -29,21 +29,42 @@ internal interface CoverFormat {
     fun transcodeInto(data: ByteArray, output: OutputStream): Boolean
 
     companion object {
-        fun webp(): CoverFormat = WebpCoverFormat()
+        // Enable if perhaps you want to try other formats.
+        // Currently this is just far too slow.
+//        fun webp(): CoverFormat = CoverFormatImpl(
+//            "webp",
+//            750,
+//            80,
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                Bitmap.CompressFormat.WEBP_LOSSY
+//            } else {
+//                Bitmap.CompressFormat.WEBP
+//            }
+//        )
+
+        fun jpeg(): CoverFormat = CoverFormatImpl(
+            "jpg",
+            1000,
+            100,
+            Bitmap.CompressFormat.JPEG
+        )
     }
 }
 
-private class WebpCoverFormat() : CoverFormat {
-    override val extension = EXTENSION
-
+private class CoverFormatImpl(
+    override val extension: String,
+    val size: Int,
+    val quality: Int,
+    val format: Bitmap.CompressFormat,
+) : CoverFormat {
     override fun transcodeInto(data: ByteArray, output: OutputStream) =
         BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeByteArray(data, 0, data.size, this)
-            inSampleSize = calculateInSampleSize(SIZE)
+            inSampleSize = calculateInSampleSize(size)
             inJustDecodeBounds = false
             val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size, this) ?: return@run false
-            bitmap.compress(FORMAT, QUALITY, output)
+            bitmap.compress(format, quality, output)
             true
         }
 
@@ -59,17 +80,5 @@ private class WebpCoverFormat() : CoverFormat {
             }
         }
         return inSampleSize
-    }
-
-    private companion object {
-        const val SIZE = 750
-        val FORMAT =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Bitmap.CompressFormat.WEBP_LOSSY
-            } else {
-                Bitmap.CompressFormat.WEBP
-            }
-        const val QUALITY = 80
-        const val EXTENSION = "webp"
     }
 }

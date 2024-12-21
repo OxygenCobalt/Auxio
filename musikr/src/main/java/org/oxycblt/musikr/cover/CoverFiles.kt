@@ -35,7 +35,7 @@ interface CoverFiles {
 
     companion object {
         fun at(context: Context, path: String): CoverFiles =
-            CoverFilesImpl(File(context.filesDir, path).also { it.mkdirs() }, CoverFormat.webp())
+            CoverFilesImpl(File(context.filesDir, path).also { it.mkdirs() }, CoverFormat.jpeg())
     }
 }
 
