@@ -40,8 +40,8 @@ import org.oxycblt.musikr.Music
     version = 30,
     exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
-abstract class PlaylistDatabase : RoomDatabase() {
-    internal abstract fun playlistDao(): PlaylistDao
+internal abstract class PlaylistDatabase : RoomDatabase() {
+    abstract fun playlistDao(): PlaylistDao
 
     companion object {
         fun from(context: Context) =

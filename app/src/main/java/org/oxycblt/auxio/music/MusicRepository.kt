@@ -39,7 +39,6 @@ import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheDatabase
-import org.oxycblt.musikr.playlist.db.PlaylistDatabase
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -216,7 +215,7 @@ class MusicRepositoryImpl
 constructor(
     @ApplicationContext private val context: Context,
     private val cacheDatabase: CacheDatabase,
-    private val playlistDatabase: PlaylistDatabase,
+    private val storedPlaylists: StoredPlaylists,
     private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
@@ -371,14 +370,14 @@ constructor(
                 Storage(
                     Cache.full(cacheDatabase),
                     MutableRevisionedStoredCovers(context, revision),
-                    StoredPlaylists.from(playlistDatabase))
+                    storedPlaylists)
         } else {
             revision = UUID.randomUUID()
             storage =
                 Storage(
                     Cache.writeOnly(cacheDatabase),
                     MutableRevisionedStoredCovers(context, revision),
-                    StoredPlaylists.from(playlistDatabase))
+                    storedPlaylists)
         }
 
         val interpretation = Interpretation(nameFactory, separators)

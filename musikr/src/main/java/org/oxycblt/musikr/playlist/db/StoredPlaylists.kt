@@ -18,6 +18,7 @@
  
 package org.oxycblt.musikr.playlist.db
 
+import android.content.Context
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.playlist.PlaylistFile
@@ -30,8 +31,8 @@ abstract class StoredPlaylists {
     internal abstract suspend fun read(): List<PlaylistFile>
 
     companion object {
-        fun from(database: PlaylistDatabase): StoredPlaylists =
-            StoredPlaylistsImpl(database.playlistDao())
+        fun from(context: Context): StoredPlaylists =
+            StoredPlaylistsImpl(PlaylistDatabase.from(context).playlistDao())
     }
 }
 
