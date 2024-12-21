@@ -19,27 +19,26 @@
 package org.oxycblt.musikr.cover
 
 import org.oxycblt.musikr.Song
+import java.io.InputStream
 
 sealed interface Cover {
-    val key: String
+    val id: String
 
-    data class Single(override val key: String) : Cover
+    interface Single : Cover {
+        suspend fun open(): InputStream?
+    }
 
     class Multi(val all: List<Single>) : Cover {
-        override val key = "multi@${all.hashCode()}"
+        override val id = "multi@${all.hashCode()}"
     }
 
     companion object {
-        fun nil() = Multi(listOf())
-
-        fun single(key: String) = Single(key)
-
         fun multi(songs: Collection<Song>) = order(songs).run { Multi(this) }
 
         private fun order(songs: Collection<Song>) =
             songs
                 .mapNotNull { it.cover }
-                .groupBy { it.key }
+                .groupBy { it.id }
                 .entries
                 .sortedByDescending { it.key }
                 .sortedByDescending { it.value.size }

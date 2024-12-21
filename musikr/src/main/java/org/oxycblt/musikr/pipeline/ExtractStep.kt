@@ -32,6 +32,7 @@ import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.MutableStoredCovers
 import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
@@ -59,7 +60,7 @@ private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
     private val cache: Cache,
-    private val storedCovers: StoredCovers
+    private val storedCovers: MutableStoredCovers
 ) : ExtractStep {
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val filterFlow =
@@ -74,7 +75,7 @@ private class ExtractStepImpl(
 
         val cacheResults =
             audioNodes
-                .map { wrap(it, cache::read) }
+                .map { wrap(it) { file -> cache.read(file, storedCovers)} }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
         val cacheFlow =

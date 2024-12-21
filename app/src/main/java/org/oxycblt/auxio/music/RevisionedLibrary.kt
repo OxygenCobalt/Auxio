@@ -15,33 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music
 
+import android.content.Context
+import androidx.media3.common.util.Log
+import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.util.UUID
-import org.oxycblt.musikr.Library
-import org.oxycblt.musikr.MutableLibrary
-import org.oxycblt.musikr.Playlist
-import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.MutableStoredCovers
+import org.oxycblt.musikr.cover.StoredCovers
 
-interface RevisionedLibrary : Library {
-    val revision: UUID
+open class RevisionedStoredCovers(
+    private val context: Context,
+    private val revision: UUID?
+) : StoredCovers {
+    protected val inner = revision?.let { StoredCovers.at(context, "covers_$it") }
+
+    override suspend fun obtain(id: String): RevisionedCover? {
+        val split = id.split('@', limit = 2)
+        if (split.size != 2) return null
+        val (coverId, coverRevisionStr) = split
+        val coverRevision = coverRevisionStr.toUuidOrNull() ?: return null
+        Log.d("RevisionedStoredCovers", "$coverId $coverRevision $revision")
+        if (revision != null) {
+            if (coverRevision != revision) {
+                return null
+            }
+            val storedCovers = unlikelyToBeNull(inner)
+            return storedCovers.obtain(coverId)?.let { RevisionedCover(revision, it) }
+        } else {
+            val storedCovers = StoredCovers.at(context, "covers_$coverRevision")
+            return storedCovers.obtain(coverId)?.let { RevisionedCover(coverRevision, it) }
+        }
+    }
 }
 
-class MutableRevisionedLibrary(override val revision: UUID, private val inner: MutableLibrary) :
-    RevisionedLibrary, Library by inner, MutableLibrary {
-    override suspend fun createPlaylist(name: String, songs: List<Song>) =
-        MutableRevisionedLibrary(revision, inner.createPlaylist(name, songs))
-
-    override suspend fun renamePlaylist(playlist: Playlist, name: String) =
-        MutableRevisionedLibrary(revision, inner.renamePlaylist(playlist, name))
-
-    override suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>) =
-        MutableRevisionedLibrary(revision, inner.addToPlaylist(playlist, songs))
-
-    override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) =
-        MutableRevisionedLibrary(revision, inner.rewritePlaylist(playlist, songs))
-
-    override suspend fun deletePlaylist(playlist: Playlist) =
-        MutableRevisionedLibrary(revision, inner.deletePlaylist(playlist))
+class MutableRevisionedStoredCovers(
+    context: Context,
+    private val revision: UUID
+) : RevisionedStoredCovers(context, revision), MutableStoredCovers {
+    override suspend fun write(data: ByteArray): RevisionedCover? {
+        return unlikelyToBeNull(inner).write(data)?.let { RevisionedCover(revision, it) }
+    }
 }
+
+class RevisionedCover(private val revision: UUID, val inner: Cover.Single) : Cover.Single by inner {
+    override val id: String
+        get() = "${inner.id}@${revision}"
+}
+
+internal fun String.toUuidOrNull(): UUID? =
+    try {
+        UUID.fromString(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }

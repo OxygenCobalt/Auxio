@@ -18,6 +18,7 @@
  
 package org.oxycblt.musikr.pipeline
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -78,7 +79,10 @@ private class EvaluateStepImpl(
         val graphBuild =
             merge(
                 filterFlow.manager,
-                preSongs.onEach { wrap(it, graphBuilder::add) },
+                preSongs.onEach {
+                    Log.d("EvaluateStep", it.toString())
+                    wrap(it, graphBuilder::add)
+                                },
                 prePlaylists.onEach { wrap(it, graphBuilder::add) })
         graphBuild.collect()
         val graph = graphBuilder.build()

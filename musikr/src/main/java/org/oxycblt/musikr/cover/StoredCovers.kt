@@ -15,33 +15,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.cover
 
 import android.content.Context
 import java.io.InputStream
 
 interface StoredCovers {
-    suspend fun read(cover: Cover.Single): InputStream?
-
-    suspend fun write(data: ByteArray): Cover.Single?
+    suspend fun obtain(id: String): Cover.Single?
 
     companion object {
-        fun from(context: Context, path: String): StoredCovers =
+        fun at(context: Context, path: String): MutableStoredCovers =
             FileStoredCovers(
-                CoverIdentifier.md5(), CoverFiles.from(context, path, CoverFormat.webp()))
+                CoverIdentifier.md5(), CoverFiles.at(context, path)
+            )
     }
+}
+
+interface MutableStoredCovers : StoredCovers {
+    suspend fun write(data: ByteArray): Cover.Single?
 }
 
 private class FileStoredCovers(
     private val coverIdentifier: CoverIdentifier,
     private val coverFiles: CoverFiles
-) : StoredCovers {
-    override suspend fun read(cover: Cover.Single) = coverFiles.read(cover.key)
+) : StoredCovers, MutableStoredCovers {
+    override suspend fun obtain(id: String) = coverFiles.find(id)?.let { FileCover(id, it) }
 
     override suspend fun write(data: ByteArray) =
-        coverIdentifier.identify(data).let { key ->
-            coverFiles.write(key, data)
-            Cover.Single(key)
+        coverIdentifier.identify(data).let { id ->
+            coverFiles.write(id, data)?.let { FileCover(id, it) }
         }
+}
+
+private class FileCover(
+    override val id: String,
+    private val coverFile: CoverFile
+) : Cover.Single {
+    override suspend fun open() = coverFile.open()
 }

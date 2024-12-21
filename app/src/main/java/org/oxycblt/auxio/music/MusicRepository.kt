@@ -30,8 +30,10 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
+import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Musikr
+import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
@@ -57,7 +59,7 @@ import timber.log.Timber as L
  */
 interface MusicRepository {
     /** The current library */
-    val library: RevisionedLibrary?
+    val library: Library?
 
     /** The current state of music loading. Null if no load has occurred yet. */
     val indexingState: IndexingState?
@@ -222,7 +224,7 @@ constructor(
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
     @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
 
-    @Volatile override var library: MutableRevisionedLibrary? = null
+    @Volatile override var library: MutableLibrary? = null
     @Volatile private var previousCompletedState: IndexingState.Completed? = null
     @Volatile private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
@@ -365,18 +367,18 @@ constructor(
         val revision: UUID
         val storage: Storage
         if (withCache) {
-            revision = this.library?.revision ?: musicSettings.revision
+            revision = musicSettings.revision
             storage =
                 Storage(
                     Cache.full(cacheDatabase),
-                    StoredCovers.from(context, "covers_$revision"),
+                    MutableRevisionedStoredCovers(context, revision),
                     StoredPlaylists.from(playlistDatabase))
         } else {
             revision = UUID.randomUUID()
             storage =
                 Storage(
                     Cache.writeOnly(cacheDatabase),
-                    StoredCovers.from(context, "covers_$revision"),
+                    MutableRevisionedStoredCovers(context, revision),
                     StoredPlaylists.from(playlistDatabase))
         }
 
@@ -384,8 +386,6 @@ constructor(
 
         val newLibrary =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
-
-        val revisionedLibrary = MutableRevisionedLibrary(revision, newLibrary)
 
         emitIndexingCompletion(null)
 
@@ -408,7 +408,7 @@ constructor(
                 return
             }
 
-            this.library = revisionedLibrary
+            this.library = newLibrary
         }
 
         // Consumers expect their updates to be on the main thread (notably PlaybackService),
@@ -418,9 +418,7 @@ constructor(
         }
 
         // Quietly update the revision if needed (this way we don't disrupt any new loads)
-        if (!withCache) {
-            musicSettings.revision = revisionedLibrary.revision
-        }
+        musicSettings.revision = revision
     }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {
