@@ -20,6 +20,7 @@ package org.oxycblt.auxio.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -94,6 +95,7 @@ class HomeFragment :
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     private var getContentLauncher: ActivityResultLauncher<String>? = null
     private var pendingImportTarget: Playlist? = null
+    private var lastUpdateTime = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -368,13 +370,19 @@ class HomeFragment :
             }
             is IndexingProgress.Songs -> {
                 // Actively loading songs, show the current progress.
-                binding.homeIndexingStatus.text =
-                    getString(R.string.fmt_indexing, progress.loaded, progress.explored)
                 binding.homeIndexingProgress.apply {
                     isIndeterminate = false
                     max = progress.explored
                     this.progress = progress.loaded
                 }
+                // Avoid aggressively updating the UI for rapid progress updates.
+                val now = SystemClock.elapsedRealtime()
+                if (lastUpdateTime > -1 && (now - lastUpdateTime) < 250) {
+                    return
+                }
+                lastUpdateTime = SystemClock.elapsedRealtime()
+                binding.homeIndexingStatus.text =
+                    getString(R.string.fmt_indexing, progress.loaded, progress.explored)
             }
         }
     }
