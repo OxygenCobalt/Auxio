@@ -90,7 +90,6 @@ private class ExtractStepImpl(
 
         val fds =
             uncachedSongs
-                .shuffle()
                 .mapNotNull {
                     wrap(it) { file ->
                         withContext(Dispatchers.IO) {

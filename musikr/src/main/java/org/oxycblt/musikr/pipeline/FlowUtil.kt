@@ -82,15 +82,3 @@ internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
     val hotFlows = posChannels.map { it.receiveAsFlow() }.toTypedArray()
     return DistributedFlow(managerFlow, hotFlows)
 }
-
-internal fun <T> Flow<T>.shuffle() = flow {
-    // As far as I'm aware, the only way to get a truly normal distribution
-    // on a flow is by evaluating it. I tried a bunch of different strategies
-    // on lazily shuffling a flow and it simply doesn't produce a good enough
-    // distribution since you need to emit late stuff early and early stuff
-    // late. It's best to just eval and re-emit.
-    val output = mutableListOf<T>()
-    toList(output)
-    output.shuffle()
-    emitAll(output.asFlow())
-}
