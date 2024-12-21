@@ -39,7 +39,6 @@ import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheDatabase
-import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.playlist.db.PlaylistDatabase
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming

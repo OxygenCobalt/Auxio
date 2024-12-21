@@ -18,8 +18,8 @@
  
 package org.oxycblt.musikr.cover
 
-import org.oxycblt.musikr.Song
 import java.io.InputStream
+import org.oxycblt.musikr.Song
 
 sealed interface Cover {
     val id: String

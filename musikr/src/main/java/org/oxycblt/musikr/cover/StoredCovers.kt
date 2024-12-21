@@ -15,20 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.cover
 
 import android.content.Context
-import java.io.InputStream
 
 interface StoredCovers {
     suspend fun obtain(id: String): Cover.Single?
 
     companion object {
         fun at(context: Context, path: String): MutableStoredCovers =
-            FileStoredCovers(
-                CoverIdentifier.md5(), CoverFiles.at(context, path)
-            )
+            FileStoredCovers(CoverIdentifier.md5(), CoverFiles.at(context, path))
     }
 }
 
@@ -48,9 +45,6 @@ private class FileStoredCovers(
         }
 }
 
-private class FileCover(
-    override val id: String,
-    private val coverFile: CoverFile
-) : Cover.Single {
+private class FileCover(override val id: String, private val coverFile: CoverFile) : Cover.Single {
     override suspend fun open() = coverFile.open()
 }

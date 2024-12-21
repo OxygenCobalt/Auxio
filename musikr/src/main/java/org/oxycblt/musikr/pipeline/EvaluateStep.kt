@@ -82,7 +82,7 @@ private class EvaluateStepImpl(
                 preSongs.onEach {
                     Log.d("EvaluateStep", it.toString())
                     wrap(it, graphBuilder::add)
-                                },
+                },
                 prePlaylists.onEach { wrap(it, graphBuilder::add) })
         graphBuild.collect()
         val graph = graphBuilder.build()

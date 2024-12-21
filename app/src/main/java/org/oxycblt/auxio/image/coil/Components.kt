@@ -44,7 +44,6 @@ import okio.FileSystem
 import okio.buffer
 import okio.source
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.StoredCovers
 
 class CoverKeyer @Inject constructor() : Keyer<Cover> {
     override fun key(data: Cover, options: Options) = "${data.id}&${options.size}"

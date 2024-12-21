@@ -15,21 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music
 
 import android.content.Context
 import androidx.media3.common.util.Log
-import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.util.UUID
+import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.MutableStoredCovers
 import org.oxycblt.musikr.cover.StoredCovers
 
-open class RevisionedStoredCovers(
-    private val context: Context,
-    private val revision: UUID?
-) : StoredCovers {
+open class RevisionedStoredCovers(private val context: Context, private val revision: UUID?) :
+    StoredCovers {
     protected val inner = revision?.let { StoredCovers.at(context, "covers_$it") }
 
     override suspend fun obtain(id: String): RevisionedCover? {
@@ -51,10 +49,8 @@ open class RevisionedStoredCovers(
     }
 }
 
-class MutableRevisionedStoredCovers(
-    context: Context,
-    private val revision: UUID
-) : RevisionedStoredCovers(context, revision), MutableStoredCovers {
+class MutableRevisionedStoredCovers(context: Context, private val revision: UUID) :
+    RevisionedStoredCovers(context, revision), MutableStoredCovers {
     override suspend fun write(data: ByteArray): RevisionedCover? {
         return unlikelyToBeNull(inner).write(data)?.let { RevisionedCover(revision, it) }
     }

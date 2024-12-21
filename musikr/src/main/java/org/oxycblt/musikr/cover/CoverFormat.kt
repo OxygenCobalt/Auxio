@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.cover
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import java.io.OutputStream
 
 internal interface CoverFormat {
@@ -31,23 +30,18 @@ internal interface CoverFormat {
     companion object {
         // Enable if perhaps you want to try other formats.
         // Currently this is just far too slow.
-//        fun webp(): CoverFormat = CoverFormatImpl(
-//            "webp",
-//            750,
-//            80,
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//                Bitmap.CompressFormat.WEBP_LOSSY
-//            } else {
-//                Bitmap.CompressFormat.WEBP
-//            }
-//        )
+        //        fun webp(): CoverFormat = CoverFormatImpl(
+        //            "webp",
+        //            750,
+        //            80,
+        //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        //                Bitmap.CompressFormat.WEBP_LOSSY
+        //            } else {
+        //                Bitmap.CompressFormat.WEBP
+        //            }
+        //        )
 
-        fun jpeg(): CoverFormat = CoverFormatImpl(
-            "jpg",
-            1000,
-            100,
-            Bitmap.CompressFormat.JPEG
-        )
+        fun jpeg(): CoverFormat = CoverFormatImpl("jpg", 1000, 100, Bitmap.CompressFormat.JPEG)
     }
 }
 

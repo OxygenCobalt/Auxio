@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
@@ -23,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -35,7 +34,6 @@ import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.MutableStoredCovers
-import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.metadata.Properties
@@ -53,8 +51,7 @@ internal interface ExtractStep {
                 MetadataExtractor.from(context),
                 TagParser.new(),
                 storage.cache,
-                storage.storedCovers
-            )
+                storage.storedCovers)
     }
 }
 
@@ -80,9 +77,8 @@ private class ExtractStepImpl(
         val cacheResults =
             distributedAudioNodes.flows
                 .map { flow ->
-                    flow.map {
-                        wrap(it) { file -> cache.read(file, storedCovers) }
-                    }
+                    flow
+                        .map { wrap(it) { file -> cache.read(file, storedCovers) } }
                         .flowOn(Dispatchers.IO)
                         .buffer(Channel.UNLIMITED)
                 }
@@ -114,13 +110,13 @@ private class ExtractStepImpl(
 
         val metadata =
             fds.mapNotNull { fileWith ->
-                wrap(fileWith.file) { _ ->
-                    metadataExtractor
-                        .extract(fileWith.with)
-                        ?.let { FileWith(fileWith.file, it) }
-                        .also { withContext(Dispatchers.IO) { fileWith.with.close() } }
+                    wrap(fileWith.file) { _ ->
+                        metadataExtractor
+                            .extract(fileWith.with)
+                            ?.let { FileWith(fileWith.file, it) }
+                            .also { withContext(Dispatchers.IO) { fileWith.with.close() } }
+                    }
                 }
-            }
                 .flowOn(Dispatchers.IO)
                 // Covers are pretty big, so cap the amount of parsed metadata in-memory to at most
                 // 8 to minimize GCs.
@@ -150,8 +146,7 @@ private class ExtractStepImpl(
             cacheFlow.manager,
             cachedSongs,
             writtenSongs,
-            playlistNodes
-        )
+            playlistNodes)
     }
 
     private data class FileWith<T>(val file: DeviceFile, val with: T)

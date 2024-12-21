@@ -15,22 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.cover
 
 import android.content.Context
-import android.util.Log
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import java.io.InputStream
-import java.io.OutputStream
 
 interface CoverFiles {
     suspend fun find(id: String): CoverFile?
+
     suspend fun write(id: String, data: ByteArray): CoverFile?
 
     companion object {
