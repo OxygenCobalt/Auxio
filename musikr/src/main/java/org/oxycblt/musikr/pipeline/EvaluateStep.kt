@@ -80,7 +80,6 @@ private class EvaluateStepImpl(
             merge(
                 filterFlow.manager,
                 preSongs.onEach {
-                    Log.d("EvaluateStep", it.toString())
                     wrap(it, graphBuilder::add)
                 },
                 prePlaylists.onEach { wrap(it, graphBuilder::add) })

@@ -36,7 +36,6 @@ open class RevisionedStoredCovers(private val context: Context, private val revi
         if (split.size != 2) return null
         val (coverId, coverRevisionStr) = split
         val coverRevision = coverRevisionStr.toUuidOrNull() ?: return null
-        Log.d("RevisionedStoredCovers", "$coverId $coverRevision $revision")
         if (revision != null) {
             if (coverRevision != revision) {
                 return null
