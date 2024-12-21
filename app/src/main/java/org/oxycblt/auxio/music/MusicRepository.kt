@@ -38,7 +38,7 @@ import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
-import org.oxycblt.musikr.cache.CacheDatabase
+import org.oxycblt.musikr.cache.WriteOnlyCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -214,7 +214,7 @@ class MusicRepositoryImpl
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val cacheDatabase: CacheDatabase,
+    private val cache: Cache,
     private val storedPlaylists: StoredPlaylists,
     private val musicSettings: MusicSettings
 ) : MusicRepository {
@@ -368,14 +368,14 @@ constructor(
             revision = musicSettings.revision
             storage =
                 Storage(
-                    Cache.full(cacheDatabase),
+                    cache,
                     MutableRevisionedStoredCovers(context, revision),
                     storedPlaylists)
         } else {
             revision = UUID.randomUUID()
             storage =
                 Storage(
-                    Cache.writeOnly(cacheDatabase),
+                    WriteOnlyCache(cache),
                     MutableRevisionedStoredCovers(context, revision),
                     storedPlaylists)
         }

@@ -40,8 +40,8 @@ import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.splitEscaped
 
 @Database(entities = [CachedSong::class], version = 50, exportSchema = false)
-abstract class CacheDatabase : RoomDatabase() {
-    internal abstract fun cachedSongsDao(): CacheInfoDao
+internal abstract class CacheDatabase : RoomDatabase() {
+    abstract fun cachedSongsDao(): CacheInfoDao
 
     companion object {
         fun from(context: Context) =

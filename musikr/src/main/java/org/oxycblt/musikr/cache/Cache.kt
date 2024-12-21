@@ -18,6 +18,7 @@
  
 package org.oxycblt.musikr.cache
 
+import android.content.Context
 import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
@@ -28,9 +29,7 @@ abstract class Cache {
     internal abstract suspend fun write(song: RawSong)
 
     companion object {
-        fun full(db: CacheDatabase): Cache = FullCache(db.cachedSongsDao())
-
-        fun writeOnly(db: CacheDatabase): Cache = WriteOnlyCache(db.cachedSongsDao())
+        fun from(context: Context): Cache = CacheImpl(CacheDatabase.from(context).cachedSongsDao())
     }
 }
 
@@ -40,7 +39,7 @@ internal sealed interface CacheResult {
     data class Miss(val file: DeviceFile) : CacheResult
 }
 
-private class FullCache(private val cacheInfoDao: CacheInfoDao) : Cache() {
+private class CacheImpl(private val cacheInfoDao: CacheInfoDao) : Cache() {
     override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) =
         cacheInfoDao.selectSong(file.uri.toString(), file.lastModified)?.let {
             CacheResult.Hit(it.intoRawSong(file, storedCovers))
@@ -50,9 +49,10 @@ private class FullCache(private val cacheInfoDao: CacheInfoDao) : Cache() {
         cacheInfoDao.updateSong(CachedSong.fromRawSong(song))
 }
 
-private class WriteOnlyCache(private val cacheInfoDao: CacheInfoDao) : Cache() {
-    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) = CacheResult.Miss(file)
+class WriteOnlyCache(private val inner: Cache) : Cache() {
+    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) =
+        CacheResult.Miss(file)
 
     override suspend fun write(song: RawSong) =
-        cacheInfoDao.updateSong(CachedSong.fromRawSong(song))
+        inner.write(song)
 }
