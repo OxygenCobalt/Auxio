@@ -367,10 +367,7 @@ constructor(
         if (withCache) {
             revision = musicSettings.revision
             storage =
-                Storage(
-                    cache,
-                    MutableRevisionedStoredCovers(context, revision),
-                    storedPlaylists)
+                Storage(cache, MutableRevisionedStoredCovers(context, revision), storedPlaylists)
         } else {
             revision = UUID.randomUUID()
             storage =

@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
-import androidx.media3.common.util.Log
 import java.util.UUID
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.cover.Cover
@@ -29,7 +28,8 @@ import org.oxycblt.musikr.cover.StoredCovers
 
 open class RevisionedStoredCovers(private val context: Context, private val revision: UUID?) :
     StoredCovers {
-    protected val inner = revision?.let { StoredCovers.from(context, "covers_$it", CoverFormat.jpeg()) }
+    protected val inner =
+        revision?.let { StoredCovers.from(context, "covers_$it", CoverFormat.jpeg()) }
 
     override suspend fun obtain(id: String): RevisionedCover? {
         val split = id.split('@', limit = 2)
@@ -43,7 +43,8 @@ open class RevisionedStoredCovers(private val context: Context, private val revi
             val storedCovers = unlikelyToBeNull(inner)
             return storedCovers.obtain(coverId)?.let { RevisionedCover(revision, it) }
         } else {
-            val storedCovers = StoredCovers.from(context, "covers_$coverRevision", CoverFormat.jpeg())
+            val storedCovers =
+                StoredCovers.from(context, "covers_$coverRevision", CoverFormat.jpeg())
             return storedCovers.obtain(coverId)?.let { RevisionedCover(coverRevision, it) }
         }
     }

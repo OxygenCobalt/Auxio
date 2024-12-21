@@ -50,9 +50,7 @@ private class CacheImpl(private val cacheInfoDao: CacheInfoDao) : Cache() {
 }
 
 class WriteOnlyCache(private val inner: Cache) : Cache() {
-    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) =
-        CacheResult.Miss(file)
+    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) = CacheResult.Miss(file)
 
-    override suspend fun write(song: RawSong) =
-        inner.write(song)
+    override suspend fun write(song: RawSong) = inner.write(song)
 }
