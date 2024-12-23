@@ -21,7 +21,6 @@
 #include <cmath>
 
 // TODO: Handle stream exceptions
-
 JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream) : env(env), inputStream(
 		inputStream) {
 	if (!env->IsInstanceOf(inputStream,
@@ -106,7 +105,7 @@ void JVMInputStream::seek(TagLib::offset_t offset, Position p) {
 }
 
 void JVMInputStream::clear() {
-    // Nothing to do
+	// Nothing to do
 }
 
 TagLib::offset_t JVMInputStream::tell() const {

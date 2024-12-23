@@ -42,7 +42,6 @@ set_target_properties(
         ${taglib_file_path}
         INTERFACE_INCLUDE_DIRECTORIES
         ${taglib_include})
-
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         taglib_jni.cpp
@@ -50,12 +49,13 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         JVMTagMap.cpp
         JVMMetadataBuilder.cpp
 )
-set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
+target_link_options(${CMAKE_PROJECT_NAME}
         # @Tolriq found that these flags can reduce the size of the linked
         # taglib + jni shim shared library. Kudos to them.
         # https://github.com/taglib/taglib/issues/1212#issuecomment-2326456903
-        LINK_FLAGS
-        "-Wl,--exclude-libs,ALL")
+        # Additionally, enable 16kb page size. I believe taglib can support this fine,
+        # as a cursory glance indicates that it doesn't hardcode any page sizes.
+        PRIVATE "-Wl,--exclude-libs,ALL,-z,max-page-size=16384")
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
