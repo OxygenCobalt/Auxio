@@ -92,7 +92,6 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
 
         // Hook drag events to "lifting" the item (i.e raising it's elevation). Make sure
         // this is only done once when the item is initially picked up.
-        // TODO: I think this is possible to improve with a raw ValueAnimator.
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             L.d("Lifting ViewHolder")
 

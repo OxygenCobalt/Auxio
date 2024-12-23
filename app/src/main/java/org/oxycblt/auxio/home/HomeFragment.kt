@@ -313,9 +313,8 @@ class HomeFragment :
     }
 
     private fun updateIndexerState(state: IndexingState?) {
-        // TODO: Make music loading experience a bit more pleasant
-        //  1. Loading placeholder for item lists
-        //  2. Rework the "No Music" case to not be an error and instead result in a placeholder
+        // TODO: Reduce intrusiveness of current loading state:
+        //  1. "Dry" loads
         val binding = requireBinding()
         when (state) {
             is IndexingState.Completed -> setupCompleteState(binding, state.error)

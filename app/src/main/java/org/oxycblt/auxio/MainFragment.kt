@@ -404,9 +404,6 @@ class MainFragment :
     }
 
     private fun updateIndexerState(state: IndexingState?) {
-        // TODO: Make music loading experience a bit more pleasant
-        //  1. Loading placeholder for item lists
-        //  2. Rework the "No Music" case to not be an error and instead result in a placeholder
         if (state is IndexingState.Completed && state.error == null) {
             L.d("Received ok response")
             val binding = requireBinding()

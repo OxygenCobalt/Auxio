@@ -344,7 +344,6 @@ constructor(
             throw e
         } catch (e: Exception) {
             // Music loading process failed due to something we have not handled.
-            // TODO: Still want to display this error eventually
             L.e("Music indexing failed")
             L.e(e.stackTraceToString())
             emitIndexingCompletion(e)
@@ -392,6 +391,10 @@ constructor(
         synchronized(this) {
             // It's possible that this reload might have changed nothing, so make sure that
             // hasn't happened before dispatching a change to all consumers.
+
+            // This is an old compat shim back when device library and user library were different
+            // thinks. For the sake of avoiding drastic changes, it sticks around.
+            // TODO: Remove this once you start work on kindred.
             deviceLibraryChanged =
                 this.library?.songs != newLibrary.songs ||
                     this.library?.albums != newLibrary.albums ||

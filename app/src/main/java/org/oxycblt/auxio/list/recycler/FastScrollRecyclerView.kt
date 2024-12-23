@@ -66,7 +66,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  *
  * TODO: Add vibration when popup changes
- * TODO: Improve support for variably sized items (Re-back with library fast scroller?)
  */
 class FastScrollRecyclerView
 @JvmOverloads
