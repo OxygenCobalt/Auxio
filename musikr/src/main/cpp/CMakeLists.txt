@@ -50,6 +50,12 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         JVMTagMap.cpp
         JVMMetadataBuilder.cpp
 )
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
+        # @Tolriq found that these flags can reduce the size of the linked
+        # taglib + jni shim shared library. Kudos to them.
+        # https://github.com/taglib/taglib/issues/1212#issuecomment-2326456903
+        LINK_FLAGS
+        "-Wl,--exclude-libs,ALL")
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
