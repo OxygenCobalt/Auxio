@@ -128,7 +128,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         sortName: String?,
         interpretation: Interpretation
     ): PreArtist {
-        val name = interpretation.naming.name(rawName, null, Placeholder.ARTIST)
+        val name = interpretation.naming.name(rawName, sortName, Placeholder.ARTIST)
         val musicBrainzId = musicBrainzId?.toUuidOrNull()
         return PreArtist(musicBrainzId, name, rawName)
     }
