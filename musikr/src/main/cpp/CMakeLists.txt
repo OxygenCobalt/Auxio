@@ -62,6 +62,6 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
 # build script, prebuilt third-party libraries, or Android system libraries.
 target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
-        android
-        log
-        taglib)
+        PRIVATE android
+        PRIVATE log
+        PRIVATE taglib)
