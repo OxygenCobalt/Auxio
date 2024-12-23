@@ -1,14 +1,15 @@
 # musikr
 
-Musikr is a highly opinionated multithreaded music library that enables Auxio's advanced music functionality.
-It completely bypasses Android's MediaStore and uses the [storage access framework (SAF)](), [taglib]() to
-replicate it's functionality with less bugs and more flexibility, further expanding it with an advanced music
-model that is both fast and leverages some of the nice features within the MusicBrainz spec.
+Musikr is a highly opinionated multithreaded music loader that enables Auxio's advanced music functionality.
+It completely bypasses Android's MediaStore and uses the [storage access framework (SAF)](https://developer.android.com/guide/topics/providers/document-provider)
+and [taglib](https://taglib.org/) to replicate it's functionality with less bugs and more flexibility, further
+expanding it with an advanced music model that leverages the wide variety of tags available in modern extended
+specs.
 
-There's not really a stable API surface for musikr right now, given that the music loader is still being
-optimized and the rest of Auxio's modularization efforts are still in progress. Lots of useful stuff is
-hidden, and lots of useless stuff is exposed. Eventually the API will start settling down into something
-usable, but it will still require patches for your own project.
+Warning that the API surface is:
+- Extremely unstable, as it's a very thin shim on top of a constantly optimzied and updated music loader
+- Minimized to only what the rest of the app uses or builds on, so you will need to patch it to extend 
+certain components
 
 Feel free to use this library as long as you follow Auxio's GPLv3 license and open-source all modifications.
 
