@@ -133,7 +133,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         return PreArtist(musicBrainzId, name, rawName)
     }
 
-    private fun unknownPreArtist() = PreArtist(null, Name.Unknown(Placeholder.GENRE), null)
+    private fun unknownPreArtist() = PreArtist(null, Name.Unknown(Placeholder.ARTIST), null)
 
     private fun makePreGenres(
         parsedTags: ParsedTags,
