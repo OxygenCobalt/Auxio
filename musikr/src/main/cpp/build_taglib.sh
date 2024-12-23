@@ -30,14 +30,13 @@ build_for_arch() {
     -DBUILD_EXAMPLES=OFF -DBUILD_BINDINGS=OFF -DWITH_ZLIB=OFF -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_FLAGS="-fPIC"
   # Try to parallelize the build
-  cmake --build $DST_DIR --config Release -j$(( $(nproc) / 4 ))
+  cmake --build $DST_DIR --config Release -j$(nproc)
   cd $WORKING_DIR
 
   cmake --install $DST_DIR --config Release --prefix $PKG_DIR --strip
 }
 
-build_for_arch $X86_ARCH&
-build_for_arch $X86_64_ARCH&
-build_for_arch $ARMV7_ARCH&
-build_for_arch $ARMV8_ARCH&
-wait
+build_for_arch $X86_ARCH
+build_for_arch $X86_64_ARCH
+build_for_arch $ARMV7_ARCH
+build_for_arch $ARMV8_ARCH
