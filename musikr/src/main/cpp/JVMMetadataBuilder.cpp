@@ -67,6 +67,11 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
 	auto map = tag.itemMap();
 	for (auto item : map) {
 		auto itemName = item.first;
+		if (itemName.startsWith("----")) {
+			// Capitalize description atoms only
+			// Other standard atoms are cased so we want to avoid collissions there.
+			itemName = itemName.upper();
+		}
 		auto itemValue = item.second;
 		auto type = itemValue.type();
 		// Only read out the atoms for the reasonable tags we are expecting.
