@@ -21,7 +21,7 @@ package org.oxycblt.musikr.metadata
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 
-class NativeInputStream(fis: FileInputStream) {
+internal class NativeInputStream(fis: FileInputStream) {
     private val channel = fis.channel
 
     fun readBlock(length: Long): ByteArray {
