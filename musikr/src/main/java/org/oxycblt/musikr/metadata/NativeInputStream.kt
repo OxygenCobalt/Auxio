@@ -18,25 +18,39 @@
  
 package org.oxycblt.musikr.metadata
 
-/**
- * Java interface for the read-only methods in TagLib's IOStream API.
- *
- * The vast majority of IO shim between Taglib/KTaglib should occur here to minimize JNI calls.
- */
-internal interface NativeInputStream {
-    fun readBlock(length: Long): ByteArray
+import java.io.FileInputStream
+import java.nio.ByteBuffer
 
-    fun isOpen(): Boolean
+class NativeInputStream(fis: FileInputStream) {
+    private val channel = fis.channel
 
-    fun seekFromBeginning(offset: Long)
+    fun readBlock(length: Long): ByteArray {
+        val buffer = ByteBuffer.allocate(length.toInt())
+        channel.read(buffer)
+        return buffer.array()
+    }
 
-    fun seekFromCurrent(offset: Long)
+    fun isOpen(): Boolean {
+        return channel.isOpen
+    }
 
-    fun seekFromEnd(offset: Long)
+    fun seekFromBeginning(offset: Long) {
+        channel.position(offset)
+    }
 
-    fun clear()
+    fun seekFromCurrent(offset: Long) {
+        channel.position(channel.position() + offset)
+    }
 
-    fun tell(): Long
+    fun seekFromEnd(offset: Long) {
+        channel.position(channel.size() - offset)
+    }
 
-    fun length(): Long
+    fun tell() = channel.position()
+
+    fun length() = channel.size()
+
+    fun close() {
+        channel.close()
+    }
 }

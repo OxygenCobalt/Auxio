@@ -48,7 +48,7 @@ internal interface ExtractStep {
         fun from(context: Context, storage: Storage): ExtractStep =
             ExtractStepImpl(
                 context,
-                MetadataExtractor.from(context),
+                MetadataExtractor.new(),
                 TagParser.new(),
                 storage.cache,
                 storage.storedCovers)

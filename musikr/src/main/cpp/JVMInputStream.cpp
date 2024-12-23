@@ -40,7 +40,6 @@ JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream) : env(env), inp
 			"seekFromCurrent", "(J)V");
 	inputStreamSeekFromEndMethod = env->GetMethodID(inputStreamClass,
 			"seekFromEnd", "(J)V");
-	inputStreamClearMethod = env->GetMethodID(inputStreamClass, "clear", "()V");
 	inputStreamTellMethod = env->GetMethodID(inputStreamClass, "tell", "()J");
 	inputStreamLengthMethod = env->GetMethodID(inputStreamClass, "length",
 			"()J");
@@ -107,7 +106,7 @@ void JVMInputStream::seek(TagLib::offset_t offset, Position p) {
 }
 
 void JVMInputStream::clear() {
-	env->CallVoidMethod(inputStream, inputStreamClearMethod);
+    // Nothing to do
 }
 
 TagLib::offset_t JVMInputStream::tell() const {

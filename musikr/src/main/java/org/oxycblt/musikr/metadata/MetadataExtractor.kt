@@ -28,14 +28,14 @@ internal interface MetadataExtractor {
     suspend fun extract(fd: ParcelFileDescriptor): Metadata?
 
     companion object {
-        fun from(context: Context): MetadataExtractor = MetadataExtractorImpl(context)
+        fun new(): MetadataExtractor = MetadataExtractorImpl
     }
 }
 
-private class MetadataExtractorImpl(private val context: Context) : MetadataExtractor {
+private object MetadataExtractorImpl : MetadataExtractor {
     override suspend fun extract(fd: ParcelFileDescriptor) =
         withContext(Dispatchers.IO) {
             val fis = FileInputStream(fd.fileDescriptor)
-            TagLibJNI.open(context, fis).also { fis.close() }
+            TagLibJNI.open(fis).also { fis.close() }
         }
 }

@@ -1,0 +1,1 @@
+-keep class org.oxycblt.musikr.metadata.NativeInputStream { *; }
