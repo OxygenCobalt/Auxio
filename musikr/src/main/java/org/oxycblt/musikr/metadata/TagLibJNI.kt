@@ -23,7 +23,7 @@ import java.io.FileInputStream
 
 internal object TagLibJNI {
     init {
-        System.loadLibrary("taglib_jni")
+        System.loadLibrary("tagJNI")
     }
 
     /**
