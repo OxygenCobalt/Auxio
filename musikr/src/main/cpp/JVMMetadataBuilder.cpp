@@ -18,8 +18,12 @@
  
 #include "JVMMetadataBuilder.h"
 
+#include "log.h"
+
 #include <taglib/mp4tag.h>
 #include <taglib/textidentificationframe.h>
+
+#include <taglib/tpropertymap.h>
 
 JVMMetadataBuilder::JVMMetadataBuilder(JNIEnv *env) : env(env), id3v2(env), xiph(
 		env), mp4(env), cover(), properties(nullptr) {
@@ -60,19 +64,17 @@ void JVMMetadataBuilder::setXiph(const TagLib::Ogg::XiphComment &tag) {
 }
 
 void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
-	for (auto item : tag.itemMap()) {
-		auto itemName = TagLib::String(item.first);
+	auto map = tag.itemMap();
+	for (auto item : map) {
+		auto itemName = item.first;
 		auto itemValue = item.second;
 		auto type = itemValue.type();
-
-		// TODO: Handle internal atoms
-
 		// Only read out the atoms for the reasonable tags we are expecting.
 		// None of the crazy binary atoms.
 		if (type == TagLib::MP4::Item::Type::StringList) {
 			auto value = itemValue.toStringList();
 			mp4.add(itemName, value);
-			return;
+			continue;
 		}
 
 		// Assume that taggers will be unhinged and store track numbers
@@ -80,17 +82,17 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
 		if (type == TagLib::MP4::Item::Type::Int) {
 			auto value = std::to_string(itemValue.toInt());
 			id3v2.add(itemName, value);
-			return;
+			continue;
 		}
 		if (type == TagLib::MP4::Item::Type::UInt) {
 			auto value = std::to_string(itemValue.toUInt());
 			id3v2.add(itemName, value);
-			return;
+			continue;
 		}
 		if (type == TagLib::MP4::Item::Type::LongLong) {
 			auto value = std::to_string(itemValue.toLongLong());
 			id3v2.add(itemName, value);
-			return;
+			continue;
 		}
 		if (type == TagLib::MP4::Item::Type::IntPair) {
 			// It's inefficient going from the integer representation back into
@@ -99,9 +101,8 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
 			auto value = std::to_string(itemValue.toIntPair().first) + "/"
 					+ std::to_string(itemValue.toIntPair().second);
 			id3v2.add(itemName, value);
-			return;
+			continue;
 		}
-		// Nothing else makes sense to handle as far as I can tell.
 	}
 }
 
