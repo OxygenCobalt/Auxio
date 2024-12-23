@@ -30,7 +30,7 @@ import org.oxycblt.musikr.util.positiveOrNull
  *
  * @see transformPositionField
  */
-internal fun String.parseId3v2PositionField() =
+internal fun String.parseSlashPositionField() =
     split('/', limit = 2).let {
         transformPositionField(it[0].toIntOrNull(), it.getOrNull(1)?.toIntOrNull())
     }

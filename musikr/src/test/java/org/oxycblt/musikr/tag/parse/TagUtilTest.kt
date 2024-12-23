@@ -21,7 +21,7 @@ package org.oxycblt.musikr.tag.parse
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.oxycblt.musikr.tag.format.parseId3GenreNames
-import org.oxycblt.musikr.tag.format.parseId3v2PositionField
+import org.oxycblt.musikr.tag.format.parseSlashPositionField
 import org.oxycblt.musikr.tag.format.parseXiphPositionField
 import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.splitEscaped
@@ -78,21 +78,21 @@ class TagUtilTest {
 
     @Test
     fun parseId3v2PositionField_correct() {
-        assertEquals(16, "16/32".parseId3v2PositionField())
-        assertEquals(16, "16".parseId3v2PositionField())
+        assertEquals(16, "16/32".parseSlashPositionField())
+        assertEquals(16, "16".parseSlashPositionField())
     }
 
     @Test
     fun parseId3v2PositionField_zeroed() {
-        assertEquals(null, "0".parseId3v2PositionField())
-        assertEquals(0, "0/32".parseId3v2PositionField())
+        assertEquals(null, "0".parseSlashPositionField())
+        assertEquals(0, "0/32".parseSlashPositionField())
     }
 
     @Test
     fun parseId3v2PositionField_wack() {
-        assertEquals(16, "16/".parseId3v2PositionField())
-        assertEquals(null, "a".parseId3v2PositionField())
-        assertEquals(null, "a/b".parseId3v2PositionField())
+        assertEquals(16, "16/".parseSlashPositionField())
+        assertEquals(null, "a".parseSlashPositionField())
+        assertEquals(null, "a/b".parseSlashPositionField())
     }
 
     @Test

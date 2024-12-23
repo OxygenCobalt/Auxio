@@ -21,98 +21,113 @@ package org.oxycblt.musikr.tag.parse
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.tag.Date
-import org.oxycblt.musikr.tag.format.parseId3v2PositionField
+import org.oxycblt.musikr.tag.format.parseSlashPositionField
 import org.oxycblt.musikr.tag.format.parseXiphPositionField
 import org.oxycblt.musikr.util.nonZeroOrNull
+
+// Note: TagLibJNI deliberately uppercases descriptive tags to avoid casing issues,
+// hence why the casing here is matched. Note that MP4 atoms are kept in their
+// original casing, as they are case-sensitive.
 
 // Song
 internal fun Metadata.musicBrainzId() =
     (xiph["MUSICBRAINZ_RELEASETRACKID"]
-            ?: xiph["MUSICBRAINZ RELEASE TRACK ID"]
-            ?: id3v2["TXXX:MUSICBRAINZ RELEASE TRACK ID"]
-            ?: id3v2["TXXX:MUSICBRAINZ_RELEASETRACKID"])
-        ?.first()
+        ?: xiph["MUSICBRAINZ RELEASE TRACK ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ RELEASE TRACK ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_RELEASETRACKID"])
+        ?: id3v2["TXXX:MUSICBRAINZ RELEASE TRACK ID"]
+        ?: id3v2["TXXX:MUSICBRAINZ_RELEASETRACKID"]?.first()
 
-internal fun Metadata.name() = (xiph["TITLE"] ?: id3v2["TIT2"])?.first()
+internal fun Metadata.name() =
+    (xiph["TITLE"] ?: mp4["©nam"] ?: mp4["©trk"] ?: id3v2["TIT2"])?.first()
 
-internal fun Metadata.sortName() = (xiph["TITLESORT"] ?: id3v2["TSOT"])?.first()
+internal fun Metadata.sortName() = (xiph["TITLESORT"] ?: mp4["sonm"] ?: id3v2["TSOT"])?.first()
 
 // Track.
 internal fun Metadata.track() =
     (parseXiphPositionField(
         xiph["TRACKNUMBER"]?.first(),
         (xiph["TOTALTRACKS"] ?: xiph["TRACKTOTAL"] ?: xiph["TRACKC"])?.first())
-        ?: id3v2["TRCK"]?.run { first().parseId3v2PositionField() })
+        ?: (mp4["trkn"] ?: id3v2["TRCK"])?.run { first().parseSlashPositionField() })
 
 // Disc and it's subtitle name.
 internal fun Metadata.disc() =
     (parseXiphPositionField(
         xiph["DISCNUMBER"]?.first(),
         (xiph["TOTALDISCS"] ?: xiph["DISCTOTAL"] ?: xiph["DISCC"])?.run { first() })
-        ?: id3v2["TPOS"]?.run { first().parseId3v2PositionField() })
+        ?: (mp4["disk"] ?: id3v2["TPOS"])?.run { first().parseSlashPositionField() })
 
 internal fun Metadata.subtitle() = (xiph["DISCSUBTITLE"] ?: id3v2["TSST"])?.first()
 
-// Dates are somewhat complicated, as not only did their semantics change from a flat year
-// value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
-// date types.
-// Our hierarchy for dates is as such:
-// 1. ID3v2.4 Original Date, as it resolves the "Released in X, Remastered in Y" issue
-// 2. ID3v2.4 Recording Date, as it is the most common date type
-// 3. ID3v2.4 Release Date, as it is the second most common date type
-// 4. ID3v2.3 Original Date, as it is like #1
-// 5. ID3v2.3 Release Year, as it is the most common date type
-// TODO: Show original and normal dates side-by-side
-// TODO: Handle dates that are in "January" because the actual specific release date
-//  isn't known?
 internal fun Metadata.date() =
-    (xiph["ORIGINALDATE"]?.run { Date.from(first()) }
-        ?: xiph["DATE"]?.run { Date.from(first()) }
-        ?: xiph["YEAR"]?.run { Date.from(first()) }
-        ?:
-
-        // xiph dates are less complicated, but there are still several types
-        // Our hierarchy for dates is as such:
-        // 1. Original Date, as it solves the "Released in X, Remastered in Y" issue
-        // 2. Date, as it is the most common date type
-        // 3. Year, as old xiph tags tended to use this (I know this because it's the only
-        // date tag that android supports, so it must be 15 years old or more!)
-        id3v2["TDOR"]?.run { Date.from(first()) }
-        ?: id3v2["TDRC"]?.run { Date.from(first()) }
-        ?: id3v2["TDRL"]?.run { Date.from(first()) }
-        ?: parseId3v23Date())
+    // For ID3v 2, are somewhat complicated, as not only did their semantics change from a flat
+    // year value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
+    // date types.
+    // Our hierarchy for dates is as such:
+    // 1. ID3v2.4 Original Date, as it resolves the "Released in X, Remastered in Y" issue
+    // 2. ID3v2.4 Recording Date, as it is the most common date type
+    // 3. ID3v2.4 Release Date, as it is the second most common date type
+    // 4. ID3v2.3 Original Date, as it is like #1
+    // 5. ID3v2.3 Release Year, as it is the most common date type
+    // xiph dates aren't complicated, but there are still several types
+    // Our hierarchy for dates is as such:
+    // 1. Original Date, as it solves the "Released in X, Remastered in Y" issue
+    // 2. Date, as it is the most common date type
+    // 3. Year, as old xiph tags tended to use this (I know this because it's the only
+    // date tag that android supports, so it must be 15 years old or more!)
+    // TODO: Show original and normal dates side-by-side
+    // TODO: Handle dates that are in "January" because the actual specific release date
+    //  isn't known?
+    ((xiph["ORIGINALDATE"]
+            ?: xiph["DATE"]
+            ?: xiph["YEAR"]
+            ?: mp4["©day"]
+            ?: id3v2["TDOR"]
+            ?: id3v2["TDRC"]
+            ?: id3v2["TDRL"])
+        ?.run { Date.from(first()) } ?: parseId3v23Date())
 
 // Album
 internal fun Metadata.albumMusicBrainzId() =
     (xiph["MUSICBRAINZ_ALBUMID"]
             ?: xiph["MUSICBRAINZ ALBUM ID"]
+            ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ ALBUM ID"]
+            ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_ALBUMID"]
             ?: id3v2["TXXX:MUSICBRAINZ ALBUM ID"]
             ?: id3v2["TXXX:MUSICBRAINZ_ALBUMID"])
         ?.first()
 
-internal fun Metadata.albumName() = (xiph["ALBUM"] ?: id3v2["TALB"])?.first()
+internal fun Metadata.albumName() = (xiph["ALBUM"] ?: mp4["©alb"] ?: id3v2["TALB"])?.first()
 
-internal fun Metadata.albumSortName() = (xiph["ALBUMSORT"] ?: id3v2["TSOA"])?.first()
+internal fun Metadata.albumSortName() = (xiph["ALBUMSORT"] ?: mp4["soal"] ?: id3v2["TSOA"])?.first()
 
 internal fun Metadata.releaseTypes() =
+    // GRP/GRP1 are assumed to also pertain to release types.
+    // GRP1 is a non-standard iTunes extension.
     (xiph["RELEASETYPE"]
         ?: xiph["MUSICBRAINZ ALBUM TYPE"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ ALBUM TYPE"]
+        ?: mp4["----:COM.APPLE.ITUNES:RELEASETYPE"]
+        ?: mp4["©grp"]
         ?: id3v2["TXXX:MUSICBRAINZ ALBUM TYPE"]
         ?: id3v2["TXXX:RELEASETYPE"]
-        ?:
-        // This is a non-standard iTunes extension
-        id3v2["GRP1"])
+        ?: id3v2["GRP1"])
 
 // Artist
 internal fun Metadata.artistMusicBrainzIds() =
     (xiph["MUSICBRAINZ_ARTISTID"]
         ?: xiph["MUSICBRAINZ ARTIST ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ ARTIST ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_ARTISTID"]
         ?: id3v2["TXXX:MUSICBRAINZ ARTIST ID"]
         ?: id3v2["TXXX:MUSICBRAINZ_ARTISTID"])
 
 internal fun Metadata.artistNames() =
     (xiph["ARTISTS"]
         ?: xiph["ARTIST"]
+        ?: mp4["----:COM.APPLE.ITUNES:ARTISTS"]
+        ?: mp4["©ART"]
+        ?: mp4["----:COM.APPLE.ITUNES:ARTIST"]
         ?: id3v2["TXXX:ARTISTS"]
         ?: id3v2["TPE1"]
         ?: id3v2["TXXX:ARTIST"])
@@ -123,6 +138,12 @@ internal fun Metadata.artistSortNames() =
         ?: xiph["ARTISTS SORT"]
         ?: xiph["ARTISTSORT"]
         ?: xiph["ARTIST SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ARTISTSSORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ARTISTS_SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ARTISTS SORT"]
+        ?: mp4["soar"]
+        ?: mp4["----:COM.APPLE.ITUNES:ARTISTSORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ARTIST SORT"]
         ?: id3v2["TXXX:ARTISTSSORT"]
         ?: id3v2["TXXX:ARTISTS_SORT"]
         ?: id3v2["TXXX:ARTISTS SORT"]
@@ -133,6 +154,8 @@ internal fun Metadata.artistSortNames() =
 internal fun Metadata.albumArtistMusicBrainzIds() =
     (xiph["MUSICBRAINZ_ALBUMARTISTID"]
         ?: xiph["MUSICBRAINZ ALBUM ARTIST ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ ALBUM ARTIST ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_ALBUMARTISTID"]
         ?: id3v2["TXXX:MUSICBRAINZ ALBUM ARTIST ID"]
         ?: id3v2["TXXX:MUSICBRAINZ_ALBUMARTISTID"])
 
@@ -142,6 +165,12 @@ internal fun Metadata.albumArtistNames() =
         ?: xiph["ALBUM ARTISTS"]
         ?: xiph["ALBUMARTIST"]
         ?: xiph["ALBUM ARTIST"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUMARTISTS"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUM_ARTISTS"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUM ARTISTS"]
+        ?: mp4["aART"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUMARTIST"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUM ARTIST"]
         ?: id3v2["TXXX:ALBUMARTISTS"]
         ?: id3v2["TXXX:ALBUM_ARTISTS"]
         ?: id3v2["TXXX:ALBUM ARTISTS"]
@@ -150,27 +179,37 @@ internal fun Metadata.albumArtistNames() =
         ?: id3v2["TXXX:ALBUM ARTIST"])
 
 internal fun Metadata.albumArtistSortNames() =
+    // TSO2 is a non-standard iTunes extension.
     (xiph["ALBUMARTISTSSORT"]
         ?: xiph["ALBUMARTISTS_SORT"]
         ?: xiph["ALBUMARTISTS SORT"]
         ?: xiph["ALBUMARTISTSORT"]
         ?: xiph["ALBUM ARTIST SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUMARTISTSSORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUMARTISTS_SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUMARTISTS SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUMARTISTSORT"]
+        ?: mp4["soaa"]
+        ?: mp4["----:COM.APPLE.ITUNES:ALBUM ARTIST SORT"]
         ?: id3v2["TXXX:ALBUMARTISTSSORT"]
         ?: id3v2["TXXX:ALBUMARTISTS_SORT"]
         ?: id3v2["TXXX:ALBUMARTISTS SORT"]
         ?: id3v2["TXXX:ALBUMARTISTSORT"]
-        // This is a non-standard iTunes extension
         ?: id3v2["TSO2"]
         ?: id3v2["TXXX:ALBUM ARTIST SORT"])
 
 // Genre
-internal fun Metadata.genreNames() = xiph["GENRE"] ?: id3v2["TCON"]
+internal fun Metadata.genreNames() = xiph["GENRE"] ?: mp4["©gen"] ?: mp4["gnre"] ?: id3v2["TCON"]
 
 // Compilation Flag
 internal fun Metadata.isCompilation() =
+    // TCMP is a non-standard itunes extension
     (xiph["COMPILATION"]
             ?: xiph["ITUNESCOMPILATION"]
-            ?: id3v2["TCMP"] // This is a non-standard itunes extension
+            ?: mp4["cpil"]
+            ?: mp4["----:COM.APPLE.ITUNES:COMPILATION"]
+            ?: mp4["----:COM.APPLE.ITUNES:ITUNESCOMPILATION"]
+            ?: id3v2["TCMP"]
             ?: id3v2["TXXX:COMPILATION"]
             ?: id3v2["TXXX:ITUNESCOMPILATION"])
         ?.let {
@@ -182,11 +221,13 @@ internal fun Metadata.isCompilation() =
 internal fun Metadata.replayGainTrackAdjustment() =
     (xiph["R128_TRACK_GAIN"]?.parseR128Adjustment()
         ?: xiph["REPLAYGAIN_TRACK_GAIN"]?.parseReplayGainAdjustment()
+        ?: mp4["----:COM.APPLE.ITUNES:REPLAYGAIN_TRACK_GAIN"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:REPLAYGAIN_TRACK_GAIN"]?.parseReplayGainAdjustment())
 
 internal fun Metadata.replayGainAlbumAdjustment() =
     (xiph["R128_ALBUM_GAIN"]?.parseR128Adjustment()
         ?: xiph["REPLAYGAIN_ALBUM_GAIN"]?.parseReplayGainAdjustment()
+        ?: mp4["----:COM.APPLE.ITUNES:REPLAYGAIN_ALBUM_GAIN"]?.parseReplayGainAdjustment()
         ?: id3v2["TXXX:REPLAYGAIN_ALBUM_GAIN"]?.parseReplayGainAdjustment())
 
 private fun List<String>.parseR128Adjustment() =
