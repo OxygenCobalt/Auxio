@@ -25,6 +25,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
@@ -361,25 +362,18 @@ constructor(
             }
         val locations = musicSettings.musicLocations
 
-        val revision: UUID
-        val storage: Storage
-        if (withCache) {
-            revision = musicSettings.revision
-            storage =
-                Storage(cache, MutableRevisionedStoredCovers(context, revision), storedPlaylists)
-        } else {
-            revision = UUID.randomUUID()
-            storage =
-                Storage(
-                    WriteOnlyCache(cache),
-                    MutableRevisionedStoredCovers(context, revision),
-                    storedPlaylists)
-        }
-
+        val currentRevision = musicSettings.revision
+        val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
+        val cache = if (withCache) cache else WriteOnlyCache(cache)
+        val covers = MutableRevisionedStoredCovers(context, newRevision)
+        val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
 
         val newLibrary =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
+        // Music loading completed, update the revision right now so we re-use this work
+        // later.
+        musicSettings.revision = newRevision
 
         emitIndexingCompletion(null)
 
@@ -415,8 +409,9 @@ constructor(
             dispatchLibraryChange(deviceLibraryChanged, userLibraryChanged)
         }
 
-        // Quietly update the revision if needed (this way we don't disrupt any new loads)
-        musicSettings.revision = revision
+        // Old cover revisions may be lying around, even during a normal refresh due
+        // to realyl lucky cancellations. Clean those up.
+        RevisionedStoredCovers.cleanup(context, newRevision)
     }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {

@@ -15,16 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverFormat
 import org.oxycblt.musikr.cover.MutableStoredCovers
 import org.oxycblt.musikr.cover.StoredCovers
+import java.io.File
 
 open class RevisionedStoredCovers(private val context: Context, private val revision: UUID?) :
     StoredCovers {
@@ -46,6 +49,13 @@ open class RevisionedStoredCovers(private val context: Context, private val revi
             val storedCovers =
                 StoredCovers.from(context, "covers_$coverRevision", CoverFormat.jpeg())
             return storedCovers.obtain(coverId)?.let { RevisionedCover(coverRevision, it) }
+        }
+    }
+
+    companion object {
+        suspend fun cleanup(context: Context, exclude: UUID) = withContext(Dispatchers.IO) {
+            context.filesDir.listFiles { file -> file.name.startsWith("covers_") && file.name != "covers_$exclude" }
+                ?.forEach { it.deleteRecursively() }
         }
     }
 }

@@ -35,7 +35,7 @@ import timber.log.Timber as L
  */
 interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The current library revision. */
-    var revision: UUID
+    var revision: UUID?
     /** The locations of music to load. */
     var musicLocations: List<MusicLocation>
     /** Whether to exclude non-music audio files from the music library. */
@@ -58,11 +58,9 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
 class MusicSettingsImpl @Inject constructor(@ApplicationContext private val context: Context) :
     Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
 
-    override var revision: UUID
+    override var revision: UUID?
         get() =
-            UUID.fromString(
-                sharedPreferences.getString(getString(R.string.set_key_library_revision), null)
-                    ?: UUID.randomUUID().toString())
+            sharedPreferences.getString(getString(R.string.set_key_library_revision), null)?.let(UUID::fromString)
         set(value) {
             sharedPreferences.edit {
                 putString(getString(R.string.set_key_library_revision), value.toString())
