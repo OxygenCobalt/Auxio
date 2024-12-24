@@ -24,7 +24,7 @@ import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.tag.interpret.PreGenre
-import org.oxycblt.musikr.tag.interpret.PreSong
+import org.oxycblt.musikr.track.TrackedSong
 import org.oxycblt.musikr.util.unlikelyToBeNull
 
 internal data class MusicGraph(
@@ -35,7 +35,7 @@ internal data class MusicGraph(
     val playlistVertex: Set<PlaylistVertex>
 ) {
     interface Builder {
-        fun add(preSong: PreSong)
+        fun add(trackedSong: TrackedSong)
 
         fun add(prePlaylist: PrePlaylist)
 
@@ -54,7 +54,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private val genreVertices = mutableMapOf<PreGenre, GenreVertex>()
     private val playlistVertices = mutableSetOf<PlaylistVertex>()
 
-    override fun add(preSong: PreSong) {
+    override fun add(trackedSong: TrackedSong) {
+        val preSong = trackedSong.preSong
         val uid = preSong.uid
         if (songVertices.containsKey(uid)) {
             return
@@ -88,7 +89,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
 
         val songVertex =
             SongVertex(
-                preSong,
+                trackedSong,
                 albumVertex,
                 songArtistVertices.toMutableList(),
                 songGenreVertices.toMutableList())
@@ -311,7 +312,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
 }
 
 internal class SongVertex(
-    val preSong: PreSong,
+    val trackedSong: TrackedSong,
     var albumVertex: AlbumVertex,
     var artistVertices: MutableList<ArtistVertex>,
     var genreVertices: MutableList<GenreVertex>

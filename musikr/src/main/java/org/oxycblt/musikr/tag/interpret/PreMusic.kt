@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.tag.interpret
 
 import android.net.Uri
@@ -47,27 +47,27 @@ internal data class PreSong(
     val sampleRateHz: Int,
     val replayGainAdjustment: ReplayGainAdjustment,
     val lastModified: Long,
-    val dateAdded: Long,
     val cover: Cover?,
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>
 ) {
-    val uid = musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
-        ?: Music.UID.auxio(Music.UID.Item.SONG) {
-            // Song UIDs are based on the raw data without parsing so that they remain
-            // consistent across music setting changes. Parents are not held up to the
-            // same standard since grouping is already inherently linked to settings.
-            update(rawName)
-            update(preAlbum.rawName)
-            update(date)
+    val uid =
+        musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
+            ?: Music.UID.auxio(Music.UID.Item.SONG) {
+                // Song UIDs are based on the raw data without parsing so that they remain
+                // consistent across music setting changes. Parents are not held up to the
+                // same standard since grouping is already inherently linked to settings.
+                update(rawName)
+                update(preAlbum.rawName)
+                update(date)
 
-            update(track)
-            update(disc?.number)
+                update(track)
+                update(disc?.number)
 
-            update(preArtists.map { artist -> artist.rawName })
-            update(preAlbum.preArtists.map { artist -> artist.rawName })
-        }
+                update(preArtists.map { artist -> artist.rawName })
+                update(preAlbum.preArtists.map { artist -> artist.rawName })
+            }
 }
 
 internal data class PreAlbum(

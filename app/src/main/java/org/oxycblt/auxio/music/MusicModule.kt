@@ -28,6 +28,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
+import org.oxycblt.musikr.track.Tracker
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -41,6 +42,8 @@ interface MusicModule {
 @InstallIn(SingletonComponent::class)
 class MusikrShimModule {
     @Singleton @Provides fun cache(@ApplicationContext context: Context) = Cache.from(context)
+
+    @Singleton @Provides fun tracker(@ApplicationContext context: Context) = Tracker.from(context)
 
     @Singleton
     @Provides

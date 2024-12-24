@@ -22,10 +22,10 @@ import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.tag.interpret.PreSong
+import org.oxycblt.musikr.track.TrackedSong
 
 internal interface SongCore {
-    val preSong: PreSong
+    val trackedSong: TrackedSong
 
     fun resolveAlbum(): Album
 
@@ -40,7 +40,7 @@ internal interface SongCore {
  * @author Alexander Capehart (OxygenCobalt)
  */
 internal class SongImpl(private val handle: SongCore) : Song {
-    private val preSong = handle.preSong
+    private val preSong = handle.trackedSong.preSong
 
     override val uid = preSong.uid
     override val name = preSong.name
@@ -56,7 +56,7 @@ internal class SongImpl(private val handle: SongCore) : Song {
     override val sampleRateHz = preSong.sampleRateHz
     override val replayGainAdjustment = preSong.replayGainAdjustment
     override val lastModified = preSong.lastModified
-    override val dateAdded = preSong.dateAdded
+    override val dateAdded = handle.trackedSong.dateAdded
     override val cover = preSong.cover
     override val album: Album
         get() = handle.resolveAlbum()

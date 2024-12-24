@@ -19,10 +19,12 @@
 package org.oxycblt.musikr.pipeline
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -35,6 +37,7 @@ import org.oxycblt.musikr.model.LibraryFactory
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
+import org.oxycblt.musikr.track.Tracker
 
 internal interface EvaluateStep {
     suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary
@@ -43,14 +46,17 @@ internal interface EvaluateStep {
         fun new(storage: Storage, interpretation: Interpretation): EvaluateStep =
             EvaluateStepImpl(
                 TagInterpreter.new(interpretation),
+                storage.tracker,
                 PlaylistInterpreter.new(interpretation),
                 storage.storedPlaylists,
                 LibraryFactory.new())
     }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private class EvaluateStepImpl(
     private val tagInterpreter: TagInterpreter,
+    private val tracker: Tracker,
     private val playlistInterpreter: PlaylistInterpreter,
     private val storedPlaylists: StoredPlaylists,
     private val libraryFactory: LibraryFactory
@@ -69,6 +75,13 @@ private class EvaluateStepImpl(
                 .map { wrap(it, tagInterpreter::interpret) }
                 .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
+        val trackDistributedFlow = preSongs.distribute(8)
+        val trackedSongs =
+            merge(
+                trackDistributedFlow.manager,
+                trackDistributedFlow.flows
+                    .map { flow -> flow.map { wrap(it, tracker::track) } }
+                    .flattenMerge())
         val prePlaylists =
             filterFlow.left
                 .map { wrap(it, playlistInterpreter::interpret) }
@@ -78,7 +91,7 @@ private class EvaluateStepImpl(
         val graphBuild =
             merge(
                 filterFlow.manager,
-                preSongs.onEach { wrap(it, graphBuilder::add) },
+                trackedSongs.onEach { wrap(it, graphBuilder::add) },
                 prePlaylists.onEach { wrap(it, graphBuilder::add) })
         graphBuild.collect()
         val graph = graphBuilder.build()
