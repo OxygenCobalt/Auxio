@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2021 Auxio Project
- * Components.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * CoverCollectionFetcher.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ import coil3.fetch.FetchResult
 import coil3.fetch.Fetcher
 import coil3.fetch.ImageFetchResult
 import coil3.fetch.SourceFetchResult
-import coil3.key.Keyer
 import coil3.request.Options
 import coil3.size.Dimension
 import coil3.size.Size
@@ -39,36 +38,24 @@ import coil3.size.pxOrElse
 import java.io.InputStream
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.buffer
 import okio.source
-import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverCollection
 
-class CoverKeyer @Inject constructor() : Keyer<Cover> {
-    override fun key(data: Cover, options: Options) = "${data.id}&${options.size}"
-}
-
-class CoverFetcher
+class CoverCollectionFetcher
 private constructor(
     private val context: Context,
-    private val cover: Cover,
+    private val covers: CoverCollection,
     private val size: Size,
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
-        val streams =
-            when (val cover = cover) {
-                is Cover.Single -> listOfNotNull(cover.open())
-                is Cover.Multi ->
-                    buildList {
-                        for (single in cover.all) {
-                            single.open()?.let { add(it) }
-                            if (size == 4) {
-                                break
-                            }
-                        }
-                    }
-            }
+        val streams = covers.covers.asFlow().mapNotNull { it.open() }.take(4).toList()
         // We don't immediately check for mosaic feasibility from album count alone, as that
         // does not factor in InputStreams failing to load. Instead, only check once we
         // definitely have image data to use.
@@ -79,6 +66,7 @@ private constructor(
                 withContext(Dispatchers.IO) { streams.forEach(InputStream::close) }
             }
         }
+
         // Not enough covers for a mosaic, take the first one (if that even exists)
         val first = streams.firstOrNull() ?: return null
 
@@ -146,8 +134,8 @@ private constructor(
         return if (size.mod(2) > 0) size + 1 else size
     }
 
-    class Factory @Inject constructor() : Fetcher.Factory<Cover> {
-        override fun create(data: Cover, options: Options, imageLoader: ImageLoader) =
-            CoverFetcher(options.context, data, options.size)
+    class Factory @Inject constructor() : Fetcher.Factory<CoverCollection> {
+        override fun create(data: CoverCollection, options: Options, imageLoader: ImageLoader) =
+            CoverCollectionFetcher(options.context, data, options.size)
     }
 }

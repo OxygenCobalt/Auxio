@@ -21,7 +21,7 @@ package org.oxycblt.musikr.cover
 import android.content.Context
 
 interface StoredCovers {
-    suspend fun obtain(id: String): Cover.Single?
+    suspend fun obtain(id: String): Cover?
 
     companion object {
         fun from(context: Context, path: String, format: CoverFormat): MutableStoredCovers =
@@ -30,7 +30,7 @@ interface StoredCovers {
 }
 
 interface MutableStoredCovers : StoredCovers {
-    suspend fun write(data: ByteArray): Cover.Single?
+    suspend fun write(data: ByteArray): Cover?
 }
 
 private class FileStoredCovers(
@@ -45,6 +45,6 @@ private class FileStoredCovers(
         }
 }
 
-private class FileCover(override val id: String, private val coverFile: CoverFile) : Cover.Single {
+private class FileCover(override val id: String, private val coverFile: CoverFile) : Cover {
     override suspend fun open() = coverFile.open()
 }

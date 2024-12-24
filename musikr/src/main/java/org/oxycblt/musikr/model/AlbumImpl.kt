@@ -22,7 +22,7 @@ import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverCollection
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.util.update
@@ -56,7 +56,7 @@ internal class AlbumImpl(private val core: AlbumCore) : Album {
     override val releaseType = preAlbum.releaseType
     override val durationMs = core.songs.sumOf { it.durationMs }
     override val dateAdded = core.songs.minOf { it.dateAdded }
-    override val cover = Cover.multi(core.songs)
+    override val covers = CoverCollection.from(core.songs.mapNotNull { it.cover })
     override val dates: Date.Range? =
         core.songs.mapNotNull { it.date }.ifEmpty { null }?.run { Date.Range(min(), max()) }
 

@@ -163,7 +163,7 @@ internal data class RawSong(
     val file: DeviceFile,
     val properties: Properties,
     val tags: ParsedTags,
-    val cover: Cover.Single?
+    val cover: Cover?
 )
 
 internal sealed interface ExtractedMusic {

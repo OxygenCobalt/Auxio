@@ -64,7 +64,7 @@ import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverCollection
 
 /**
  * Auxio's extension of [ImageView] that enables cover art loading and playing indicator and
@@ -327,7 +327,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(album: Album) =
         bindImpl(
-            album.cover,
+            album.covers,
             context.getString(R.string.desc_album_cover, album.name),
             R.drawable.ic_album_24)
 
@@ -338,7 +338,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(artist: Artist) =
         bindImpl(
-            artist.cover,
+            artist.covers,
             context.getString(R.string.desc_artist_image, artist.name),
             R.drawable.ic_artist_24)
 
@@ -349,7 +349,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(genre: Genre) =
         bindImpl(
-            genre.cover,
+            genre.covers,
             context.getString(R.string.desc_genre_image, genre.name),
             R.drawable.ic_genre_24)
 
@@ -360,7 +360,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(playlist: Playlist) =
         bindImpl(
-            playlist.cover,
+            playlist.covers,
             context.getString(R.string.desc_playlist_image, playlist.name),
             R.drawable.ic_playlist_24)
 
@@ -372,9 +372,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param errorRes The resource of the error drawable to use if the cover cannot be loaded.
      */
     fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) =
-        bindImpl(Cover.multi(songs), desc, errorRes)
+        bindImpl(CoverCollection.from(songs.mapNotNull { it.cover }), desc, errorRes)
 
-    private fun bindImpl(cover: Cover?, desc: String, @DrawableRes errorRes: Int) {
+    private fun bindImpl(cover: Any?, desc: String, @DrawableRes errorRes: Int) {
         val request =
             ImageRequest.Builder(context)
                 .data(cover)

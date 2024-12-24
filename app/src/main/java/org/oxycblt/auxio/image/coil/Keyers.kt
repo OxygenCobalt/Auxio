@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * Cover.kt is part of Auxio.
+ * Copyright (c) 2021 Auxio Project
+ * Keyers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,25 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.auxio.image.coil
 
-import java.io.InputStream
+import coil3.key.Keyer
+import coil3.request.Options
+import javax.inject.Inject
+import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverCollection
 
-interface Cover {
-    val id: String
-
-    suspend fun open(): InputStream?
+class CoverKeyer @Inject constructor() : Keyer<Cover> {
+    override fun key(data: Cover, options: Options) = "${data.id}&${options.size}"
 }
 
-class CoverCollection private constructor(val covers: List<Cover>) {
-    companion object {
-        fun from(covers: Collection<Cover>) =
-            CoverCollection(
-                covers
-                    .groupBy { it.id }
-                    .entries
-                    .sortedByDescending { it.key }
-                    .sortedByDescending { it.value.size }
-                    .map { it.value.first() })
-    }
+class CoverCollectionKeyer @Inject constructor() : Keyer<CoverCollection> {
+    override fun key(data: CoverCollection, options: Options) =
+        "multi:${data.hashCode()}&${options.size}"
 }

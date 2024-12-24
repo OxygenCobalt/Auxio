@@ -26,6 +26,7 @@ import java.util.UUID
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverCollection
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.tag.Date
@@ -276,7 +277,7 @@ interface Song : Music {
     /** The date the audio file was added to the device, as a unix epoch timestamp. */
     val dateAdded: Long
     /** Useful information to quickly obtain the album cover. */
-    val cover: Cover.Single?
+    val cover: Cover?
     /**
      * The parent [Album]. If the metadata did not specify an album, it's parent directory is used
      * instead.
@@ -310,7 +311,7 @@ interface Album : MusicParent {
      */
     val releaseType: ReleaseType
     /** Cover information from album's songs. */
-    val cover: Cover
+    val covers: CoverCollection
     /** The duration of all songs in the album, in milliseconds. */
     val durationMs: Long
     /** The earliest date a song in this album was added, as a unix epoch timestamp. */
@@ -340,7 +341,7 @@ interface Artist : MusicParent {
      */
     val durationMs: Long?
     /** Useful information to quickly obtain a (single) cover for a Genre. */
-    val cover: Cover
+    val covers: CoverCollection
     /** The [Genre]s of this artist. */
     val genres: List<Genre>
 }
@@ -356,7 +357,7 @@ interface Genre : MusicParent {
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
     /** Useful information to quickly obtain a (single) cover for a Genre. */
-    val cover: Cover
+    val covers: CoverCollection
 }
 
 /**
@@ -370,5 +371,5 @@ interface Playlist : MusicParent {
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
     /** Useful information to quickly obtain a (single) cover for a Genre. */
-    val cover: Cover
+    val covers: CoverCollection
 }

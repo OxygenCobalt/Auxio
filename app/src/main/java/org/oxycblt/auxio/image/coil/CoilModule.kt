@@ -36,14 +36,17 @@ class CoilModule {
     @Provides
     fun imageLoader(
         @ApplicationContext context: Context,
-        keyer: CoverKeyer,
-        factory: CoverFetcher.Factory
+        coverKeyer: CoverKeyer,
+        coverFactory: CoverFetcher.Factory,
+        coverCollectionKeyer: CoverCollectionKeyer,
+        coverCollectionFactory: CoverCollectionFetcher.Factory
     ) =
         ImageLoader.Builder(context)
             .components {
-                // Add fetchers for Music components to make them usable with ImageRequest
-                add(keyer)
-                add(factory)
+                add(coverKeyer)
+                add(coverFactory)
+                add(coverCollectionKeyer)
+                add(coverCollectionFactory)
             }
             // Use our own crossfade with error drawable support
             .transitionFactory(ErrorCrossfadeTransitionFactory())

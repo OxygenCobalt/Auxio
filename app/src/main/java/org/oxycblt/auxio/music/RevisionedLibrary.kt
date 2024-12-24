@@ -70,7 +70,7 @@ class MutableRevisionedStoredCovers(context: Context, private val revision: UUID
     }
 }
 
-class RevisionedCover(private val revision: UUID, val inner: Cover.Single) : Cover.Single by inner {
+class RevisionedCover(private val revision: UUID, val inner: Cover) : Cover by inner {
     override val id: String
         get() = "${inner.id}@${revision}"
 }
