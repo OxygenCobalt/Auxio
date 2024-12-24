@@ -32,11 +32,12 @@ import org.oxycblt.musikr.util.nonZeroOrNull
 // Song
 internal fun Metadata.musicBrainzId() =
     (xiph["MUSICBRAINZ_RELEASETRACKID"]
-        ?: xiph["MUSICBRAINZ RELEASE TRACK ID"]
-        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ RELEASE TRACK ID"]
-        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_RELEASETRACKID"]
-        ?: id3v2["TXXX:MUSICBRAINZ RELEASE TRACK ID"]
-        ?: id3v2["TXXX:MUSICBRAINZ_RELEASETRACKID"])?.first()
+            ?: xiph["MUSICBRAINZ RELEASE TRACK ID"]
+            ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ RELEASE TRACK ID"]
+            ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_RELEASETRACKID"]
+            ?: id3v2["TXXX:MUSICBRAINZ RELEASE TRACK ID"]
+            ?: id3v2["TXXX:MUSICBRAINZ_RELEASETRACKID"])
+        ?.first()
 
 internal fun Metadata.name() =
     (xiph["TITLE"] ?: mp4["©nam"] ?: mp4["©trk"] ?: id3v2["TIT2"])?.first()
