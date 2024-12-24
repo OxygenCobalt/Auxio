@@ -116,7 +116,7 @@
     <string name="cdc_mp4">MPEG-4 zvuk</string>
     <string name="cdc_ogg">Ogg zvuk</string>
     <string name="cdc_aac">Napredno kodiranje zvuka (AAC)</string>
-    <string name="cdc_flac">Slobodan audio kodek bez gubitaka (FLAC)</string>
+    <string name="cdc_flac">Slobodan kodek zvuka bez gubitaka (FLAC)</string>
     <string name="clr_red">Crvena</string>
     <string name="clr_pink">Ružičasta</string>
     <string name="clr_deep_purple">Tamnoljubičasta</string>
@@ -191,7 +191,7 @@
     <string name="desc_skip_prev">Preskoči na prethodnu pjesmu</string>
     <string name="desc_change_repeat">Promijeni način ponavljanja</string>
     <string name="clr_purple">Ljubičasto</string>
-    <string name="cdc_mka">Matroska Zvuk</string>
+    <string name="cdc_mka">Matroska zvuk</string>
     <string name="desc_queue_bar">Otvori redoslijed</string>
     <string name="lbl_genre">Žanr</string>
     <string name="set_separators_comma">Zarez (,)</string>
@@ -239,7 +239,7 @@
     <string name="set_personalize_desc">Prilagodite kontrole i ponašanje korisničkog sučelja</string>
     <string name="set_content_desc">Upravljajte učitavanjem glazbe i slika</string>
     <string name="set_images">Slike</string>
-    <string name="set_audio_desc">Konfigurirajte ponašanje zvuka i reprodukcije</string>
+    <string name="set_audio_desc">Konfiguriraj ponašanje zvuka i reprodukcije</string>
     <string name="set_playback">Reprodukcija</string>
     <string name="set_library">Fonoteka</string>
     <string name="lbl_playlists">Popisi pjesama</string>
@@ -321,4 +321,8 @@
     <string name="lng_no_playlists">Tvoj popis pjesama će se ovdje prikazati kada dodaš neku glazbu.</string>
     <string name="lng_no_genres">Tvoji žanri će se ovdje prikazati kada dodaš neku glazbu.</string>
     <string name="lng_no_songs">Tvoje pjesme će se ovdje prikazati kada dodaš neku glazbu.</string>
+    <string name="cdc_alac">Appleov kodek zvuka bez gubitaka (ALAC)</string>
+    <string name="def_album">Nepoznat album</string>
+    <string name="cdc_unknown">Nepoznato</string>
+    <string name="cnt_mp4">MPEG-4 sadrži %s</string>
 </resources>
