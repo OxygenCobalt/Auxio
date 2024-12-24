@@ -25,7 +25,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
@@ -410,7 +409,8 @@ constructor(
         }
 
         // Old cover revisions may be lying around, even during a normal refresh due
-        // to realyl lucky cancellations. Clean those up.
+        // to really lucky cancellations. Clean those up now that it's impossible for
+        // the rest of the app to be using them.
         RevisionedStoredCovers.cleanup(context, newRevision)
     }
 

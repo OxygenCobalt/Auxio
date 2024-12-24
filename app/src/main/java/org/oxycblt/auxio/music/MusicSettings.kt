@@ -60,7 +60,9 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
 
     override var revision: UUID?
         get() =
-            sharedPreferences.getString(getString(R.string.set_key_library_revision), null)?.let(UUID::fromString)
+            sharedPreferences
+                .getString(getString(R.string.set_key_library_revision), null)
+                ?.let(UUID::fromString)
         set(value) {
             sharedPreferences.edit {
                 putString(getString(R.string.set_key_library_revision), value.toString())
