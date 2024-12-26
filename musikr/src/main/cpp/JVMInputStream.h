@@ -1,7 +1,21 @@
-//
-// Created by oxycblt on 12/12/24.
-//
-
+/*
+ * Copyright (c) 2024 Auxio Project
+ * JVMInputStream.h is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 #ifndef AUXIO_JVMINPUTSTREAM_H
 #define AUXIO_JVMINPUTSTREAM_H
 
@@ -9,14 +23,14 @@
 
 #include "taglib/tiostream.h"
 
-class JVMInputStream : public  TagLib::IOStream {
+class JVMInputStream: public TagLib::IOStream {
 public:
     JVMInputStream(JNIEnv *env, jobject inputStream);
 
     ~JVMInputStream();
 
-    JVMInputStream(const JVMInputStream &) = delete;
-    JVMInputStream &operator=(const JVMInputStream &) = delete;
+    JVMInputStream(const JVMInputStream&) = delete;
+    JVMInputStream& operator=(const JVMInputStream&) = delete;
 
     /*!
      * Returns the stream name in the local file system encoding.
@@ -46,8 +60,8 @@ public:
      * \note This method is slow since it requires rewriting all of the file
      * after the insertion point.
      */
-    void insert(const TagLib::ByteVector &data,
-                        TagLib::offset_t start = 0, size_t replace = 0) override;
+    void insert(const TagLib::ByteVector &data, TagLib::offset_t start = 0,
+            size_t replace = 0) override;
 
     /*!
      * Removes a block of the file starting a \a start and continuing for
@@ -109,6 +123,5 @@ private:
     jmethodID inputStreamLengthMethod;
 
 };
-
 
 #endif //AUXIO_JVMINPUTSTREAM_H

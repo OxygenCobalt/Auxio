@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiles version="12">
+    <profile kind="CodeFormatterProfile" name="CustomProfile" version="12">
+        <setting id="org.eclipse.cdt.core.formatter.tabulation.char" value="space"/>
+        <setting id="org.eclipse.cdt.core.formatter.tabulation.size" value="4"/>
+        <setting id="org.eclipse.cdt.core.formatter.indentation.size" value="4"/>
+    </profile>
+</profiles>
