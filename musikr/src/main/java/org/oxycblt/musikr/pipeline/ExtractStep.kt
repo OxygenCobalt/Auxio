@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
@@ -52,8 +53,7 @@ internal interface ExtractStep {
                 MetadataExtractor.new(),
                 TagParser.new(),
                 storage.cache,
-                storage.storedCovers
-            )
+                storage.storedCovers)
     }
 }
 
@@ -64,6 +64,7 @@ private class ExtractStepImpl(
     private val cacheFactory: Cache.Factory,
     private val storedCovers: MutableStoredCovers
 ) : ExtractStep {
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
         val cache = cacheFactory.open()
         val addingMs = System.currentTimeMillis()
@@ -114,13 +115,13 @@ private class ExtractStepImpl(
 
         val metadata =
             fds.mapNotNull { fileWith ->
-                wrap(fileWith.file) { _ ->
-                    metadataExtractor
-                        .extract(fileWith.with)
-                        ?.let { FileWith(fileWith.file, it) }
-                        .also { withContext(Dispatchers.IO) { fileWith.with.close() } }
+                    wrap(fileWith.file) { _ ->
+                        metadataExtractor
+                            .extract(fileWith.with)
+                            ?.let { FileWith(fileWith.file, it) }
+                            .also { withContext(Dispatchers.IO) { fileWith.with.close() } }
+                    }
                 }
-            }
                 .flowOn(Dispatchers.IO)
                 // Covers are pretty big, so cap the amount of parsed metadata in-memory to at most
                 // 8 to minimize GCs.
@@ -150,19 +151,17 @@ private class ExtractStepImpl(
                 }
                 .flattenMerge()
 
-        val merged = merge(
-            filterFlow.manager,
-            readDistributedFlow.manager,
-            cacheFlow.manager,
-            cachedSongs,
-            writeDistributedFlow.manager,
-            writtenSongs,
-            playlistNodes
-        )
+        val merged =
+            merge(
+                filterFlow.manager,
+                readDistributedFlow.manager,
+                cacheFlow.manager,
+                cachedSongs,
+                writeDistributedFlow.manager,
+                writtenSongs,
+                playlistNodes)
 
-        return merged.onCompletion {
-            cache.finalize()
-        }
+        return merged.onCompletion { cache.finalize() }
     }
 
     private data class FileWith<T>(val file: DeviceFile, val with: T)

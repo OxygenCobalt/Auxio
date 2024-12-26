@@ -209,6 +209,28 @@ interface MusicRepository {
     }
 }
 
+/**
+ * Represents the current state of the music loader.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+sealed interface IndexingState {
+    /**
+     * Music loading is on-going.
+     *
+     * @param progress The current progress of the music loading.
+     */
+    data class Indexing(val progress: IndexingProgress) : IndexingState
+
+    /**
+     * Music loading has completed.
+     *
+     * @param error If music loading has failed, the error that occurred will be here. Otherwise, it
+     *   will be null.
+     */
+    data class Completed(val error: Exception?) : IndexingState
+}
+
 class MusicRepositoryImpl
 @Inject
 constructor(

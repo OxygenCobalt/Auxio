@@ -26,7 +26,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.StoredCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 
@@ -41,7 +40,9 @@ interface MusicModule {
 @Module
 @InstallIn(SingletonComponent::class)
 class MusikrShimModule {
-    @Singleton @Provides fun storedCache(@ApplicationContext context: Context) = StoredCache.from(context)
+    @Singleton
+    @Provides
+    fun storedCache(@ApplicationContext context: Context) = StoredCache.from(context)
 
     @Singleton
     @Provides

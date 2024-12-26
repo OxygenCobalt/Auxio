@@ -21,7 +21,6 @@ package org.oxycblt.musikr.cache
 import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -32,7 +31,6 @@ import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import androidx.room.Update
 import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
@@ -67,8 +65,7 @@ internal interface VisibleCacheDao {
     @Query("SELECT addedMs FROM CachedSong WHERE uri = :uri")
     suspend fun selectAddedMs(uri: String): Long?
 
-    @Transaction
-    suspend fun touch(uri: String) = updateTouchedNs(uri, System.nanoTime())
+    @Transaction suspend fun touch(uri: String) = updateTouchedNs(uri, System.nanoTime())
 
     @Query("UPDATE cachedsong SET touchedNs = :nowNs WHERE uri = :uri")
     suspend fun updateTouchedNs(uri: String, nowNs: Long)
@@ -84,8 +81,7 @@ internal interface InvisibleCacheDao {
 internal interface CacheWriteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(cachedSong: CachedSong)
 
-    @Query("DELETE FROM CachedSong WHERE touchedNs < :now")
-    suspend fun pruneOlderThan(now: Long)
+    @Query("DELETE FROM CachedSong WHERE touchedNs < :now") suspend fun pruneOlderThan(now: Long)
 }
 
 @Entity

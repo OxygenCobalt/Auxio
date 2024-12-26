@@ -96,7 +96,7 @@
         tools:layout="@layout/dialog_music_locations" />
     <dialog
         android:id="@+id/separators_dialog"
-        android:name="org.oxycblt.auxio.music.metadata.SeparatorsDialog"
+        android:name="org.oxycblt.auxio.music.interpret.SeparatorsDialog"
         android:label="separators_dialog"
         tools:layout="@layout/dialog_separators" />
 

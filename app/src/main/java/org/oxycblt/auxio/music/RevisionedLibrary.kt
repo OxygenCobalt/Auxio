@@ -75,7 +75,7 @@ class RevisionedCover(private val revision: UUID, val inner: Cover) : Cover by i
         get() = "${inner.id}@${revision}"
 }
 
-internal fun String.toUuidOrNull(): UUID? =
+private fun String.toUuidOrNull(): UUID? =
     try {
         UUID.fromString(this)
     } catch (e: IllegalArgumentException) {
