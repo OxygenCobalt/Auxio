@@ -54,8 +54,11 @@ internal abstract class CacheDatabase : RoomDatabase() {
 
 @Dao
 internal interface CacheInfoDao {
-    @Query("SELECT * FROM CachedSong WHERE uri = :uri AND dateModified = :dateModified")
-    suspend fun selectSong(uri: String, dateModified: Long): CachedSong?
+    @Query("SELECT * FROM CachedSong WHERE uri = :uri")
+    suspend fun selectSong(uri: String): CachedSong?
+
+    @Query("SELECT dateAdded FROM CachedSong WHERE uri = :uri")
+    suspend fun selectDateAdded(uri: String): Long?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(cachedSong: CachedSong)
 }
@@ -65,6 +68,7 @@ internal interface CacheInfoDao {
 internal data class CachedSong(
     @PrimaryKey val uri: String,
     val dateModified: Long,
+    val dateAdded: Long,
     val mimeType: String,
     val durationMs: Long,
     val bitrateHz: Int,
@@ -117,7 +121,8 @@ internal data class CachedSong(
                 genreNames = genreNames,
                 replayGainTrackAdjustment = replayGainTrackAdjustment,
                 replayGainAlbumAdjustment = replayGainAlbumAdjustment),
-            coverId?.let { storedCovers.obtain(it) })
+            coverId?.let { storedCovers.obtain(it) },
+            dateAdded = dateAdded)
 
     object Converters {
         @TypeConverter
@@ -137,6 +142,7 @@ internal data class CachedSong(
             CachedSong(
                 uri = rawSong.file.uri.toString(),
                 dateModified = rawSong.file.lastModified,
+                dateAdded = rawSong.dateAdded,
                 musicBrainzId = rawSong.tags.musicBrainzId,
                 name = rawSong.tags.name,
                 sortName = rawSong.tags.sortName,

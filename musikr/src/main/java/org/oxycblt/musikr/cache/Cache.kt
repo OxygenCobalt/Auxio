@@ -27,30 +27,48 @@ abstract class Cache {
     internal abstract suspend fun read(file: DeviceFile, storedCovers: StoredCovers): CacheResult
 
     internal abstract suspend fun write(song: RawSong)
+}
+
+interface StoredCache {
+    fun full(): Cache
+
+    fun writeOnly(): Cache
 
     companion object {
-        fun from(context: Context): Cache = CacheImpl(CacheDatabase.from(context).cachedSongsDao())
+        fun from(context: Context): StoredCache = StoredCacheImpl(CacheDatabase.from(context))
     }
 }
 
 internal sealed interface CacheResult {
     data class Hit(val song: RawSong) : CacheResult
 
-    data class Miss(val file: DeviceFile) : CacheResult
+    data class Miss(val file: DeviceFile, val dateAdded: Long?) : CacheResult
+}
+
+private class StoredCacheImpl(private val database: CacheDatabase) : StoredCache {
+    override fun full() = CacheImpl(database.cachedSongsDao())
+
+    override fun writeOnly() = WriteOnlyCacheImpl(database.cachedSongsDao())
 }
 
 private class CacheImpl(private val cacheInfoDao: CacheInfoDao) : Cache() {
-    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) =
-        cacheInfoDao.selectSong(file.uri.toString(), file.lastModified)?.let {
-            CacheResult.Hit(it.intoRawSong(file, storedCovers))
-        } ?: CacheResult.Miss(file)
+    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers): CacheResult {
+        val song = cacheInfoDao.selectSong(file.uri.toString()) ?:
+            return CacheResult.Miss(file, null)
+        if (song.dateModified != file.lastModified) {
+            return CacheResult.Miss(file, song.dateAdded)
+        }
+        return CacheResult.Hit(song.intoRawSong(file, storedCovers))
+    }
 
     override suspend fun write(song: RawSong) =
         cacheInfoDao.updateSong(CachedSong.fromRawSong(song))
 }
 
-class WriteOnlyCache(private val inner: Cache) : Cache() {
-    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) = CacheResult.Miss(file)
+private class WriteOnlyCacheImpl(private val cacheInfoDao: CacheInfoDao) : Cache() {
+    override suspend fun read(file: DeviceFile, storedCovers: StoredCovers) =
+        CacheResult.Miss(file, cacheInfoDao.selectDateAdded(file.uri.toString()))
 
-    override suspend fun write(song: RawSong) = inner.write(song)
+    override suspend fun write(song: RawSong) =
+        cacheInfoDao.updateSong(CachedSong.fromRawSong(song))
 }

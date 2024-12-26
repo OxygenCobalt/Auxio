@@ -63,6 +63,7 @@ private class ExtractStepImpl(
     private val storedCovers: MutableStoredCovers
 ) : ExtractStep {
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
+        val startTime = System.currentTimeMillis()
         val filterFlow =
             nodes.divert {
                 when (it) {
@@ -127,7 +128,7 @@ private class ExtractStepImpl(
                 .mapNotNull { fileWith ->
                     val tags = tagParser.parse(fileWith.file, fileWith.with)
                     val cover = fileWith.with.cover?.let { storedCovers.write(it) }
-                    RawSong(fileWith.file, fileWith.with.properties, tags, cover)
+                    RawSong(fileWith.file, fileWith.with.properties, tags, cover, startTime)
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
@@ -163,7 +164,8 @@ internal data class RawSong(
     val file: DeviceFile,
     val properties: Properties,
     val tags: ParsedTags,
-    val cover: Cover?
+    val cover: Cover?,
+    val dateAdded: Long
 )
 
 internal sealed interface ExtractedMusic {
