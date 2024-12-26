@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
@@ -63,7 +64,8 @@ private class ExtractStepImpl(
     private val storedCovers: MutableStoredCovers
 ) : ExtractStep {
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
-        val startTime = System.currentTimeMillis()
+        val cacheTimestamp = cache.lap()
+        val addingMs = System.currentTimeMillis()
         val filterFlow =
             nodes.divert {
                 when (it) {
@@ -128,7 +130,7 @@ private class ExtractStepImpl(
                 .mapNotNull { fileWith ->
                     val tags = tagParser.parse(fileWith.file, fileWith.with)
                     val cover = fileWith.with.cover?.let { storedCovers.write(it) }
-                    RawSong(fileWith.file, fileWith.with.properties, tags, cover, startTime)
+                    RawSong(fileWith.file, fileWith.with.properties, tags, cover, addingMs)
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
@@ -146,6 +148,9 @@ private class ExtractStepImpl(
                         .buffer(Channel.UNLIMITED)
                 }
                 .flattenMerge()
+                .onCompletion {
+                    cache.prune(cacheTimestamp)
+                }
 
         return merge(
             filterFlow.manager,
@@ -165,7 +170,7 @@ internal data class RawSong(
     val properties: Properties,
     val tags: ParsedTags,
     val cover: Cover?,
-    val dateAdded: Long
+    val addedMs: Long
 )
 
 internal sealed interface ExtractedMusic {

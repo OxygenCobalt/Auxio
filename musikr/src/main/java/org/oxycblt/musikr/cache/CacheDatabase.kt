@@ -21,6 +21,7 @@ package org.oxycblt.musikr.cache
 import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
+import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -28,8 +29,10 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import androidx.room.Update
 import org.oxycblt.musikr.cover.StoredCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
@@ -57,18 +60,28 @@ internal interface CacheInfoDao {
     @Query("SELECT * FROM CachedSong WHERE uri = :uri")
     suspend fun selectSong(uri: String): CachedSong?
 
-    @Query("SELECT dateAdded FROM CachedSong WHERE uri = :uri")
-    suspend fun selectDateAdded(uri: String): Long?
+    @Query("SELECT addedMs FROM CachedSong WHERE uri = :uri")
+    suspend fun selectAddedMs(uri: String): Long?
+
+    @Transaction
+    suspend fun touch(uri: String) = updateTouchedNs(uri, System.nanoTime())
+
+    @Query("UPDATE cachedsong SET touchedNs = :nowNs WHERE uri = :uri")
+    suspend fun updateTouchedNs(uri: String, nowNs: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(cachedSong: CachedSong)
+
+    @Query("DELETE FROM CachedSong WHERE touchedNs < :now")
+    suspend fun pruneOlderThan(now: Long)
 }
 
 @Entity
 @TypeConverters(CachedSong.Converters::class)
 internal data class CachedSong(
     @PrimaryKey val uri: String,
-    val dateModified: Long,
-    val dateAdded: Long,
+    val modifiedMs: Long,
+    val addedMs: Long,
+    val touchedNs: Long,
     val mimeType: String,
     val durationMs: Long,
     val bitrateHz: Int,
@@ -122,7 +135,7 @@ internal data class CachedSong(
                 replayGainTrackAdjustment = replayGainTrackAdjustment,
                 replayGainAlbumAdjustment = replayGainAlbumAdjustment),
             coverId?.let { storedCovers.obtain(it) },
-            dateAdded = dateAdded)
+            addedMs = addedMs)
 
     object Converters {
         @TypeConverter
@@ -141,8 +154,11 @@ internal data class CachedSong(
         fun fromRawSong(rawSong: RawSong) =
             CachedSong(
                 uri = rawSong.file.uri.toString(),
-                dateModified = rawSong.file.lastModified,
-                dateAdded = rawSong.dateAdded,
+                modifiedMs = rawSong.file.lastModified,
+                addedMs = rawSong.addedMs,
+                // Should be strictly monotonic so we don't prune this
+                // by accident later.
+                touchedNs = System.nanoTime(),
                 musicBrainzId = rawSong.tags.musicBrainzId,
                 name = rawSong.tags.name,
                 sortName = rawSong.tags.sortName,
