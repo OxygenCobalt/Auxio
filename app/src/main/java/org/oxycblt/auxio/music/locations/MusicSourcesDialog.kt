@@ -27,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.ConcatAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
@@ -45,8 +46,9 @@ import timber.log.Timber as L
  */
 @AndroidEntryPoint
 class MusicSourcesDialog :
-    ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(), LocationAdapter.Listener {
+    ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(), LocationAdapter.Listener, NewLocationFooterAdapter.Listener {
     private val locationAdapter = LocationAdapter(this)
+    private val locationFooterAdapter = NewLocationFooterAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
     @Inject lateinit var musicSettings: MusicSettings
 
@@ -71,26 +73,8 @@ class MusicSourcesDialog :
             registerForActivityResult(
                 ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
 
-        binding.locationsAdd.apply {
-            ViewCompat.setTooltipText(this, contentDescription)
-            setOnClickListener {
-                L.d("Opening launcher")
-                val launcher =
-                    requireNotNull(openDocumentTreeLauncher) {
-                        "Document tree launcher was not available"
-                    }
-
-                try {
-                    launcher.launch(null)
-                } catch (e: ActivityNotFoundException) {
-                    // User doesn't have a capable file manager.
-                    requireContext().showToast(R.string.err_no_app)
-                }
-            }
-        }
-
         binding.locationsRecycler.apply {
-            adapter = locationAdapter
+            adapter = ConcatAdapter(locationAdapter, locationFooterAdapter)
             itemAnimator = null
         }
 
@@ -100,7 +84,6 @@ class MusicSourcesDialog :
             } ?: musicSettings.musicLocations
 
         locationAdapter.addAll(locations)
-        requireBinding().locationsEmpty.isVisible = locations.isEmpty()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -117,7 +100,21 @@ class MusicSourcesDialog :
 
     override fun onRemoveLocation(location: MusicLocation) {
         locationAdapter.remove(location)
-        requireBinding().locationsEmpty.isVisible = locationAdapter.locations.isEmpty()
+    }
+
+    override fun onNewLocation() {
+        L.d("Opening launcher")
+        val launcher =
+            requireNotNull(openDocumentTreeLauncher) {
+                "Document tree launcher was not available"
+            }
+
+        try {
+            launcher.launch(null)
+        } catch (e: ActivityNotFoundException) {
+            // User doesn't have a capable file manager.
+            requireContext().showToast(R.string.err_no_app)
+        }
     }
 
     /**
@@ -136,7 +133,6 @@ class MusicSourcesDialog :
 
         if (location != null) {
             locationAdapter.add(location)
-            requireBinding().locationsEmpty.isVisible = false
         } else {
             requireContext().showToast(R.string.err_bad_location)
         }

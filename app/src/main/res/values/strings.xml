@@ -314,6 +314,7 @@
     <string name="set_locations">Music folders</string>
     <string name="set_locations_desc">Manage where music should be loaded from</string>
     <string name="set_locations_list">Folders</string>
+    <string name="set_locations_new">New folder</string>
     <string name="set_reindex">Refresh music</string>
     <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
     <!-- Different from "Reload music" -->
