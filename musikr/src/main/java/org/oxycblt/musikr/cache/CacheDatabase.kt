@@ -44,7 +44,11 @@ import org.oxycblt.musikr.util.splitEscaped
 
 @Database(entities = [CachedSong::class], version = 50, exportSchema = false)
 internal abstract class CacheDatabase : RoomDatabase() {
-    abstract fun cachedSongsDao(): CacheInfoDao
+    abstract fun visibleDao(): VisibleCacheDao
+
+    abstract fun invisibleDao(): InvisibleCacheDao
+
+    abstract fun writeDao(): CacheWriteDao
 
     companion object {
         fun from(context: Context) =
@@ -56,7 +60,7 @@ internal abstract class CacheDatabase : RoomDatabase() {
 }
 
 @Dao
-internal interface CacheInfoDao {
+internal interface VisibleCacheDao {
     @Query("SELECT * FROM CachedSong WHERE uri = :uri")
     suspend fun selectSong(uri: String): CachedSong?
 
@@ -68,7 +72,16 @@ internal interface CacheInfoDao {
 
     @Query("UPDATE cachedsong SET touchedNs = :nowNs WHERE uri = :uri")
     suspend fun updateTouchedNs(uri: String, nowNs: Long)
+}
 
+@Dao
+internal interface InvisibleCacheDao {
+    @Query("SELECT addedMs FROM CachedSong WHERE uri = :uri")
+    suspend fun selectAddedMs(uri: String): Long?
+}
+
+@Dao
+internal interface CacheWriteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(cachedSong: CachedSong)
 
     @Query("DELETE FROM CachedSong WHERE touchedNs < :now")

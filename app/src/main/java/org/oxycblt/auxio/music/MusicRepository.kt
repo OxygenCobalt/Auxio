@@ -362,7 +362,7 @@ constructor(
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
-        val cache = if (withCache) storedCache.full() else storedCache.writeOnly()
+        val cache = if (withCache) storedCache.visible() else storedCache.invisible()
         val covers = MutableRevisionedStoredCovers(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
