@@ -22,7 +22,6 @@ import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreSong
-import org.oxycblt.musikr.track.TrackedSong
 
 class PipelineException(val processing: WhileProcessing, val error: Exception) : Exception() {
     override val cause = error
@@ -45,11 +44,6 @@ sealed interface WhileProcessing {
 
     class APreSong internal constructor(private val preSong: PreSong) : WhileProcessing {
         override fun toString() = "Pre Song @ ${preSong.path}"
-    }
-
-    class ATrackedSong internal constructor(private val trackedSong: TrackedSong) :
-        WhileProcessing {
-        override fun toString() = "Tracked Song @ ${trackedSong.preSong.path}"
     }
 
     class APrePlaylist internal constructor(private val prePlaylist: PrePlaylist) :
@@ -84,13 +78,6 @@ internal suspend fun <R> wrap(song: PreSong, block: suspend (PreSong) -> R): R =
         block(song)
     } catch (e: Exception) {
         throw PipelineException(WhileProcessing.APreSong(song), e)
-    }
-
-internal suspend fun <R> wrap(song: TrackedSong, block: suspend (TrackedSong) -> R): R =
-    try {
-        block(song)
-    } catch (e: Exception) {
-        throw PipelineException(WhileProcessing.ATrackedSong(song), e)
     }
 
 internal suspend fun <R> wrap(playlist: PrePlaylist, block: suspend (PrePlaylist) -> R): R =

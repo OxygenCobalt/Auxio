@@ -65,6 +65,8 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             size = song.file.size,
             format = Format.infer(song.file.mimeType, song.properties.mimeType),
             lastModified = song.file.lastModified,
+            // TODO: Figure out what to do with date added
+            dateAdded = song.file.lastModified,
             musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull(),
             name = interpretation.naming.name(song.tags.name, song.tags.sortName),
             rawName = song.tags.name,

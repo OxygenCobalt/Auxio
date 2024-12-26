@@ -23,11 +23,9 @@ import org.oxycblt.musikr.cover.MutableStoredCovers
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
-import org.oxycblt.musikr.track.Tracker
 
 data class Storage(
     val cache: Cache,
-    val tracker: Tracker,
     val storedCovers: MutableStoredCovers,
     val storedPlaylists: StoredPlaylists
 )

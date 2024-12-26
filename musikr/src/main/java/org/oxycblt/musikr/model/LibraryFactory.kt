@@ -75,7 +75,7 @@ private class LibraryFactoryImpl() : LibraryFactory {
     }
 
     private class SongVertexCore(private val vertex: SongVertex) : SongCore {
-        override val trackedSong = vertex.trackedSong
+        override val preSong = vertex.preSong
 
         override fun resolveAlbum() = vertex.albumVertex.tag as Album
 

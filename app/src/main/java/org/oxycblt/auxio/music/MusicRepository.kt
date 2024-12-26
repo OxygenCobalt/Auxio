@@ -42,7 +42,6 @@ import org.oxycblt.musikr.cache.WriteOnlyCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
-import org.oxycblt.musikr.track.Tracker
 import timber.log.Timber as L
 
 /**
@@ -216,7 +215,6 @@ class MusicRepositoryImpl
 constructor(
     @ApplicationContext private val context: Context,
     private val cache: Cache,
-    private val tracker: Tracker,
     private val storedPlaylists: StoredPlaylists,
     private val musicSettings: MusicSettings
 ) : MusicRepository {
@@ -367,7 +365,7 @@ constructor(
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) cache else WriteOnlyCache(cache)
         val covers = MutableRevisionedStoredCovers(context, newRevision)
-        val storage = Storage(cache, tracker, covers, storedPlaylists)
+        val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
 
         val newLibrary =
