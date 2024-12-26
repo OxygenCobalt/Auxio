@@ -25,8 +25,6 @@ import android.view.LayoutInflater
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.ViewCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ConcatAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -46,7 +44,9 @@ import timber.log.Timber as L
  */
 @AndroidEntryPoint
 class MusicSourcesDialog :
-    ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(), LocationAdapter.Listener, NewLocationFooterAdapter.Listener {
+    ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(),
+    LocationAdapter.Listener,
+    NewLocationFooterAdapter.Listener {
     private val locationAdapter = LocationAdapter(this)
     private val locationFooterAdapter = NewLocationFooterAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
@@ -105,9 +105,7 @@ class MusicSourcesDialog :
     override fun onNewLocation() {
         L.d("Opening launcher")
         val launcher =
-            requireNotNull(openDocumentTreeLauncher) {
-                "Document tree launcher was not available"
-            }
+            requireNotNull(openDocumentTreeLauncher) { "Document tree launcher was not available" }
 
         try {
             launcher.launch(null)
