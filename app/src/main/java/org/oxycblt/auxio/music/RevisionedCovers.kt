@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * RevisionedLibrary.kt is part of Auxio.
+ * RevisionedCovers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,51 +22,50 @@ import android.content.Context
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverFiles
 import org.oxycblt.musikr.cover.CoverFormat
 import org.oxycblt.musikr.cover.MutableStoredCovers
 import org.oxycblt.musikr.cover.StoredCovers
 
-open class RevisionedStoredCovers(private val context: Context, private val revision: UUID?) :
-    StoredCovers {
-    protected val inner =
-        revision?.let { StoredCovers.from(context, "covers_$it", CoverFormat.jpeg()) }
-
+class RevisionedCovers(private val revision: UUID, private val inner: MutableStoredCovers) :
+    MutableStoredCovers {
     override suspend fun obtain(id: String): RevisionedCover? {
-        val split = id.split('@', limit = 2)
-        if (split.size != 2) return null
-        val (coverId, coverRevisionStr) = split
-        val coverRevision = coverRevisionStr.toUuidOrNull() ?: return null
-        if (revision != null) {
-            if (coverRevision != revision) {
-                return null
-            }
-            val storedCovers = unlikelyToBeNull(inner)
-            return storedCovers.obtain(coverId)?.let { RevisionedCover(revision, it) }
-        } else {
-            val storedCovers =
-                StoredCovers.from(context, "covers_$coverRevision", CoverFormat.jpeg())
-            return storedCovers.obtain(coverId)?.let { RevisionedCover(coverRevision, it) }
-        }
+        val (coverId, coverRevision) = parse(id) ?: return null
+        if (coverRevision != revision) return null
+        return inner.obtain(coverId)?.let { RevisionedCover(revision, it) }
+    }
+
+    override suspend fun write(data: ByteArray): RevisionedCover? {
+        return inner.write(data)?.let { RevisionedCover(revision, it) }
     }
 
     companion object {
+        suspend fun at(context: Context, revision: UUID): RevisionedCovers {
+            val dir =
+                withContext(Dispatchers.IO) {
+                    context.filesDir.resolve("covers/${revision}").apply { mkdirs() }
+                }
+            return RevisionedCovers(
+                revision, StoredCovers.from(CoverFiles.at(dir, CoverFormat.jpeg())))
+        }
+
         suspend fun cleanup(context: Context, exclude: UUID) =
             withContext(Dispatchers.IO) {
+                val excludeName = exclude.toString()
                 context.filesDir
-                    .listFiles { file ->
-                        file.name.startsWith("covers_") && file.name != "covers_$exclude"
-                    }
+                    .resolve("covers")
+                    .listFiles { file -> file.name != excludeName }
                     ?.forEach { it.deleteRecursively() }
             }
-    }
-}
 
-class MutableRevisionedStoredCovers(context: Context, private val revision: UUID) :
-    RevisionedStoredCovers(context, revision), MutableStoredCovers {
-    override suspend fun write(data: ByteArray): RevisionedCover? {
-        return unlikelyToBeNull(inner).write(data)?.let { RevisionedCover(revision, it) }
+        private fun parse(id: String): Pair<String, UUID>? {
+            val split = id.split('@', limit = 2)
+            if (split.size != 2) return null
+            val (coverId, coverRevisionStr) = split
+            val coverRevision = coverRevisionStr.toUuidOrNull() ?: return null
+            return coverId to coverRevision
+        }
     }
 }
 

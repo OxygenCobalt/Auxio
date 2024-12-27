@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.cover
 
-import android.content.Context
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -27,18 +26,20 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-internal interface CoverFiles {
+interface CoverFiles {
     suspend fun find(id: String): CoverFile?
 
     suspend fun write(id: String, data: ByteArray): CoverFile?
 
     companion object {
-        fun at(context: Context, path: String, format: CoverFormat): CoverFiles =
-            CoverFilesImpl(File(context.filesDir, path).also { it.mkdirs() }, format)
+        suspend fun at(dir: File, format: CoverFormat): CoverFiles {
+            withContext(Dispatchers.IO) { check(dir.exists() && dir.isDirectory) }
+            return CoverFilesImpl(dir, format)
+        }
     }
 }
 
-internal interface CoverFile {
+interface CoverFile {
     suspend fun open(): InputStream?
 }
 

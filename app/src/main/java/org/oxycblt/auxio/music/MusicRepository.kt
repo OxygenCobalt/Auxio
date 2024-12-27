@@ -385,7 +385,7 @@ constructor(
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) storedCache.visible() else storedCache.invisible()
-        val covers = MutableRevisionedStoredCovers(context, newRevision)
+        val covers = RevisionedCovers.at(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
 
@@ -432,7 +432,7 @@ constructor(
         // Old cover revisions may be lying around, even during a normal refresh due
         // to really lucky cancellations. Clean those up now that it's impossible for
         // the rest of the app to be using them.
-        RevisionedStoredCovers.cleanup(context, newRevision)
+        RevisionedCovers.cleanup(context, newRevision)
     }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {

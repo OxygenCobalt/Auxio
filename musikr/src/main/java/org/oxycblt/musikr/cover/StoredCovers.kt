@@ -18,14 +18,12 @@
  
 package org.oxycblt.musikr.cover
 
-import android.content.Context
-
 interface StoredCovers {
     suspend fun obtain(id: String): Cover?
 
     companion object {
-        fun from(context: Context, path: String, format: CoverFormat): MutableStoredCovers =
-            FileStoredCovers(CoverIdentifier.md5(), CoverFiles.at(context, path, format))
+        fun from(files: CoverFiles): MutableStoredCovers =
+            FileStoredCovers(CoverIdentifier.md5(), files)
     }
 }
 
