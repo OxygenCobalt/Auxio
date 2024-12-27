@@ -68,7 +68,7 @@ internal interface VisibleCacheDao {
 
     @Transaction suspend fun touch(uri: String) = updateTouchedNs(uri, System.nanoTime())
 
-    @Query("UPDATE cachedsong SET touchedNs = :nowNs WHERE uri = :uri")
+    @Query("UPDATE CachedSong SET touchedNs = :nowNs WHERE uri = :uri")
     suspend fun updateTouchedNs(uri: String, nowNs: Long)
 }
 
