@@ -334,4 +334,5 @@
     <string name="cnt_mp4">MPEG-4, що містить %s</string>
     <string name="cdc_unknown">Невідомий</string>
     <string name="cdc_alac">Аудіокодек Apple без втрат (ALAC)</string>
+    <string name="set_locations_new">Нова папка</string>
 </resources>
