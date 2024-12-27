@@ -32,6 +32,8 @@ interface CoverFiles {
 
     suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile?
 
+    suspend fun deleteWhere(block: (String) -> Boolean)
+
     companion object {
         suspend fun at(dir: File): CoverFiles {
             withContext(Dispatchers.IO) { check(dir.exists() && dir.isDirectory) }
@@ -81,6 +83,12 @@ private class CoverFilesImpl(private val dir: File) : CoverFiles {
             } else {
                 CoverFileImpl(targetFile)
             }
+        }
+    }
+
+    override suspend fun deleteWhere(block: (String) -> Boolean) {
+        withContext(Dispatchers.IO) {
+            dir.listFiles { file -> block(file.name) }?.forEach { it.deleteRecursively() }
         }
     }
 }

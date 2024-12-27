@@ -18,6 +18,8 @@
  
 package org.oxycblt.musikr.cover
 
+import org.oxycblt.musikr.Library
+
 interface StoredCovers {
     suspend fun obtain(id: String): Cover?
 
@@ -32,6 +34,8 @@ interface StoredCovers {
 
 interface MutableStoredCovers : StoredCovers {
     suspend fun write(data: ByteArray): Cover?
+
+    suspend fun cleanup(assuming: Library)
 }
 
 private class FileStoredCovers(
@@ -47,6 +51,11 @@ private class FileStoredCovers(
         return coverFiles
             .write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
             ?.let { FileCover(id, it) }
+    }
+
+    override suspend fun cleanup(assuming: Library) {
+        val used = assuming.songs.mapNotNullTo(mutableSetOf()) { it.cover?.id?.let(::getFileName) }
+        coverFiles.deleteWhere { it !in used }
     }
 
     private fun getFileName(id: String) = "$id.${coverFormat.extension}"

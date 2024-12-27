@@ -432,7 +432,7 @@ constructor(
         // Old cover revisions may be lying around, even during a normal refresh due
         // to really lucky cancellations. Clean those up now that it's impossible for
         // the rest of the app to be using them.
-        covers.cleanup(context)
+        covers.cleanup(newLibrary)
     }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {
