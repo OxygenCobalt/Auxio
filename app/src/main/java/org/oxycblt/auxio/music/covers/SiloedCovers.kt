@@ -20,13 +20,11 @@ package org.oxycblt.auxio.music.covers
 
 import android.content.Context
 import java.io.File
-import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverFiles
 import org.oxycblt.musikr.cover.CoverFormat
-import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.ObtainResult
@@ -72,21 +70,6 @@ class SiloedCovers(
     }
 }
 
-data class CoverSilo(val revision: UUID, val params: CoverParams) {
-    override fun toString() = "${revision}.${params.resolution}.${params.quality}"
-
-    companion object {
-        fun parse(silo: String): CoverSilo? {
-            val parts = silo.split('.')
-            if (parts.size != 3) return null
-            val revision = parts[0].toUuidOrNull() ?: return null
-            val resolution = parts[1].toIntOrNull() ?: return null
-            val quality = parts[2].toIntOrNull() ?: return null
-            return CoverSilo(revision, CoverParams.of(resolution, quality))
-        }
-    }
-}
-
 class SiloedCover(silo: CoverSilo, val innerCover: Cover) : Cover by innerCover {
     private val innerId = SiloedCoverId(silo, innerCover.id)
     override val id = innerId.toString()
@@ -104,10 +87,3 @@ data class SiloedCoverId(val silo: CoverSilo, val id: String) {
         }
     }
 }
-
-private fun String.toUuidOrNull(): UUID? =
-    try {
-        UUID.fromString(this)
-    } catch (e: IllegalArgumentException) {
-        null
-    }
