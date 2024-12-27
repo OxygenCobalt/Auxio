@@ -72,7 +72,7 @@ private class CoverFilesImpl(private val dir: File) : CoverFiles {
                     val tempFile = File(dir, "$name.tmp")
 
                     try {
-                        block(tempFile.outputStream())
+                        tempFile.outputStream().use { block(it) }
                         tempFile.renameTo(targetFile)
                         CoverFileImpl(targetFile)
                     } catch (e: IOException) {
