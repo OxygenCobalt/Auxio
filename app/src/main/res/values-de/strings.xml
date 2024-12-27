@@ -330,4 +330,5 @@
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Unbekannt</string>
     <string name="def_album">Unbekanntes Album</string>
+    <string name="set_locations_new">Neuer Ordner</string>
 </resources>
