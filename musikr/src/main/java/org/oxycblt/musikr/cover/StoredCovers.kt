@@ -22,8 +22,11 @@ interface StoredCovers {
     suspend fun obtain(id: String): Cover?
 
     companion object {
-        fun from(files: CoverFiles): MutableStoredCovers =
-            FileStoredCovers(CoverIdentifier.md5(), files)
+        fun from(
+            coverFiles: CoverFiles,
+            coverFormat: CoverFormat,
+            identifier: CoverIdentifier = CoverIdentifier.md5()
+        ): MutableStoredCovers = FileStoredCovers(coverFiles, coverFormat, identifier)
     }
 }
 
@@ -32,15 +35,21 @@ interface MutableStoredCovers : StoredCovers {
 }
 
 private class FileStoredCovers(
+    private val coverFiles: CoverFiles,
+    private val coverFormat: CoverFormat,
     private val coverIdentifier: CoverIdentifier,
-    private val coverFiles: CoverFiles
 ) : StoredCovers, MutableStoredCovers {
-    override suspend fun obtain(id: String) = coverFiles.find(id)?.let { FileCover(id, it) }
+    override suspend fun obtain(id: String) =
+        coverFiles.find(getFileName(id))?.let { FileCover(id, it) }
 
-    override suspend fun write(data: ByteArray) =
-        coverIdentifier.identify(data).let { id ->
-            coverFiles.write(id, data)?.let { FileCover(id, it) }
-        }
+    override suspend fun write(data: ByteArray): Cover? {
+        val id = coverIdentifier.identify(data)
+        return coverFiles
+            .write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
+            ?.let { FileCover(id, it) }
+    }
+
+    private fun getFileName(id: String) = "$id.${coverFormat.extension}"
 }
 
 private class FileCover(override val id: String, private val coverFile: CoverFile) : Cover {

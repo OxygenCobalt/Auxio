@@ -47,7 +47,7 @@ class RevisionedCovers(private val revision: UUID, private val inner: MutableSto
                     context.filesDir.resolve("covers/${revision}").apply { mkdirs() }
                 }
             return RevisionedCovers(
-                revision, StoredCovers.from(CoverFiles.at(dir, CoverFormat.jpeg())))
+                revision, StoredCovers.from(CoverFiles.at(dir), CoverFormat.jpeg()))
         }
 
         suspend fun cleanup(context: Context, exclude: UUID) =

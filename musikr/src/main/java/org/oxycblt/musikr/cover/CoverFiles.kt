@@ -21,20 +21,21 @@ package org.oxycblt.musikr.cover
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 interface CoverFiles {
-    suspend fun find(id: String): CoverFile?
+    suspend fun find(name: String): CoverFile?
 
-    suspend fun write(id: String, data: ByteArray): CoverFile?
+    suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile?
 
     companion object {
-        suspend fun at(dir: File, format: CoverFormat): CoverFiles {
+        suspend fun at(dir: File): CoverFiles {
             withContext(Dispatchers.IO) { check(dir.exists() && dir.isDirectory) }
-            return CoverFilesImpl(dir, format)
+            return CoverFilesImpl(dir)
         }
     }
 }
@@ -43,8 +44,7 @@ interface CoverFile {
     suspend fun open(): InputStream?
 }
 
-private class CoverFilesImpl(private val dir: File, private val coverFormat: CoverFormat) :
-    CoverFiles {
+private class CoverFilesImpl(private val dir: File) : CoverFiles {
     private val fileMutexes = mutableMapOf<String, Mutex>()
     private val mapMutex = Mutex()
 
@@ -52,25 +52,25 @@ private class CoverFilesImpl(private val dir: File, private val coverFormat: Cov
         return mapMutex.withLock { fileMutexes.getOrPut(file) { Mutex() } }
     }
 
-    override suspend fun find(id: String): CoverFile? =
+    override suspend fun find(name: String): CoverFile? =
         withContext(Dispatchers.IO) {
             try {
-                File(dir, getTargetFilePath(id)).takeIf { it.exists() }?.let { CoverFileImpl(it) }
+                File(dir, name).takeIf { it.exists() }?.let { CoverFileImpl(it) }
             } catch (e: IOException) {
                 null
             }
         }
 
-    override suspend fun write(id: String, data: ByteArray): CoverFile? {
-        val fileMutex = getMutexForFile(id)
+    override suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile? {
+        val fileMutex = getMutexForFile(name)
         return fileMutex.withLock {
-            val targetFile = File(dir, getTargetFilePath(id))
+            val targetFile = File(dir, name)
             if (!targetFile.exists()) {
                 withContext(Dispatchers.IO) {
-                    val tempFile = File(dir, getTempFilePath(id))
+                    val tempFile = File(dir, "$name.tmp")
 
                     try {
-                        tempFile.outputStream().use { coverFormat.transcodeInto(data, it) }
+                        block(tempFile.outputStream())
                         tempFile.renameTo(targetFile)
                         CoverFileImpl(targetFile)
                     } catch (e: IOException) {
@@ -83,10 +83,6 @@ private class CoverFilesImpl(private val dir: File, private val coverFormat: Cov
             }
         }
     }
-
-    private fun getTargetFilePath(name: String) = "cover_${name}.${coverFormat.extension}"
-
-    private fun getTempFilePath(name: String) = "${getTargetFilePath(name)}.tmp"
 }
 
 private class CoverFileImpl(private val file: File) : CoverFile {
