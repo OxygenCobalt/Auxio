@@ -339,4 +339,5 @@
     <string name="cnt_mp4">MPEG-4 obsahující %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Neznámý</string>
+    <string name="set_locations_new">Nová složka</string>
 </resources>
