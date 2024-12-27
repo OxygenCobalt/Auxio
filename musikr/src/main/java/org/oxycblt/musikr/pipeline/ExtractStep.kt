@@ -35,7 +35,7 @@ import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.MutableStoredCovers
+import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.metadata.Properties
@@ -62,7 +62,7 @@ private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
     private val cacheFactory: Cache.Factory,
-    private val storedCovers: MutableStoredCovers
+    private val storedCovers: MutableCovers
 ) : ExtractStep {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {

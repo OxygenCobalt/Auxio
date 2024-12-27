@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
 interface CoverFiles {
     suspend fun find(name: String): CoverFile?
 
-    suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile?
+    suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile
 
     suspend fun deleteWhere(block: (String) -> Boolean)
 
@@ -63,7 +63,7 @@ private class CoverFilesImpl(private val dir: File) : CoverFiles {
             }
         }
 
-    override suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile? {
+    override suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile {
         val fileMutex = getMutexForFile(name)
         return fileMutex.withLock {
             val targetFile = File(dir, name)
@@ -77,7 +77,7 @@ private class CoverFilesImpl(private val dir: File) : CoverFiles {
                         CoverFileImpl(targetFile)
                     } catch (e: IOException) {
                         tempFile.delete()
-                        null
+                        throw e
                     }
                 }
             } else {

@@ -28,23 +28,25 @@ import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverFiles
 import org.oxycblt.musikr.cover.CoverFormat
 import org.oxycblt.musikr.cover.CoverParams
-import org.oxycblt.musikr.cover.MutableStoredCovers
-import org.oxycblt.musikr.cover.StoredCovers
+import org.oxycblt.musikr.cover.Covers
+import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.cover.ObtainResult
 
 class SiloedCovers(
     private val rootDir: File,
     private val silo: CoverSilo,
-    private val inner: MutableStoredCovers
-) : MutableStoredCovers {
-    override suspend fun obtain(id: String): SiloedCover? {
-        val coverId = SiloedCoverId.parse(id) ?: return null
-        if (coverId.silo != silo) return null
-        return inner.obtain(coverId.id)?.let { SiloedCover(coverId.silo, it) }
+    private val inner: MutableCovers
+) : MutableCovers {
+    override suspend fun obtain(id: String): ObtainResult {
+        val coverId = SiloedCoverId.parse(id) ?: return ObtainResult.Miss
+        if (coverId.silo != silo) return ObtainResult.Miss
+        return when (val result = inner.obtain(coverId.id)) {
+            is ObtainResult.Hit -> ObtainResult.Hit(SiloedCover(silo, result.cover))
+            is ObtainResult.Miss -> ObtainResult.Miss
+        }
     }
 
-    override suspend fun write(data: ByteArray): SiloedCover? {
-        return inner.write(data)?.let { SiloedCover(silo, it) }
-    }
+    override suspend fun write(data: ByteArray) = SiloedCover(silo, inner.write(data))
 
     override suspend fun cleanup(assuming: Library) {
         inner.cleanup(assuming)
@@ -66,7 +68,7 @@ class SiloedCovers(
             }
             val files = CoverFiles.at(revisionDir)
             val format = CoverFormat.jpeg(silo.params)
-            return SiloedCovers(rootDir, silo, StoredCovers.from(files, format))
+            return SiloedCovers(rootDir, silo, Covers.from(files, format))
         }
     }
 }

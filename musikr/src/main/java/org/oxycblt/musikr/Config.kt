@@ -19,14 +19,14 @@
 package org.oxycblt.musikr
 
 import org.oxycblt.musikr.cache.Cache
-import org.oxycblt.musikr.cover.MutableStoredCovers
+import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
 
 data class Storage(
     val cache: Cache.Factory,
-    val storedCovers: MutableStoredCovers,
+    val storedCovers: MutableCovers,
     val storedPlaylists: StoredPlaylists
 )
 

@@ -31,7 +31,8 @@ import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.musikr.cover.StoredCovers
+import org.oxycblt.musikr.cover.Covers
+import org.oxycblt.musikr.cover.ObtainResult
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
@@ -117,8 +118,17 @@ internal data class CachedSong(
     val replayGainAlbumAdjustment: Float?,
     val coverId: String?,
 ) {
-    suspend fun intoRawSong(file: DeviceFile, storedCovers: StoredCovers) =
-        RawSong(
+    suspend fun intoRawSong(file: DeviceFile, covers: Covers): RawSong? {
+        val cover =
+            when (val result = coverId?.let { covers.obtain(it) }) {
+                // We found the cover.
+                is ObtainResult.Hit -> result.cover
+                // We actually didn't find the cover, can't safely convert.
+                is ObtainResult.Miss -> return null
+                // No cover in the first place, can ignore.
+                null -> null
+            }
+        return RawSong(
             file,
             Properties(mimeType, durationMs, bitrateHz, sampleRateHz),
             ParsedTags(
@@ -143,8 +153,9 @@ internal data class CachedSong(
                 genreNames = genreNames,
                 replayGainTrackAdjustment = replayGainTrackAdjustment,
                 replayGainAlbumAdjustment = replayGainAlbumAdjustment),
-            coverId?.let { storedCovers.obtain(it) },
+            cover = cover,
             addedMs = addedMs)
+    }
 
     object Converters {
         @TypeConverter

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * StoredCovers.kt is part of Auxio.
+ * Covers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,37 +20,48 @@ package org.oxycblt.musikr.cover
 
 import org.oxycblt.musikr.Library
 
-interface StoredCovers {
-    suspend fun obtain(id: String): Cover?
+interface Covers {
+    suspend fun obtain(id: String): ObtainResult
 
     companion object {
         fun from(
             coverFiles: CoverFiles,
             coverFormat: CoverFormat,
             identifier: CoverIdentifier = CoverIdentifier.md5()
-        ): MutableStoredCovers = FileStoredCovers(coverFiles, coverFormat, identifier)
+        ): MutableCovers = FileCovers(coverFiles, coverFormat, identifier)
     }
 }
 
-interface MutableStoredCovers : StoredCovers {
-    suspend fun write(data: ByteArray): Cover?
+interface MutableCovers : Covers {
+    suspend fun write(data: ByteArray): Cover
 
     suspend fun cleanup(assuming: Library)
 }
 
-private class FileStoredCovers(
+sealed interface ObtainResult {
+    data class Hit(val cover: Cover) : ObtainResult
+
+    data object Miss : ObtainResult
+}
+
+private class FileCovers(
     private val coverFiles: CoverFiles,
     private val coverFormat: CoverFormat,
     private val coverIdentifier: CoverIdentifier,
-) : StoredCovers, MutableStoredCovers {
-    override suspend fun obtain(id: String) =
-        coverFiles.find(getFileName(id))?.let { FileCover(id, it) }
+) : Covers, MutableCovers {
+    override suspend fun obtain(id: String): ObtainResult {
+        val file = coverFiles.find(getFileName(id))
+        return if (file != null) {
+            ObtainResult.Hit(FileCover(id, file))
+        } else {
+            ObtainResult.Miss
+        }
+    }
 
-    override suspend fun write(data: ByteArray): Cover? {
+    override suspend fun write(data: ByteArray): Cover {
         val id = coverIdentifier.identify(data)
-        return coverFiles
-            .write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
-            ?.let { FileCover(id, it) }
+        val file = coverFiles.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
+        return FileCover(id, file)
     }
 
     override suspend fun cleanup(assuming: Library) {
