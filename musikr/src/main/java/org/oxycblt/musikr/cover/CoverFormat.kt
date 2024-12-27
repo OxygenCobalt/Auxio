@@ -28,37 +28,24 @@ abstract class CoverFormat {
     internal abstract fun transcodeInto(data: ByteArray, output: OutputStream): Boolean
 
     companion object {
-        // Enable if perhaps you want to try other formats.
-        // Currently this is just far too slow.
-        //        fun webp(): CoverFormat = CoverFormatImpl(
-        //            "webp",
-        //            750,
-        //            80,
-        //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        //                Bitmap.CompressFormat.WEBP_LOSSY
-        //            } else {
-        //                Bitmap.CompressFormat.WEBP
-        //            }
-        //        )
-
-        fun jpeg(): CoverFormat = CoverFormatImpl("jpg", 1000, 100, Bitmap.CompressFormat.JPEG)
+        fun jpeg(params: CoverParams): CoverFormat =
+            CoverFormatImpl("jpg", params, Bitmap.CompressFormat.JPEG)
     }
 }
 
 private class CoverFormatImpl(
     override val extension: String,
-    val size: Int,
-    val quality: Int,
-    val format: Bitmap.CompressFormat,
+    private val params: CoverParams,
+    private val format: Bitmap.CompressFormat,
 ) : CoverFormat() {
     override fun transcodeInto(data: ByteArray, output: OutputStream) =
         BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeByteArray(data, 0, data.size, this)
-            inSampleSize = calculateInSampleSize(size)
+            inSampleSize = calculateInSampleSize(params.resolution)
             inJustDecodeBounds = false
             val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size, this) ?: return@run false
-            bitmap.compress(format, quality, output)
+            bitmap.compress(format, params.quality, output)
             true
         }
 

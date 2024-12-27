@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverFiles
 import org.oxycblt.musikr.cover.CoverFormat
+import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.cover.MutableStoredCovers
 import org.oxycblt.musikr.cover.StoredCovers
 
@@ -47,7 +48,8 @@ class RevisionedCovers(private val revision: UUID, private val inner: MutableSto
                     context.filesDir.resolve("covers/${revision}").apply { mkdirs() }
                 }
             return RevisionedCovers(
-                revision, StoredCovers.from(CoverFiles.at(dir), CoverFormat.jpeg()))
+                revision,
+                StoredCovers.from(CoverFiles.at(dir), CoverFormat.jpeg(CoverParams.of(750, 80))))
         }
 
         suspend fun cleanup(context: Context, exclude: UUID) =
