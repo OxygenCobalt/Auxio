@@ -41,6 +41,15 @@ class RevisionedCovers(private val revision: UUID, private val inner: MutableSto
         return inner.write(data)?.let { RevisionedCover(revision, it) }
     }
 
+    suspend fun cleanup(context: Context) =
+        withContext(Dispatchers.IO) {
+            val exclude = revision.toString()
+            context.filesDir
+                .resolve("covers")
+                .listFiles { file -> file.name != exclude }
+                ?.forEach { it.deleteRecursively() }
+        }
+
     companion object {
         suspend fun at(context: Context, revision: UUID): RevisionedCovers {
             val dir =
@@ -51,15 +60,6 @@ class RevisionedCovers(private val revision: UUID, private val inner: MutableSto
                 revision,
                 StoredCovers.from(CoverFiles.at(dir), CoverFormat.jpeg(CoverParams.of(750, 80))))
         }
-
-        suspend fun cleanup(context: Context, exclude: UUID) =
-            withContext(Dispatchers.IO) {
-                val excludeName = exclude.toString()
-                context.filesDir
-                    .resolve("covers")
-                    .listFiles { file -> file.name != excludeName }
-                    ?.forEach { it.deleteRecursively() }
-            }
 
         private fun parse(id: String): Pair<String, UUID>? {
             val split = id.split('@', limit = 2)
