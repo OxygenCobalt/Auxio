@@ -19,6 +19,11 @@
 package org.oxycblt.musikr.cover
 
 class CoverParams private constructor(val resolution: Int, val quality: Int) {
+    override fun hashCode() = 31 * resolution + quality
+
+    override fun equals(other: Any?) =
+        other is CoverParams && other.resolution == resolution && other.quality == quality
+
     companion object {
         fun of(resolution: Int, quality: Int): CoverParams {
             check(resolution > 0) { "Resolution must be positive" }
