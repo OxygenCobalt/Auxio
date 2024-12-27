@@ -322,4 +322,5 @@
     <string name="cnt_mp4">MPEG-4 %s koodekiga</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Teadmata</string>
+    <string name="set_locations_new">Uus kaust</string>
 </resources>
