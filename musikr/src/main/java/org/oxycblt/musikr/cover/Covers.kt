@@ -18,8 +18,6 @@
  
 package org.oxycblt.musikr.cover
 
-import org.oxycblt.musikr.Library
-
 interface Covers {
     suspend fun obtain(id: String): ObtainResult
 
@@ -35,7 +33,7 @@ interface Covers {
 interface MutableCovers : Covers {
     suspend fun write(data: ByteArray): Cover
 
-    suspend fun cleanup(assuming: Library)
+    suspend fun cleanup(excluding: Collection<Cover>)
 }
 
 sealed interface ObtainResult {
@@ -64,8 +62,8 @@ private class FileCovers(
         return FileCover(id, file)
     }
 
-    override suspend fun cleanup(assuming: Library) {
-        val used = assuming.songs.mapNotNullTo(mutableSetOf()) { it.cover?.id?.let(::getFileName) }
+    override suspend fun cleanup(excluding: Collection<Cover>) {
+        val used = excluding.mapTo(mutableSetOf()) { getFileName(it.id) }
         coverFiles.deleteWhere { it !in used }
     }
 

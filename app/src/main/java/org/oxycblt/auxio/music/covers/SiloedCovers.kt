@@ -23,7 +23,6 @@ import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverFiles
 import org.oxycblt.musikr.cover.CoverFormat
@@ -48,8 +47,8 @@ class SiloedCovers(
 
     override suspend fun write(data: ByteArray) = SiloedCover(silo, inner.write(data))
 
-    override suspend fun cleanup(assuming: Library) {
-        inner.cleanup(assuming)
+    override suspend fun cleanup(excluding: Collection<Cover>) {
+        inner.cleanup(excluding.filterIsInstance<SiloedCover>().map { it.innerCover })
 
         // Destroy old revisions no longer being used.
         withContext(Dispatchers.IO) {
@@ -88,7 +87,7 @@ data class CoverSilo(val revision: UUID, val params: CoverParams) {
     }
 }
 
-class SiloedCover(silo: CoverSilo, private val innerCover: Cover) : Cover by innerCover {
+class SiloedCover(silo: CoverSilo, val innerCover: Cover) : Cover by innerCover {
     private val innerId = SiloedCoverId(silo, innerCover.id)
     override val id = innerId.toString()
 }
