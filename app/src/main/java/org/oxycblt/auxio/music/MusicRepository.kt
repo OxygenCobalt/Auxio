@@ -28,6 +28,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
+import org.oxycblt.auxio.music.covers.CoverSilo
+import org.oxycblt.auxio.music.covers.SiloedCovers
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library
@@ -38,6 +40,7 @@ import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.StoredCache
+import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -385,7 +388,7 @@ constructor(
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) storedCache.visible() else storedCache.invisible()
-        val covers = RevisionedCovers.at(context, newRevision)
+        val covers = SiloedCovers.at(context, CoverSilo(newRevision, CoverParams.of(750, 80)))
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
 

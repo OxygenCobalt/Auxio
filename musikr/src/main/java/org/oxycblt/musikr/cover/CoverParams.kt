@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.cover
 
-class CoverParams private constructor(internal val resolution: Int, internal val quality: Int) {
+class CoverParams private constructor(val resolution: Int, val quality: Int) {
     companion object {
         fun of(resolution: Int, quality: Int): CoverParams {
             check(resolution > 0) { "Resolution must be positive" }
