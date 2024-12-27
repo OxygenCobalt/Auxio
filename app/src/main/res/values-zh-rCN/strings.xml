@@ -328,4 +328,5 @@
     <string name="cnt_mp4">含 %s 的 MPEG-4</string>
     <string name="cdc_alac">Apple 无损音频编解码器（ALAC）</string>
     <string name="cdc_unknown">未知</string>
+    <string name="set_locations_new">新文件夹</string>
 </resources>
