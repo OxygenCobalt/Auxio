@@ -57,7 +57,11 @@ class SiloedCovers(
     }
 
     companion object {
-        suspend fun from(context: Context, silo: CoverSilo, identifier: CoverIdentifier): SiloedCovers {
+        suspend fun from(
+            context: Context,
+            silo: CoverSilo,
+            identifier: CoverIdentifier
+        ): SiloedCovers {
             val rootDir: File
             val revisionDir: File
             withContext(Dispatchers.IO) {

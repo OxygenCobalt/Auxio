@@ -49,7 +49,7 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
         get() =
             CoverMode.fromIntCode(
                 sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE))
-                ?: CoverMode.FAST
+                ?: CoverMode.BALANCED
 
     override val forceSquareCovers: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_square_covers), false)
@@ -64,14 +64,32 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
                 when {
                     !sharedPreferences.getBoolean(OLD_KEY_SHOW_COVERS, true) -> CoverMode.OFF
                     !sharedPreferences.getBoolean(OLD_KEY_QUALITY_COVERS, true) ->
-                        CoverMode.FAST
-                    else -> CoverMode.QUALITY
+                        CoverMode.BALANCED
+                    else -> CoverMode.BALANCED
                 }
 
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_cover_mode), mode.intCode)
                 remove(OLD_KEY_SHOW_COVERS)
                 remove(OLD_KEY_QUALITY_COVERS)
+            }
+        }
+
+        if (sharedPreferences.contains(OLD_KEY_COVER_MODE)) {
+            L.d("Migrating cover mode setting")
+
+            var mode =
+                CoverMode.fromIntCode(sharedPreferences.getInt(OLD_KEY_COVER_MODE, Int.MIN_VALUE))
+                    ?: CoverMode.BALANCED
+            if (mode == CoverMode.HIGH_QUALITY) {
+                // High quality now has space characteristics that could be
+                // undesirable, clamp to balanced.
+                mode = CoverMode.BALANCED
+            }
+
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_cover_mode), mode.intCode)
+                remove(OLD_KEY_COVER_MODE)
             }
         }
     }
@@ -87,5 +105,6 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
     private companion object {
         const val OLD_KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
         const val OLD_KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
+        const val OLD_KEY_COVER_MODE = "auxio_cover_mode"
     }
 }

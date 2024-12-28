@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music
 
 import android.content.Context
@@ -27,9 +27,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
-import org.oxycblt.auxio.image.covers.CoverSilo
-import org.oxycblt.auxio.image.covers.SiloedCovers
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library
@@ -40,8 +39,6 @@ import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.StoredCache
-import org.oxycblt.musikr.cover.CoverIdentifier
-import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -241,19 +238,16 @@ constructor(
     @ApplicationContext private val context: Context,
     private val storedCache: StoredCache,
     private val storedPlaylists: StoredPlaylists,
+    private val settingCovers: SettingCovers,
     private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
-    @Volatile
-    private var indexingWorker: MusicRepository.IndexingWorker? = null
+    @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
 
-    @Volatile
-    override var library: MutableLibrary? = null
-    @Volatile
-    private var previousCompletedState: IndexingState.Completed? = null
-    @Volatile
-    private var currentIndexingState: IndexingState? = null
+    @Volatile override var library: MutableLibrary? = null
+    @Volatile private var previousCompletedState: IndexingState.Completed? = null
+    @Volatile private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
         get() = currentIndexingState ?: previousCompletedState
 
@@ -393,11 +387,7 @@ constructor(
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) storedCache.visible() else storedCache.invisible()
-        val covers = SiloedCovers.from(
-            context,
-            CoverSilo(newRevision, CoverParams.of(750, 80)),
-            CoverIdentifier.md5()
-        )
+        val covers = settingCovers.create(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
 
@@ -423,9 +413,9 @@ constructor(
             // TODO: Remove this once you start work on kindred.
             deviceLibraryChanged =
                 this.library?.songs != newLibrary.songs ||
-                        this.library?.albums != newLibrary.albums ||
-                        this.library?.artists != newLibrary.artists ||
-                        this.library?.genres != newLibrary.genres
+                    this.library?.albums != newLibrary.albums ||
+                    this.library?.artists != newLibrary.artists ||
+                    this.library?.genres != newLibrary.genres
             userLibraryChanged = this.library?.playlists != newLibrary.playlists
             if (!deviceLibraryChanged && !userLibraryChanged) {
                 L.d("Library has not changed, skipping update")

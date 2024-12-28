@@ -123,10 +123,10 @@ object IntegerTable {
     const val ACTION_MODE_SHUFFLE = 0xA11B
     /** CoverMode.Off */
     const val COVER_MODE_OFF = 0xA11C
-    /** CoverMode.MediaStore */
-    const val COVER_MODE_FAST = 0xA11D
+    /** CoverMode.Balanced */
+    const val COVER_MODE_BALANCED = 0xA11D
     /** CoverMode.Quality */
-    const val COVER_MODE_QUALITY = 0xA11E
+    const val COVER_MODE_HIGH_QUALITY = 0xA11E
     /** PlaySong.FromAll */
     const val PLAY_SONG_FROM_ALL = 0xA11F
     /** PlaySong.FromAlbum */
@@ -139,4 +139,6 @@ object IntegerTable {
     const val PLAY_SONG_FROM_PLAYLIST = 0xA123
     /** PlaySong.ByItself */
     const val PLAY_SONG_BY_ITSELF = 0xA124
+    /** CoverMode.SaveSpace */
+    const val COVER_MODE_SAVE_SPACE = 0xA125
 }
