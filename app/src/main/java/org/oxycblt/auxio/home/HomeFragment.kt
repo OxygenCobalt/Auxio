@@ -20,13 +20,12 @@ package org.oxycblt.auxio.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -313,75 +312,32 @@ class HomeFragment :
     }
 
     private fun updateIndexerState(state: IndexingState?) {
-        // TODO: Reduce intrusiveness of current loading state:
-        //  1. "Dry" loads
         val binding = requireBinding()
         when (state) {
-            is IndexingState.Completed -> setupCompleteState(binding, state.error)
-            is IndexingState.Indexing -> setupIndexingState(binding, state.progress)
-            null -> {
-                L.d("Indexer is in indeterminate state")
-                binding.homeIndexingContainer.visibility = View.INVISIBLE
+            is IndexingState.Completed -> {
+                binding.homeIndexingContainer.isInvisible = state.error == null
+                binding.homeIndexingProgress.isInvisible = state.error != null
+                binding.homeIndexingError.isInvisible = state.error == null
             }
-        }
-    }
-
-    private fun setupCompleteState(binding: FragmentHomeBinding, error: Exception?) {
-        if (error == null) {
-            L.d("Received ok response")
-            binding.homeIndexingContainer.visibility = View.INVISIBLE
-            return
-        }
-
-        L.d("Received non-ok response")
-        val context = requireContext()
-        binding.homeIndexingContainer.visibility = View.VISIBLE
-        binding.homeIndexingProgress.visibility = View.INVISIBLE
-        binding.homeIndexingActions.visibility = View.VISIBLE
-
-        L.d("Showing generic error")
-        binding.homeIndexingStatus.setText(R.string.err_index_failed)
-        // Configure the action to act as a reload trigger.
-        binding.homeIndexingTry.apply {
-            visibility = View.VISIBLE
-            text = context.getString(R.string.lbl_retry)
-            setOnClickListener { musicModel.rescan() }
-        }
-        binding.homeIndexingMore.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                findNavController().navigateSafe(HomeFragmentDirections.reportError(error))
-            }
-        }
-    }
-
-    private fun setupIndexingState(binding: FragmentHomeBinding, progress: IndexingProgress) {
-        // Remove all content except for the progress indicator.
-        binding.homeIndexingContainer.visibility = View.VISIBLE
-        binding.homeIndexingProgress.visibility = View.VISIBLE
-        binding.homeIndexingActions.visibility = View.INVISIBLE
-
-        when (progress) {
-            is IndexingProgress.Indeterminate -> {
-                // In a query/initialization state, show a generic loading status.
-                binding.homeIndexingStatus.text = getString(R.string.lng_indexing)
-                binding.homeIndexingProgress.isIndeterminate = true
-            }
-            is IndexingProgress.Songs -> {
-                // Actively loading songs, show the current progress.
+            is IndexingState.Indexing -> {
+                binding.homeIndexingContainer.isInvisible = false
                 binding.homeIndexingProgress.apply {
-                    isIndeterminate = false
-                    max = progress.explored
-                    this.progress = progress.loaded
+                    isInvisible = false
+                    when (state.progress) {
+                        is IndexingProgress.Songs -> {
+                            isIndeterminate = false
+                            progress = state.progress.loaded
+                            max = state.progress.explored
+                        }
+                        is IndexingProgress.Indeterminate -> {
+                            isIndeterminate = true
+                        }
+                    }
                 }
-                // Avoid aggressively updating the UI for rapid progress updates.
-                val now = SystemClock.elapsedRealtime()
-                if (lastUpdateTime > -1 && (now - lastUpdateTime) < 250) {
-                    return
-                }
-                lastUpdateTime = SystemClock.elapsedRealtime()
-                binding.homeIndexingStatus.text =
-                    getString(R.string.fmt_indexing, progress.loaded, progress.explored)
+                binding.homeIndexingError.isInvisible = true
+            }
+            null -> {
+                binding.homeIndexingContainer.isInvisible = true
             }
         }
     }
