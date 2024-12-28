@@ -172,6 +172,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 
     private fun meldGenreVertices(src: GenreVertex, dst: GenreVertex) {
+        if (src == dst) {
+            // Same vertex, do nothing
+            return
+        }
         // Link all songs and artists from the irrelevant genre to the relevant genre.
         dst.songVertices.addAll(src.songVertices)
         dst.artistVertices.addAll(src.artistVertices)
@@ -229,6 +233,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 
     private fun meldArtistVertices(src: ArtistVertex, dst: ArtistVertex) {
+        if (src == dst) {
+            // Same vertex, do nothing
+            return
+        }
         // Link all songs and albums from the irrelevant artist to the relevant artist.
         dst.songVertices.addAll(src.songVertices)
         dst.albumVertices.addAll(src.albumVertices)
@@ -296,6 +304,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 
     private fun meldAlbumVertices(src: AlbumVertex, dst: AlbumVertex) {
+        if (src == dst) {
+            // Same vertex, do nothing
+            return
+        }
         // Link all songs and artists from the irrelevant album to the relevant album.
         dst.songVertices.addAll(src.songVertices)
         dst.artistVertices.addAll(src.artistVertices)
