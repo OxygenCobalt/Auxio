@@ -214,8 +214,8 @@
     <string name="set_cover_mode_off">Isključeno</string>
     <string name="set_exclude_non_music">Isključi sve što nije glazba</string>
     <string name="set_play_song_from_artist">Reproduciraj iz izvođača</string>
-    <string name="set_cover_mode_quality">Visoka kvaliteta</string>
-    <string name="set_cover_mode_media_store">Brzo</string>
+    <string name="set_cover_mode_high_quality">Visoka kvaliteta</string>
+    <string name="set_cover_mode_balanced">Brzo</string>
     <string name="set_exclude_non_music_desc">Zanemari sve audio datoteke koje nisu glazba, npr. podcast datoteke</string>
     <string name="set_separators_warning">Upozorenje: Korištenje ove postavke može dovesti do pogrešnog tumačenja nekih oznaka kao da imaju više vrijednosti. To možeš riješiti postavljanjem obrnute kose crte (\\) ispred neželjenih znakova rastavljanja.</string>
     <string name="set_cover_mode">Omoti albuma</string>

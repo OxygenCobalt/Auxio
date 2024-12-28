@@ -219,10 +219,10 @@
     <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。要解决这个问题，你可以在不想要的分隔符前加上反斜杠 (\\)。</string>
     <string name="set_exclude_non_music_desc">忽略不是音乐的音频文件，例如播客</string>
     <string name="set_exclude_non_music">排除非音乐</string>
-    <string name="set_cover_mode_quality">高质量</string>
+    <string name="set_cover_mode_high_quality">高质量</string>
     <string name="set_cover_mode">专辑封面</string>
     <string name="set_cover_mode_off">关</string>
-    <string name="set_cover_mode_media_store">快速</string>
+    <string name="set_cover_mode_balanced">快速</string>
     <string name="set_hide_collaborators">隐藏协作者</string>
     <string name="set_hide_collaborators_desc">在库中仅显示在出现在“专辑艺术家”标签中的艺术家（在标记良好的库上效果最好）</string>
     <plurals name="fmt_artist_count">

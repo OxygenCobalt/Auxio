@@ -180,8 +180,8 @@
     <string name="set_images">Pildid</string>
     <string name="set_cover_mode">Kaanepildid</string>
     <string name="set_cover_mode_off">Pole kasutusel</string>
-    <string name="set_cover_mode_quality">Kuva kõrgekvaliteedilisena</string>
-    <string name="set_cover_mode_media_store">Kuva kiirelt</string>
+    <string name="set_cover_mode_high_quality">Kuva kõrgekvaliteedilisena</string>
+    <string name="set_cover_mode_balanced">Kuva kiirelt</string>
     <string name="set_square_covers">Näita kaanepildid teravate nurkadega</string>
     <string name="set_audio">Heli</string>
     <string name="set_square_covers_desc">Kadreeri kaanepildid 1:1 küljesuhte alusel</string>

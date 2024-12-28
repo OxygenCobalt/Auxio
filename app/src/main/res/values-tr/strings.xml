@@ -200,12 +200,12 @@
     <string name="lbl_remix_group">Remiksler</string>
     <string name="lbl_soundtracks">Film Müzikleri</string>
     <string name="lbl_soundtrack">Film Müziği</string>
-    <string name="set_cover_mode_quality">Yüksek kaliteli</string>
+    <string name="set_cover_mode_high_quality">Yüksek kaliteli</string>
     <string name="set_hide_collaborators">Katılımcaları gizleyin</string>
     <string name="set_hide_collaborators_desc">Yalnızca bir albümde doğrudan adı geçen sanatçıları gösterin (iyi etiketlenmiş kütüphanelerde en iyi sonucu verir)</string>
     <string name="set_cover_mode">Albüm kapakları</string>
     <string name="set_cover_mode_off">Kapalı</string>
-    <string name="set_cover_mode_media_store">Hızlı</string>
+    <string name="set_cover_mode_balanced">Hızlı</string>
     <string name="fmt_selected">%d Seçili</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d sanatçı</item>

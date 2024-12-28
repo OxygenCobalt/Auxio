@@ -221,8 +221,8 @@
     <string name="set_exclude_non_music">Ignorar arquivos que não sejam músicas</string>
     <string name="set_cover_mode">Capas de álbuns</string>
     <string name="set_cover_mode_off">Desligado</string>
-    <string name="set_cover_mode_media_store">Rápido</string>
-    <string name="set_cover_mode_quality">Alta qualidade</string>
+    <string name="set_cover_mode_balanced">Rápido</string>
+    <string name="set_cover_mode_high_quality">Alta qualidade</string>
     <string name="lbl_mixes">Mixagens de DJ</string>
     <string name="lbl_mix">Mixagem de DJ</string>
     <plurals name="fmt_artist_count">

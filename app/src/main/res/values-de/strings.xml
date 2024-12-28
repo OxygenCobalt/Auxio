@@ -222,8 +222,8 @@
     <string name="set_exclude_non_music_desc">Audio-Dateien, die keine Musik sind (wie Podcasts), ignorieren</string>
     <string name="set_cover_mode">Album-Cover</string>
     <string name="set_cover_mode_off">Aus</string>
-    <string name="set_cover_mode_media_store">Schnell</string>
-    <string name="set_cover_mode_quality">Hohe Qualität</string>
+    <string name="set_cover_mode_balanced">Schnell</string>
+    <string name="set_cover_mode_high_quality">Hohe Qualität</string>
     <string name="set_hide_collaborators">Mitarbeitende ausblenden</string>
     <string name="set_hide_collaborators_desc">Nur Künstler anzeigen, die direkt auf einem Album erwähnt werden (funktioniert am besten mit gut getaggten Bibliotheken)</string>
     <plurals name="fmt_artist_count">

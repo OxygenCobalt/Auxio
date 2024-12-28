@@ -84,7 +84,7 @@
     <string name="set_hide_collaborators">Приховати співавторів</string>
     <string name="set_cover_mode_off">Вимкнено</string>
     <string name="set_action_mode_next">Перейти до наступної</string>
-    <string name="set_cover_mode_media_store">Швидкі</string>
+    <string name="set_cover_mode_balanced">Швидкі</string>
     <string name="set_locations_desc">Вкажіть звідки слід завантажувати музику</string>
     <string name="fmt_lib_total_duration">Загальна тривалість: %s</string>
     <string name="lbl_mixtapes">Мікстейпи</string>
@@ -99,7 +99,7 @@
     <string name="set_repeat_pause_desc">Ставити на паузу при повторенні пісні</string>
     <string name="lbl_date_added">Дата додавання</string>
     <string name="lbl_sample_rate">Частота дискретизації</string>
-    <string name="set_cover_mode_quality">Висока якість</string>
+    <string name="set_cover_mode_high_quality">Висока якість</string>
     <string name="set_reindex">Оновити музику</string>
     <string name="lbl_remix_group">Ремікси</string>
     <string name="lbl_mixtape">Мікстейп</string>

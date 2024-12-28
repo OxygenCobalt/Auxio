@@ -228,9 +228,9 @@
     <string name="set_exclude_non_music">Vyloučit nehudební obsah</string>
     <string name="set_exclude_non_music_desc">Ignorovat zvukové soubory, které nejsou hudbou, například podcasty</string>
     <string name="set_cover_mode">Obaly alb</string>
-    <string name="set_cover_mode_quality">Vysoká kvalita</string>
+    <string name="set_cover_mode_high_quality">Vysoká kvalita</string>
     <string name="set_cover_mode_off">Vypnuté</string>
-    <string name="set_cover_mode_media_store">Rychlé</string>
+    <string name="set_cover_mode_balanced">Rychlé</string>
     <string name="set_hide_collaborators">Skrýt spoluautory</string>
     <string name="set_hide_collaborators_desc">Zobrazit pouze umělce, kteří jsou přímo uvedeni na albu (funguje nejlépe u dobře označených knihoven)</string>
     <plurals name="fmt_artist_count">

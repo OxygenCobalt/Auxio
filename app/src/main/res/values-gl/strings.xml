@@ -106,7 +106,7 @@
         <item quantity="other">%d cancións</item>
     </plurals>
     <string name="set_audio">Son</string>
-    <string name="set_cover_mode_quality">Alta calidade</string>
+    <string name="set_cover_mode_high_quality">Alta calidade</string>
     <string name="set_locations">Cartafois de música</string>
     <string name="err_bad_location">Este cartafol non está soportado</string>
     <string name="desc_play_pause">Reproducir ou pausar</string>
@@ -142,7 +142,7 @@
     <string name="set_images">Imaxes</string>
     <string name="set_cover_mode">Portadas de álbums</string>
     <string name="set_cover_mode_off">Apagado</string>
-    <string name="set_cover_mode_media_store">Rápido</string>
+    <string name="set_cover_mode_balanced">Rápido</string>
     <string name="set_audio_desc">Configurar o comportamento de son e reprodución</string>
     <string name="set_playback">Reprodución</string>
     <string name="set_headset_autoplay">Reprodución automática con auriculares</string>

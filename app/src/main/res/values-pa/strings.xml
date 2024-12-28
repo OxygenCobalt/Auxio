@@ -166,8 +166,8 @@
     <string name="set_images">ਚਿੱਤਰ</string>
     <string name="set_cover_mode">ਐਲਬਮ ਕਵਰ</string>
     <string name="set_cover_mode_off">ਬੰਦ</string>
-    <string name="set_cover_mode_media_store">ਤੇਜ</string>
-    <string name="set_cover_mode_quality">ਉੱਚ ਕੁਆਲਿਟੀ</string>
+    <string name="set_cover_mode_balanced">ਤੇਜ</string>
+    <string name="set_cover_mode_high_quality">ਉੱਚ ਕੁਆਲਿਟੀ</string>
     <string name="set_audio">ਆਡੀਓ</string>
     <string name="set_rewind_prev_desc">ਪਿਛਲੇ ਗੀਤ \'ਤੇ ਜਾਣ ਤੋਂ ਪਹਿਲਾਂ ਰੀਵਾਈਂਡ ਕਰੋ</string>
     <string name="set_repeat_pause">ਦੁਹਰਾਉਣ \'ਤੇ ਰੁਕੋ</string>

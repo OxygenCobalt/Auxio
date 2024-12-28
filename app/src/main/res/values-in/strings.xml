@@ -178,14 +178,14 @@
     <string name="set_separators_comma">Koma (,)</string>
     <string name="set_separators_plus">Tambah (+)</string>
     <string name="lbl_date_added">Tanggal ditambahkan</string>
-    <string name="set_cover_mode_quality">Kualitas tinggi</string>
+    <string name="set_cover_mode_high_quality">Kualitas tinggi</string>
     <string name="set_separators_semicolon">Titik koma (;)</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="set_play_song_from_genre">Putar dari aliran</string>
     <string name="lbl_genre">Aliran</string>
     <string name="set_cover_mode">Sampul album</string>
     <string name="set_cover_mode_off">Nonaktif</string>
-    <string name="set_cover_mode_media_store">Cepat</string>
+    <string name="set_cover_mode_balanced">Cepat</string>
     <string name="lbl_album_remix">Album remix</string>
     <string name="set_locations_list">Folder</string>
     <string name="lbl_indexing">Memuat musik</string>

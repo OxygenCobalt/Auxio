@@ -24,7 +24,7 @@
     <string name="set_repeat_pause_desc">曲の繰り返し時にポーズ</string>
     <string name="desc_clear_search">検索クエリを解除</string>
     <string name="lbl_date">日付け</string>
-    <string name="set_cover_mode_quality">高クオリティ</string>
+    <string name="set_cover_mode_high_quality">高クオリティ</string>
     <string name="set_round_mode">ラウンドモード</string>
     <string name="err_no_music">音楽が見つかりません</string>
     <string name="err_index_failed">音楽の読み込みに失敗</string>
@@ -224,7 +224,7 @@
     <string name="set_bar_action">カスタム再生バー アクション</string>
     <string name="set_intelligent_sorting">ソート時に記事を無視する</string>
     <string name="set_intelligent_sorting_desc">名前で並べ替えるときに「the」などの単語を無視する (英語の音楽に最適)</string>
-    <string name="set_cover_mode_media_store">初期 (高速読み込み)</string>
+    <string name="set_cover_mode_balanced">初期 (高速読み込み)</string>
     <string name="set_replay_gain_mode_dynamic">再生中の場合はアルバムを優先</string>
     <string name="set_separators">複数値セパレータ</string>
     <string name="set_observing_desc">変更されるたびに音楽ライブラリをリロードします (永続的な通知が必要です)</string>

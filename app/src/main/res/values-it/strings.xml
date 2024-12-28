@@ -213,7 +213,7 @@
     <string name="set_hide_collaborators_desc">Mostra solo artisti che sono direttamente accreditati in un album (funziona meglio su librerie ben taggate)</string>
     <string name="set_cover_mode">Copertine album</string>
     <string name="set_cover_mode_off">Off</string>
-    <string name="set_cover_mode_media_store">Veloce</string>
+    <string name="set_cover_mode_balanced">Veloce</string>
     <string name="set_exclude_non_music">Escludi file non musicali</string>
     <string name="set_exclude_non_music_desc">Ignora file audio non musicali, come i podcast</string>
     <string name="set_separators">Separatori multi-valore</string>
@@ -225,7 +225,7 @@
     <string name="lbl_compilation_remix">Raccolta remix</string>
     <string name="lbl_mixes">Mix DJ</string>
     <string name="lbl_mix">Mix DJ</string>
-    <string name="set_cover_mode_quality">Alta qualità</string>
+    <string name="set_cover_mode_high_quality">Alta qualità</string>
     <string name="set_separators_comma">Virgola (,)</string>
     <string name="set_separators_semicolon">Punto e virgola (;)</string>
     <string name="set_separators_plus">Più (+)</string>

@@ -282,8 +282,9 @@
     <string name="set_images">Images</string>
     <string name="set_cover_mode">Album covers</string>
     <string name="set_cover_mode_off">Off</string>
-    <string name="set_cover_mode_media_store">Fast</string>
-    <string name="set_cover_mode_quality">High quality</string>
+    <string name="set_cover_mode_save_space">Save space</string>
+    <string name="set_cover_mode_balanced">Balanced</string>
+    <string name="set_cover_mode_high_quality">High quality</string>
     <string name="set_square_covers">Force square album covers</string>
     <string name="set_square_covers_desc">Crop all album covers to a 1:1 aspect ratio</string>
 

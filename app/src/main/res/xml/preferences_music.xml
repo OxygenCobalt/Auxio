@@ -37,7 +37,7 @@
     <PreferenceCategory app:title="@string/set_images">
 
         <org.oxycblt.auxio.settings.ui.IntListPreference
-            app:defaultValue="@integer/cover_mode_media_store"
+            app:defaultValue="@integer/cover_mode_balanced"
             app:entries="@array/entries_cover_mode"
             app:entryValues="@array/values_cover_mode"
             app:key="@string/set_key_cover_mode"

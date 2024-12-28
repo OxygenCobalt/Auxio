@@ -224,8 +224,8 @@
     <string name="set_exclude_non_music">Wyklucz inne pliki dźwiękowe</string>
     <string name="set_cover_mode">Okładki albumów</string>
     <string name="set_cover_mode_off">Wyłączone</string>
-    <string name="set_cover_mode_media_store">Niska jakość</string>
-    <string name="set_cover_mode_quality">Wysoka jakość</string>
+    <string name="set_cover_mode_balanced">Niska jakość</string>
+    <string name="set_cover_mode_high_quality">Wysoka jakość</string>
     <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów (tak, jakby posiadały wiele wartości). Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami oddzielającymi.</string>
     <string name="set_ui_desc">Dostosuj motyw i kolory aplikacji</string>
     <string name="set_hide_collaborators">Ukryj wykonawców uczestniczących</string>

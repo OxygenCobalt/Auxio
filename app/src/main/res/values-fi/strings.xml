@@ -77,8 +77,8 @@
     <string name="set_intelligent_sorting">Älykäs järjestys</string>
     <string name="set_hide_collaborators">Piilota avustajat</string>
     <string name="set_cover_mode_off">Pois</string>
-    <string name="set_cover_mode_media_store">Nopea</string>
-    <string name="set_cover_mode_quality">Korkea laatu</string>
+    <string name="set_cover_mode_balanced">Nopea</string>
+    <string name="set_cover_mode_high_quality">Korkea laatu</string>
     <string name="set_audio">Ääni</string>
     <string name="set_audio_desc">Määritä äänen ja toiston toimintaa</string>
     <string name="set_playback">Toisto</string>

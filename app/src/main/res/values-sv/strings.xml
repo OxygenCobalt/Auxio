@@ -165,7 +165,7 @@
     <string name="fmt_deletion_info">Ta bort %s? Detta kan inte ångras.</string>
     <string name="set_hide_collaborators_desc">Endast visa artister som är direkt krediterade på ett album (funkar bäst på välmärkta bibliotek)</string>
     <string name="set_cover_mode">Albumomslag</string>
-    <string name="set_cover_mode_media_store">Snabbt</string>
+    <string name="set_cover_mode_balanced">Snabbt</string>
     <string name="set_library">Bibliotek</string>
     <string name="set_reindex">Uppdatera musik</string>
     <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade taggar</string>
@@ -240,7 +240,7 @@
     <string name="fmt_lib_album_count">Inlästa album: %d</string>
     <string name="fmt_lib_genre_count">Inlästa genrer: %d</string>
     <string name="set_play_song_by_itself">Spela endast vald låt</string>
-    <string name="set_cover_mode_quality">Hög kvalitet</string>
+    <string name="set_cover_mode_high_quality">Hög kvalitet</string>
     <string name="set_square_covers">Tvinga fyrkantiga skivomslag</string>
     <string name="set_square_covers_desc">Beskär alla albumomslag till ett 1:1 sidförhållande</string>
     <string name="set_rewind_prev_desc">Spola tillbaka innan att hoppa till föregående låt</string>

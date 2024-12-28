@@ -169,13 +169,13 @@
     <string name="set_content_desc">Contrôler le chargement de la musique et des images</string>
     <string name="set_music">Musique</string>
     <string name="set_images">Images</string>
-    <string name="set_cover_mode_quality">Qualité améliorée (chargement lent)</string>
+    <string name="set_cover_mode_high_quality">Qualité améliorée (chargement lent)</string>
     <string name="set_separators_desc">Configurer les caractères qui indiquent plusieurs valeurs de balise</string>
     <string name="set_cover_mode">Pochettes d\'albums</string>
     <string name="set_hide_collaborators">Masquer les collaborateurs</string>
     <string name="set_hide_collaborators_desc">Afficher uniquement les artistes qui sont directement crédités sur un album (fonctionne mieux sur les bibliothèques bien étiquetées)</string>
     <string name="set_cover_mode_off">Désactivé</string>
-    <string name="set_cover_mode_media_store">Couvertures originales (téléchargement rapide)</string>
+    <string name="set_cover_mode_balanced">Couvertures originales (téléchargement rapide)</string>
     <string name="set_audio_desc">Configurer le son et le comportement de lecture</string>
     <string name="lbl_playlists">Listes de lecture</string>
     <string name="set_play_in_list_with">Lors de la lecture depuis la bibliothèque</string>

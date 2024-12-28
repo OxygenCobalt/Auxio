@@ -80,8 +80,8 @@
     <string name="set_images">Lluniau</string>
     <string name="set_cover_mode">Cloriau albwm</string>
     <string name="set_cover_mode_off">I ffwrdd</string>
-    <string name="set_cover_mode_media_store">Yn gyflym</string>
-    <string name="set_cover_mode_quality">Ansawdd uwch</string>
+    <string name="set_cover_mode_balanced">Yn gyflym</string>
+    <string name="set_cover_mode_high_quality">Ansawdd uwch</string>
     <string name="set_square_covers">Gorfodi cloriau albwm sgwâr</string>
     <string name="set_audio">Sain</string>
     <string name="set_replay_gain_mode_off">I ffwrdd</string>

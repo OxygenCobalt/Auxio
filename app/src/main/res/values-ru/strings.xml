@@ -225,8 +225,8 @@
     <string name="set_pre_amp_with">Изменение по тегам</string>
     <string name="set_pre_amp_without">Изменения без тегов</string>
     <string name="set_cover_mode_off">Отключены</string>
-    <string name="set_cover_mode_media_store">Исходные (Быстрая загрузка)</string>
-    <string name="set_cover_mode_quality">Повышенного качества (Медленная загрузка)</string>
+    <string name="set_cover_mode_balanced">Исходные (Быстрая загрузка)</string>
+    <string name="set_cover_mode_high_quality">Повышенного качества (Медленная загрузка)</string>
     <string name="lbl_compilation_live">Сборник концертных записей</string>
     <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
     <string name="set_rescan">Пересканировать музыку</string>

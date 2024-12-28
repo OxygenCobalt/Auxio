@@ -89,8 +89,8 @@
     <string name="lbl_library_counts">Estatísticas da biblioteca</string>
     <string name="desc_no_cover">Capa do álbum</string>
     <string name="lbl_date">Data</string>
-    <string name="set_cover_mode_media_store">Rápido</string>
-    <string name="set_cover_mode_quality">Qualidade alta</string>
+    <string name="set_cover_mode_balanced">Rápido</string>
+    <string name="set_cover_mode_high_quality">Qualidade alta</string>
     <string name="set_bar_action">Personalizar a barra de reprodução</string>
     <string name="set_action_mode_repeat">Modo de repetição</string>
     <string name="set_play_song_from_artist">Reproduzir do artista</string>

@@ -169,8 +169,8 @@
     <string name="lbl_sort_mode">Sortează după</string>
     <string name="set_intelligent_sorting_desc">Sortare corectă pentru nume care incep cu numere sau cuvinte precum \"the\" (funcționează cel mai bine cu melodii în limba engleză)</string>
     <string name="set_square_covers">Forțează coperți de album pătrate</string>
-    <string name="set_cover_mode_media_store">Rapid</string>
-    <string name="set_cover_mode_quality">Calitate mare</string>
+    <string name="set_cover_mode_balanced">Rapid</string>
+    <string name="set_cover_mode_high_quality">Calitate mare</string>
     <string name="set_separators_semicolon">Punct și virgulă (;)</string>
     <string name="lbl_edit">Editează</string>
     <string name="set_exclude_non_music">Exclude non-muzică</string>

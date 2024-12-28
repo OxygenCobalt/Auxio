@@ -170,8 +170,8 @@
     <string name="set_intelligent_sorting">Интелигентно сортиране</string>
     <string name="set_cover_mode">Обложки на албум</string>
     <string name="set_cover_mode_off">Изключено</string>
-    <string name="set_cover_mode_media_store">Бързо</string>
-    <string name="set_cover_mode_quality">Високо качество</string>
+    <string name="set_cover_mode_balanced">Бързо</string>
+    <string name="set_cover_mode_high_quality">Високо качество</string>
     <string name="set_square_covers">Функция квадратни обложки на албум</string>
     <string name="set_square_covers_desc">Изрежи всички корици на албуми до съотношение 1:1</string>
     <string name="set_audio">Аудио</string>

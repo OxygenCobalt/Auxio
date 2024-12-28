@@ -106,7 +106,7 @@
     <string name="set_hide_collaborators_desc">הצגת אומנים שמצויינים ישירות בקרדיטים של אלבום בלבד (עובד באופן מיטבי על ספריות מתויגות היטב)</string>
     <string name="set_cover_mode">עטיפות אלבום</string>
     <string name="set_cover_mode_off">כבוי</string>
-    <string name="set_cover_mode_media_store">מהיר</string>
+    <string name="set_cover_mode_balanced">מהיר</string>
     <string name="set_audio">שמע</string>
     <string name="set_playback">ניגון</string>
     <string name="set_headset_autoplay">ניגון אוטומטי באוזניות</string>
@@ -143,7 +143,7 @@
     <string name="set_separators_desc">התאמת תווים המציינים ערכי תגית מרובים</string>
     <string name="set_separators_slash">קו נטוי (/)</string>
     <string name="set_separators_warning">אזהרה: השימוש בהגדרה זו עלול לגרום לחלק מהתגיות להיות מפורשות באופן שגוי כבעלות מספר ערכים. ניתן לפתור זאת על ידי הכנסת קו נטוי אחורי (\\) לפני תווים מפרידים לא רצויים.</string>
-    <string name="set_cover_mode_quality">איכות גבוהה</string>
+    <string name="set_cover_mode_high_quality">איכות גבוהה</string>
     <string name="set_intelligent_sorting_desc">התעלמות ממספרים או מילים כמו \"The\" (\"ה׳ היידוע\") בעת סידור על פי שם (עובד באופן מיטבי עם מוזיקה בשפה האנגלית)</string>
     <string name="set_images">תמונות</string>
     <string name="set_audio_desc">הגדרת הצליל והניגון</string>

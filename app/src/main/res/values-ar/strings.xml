@@ -217,8 +217,8 @@
     <string name="set_separators_comma">الفاصلة (،)</string>
     <string name="set_separators_slash">شرطة مائلة (/)</string>
     <string name="set_cover_mode">أغطية الألبومات</string>
-    <string name="set_cover_mode_media_store">سريع</string>
-    <string name="set_cover_mode_quality">عالية الجودة</string>
+    <string name="set_cover_mode_balanced">سريع</string>
+    <string name="set_cover_mode_high_quality">عالية الجودة</string>
     <string name="set_square_covers">فرض أغطية ألبومات مربعة</string>
     <string name="set_square_covers_desc">قص جميع أغطية الألبومات إلى نسبة جانب 1:1</string>
     <string name="set_audio">صوت</string>

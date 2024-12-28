@@ -135,7 +135,7 @@
     <string name="desc_no_cover">Copertura de album</string>
     <string name="set_cover_mode">Coperrturas de album</string>
     <string name="set_cover_mode_off">Disactivate</string>
-    <string name="set_cover_mode_media_store">Rapide</string>
+    <string name="set_cover_mode_balanced">Rapide</string>
     <string name="set_playback">Reproduction</string>
     <string name="set_remember_pause">Rememorar le pausa</string>
     <string name="set_locations">Dossieres de musica</string>

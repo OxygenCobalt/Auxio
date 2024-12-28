@@ -209,13 +209,13 @@
     <string name="set_separators_and">Ampersandas (&amp;)</string>
     <string name="set_cover_mode">Albumų viršeliai</string>
     <string name="set_cover_mode_off">Išjungta</string>
-    <string name="set_cover_mode_media_store">Greita</string>
+    <string name="set_cover_mode_balanced">Greita</string>
     <string name="set_separators_desc">Konfigūruok simbolius, kurie nurodo kelias žymių reikšmes.</string>
     <string name="set_separators_comma">Kablelis (,)</string>
     <string name="set_pre_amp_without">Koreguoti be žymių</string>
     <string name="set_separators_warning">Įspėjimas: naudojant šį nustatymą, kai kurios žymes gali būti neteisingai interpretuojamos kaip turinčios kelias reikšmes. Tai galima išspręsti prieš nepageidaujamus skiriamuosius ženklus su agalinių brūkšniu (\\).</string>
     <string name="set_separators_semicolon">Kabliataškis (;)</string>
-    <string name="set_cover_mode_quality">Aukštos kokybės</string>
+    <string name="set_cover_mode_high_quality">Aukštos kokybės</string>
     <string name="set_exclude_non_music">Neįtraukti nemuzikinių</string>
     <string name="set_exclude_non_music_desc">Ignoruok garso failus, kurie nėra muzika, tokius kaip tinklalaides.</string>
     <string name="set_pre_amp_desc">Išankstinis stiprintuvas taikomas esamam koregavimui įrašo perklausos metu.</string>

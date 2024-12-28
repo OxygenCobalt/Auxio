@@ -218,8 +218,8 @@
     <string name="set_hide_collaborators_desc">ஒரு ஆல்பத்தில் நேரடியாக வரவு வைக்கப்படும் கலைஞர்களை மட்டுமே காண்பி (நன்கு குறியிடப்பட்ட நூலகங்களில் சிறப்பாக செயல்படுகிறது)</string>
     <string name="set_cover_mode">ஆல்பம் கவர்கள்</string>
     <string name="set_cover_mode_off">அணை</string>
-    <string name="set_cover_mode_media_store">வேகமாக</string>
-    <string name="set_cover_mode_quality">உயர் தகுதி</string>
+    <string name="set_cover_mode_balanced">வேகமாக</string>
+    <string name="set_cover_mode_high_quality">உயர் தகுதி</string>
     <string name="set_square_covers">படை சதுர ஆல்பம் கவர்கள்</string>
     <string name="set_square_covers_desc">அனைத்து ஆல்பத்தையும் 1: 1 விகித விகிதத்திற்கு பயிர்</string>
     <string name="set_audio_desc">ஒலி மற்றும் பின்னணி நடத்தை உள்ளமைக்கவும்</string>

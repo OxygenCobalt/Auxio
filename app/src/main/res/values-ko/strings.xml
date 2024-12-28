@@ -201,8 +201,8 @@
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="set_cover_mode">앨범 커버</string>
     <string name="set_cover_mode_off">끔</string>
-    <string name="set_cover_mode_media_store">빠름</string>
-    <string name="set_cover_mode_quality">고품질</string>
+    <string name="set_cover_mode_balanced">빠름</string>
+    <string name="set_cover_mode_high_quality">고품질</string>
     <string name="set_observing_desc">음악 라이브러리가 변경될 때마다 새로고침 (고정 알림 필요)</string>
     <string name="lbl_indexing">음악 불러오는 중</string>
     <string name="lbl_indexer">음악 불러오는 중</string>

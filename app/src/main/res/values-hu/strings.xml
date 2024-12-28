@@ -183,7 +183,7 @@
     <string name="def_playback">Nincs zenelejátszás</string>
     <string name="set_notif_action">Egyéni értesítési művelet</string>
     <string name="def_date">Nincs dátum</string>
-    <string name="set_cover_mode_media_store">Gyors</string>
+    <string name="set_cover_mode_balanced">Gyors</string>
     <string name="set_exclude_non_music">A nem zenei anyagok kizárása</string>
     <string name="desc_shuffle_all">Keverés minden dalból</string>
     <string name="cdc_ogg">Ogg audio</string>
@@ -245,7 +245,7 @@
     <string name="set_hide_collaborators">Közreműködők elrejtése</string>
     <string name="set_hide_collaborators_desc">Csak az albumon közvetlenül feltüntetett előadók megjelenítése (a jól címkézett könyvtárakban működik a legjobban)</string>
     <string name="set_cover_mode_off">Ki</string>
-    <string name="set_cover_mode_quality">Magas minőség</string>
+    <string name="set_cover_mode_high_quality">Magas minőség</string>
     <string name="set_audio_desc">Hang és lejátszási viselkedés konfigurálása</string>
     <string name="set_playback">Lejátszás</string>
     <string name="set_headset_autoplay">Fejhallgató auto. lejátszás</string>

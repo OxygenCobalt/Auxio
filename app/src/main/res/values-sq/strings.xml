@@ -173,7 +173,7 @@
     <string name="set_hide_collaborators">Fshih bashkëpunëtorët</string>
     <string name="set_images">Imazhet</string>
     <string name="set_cover_mode_off">Fikur</string>
-    <string name="set_cover_mode_media_store">Shpejt</string>
+    <string name="set_cover_mode_balanced">Shpejt</string>
     <string name="set_square_covers">Forco kopertinat e albumeve katrore</string>
     <string name="set_square_covers_desc">Pritini të gjitha kopertinat e albumeve në një raport pamjeje 1:1</string>
     <string name="set_audio">Audio</string>
@@ -201,7 +201,7 @@
     <string name="set_intelligent_sorting_desc">Renditni saktë emrat që fillojnë me numra ose fjalë si \"the\" (funksionon më së miri me muzikën në anglisht).</string>
     <string name="set_cover_mode">Kopertinat e albumeve</string>
     <string name="set_hide_collaborators_desc">Shfaq vetëm artistë që vlerësohen drejtpërdrejt në një album (funksionon më mirë në bibliotekat e etiketuara mirë)</string>
-    <string name="set_cover_mode_quality">Cilësi e lartë</string>
+    <string name="set_cover_mode_high_quality">Cilësi e lartë</string>
     <string name="set_replay_gain">Normalizimi i volumit</string>
     <string name="set_remember_pause_desc">Mbajeni duke luajtur/ndërprerë kur kaloni ose redaktoni radhën</string>
     <string name="set_replay_gain_mode">Strategjia ReplayGain</string>

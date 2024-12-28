@@ -93,7 +93,7 @@
     <string name="lbl_save">Захаваць</string>
     <string name="lbl_version">Версія</string>
     <string name="set_black_mode_desc">Выкарыстоўвайце чыста чорную цёмную тэму</string>
-    <string name="set_cover_mode_quality">Падвышанай якасці (павольная загрузка)</string>
+    <string name="set_cover_mode_high_quality">Падвышанай якасці (павольная загрузка)</string>
     <string name="set_replay_gain_mode_dynamic">Аддайце перавагу альбому, калі ён гучыць</string>
     <string name="set_pre_amp_without">Карэкціроўка без тэгаў</string>
     <string name="set_locations">Тэчкі з музыкай</string>
@@ -240,7 +240,7 @@
     <string name="set_cover_mode">Вокладкі альбомаў</string>
     <string name="desc_tab_handle">Перамясціць гэту ўкладку</string>
     <string name="set_cover_mode_off">Адключаны</string>
-    <string name="set_cover_mode_media_store">Зыходныя (хуткая загрузка)</string>
+    <string name="set_cover_mode_balanced">Зыходныя (хуткая загрузка)</string>
     <string name="set_audio">Аўдыё</string>
     <string name="set_playback">Прайграванне</string>
     <string name="lbl_ep_live">Канцэртны міні-альбом</string>

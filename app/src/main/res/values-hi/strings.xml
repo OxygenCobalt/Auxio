@@ -240,8 +240,8 @@
     <string name="lbl_parent_detail">देखें</string>
     <string name="set_separators_warning">चेतावनी: इस सेटिंग का उपयोग करने से कुछ टैग को गलत तरीके से एकाधिक मान के रूप में व्याख्या किया जा सकता है. आप बैकस्लैश (\\) के साथ अवांछित विभाजक वर्णों को उपसर्ग करके इसे हल कर सकते हैं।</string>
     <string name="set_hide_collaborators_desc">केवल उन कलाकारों को दिखाएँ जिन्हें सीधे एल्बम पर श्रेय दिया जाता है (अच्छी तरह से टैग की गई लाइब्रेरी पर अच्छा काम करता है)</string>
-    <string name="set_cover_mode_media_store">तेज</string>
-    <string name="set_cover_mode_quality">उच्च गुणवत्ता</string>
+    <string name="set_cover_mode_balanced">तेज</string>
+    <string name="set_cover_mode_high_quality">उच्च गुणवत्ता</string>
     <string name="desc_music_location_delete">फ़ोल्डर हटाएँ</string>
     <string name="desc_remove_song">यह गीत हटाओ</string>
     <string name="def_disc">डिस्क नहीं</string>

@@ -163,8 +163,8 @@
     <string name="set_images">Bilete</string>
     <string name="set_cover_mode">Albumomslag</string>
     <string name="set_cover_mode_off">Av</string>
-    <string name="set_cover_mode_quality">Høg kvalitet</string>
-    <string name="set_cover_mode_media_store">Raskt</string>
+    <string name="set_cover_mode_high_quality">Høg kvalitet</string>
+    <string name="set_cover_mode_balanced">Raskt</string>
     <string name="set_square_covers">Påtving firkanta albumomslag</string>
     <string name="set_square_covers_desc">Beskjer alle albumomslag til 1:1-sideforhold</string>
     <string name="set_audio_desc">Still inn ljod- og avspelingsåtferd</string>

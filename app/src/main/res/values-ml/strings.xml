@@ -36,8 +36,8 @@
     <string name="set_root_title">ക്രമീകരണങ്ങൾ</string>
     <string name="set_music">സംഗീതം</string>
     <string name="set_images">ചിത്രങ്ങൾ</string>
-    <string name="set_cover_mode_media_store">വേഗം</string>
-    <string name="set_cover_mode_quality">ഉയർന്ന നിലവാരമുള്ളത്</string>
+    <string name="set_cover_mode_balanced">വേഗം</string>
+    <string name="set_cover_mode_high_quality">ഉയർന്ന നിലവാരമുള്ളത്</string>
     <string name="desc_skip_next">അടുത്ത പാട്ടിലേക്ക് പോകുക</string>
     <string name="set_library">ഗ്രന്ഥശാല</string>
     <string name="clr_green">പച്ച</string>
