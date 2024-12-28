@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverFiles
 import org.oxycblt.musikr.cover.CoverFormat
+import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.ObtainResult
@@ -56,16 +57,16 @@ class SiloedCovers(
     }
 
     companion object {
-        suspend fun at(context: Context, silo: CoverSilo): SiloedCovers {
+        suspend fun from(context: Context, silo: CoverSilo, identifier: CoverIdentifier): SiloedCovers {
             val rootDir: File
             val revisionDir: File
             withContext(Dispatchers.IO) {
-                rootDir = context.filesDir.resolve("covers").apply { mkdirs() }
+                rootDir = context.coversDir()
                 revisionDir = rootDir.resolve(silo.toString()).apply { mkdirs() }
             }
             val files = CoverFiles.at(revisionDir)
             val format = CoverFormat.jpeg(silo.params)
-            return SiloedCovers(rootDir, silo, Covers.from(files, format))
+            return SiloedCovers(rootDir, silo, Covers.from(files, format, identifier))
         }
     }
 }
