@@ -28,8 +28,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
-import org.oxycblt.auxio.music.covers.CoverSilo
-import org.oxycblt.auxio.music.covers.SiloedCovers
+import org.oxycblt.auxio.image.covers.CoverSilo
+import org.oxycblt.auxio.image.covers.SiloedCovers
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library

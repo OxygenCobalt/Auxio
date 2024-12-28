@@ -124,7 +124,7 @@ object IntegerTable {
     /** CoverMode.Off */
     const val COVER_MODE_OFF = 0xA11C
     /** CoverMode.MediaStore */
-    const val COVER_MODE_MEDIA_STORE = 0xA11D
+    const val COVER_MODE_FAST = 0xA11D
     /** CoverMode.Quality */
     const val COVER_MODE_QUALITY = 0xA11E
     /** PlaySong.FromAll */

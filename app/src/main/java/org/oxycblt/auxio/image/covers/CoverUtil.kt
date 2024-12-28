@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music.covers
+package org.oxycblt.auxio.image.covers
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers

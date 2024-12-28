@@ -49,7 +49,7 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
         get() =
             CoverMode.fromIntCode(
                 sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE))
-                ?: CoverMode.MEDIA_STORE
+                ?: CoverMode.FAST
 
     override val forceSquareCovers: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_square_covers), false)
@@ -64,7 +64,7 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
                 when {
                     !sharedPreferences.getBoolean(OLD_KEY_SHOW_COVERS, true) -> CoverMode.OFF
                     !sharedPreferences.getBoolean(OLD_KEY_QUALITY_COVERS, true) ->
-                        CoverMode.MEDIA_STORE
+                        CoverMode.FAST
                     else -> CoverMode.QUALITY
                 }
 

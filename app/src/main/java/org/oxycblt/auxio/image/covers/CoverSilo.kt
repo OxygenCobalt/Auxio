@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.covers
+package org.oxycblt.auxio.image.covers
 
 import java.util.UUID
 import org.oxycblt.musikr.cover.CoverParams

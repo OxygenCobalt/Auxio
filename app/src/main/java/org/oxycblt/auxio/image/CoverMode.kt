@@ -29,7 +29,7 @@ enum class CoverMode {
     /** Do not load album covers ("Off"). */
     OFF,
     /** Load covers from the fast, but lower-quality media store database ("Fast"). */
-    MEDIA_STORE,
+    FAST,
     /** Load high-quality covers directly from music files ("Quality"). */
     QUALITY;
 
@@ -42,7 +42,7 @@ enum class CoverMode {
         get() =
             when (this) {
                 OFF -> IntegerTable.COVER_MODE_OFF
-                MEDIA_STORE -> IntegerTable.COVER_MODE_MEDIA_STORE
+                FAST -> IntegerTable.COVER_MODE_FAST
                 QUALITY -> IntegerTable.COVER_MODE_QUALITY
             }
 
@@ -57,7 +57,7 @@ enum class CoverMode {
         fun fromIntCode(intCode: Int) =
             when (intCode) {
                 IntegerTable.COVER_MODE_OFF -> OFF
-                IntegerTable.COVER_MODE_MEDIA_STORE -> MEDIA_STORE
+                IntegerTable.COVER_MODE_FAST -> FAST
                 IntegerTable.COVER_MODE_QUALITY -> QUALITY
                 else -> null
             }
