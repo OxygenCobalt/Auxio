@@ -316,4 +316,8 @@
     <string name="lng_no_genres">Tyylilajisi näkyvät tässä, kun lisäät musiikkia.</string>
     <string name="set_pre_amp_desc">Esivahvistinta käytetään olemassa olevaan säätöön toiston aikana</string>
     <string name="set_pre_amp_with">Säätö tunnisteilla</string>
+    <string name="def_album">Tuntematon albumi</string>
+    <string name="set_locations_new">Uusi kansio</string>
+    <string name="cnt_mp4">MPEG-4 sisältäen %s</string>
+    <string name="cdc_unknown">Tuntematon</string>
 </resources>
