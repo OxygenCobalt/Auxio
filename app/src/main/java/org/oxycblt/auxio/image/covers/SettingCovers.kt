@@ -38,7 +38,7 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
     override suspend fun create(context: Context, revision: UUID): MutableCovers =
         when (imageSettings.coverMode) {
             CoverMode.OFF -> NullCovers(context, identifier)
-            CoverMode.SAVE_SPACE -> siloedCovers(context, revision, CoverParams.of(750, 70))
+            CoverMode.SAVE_SPACE -> siloedCovers(context, revision, CoverParams.of(500, 70))
             CoverMode.BALANCED -> siloedCovers(context, revision, CoverParams.of(750, 85))
             CoverMode.HIGH_QUALITY -> siloedCovers(context, revision, CoverParams.of(1000, 100))
         }
