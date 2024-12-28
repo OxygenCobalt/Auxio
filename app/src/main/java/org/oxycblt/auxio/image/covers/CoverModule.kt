@@ -27,12 +27,12 @@ import org.oxycblt.musikr.cover.CoverIdentifier
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class CoverModule {
-    @Binds abstract fun configCovers(impl: SettingCoversImpl): SettingCovers
+interface CoverModule {
+    @Binds fun configCovers(impl: SettingCoversImpl): SettingCovers
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class CoverProvidesModule {
+class CoverProvidesModule {
     @Provides fun identifier(): CoverIdentifier = CoverIdentifier.md5()
 }
