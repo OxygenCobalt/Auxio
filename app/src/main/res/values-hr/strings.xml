@@ -63,8 +63,8 @@
     <string name="set_black_mode">Crna tema</string>
     <string name="set_black_mode_desc">Koristi potpuno tamnu temu</string>
     <string name="set_display">Prikaz</string>
-    <string name="set_lib_tabs">Pločice zbirke</string>
-    <string name="set_lib_tabs_desc">Promijeni vidljivost i redoslijed pločica zbirke</string>
+    <string name="set_lib_tabs">Kartice zbirke</string>
+    <string name="set_lib_tabs_desc">Promijeni vidljivost i redoslijed kartica zbirke</string>
     <string name="set_round_mode">Zaobljena naslovnica</string>
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Slušalice: odmah reproduciraj</string>
@@ -99,7 +99,7 @@
     <string name="desc_shuffle_all">Izmiješaj sve pjesme</string>
     <string name="desc_remove_song">Ukoni ovu pjesmu iz popisa pjesama</string>
     <string name="desc_song_handle">Premjesti ovu pjesmu u popisu pjesama</string>
-    <string name="desc_tab_handle">Pomakni ovu pločicu</string>
+    <string name="desc_tab_handle">Pomakni ovu karticu</string>
     <string name="desc_clear_search">Izbriši pretražene pojmove</string>
     <string name="desc_music_location_delete">Ukloni mapu</string>
     <string name="desc_auxio_icon">Auxio logotip</string>
@@ -177,7 +177,7 @@
     <string name="set_theme_auto">Automatski</string>
     <string name="set_notif_action">Koristi alternativnu radnju za obavijest</string>
     <string name="set_round_mode_desc">Omogući zaobljene rubove na dodatnim elementima korisničkog sučelja (zahtijeva zaobljene omote albuma)</string>
-    <string name="set_personalize">Ponašanje</string>
+    <string name="set_personalize">Prilagodi</string>
     <string name="set_rewind_prev">Premotaj prije preskakanja natrag</string>
     <string name="desc_skip_next">Preskoči na sljedeću pjesmu</string>
     <string name="set_play_song_none">Reproduciraj iz prikazanog predmeta</string>
@@ -215,7 +215,7 @@
     <string name="set_exclude_non_music">Isključi sve što nije glazba</string>
     <string name="set_play_song_from_artist">Reproduciraj iz izvođača</string>
     <string name="set_cover_mode_high_quality">Visoka kvaliteta</string>
-    <string name="set_cover_mode_balanced">Brzo</string>
+    <string name="set_cover_mode_balanced">Srednja kvaliteta</string>
     <string name="set_exclude_non_music_desc">Zanemari sve audio datoteke koje nisu glazba, npr. podcast datoteke</string>
     <string name="set_separators_warning">Upozorenje: Korištenje ove postavke može dovesti do pogrešnog tumačenja nekih oznaka kao da imaju više vrijednosti. To možeš riješiti postavljanjem obrnute kose crte (\\) ispred neželjenih znakova rastavljanja.</string>
     <string name="set_cover_mode">Omoti albuma</string>
@@ -248,7 +248,7 @@
     <string name="desc_playlist_image">Slika popisa pjesama za %s</string>
     <string name="set_behavior">Ponašanje</string>
     <string name="set_intelligent_sorting">Pametno razvrstavanje</string>
-    <string name="set_intelligent_sorting_desc">Ispravno razvrstaj imena koja počinju brojevima ili riječima poput „the” (najbolje radi s glazbom na engleskom jeziku)</string>
+    <string name="set_intelligent_sorting_desc">Ispravno razvrstaj imena koja počinju s brojevima ili riječima poput „the” (najbolje radi s glazbom na engleskom jeziku)</string>
     <string name="lbl_new_playlist">Novi popis pjesama</string>
     <string name="lbl_playlist_add">Dodaj u popis pjesama</string>
     <string name="def_song_count">Nema pjesama</string>
@@ -264,7 +264,7 @@
     <string name="lbl_edit">Uredi</string>
     <string name="fmt_deletion_info">Izbrisati %s\? To je nepovratna radnja.</string>
     <string name="fmt_editing">Uređivanje popisa pjesama %s</string>
-    <string name="lbl_appears_on">Sudjelovanje:</string>
+    <string name="lbl_appears_on">Sudjeluje u</string>
     <string name="lbl_share">Dijeli</string>
     <string name="def_disc">Nema diska</string>
     <string name="set_square_covers">Prisili kvadratične omote albuma</string>
@@ -325,4 +325,6 @@
     <string name="def_album">Nepoznat album</string>
     <string name="cdc_unknown">Nepoznato</string>
     <string name="cnt_mp4">MPEG-4 sadrži %s</string>
+    <string name="set_cover_mode_save_space">Niža kvaliteta</string>
+    <string name="set_locations_new">Nova mapa</string>
 </resources>
