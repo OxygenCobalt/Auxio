@@ -262,7 +262,7 @@
     <string name="desc_playlist_image">Obrázek seznamu skladeb pro %s</string>
     <string name="lbl_playlist">Seznam skladeb</string>
     <string name="set_intelligent_sorting">Při řazení ignorovat předložky</string>
-    <string name="set_intelligent_sorting_desc">Ignorovat slova jako \the při řazení podle názvu (funguje nejlépe u hudby v angličtině)</string>
+    <string name="set_intelligent_sorting_desc">Ignorovat slova jako „the“ při řazení podle názvu (funguje nejlépe u hudby v angličtině)</string>
     <string name="lbl_playlist_add">Přidat do seznamu skladeb</string>
     <string name="lng_playlist_added">Přidáno do seznamu skladeb</string>
     <string name="lng_playlist_created">Seznam skladeb vytvořen</string>
@@ -334,4 +334,6 @@
     <string name="cnt_mp4">MPEG-4 obsahující %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Neznámý</string>
+    <string name="set_locations_new">Nová složka</string>
+    <string name="set_cover_mode_save_space">Úspora místa</string>
 </resources>

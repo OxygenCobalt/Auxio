@@ -251,7 +251,7 @@
     <string name="lbl_playlists">播放列表</string>
     <string name="desc_playlist_image">%s 的播放列表图片</string>
     <string name="set_intelligent_sorting">排序时忽略冠词</string>
-    <string name="set_intelligent_sorting_desc">正确排列以数字或像是 \the 这样的单词开头的名称（对英文歌曲效果最好）</string>
+    <string name="set_intelligent_sorting_desc">正确排列以数字或像是 \"the\" 这样的单词开头的名称（对英文歌曲效果最好）</string>
     <string name="lbl_new_playlist">新建播放列表</string>
     <string name="fmt_def_playlist">播放列表 %d</string>
     <string name="lng_playlist_created">已创建播放列表</string>
@@ -323,4 +323,6 @@
     <string name="cnt_mp4">含 %s 的 MPEG-4</string>
     <string name="cdc_alac">Apple 无损音频编解码器（ALAC）</string>
     <string name="cdc_unknown">未知</string>
+    <string name="set_locations_new">新文件夹</string>
+    <string name="set_cover_mode_save_space">节省空间</string>
 </resources>

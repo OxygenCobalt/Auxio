@@ -124,4 +124,12 @@
     <string name="lbl_feedback">Əks Əlaqə</string>
     <string name="lbl_email">E-poçt göndər</string>
     <string name="lbl_github">GitHub-da problem yarat</string>
+    <string name="lbl_music_sources">Qovluqları seç</string>
+    <string name="lng_playlist_exported">Pleylist ixrac edildi</string>
+    <string name="lng_playlist_added">Pleylistə əlavə edildi</string>
+    <string name="lng_playlist_renamed">Pleylist adı dəyişdirildi</string>
+    <string name="lng_playlist_imported">Pleylist idxal edildi</string>
+    <string name="lng_playlist_deleted">Pleylist silindi</string>
+    <string name="lng_playlist_created">Səsləndirmə siyahısı yaradıldı</string>
+    <string name="lng_queue_added">Növbəyə əlavə edildi</string>
 </resources>
