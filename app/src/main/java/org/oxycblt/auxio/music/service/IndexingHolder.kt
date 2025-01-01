@@ -35,6 +35,7 @@ import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.track.UpdateTracker
 import timber.log.Timber as L
 
 class IndexingHolder
@@ -45,7 +46,7 @@ private constructor(
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
     private val imageLoader: ImageLoader,
-    private val contentObserver: SystemContentObserver
+    private val updateTracker: UpdateTracker
 ) :
     MusicRepository.IndexingWorker,
     MusicRepository.IndexingListener,
@@ -58,7 +59,7 @@ private constructor(
         private val musicRepository: MusicRepository,
         private val musicSettings: MusicSettings,
         private val imageLoader: ImageLoader,
-        private val contentObserver: SystemContentObserver
+        private val updateTracker: UpdateTracker
     ) {
         fun create(context: Context, listener: ForegroundListener) =
             IndexingHolder(
@@ -68,7 +69,7 @@ private constructor(
                 musicRepository,
                 musicSettings,
                 imageLoader,
-                contentObserver)
+                updateTracker)
     }
 
     private val indexJob = Job()
@@ -87,11 +88,11 @@ private constructor(
         musicRepository.addUpdateListener(this)
         musicRepository.addIndexingListener(this)
         musicRepository.registerWorker(this)
-        contentObserver.attach()
+        updateTracker.track(musicSettings.musicLocations)
     }
 
     fun release() {
-        contentObserver.release()
+        updateTracker.release()
         musicRepository.unregisterWorker(this)
         musicRepository.removeIndexingListener(this)
         musicRepository.removeUpdateListener(this)
@@ -161,6 +162,12 @@ private constructor(
                     heap = savedState.heap.map { song -> song?.let { library.findSong(it.uid) } }),
                 true)
         }
+    }
+
+    override fun onMusicLocationsChanged() {
+        super.onMusicLocationsChanged()
+        updateTracker.track(musicSettings.musicLocations)
+        musicRepository.requestIndex(true)
     }
 
     override fun onIndexingSettingChanged() {

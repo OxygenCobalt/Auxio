@@ -48,6 +48,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val intelligentSorting: Boolean
 
     interface Listener {
+        /** Called when the current music locations changed. */
+        fun onMusicLocationsChanged() {}
         /** Called when a setting controlling how music is loaded has changed. */
         fun onIndexingSettingChanged() {}
         /** Called when the [shouldBeObserving] configuration has changed. */
@@ -109,7 +111,10 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
         when (key) {
-            getString(R.string.set_key_music_locations),
+            getString(R.string.set_key_music_locations) -> {
+                L.d("Dispatching music locations change")
+                listener.onMusicLocationsChanged()
+            }
             getString(R.string.set_key_separators),
             getString(R.string.set_key_auto_sort_names) -> {
                 L.d("Dispatching indexing setting change for $key")
