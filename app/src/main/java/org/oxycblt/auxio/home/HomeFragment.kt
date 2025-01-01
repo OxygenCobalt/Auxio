@@ -318,6 +318,13 @@ class HomeFragment :
                 binding.homeIndexingContainer.isInvisible = state.error == null
                 binding.homeIndexingProgress.isInvisible = state.error != null
                 binding.homeIndexingError.isInvisible = state.error == null
+                if (state.error != null) {
+                    binding.homeIndexingContainer.setOnClickListener {
+                        findNavController().navigateSafe(
+                            HomeFragmentDirections.reportError(state.error)
+                        )
+                    }
+                }
             }
             is IndexingState.Indexing -> {
                 binding.homeIndexingContainer.isInvisible = false
