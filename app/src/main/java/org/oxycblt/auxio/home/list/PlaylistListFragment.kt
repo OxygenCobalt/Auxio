@@ -34,7 +34,6 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.recycler.PlaylistViewHolder
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -73,11 +72,14 @@ class PlaylistListFragment :
             listener = this@PlaylistListFragment
         }
 
-        binding.homeNoMusicMsg.text = getString(R.string.lng_no_playlists)
+        binding.homeNoMusicPlaceholder.apply {
+            setImageResource(R.drawable.ic_playlist_48)
+            contentDescription = getString(R.string.lbl_playlists)
+        }
+        binding.homeNoMusicMsg.text = getString(R.string.lng_empty_playlists)
 
-        binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
-
-        collectImmediately(homeModel.playlistList, musicModel.indexingState, ::updatePlaylists)
+        collectImmediately(homeModel.playlistList, ::updatePlaylists)
+        collectImmediately(homeModel.empty, homeModel.playlistList, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -122,13 +124,21 @@ class PlaylistListFragment :
         listModel.openMenu(R.menu.playlist, item)
     }
 
-    private fun updatePlaylists(playlists: List<Playlist>, indexingState: IndexingState?) {
-        requireBinding().apply {
-            homeRecycler.isInvisible = playlists.isEmpty()
-            homeNoMusic.isInvisible =
-                indexingState !is IndexingState.Completed || playlists.isNotEmpty()
-        }
+    private fun updatePlaylists(playlists: List<Playlist>) {
         playlistAdapter.update(playlists, homeModel.playlistInstructions.consume())
+    }
+
+    private fun updateNoMusicIndicator(empty: Boolean, playlists: List<Playlist>) {
+        val binding = requireBinding()
+        binding.homeRecycler.isInvisible = empty
+        binding.homeNoMusic.isInvisible = !empty && playlists.isNotEmpty()
+        if (!empty && playlists.isEmpty()) {
+            binding.homeNoMusicAction.text = getString(R.string.lbl_new_playlist)
+            binding.homeNoMusicAction.setOnClickListener { musicModel.createPlaylist() }
+        } else {
+            binding.homeNoMusicAction.text = getString(R.string.lbl_music_sources)
+            binding.homeNoMusicAction.setOnClickListener { homeModel.startChooseMusicLocations() }
+        }
     }
 
     private fun updateSelection(selection: List<Music>) {

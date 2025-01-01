@@ -321,9 +321,4 @@
     <string name="lbl_github">Faire un ticket sur GitHub</string>
     <string name="lbl_email">Envoyer un courriel</string>
     <string name="lbl_music_sources">Choisir des dossiers</string>
-    <string name="lng_no_songs">Vos titres apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
-    <string name="lng_no_albums">Vos albums apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
-    <string name="lng_no_artists">Vos artistes apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
-    <string name="lng_no_genres">Vos genres apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
-    <string name="lng_no_playlists">Vos listes de lecture apparaîtront ici une fois que vous aurez ajouté de la musique.</string>
 </resources>

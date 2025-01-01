@@ -319,11 +319,6 @@
     <string name="lbl_more">더 보기</string>
     <string name="lbl_music_sources">폴더 선택</string>
     <string name="lbl_email">전자우편을 전송합니다</string>
-    <string name="lng_no_albums">당신이 음악을 추가하면 여기에 자신의 앨범이 표시됩니다.</string>
-    <string name="lng_no_artists">당신이 음악을 추가하면 여기에 자신의 음악가가 표시됩니다.</string>
     <string name="lbl_github">깃허브에 문제를 제기합니다</string>
     <string name="lbl_feedback">응답</string>
-    <string name="lng_no_songs">당신이 음악을 추가하면 여기에 표시됩니다.</string>
-    <string name="lng_no_playlists">당신이 음악을 여기에 추가하면 자신의 재생목록이 표시됩니다.</string>
-    <string name="lng_no_genres">당신이 음악을 추가하면 여기에 자신의 장르가 표시됩니다.</string>
 </resources>

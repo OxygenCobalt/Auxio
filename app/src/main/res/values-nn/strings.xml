@@ -311,9 +311,4 @@
     <string name="fmt_lib_album_count">Innlasta album: %d</string>
     <string name="fmt_lib_total_duration">Total lengd: %s</string>
     <string name="lbl_music_sources">Vel mapper</string>
-    <string name="lng_no_songs">Spora dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_artists">Artistane dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_genres">Sjangrane dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_albums">Albuma dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_playlists">Spelelistene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
 </resources>

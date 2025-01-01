@@ -33,7 +33,7 @@
                 android:layout_width="@dimen/size_icon_huge"
                 android:layout_height="@dimen/size_icon_huge"
                 android:layout_marginBottom="@dimen/spacing_small"
-                android:src="@drawable/ic_song_24"
+                android:src="@drawable/ic_song_48"
                 app:tint="?attr/colorOnSurface" />
 
             <TextView
@@ -41,12 +41,12 @@
                 android:layout_width="256dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_small"
-                tools:text="@string/lng_no_songs"
+                tools:text="@string/lng_empty_songs"
                 android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceBodyLarge" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
-                android:id="@+id/home_choose_music_sources"
+                android:id="@+id/home_no_music_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_music_sources" />

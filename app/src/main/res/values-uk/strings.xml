@@ -323,13 +323,8 @@
     <string name="lbl_more">Більше</string>
     <string name="lbl_music_sources">Виберіть папки</string>
     <string name="lbl_feedback">Зворотній зв\'язок</string>
-    <string name="lng_no_artists">Ваші виконавці з’являться тут, коли ви додасте музику.</string>
-    <string name="lng_no_genres">Ваші жанри з’являться тут, коли ви додасте музику.</string>
-    <string name="lng_no_songs">Ваші пісні з’являться тут, коли ви додасте музику.</string>
     <string name="lbl_github">Зробіть випуск на GitHub</string>
     <string name="lbl_email">Надіслати електронний лист</string>
-    <string name="lng_no_playlists">Ваші списки відтворення з’являться тут, коли ви додасте музику.</string>
-    <string name="lng_no_albums">Ваші альбоми з’являться тут, коли ви додасте музику.</string>
     <string name="def_album">Невідомий альбом</string>
     <string name="cnt_mp4">MPEG-4, що містить %s</string>
     <string name="cdc_unknown">Невідомий</string>

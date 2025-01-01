@@ -323,6 +323,8 @@ class HomeFragment :
                         findNavController()
                             .navigateSafe(HomeFragmentDirections.reportError(state.error))
                     }
+                } else {
+                    binding.homeIndexingContainer.setOnClickListener(null)
                 }
             }
             is IndexingState.Indexing -> {

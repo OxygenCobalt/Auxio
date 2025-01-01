@@ -42,6 +42,8 @@ internal data class LibraryImpl(
     private val genreUidMap = genres.associateBy { it.uid }
     private val playlistUidMap = playlists.associateBy { it.uid }
 
+    override fun empty() = songs.isEmpty()
+
     override fun findSong(uid: Music.UID) = songUidMap[uid]
 
     override fun findSongByPath(path: Path) = songs.find { it.path == path }

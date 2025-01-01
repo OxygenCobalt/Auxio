@@ -120,6 +120,10 @@ constructor(
     val playlistList: StateFlow<List<Playlist>>
         get() = _playlistList
 
+    private val _empty = MutableStateFlow(false)
+    val empty: StateFlow<Boolean>
+        get() = _empty
+
     private val _playlistInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for how to update [genreList] in the UI. */
     val playlistInstructions: Event<UpdateInstructions>
@@ -128,6 +132,7 @@ constructor(
     /** The current [Sort] used for [genreList]. */
     val playlistSort: Sort
         get() = listSettings.playlistSort
+
 
     private val homeGenerator = homeGeneratorFactory.create(this)
 
@@ -170,6 +175,10 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         homeGenerator.release()
+    }
+
+    override fun invalidateEmpty() {
+        _empty.value = homeGenerator.empty()
     }
 
     override fun invalidateMusic(type: MusicType, instructions: UpdateInstructions) {
