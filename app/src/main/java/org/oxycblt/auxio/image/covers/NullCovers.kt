@@ -35,6 +35,6 @@ class NullCovers(private val context: Context, private val identifier: CoverIden
     }
 }
 
-private class NullCover(override val id: String) : Cover {
+class NullCover(override val id: String) : Cover {
     override suspend fun open() = null
 }

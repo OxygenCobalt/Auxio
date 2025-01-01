@@ -26,8 +26,8 @@ import java.io.File
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.fs.Volume
-import org.oxycblt.musikr.fs.query.contentResolverSafe
-import org.oxycblt.musikr.fs.query.useQuery
+import org.oxycblt.musikr.fs.device.contentResolverSafe
+import org.oxycblt.musikr.fs.device.useQuery
 
 /**
  * A factory for parsing the reverse-engineered format of the URIs obtained from document picker.

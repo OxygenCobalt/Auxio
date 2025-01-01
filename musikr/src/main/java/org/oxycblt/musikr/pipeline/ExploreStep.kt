@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.MusicLocation
-import org.oxycblt.musikr.fs.query.DeviceFiles
+import org.oxycblt.musikr.fs.device.DeviceFiles
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U

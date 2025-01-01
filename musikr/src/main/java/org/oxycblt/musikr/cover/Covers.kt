@@ -18,16 +18,10 @@
  
 package org.oxycblt.musikr.cover
 
-interface Covers {
-    suspend fun obtain(id: String): ObtainResult
+import java.io.InputStream
 
-    companion object {
-        fun from(
-            coverFiles: CoverFiles,
-            coverFormat: CoverFormat,
-            identifier: CoverIdentifier = CoverIdentifier.md5()
-        ): MutableCovers = FileCovers(coverFiles, coverFormat, identifier)
-    }
+interface Covers {
+    suspend fun obtain(id: String): ObtainResult<out Cover>
 }
 
 interface MutableCovers : Covers {
@@ -36,40 +30,27 @@ interface MutableCovers : Covers {
     suspend fun cleanup(excluding: Collection<Cover>)
 }
 
-sealed interface ObtainResult {
-    data class Hit(val cover: Cover) : ObtainResult
+interface Cover {
+    val id: String
 
-    data object Miss : ObtainResult
+    suspend fun open(): InputStream?
 }
 
-private class FileCovers(
-    private val coverFiles: CoverFiles,
-    private val coverFormat: CoverFormat,
-    private val coverIdentifier: CoverIdentifier,
-) : Covers, MutableCovers {
-    override suspend fun obtain(id: String): ObtainResult {
-        val file = coverFiles.find(getFileName(id))
-        return if (file != null) {
-            ObtainResult.Hit(FileCover(id, file))
-        } else {
-            ObtainResult.Miss
-        }
+class CoverCollection private constructor(val covers: List<Cover>) {
+    companion object {
+        fun from(covers: Collection<Cover>) =
+            CoverCollection(
+                covers
+                    .groupBy { it.id }
+                    .entries
+                    .sortedByDescending { it.key }
+                    .sortedByDescending { it.value.size }
+                    .map { it.value.first() })
     }
-
-    override suspend fun write(data: ByteArray): Cover {
-        val id = coverIdentifier.identify(data)
-        val file = coverFiles.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
-        return FileCover(id, file)
-    }
-
-    override suspend fun cleanup(excluding: Collection<Cover>) {
-        val used = excluding.mapTo(mutableSetOf()) { getFileName(it.id) }
-        coverFiles.deleteWhere { it !in used }
-    }
-
-    private fun getFileName(id: String) = "$id.${coverFormat.extension}"
 }
 
-private class FileCover(override val id: String, private val coverFile: CoverFile) : Cover {
-    override suspend fun open() = coverFile.open()
+sealed interface ObtainResult<T : Cover> {
+    data class Hit<T : Cover>(val cover: T) : ObtainResult<T>
+
+    class Miss<T : Cover> : ObtainResult<T>
 }

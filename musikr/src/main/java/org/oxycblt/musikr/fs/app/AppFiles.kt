@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.fs.app
 
+import android.os.ParcelFileDescriptor
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -27,26 +28,28 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-interface CoverFiles {
-    suspend fun find(name: String): CoverFile?
+interface AppFiles {
+    suspend fun find(name: String): AppFile?
 
-    suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile
+    suspend fun write(name: String, block: suspend (OutputStream) -> Unit): AppFile
 
     suspend fun deleteWhere(block: (String) -> Boolean)
 
     companion object {
-        suspend fun at(dir: File): CoverFiles {
+        suspend fun at(dir: File): AppFiles {
             withContext(Dispatchers.IO) { check(dir.exists() && dir.isDirectory) }
-            return CoverFilesImpl(dir)
+            return AppFilesImpl(dir)
         }
     }
 }
 
-interface CoverFile {
+interface AppFile {
+    suspend fun fd(): ParcelFileDescriptor?
+
     suspend fun open(): InputStream?
 }
 
-private class CoverFilesImpl(private val dir: File) : CoverFiles {
+private class AppFilesImpl(private val dir: File) : AppFiles {
     private val fileMutexes = mutableMapOf<String, Mutex>()
     private val mapMutex = Mutex()
 
@@ -54,16 +57,16 @@ private class CoverFilesImpl(private val dir: File) : CoverFiles {
         return mapMutex.withLock { fileMutexes.getOrPut(file) { Mutex() } }
     }
 
-    override suspend fun find(name: String): CoverFile? =
+    override suspend fun find(name: String): AppFile? =
         withContext(Dispatchers.IO) {
             try {
-                File(dir, name).takeIf { it.exists() }?.let { CoverFileImpl(it) }
+                File(dir, name).takeIf { it.exists() }?.let { AppFileImpl(it) }
             } catch (e: IOException) {
                 null
             }
         }
 
-    override suspend fun write(name: String, block: suspend (OutputStream) -> Unit): CoverFile {
+    override suspend fun write(name: String, block: suspend (OutputStream) -> Unit): AppFile {
         val fileMutex = getMutexForFile(name)
         return fileMutex.withLock {
             val targetFile = File(dir, name)
@@ -74,14 +77,14 @@ private class CoverFilesImpl(private val dir: File) : CoverFiles {
                     try {
                         tempFile.outputStream().use { block(it) }
                         tempFile.renameTo(targetFile)
-                        CoverFileImpl(targetFile)
+                        AppFileImpl(targetFile)
                     } catch (e: IOException) {
                         tempFile.delete()
                         throw e
                     }
                 }
             } else {
-                CoverFileImpl(targetFile)
+                AppFileImpl(targetFile)
             }
         }
     }
@@ -93,6 +96,15 @@ private class CoverFilesImpl(private val dir: File) : CoverFiles {
     }
 }
 
-private class CoverFileImpl(private val file: File) : CoverFile {
+private class AppFileImpl(private val file: File) : AppFile {
+    override suspend fun fd() =
+        withContext(Dispatchers.IO) {
+            try {
+                ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+            } catch (e: IOException) {
+                null
+            }
+        }
+
     override suspend fun open() = withContext(Dispatchers.IO) { file.inputStream() }
 }

@@ -23,7 +23,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
-import org.oxycblt.musikr.fs.query.contentResolverSafe
+import org.oxycblt.musikr.fs.device.contentResolverSafe
 import org.oxycblt.musikr.util.splitEscaped
 
 class MusicLocation private constructor(val uri: Uri, val path: Path) {
