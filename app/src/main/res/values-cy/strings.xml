@@ -324,13 +324,9 @@
     <string name="lbl_feedback">Adborth</string>
     <string name="lbl_github">Creu issue ar GitHub</string>
     <string name="lbl_email">Anfon ebost</string>
-    <string name="lng_no_songs">Bydd eich caneuon yn ymddangos yma unwaith y byddwch chi\'n ychwanegu cerddoriaeth.</string>
-    <string name="lng_no_artists">Bydd eich artistiaid yn ymddangos yma unwaith y byddwch chi\'n ychwanegu cerddoriaeth.</string>
     <string name="lbl_more">Mwy</string>
     <string name="def_album">Albwm anhysbys</string>
     <string name="cdc_unknown">Anhysbys</string>
-    <string name="lng_no_genres">Bydd eich genres yn ymddangos yma unwaith y byddwch chi\'n ychwanegu cerddoriaeth.</string>
-    <string name="lng_no_playlists">Bydd eich rhestri chwarae\'n ymddangos yma unwaith y byddwch chi\'n ychwanegu cerddoriaeth.</string>
     <string name="cnt_mp4">MPEG-4 gan gynnwys %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
 </resources>

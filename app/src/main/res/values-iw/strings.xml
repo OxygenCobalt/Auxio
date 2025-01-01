@@ -300,9 +300,6 @@
     <string name="err_export_failed">אין יכולת לייצא רשימת השמעה מהקובץ הנ”ל</string>
     <string name="lbl_music_sources">בחר תיקיות</string>
     <string name="lbl_start_playback">התחל השמעה</string>
-    <string name="lng_no_albums">האלבומים שלכם יופיעו כאן לאחר שתוסיפו מוזיקה.</string>
-    <string name="lng_no_artists">האמנים שלכם יופיעו כאן לאחר שתוסיפו מוזיקה.</string>
-    <string name="lng_no_playlists">רשימות ההשמעה שלכם יופיעו כאן לאחר שתוסיפו מוזיקה.</string>
     <string name="set_remember_pause">זכור השהיה</string>
     <string name="set_replay_gain_mode_off">כבוי</string>
     <string name="lbl_more">עוד</string>
@@ -317,8 +314,6 @@
     <string name="lng_supporters_promo">תרמו לפרויקט כדי להוסיף את שמכם כאן!</string>
     <string name="lng_tasker_start">מפעיל Auxio במצב שנשמר קודם לכן. אם אין מצב שמור זמין, כל השירים יתערבבו. השמעה תתחיל מידית.\n\nאזהרה: היזהר בשליטה בשירות זה, אם תסגרו אותו ואחר כך תנסו להשתמש בו שוב, ייתכן שתקרסו את האפליקציה.</string>
     <string name="set_remember_pause_desc">הישאר בניגון/בהשהיה בעת דילוג או עריכה של התור</string>
-    <string name="lng_no_songs">השירים שלכם יופיעו כאן לאחר שתוסיפו מוזיקה.</string>
-    <string name="lng_no_genres">הז\'אנרים שלכם יופיעו כאן לאחר שתוסיפו מוזיקה.</string>
     <string name="cdc_alac">קודק אודיו Apple ללא אובדן נתונים (ALAC)</string>
     <string name="lbl_feedback">משוב</string>
     <string name="lbl_supporters">תומכים</string>
