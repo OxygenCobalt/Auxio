@@ -78,9 +78,8 @@ class PlaylistListFragment :
         }
         binding.homeNoMusicMsg.text = getString(R.string.lng_empty_playlists)
 
-        binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
-
         collectImmediately(homeModel.playlistList, ::updatePlaylists)
+        collectImmediately(homeModel.empty, homeModel.playlistList, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -126,11 +125,20 @@ class PlaylistListFragment :
     }
 
     private fun updatePlaylists(playlists: List<Playlist>) {
-        requireBinding().apply {
-            homeRecycler.isInvisible = playlists.isEmpty()
-            homeNoMusic.isInvisible = playlists.isNotEmpty()
-        }
         playlistAdapter.update(playlists, homeModel.playlistInstructions.consume())
+    }
+
+    private fun updateNoMusicIndicator(empty: Boolean, playlists: List<Playlist>) {
+        val binding = requireBinding()
+        binding.homeRecycler.isInvisible = empty
+        binding.homeNoMusic.isInvisible = !empty && playlists.isNotEmpty()
+        if (!empty && playlists.isEmpty()) {
+            binding.homeNoMusicAction.text = getString(R.string.lbl_new_playlist)
+            binding.homeNoMusicAction.setOnClickListener { musicModel.createPlaylist() }
+        } else {
+            binding.homeNoMusicAction.text = getString(R.string.lbl_music_sources)
+            binding.homeNoMusicAction.setOnClickListener { homeModel.startChooseMusicLocations() }
+        }
     }
 
     private fun updateSelection(selection: List<Music>) {

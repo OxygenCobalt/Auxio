@@ -46,7 +46,7 @@
                 android:textAppearance="?attr/textAppearanceBodyLarge" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
-                android:id="@+id/home_choose_music_sources"
+                android:id="@+id/home_no_music_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_music_sources" />

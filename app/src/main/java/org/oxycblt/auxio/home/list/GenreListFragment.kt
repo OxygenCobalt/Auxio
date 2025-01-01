@@ -80,9 +80,10 @@ class GenreListFragment :
         }
         binding.homeNoMusicMsg.text = getString(R.string.lng_empty_genres)
 
-        binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
+        binding.homeNoMusicAction.setOnClickListener { homeModel.startChooseMusicLocations() }
 
         collectImmediately(homeModel.genreList, ::updateGenres)
+        collectImmediately(homeModel.empty, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -128,11 +129,13 @@ class GenreListFragment :
     }
 
     private fun updateGenres(genres: List<Genre>) {
-        requireBinding().apply {
-            homeRecycler.isInvisible = genres.isEmpty()
-            homeNoMusic.isInvisible = genres.isNotEmpty()
-        }
         genreAdapter.update(genres, homeModel.genreInstructions.consume())
+    }
+
+    private fun updateNoMusicIndicator(empty: Boolean) {
+        val binding = requireBinding()
+        binding.homeRecycler.isInvisible = empty
+        binding.homeNoMusic.isInvisible = !empty
     }
 
     private fun updateSelection(selection: List<Music>) {

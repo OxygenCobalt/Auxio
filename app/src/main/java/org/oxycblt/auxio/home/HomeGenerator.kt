@@ -36,6 +36,8 @@ interface HomeGenerator {
 
     fun release()
 
+    fun empty(): Boolean
+
     fun songs(): List<Song>
 
     fun albums(): List<Album>
@@ -49,6 +51,8 @@ interface HomeGenerator {
     fun tabs(): List<MusicType>
 
     interface Invalidator {
+        fun invalidateEmpty() {}
+
         fun invalidateMusic(type: MusicType, instructions: UpdateInstructions)
 
         fun invalidateTabs()
@@ -119,6 +123,8 @@ private class HomeGeneratorImpl(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
+        invalidator.invalidateEmpty()
+
         val library = musicRepository.library
         if (changes.deviceLibrary && library != null) {
             L.d("Refreshing library")
@@ -141,6 +147,9 @@ private class HomeGeneratorImpl(
         listSettings.unregisterListener(this)
         homeSettings.unregisterListener(this)
     }
+
+    override fun empty() =
+        musicRepository.library == null
 
     override fun songs() =
         musicRepository.library?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
