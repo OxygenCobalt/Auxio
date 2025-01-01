@@ -152,7 +152,7 @@ class SongListFragment :
 
     private fun updateSongs(songs: List<Song>, indexingState: IndexingState?) {
         requireBinding().apply {
-            homeRecycler.isInvisible = indexingState !is IndexingState.Completed || songs.isEmpty()
+            homeRecycler.isInvisible = songs.isEmpty()
             homeNoMusic.isInvisible =
                 indexingState !is IndexingState.Completed || songs.isNotEmpty()
         }

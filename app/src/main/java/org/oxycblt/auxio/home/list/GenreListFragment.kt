@@ -126,7 +126,7 @@ class GenreListFragment :
 
     private fun updateGenres(genres: List<Genre>, indexingState: IndexingState?) {
         requireBinding().apply {
-            homeRecycler.isInvisible = indexingState !is IndexingState.Completed || genres.isEmpty()
+            homeRecycler.isInvisible = genres.isEmpty()
             homeNoMusic.isInvisible =
                 indexingState !is IndexingState.Completed || genres.isNotEmpty()
         }
