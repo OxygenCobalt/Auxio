@@ -22,11 +22,8 @@ import android.os.ParcelFileDescriptor
 import org.oxycblt.musikr.fs.app.AppFile
 import org.oxycblt.musikr.fs.app.AppFiles
 
-class FileCovers(
-    private val appFiles: AppFiles,
-    private val coverFormat: CoverFormat,
-    private val coverIdentifier: CoverIdentifier,
-) : Covers, MutableCovers {
+open class FileCovers(private val appFiles: AppFiles, private val coverFormat: CoverFormat) :
+    Covers {
     override suspend fun obtain(id: String): ObtainResult<FileCover> {
         val file = appFiles.find(getFileName(id))
         return if (file != null) {
@@ -36,6 +33,14 @@ class FileCovers(
         }
     }
 
+    protected fun getFileName(id: String) = "$id.${coverFormat.extension}"
+}
+
+class MutableFileCovers(
+    private val appFiles: AppFiles,
+    private val coverFormat: CoverFormat,
+    private val coverIdentifier: CoverIdentifier
+) : FileCovers(appFiles, coverFormat), MutableCovers {
     override suspend fun write(data: ByteArray): FileCover {
         val id = coverIdentifier.identify(data)
         val file = appFiles.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
@@ -46,8 +51,6 @@ class FileCovers(
         val used = excluding.mapTo(mutableSetOf()) { getFileName(it.id) }
         appFiles.deleteWhere { it !in used }
     }
-
-    private fun getFileName(id: String) = "$id.${coverFormat.extension}"
 }
 
 interface FileCover : Cover {

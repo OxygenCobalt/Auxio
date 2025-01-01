@@ -25,14 +25,10 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.runBlocking
-import org.oxycblt.auxio.image.covers.MutableSiloedCovers
 import org.oxycblt.auxio.image.covers.SiloedCoverId
-import org.oxycblt.musikr.cover.CoverIdentifier
+import org.oxycblt.auxio.image.covers.SiloedCovers
 import org.oxycblt.musikr.cover.ObtainResult
 
-// AndroidManifest.xml addition
-
-// ImageProvider.java
 class CoverProvider : ContentProvider() {
     override fun onCreate(): Boolean = true
 
@@ -42,8 +38,7 @@ class CoverProvider : ContentProvider() {
         val id = requireNotNull(uri.lastPathSegment) { "No ID in URI: $uri" }
         val coverId = requireNotNull(SiloedCoverId.parse(id)) { "Invalid ID: $id" }
         return runBlocking {
-            val siloedCovers =
-                MutableSiloedCovers.from(requireContext(), coverId.silo, CoverIdentifier.md5())
+            val siloedCovers = SiloedCovers.from(requireContext(), coverId.silo)
             when (val res = siloedCovers.obtain(coverId.id)) {
                 is ObtainResult.Hit -> res.cover.fd()
                 is ObtainResult.Miss -> null
