@@ -23,13 +23,13 @@ import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.fs.app.AppFiles
 import org.oxycblt.musikr.cover.CoverFormat
 import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.FileCovers
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.ObtainResult
+import org.oxycblt.musikr.fs.app.AppFiles
 
 class SiloedCovers
 private constructor(
