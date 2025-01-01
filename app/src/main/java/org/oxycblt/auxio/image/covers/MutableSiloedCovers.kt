@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * SiloedCovers.kt is part of Auxio.
+ * MutableSiloedCovers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.ObtainResult
 import org.oxycblt.musikr.fs.app.AppFiles
 
-class SiloedCovers
+class MutableSiloedCovers
 private constructor(
     private val rootDir: File,
     private val silo: CoverSilo,
@@ -63,7 +63,7 @@ private constructor(
             context: Context,
             silo: CoverSilo,
             identifier: CoverIdentifier
-        ): SiloedCovers {
+        ): MutableSiloedCovers {
             val rootDir: File
             val revisionDir: File
             withContext(Dispatchers.IO) {
@@ -72,7 +72,7 @@ private constructor(
             }
             val files = AppFiles.at(revisionDir)
             val format = CoverFormat.jpeg(silo.params)
-            return SiloedCovers(rootDir, silo, FileCovers(files, format, identifier))
+            return MutableSiloedCovers(rootDir, silo, FileCovers(files, format, identifier))
         }
     }
 }

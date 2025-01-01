@@ -101,6 +101,15 @@
         </service>
 
         <!--
+        Expose Auxio's cover data to the android system
+        -->
+        <provider
+            android:name=".image.CoverProvider"
+            android:authorities="org.oxycblt.auxio.image"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
+
+        <!--
         Work around apps that blindly query for ACTION_MEDIA_BUTTON working.
         See the class for more info.
         -->
