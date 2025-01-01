@@ -320,9 +320,8 @@ class HomeFragment :
                 binding.homeIndexingError.isInvisible = state.error == null
                 if (state.error != null) {
                     binding.homeIndexingContainer.setOnClickListener {
-                        findNavController().navigateSafe(
-                            HomeFragmentDirections.reportError(state.error)
-                        )
+                        findNavController()
+                            .navigateSafe(HomeFragmentDirections.reportError(state.error))
                     }
                 }
             }
