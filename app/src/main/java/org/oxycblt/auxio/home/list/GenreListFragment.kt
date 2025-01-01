@@ -74,6 +74,10 @@ class GenreListFragment :
             listener = this@GenreListFragment
         }
 
+        binding.homeNoMusicPlaceholder.apply {
+            setImageResource(R.drawable.ic_genre_48)
+            contentDescription = getString(R.string.lbl_genres)
+        }
         binding.homeNoMusicMsg.text = getString(R.string.lng_empty_genres)
 
         binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }

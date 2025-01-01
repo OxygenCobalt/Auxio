@@ -72,6 +72,10 @@ class PlaylistListFragment :
             listener = this@PlaylistListFragment
         }
 
+        binding.homeNoMusicPlaceholder.apply {
+            setImageResource(R.drawable.ic_playlist_48)
+            contentDescription = getString(R.string.lbl_playlists)
+        }
         binding.homeNoMusicMsg.text = getString(R.string.lng_empty_playlists)
 
         binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }

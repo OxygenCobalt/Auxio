@@ -81,6 +81,10 @@ class AlbumListFragment :
             listener = this@AlbumListFragment
         }
 
+        binding.homeNoMusicPlaceholder.apply {
+            setImageResource(R.drawable.ic_album_48)
+            contentDescription = getString(R.string.lbl_albums)
+        }
         binding.homeNoMusicMsg.text = getString(R.string.lng_empty_albums)
 
         binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
