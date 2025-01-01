@@ -218,7 +218,7 @@
     <string name="lng_empty_songs">Your songs will show up here.</string>
     <string name="lng_empty_albums">Your albums will show up here.</string>
     <string name="lng_empty_artists">Your artists will show up here.</string>
-    <string name="lng_empty_genres">Your genres will show up here once.</string>
+    <string name="lng_empty_genres">Your genres will show up here.</string>
     <string name="lng_empty_playlists">Your playlists will show up here.</string>
 
     <!-- Settings namespace | Settings-related labels -->
