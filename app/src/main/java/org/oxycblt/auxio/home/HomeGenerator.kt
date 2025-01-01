@@ -148,8 +148,7 @@ private class HomeGeneratorImpl(
         homeSettings.unregisterListener(this)
     }
 
-    override fun empty() =
-        musicRepository.library?.empty() ?: true
+    override fun empty() = musicRepository.library?.empty() ?: true
 
     override fun songs() =
         musicRepository.library?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()

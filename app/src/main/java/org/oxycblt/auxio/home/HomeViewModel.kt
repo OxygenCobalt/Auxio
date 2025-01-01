@@ -133,7 +133,6 @@ constructor(
     val playlistSort: Sort
         get() = listSettings.playlistSort
 
-
     private val homeGenerator = homeGeneratorFactory.create(this)
 
     /**
