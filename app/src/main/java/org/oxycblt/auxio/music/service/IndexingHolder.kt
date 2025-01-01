@@ -32,26 +32,29 @@ import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.shim.UpdateTrackerFactory
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.track.UpdateTracker
 import timber.log.Timber as L
 
 class IndexingHolder
 private constructor(
-    private val workerContext: Context,
+    workerContext: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
     private val imageLoader: ImageLoader,
-    private val updateTracker: UpdateTracker
+    updateTrackerFactory: UpdateTrackerFactory
 ) :
     MusicRepository.IndexingWorker,
     MusicRepository.IndexingListener,
     MusicRepository.UpdateListener,
-    MusicSettings.Listener {
+    MusicSettings.Listener,
+    UpdateTracker.Callback {
     class Factory
     @Inject
     constructor(
@@ -59,7 +62,7 @@ private constructor(
         private val musicRepository: MusicRepository,
         private val musicSettings: MusicSettings,
         private val imageLoader: ImageLoader,
-        private val updateTracker: UpdateTracker
+        private val updateTrackerFactory: UpdateTrackerFactory
     ) {
         fun create(context: Context, listener: ForegroundListener) =
             IndexingHolder(
@@ -69,7 +72,7 @@ private constructor(
                 musicRepository,
                 musicSettings,
                 imageLoader,
-                updateTracker)
+                updateTrackerFactory)
     }
 
     private val indexJob = Job()
@@ -82,6 +85,7 @@ private constructor(
             .getSystemServiceCompat(PowerManager::class)
             .newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexingComponent")
+    private val updateTracker = updateTrackerFactory.create(this)
 
     fun attach() {
         musicSettings.registerListener(this)
@@ -161,6 +165,12 @@ private constructor(
                         savedState.parent?.let { musicRepository.find(it.uid) as? MusicParent? },
                     heap = savedState.heap.map { song -> song?.let { library.findSong(it.uid) } }),
                 true)
+        }
+    }
+
+    override fun onUpdate(location: MusicLocation) {
+        if (musicSettings.shouldBeObserving) {
+            musicRepository.requestIndex(true)
         }
     }
 

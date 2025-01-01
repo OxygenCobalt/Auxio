@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * MusicModule.kt is part of Auxio.
+ * Copyright (c) 2025 Auxio Project
+ * MusikrShimModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.shim
 
-import dagger.Binds
+import android.content.Context
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import org.oxycblt.musikr.cache.StoredCache
+import org.oxycblt.musikr.playlist.db.StoredPlaylists
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface MusicModule {
-    @Singleton @Binds fun repository(musicRepository: MusicRepositoryImpl): MusicRepository
+class MusikrShimModule {
+    @Singleton
+    @Provides
+    fun storedCache(@ApplicationContext context: Context) = StoredCache.from(context)
 
-    @Binds fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
+    @Singleton
+    @Provides
+    fun storedPlaylists(@ApplicationContext context: Context) = StoredPlaylists.from(context)
+
+    @Provides
+    fun updateTrackerFactory(@ApplicationContext context: Context): UpdateTrackerFactory =
+        UpdateTrackerFactoryImpl(context)
 }

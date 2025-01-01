@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 Auxio Project
- * MusicModule.kt is part of Auxio.
+ * Copyright (c) 2025 Auxio Project
+ * UpdateTrackerFactory.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.shim
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import android.content.Context
+import org.oxycblt.musikr.track.UpdateTracker
 
-@Module
-@InstallIn(SingletonComponent::class)
-interface MusicModule {
-    @Singleton @Binds fun repository(musicRepository: MusicRepositoryImpl): MusicRepository
+interface UpdateTrackerFactory {
+    fun create(callback: UpdateTracker.Callback): UpdateTracker
+}
 
-    @Binds fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
+class UpdateTrackerFactoryImpl(private val context: Context) : UpdateTrackerFactory {
+    override fun create(callback: UpdateTracker.Callback) = UpdateTracker.from(context, callback)
 }
