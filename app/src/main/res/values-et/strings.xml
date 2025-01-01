@@ -313,11 +313,6 @@
     <string name="lbl_github">Koosta GitHubis veateade või ettepanek</string>
     <string name="lbl_email">Saada e-kiri</string>
     <string name="lbl_music_sources">Vali kaustad</string>
-    <string name="lng_no_songs">Kui oled muusikat lisanud, siis on sinu palad siin näha.</string>
-    <string name="lng_no_albums">Kui oled muusikat lisanud, siis on sinu albumid siin näha.</string>
-    <string name="lng_no_artists">Kui oled muusikat lisanud, siis on sinu esitajad siin näha.</string>
-    <string name="lng_no_genres">Kui oled muusikat lisanud, siis on žanrid siin näha.</string>
-    <string name="lng_no_playlists">Kui oled muusikat lisanud, siis on sinu esitusloendid siin näha.</string>
     <string name="def_album">Tundmatu album</string>
     <string name="cnt_mp4">MPEG-4 %s koodekiga</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>

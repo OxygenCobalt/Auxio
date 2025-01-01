@@ -35,7 +35,6 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
 import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -76,11 +75,11 @@ class ArtistListFragment :
             listener = this@ArtistListFragment
         }
 
-        binding.homeNoMusicMsg.text = getString(R.string.lng_no_artists)
+        binding.homeNoMusicMsg.text = getString(R.string.lng_empty_artists)
 
         binding.homeChooseMusicSources.setOnClickListener { homeModel.startChooseMusicLocations() }
 
-        collectImmediately(homeModel.artistList, musicModel.indexingState, ::updateArtists)
+        collectImmediately(homeModel.artistList, ::updateArtists)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -125,11 +124,10 @@ class ArtistListFragment :
         listModel.openMenu(R.menu.parent, item)
     }
 
-    private fun updateArtists(artists: List<Artist>, indexingState: IndexingState?) {
+    private fun updateArtists(artists: List<Artist>) {
         requireBinding().apply {
             homeRecycler.isInvisible = artists.isEmpty()
-            homeNoMusic.isInvisible =
-                indexingState !is IndexingState.Completed || artists.isNotEmpty()
+            homeNoMusic.isInvisible = artists.isNotEmpty()
         }
         artistAdapter.update(artists, homeModel.artistInstructions.consume())
     }

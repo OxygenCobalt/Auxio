@@ -311,9 +311,4 @@
     <string name="lbl_feedback">Gi tilbakemelding</string>
     <string name="lbl_email">Send en e-post</string>
     <string name="lbl_music_sources">Velg mapper</string>
-    <string name="lng_no_genres">Sjangrene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_playlists">Spillelistene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_artists">Artistene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_songs">Sporene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
-    <string name="lng_no_albums">Albumene dine vil dukke opp her etter at du har lagt til musikk i biblioteket ditt.</string>
 </resources>

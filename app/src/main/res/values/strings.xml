@@ -215,11 +215,11 @@
         Starts Auxio using the previously saved state. If no saved state is available, all songs will be shuffled. Playback will start immediately.
         \n\nWARNING: Be careful controlling this service, if you close it and then try to use it again, you will probably crash the app.
     </string>
-    <string name="lng_no_songs">Your songs will show up here once you add some music.</string>
-    <string name="lng_no_albums">Your albums will show up here once you add some music.</string>
-    <string name="lng_no_artists">Your artists will show up here once you add some music.</string>
-    <string name="lng_no_genres">Your genres will show up here once you add some music.</string>
-    <string name="lng_no_playlists">Your playlists will show up here once you add some music.</string>
+    <string name="lng_empty_songs">Your songs will show up here.</string>
+    <string name="lng_empty_albums">Your albums will show up here.</string>
+    <string name="lng_empty_artists">Your artists will show up here.</string>
+    <string name="lng_empty_genres">Your genres will show up here once.</string>
+    <string name="lng_empty_playlists">Your playlists will show up here.</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <eat-comment />

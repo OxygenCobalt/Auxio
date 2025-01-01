@@ -320,12 +320,7 @@
     <string name="lbl_github">Ein Issue auf GitHub erstellen</string>
     <string name="lbl_feedback">Rückmeldung</string>
     <string name="lbl_email">Eine E-Mail senden</string>
-    <string name="lng_no_albums">Deine Alben werden hier angezeigt, sobald du Musik hinzufügst.</string>
     <string name="lbl_music_sources">Ordner auswählen</string>
-    <string name="lng_no_songs">Deine Lieder werden hier angezeigt, sobald du Musik hinzufügst.</string>
-    <string name="lng_no_artists">Deine Künstler werden hier angezeigt, sobald du Musik hinzufügst.</string>
-    <string name="lng_no_playlists">Deine Wiedergabelisten werden hier angezeigt, sobald du Musik hinzufügst.</string>
-    <string name="lng_no_genres">Deine Genres werden hier angezeigt, sobald du Musik hinzufügst.</string>
     <string name="cnt_mp4">MPEG-4, enthält %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Unbekannt</string>
