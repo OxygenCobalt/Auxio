@@ -27,6 +27,8 @@ interface Library {
     val genres: Collection<Genre>
     val playlists: Collection<Playlist>
 
+    fun empty(): Boolean
+
     fun findSong(uid: Music.UID): Song?
 
     fun findSongByPath(path: Path): Song?
