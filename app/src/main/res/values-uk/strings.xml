@@ -331,4 +331,9 @@
     <string name="cdc_alac">Аудіокодек Apple без втрат (ALAC)</string>
     <string name="set_locations_new">Нова папка</string>
     <string name="set_cover_mode_save_space">Економія місця</string>
+    <string name="lng_empty_songs">Ваші пісні відображатимуться тут.</string>
+    <string name="lng_empty_albums">Ваші альбоми відображатимуться тут.</string>
+    <string name="lng_empty_playlists">Тут відображатимуться ваші списки відтворення.</string>
+    <string name="lng_empty_genres">Тут відображатимуться ваші жанри.</string>
+    <string name="lng_empty_artists">Тут з’являться ваші виконавці.</string>
 </resources>
