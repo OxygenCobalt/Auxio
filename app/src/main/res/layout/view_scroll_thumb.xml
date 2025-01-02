@@ -2,14 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/ui_scroll_thumb">
+    android:padding="@dimen/spacing_tiny"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:layout_width="@dimen/size_touchable_small"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/size_touchable_small"
-        app:tint="?attr/colorOnSecondary"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_scroll_24" />
+        android:src="@drawable/ui_scroll_thumb" />
 
 </FrameLayout>

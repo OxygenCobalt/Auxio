@@ -72,8 +72,9 @@ class FastScrollRecyclerView
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AuxioRecyclerView(context, attrs, defStyleAttr) {
     // Thumb
-    private val thumbSize = context.getDimenPixels(R.dimen.size_touchable_small)
-    private val slider = MaterialSlider(context, thumbSize)
+    private val thumbWidth = context.getDimenPixels(R.dimen.spacing_mid_medium)
+    private val thumbHeight = context.getDimenPixels(R.dimen.size_touchable_medium)
+    private val slider = MaterialSlider(context, thumbWidth)
     private var thumbAnimator: Animator? = null
 
     private val thumbView =
@@ -174,16 +175,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         thumbView.layoutDirection = layoutDirection
         thumbView.measure(
-            MeasureSpec.makeMeasureSpec(thumbSize, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(thumbSize, MeasureSpec.EXACTLY))
+            MeasureSpec.makeMeasureSpec(thumbWidth, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(thumbHeight, MeasureSpec.EXACTLY))
         val thumbTop = thumbPadding.top + thumbOffset
         val thumbLeft =
             if (isRtl) {
                 thumbPadding.left
             } else {
-                width - thumbPadding.right - thumbSize
+                width - thumbPadding.right - thumbWidth
             }
-        thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbSize, thumbTop + thumbSize)
+        thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbHeight)
     }
 
     override fun onScrolled(dx: Int, dy: Int) {
@@ -233,8 +234,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
                     if (thumbView.isUnder(eventX, eventY, minTouchTargetSize)) {
                         dragStartThumbOffset = thumbOffset
-                    } else if (eventX > thumbView.right - thumbSize / 4) {
-                        dragStartThumbOffset = (eventY - thumbPadding.top - thumbSize / 2f).toInt()
+                    } else if (eventX > thumbView.right - thumbWidth / 4) {
+                        dragStartThumbOffset =
+                            (eventY - thumbPadding.top - thumbHeight / 2f).toInt()
                         scrollToThumbOffset(dragStartThumbOffset)
                     } else {
                         return false
@@ -252,7 +254,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         dragStartThumbOffset = thumbOffset
                     } else {
                         dragStartY = eventY
-                        dragStartThumbOffset = (eventY - thumbPadding.top - thumbSize / 2f).toInt()
+                        dragStartThumbOffset =
+                            (eventY - thumbPadding.top - thumbHeight / 2f).toInt()
                         scrollToThumbOffset(dragStartThumbOffset)
                     }
 
@@ -319,7 +322,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private val thumbOffsetRange: Int
         get() {
-            return height - thumbPadding.top - thumbPadding.bottom - thumbSize
+            return height - thumbPadding.top - thumbPadding.bottom - thumbHeight
         }
 
     /** An interface to provide text to use in the popup when fast-scrolling. */
