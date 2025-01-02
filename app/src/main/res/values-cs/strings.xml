@@ -336,4 +336,9 @@
     <string name="cdc_unknown">Neznámý</string>
     <string name="set_locations_new">Nová složka</string>
     <string name="set_cover_mode_save_space">Úspora místa</string>
+    <string name="lng_empty_songs">Vaše skladby se zobrazí zde.</string>
+    <string name="lng_empty_albums">Vaše alba se zobrazí zde.</string>
+    <string name="lng_empty_artists">Vaši umělci se zobrazí zde.</string>
+    <string name="lng_empty_playlists">Vaše seznamy skladeb se zobrazí zde.</string>
+    <string name="lng_empty_genres">Vaše žánry se zobrazí zde.</string>
 </resources>
