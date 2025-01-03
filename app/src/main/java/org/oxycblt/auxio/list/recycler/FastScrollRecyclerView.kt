@@ -99,14 +99,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var dragStartY = 0f
     private var dragStartThumbOffset = 0
 
-    private var thumbEnabled = false
+    var thumbEnabled = false
         set(value) {
             if (field == value) {
                 return
             }
 
             field = value
-            if (value) {
+            if (!value) {
                 removeCallbacks(hideThumbRunnable)
                 hideScrollbar()
             }
@@ -221,6 +221,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun onItemTouch(event: MotionEvent): Boolean {
+        if (!thumbEnabled) {
+            dragging = false
+            return false
+        }
         val eventX = event.x
         val eventY = event.y
 
@@ -299,6 +303,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun showScrollbar() {
+        if (!thumbEnabled) {
+            return
+        }
         if (showingThumb) {
             return
         }
