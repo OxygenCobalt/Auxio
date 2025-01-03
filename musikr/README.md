@@ -11,7 +11,8 @@ Warning that the API surface is:
 - Minimized to only what the rest of the app uses or builds on, so you will need to patch it to extend 
 certain components
 
-Feel free to use this library as long as you follow Auxio's GPLv3 license and open-source all modifications.
+Feel free to use this library as long as you follow Auxio's GPLv3 license. Note that the license is viral, so
+if you wind up using this in a proprietary project, the entire project must be GPLv3 too.
 
 If you want to generate some docs for the unstable API, you can run
 
