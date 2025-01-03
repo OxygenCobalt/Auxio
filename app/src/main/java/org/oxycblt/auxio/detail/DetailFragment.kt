@@ -83,20 +83,7 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
             overrideOnOverflowMenuClick { onOpenParentMenu() }
         }
 
-        binding.detailRecycler.apply {
-            adapter = getDetailListAdapter()
-            (layoutManager as GridLayoutManager).setFullWidthLookup {
-                if (it != 0) {
-                    val item =
-                        detailModel.artistSongList.value.getOrElse(it - 1) {
-                            return@setFullWidthLookup false
-                        }
-                    item is PlainDivider || item is PlainHeader
-                } else {
-                    true
-                }
-            }
-        }
+        binding.detailRecycler.adapter = getDetailListAdapter()
 
         spacingSmall = requireContext().getDimenPixels(R.dimen.spacing_small)
     }

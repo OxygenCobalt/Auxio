@@ -201,7 +201,7 @@
 
     <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
         android:id="@+id/detail_recycler"
-        style="@style/Widget.Auxio.RecyclerView.Grid"
+        style="@style/Widget.Auxio.RecyclerView.Linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
