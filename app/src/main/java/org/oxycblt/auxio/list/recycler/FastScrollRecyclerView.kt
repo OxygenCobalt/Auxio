@@ -99,7 +99,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var dragStartY = 0f
     private var dragStartThumbOffset = 0
 
-    var thumbEnabled = false
+    var thumbEnabled = true
         set(value) {
             if (field == value) {
                 return
