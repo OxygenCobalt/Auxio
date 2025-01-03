@@ -110,6 +110,9 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
         val detailContent = binding.detailToolbarContent
         detailContent.alpha = inRatio
         detailContent.translationY = spacingSmall * (1 - inRatio)
+
+        // Enable fast scrolling once fully collapsed
+        binding.detailRecycler.thumbEnabled = ratio == 1f
     }
 
     abstract fun onOpenParentMenu()

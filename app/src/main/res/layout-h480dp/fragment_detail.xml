@@ -184,9 +184,9 @@
 
     </org.oxycblt.auxio.ui.CoordinatorAppBarLayout>
 
-    <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
+    <org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
         android:id="@+id/detail_recycler"
-        style="@style/Widget.Auxio.RecyclerView.Linear"
+        style="@style/Widget.Auxio.RecyclerView.Grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
