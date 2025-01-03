@@ -3,28 +3,46 @@
 ## 4.0.0
 
 #### What's New
+- A total user interface refresh based on the latest Material Design specs
+	- New theme palettes
+	- Refreshed playback design
+	- New fluid detail view with a fast scroller
+	- New app branding and icon
+	- Better round mode support
+	- Less intrusive music loading indicators
+- **Musikr**, a brand new music loading system
+	- Directly accesses user files rather than unreliable media database
+	- Uses faster and more capable native tag parsing
+	- Stores cover data on-device for fast and high-quality access
+	- New interpretation system with many quality-of-life improvements
 - Android 15 support
-- New app branding and icon
-- Refreshed playback design
-- Live widget preview on Android 15+
-- Added GitHub/email feedback forms to about page
 
 #### What's Improved
-- Album grouping no longer done with artist in mind by default
+- Initial music loading is signifigantly faster and less resource intensive
+- Album grouping no longer done with artist
 - MusicBrainz IDs will no longer split albums/artists in less tagged libraries
 - M3U playlist file name is now proposed if one cannot be found within the file
+- Duration is now parsed from certain files that previously could not be parsed
+- ID3v2 tags are now parsed from WAV files
+- Music library will is less likely to fail to respond to updates
+- Hidden audio files can now be loaded
 - Sorting songs by date now uses songs date first, before the earliest album date
 - Added working layouts for small split-screen form factors
+- Added ability to make issues and make feedback e-mails in-app
 
 #### What's Fixed
-- Music loader no longer spawns thousands of threads when scanning
-- Excessive CPU no longer spent showing music loading process
 - Fixed playback sheet flickering on warm start
 - No longer possible to save a sort with no direction specified
 - Fixed inconsistent corner radii in widget
 
+#### What's Changed
+- Date added is now local to when the app discovers the file and will not
+persist long-term
+- Songs with no album are now "Unknown album" rather than folder name
+
 #### Dev/Meta
 - No longer using custom logging setup
+- Music loading split off into separate musikr module
 
 ## 3.6.3
 
