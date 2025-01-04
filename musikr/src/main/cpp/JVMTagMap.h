@@ -32,16 +32,28 @@ public:
     JVMTagMap(const JVMTagMap&) = delete;
     JVMTagMap& operator=(const JVMTagMap&) = delete;
 
-    void add(TagLib::String &key, std::string_view value);
-    void add(TagLib::String &key, TagLib::StringList &value);
+    void add_id(TagLib::String &id, TagLib::String &value);
+    void add_id(TagLib::String &id, TagLib::StringList &value);
+
+    void add_custom(TagLib::String &description, TagLib::String &value);
+    void add_custom(TagLib::String &description, TagLib::StringList &value);
+
+    void add_combined(TagLib::String &id, TagLib::String &description, TagLib::String &value);
+    void add_combined(TagLib::String &id, TagLib::String &description, TagLib::StringList &value);
 
     jobject getObject();
 
 private:
     JNIEnv *env;
-    jobject hashMap;
-    jmethodID hashMapGetMethod;
-    jmethodID hashMapPutMethod;
+    jobject tagMap;
+    jmethodID tagMapAddIdSingleMethod;
+    jmethodID tagMapAddIdListMethod;
+    jmethodID tagMapAddCustomSingleMethod;
+    jmethodID tagMapAddCustomListMethod;
+    jmethodID tagMapAddCombinedSingleMethod;
+    jmethodID tagMapAddCombinedListMethod;
+    jmethodID tagMapGetObjectMethod;
+    jclass arrayListClass;
     jmethodID arrayListInitMethod;
     jmethodID arrayListAddMethod;
 };

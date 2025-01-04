@@ -18,76 +18,86 @@
  
 #include "JVMTagMap.h"
 
-JVMTagMap::JVMTagMap(JNIEnv *env) : env(env) {
-    jclass hashMapClass = env->FindClass("java/util/HashMap");
-    jmethodID init = env->GetMethodID(hashMapClass, "<init>", "()V");
-    hashMap = env->NewObject(hashMapClass, init);
-    hashMapGetMethod = env->GetMethodID(hashMapClass, "get",
-            "(Ljava/lang/Object;)Ljava/lang/Object;");
-    hashMapPutMethod = env->GetMethodID(hashMapClass, "put",
-            "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-    env->DeleteLocalRef(hashMapClass);
+#include "util.h"
 
-    jclass arrayListClass = env->FindClass("java/util/ArrayList");
+JVMTagMap::JVMTagMap(JNIEnv *env) : env(env) {
+    jclass tagMapClass = env->FindClass("org/oxycblt/musikr/metadata/NativeTagMap");
+    jmethodID init = env->GetMethodID(tagMapClass, "<init>", "()V");
+    tagMap = env->NewObject(tagMapClass, init);
+    tagMapAddIdSingleMethod = env->GetMethodID(tagMapClass, "addID",
+            "(Ljava/lang/String;Ljava/lang/String;)V");
+    tagMapAddIdListMethod = env->GetMethodID(tagMapClass, "addID",
+            "(Ljava/lang/String;Ljava/util/List;)V");
+    tagMapAddCustomSingleMethod = env->GetMethodID(tagMapClass, "addCustom",
+            "(Ljava/lang/String;Ljava/lang/String;)V");
+    tagMapAddCustomListMethod = env->GetMethodID(tagMapClass, "addCustom",
+            "(Ljava/lang/String;Ljava/util/List;)V");
+    tagMapAddCombinedSingleMethod = env->GetMethodID(tagMapClass, "addCombined",
+            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+    tagMapAddCombinedListMethod = env->GetMethodID(tagMapClass, "addCombined",
+            "(Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V");
+    tagMapGetObjectMethod = env->GetMethodID(tagMapClass, "getObject",
+            "()Ljava/util/Map;");
+    env->DeleteLocalRef(tagMapClass);
+
+    arrayListClass = env->FindClass("java/util/ArrayList");
     arrayListInitMethod = env->GetMethodID(arrayListClass, "<init>", "()V");
     arrayListAddMethod = env->GetMethodID(arrayListClass, "add",
             "(Ljava/lang/Object;)Z");
-    env->DeleteLocalRef(arrayListClass);
 }
 
 JVMTagMap::~JVMTagMap() {
-    env->DeleteLocalRef(hashMap);
+    env->DeleteLocalRef(tagMap);
+    env->DeleteLocalRef(arrayListClass);
 }
 
-void JVMTagMap::add(TagLib::String &key, std::string_view value) {
-    jstring jKey = env->NewStringUTF(key.toCString(true));
-    jstring jValue = env->NewStringUTF(value.data());
-
-    // check if theres already a value arraylist in the map
-    jobject existingValue = env->CallObjectMethod(hashMap, hashMapGetMethod,
-            jKey);
-    // if there is, add to the value to the existing arraylist
-    if (existingValue != nullptr) {
-        env->CallBooleanMethod(existingValue, arrayListAddMethod, jValue);
-    } else {
-        // if there isn't, create a new arraylist and add the value to it
-        jclass arrayListClass = env->FindClass("java/util/ArrayList");
-        jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
-        env->CallBooleanMethod(arrayList, arrayListAddMethod, jValue);
-        env->CallObjectMethod(hashMap, hashMapPutMethod, jKey, arrayList);
-        env->DeleteLocalRef(arrayListClass);
-    }
+void JVMTagMap::add_id(TagLib::String &id, TagLib::String &value) {
+    env->CallVoidMethod(tagMap, tagMapAddIdSingleMethod,
+            env->NewStringUTF(id.toCString(true)), env->NewStringUTF(value.toCString(true)));
 }
 
-void JVMTagMap::add(TagLib::String &key, TagLib::StringList &value) {
-    if (value.isEmpty()) {
-        // Nothing to add
-        return;
+void JVMTagMap::add_id(TagLib::String &id, TagLib::StringList &value) {
+    jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
+    for (auto &item : value) {
+        env->CallBooleanMethod(arrayList, arrayListAddMethod,
+                env->NewStringUTF(item.toCString(true)));
     }
-    jstring jKey = env->NewStringUTF(key.toCString(true));
+    env->CallVoidMethod(tagMap, tagMapAddIdListMethod,
+            env->NewStringUTF(id.toCString(true)), arrayList);
+}
 
-    // check if theres already a value arraylist in the map
-    jobject existingValue = env->CallObjectMethod(hashMap, hashMapGetMethod,
-            jKey);
-    // if there is, add to the value to the existing arraylist
-    if (existingValue != nullptr) {
-        for (auto &val : value) {
-            jstring jValue = env->NewStringUTF(val.toCString(true));
-            env->CallBooleanMethod(existingValue, arrayListAddMethod, jValue);
-        }
-    } else {
-        // if there isn't, create a new arraylist and add the value to it
-        jclass arrayListClass = env->FindClass("java/util/ArrayList");
-        jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
-        for (auto &val : value) {
-            jstring jValue = env->NewStringUTF(val.toCString(true));
-            env->CallBooleanMethod(arrayList, arrayListAddMethod, jValue);
-        }
-        env->CallObjectMethod(hashMap, hashMapPutMethod, jKey, arrayList);
-        env->DeleteLocalRef(arrayListClass);
+void JVMTagMap::add_custom(TagLib::String &description, TagLib::String &value) {
+    env->CallVoidMethod(tagMap, tagMapAddCustomSingleMethod,
+            env->NewStringUTF(description.toCString(true)), env->NewStringUTF(value.toCString(true)));
+}
+
+void JVMTagMap::add_custom(TagLib::String &description, TagLib::StringList &value) {
+    jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
+    for (auto &item : value) {
+        env->CallBooleanMethod(arrayList, arrayListAddMethod,
+                env->NewStringUTF(item.toCString(true)));
     }
+    env->CallVoidMethod(tagMap, tagMapAddCustomListMethod,
+            env->NewStringUTF(description.toCString(true)), arrayList);
+}
+
+void JVMTagMap::add_combined(TagLib::String &id, TagLib::String &description, TagLib::String &value) {
+    env->CallVoidMethod(tagMap, tagMapAddCombinedSingleMethod,
+            env->NewStringUTF(id.toCString(true)), env->NewStringUTF(description.toCString(true)),
+            env->NewStringUTF(value.toCString(true)));
+}
+
+void JVMTagMap::add_combined(TagLib::String &id, TagLib::String &description, TagLib::StringList &value) {
+    jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
+    for (auto &item : value) {
+        env->CallBooleanMethod(arrayList, arrayListAddMethod,
+                env->NewStringUTF(item.toCString(true)));
+    }
+    env->CallVoidMethod(tagMap, tagMapAddCombinedListMethod,
+            env->NewStringUTF(id.toCString(true)), env->NewStringUTF(description.toCString(true)),
+            arrayList);
 }
 
 jobject JVMTagMap::getObject() {
-    return hashMap;
+    return env->CallObjectMethod(tagMap, tagMapGetObjectMethod);
 }

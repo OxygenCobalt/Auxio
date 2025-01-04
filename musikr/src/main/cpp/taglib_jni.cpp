@@ -20,7 +20,7 @@
 #include <string>
 #include "JVMInputStream.h"
 #include "JVMMetadataBuilder.h"
-#include "log.h"
+#include "util.h"
 
 #include "taglib/fileref.h"
 #include "taglib/flacfile.h"

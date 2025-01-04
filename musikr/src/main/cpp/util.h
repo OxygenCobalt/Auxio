@@ -16,9 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#ifndef AUXIO_LOG_H
-#define AUXIO_LOG_H
+#ifndef AUXIO_UTIL_H
+#define AUXIO_UTIL_H
 
+#include <jni.h>
 #include <android/log.h>
 
 #define LOG_TAG "taglib_jni"
@@ -27,4 +28,4 @@
 #define LOGD(...) \
   ((void)__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
 
-#endif //AUXIO_LOG_H
+#endif //AUXIO_UTIL_H

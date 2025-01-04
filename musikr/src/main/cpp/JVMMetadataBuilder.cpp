@@ -18,7 +18,7 @@
  
 #include "JVMMetadataBuilder.h"
 
-#include "log.h"
+#include "util.h"
 
 #include <taglib/mp4tag.h>
 #include <taglib/textidentificationframe.h>
@@ -37,18 +37,18 @@ void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
     for (auto frame : tag.frameList()) {
         if (auto txxxFrame =
                 dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame*>(frame)) {
+            TagLib::String id = frame->frameID();
             TagLib::StringList frameText = txxxFrame->fieldList();
             // Frame text starts with the description then the remaining values
             auto begin = frameText.begin();
-            TagLib::String key = TagLib::String(frame->frameID()) + ":"
-                    + begin->upper();
+            TagLib::String description = *begin;
             frameText.erase(begin);
-            id3v2.add(key, frameText);
+            id3v2.add_combined(id, description, frameText);
         } else if (auto textFrame =
                 dynamic_cast<TagLib::ID3v2::TextIdentificationFrame*>(frame)) {
             TagLib::String key = frame->frameID();
             TagLib::StringList frameText = textFrame->fieldList();
-            id3v2.add(key, frameText);
+            id3v2.add_id(key, frameText);
         } else {
             continue;
         }
@@ -59,7 +59,23 @@ void JVMMetadataBuilder::setXiph(const TagLib::Ogg::XiphComment &tag) {
     for (auto field : tag.fieldListMap()) {
         auto key = field.first.upper();
         auto values = field.second;
-        xiph.add(key, values);
+        xiph.add_custom(key, values);
+    }
+}
+
+template<typename T>
+void mp4AddImpl(JVMTagMap &map, TagLib::String &itemName, T itemValue) {
+    if (itemName.startsWith("----")) {
+        // Split this into it's atom name and description
+        auto split = itemName.split(":");
+        if (split.size() != 2) {
+            throw std::runtime_error("Invalid atom name");
+        }
+        auto atomName = split[0];
+        auto atomDescription = split[1];
+        map.add_combined(atomName, atomDescription, itemValue);
+    } else {
+        map.add_id(itemName, itemValue);
     }
 }
 
@@ -67,47 +83,36 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
     auto map = tag.itemMap();
     for (auto item : map) {
         auto itemName = item.first;
-        if (itemName.startsWith("----")) {
-            // Capitalize description atoms only
-            // Other standard atoms are cased so we want to avoid collissions there.
-            itemName = itemName.upper();
-        }
         auto itemValue = item.second;
         auto type = itemValue.type();
-        // Only read out the atoms for the reasonable tags we are expecting.
-        // None of the crazy binary atoms.
-        if (type == TagLib::MP4::Item::Type::StringList) {
-            auto value = itemValue.toStringList();
-            mp4.add(itemName, value);
-            continue;
+        std::string serializedValue;
+        switch (type) {
+            // Normal expected MP4 items
+            case TagLib::MP4::Item::Type::StringList:
+                mp4AddImpl(mp4, itemName, itemValue.toStringList());
+                break;
+                // Weird MP4 items I'm 90% sure I'll encounter.
+            case TagLib::MP4::Item::Type::Int:
+                serializedValue = std::to_string(itemValue.toInt());
+                break;
+            case TagLib::MP4::Item::Type::UInt:
+                serializedValue = std::to_string(itemValue.toUInt());
+                break;
+            case TagLib::MP4::Item::Type::LongLong:
+                serializedValue = std::to_string(itemValue.toLongLong());
+                break;
+            case TagLib::MP4::Item::Type::IntPair:
+                // It's inefficient going from the integer representation back into
+                // a string, but I fully expect taggers to just write "NN/TT" strings
+                // anyway, and musikr doesn't have to do as much fiddly variant handling.
+                serializedValue = std::to_string(itemValue.toIntPair().first) + "/"
+                             + std::to_string(itemValue.toIntPair().second);
+                break;
+            default:
+                // Don't care about the other types
+                continue;
         }
-
-        // Assume that taggers will be unhinged and store track numbers
-        // as ints, uints, or longs.
-        if (type == TagLib::MP4::Item::Type::Int) {
-            auto value = std::to_string(itemValue.toInt());
-            id3v2.add(itemName, value);
-            continue;
-        }
-        if (type == TagLib::MP4::Item::Type::UInt) {
-            auto value = std::to_string(itemValue.toUInt());
-            id3v2.add(itemName, value);
-            continue;
-        }
-        if (type == TagLib::MP4::Item::Type::LongLong) {
-            auto value = std::to_string(itemValue.toLongLong());
-            id3v2.add(itemName, value);
-            continue;
-        }
-        if (type == TagLib::MP4::Item::Type::IntPair) {
-            // It's inefficient going from the integer representation back into
-            // a string, but I fully expect taggers to just write "NN/TT" strings
-            // anyway, and musikr doesn't have to do as much fiddly variant handling.
-            auto value = std::to_string(itemValue.toIntPair().first) + "/"
-                    + std::to_string(itemValue.toIntPair().second);
-            id3v2.add(itemName, value);
-            continue;
-        }
+        mp4AddImpl(mp4, itemName, TagLib::String(serializedValue));
     }
 }
 
