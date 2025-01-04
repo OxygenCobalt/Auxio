@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.image
 
 import android.content.ContentProvider
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
@@ -59,25 +60,28 @@ class CoverProvider : ContentProvider() {
         sortOrder: String?
     ): Cursor = throw UnsupportedOperationException()
 
-    override fun insert(uri: Uri, values: ContentValues?): Uri =
-        throw UnsupportedOperationException()
+    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
 
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int =
-        throw UnsupportedOperationException()
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int = 0
 
     override fun update(
         uri: Uri,
         values: ContentValues?,
         selection: String?,
         selectionArgs: Array<out String>?
-    ): Int = throw UnsupportedOperationException()
+    ): Int = 0
 
     companion object {
-        private const val AUTHORITY = "org.oxycblt.auxio.image"
+        private const val AUTHORITY = "org.oxycblt.auxio.image.CoverProvider"
         private const val IMAGES_PATH = "covers"
         private val uriMatcher =
             UriMatcher(UriMatcher.NO_MATCH).apply { addURI(AUTHORITY, "$IMAGES_PATH/*", 1) }
 
-        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/$IMAGES_PATH")
+        val CONTENT_URI: Uri =
+            Uri.Builder()
+                .scheme(ContentResolver.SCHEME_CONTENT)
+                .authority(AUTHORITY)
+                .appendPath(IMAGES_PATH)
+                .build()
     }
 }

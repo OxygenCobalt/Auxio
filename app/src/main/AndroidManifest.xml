@@ -105,7 +105,7 @@
         -->
         <provider
             android:name=".image.CoverProvider"
-            android:authorities="org.oxycblt.auxio.image"
+            android:authorities="org.oxycblt.auxio.image.CoverProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 
