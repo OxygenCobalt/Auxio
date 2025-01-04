@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.service
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat
@@ -27,6 +28,7 @@ import androidx.annotation.StringRes
 import androidx.media.utils.MediaConstants
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.image.CoverProvider
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationDs
@@ -38,6 +40,7 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
+import timber.log.Timber
 
 sealed interface MediaSessionUID {
     data class Tab(val node: TabNode) : MediaSessionUID {
@@ -115,7 +118,7 @@ fun Song.toMediaDescription(context: Context, vararg sugar: Sugar): MediaDescrip
         .setTitle(name.resolve(context))
         .setSubtitle(artists.resolveNames(context))
         .setDescription(album.name.resolve(context))
-        //        .setIconUri(cover.mediaStoreCoverUri)
+        .setIconUri(cover?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id) })
         .setMediaUri(uri)
         .setExtras(extras)
         .build()
@@ -135,7 +138,11 @@ fun Album.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setTitle(name.resolve(context))
             .setSubtitle(artists.resolveNames(context))
             .setDescription(counts)
-            //            .setIconUri(cover.single.mediaStoreCoverUri)
+            .setIconUri(
+                covers.covers
+                    .firstOrNull()
+                    ?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id) }
+                    .also { Timber.d("Album cover: $it") })
             .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
@@ -163,7 +170,10 @@ fun Artist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
             .setDescription(genres.resolveNames(context))
-            //            .setIconUri(cover.single.mediaStoreCoverUri)
+            .setIconUri(
+                covers.covers.firstOrNull()?.let {
+                    Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
+                })
             .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
@@ -183,7 +193,10 @@ fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setMediaId(mediaSessionUID.toString())
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
-            //            .setIconUri(cover.single.mediaStoreCoverUri)
+            .setIconUri(
+                covers.covers.firstOrNull()?.let {
+                    Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
+                })
             .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
@@ -204,7 +217,10 @@ fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setTitle(name.resolve(context))
             .setSubtitle(counts)
             .setDescription(durationMs.formatDurationDs(true))
-            //            .setIconUri(cover?.single?.mediaStoreCoverUri)
+            .setIconUri(
+                covers.covers.firstOrNull()?.let {
+                    Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
+                })
             .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
