@@ -282,8 +282,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     popupLayoutParams.height)
 
             popupView.measure(widthMeasureSpec, heightMeasureSpec)
-            Timber.d(
-                "Updating popup text to ${popupView.measuredHeight} ${popupView.measuredWidth}")
         }
 
         val popupWidth = popupView.measuredWidth

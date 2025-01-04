@@ -141,8 +141,7 @@ fun Album.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setIconUri(
                 covers.covers
                     .firstOrNull()
-                    ?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id) }
-                    .also { Timber.d("Album cover: $it") })
+                    ?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id) })
             .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
