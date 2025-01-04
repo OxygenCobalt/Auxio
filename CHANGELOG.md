@@ -5,10 +5,9 @@
 #### What's New
 - A total user interface refresh based on the latest Material Design specs
 	- New theme palettes
-	- Refreshed playback design
-	- New fluid detail view with a fast scroller
+	- Improved designs for playback and detail views
 	- New app branding and icon
-	- Better round mode support
+	- Refreshed round mode
 	- Less intrusive music loading indicators
 - **Musikr**, a brand new music loading system
 	- Directly accesses user files rather than unreliable media database
@@ -28,6 +27,7 @@
 - Hidden audio files can now be loaded
 - Sorting songs by date now uses songs date first, before the earliest album date
 - Added working layouts for small split-screen form factors
+- Added fast scrolling in detail views
 - Added ability to make issues and make feedback e-mails in-app
 
 #### What's Fixed

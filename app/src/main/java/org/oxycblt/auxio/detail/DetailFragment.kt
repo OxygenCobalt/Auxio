@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlin.math.abs
@@ -32,10 +33,13 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.PlainDivider
+import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
+import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
 
@@ -79,7 +83,20 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
             overrideOnOverflowMenuClick { onOpenParentMenu() }
         }
 
-        binding.detailRecycler.adapter = getDetailListAdapter()
+        binding.detailRecycler.apply {
+            adapter = getDetailListAdapter()
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                if (it != 0) {
+                    val item =
+                        detailModel.artistSongList.value.getOrElse(it - 1) {
+                            return@setFullWidthLookup false
+                        }
+                    item is PlainDivider || item is PlainHeader
+                } else {
+                    true
+                }
+            }
+        }
 
         spacingSmall = requireContext().getDimenPixels(R.dimen.spacing_small)
     }
