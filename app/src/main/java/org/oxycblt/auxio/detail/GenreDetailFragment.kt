@@ -133,7 +133,13 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
         binding.detailPlayButton?.setOnClickListener {
             playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
         }
+        binding.detailToolbarPlay.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
+        }
         binding.detailShuffleButton?.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
+        }
+        binding.detailToolbarShuffle.setOnClickListener {
             playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
         }
         updatePlayback(

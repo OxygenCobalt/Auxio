@@ -164,7 +164,13 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
         binding.detailPlayButton?.setOnClickListener {
             playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
         }
+        binding.detailToolbarPlay.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
         binding.detailShuffleButton?.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
+        binding.detailToolbarShuffle.setOnClickListener {
             playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
         }
         updatePlayback(

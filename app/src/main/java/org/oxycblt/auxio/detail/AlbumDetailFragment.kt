@@ -141,7 +141,13 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         binding.detailPlayButton?.setOnClickListener {
             playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
         }
+        binding.detailToolbarPlay.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
+        }
         binding.detailShuffleButton?.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
+        }
+        binding.detailToolbarShuffle.setOnClickListener {
             playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
         }
         updatePlayback(

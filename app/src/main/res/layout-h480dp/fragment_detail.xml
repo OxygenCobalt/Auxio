@@ -146,17 +146,34 @@
 
                         <TextView
                             android:id="@+id/detail_toolbar_title"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:layout_marginStart="@dimen/spacing_tiny"
                             android:maxLines="1"
                             android:singleLine="true"
+                            android:layout_gravity="center_vertical"
                             android:ellipsize="end"
                             android:textAppearance="@style/TextAppearance.Auxio.TitleLarge"
                             android:textColor="?attr/colorOnSurface"
                             tools:text="Name" />
 
+                        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                            android:id="@+id/detail_toolbar_play"
+                            style="@style/Widget.Auxio.Button.Icon.Small.Secondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:icon="@drawable/ic_play_24" />
+
+                        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                            android:id="@+id/detail_toolbar_shuffle"
+                            style="@style/Widget.Auxio.Button.Icon.Small.Primary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:icon="@drawable/ic_shuffle_off_24" />
+
                     </LinearLayout>
+
 
                 </com.google.android.material.appbar.MaterialToolbar>
 

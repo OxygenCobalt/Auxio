@@ -297,8 +297,32 @@
         <item name="iconTint" tools:ignore="PrivateResource">@color/m3_text_button_foreground_color_selector</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Icon.Small.Secondary" parent="Widget.Auxio.Button.Icon.Small">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.Huge</item>
+    <style name="Widget.Auxio.Button.Icon.Small.Primary" parent="Widget.Material3.Button.IconButton.Filled">
+        <item name="iconSize">@dimen/size_icon_small</item>
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
+        <item name="android:insetTop">@dimen/spacing_tiny</item>
+        <item name="android:insetBottom">@dimen/spacing_tiny</item>
+        <item name="android:insetLeft">@dimen/spacing_tiny</item>
+        <item name="android:insetRight">@dimen/spacing_tiny</item>
+        <item name="android:paddingStart">@dimen/spacing_small</item>
+        <item name="android:paddingEnd">@dimen/spacing_small</item>
+        <item name="android:paddingTop">@dimen/spacing_small</item>
+        <item name="android:paddingBottom">@dimen/spacing_small</item>
+    </style>
+
+    <style name="Widget.Auxio.Button.Icon.Small.Secondary" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
+        <item name="iconSize">@dimen/size_icon_small</item>
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
+        <item name="android:insetTop">@dimen/spacing_tiny</item>
+        <item name="android:insetBottom">@dimen/spacing_tiny</item>
+        <item name="android:insetLeft">@dimen/spacing_tiny</item>
+        <item name="android:insetRight">@dimen/spacing_tiny</item>
+        <item name="android:paddingStart">@dimen/spacing_small</item>
+        <item name="android:paddingEnd">@dimen/spacing_small</item>
+        <item name="android:paddingTop">@dimen/spacing_small</item>
+        <item name="android:paddingBottom">@dimen/spacing_small</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Small.PlayPause" parent="Widget.Auxio.Button.Icon.Small">
@@ -321,10 +345,15 @@
         <item name="android:paddingEnd">8dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
-        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.Huge</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.IconButton.Palette.Secondary</item>
     </style>
 
-    <style name="ThemeOverlay.Auxio.IconButton.Huge" parent="">
+    <style name="ThemeOverlay.Auxio.IconButton.Palette.Primary" parent="">
+        <item name="colorContainer">?attr/colorPrimaryContainer</item>
+        <item name="colorOnContainer">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+    <style name="ThemeOverlay.Auxio.IconButton.Palette.Secondary" parent="">
         <item name="colorContainer">?attr/colorSecondaryContainer</item>
         <item name="colorOnContainer">?attr/colorOnSecondaryContainer</item>
     </style>

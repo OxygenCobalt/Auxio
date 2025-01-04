@@ -232,7 +232,19 @@ class PlaylistDetailFragment :
                 playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
             }
         }
+        binding.detailToolbarPlay.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
         binding.detailShuffleButton?.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
+        binding.detailToolbarShuffle.apply {
             isEnabled = playable
             setOnClickListener {
                 playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
