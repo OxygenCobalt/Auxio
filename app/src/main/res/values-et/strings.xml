@@ -319,4 +319,9 @@
     <string name="cdc_unknown">Teadmata</string>
     <string name="set_locations_new">Uus kaust</string>
     <string name="set_cover_mode_save_space">Säästa ruumi</string>
+    <string name="lng_empty_songs">Sinu muusikapalad saavad olema nähtavad siin.</string>
+    <string name="lng_empty_artists">Sinu esitajad saavad olema nähtavad siin.</string>
+    <string name="lng_empty_genres">Sinu žanrid saavad olema nähtavad siin.</string>
+    <string name="lng_empty_albums">Sinu albumid saavad olema nähtavad siin.</string>
+    <string name="lng_empty_playlists">Sinu esitusloendid saavad olema nähtavad siin.</string>
 </resources>

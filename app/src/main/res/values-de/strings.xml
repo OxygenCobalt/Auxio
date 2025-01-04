@@ -327,4 +327,9 @@
     <string name="def_album">Unbekanntes Album</string>
     <string name="set_locations_new">Neuer Ordner</string>
     <string name="set_cover_mode_save_space">Speicherplatz sparen</string>
+    <string name="lng_empty_albums">Deine Alben werden hier angezeigt.</string>
+    <string name="lng_empty_playlists">Deine Wiedergabelisten werden hier angezeigt.</string>
+    <string name="lng_empty_songs">Deine Lieder werden hier angezeigt.</string>
+    <string name="lng_empty_genres">Deine Genres werden hier angezeigt.</string>
+    <string name="lng_empty_artists">Deine Künstler werden hier angezeigt.</string>
 </resources>

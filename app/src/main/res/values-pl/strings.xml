@@ -149,7 +149,7 @@
     <string name="desc_skip_next">Przejdź do następnego utworu</string>
     <string name="lbl_author_name">Autorstwa Alexandra Capeharta</string>
     <string name="set_round_mode">Zaokrąglone krawędzie</string>
-    <string name="set_round_mode_desc">Włącz zaokrąglone rogi na dodatkowych elementach interfejsu (wymaga zaokrąglenia okładek albumów)</string>
+    <string name="set_round_mode_desc">Włącz zaokrąglone narożniki na dodatkowych elementach interfejsu (wymaga zaokrąglenia okładek albumów)</string>
     <string name="set_bar_action">Akcja na pasku odtwarzania</string>
     <string name="set_action_mode_next">Następny utwór</string>
     <string name="set_action_mode_repeat">Tryb powtarzania</string>
@@ -226,7 +226,7 @@
     <string name="set_cover_mode_off">Wyłączone</string>
     <string name="set_cover_mode_balanced">Niska jakość</string>
     <string name="set_cover_mode_high_quality">Wysoka jakość</string>
-    <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów (tak, jakby posiadały wiele wartości). Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami oddzielającymi.</string>
+    <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów (mogą być przetwarzane tak, jakby posiadały wiele wartości). Problem ten należy rozwiązać stawiając ukośnik wsteczny () przed niepożądanymi znakami oddzielającymi.</string>
     <string name="set_ui_desc">Dostosuj motyw i kolory aplikacji</string>
     <string name="set_hide_collaborators">Ukryj wykonawców uczestniczących</string>
     <string name="set_content_desc">Zarządzaj importowaniem muzyki i obrazów</string>
@@ -258,7 +258,7 @@
     <string name="lbl_playlist">Playlista</string>
     <string name="desc_playlist_image">Obraz playlisty %s</string>
     <string name="set_intelligent_sorting">Inteligentne sortowanie</string>
-    <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” oraz numery w tytule podczas sortowania (działa najlepiej z utworami w języku angielskim)</string>
+    <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” oraz liczby w tytule podczas sortowania (działa najlepiej z utworami w języku angielskim)</string>
     <string name="lbl_new_playlist">Nowa playlista</string>
     <string name="lbl_playlist_add">Dodaj do playlisty</string>
     <string name="lng_playlist_created">Utworzono playlistę</string>
@@ -280,7 +280,7 @@
     <string name="set_square_covers_desc">Przytnij okładki do formatu 1:1</string>
     <string name="set_square_covers">Wymuś kwadratowe okładki</string>
     <string name="lbl_song">Piosenka</string>
-    <string name="set_play_song_by_itself">Odtwarzanie utworu samodzielnie</string>
+    <string name="set_play_song_by_itself">Odtwórz tylko utwór</string>
     <string name="lbl_parent_detail">Widok</string>
     <string name="lbl_sort_mode">Sortuj według</string>
     <string name="lbl_sort_direction">Kierunek</string>
@@ -310,7 +310,7 @@
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Dema</string>
     <string name="lbl_more">Więcej</string>
-    <string name="lng_tasker_start">Uruchamia Auxio z użyciem poprzednio zapisanego stanu. Jeśli nie ma zapisanego stanu, wszystkie utwory będą odtwarzane w losowej kolejności. Odtwarzanie rozpocznie się natychmiast.\n\nUWAGA: Zachowaj ostrożność przy kontrolowaniu tej usługi, jeśli ją zamkniesz, a następnie spróbujesz ponownie z niej skorzystać, aplikacja może się zawiesić.</string>
+    <string name="lng_tasker_start">Uruchamia Auxio z użyciem poprzednio zapisanego stanu. Jeśli nie zapisano poprzedniego stanu, wszystkie utwory będą odtwarzane w losowej kolejności. Odtwarzanie rozpocznie się natychmiast.\n\nUWAGA: Zachowaj ostrożność przy korzystaniu z tej opcji. Jeśli ją zamkniesz, a następnie spróbujesz ponownie z niej skorzystać, aplikacja może się zawiesić.</string>
     <string name="err_export_failed">Nie udało się wyeksportować playlisty do tego pliku</string>
     <string name="lbl_replaygain_track">Dopasowanie głośności utworu (ReplayGain)</string>
     <string name="lbl_replaygain_album">Dopasowanie głośności albumu (ReplayGain)</string>
@@ -324,15 +324,15 @@
     <string name="lbl_feedback">Informacja zwrotna</string>
     <string name="lbl_github">Zgłoś problem na GitHubie</string>
     <string name="lbl_music_sources">Wybierz foldery</string>
-    <string name="lng_no_songs">Tutaj pojawią się utwory po zaimportowaniu.</string>
-    <string name="lng_no_albums">Tutaj pojawią się albumy po zaimportowaniu utworów.</string>
-    <string name="lng_no_artists">Tutaj pojawią się artyści po zaimportowaniu utworów.</string>
-    <string name="lng_no_genres">Tutaj pojawią się gatunki po zaimportowaniu utworów.</string>
-    <string name="lng_no_playlists">Tutaj pojawią się playlisty po zaimportowaniu utworów.</string>
     <string name="cnt_mp4">MPEG-4 zawierający %s</string>
     <string name="cdc_unknown">Nieznany</string>
     <string name="def_album">Nieznany album</string>
     <string name="set_locations_new">Nowy folder</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="set_cover_mode_save_space">Oszczędzanie miejsca</string>
+    <string name="lng_empty_songs">Tutaj pojawią się dodane utwory.</string>
+    <string name="lng_empty_albums">Tutaj pojawią się dodane albumy.</string>
+    <string name="lng_empty_artists">Tutaj pojawią się dodani artyści.</string>
+    <string name="lng_empty_playlists">Tutaj pojawią się dodane playlisty.</string>
+    <string name="lng_empty_genres">Tutaj pojawią się dodane gatunki.</string>
 </resources>

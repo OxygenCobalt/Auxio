@@ -325,4 +325,9 @@
     <string name="cdc_unknown">未知</string>
     <string name="set_locations_new">新文件夹</string>
     <string name="set_cover_mode_save_space">节省空间</string>
+    <string name="lng_empty_songs">歌曲会出现在此处。</string>
+    <string name="lng_empty_artists">艺术家会出现在此处。</string>
+    <string name="lng_empty_genres">流派会出现在此处。</string>
+    <string name="lng_empty_albums">专辑会出现在此处。</string>
+    <string name="lng_empty_playlists">播放列表会出现在此处。</string>
 </resources>
