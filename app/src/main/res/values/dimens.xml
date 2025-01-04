@@ -29,6 +29,12 @@
     <dimen name="height_scroll_thumb">48dp</dimen>
 
     <!-- Misc -->
+    <dimen name="fast_scroll_popup_min_width">72dp</dimen>
+    <dimen name="fast_scroll_popup_min_height">52dp</dimen>
+    <dimen name="fast_scroll_popup_padding_start">@dimen/spacing_medium</dimen>
+    <dimen name="fast_scroll_popup_padding_end">30dp</dimen>
+    <dimen name="fast_scroll_thumb_touch_target_size">48dp</dimen>
+
     <dimen name="m3_shape_corners_large">16dp</dimen>
     <dimen name="m3_shape_corners_full">128dp</dimen>
 

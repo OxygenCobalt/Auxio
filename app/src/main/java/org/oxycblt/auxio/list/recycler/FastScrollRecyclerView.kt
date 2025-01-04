@@ -15,29 +15,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.list.recycler
 
 import android.animation.Animator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
+import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewConfiguration
+import android.view.ViewGroup
 import android.view.WindowInsets
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.annotation.AttrRes
+import androidx.core.view.isInvisible
+import androidx.core.view.updatePaddingRelative
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textview.MaterialTextView
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.MaterialFadingSlider
 import org.oxycblt.auxio.ui.MaterialSlider
+import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimenPixels
+import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import timber.log.Timber
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of
@@ -74,11 +88,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     // Thumb
     private val thumbWidth = context.getDimenPixels(R.dimen.spacing_mid_medium)
     private val thumbHeight = context.getDimenPixels(R.dimen.size_touchable_medium)
-    private val slider = MaterialSlider(context, thumbWidth)
+    private val thumbSlider = MaterialSlider.small(context, thumbWidth)
     private var thumbAnimator: Animator? = null
 
     private val thumbView =
-        context.inflater.inflate(R.layout.view_scroll_thumb, null).apply { slider.jumpOut(this) }
+        context.inflater.inflate(R.layout.view_scroll_thumb, null)
+            .apply { thumbSlider.jumpOut(this) }
     private val thumbPadding = Rect(0, 0, 0, 0)
     private var thumbOffset = 0
 
@@ -88,6 +103,36 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             hideScrollbar()
         }
     }
+
+    private val popupView = MaterialTextView(context).apply {
+        minimumWidth = context.getDimenPixels(R.dimen.size_touchable_large)
+        minimumHeight = context.getDimenPixels(R.dimen.size_touchable_small)
+
+        TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineMedium)
+        setTextColor(context.getAttrColorCompat(com.google.android.material.R.attr.colorOnSecondary))
+        ellipsize = TextUtils.TruncateAt.MIDDLE
+        gravity = Gravity.CENTER
+        includeFontPadding = false
+
+        elevation =
+            context.getDimenPixels(com.google.android.material.R.dimen.m3_sys_elevation_level1)
+                .toFloat()
+        background = context.getDrawableCompat(R.drawable.ui_popup)
+        updatePaddingRelative(end = context.getDimenPixels(R.dimen.spacing_tiny) / 2)
+        layoutParams =
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+                .apply {
+                    gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                }
+    }
+    private val popupSlider =
+        MaterialFadingSlider(MaterialSlider.large(context, popupView.minimumWidth / 2)).apply {
+            jumpOut(popupView)
+        }
+    private var popupAnimator: Animator? = null
+    private var showingPopup = false
 
     // Touch
     private val minTouchTargetSize = context.getDimenPixels(R.dimen.size_touchable_small)
@@ -109,6 +154,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             if (!value) {
                 removeCallbacks(hideThumbRunnable)
                 hideScrollbar()
+                hidePopup()
             }
 
             listener?.onFastScrollingChanged(field)
@@ -131,7 +177,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             if (field) {
                 removeCallbacks(hideThumbRunnable)
                 showScrollbar()
+                showPopup()
             } else {
+                hidePopup()
                 postAutoHideScrollbar()
             }
 
@@ -143,6 +191,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     init {
         overlay.add(thumbView)
+        overlay.add(popupView)
 
         addItemDecoration(
             object : ItemDecoration() {
@@ -176,7 +225,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         thumbView.layoutDirection = layoutDirection
         thumbView.measure(
             MeasureSpec.makeMeasureSpec(thumbWidth, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(thumbHeight, MeasureSpec.EXACTLY))
+            MeasureSpec.makeMeasureSpec(thumbHeight, MeasureSpec.EXACTLY)
+        )
         val thumbTop = thumbPadding.top + thumbOffset
         val thumbLeft =
             if (isRtl) {
@@ -185,6 +235,77 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 width - thumbPadding.right - thumbWidth
             }
         thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbHeight)
+
+        popupView.layoutDirection = layoutDirection
+        val child = getChildAt(0)
+        val firstAdapterPos =
+            if (child != null) {
+                layoutManager?.getPosition(child) ?: NO_POSITION
+            } else {
+                NO_POSITION
+            }
+
+        val popupText: String
+        val provider = popupProvider
+        if (firstAdapterPos != NO_POSITION && provider != null) {
+            popupView.isInvisible = false
+            // Get the popup text. If there is none, we default to "?".
+            popupText = provider.getPopup(firstAdapterPos) ?: "?"
+        } else {
+            // No valid position or provider, do not show the popup.
+            popupView.isInvisible = false
+            popupText = ""
+        }
+        val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
+
+        if (popupView.text != popupText) {
+            popupView.text = popupText
+
+            val widthMeasureSpec =
+                ViewGroup.getChildMeasureSpec(
+                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                    thumbPadding.left +
+                            thumbPadding.right +
+                            thumbWidth +
+                            popupLayoutParams.leftMargin +
+                            popupLayoutParams.rightMargin,
+                    popupLayoutParams.width
+                )
+
+            val heightMeasureSpec =
+                ViewGroup.getChildMeasureSpec(
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+                    thumbPadding.top +
+                            thumbPadding.bottom +
+                            popupLayoutParams.topMargin +
+                            popupLayoutParams.bottomMargin,
+                    popupLayoutParams.height
+                )
+
+            popupView.measure(widthMeasureSpec, heightMeasureSpec)
+            Timber.d("Updating popup text to ${popupView.measuredHeight} ${popupView.measuredWidth}")
+        }
+
+        val popupWidth = popupView.measuredWidth
+        val popupHeight = popupView.measuredHeight
+        val popupLeft =
+            if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin + popupWidth / 2
+            } else {
+                width - thumbPadding.right - thumbWidth - popupLayoutParams.rightMargin - popupWidth - popupWidth / 2
+            }
+
+        val popupAnchorY = popupHeight / 2
+        val thumbAnchorY = thumbView.height / 2
+
+        val popupTop =
+            (thumbTop + thumbAnchorY - popupAnchorY)
+                .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
+                .coerceAtMost(
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight
+                )
+
+        popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
     }
 
     override fun onScrolled(dx: Int, dy: Int) {
@@ -249,10 +370,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     dragging = true
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 if (!dragging &&
                     thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
-                    abs(eventY - downY) > touchSlop) {
+                    abs(eventY - downY) > touchSlop
+                ) {
                     if (thumbView.isUnder(downX, downY, minTouchTargetSize)) {
                         dragStartY = lastY
                         dragStartThumbOffset = thumbOffset
@@ -271,6 +394,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     scrollToThumbOffset(thumbOffset)
                 }
             }
+
             MotionEvent.ACTION_UP,
             MotionEvent.ACTION_CANCEL -> dragging = false
         }
@@ -312,7 +436,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         showingThumb = true
         thumbAnimator?.cancel()
-        thumbAnimator = slider.slideIn(thumbView).also { it.start() }
+        thumbAnimator = thumbSlider.slideIn(thumbView).also { it.start() }
     }
 
     private fun hideScrollbar() {
@@ -322,7 +446,30 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         showingThumb = false
         thumbAnimator?.cancel()
-        thumbAnimator = slider.slideOut(thumbView).also { it.start() }
+        thumbAnimator = thumbSlider.slideOut(thumbView).also { it.start() }
+    }
+
+    private fun showPopup() {
+        if (!thumbEnabled) {
+            return
+        }
+        if (showingPopup) {
+            return
+        }
+
+        showingPopup = true
+        popupAnimator?.cancel()
+        popupAnimator = popupSlider.slideIn(popupView).also { it.start() }
+    }
+
+    private fun hidePopup() {
+        if (!showingPopup) {
+            return
+        }
+
+        showingPopup = false
+        popupAnimator?.cancel()
+        popupAnimator = popupSlider.slideOut(popupView).also { it.start() }
     }
 
     // --- LAYOUT STATE ---
