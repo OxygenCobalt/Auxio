@@ -397,8 +397,6 @@ constructor(
         // later.
         musicSettings.revision = newRevision
 
-        emitIndexingCompletion(null)
-
         // We want to make sure that all reads and writes are synchronized due to the sheer
         // amount of consumers of MusicRepository.
         // TODO: Would Atomics not be a better fit here?
@@ -435,6 +433,8 @@ constructor(
         // to really lucky cancellations. Clean those up now that it's impossible for
         // the rest of the app to be using them.
         covers.cleanup(newLibrary.songs.mapNotNull { it.cover })
+
+        emitIndexingCompletion(null)
     }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {
