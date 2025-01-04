@@ -39,7 +39,7 @@ class CoverProvider : ContentProvider() {
         val coverId = requireNotNull(SiloedCoverId.parse(id)) { "Invalid ID: $id" }
         return runBlocking {
             val siloedCovers = SiloedCovers.from(requireContext(), coverId.silo)
-            when (val res = siloedCovers.obtain(coverId.id)) {
+            when (val res = siloedCovers.obtain(id)) {
                 is ObtainResult.Hit -> res.cover.fd()
                 is ObtainResult.Miss -> null
             }
