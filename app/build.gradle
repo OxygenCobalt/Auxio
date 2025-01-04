@@ -18,8 +18,8 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "3.6.3"
-        versionCode 53
+        versionName "4.0.0-BETA1"
+        versionCode 54
 
         minSdk target_sdk
         targetSdk target_sdk

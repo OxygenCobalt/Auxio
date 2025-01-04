@@ -41,7 +41,7 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 50, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 54, exportSchema = false)
 internal abstract class CacheDatabase : RoomDatabase() {
     abstract fun visibleDao(): VisibleCacheDao
 
