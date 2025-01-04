@@ -201,7 +201,13 @@ class MaterialFlipper(context: Context) {
     }
 }
 
-class MaterialSlider private constructor(context: Context, private val x: Int?, inDuration: Pair<Int, Int>, outDuration: Pair<Int, Int>) {
+class MaterialSlider
+private constructor(
+    context: Context,
+    private val x: Int?,
+    inDuration: Pair<Int, Int>,
+    outDuration: Pair<Int, Int>
+) {
     private val outConfig = AnimConfig.of(context, AnimConfig.EMPHASIZED_ACCELERATE, outDuration)
     private val inConfig = AnimConfig.of(context, AnimConfig.EMPHASIZED_DECELERATE, inDuration)
 
@@ -217,8 +223,7 @@ class MaterialSlider private constructor(context: Context, private val x: Int?, 
         if (view.translationX > target) {
             view.translationX = target
         }
-        val animator =
-            outConfig.genericFloat(view.translationX, target) { view.translationX = it }
+        val animator = outConfig.genericFloat(view.translationX, target) { view.translationX = it }
         return animator
     }
 
@@ -228,10 +233,11 @@ class MaterialSlider private constructor(context: Context, private val x: Int?, 
     }
 
     companion object {
-        fun small(context: Context, x: Int?) = MaterialSlider(context, x, AnimConfig.SHORT3, AnimConfig.MEDIUM1)
+        fun small(context: Context, x: Int?) =
+            MaterialSlider(context, x, AnimConfig.SHORT3, AnimConfig.MEDIUM1)
 
-        fun large(context: Context, x: Int?) = MaterialSlider(context, x, AnimConfig.MEDIUM3, AnimConfig.SHORT3)
-
+        fun large(context: Context, x: Int?) =
+            MaterialSlider(context, x, AnimConfig.MEDIUM3, AnimConfig.SHORT3)
     }
 }
 
@@ -243,19 +249,21 @@ class MaterialFadingSlider(private val slider: MaterialSlider) {
 
     fun slideOut(view: View): Animator {
         val slideOut = slider.slideOut(view)
-        val alphaOut = ValueAnimator.ofFloat(1f, 0f).apply {
-            duration = slideOut.duration
-            addUpdateListener { view.alpha = it.animatedValue as Float }
-        }
+        val alphaOut =
+            ValueAnimator.ofFloat(1f, 0f).apply {
+                duration = slideOut.duration
+                addUpdateListener { view.alpha = it.animatedValue as Float }
+            }
         return AnimatorSet().apply { playTogether(slideOut, alphaOut) }
     }
 
     fun slideIn(view: View): Animator {
         val slideIn = slider.slideIn(view)
-        val alphaIn = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = slideIn.duration
-            addUpdateListener { view.alpha = it.animatedValue as Float }
-        }
+        val alphaIn =
+            ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = slideIn.duration
+                addUpdateListener { view.alpha = it.animatedValue as Float }
+            }
         return AnimatorSet().apply { playTogether(slideIn, alphaIn) }
     }
 }

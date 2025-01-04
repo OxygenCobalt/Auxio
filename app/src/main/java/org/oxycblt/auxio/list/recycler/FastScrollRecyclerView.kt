@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.list.recycler
 
 import android.animation.Animator
@@ -91,8 +91,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var thumbAnimator: Animator? = null
 
     private val thumbView =
-        context.inflater.inflate(R.layout.view_scroll_thumb, null)
-            .apply { thumbSlider.jumpOut(this) }
+        context.inflater.inflate(R.layout.view_scroll_thumb, null).apply {
+            thumbSlider.jumpOut(this)
+        }
     private val thumbPadding = Rect(0, 0, 0, 0)
     private var thumbOffset = 0
 
@@ -103,29 +104,29 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    private val popupView = MaterialTextView(context).apply {
-        minimumWidth = context.getDimenPixels(R.dimen.size_touchable_large)
-        minimumHeight = context.getDimenPixels(R.dimen.size_touchable_small)
+    private val popupView =
+        MaterialTextView(context).apply {
+            minimumWidth = context.getDimenPixels(R.dimen.size_touchable_large)
+            minimumHeight = context.getDimenPixels(R.dimen.size_touchable_small)
 
-        TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineMedium)
-        setTextColor(context.getAttrColorCompat(com.google.android.material.R.attr.colorOnSecondary))
-        ellipsize = TextUtils.TruncateAt.MIDDLE
-        gravity = Gravity.CENTER
-        includeFontPadding = false
+            TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineMedium)
+            setTextColor(
+                context.getAttrColorCompat(com.google.android.material.R.attr.colorOnSecondary))
+            ellipsize = TextUtils.TruncateAt.MIDDLE
+            gravity = Gravity.CENTER
+            includeFontPadding = false
 
-        elevation =
-            context.getDimenPixels(com.google.android.material.R.dimen.m3_sys_elevation_level1)
-                .toFloat()
-        background = context.getDrawableCompat(R.drawable.ui_popup)
-        updatePaddingRelative(end = context.getDimenPixels(R.dimen.spacing_tiny) / 2)
-        layoutParams =
-            FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-                .apply {
-                    gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                }
-    }
+            elevation =
+                context
+                    .getDimenPixels(com.google.android.material.R.dimen.m3_sys_elevation_level1)
+                    .toFloat()
+            background = context.getDrawableCompat(R.drawable.ui_popup)
+            updatePaddingRelative(end = context.getDimenPixels(R.dimen.spacing_tiny) / 2)
+            layoutParams =
+                FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    .apply { gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP }
+        }
     private val popupSlider =
         MaterialFadingSlider(MaterialSlider.large(context, popupView.minimumWidth / 2)).apply {
             jumpOut(popupView)
@@ -226,8 +227,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         thumbView.layoutDirection = layoutDirection
         thumbView.measure(
             MeasureSpec.makeMeasureSpec(thumbWidth, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(thumbHeight, MeasureSpec.EXACTLY)
-        )
+            MeasureSpec.makeMeasureSpec(thumbHeight, MeasureSpec.EXACTLY))
         val thumbTop = thumbPadding.top + thumbOffset
         val thumbLeft =
             if (isRtl) {
@@ -266,25 +266,24 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 ViewGroup.getChildMeasureSpec(
                     MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                     thumbPadding.left +
-                            thumbPadding.right +
-                            thumbWidth +
-                            popupLayoutParams.leftMargin +
-                            popupLayoutParams.rightMargin,
-                    popupLayoutParams.width
-                )
+                        thumbPadding.right +
+                        thumbWidth +
+                        popupLayoutParams.leftMargin +
+                        popupLayoutParams.rightMargin,
+                    popupLayoutParams.width)
 
             val heightMeasureSpec =
                 ViewGroup.getChildMeasureSpec(
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
                     thumbPadding.top +
-                            thumbPadding.bottom +
-                            popupLayoutParams.topMargin +
-                            popupLayoutParams.bottomMargin,
-                    popupLayoutParams.height
-                )
+                        thumbPadding.bottom +
+                        popupLayoutParams.topMargin +
+                        popupLayoutParams.bottomMargin,
+                    popupLayoutParams.height)
 
             popupView.measure(widthMeasureSpec, heightMeasureSpec)
-            Timber.d("Updating popup text to ${popupView.measuredHeight} ${popupView.measuredWidth}")
+            Timber.d(
+                "Updating popup text to ${popupView.measuredHeight} ${popupView.measuredWidth}")
         }
 
         val popupWidth = popupView.measuredWidth
@@ -293,7 +292,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
                 thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin + popupWidth / 2
             } else {
-                width - thumbPadding.right - thumbWidth - popupLayoutParams.rightMargin - popupWidth - popupWidth / 2
+                width -
+                    thumbPadding.right -
+                    thumbWidth -
+                    popupLayoutParams.rightMargin -
+                    popupWidth -
+                    popupWidth / 2
             }
 
         val popupAnchorY = popupHeight / 2
@@ -303,8 +307,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             (thumbTop + thumbAnchorY - popupAnchorY)
                 .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
                 .coerceAtMost(
-                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight
-                )
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
 
         popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
     }
@@ -374,12 +377,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     dragging = true
                 }
             }
-
             MotionEvent.ACTION_MOVE -> {
                 if (!dragging &&
                     thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
-                    abs(eventY - downY) > touchSlop
-                ) {
+                    abs(eventY - downY) > touchSlop) {
                     if (thumbView.isUnder(downX, downY, minTouchTargetSize)) {
                         dragStartY = lastY
                         dragStartThumbOffset = thumbOffset
@@ -398,7 +399,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     scrollToThumbOffset(thumbOffset)
                 }
             }
-
             MotionEvent.ACTION_UP,
             MotionEvent.ACTION_CANCEL -> dragging = false
         }

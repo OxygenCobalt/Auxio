@@ -24,6 +24,8 @@ import org.oxycblt.musikr.tag.Name
 fun Name.thumb() =
     when (this) {
         is Name.Known ->
-            tokens.firstOrNull()?.let { if (it.value.isDigitsOnly()) "#" else it.value.first().uppercase() }
+            tokens.firstOrNull()?.let {
+                if (it.value.isDigitsOnly()) "#" else it.value.first().uppercase()
+            }
         is Name.Unknown -> "?"
     }
