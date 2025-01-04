@@ -38,8 +38,10 @@ public:
     void add_custom(TagLib::String &description, TagLib::String &value);
     void add_custom(TagLib::String &description, TagLib::StringList &value);
 
-    void add_combined(TagLib::String &id, TagLib::String &description, TagLib::String &value);
-    void add_combined(TagLib::String &id, TagLib::String &description, TagLib::StringList &value);
+    void add_combined(TagLib::String &id, TagLib::String &description,
+            TagLib::String &value);
+    void add_combined(TagLib::String &id, TagLib::String &description,
+            TagLib::StringList &value);
 
     jobject getObject();
 

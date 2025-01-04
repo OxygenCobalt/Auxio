@@ -87,30 +87,30 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
         auto type = itemValue.type();
         std::string serializedValue;
         switch (type) {
-            // Normal expected MP4 items
-            case TagLib::MP4::Item::Type::StringList:
-                mp4AddImpl(mp4, itemName, itemValue.toStringList());
-                break;
-                // Weird MP4 items I'm 90% sure I'll encounter.
-            case TagLib::MP4::Item::Type::Int:
-                serializedValue = std::to_string(itemValue.toInt());
-                break;
-            case TagLib::MP4::Item::Type::UInt:
-                serializedValue = std::to_string(itemValue.toUInt());
-                break;
-            case TagLib::MP4::Item::Type::LongLong:
-                serializedValue = std::to_string(itemValue.toLongLong());
-                break;
-            case TagLib::MP4::Item::Type::IntPair:
-                // It's inefficient going from the integer representation back into
-                // a string, but I fully expect taggers to just write "NN/TT" strings
-                // anyway, and musikr doesn't have to do as much fiddly variant handling.
-                serializedValue = std::to_string(itemValue.toIntPair().first) + "/"
-                             + std::to_string(itemValue.toIntPair().second);
-                break;
-            default:
-                // Don't care about the other types
-                continue;
+        // Normal expected MP4 items
+        case TagLib::MP4::Item::Type::StringList:
+            mp4AddImpl(mp4, itemName, itemValue.toStringList());
+            break;
+            // Weird MP4 items I'm 90% sure I'll encounter.
+        case TagLib::MP4::Item::Type::Int:
+            serializedValue = std::to_string(itemValue.toInt());
+            break;
+        case TagLib::MP4::Item::Type::UInt:
+            serializedValue = std::to_string(itemValue.toUInt());
+            break;
+        case TagLib::MP4::Item::Type::LongLong:
+            serializedValue = std::to_string(itemValue.toLongLong());
+            break;
+        case TagLib::MP4::Item::Type::IntPair:
+            // It's inefficient going from the integer representation back into
+            // a string, but I fully expect taggers to just write "NN/TT" strings
+            // anyway, and musikr doesn't have to do as much fiddly variant handling.
+            serializedValue = std::to_string(itemValue.toIntPair().first) + "/"
+                    + std::to_string(itemValue.toIntPair().second);
+            break;
+        default:
+            // Don't care about the other types
+            continue;
         }
         mp4AddImpl(mp4, itemName, TagLib::String(serializedValue));
     }
