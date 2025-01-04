@@ -32,6 +32,7 @@ internal interface TagParser {
 
 private data object TagParserImpl : TagParser {
     override fun parse(file: DeviceFile, metadata: Metadata): ParsedTags {
+        val compilation = metadata.isCompilation()
         return ParsedTags(
             durationMs = metadata.properties.durationMs,
             replayGainTrackAdjustment = metadata.replayGainTrackAdjustment(),
@@ -46,12 +47,20 @@ private data object TagParserImpl : TagParser {
             albumMusicBrainzId = metadata.albumMusicBrainzId(),
             albumName = metadata.albumName(),
             albumSortName = metadata.albumSortName(),
-            releaseTypes = metadata.releaseTypes() ?: listOf(),
+            // Compilation flag implies a compilation release type in the case that
+            // we don't have any other release types
+            releaseTypes =
+                metadata.releaseTypes() ?: listOf("compilation").takeIf { compilation } ?: listOf(),
             artistMusicBrainzIds = metadata.artistMusicBrainzIds() ?: listOf(),
             artistNames = metadata.artistNames() ?: listOf(),
             artistSortNames = metadata.artistSortNames() ?: listOf(),
             albumArtistMusicBrainzIds = metadata.albumArtistMusicBrainzIds() ?: listOf(),
-            albumArtistNames = metadata.albumArtistNames() ?: listOf(),
+            // Compilation pretty heavily implies various artists in the case that we don't
+            // have any other album artists
+            albumArtistNames =
+                metadata.albumArtistNames()
+                    ?: listOf("Various Artists").takeIf { compilation }
+                    ?: listOf(),
             albumArtistSortNames = metadata.albumArtistSortNames() ?: listOf(),
             genreNames = metadata.genreNames() ?: listOf())
     }

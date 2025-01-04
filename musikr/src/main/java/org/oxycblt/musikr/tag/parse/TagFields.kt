@@ -205,18 +205,16 @@ internal fun Metadata.genreNames() = xiph["GENRE"] ?: mp4["©gen"] ?: mp4["gnre"
 // Compilation Flag
 internal fun Metadata.isCompilation() =
     // TCMP is a non-standard itunes extension
+    // We also only look for tags that are actually valid
+    // (i.e. 1 for true, 0 for false)
     (xiph["COMPILATION"]
-            ?: xiph["ITUNESCOMPILATION"]
-            ?: mp4["cpil"]
-            ?: mp4["----:COM.APPLE.ITUNES:COMPILATION"]
-            ?: mp4["----:COM.APPLE.ITUNES:ITUNESCOMPILATION"]
-            ?: id3v2["TCMP"]
-            ?: id3v2["TXXX:COMPILATION"]
-            ?: id3v2["TXXX:ITUNESCOMPILATION"])
-        ?.let {
-            // Ignore invalid instances of this tag
-            it == listOf("1")
-        }
+        ?: xiph["ITUNESCOMPILATION"]
+        ?: mp4["cpil"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPILATION"]
+        ?: mp4["----:COM.APPLE.ITUNES:ITUNESCOMPILATION"]
+        ?: id3v2["TCMP"]
+        ?: id3v2["TXXX:COMPILATION"]
+        ?: id3v2["TXXX:ITUNESCOMPILATION"]) == listOf("1")
 
 // ReplayGain information
 internal fun Metadata.replayGainTrackAdjustment() =
