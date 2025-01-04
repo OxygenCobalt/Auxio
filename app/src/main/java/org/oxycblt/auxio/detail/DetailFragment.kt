@@ -108,7 +108,7 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
         detailContent.translationY = spacingSmall * (1 - inRatio)
 
         // Enable fast scrolling once fully collapsed
-        binding.detailRecycler.thumbEnabled = ratio == 1f
+        binding.detailRecycler.fastScrollingEnabled = ratio == 1f
     }
 
     abstract fun onOpenParentMenu()

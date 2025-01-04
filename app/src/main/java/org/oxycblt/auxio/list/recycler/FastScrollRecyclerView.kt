@@ -31,7 +31,6 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePaddingRelative
@@ -100,7 +99,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var showingThumb = false
     private val hideThumbRunnable = Runnable {
         if (!dragging) {
-            hideScrollbar()
+            hideThumb()
         }
     }
 
@@ -144,7 +143,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var dragStartY = 0f
     private var dragStartThumbOffset = 0
 
-    var thumbEnabled = true
+    private var fastScrollingPossible = true
+
+    var fastScrollingEnabled = true
         set(value) {
             if (field == value) {
                 return
@@ -153,7 +154,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             field = value
             if (!value) {
                 removeCallbacks(hideThumbRunnable)
-                hideScrollbar()
+                hideThumb()
                 hidePopup()
             }
 
@@ -220,7 +221,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
 
     private fun onPreDraw() {
-        updateScrollbarState()
+        updateThumbState()
 
         thumbView.layoutDirection = layoutDirection
         thumbView.measure(
@@ -311,7 +312,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onScrolled(dx: Int, dy: Int) {
         super.onScrolled(dx, dy)
 
-        updateScrollbarState()
+        updateThumbState()
 
         // Measure or layout events result in a fake onScrolled call. Ignore those.
         if (dx == 0 && dy == 0) {
@@ -329,11 +330,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return insets
     }
 
-    private fun updateScrollbarState() {
+    private fun updateThumbState() {
         // Then calculate the thumb position, which is just:
         // [proportion of scroll position to scroll range] * [total thumb range]
         val offsetY = computeVerticalScrollOffset()
         if (computeVerticalScrollRange() < height || childCount == 0) {
+            fastScrollingPossible = false
+            hideThumb()
+            hidePopup()
             return
         }
         val extentY = computeVerticalScrollExtent()
@@ -342,7 +346,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun onItemTouch(event: MotionEvent): Boolean {
-        if (!thumbEnabled) {
+        if (!fastScrollingEnabled || !fastScrollingPossible) {
             dragging = false
             return false
         }
@@ -427,7 +431,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun showScrollbar() {
-        if (!thumbEnabled) {
+        if (!fastScrollingEnabled || !fastScrollingPossible) {
             return
         }
         if (showingThumb) {
@@ -439,7 +443,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         thumbAnimator = thumbSlider.slideIn(thumbView).also { it.start() }
     }
 
-    private fun hideScrollbar() {
+    private fun hideThumb() {
         if (!showingThumb) {
             return
         }
@@ -450,7 +454,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun showPopup() {
-        if (!thumbEnabled) {
+        if (!fastScrollingEnabled || !fastScrollingPossible) {
             return
         }
         if (showingPopup) {
