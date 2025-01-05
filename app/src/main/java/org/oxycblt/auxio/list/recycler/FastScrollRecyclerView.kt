@@ -484,8 +484,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 HapticFeedbackConstants.TEXT_HANDLE_MOVE
             } else {
                 HapticFeedbackConstants.KEYBOARD_TAP
-            }
-        )
+            })
     }
 
     // --- LAYOUT STATE ---

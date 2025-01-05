@@ -40,7 +40,6 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import timber.log.Timber
 
 sealed interface MediaSessionUID {
     data class Tab(val node: TabNode) : MediaSessionUID {
@@ -139,9 +138,9 @@ fun Album.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setSubtitle(artists.resolveNames(context))
             .setDescription(counts)
             .setIconUri(
-                covers.covers
-                    .firstOrNull()
-                    ?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id) })
+                covers.covers.firstOrNull()?.let {
+                    Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
+                })
             .setExtras(extras)
             .build()
     return MediaItem(description, MediaItem.FLAG_BROWSABLE)
