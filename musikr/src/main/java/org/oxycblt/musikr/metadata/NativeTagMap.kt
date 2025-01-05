@@ -20,7 +20,7 @@ package org.oxycblt.musikr.metadata
 
 import org.oxycblt.musikr.util.correctWhitespace
 
-class NativeTagMap {
+internal class NativeTagMap {
     private val map = mutableMapOf<String, List<String>>()
 
     fun addID(id: String, value: String) {

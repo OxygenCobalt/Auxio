@@ -30,6 +30,12 @@ interface MutableCovers : Covers {
     suspend fun cleanup(excluding: Collection<Cover>)
 }
 
+sealed interface ObtainResult<T : Cover> {
+    data class Hit<T : Cover>(val cover: T) : ObtainResult<T>
+
+    class Miss<T : Cover> : ObtainResult<T>
+}
+
 interface Cover {
     val id: String
 
@@ -47,10 +53,4 @@ class CoverCollection private constructor(val covers: List<Cover>) {
                     .sortedByDescending { it.value.size }
                     .map { it.value.first() })
     }
-}
-
-sealed interface ObtainResult<T : Cover> {
-    data class Hit<T : Cover>(val cover: T) : ObtainResult<T>
-
-    class Miss<T : Cover> : ObtainResult<T>
 }
