@@ -76,6 +76,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Added drag listener
  * - Added documentation
  * - Completely new design
+ * - New scroll position backend
  *
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  *
@@ -338,6 +339,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private fun updateThumbState() {
         // Then calculate the thumb position, which is just:
         // [proportion of scroll position to scroll range] * [total thumb range]
+        // This is somewhat adapted from the androidx RecyclerView FastScroller implementation.
         val offsetY = computeVerticalScrollOffset()
         if (computeVerticalScrollRange() < height || childCount == 0) {
             fastScrollingPossible = false
