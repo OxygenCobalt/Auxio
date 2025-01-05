@@ -21,7 +21,7 @@ android {
         versionName "4.0.0-BETA1"
         versionCode 54
 
-        minSdk target_sdk
+        minSdk min_sdk
         targetSdk target_sdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
