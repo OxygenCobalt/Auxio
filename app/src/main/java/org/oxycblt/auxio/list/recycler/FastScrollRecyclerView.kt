@@ -32,7 +32,6 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowInsets
-import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.core.view.isInvisible
@@ -53,7 +52,6 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import timber.log.Timber
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of
@@ -263,13 +261,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
 
         if (popupView.text != popupText) {
-            performHapticFeedback(
-                if (Build.VERSION.SDK_INT >= 27) {
-                    HapticFeedbackConstants.TEXT_HANDLE_MOVE
-                } else {
-                    HapticFeedbackConstants.KEYBOARD_TAP
-                }
-            )
             popupView.text = popupText
 
             val widthMeasureSpec =
@@ -292,6 +283,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     popupLayoutParams.height)
 
             popupView.measure(widthMeasureSpec, heightMeasureSpec)
+            if (showingPopup) {
+                doPopupVibration()
+            }
         }
 
         val popupWidth = popupView.measuredWidth
@@ -482,6 +476,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         showingPopup = false
         popupAnimator?.cancel()
         popupAnimator = popupSlider.slideOut(popupView).also { it.start() }
+    }
+
+    private fun doPopupVibration() {
+        performHapticFeedback(
+            if (Build.VERSION.SDK_INT >= 27) {
+                HapticFeedbackConstants.TEXT_HANDLE_MOVE
+            } else {
+                HapticFeedbackConstants.KEYBOARD_TAP
+            }
+        )
     }
 
     // --- LAYOUT STATE ---
