@@ -22,14 +22,17 @@ import android.animation.Animator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
+import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowInsets
+import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.core.view.isInvisible
@@ -260,6 +263,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
 
         if (popupView.text != popupText) {
+            performHapticFeedback(
+                if (Build.VERSION.SDK_INT >= 27) {
+                    HapticFeedbackConstants.TEXT_HANDLE_MOVE
+                } else {
+                    HapticFeedbackConstants.KEYBOARD_TAP
+                }
+            )
             popupView.text = popupText
 
             val widthMeasureSpec =
