@@ -298,11 +298,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
                 thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin
             } else {
-                width -
-                    thumbPadding.right -
-                    thumbWidth -
-                    popupLayoutParams.rightMargin -
-                    popupWidth
+                width - thumbPadding.right - thumbWidth - popupLayoutParams.rightMargin - popupWidth
             }
 
         val popupAnchorY = popupHeight / 2
