@@ -391,7 +391,7 @@ constructor(
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
 
-        val newLibrary =
+        val result =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work
         // later.
@@ -399,11 +399,9 @@ constructor(
         // Deliver the library to the rest of the app
         // This will more or less block until all required item translation and
         // cleanup finishes.
-        emitLibrary(newLibrary)
-        // Old cover revisions may be lying around, even during a normal refresh due
-        // to really lucky cancellations. Now that it is impossible for the rest of
-        // the app to possible be using them, clean them up.
-        covers.cleanup(newLibrary.songs.mapNotNull { it.cover })
+        emitLibrary(result.library)
+        // Clean up old data that is now impossible for the app to be using.
+        result.cleanup()
         // Finish up loading.
         emitIndexingCompletion(null)
     }

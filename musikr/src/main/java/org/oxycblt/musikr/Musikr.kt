@@ -34,15 +34,22 @@ interface Musikr {
     suspend fun run(
         locations: List<MusicLocation>,
         onProgress: suspend (IndexingProgress) -> Unit = {}
-    ): MutableLibrary
+    ): LibraryResult
 
     companion object {
         fun new(context: Context, storage: Storage, interpretation: Interpretation): Musikr =
             MusikrImpl(
+                storage,
                 ExploreStep.from(context, storage),
                 ExtractStep.from(context, storage),
                 EvaluateStep.new(storage, interpretation))
     }
+}
+
+interface LibraryResult {
+    val library: MutableLibrary
+
+    suspend fun cleanup()
 }
 
 /**
@@ -57,6 +64,7 @@ sealed interface IndexingProgress {
 }
 
 private class MusikrImpl(
+    private val storage: Storage,
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
@@ -79,6 +87,16 @@ private class MusikrImpl(
                 .buffer(Channel.UNLIMITED)
                 .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
                 .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-        evaluateStep.evaluate(extracted)
+        val library = evaluateStep.evaluate(extracted)
+        LibraryResultImpl(storage, library)
+    }
+}
+
+private class LibraryResultImpl(
+    private val storage: Storage,
+    override val library: MutableLibrary) : LibraryResult {
+
+    override suspend fun cleanup() {
+        storage.storedCovers.cleanup(library.songs.mapNotNull { it.cover })
     }
 }
