@@ -28,7 +28,14 @@ internal class NativeTagMap {
     }
 
     fun addID(id: String, values: List<String>) {
-        map[id] = values.mapNotNull { it.correctWhitespace() }
+        if (values.isEmpty()) {
+            return
+        }
+        val correctedValues = values.mapNotNull { it.correctWhitespace() }
+        if (correctedValues.isEmpty()) {
+            return
+        }
+        map[id] = correctedValues
     }
 
     fun addCustom(description: String, value: String) {
@@ -36,7 +43,14 @@ internal class NativeTagMap {
     }
 
     fun addCustom(description: String, values: List<String>) {
-        map[description.uppercase()] = values.mapNotNull { it.correctWhitespace() }
+        if (values.isEmpty()) {
+            return
+        }
+        val correctedValues = values.mapNotNull { it.correctWhitespace() }
+        if (correctedValues.isEmpty()) {
+            return
+        }
+        map[description.uppercase()] = correctedValues
     }
 
     fun addCombined(id: String, description: String, value: String) {
@@ -44,7 +58,14 @@ internal class NativeTagMap {
     }
 
     fun addCombined(id: String, description: String, values: List<String>) {
-        map["$id:${description.uppercase()}"] = values.mapNotNull { it.correctWhitespace() }
+        if (values.isEmpty()) {
+            return
+        }
+        val correctedValues = values.mapNotNull { it.correctWhitespace() }
+        if (correctedValues.isEmpty()) {
+            return
+        }
+        map["$id:${description.uppercase()}"] = correctedValues
     }
 
     fun getObject(): Map<String, List<String>> {
