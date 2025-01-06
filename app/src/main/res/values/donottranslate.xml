@@ -16,5 +16,8 @@
     <string name="cdc_wav">Microsoft WAVE</string>
     <string name="cnt_ogg">Ogg %s</string>
 
+    <!-- Pkg Namespace | Dynamic package names -->
+    <string name="pkg_authority_cover">org.oxycblt.auxio.image.CoverProvider</string>
+
     <!-- Supporter Namespace | Sponsor usernames  -->
 </resources>

@@ -26,6 +26,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.runBlocking
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.image.covers.SiloedCoverId
 import org.oxycblt.auxio.image.covers.SiloedCovers
 import org.oxycblt.musikr.cover.ObtainResult
@@ -72,7 +73,7 @@ class CoverProvider : ContentProvider() {
     ): Int = 0
 
     companion object {
-        private const val AUTHORITY = "org.oxycblt.auxio.image.CoverProvider"
+        private const val AUTHORITY = "${BuildConfig.APPLICATION_ID}.image.CoverProvider"
         private const val IMAGES_PATH = "covers"
         private val uriMatcher =
             UriMatcher(UriMatcher.NO_MATCH).apply { addURI(AUTHORITY, "$IMAGES_PATH/*", 1) }
