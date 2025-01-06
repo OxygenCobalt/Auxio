@@ -79,8 +79,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - New scroll position backend
  *
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
- *
- * TODO: Add vibration when popup changes
  */
 class FastScrollRecyclerView
 @JvmOverloads
@@ -123,11 +121,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     .getDimenPixels(com.google.android.material.R.dimen.m3_sys_elevation_level1)
                     .toFloat()
             background = context.getDrawableCompat(R.drawable.ui_popup)
-            updatePaddingRelative(end = context.getDimenPixels(R.dimen.spacing_tiny) / 2)
+            val paddingStart = context.getDimenPixels(R.dimen.spacing_medium)
+            val paddingEnd = paddingStart + context.getDimenPixels(R.dimen.spacing_tiny) / 2
+            updatePaddingRelative(start = paddingStart, end = paddingEnd)
             layoutParams =
                 FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    .apply { gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP }
+                    .apply {
+                        marginEnd = context.getDimenPixels(R.dimen.size_touchable_small)
+                        gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                    }
         }
     private val popupSlider =
         MaterialFadingSlider(MaterialSlider.large(context, popupView.minimumWidth / 2)).apply {
@@ -293,14 +296,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val popupHeight = popupView.measuredHeight
         val popupLeft =
             if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-                thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin + popupWidth / 2
+                thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin
             } else {
                 width -
                     thumbPadding.right -
                     thumbWidth -
                     popupLayoutParams.rightMargin -
-                    popupWidth -
-                    popupWidth / 2
+                    popupWidth
             }
 
         val popupAnchorY = popupHeight / 2
