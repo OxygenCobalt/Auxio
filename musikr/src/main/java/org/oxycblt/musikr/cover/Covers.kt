@@ -43,6 +43,10 @@ interface Cover {
 }
 
 class CoverCollection private constructor(val covers: List<Cover>) {
+    override fun hashCode() = covers.hashCode()
+
+    override fun equals(other: Any?) = other is CoverCollection && covers == other.covers
+
     companion object {
         fun from(covers: Collection<Cover>) =
             CoverCollection(

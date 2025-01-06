@@ -29,7 +29,7 @@ import org.oxycblt.musikr.util.update
 
 internal interface AlbumCore {
     val preAlbum: PreAlbum
-    val songs: List<Song>
+    val songs: Set<Song>
 
     fun resolveArtists(): List<Artist>
 }
@@ -39,7 +39,7 @@ internal interface AlbumCore {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-internal class AlbumImpl(private val core: AlbumCore) : Album {
+class AlbumImpl internal constructor(private val core: AlbumCore) : Album {
     private val preAlbum = core.preAlbum
 
     override val uid =
@@ -73,4 +73,6 @@ internal class AlbumImpl(private val core: AlbumCore) : Album {
         other is AlbumImpl && uid == other.uid && preAlbum == other.preAlbum && songs == other.songs
 
     override fun toString() = "Album(uid=$uid, name=$name)"
+
+    fun a(other: AlbumImpl) = uid == other.uid
 }

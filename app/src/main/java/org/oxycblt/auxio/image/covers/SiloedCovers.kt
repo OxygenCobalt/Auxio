@@ -82,7 +82,8 @@ private constructor(
     }
 }
 
-class SiloedCover(silo: CoverSilo, val innerCover: FileCover) : FileCover by innerCover {
+data class SiloedCover(private val silo: CoverSilo, val innerCover: FileCover) :
+    FileCover by innerCover {
     private val innerId = SiloedCoverId(silo, innerCover.id)
     override val id = innerId.toString()
 }

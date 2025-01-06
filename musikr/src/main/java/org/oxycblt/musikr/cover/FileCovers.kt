@@ -57,7 +57,8 @@ interface FileCover : Cover {
     suspend fun fd(): ParcelFileDescriptor?
 }
 
-private class FileCoverImpl(override val id: String, private val appFile: AppFile) : FileCover {
+private data class FileCoverImpl(override val id: String, private val appFile: AppFile) :
+    FileCover {
     override suspend fun fd() = appFile.fd()
 
     override suspend fun open() = appFile.open()

@@ -87,7 +87,7 @@ private class LibraryFactoryImpl() : LibraryFactory {
     private class AlbumVertexCore(private val vertex: AlbumVertex) : AlbumCore {
         override val preAlbum = vertex.preAlbum
 
-        override val songs = vertex.songVertices.map { SongImpl(SongVertexCore(it)) }
+        override val songs = vertex.songVertices.mapTo(mutableSetOf()) { it.tag as Song }
 
         override fun resolveArtists() = vertex.artistVertices.map { it.tag as Artist }
     }

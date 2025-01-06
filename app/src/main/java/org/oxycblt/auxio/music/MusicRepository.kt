@@ -396,12 +396,33 @@ constructor(
         // Music loading completed, update the revision right now so we re-use this work
         // later.
         musicSettings.revision = newRevision
+        // Deliver the library to the rest of the app
+        // This will more or less block until all required item translation and
+        // cleanup finishes.
+        emitLibrary(newLibrary)
+        // Old cover revisions may be lying around, even during a normal refresh due
+        // to really lucky cancellations. Now that it is impossible for the rest of
+        // the app to possible be using them, clean them up.
+        covers.cleanup(newLibrary.songs.mapNotNull { it.cover })
+        // Finish up loading.
+        emitIndexingCompletion(null)
+    }
 
-        // We want to make sure that all reads and writes are synchronized due to the sheer
-        // amount of consumers of MusicRepository.
-        // TODO: Would Atomics not be a better fit here?
+    private suspend fun emitIndexingProgress(progress: IndexingProgress) {
+        yield()
+        synchronized(this) {
+            currentIndexingState = IndexingState.Indexing(progress)
+            for (listener in indexingListeners) {
+                listener.onIndexingStateChanged()
+            }
+        }
+    }
+
+    private suspend fun emitLibrary(newLibrary: MutableLibrary) {
         val deviceLibraryChanged: Boolean
         val userLibraryChanged: Boolean
+        // We want to make sure that all reads and writes are synchronized due to the sheer
+        // amount of consumers of MusicRepository.
         synchronized(this) {
             // It's possible that this reload might have changed nothing, so make sure that
             // hasn't happened before dispatching a change to all consumers.
@@ -427,23 +448,6 @@ constructor(
         // so switch to it.
         withContext(Dispatchers.Main) {
             dispatchLibraryChange(deviceLibraryChanged, userLibraryChanged)
-        }
-
-        // Old cover revisions may be lying around, even during a normal refresh due
-        // to really lucky cancellations. Clean those up now that it's impossible for
-        // the rest of the app to be using them.
-        covers.cleanup(newLibrary.songs.mapNotNull { it.cover })
-
-        emitIndexingCompletion(null)
-    }
-
-    private suspend fun emitIndexingProgress(progress: IndexingProgress) {
-        yield()
-        synchronized(this) {
-            currentIndexingState = IndexingState.Indexing(progress)
-            for (listener in indexingListeners) {
-                listener.onIndexingStateChanged()
-            }
         }
     }
 

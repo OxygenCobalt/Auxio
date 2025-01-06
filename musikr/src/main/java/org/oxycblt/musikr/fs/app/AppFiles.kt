@@ -96,7 +96,7 @@ private class AppFilesImpl(private val dir: File) : AppFiles {
     }
 }
 
-private class AppFileImpl(private val file: File) : AppFile {
+private data class AppFileImpl(private val file: File) : AppFile {
     override suspend fun fd() =
         withContext(Dispatchers.IO) {
             try {
