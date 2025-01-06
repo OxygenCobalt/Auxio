@@ -67,12 +67,9 @@ template<typename T>
 void mp4AddImpl(JVMTagMap &map, TagLib::String &itemName, T itemValue) {
     if (itemName.startsWith("----")) {
         // Split this into it's atom name and description
-        auto split = itemName.split(":");
-        if (split.size() != 2) {
-            throw std::runtime_error("Invalid atom name");
-        }
-        auto atomName = split[0];
-        auto atomDescription = split[1];
+        auto split = itemName.find(':');
+        auto atomName = itemName.substr(0, split);
+        auto atomDescription = itemName.substr(split + 1);
         map.add_combined(atomName, atomDescription, itemValue);
     } else {
         map.add_id(itemName, itemValue);
