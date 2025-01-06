@@ -23,8 +23,7 @@ import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.ObtainResult
 
-class NullCovers(private val context: Context) :
-    MutableCovers {
+class NullCovers(private val context: Context) : MutableCovers {
     override suspend fun obtain(id: String) = ObtainResult.Hit(NullCover)
 
     override suspend fun write(data: ByteArray): Cover = NullCover
@@ -36,5 +35,6 @@ class NullCovers(private val context: Context) :
 
 data object NullCover : Cover {
     override val id = "null"
+
     override suspend fun open() = null
 }
