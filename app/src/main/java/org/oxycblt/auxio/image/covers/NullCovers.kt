@@ -20,21 +20,21 @@ package org.oxycblt.auxio.image.covers
 
 import android.content.Context
 import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.ObtainResult
 
-class NullCovers(private val context: Context, private val identifier: CoverIdentifier) :
+class NullCovers(private val context: Context) :
     MutableCovers {
-    override suspend fun obtain(id: String) = ObtainResult.Hit(NullCover(id))
+    override suspend fun obtain(id: String) = ObtainResult.Hit(NullCover)
 
-    override suspend fun write(data: ByteArray): Cover = NullCover(identifier.identify(data))
+    override suspend fun write(data: ByteArray): Cover = NullCover
 
     override suspend fun cleanup(excluding: Collection<Cover>) {
         context.coversDir().listFiles()?.forEach { it.deleteRecursively() }
     }
 }
 
-class NullCover(override val id: String) : Cover {
+data object NullCover : Cover {
+    override val id = "null"
     override suspend fun open() = null
 }

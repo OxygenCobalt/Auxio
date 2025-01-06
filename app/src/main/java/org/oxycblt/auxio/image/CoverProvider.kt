@@ -35,12 +35,13 @@ class CoverProvider : ContentProvider() {
     override fun onCreate(): Boolean = true
 
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
-        check(mode == "r") { "Unsupported mode: $mode" }
-        check(uriMatcher.match(uri) == 1) { "Unknown URI: $uri" }
-        val id = requireNotNull(uri.lastPathSegment) { "No ID in URI: $uri" }
-        val coverId = requireNotNull(SiloedCoverId.parse(id)) { "Invalid ID: $id" }
+        if (mode != "r" || uriMatcher.match(uri) != 1) {
+            return null
+        }
+        val id = uri.lastPathSegment ?: return null
+        val coverId = SiloedCoverId.parse(id) ?: return null
         return runBlocking {
-            val siloedCovers = SiloedCovers.from(requireContext(), coverId.silo)
+            val siloedCovers = SiloedCovers.from(requireNotNull(context), coverId.silo)
             when (val res = siloedCovers.obtain(id)) {
                 is ObtainResult.Hit -> res.cover.fd()
                 is ObtainResult.Miss -> null
