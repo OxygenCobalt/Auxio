@@ -19,6 +19,7 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -119,7 +120,14 @@ private class ExtractStepImpl(
                         metadataExtractor
                             .extract(fileWith.with)
                             ?.let { FileWith(fileWith.file, it) }
-                            .also { withContext(Dispatchers.IO) { fileWith.with.close() } }
+                            .also {
+                                if (it == null) {
+                                    Log.d(
+                                        "ExtractStep",
+                                        "Failed to extract metadata for ${fileWith.file.path}")
+                                }
+                                withContext(Dispatchers.IO) { fileWith.with.close() }
+                            }
                     }
                 }
                 .flowOn(Dispatchers.IO)

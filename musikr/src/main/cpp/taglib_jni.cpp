@@ -38,6 +38,7 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
         JVMInputStream stream {env, inputStream};
         TagLib::FileRef fileRef {&stream};
         if (fileRef.isNull()) {
+            LOGE("Error opening file");
             return nullptr;
         }
         TagLib::File *file = fileRef.file();
@@ -65,6 +66,7 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
             builder.setId3v2(*wavFile->ID3v2Tag());
         } else {
             // While taglib supports other formats, ExoPlayer does not. Ignore them.
+            LOGE("Unsupported file format");
             return nullptr;
         }
 
