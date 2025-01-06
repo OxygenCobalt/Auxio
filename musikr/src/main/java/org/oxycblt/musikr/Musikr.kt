@@ -94,7 +94,8 @@ private class MusikrImpl(
 
 private class LibraryResultImpl(
     private val storage: Storage,
-    override val library: MutableLibrary) : LibraryResult {
+    override val library: MutableLibrary
+) : LibraryResult {
 
     override suspend fun cleanup() {
         storage.storedCovers.cleanup(library.songs.mapNotNull { it.cover })
