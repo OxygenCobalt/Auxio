@@ -117,6 +117,7 @@ private class ExtractStepImpl(
         val metadata =
             fds.mapNotNull { fileWith ->
                     wrap(fileWith.file) { _ ->
+                        Log.d("ExtractStep", "Extracting ${fileWith.file.path}")
                         metadataExtractor
                             .extract(fileWith.with)
                             ?.let { FileWith(fileWith.file, it) }
