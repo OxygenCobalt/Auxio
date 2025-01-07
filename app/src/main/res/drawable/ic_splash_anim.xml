@@ -23,7 +23,7 @@
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
-                android:translateY="-64">
+                android:translateY="19.98">
                 <path
                     android:fillColor="@android:color/transparent"
                     android:pathData="m 13,17 -3,3 -3,-3 3,-3"
@@ -38,7 +38,7 @@
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
-                android:translateY="-64">
+                android:translateY="19.98">
 
                 <path
                     android:fillColor="@android:color/transparent"
@@ -54,7 +54,7 @@
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
-                android:translateY="-64">
+                android:translateY="19.98">
 
                 <path
                     android:fillColor="@android:color/transparent"
@@ -70,7 +70,7 @@
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
-                android:translateY="-64">
+                android:translateY="19.98">
 
                 <path
                     android:fillColor="@android:color/transparent"
@@ -93,9 +93,9 @@
                 <objectAnimator
                     android:duration="500"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateY"
+                    android:propertyName="translateX"
                     android:startOffset="0"
-                    android:valueFrom="-512"
+                    android:valueFrom="72"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
@@ -110,7 +110,7 @@
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="translateY"
                     android:startOffset="0"
-                    android:valueFrom="-256"
+                    android:valueFrom="-30"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
@@ -126,7 +126,7 @@
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="translateY"
                     android:startOffset="0"
-                    android:valueFrom="-128"
+                    android:valueFrom="78"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
@@ -139,9 +139,9 @@
                 <objectAnimator
                     android:duration="500"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateY"
+                    android:propertyName="translateX"
                     android:startOffset="0"
-                    android:valueFrom="-64"
+                    android:valueFrom="-38"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
