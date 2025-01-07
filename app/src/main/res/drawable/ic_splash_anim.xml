@@ -93,9 +93,9 @@
                 <objectAnimator
                     android:duration="500"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateX"
+                    android:propertyName="translateY"
                     android:startOffset="0"
-                    android:valueFrom="72"
+                    android:valueFrom="-26"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
@@ -108,9 +108,9 @@
                 <objectAnimator
                     android:duration="500"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateY"
+                    android:propertyName="translateX"
                     android:startOffset="0"
-                    android:valueFrom="-30"
+                    android:valueFrom="-40"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
@@ -124,9 +124,9 @@
                 <objectAnimator
                     android:duration="500"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateY"
+                    android:propertyName="translateX"
                     android:startOffset="0"
-                    android:valueFrom="78"
+                    android:valueFrom="74"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
@@ -139,9 +139,9 @@
                 <objectAnimator
                     android:duration="500"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateX"
+                    android:propertyName="translateY"
                     android:startOffset="0"
-                    android:valueFrom="-38"
+                    android:valueFrom="72"
                     android:valueTo="19.98"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
