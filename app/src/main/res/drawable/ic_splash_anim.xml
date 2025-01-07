@@ -12,19 +12,33 @@
                 android:pivotX="56"
                 android:pivotY="56">
                 <path
-                    android:fillColor="#ffffff"
+                    android:fillColor="#00000000"
                     android:pathData="M 136,54 A 82,82 0 0 1 54,136 82,82 0 0 1 -28,54 82,82 0 0 1 54,-28 82,82 0 0 1 136,54 Z"
                     android:strokeColor="#00000000" />
             </group>
 
-
             <group
-                android:name="base"
+                android:name="backdrop"
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
                 android:translateY="19.98">
                 <path
+                    android:fillColor="@android:color/transparent"
+                    android:pathData="M13 4l4 4m-4-4v13m0 0l-3 3-3-3 3-3"
+                    android:strokeWidth="2"
+                    android:strokeColor="#40ffffff"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round" />
+            </group>
+
+            <group
+                android:scaleX="2.835"
+                android:scaleY="2.835"
+                android:translateX="19.98"
+                android:translateY="19.98">
+                <path
+                    android:name="base"
                     android:fillColor="@android:color/transparent"
                     android:pathData="m 13,17 -3,3 -3,-3 3,-3"
                     android:strokeWidth="2"
@@ -34,13 +48,13 @@
             </group>
 
             <group
-                android:name="lower_stem"
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
                 android:translateY="19.98">
 
                 <path
+                    android:name="lower_stem"
                     android:fillColor="@android:color/transparent"
                     android:pathData="M 13,10.5 V 17"
                     android:strokeWidth="2"
@@ -50,13 +64,13 @@
             </group>
 
             <group
-                android:name="upper_stem"
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
                 android:translateY="19.98">
 
                 <path
+                    android:name="upper_stem"
                     android:fillColor="@android:color/transparent"
                     android:pathData="m 13,4v 6.5"
                     android:strokeWidth="2"
@@ -66,13 +80,13 @@
             </group>
 
             <group
-                android:name="tail"
                 android:scaleX="2.835"
                 android:scaleY="2.835"
                 android:translateX="19.98"
                 android:translateY="19.98">
 
                 <path
+                    android:name="tail"
                     android:fillColor="@android:color/transparent"
                     android:pathData="m 13,4 4,4"
                     android:strokeWidth="2"
@@ -91,12 +105,12 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="500"
+                    android:duration="1000"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateY"
+                    android:propertyName="strokeWidth"
                     android:startOffset="0"
-                    android:valueFrom="-26"
-                    android:valueTo="19.98"
+                    android:valueFrom="0"
+                    android:valueTo="2"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
             </set>
@@ -106,12 +120,12 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="500"
+                    android:duration="1000"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateX"
+                    android:propertyName="strokeWidth"
                     android:startOffset="0"
-                    android:valueFrom="-40"
-                    android:valueTo="19.98"
+                    android:valueFrom="0"
+                    android:valueTo="2"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
             </set>
@@ -122,12 +136,12 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="500"
+                    android:duration="1000"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateX"
+                    android:propertyName="strokeWidth"
                     android:startOffset="0"
-                    android:valueFrom="74"
-                    android:valueTo="19.98"
+                    android:valueFrom="0"
+                    android:valueTo="2"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
             </set>
@@ -137,12 +151,12 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="500"
+                    android:duration="1000"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
-                    android:propertyName="translateY"
+                    android:propertyName="strokeWidth"
                     android:startOffset="0"
-                    android:valueFrom="72"
-                    android:valueTo="19.98"
+                    android:valueFrom="0"
+                    android:valueTo="2"
                     android:valueType="floatType"
                     tools:ignore="PrivateResource" />
             </set>
