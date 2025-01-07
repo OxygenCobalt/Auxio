@@ -35,11 +35,14 @@ void JVMMetadataBuilder::setMimeType(const std::string_view type) {
 
 void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
     for (auto frame : tag.frameList()) {
+        if (frame == nullptr)
+            continue;
         if (auto txxxFrame =
                 dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame*>(frame)) {
             TagLib::String id = frame->frameID();
             TagLib::StringList frameText = txxxFrame->fieldList();
-            // Frame text starts with the description then the remaining values
+            if (frameText.isEmpty())
+                continue;
             auto begin = frameText.begin();
             TagLib::String description = *begin;
             frameText.erase(begin);
