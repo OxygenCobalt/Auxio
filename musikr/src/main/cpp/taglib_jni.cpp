@@ -46,24 +46,45 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
 
         if (auto *mpegFile = dynamic_cast<TagLib::MPEG::File *>(file)) {
             builder.setMimeType("audio/mpeg");
-            builder.setId3v2(*mpegFile->ID3v2Tag());
+            auto tag = mpegFile->ID3v2Tag();
+            if (tag != nullptr) {
+                builder.setId3v2(*tag);
+            }
         } else if (auto *mp4File = dynamic_cast<TagLib::MP4::File *>(file)) {
             builder.setMimeType("audio/mp4");
-            builder.setMp4(*mp4File->tag());
+            auto tag = mp4File->tag();
+            if (tag != nullptr) {
+                builder.setMp4(*tag);
+            }
         } else if (auto *flacFile = dynamic_cast<TagLib::FLAC::File *>(file)) {
             builder.setMimeType("audio/flac");
-            builder.setId3v2(*flacFile->ID3v2Tag());
-            builder.setXiph(*flacFile->xiphComment());
+            auto id3v2Tag = flacFile->ID3v2Tag();
+            if (id3v2Tag != nullptr) {
+                builder.setId3v2(*id3v2Tag);
+            }
+            auto xiphComment = flacFile->xiphComment();
+            if (xiphComment != nullptr) {
+                builder.setXiph(*xiphComment);
+            }
         } else if (auto *opusFile = dynamic_cast<TagLib::Ogg::Opus::File *>(file)) {
             builder.setMimeType("audio/opus");
-            builder.setXiph(*opusFile->tag());
+            auto tag = opusFile->tag();
+            if (tag != nullptr) {
+                builder.setXiph(*tag);
+            }
         } else if (auto *vorbisFile =
                 dynamic_cast<TagLib::Ogg::Vorbis::File *>(file)) {
             builder.setMimeType("audio/vorbis");
-            builder.setXiph(*vorbisFile->tag());
+            auto tag = vorbisFile->tag();
+            if (tag != nullptr) {
+                builder.setXiph(*tag);
+            }
         } else if (auto *wavFile = dynamic_cast<TagLib::RIFF::WAV::File *>(file)) {
             builder.setMimeType("audio/wav");
-            builder.setId3v2(*wavFile->ID3v2Tag());
+            auto tag = wavFile->ID3v2Tag();
+            if (tag != nullptr) {
+                builder.setId3v2(*tag);
+            }
         } else {
             // While taglib supports other formats, ExoPlayer does not. Ignore them.
             LOGE("Unsupported file format");
