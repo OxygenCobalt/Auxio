@@ -44,14 +44,12 @@ import org.oxycblt.auxio.util.showToast
 class ErrorDetailsDialog : ViewBindingMaterialDialogFragment<DialogErrorDetailsBinding>() {
     private val args: ErrorDetailsDialogArgs by navArgs()
     private var clipboardManager: ClipboardManager? = null
-    private val musicModel: MusicViewModel by viewModels<>()
+    private val musicModel: MusicViewModel by viewModels()
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
             .setTitle(R.string.lbl_error_info)
-            .setNeutralButton(
-                R.string.lbl_retry
-            ) { _, _ -> musicModel.refresh() }
+            .setNeutralButton(R.string.lbl_retry) { _, _ -> musicModel.refresh() }
             .setPositiveButton(R.string.lbl_report) { _, _ ->
                 requireContext().openInBrowser(LINK_ISSUES)
             }
