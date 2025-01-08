@@ -115,11 +115,11 @@ void JVMMetadataBuilder::setMp4(TagLib::MP4::Tag &tag) {
                 if (format == TagLib::MP4::CoverArt::PNG
                         || format == TagLib::MP4::CoverArt::JPEG) {
                     cover = pic.data();
-                    return;
+                    continue;
                 }
             }
             cover = pics.front().data();
-            return;
+            continue;
         }
         auto type = itemValue.type();
         std::string serializedValue;
