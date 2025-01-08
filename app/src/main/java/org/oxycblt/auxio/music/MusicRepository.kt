@@ -347,7 +347,8 @@ constructor(
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         val library = synchronized(this) { library ?: return }
         L.d("Rewriting $playlist with ${songs.size} songs")
-        library.rewritePlaylist(playlist, songs)
+        val newLibrary = library.rewritePlaylist(playlist, songs)
+        synchronized(this) { this.library = newLibrary }
         withContext(Dispatchers.Main) { dispatchLibraryChange(device = false, user = true) }
     }
 
