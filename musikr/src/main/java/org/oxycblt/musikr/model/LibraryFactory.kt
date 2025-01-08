@@ -21,6 +21,7 @@ package org.oxycblt.musikr.model
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.graph.AlbumVertex
@@ -29,6 +30,7 @@ import org.oxycblt.musikr.graph.GenreVertex
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.graph.PlaylistVertex
 import org.oxycblt.musikr.graph.SongVertex
+import org.oxycblt.musikr.graph.Vertex
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 
@@ -77,44 +79,52 @@ private class LibraryFactoryImpl() : LibraryFactory {
     private class SongVertexCore(private val vertex: SongVertex) : SongCore {
         override val preSong = vertex.preSong
 
-        override fun resolveAlbum() = vertex.albumVertex.tag as Album
+        override fun resolveAlbum(): Album = tag(vertex.albumVertex)
 
-        override fun resolveArtists() = vertex.artistVertices.map { it.tag as Artist }
+        override fun resolveArtists(): List<Artist> = vertex.artistVertices.map { tag(it) }
 
-        override fun resolveGenres() = vertex.genreVertices.map { it.tag as Genre }
+        override fun resolveGenres(): List<Genre> = vertex.genreVertices.map { tag(it) }
     }
 
     private class AlbumVertexCore(private val vertex: AlbumVertex) : AlbumCore {
         override val preAlbum = vertex.preAlbum
 
-        override val songs = vertex.songVertices.mapTo(mutableSetOf()) { it.tag as Song }
+        override val songs: Set<Song> = vertex.songVertices.mapTo(mutableSetOf()) { tag(it) }
 
-        override fun resolveArtists() = vertex.artistVertices.map { it.tag as Artist }
+        override fun resolveArtists(): List<Artist> = vertex.artistVertices.map { tag(it) }
     }
 
     private class ArtistVertexCore(private val vertex: ArtistVertex) : ArtistCore {
         override val preArtist = vertex.preArtist
 
-        override val songs = vertex.songVertices.mapTo(mutableSetOf()) { it.tag as Song }
+        override val songs: Set<Song> = vertex.songVertices.mapTo(mutableSetOf()) { tag(it) }
 
-        override val albums = vertex.albumVertices.mapTo(mutableSetOf()) { it.tag as Album }
+        override val albums: Set<Album> = vertex.albumVertices.mapTo(mutableSetOf()) { tag(it) }
 
-        override fun resolveGenres() =
-            vertex.genreVertices.mapTo(mutableSetOf()) { it.tag as Genre }
+        override fun resolveGenres(): Set<Genre> =
+            vertex.genreVertices.mapTo(mutableSetOf()) { tag(it) }
     }
 
     private class GenreVertexCore(vertex: GenreVertex) : GenreCore {
         override val preGenre = vertex.preGenre
 
-        override val songs = vertex.songVertices.mapTo(mutableSetOf()) { it.tag as Song }
+        override val songs: Set<Song> = vertex.songVertices.mapTo(mutableSetOf()) { tag(it) }
 
-        override val artists = vertex.artistVertices.mapTo(mutableSetOf()) { it.tag as Artist }
+        override val artists: Set<Artist> = vertex.artistVertices.mapTo(mutableSetOf()) { tag(it) }
     }
 
     private class PlaylistVertexCore(vertex: PlaylistVertex) : PlaylistCore {
         override val prePlaylist = vertex.prePlaylist
 
-        override val songs =
-            vertex.songVertices.mapNotNull { vertex -> vertex?.let { it.tag as Song } }
+        override val songs: List<Song> =
+            vertex.songVertices.mapNotNull { vertex -> vertex?.let { tag(it) } }
+    }
+
+    private companion object {
+        private inline fun <reified T : Music> tag(vertex: Vertex): T {
+            val tag = vertex.tag
+            check(tag is T) { "Dead Vertex Detected: $vertex" }
+            return tag
+        }
     }
 }

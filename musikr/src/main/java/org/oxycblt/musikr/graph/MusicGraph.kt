@@ -322,33 +322,46 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     }
 }
 
+internal interface Vertex {
+    val tag: Any?
+}
+
 internal class SongVertex(
     val preSong: PreSong,
     var albumVertex: AlbumVertex,
     var artistVertices: MutableList<ArtistVertex>,
     var genreVertices: MutableList<GenreVertex>
-) {
-    var tag: Any? = null
+) : Vertex {
+    override var tag: Any? = null
+
+    override fun toString() = "SongVertex(preSong=$preSong)"
 }
 
-internal class AlbumVertex(val preAlbum: PreAlbum, var artistVertices: MutableList<ArtistVertex>) {
+internal class AlbumVertex(val preAlbum: PreAlbum, var artistVertices: MutableList<ArtistVertex>) :
+    Vertex {
     val songVertices = mutableSetOf<SongVertex>()
-    var tag: Any? = null
+    override var tag: Any? = null
+
+    override fun toString() = "AlbumVertex(preAlbum=$preAlbum)"
 }
 
 internal class ArtistVertex(
     val preArtist: PreArtist,
-) {
+) : Vertex {
     val songVertices = mutableSetOf<SongVertex>()
     val albumVertices = mutableSetOf<AlbumVertex>()
     val genreVertices = mutableSetOf<GenreVertex>()
-    var tag: Any? = null
+    override var tag: Any? = null
+
+    override fun toString() = "ArtistVertex(preArtist=$preArtist)"
 }
 
-internal class GenreVertex(val preGenre: PreGenre) {
+internal class GenreVertex(val preGenre: PreGenre) : Vertex {
     val songVertices = mutableSetOf<SongVertex>()
     val artistVertices = mutableSetOf<ArtistVertex>()
-    var tag: Any? = null
+    override var tag: Any? = null
+
+    override fun toString() = "GenreVertex(preGenre=$preGenre)"
 }
 
 internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
