@@ -43,7 +43,7 @@ internal class NativeInputStream(fis: FileInputStream) {
     }
 
     fun seekFromEnd(offset: Long) {
-        channel.position(channel.size() - offset)
+        channel.position(channel.size() + offset)
     }
 
     fun tell() = channel.position()
