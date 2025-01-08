@@ -23,6 +23,7 @@
 #include <string_view>
 #include <optional>
 
+#include "taglib/id3v1tag.h"
 #include "taglib/id3v2tag.h"
 #include "taglib/xiphcomment.h"
 #include "taglib/mp4tag.h"
@@ -35,6 +36,7 @@ public:
     JVMMetadataBuilder(JNIEnv *env);
 
     void setMimeType(const std::string_view type);
+    void setId3v1(TagLib::ID3v1::Tag &tag);
     void setId3v2(TagLib::ID3v2::Tag &tag);
     void setXiph(TagLib::Ogg::XiphComment &tag);
     void setMp4(TagLib::MP4::Tag &tag);

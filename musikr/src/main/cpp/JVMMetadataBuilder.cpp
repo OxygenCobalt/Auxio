@@ -34,6 +34,15 @@ void JVMMetadataBuilder::setMimeType(const std::string_view type) {
     this->mimeType = type;
 }
 
+void JVMMetadataBuilder::setId3v1(TagLib::ID3v1::Tag &tag) {
+    id3v2.add_id("TIT2", tag.title());
+    id3v2.add_id("TPE1", tag.artist());
+    id3v2.add_id("TALB", tag.album());
+    id3v2.add_id("TRCK", std::to_string(tag.track()));
+    id3v2.add_id("TYER", std::to_string(tag.year()));
+    id3v2.add_id("TCON", std::to_string(tag.genreNumber()));
+}
+
 void JVMMetadataBuilder::setId3v2(TagLib::ID3v2::Tag &tag) {
     // We want to ideally find the front cover, fall back to the first picture otherwise.
     std::optional<TagLib::ID3v2::AttachedPictureFrame*> firstPic;

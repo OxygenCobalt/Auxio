@@ -52,13 +52,13 @@ JVMTagMap::~JVMTagMap() {
     env->DeleteLocalRef(arrayListClass);
 }
 
-void JVMTagMap::add_id(TagLib::String &id, TagLib::String &value) {
+void JVMTagMap::add_id(TagLib::String id, TagLib::String value) {
     env->CallVoidMethod(tagMap, tagMapAddIdSingleMethod,
             env->NewStringUTF(id.toCString(true)),
             env->NewStringUTF(value.toCString(true)));
 }
 
-void JVMTagMap::add_id(TagLib::String &id, TagLib::StringList &value) {
+void JVMTagMap::add_id(TagLib::String id, TagLib::StringList value) {
     jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
     for (auto &item : value) {
         env->CallBooleanMethod(arrayList, arrayListAddMethod,
@@ -68,14 +68,14 @@ void JVMTagMap::add_id(TagLib::String &id, TagLib::StringList &value) {
             env->NewStringUTF(id.toCString(true)), arrayList);
 }
 
-void JVMTagMap::add_custom(TagLib::String &description, TagLib::String &value) {
+void JVMTagMap::add_custom(TagLib::String description, TagLib::String value) {
     env->CallVoidMethod(tagMap, tagMapAddCustomSingleMethod,
             env->NewStringUTF(description.toCString(true)),
             env->NewStringUTF(value.toCString(true)));
 }
 
-void JVMTagMap::add_custom(TagLib::String &description,
-        TagLib::StringList &value) {
+void JVMTagMap::add_custom(TagLib::String description,
+        TagLib::StringList value) {
     jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
     for (auto &item : value) {
         env->CallBooleanMethod(arrayList, arrayListAddMethod,
@@ -85,16 +85,16 @@ void JVMTagMap::add_custom(TagLib::String &description,
             env->NewStringUTF(description.toCString(true)), arrayList);
 }
 
-void JVMTagMap::add_combined(TagLib::String &id, TagLib::String &description,
-        TagLib::String &value) {
+void JVMTagMap::add_combined(TagLib::String id, TagLib::String description,
+        TagLib::String value) {
     env->CallVoidMethod(tagMap, tagMapAddCombinedSingleMethod,
             env->NewStringUTF(id.toCString(true)),
             env->NewStringUTF(description.toCString(true)),
             env->NewStringUTF(value.toCString(true)));
 }
 
-void JVMTagMap::add_combined(TagLib::String &id, TagLib::String &description,
-        TagLib::StringList &value) {
+void JVMTagMap::add_combined(TagLib::String id, TagLib::String description,
+        TagLib::StringList value) {
     jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
     for (auto &item : value) {
         env->CallBooleanMethod(arrayList, arrayListAddMethod,

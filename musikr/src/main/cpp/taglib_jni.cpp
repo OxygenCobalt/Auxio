@@ -46,9 +46,13 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
 
         if (auto *mpegFile = dynamic_cast<TagLib::MPEG::File *>(file)) {
             builder.setMimeType("audio/mpeg");
-            auto tag = mpegFile->ID3v2Tag();
-            if (tag != nullptr) {
-                builder.setId3v2(*tag);
+            auto id3v1Tag = mpegFile->ID3v1Tag();
+            if (id3v1Tag != nullptr) {
+                builder.setId3v1(*id3v1Tag);
+            }
+            auto id3v2Tag = mpegFile->ID3v2Tag();
+            if (id3v2Tag != nullptr) {
+                builder.setId3v2(*id3v2Tag);
             }
         } else if (auto *mp4File = dynamic_cast<TagLib::MP4::File *>(file)) {
             builder.setMimeType("audio/mp4");
@@ -58,6 +62,10 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
             }
         } else if (auto *flacFile = dynamic_cast<TagLib::FLAC::File *>(file)) {
             builder.setMimeType("audio/flac");
+            auto id3v1Tag = flacFile->ID3v1Tag();
+            if (id3v1Tag != nullptr) {
+                builder.setId3v1(*id3v1Tag);
+            }
             auto id3v2Tag = flacFile->ID3v2Tag();
             if (id3v2Tag != nullptr) {
                 builder.setId3v2(*id3v2Tag);
@@ -89,14 +97,14 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
             }
         } else {
             // While taglib supports other formats, ExoPlayer does not. Ignore them.
-            LOGE("Unsupported file format");
+            LOGD("Unsupported file format");
             return nullptr;
         }
 
         builder.setProperties(file->audioProperties());
         return builder.build();
     } catch (std::runtime_error e) {
-        LOGE("Error opening file: %s", e.what());
+        LOGD("Error opening file: %s", e.what());
         return nullptr;
     }
 
