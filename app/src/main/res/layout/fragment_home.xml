@@ -72,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
             android:transitionGroup="true"
+            android:visibility="invisible"
             android:layout_margin="@dimen/spacing_medium">
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
