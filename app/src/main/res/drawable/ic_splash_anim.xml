@@ -3,93 +3,94 @@
     xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
         <vector
-            android:width="108dp"
-            android:height="108dp"
-            android:viewportWidth="108"
-            android:viewportHeight="108">
+            android:width="432dp"
+            android:height="432dp"
+            android:viewportWidth="432"
+            android:viewportHeight="432">
             <group
                 android:name="bg"
                 android:pivotX="56"
                 android:pivotY="56">
                 <path
                     android:fillColor="#00000000"
-                    android:pathData="M 136,54 A 82,82 0 0 1 54,136 82,82 0 0 1 -28,54 82,82 0 0 1 54,-28 82,82 0 0 1 136,54 Z"
-                    android:strokeColor="#00000000" />
+                    android:strokeColor="#00000000"
+                    android:pathData="M 408,216
+A 192,192 0 0 1 216,408 192,192 0 0 1 24,216 192,192 0 0 1 216,24 192,192 0 0 1 408,216
+Z" />
             </group>
 
             <group
-                android:name="backdrop"
-                android:scaleX="2.835"
-                android:scaleY="2.835"
-                android:translateX="19.98"
-                android:translateY="19.98">
+                android:scaleX="8.5"
+                android:scaleY="8.5"
+                android:translateX="114"
+                android:translateY="114">
                 <path
                     android:fillColor="@android:color/transparent"
                     android:pathData="M13 4l4 4m-4-4v13m0 0l-3 3-3-3 3-3"
                     android:strokeWidth="2"
-                    android:strokeColor="#40ffffff"
+                    android:strokeColor="#80808080"
                     android:strokeLineCap="round"
                     android:strokeLineJoin="round" />
             </group>
 
             <group
-                android:scaleX="2.835"
-                android:scaleY="2.835"
-                android:translateX="19.98"
-                android:translateY="19.98">
+                android:scaleX="8.5"
+                android:scaleY="8.5"
+                android:translateX="114"
+                android:translateY="114">
                 <path
                     android:name="base"
                     android:fillColor="@android:color/transparent"
                     android:pathData="m 13,17 -3,3 -3,-3 3,-3"
-                    android:strokeWidth="2"
+                    android:strokeWidth="0"
                     android:strokeColor="#004894"
                     android:strokeLineCap="round"
                     android:strokeLineJoin="round" />
             </group>
 
             <group
-                android:scaleX="2.835"
-                android:scaleY="2.835"
-                android:translateX="19.98"
-                android:translateY="19.98">
+                android:scaleX="8.5"
+                android:scaleY="8.5"
+                android:translateX="114"
+                android:translateY="114">
 
                 <path
                     android:name="lower_stem"
                     android:fillColor="@android:color/transparent"
                     android:pathData="M 13,10.5 V 17"
-                    android:strokeWidth="2"
+                    android:strokeWidth="0"
                     android:strokeColor="#1a61ae"
                     android:strokeLineCap="round"
                     android:strokeLineJoin="round" />
             </group>
 
             <group
-                android:scaleX="2.835"
-                android:scaleY="2.835"
-                android:translateX="19.98"
-                android:translateY="19.98">
+                android:scaleX="8.5"
+                android:scaleY="8.5"
+                android:translateX="114"
+                android:translateY="114">
 
                 <path
                     android:name="upper_stem"
                     android:fillColor="@android:color/transparent"
                     android:pathData="m 13,4v 6.5"
-                    android:strokeWidth="2"
+                    android:strokeWidth="0"
                     android:strokeColor="#357ac9"
                     android:strokeLineCap="round"
                     android:strokeLineJoin="round" />
             </group>
 
             <group
-                android:scaleX="2.835"
-                android:scaleY="2.835"
-                android:translateX="19.98"
-                android:translateY="19.98">
+                android:scaleX="8.5"
+                android:scaleY="8.5"
+                android:translateX="114"
+                android:translateY="114">
 
                 <path
                     android:name="tail"
                     android:fillColor="@android:color/transparent"
                     android:pathData="m 13,4 4,4"
-                    android:strokeWidth="2"
+                    android:strokeWidth="0"
                     android:strokeColor="#5093e4"
                     android:strokeLineCap="round"
                     android:strokeLineJoin="round" />
@@ -105,10 +106,10 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="1000"
+                    android:duration="850"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="strokeWidth"
-                    android:startOffset="0"
+                    android:startOffset="150"
                     android:valueFrom="0"
                     android:valueTo="2"
                     android:valueType="floatType"
@@ -120,10 +121,10 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="1000"
+                    android:duration="850"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="strokeWidth"
-                    android:startOffset="0"
+                    android:startOffset="150"
                     android:valueFrom="0"
                     android:valueTo="2"
                     android:valueType="floatType"
@@ -136,10 +137,10 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="1000"
+                    android:duration="850"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="strokeWidth"
-                    android:startOffset="0"
+                    android:startOffset="150"
                     android:valueFrom="0"
                     android:valueTo="2"
                     android:valueType="floatType"
@@ -151,10 +152,10 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="1000"
+                    android:duration="850"
                     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized_decelerate"
                     android:propertyName="strokeWidth"
-                    android:startOffset="0"
+                    android:startOffset="150"
                     android:valueFrom="0"
                     android:valueTo="2"
                     android:valueType="floatType"
