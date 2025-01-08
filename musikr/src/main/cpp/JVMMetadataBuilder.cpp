@@ -35,22 +35,34 @@ void JVMMetadataBuilder::setMimeType(const std::string_view type) {
 
 void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
     for (auto frame : tag.frameList()) {
+        LOGD("Frame Check");
         if (frame == nullptr)
             continue;
+        LOGD("Text Frame Check");
         if (auto txxxFrame =
                 dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame*>(frame)) {
+            LOGD("TXXX ID");
             TagLib::String id = frame->frameID();
+            LOGD("TXXX Fields");
             TagLib::StringList frameText = txxxFrame->fieldList();
+            LOGD("TXXX Check");
             if (frameText.isEmpty())
                 continue;
+            LOGD("TXXX Begin");
             auto begin = frameText.begin();
+            LOGD("TXXX Desc");
             TagLib::String description = *begin;
+            LOGD("TXXX Erase");
             frameText.erase(begin);
+            LOGD("TXXX Add");
             id3v2.add_combined(id, description, frameText);
         } else if (auto textFrame =
                 dynamic_cast<TagLib::ID3v2::TextIdentificationFrame*>(frame)) {
+            LOGD("T*** ID");
             TagLib::String key = frame->frameID();
+            LOGD("T*** Fields");
             TagLib::StringList frameText = textFrame->fieldList();
+            LOGD("T*** Add");
             id3v2.add_id(key, frameText);
         } else {
             continue;
