@@ -35,10 +35,10 @@ public:
     JVMMetadataBuilder(JNIEnv *env);
 
     void setMimeType(const std::string_view type);
-    void setId3v2(const TagLib::ID3v2::Tag &tag);
-    void setXiph(const TagLib::Ogg::XiphComment &tag);
-    void setMp4(const TagLib::MP4::Tag &tag);
-    void setCover(const TagLib::List<TagLib::VariantMap> covers);
+    void setId3v2(TagLib::ID3v2::Tag &tag);
+    void setXiph(TagLib::Ogg::XiphComment &tag);
+    void setMp4(TagLib::MP4::Tag &tag);
+    void setFlacPictures(TagLib::List<TagLib::FLAC::Picture*> &pics);
     void setProperties(TagLib::AudioProperties *properties);
 
     jobject build();

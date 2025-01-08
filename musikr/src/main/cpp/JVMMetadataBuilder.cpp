@@ -22,6 +22,7 @@
 
 #include <taglib/mp4tag.h>
 #include <taglib/textidentificationframe.h>
+#include <taglib/attachedpictureframe.h>
 
 #include <taglib/tpropertymap.h>
 
@@ -33,7 +34,10 @@ void JVMMetadataBuilder::setMimeType(const std::string_view type) {
     this->mimeType = type;
 }
 
-void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
+void JVMMetadataBuilder::setId3v2(TagLib::ID3v2::Tag &tag) {
+    // We want to ideally find the front cover, fall back to the first picture otherwise.
+    std::optional<TagLib::ID3v2::AttachedPictureFrame*> firstPic;
+    std::optional<TagLib::ID3v2::AttachedPictureFrame*> frontCoverPic;
     for (auto frame : tag.frameList()) {
         if (auto txxxFrame =
                 dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame*>(frame)) {
@@ -50,18 +54,37 @@ void JVMMetadataBuilder::setId3v2(const TagLib::ID3v2::Tag &tag) {
             TagLib::String key = frame->frameID();
             TagLib::StringList frameText = textFrame->fieldList();
             id3v2.add_id(key, frameText);
+        } else if (auto pictureFrame =
+                dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(frame)) {
+            if (!firstPic) {
+                firstPic = pictureFrame;
+            }
+            if (!frontCoverPic
+                    && pictureFrame->type()
+                            == TagLib::ID3v2::AttachedPictureFrame::FrontCover) {
+                frontCoverPic = pictureFrame;
+            }
         } else {
             continue;
         }
     }
+    if (frontCoverPic) {
+        auto pic = *frontCoverPic;
+        cover = pic->picture();
+    } else if (firstPic) {
+        auto pic = *firstPic;
+        cover = pic->picture();
+    }
 }
 
-void JVMMetadataBuilder::setXiph(const TagLib::Ogg::XiphComment &tag) {
+void JVMMetadataBuilder::setXiph(TagLib::Ogg::XiphComment &tag) {
     for (auto field : tag.fieldListMap()) {
         auto key = field.first.upper();
         auto values = field.second;
         xiph.add_custom(key, values);
     }
+    auto pics = tag.pictureList();
+    setFlacPictures(pics);
 }
 
 template<typename T>
@@ -77,11 +100,27 @@ void mp4AddImpl(JVMTagMap &map, TagLib::String &itemName, T itemValue) {
     }
 }
 
-void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
+void JVMMetadataBuilder::setMp4(TagLib::MP4::Tag &tag) {
     auto map = tag.itemMap();
+    std::optional < TagLib::MP4::CoverArt > firstCover;
     for (auto item : map) {
         auto itemName = item.first;
         auto itemValue = item.second;
+        if (itemName == "covr") {
+            // Special cover case.
+            // MP4 has no types, so just prioritize easier to decode covers (PNG, JPEG)
+            auto pics = itemValue.toCoverArtList();
+            for (auto &pic : pics) {
+                auto format = pic.format();
+                if (format == TagLib::MP4::CoverArt::PNG
+                        || format == TagLib::MP4::CoverArt::JPEG) {
+                    cover = pic.data();
+                    return;
+                }
+            }
+            cover = pics.front().data();
+            return;
+        }
         auto type = itemValue.type();
         std::string serializedValue;
         switch (type) {
@@ -114,23 +153,18 @@ void JVMMetadataBuilder::setMp4(const TagLib::MP4::Tag &tag) {
     }
 }
 
-void JVMMetadataBuilder::setCover(
-        const TagLib::List<TagLib::VariantMap> covers) {
-    if (covers.isEmpty()) {
-        return;
-    }
-    // Find the cover with a "front cover" type
-    for (auto cover : covers) {
-        auto type = cover["pictureType"].toString();
-        if (type == "Front Cover") {
-            this->cover = cover["data"].toByteVector();
+void JVMMetadataBuilder::setFlacPictures(
+        TagLib::List<TagLib::FLAC::Picture*> &pics) {
+    // Find the front cover image. If it doesn't exist, fall back to the first image.
+    for (auto pic : pics) {
+        if (pic->type() == TagLib::FLAC::Picture::FrontCover) {
+            cover = pic->data();
             return;
         }
     }
-    // No front cover, just pick first.
-    // TODO: Consider having cascading fallbacks to increasingly less
-    //  relevant covers perhaps
-    this->cover = covers.front()["data"].toByteVector();
+    if (!pics.isEmpty()) {
+        cover = pics.front()->data();
+    }
 }
 
 void JVMMetadataBuilder::setProperties(TagLib::AudioProperties *properties) {

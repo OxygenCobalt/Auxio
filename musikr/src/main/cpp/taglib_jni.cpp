@@ -66,6 +66,8 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
             if (xiphComment != nullptr) {
                 builder.setXiph(*xiphComment);
             }
+            auto pics = flacFile->pictureList();
+            builder.setFlacPictures(pics);
         } else if (auto *opusFile = dynamic_cast<TagLib::Ogg::Opus::File *>(file)) {
             builder.setMimeType("audio/opus");
             auto tag = opusFile->tag();
@@ -92,7 +94,6 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
         }
 
         builder.setProperties(file->audioProperties());
-        builder.setCover(file->tag()->complexProperties("PICTURE"));
         return builder.build();
     } catch (std::runtime_error e) {
         LOGE("Error opening file: %s", e.what());
