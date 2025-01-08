@@ -190,6 +190,8 @@ class ThemedSpeedDialView : SpeedDialView {
             val overlayColor = surfaceColor.defaultColor.withModulatedAlpha(0.87f)
             overlayLayout.setBackgroundColor(overlayColor)
         }
+        // Fix default margins added by library
+        (mainFab.layoutParams as LayoutParams).setMargins(0, 0, 0, 0)
     }
 
     private fun Int.withModulatedAlpha(
@@ -230,13 +232,24 @@ class ThemedSpeedDialView : SpeedDialView {
         return super.addActionItem(actionItem, position, animate)?.apply {
             fab.apply {
                 updateLayoutParams<MarginLayoutParams> {
-                    val horizontalMargin = context.getDimenPixels(R.dimen.spacing_mid_large)
-                    setMargins(horizontalMargin, 0, horizontalMargin, 0)
+                    val rightMargin = context.getDimenPixels(R.dimen.spacing_tiny)
+                    if (position == actionItems.lastIndex) {
+                        val bottomMargin = context.getDimenPixels(R.dimen.spacing_small)
+                        setMargins(0, 0, rightMargin, bottomMargin)
+                    } else {
+                        setMargins(0, 0, rightMargin, 0)
+                    }
                 }
                 useCompatPadding = false
             }
 
             labelBackground.apply {
+                updateLayoutParams<MarginLayoutParams> {
+                    if (position == actionItems.lastIndex) {
+                        val bottomMargin = context.getDimenPixels(R.dimen.spacing_small)
+                        setMargins(0, 0, rightMargin, bottomMargin)
+                    }
+                }
                 useCompatPadding = false
                 setContentPadding(spacingSmall, spacingSmall, spacingSmall, spacingSmall)
                 background =

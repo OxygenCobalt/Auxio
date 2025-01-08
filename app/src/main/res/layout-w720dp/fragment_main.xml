@@ -28,6 +28,7 @@
             android:layout_gravity="bottom|end"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:layout_margin="@dimen/spacing_medium"
             app:layout_anchor="@id/home_content">
 
             <org.oxycblt.auxio.home.ThemedSpeedDialView
