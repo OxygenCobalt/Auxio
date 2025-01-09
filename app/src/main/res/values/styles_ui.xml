@@ -377,7 +377,7 @@
     </style>
 
     <style name="ThemeOverlay.Auxio.IconButton.PlayPause" parent="">
-        <item name="colorContainer">?attr/colorPrimaryFixedDim</item>
-        <item name="colorOnContainer">?attr/colorOnPrimaryFixed</item>
+        <item name="colorContainer">?attr/colorSecondary</item>
+        <item name="colorOnContainer">?attr/colorOnSecondary</item>
     </style>
 </resources>
