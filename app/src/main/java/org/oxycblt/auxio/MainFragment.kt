@@ -258,9 +258,9 @@ class MainFragment :
     }
 
     override fun onPreDraw(): Boolean {
-        // TODO: Due to draw caching even *this* isn't effective enough to avoid the bottom
-        //  sheets continually getting stuck. I need something with even more frequent updates,
-        //  or otherwise bottom sheets get stuck.
+        // This is where I shove literally all the UI logic that won't behave any callback
+        // or "normal" method I've tried. Surely running this on every frame will actually cause
+        // it to work properly!
 
         // We overload CoordinatorLayout far too much to rely on any of it's typical
         // listener functionality. Just update all transitions before every draw. Should
@@ -369,7 +369,8 @@ class MainFragment :
             .invalidateEnabled()
 
         // Stop the FrameLayout containing the fabs from eating touch events elsewhere
-        binding.mainFabContainer.isVisible = binding.homeNewPlaylistFab.mainFab.isVisible && binding.homeShuffleFab.isVisible
+        binding.mainFabContainer.isVisible =
+            binding.homeNewPlaylistFab.mainFab.isVisible || binding.homeShuffleFab.isVisible
 
         return true
     }
