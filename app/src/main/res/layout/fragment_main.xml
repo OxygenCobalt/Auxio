@@ -29,6 +29,7 @@
             android:visibility="invisible" />
 
         <org.oxycblt.auxio.home.EdgeFrameLayout
+            android:id="@+id/main_fab_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|end"

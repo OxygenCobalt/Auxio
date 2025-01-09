@@ -27,6 +27,7 @@ import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -366,6 +367,9 @@ class MainFragment :
         // it every frame.
         requireNotNull(sheetBackCallback) { "SheetBackPressedCallback was not available" }
             .invalidateEnabled()
+
+        // Stop the FrameLayout containing the fabs from eating touch events elsewhere
+        binding.mainFabContainer.isVisible = binding.homeNewPlaylistFab.mainFab.isVisible && binding.homeShuffleFab.isVisible
 
         return true
     }
