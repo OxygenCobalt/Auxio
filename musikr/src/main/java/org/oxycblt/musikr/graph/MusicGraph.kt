@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.graph
 
-import android.util.Log
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
@@ -149,12 +148,13 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             }
         }
 
-        val graph = MusicGraph(
-            songVertices.values.toList(),
-            albumVertices.values.toList(),
-            artistVertices.values.toList(),
-            genreVertices.values.toList(),
-            playlistVertices)
+        val graph =
+            MusicGraph(
+                songVertices.values.toList(),
+                albumVertices.values.toList(),
+                artistVertices.values.toList(),
+                genreVertices.values.toList(),
+                playlistVertices)
 
         return graph
     }
