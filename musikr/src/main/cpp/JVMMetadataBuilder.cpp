@@ -40,7 +40,10 @@ void JVMMetadataBuilder::setId3v1(TagLib::ID3v1::Tag &tag) {
     id3v2.add_id("TALB", tag.album());
     id3v2.add_id("TRCK", std::to_string(tag.track()));
     id3v2.add_id("TYER", std::to_string(tag.year()));
-    id3v2.add_id("TCON", std::to_string(tag.genreNumber()));
+    const int genreNumber = tag.genreNumber();
+    if (genreNumber != 255) {
+        id3v2.add_id("TCON", std::to_string(genreNumber));
+    }
 }
 
 void JVMMetadataBuilder::setId3v2(TagLib::ID3v2::Tag &tag) {
