@@ -4,9 +4,4 @@
         <item name="colorContainer">?attr/colorPrimaryContainer</item>
         <item name="colorOnContainer">?attr/colorOnPrimaryContainer</item>
     </style>
-
-    <style name="ThemeOverlay.Auxio.IconButton.Huge" parent="">
-        <item name="colorContainer">?attr/colorSecondaryContainer</item>
-        <item name="colorOnContainer">?attr/colorOnSecondaryContainer</item>
-    </style>
 </resources>
