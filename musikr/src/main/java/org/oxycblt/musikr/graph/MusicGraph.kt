@@ -18,6 +18,7 @@
  
 package org.oxycblt.musikr.graph
 
+import android.util.Log
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
@@ -148,12 +149,14 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             }
         }
 
-        return MusicGraph(
+        val graph = MusicGraph(
             songVertices.values.toList(),
             albumVertices.values.toList(),
             artistVertices.values.toList(),
             genreVertices.values.toList(),
             playlistVertices)
+
+        return graph
     }
 
     private fun simplifyGenreCluster(cluster: Collection<GenreVertex>) {
@@ -240,6 +243,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         // Link all songs and albums from the irrelevant artist to the relevant artist.
         dst.songVertices.addAll(src.songVertices)
         dst.albumVertices.addAll(src.albumVertices)
+        dst.genreVertices.addAll(src.genreVertices)
         // Update all songs, albums, and genres to point to the relevant artist.
         src.songVertices.forEach {
             val index = it.artistVertices.indexOf(src)
