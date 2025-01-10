@@ -360,8 +360,8 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
                 songs.sortBy { it.name }
                 when (direction) {
-                    Direction.ASCENDING -> songs.sortBy { it.dateAdded }
-                    Direction.DESCENDING -> songs.sortByDescending { it.dateAdded }
+                    Direction.ASCENDING -> songs.sortBy { it.addedMs }
+                    Direction.DESCENDING -> songs.sortByDescending { it.addedMs }
                 }
             }
 

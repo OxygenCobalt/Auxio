@@ -55,7 +55,7 @@ private class VisibleStoredCache(private val visibleDao: VisibleCacheDao, writeD
     BaseStoredCache(writeDao) {
     override suspend fun read(file: DeviceFile, covers: Covers): CacheResult {
         val song = visibleDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file, null)
-        if (song.modifiedMs != file.lastModified) {
+        if (song.modifiedMs != file.modifiedMs) {
             // We *found* this file earlier, but it's out of date.
             // Send back it with the timestamp so it will be re-used.
             // The touch timestamp will be updated on write.

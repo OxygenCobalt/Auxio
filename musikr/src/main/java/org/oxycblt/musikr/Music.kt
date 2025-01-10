@@ -272,10 +272,13 @@ interface Song : Music {
     val sampleRateHz: Int
     /** The ReplayGain adjustment to apply during playback. */
     val replayGainAdjustment: ReplayGainAdjustment
-    /** The date last modified the audio file was last modified, as a unix epoch timestamp. */
-    val lastModified: Long
-    /** The date the audio file was added to the device, as a unix epoch timestamp. */
-    val dateAdded: Long
+    /**
+     * The date last modified the audio file was last modified, in milliseconds since the unix
+     * epoch.
+     */
+    val modifiedMs: Long
+    /** The time the audio file was added to the device, in milliseconds since the unix epoch. */
+    val addedMs: Long
     /** Useful information to quickly obtain the album cover. */
     val cover: Cover?
     /**

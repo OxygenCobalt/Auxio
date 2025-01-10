@@ -25,5 +25,5 @@ internal data class DeviceFile(
     val mimeType: String,
     val path: Path,
     val size: Long,
-    val lastModified: Long
+    val modifiedMs: Long
 )

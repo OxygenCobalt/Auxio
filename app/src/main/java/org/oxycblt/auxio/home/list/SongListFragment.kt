@@ -128,7 +128,7 @@ class SongListFragment :
 
             // Last added -> Format as date
             is Sort.Mode.ByDateAdded -> {
-                val dateAddedMillis = song.dateAdded.secsToMs()
+                val dateAddedMillis = song.addedMs.secsToMs()
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
                         context,

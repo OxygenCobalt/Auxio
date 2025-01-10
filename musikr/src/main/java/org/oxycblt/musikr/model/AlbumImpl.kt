@@ -55,7 +55,7 @@ class AlbumImpl internal constructor(private val core: AlbumCore) : Album {
     override val name = preAlbum.name
     override val releaseType = preAlbum.releaseType
     override val durationMs = core.songs.sumOf { it.durationMs }
-    override val dateAdded = core.songs.minOf { it.dateAdded }
+    override val dateAdded = core.songs.minOf { it.addedMs }
     override val covers = CoverCollection.from(core.songs.mapNotNull { it.cover })
     override val dates: Date.Range? =
         core.songs.mapNotNull { it.date }.ifEmpty { null }?.run { Date.Range(min(), max()) }

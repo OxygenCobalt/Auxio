@@ -174,7 +174,7 @@ internal data class CachedSong(
         fun fromRawSong(rawSong: RawSong) =
             CachedSong(
                 uri = rawSong.file.uri.toString(),
-                modifiedMs = rawSong.file.lastModified,
+                modifiedMs = rawSong.file.modifiedMs,
                 addedMs = rawSong.addedMs,
                 // Should be strictly monotonic so we don't prune this
                 // by accident later.
