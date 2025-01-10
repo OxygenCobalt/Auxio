@@ -317,8 +317,8 @@ interface Album : MusicParent {
     val covers: CoverCollection
     /** The duration of all songs in the album, in milliseconds. */
     val durationMs: Long
-    /** The earliest date a song in this album was added, as a unix epoch timestamp. */
-    val dateAdded: Long
+    /** The earliest date a song in this album was added, in milliseconds since the unix epoch. */
+    val addedMs: Long
     /**
      * The parent [Artist]s of this [Album]. Is often one, but there can be multiple if more than
      * one [Artist] name was specified in the metadata of the [Song]'s. Unlike [Song], album artists

@@ -368,8 +368,8 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
                 albums.sortBy { it.name }
                 when (direction) {
-                    Direction.ASCENDING -> albums.sortBy { it.dateAdded }
-                    Direction.DESCENDING -> albums.sortByDescending { it.dateAdded }
+                    Direction.ASCENDING -> albums.sortBy { it.addedMs }
+                    Direction.DESCENDING -> albums.sortByDescending { it.addedMs }
                 }
             }
         }

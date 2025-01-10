@@ -43,7 +43,6 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Music
@@ -128,7 +127,7 @@ class AlbumListFragment :
 
             // Last added -> Format as date
             is Sort.Mode.ByDateAdded -> {
-                val dateAddedMillis = album.dateAdded.secsToMs()
+                val dateAddedMillis = album.addedMs
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
                         context,
