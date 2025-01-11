@@ -42,7 +42,6 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
