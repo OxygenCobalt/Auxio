@@ -22,6 +22,7 @@
             app:navGraph="@navigation/inner"
             tools:layout="@layout/fragment_home" />
 
+
         <org.oxycblt.auxio.home.EdgeFrameLayout
             android:id="@+id/main_fab_container"
             android:layout_width="match_parent"
@@ -29,7 +30,6 @@
             android:layout_gravity="bottom|end"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_margin="@dimen/spacing_medium"
             app:layout_anchor="@id/home_content">
 
             <org.oxycblt.auxio.home.ThemedSpeedDialView
@@ -41,6 +41,7 @@
                 android:contentDescription="@string/lbl_new_playlist"
                 android:focusable="true"
                 android:gravity="bottom|end"
+                android:layout_margin="@dimen/spacing_medium"
                 app:sdMainFabAnimationRotateAngle="135"
                 app:sdMainFabClosedIconColor="@android:color/white"
                 app:sdMainFabClosedSrc="@drawable/ic_add_24" />
@@ -49,9 +50,9 @@
                 android:id="@+id/home_shuffle_fab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
                 android:layout_margin="@dimen/spacing_medium"
-                android:contentDescription="@string/desc_shuffle_all"
+                android:layout_gravity="bottom|end"
+                android:contentDescription="@string/lbl_shuffle"
                 android:src="@drawable/ic_shuffle_off_24" />
 
         </org.oxycblt.auxio.home.EdgeFrameLayout>
