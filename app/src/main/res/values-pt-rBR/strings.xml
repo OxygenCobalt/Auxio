@@ -327,4 +327,11 @@
     <string name="cdc_unknown">Desconhecido</string>
     <string name="def_album">Álbum desconhecido</string>
     <string name="lbl_feedback">Feedback</string>
+    <string name="lng_empty_songs">As suas músicas aparecerão aqui.</string>
+    <string name="lng_empty_albums">Os seus álbuns aparecerão aqui.</string>
+    <string name="lng_empty_artists">Os seus artistas aparecerão aqui.</string>
+    <string name="lng_empty_playlists">As suas playlists aparecerão aqui.</string>
+    <string name="lng_empty_genres">Os seus gêneros aparecerão aqui.</string>
+    <string name="set_cover_mode_save_space">Salvar espaço</string>
+    <string name="set_locations_new">Nova pasta</string>
 </resources>
