@@ -22,6 +22,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
@@ -298,6 +299,11 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             // RecyclerView will scroll assuming it has the total height of the screen (i.e a
             // collapsed appbar), so we need to collapse the appbar if that's the case.
             binding.detailAppbar.setExpanded(false)
+            if (!binding.detailRecycler.canScroll()) {
+                // Don't scroll if the RecyclerView goes off screen. If we go anyway, overscroll
+                // kicks in and creates a weird bounce effect.
+                return
+            }
             binding.detailRecycler.post {
                 // Use a custom smooth scroller that will settle the item in the middle of
                 // the screen rather than the end.
@@ -323,4 +329,6 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             }
         }
     }
+
+    private fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
 }
