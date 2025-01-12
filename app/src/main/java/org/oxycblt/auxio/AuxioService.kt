@@ -42,7 +42,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
-import timber.log.Timber as L
 
 @AndroidEntryPoint
 class AuxioService :
