@@ -34,8 +34,15 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.utils.MediaConstants
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
+import timber.log.Timber as L
 
 @AndroidEntryPoint
 class AuxioService :
@@ -45,6 +52,10 @@ class AuxioService :
 
     @Inject lateinit var musicFragmentFactory: MusicServiceFragment.Factory
     private lateinit var musicFragment: MusicServiceFragment
+
+    private val delayScopeJob = Job() + Dispatchers.Main
+    private val delayScope = CoroutineScope(delayScopeJob)
+    private var currentDelayJob: Job? = null
 
     @SuppressLint("WrongConstant")
     override fun onCreate() {
@@ -68,9 +79,17 @@ class AuxioService :
     }
 
     private fun onHandleForeground(intent: Intent?) {
-        val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
-        musicFragment.start()
-        playbackFragment.start(startId)
+        currentDelayJob?.cancel()
+        currentDelayJob =
+            delayScope.launch {
+                // The foreground limiter is fussy and doesn't like us starting a foreground
+                // service too early despite having the right to do so at this point. Comply
+                // and artificially delay (to user detriment...)
+                delay(250)
+                val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
+                musicFragment.start()
+                playbackFragment.start(startId)
+            }
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -80,6 +99,7 @@ class AuxioService :
 
     override fun onDestroy() {
         super.onDestroy()
+        delayScopeJob.cancel()
         musicFragment.release()
         playbackFragment.release()
     }
