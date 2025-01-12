@@ -35,6 +35,7 @@ import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.MediaSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +46,6 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.playback.msToSecs
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.DeferredPlayback
@@ -59,7 +59,6 @@ import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
-import kotlin.math.abs
 import timber.log.Timber as L
 
 class ExoPlaybackStateHolder(
@@ -397,7 +396,8 @@ class ExoPlaybackStateHolder(
         // in the case of a "tight restore" (i.e music was reloaded).
         // In the case that this is a false positive, it's not very percievable (at least compared
         // to skipping when updating the library).
-        // TODO: Introduce a better state management system rather than do something finicky like this.
+        // TODO: Introduce a better state management system rather than do something finicky like
+        // this.
         if (shouldSeek || abs(player.currentPosition - positionMs) > 1000L) {
             player.seekTo(positionMs)
         }
