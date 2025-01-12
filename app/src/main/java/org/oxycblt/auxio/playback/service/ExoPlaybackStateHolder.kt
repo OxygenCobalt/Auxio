@@ -59,6 +59,7 @@ import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
+import kotlin.math.abs
 import timber.log.Timber as L
 
 class ExoPlaybackStateHolder(
@@ -372,7 +373,6 @@ class ExoPlaybackStateHolder(
     ) {
         var sendNewPlaybackEvent = false
         var shouldSeek = false
-        L.d("invalidating parent ${this.parent?.songs} ${parent?.songs}")
         if (this.parent != parent) {
             this.parent = parent
             sendNewPlaybackEvent = true
@@ -393,9 +393,12 @@ class ExoPlaybackStateHolder(
         }
 
         repeatMode(repeatMode)
-        // Positions in milliseconds will drift during tight restores (i.e what the music loader
-        // does to sanitize the state), compare by seconds instead.
-        if (positionMs.msToSecs() != player.currentPosition.msToSecs() || shouldSeek) {
+        // See if we differ by more than a second. This allows us to avoid a meaningless seek
+        // in the case of a "tight restore" (i.e music was reloaded).
+        // In the case that this is a false positive, it's not very percievable (at least compared
+        // to skipping when updating the library).
+        // TODO: Introduce a better state management system rather than do something finicky like this.
+        if (shouldSeek || abs(player.currentPosition - positionMs) > 1000L) {
             player.seekTo(positionMs)
         }
 
