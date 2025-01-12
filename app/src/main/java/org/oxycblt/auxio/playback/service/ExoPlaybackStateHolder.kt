@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback.service
 import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import android.provider.OpenableColumns
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -181,13 +182,34 @@ class ExoPlaybackStateHolder(
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
                 L.d("Opening specified file")
-                //                library.findSongForUri(context, action.uri)?.let { song ->
-                //                    playbackManager.play(
-                //                        requireNotNull(commandFactory.song(song,
-                // ShuffleMode.IMPLICIT)) {
-                //                            "Invalid playback parameters"
-                //                        })
-                //                }
+                context.applicationContext.contentResolver
+                    .query(
+                        action.uri,
+                        arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE),
+                        null,
+                        null,
+                        null)
+                    ?.use { cursor ->
+                        val displayNameIndex =
+                            cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                        val sizeIndex = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE)
+                        if (cursor.moveToFirst()) {
+                            val displayName = cursor.getString(displayNameIndex)
+                            val size = cursor.getLong(sizeIndex)
+                            val song =
+                                library.songs.find {
+                                    it.path.name == displayName && it.size == size
+                                }
+                            if (song != null) {
+                                val command =
+                                    requireNotNull(
+                                        commandFactory.songFromAll(song, ShuffleMode.IMPLICIT)) {
+                                            "Invalid playback command"
+                                        }
+                                playbackManager.play(command)
+                            }
+                        }
+                    }
             }
         }
 
