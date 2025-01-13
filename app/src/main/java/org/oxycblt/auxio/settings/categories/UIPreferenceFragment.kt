@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.settings.categories
 
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
