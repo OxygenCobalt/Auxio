@@ -21,6 +21,7 @@ package org.oxycblt.auxio
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -56,12 +57,12 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var uiSettings: UISettings
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setupTheme()
         // Inflate the views after setting up the theme so that the theme attributes are applied.
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupEdgeToEdge(binding.root)
         L.d("Activity created")
     }
 
@@ -95,17 +96,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             L.d("Applying normal theme [accent ${uiSettings.accent}]")
             setTheme(uiSettings.accent.theme)
-        }
-    }
-
-    private fun setupEdgeToEdge(contentView: View) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        contentView.setOnApplyWindowInsetsListener { view, insets ->
-            // Automatically inset the view to the left/right, as component support for
-            // these insets are highly lacking.
-            val bars = insets.systemBarInsetsCompat
-            view.updatePadding(left = bars.left, right = bars.right)
-            insets
         }
     }
 

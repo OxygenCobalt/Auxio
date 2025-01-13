@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Auxio.V31" parent="Theme.Auxio.V29">
+    <style name="Theme.Auxio.V31" parent="Theme.Auxio">
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_splash_anim</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>
