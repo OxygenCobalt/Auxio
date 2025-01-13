@@ -54,7 +54,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, value ->
                         L.d("Theme changed, recreating")
-                        AppCompatDelegate.setDefaultNightMode(value as Int)
+                        requireActivity().recreate()
                         true
                     }
             }
