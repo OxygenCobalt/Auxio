@@ -24,10 +24,34 @@ import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
 
+/** Side-effect laden [Storage] for use during music loading and [MutableLibrary] operation. */
 data class Storage(
+    /**
+     * A factory producing a repository of cached metadata to read and write from over the course of
+     * music loading. This will only be used during music loading.
+     */
     val cache: Cache.Factory,
+
+    /**
+     * A repository of cover images to for re-use during music loading. Should be kept in lock-step
+     * with the cache for best performance. This will be used during music loading and when
+     * retrieving cover information from the library.
+     */
     val storedCovers: MutableCovers,
+
+    /**
+     * A repository of user-created playlists that should also be loaded into the library. This will
+     * be used during music loading and mutated when creating, renaming, or deleting playlists in
+     * the library.
+     */
     val storedPlaylists: StoredPlaylists
 )
 
-data class Interpretation(val naming: Naming, val separators: Separators)
+/** Configuration for how to interpret and extrapolate certain audio tags. */
+data class Interpretation(
+    /** How to construct names from audio tags. */
+    val naming: Naming,
+
+    /** What separators delimit multi-value audio tags. */
+    val separators: Separators
+)
