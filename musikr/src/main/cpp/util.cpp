@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2024 Auxio Project
- * util.h is part of Auxio.
+ * Copyright (c) 2025 Auxio Project
+ * util.cpp is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,22 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#ifndef AUXIO_UTIL_H
-#define AUXIO_UTIL_H
+#include <stdexcept>
 
-#include <jni.h>
-#include <android/log.h>
+#include "util.h"
 
-#define LOG_TAG "taglib_jni"
-#define LOGE(...) \
-  ((void)__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
-#define LOGD(...) \
-  ((void)__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
-
-void jni_check(JNIEnv *env);
-
-#define TRY(block) \
-  block; \
-  jni_check(env);
-
-#endif //AUXIO_UTIL_H
+void jni_check(JNIEnv *env) {
+    if (env->ExceptionCheck()) {
+        env->ExceptionDescribe();
+        env->ExceptionClear();
+        throw std::runtime_error(
+                "An exception occurred in a JNI call, see logcat");
+    }
+}
