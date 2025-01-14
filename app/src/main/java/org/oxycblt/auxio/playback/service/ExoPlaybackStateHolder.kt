@@ -147,7 +147,7 @@ class ExoPlaybackStateHolder(
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
         val library =
-            musicRepository.library
+            musicRepository.library?.takeIf { !it.empty() }
                 // No library, cannot do anything.
                 ?: return false
 
@@ -524,7 +524,7 @@ class ExoPlaybackStateHolder(
     // --- MUSICREPOSITORY METHODS ---
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.deviceLibrary && musicRepository.library != null) {
+        if (changes.deviceLibrary && musicRepository.library?.takeIf { !it.empty() } != null) {
             // We now have a library, see if we have anything we need to do.
             L.d("Library obtained, requesting action")
             playbackManager.requestAction(this)

@@ -50,7 +50,7 @@ constructor(
 ) : PersistenceRepository {
 
     override suspend fun readState(): PlaybackStateManager.SavedState? {
-        val library = musicRepository.library ?: return null
+        val library = musicRepository.library?.takeIf { !it.empty() } ?: return null
         val playbackState: PlaybackState
         val heapItems: List<QueueHeapItem>
         val mappingItems: List<QueueShuffledMappingItem>
