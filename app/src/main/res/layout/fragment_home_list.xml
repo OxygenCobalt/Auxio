@@ -14,7 +14,7 @@
         tools:listitem="@layout/item_song" />
 
 
-    <org.oxycblt.auxio.home.EdgeFrameLayout
+    <org.oxycblt.auxio.ui.EdgeFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -53,5 +53,5 @@
 
         </LinearLayout>
 
-    </org.oxycblt.auxio.home.EdgeFrameLayout>
+    </org.oxycblt.auxio.ui.EdgeFrameLayout>
 </FrameLayout>

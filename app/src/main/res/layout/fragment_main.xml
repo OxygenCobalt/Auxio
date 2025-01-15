@@ -8,7 +8,7 @@
     android:background="?attr/colorSurface"
     android:transitionGroup="true">
 
-    <FrameLayout
+    <org.oxycblt.auxio.ui.EatInsetsFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="org.oxycblt.auxio.ui.BottomSheetContentBehavior">
@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:visibility="invisible" />
 
-        <org.oxycblt.auxio.home.EdgeFrameLayout
+        <org.oxycblt.auxio.ui.EdgeFrameLayout
             android:id="@+id/main_fab_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -60,9 +60,9 @@
                 android:contentDescription="@string/lbl_shuffle"
                 android:src="@drawable/ic_shuffle_off_24" />
 
-        </org.oxycblt.auxio.home.EdgeFrameLayout>
+        </org.oxycblt.auxio.ui.EdgeFrameLayout>
 
-    </FrameLayout>
+    </org.oxycblt.auxio.ui.EatInsetsFrameLayout>
 
     <View
         android:id="@+id/main_sheet_scrim"

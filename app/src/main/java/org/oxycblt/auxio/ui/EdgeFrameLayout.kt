@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.home
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.util.AttributeSet
@@ -40,8 +40,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        // Prevent excessive layouts by using translation instead of padding.
         updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
         return insets
     }
 }
+
