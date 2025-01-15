@@ -28,10 +28,4 @@
 #define LOGD(...) \
   ((void)__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
 
-void jni_check(JNIEnv *env);
-
-#define TRY(block) \
-  block; \
-  jni_check(env);
-
 #endif //AUXIO_UTIL_H

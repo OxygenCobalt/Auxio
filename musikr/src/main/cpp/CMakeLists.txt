@@ -48,7 +48,6 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         JVMInputStream.cpp
         JVMTagMap.cpp
         JVMMetadataBuilder.cpp
-        util.cpp
 )
 target_link_options(${CMAKE_PROJECT_NAME}
         # @Tolriq found that these flags can reduce the size of the linked

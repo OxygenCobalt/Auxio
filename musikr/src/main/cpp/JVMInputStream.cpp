@@ -17,42 +17,32 @@
  */
  
 #include "JVMInputStream.h"
-#include "util.h"
 
 #include <cmath>
 
 // TODO: Handle stream exceptions
 JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream) : env(env), inputStream(
         inputStream) {
-    TRY(auto isNativeInputStream = env->IsInstanceOf(inputStream,
-                    env->FindClass("org/oxycblt/musikr/metadata/NativeInputStream")))
-    if (!isNativeInputStream) {
+    if (!env->IsInstanceOf(inputStream,
+            env->FindClass("org/oxycblt/musikr/metadata/NativeInputStream"))) {
         throw std::runtime_error("oStream is not an instance of TagLibOStream");
     }
-    TRY(jclass inputStreamClass = env->FindClass(
-                    "org/oxycblt/musikr/metadata/NativeInputStream"));
-    TRY(
-            inputStreamReadBlockMethod = env->GetMethodID(inputStreamClass,
-                    "readBlock", "(J)[B"));
-    TRY(
-            inputStreamIsOpenMethod = env->GetMethodID(inputStreamClass,
-                    "isOpen", "()Z"));
-    TRY(
-            inputStreamSeekFromBeginningMethod = env->GetMethodID(
-                    inputStreamClass, "seekFromBeginning", "(J)V"));
-    TRY(
-            inputStreamSeekFromCurrentMethod = env->GetMethodID(
-                    inputStreamClass, "seekFromCurrent", "(J)V"));
-    TRY(
-            inputStreamSeekFromEndMethod = env->GetMethodID(inputStreamClass,
-                    "seekFromEnd", "(J)V"));
-    TRY(
-            inputStreamTellMethod = env->GetMethodID(inputStreamClass, "tell",
-                    "()J"));
-    TRY(
-            inputStreamLengthMethod = env->GetMethodID(inputStreamClass,
-                    "length", "()J"));
-    TRY(env->DeleteLocalRef(inputStreamClass));
+    jclass inputStreamClass = env->FindClass(
+            "org/oxycblt/musikr/metadata/NativeInputStream");
+    inputStreamReadBlockMethod = env->GetMethodID(inputStreamClass, "readBlock",
+            "(J)[B");
+    inputStreamIsOpenMethod = env->GetMethodID(inputStreamClass, "isOpen",
+            "()Z");
+    inputStreamSeekFromBeginningMethod = env->GetMethodID(inputStreamClass,
+            "seekFromBeginning", "(J)V");
+    inputStreamSeekFromCurrentMethod = env->GetMethodID(inputStreamClass,
+            "seekFromCurrent", "(J)V");
+    inputStreamSeekFromEndMethod = env->GetMethodID(inputStreamClass,
+            "seekFromEnd", "(J)V");
+    inputStreamTellMethod = env->GetMethodID(inputStreamClass, "tell", "()J");
+    inputStreamLengthMethod = env->GetMethodID(inputStreamClass, "length",
+            "()J");
+    env->DeleteLocalRef(inputStreamClass);
 }
 
 JVMInputStream::~JVMInputStream() {
@@ -66,15 +56,13 @@ TagLib::FileName JVMInputStream::name() const {
 }
 
 TagLib::ByteVector JVMInputStream::readBlock(size_t length) {
-    TRY(auto data = (jbyteArray) env->CallObjectMethod(inputStream,
-                    inputStreamReadBlockMethod, length));
-    // Check for an exception
-    // If we don't do this, data == nullptr and the remaining calls crash.
-    TRY(jsize dataLength = env->GetArrayLength(data));
-    TRY(auto dataBytes = env->GetByteArrayElements(data, nullptr));
+    auto data = (jbyteArray) env->CallObjectMethod(inputStream,
+            inputStreamReadBlockMethod, length);
+    jsize dataLength = env->GetArrayLength(data);
+    auto dataBytes = env->GetByteArrayElements(data, nullptr);
     TagLib::ByteVector byteVector(reinterpret_cast<const char*>(dataBytes),
             dataLength);
-    TRY(env->ReleaseByteArrayElements(data, dataBytes, JNI_ABORT));
+    env->ReleaseByteArrayElements(data, dataBytes, JNI_ABORT);
     return byteVector;
 }
 
@@ -96,17 +84,15 @@ bool JVMInputStream::readOnly() const {
 }
 
 bool JVMInputStream::isOpen() const {
-    TRY(auto result = env->CallBooleanMethod(inputStream, inputStreamIsOpenMethod));
-    return result;
+    return env->CallBooleanMethod(inputStream, inputStreamIsOpenMethod);
 }
 
 void JVMInputStream::seek(TagLib::offset_t offset, Position p) {
     auto joffset = static_cast<jlong>(std::llround(offset));
     switch (p) {
     case Beginning:
-        TRY(
-                env->CallVoidMethod(inputStream,
-                        inputStreamSeekFromBeginningMethod, joffset));
+        env->CallVoidMethod(inputStream, inputStreamSeekFromBeginningMethod,
+                joffset);
         break;
     case Current:
         env->CallVoidMethod(inputStream, inputStreamSeekFromCurrentMethod,
@@ -123,12 +109,12 @@ void JVMInputStream::clear() {
 }
 
 TagLib::offset_t JVMInputStream::tell() const {
-    TRY(jlong jposition = env->CallLongMethod(inputStream, inputStreamTellMethod));
+    jlong jposition = env->CallLongMethod(inputStream, inputStreamTellMethod);
     return static_cast<TagLib::offset_t>(jposition);
 }
 
 TagLib::offset_t JVMInputStream::length() {
-    TRY(jlong jlength = env->CallLongMethod(inputStream, inputStreamLengthMethod));
+    jlong jlength = env->CallLongMethod(inputStream, inputStreamLengthMethod);
     return static_cast<TagLib::offset_t>(jlength);
 }
 
