@@ -2,12 +2,23 @@
 <resources>
     <!-- Master parent theme -->
     <style name="Theme.Auxio" parent="Theme.Material3.DynamicColors.DayNight" />
+    <!-- Adds nicer selector attributes not supported on lollipop -->
+    <style name="Theme.Auxio.V23" parent="Theme.Auxio" />
+    <!-- Handles edge-to-edge on other styles variants -->
+    <style name="Theme.Auxio.V27" parent="Theme.Auxio.V23">
+        <item name="android:statusBarColor">@color/chrome_translucent</item>
+        <item name="android:navigationBarColor">@color/chrome_translucent</item>
+    </style>
+    <!-- Adds fully transparent system bars -->
+    <style name="Theme.Auxio.V29" parent="Theme.Auxio.V27" />
     <!-- Adds an animated splash screen. -->
-    <style name="Theme.Auxio.V31" parent="Theme.Auxio" />
+    <style name="Theme.Auxio.V31" parent="Theme.Auxio.V29" />
 
     <!-- Base theme -->
     <style name="Theme.Auxio.Base" parent="Theme.Auxio.V31">
+
         <!-- Material configuration -->
+<!--        <item name="colorOutline">@color/overlay_stroke</item>-->
         <item name="toolbarStyle">@style/Widget.Auxio.Toolbar</item>
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>

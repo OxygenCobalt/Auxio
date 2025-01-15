@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Auxio.V29" parent="Theme.Auxio.V27">
+        <!--
+        Android 10 finally allows you to use fully transparent system bars without it automatically
+        forcing contrast.
+        -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+
+    </style>
+</resources>

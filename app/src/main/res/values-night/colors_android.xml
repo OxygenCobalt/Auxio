@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+    Used on devices when we can technically use "transparent" system bars, but fully
+    transparent system bars would actually be made translucent by the OS.
+    -->
+    <color name="chrome_transparent_ish">#01000000</color>
+
     <!-- Replicate extra theme values for widgets -->
     <color name="widget_surface">@color/material_dynamic_secondary20</color>
     <color name="widget_surface_inverse">@color/material_dynamic_neutral90</color>

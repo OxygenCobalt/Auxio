@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Template theme that handles edge-to-edge on other styles variants -->
+    <style name="Theme.Auxio.V27" parent="Theme.Auxio.V23">
+        <item name="android:navigationBarColor">@color/chrome_transparent_ish</item>
+        <item name="android:statusBarColor">@color/chrome_transparent_ish</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>
