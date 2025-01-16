@@ -44,4 +44,3 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return insets
     }
 }
-
