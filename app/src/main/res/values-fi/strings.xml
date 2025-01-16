@@ -70,7 +70,7 @@
     <string name="set_play_song_from_genre">Toista tyylilajista</string>
     <string name="set_separators">Moniarvoerottimet</string>
     <string name="set_exclude_non_music_desc">Ohita äänitiedostot, jotka eivät ole musiikkia, kuten podcastit</string>
-    <string name="set_separators_and">Ja-merkki (&amp;)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="set_separators_comma">Pilkku (,)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_separators_semicolon">Puolipiste (;)</string>
