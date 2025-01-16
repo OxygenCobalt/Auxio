@@ -12,6 +12,7 @@ kesin/orijinal tarihler, sıralama etiketleri ve daha fazlası
 - SD Card-aware klasör yönetimi
 - Güvenilir çalma listesi işlevi
 - Oynatma durumu kalıcılığı
+- Android Auto desteği
 - Tam ReplayGain desteği (MP3, FLAC, OGG, OPUS ve MP4 dosyalarında)
 - Harici ekolayzer desteği (örn. Wavelet)
 - Kenardan kenara
