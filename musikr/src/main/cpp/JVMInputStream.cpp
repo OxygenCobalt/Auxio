@@ -34,11 +34,11 @@ JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream) : env(env), inp
     inputStreamIsOpenMethod = env->GetMethodID(inputStreamClass, "isOpen",
             "()Z");
     inputStreamSeekFromBeginningMethod = env->GetMethodID(inputStreamClass,
-            "seekFromBeginning", "(J)V");
+            "seekFromBeginning", "(J)Z");
     inputStreamSeekFromCurrentMethod = env->GetMethodID(inputStreamClass,
-            "seekFromCurrent", "(J)V");
+            "seekFromCurrent", "(J)Z");
     inputStreamSeekFromEndMethod = env->GetMethodID(inputStreamClass,
-            "seekFromEnd", "(J)V");
+            "seekFromEnd", "(J)Z");
     inputStreamTellMethod = env->GetMethodID(inputStreamClass, "tell", "()J");
     inputStreamLengthMethod = env->GetMethodID(inputStreamClass, "length",
             "()J");
@@ -58,6 +58,9 @@ TagLib::FileName JVMInputStream::name() const {
 TagLib::ByteVector JVMInputStream::readBlock(size_t length) {
     auto data = (jbyteArray) env->CallObjectMethod(inputStream,
             inputStreamReadBlockMethod, length);
+    if (data == nullptr) {
+        throw std::runtime_error("Failed to read block, see logs");
+    }
     jsize dataLength = env->GetArrayLength(data);
     auto dataBytes = env->GetByteArrayElements(data, nullptr);
     TagLib::ByteVector byteVector(reinterpret_cast<const char*>(dataBytes),
@@ -89,18 +92,23 @@ bool JVMInputStream::isOpen() const {
 
 void JVMInputStream::seek(TagLib::offset_t offset, Position p) {
     auto joffset = static_cast<jlong>(std::llround(offset));
+    jboolean result;
     switch (p) {
     case Beginning:
-        env->CallVoidMethod(inputStream, inputStreamSeekFromBeginningMethod,
-                joffset);
+        result = env->CallBooleanMethod(inputStream,
+                inputStreamSeekFromBeginningMethod, joffset);
         break;
     case Current:
-        env->CallVoidMethod(inputStream, inputStreamSeekFromCurrentMethod,
-                joffset);
+        result = env->CallBooleanMethod(inputStream,
+                inputStreamSeekFromCurrentMethod, joffset);
         break;
     case End:
-        env->CallVoidMethod(inputStream, inputStreamSeekFromEndMethod, joffset);
+        result = env->CallBooleanMethod(inputStream,
+                inputStreamSeekFromEndMethod, joffset);
         break;
+    }
+    if (!result) {
+        throw std::runtime_error("Failed to seek, see logs");
     }
 }
 
@@ -110,11 +118,17 @@ void JVMInputStream::clear() {
 
 TagLib::offset_t JVMInputStream::tell() const {
     jlong jposition = env->CallLongMethod(inputStream, inputStreamTellMethod);
+    if (jposition == INT64_MIN) {
+        throw std::runtime_error("Failed to get position, see logs");
+    }
     return static_cast<TagLib::offset_t>(jposition);
 }
 
 TagLib::offset_t JVMInputStream::length() {
     jlong jlength = env->CallLongMethod(inputStream, inputStreamLengthMethod);
+    if (jlength == INT64_MIN) {
+        throw std::runtime_error("Failed to get length, see logs");
+    }
     return static_cast<TagLib::offset_t>(jlength);
 }
 

@@ -18,37 +18,73 @@
  
 package org.oxycblt.musikr.metadata
 
+import android.util.Log
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 
 internal class NativeInputStream(fis: FileInputStream) {
     private val channel = fis.channel
 
-    fun readBlock(length: Long): ByteArray {
-        val buffer = ByteBuffer.allocate(length.toInt())
-        channel.read(buffer)
-        return buffer.array()
+    fun readBlock(length: Long): ByteArray? {
+        try {
+            val buffer = ByteBuffer.allocate(length.toInt())
+            channel.read(buffer)
+            return buffer.array()
+        } catch (e: Exception) {
+            Log.d("NativeInputStream", "Error reading block", e)
+            return null
+        }
     }
 
     fun isOpen(): Boolean {
         return channel.isOpen
     }
 
-    fun seekFromBeginning(offset: Long) {
-        channel.position(offset)
+    fun seekFromBeginning(offset: Long): Boolean {
+        try {
+            channel.position(offset)
+            return true
+        } catch (e: Exception) {
+            Log.d("NativeInputStream", "Error seeking from beginning", e)
+            return false
+        }
     }
 
-    fun seekFromCurrent(offset: Long) {
-        channel.position(channel.position() + offset)
+    fun seekFromCurrent(offset: Long): Boolean {
+        try {
+            channel.position(channel.position() + offset)
+            return true
+        } catch (e: Exception) {
+            Log.d("NativeInputStream", "Error seeking from current", e)
+            return false
+        }
     }
 
-    fun seekFromEnd(offset: Long) {
-        channel.position(channel.size() + offset)
+    fun seekFromEnd(offset: Long): Boolean {
+        try {
+            channel.position(channel.size() + offset)
+            return true
+        } catch (e: Exception) {
+            Log.d("NativeInputStream", "Error seeking from end", e)
+            return false
+        }
     }
 
-    fun tell() = channel.position()
+    fun tell() =
+        try {
+            channel.position()
+        } catch (e: Exception) {
+            Log.d("NativeInputStream", "Error getting position", e)
+            Long.MIN_VALUE
+        }
 
-    fun length() = channel.size()
+    fun length() =
+        try {
+            channel.size()
+        } catch (e: Exception) {
+            Log.d("NativeInputStream", "Error getting length", e)
+            Long.MIN_VALUE
+        }
 
     fun close() {
         channel.close()
