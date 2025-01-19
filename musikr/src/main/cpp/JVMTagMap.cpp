@@ -52,57 +52,78 @@ JVMTagMap::~JVMTagMap() {
     env->DeleteLocalRef(arrayListClass);
 }
 
-void JVMTagMap::add_id(TagLib::String id, TagLib::String value) {
-    env->CallVoidMethod(tagMap, tagMapAddIdSingleMethod,
-            env->NewStringUTF(id.toCString(true)),
-            env->NewStringUTF(value.toCString(true)));
+void JVMTagMap::add_id(const TagLib::String id, const TagLib::String value) {
+    jstring jid = env->NewStringUTF(id.toCString(true));
+    jstring jvalue = env->NewStringUTF(value.toCString(true));
+    env->CallVoidMethod(tagMap, tagMapAddIdSingleMethod, jid, jvalue);
+    env->DeleteLocalRef(jid);
+    env->DeleteLocalRef(jvalue);
 }
 
-void JVMTagMap::add_id(TagLib::String id, TagLib::StringList value) {
-    jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
-    for (auto &item : value) {
-        env->CallBooleanMethod(arrayList, arrayListAddMethod,
-                env->NewStringUTF(item.toCString(true)));
+void JVMTagMap::add_id(const TagLib::String id,
+        const TagLib::StringList values) {
+    jstring jid = env->NewStringUTF(id.toCString(true));
+    jobject jvalues = env->NewObject(arrayListClass, arrayListInitMethod);
+    for (auto &item : values) {
+        jstring jvalue = env->NewStringUTF(item.toCString(true));
+        env->CallBooleanMethod(jvalues, arrayListAddMethod, jvalue);
+        env->DeleteLocalRef(jvalue);
     }
-    env->CallVoidMethod(tagMap, tagMapAddIdListMethod,
-            env->NewStringUTF(id.toCString(true)), arrayList);
+    env->CallVoidMethod(tagMap, tagMapAddIdListMethod, jid, jvalues);
+    env->DeleteLocalRef(jid);
 }
 
-void JVMTagMap::add_custom(TagLib::String description, TagLib::String value) {
-    env->CallVoidMethod(tagMap, tagMapAddCustomSingleMethod,
-            env->NewStringUTF(description.toCString(true)),
-            env->NewStringUTF(value.toCString(true)));
+void JVMTagMap::add_custom(const TagLib::String description,
+        const TagLib::String value) {
+    jstring jdescription = env->NewStringUTF(description.toCString(true));
+    jstring jvalue = env->NewStringUTF(value.toCString(true));
+    env->CallVoidMethod(tagMap, tagMapAddCustomSingleMethod, jdescription,
+            jvalue);
+    env->DeleteLocalRef(jdescription);
+    env->DeleteLocalRef(jvalue);
 }
 
-void JVMTagMap::add_custom(TagLib::String description,
-        TagLib::StringList value) {
-    jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
-    for (auto &item : value) {
-        env->CallBooleanMethod(arrayList, arrayListAddMethod,
-                env->NewStringUTF(item.toCString(true)));
+void JVMTagMap::add_custom(const TagLib::String description,
+        const TagLib::StringList values) {
+    jstring jid = env->NewStringUTF(description.toCString(true));
+    jobject jvalues = env->NewObject(arrayListClass, arrayListInitMethod);
+    for (auto &item : values) {
+        jstring jvalue = env->NewStringUTF(item.toCString(true));
+        env->CallBooleanMethod(jvalues, arrayListAddMethod, jvalue);
+        env->DeleteLocalRef(jvalue);
     }
-    env->CallVoidMethod(tagMap, tagMapAddCustomListMethod,
-            env->NewStringUTF(description.toCString(true)), arrayList);
+    env->CallVoidMethod(tagMap, tagMapAddCustomListMethod, jid, jvalues);
+    env->DeleteLocalRef(jid);
+    env->DeleteLocalRef(jvalues);
 }
 
-void JVMTagMap::add_combined(TagLib::String id, TagLib::String description,
-        TagLib::String value) {
-    env->CallVoidMethod(tagMap, tagMapAddCombinedSingleMethod,
-            env->NewStringUTF(id.toCString(true)),
-            env->NewStringUTF(description.toCString(true)),
-            env->NewStringUTF(value.toCString(true)));
+void JVMTagMap::add_combined(const TagLib::String id,
+        const TagLib::String description, const TagLib::String value) {
+    jstring jid = env->NewStringUTF(id.toCString(true));
+    jstring jdescription = env->NewStringUTF(description.toCString(true));
+    jstring jvalue = env->NewStringUTF(value.toCString(true));
+    env->CallVoidMethod(tagMap, tagMapAddCombinedSingleMethod, jid,
+            jdescription, jvalue);
+    env->DeleteLocalRef(jid);
+    env->DeleteLocalRef(jdescription);
+    env->DeleteLocalRef(jvalue);
 }
 
-void JVMTagMap::add_combined(TagLib::String id, TagLib::String description,
-        TagLib::StringList value) {
-    jobject arrayList = env->NewObject(arrayListClass, arrayListInitMethod);
-    for (auto &item : value) {
-        env->CallBooleanMethod(arrayList, arrayListAddMethod,
-                env->NewStringUTF(item.toCString(true)));
+void JVMTagMap::add_combined(const TagLib::String id,
+        const TagLib::String description, const TagLib::StringList values) {
+    jstring jid = env->NewStringUTF(id.toCString(true));
+    jstring jdescription = env->NewStringUTF(description.toCString(true));
+    jobject jvalues = env->NewObject(arrayListClass, arrayListInitMethod);
+    for (auto &item : values) {
+        jstring jvalue = env->NewStringUTF(item.toCString(true));
+        env->CallBooleanMethod(jvalues, arrayListAddMethod, jvalue);
+        env->DeleteLocalRef(jvalue);
     }
-    env->CallVoidMethod(tagMap, tagMapAddCombinedListMethod,
-            env->NewStringUTF(id.toCString(true)),
-            env->NewStringUTF(description.toCString(true)), arrayList);
+    env->CallVoidMethod(tagMap, tagMapAddCombinedListMethod, jid, jdescription,
+            jvalues);
+    env->DeleteLocalRef(jid);
+    env->DeleteLocalRef(jdescription);
+    env->DeleteLocalRef(jvalues);
 }
 
 jobject JVMTagMap::getObject() {

@@ -23,12 +23,11 @@
 // TODO: Handle stream exceptions
 JVMInputStream::JVMInputStream(JNIEnv *env, jobject inputStream) : env(env), inputStream(
         inputStream) {
-    if (!env->IsInstanceOf(inputStream,
-            env->FindClass("org/oxycblt/musikr/metadata/NativeInputStream"))) {
-        throw std::runtime_error("oStream is not an instance of TagLibOStream");
-    }
     jclass inputStreamClass = env->FindClass(
             "org/oxycblt/musikr/metadata/NativeInputStream");
+    if (!env->IsInstanceOf(inputStream, inputStreamClass)) {
+        throw std::runtime_error("oStream is not an instance of TagLibOStream");
+    }
     inputStreamReadBlockMethod = env->GetMethodID(inputStreamClass, "readBlock",
             "(J)[B");
     inputStreamIsOpenMethod = env->GetMethodID(inputStreamClass, "isOpen",
@@ -57,7 +56,7 @@ TagLib::FileName JVMInputStream::name() const {
 
 TagLib::ByteVector JVMInputStream::readBlock(size_t length) {
     auto data = (jbyteArray) env->CallObjectMethod(inputStream,
-            inputStreamReadBlockMethod, length);
+            inputStreamReadBlockMethod, static_cast<jlong>(length));
     if (data == nullptr) {
         throw std::runtime_error("Failed to read block, see logs");
     }
@@ -66,6 +65,7 @@ TagLib::ByteVector JVMInputStream::readBlock(size_t length) {
     TagLib::ByteVector byteVector(reinterpret_cast<const char*>(dataBytes),
             dataLength);
     env->ReleaseByteArrayElements(data, dataBytes, JNI_ABORT);
+    env->DeleteLocalRef(data);
     return byteVector;
 }
 

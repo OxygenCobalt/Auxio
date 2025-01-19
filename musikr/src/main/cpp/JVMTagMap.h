@@ -33,15 +33,15 @@ public:
     JVMTagMap& operator=(const JVMTagMap&) = delete;
 
     void add_id(TagLib::String id, TagLib::String value);
-    void add_id(TagLib::String id, TagLib::StringList value);
+    void add_id(TagLib::String id, TagLib::StringList values);
 
     void add_custom(TagLib::String description, TagLib::String value);
-    void add_custom(TagLib::String description, TagLib::StringList value);
+    void add_custom(TagLib::String description, TagLib::StringList values);
 
     void add_combined(TagLib::String id, TagLib::String description,
             TagLib::String value);
     void add_combined(TagLib::String id, TagLib::String description,
-            TagLib::StringList value);
+            TagLib::StringList values);
 
     jobject getObject();
 

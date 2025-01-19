@@ -188,10 +188,11 @@ jobject JVMMetadataBuilder::build() {
             "org/oxycblt/musikr/metadata/Properties");
     jmethodID propertiesInit = env->GetMethodID(propertiesClass, "<init>",
             "(Ljava/lang/String;JII)V");
+    jstring jmimeType = env->NewStringUTF(mimeType.data());
     jobject propertiesObj = env->NewObject(propertiesClass, propertiesInit,
-            env->NewStringUTF(mimeType.data()),
-            (jlong) properties->lengthInMilliseconds(), properties->bitrate(),
-            properties->sampleRate());
+            jmimeType, (jlong) properties->lengthInMilliseconds(),
+            properties->bitrate(), properties->sampleRate());
+    env->DeleteLocalRef(jmimeType);
     env->DeleteLocalRef(propertiesClass);
 
     jclass metadataClass = env->FindClass(
@@ -211,6 +212,11 @@ jobject JVMMetadataBuilder::build() {
     }
     jobject metadataObj = env->NewObject(metadataClass, metadataInit, id3v2Map,
             xiphMap, mp4Map, coverArray, propertiesObj);
+    env->DeleteLocalRef(propertiesObj);
     env->DeleteLocalRef(metadataClass);
+    env->DeleteLocalRef(coverArray);
+    env->DeleteLocalRef(id3v2Map);
+    env->DeleteLocalRef(xiphMap);
+    env->DeleteLocalRef(mp4Map);
     return metadataObj;
 }
