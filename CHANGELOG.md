@@ -23,6 +23,7 @@
 - M3U playlist file name is now proposed if one cannot be found within the file
 - Duration is now parsed from certain files that previously could not be parsed
 - ID3v2 tags are now parsed from WAV files
+- NN/TT tracks/discs are now handled in Vorbis
 - Music library will is less likely to fail to respond to updates
 - Hidden audio files can now be loaded
 - Sorting songs by date now uses songs date first, before the earliest album date
