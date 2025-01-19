@@ -18,8 +18,8 @@
  
 #include <jni.h>
 #include <string>
-#include "JVMInputStream.h"
-#include "JVMMetadataBuilder.h"
+#include "JInputStream.h"
+#include "JMetadataBuilder.h"
 #include "util.h"
 
 #include "taglib/fileref.h"
@@ -35,65 +35,65 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
         jobject /* this */,
         jobject inputStream) {
     try {
-        JVMInputStream stream {env, inputStream};
-        TagLib::FileRef fileRef {&stream};
+        JInputStream jStream {env, inputStream};
+        TagLib::FileRef fileRef {&jStream};
         if (fileRef.isNull()) {
             LOGE("Error opening file");
             return nullptr;
         }
         TagLib::File *file = fileRef.file();
-        JVMMetadataBuilder builder {env};
+        JMetadataBuilder jBuilder {env};
 
         if (auto *mpegFile = dynamic_cast<TagLib::MPEG::File *>(file)) {
-            builder.setMimeType("audio/mpeg");
+            jBuilder.setMimeType("audio/mpeg");
             auto id3v1Tag = mpegFile->ID3v1Tag();
             if (id3v1Tag != nullptr) {
-                builder.setId3v1(*id3v1Tag);
+                jBuilder.setId3v1(*id3v1Tag);
             }
             auto id3v2Tag = mpegFile->ID3v2Tag();
             if (id3v2Tag != nullptr) {
-                builder.setId3v2(*id3v2Tag);
+                jBuilder.setId3v2(*id3v2Tag);
             }
         } else if (auto *mp4File = dynamic_cast<TagLib::MP4::File *>(file)) {
-            builder.setMimeType("audio/mp4");
+            jBuilder.setMimeType("audio/mp4");
             auto tag = mp4File->tag();
             if (tag != nullptr) {
-                builder.setMp4(*tag);
+                jBuilder.setMp4(*tag);
             }
         } else if (auto *flacFile = dynamic_cast<TagLib::FLAC::File *>(file)) {
-            builder.setMimeType("audio/flac");
+            jBuilder.setMimeType("audio/flac");
             auto id3v1Tag = flacFile->ID3v1Tag();
             if (id3v1Tag != nullptr) {
-                builder.setId3v1(*id3v1Tag);
+                jBuilder.setId3v1(*id3v1Tag);
             }
             auto id3v2Tag = flacFile->ID3v2Tag();
             if (id3v2Tag != nullptr) {
-                builder.setId3v2(*id3v2Tag);
+                jBuilder.setId3v2(*id3v2Tag);
             }
             auto xiphComment = flacFile->xiphComment();
             if (xiphComment != nullptr) {
-                builder.setXiph(*xiphComment);
+                jBuilder.setXiph(*xiphComment);
             }
             auto pics = flacFile->pictureList();
-            builder.setFlacPictures(pics);
+            jBuilder.setFlacPictures(pics);
         } else if (auto *opusFile = dynamic_cast<TagLib::Ogg::Opus::File *>(file)) {
-            builder.setMimeType("audio/opus");
+            jBuilder.setMimeType("audio/opus");
             auto tag = opusFile->tag();
             if (tag != nullptr) {
-                builder.setXiph(*tag);
+                jBuilder.setXiph(*tag);
             }
         } else if (auto *vorbisFile =
                 dynamic_cast<TagLib::Ogg::Vorbis::File *>(file)) {
-            builder.setMimeType("audio/vorbis");
+            jBuilder.setMimeType("audio/vorbis");
             auto tag = vorbisFile->tag();
             if (tag != nullptr) {
-                builder.setXiph(*tag);
+                jBuilder.setXiph(*tag);
             }
         } else if (auto *wavFile = dynamic_cast<TagLib::RIFF::WAV::File *>(file)) {
-            builder.setMimeType("audio/wav");
+            jBuilder.setMimeType("audio/wav");
             auto tag = wavFile->ID3v2Tag();
             if (tag != nullptr) {
-                builder.setId3v2(*tag);
+                jBuilder.setId3v2(*tag);
             }
         } else {
             // While taglib supports other formats, ExoPlayer does not. Ignore them.
@@ -101,8 +101,8 @@ Java_org_oxycblt_musikr_metadata_TagLibJNI_openNative(JNIEnv *env,
             return nullptr;
         }
 
-        builder.setProperties(file->audioProperties());
-        return builder.build();
+        jBuilder.setProperties(file->audioProperties());
+        return jBuilder.build();
     } catch (std::runtime_error e) {
         LOGD("Error opening file: %s", e.what());
         return nullptr;

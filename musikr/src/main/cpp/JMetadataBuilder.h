@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * JVMMetadataBuilder.h is part of Auxio.
+ * JMetadataBuilder.h is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#ifndef AUXIO_JVMMETADATABUILDER_H
-#define AUXIO_JVMMETADATABUILDER_H
+#ifndef AUXIO_JMETADATABUILDER_H
+#define AUXIO_JMETADATABUILDER_H
 
 #include <jni.h>
 #include <string_view>
@@ -29,13 +29,13 @@
 #include "taglib/mp4tag.h"
 #include "taglib/audioproperties.h"
 
-#include "JVMTagMap.h"
+#include "JTagMap.h"
 
-class JVMMetadataBuilder {
+class JMetadataBuilder {
 public:
-    JVMMetadataBuilder(JNIEnv *env);
+    JMetadataBuilder(JNIEnv *env);
 
-    void setMimeType(const std::string_view type);
+    void setMimeType(TagLib::String type);
     void setId3v1(TagLib::ID3v1::Tag &tag);
     void setId3v2(TagLib::ID3v2::Tag &tag);
     void setXiph(TagLib::Ogg::XiphComment &tag);
@@ -48,14 +48,14 @@ public:
 private:
     JNIEnv *env;
 
-    std::string_view mimeType;
+    TagLib::String mimeType;
 
     std::optional<TagLib::ByteVector> cover;
     TagLib::AudioProperties *properties;
 
-    JVMTagMap id3v2;
-    JVMTagMap xiph;
-    JVMTagMap mp4;
+    JTagMap id3v2;
+    JTagMap xiph;
+    JTagMap mp4;
 };
 
-#endif //AUXIO_JVMMETADATABUILDER_H
+#endif //AUXIO_JMETADATABUILDER_H

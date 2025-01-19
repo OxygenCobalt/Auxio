@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * JVMInputStream.h is part of Auxio.
+ * JInputStream.h is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#ifndef AUXIO_JVMINPUTSTREAM_H
-#define AUXIO_JVMINPUTSTREAM_H
+#ifndef AUXIO_JINPUTSTREAM_H
+#define AUXIO_JINPUTSTREAM_H
 
 #include <jni.h>
+#include "JObjectRef.h"
 
 #include "taglib/tiostream.h"
 
-class JVMInputStream: public TagLib::IOStream {
+class JInputStream: public TagLib::IOStream {
 public:
-    JVMInputStream(JNIEnv *env, jobject inputStream);
+    JInputStream(JNIEnv *env, jobject jInputStream);
 
-    ~JVMInputStream();
+    ~JInputStream();
 
-    JVMInputStream(const JVMInputStream&) = delete;
-    JVMInputStream& operator=(const JVMInputStream&) = delete;
+    JInputStream(const JInputStream&) = delete;
+    JInputStream& operator=(const JInputStream&) = delete;
 
     /*!
      * Returns the stream name in the local file system encoding.
@@ -113,15 +114,14 @@ public:
 
 private:
     JNIEnv *env;
-    jobject inputStream;
-    jmethodID inputStreamReadBlockMethod;
-    jmethodID inputStreamIsOpenMethod;
-    jmethodID inputStreamSeekFromBeginningMethod;
-    jmethodID inputStreamSeekFromCurrentMethod;
-    jmethodID inputStreamSeekFromEndMethod;
-    jmethodID inputStreamTellMethod;
-    jmethodID inputStreamLengthMethod;
-
+    jobject jInputStream;
+    jmethodID jInputStreamReadBlockMethod;
+    jmethodID jInputStreamIsOpenMethod;
+    jmethodID jInputStreamSeekFromBeginningMethod;
+    jmethodID jInputStreamSeekFromCurrentMethod;
+    jmethodID jInputStreamSeekFromEndMethod;
+    jmethodID jInputStreamTellMethod;
+    jmethodID jInputStreamLengthMethod;
 };
 
-#endif //AUXIO_JVMINPUTSTREAM_H
+#endif //AUXIO_JINPUTSTREAM_H

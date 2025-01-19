@@ -45,9 +45,13 @@ set_target_properties(
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         taglib_jni.cpp
-        JVMInputStream.cpp
-        JVMTagMap.cpp
-        JVMMetadataBuilder.cpp
+        JInputStream.cpp
+        JTagMap.cpp
+        JMetadataBuilder.cpp
+        JClassRef.cpp
+        JObjectRef.cpp
+        JStringRef.cpp
+        JByteArrayRef.cpp
 )
 target_link_options(${CMAKE_PROJECT_NAME}
         # @Tolriq found that these flags can reduce the size of the linked

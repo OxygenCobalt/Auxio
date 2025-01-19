@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * JVMMetadataBuilder.cpp is part of Auxio.
+ * JMetadataBuilder.cpp is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#include "JVMMetadataBuilder.h"
+#include "JMetadataBuilder.h"
 
 #include "util.h"
 
@@ -26,15 +26,20 @@
 
 #include <taglib/tpropertymap.h>
 
-JVMMetadataBuilder::JVMMetadataBuilder(JNIEnv *env) : env(env), id3v2(env), xiph(
+#include "JObjectRef.h"
+#include "JClassRef.h"
+#include "JStringRef.h"
+#include "JByteArrayRef.h"
+
+JMetadataBuilder::JMetadataBuilder(JNIEnv *env) : env(env), id3v2(env), xiph(
         env), mp4(env), cover(), properties(nullptr) {
 }
 
-void JVMMetadataBuilder::setMimeType(const std::string_view type) {
-    this->mimeType = type;
+void JMetadataBuilder::setMimeType(TagLib::String type) {
+    mimeType = type;
 }
 
-void JVMMetadataBuilder::setId3v1(TagLib::ID3v1::Tag &tag) {
+void JMetadataBuilder::setId3v1(TagLib::ID3v1::Tag &tag) {
     id3v2.add_id("TIT2", tag.title());
     id3v2.add_id("TPE1", tag.artist());
     id3v2.add_id("TALB", tag.album());
@@ -46,7 +51,7 @@ void JVMMetadataBuilder::setId3v1(TagLib::ID3v1::Tag &tag) {
     }
 }
 
-void JVMMetadataBuilder::setId3v2(TagLib::ID3v2::Tag &tag) {
+void JMetadataBuilder::setId3v2(TagLib::ID3v2::Tag &tag) {
     // We want to ideally find the front cover, fall back to the first picture otherwise.
     std::optional<TagLib::ID3v2::AttachedPictureFrame*> firstPic;
     std::optional<TagLib::ID3v2::AttachedPictureFrame*> frontCoverPic;
@@ -89,7 +94,7 @@ void JVMMetadataBuilder::setId3v2(TagLib::ID3v2::Tag &tag) {
     }
 }
 
-void JVMMetadataBuilder::setXiph(TagLib::Ogg::XiphComment &tag) {
+void JMetadataBuilder::setXiph(TagLib::Ogg::XiphComment &tag) {
     for (auto field : tag.fieldListMap()) {
         auto key = field.first.upper();
         auto values = field.second;
@@ -100,7 +105,7 @@ void JVMMetadataBuilder::setXiph(TagLib::Ogg::XiphComment &tag) {
 }
 
 template<typename T>
-void mp4AddImpl(JVMTagMap &map, TagLib::String &itemName, T itemValue) {
+void mp4AddImpl(JTagMap &map, TagLib::String &itemName, T itemValue) {
     if (itemName.startsWith("----")) {
         // Split this into it's atom name and description
         auto split = itemName.find(':');
@@ -112,7 +117,7 @@ void mp4AddImpl(JVMTagMap &map, TagLib::String &itemName, T itemValue) {
     }
 }
 
-void JVMMetadataBuilder::setMp4(TagLib::MP4::Tag &tag) {
+void JMetadataBuilder::setMp4(TagLib::MP4::Tag &tag) {
     auto map = tag.itemMap();
     std::optional < TagLib::MP4::CoverArt > firstCover;
     for (auto item : map) {
@@ -165,7 +170,7 @@ void JVMMetadataBuilder::setMp4(TagLib::MP4::Tag &tag) {
     }
 }
 
-void JVMMetadataBuilder::setFlacPictures(
+void JMetadataBuilder::setFlacPictures(
         TagLib::List<TagLib::FLAC::Picture*> &pics) {
     // Find the front cover image. If it doesn't exist, fall back to the first image.
     for (auto pic : pics) {
@@ -179,44 +184,33 @@ void JVMMetadataBuilder::setFlacPictures(
     }
 }
 
-void JVMMetadataBuilder::setProperties(TagLib::AudioProperties *properties) {
+void JMetadataBuilder::setProperties(TagLib::AudioProperties *properties) {
     this->properties = properties;
 }
 
-jobject JVMMetadataBuilder::build() {
-    jclass propertiesClass = env->FindClass(
-            "org/oxycblt/musikr/metadata/Properties");
-    jmethodID propertiesInit = env->GetMethodID(propertiesClass, "<init>",
+jobject JMetadataBuilder::build() {
+    JClassRef jPropertiesClass { env, "org/oxycblt/musikr/metadata/Properties" };
+    jmethodID jPropertiesInitMethod = jPropertiesClass.method("<init>",
             "(Ljava/lang/String;JII)V");
-    jstring jmimeType = env->NewStringUTF(mimeType.data());
-    jobject propertiesObj = env->NewObject(propertiesClass, propertiesInit,
-            jmimeType, (jlong) properties->lengthInMilliseconds(),
-            properties->bitrate(), properties->sampleRate());
-    env->DeleteLocalRef(jmimeType);
-    env->DeleteLocalRef(propertiesClass);
+    JStringRef jMimeType { env, this->mimeType };
 
-    jclass metadataClass = env->FindClass(
-            "org/oxycblt/musikr/metadata/Metadata");
-    jmethodID metadataInit = env->GetMethodID(metadataClass, "<init>",
+    JObjectRef jProperties { env, env->NewObject(*jPropertiesClass,
+            jPropertiesInitMethod, *jMimeType,
+            (jlong) properties->lengthInMilliseconds(), properties->bitrate(),
+            properties->sampleRate()) };
+
+    JClassRef jMetadataClass { env, "org/oxycblt/musikr/metadata/Metadata" };
+    jmethodID jMetadataInitMethod = jMetadataClass.method("<init>",
             "(Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;[BLorg/"
                     "oxycblt/musikr/metadata/Properties;)V");
-    jobject id3v2Map = id3v2.getObject();
-    jobject xiphMap = xiph.getObject();
-    jobject mp4Map = mp4.getObject();
-    jbyteArray coverArray = nullptr;
+    auto jId3v2Map = id3v2.getObject();
+    auto jXiphMap = xiph.getObject();
+    auto jMp4Map = mp4.getObject();
     if (cover.has_value()) {
-        auto coverSize = static_cast<jsize>(cover->size());
-        coverArray = env->NewByteArray(coverSize);
-        env->SetByteArrayRegion(coverArray, 0, coverSize,
-                reinterpret_cast<const jbyte*>(cover->data()));
+        JByteArrayRef jCoverArray { env, cover.value() };
+        return env->NewObject(*jMetadataClass, jMetadataInitMethod, **jId3v2Map,
+                **jXiphMap, **jMp4Map, *jCoverArray, *jProperties);
     }
-    jobject metadataObj = env->NewObject(metadataClass, metadataInit, id3v2Map,
-            xiphMap, mp4Map, coverArray, propertiesObj);
-    env->DeleteLocalRef(propertiesObj);
-    env->DeleteLocalRef(metadataClass);
-    env->DeleteLocalRef(coverArray);
-    env->DeleteLocalRef(id3v2Map);
-    env->DeleteLocalRef(xiphMap);
-    env->DeleteLocalRef(mp4Map);
-    return metadataObj;
+    return env->NewObject(*jMetadataClass, jMetadataInitMethod, **jId3v2Map,
+            **jXiphMap, **jMp4Map, nullptr, *jProperties);
 }
