@@ -30,9 +30,6 @@
 #include "taglib/vorbisfile.h"
 #include "taglib/wavfile.h"
 
-std::unique_ptr<TagLib::FileRef> openFile(JNIEnv *env, jobject inputStream) {
-}
-
 bool parseMpeg(const char *name, TagLib::File *file,
         JMetadataBuilder &jBuilder) {
     auto *mpegFile = dynamic_cast<TagLib::MPEG::File*>(file);
