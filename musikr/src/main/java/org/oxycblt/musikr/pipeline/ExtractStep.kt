@@ -117,7 +117,7 @@ private class ExtractStepImpl(
             fds.mapNotNull { fileWith ->
                     wrap(fileWith.file) { _ ->
                         metadataExtractor
-                            .extract(fileWith.with)
+                            .extract(fileWith.file, fileWith.with)
                             ?.let { FileWith(fileWith.file, it) }
                             .also { withContext(Dispatchers.IO) { fileWith.with.close() } }
                     }

@@ -21,9 +21,12 @@ package org.oxycblt.musikr.metadata
 import android.util.Log
 import java.io.FileInputStream
 import java.nio.ByteBuffer
+import org.oxycblt.musikr.fs.DeviceFile
 
-internal class NativeInputStream(fis: FileInputStream) {
+internal class NativeInputStream(private val deviceFile: DeviceFile, fis: FileInputStream) {
     private val channel = fis.channel
+
+    fun name() = requireNotNull(deviceFile.path.name)
 
     fun readBlock(length: Long): ByteArray? {
         try {

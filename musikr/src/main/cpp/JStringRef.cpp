@@ -19,6 +19,9 @@
 #include "JStringRef.h"
 #include "util.h"
 
+JStringRef::JStringRef(JNIEnv *env, jstring jString) : env(env), string(jString) {
+}
+
 JStringRef::JStringRef(JNIEnv *env, const TagLib::String string) {
     this->env = env;
     this->string = env->NewStringUTF(string.toCString(true));
@@ -26,6 +29,13 @@ JStringRef::JStringRef(JNIEnv *env, const TagLib::String string) {
 
 JStringRef::~JStringRef() {
     env->DeleteLocalRef(string);
+}
+
+TagLib::String JStringRef::copy() {
+    auto chars = env->GetStringUTFChars(string, nullptr);
+    TagLib::String result = chars;
+    env->ReleaseStringUTFChars(string, chars);
+    return result;
 }
 
 jstring& JStringRef::operator*() {

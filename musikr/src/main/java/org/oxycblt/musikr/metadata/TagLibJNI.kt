@@ -19,6 +19,7 @@
 package org.oxycblt.musikr.metadata
 
 import java.io.FileInputStream
+import org.oxycblt.musikr.fs.DeviceFile
 
 internal object TagLibJNI {
     init {
@@ -30,12 +31,12 @@ internal object TagLibJNI {
      *
      * Note: This method is blocking and should be handled as such if calling from a coroutine.
      */
-    fun open(fis: FileInputStream): Metadata? {
-        val inputStream = NativeInputStream(fis)
+    fun open(deviceFile: DeviceFile, fis: FileInputStream): Metadata? {
+        val inputStream = NativeInputStream(deviceFile, fis)
         val tag = openNative(inputStream)
         inputStream.close()
         return tag
     }
 
-    private external fun openNative(ioStream: NativeInputStream): Metadata?
+    private external fun openNative(inputStream: NativeInputStream): Metadata?
 }

@@ -24,6 +24,8 @@
 
 class JStringRef {
 public:
+    JStringRef(JNIEnv *env, jstring jString);
+
     JStringRef(JNIEnv *env, TagLib::String string);
 
     ~JStringRef();
@@ -31,6 +33,8 @@ public:
     JStringRef(const JStringRef&) = delete;
 
     JStringRef& operator=(const JStringRef&) = delete;
+
+    TagLib::String copy();
 
     jstring& operator*();
 

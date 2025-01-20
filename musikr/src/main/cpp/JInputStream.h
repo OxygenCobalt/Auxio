@@ -115,6 +115,7 @@ public:
 private:
     JNIEnv *env;
     jobject jInputStream;
+    jmethodID jInputStreamNameMethod;
     jmethodID jInputStreamReadBlockMethod;
     jmethodID jInputStreamIsOpenMethod;
     jmethodID jInputStreamSeekFromBeginningMethod;

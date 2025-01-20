@@ -22,14 +22,17 @@
 
 #include "JClassRef.h"
 #include "JByteArrayRef.h"
+#include "JStringRef.h"
 
 JInputStream::JInputStream(JNIEnv *env, jobject jInputStream) : env(env), jInputStream(
         jInputStream) {
     JClassRef jInputStreamClass = { env,
             "org/oxycblt/musikr/metadata/NativeInputStream" };
     if (!env->IsInstanceOf(jInputStream, *jInputStreamClass)) {
-        throw std::runtime_error("oStream is not an instance of TagLibOStream");
+        throw std::runtime_error("Object is not NativeInputStream");
     }
+    jInputStreamNameMethod = jInputStreamClass.method("name",
+            "()Ljava/lang/String;");
     jInputStreamReadBlockMethod = jInputStreamClass.method("readBlock",
             "(J)[B");
     jInputStreamIsOpenMethod = jInputStreamClass.method("isOpen", "()Z");
@@ -50,7 +53,9 @@ JInputStream::~JInputStream() {
 
 TagLib::FileName JInputStream::name() const {
     // Not actually used except in FileRef, can safely ignore.
-    return "";
+    JStringRef jName { env, reinterpret_cast<jstring>(env->CallObjectMethod(
+            jInputStream, jInputStreamNameMethod)) };
+    return jName.copy().toCString();
 }
 
 TagLib::ByteVector JInputStream::readBlock(size_t length) {
