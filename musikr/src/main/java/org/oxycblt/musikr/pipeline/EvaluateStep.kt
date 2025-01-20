@@ -23,6 +23,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -57,10 +58,10 @@ private class EvaluateStepImpl(
 ) : EvaluateStep {
     override suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary {
         val filterFlow =
-            extractedMusic.divert {
+            extractedMusic.filterIsInstance<ExtractedMusic.Valid>().divert {
                 when (it) {
-                    is ExtractedMusic.Song -> Divert.Right(it.song)
-                    is ExtractedMusic.Playlist -> Divert.Left(it.file)
+                    is ExtractedMusic.Valid.Song -> Divert.Right(it.song)
+                    is ExtractedMusic.Valid.Playlist -> Divert.Left(it.file)
                 }
             }
         val rawSongs = filterFlow.right
