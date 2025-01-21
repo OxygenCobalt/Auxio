@@ -18,16 +18,17 @@
  
 package org.oxycblt.musikr.cache
 
-import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
+import org.oxycblt.musikr.tag.parse.ParsedTags
 
 abstract class Cache {
-    internal abstract suspend fun read(file: DeviceFile, covers: Covers): CacheResult
+    internal abstract suspend fun read(file: DeviceFile): CacheResult
 
     internal abstract suspend fun write(song: RawSong)
 
-    internal abstract suspend fun finalize()
+    internal abstract suspend fun finalize(songs: List<RawSong>)
 
     abstract class Factory {
         internal abstract fun open(): Cache
@@ -35,7 +36,15 @@ abstract class Cache {
 }
 
 internal sealed interface CacheResult {
-    data class Hit(val song: RawSong) : CacheResult
+    data class Hit(
+        val file: DeviceFile,
+        val properties: Properties,
+        val tags: ParsedTags,
+        val coverId: String?,
+        val addedMs: Long
+    ) : CacheResult
 
-    data class Miss(val file: DeviceFile, val addedMs: Long?) : CacheResult
+    data class Outdated(val file: DeviceFile, val addedMs: Long) : CacheResult
+
+    data class Miss(val file: DeviceFile) : CacheResult
 }

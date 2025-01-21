@@ -24,20 +24,20 @@ import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
 
-/** Side-effect laden [Storage] for use during music loading and [MutableLibrary] operation. */
+/** Side-effect repositories for use during music loading and [MutableLibrary] operation. */
 data class Storage(
     /**
-     * A factory producing a repository of cached metadata to read and write from over the course of
-     * music loading. This will only be used during music loading.
+     * A repository of cached metadata to read and write from over the course of music loading only.
+     * This will be used only during music loading.
      */
-    val cache: Cache.Factory,
+    val cache: Cache,
 
     /**
      * A repository of cover images to for re-use during music loading. Should be kept in lock-step
      * with the cache for best performance. This will be used during music loading and when
      * retrieving cover information from the library.
      */
-    val storedCovers: MutableCovers,
+    val covers: MutableCovers,
 
     /**
      * A repository of user-created playlists that should also be loaded into the library. This will

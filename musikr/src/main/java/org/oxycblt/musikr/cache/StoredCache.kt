@@ -21,7 +21,9 @@ package org.oxycblt.musikr.cache
 import android.content.Context
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
+import org.oxycblt.musikr.tag.parse.ParsedTags
 
 interface StoredCache {
     fun visible(): Cache.Factory
@@ -54,17 +56,44 @@ private abstract class BaseStoredCache(protected val writeDao: CacheWriteDao) : 
 private class VisibleStoredCache(private val visibleDao: VisibleCacheDao, writeDao: CacheWriteDao) :
     BaseStoredCache(writeDao) {
     override suspend fun read(file: DeviceFile, covers: Covers): CacheResult {
-        val song = visibleDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file, null)
-        if (song.modifiedMs != file.modifiedMs) {
+        val cachedSong = visibleDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file)
+        if (cachedSong.modifiedMs != file.modifiedMs) {
             // We *found* this file earlier, but it's out of date.
             // Send back it with the timestamp so it will be re-used.
             // The touch timestamp will be updated on write.
-            return CacheResult.Miss(file, song.addedMs)
+            return CacheResult.Outdated(file, cachedSong.addedMs)
         }
         // Valid file, update the touch time.
         visibleDao.touch(file.uri.toString())
-        val rawSong = song.intoRawSong(file, covers) ?: return CacheResult.Miss(file, song.addedMs)
-        return CacheResult.Hit(rawSong)
+        return cachedSong.run {
+            CacheResult.Hit(
+                file,
+                Properties(mimeType, durationMs, bitrateHz, sampleRateHz),
+                ParsedTags(
+                    musicBrainzId = musicBrainzId,
+                    name = name,
+                    sortName = sortName,
+                    durationMs = durationMs,
+                    track = track,
+                    disc = disc,
+                    subtitle = subtitle,
+                    date = date,
+                    albumMusicBrainzId = albumMusicBrainzId,
+                    albumName = albumName,
+                    albumSortName = albumSortName,
+                    releaseTypes = releaseTypes,
+                    artistMusicBrainzIds = artistMusicBrainzIds,
+                    artistNames = artistNames,
+                    artistSortNames = artistSortNames,
+                    albumArtistMusicBrainzIds = albumArtistMusicBrainzIds,
+                    albumArtistNames = albumArtistNames,
+                    albumArtistSortNames = albumArtistSortNames,
+                    genreNames = genreNames,
+                    replayGainTrackAdjustment = replayGainTrackAdjustment,
+                    replayGainAlbumAdjustment = replayGainAlbumAdjustment),
+                coverId = coverId,
+                addedMs = addedMs)
+        }
     }
 
     class Factory(private val cacheDatabase: CacheDatabase) : Cache.Factory() {
@@ -77,8 +106,11 @@ private class InvisibleStoredCache(
     private val invisibleCacheDao: InvisibleCacheDao,
     writeDao: CacheWriteDao
 ) : BaseStoredCache(writeDao) {
-    override suspend fun read(file: DeviceFile, covers: Covers) =
-        CacheResult.Miss(file, invisibleCacheDao.selectAddedMs(file.uri.toString()))
+    override suspend fun read(file: DeviceFile, covers: Covers): CacheResult {
+        val addedMs =
+            invisibleCacheDao.selectAddedMs(file.uri.toString()) ?: return CacheResult.Miss(file)
+        return CacheResult.Outdated(file, addedMs)
+    }
 
     class Factory(private val cacheDatabase: CacheDatabase) : Cache.Factory() {
         override fun open() =

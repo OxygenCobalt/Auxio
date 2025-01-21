@@ -18,6 +18,8 @@
  
 package org.oxycblt.musikr.metadata
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.ParcelFileDescriptor
 import java.io.FileInputStream
 import kotlinx.coroutines.Dispatchers
@@ -25,17 +27,38 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.fs.DeviceFile
 
 internal interface MetadataExtractor {
-    suspend fun extract(deviceFile: DeviceFile, fd: ParcelFileDescriptor): Metadata?
+    suspend fun open(deviceFile: DeviceFile): MetadataHandle?
 
     companion object {
-        fun new(): MetadataExtractor = MetadataExtractorImpl
+        fun new(context: Context): MetadataExtractor = MetadataExtractorImpl(context)
     }
 }
 
-private object MetadataExtractorImpl : MetadataExtractor {
-    override suspend fun extract(deviceFile: DeviceFile, fd: ParcelFileDescriptor) =
+internal interface MetadataHandle {
+    suspend fun extract(): Metadata?
+}
+
+private class MetadataExtractorImpl(private val context: Context) : MetadataExtractor {
+    @SuppressLint("Recycle")
+    override suspend fun open(deviceFile: DeviceFile): MetadataHandle? {
+        val fd =
+            withContext(Dispatchers.IO) {
+                context.contentResolver.openFileDescriptor(deviceFile.uri, "r")
+            }
+        return MetadataHandleImpl(deviceFile, fd ?: return null)
+    }
+}
+
+private class MetadataHandleImpl(
+    private val file: DeviceFile,
+    private val fd: ParcelFileDescriptor
+) : MetadataHandle {
+    override suspend fun extract() =
         withContext(Dispatchers.IO) {
             val fis = FileInputStream(fd.fileDescriptor)
-            TagLibJNI.open(deviceFile, fis).also { fis.close() }
+            TagLibJNI.open(file, fis).also {
+                fis.close()
+                fd.close()
+            }
         }
 }

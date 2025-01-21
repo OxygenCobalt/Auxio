@@ -24,56 +24,71 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.cache.Cache
+import org.oxycblt.musikr.cache.CacheResult
+import org.oxycblt.musikr.cover.Covers
+import org.oxycblt.musikr.cover.ObtainResult
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceFiles
-import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
+    fun explore(locations: List<MusicLocation>): Flow<Explored>
 
     companion object {
         fun from(context: Context, storage: Storage): ExploreStep =
-            ExploreStepImpl(DeviceFiles.from(context), storage.storedPlaylists)
+            ExploreStepImpl(
+                DeviceFiles.from(context), storage.storedPlaylists, storage.cache, storage.covers)
     }
 }
 
 private class ExploreStepImpl(
     private val deviceFiles: DeviceFiles,
-    private val storedPlaylists: StoredPlaylists
+    private val storedPlaylists: StoredPlaylists,
+    private val cache: Cache,
+    private val covers: Covers
 ) : ExploreStep {
-    override fun explore(locations: List<MusicLocation>): Flow<ExploreNode> {
+    override fun explore(locations: List<MusicLocation>): Flow<Explored> {
         val audios =
             deviceFiles
                 .explore(locations.asFlow())
-                .mapNotNull {
-                    when {
-                        it.mimeType == M3U.MIME_TYPE -> null
-                        it.mimeType.startsWith("audio/") -> ExploreNode.Audio(it)
-                        else -> null
-                    }
-                }
+                .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
+                .map { evaluateAudio(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer()
         val playlists =
             flow { emitAll(storedPlaylists.read().asFlow()) }
-                .map { ExploreNode.Playlist(it) }
+                .map { RawPlaylist(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer()
         return merge(audios, playlists)
     }
-}
 
-internal sealed interface ExploreNode {
-    data class Audio(val file: DeviceFile) : ExploreNode
-
-    data class Playlist(val file: PlaylistFile) : ExploreNode
+    private suspend fun evaluateAudio(file: DeviceFile): Explored {
+        return when (val cacheResult = cache.read(file)) {
+            is CacheResult.Hit -> {
+                val coverResult = cacheResult.coverId?.let { covers.obtain(it) }
+                when (coverResult) {
+                    is ObtainResult.Hit ->
+                        RawSong(
+                            file,
+                            cacheResult.properties,
+                            cacheResult.tags,
+                            coverResult.cover,
+                            cacheResult.addedMs)
+                    else -> NewSong(file, cacheResult.addedMs)
+                }
+            }
+            is CacheResult.Outdated -> NewSong(file, cacheResult.addedMs)
+            is CacheResult.Miss -> NewSong(file, System.currentTimeMillis())
+        }
+    }
 }

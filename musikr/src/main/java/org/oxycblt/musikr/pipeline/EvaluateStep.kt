@@ -23,9 +23,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import org.oxycblt.musikr.Interpretation
@@ -38,7 +36,7 @@ import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
 internal interface EvaluateStep {
-    suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary
+    suspend fun evaluate(complete: Flow<Complete>): MutableLibrary
 
     companion object {
         fun new(storage: Storage, interpretation: Interpretation): EvaluateStep =
@@ -56,31 +54,31 @@ private class EvaluateStepImpl(
     private val storedPlaylists: StoredPlaylists,
     private val libraryFactory: LibraryFactory
 ) : EvaluateStep {
-    override suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary {
+    override suspend fun evaluate(complete: Flow<Complete>): MutableLibrary {
         val filterFlow =
-            extractedMusic.filterIsInstance<ExtractedMusic.Valid>().divert {
+            complete.divert {
                 when (it) {
-                    is ExtractedMusic.Valid.Song -> Divert.Right(it.song)
-                    is ExtractedMusic.Valid.Playlist -> Divert.Left(it.file)
+                    is RawSong -> Divert.Right(it)
+                    is RawPlaylist -> Divert.Left(it.file)
                 }
             }
         val rawSongs = filterFlow.right
         val preSongs =
             rawSongs
-                .map { wrap(it, tagInterpreter::interpret) }
+                .tryMap { tagInterpreter.interpret(it) }
                 .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val prePlaylists =
             filterFlow.left
-                .map { wrap(it, playlistInterpreter::interpret) }
+                .tryMap { playlistInterpreter.interpret(it) }
                 .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val graphBuilder = MusicGraph.builder()
         val graphBuild =
             merge(
                 filterFlow.manager,
-                preSongs.onEach { wrap(it, graphBuilder::add) },
-                prePlaylists.onEach { wrap(it, graphBuilder::add) })
+                preSongs.onEach { graphBuilder.add(it) },
+                prePlaylists.onEach { graphBuilder.add(it) })
         graphBuild.collect()
         val graph = graphBuilder.build()
         return libraryFactory.create(graph, storedPlaylists, playlistInterpreter)

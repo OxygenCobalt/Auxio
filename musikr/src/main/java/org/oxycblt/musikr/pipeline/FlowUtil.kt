@@ -20,9 +20,7 @@ package org.oxycblt.musikr.pipeline
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
 
@@ -57,7 +55,7 @@ internal inline fun <T, L, R> Flow<T>.divert(
     return DivertedFlow(managedFlow, leftChannel.receiveAsFlow(), rightChannel.receiveAsFlow())
 }
 
-internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Flow<Flow<T>>)
+internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Array<Flow<T>>)
 
 /**
  * Equally "distributes" the values of some flow across n new flows.
@@ -66,7 +64,7 @@ internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Flow<Fl
  * order to function. Without this, all of the newly split flows will simply block.
  */
 internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
-    val posChannels = List(n) { Channel<T>(Channel.UNLIMITED) }
+    val posChannels = Array(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
             withIndex().collect {
@@ -77,6 +75,9 @@ internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
                 channel.close()
             }
         }
-    val hotFlows = posChannels.asFlow().map { it.receiveAsFlow() }
+    val hotFlows = posChannels.mapx { it.receiveAsFlow() }
     return DistributedFlow(managerFlow, hotFlows)
 }
+
+internal inline fun <T, reified R> Array<T>.mapx(transform: (T) -> R) =
+    Array(size) { index -> transform(this[index]) }

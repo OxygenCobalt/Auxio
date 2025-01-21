@@ -22,13 +22,19 @@ import android.content.Context
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.pipeline.Divert
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
+import org.oxycblt.musikr.pipeline.Explored
 import org.oxycblt.musikr.pipeline.ExtractStep
+import org.oxycblt.musikr.pipeline.Extracted
+import org.oxycblt.musikr.pipeline.divert
 
 /**
  * A highly opinionated, multi-threaded device music library.
@@ -127,13 +133,24 @@ private class MusikrImpl(
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
                 .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
+        val typeDiversion =
+            explored.divert {
+                when (it) {
+                    is Explored.Known -> Divert.Right(it)
+                    is Explored.New -> Divert.Left(it)
+                }
+            }
+        val known = typeDiversion.right
+        val new = typeDiversion.left
         val extracted =
             extractStep
-                .extract(explored)
+                .extract(new)
                 .buffer(Channel.UNLIMITED)
                 .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
                 .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-        val library = evaluateStep.evaluate(extracted)
+        val complete =
+            merge(typeDiversion.manager, known, extracted.filterIsInstance<Extracted.Valid>())
+        val library = evaluateStep.evaluate(complete)
         LibraryResultImpl(storage, library)
     }
 }
@@ -143,6 +160,6 @@ private class LibraryResultImpl(
     override val library: MutableLibrary
 ) : LibraryResult {
     override suspend fun cleanup() {
-        storage.storedCovers.cleanup(library.songs.mapNotNull { it.cover })
+        storage.covers.cleanup(library.songs.mapNotNull { it.cover })
     }
 }
