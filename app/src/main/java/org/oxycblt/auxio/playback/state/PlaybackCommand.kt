@@ -94,7 +94,11 @@ constructor(
         override val parent: MusicParent?,
         override val queue: List<Song>,
         override val shuffled: Boolean
-    ) : PlaybackCommand
+    ) : PlaybackCommand {
+        // Only show queue count to reduce memory use
+        override fun toString() =
+            "PlaybackCommand(song=$song, parent=$parent, queue=${queue.size} songs, shuffled=$shuffled)"
+    }
 
     override fun song(song: Song, shuffle: ShuffleMode) =
         newCommand(song, null, listOf(song), shuffle)
