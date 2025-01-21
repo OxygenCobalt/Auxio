@@ -20,22 +20,6 @@ package org.oxycblt.musikr.cover
 
 import java.io.InputStream
 
-interface Covers {
-    suspend fun obtain(id: String): ObtainResult<out Cover>
-}
-
-interface MutableCovers : Covers {
-    suspend fun write(data: ByteArray): Cover
-
-    suspend fun cleanup(excluding: Collection<Cover>)
-}
-
-sealed interface ObtainResult<T : Cover> {
-    data class Hit<T : Cover>(val cover: T) : ObtainResult<T>
-
-    class Miss<T : Cover> : ObtainResult<T>
-}
-
 interface Cover {
     val id: String
 
@@ -57,4 +41,20 @@ class CoverCollection private constructor(val covers: List<Cover>) {
                     .sortedByDescending { it.value.size }
                     .map { it.value.first() })
     }
+}
+
+interface Covers {
+    suspend fun obtain(id: String): ObtainResult<out Cover>
+}
+
+interface MutableCovers : Covers {
+    suspend fun write(data: ByteArray): Cover
+
+    suspend fun cleanup(excluding: Collection<Cover>)
+}
+
+sealed interface ObtainResult<T : Cover> {
+    data class Hit<T : Cover>(val cover: T) : ObtainResult<T>
+
+    class Miss<T : Cover> : ObtainResult<T>
 }

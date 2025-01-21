@@ -16,10 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cache
+package org.oxycblt.musikr.cache.db
 
 import android.content.Context
 import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.cache.CacheResult
+import org.oxycblt.musikr.cache.CachedSong
+import org.oxycblt.musikr.cache.MutableSongCache
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags

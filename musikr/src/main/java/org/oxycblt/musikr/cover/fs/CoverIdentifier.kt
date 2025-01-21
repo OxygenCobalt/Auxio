@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * DeviceFile.kt is part of Auxio.
+ * CoverIdentifier.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,15 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs.device
+package org.oxycblt.musikr.cover.fs
 
-import android.net.Uri
-import org.oxycblt.musikr.fs.Path
+import java.security.MessageDigest
 
-data class DeviceFile(
-    val uri: Uri,
-    val mimeType: String,
-    val path: Path,
-    val size: Long,
-    val modifiedMs: Long
-)
+interface CoverIdentifier {
+    suspend fun identify(data: ByteArray): String
+
+    companion object {
+        fun md5(): CoverIdentifier = MD5CoverIdentifier()
+    }
+}
+
+private class MD5CoverIdentifier() : CoverIdentifier {
+    @OptIn(ExperimentalStdlibApi::class)
+    override suspend fun identify(data: ByteArray): String {
+        val digest =
+            MessageDigest.getInstance("MD5").run {
+                update(data)
+                digest()
+            }
+        return digest.toHexString()
+    }
+}

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cache
+package org.oxycblt.musikr.cache.db
 
 import android.content.Context
 import androidx.room.Dao

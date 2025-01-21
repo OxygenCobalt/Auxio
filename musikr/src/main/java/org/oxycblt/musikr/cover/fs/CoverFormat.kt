@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.cover.fs
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

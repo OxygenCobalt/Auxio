@@ -23,9 +23,9 @@ import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.musikr.cover.CoverIdentifier
-import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.cover.fs.CoverIdentifier
+import org.oxycblt.musikr.cover.fs.CoverParams
 
 interface SettingCovers {
     suspend fun create(context: Context, revision: UUID): MutableCovers

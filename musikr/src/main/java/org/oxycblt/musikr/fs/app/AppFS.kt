@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * AppFiles.kt is part of Auxio.
+ * AppFS.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-interface AppFiles {
+interface AppFS {
     suspend fun find(name: String): AppFile?
 
     suspend fun write(name: String, block: suspend (OutputStream) -> Unit): AppFile
@@ -36,9 +36,9 @@ interface AppFiles {
     suspend fun deleteWhere(block: (String) -> Boolean)
 
     companion object {
-        suspend fun at(dir: File): AppFiles {
+        suspend fun at(dir: File): AppFS {
             withContext(Dispatchers.IO) { check(dir.exists() && dir.isDirectory) }
-            return AppFilesImpl(dir)
+            return AppFSImpl(dir)
         }
     }
 }
@@ -49,7 +49,7 @@ interface AppFile {
     suspend fun open(): InputStream?
 }
 
-private class AppFilesImpl(private val dir: File) : AppFiles {
+private class AppFSImpl(private val dir: File) : AppFS {
     private val fileMutexes = mutableMapOf<String, Mutex>()
     private val mapMutex = Mutex()
 

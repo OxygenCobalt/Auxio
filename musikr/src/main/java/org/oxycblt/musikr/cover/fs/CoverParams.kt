@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.cover.fs
 
 class CoverParams private constructor(val resolution: Int, val quality: Int) {
     override fun hashCode() = 31 * resolution + quality

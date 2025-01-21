@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * DeviceFiles.kt is part of Auxio.
+ * DeviceFS.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,16 +32,24 @@ import kotlinx.coroutines.flow.flow
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
-internal interface DeviceFiles {
+internal interface DeviceFS {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
 
     companion object {
-        fun from(context: Context): DeviceFiles = DeviceFilesImpl(context.contentResolverSafe)
+        fun from(context: Context): DeviceFS = DeviceFSImpl(context.contentResolverSafe)
     }
 }
 
+data class DeviceFile(
+    val uri: Uri,
+    val mimeType: String,
+    val path: Path,
+    val size: Long,
+    val modifiedMs: Long
+)
+
 @OptIn(ExperimentalCoroutinesApi::class)
-private class DeviceFilesImpl(private val contentResolver: ContentResolver) : DeviceFiles {
+private class DeviceFSImpl(private val contentResolver: ContentResolver) : DeviceFS {
     override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
         locations.flatMapMerge { location ->
             exploreImpl(

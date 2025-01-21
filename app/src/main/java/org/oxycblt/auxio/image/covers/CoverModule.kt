@@ -23,7 +23,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.musikr.cover.CoverIdentifier
+import org.oxycblt.musikr.cover.fs.CoverIdentifier
 
 @Module
 @InstallIn(SingletonComponent::class)
