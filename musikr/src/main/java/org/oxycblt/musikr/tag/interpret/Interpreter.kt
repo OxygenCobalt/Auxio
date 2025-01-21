@@ -30,15 +30,15 @@ import org.oxycblt.musikr.tag.format.parseId3GenreNames
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.util.toUuidOrNull
 
-internal interface TagInterpreter {
+internal interface Interpreter {
     fun interpret(song: RawSong): PreSong
 
     companion object {
-        fun new(interpretation: Interpretation): TagInterpreter = TagInterpreterImpl(interpretation)
+        fun new(interpretation: Interpretation): Interpreter = InterpreterImpl(interpretation)
     }
 }
 
-private class TagInterpreterImpl(private val interpretation: Interpretation) : TagInterpreter {
+private class InterpreterImpl(private val interpretation: Interpretation) : Interpreter {
     override fun interpret(song: RawSong): PreSong {
         val individualPreArtists =
             makePreArtists(

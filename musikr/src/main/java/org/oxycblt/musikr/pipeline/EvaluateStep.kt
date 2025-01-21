@@ -33,7 +33,7 @@ import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
-import org.oxycblt.musikr.tag.interpret.TagInterpreter
+import org.oxycblt.musikr.tag.interpret.Interpreter
 
 internal interface EvaluateStep {
     suspend fun evaluate(complete: Flow<Complete>): MutableLibrary
@@ -41,7 +41,7 @@ internal interface EvaluateStep {
     companion object {
         fun new(storage: Storage, interpretation: Interpretation): EvaluateStep =
             EvaluateStepImpl(
-                TagInterpreter.new(interpretation),
+                Interpreter.new(interpretation),
                 PlaylistInterpreter.new(interpretation),
                 storage.storedPlaylists,
                 LibraryFactory.new())
@@ -49,7 +49,7 @@ internal interface EvaluateStep {
 }
 
 private class EvaluateStepImpl(
-    private val tagInterpreter: TagInterpreter,
+    private val interpreter: Interpreter,
     private val playlistInterpreter: PlaylistInterpreter,
     private val storedPlaylists: StoredPlaylists,
     private val libraryFactory: LibraryFactory
@@ -65,7 +65,7 @@ private class EvaluateStepImpl(
         val rawSongs = filterFlow.right
         val preSongs =
             rawSongs
-                .tryMap { tagInterpreter.interpret(it) }
+                .tryMap { interpreter.interpret(it) }
                 .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val prePlaylists =

@@ -28,13 +28,12 @@ import org.oxycblt.musikr.tag.interpret.Separators
 data class Storage(
     /**
      * A repository of cached metadata to read and write from over the course of music loading only.
-     * This will be used only during music loading.
      */
     val cache: MutableSongCache,
 
     /**
      * A repository of cover images to for re-use during music loading. Should be kept in lock-step
-     * with the cache for best performance. This will be used during music loading and when
+     * with the [cache] for best performance. This will be used during music loading and when
      * retrieving cover information from the library.
      */
     val covers: MutableCovers,
