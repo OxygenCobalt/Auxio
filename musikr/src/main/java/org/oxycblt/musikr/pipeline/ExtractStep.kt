@@ -54,7 +54,7 @@ private class ExtractStepImpl(
     override fun extract(nodes: Flow<Explored.New>): Flow<Extracted> {
         val newSongs = nodes.filterIsInstance<NewSong>()
 
-        val handles: Flow<ExtractedInternal.Pre> =
+        val handles =
             newSongs
                 .tryMap {
                     val handle = metadataExtractor.open(it.file)
@@ -63,7 +63,7 @@ private class ExtractStepImpl(
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED)
 
-        val extracted: Flow<ExtractedInternal.Post> =
+        val extracted =
             handles
                 .tryMap { item ->
                     when (item) {
@@ -88,11 +88,11 @@ private class ExtractStepImpl(
                 }
             }
 
-        val validSongs = validDiversion.right
-        val invalidSongs = validDiversion.left
+        val success = validDiversion.right
+        val failed = validDiversion.left
 
         val parsed =
-            validSongs
+            success
                 .tryMap { item ->
                     val tags = tagParser.parse(item.song.file, item.metadata)
                     val cover = item.metadata.cover?.let { storedCovers.write(it) }
@@ -114,9 +114,9 @@ private class ExtractStepImpl(
                     .buffer(Channel.UNLIMITED)
             }
 
-        val invalid = invalidSongs.map { InvalidSong }
+        val invalidSongs = failed.map { InvalidSong }
 
-        return merge(validDiversion.manager, writeDistribution.manager, *writtenSongs, invalid)
+        return merge(validDiversion.manager, writeDistribution.manager, *writtenSongs, invalidSongs)
     }
 
     private sealed interface ExtractedInternal {
