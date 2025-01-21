@@ -30,11 +30,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
+import org.oxycblt.musikr.cache.SongCache
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.ObtainResult
-import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceFiles
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
@@ -53,42 +52,47 @@ internal interface ExploreStep {
 private class ExploreStepImpl(
     private val deviceFiles: DeviceFiles,
     private val storedPlaylists: StoredPlaylists,
-    private val cache: Cache,
+    private val songCache: SongCache,
     private val covers: Covers
 ) : ExploreStep {
     override fun explore(locations: List<MusicLocation>): Flow<Explored> {
-        val audios =
+        val audioFiles =
             deviceFiles
                 .explore(locations.asFlow())
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
-                .map { evaluateAudio(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer()
-        val playlists =
+        val readDistribution = audioFiles.distribute(8)
+        val read =
+            readDistribution.flows.mapx { flow ->
+                flow
+                    .tryMap { file ->
+                        when (val cacheResult = songCache.read(file)) {
+                            is CacheResult.Hit -> {
+                                val cachedSong = cacheResult.song
+                                val coverResult = cachedSong.coverId?.let { covers.obtain(it) }
+                                if (coverResult !is ObtainResult.Hit) {
+                                    return@tryMap NewSong(file, cachedSong.addedMs)
+                                }
+                                RawSong(
+                                    cachedSong.file,
+                                    cachedSong.properties,
+                                    cachedSong.tags,
+                                    coverResult.cover,
+                                    cachedSong.addedMs)
+                            }
+                            is CacheResult.Outdated -> NewSong(file, cacheResult.addedMs)
+                            is CacheResult.Miss -> NewSong(file, System.currentTimeMillis())
+                        }
+                    }
+                    .flowOn(Dispatchers.IO)
+                    .buffer()
+            }
+        val storedPlaylists =
             flow { emitAll(storedPlaylists.read().asFlow()) }
                 .map { RawPlaylist(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer()
-        return merge(audios, playlists)
-    }
-
-    private suspend fun evaluateAudio(file: DeviceFile): Explored {
-        return when (val cacheResult = cache.read(file)) {
-            is CacheResult.Hit -> {
-                val coverResult = cacheResult.coverId?.let { covers.obtain(it) }
-                when (coverResult) {
-                    is ObtainResult.Hit ->
-                        RawSong(
-                            file,
-                            cacheResult.properties,
-                            cacheResult.tags,
-                            coverResult.cover,
-                            cacheResult.addedMs)
-                    else -> NewSong(file, cacheResult.addedMs)
-                }
-            }
-            is CacheResult.Outdated -> NewSong(file, cacheResult.addedMs)
-            is CacheResult.Miss -> NewSong(file, System.currentTimeMillis())
-        }
+        return merge(readDistribution.manager, *read, storedPlaylists)
     }
 }

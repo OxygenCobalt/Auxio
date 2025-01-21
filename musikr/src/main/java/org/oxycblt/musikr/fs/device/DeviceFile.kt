@@ -16,11 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs
+package org.oxycblt.musikr.fs.device
 
 import android.net.Uri
+import org.oxycblt.musikr.fs.Path
 
-internal data class DeviceFile(
+data class DeviceFile(
     val uri: Uri,
     val mimeType: String,
     val path: Path,

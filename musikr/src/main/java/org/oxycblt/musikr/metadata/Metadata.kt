@@ -53,7 +53,7 @@ internal data class Metadata(
     }
 }
 
-internal data class Properties(
+data class Properties(
     val mimeType: String,
     val durationMs: Long,
     val bitrateKbps: Int,

@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.tag.parse
 
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.util.unlikelyToBeNull
 

@@ -28,7 +28,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cache.Cache
+import org.oxycblt.musikr.cache.CachedSong
+import org.oxycblt.musikr.cache.MutableSongCache
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.metadata.MetadataExtractor
@@ -48,7 +49,7 @@ internal interface ExtractStep {
 private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
-    private val cache: Cache,
+    private val cache: MutableSongCache,
     private val storedCovers: MutableCovers
 ) : ExtractStep {
     override fun extract(nodes: Flow<Explored.New>): Flow<Extracted> {
@@ -107,7 +108,9 @@ private class ExtractStepImpl(
             writeDistribution.flows.mapx { flow ->
                 flow
                     .tryMap {
-                        cache.write(it)
+                        val cachedSong =
+                            CachedSong(it.file, it.properties, it.tags, it.cover?.id, it.addedMs)
+                        cache.write(cachedSong)
                         it
                     }
                     .flowOn(Dispatchers.IO)
