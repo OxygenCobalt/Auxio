@@ -27,14 +27,17 @@ internal class PlaylistGraph {
 
     fun link(vertex: PlaylistVertex) {
         for ((pointer, songVertex) in pointerMap) {
+            // Link the vertices we are already aware of to this vertex.
             vertex.pointerMap[pointer]?.forEach { index -> vertex.songVertices[index] = songVertex }
         }
+        vertices.add(vertex)
     }
 
     fun link(vertex: SongVertex) {
         val pointer = SongPointer.UID(vertex.preSong.uid)
         pointerMap[pointer] = vertex
         for (playlistVertex in vertices) {
+            // Retroactively update previously known playlists to add the new vertex.
             playlistVertex.pointerMap[pointer]?.forEach { index ->
                 playlistVertex.songVertices[index] = vertex
             }

@@ -30,14 +30,16 @@ internal class SongGraph(
     private val vertices = mutableMapOf<Music.UID, SongVertex>()
 
     fun link(vertex: SongVertex): Boolean {
-        val preSong = vertex.preSong
-        val uid = preSong.uid
+        val uid = vertex.preSong.uid
         if (vertices.containsKey(uid)) {
+            // Discard songs with duplicate ID's, they wreck the entire
+            // music model and they're pretty much always the same file.
             return false
         }
+        // Link the vertex to the rest of the graph now.
+        albumGraph.link(vertex)
         artistGraph.link(vertex)
         genreGraph.link(vertex)
-        albumGraph.link(vertex)
         playlistGraph.link(vertex)
         vertices[uid] = vertex
         return true
