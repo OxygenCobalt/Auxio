@@ -141,10 +141,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
 
             playlistVertices.forEach {
                 val pointer = SongPointer.UID(entry.key)
-                val index = it.pointerMap[pointer]
-                if (index != null) {
-                    it.songVertices[index] = vertex
-                }
+                it.pointerMap[pointer]?.forEach { index -> it.songVertices[index] = vertex }
             }
         }
 
@@ -373,7 +370,7 @@ internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
     val pointerMap =
         prePlaylist.songPointers
             .withIndex()
-            .associateBy { it.value }
-            .mapValuesTo(mutableMapOf()) { it.value.index }
+            .groupBy { it.value }
+            .mapValuesTo(mutableMapOf()) { entry -> entry.value.map { it.index } }
     val tag: Any? = null
 }
