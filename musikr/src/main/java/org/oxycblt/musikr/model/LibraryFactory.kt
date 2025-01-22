@@ -53,23 +53,23 @@ private class LibraryFactoryImpl() : LibraryFactory {
         playlistInterpreter: PlaylistInterpreter
     ): MutableLibrary {
         val songs =
-            graph.songVertex.mapTo(mutableSetOf()) { vertex ->
+            graph.songVertices.mapTo(mutableSetOf()) { vertex ->
                 SongImpl(SongVertexCore(vertex)).also { vertex.tag = it }
             }
         val albums =
-            graph.albumVertex.mapTo(mutableSetOf()) { vertex ->
+            graph.albumVertices.mapTo(mutableSetOf()) { vertex ->
                 AlbumImpl(AlbumVertexCore(vertex)).also { vertex.tag = it }
             }
         val artists =
-            graph.artistVertex.mapTo(mutableSetOf()) { vertex ->
+            graph.artistVertices.mapTo(mutableSetOf()) { vertex ->
                 ArtistImpl(ArtistVertexCore(vertex)).also { vertex.tag = it }
             }
         val genres =
-            graph.genreVertex.mapTo(mutableSetOf()) { vertex ->
+            graph.genreVertices.mapTo(mutableSetOf()) { vertex ->
                 GenreImpl(GenreVertexCore(vertex)).also { vertex.tag = it }
             }
         val playlists =
-            graph.playlistVertex.mapTo(mutableSetOf()) { vertex ->
+            graph.playlistVertices.mapTo(mutableSetOf()) { vertex ->
                 PlaylistImpl(PlaylistVertexCore(vertex))
             }
         return LibraryImpl(
@@ -121,8 +121,8 @@ private class LibraryFactoryImpl() : LibraryFactory {
     }
 
     private companion object {
-        private inline fun <reified T : Music> tag(vertex: Vertex): T {
-            val tag = vertex.tag
+        private inline fun <reified T : Music> tag(vertex: Vertex?): T {
+            val tag = vertex?.tag
             check(tag is T) { "Dead Vertex Detected: $vertex" }
             return tag
         }

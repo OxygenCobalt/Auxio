@@ -21,15 +21,30 @@ package org.oxycblt.musikr.graph
 import org.oxycblt.musikr.tag.interpret.PreGenre
 
 internal class GenreGraph {
-    val vertices = mutableMapOf<PreGenre, GenreVertex>()
+    private val vertices = mutableMapOf<PreGenre, GenreVertex>()
 
-    fun add(preGenre: PreGenre): GenreVertex = vertices.getOrPut(preGenre) { GenreVertex(preGenre) }
+    fun link(vertex: SongVertex) {
+        val preGenres = vertex.preSong.preGenres
+        val artistVertices = vertex.artistVertices
 
-    fun simplify() {
+        for (preGenre in preGenres) {
+            val genreVertex = vertices.getOrPut(preGenre) { GenreVertex(preGenre) }
+            vertex.genreVertices.add(genreVertex)
+            genreVertex.songVertices.add(vertex)
+
+            for (artistVertex in artistVertices) {
+                genreVertex.artistVertices.add(artistVertex)
+                artistVertex.genreVertices.add(genreVertex)
+            }
+        }
+    }
+
+    fun solve(): Collection<GenreVertex> {
         val genreClusters = vertices.values.groupBy { it.preGenre.rawName?.lowercase() }
         for (cluster in genreClusters.values) {
             simplifyGenreCluster(cluster)
         }
+        return vertices.values
     }
 
     private fun simplifyGenreCluster(cluster: Collection<GenreVertex>) {
@@ -43,27 +58,27 @@ internal class GenreGraph {
         val dst = clusterSet.maxBy { it.songVertices.size }
         clusterSet.remove(dst)
         for (src in clusterSet) {
-            meldGenreGraph(src, dst)
+            meldGenreVertices(src, dst)
         }
     }
 
-    private fun meldGenreGraph(src: GenreVertex, dst: GenreVertex) {
+    private fun meldGenreVertices(src: GenreVertex, dst: GenreVertex) {
         if (src == dst) {
             // Same vertex, do nothing
             return
         }
         // Link all songs and artists from the irrelevant genre to the relevant genre.
         dst.songVertices.addAll(src.songVertices)
-        dst.artistGraph.addAll(src.artistGraph)
+        dst.artistVertices.addAll(src.artistVertices)
         // Update all songs and artists to point to the relevant genre.
         src.songVertices.forEach {
-            val index = it.genreGraph.indexOf(src)
+            val index = it.genreVertices.indexOf(src)
             check(index >= 0) { "Illegal state: directed edge between genre and song" }
-            it.genreGraph[index] = dst
+            it.genreVertices[index] = dst
         }
-        src.artistGraph.forEach {
-            it.genreGraph.remove(src)
-            it.genreGraph.add(dst)
+        src.artistVertices.forEach {
+            it.genreVertices.remove(src)
+            it.genreVertices.add(dst)
         }
         // Remove the irrelevant genre from the graph.
         vertices.remove(src.preGenre)
@@ -72,7 +87,7 @@ internal class GenreGraph {
 
 internal class GenreVertex(val preGenre: PreGenre) : Vertex {
     val songVertices = mutableSetOf<SongVertex>()
-    val artistGraph = mutableSetOf<ArtistVertex>()
+    val artistVertices = mutableSetOf<ArtistVertex>()
     override var tag: Any? = null
 
     override fun toString() = "GenreVertex(preGenre=$preGenre)"

@@ -19,7 +19,6 @@
 package org.oxycblt.musikr.graph
 
 import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.tag.interpret.PreSong
 
 internal class SongGraph(
@@ -28,66 +27,38 @@ internal class SongGraph(
     private val genreGraph: GenreGraph,
     private val playlistGraph: PlaylistGraph
 ) {
-    val vertices = mutableMapOf<Music.UID, SongVertex>()
+    private val vertices = mutableMapOf<Music.UID, SongVertex>()
 
-    fun add(preSong: PreSong): SongVertex? {
+    fun link(vertex: SongVertex): Boolean {
+        val preSong = vertex.preSong
         val uid = preSong.uid
         if (vertices.containsKey(uid)) {
-            return null
+            return false
         }
-
-        val songGenreVertices = preSong.preGenres.map { preGenre -> genreGraph.add(preGenre) }
-
-        val songArtistVertices = preSong.preArtists.map { preArtist -> artistGraph.add(preArtist) }
-
-        val albumVertex = albumGraph.add(preSong.preAlbum)
-
-        val songVertex =
-            SongVertex(
-                preSong,
-                albumVertex,
-                songArtistVertices.toMutableList(),
-                songGenreVertices.toMutableList())
-
-        songVertex.artistGraph.forEach { artistVertex ->
-            artistVertex.songVertices.add(songVertex)
-            songGenreVertices.forEach { genreVertex ->
-                // Mutually link any new genres to the artist
-                artistVertex.genreGraph.add(genreVertex)
-                genreVertex.artistGraph.add(artistVertex)
-            }
-        }
-
-        songVertex.genreGraph.forEach { genreVertex -> genreVertex.songVertices.add(songVertex) }
-
-        vertices[uid] = songVertex
-
-        return songVertex
+        artistGraph.link(vertex)
+        genreGraph.link(vertex)
+        albumGraph.link(vertex)
+        playlistGraph.link(vertex)
+        vertices[uid] = vertex
+        return true
     }
 
-    fun simplify() {
+    fun solve(): Collection<SongVertex> {
         vertices.entries.forEach { entry ->
             val vertex = entry.value
-            vertex.artistGraph = vertex.artistGraph.distinct().toMutableList()
-            vertex.genreGraph = vertex.genreGraph.distinct().toMutableList()
-
-            playlistGraph.vertices.forEach {
-                val pointer = SongPointer.UID(entry.key)
-                val index = it.pointerMap[pointer]
-                if (index != null) {
-                    it.songVertices[index] = vertex
-                }
-            }
+            vertex.artistVertices = vertex.artistVertices.distinct().toMutableList()
+            vertex.genreVertices = vertex.genreVertices.distinct().toMutableList()
         }
+        return vertices.values
     }
 }
 
 internal class SongVertex(
     val preSong: PreSong,
-    var albumVertex: AlbumVertex,
-    var artistGraph: MutableList<ArtistVertex>,
-    var genreGraph: MutableList<GenreVertex>
 ) : Vertex {
+    var albumVertex: AlbumVertex? = null
+    var artistVertices = mutableListOf<ArtistVertex>()
+    var genreVertices = mutableListOf<GenreVertex>()
     override var tag: Any? = null
 
     override fun toString() = "SongVertex(preSong=$preSong)"

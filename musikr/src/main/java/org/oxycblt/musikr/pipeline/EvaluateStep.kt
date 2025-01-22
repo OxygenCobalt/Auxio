@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Storage
@@ -78,11 +80,16 @@ private class EvaluateStepImpl(
                 .flowOn(Dispatchers.Default)
                 .buffer(Channel.UNLIMITED)
         val graphBuilder = MusicGraph.builder()
+        // Concurrent addition of playlists and songs could easily
+        // break the grapher (remember, individual pipeline elements
+        // are generally unaware of the highly concurrent nature of
+        // the pipeline), prevent that with a mutex.
+        val graphLock = Mutex()
         val graphBuild =
             merge(
                 filterFlow.manager,
-                preSongs.onEach { graphBuilder.add(it) },
-                prePlaylists.onEach { graphBuilder.add(it) })
+                preSongs.onEach { graphLock.withLock { graphBuilder.add(it) } },
+                prePlaylists.onEach { graphLock.withLock { graphBuilder.add(it) } })
         graphBuild.collect()
         logger.d("starting graph build")
         val graph = graphBuilder.build()

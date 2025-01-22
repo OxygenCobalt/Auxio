@@ -22,11 +22,11 @@ import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreSong
 
 internal data class MusicGraph(
-    val songVertex: List<SongVertex>,
-    val albumVertex: List<AlbumVertex>,
-    val artistVertex: List<ArtistVertex>,
-    val genreVertex: List<GenreVertex>,
-    val playlistVertex: Set<PlaylistVertex>
+    val songVertices: Collection<SongVertex>,
+    val albumVertices: Collection<AlbumVertex>,
+    val artistVertices: Collection<ArtistVertex>,
+    val genreVertices: Collection<GenreVertex>,
+    val playlistVertices: Collection<PlaylistVertex>
 ) {
     interface Builder {
         fun add(preSong: PreSong)
@@ -41,35 +41,32 @@ internal data class MusicGraph(
     }
 }
 
+internal interface Vertex {
+    val tag: Any?
+}
+
 private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private val genreGraph = GenreGraph()
     private val artistGraph = ArtistGraph()
     private val albumGraph = AlbumGraph(artistGraph)
     private val playlistGraph = PlaylistGraph()
-    private val songVertices = SongGraph(albumGraph, artistGraph, genreGraph, playlistGraph)
+    private val songGraph = SongGraph(albumGraph, artistGraph, genreGraph, playlistGraph)
 
     override fun add(preSong: PreSong) {
-        songVertices.add(preSong)
+        songGraph.link(SongVertex(preSong))
     }
 
     override fun add(prePlaylist: PrePlaylist) {
-        playlistGraph.add(prePlaylist)
+        playlistGraph.link(PlaylistVertex(prePlaylist))
     }
 
     override fun build(): MusicGraph {
-        genreGraph.simplify()
-        artistGraph.simplify()
-        albumGraph.simplify()
-        songVertices.simplify()
-
-        val graph =
-            MusicGraph(
-                songVertices.vertices.values.toList(),
-                albumGraph.vertices.values.toList(),
-                artistGraph.vertices.values.toList(),
-                genreGraph.vertices.values.toList(),
-                playlistGraph.vertices)
-
-        return graph
+        val genreVertices = genreGraph.solve()
+        val artistVertices = artistGraph.solve()
+        val albumVertices = albumGraph.solve()
+        val songVertices = songGraph.solve()
+        val playlistVertices = playlistGraph.solve()
+        return MusicGraph(
+            songVertices, albumVertices, artistVertices, genreVertices, playlistVertices)
     }
 }

@@ -18,14 +18,30 @@
  
 package org.oxycblt.musikr.graph
 
+import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 
 internal class PlaylistGraph {
-    val vertices = mutableSetOf<PlaylistVertex>()
+    private val pointerMap = mutableMapOf<SongPointer, SongVertex>()
+    private val vertices = mutableSetOf<PlaylistVertex>()
 
-    fun add(prePlaylist: PrePlaylist) {
-        vertices.add(PlaylistVertex(prePlaylist))
+    fun link(vertex: PlaylistVertex) {
+        for ((pointer, songVertex) in pointerMap) {
+            vertex.pointerMap[pointer]?.forEach { index -> vertex.songVertices[index] = songVertex }
+        }
     }
+
+    fun link(vertex: SongVertex) {
+        val pointer = SongPointer.UID(vertex.preSong.uid)
+        pointerMap[pointer] = vertex
+        for (playlistVertex in vertices) {
+            playlistVertex.pointerMap[pointer]?.forEach { index ->
+                playlistVertex.songVertices[index] = vertex
+            }
+        }
+    }
+
+    fun solve(): Collection<PlaylistVertex> = vertices
 }
 
 internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
@@ -33,7 +49,7 @@ internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
     val pointerMap =
         prePlaylist.songPointers
             .withIndex()
-            .associateBy { it.value }
-            .mapValuesTo(mutableMapOf()) { it.value.index }
+            .groupBy { it.value }
+            .mapValuesTo(mutableMapOf()) { indexed -> indexed.value.map { it.index } }
     val tag: Any? = null
 }

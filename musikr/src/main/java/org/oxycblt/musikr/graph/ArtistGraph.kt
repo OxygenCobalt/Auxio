@@ -21,17 +21,29 @@ package org.oxycblt.musikr.graph
 import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.util.unlikelyToBeNull
 
-internal class ArtistGraph() {
-    val vertices = mutableMapOf<PreArtist, ArtistVertex>()
+internal class ArtistGraph {
+    private val vertices = mutableMapOf<PreArtist, ArtistVertex>()
 
-    fun add(preArtist: PreArtist): ArtistVertex =
-        vertices.getOrPut(preArtist) { ArtistVertex(preArtist) }
+    fun link(songVertex: SongVertex) {
+        val preArtists = songVertex.preSong.preArtists
+        val artistVertices = preArtists.map { vertices.getOrPut(it) { ArtistVertex(it) } }
+        songVertex.artistVertices.addAll(artistVertices)
+        artistVertices.forEach { it.songVertices.add(songVertex) }
+    }
 
-    fun simplify() {
+    fun link(albumVertex: AlbumVertex) {
+        val preArtists = albumVertex.preAlbum.preArtists
+        val artistVertices = preArtists.map { vertices.getOrPut(it) { ArtistVertex(it) } }
+        albumVertex.artistVertices = artistVertices.toMutableList()
+        artistVertices.forEach { it.albumVertices.add(albumVertex) }
+    }
+
+    fun solve(): Collection<ArtistVertex> {
         val artistClusters = vertices.values.groupBy { it.preArtist.rawName?.lowercase() }
         for (cluster in artistClusters.values) {
             simplifyArtistCluster(cluster)
         }
+        return vertices.values
     }
 
     private fun simplifyArtistCluster(cluster: Collection<ArtistVertex>) {
@@ -54,7 +66,7 @@ internal class ArtistGraph() {
                 val noMbidPreArtist = it.preArtist.copy(musicBrainzId = null)
                 val simpleMbidVertex =
                     vertices.getOrPut(noMbidPreArtist) { ArtistVertex(noMbidPreArtist) }
-                meldArtistGraph(it, simpleMbidVertex)
+                meldArtistVertices(it, simpleMbidVertex)
                 simpleMbidVertex
             }
         simplifyArtistClusterImpl(strippedCluster)
@@ -69,33 +81,33 @@ internal class ArtistGraph() {
         val relevantArtistVertex = clusterSet.maxBy { it.songVertices.size }
         clusterSet.remove(relevantArtistVertex)
         for (irrelevantArtistVertex in clusterSet) {
-            meldArtistGraph(irrelevantArtistVertex, relevantArtistVertex)
+            meldArtistVertices(irrelevantArtistVertex, relevantArtistVertex)
         }
     }
 
-    private fun meldArtistGraph(src: ArtistVertex, dst: ArtistVertex) {
+    private fun meldArtistVertices(src: ArtistVertex, dst: ArtistVertex) {
         if (src == dst) {
             // Same vertex, do nothing
             return
         }
         // Link all songs and albums from the irrelevant artist to the relevant artist.
         dst.songVertices.addAll(src.songVertices)
-        dst.albumGraph.addAll(src.albumGraph)
-        dst.genreGraph.addAll(src.genreGraph)
+        dst.albumVertices.addAll(src.albumVertices)
+        dst.genreVertices.addAll(src.genreVertices)
         // Update all songs, albums, and genres to point to the relevant artist.
         src.songVertices.forEach {
-            val index = it.artistGraph.indexOf(src)
+            val index = it.artistVertices.indexOf(src)
             check(index >= 0) { "Illegal state: directed edge between artist and song" }
-            it.artistGraph[index] = dst
+            it.artistVertices[index] = dst
         }
-        src.albumGraph.forEach {
-            val index = it.artistGraph.indexOf(src)
+        src.albumVertices.forEach {
+            val index = it.artistVertices.indexOf(src)
             check(index >= 0) { "Illegal state: directed edge between artist and album" }
-            it.artistGraph[index] = dst
+            it.artistVertices[index] = dst
         }
-        src.genreGraph.forEach {
-            it.artistGraph.remove(src)
-            it.artistGraph.add(dst)
+        src.genreVertices.forEach {
+            it.artistVertices.remove(src)
+            it.artistVertices.add(dst)
         }
 
         // Remove the irrelevant artist from the graph.
@@ -107,8 +119,8 @@ internal class ArtistVertex(
     val preArtist: PreArtist,
 ) : Vertex {
     val songVertices = mutableSetOf<SongVertex>()
-    val albumGraph = mutableSetOf<AlbumVertex>()
-    val genreGraph = mutableSetOf<GenreVertex>()
+    val albumVertices = mutableSetOf<AlbumVertex>()
+    val genreVertices = mutableSetOf<GenreVertex>()
     override var tag: Any? = null
 
     override fun toString() = "ArtistVertex(preArtist=$preArtist)"

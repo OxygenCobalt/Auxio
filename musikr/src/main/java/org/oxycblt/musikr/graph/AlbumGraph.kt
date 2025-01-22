@@ -22,27 +22,27 @@ import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.util.unlikelyToBeNull
 
 internal class AlbumGraph(private val artistGraph: ArtistGraph) {
-    val vertices = mutableMapOf<PreAlbum, AlbumVertex>()
+    private val vertices = mutableMapOf<PreAlbum, AlbumVertex>()
 
-    fun add(preAlbum: PreAlbum): AlbumVertex {
+    fun link(vertex: SongVertex) {
         // Albums themselves have their own parent artists that also need to be
         // linked up.
-        val albumartistGraph = preAlbum.preArtists.map { preArtist -> artistGraph.add(preArtist) }
-        val albumVertex = AlbumVertex(preAlbum, albumartistGraph.toMutableList())
-        // Album vertex is linked, now link artists back to album.
-        albumartistGraph.forEach { artistVertex -> artistVertex.albumGraph.add(albumVertex) }
-        return albumVertex
+        val preAlbum = vertex.preSong.preAlbum
+        val albumVertex =
+            vertices.getOrPut(preAlbum) { AlbumVertex(preAlbum).also { artistGraph.link(it) } }
+        vertex.albumVertex = albumVertex
+        albumVertex.songVertices.add(vertex)
     }
 
-    fun simplify() {
+    fun solve(): Collection<AlbumVertex> {
         val albumClusters = vertices.values.groupBy { it.preAlbum.rawName?.lowercase() }
         for (cluster in albumClusters.values) {
             simplifyAlbumCluster(cluster)
         }
-
         // Remove any edges that wound up connecting to the same artist or genre
         // in the end after simplification.
-        vertices.values.forEach { it.artistGraph = it.artistGraph.distinct().toMutableList() }
+        vertices.values.forEach { it.artistVertices = it.artistVertices.distinct().toMutableList() }
+        return vertices.values
     }
 
     private fun simplifyAlbumCluster(cluster: Collection<AlbumVertex>) {
@@ -65,9 +65,9 @@ internal class AlbumGraph(private val artistGraph: ArtistGraph) {
                 val noMbidPreAlbum = it.preAlbum.copy(musicBrainzId = null)
                 val simpleMbidVertex =
                     vertices.getOrPut(noMbidPreAlbum) {
-                        AlbumVertex(noMbidPreAlbum, it.artistGraph.toMutableList())
+                        AlbumVertex(noMbidPreAlbum).apply { artistVertices = it.artistVertices }
                     }
-                meldAlbumGraph(it, simpleMbidVertex)
+                meldAlbumVertices(it, simpleMbidVertex)
                 simpleMbidVertex
             }
         simplifyAlbumClusterImpl(strippedCluster)
@@ -84,31 +84,33 @@ internal class AlbumGraph(private val artistGraph: ArtistGraph) {
         val dst = clusterSet.maxBy { it.songVertices.size }
         clusterSet.remove(dst)
         for (src in clusterSet) {
-            meldAlbumGraph(src, dst)
+            meldAlbumVertices(src, dst)
         }
     }
 
-    private fun meldAlbumGraph(src: AlbumVertex, dst: AlbumVertex) {
+    private fun meldAlbumVertices(src: AlbumVertex, dst: AlbumVertex) {
         if (src == dst) {
             // Same vertex, do nothing
             return
         }
         // Link all songs and artists from the irrelevant album to the relevant album.
         dst.songVertices.addAll(src.songVertices)
-        dst.artistGraph.addAll(src.artistGraph)
+        dst.artistVertices.addAll(src.artistVertices)
         // Update all songs and artists to point to the relevant album.
         src.songVertices.forEach { it.albumVertex = dst }
-        src.artistGraph.forEach {
-            it.albumGraph.remove(src)
-            it.albumGraph.add(dst)
+        src.artistVertices.forEach {
+            it.albumVertices.remove(src)
+            it.albumVertices.add(dst)
         }
         // Remove the irrelevant album from the graph.
         vertices.remove(src.preAlbum)
     }
 }
 
-internal class AlbumVertex(val preAlbum: PreAlbum, var artistGraph: MutableList<ArtistVertex>) :
-    Vertex {
+internal class AlbumVertex(
+    val preAlbum: PreAlbum,
+) : Vertex {
+    var artistVertices = mutableListOf<ArtistVertex>()
     val songVertices = mutableSetOf<SongVertex>()
     override var tag: Any? = null
 
