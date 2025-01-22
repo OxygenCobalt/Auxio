@@ -153,6 +153,7 @@ private class MusikrImpl(
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
                 .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
+
         val typeDiversion =
             explored.divert {
                 when (it) {
@@ -162,15 +163,18 @@ private class MusikrImpl(
             }
         val known = typeDiversion.right
         val new = typeDiversion.left
+
         val extracted =
             extractStep
                 .extract(new)
                 .buffer(Channel.UNLIMITED)
                 .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
                 .onCompletion { onProgress(IndexingProgress.Indeterminate) }
+
         val complete =
             merge(typeDiversion.manager, known, extracted.filterIsInstance<Extracted.Valid>())
         val library = evaluateStep.evaluate(complete)
+
         LibraryResultImpl(storage, library)
     }
 }
