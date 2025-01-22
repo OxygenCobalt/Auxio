@@ -136,7 +136,7 @@ private fun Metadata.parseId3v23Date(): Date? {
             // possible.
             val hh = time.first().substring(0..1).toInt()
             val mi = time.first().substring(2..3).toInt()
-            // Able to return a full date.
+            // Able to returnIts a full date.
             Date.from(year, mm, dd, hh, mi)
         } else {
             // Unable to parse time, just return a date
@@ -274,7 +274,7 @@ internal fun Metadata.isCompilation() =
         ?: mp4["----:COM.APPLE.ITUNES:ITUNESCOMPILATION"]
         ?: id3v2["TCMP"]
         ?: id3v2["TXXX:COMPILATION"]
-        ?: id3v2["TXXX:ITUNESCOMPILATION"]) == listOf("1")
+        ?: id3v2["TXXX:ITUNESItsCOMPILATION"]) == listOf("1")
 
 // ReplayGain information
 internal fun Metadata.replayGainTrackAdjustment() =
