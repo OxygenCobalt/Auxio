@@ -21,9 +21,8 @@ package org.oxycblt.musikr.tag.parse
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.tag.Date
-import org.oxycblt.musikr.tag.format.parseSlashPositionField
-import org.oxycblt.musikr.tag.format.parseXiphPositionField
 import org.oxycblt.musikr.util.nonZeroOrNull
+import org.oxycblt.musikr.util.positiveOrNull
 
 // Note: TagLibJNI deliberately uppercases descriptive tags to avoid casing issues,
 // hence why the casing here is matched. Note that MP4 atoms are kept in their
@@ -46,17 +45,66 @@ internal fun Metadata.sortName() = (xiph["TITLESORT"] ?: mp4["sonm"] ?: id3v2["T
 
 // Track.
 internal fun Metadata.track() =
-    (parseXiphPositionField(
+    (parseSeparatedPosition(
         xiph["TRACKNUMBER"]?.first(),
         (xiph["TOTALTRACKS"] ?: xiph["TRACKTOTAL"] ?: xiph["TRACKC"])?.first())
-        ?: (mp4["trkn"] ?: id3v2["TRCK"])?.run { first().parseSlashPositionField() })
+        ?: (mp4["trkn"] ?: id3v2["TRCK"])?.run { first().parseJoinedPosition() })
 
 // Disc and it's subtitle name.
 internal fun Metadata.disc() =
-    (parseXiphPositionField(
+    (parseSeparatedPosition(
         xiph["DISCNUMBER"]?.first(),
         (xiph["TOTALDISCS"] ?: xiph["DISCTOTAL"] ?: xiph["DISCC"])?.run { first() })
-        ?: (mp4["disk"] ?: id3v2["TPOS"])?.run { first().parseSlashPositionField() })
+        ?: (mp4["disk"] ?: id3v2["TPOS"])?.run { first().parseJoinedPosition() })
+
+/**
+ * Parse an ID3v2-style position + total [String] field. These fields consist of a number and an
+ * (optional) total value delimited by a /.
+ *
+ * @return The position value extracted from the string field, or null if:
+ * - The position could not be parsed
+ * - The position was zeroed AND the total value was not present/zeroed
+ *
+ * @see transformPosition
+ */
+private fun String.parseJoinedPosition() =
+    split('/', limit = 2).let {
+        transformPosition(it[0].toIntOrNull(), it.getOrNull(1)?.toIntOrNull())
+    }
+
+/**
+ * Parse a vorbis-style position + total field. These fields consist of two fields for the position
+ * and total numbers.
+ *
+ * @param pos The position value, or null if not present.
+ * @param total The total value, if not present.
+ * @return The position value extracted from the field, or null if:
+ * - The position could not be parsed
+ * - The position was zeroed AND the total value was not present/zeroed
+ *
+ * @see transformPosition
+ */
+private fun parseSeparatedPosition(pos: String?, total: String?) =
+    pos?.let { posStr ->
+        posStr.toIntOrNull()?.let { transformPosition(it, total?.toIntOrNull()) }
+            ?: posStr.parseJoinedPosition()
+    }
+
+/**
+ * Transform a raw position + total field into a position a way that tolerates placeholder values.
+ *
+ * @param pos The position value, or null if not present.
+ * @param total The total value, if not present.
+ * @return The position value extracted from the field, or null if:
+ * - The position could not be parsed
+ * - The position was zeroed AND the total value was not present/zeroed
+ */
+private fun transformPosition(pos: Int?, total: Int?) =
+    if (pos != null && (pos > 0 || (total?.positiveOrNull() != null))) {
+        pos
+    } else {
+        null
+    }
 
 internal fun Metadata.subtitle() = (xiph["DISCSUBTITLE"] ?: id3v2["TSST"])?.first()
 
@@ -87,6 +135,40 @@ internal fun Metadata.date() =
             ?: id3v2["TDRC"]
             ?: id3v2["TDRL"])
         ?.run { Date.from(first()) } ?: parseId3v23Date())
+
+private fun Metadata.parseId3v23Date(): Date? {
+    // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
+    // is present.
+    val year =
+        id3v2["TORY"]?.run { first().toIntOrNull() }
+            ?: id3v2["TYER"]?.run { first().toIntOrNull() }
+            ?: return null
+
+    val tdat = id3v2["TDAT"]
+    return if (tdat != null && tdat.first().length == 4 && tdat.first().isDigitsOnly()) {
+        // TDAT frames consist of a 4-digit string where the first two digits are
+        // the month and the last two digits are the day.
+        val mm = tdat.first().substring(0..1).toInt()
+        val dd = tdat.first().substring(2..3).toInt()
+
+        val time = id3v2["TIME"]
+        if (time != null && time.first().length == 4 && time.first().isDigitsOnly()) {
+            // TIME frames consist of a 4-digit string where the first two digits are
+            // the hour and the last two digits are the minutes. No second value is
+            // possible.
+            val hh = time.first().substring(0..1).toInt()
+            val mi = time.first().substring(2..3).toInt()
+            // Able to return a full date.
+            Date.from(year, mm, dd, hh, mi)
+        } else {
+            // Unable to parse time, just return a date
+            Date.from(year, mm, dd)
+        }
+    } else {
+        // Unable to parse month/day, just return a year
+        return Date.from(year)
+    }
+}
 
 // Album
 internal fun Metadata.albumMusicBrainzId() =
@@ -248,37 +330,3 @@ private fun List<String>.parseReplayGainAdjustment() =
  * https://github.com/vanilla-music/vanilla
  */
 private val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }
-
-private fun Metadata.parseId3v23Date(): Date? {
-    // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
-    // is present.
-    val year =
-        id3v2["TORY"]?.run { first().toIntOrNull() }
-            ?: id3v2["TYER"]?.run { first().toIntOrNull() }
-            ?: return null
-
-    val tdat = id3v2["TDAT"]
-    return if (tdat != null && tdat.first().length == 4 && tdat.first().isDigitsOnly()) {
-        // TDAT frames consist of a 4-digit string where the first two digits are
-        // the month and the last two digits are the day.
-        val mm = tdat.first().substring(0..1).toInt()
-        val dd = tdat.first().substring(2..3).toInt()
-
-        val time = id3v2["TIME"]
-        if (time != null && time.first().length == 4 && time.first().isDigitsOnly()) {
-            // TIME frames consist of a 4-digit string where the first two digits are
-            // the hour and the last two digits are the minutes. No second value is
-            // possible.
-            val hh = time.first().substring(0..1).toInt()
-            val mi = time.first().substring(2..3).toInt()
-            // Able to return a full date.
-            Date.from(year, mm, dd, hh, mi)
-        } else {
-            // Unable to parse time, just return a date
-            Date.from(year, mm, dd)
-        }
-    } else {
-        // Unable to parse month/day, just return a year
-        return Date.from(year)
-    }
-}
