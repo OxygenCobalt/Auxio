@@ -31,6 +31,7 @@ import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableSongCache
 import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.log.Logger
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.metadata.MetadataHandle
@@ -40,9 +41,14 @@ internal interface ExtractStep {
     fun extract(nodes: Flow<Explored.New>): Flow<Extracted>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExtractStep =
+        fun from(context: Context, storage: Storage, logger: Logger): ExtractStep =
             ExtractStepImpl(
-                MetadataExtractor.new(context), TagParser.new(), storage.cache, storage.covers)
+                MetadataExtractor.new(context),
+                TagParser.new(),
+                storage.cache,
+                storage.covers,
+                logger.primary("exct"),
+            )
     }
 }
 
@@ -50,9 +56,12 @@ private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
     private val cache: MutableSongCache,
-    private val storedCovers: MutableCovers
+    private val storedCovers: MutableCovers,
+    private val logger: Logger
 ) : ExtractStep {
     override fun extract(nodes: Flow<Explored.New>): Flow<Extracted> {
+        logger.d("extract start.")
+
         val newSongs = nodes.filterIsInstance<NewSong>()
 
         val handles =

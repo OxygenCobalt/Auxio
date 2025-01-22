@@ -40,6 +40,7 @@ import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.MutableSongCache
+import org.oxycblt.musikr.log.Logger
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -394,7 +395,8 @@ constructor(
         val interpretation = Interpretation(nameFactory, separators)
 
         val result =
-            Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
+            Musikr.new(context, storage, interpretation, Logger.root())
+                .run(locations, ::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work
         // later.
         musicSettings.revision = newRevision

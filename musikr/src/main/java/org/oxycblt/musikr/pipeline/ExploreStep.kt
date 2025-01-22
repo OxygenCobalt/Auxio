@@ -36,6 +36,7 @@ import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.ObtainResult
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceFS
+import org.oxycblt.musikr.log.Logger
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
@@ -43,9 +44,14 @@ internal interface ExploreStep {
     fun explore(locations: List<MusicLocation>): Flow<Explored>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExploreStep =
+        fun from(context: Context, storage: Storage, logger: Logger): ExploreStep =
             ExploreStepImpl(
-                DeviceFS.from(context), storage.storedPlaylists, storage.cache, storage.covers)
+                DeviceFS.from(context),
+                storage.storedPlaylists,
+                storage.cache,
+                storage.covers,
+                logger.primary("expl"),
+            )
     }
 }
 
@@ -53,9 +59,11 @@ private class ExploreStepImpl(
     private val deviceFS: DeviceFS,
     private val storedPlaylists: StoredPlaylists,
     private val songCache: SongCache,
-    private val covers: Covers
+    private val covers: Covers,
+    private val logger: Logger,
 ) : ExploreStep {
     override fun explore(locations: List<MusicLocation>): Flow<Explored> {
+        logger.d("explore start.")
         val audioFiles =
             deviceFS
                 .explore(locations.asFlow())

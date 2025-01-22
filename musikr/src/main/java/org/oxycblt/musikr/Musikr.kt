@@ -19,6 +19,7 @@
 package org.oxycblt.musikr
 
 import android.content.Context
+import android.os.Build
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.log.Logger
 import org.oxycblt.musikr.pipeline.Divert
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
@@ -68,18 +70,25 @@ interface Musikr {
          * Create a new instance from the given configuration.
          *
          * @param context The context to use for loading resources.
+         * @param logger The logger to use for logging events.
          * @param storage Side-effect laden storage for use within the music loader **and** when
          *   mutating [MutableLibrary]. You should take responsibility for managing their long-term
          *   state.
          * @param interpretation The configuration to use for interpreting certain vague tags. This
          *   should be configured by the user, if possible.
          */
-        fun new(context: Context, storage: Storage, interpretation: Interpretation): Musikr =
+        fun new(
+            context: Context,
+            storage: Storage,
+            interpretation: Interpretation,
+            logger: Logger
+        ): Musikr =
             MusikrImpl(
+                logger,
                 storage,
-                ExploreStep.from(context, storage),
-                ExtractStep.from(context, storage),
-                EvaluateStep.new(storage, interpretation))
+                ExploreStep.from(context, storage, logger),
+                ExtractStep.from(context, storage, logger),
+                EvaluateStep.new(storage, interpretation, logger))
     }
 }
 
@@ -116,6 +125,7 @@ sealed interface IndexingProgress {
 }
 
 private class MusikrImpl(
+    private val logger: Logger,
     private val storage: Storage,
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
@@ -125,6 +135,16 @@ private class MusikrImpl(
         locations: List<MusicLocation>,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
+        logger.d(
+            "musikr start.",
+            "hw:",
+            Build.MANUFACTURER,
+            Build.MODEL,
+            Build.SUPPORTED_ABIS.joinToString(" "),
+            "sw:",
+            Build.VERSION.SDK_INT,
+            Build.DISPLAY)
+
         var exploredCount = 0
         var extractedCount = 0
         val explored =

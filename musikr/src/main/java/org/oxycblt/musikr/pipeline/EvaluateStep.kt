@@ -30,6 +30,7 @@ import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.graph.MusicGraph
+import org.oxycblt.musikr.log.Logger
 import org.oxycblt.musikr.model.LibraryFactory
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
@@ -39,12 +40,13 @@ internal interface EvaluateStep {
     suspend fun evaluate(complete: Flow<Complete>): MutableLibrary
 
     companion object {
-        fun new(storage: Storage, interpretation: Interpretation): EvaluateStep =
+        fun new(storage: Storage, interpretation: Interpretation, logger: Logger): EvaluateStep =
             EvaluateStepImpl(
                 Interpreter.new(interpretation),
                 PlaylistInterpreter.new(interpretation),
                 storage.storedPlaylists,
-                LibraryFactory.new())
+                LibraryFactory.new(),
+                logger.primary("eval"))
     }
 }
 
@@ -52,9 +54,11 @@ private class EvaluateStepImpl(
     private val interpreter: Interpreter,
     private val playlistInterpreter: PlaylistInterpreter,
     private val storedPlaylists: StoredPlaylists,
-    private val libraryFactory: LibraryFactory
+    private val libraryFactory: LibraryFactory,
+    private val logger: Logger
 ) : EvaluateStep {
     override suspend fun evaluate(complete: Flow<Complete>): MutableLibrary {
+        logger.d("evaluate start.")
         val filterFlow =
             complete.divert {
                 when (it) {
@@ -80,7 +84,9 @@ private class EvaluateStepImpl(
                 preSongs.onEach { graphBuilder.add(it) },
                 prePlaylists.onEach { graphBuilder.add(it) })
         graphBuild.collect()
+        logger.d("starting graph build")
         val graph = graphBuilder.build()
+        logger.d("graph build done, creating library")
         return libraryFactory.create(graph, storedPlaylists, playlistInterpreter)
     }
 }
