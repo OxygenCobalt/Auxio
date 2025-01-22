@@ -25,8 +25,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import org.oxycblt.musikr.cache.DatabaseSongCache
 import org.oxycblt.musikr.cache.SongCache
+import org.oxycblt.musikr.cache.db.DBSongCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 
 @Module
@@ -34,7 +34,7 @@ import org.oxycblt.musikr.playlist.db.StoredPlaylists
 class MusikrShimModule {
     @Singleton
     @Provides
-    fun songCache(@ApplicationContext context: Context): SongCache = DatabaseSongCache.from(context)
+    fun songCache(@ApplicationContext context: Context): SongCache = DBSongCache.from(context)
 
     @Singleton
     @Provides
