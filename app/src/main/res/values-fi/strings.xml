@@ -315,4 +315,11 @@
     <string name="set_locations_new">Uusi kansio</string>
     <string name="cnt_mp4">MPEG-4 sisältäen %s</string>
     <string name="cdc_unknown">Tuntematon</string>
+    <string name="lng_empty_songs">Kappaleesi tulevat näkymään tässä.</string>
+    <string name="lng_empty_albums">Albumisi tulevat näkymään tässä.</string>
+    <string name="lng_empty_artists">Esittäjäsi tulevat näkymään tässä.</string>
+    <string name="lng_empty_playlists">Soittolistasi tulevat näkymään tässä.</string>
+    <string name="lng_empty_genres">Tyylilajisi tulevat näkymään tässä.</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="set_cover_mode_save_space">Säätä tilaa</string>
 </resources>
