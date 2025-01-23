@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="lbl_retry">გამეორება</string>
+    <string name="lbl_show_error_info">მეტი</string>
+    <string name="lbl_ep">EP</string>
+    <string name="info_app_desc">მარტივი, რაციონალური მუსიკის ფლეიერი Android-ისთვის</string>
+    <string name="lbl_song">სიმღერა</string>
+    <string name="lbl_ep_remix">EP-ის რემიქსი</string>
+    <string name="lbl_indexing">მუსიკის ჩატვირთვა</string>
+    <string name="lbl_songs">სიმღერები</string>
+    <string name="lbl_observing">მუსიკის ბიბლიოთეკის მონიტორინგი</string>
+    <string name="lbl_grant">ავტორიზაცია</string>
+    <string name="lbl_albums">ალბომები</string>
+    <string name="lbl_eps">EP-ები</string>
+    <string name="lbl_all_songs">ყველა სიმღერა</string>
+    <string name="lbl_album">ალბომი</string>
+    <string name="lbl_music_sources">შეარჩიე საქაღალდეები</string>
+    <string name="lbl_indexer">მუსიკის ჩატვირთვა</string>
+    <string name="lbl_ep_live">პირდაპირი EP</string>
+    <string name="lbl_singles">სინგლები</string>
+    <string name="lbl_single">სინგლი</string>
+</resources>
