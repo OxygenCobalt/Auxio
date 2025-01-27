@@ -19,14 +19,6 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableSongCache
@@ -38,7 +30,7 @@ import org.oxycblt.musikr.metadata.MetadataHandle
 import org.oxycblt.musikr.tag.parse.TagParser
 
 internal interface ExtractStep {
-    fun extract(nodes: Flow<Explored.New>): Flow<Extracted>
+    suspend fun extract(nodes: Werk<Explored.New>): Werk<Extracted>
 
     companion object {
         fun from(context: Context, storage: Storage, logger: Logger): ExtractStep =
@@ -59,76 +51,56 @@ private class ExtractStepImpl(
     private val storedCovers: MutableCovers,
     private val logger: Logger
 ) : ExtractStep {
-    override fun extract(nodes: Flow<Explored.New>): Flow<Extracted> {
+    override suspend fun extract(nodes: Werk<Explored.New>): Werk<Extracted> {
         logger.d("extract start.")
-
-        val newSongs = nodes.filterIsInstance<NewSong>()
-
-        val handles =
-            newSongs
-                .tryMap {
-                    val handle = metadataExtractor.open(it.file)
-                    if (handle != null) NewSongHandle(it, handle) else ExtractFailed
-                }
-                .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED)
-
-        val extracted =
-            handles
-                .tryMap { item ->
-                    when (item) {
-                        is NewSongHandle -> {
-                            val metadata = item.handle.extract()
-                            if (metadata != null) NewSongMetadata(item.song, metadata)
-                            else ExtractFailed
-                        }
-                        is ExtractFailed -> ExtractFailed
+        return nodes
+            .filterIsInstance<NewSong>()
+            .then {
+                val handle = metadataExtractor.open(it.file)
+                if (handle != null) NewSongHandle(it, handle) else ExtractFailed
+            }
+            .then(8) { item ->
+                when (item) {
+                    is NewSongHandle -> {
+                        val metadata = item.handle.extract()
+                        if (metadata != null) NewSongMetadata(item.song, metadata)
+                        else ExtractFailed
                     }
-                }
-                .flowOn(Dispatchers.IO)
-                // Covers are pretty big, so cap the amount of parsed metadata in-memory to at most
-                // 8 to minimize GCs.
-                .buffer(8)
-
-        val validDiversion =
-            extracted.divert {
-                when (it) {
-                    is NewSongMetadata -> Divert.Right(it)
-                    is ExtractFailed -> Divert.Left(it)
+                    is ExtractFailed -> ExtractFailed
                 }
             }
-
-        val success = validDiversion.right
-        val failed = validDiversion.left
-
-        val parsed =
-            success
-                .tryMap { item ->
-                    val tags = tagParser.parse(item.song.file, item.metadata)
-                    val cover = item.metadata.cover?.let { storedCovers.write(it) }
-                    RawSong(
-                        item.song.file, item.metadata.properties, tags, cover, item.song.addedMs)
-                }
-                .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED)
-
-        val writeDistribution = parsed.distribute(8)
-        val writtenSongs =
-            writeDistribution.flows.mapx { flow ->
-                flow
-                    .tryMap {
-                        val cachedSong =
-                            CachedSong(it.file, it.properties, it.tags, it.cover?.id, it.addedMs)
-                        cache.write(cachedSong)
-                        it
+            .then { item ->
+                when (item) {
+                    is NewSongMetadata -> {
+                        val tags = tagParser.parse(item.song.file, item.metadata)
+                        val cover = item.metadata.cover?.let { storedCovers.write(it) }
+                        RawSong(
+                            item.song.file,
+                            item.metadata.properties,
+                            tags,
+                            cover,
+                            item.song.addedMs)
                     }
-                    .flowOn(Dispatchers.IO)
-                    .buffer(Channel.UNLIMITED)
+                    is ExtractFailed -> InvalidSong
+                }
             }
-
-        val invalidSongs = failed.map { InvalidSong }
-
-        return merge(validDiversion.manager, writeDistribution.manager, *writtenSongs, invalidSongs)
+            .distribute(8)
+            .transform { item ->
+                when (item) {
+                    is RawSong -> {
+                        cache.write(
+                            CachedSong(
+                                item.file,
+                                item.properties,
+                                item.tags,
+                                item.cover?.id,
+                                item.addedMs))
+                        item
+                    }
+                    else -> item
+                }
+            }
+            .merge()
     }
 
     private sealed interface ExtractedInternal {

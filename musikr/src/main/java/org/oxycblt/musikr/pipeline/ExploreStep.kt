@@ -19,16 +19,8 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.SongCache
@@ -41,7 +33,7 @@ import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(locations: List<MusicLocation>): Flow<Explored>
+    suspend fun explore(locations: List<MusicLocation>): Werk<Explored>
 
     companion object {
         fun from(context: Context, storage: Storage, logger: Logger): ExploreStep =
@@ -62,45 +54,37 @@ private class ExploreStepImpl(
     private val covers: Covers,
     private val logger: Logger,
 ) : ExploreStep {
-    override fun explore(locations: List<MusicLocation>): Flow<Explored> {
+    override suspend fun explore(locations: List<MusicLocation>): Werk<Explored> {
         logger.d("explore start.")
-        val audioFiles =
+        val songs: Werk<Explored> =
             deviceFS
                 .explore(locations.asFlow())
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
-                .flowOn(Dispatchers.IO)
-                .buffer()
-        val readDistribution = audioFiles.distribute(8)
-        val read =
-            readDistribution.flows.mapx { flow ->
-                flow
-                    .tryMap { file ->
-                        when (val cacheResult = songCache.read(file)) {
-                            is CacheResult.Hit -> {
-                                val cachedSong = cacheResult.song
-                                val coverResult = cachedSong.coverId?.let { covers.obtain(it) }
-                                if (coverResult !is ObtainResult.Hit) {
-                                    return@tryMap NewSong(file, cachedSong.addedMs)
-                                }
-                                RawSong(
-                                    cachedSong.file,
-                                    cachedSong.properties,
-                                    cachedSong.tags,
-                                    coverResult.cover,
-                                    cachedSong.addedMs)
+                .werk()
+                .distribute(8)
+                .transform { file ->
+                    when (val cacheResult = songCache.read(file)) {
+                        is CacheResult.Hit -> {
+                            val cachedSong = cacheResult.song
+                            val coverResult = cachedSong.coverId?.let { covers.obtain(it) }
+                            if (coverResult !is ObtainResult.Hit) {
+                                return@transform NewSong(file, cachedSong.addedMs)
                             }
-                            is CacheResult.Outdated -> NewSong(file, cacheResult.addedMs)
-                            is CacheResult.Miss -> NewSong(file, System.currentTimeMillis())
+                            RawSong(
+                                cachedSong.file,
+                                cachedSong.properties,
+                                cachedSong.tags,
+                                coverResult.cover,
+                                cachedSong.addedMs)
                         }
+                        is CacheResult.Outdated -> NewSong(file, cacheResult.addedMs)
+                        is CacheResult.Miss -> NewSong(file, System.currentTimeMillis())
                     }
-                    .flowOn(Dispatchers.IO)
-                    .buffer()
-            }
-        val storedPlaylists =
-            flow { emitAll(storedPlaylists.read().asFlow()) }
-                .map { RawPlaylist(it) }
-                .flowOn(Dispatchers.IO)
-                .buffer()
-        return merge(readDistribution.manager, *read, storedPlaylists)
+                }
+                .merge()
+        val playlists: Werk<Explored> = werk {
+            storedPlaylists.read().forEach { send(RawPlaylist(it)) }
+        }
+        return listOf(songs, playlists).merge()
     }
 }

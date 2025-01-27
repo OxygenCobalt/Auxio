@@ -20,14 +20,9 @@ package org.oxycblt.musikr
 
 import android.content.Context
 import android.os.Build
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.log.Logger
 import org.oxycblt.musikr.pipeline.Divert
@@ -37,6 +32,9 @@ import org.oxycblt.musikr.pipeline.Explored
 import org.oxycblt.musikr.pipeline.ExtractStep
 import org.oxycblt.musikr.pipeline.Extracted
 import org.oxycblt.musikr.pipeline.divert
+import org.oxycblt.musikr.pipeline.filterIsInstance
+import org.oxycblt.musikr.pipeline.merge
+import org.oxycblt.musikr.pipeline.on
 
 /**
  * A highly opinionated, multi-threaded device music library.
@@ -150,30 +148,27 @@ private class MusikrImpl(
         val explored =
             exploreStep
                 .explore(locations)
-                .buffer(Channel.UNLIMITED)
-                .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
-                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
+                .on(
+                    start = { onProgress(IndexingProgress.Songs(0, 0)) },
+                    each = { exploredCount++ })
 
-        val typeDiversion =
+        val (new, known) =
             explored.divert {
                 when (it) {
                     is Explored.Known -> Divert.Right(it)
                     is Explored.New -> Divert.Left(it)
                 }
             }
-        val known = typeDiversion.right
-        val new = typeDiversion.left
 
         val extracted =
             extractStep
                 .extract(new)
-                .buffer(Channel.UNLIMITED)
-                .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
-                .onCompletion { onProgress(IndexingProgress.Indeterminate) }
+                .on(
+                    each = { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) },
+                    end = { onProgress(IndexingProgress.Indeterminate) })
+                .filterIsInstance<Extracted.Valid>()
 
-        val complete =
-            merge(typeDiversion.manager, known, extracted.filterIsInstance<Extracted.Valid>())
-        val library = evaluateStep.evaluate(complete)
+        val library = evaluateStep.evaluate(listOf(extracted, known).merge())
 
         LibraryResultImpl(storage, library)
     }

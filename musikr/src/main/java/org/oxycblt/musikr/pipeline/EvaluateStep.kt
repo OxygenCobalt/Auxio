@@ -18,16 +18,6 @@
  
 package org.oxycblt.musikr.pipeline
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Storage
@@ -39,7 +29,7 @@ import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.Interpreter
 
 internal interface EvaluateStep {
-    suspend fun evaluate(complete: Flow<Complete>): MutableLibrary
+    suspend fun evaluate(complete: Werk<Complete>): MutableLibrary
 
     companion object {
         fun new(storage: Storage, interpretation: Interpretation, logger: Logger): EvaluateStep =
@@ -59,38 +49,16 @@ private class EvaluateStepImpl(
     private val libraryFactory: LibraryFactory,
     private val logger: Logger
 ) : EvaluateStep {
-    override suspend fun evaluate(complete: Flow<Complete>): MutableLibrary {
+    override suspend fun evaluate(complete: Werk<Complete>): MutableLibrary {
         logger.d("evaluate start.")
-        val filterFlow =
-            complete.divert {
-                when (it) {
-                    is RawSong -> Divert.Right(it)
-                    is RawPlaylist -> Divert.Left(it.file)
-                }
-            }
-        val rawSongs = filterFlow.right
-        val preSongs =
-            rawSongs
-                .tryMap { interpreter.interpret(it) }
-                .flowOn(Dispatchers.Default)
-                .buffer(Channel.UNLIMITED)
-        val prePlaylists =
-            filterFlow.left
-                .tryMap { playlistInterpreter.interpret(it) }
-                .flowOn(Dispatchers.Default)
-                .buffer(Channel.UNLIMITED)
         val graphBuilder = MusicGraph.builder()
-        // Concurrent addition of playlists and songs could easily
-        // break the grapher (remember, individual pipeline elements
-        // are generally unaware of the highly concurrent nature of
-        // the pipeline), prevent that with a mutex.
-        val graphLock = Mutex()
-        val graphBuild =
-            merge(
-                filterFlow.manager,
-                preSongs.onEach { graphLock.withLock { graphBuilder.add(it) } },
-                prePlaylists.onEach { graphLock.withLock { graphBuilder.add(it) } })
-        graphBuild.collect()
+        for (item in complete.chan) {
+            when (item) {
+                is RawSong -> graphBuilder.add(interpreter.interpret(item))
+                is RawPlaylist -> graphBuilder.add(playlistInterpreter.interpret(item.file))
+            }
+        }
+        complete.def.await()
         logger.d("starting graph build")
         val graph = graphBuilder.build()
         logger.d("graph build done, creating library")
