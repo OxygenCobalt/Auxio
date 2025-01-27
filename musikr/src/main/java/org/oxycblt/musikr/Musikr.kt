@@ -21,8 +21,6 @@ package org.oxycblt.musikr
 import android.content.Context
 import android.os.Build
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.log.Logger
 import org.oxycblt.musikr.pipeline.Divert
@@ -31,10 +29,7 @@ import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.Explored
 import org.oxycblt.musikr.pipeline.ExtractStep
 import org.oxycblt.musikr.pipeline.Extracted
-import org.oxycblt.musikr.pipeline.divert
-import org.oxycblt.musikr.pipeline.filterIsInstance
 import org.oxycblt.musikr.pipeline.merge
-import org.oxycblt.musikr.pipeline.on
 
 /**
  * A highly opinionated, multi-threaded device music library.

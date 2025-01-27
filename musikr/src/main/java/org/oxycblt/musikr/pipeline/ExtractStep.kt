@@ -85,7 +85,7 @@ private class ExtractStepImpl(
                 }
             }
             .distribute(8)
-            .transform { item ->
+            .then { item ->
                 when (item) {
                     is RawSong -> {
                         cache.write(

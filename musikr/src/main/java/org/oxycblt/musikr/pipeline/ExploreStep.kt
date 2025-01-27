@@ -62,13 +62,13 @@ private class ExploreStepImpl(
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
                 .werk()
                 .distribute(8)
-                .transform { file ->
+                .then { file ->
                     when (val cacheResult = songCache.read(file)) {
                         is CacheResult.Hit -> {
                             val cachedSong = cacheResult.song
                             val coverResult = cachedSong.coverId?.let { covers.obtain(it) }
                             if (coverResult !is ObtainResult.Hit) {
-                                return@transform NewSong(file, cachedSong.addedMs)
+                                return@then NewSong(file, cachedSong.addedMs)
                             }
                             RawSong(
                                 cachedSong.file,
