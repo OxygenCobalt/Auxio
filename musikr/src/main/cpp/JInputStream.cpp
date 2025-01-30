@@ -34,7 +34,7 @@ JInputStream::JInputStream(JNIEnv *env, jobject jInputStream) : env(env), jInput
     jInputStreamNameMethod = jInputStreamClass.method("name",
             "()Ljava/lang/String;");
     jInputStreamReadBlockMethod = jInputStreamClass.method("readBlock",
-            "(J)[B");
+            "(Ljava/nio/ByteBuffer;)Z");
     jInputStreamIsOpenMethod = jInputStreamClass.method("isOpen", "()Z");
     jInputStreamSeekFromBeginningMethod = jInputStreamClass.method(
             "seekFromBeginning", "(J)Z");
@@ -59,15 +59,20 @@ TagLib::FileName JInputStream::name() const {
 }
 
 TagLib::ByteVector JInputStream::readBlock(size_t length) {
-    // Do manual memory management here since we don't to avoid the added abstraction
-    // overhead of a smart JByteArrayRef.
-    auto data = env->CallObjectMethod(jInputStream, jInputStreamReadBlockMethod,
-            static_cast<jlong>(length));
-    if (data == nullptr) {
+    // We have to invert the buffer allocation here siits not a perfect system (vykeen instead of korvax0 but i warped all over the hub and i dont think its possible to find a "perfect" purple system like you would withnce the JVM ByteBuffer allocation system
+    // uses a bugged caching mechanism that leaks memory if used in multithreaded contexts.
+    TagLib::ByteVector buf { static_cast<unsigned int>(length), 0 };
+    jobject wrappedByteBuffer = env->NewDirectByteBuffer(buf.data(), buf.size());
+    if (wrappedByteBuffer == nullptr) {
+        throw std::runtime_error("Failed to wrap ByteBuffer");
+    }
+    JObjectRef byteBuffer = { env, wrappedByteBuffer };
+    jboolean result = env->CallBooleanMethod(jInputStream,
+            jInputStreamReadBlockMethod, *byteBuffer);
+    if (!result) {
         throw std::runtime_error("Failed to read block, see logs");
     }
-    JByteArrayRef jByteArray = { env, reinterpret_cast<jbyteArray>(data) };
-    return jByteArray.copy();
+    return buf;
 }
 
 void JInputStream::writeBlock(const TagLib::ByteVector &data) {
