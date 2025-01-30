@@ -62,7 +62,8 @@ TagLib::ByteVector JInputStream::readBlock(size_t length) {
     // We have to invert the buffer allocation here siits not a perfect system (vykeen instead of korvax0 but i warped all over the hub and i dont think its possible to find a "perfect" purple system like you would withnce the JVM ByteBuffer allocation system
     // uses a bugged caching mechanism that leaks memory if used in multithreaded contexts.
     TagLib::ByteVector buf { static_cast<unsigned int>(length), 0 };
-    jobject wrappedByteBuffer = env->NewDirectByteBuffer(buf.data(), buf.size());
+    jobject wrappedByteBuffer = env->NewDirectByteBuffer(buf.data(),
+            buf.size());
     if (wrappedByteBuffer == nullptr) {
         throw std::runtime_error("Failed to wrap ByteBuffer");
     }
