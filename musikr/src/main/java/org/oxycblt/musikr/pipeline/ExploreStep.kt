@@ -19,12 +19,16 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.MusicLocation
@@ -34,10 +38,7 @@ import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    suspend fun explore(
-        locations: List<MusicLocation>,
-        explored: SendChannel<ExploreNode>
-    ): Deferred<Result<Unit>>
+    fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
 
     companion object {
         fun from(context: Context, storage: Storage): ExploreStep =
@@ -49,49 +50,25 @@ private class ExploreStepImpl(
     private val deviceFiles: DeviceFiles,
     private val storedPlaylists: StoredPlaylists
 ) : ExploreStep {
-    override suspend fun explore(
-        locations: List<MusicLocation>,
-        explored: SendChannel<ExploreNode>
-    ) = coroutineScope {
-        async {
-            try {
-                val audioTask = async {
-                    try {
-                        deviceFiles
-                            .explore(locations.asFlow())
-                            .mapNotNull {
-                                when {
-                                    it.mimeType == M3U.MIME_TYPE -> null
-                                    it.mimeType.startsWith("audio/") -> ExploreNode.Audio(it)
-                                    else -> null
-                                }
-                            }
-                            .collect { explored.send(it) }
-                        Result.success(Unit)
-                    } catch (e: Exception) {
-                        Result.failure(e)
+    override fun explore(locations: List<MusicLocation>): Flow<ExploreNode> {
+        val audios =
+            deviceFiles
+                .explore(locations.asFlow())
+                .mapNotNull {
+                    when {
+                        it.mimeType == M3U.MIME_TYPE -> null
+                        it.mimeType.startsWith("audio/") -> ExploreNode.Audio(it)
+                        else -> null
                     }
                 }
-
-                val playlistTask = async {
-                    try {
-                        storedPlaylists.read().forEach { explored.send(ExploreNode.Playlist(it)) }
-                        Result.success(Unit)
-                    } catch (e: Exception) {
-                        Result.failure(e)
-                    }
-                }
-
-                audioTask.await().getOrThrow()
-                playlistTask.await().getOrThrow()
-
-                explored.close()
-                Result.success(Unit)
-            } catch (e: Exception) {
-                explored.close(e)
-                Result.failure(e)
-            }
-        }
+                .flowOn(Dispatchers.IO)
+                .buffer()
+        val playlists =
+            flow { emitAll(storedPlaylists.read().asFlow()) }
+                .map { ExploreNode.Playlist(it) }
+                .flowOn(Dispatchers.IO)
+                .buffer()
+        return merge(audios, playlists)
     }
 }
 

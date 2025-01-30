@@ -19,15 +19,16 @@
 package org.oxycblt.musikr
 
 import android.content.Context
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.pipeline.EvaluateStep
-import org.oxycblt.musikr.pipeline.ExploreNode
 import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.ExtractStep
-import org.oxycblt.musikr.pipeline.ExtractedMusic
 
 /**
  * A highly opinionated, multi-threaded device music library.
@@ -118,57 +119,21 @@ private class MusikrImpl(
         locations: List<MusicLocation>,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
-        var explored = 0
-        var loaded = 0
-        val intermediateNodes = Channel<ExploreNode>(Channel.UNLIMITED)
-        val nodes = Channel<ExploreNode>(Channel.UNLIMITED)
-
-        val exploreTask = exploreStep.explore(locations, intermediateNodes)
-        val exploreMonitor = async {
-            try {
-                onProgress(IndexingProgress.Songs(loaded, explored))
-                for (node in intermediateNodes) {
-                    explored++
-                    onProgress(IndexingProgress.Songs(loaded, explored))
-                    nodes.send(node)
-                }
-
-                nodes.close()
-                Result.success(Unit)
-            } catch (e: Exception) {
-                nodes.close(e)
-                Result.failure(e)
-            }
-        }
-
-        val intermediateExtracted = Channel<ExtractedMusic>(Channel.UNLIMITED)
-        val extracted = Channel<ExtractedMusic>(Channel.UNLIMITED)
-
-        val extractTask = extractStep.extract(nodes, intermediateExtracted)
-        val extractMonitor = async {
-            try {
-                onProgress(IndexingProgress.Songs(loaded, explored))
-                for (music in intermediateExtracted) {
-                    loaded++
-                    onProgress(IndexingProgress.Songs(loaded, explored))
-                    extracted.send(music)
-                }
-
-                extracted.close()
-                Result.success(Unit)
-            } catch (e: Exception) {
-                extracted.close(e)
-                Result.failure(e)
-            }
-        }
-
-        val libraryTask = evaluateStep.evaluate(extracted)
-
-        exploreTask.await().getOrThrow()
-        exploreMonitor.await().getOrThrow()
-        extractTask.await().getOrThrow()
-        extractMonitor.await().getOrThrow()
-        val library = libraryTask.await().getOrThrow()
+        var exploredCount = 0
+        var extractedCount = 0
+        val explored =
+            exploreStep
+                .explore(locations)
+                .buffer(Channel.UNLIMITED)
+                .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
+                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
+        val extracted =
+            extractStep
+                .extract(explored)
+                .buffer(Channel.UNLIMITED)
+                .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
+                .onCompletion { onProgress(IndexingProgress.Indeterminate) }
+        val library = evaluateStep.evaluate(extracted)
         LibraryResultImpl(storage, library)
     }
 }
