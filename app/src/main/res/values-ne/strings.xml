@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="lbl_indexer">गीतहरु लोड हुँदै छन्</string>
+    <string name="info_app_desc">एन्डरोइडको लागि एक सहज, विवेकशील गीत बजाउने एप।</string>
+</resources>
