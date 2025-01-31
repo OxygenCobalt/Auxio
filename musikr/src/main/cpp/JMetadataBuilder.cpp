@@ -208,8 +208,9 @@ jobject JMetadataBuilder::build() {
     auto jMp4Map = mp4.getObject();
     if (cover.has_value()) {
         JByteArrayRef jCoverArray { env, cover.value() };
-        return env->NewObject(*jMetadataClass, jMetadataInitMethod, **jId3v2Map,
+        jobject result = env->NewObject(*jMetadataClass, jMetadataInitMethod, **jId3v2Map,
                 **jXiphMap, **jMp4Map, *jCoverArray, *jProperties);
+        return result;
     }
     return env->NewObject(*jMetadataClass, jMetadataInitMethod, **jId3v2Map,
             **jXiphMap, **jMp4Map, nullptr, *jProperties);
