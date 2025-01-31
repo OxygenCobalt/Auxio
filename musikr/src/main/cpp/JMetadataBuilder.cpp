@@ -135,7 +135,9 @@ void JMetadataBuilder::setMp4(TagLib::MP4::Tag &tag) {
                     continue;
                 }
             }
-            cover = pics.front().data();
+            if (!pics.isEmpty()) {
+                cover = pics.front().data();
+            }
             continue;
         }
         auto type = itemValue.type();
