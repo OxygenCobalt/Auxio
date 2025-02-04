@@ -78,23 +78,23 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }
-
-task assembleTaglib(type: Exec) {
-    def jniDir = "$projectDir/src/main/cpp"
-    def libs = new File("$jniDir/taglib/pkg")
-    if (libs.exists()) {
-        commandLine "true"
-        return
-    }
-    commandLine "sh", "-c", "$jniDir/build_taglib.sh $jniDir $android.ndkDirectory"
-}
-
-afterEvaluate {
-    preDebugBuild.dependsOn assembleTaglib
-    preReleaseBuild.dependsOn assembleTaglib
-}
-
-clean {
-    delete "$projectDir/src/main/cpp/taglib/pkg"
-    delete "$projectDir/src/main/cpp/taglib/build"
-}
+//
+//task assembleTaglib(type: Exec) {
+//    def jniDir = "$projectDir/src/main/cpp"
+//    def libs = new File("$jniDir/taglib/pkg")
+//    if (libs.exists()) {
+//        commandLine "true"
+//        return
+//    }
+//    commandLine "sh", "-c", "$jniDir/build_taglib.sh $jniDir $android.ndkDirectory"
+//}
+//
+//afterEvaluate {
+//    preDebugBuild.dependsOn assembleTaglib
+//    preReleaseBuild.dependsOn assembleTaglib
+//}
+//
+//clean {
+//    delete "$projectDir/src/main/cpp/taglib/pkg"
+//    delete "$projectDir/src/main/cpp/taglib/build"
+//}
