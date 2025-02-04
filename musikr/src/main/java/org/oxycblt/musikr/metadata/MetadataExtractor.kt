@@ -19,6 +19,7 @@
 package org.oxycblt.musikr.metadata
 
 import android.os.ParcelFileDescriptor
+import android.util.Log
 import java.io.FileInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -36,6 +37,8 @@ private object MetadataExtractorImpl : MetadataExtractor {
     override suspend fun extract(deviceFile: DeviceFile, fd: ParcelFileDescriptor) =
         withContext(Dispatchers.IO) {
             val fis = FileInputStream(fd.fileDescriptor)
-            TagLibJNI.open(deviceFile, fis).also { fis.close() }
+            Log.d("MetadataExtractorImpl", MetadataJNI.rust("bruh"))
+//            MetadataJNI.open(deviceFile, fis).also { fis.close() }
+                null
         }
 }

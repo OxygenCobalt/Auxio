@@ -33,6 +33,7 @@ plugins {
     id "com.google.devtools.ksp" version '2.0.21-1.0.25' apply false
     // We use spotless in the root build.gradle to apply to all modules.
     id "com.diffplug.spotless" version "6.25.0" apply true
+    id "org.mozilla.rust-android-gradle.rust-android" version "0.9.6" apply false
 }
 
 spotless {

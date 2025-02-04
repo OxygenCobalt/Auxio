@@ -7,6 +7,7 @@ plugins {
     id "com.diffplug.spotless"
     id "kotlin-parcelize"
     id "org.jetbrains.dokka"
+    id "org.mozilla.rust-android-gradle.rust-android"
 }
 
 android {
@@ -20,24 +21,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-            }
-        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path "src/main/cpp/CMakeLists.txt"
-            version "3.22.1"
         }
     }
 
@@ -55,6 +44,14 @@ android {
     buildFeatures {
         buildConfig true
     }
+}
+
+cargo {
+    module  = "./src/main/jni"
+    libname = "metadatajni"
+    targets = ["arm", "arm64", "x86", "x86_64"]
+    prebuiltToolchains = true
+    profile = 'debug'
 }
 
 dependencies {

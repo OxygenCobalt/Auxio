@@ -18,25 +18,12 @@
  
 package org.oxycblt.musikr.metadata
 
-import java.io.FileInputStream
-import org.oxycblt.musikr.fs.DeviceFile
-
-internal object TagLibJNI {
+internal object MetadataJNI {
     init {
-        System.loadLibrary("tagJNI")
+        System.loadLibrary("metadatajni")
     }
 
-    /**
-     * Open a file and extract a tag.
-     *
-     * Note: This method is blocking and should be handled as such if calling from a coroutine.
-     */
-    fun open(deviceFile: DeviceFile, fis: FileInputStream): Metadata? {
-        val inputStream = NativeInputStream(deviceFile, fis)
-        val tag = openNative(inputStream)
-        inputStream.close()
-        return tag
-    }
-
-    private external fun openNative(inputStream: NativeInputStream): Metadata?
+    // This is a rust function, Android Studio has no idea how to link to it
+    @Suppress("KotlinJniMissingFunction")
+    external fun rust(a: String): String
 }

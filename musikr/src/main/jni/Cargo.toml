@@ -1,0 +1,11 @@
+[package]
+name = "metadatajni"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+name = "metadatajni"
+
+[dependencies]
+jni = "0.21.1"
