@@ -2,6 +2,14 @@ use jni::objects::{JClass, JString};
 use jni::sys::jstring;
 use jni::JNIEnv;
 
+#[cxx::bridge]
+mod ffi {
+    unsafe extern "C++" {
+        include!("taglib/taglib.h");
+        // Add the C++ APIs you need to call.
+    }
+}
+
 #[no_mangle]
 pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_rust(
     mut env: JNIEnv,

@@ -8,4 +8,8 @@ crate-type = ["cdylib"]
 name = "metadatajni"
 
 [dependencies]
+cxx = "1.0.137"
 jni = "0.21.1"
+
+[build-dependencies]
+cxx-build = "1.0.137"

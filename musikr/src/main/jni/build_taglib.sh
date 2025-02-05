@@ -1,3 +1,4 @@
+# Deprecated: Please use the new Rust buildscript in build.rs
 set -e
 WORKING_DIR=$1
 echo "Working directory is at $WORKING_DIR"
