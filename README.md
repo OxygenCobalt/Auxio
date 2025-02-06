@@ -84,7 +84,8 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
 
 ## Building
 
-Auxio relies on a custom version of Media3 that enables some extra features. This adds some caveats to the build process:
+Auxio relies on a patched version of Media3 that enables some extra playback features, alongside taglib for metadata
+parsing. This adds some caveats to the build process:
 1. `cmake` and `ninja-build` must be installed before building the project.
 2. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
 download the external code.
