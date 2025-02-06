@@ -6,7 +6,10 @@ use jni::JNIEnv;
 mod ffi {
     unsafe extern "C++" {
         include!("taglib/taglib.h");
-        // Add the C++ APIs you need to call.
+
+        type FileRef;
+
+        type File;
     }
 }
 

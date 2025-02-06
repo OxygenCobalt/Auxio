@@ -5,26 +5,18 @@ use cxx_build;
 
 fn main() {
     let working_dir = env::current_dir().expect("Failed to get current working directory");
-
-    // New: Extract ndk path from CLANG_PATH.
-    let clang_path = env::var("CLANG_PATH").expect("CLANG_PATH env var not set");
-    let toolchains_marker = "/toolchains";
-    let ndk_path = if let Some(pos) = clang_path.find(toolchains_marker) {
-        &clang_path[..pos]
-    } else {
-        panic!("CLANG_PATH does not contain '{}'", toolchains_marker);
-    };
-
+    let target = env::var("TARGET").expect("TARGET env var not set");
     let working_dir = Path::new(&working_dir);
 
-    // Define directories.
+    // Define directories
     let taglib_src_dir = working_dir.join("taglib");
     let taglib_build_dir = taglib_src_dir.join("build");
     let taglib_pkg_dir = taglib_src_dir.join("pkg");
-    let ndk_toolchain = working_dir.join("android.toolchain.cmake");
 
-    // Define architectures.
-    let target = env::var("TARGET").expect("TARGET env var not set");
+    // Determine if building for Android
+    let is_android = target.contains("android");
+
+    // Get architecture
     let arch = if target.contains("x86_64") {
         "x86_64"
     } else if target.contains("i686") {
@@ -40,24 +32,42 @@ fn main() {
     let arch_build_dir = taglib_build_dir.join(arch);
     let arch_pkg_dir = taglib_pkg_dir.join(arch);
 
-    // Configure step.
+    // Prepare cmake command
+    let mut cmake_args = vec![
+        "-B".to_string(),
+        arch_build_dir.to_str().unwrap().to_string(),
+        "-DBUILD_SHARED_LIBS=OFF".to_string(),
+        "-DVISIBILITY_HIDDEN=ON".to_string(),
+        "-DBUILD_TESTING=OFF".to_string(),
+        "-DBUILD_EXAMPLES=OFF".to_string(),
+        "-DBUILD_BINDINGS=OFF".to_string(),
+        "-DWITH_ZLIB=OFF".to_string(),
+        "-DCMAKE_BUILD_TYPE=Release".to_string(),
+        "-DCMAKE_CXX_FLAGS=-fPIC".to_string(),
+    ];
+
+    // Add Android-specific arguments if building for Android
+    if is_android {
+        let clang_path = env::var("CLANG_PATH").expect("CLANG_PATH env var not set");
+        let toolchains_marker = "/toolchains";
+        let ndk_path = if let Some(pos) = clang_path.find(toolchains_marker) {
+            &clang_path[..pos]
+        } else {
+            panic!("CLANG_PATH does not contain '{}'", toolchains_marker);
+        };
+
+        let ndk_toolchain = working_dir.join("android.toolchain.cmake");
+        
+        cmake_args.extend(vec![
+            format!("-DANDROID_NDK_PATH={}", ndk_path),
+            format!("-DCMAKE_TOOLCHAIN_FILE={}", ndk_toolchain.to_str().unwrap()),
+            format!("-DANDROID_ABI={}", arch),
+        ]);
+    }
+
+    // Configure step
     let status = Command::new("cmake")
-        .arg("-B")
-        .arg(arch_build_dir.to_str().unwrap())
-        .arg(format!("-DANDROID_NDK_PATH={}", ndk_path))
-        .arg(format!(
-            "-DCMAKE_TOOLCHAIN_FILE={}",
-            ndk_toolchain.to_str().unwrap()
-        ))
-        .arg(format!("-DANDROID_ABI={}", arch))
-        .arg("-DBUILD_SHARED_LIBS=OFF")
-        .arg("-DVISIBILITY_HIDDEN=ON")
-        .arg("-DBUILD_TESTING=OFF")
-        .arg("-DBUILD_EXAMPLES=OFF")
-        .arg("-DBUILD_BINDINGS=OFF")
-        .arg("-DWITH_ZLIB=OFF")
-        .arg("-DCMAKE_BUILD_TYPE=Release")
-        .arg("-DCMAKE_CXX_FLAGS=-fPIC")
+        .args(&cmake_args)
         .current_dir(&taglib_src_dir)
         .status()
         .expect("Failed to run cmake configure");
@@ -65,7 +75,7 @@ fn main() {
         panic!("cmake configure failed for arch {}", arch);
     }
 
-    // Build step.
+    // Build step
     let status = Command::new("cmake")
         .arg("--build")
         .arg(arch_build_dir.to_str().unwrap())
@@ -78,7 +88,7 @@ fn main() {
         panic!("cmake build failed for arch {}", arch);
     }
 
-    // Install step.
+    // Install step
     let status = Command::new("cmake")
         .arg("--install")
         .arg(arch_build_dir.to_str().unwrap())
@@ -93,9 +103,11 @@ fn main() {
         panic!("cmake install failed for arch {}", arch);
     }
 
+    println!("cargo:rustc-link-search=native={}/lib", arch_pkg_dir.display());
+    println!("cargo:rustc-link-lib=static=tag");
+    
     cxx_build::bridge("src/lib.rs")
-        .include(format!["taglib/pkg/{}/include", arch]) // path to Taglib includes
+        .include(format!["taglib/pkg/{}/include", arch])
         .flag_if_supported("-std=c++14")
         .compile("taglib_cxx_bindings");
-    // println!("cargo:rerun-if-changed=src/lib.rs");
 }
