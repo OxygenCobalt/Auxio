@@ -167,7 +167,7 @@
     <string name="lbl_search">Traži</string>
     <string name="lbl_filter_all">Sve</string>
     <string name="lbl_queue_add">Dodaj u redoslijed</string>
-    <string name="lng_queue_added">Dodano u redoslijed</string>
+    <string name="lng_queue_added">Dodano u redoslijed izvođenja</string>
     <string name="lbl_song_detail">Pogledaj svojstva</string>
     <string name="lbl_artist_details">Idi na izvođača</string>
     <string name="lbl_album_details">Idi na album</string>
