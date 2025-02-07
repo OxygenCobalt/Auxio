@@ -322,4 +322,9 @@
     <string name="cnt_mp4">MPEG-4 sadrži %s</string>
     <string name="set_cover_mode_save_space">Niža kvaliteta</string>
     <string name="set_locations_new">Nova mapa</string>
+    <string name="lng_empty_songs">Tvoje pjesme će se ovdje prikazati.</string>
+    <string name="lng_empty_albums">Tvoji albumi će se ovdje prikazati.</string>
+    <string name="lng_empty_artists">Tvoji izvođači će se ovdje prikazati.</string>
+    <string name="lng_empty_playlists">Tvoji popisi pjesama će se ovdje prikazati.</string>
+    <string name="lng_empty_genres">Tvoji žanrovi će se ovdje prikazati.</string>
 </resources>
