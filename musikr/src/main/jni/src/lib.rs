@@ -34,11 +34,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
         }
     };
 
-    // Get the file and read the title
-    let file = file_ref.file();
-    let title = file.title().unwrap_or("No title");
-    
     // Return the title
-    let output = env.new_string(title).expect("Couldn't create string!");
+    let output = env.new_string("title").expect("Couldn't create string!");
     output.into_raw()
 }

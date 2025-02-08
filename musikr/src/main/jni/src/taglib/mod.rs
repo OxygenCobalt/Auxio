@@ -7,10 +7,10 @@ use ffi::bindings;
 /// Audio properties of a media file
 #[derive(Default)]
 pub struct AudioProperties {
-    pub length: i32,
-    pub bitrate: i32,
-    pub sample_rate: i32,
-    pub channels: i32,
+    pub length_in_milliseconds: i32,
+    pub bitrate_in_kilobits_per_second: i32,
+    pub sample_rate_in_hz: i32,
+    pub number_of_channels: i32,
 }
 
 pub enum File {
@@ -139,10 +139,10 @@ impl FileRef {
             let props_ptr = ffi::bindings::File_audioProperties(file_ptr);
             if !props_ptr.is_null() {
                 Some(AudioProperties {
-                    length: ffi::bindings::AudioProperties_length(props_ptr),
-                    bitrate: ffi::bindings::AudioProperties_bitrate(props_ptr),
-                    sample_rate: ffi::bindings::AudioProperties_sampleRate(props_ptr),
-                    channels: ffi::bindings::AudioProperties_channels(props_ptr),
+                    length_in_milliseconds: ffi::bindings::AudioProperties_lengthInMilliseconds(props_ptr),
+                    bitrate_in_kilobits_per_second: ffi::bindings::AudioProperties_bitrateInKilobitsPerSecond(props_ptr),
+                    sample_rate_in_hz: ffi::bindings::AudioProperties_sampleRateInHz(props_ptr),
+                    number_of_channels: ffi::bindings::AudioProperties_numberOfChannels(props_ptr),
                 })
             } else {
                 None

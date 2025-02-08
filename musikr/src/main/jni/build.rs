@@ -109,6 +109,9 @@ fn main() {
     // Build the shim and cxx bridge together
     cxx_build::bridge("src/taglib/ffi.rs")
         .file("shim/iostream_shim.cpp")
+        .file("shim/file_shim.cpp")
+        .file("shim/string_shim.cpp")
+        .file("shim/audioproperties_shim.cpp")
         .include(format!("taglib/pkg/{}/include", arch))
         .include("shim")
         .include(".")  // Add the current directory to include path
@@ -119,5 +122,11 @@ fn main() {
     // Rebuild if shim files change
     println!("cargo:rerun-if-changed=shim/iostream_shim.hpp");
     println!("cargo:rerun-if-changed=shim/iostream_shim.cpp");
+    println!("cargo:rerun-if-changed=shim/file_shim.hpp");
+    println!("cargo:rerun-if-changed=shim/file_shim.cpp");
+    println!("cargo:rerun-if-changed=shim/string_shim.hpp");
+    println!("cargo:rerun-if-changed=shim/string_shim.cpp");
+    println!("cargo:rerun-if-changed=shim/audioproperties_shim.hpp");
+    println!("cargo:rerun-if-changed=shim/audioproperties_shim.cpp");
     println!("cargo:rerun-if-changed=src/taglib/ffi.rs");
 }

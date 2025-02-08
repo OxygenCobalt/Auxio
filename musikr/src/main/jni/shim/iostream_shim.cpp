@@ -1,6 +1,7 @@
 #include "iostream_shim.hpp"
 #include <stdexcept>
 #include <rust/cxx.h>
+#include <vector>
 
 // These are the functions we'll define in Rust
 extern "C" {
@@ -24,64 +25,6 @@ std::unique_ptr<RustIOStream> new_rust_iostream(RustStream* stream) {
 // Factory function to create a FileRef from a stream
 std::unique_ptr<TagLib::FileRef> new_FileRef_from_stream(std::unique_ptr<RustIOStream> stream) {
     return std::make_unique<TagLib::FileRef>(stream.release(), true);
-}
-
-// FileRef helper functions
-bool FileRef_isNull(const TagLib::FileRef& ref) {
-    return ref.isNull();
-}
-
-const TagLib::File& FileRef_file(const TagLib::FileRef& ref) {
-    return *ref.file();
-}
-
-// File tag methods
-bool File_tag(const TagLib::File& file) {
-    return file.tag() != nullptr;
-}
-
-namespace {
-    // Keep the empty string as a static member to ensure it lives long enough
-    const TagLib::String empty_string;
-}
-
-const TagLib::String& File_tag_title(const TagLib::File& file) {
-    if (auto* tag = file.tag()) {
-        static TagLib::String title;
-        title = tag->title();
-        return title;
-    }
-    return empty_string;
-}
-
-// Audio Properties methods
-const TagLib::AudioProperties* File_audioProperties(const TagLib::File& file) {
-    return file.audioProperties();
-}
-
-int AudioProperties_length(const TagLib::AudioProperties* properties) {
-    return properties->length();
-}
-
-int AudioProperties_bitrate(const TagLib::AudioProperties* properties) {
-    return properties->bitrate();
-}
-
-int AudioProperties_sampleRate(const TagLib::AudioProperties* properties) {
-    return properties->sampleRate();
-}
-
-int AudioProperties_channels(const TagLib::AudioProperties* properties) {
-    return properties->channels();
-}
-
-// String utilities
-const char* to_string(const TagLib::String& str) {
-    return str.toCString(true);
-}
-
-bool isEmpty(const TagLib::String& str) {
-    return str.isEmpty();
 }
 
 RustIOStream::RustIOStream(RustStream* stream) : rust_stream(stream) {}

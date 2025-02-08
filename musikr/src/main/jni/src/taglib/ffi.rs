@@ -4,6 +4,9 @@ pub(crate) mod bindings {
         include!("taglib/taglib.h");
         include!("taglib/tstring.h");
         include!("shim/iostream_shim.hpp");
+        include!("shim/file_shim.hpp");
+        include!("shim/string_shim.hpp");
+        include!("shim/audioproperties_shim.hpp");
 
         #[namespace = "TagLib"]
         type FileRef;
@@ -58,13 +61,13 @@ pub(crate) mod bindings {
         #[namespace = "taglib_shim"]
         unsafe fn File_audioProperties(file: &File) -> *const AudioProperties;
         #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_length(properties: *const AudioProperties) -> i32;
+        unsafe fn AudioProperties_lengthInMilliseconds(properties: *const AudioProperties) -> i32;
         #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_bitrate(properties: *const AudioProperties) -> i32;
+        unsafe fn AudioProperties_bitrateInKilobitsPerSecond(properties: *const AudioProperties) -> i32;
         #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_sampleRate(properties: *const AudioProperties) -> i32;
+        unsafe fn AudioProperties_sampleRateInHz(properties: *const AudioProperties) -> i32;
         #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_channels(properties: *const AudioProperties) -> i32;
+        unsafe fn AudioProperties_numberOfChannels(properties: *const AudioProperties) -> i32;
 
         // String conversion utilities
         #[namespace = "taglib_shim"]
@@ -72,16 +75,4 @@ pub(crate) mod bindings {
         #[namespace = "taglib_shim"]
         fn isEmpty(s: &TagString) -> bool;
     }
-}
-
-extern "C" {
-    // File type checking functions
-    pub fn File_isMPEG(file: *const bindings::File) -> bool;
-    pub fn File_isFLAC(file: *const bindings::File) -> bool;
-    pub fn File_isMP4(file: *const bindings::File) -> bool;
-    pub fn File_isOgg(file: *const bindings::File) -> bool;
-    pub fn File_isOpus(file: *const bindings::File) -> bool;
-    pub fn File_isWAV(file: *const bindings::File) -> bool;
-    pub fn File_isWavPack(file: *const bindings::File) -> bool;
-    pub fn File_isAPE(file: *const bindings::File) -> bool;
 }
