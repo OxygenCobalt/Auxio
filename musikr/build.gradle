@@ -25,6 +25,7 @@ android {
 
     buildTypes {
         release {
+            // R8 flips out that random classes were stripped for unknown reasons
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -52,7 +53,53 @@ cargo {
     libname = "metadatajni"
     targets = ["arm", "arm64", "x86", "x86_64"]
     prebuiltToolchains = true
-    profile = 'debug'
+    profile = "release"
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'mergeDebugJniLibFolders' || task.name == 'mergeReleaseJniLibFolders') {
+        task.dependsOn 'cargoBuild'
+    }
+    for (target in cargo.targets) {
+        if (task.name == "cargoBuild${target.capitalize()}") {
+            task.dependsOn "copy_libc++_shared${target.capitalize()}"
+        }
+    }
+}
+
+for (target in cargo.targets) {
+    tasks.register("copy_libc++_shared${target.capitalize()}", Copy) {
+        def ndkDir = android.ndkDirectory
+        // hostTag, abi and archTriple from: https://developer.android.com/ndk/guides/other_build_systems
+
+        def hostTag
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            if (Os.isArch("x86_64") || Os.isArch("amd64")) {
+                hostTag = "windows-x86_64"
+            } else {
+                hostTag = "windows"
+            }
+        } else if (Os.isFamily(Os.FAMILY_MAC)) {
+            hostTag = "darwin-x86_64"
+        } else {
+            hostTag = "linux-x86_64"
+        }
+
+        def (abi, archTriple) = [
+                arm: ['armeabi-v7a', 'arm-linux-androideabi'],
+                arm64: ['arm64-v8a', 'aarch64-linux-android'],
+                x86: ['x86', 'i686-linux-android'],
+                x86_64: ['x86_64', 'x86_64-linux-android'],
+        ][target]
+
+        def from_path = "$ndkDir/toolchains/llvm/prebuilt/$hostTag/sysroot/usr/lib/$archTriple/libc++_shared.so"
+        def into_path = layout.buildDirectory.dir("rustJniLibs/android/$abi")
+
+        assert file(from_path).exists()
+
+        from from_path
+        into into_path
+    }
 }
 
 dependencies {
@@ -80,23 +127,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }
 
-//
-//task assembleTaglib(type: Exec) {
-//    def jniDir = "$projectDir/src/main/cpp"
-//    def libs = new File("$jniDir/taglib/pkg")
-//    if (libs.exists()) {
-//        commandLine "true"
-//        return
-//    }
-//    commandLine "sh", "-c", "$jniDir/build_taglib.sh $jniDir $android.ndkDirectory"
-//}
-//
-//afterEvaluate {
-//    preDebugBuild.dependsOn assembleTaglib
-//    preReleaseBuild.dependsOn assembleTaglib
-//}
-//
-//clean {
-//    delete "$projectDir/src/main/cpp/taglib/pkg"
-//    delete "$projectDir/src/main/cpp/taglib/build"
-//}
+clean {
+    delete "$projectDir/build/rustJniLibs"
+}

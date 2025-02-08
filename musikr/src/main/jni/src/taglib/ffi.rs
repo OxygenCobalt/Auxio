@@ -32,8 +32,6 @@ pub(crate) mod bindings {
 
         // File tag methods
         #[namespace = "taglib_shim"]
-        fn File_tag(file: &File) -> bool;
-        #[namespace = "taglib_shim"]
         fn File_tag_title(file: &File) -> &TagString;
 
         // String conversion utilities

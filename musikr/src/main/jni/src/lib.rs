@@ -9,7 +9,7 @@ pub use taglib::*;
 use jni_stream::JInputStream;
 
 #[no_mangle]
-pub extern "system" fn Java_HelloWorld_hello<'local>(
+pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     mut env: JNIEnv<'local>,
     _class: JClass<'local>,
     input: JObject<'local>,

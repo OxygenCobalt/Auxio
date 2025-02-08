@@ -4,8 +4,8 @@ version = "1.0.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
 name = "metadatajni"
+crate-type = ["cdylib"]
 
 [dependencies]
 cxx = "1.0.137"

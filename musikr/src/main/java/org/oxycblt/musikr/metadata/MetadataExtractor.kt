@@ -17,7 +17,7 @@
  */
  
 package org.oxycblt.musikr.metadata
-
+ 
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import java.io.FileInputStream

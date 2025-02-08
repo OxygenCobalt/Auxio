@@ -113,6 +113,7 @@ fn main() {
         .include("shim")
         .include(".")  // Add the current directory to include path
         .flag_if_supported("-std=c++14")
+        .cpp_link_stdlib("c++_shared")  // Use shared C++ runtime for Android compatibility
         .compile("taglib_cxx_bindings");
 
     // Rebuild if shim files change
