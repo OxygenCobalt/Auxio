@@ -36,6 +36,24 @@ pub(crate) mod bindings {
         #[namespace = "taglib_shim"]
         fn File_tag_title(file: &File) -> &TagString;
 
+        // File type checking functions
+        #[namespace = "taglib_shim"]
+        fn File_isMPEG(file: &File) -> bool;
+        #[namespace = "taglib_shim"]
+        fn File_isFLAC(file: &File) -> bool;
+        #[namespace = "taglib_shim"]
+        fn File_isMP4(file: &File) -> bool;
+        #[namespace = "taglib_shim"]
+        fn File_isOgg(file: &File) -> bool;
+        #[namespace = "taglib_shim"]
+        fn File_isOpus(file: &File) -> bool;
+        #[namespace = "taglib_shim"]
+        fn File_isWAV(file: &File) -> bool;
+        #[namespace = "taglib_shim"]
+        fn File_isWavPack(file: &File) -> bool;
+        #[namespace = "taglib_shim"]
+        fn File_isAPE(file: &File) -> bool;
+
         // Audio Properties methods
         #[namespace = "taglib_shim"]
         unsafe fn File_audioProperties(file: &File) -> *const AudioProperties;
@@ -54,4 +72,16 @@ pub(crate) mod bindings {
         #[namespace = "taglib_shim"]
         fn isEmpty(s: &TagString) -> bool;
     }
+}
+
+extern "C" {
+    // File type checking functions
+    pub fn File_isMPEG(file: *const bindings::File) -> bool;
+    pub fn File_isFLAC(file: *const bindings::File) -> bool;
+    pub fn File_isMP4(file: *const bindings::File) -> bool;
+    pub fn File_isOgg(file: *const bindings::File) -> bool;
+    pub fn File_isOpus(file: *const bindings::File) -> bool;
+    pub fn File_isWAV(file: *const bindings::File) -> bool;
+    pub fn File_isWavPack(file: *const bindings::File) -> bool;
+    pub fn File_isAPE(file: *const bindings::File) -> bool;
 }

@@ -13,22 +13,83 @@ pub struct AudioProperties {
     pub channels: i32,
 }
 
-// Store extracted tag data instead of C++ reference
-#[derive(Default)]
-pub struct File {
-    title: Option<String>,
-    audio_properties: Option<AudioProperties>,
+pub enum File {
+    Unknown {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    MP3 {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    FLAC {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    MP4 {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    OGG {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    Opus {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    WAV {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    WavPack {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+    APE {
+        title: Option<String>,
+        audio_properties: Option<AudioProperties>,
+    },
+}
+
+impl Default for File {
+    fn default() -> Self {
+        File::Unknown {
+            title: None,
+            audio_properties: None,
+        }
+    }
 }
 
 impl File {
     /// Get the title of the file, if available
     pub fn title(&self) -> Option<&str> {
-        self.title.as_deref()
+        match self {
+            File::Unknown { title, .. } |
+            File::MP3 { title, .. } |
+            File::FLAC { title, .. } |
+            File::MP4 { title, .. } |
+            File::OGG { title, .. } |
+            File::Opus { title, .. } |
+            File::WAV { title, .. } |
+            File::WavPack { title, .. } |
+            File::APE { title, .. } => title.as_deref()
+        }
     }
 
     /// Get the audio properties of the file, if available
     pub fn audio_properties(&self) -> Option<&AudioProperties> {
-        self.audio_properties.as_ref()
+        match self {
+            File::Unknown { audio_properties, .. } |
+            File::MP3 { audio_properties, .. } |
+            File::FLAC { audio_properties, .. } |
+            File::MP4 { audio_properties, .. } |
+            File::OGG { audio_properties, .. } |
+            File::Opus { audio_properties, .. } |
+            File::WAV { audio_properties, .. } |
+            File::WavPack { audio_properties, .. } |
+            File::APE { audio_properties, .. } => audio_properties.as_ref()
+        }
     }
 }
 
@@ -88,14 +149,31 @@ impl FileRef {
             }
         };
 
+        // Determine file type and create appropriate variant
+        let file = {
+            if ffi::bindings::File_isMPEG(file_ptr) {
+                File::MP3 { title, audio_properties }
+            } else if ffi::bindings::File_isFLAC(file_ptr) {
+                File::FLAC { title, audio_properties }
+            } else if ffi::bindings::File_isMP4(file_ptr) {
+                File::MP4 { title, audio_properties }
+            } else if ffi::bindings::File_isOpus(file_ptr) {
+                File::Opus { title, audio_properties }
+            } else if ffi::bindings::File_isOgg(file_ptr) {
+                File::OGG { title, audio_properties }
+            } else if ffi::bindings::File_isWAV(file_ptr) {
+                File::WAV { title, audio_properties }
+            } else if ffi::bindings::File_isWavPack(file_ptr) {
+                File::WavPack { title, audio_properties }
+            } else if ffi::bindings::File_isAPE(file_ptr) {
+                File::APE { title, audio_properties }
+            } else {
+                File::Unknown { title, audio_properties }
+            }
+        };
+
         // Clean up C++ objects - they will be dropped when inner is dropped
         drop(inner);
-
-        // Create File with extracted data
-        let file = File { 
-            title,
-            audio_properties,
-        };
 
         Some(FileRef { file })
     }

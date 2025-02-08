@@ -54,6 +54,27 @@ const TagLib::String& File_tag_title(const TagLib::File& file) {
     return empty_string;
 }
 
+// Audio Properties methods
+const TagLib::AudioProperties* File_audioProperties(const TagLib::File& file) {
+    return file.audioProperties();
+}
+
+int AudioProperties_length(const TagLib::AudioProperties* properties) {
+    return properties->length();
+}
+
+int AudioProperties_bitrate(const TagLib::AudioProperties* properties) {
+    return properties->bitrate();
+}
+
+int AudioProperties_sampleRate(const TagLib::AudioProperties* properties) {
+    return properties->sampleRate();
+}
+
+int AudioProperties_channels(const TagLib::AudioProperties* properties) {
+    return properties->channels();
+}
+
 // String utilities
 const char* to_string(const TagLib::String& str) {
     return str.toCString(true);
