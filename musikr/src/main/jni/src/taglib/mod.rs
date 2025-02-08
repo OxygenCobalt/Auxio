@@ -4,16 +4,31 @@ mod stream;
 pub use stream::{RustStream, TagLibStream};
 use ffi::bindings;
 
+/// Audio properties of a media file
+#[derive(Default)]
+pub struct AudioProperties {
+    pub length: i32,
+    pub bitrate: i32,
+    pub sample_rate: i32,
+    pub channels: i32,
+}
+
 // Store extracted tag data instead of C++ reference
 #[derive(Default)]
 pub struct File {
     title: Option<String>,
+    audio_properties: Option<AudioProperties>,
 }
 
 impl File {
     /// Get the title of the file, if available
     pub fn title(&self) -> Option<&str> {
         self.title.as_deref()
+    }
+
+    /// Get the audio properties of the file, if available
+    pub fn audio_properties(&self) -> Option<&AudioProperties> {
+        self.audio_properties.as_ref()
     }
 }
 
@@ -58,11 +73,29 @@ impl FileRef {
             }
         };
 
+        // Extract audio properties
+        let audio_properties = unsafe {
+            let props_ptr = ffi::bindings::File_audioProperties(file_ptr);
+            if !props_ptr.is_null() {
+                Some(AudioProperties {
+                    length: ffi::bindings::AudioProperties_length(props_ptr),
+                    bitrate: ffi::bindings::AudioProperties_bitrate(props_ptr),
+                    sample_rate: ffi::bindings::AudioProperties_sampleRate(props_ptr),
+                    channels: ffi::bindings::AudioProperties_channels(props_ptr),
+                })
+            } else {
+                None
+            }
+        };
+
         // Clean up C++ objects - they will be dropped when inner is dropped
         drop(inner);
 
         // Create File with extracted data
-        let file = File { title };
+        let file = File { 
+            title,
+            audio_properties,
+        };
 
         Some(FileRef { file })
     }

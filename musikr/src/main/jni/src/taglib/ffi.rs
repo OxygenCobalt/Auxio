@@ -12,6 +12,8 @@ pub(crate) mod bindings {
         #[namespace = "TagLib"]
         #[cxx_name = "String"]
         type TagString;
+        #[namespace = "TagLib"]
+        type AudioProperties;
 
         #[namespace = "taglib_shim"]
         type RustIOStream;
@@ -33,6 +35,18 @@ pub(crate) mod bindings {
         // File tag methods
         #[namespace = "taglib_shim"]
         fn File_tag_title(file: &File) -> &TagString;
+
+        // Audio Properties methods
+        #[namespace = "taglib_shim"]
+        unsafe fn File_audioProperties(file: &File) -> *const AudioProperties;
+        #[namespace = "taglib_shim"]
+        unsafe fn AudioProperties_length(properties: *const AudioProperties) -> i32;
+        #[namespace = "taglib_shim"]
+        unsafe fn AudioProperties_bitrate(properties: *const AudioProperties) -> i32;
+        #[namespace = "taglib_shim"]
+        unsafe fn AudioProperties_sampleRate(properties: *const AudioProperties) -> i32;
+        #[namespace = "taglib_shim"]
+        unsafe fn AudioProperties_channels(properties: *const AudioProperties) -> i32;
 
         // String conversion utilities
         #[namespace = "taglib_shim"]

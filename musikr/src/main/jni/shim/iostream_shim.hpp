@@ -6,6 +6,7 @@
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
+#include <taglib/audioproperties.h>
 #include <cstdint>
 
 namespace taglib_shim {
@@ -48,6 +49,27 @@ const TagLib::File& FileRef_file(const TagLib::FileRef& ref);
 // File tag methods
 bool File_tag(const TagLib::File& file);
 const TagLib::String& File_tag_title(const TagLib::File& file);
+
+// Audio Properties methods
+const TagLib::AudioProperties* File_audioProperties(const TagLib::File& file) {
+    return file.audioProperties();
+}
+
+int AudioProperties_length(const TagLib::AudioProperties* properties) {
+    return properties->length();
+}
+
+int AudioProperties_bitrate(const TagLib::AudioProperties* properties) {
+    return properties->bitrate();
+}
+
+int AudioProperties_sampleRate(const TagLib::AudioProperties* properties) {
+    return properties->sampleRate();
+}
+
+int AudioProperties_channels(const TagLib::AudioProperties* properties) {
+    return properties->channels();
+}
 
 // String utilities
 const char* to_string(const TagLib::String& str);
