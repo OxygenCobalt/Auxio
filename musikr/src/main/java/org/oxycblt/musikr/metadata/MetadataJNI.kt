@@ -25,5 +25,5 @@ internal object MetadataJNI {
 
     // This is a rust function, Android Studio has no idea how to link to it
     @Suppress("KotlinJniMissingFunction")
-    external fun rust(a: String): String
+    external fun openFile(input: NativeInputStream): String
 }

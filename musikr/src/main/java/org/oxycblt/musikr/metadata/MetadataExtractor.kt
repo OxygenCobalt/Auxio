@@ -37,7 +37,8 @@ private object MetadataExtractorImpl : MetadataExtractor {
     override suspend fun extract(deviceFile: DeviceFile, fd: ParcelFileDescriptor) =
         withContext(Dispatchers.IO) {
             val fis = FileInputStream(fd.fileDescriptor)
-            Log.d("MetadataExtractorImpl", MetadataJNI.rust("bruh"))
+            val input = NativeInputStream(deviceFile, fis)
+            Log.d("MetadataExtractorImpl", MetadataJNI.openFile(input))
 //            MetadataJNI.open(deviceFile, fis).also { fis.close() }
                 null
         }

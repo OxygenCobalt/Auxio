@@ -1,33 +1,44 @@
-use jni::objects::{JClass, JString};
+use jni::objects::{JClass, JObject};
 use jni::sys::jstring;
 use jni::JNIEnv;
 
-#[cxx::bridge]
-mod ffi {
-    unsafe extern "C++" {
-        include!("taglib/taglib.h");
+mod taglib;
+mod jni_stream;
 
-        type FileRef;
-
-        type File;
-    }
-}
+pub use taglib::*;
+use jni_stream::JInputStream;
 
 #[no_mangle]
-pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_rust(
-    mut env: JNIEnv,
-    _class: JClass,
-    input: JString,
+pub extern "system" fn Java_HelloWorld_hello<'local>(
+    mut env: JNIEnv<'local>,
+    _class: JClass<'local>,
+    input: JObject<'local>,
 ) -> jstring {
-    // Convert the Java string (JString) to a Rust string
-    let input: String = env.get_string(&input).expect("Couldn't get java string!").into();
+    // Create JInputStream from the Java input stream
+    let stream = match JInputStream::new(&mut env, input) {
+        Ok(stream) => stream,
+        Err(e) => {
+            let error = format!("Failed to create input stream: {}", e);
+            let error_str = env.new_string(error).expect("Couldn't create error string!");
+            return error_str.into_raw();
+        }
+    };
 
-    // Process the input string (this is where your Rust logic would go)
-    let output = format!("Hello from Rust, {}", input);
+    // Create FileRef from the stream
+    let file_ref = match FileRef::from_stream(stream) {
+        Some(file_ref) => file_ref,
+        None => {
+            let error = "Failed to create FileRef";
+            let error_str = env.new_string(error).expect("Couldn't create error string!");
+            return error_str.into_raw();
+        }
+    };
 
-    // Convert the Rust string back to a Java string (jstring)
-    let output = env.new_string(output).expect("Couldn't create java string!");
-
-    // Return the Java string
+    // Get the file and read the title
+    let file = file_ref.file();
+    let title = file.title().unwrap_or("No title");
+    
+    // Return the title
+    let output = env.new_string(title).expect("Couldn't create string!");
     output.into_raw()
 }

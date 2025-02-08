@@ -106,8 +106,17 @@ fn main() {
     println!("cargo:rustc-link-search=native={}/lib", arch_pkg_dir.display());
     println!("cargo:rustc-link-lib=static=tag");
     
-    cxx_build::bridge("src/lib.rs")
-        .include(format!["taglib/pkg/{}/include", arch])
+    // Build the shim and cxx bridge together
+    cxx_build::bridge("src/taglib/ffi.rs")
+        .file("shim/iostream_shim.cpp")
+        .include(format!("taglib/pkg/{}/include", arch))
+        .include("shim")
+        .include(".")  // Add the current directory to include path
         .flag_if_supported("-std=c++14")
         .compile("taglib_cxx_bindings");
+
+    // Rebuild if shim files change
+    println!("cargo:rerun-if-changed=shim/iostream_shim.hpp");
+    println!("cargo:rerun-if-changed=shim/iostream_shim.cpp");
+    println!("cargo:rerun-if-changed=src/taglib/ffi.rs");
 }
