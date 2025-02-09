@@ -3,10 +3,12 @@ pub(crate) mod bindings {
     unsafe extern "C++" {
         include!("taglib/taglib.h");
         include!("taglib/tstring.h");
+        include!("taglib/tstringlist.h");
         include!("taglib/vorbisfile.h");
         include!("taglib/xiphcomment.h");
         include!("shim/iostream_shim.hpp");
         include!("shim/file_shim.hpp");
+        include!("shim/tk_shim.hpp");
 
         #[namespace = "TagLib"]
         type FileRef;
@@ -47,13 +49,11 @@ pub(crate) mod bindings {
         #[namespace = "TagLib::Ogg::Opus"]
         #[cxx_name = "File"]
         type OpusFile;
+        unsafe fn tag(self: Pin<&OpusFile>) -> *mut XiphComment;
 
         #[namespace = "TagLib::Ogg"]
         type XiphComment;
-        unsafe fn fieldListMap(self: Pin<&XiphComment>) -> &FieldListMap;
-
-        #[namespace = "TagLib::Ogg"]
-        type FieldListMap;
+        unsafe fn fieldListMap(self: Pin<&XiphComment>) -> &SimplePropertyMap;
 
         #[namespace = "TagLib::MPEG"]
         #[cxx_name = "File"]
@@ -93,6 +93,21 @@ pub(crate) mod bindings {
         unsafe fn File_asWavPack(file: *mut File) -> *mut WavPackFile;
         #[namespace = "taglib_shim"]
         unsafe fn File_asAPE(file: *mut File) -> *mut APEFile;
+
+        #[namespace = "TagLib"]
+        type SimplePropertyMap;
+        #[namespace = "taglib_shim"]
+        fn SimplePropertyMap_to_vector(field_list_map: Pin<&SimplePropertyMap>) -> UniquePtr<CxxVector<Property>>;
+
+        #[namespace = "taglib_shim"]
+        type Property;
+        fn key(self: Pin<&Property>) -> &TagString;
+        unsafe fn value(self: Pin<&Property>) -> &StringList;
+
+        #[namespace = "TagLib"]
+        type StringList;
+        #[namespace = "taglib_shim"]
+        fn StringList_to_vector(string_list: Pin<&StringList>) -> UniquePtr<CxxVector<TagString>>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "String"]

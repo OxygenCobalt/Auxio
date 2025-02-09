@@ -2,8 +2,12 @@ mod ffi;
 mod stream;
 
 use ffi::bindings;
-use std::pin::Pin;
+use std::ffi::CStr;
+use std::pin::{pin, Pin};
+use std::collections::HashMap;
 pub use stream::{RustStream, TagLibStream};
+
+type XiphComments = HashMap<String, Vec<String>>;
 
 pub enum File {
     Unknown {
@@ -14,15 +18,18 @@ pub enum File {
     },
     FLAC {
         audio_properties: Option<AudioProperties>,
+        xiph_comments: Option<XiphComments>,
     },
     MP4 {
         audio_properties: Option<AudioProperties>,
     },
     OGG {
         audio_properties: Option<AudioProperties>,
+        xiph_comments: Option<XiphComments>,
     },
     Opus {
         audio_properties: Option<AudioProperties>,
+        xiph_comments: Option<XiphComments>,
     },
     WAV {
         audio_properties: Option<AudioProperties>,
@@ -100,7 +107,7 @@ impl FileRef {
             let flac_file = ffi::bindings::File_asFLAC(file_ptr);
             if !flac_file.is_null() {
                 return Some(FileRef {
-                    file: File::FLAC { audio_properties }
+                    file: File::FLAC { audio_properties, xiph_comments: None }
                 });
             }
 
@@ -134,15 +141,56 @@ impl FileRef {
 
             let vorbis_file = ffi::bindings::File_asVorbis(file_ptr);
             if !vorbis_file.is_null() {
+                let pinned_vorbis_file =  Pin::new_unchecked(&*vorbis_file);
+                let xiph_comments = pinned_vorbis_file.tag();
+                let pinned_xiph_comments = Pin::new_unchecked(&*xiph_comments);
+                let xiph_map = pinned_xiph_comments.fieldListMap();
+                let pinned_xiph_map = Pin::new_unchecked(xiph_map);
+                let xiph_comments = ffi::bindings::SimplePropertyMap_to_vector(pinned_xiph_map);
+                
+                let mut xiph_safe_map = XiphComments::new();
+                for property in xiph_comments.iter() {
+                    let pinned_property = Pin::new_unchecked(property);
+                    let tag_key = pinned_property.key();
+                    let pinned_key = Pin::new_unchecked(&*tag_key);
+                    let c_str = pinned_key.toCString(true);
+                    let key = CStr::from_ptr(c_str).to_string_lossy().to_string();
+
+                    let tag_values = pinned_property.value();
+                    let pinned_values = Pin::new_unchecked(&*tag_values);
+                    let cxx_vec_values = ffi::bindings::StringList_to_vector(pinned_values);
+                    let values = cxx_vec_values.iter().map(|value|  {
+                        let pinned_value = Pin::new_unchecked(value);
+                        let c_str = pinned_value.toCString(true);
+                        CStr::from_ptr(c_str).to_string_lossy().to_string()
+                    }).collect();
+
+                    xiph_safe_map.insert(key, values);
+                }
+
                 return Some(FileRef {
-                    file: File::OGG { audio_properties }
+                    file: File::OGG { audio_properties, xiph_comments: Some(xiph_safe_map) }
                 });
             }
 
             let opus_file = ffi::bindings::File_asOpus(file_ptr);
             if !opus_file.is_null() {
+                let pinned_opus_file = Pin::new_unchecked(&*opus_file);
+                let xiph_comments = pinned_opus_file.tag();
+                let pinned_xiph_comments = Pin::new_unchecked(&*xiph_comments);
+                let xiph_map = pinned_xiph_comments.fieldListMap();
+                let pinned_xiph_map = Pin::new_unchecked(xiph_map);
+                let xiph_comments = ffi::bindings::SimplePropertyMap_to_vector(pinned_xiph_map);
+                
+                let mut xiph_safe_map = XiphComments::new();
+                for property in xiph_comments.iter() {
+                    let pinned_property = Pin::new_unchecked(property);
+                    let tag_key = pinned_property.key();
+                    let pinned_key = Pin::new_unchecked(&*tag_key);
+                }
+                
                 return Some(FileRef {
-                    file: File::Opus { audio_properties }
+                    file: File::Opus { audio_properties, xiph_comments: Some(xiph_safe_map) }
                 });
             }
 
