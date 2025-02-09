@@ -2,37 +2,40 @@
 
 namespace taglib_shim {
 
-// File conversion functions
-TagLib::Ogg::Vorbis::File* File_asVorbis(TagLib::File* file) {
-    return dynamic_cast<TagLib::Ogg::Vorbis::File*>(file);
+const TagLib::Ogg::File* File_asOgg(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::Ogg::File*>(file);
 }
 
-TagLib::Ogg::Opus::File* File_asOpus(TagLib::File* file) {
-    return dynamic_cast<TagLib::Ogg::Opus::File*>(file);
+const TagLib::Ogg::Vorbis::File* File_asVorbis(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::Ogg::Vorbis::File*>(file);
 }
 
-TagLib::MPEG::File* File_asMPEG(TagLib::File* file) {
-    return dynamic_cast<TagLib::MPEG::File*>(file);
+const TagLib::Ogg::Opus::File* File_asOpus(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::Ogg::Opus::File*>(file);
 }
 
-TagLib::FLAC::File* File_asFLAC(TagLib::File* file) {
-    return dynamic_cast<TagLib::FLAC::File*>(file);
+const TagLib::MPEG::File* File_asMPEG(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::MPEG::File*>(file);
 }
 
-TagLib::MP4::File* File_asMP4(TagLib::File* file) {
-    return dynamic_cast<TagLib::MP4::File*>(file);
+const TagLib::FLAC::File* File_asFLAC(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::FLAC::File*>(file);
 }
 
-TagLib::RIFF::WAV::File* File_asWAV(TagLib::File* file) {
-    return dynamic_cast<TagLib::RIFF::WAV::File*>(file);
+const TagLib::MP4::File* File_asMP4(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::MP4::File*>(file);
 }
 
-TagLib::WavPack::File* File_asWavPack(TagLib::File* file) {
-    return dynamic_cast<TagLib::WavPack::File*>(file);
+const TagLib::RIFF::WAV::File* File_asWAV(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::RIFF::WAV::File*>(file);
 }
 
-TagLib::APE::File* File_asAPE(TagLib::File* file) {
-    return dynamic_cast<TagLib::APE::File*>(file);
+const TagLib::WavPack::File* File_asWavPack(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::WavPack::File*>(file);
+}
+
+const TagLib::APE::File* File_asAPE(const TagLib::File* file) {
+    return dynamic_cast<const TagLib::APE::File*>(file);
 }
 
 } // namespace taglib_shim 
