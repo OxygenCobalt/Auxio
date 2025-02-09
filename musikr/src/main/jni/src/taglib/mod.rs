@@ -1,6 +1,9 @@
 mod ffi;
 mod stream;
 
+use std::pin::{pin, Pin};
+
+use cxx::UniquePtr;
 pub use stream::{RustStream, TagLibStream};
 use ffi::bindings;
 
@@ -15,39 +18,30 @@ pub struct AudioProperties {
 
 pub enum File {
     Unknown {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     MP3 {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     FLAC {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     MP4 {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     OGG {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     Opus {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     WAV {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     WavPack {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
     APE {
-        title: Option<String>,
         audio_properties: Option<AudioProperties>,
     },
 }
@@ -55,28 +49,12 @@ pub enum File {
 impl Default for File {
     fn default() -> Self {
         File::Unknown {
-            title: None,
             audio_properties: None,
         }
     }
 }
 
 impl File {
-    /// Get the title of the file, if available
-    pub fn title(&self) -> Option<&str> {
-        match self {
-            File::Unknown { title, .. } |
-            File::MP3 { title, .. } |
-            File::FLAC { title, .. } |
-            File::MP4 { title, .. } |
-            File::OGG { title, .. } |
-            File::Opus { title, .. } |
-            File::WAV { title, .. } |
-            File::WavPack { title, .. } |
-            File::APE { title, .. } => title.as_deref()
-        }
-    }
-
     /// Get the audio properties of the file, if available
     pub fn audio_properties(&self) -> Option<&AudioProperties> {
         match self {
@@ -111,38 +89,26 @@ impl FileRef {
         let iostream = unsafe { ffi::bindings::new_rust_iostream(raw_stream) };
         
         // Create FileRef from iostream
-        let inner = ffi::bindings::new_FileRef_from_stream(iostream);
-        if ffi::bindings::FileRef_isNull(&inner) {
+        let file_ref = ffi::bindings::new_FileRef_from_stream(iostream);
+        if file_ref.is_null() {
             return None;
         }
 
         // Extract data from C++ objects
-        let file_ref = &inner;
-        let file_ptr = ffi::bindings::FileRef_file(&file_ref);
-        
-        // Extract title
-        let title = {
-            let title = ffi::bindings::File_tag_title(file_ptr);
-            if ffi::bindings::isEmpty(title) {
-                None
-            } else {
-                let cstr = unsafe { ffi::bindings::to_string(title) };
-                unsafe { std::ffi::CStr::from_ptr(cstr) }
-                    .to_str()
-                    .ok()
-                    .map(|s| s.to_owned())
-            }
-        };
+        let pinned_file_ref = unsafe { Pin::new_unchecked(file_ref.as_ref().unwrap()) };
+        let file_ptr = pinned_file_ref.file();
 
         // Extract audio properties
-        let audio_properties = unsafe {
-            let props_ptr = ffi::bindings::File_audioProperties(file_ptr);
+        let audio_properties = {
+            let pinned_file = unsafe { Pin::new_unchecked(&*file_ptr) };
+            let props_ptr = pinned_file.audioProperties();
             if !props_ptr.is_null() {
+                let props = unsafe { Pin::new_unchecked(&*props_ptr) };
                 Some(AudioProperties {
-                    length_in_milliseconds: ffi::bindings::AudioProperties_lengthInMilliseconds(props_ptr),
-                    bitrate_in_kilobits_per_second: ffi::bindings::AudioProperties_bitrateInKilobitsPerSecond(props_ptr),
-                    sample_rate_in_hz: ffi::bindings::AudioProperties_sampleRateInHz(props_ptr),
-                    number_of_channels: ffi::bindings::AudioProperties_numberOfChannels(props_ptr),
+                    length_in_milliseconds: props.lengthInMilliseconds(),
+                    bitrate_in_kilobits_per_second: props.bitrate(),
+                    sample_rate_in_hz: props.sampleRate(),
+                    number_of_channels: props.channels(),
                 })
             } else {
                 None
@@ -150,30 +116,30 @@ impl FileRef {
         };
 
         // Determine file type and create appropriate variant
-        let file = {
+        let file = unsafe {
             if ffi::bindings::File_isMPEG(file_ptr) {
-                File::MP3 { title, audio_properties }
+                File::MP3 { audio_properties }
             } else if ffi::bindings::File_isFLAC(file_ptr) {
-                File::FLAC { title, audio_properties }
+                File::FLAC { audio_properties }
             } else if ffi::bindings::File_isMP4(file_ptr) {
-                File::MP4 { title, audio_properties }
+                File::MP4 { audio_properties }
             } else if ffi::bindings::File_isOpus(file_ptr) {
-                File::Opus { title, audio_properties }
+                File::Opus { audio_properties }
             } else if ffi::bindings::File_isOgg(file_ptr) {
-                File::OGG { title, audio_properties }
+                File::OGG { audio_properties }
             } else if ffi::bindings::File_isWAV(file_ptr) {
-                File::WAV { title, audio_properties }
+                File::WAV { audio_properties }
             } else if ffi::bindings::File_isWavPack(file_ptr) {
-                File::WavPack { title, audio_properties }
+                File::WavPack { audio_properties }
             } else if ffi::bindings::File_isAPE(file_ptr) {
-                File::APE { title, audio_properties }
+                File::APE { audio_properties }
             } else {
-                File::Unknown { title, audio_properties }
+                File::Unknown { audio_properties }
             }
         };
 
-        // Clean up C++ objects - they will be dropped when inner is dropped
-        drop(inner);
+        // Clean up C++ objects - they will be dropped when file_ref is dropped
+        drop(file_ref);
 
         Some(FileRef { file })
     }

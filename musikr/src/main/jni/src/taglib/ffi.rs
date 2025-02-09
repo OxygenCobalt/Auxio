@@ -5,8 +5,6 @@ pub(crate) mod bindings {
         include!("taglib/tstring.h");
         include!("shim/iostream_shim.hpp");
         include!("shim/file_shim.hpp");
-        include!("shim/string_shim.hpp");
-        include!("shim/audioproperties_shim.hpp");
 
         #[namespace = "TagLib"]
         type FileRef;
@@ -30,49 +28,39 @@ pub(crate) mod bindings {
         fn new_FileRef_from_stream(stream: UniquePtr<RustIOStream>) -> UniquePtr<FileRef>;
 
         // FileRef helper functions
-        #[namespace = "taglib_shim"]
-        fn FileRef_isNull(ref_: &FileRef) -> bool;
-        #[namespace = "taglib_shim"]
-        fn FileRef_file(ref_: &FileRef) -> &File;
+        fn isNull(self: Pin<&FileRef>) -> bool;
+        fn file(self: Pin<&FileRef>) -> *mut File;
 
-        // File tag methods
-        #[namespace = "taglib_shim"]
-        fn File_tag_title(file: &File) -> &TagString;
+        fn audioProperties(self: Pin<&File>) -> *mut AudioProperties;
 
         // File type checking functions
         #[namespace = "taglib_shim"]
-        fn File_isMPEG(file: &File) -> bool;
+        unsafe fn File_isMPEG(file: *mut File) -> bool;
         #[namespace = "taglib_shim"]
-        fn File_isFLAC(file: &File) -> bool;
+        unsafe fn File_isFLAC(file: *mut File) -> bool;
         #[namespace = "taglib_shim"]
-        fn File_isMP4(file: &File) -> bool;
+        unsafe fn File_isMP4(file: *mut File) -> bool;
         #[namespace = "taglib_shim"]
-        fn File_isOgg(file: &File) -> bool;
+        unsafe fn File_isOgg(file: *mut File) -> bool;
         #[namespace = "taglib_shim"]
-        fn File_isOpus(file: &File) -> bool;
+        unsafe fn File_isOpus(file: *mut File) -> bool;
         #[namespace = "taglib_shim"]
-        fn File_isWAV(file: &File) -> bool;
+        unsafe fn File_isWAV(file: *mut File) -> bool;
         #[namespace = "taglib_shim"]
-        fn File_isWavPack(file: &File) -> bool;
+        unsafe fn File_isWavPack(file: *mut File) -> bool;
         #[namespace = "taglib_shim"]
-        fn File_isAPE(file: &File) -> bool;
+        unsafe fn File_isAPE(file: *mut File) -> bool;
 
-        // Audio Properties methods
-        #[namespace = "taglib_shim"]
-        unsafe fn File_audioProperties(file: &File) -> *const AudioProperties;
-        #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_lengthInMilliseconds(properties: *const AudioProperties) -> i32;
-        #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_bitrateInKilobitsPerSecond(properties: *const AudioProperties) -> i32;
-        #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_sampleRateInHz(properties: *const AudioProperties) -> i32;
-        #[namespace = "taglib_shim"]
-        unsafe fn AudioProperties_numberOfChannels(properties: *const AudioProperties) -> i32;
+        // AudioProperties methods
+        fn lengthInMilliseconds(self: Pin<&AudioProperties>) -> i32;
+        fn bitrate(self: Pin<&AudioProperties>) -> i32;
+        fn sampleRate(self: Pin<&AudioProperties>) -> i32;
+        fn channels(self: Pin<&AudioProperties>) -> i32;
 
         // String conversion utilities
         #[namespace = "taglib_shim"]
-        unsafe fn to_string(s: &TagString) -> *const c_char;
+        unsafe fn toCString(self: Pin<&TagString>, unicode: bool) -> *const c_char;
         #[namespace = "taglib_shim"]
-        fn isEmpty(s: &TagString) -> bool;
+        fn isEmpty(self: Pin<&TagString>) -> bool;
     }
 }
