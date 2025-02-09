@@ -12,18 +12,18 @@
 #include <taglib/wavfile.h>
 #include <taglib/wavpackfile.h>
 #include <taglib/apefile.h>
+#include <taglib/vorbisfile.h>
 
 namespace taglib_shim {
 
-// File type checking functions
-bool File_isMPEG(TagLib::File* file);
-bool File_isFLAC(TagLib::File* file);
-bool File_isMP4(TagLib::File* file);
-bool File_isOgg(TagLib::File* file);
-bool File_isOpus(TagLib::File* file);
-bool File_isWAV(TagLib::File* file);
-bool File_isWavPack(TagLib::File* file);
-bool File_isAPE(TagLib::File* file);
-
+// File conversion functions
+TagLib::Ogg::Vorbis::File* File_asVorbis(TagLib::File* file);
+TagLib::Ogg::Opus::File* File_asOpus(TagLib::File* file);
+TagLib::MPEG::File* File_asMPEG(TagLib::File* file);
+TagLib::FLAC::File* File_asFLAC(TagLib::File* file);
+TagLib::MP4::File* File_asMP4(TagLib::File* file);
+TagLib::RIFF::WAV::File* File_asWAV(TagLib::File* file);
+TagLib::WavPack::File* File_asWavPack(TagLib::File* file);
+TagLib::APE::File* File_asAPE(TagLib::File* file);
 
 } // namespace taglib_shim 

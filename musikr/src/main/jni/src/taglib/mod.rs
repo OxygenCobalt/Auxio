@@ -1,20 +1,9 @@
 mod ffi;
 mod stream;
 
-use std::pin::{pin, Pin};
-
-use cxx::UniquePtr;
-pub use stream::{RustStream, TagLibStream};
 use ffi::bindings;
-
-/// Audio properties of a media file
-#[derive(Default)]
-pub struct AudioProperties {
-    pub length_in_milliseconds: i32,
-    pub bitrate_in_kilobits_per_second: i32,
-    pub sample_rate_in_hz: i32,
-    pub number_of_channels: i32,
-}
+use std::pin::Pin;
+pub use stream::{RustStream, TagLibStream};
 
 pub enum File {
     Unknown {
@@ -46,29 +35,13 @@ pub enum File {
     },
 }
 
-impl Default for File {
-    fn default() -> Self {
-        File::Unknown {
-            audio_properties: None,
-        }
-    }
-}
-
-impl File {
-    /// Get the audio properties of the file, if available
-    pub fn audio_properties(&self) -> Option<&AudioProperties> {
-        match self {
-            File::Unknown { audio_properties, .. } |
-            File::MP3 { audio_properties, .. } |
-            File::FLAC { audio_properties, .. } |
-            File::MP4 { audio_properties, .. } |
-            File::OGG { audio_properties, .. } |
-            File::Opus { audio_properties, .. } |
-            File::WAV { audio_properties, .. } |
-            File::WavPack { audio_properties, .. } |
-            File::APE { audio_properties, .. } => audio_properties.as_ref()
-        }
-    }
+/// Audio properties of a media file
+#[derive(Default)]
+pub struct AudioProperties {
+    pub length_in_milliseconds: i32,
+    pub bitrate_in_kilobits_per_second: i32,
+    pub sample_rate_in_hz: i32,
+    pub number_of_channels: i32,
 }
 
 // Safe wrapper for FileRef that owns extracted data
@@ -81,13 +54,13 @@ impl FileRef {
     pub fn from_stream<'a, T: TagLibStream + 'a>(stream: T) -> Option<Self> {
         // Create the RustStream wrapper
         let rust_stream = stream::RustStream::new(stream);
-        
+
         // Convert to raw pointer for FFI
         let raw_stream = Box::into_raw(Box::new(rust_stream)) as *mut bindings::RustStream;
-        
+
         // Create the RustIOStream C++ wrapper
         let iostream = unsafe { ffi::bindings::new_rust_iostream(raw_stream) };
-        
+
         // Create FileRef from iostream
         let file_ref = ffi::bindings::new_FileRef_from_stream(iostream);
         if file_ref.is_null() {
@@ -117,25 +90,63 @@ impl FileRef {
 
         // Determine file type and create appropriate variant
         let file = unsafe {
-            if ffi::bindings::File_isMPEG(file_ptr) {
-                File::MP3 { audio_properties }
-            } else if ffi::bindings::File_isFLAC(file_ptr) {
-                File::FLAC { audio_properties }
-            } else if ffi::bindings::File_isMP4(file_ptr) {
-                File::MP4 { audio_properties }
-            } else if ffi::bindings::File_isOpus(file_ptr) {
-                File::Opus { audio_properties }
-            } else if ffi::bindings::File_isOgg(file_ptr) {
-                File::OGG { audio_properties }
-            } else if ffi::bindings::File_isWAV(file_ptr) {
-                File::WAV { audio_properties }
-            } else if ffi::bindings::File_isWavPack(file_ptr) {
-                File::WavPack { audio_properties }
-            } else if ffi::bindings::File_isAPE(file_ptr) {
-                File::APE { audio_properties }
-            } else {
-                File::Unknown { audio_properties }
+            let mpeg_file = ffi::bindings::File_asMPEG(file_ptr);
+            if !mpeg_file.is_null() {
+                return Some(FileRef {
+                    file: File::MP3 { audio_properties }
+                });
             }
+
+            let flac_file = ffi::bindings::File_asFLAC(file_ptr);
+            if !flac_file.is_null() {
+                return Some(FileRef {
+                    file: File::FLAC { audio_properties }
+                });
+            }
+
+            let mp4_file = ffi::bindings::File_asMP4(file_ptr);
+            if !mp4_file.is_null() {
+                return Some(FileRef {
+                    file: File::MP4 { audio_properties }
+                });
+            }
+
+            let wav_file = ffi::bindings::File_asWAV(file_ptr);
+            if !wav_file.is_null() {
+                return Some(FileRef {
+                    file: File::WAV { audio_properties }
+                });
+            }
+
+            let wavpack_file = ffi::bindings::File_asWavPack(file_ptr);
+            if !wavpack_file.is_null() {
+                return Some(FileRef {
+                    file: File::WavPack { audio_properties }
+                });
+            }
+
+            let ape_file = ffi::bindings::File_asAPE(file_ptr);
+            if !ape_file.is_null() {
+                return Some(FileRef {
+                    file: File::APE { audio_properties }
+                });
+            }
+
+            let vorbis_file = ffi::bindings::File_asVorbis(file_ptr);
+            if !vorbis_file.is_null() {
+                return Some(FileRef {
+                    file: File::OGG { audio_properties }
+                });
+            }
+
+            let opus_file = ffi::bindings::File_asOpus(file_ptr);
+            if !opus_file.is_null() {
+                return Some(FileRef {
+                    file: File::Opus { audio_properties }
+                });
+            }
+
+            File::Unknown { audio_properties }
         };
 
         // Clean up C++ objects - they will be dropped when file_ref is dropped
@@ -147,4 +158,4 @@ impl FileRef {
     pub fn file(&self) -> &File {
         &self.file
     }
-} 
+}

@@ -2,37 +2,37 @@
 
 namespace taglib_shim {
 
-// File type checking functions
-bool File_isMPEG(TagLib::File* file) {
-    return dynamic_cast<TagLib::MPEG::File*>(file) != nullptr;
+// File conversion functions
+TagLib::Ogg::Vorbis::File* File_asVorbis(TagLib::File* file) {
+    return dynamic_cast<TagLib::Ogg::Vorbis::File*>(file);
 }
 
-bool File_isFLAC(TagLib::File* file) {
-    return dynamic_cast<TagLib::FLAC::File*>(file) != nullptr;
+TagLib::Ogg::Opus::File* File_asOpus(TagLib::File* file) {
+    return dynamic_cast<TagLib::Ogg::Opus::File*>(file);
 }
 
-bool File_isMP4(TagLib::File* file) {
-    return dynamic_cast<TagLib::MP4::File*>(file) != nullptr;
+TagLib::MPEG::File* File_asMPEG(TagLib::File* file) {
+    return dynamic_cast<TagLib::MPEG::File*>(file);
 }
 
-bool File_isOgg(TagLib::File* file) {
-    return dynamic_cast<TagLib::Ogg::File*>(file) != nullptr;
+TagLib::FLAC::File* File_asFLAC(TagLib::File* file) {
+    return dynamic_cast<TagLib::FLAC::File*>(file);
 }
 
-bool File_isOpus(TagLib::File* file) {
-    return dynamic_cast<TagLib::Ogg::Opus::File*>(file) != nullptr;
+TagLib::MP4::File* File_asMP4(TagLib::File* file) {
+    return dynamic_cast<TagLib::MP4::File*>(file);
 }
 
-bool File_isWAV(TagLib::File* file) {
-    return dynamic_cast<TagLib::RIFF::WAV::File*>(file) != nullptr;
+TagLib::RIFF::WAV::File* File_asWAV(TagLib::File* file) {
+    return dynamic_cast<TagLib::RIFF::WAV::File*>(file);
 }
 
-bool File_isWavPack(TagLib::File* file) {
-    return dynamic_cast<TagLib::WavPack::File*>(file) != nullptr;
+TagLib::WavPack::File* File_asWavPack(TagLib::File* file) {
+    return dynamic_cast<TagLib::WavPack::File*>(file);
 }
 
-bool File_isAPE(TagLib::File* file) {
-    return dynamic_cast<TagLib::APE::File*>(file) != nullptr;
+TagLib::APE::File* File_asAPE(TagLib::File* file) {
+    return dynamic_cast<TagLib::APE::File*>(file);
 }
 
 } // namespace taglib_shim 

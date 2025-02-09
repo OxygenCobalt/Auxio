@@ -28,7 +28,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     let file_ref = match FileRef::from_stream(stream) {
         Some(file_ref) => file_ref,
         None => {
-            let error = "Failed to create FileRef";
+            let error = "Failed to create File";
             let error_str = env.new_string(error).expect("Couldn't create error string!");
             return error_str.into_raw();
         }
