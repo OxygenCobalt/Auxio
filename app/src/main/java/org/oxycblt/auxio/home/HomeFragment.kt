@@ -270,9 +270,7 @@ class HomeFragment :
 
         // Set up the mapping between the ViewPager and TabLayout.
         TabLayoutMediator(
-                binding.homeTabs,
-                binding.homePager,
-                NamedTabStrategy(homeModel.currentTabTypes))
+                binding.homeTabs, binding.homePager, NamedTabStrategy(homeModel.currentTabTypes))
             .attach()
     }
 
