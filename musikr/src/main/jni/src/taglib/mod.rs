@@ -75,10 +75,10 @@ impl FileRef {
         // Extract data from C++ objects
         let file = file_ref.file_or().and_then(|file| {
             let audio_properties = file.audio_properties().map(|props| AudioProperties {
-                length_in_milliseconds: props.length_ms(),
-                bitrate_in_kilobits_per_second: props.bitrate_kbps(),
-                sample_rate_in_hz: props.sample_rate_hz(),
-                number_of_channels: props.channel_count(),
+                length_in_milliseconds: props.length_in_milliseconds(),
+                bitrate_in_kilobits_per_second: props.bitrate(),
+                sample_rate_in_hz: props.sample_rate(),
+                number_of_channels: props.channels(),
             });
 
             if let Some(vorbis_file) = file.as_vorbis() {
