@@ -17,7 +17,7 @@
  */
  
 package org.oxycblt.musikr.metadata
- 
+
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import java.io.FileInputStream
@@ -39,7 +39,7 @@ private object MetadataExtractorImpl : MetadataExtractor {
             val fis = FileInputStream(fd.fileDescriptor)
             val input = NativeInputStream(deviceFile, fis)
             Log.d("MetadataExtractorImpl", MetadataJNI.openFile(input))
-//            MetadataJNI.open(deviceFile, fis).also { fis.close() }
-                null
+            //            MetadataJNI.open(deviceFile, fis).also { fis.close() }
+            null
         }
 }
