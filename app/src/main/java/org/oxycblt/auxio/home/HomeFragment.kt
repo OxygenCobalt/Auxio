@@ -53,7 +53,7 @@ import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
-import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
+import org.oxycblt.auxio.home.tabs.NamedTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectionFragment
@@ -272,7 +272,7 @@ class HomeFragment :
         TabLayoutMediator(
                 binding.homeTabs,
                 binding.homePager,
-                AdaptiveTabStrategy(requireContext(), homeModel.currentTabTypes))
+                NamedTabStrategy(homeModel.currentTabTypes))
             .attach()
     }
 

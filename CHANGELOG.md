@@ -40,6 +40,7 @@
 - Date added is now local to when the app discovers the file and will not
 persist long-term
 - Songs with no album are now "Unknown album" rather than folder name
+- Tab layout no longer changes on device configuration
 
 #### Dev/Meta
 - No longer using custom logging setup
