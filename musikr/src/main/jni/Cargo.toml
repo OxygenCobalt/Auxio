@@ -8,8 +8,8 @@ name = "metadatajni"
 crate-type = ["cdylib"]
 
 [dependencies]
-cxx = "1.0.137"
-jni = "0.21.1"
+cxx = { version = "1.0.137", default-features = false, features = ["alloc"] }
+jni = { version = "0.21.1", default-features = false }
 
 [build-dependencies]
 cxx-build = "1.0.137"

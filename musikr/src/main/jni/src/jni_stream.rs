@@ -1,7 +1,7 @@
-use crate::taglib::TagLibStream;
+use crate::taglib::{IOStream, Whence};
 use jni::objects::{JObject, JValue};
 use jni::JNIEnv;
-use std::io::{Read, Seek, SeekFrom, Write};
+use alloc::string::String;
 
 pub struct JInputStream<'local, 'a> {
     env: &'a mut JNIEnv<'local>,
@@ -20,7 +20,7 @@ impl<'local, 'a> JInputStream<'local, 'a> {
     }
 }
 
-impl<'local, 'a> TagLibStream for JInputStream<'local, 'a> {
+impl<'local, 'a> IOStream for JInputStream<'local, 'a> {
     fn name(&mut self) -> String {
         // Call the Java name() method safely
         let name = self
@@ -35,18 +35,12 @@ impl<'local, 'a> TagLibStream for JInputStream<'local, 'a> {
             .into()
     }
 
-    fn is_readonly(&self) -> bool {
-        true // JInputStream is always read-only
-    }
-}
-
-impl<'local, 'a> Read for JInputStream<'local, 'a> {
-    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+    fn read(&mut self, buf: &mut [u8]) -> Result<usize, String> {
         // Create a direct ByteBuffer from the Rust slice
         let byte_buffer = unsafe {
             self.env
                 .new_direct_byte_buffer(buf.as_mut_ptr(), buf.len())
-                .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?
+                .map_err(|_| String::from("Failed to create byte buffer"))?
         };
 
         // Call readBlock safely
@@ -59,38 +53,20 @@ impl<'local, 'a> Read for JInputStream<'local, 'a> {
                 &[JValue::Object(&byte_buffer)],
             )
             .and_then(|result| result.z())
-            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+            .map_err(|_| String::from("Failed to read block"))?;
 
         if !success {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                "Failed to read block",
-            ));
+            return Err(String::from("Failed to read block"));
         }
 
         Ok(buf.len())
     }
-}
 
-impl<'local, 'a> Write for JInputStream<'local, 'a> {
-    fn write(&mut self, _buf: &[u8]) -> std::io::Result<usize> {
-        Err(std::io::Error::new(
-            std::io::ErrorKind::PermissionDenied,
-            "JInputStream is read-only",
-        ))
-    }
-
-    fn flush(&mut self) -> std::io::Result<()> {
-        Ok(()) // Nothing to flush in a read-only stream
-    }
-}
-
-impl<'local, 'a> Seek for JInputStream<'local, 'a> {
-    fn seek(&mut self, pos: SeekFrom) -> std::io::Result<u64> {
+    fn seek(&mut self, pos: Whence) -> Result<(), String> {
         let (method, offset) = match pos {
-            SeekFrom::Start(offset) => ("seekFromBeginning", offset as i64),
-            SeekFrom::Current(offset) => ("seekFromCurrent", offset),
-            SeekFrom::End(offset) => ("seekFromEnd", offset),
+            Whence::Start(offset) => ("seekFromBeginning", offset as i64),
+            Whence::Current(offset) => ("seekFromCurrent", offset),
+            Whence::End(offset) => ("seekFromEnd", offset),
         };
 
         // Call the appropriate seek method safely
@@ -98,29 +74,28 @@ impl<'local, 'a> Seek for JInputStream<'local, 'a> {
             .env
             .call_method(&self.input, method, "(J)Z", &[JValue::Long(offset)])
             .and_then(|result| result.z())
-            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+            .map_err(|e| String::from("Failed to seek"))?;
 
         if !success {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                "Failed to seek",
-            ));
+            return Err(String::from("Failed to seek"));
         }
 
-        // Return current position safely
-        let position = self
+        Ok(())
+    }
+
+    fn tell(&mut self) -> Result<i64, String> {
+         self
             .env
             .call_method(&self.input, "tell", "()J", &[])
             .and_then(|result| result.j())
-            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+            .map_err(|_| String::from("Failed to get position"))
+    }
 
-        if position == i64::MIN {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                "Failed to get position",
-            ));
-        }
-
-        Ok(position as u64)
+    fn length(&mut self) -> Result<i64, String> {
+        self
+            .env
+            .call_method(&self.input, "length", "()J", &[])
+            .and_then(|result| result.j())
+            .map_err(|_| String::from("Failed to get length"))
     }
 }

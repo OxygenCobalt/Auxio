@@ -1,7 +1,9 @@
-use std::ffi::CStr;
-use std::pin::Pin;
-use std::string::ToString;
-use std::collections::HashMap;
+use core::ffi::CStr;
+use core::pin::Pin;
+
+use alloc::collections::BTreeMap;
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
 
 #[cxx::bridge]
 pub(crate) mod bindings {
@@ -340,7 +342,7 @@ impl bindings::XiphComment {
 }
 
 impl bindings::SimplePropertyMap {
-    pub fn to_hashmap(&self) -> HashMap<String, Vec<String>> {
+    pub fn to_hashmap(&self) -> BTreeMap<String, Vec<String>> {
         let cxx_vec = unsafe {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
@@ -371,6 +373,7 @@ impl bindings::Property {
         }
     }
 }
+
 impl ToString for bindings::TString {
     fn to_string(&self) -> String {
         let c_str = unsafe {

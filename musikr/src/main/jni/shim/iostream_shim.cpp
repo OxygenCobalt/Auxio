@@ -8,12 +8,12 @@ extern "C"
 {
     const char *rust_stream_name(const void *stream);
     size_t rust_stream_read(void *stream, uint8_t *buffer, size_t length);
-    void rust_stream_write(void *stream, const uint8_t *data, size_t length);
+    // void rust_stream_write(void *stream, const uint8_t *data, size_t length);
     void rust_stream_seek(void *stream, int64_t offset, int32_t whence);
-    void rust_stream_truncate(void *stream, int64_t length);
+    // void rust_stream_truncate(void *stream, int64_t length);
     int64_t rust_stream_tell(const void *stream);
     int64_t rust_stream_length(const void *stream);
-    bool rust_stream_is_readonly(const void *stream);
+    // bool rust_stream_is_readonly(const void *stream);
 }
 
 namespace taglib_shim
@@ -47,11 +47,9 @@ namespace taglib_shim
         return TagLib::ByteVector(reinterpret_cast<char *>(buffer.data()), bytes_read);
     }
 
-    void RustIOStream::writeBlock(const TagLib::ByteVector &data)
+    void RustIOStream::writeBlock(const TagLib::ByteVector &_)
     {
-        rust_stream_write(rust_stream,
-                          reinterpret_cast<const uint8_t *>(data.data()),
-                          data.size());
+        throw std::runtime_error("Stream is read-only");
     }
 
     void RustIOStream::insert(const TagLib::ByteVector &data, TagLib::offset_t start, size_t replace)
@@ -127,9 +125,9 @@ namespace taglib_shim
         seek(0);
     }
 
-    void RustIOStream::truncate(TagLib::offset_t length)
+    void RustIOStream::truncate(TagLib::offset_t _)
     {
-        rust_stream_truncate(rust_stream, length);
+        throw std::runtime_error("Stream is read-only");
     }
 
     TagLib::offset_t RustIOStream::tell() const
@@ -144,7 +142,7 @@ namespace taglib_shim
 
     bool RustIOStream::readOnly() const
     {
-        return rust_stream_is_readonly(rust_stream);
+        return true;
     }
 
     bool RustIOStream::isOpen() const
