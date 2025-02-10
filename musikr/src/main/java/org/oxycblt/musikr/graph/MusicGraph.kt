@@ -243,14 +243,22 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         dst.genreVertices.addAll(src.genreVertices)
         // Update all songs, albums, and genres to point to the relevant artist.
         src.songVertices.forEach {
-            val index = it.artistVertices.indexOf(src)
-            check(index >= 0) { "Illegal state: directed edge between artist and song" }
-            it.artistVertices[index] = dst
+            // There can be duplicate artist vertices that we need to
+            // all replace when melding.
+            for (idx in it.artistVertices.indices) {
+                if (it.artistVertices[idx] == src) {
+                    it.artistVertices[idx] = dst
+                }
+            }
         }
         src.albumVertices.forEach {
-            val index = it.artistVertices.indexOf(src)
-            check(index >= 0) { "Illegal state: directed edge between artist and album" }
-            it.artistVertices[index] = dst
+            // There can be duplicate artist vertices that we need to
+            // all replace when melding.
+            for (idx in it.artistVertices.indices) {
+                if (it.artistVertices[idx] == src) {
+                    it.artistVertices[idx] = dst
+                }
+            }
         }
         src.genreVertices.forEach {
             it.artistVertices.remove(src)
