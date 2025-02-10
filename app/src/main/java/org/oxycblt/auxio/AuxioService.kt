@@ -84,7 +84,7 @@ class AuxioService :
                 // The foreground limiter is fussy and doesn't like us starting a foreground
                 // service too early despite having the right to do so at this point. Comply
                 // and artificially delay (to user detriment...)
-                delay(250)
+                delay(1000)
                 val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
                 musicFragment.start()
                 playbackFragment.start(startId)
