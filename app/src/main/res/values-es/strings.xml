@@ -329,4 +329,11 @@
     <string name="cdc_unknown">Desconocido</string>
     <string name="cnt_mp4">El MPEG-4 contiene %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="lng_empty_albums">Tus álbumes aparecerán aquí.</string>
+    <string name="lng_empty_artists">Tus artistas aparecerán aquí.</string>
+    <string name="lng_empty_genres">Tus géneros aparecerán aquí.</string>
+    <string name="set_locations_new">Nueva carpeta</string>
+    <string name="lng_empty_playlists">Tus listas de reproducción aparecerán aquí.</string>
+    <string name="lng_empty_songs">Tus canciones aparecerán aquí.</string>
+    <string name="set_cover_mode_save_space">Ahorra espacio</string>
 </resources>
