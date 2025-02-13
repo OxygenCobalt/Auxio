@@ -8,8 +8,14 @@ name = "metadatajni"
 crate-type = ["cdylib"]
 
 [dependencies]
+link-cplusplus = { version = "1.0.9", features = ["nothing"] }
 cxx = { version = "1.0.137", default-features = false, features = ["alloc"] }
 jni = { version = "0.21.1", default-features = false }
 
 [build-dependencies]
 cxx-build = "1.0.137"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"

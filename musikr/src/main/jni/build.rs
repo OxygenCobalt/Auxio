@@ -4,6 +4,11 @@ use std::process::Command;
 use cxx_build;
 
 fn main() {
+    // List all envs
+    for (key, value) in env::vars() {
+        println!("{}: {}", key, value);
+    }
+
     let working_dir = env::current_dir().expect("Failed to get current working directory");
     let target = env::var("TARGET").expect("TARGET env var not set");
     let working_dir = Path::new(&working_dir);
@@ -105,18 +110,22 @@ fn main() {
 
     println!("cargo:rustc-link-search=native={}/lib", arch_pkg_dir.display());
     println!("cargo:rustc-link-lib=static=tag");
+    // println!("cargo:rustc-link-lib=c++_static");
     
     // Build the shim and cxx bridge together
-    cxx_build::bridge("src/taglib/ffi.rs")
-        .file("shim/iostream_shim.cpp")
+    let mut builder = cxx_build::bridge("src/taglib/ffi.rs");
+    builder.file("shim/iostream_shim.cpp")
         .file("shim/file_shim.cpp")
         .file("shim/tk_shim.cpp")
         .include(format!("taglib/pkg/{}/include", arch))
         .include("shim")
         .include(".")  // Add the current directory to include path
-        .flag_if_supported("-std=c++14")
-        .cpp_link_stdlib("c++_shared")  // Use shared C++ runtime for Android compatibility
-        .compile("taglib_cxx_bindings");
+        .flag_if_supported("-std=c++14");
+
+    if is_android {
+        builder.cpp_link_stdlib("c++_static");  // Use shared C++ runtime for Android compatibility
+    }
+    builder.compile("taglib_cxx_bindings");
 
     // Rebuild if shim files change
     println!("cargo:rerun-if-changed=shim/iostream_shim.hpp");
