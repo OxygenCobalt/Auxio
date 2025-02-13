@@ -196,7 +196,6 @@ dependencies = [
  "cxx",
  "cxx-build",
  "jni",
- "link-cplusplus",
 ]
 
 [[package]]

@@ -1,7 +1,3 @@
-#![no_std]
-extern crate core;
-extern crate alloc;
-
 use jni::objects::{JClass, JObject};
 use jni::sys::jstring;
 use jni::JNIEnv;
@@ -11,10 +7,6 @@ mod jni_stream;
 
 pub use taglib::*;
 use jni_stream::JInputStream;
-
-use alloc::string::String;
-
-type Map<K, V> = alloc::collections::BTreeMap<K, V>;
 
 #[no_mangle]
 pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
@@ -26,7 +18,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     let stream = match JInputStream::new(&mut env, input) {
         Ok(stream) => stream,
         Err(e) => {
-            let error = String::from("Failed to create input stream");
+            let error = format!("Failed to create input stream: {}", e);
             let error_str = env.new_string(error).expect("Couldn't create error string!");
             return error_str.into_raw();
         }

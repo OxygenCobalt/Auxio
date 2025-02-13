@@ -2,12 +2,52 @@ mod ffi;
 mod stream;
 
 use ffi::bindings;
-use alloc::boxed::Box;
-use alloc::string::String;
-use alloc::collections::BTreeMap;
-use alloc::vec::Vec;
-pub use stream::RustStream;
+use std::collections::HashMap;
+pub use stream::{RustStream, TagLibStream};
 
+type XiphComments = HashMap<String, Vec<String>>;
+
+pub enum File {
+    Unknown {
+        audio_properties: Option<AudioProperties>,
+    },
+    MP3 {
+        audio_properties: Option<AudioProperties>,
+    },
+    FLAC {
+        audio_properties: Option<AudioProperties>,
+        xiph_comments: Option<XiphComments>,
+    },
+    MP4 {
+        audio_properties: Option<AudioProperties>,
+    },
+    OGG {
+        audio_properties: Option<AudioProperties>,
+        xiph_comments: Option<XiphComments>,
+    },
+    Opus {
+        audio_properties: Option<AudioProperties>,
+        xiph_comments: Option<XiphComments>,
+    },
+    WAV {
+        audio_properties: Option<AudioProperties>,
+    },
+    WavPack {
+        audio_properties: Option<AudioProperties>,
+    },
+    APE {
+        audio_properties: Option<AudioProperties>,
+    },
+}
+
+/// Audio properties of a media file
+#[derive(Default)]
+pub struct AudioProperties {
+    pub length_in_milliseconds: i32,
+    pub bitrate_in_kilobits_per_second: i32,
+    pub sample_rate_in_hz: i32,
+    pub number_of_channels: i32,
+}
 
 // Safe wrapper for FileRef that owns extracted data
 pub struct FileRef {
@@ -16,7 +56,7 @@ pub struct FileRef {
 
 impl FileRef {
     /// Create a new FileRef from a stream implementing TagLibStream
-    pub fn from_stream<'a, T: IOStream + 'a>(stream: T) -> Option<Self> {
+    pub fn from_stream<'a, T: TagLibStream + 'a>(stream: T) -> Option<Self> {
         // Create the RustStream wrapper
         let rust_stream = stream::RustStream::new(stream);
 
@@ -73,65 +113,4 @@ impl FileRef {
     pub fn file(&self) -> &Option<File> {
         &self.file
     }
-}
-
-// Trait that must be implemented by Rust streams to be used with TagLib
-pub trait IOStream {
-    fn name(&mut self) -> String;
-    fn read(&mut self, buf: &mut [u8]) -> Result<usize, String>;
-    fn seek(&mut self, whence: Whence) -> Result<(), String>;
-    fn tell(&mut self) -> Result<i64, String>;
-    fn length(&mut self) -> Result<i64, String>;
-    // No tag editing support, only doing read-only streams for now
-    // fn write(&mut self, _buf: &[u8]) -> std::io::Result<usize>;
-}
-
-pub enum Whence {
-    Start(i64),
-    Current(i64),
-    End(i64),
-}
-
-/// Audio properties of a media file
-#[derive(Default)]
-pub struct AudioProperties {
-    pub length_in_milliseconds: i32,
-    pub bitrate_in_kilobits_per_second: i32,
-    pub sample_rate_in_hz: i32,
-    pub number_of_channels: i32,
-}
-
-type XiphComments = BTreeMap<String, Vec<String>>;
-
-pub enum File {
-    Unknown {
-        audio_properties: Option<AudioProperties>,
-    },
-    MP3 {
-        audio_properties: Option<AudioProperties>,
-    },
-    FLAC {
-        audio_properties: Option<AudioProperties>,
-        xiph_comments: Option<XiphComments>,
-    },
-    MP4 {
-        audio_properties: Option<AudioProperties>,
-    },
-    OGG {
-        audio_properties: Option<AudioProperties>,
-        xiph_comments: Option<XiphComments>,
-    },
-    Opus {
-        audio_properties: Option<AudioProperties>,
-        xiph_comments: Option<XiphComments>,
-    },
-    WAV {
-        audio_properties: Option<AudioProperties>,
-    },
-    WavPack {
-        audio_properties: Option<AudioProperties>,
-    },
-    APE {
-        audio_properties: Option<AudioProperties>,
-    },
 }
