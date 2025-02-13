@@ -1,4 +1,4 @@
-use crate::taglib::TagLibStream;
+use crate::taglib::stream::IOStream;
 use jni::objects::{JObject, JValue};
 use jni::JNIEnv;
 use std::io::{Read, Seek, SeekFrom, Write};
@@ -12,12 +12,12 @@ impl<'local, 'a> JInputStream<'local, 'a> {
     pub fn new(
         env: &'a mut JNIEnv<'local>,
         input: JObject<'local>,
-    ) -> Result<Self, jni::errors::Error> {
-        Ok(JInputStream { env, input })
+    ) -> Self {
+        Self { env, input }
     }
 }
 
-impl<'local, 'a> TagLibStream for JInputStream<'local, 'a> {
+impl<'local, 'a> IOStream for JInputStream<'local, 'a> {
     fn name(&mut self) -> String {
         // Call the Java name() method safely
         let name = self

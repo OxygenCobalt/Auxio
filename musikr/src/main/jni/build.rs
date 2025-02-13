@@ -47,7 +47,7 @@ fn main() {
         } else {
             panic!("Unsupported Android target: {}", target);
         };
-
+    
         let clang_path = env::var("CLANG_PATH").expect("CLANG_PATH env var not set");
         let toolchains_marker = "/toolchains";
         let ndk_path = if let Some(pos) = clang_path.find(toolchains_marker) {
@@ -114,7 +114,7 @@ fn main() {
     // println!("cargo:rustc-link-lib=cc++_static");
 
     // Build the shim and cxx bridge together
-    let mut builder = cxx_build::bridge("src/taglib/ffi.rs");
+    let mut builder = cxx_build::bridge("src/taglib/bridge.rs");
     builder
         .file("shim/iostream_shim.cpp")
         .file("shim/file_shim.cpp")
