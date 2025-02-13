@@ -13,10 +13,7 @@ impl<'local, 'a> JInputStream<'local, 'a> {
         env: &'a mut JNIEnv<'local>,
         input: JObject<'local>,
     ) -> Result<Self, jni::errors::Error> {
-        Ok(JInputStream {
-            env,
-            input,
-        })
+        Ok(JInputStream { env, input })
     }
 }
 

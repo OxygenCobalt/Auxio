@@ -1,7 +1,7 @@
+use std::collections::HashMap;
 use std::ffi::CStr;
 use std::pin::Pin;
 use std::string::ToString;
-use std::collections::HashMap;
 
 #[cxx::bridge]
 pub(crate) mod bindings {
@@ -148,7 +148,7 @@ impl bindings::FileRef {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The file data is a pointer that does not depend on the
             //   address of self.
             let this = Pin::new_unchecked(&*self);
@@ -179,7 +179,7 @@ impl bindings::BaseFile {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The audio properties data is a pointer that does not depend on the
             //   address of self.
             let this: Pin<&bindings::BaseFile> = Pin::new_unchecked(self);
@@ -195,7 +195,7 @@ impl bindings::BaseFile {
             props.as_ref()
         }
     }
-    
+
     pub fn as_opus(&self) -> Option<&bindings::OpusFile> {
         let ptr_self = self as *const Self;
         let opus_file = unsafe {
@@ -243,7 +243,7 @@ impl bindings::AudioProperties {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is copied and thus not dependent on the address of self.
             let this = Pin::new_unchecked(self);
             this.thisLengthInMilliseconds()
@@ -255,7 +255,7 @@ impl bindings::AudioProperties {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is copied and thus not dependent on the address of self.
             let this = Pin::new_unchecked(self);
             this.thisBitrate()
@@ -267,7 +267,7 @@ impl bindings::AudioProperties {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is copied and thus not dependent on the address of self.
             let this = Pin::new_unchecked(self);
             this.thisSampleRate()
@@ -279,7 +279,7 @@ impl bindings::AudioProperties {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is copied and thus not dependent on the address of self.
             let this = Pin::new_unchecked(self);
             this.thisChannels()
@@ -293,12 +293,12 @@ impl bindings::OpusFile {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is a pointer that does not depend on the address of self.
             let this = Pin::new_unchecked(self);
             this.opusThisTag()
         };
-        unsafe { 
+        unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
             tag.as_ref()
@@ -312,12 +312,12 @@ impl bindings::VorbisFile {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is a pointer that does not depend on the address of self.
             let this = Pin::new_unchecked(self);
             this.vorbisThisTag()
         };
-        unsafe { 
+        unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
             tag.as_ref()
@@ -331,7 +331,7 @@ impl bindings::XiphComment {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is a reference that does not depend on the address of self.
             let this = Pin::new_unchecked(self);
             this.thisFieldListMap()
@@ -345,7 +345,7 @@ impl bindings::SimplePropertyMap {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value is a unique_ptr to a copied vector that is not dependent
             //   on the address of self.
             let this = Pin::new_unchecked(self);
@@ -361,7 +361,7 @@ impl bindings::Property {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The values returned are copied and thus not dependent on the address
             //   of self.
             let this = Pin::new_unchecked(self);
@@ -377,26 +377,26 @@ impl ToString for bindings::TString {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value returned are pointers and thus not dependent on the address
             //   of self.
             let this: Pin<&bindings::TString> = Pin::new_unchecked(self);
             this.thisToCString(true)
         };
-        unsafe { 
+        unsafe {
             // SAFETY:
             // - This is a C-string returned by a C++ method guaranteed to have
             //   a null terminator.
             // - This C-string is fully allocated and owned by the TagString instance,
             //   in a continous block from start to null terminator.
             // - This C-string will be non-null even if empty.
-            // - This pointer will not be mutated before it's entirely copied into 
+            // - This pointer will not be mutated before it's entirely copied into
             //   rust.
             // - This C-string is copied to a rust string before TagString is destroyed.
-            CStr::from_ptr(c_str) 
+            CStr::from_ptr(c_str)
         }
-            .to_string_lossy()
-            .to_string()
+        .to_string_lossy()
+        .to_string()
     }
 }
 
@@ -406,7 +406,7 @@ impl bindings::TStringList {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics. 
+            //   not change address by C++ semantics.
             // - The value returned is a unique ptr to a copied vector that is not
             //   dependent on the address of self.
             let this = Pin::new_unchecked(self);

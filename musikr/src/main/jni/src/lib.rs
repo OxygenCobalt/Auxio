@@ -2,11 +2,11 @@ use jni::objects::{JClass, JObject};
 use jni::sys::jstring;
 use jni::JNIEnv;
 
-mod taglib;
 mod jni_stream;
+mod taglib;
 
-pub use taglib::*;
 use jni_stream::JInputStream;
+pub use taglib::*;
 
 #[no_mangle]
 pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
@@ -19,7 +19,9 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
         Ok(stream) => stream,
         Err(e) => {
             let error = format!("Failed to create input stream: {}", e);
-            let error_str = env.new_string(error).expect("Couldn't create error string!");
+            let error_str = env
+                .new_string(error)
+                .expect("Couldn't create error string!");
             return error_str.into_raw();
         }
     };
@@ -29,7 +31,9 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
         Some(file_ref) => file_ref,
         None => {
             let error = "Failed to create File";
-            let error_str = env.new_string(error).expect("Couldn't create error string!");
+            let error_str = env
+                .new_string(error)
+                .expect("Couldn't create error string!");
             return error_str.into_raw();
         }
     };

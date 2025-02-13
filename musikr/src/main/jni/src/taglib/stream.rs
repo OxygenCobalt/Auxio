@@ -28,33 +28,21 @@ pub extern "C" fn rust_stream_name(stream: *mut c_void) -> *const c_char {
 }
 
 #[no_mangle]
-pub extern "C" fn rust_stream_read(
-    stream: *mut c_void,
-    buffer: *mut u8,
-    length: usize,
-) -> usize {
+pub extern "C" fn rust_stream_read(stream: *mut c_void, buffer: *mut u8, length: usize) -> usize {
     let stream = unsafe { &mut *(stream as *mut RustStream<'_>) };
     let buffer = unsafe { std::slice::from_raw_parts_mut(buffer, length) };
     stream.0.read(buffer).unwrap_or(0)
 }
 
 #[no_mangle]
-pub extern "C" fn rust_stream_write(
-    stream: *mut c_void,
-    data: *const u8,
-    length: usize,
-) {
+pub extern "C" fn rust_stream_write(stream: *mut c_void, data: *const u8, length: usize) {
     let stream = unsafe { &mut *(stream as *mut RustStream<'_>) };
     let data = unsafe { std::slice::from_raw_parts(data, length) };
     stream.0.write_all(data).unwrap();
 }
 
 #[no_mangle]
-pub extern "C" fn rust_stream_seek(
-    stream: *mut c_void,
-    offset: i64,
-    whence: i32,
-) {
+pub extern "C" fn rust_stream_seek(stream: *mut c_void, offset: i64, whence: i32) {
     let stream = unsafe { &mut *(stream as *mut RustStream<'_>) };
     let pos = match whence {
         0 => SeekFrom::Start(offset as u64),
@@ -91,4 +79,4 @@ pub extern "C" fn rust_stream_length(stream: *mut c_void) -> i64 {
 pub extern "C" fn rust_stream_is_readonly(stream: *const c_void) -> bool {
     let stream = unsafe { &*(stream as *const RustStream<'_>) };
     stream.0.is_readonly()
-} 
+}
