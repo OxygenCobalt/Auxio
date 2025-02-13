@@ -73,4 +73,5 @@
     <string name="lbl_singles">單曲</string>
     <string name="lbl_single">單曲</string>
     <string name="set_round_mode_desc">在更多的用戶界面元素上啟用圓角（需要專輯封面也要設定圓角）</string>
+    <string name="lbl_show_error_info">更多</string>
 </resources>
