@@ -17,15 +17,13 @@
 namespace taglib_shim
 {
 
-    // File conversion functions
-    const TagLib::Ogg::File *File_asOgg(const TagLib::File *file);
-    const TagLib::Ogg::Vorbis::File *File_asVorbis(const TagLib::File *file);
-    const TagLib::Ogg::Opus::File *File_asOpus(const TagLib::File *file);
-    const TagLib::MPEG::File *File_asMPEG(const TagLib::File *file);
-    const TagLib::FLAC::File *File_asFLAC(const TagLib::File *file);
-    const TagLib::MP4::File *File_asMP4(const TagLib::File *file);
-    const TagLib::RIFF::WAV::File *File_asWAV(const TagLib::File *file);
-    const TagLib::WavPack::File *File_asWavPack(const TagLib::File *file);
-    const TagLib::APE::File *File_asAPE(const TagLib::File *file);
+    TagLib::Ogg::Vorbis::File *File_asVorbis(TagLib::File *file);
+    TagLib::Ogg::Opus::File *File_asOpus(TagLib::File *file);
+    TagLib::MPEG::File *File_asMPEG(TagLib::File *file);
+    TagLib::FLAC::File *File_asFLAC(TagLib::File *file);
+    TagLib::MP4::File *File_asMP4(TagLib::File *file);
+    TagLib::RIFF::WAV::File *File_asWAV(TagLib::File *file);
+    TagLib::WavPack::File *File_asWavPack(TagLib::File *file);
+    TagLib::APE::File *File_asAPE(TagLib::File *file);
 
 } // namespace taglib_shim

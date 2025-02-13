@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::ffi::CStr;
-use std::pin::Pin;
+use std::pin::{pin, Pin};
 use std::string::ToString;
 
 #[cxx::bridge]
@@ -74,6 +74,9 @@ pub(crate) mod bindings {
         #[namespace = "TagLib::FLAC"]
         #[cxx_name = "File"]
         type FLACFile;
+        #[cxx_name = "xiphComment"]
+        unsafe fn flacThisXiphComment(self: Pin<&mut FLACFile>, create: bool) -> *mut XiphComment;
+
         #[namespace = "TagLib::MPEG"]
         #[cxx_name = "File"]
         type MPEGFile;
@@ -94,25 +97,22 @@ pub(crate) mod bindings {
         #[cxx_name = "File"]
         type APEFile;
 
-        // File conversion functions
         #[namespace = "taglib_shim"]
-        unsafe fn File_asOgg(file: *const BaseFile) -> *const OggFile;
+        unsafe fn File_asVorbis(file: *mut BaseFile) -> *mut VorbisFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asVorbis(file: *const BaseFile) -> *const VorbisFile;
+        unsafe fn File_asOpus(file: *mut BaseFile) -> *mut OpusFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asOpus(file: *const BaseFile) -> *const OpusFile;
+        unsafe fn File_asMPEG(file: *mut BaseFile) -> *mut MPEGFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asMPEG(file: *const BaseFile) -> *const MPEGFile;
+        unsafe fn File_asFLAC(file: *mut BaseFile) -> *mut FLACFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asFLAC(file: *const BaseFile) -> *const FLACFile;
+        unsafe fn File_asMP4(file: *mut BaseFile) -> *mut MP4File;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asMP4(file: *const BaseFile) -> *const MP4File;
+        unsafe fn File_asWAV(file: *mut BaseFile) -> *mut WAVFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asWAV(file: *const BaseFile) -> *const WAVFile;
+        unsafe fn File_asWavPack(file: *mut BaseFile) -> *mut WavPackFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asWavPack(file: *const BaseFile) -> *const WavPackFile;
-        #[namespace = "taglib_shim"]
-        unsafe fn File_asAPE(file: *const BaseFile) -> *const APEFile;
+        unsafe fn File_asAPE(file: *mut BaseFile) -> *mut APEFile;
 
         #[namespace = "TagLib"]
         type SimplePropertyMap;
@@ -143,7 +143,7 @@ pub(crate) mod bindings {
 }
 
 impl bindings::FileRef {
-    pub fn file_or(&self) -> Option<&bindings::BaseFile> {
+    pub fn file_or(&self) -> Option<&mut bindings::BaseFile> {
         let file = unsafe {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
@@ -168,7 +168,7 @@ impl bindings::FileRef {
             // - This points to a C++FFI type ensured to be valid by cxx's codegen.
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
-            file.as_ref()
+            file.as_mut()
         })
     }
 }
@@ -196,8 +196,8 @@ impl bindings::BaseFile {
         }
     }
 
-    pub fn as_opus(&self) -> Option<&bindings::OpusFile> {
-        let ptr_self = self as *const Self;
+    pub fn as_opus(&mut self) -> Option<&mut bindings::OpusFile> {
+        let ptr_self = self as *mut Self;
         let opus_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
@@ -212,12 +212,12 @@ impl bindings::BaseFile {
             // - This points to a C++FFI type ensured to be valid by cxx's codegen.
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
-            opus_file.as_ref()
+            opus_file.as_mut()
         }
     }
 
-    pub fn as_vorbis(&self) -> Option<&bindings::VorbisFile> {
-        let ptr_self = self as *const Self;
+    pub fn as_vorbis(&mut self) -> Option<&bindings::VorbisFile> {
+        let ptr_self = self as *mut Self;
         let vorbis_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
@@ -233,6 +233,26 @@ impl bindings::BaseFile {
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             vorbis_file.as_ref()
+        }
+    }
+
+    pub fn as_flac(&mut self) -> Option<&mut bindings::FLACFile> {
+        let ptr_self = self as *mut Self;
+        let flac_file = unsafe {
+            // SAFETY:
+            // This FFI function will be a simple C++ dynamic_cast, which checks if
+            // the file can be cased down to an opus file. If the cast fails, a null
+            // pointer is returned, which will be handled by as_ref's null checking.
+            bindings::File_asFLAC(ptr_self)
+        };
+        unsafe {
+            // SAFETY:
+            // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
+            // - The null-safe version is being used.
+            // - This points to a C++FFI type ensured to be valid by cxx's codegen.
+            // - There are no datapaths that will yield any mutable pointers or references
+            //   to this, ensuring that it will not be mutated as per the aliasing rules.
+            flac_file.as_mut()
         }
     }
 }
@@ -316,6 +336,26 @@ impl bindings::VorbisFile {
             // - The value is a pointer that does not depend on the address of self.
             let this = Pin::new_unchecked(self);
             this.vorbisThisTag()
+        };
+        unsafe {
+            // SAFETY: This pointer is a valid type, and can only used and accessed
+            // via this function and thus cannot be mutated, satisfying the aliasing rules.
+            tag.as_ref()
+        }
+    }
+}
+
+impl bindings::FLACFile {
+    pub fn xiph_comments(&mut self) -> Option<&bindings::XiphComment> {
+        let tag = unsafe {
+            // SAFETY:
+            // - This pin is only used in this unsafe scope.
+            // - The pin is used as a C++ this pointer in the ffi call, which does
+            //   not change address by C++ semantics.
+            // - The value is a pointer that does not depend on the address of self.
+            let this = Pin::new_unchecked(self);
+            // SAFETY: This is a C++ FFI function ensured to call correctly.
+            this.flacThisXiphComment(false)
         };
         unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed

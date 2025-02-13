@@ -99,6 +99,14 @@ impl FileRef {
                     audio_properties,
                     xiph_comments,
                 })
+            } else if let Some(flac_file) = file.as_flac() {
+                let xiph_comments = flac_file
+                    .xiph_comments()
+                    .map(|comments| comments.field_list_map().to_hashmap());
+                Some(File::FLAC {
+                    audio_properties,
+                    xiph_comments,
+                })
             } else {
                 Some(File::Unknown { audio_properties })
             }
