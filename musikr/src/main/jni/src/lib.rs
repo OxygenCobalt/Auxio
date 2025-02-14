@@ -1,3 +1,5 @@
+use std::cell::RefCell;
+use std::rc::Rc;
 use jni::objects::{JClass, JObject};
 use jni::sys::jstring;
 use jni::JNIEnv;
@@ -8,7 +10,8 @@ mod jstream;
 use taglib::file::FileRef;
 
 use jstream::JInputStream;
-pub use taglib::*;
+
+type SharedEnv<'local> = Rc<RefCell<JNIEnv<'local>>>;
 
 #[no_mangle]
 pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
@@ -17,7 +20,8 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     input: JObject<'local>,
 ) -> jstring {
     // Create JInputStream from the Java input stream
-    let stream = JInputStream::new(&mut env, input);
+    let shared_env = Rc::new(RefCell::new(env));
+    let mut stream = JInputStream::new(shared_env.clone(), input);
     let file_ref = FileRef::new(stream);
     // file_ref.file().and_then(|file| {
     //     let audio_properties = file.audio_properties().map(|props| AudioProperties {
@@ -55,6 +59,6 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     // });
     
     // Return the title
-    let output = env.new_string("title").expect("Couldn't create string!");
+    let output = shared_env.borrow_mut().new_string("title").expect("Couldn't create string!");
     output.into_raw()
 }

@@ -1,6 +1,7 @@
 use std::ffi::{c_void, CString};
 use std::io::{Read, Seek, SeekFrom, Write};
 use std::os::raw::c_char;
+use cxx::CxxString;
 
 pub trait IOStream: Read + Write + Seek {
     fn name(&mut self) -> String;
@@ -14,67 +15,47 @@ impl<'a> BridgeStream<'a> {
     pub fn new<T: IOStream + 'a>(stream: T) -> Self {
         BridgeStream(Box::new(stream))
     }
-}
 
-#[no_mangle]
-pub extern "C" fn rust_stream_name(stream: *mut c_void) -> *const c_char {
-    let stream = unsafe { &mut *(stream as *mut BridgeStream<'_>) };
-    let name = stream.0.name();
-    // Note: This leaks memory, but TagLib only calls this once during construction
-    // and keeps the pointer, so it's fine
-    CString::new(name).unwrap().into_raw()
-}
+    // Implement the exposed functions for cxx bridge
+    pub fn name(&mut self) -> String {
+        self.0.name()
+    }
 
-#[no_mangle]
-pub extern "C" fn rust_stream_read(stream: *mut c_void, buffer: *mut u8, length: usize) -> usize {
-    let stream = unsafe { &mut *(stream as *mut BridgeStream<'_>) };
-    let buffer = unsafe { std::slice::from_raw_parts_mut(buffer, length) };
-    stream.0.read(buffer).unwrap_or(0)
-}
+    pub fn read(&mut self, buffer: &mut [u8]) -> usize {
+        self.0.read(buffer).unwrap_or(0)
+    }
 
-#[no_mangle]
-pub extern "C" fn rust_stream_write(stream: *mut c_void, data: *const u8, length: usize) {
-    let stream = unsafe { &mut *(stream as *mut BridgeStream<'_>) };
-    let data = unsafe { std::slice::from_raw_parts(data, length) };
-    stream.0.write_all(data).unwrap();
-}
+    pub fn write(&mut self, data: &[u8]) {
+        self.0.write_all(data).unwrap();
+    }
 
-#[no_mangle]
-pub extern "C" fn rust_stream_seek(stream: *mut c_void, offset: i64, whence: i32) {
-    let stream = unsafe { &mut *(stream as *mut BridgeStream<'_>) };
-    let pos = match whence {
-        0 => SeekFrom::Start(offset as u64),
-        1 => SeekFrom::Current(offset),
-        2 => SeekFrom::End(offset),
-        _ => panic!("Invalid seek whence"),
-    };
-    stream.0.seek(pos).unwrap();
-}
+    pub fn seek(&mut self, offset: i64, whence: i32) {
+        let pos = match whence {
+            0 => SeekFrom::Start(offset as u64),
+            1 => SeekFrom::Current(offset),
+            2 => SeekFrom::End(offset),
+            _ => panic!("Invalid seek whence"),
+        };
+        self.0.seek(pos).unwrap();
+    }
 
-#[no_mangle]
-pub extern "C" fn rust_stream_truncate(stream: *mut c_void, length: i64) {
-    let stream = unsafe { &mut *(stream as *mut BridgeStream<'_>) };
-    stream.0.seek(SeekFrom::Start(length as u64)).unwrap();
-    // TODO: Actually implement truncate once we have a better trait bound
-}
+    pub fn truncate(&mut self, length: i64) {
+        self.0.seek(SeekFrom::Start(length as u64)).unwrap();
+        // TODO: Actually implement truncate once we have a better trait bound
+    }
 
-#[no_mangle]
-pub extern "C" fn rust_stream_tell(stream: *mut c_void) -> i64 {
-    let stream = unsafe { &mut *(stream as *mut BridgeStream<'_>) };
-    stream.0.seek(SeekFrom::Current(0)).unwrap() as i64
-}
+    pub fn tell(&mut self) -> i64 {
+        self.0.seek(SeekFrom::Current(0)).unwrap() as i64
+    }
 
-#[no_mangle]
-pub extern "C" fn rust_stream_length(stream: *mut c_void) -> i64 {
-    let stream = unsafe { &mut *(stream as *mut BridgeStream<'_>) };
-    let current = stream.0.seek(SeekFrom::Current(0)).unwrap();
-    let end = stream.0.seek(SeekFrom::End(0)).unwrap();
-    stream.0.seek(SeekFrom::Start(current)).unwrap();
-    end as i64
-}
+    pub fn length(&mut self) -> i64 {
+        let current = self.0.seek(SeekFrom::Current(0)).unwrap();
+        let end = self.0.seek(SeekFrom::End(0)).unwrap();
+        self.0.seek(SeekFrom::Start(current)).unwrap();
+        end as i64
+    }
 
-#[no_mangle]
-pub extern "C" fn rust_stream_is_readonly(stream: *const c_void) -> bool {
-    let stream = unsafe { &*(stream as *const BridgeStream<'_>) };
-    stream.0.is_readonly()
+    pub fn is_readonly(&self) -> bool {
+        self.0.is_readonly()
+    }
 }

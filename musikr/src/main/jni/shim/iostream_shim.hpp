@@ -4,18 +4,19 @@
 #include <string>
 #include <taglib/tiostream.h>
 #include <taglib/fileref.h>
+#include "rust/cxx.h"
+
+// Forward declare the bridge type
+struct BridgeStream;
 
 namespace taglib_shim
 {
-
-    // Forward declaration of the Rust-side stream
-    struct RustStream;
 
     // C++ implementation of TagLib::IOStream that delegates to Rust
     class RustIOStream : public TagLib::IOStream
     {
     public:
-        explicit RustIOStream(RustStream *stream);
+        explicit RustIOStream(BridgeStream& stream);
         ~RustIOStream() override;
 
         // TagLib::IOStream interface implementation
@@ -33,11 +34,12 @@ namespace taglib_shim
         bool isOpen() const override;
 
     private:
-        RustStream *rust_stream;
+        BridgeStream& rust_stream;
     };
 
-    // Factory functions
-    std::unique_ptr<RustIOStream> new_rust_iostream(RustStream *stream);
+    // Factory functions with external linkage
+    std::unique_ptr<RustIOStream> new_RustIOStream(BridgeStream& stream);
+    
     std::unique_ptr<TagLib::FileRef> new_FileRef_from_stream(std::unique_ptr<RustIOStream> stream);
 
 } // namespace taglib_shim

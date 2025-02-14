@@ -7,20 +7,19 @@ use super::stream::IOStream;
 use std::pin::Pin;
 use std::marker::PhantomData;
 
-pub struct FileRef<'a, T: IOStream + 'a> {
-    data: PhantomData<&'a T>,
-    ptr: UniquePtr<TFileRef>
+pub struct FileRef<'a> {
+    stream: BridgeStream<'a>,
+    file_ref: UniquePtr<TFileRef>
 }
 
-impl <'a, T: IOStream + 'a> FileRef<'a, T> {
-    pub fn new(stream: T) -> FileRef<'a, T> {
-        let bridge_stream = BridgeStream::new(stream);
-        let raw_stream = Box::into_raw(Box::new(bridge_stream)) as *mut bridge::RustStream;
-        let iostream = unsafe { bridge::new_rust_iostream(raw_stream) };
+impl <'a> FileRef<'a> {
+    pub fn new<T : IOStream + 'a>(stream: T) -> FileRef<'a> {
+        let mut bridge_stream = BridgeStream::new(stream);
+        let iostream = unsafe { bridge::new_RustIOStream(Pin::new(&mut bridge_stream)) };
         let file_ref = bridge::new_FileRef_from_stream(iostream);
         FileRef {
-            data: PhantomData::<&'a T>,
-            ptr: file_ref
+            stream: bridge_stream,
+            file_ref
         }
     }
 
@@ -32,7 +31,7 @@ impl <'a, T: IOStream + 'a> FileRef<'a, T> {
             //   not change address by C++ semantics.
             // - The file data is a pointer that does not depend on the
             //   address of self.
-            let this = Pin::new_unchecked(&*self.ptr);
+            let this = Pin::new_unchecked(&*self.file_ref);
             // Note: This is not the rust ptr "is_null", but a taglib isNull method
             // that checks for file validity. Without this check, we can get corrupted
             // file ptrs.
@@ -184,6 +183,17 @@ impl AudioProperties {
             // - The value is copied and thus not dependent on the address of self.
             let this = Pin::new_unchecked(self);
             this.thisChannels()
+        }
+    }
+}
+
+impl <'a> Drop for FileRef<'a> {
+    fn drop(&mut self) {
+        // First drop the file, since it has a pointer to the stream.
+        // Then drop the stream
+        unsafe {
+            std::ptr::drop_in_place(&mut self.file_ref);
+            std::ptr::drop_in_place(&mut self.stream);
         }
     }
 }

@@ -1,5 +1,23 @@
+use super::stream::BridgeStream;
+
 #[cxx::bridge]
 mod bridge_impl {
+    // Expose Rust IOStream to C++
+    extern "Rust" {
+        #[cxx_name = "BridgeStream"]
+        type BridgeStream<'a>;
+
+        fn name(self: &mut BridgeStream<'_>) -> String;
+        fn read(self: &mut BridgeStream<'_>, buffer: &mut [u8]) -> usize;
+        fn write(self: &mut BridgeStream<'_>, data: &[u8]);
+        fn seek(self: &mut BridgeStream<'_>, offset: i64, whence: i32);
+        fn truncate(self: &mut BridgeStream<'_>, length: i64);
+        fn tell(self: &mut BridgeStream<'_>) -> i64;
+        fn length(self: &mut BridgeStream<'_>) -> i64;
+        fn is_readonly(self: &BridgeStream<'_>) -> bool;
+    }
+
+    #[namespace = "taglib_shim"]
     unsafe extern "C++" {
         include!("taglib/taglib.h");
         include!("taglib/tstring.h");
@@ -10,6 +28,9 @@ mod bridge_impl {
         include!("shim/file_shim.hpp");
         include!("shim/tk_shim.hpp");
 
+        #[cxx_name = "RustIOStream"]
+        type RustIOStream;
+
         #[namespace = "TagLib"]
         #[cxx_name = "FileRef"]
         type TFileRef;
@@ -18,15 +39,9 @@ mod bridge_impl {
         #[cxx_name = "file"]
         fn thisFile(self: Pin<&TFileRef>) -> *mut BaseFile;
 
-        #[namespace = "taglib_shim"]
-        type RustIOStream;
+        // Create a RustIOStream from a BridgeStream
+        unsafe fn new_RustIOStream(stream: Pin<&mut BridgeStream>) -> UniquePtr<RustIOStream>;
         // Create a FileRef from an iostream
-        #[namespace = "taglib_shim"]
-        unsafe fn new_rust_iostream(stream: *mut RustStream) -> UniquePtr<RustIOStream>;
-
-        #[namespace = "taglib_shim"]
-        type RustStream;
-        #[namespace = "taglib_shim"]
         fn new_FileRef_from_stream(stream: UniquePtr<RustIOStream>) -> UniquePtr<TFileRef>;
 
         #[namespace = "TagLib"]

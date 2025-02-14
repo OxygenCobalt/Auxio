@@ -120,7 +120,6 @@ fn main() {
         .file("shim/file_shim.cpp")
         .file("shim/tk_shim.cpp")
         .include(format!("taglib/pkg/{}/include", target))
-        .include("shim")
         .include(".") // Add the current directory to include path
         .flag_if_supported("-std=c++14");
 

@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <rust/cxx.h>
 #include <vector>
+#include "metadatajni/src/taglib/bridge.rs.h"
 
 // These are the functions we'll define in Rust
 extern "C"
@@ -20,7 +21,7 @@ namespace taglib_shim
 {
 
     // Factory function to create a new RustIOStream
-    std::unique_ptr<RustIOStream> new_rust_iostream(RustStream *stream)
+    std::unique_ptr<RustIOStream> new_RustIOStream(BridgeStream& stream)
     {
         return std::unique_ptr<RustIOStream>(new RustIOStream(stream));
     }
@@ -30,28 +31,27 @@ namespace taglib_shim
     {
         return std::make_unique<TagLib::FileRef>(stream.release(), true);
     }
-
-    RustIOStream::RustIOStream(RustStream *stream) : rust_stream(stream) {}
+    
+    RustIOStream::RustIOStream(BridgeStream& stream) : rust_stream(stream) {}
 
     RustIOStream::~RustIOStream() = default;
 
     TagLib::FileName RustIOStream::name() const
     {
-        return rust_stream_name(rust_stream);
+        return rust::string(rust_stream.name()).c_str();
     }
 
     TagLib::ByteVector RustIOStream::readBlock(size_t length)
     {
         std::vector<uint8_t> buffer(length);
-        size_t bytes_read = rust_stream_read(rust_stream, buffer.data(), length);
+        size_t bytes_read = rust_stream.read(rust::Slice<uint8_t>(buffer.data(), length));
         return TagLib::ByteVector(reinterpret_cast<char *>(buffer.data()), bytes_read);
     }
 
     void RustIOStream::writeBlock(const TagLib::ByteVector &data)
     {
-        rust_stream_write(rust_stream,
-                          reinterpret_cast<const uint8_t *>(data.data()),
-                          data.size());
+        rust_stream.write(rust::Slice<const uint8_t>(
+            reinterpret_cast<const uint8_t *>(data.data()), data.size()));
     }
 
     void RustIOStream::insert(const TagLib::ByteVector &data, TagLib::offset_t start, size_t replace)
@@ -118,7 +118,7 @@ namespace taglib_shim
         default:
             throw std::runtime_error("Invalid seek position");
         }
-        rust_stream_seek(rust_stream, offset, whence);
+        rust_stream.seek(offset, whence);
     }
 
     void RustIOStream::clear()
@@ -129,22 +129,22 @@ namespace taglib_shim
 
     void RustIOStream::truncate(TagLib::offset_t length)
     {
-        rust_stream_truncate(rust_stream, length);
+        rust_stream.truncate(length);
     }
 
     TagLib::offset_t RustIOStream::tell() const
     {
-        return rust_stream_tell(rust_stream);
+        return rust_stream.tell();
     }
 
     TagLib::offset_t RustIOStream::length()
     {
-        return rust_stream_length(rust_stream);
+        return rust_stream.length();
     }
 
     bool RustIOStream::readOnly() const
     {
-        return rust_stream_is_readonly(rust_stream);
+        return rust_stream.is_readonly();
     }
 
     bool RustIOStream::isOpen() const
