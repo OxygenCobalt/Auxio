@@ -1,4 +1,4 @@
-use crate::taglib::stream::IOStream;
+use crate::taglib::file::IOStream;
 use jni::objects::{JObject, JValue};
 use std::io::{Read, Seek, SeekFrom, Write};
 use crate::SharedEnv;
