@@ -5,38 +5,47 @@ use super::tk;
 use std::pin::Pin;
 use std::collections::HashMap;
 
-pub struct XiphComment<'a> {
-    this: Pin<&'a mut CPPXiphComment>
+pub struct XiphComment<'file_ref> {
+    this: Pin<&'file_ref mut CPPXiphComment>
 }
 
-impl<'a> XiphComment<'a> {
-    pub(super) fn new(this: Pin<&'a mut CPPXiphComment>) -> Self {
+impl<'file_ref> XiphComment<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref mut CPPXiphComment>) -> Self {
         Self { this }
     }
 
-    pub fn field_list_map(&'a self) -> FieldListMap<'a> {
-        let map = self.this.as_ref().fieldListMap();
+    pub fn field_list_map<'slf>(&'slf self) -> FieldListMap<'file_ref> {
+        // To call the method we need, we have to get our mut reference down to an immutable
+        // reference. The safe API can do this, but shortens the lifecycle to at most self, even
+        // though the reference really lives as long as file_ref. Sadly, this requires us to transmute 
+        // to extend the lifecycle back. This new pointer is really unsafe (we now have both a mut
+        // and an immutable reference to the same object), but it's dropped after this call.
+        // The value returned is unable to actually mutate this object, so it's safe.
+        let this_ref: &'slf CPPXiphComment = self.this.as_ref().get_ref();
+        let extended_ref: &'file_ref CPPXiphComment = unsafe { std::mem::transmute(this_ref) };
+        let this: Pin<&'file_ref CPPXiphComment> = unsafe { Pin::new_unchecked(extended_ref) };
+        let map = this.fieldListMap();
         let map_pin = unsafe { Pin::new_unchecked(map) };
         FieldListMap::new(map_pin)
     }
 
-    pub fn picture_list(&mut self) -> PictureList<'a> {
+    pub fn picture_list(&mut self) -> PictureList<'file_ref> {
         let pictures = XiphComment_pictureList(self.this.as_mut());
         PictureList::new(pictures)
     }
 }
 
-pub struct FieldListMap<'a> {
-    this: Pin<&'a CPPFieldListMap>,
+pub struct FieldListMap<'file_ref> {
+    this: Pin<&'file_ref CPPFieldListMap>,
 }
 
-impl<'a> FieldListMap<'a> {
-    pub(super) fn new(this: Pin<&'a CPPFieldListMap>) -> Self {
+impl<'file_ref> FieldListMap<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref CPPFieldListMap>) -> Self {
         Self { this }
     }
 }
 
-impl<'a> FieldListMap<'a> {
+impl<'file_ref> FieldListMap<'file_ref> {
     pub fn to_hashmap(&self) -> HashMap<String, Vec<String>> {
         let cxx_vec = FieldListMap_to_entries(self.this);
         cxx_vec

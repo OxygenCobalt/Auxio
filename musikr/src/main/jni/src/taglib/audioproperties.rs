@@ -1,12 +1,12 @@
 use super::bridge::CppAudioProperties;
 use std::pin::Pin;
 
-pub struct AudioProperties<'a> {
-    this: Pin<&'a CppAudioProperties>
+pub struct AudioProperties<'file_ref> {
+    this: Pin<&'file_ref CppAudioProperties>
 }
 
-impl<'a> AudioProperties<'a> {
-    pub(super) fn new(this: Pin<&'a CppAudioProperties>) -> Self {
+impl<'file_ref> AudioProperties<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref CppAudioProperties>) -> Self {
         Self { this }
     }
 

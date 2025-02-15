@@ -8,6 +8,7 @@ mod taglib;
 mod jstream;
 
 use taglib::file_ref::FileRef;
+use taglib::file::File;
 use jstream::JInputStream;
 
 type SharedEnv<'local> = Rc<RefCell<JNIEnv<'local>>>;

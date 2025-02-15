@@ -78,7 +78,7 @@ mod bridge_impl {
         #[cxx_name = "XiphComment"]
         type CPPXiphComment;
         #[cxx_name = "fieldListMap"]
-        fn fieldListMap(self: Pin<&CPPXiphComment>) -> &CPPFieldListMap;
+        fn fieldListMap(self: Pin<& CPPXiphComment>) -> &CPPFieldListMap;
 
         #[namespace = "TagLib"]
         #[cxx_name = "SimplePropertyMap"]

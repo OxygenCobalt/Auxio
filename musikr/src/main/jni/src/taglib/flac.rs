@@ -7,16 +7,16 @@ use std::marker::PhantomData;
 use cxx::UniquePtr;
 use std::pin::Pin;
 
-pub struct FLACFile<'a> {
-    this: Pin<&'a mut CPPFLACFile>
+pub struct FLACFile<'file_ref> {
+    this: Pin<&'file_ref mut CPPFLACFile>
 }
 
-impl<'a> FLACFile<'a> {
-    pub(super) fn new(this: Pin<&'a mut CPPFLACFile>) -> Self {
+impl<'file_ref> FLACFile<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref mut CPPFLACFile>) -> Self {
         Self { this }
     }
 
-    pub fn xiph_comments(&mut self) -> Option<XiphComment> {
+    pub fn xiph_comments(&mut self) -> Option<XiphComment<'file_ref>> {
         let this = self.this.as_mut();
         let tag = this.xiphComment(false);
         let tag_ref = unsafe {
@@ -28,25 +28,26 @@ impl<'a> FLACFile<'a> {
         tag_pin.map(|tag| XiphComment::new(tag))
     }
 
-    pub fn picture_list(&mut self) -> PictureList {
+    pub fn picture_list(&mut self) -> PictureList<'file_ref> {
         let pictures = FLACFile_pictureList(self.this.as_mut());
         PictureList::new(pictures)
     }
 }
 
-pub struct PictureList<'a> {
-    // PictureList is implicitly tied to the lifetime of the parent that owns it,
-    // so we need to track that lifetime.
-    _data: PhantomData<&'a CPPFLACPicture>,
+pub struct PictureList<'file_ref> {
+    // PictureList is implicitly tied to the lifetime of the file_ref, despite us technically
+    // """""owning"""" it.
+    _data: PhantomData<&'file_ref CPPFLACPicture>,
+    // Only in a UniquePtr because we can't marshal over ownership of the PictureList by itself over cxx.
     this: UniquePtr<CPPPictureList>,
 }
 
-impl<'a> PictureList<'a> {
+impl<'file_ref> PictureList<'file_ref> {
     pub(super) fn new(this: UniquePtr<CPPPictureList>) -> Self {
         Self { _data: PhantomData, this }
     }
 
-    pub fn to_vec(&self) -> Vec<Picture> {
+    pub fn to_vec(&self) -> Vec<Picture<'file_ref>> {
         let pictures = PictureList_to_vector(unsafe {
             // SAFETY: This pin is only used in this unsafe scope.
             // The pin is used as a C++ this pointer in the ffi call, which does
@@ -69,16 +70,16 @@ impl<'a> PictureList<'a> {
     }
 }
 
-pub struct Picture<'a> {
-    this: Pin<&'a CPPFLACPicture>
+pub struct Picture<'file_ref> {
+    this: Pin<&'file_ref CPPFLACPicture>
 }
 
-impl<'a> Picture<'a> {
-    pub(super) fn new(this: Pin<&'a CPPFLACPicture>) -> Self {
+impl<'file_ref> Picture<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref CPPFLACPicture>) -> Self {
         Self { this }
     }
 
-    pub fn data(&self) -> ByteVector<'a> {
+    pub fn data(&self) -> ByteVector<'file_ref> {
         let data = Picture_data(self.this);
         ByteVector::new(data)
     }

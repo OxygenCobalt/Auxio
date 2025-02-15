@@ -4,17 +4,17 @@ use std::marker::PhantomData;
 use std::pin::Pin;
 use std::{ffi::CStr, string::ToString};
 
-pub struct String<'a> {
-    this: Pin<&'a CPPString>,
+pub struct String<'file_ref> {
+    this: Pin<&'file_ref CPPString>,
 }
 
-impl<'a> String<'a> {
-    pub(super) fn new(this: Pin<&'a CPPString>) -> Self {
+impl<'file_ref> String<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref CPPString>) -> Self {
         Self { this }
     }
 }
 
-impl<'a> ToString for String<'a> {
+impl<'file_ref> ToString for String<'file_ref> {
     fn to_string(&self) -> std::string::String {
         let c_str = self.this.toCString(true);
         unsafe {
@@ -34,12 +34,12 @@ impl<'a> ToString for String<'a> {
     }
 }
 
-pub struct StringList<'a> {
-    this: Pin<&'a CPPStringList>,
+pub struct StringList<'file_ref> {
+    this: Pin<&'file_ref CPPStringList>,
 }
 
-impl<'a> StringList<'a> {
-    pub(super) fn new(this: Pin<&'a CPPStringList>) -> Self {
+impl<'file_ref> StringList<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref CPPStringList>) -> Self {
         Self { this }
     }
 
@@ -57,15 +57,15 @@ impl<'a> StringList<'a> {
     }
 }
 
-pub struct ByteVector<'a> {
+pub struct ByteVector<'file_ref> {
     // ByteVector is implicitly tied to the lifetime of the parent that owns it,
     // so we need to track that lifetime. Only reason why it's a UniquePtr is because
     // we can't marshal over ownership of the ByteVector by itself over cxx.
-    _data: PhantomData<&'a CPPByteVector>,
+    _data: PhantomData<&'file_ref CPPByteVector>,
     this: UniquePtr<CPPByteVector>,
 }
 
-impl<'a> ByteVector<'a> {
+impl<'file_ref> ByteVector<'file_ref> {
     pub(super) fn new(this: UniquePtr<CPPByteVector>) -> Self {
         Self {
             _data: PhantomData,

@@ -4,13 +4,13 @@ use super::iostream::{BridgedIOStream, IOStream};
 use cxx::UniquePtr;
 use std::pin::Pin;
 
-pub struct FileRef<'a> {
-    stream: BridgedIOStream<'a>,
+pub struct FileRef<'io> {
+    stream: BridgedIOStream<'io>,
     this: UniquePtr<CPPFileRef>,
 }
 
-impl<'a> FileRef<'a> {
-    pub fn new<T: IOStream + 'a>(stream: T) -> FileRef<'a> {
+impl<'io> FileRef<'io> {
+    pub fn new<T: IOStream + 'io>(stream: T) -> FileRef<'io> {
         let stream = BridgedIOStream::new(stream);
         let cpp_stream = stream.cpp_stream().as_mut_ptr();
         let file_ref = unsafe { bridge::new_FileRef(cpp_stream) };
@@ -20,7 +20,7 @@ impl<'a> FileRef<'a> {
         }
     }
 
-    pub fn file(&self) -> Option<File<'a>> {
+    pub fn file<'file_ref>(&'file_ref self) -> Option<File<'file_ref>> {
         let file_ptr = unsafe {
             // SAFETY:
             // - This pin is only used in this unsafe scope.

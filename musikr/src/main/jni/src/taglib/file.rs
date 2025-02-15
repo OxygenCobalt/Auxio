@@ -5,17 +5,17 @@ use super::ogg::OpusFile;
 use super::ogg::VorbisFile;
 use super::flac::FLACFile;
 
-pub struct File<'a> {
-    this: Pin<&'a mut CPPFile>
+pub struct File<'file_ref> {
+    this: Pin<&'file_ref mut CPPFile>
 }
 
 
-impl<'a> File<'a> {
-    pub(super) fn new(this: Pin<&'a mut CPPFile>) -> Self {
+impl<'file_ref> File<'file_ref> {
+    pub(super) fn new(this: Pin<&'file_ref mut CPPFile>) -> Self {
         Self { this }
     }
 
-    pub fn audio_properties(&self) -> Option<AudioProperties<'a>> {
+    pub fn audio_properties(&self) -> Option<AudioProperties<'file_ref>> {
         let props_ptr =  self.this.as_ref().audioProperties();
         let props_ref = unsafe {
             // SAFETY:
@@ -30,7 +30,7 @@ impl<'a> File<'a> {
         props_pin.map(|props| AudioProperties::new(props))
     }
 
-    pub fn as_opus(&mut self) -> Option<OpusFile<'a>> {
+    pub fn as_opus(&mut self) -> Option<OpusFile<'file_ref>> {
         let opus_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
@@ -51,7 +51,7 @@ impl<'a> File<'a> {
         opus_pin.map(|opus| OpusFile::new(opus))
     }
 
-    pub fn as_vorbis(&mut self) -> Option<VorbisFile<'a>> {
+    pub fn as_vorbis(&mut self) -> Option<VorbisFile<'file_ref>> {
         let vorbis_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
@@ -72,7 +72,7 @@ impl<'a> File<'a> {
         vorbis_pin.map(|vorbis| VorbisFile::new(vorbis))
     }
 
-    pub fn as_flac(&mut self) -> Option<FLACFile<'a>> {
+    pub fn as_flac(&mut self) -> Option<FLACFile<'file_ref>> {
         let flac_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
@@ -94,7 +94,7 @@ impl<'a> File<'a> {
     }
 }
 
-impl<'a> Drop for File<'a> {
+impl<'file_ref> Drop for File<'file_ref> {
     fn drop(&mut self) {
         unsafe {
             std::ptr::drop_in_place(&mut self.this);
