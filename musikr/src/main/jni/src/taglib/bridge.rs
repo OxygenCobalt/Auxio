@@ -32,6 +32,8 @@ mod bridge_impl {
         include!("shim/tk_shim.hpp");
         include!("shim/picture_shim.hpp");
         include!("shim/xiph_shim.hpp");
+        include!("shim/id3_shim.hpp");
+        include!("taglib/mpegfile.h");
 
         #[namespace = "TagLib"]
         #[cxx_name = "IOStream"]
@@ -55,6 +57,18 @@ mod bridge_impl {
         type CPPFile;
         #[cxx_name = "audioProperties"]
         fn audioProperties(self: Pin<&CPPFile>) -> *mut CppAudioProperties;
+        #[namespace = "taglib_shim"]
+        unsafe fn File_asVorbis(file: *mut CPPFile) -> *mut CPPVorbisFile;
+        #[namespace = "taglib_shim"]
+        unsafe fn File_asOpus(file: *mut CPPFile) -> *mut CPPOpusFile;
+        #[namespace = "taglib_shim"]
+        unsafe fn File_asMPEG(file: *mut CPPFile) -> *mut CPPMPEGFile;
+        #[namespace = "taglib_shim"]
+        unsafe fn File_asFLAC(file: *mut CPPFile) -> *mut CPPFLACFile;
+        #[namespace = "taglib_shim"]
+        unsafe fn File_asMP4(file: *mut CPPFile) -> *mut CPPMP4File;
+        #[namespace = "taglib_shim"]
+        unsafe fn File_asWAV(file: *mut CPPFile) -> *mut CPPWAVFile;
 
         #[namespace = "TagLib"]
         #[cxx_name = "AudioProperties"]
@@ -67,34 +81,6 @@ mod bridge_impl {
         fn sampleRate(self: Pin<&CppAudioProperties>) -> i32;
         #[cxx_name = "channels"]
          fn channels(self: Pin<&CppAudioProperties>) -> i32;
-
-        #[namespace = "TagLib::FLAC"]
-        #[cxx_name = "Picture"]
-        type CPPFLACPicture;
-        #[namespace = "taglib_shim"]
-        fn Picture_data(picture: Pin<&CPPFLACPicture>) -> UniquePtr<CPPByteVector>;
-
-        #[namespace = "TagLib::Ogg"]
-        #[cxx_name = "XiphComment"]
-        type CPPXiphComment;
-        #[cxx_name = "fieldListMap"]
-        fn fieldListMap(self: Pin<& CPPXiphComment>) -> &CPPFieldListMap;
-
-        #[namespace = "TagLib"]
-        #[cxx_name = "SimplePropertyMap"]
-        type CPPFieldListMap;
-        #[namespace = "taglib_shim"]
-        fn FieldListMap_to_entries(
-            field_list_map: Pin<&CPPFieldListMap>,
-        ) -> UniquePtr<CxxVector<CPPFieldListEntry>>;
-
-        #[namespace = "taglib_shim"]
-        #[cxx_name = "FieldListEntry"]
-        type CPPFieldListEntry;
-        #[cxx_name = "key"]
-        fn key(self: Pin<&CPPFieldListEntry>) -> &CPPString;
-        #[cxx_name = "value"]
-        fn value(self: Pin<&CPPFieldListEntry>) -> &CPPStringList;
 
         #[namespace = "TagLib::Ogg::Vorbis"]
         #[cxx_name = "File"]
@@ -132,6 +118,8 @@ mod bridge_impl {
         #[namespace = "TagLib::MPEG"]
         #[cxx_name = "File"]
         type CPPMPEGFile;
+        #[cxx_name = "ID3v2Tag"]
+        fn ID3v2Tag(self: Pin<&mut CPPMPEGFile>, create: bool) -> *mut CPPID3v2Tag;
 
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "File"]
@@ -141,18 +129,71 @@ mod bridge_impl {
         #[cxx_name = "File"]
         type CPPWAVFile;
 
+        #[namespace = "TagLib::FLAC"]
+        #[cxx_name = "Picture"]
+        type CPPFLACPicture;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asVorbis(file: *mut CPPFile) -> *mut CPPVorbisFile;
+        fn Picture_data(picture: Pin<&CPPFLACPicture>) -> UniquePtr<CPPByteVector>;
+
+        #[namespace = "TagLib::Ogg"]
+        #[cxx_name = "XiphComment"]
+        type CPPXiphComment;
+        #[cxx_name = "fieldListMap"]
+        fn fieldListMap(self: Pin<& CPPXiphComment>) -> &CPPFieldListMap;
+
+        #[namespace = "TagLib"]
+        #[cxx_name = "SimplePropertyMap"]
+        type CPPFieldListMap;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asOpus(file: *mut CPPFile) -> *mut CPPOpusFile;
+        fn FieldListMap_to_entries(
+            field_list_map: Pin<&CPPFieldListMap>,
+        ) -> UniquePtr<CxxVector<CPPFieldListEntry>>;
+
         #[namespace = "taglib_shim"]
-        unsafe fn File_asMPEG(file: *mut CPPFile) -> *mut CPPMPEGFile;
+        #[cxx_name = "FieldListEntry"]
+        type CPPFieldListEntry;
+        #[cxx_name = "key"]
+        fn key(self: Pin<&CPPFieldListEntry>) -> &CPPString;
+        #[cxx_name = "value"]
+        fn value(self: Pin<&CPPFieldListEntry>) -> &CPPStringList;
+
+        #[namespace = "TagLib::ID3v2"]
+        #[cxx_name = "Tag"]
+        type CPPID3v2Tag;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asFLAC(file: *mut CPPFile) -> *mut CPPFLACFile;
+        fn Tag_frameList(tag: Pin<&CPPID3v2Tag>) -> UniquePtr<CxxVector<WrappedFrame>>;
+
+        #[namespace = "TagLib::ID3v2"]
+        #[cxx_name = "Frame"]
+        type CPPID3v2Frame;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asMP4(file: *mut CPPFile) -> *mut CPPMP4File;
+        unsafe fn Frame_asTextIdentification(frame: *const CPPID3v2Frame) -> *const CPPID3v2TextIdentificationFrame;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asWAV(file: *mut CPPFile) -> *mut CPPWAVFile;
+        unsafe fn Frame_asUserTextIdentification(frame: *const CPPID3v2Frame) -> *const CPPID3v2UserTextIdentificationFrame;
+        #[namespace = "taglib_shim"]
+        unsafe fn Frame_asAttachedPicture(frame: *const CPPID3v2Frame) -> *const CPPID3v2AttachedPictureFrame;
+
+        #[namespace = "taglib_shim"]
+        type WrappedFrame;
+        fn get(self: &WrappedFrame) -> *const CPPID3v2Frame;
+
+        #[namespace = "TagLib::ID3v2"]
+        #[cxx_name = "TextIdentificationFrame"]
+        type CPPID3v2TextIdentificationFrame;
+        #[namespace = "taglib_shim"]
+        fn TextIdentificationFrame_fieldList(frame: Pin<&CPPID3v2TextIdentificationFrame>) -> UniquePtr<CPPStringList>;
+
+        #[namespace = "TagLib::ID3v2"]
+        #[cxx_name = "UserTextIdentificationFrame"]
+        type CPPID3v2UserTextIdentificationFrame;
+        #[namespace = "taglib_shim"]
+        fn UserTextIdentificationFrame_fieldList(frame: Pin<&CPPID3v2UserTextIdentificationFrame>) -> UniquePtr<CPPStringList>;
+
+        #[namespace = "TagLib::ID3v2"]
+        #[cxx_name = "AttachedPictureFrame"]
+        type CPPID3v2AttachedPictureFrame;
+        #[namespace = "taglib_shim"]
+        fn AttachedPictureFrame_picture(frame: Pin<&CPPID3v2AttachedPictureFrame>) -> UniquePtr<CPPByteVector>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "String"]

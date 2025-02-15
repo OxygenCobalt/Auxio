@@ -63,7 +63,7 @@ impl<'file_ref> FieldListMap<'file_ref> {
                 let key = tk::String::new(key_pin).to_string();
                 let value_ref = property_pin.value();
                 let value_pin = unsafe { Pin::new_unchecked(value_ref) };
-                let value = tk::StringList::new(value_pin).to_vec();
+                let value = tk::StringList::reference(value_pin).to_vec();
                 (key, value)
             })
             .collect()

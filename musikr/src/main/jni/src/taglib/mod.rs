@@ -7,4 +7,6 @@ pub mod audioproperties;
 pub mod ogg;
 pub mod flac;
 pub mod xiph;
+pub mod mpeg;
 pub mod tk;
+pub mod id3;

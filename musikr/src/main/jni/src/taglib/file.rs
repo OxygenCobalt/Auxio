@@ -1,14 +1,15 @@
 use std::pin::Pin;
-use super::bridge::{self, CPPFile};
+use super::bridge::{self, CPPFile, CPPMPEGFile};
 use super::audioproperties::AudioProperties;
+use super::mpeg::MPEGFile;
 use super::ogg::OpusFile;
 use super::ogg::VorbisFile;
 use super::flac::FLACFile;
+use super::id3::Tag;
 
 pub struct File<'file_ref> {
     this: Pin<&'file_ref mut CPPFile>
 }
-
 
 impl<'file_ref> File<'file_ref> {
     pub(super) fn new(this: Pin<&'file_ref mut CPPFile>) -> Self {
@@ -92,12 +93,25 @@ impl<'file_ref> File<'file_ref> {
         let flac_pin = flac_ref.map(|flac| unsafe { Pin::new_unchecked(flac) });
         flac_pin.map(|flac| FLACFile::new(flac))
     }
-}
 
-impl<'file_ref> Drop for File<'file_ref> {
-    fn drop(&mut self) {
-        unsafe {
-            std::ptr::drop_in_place(&mut self.this);
-        }
+    pub fn as_mpeg(&mut self) -> Option<MPEGFile<'file_ref>> {
+        let mpeg_file = unsafe {
+            // SAFETY:
+            // This FFI function will be a simple C++ dynamic_cast, which checks if
+            // the file can be cased down to an MPEG file. If the cast fails, a null
+            // pointer is returned, which will be handled by as_ref's null checking.
+            bridge::File_asMPEG(self.this.as_mut().get_unchecked_mut() as *mut CPPFile)
+        };
+        let mpeg_ref = unsafe {
+            // SAFETY:
+            // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
+            // - The null-safe version is being used.
+            // - This points to a C++FFI type ensured to be valid by cxx's codegen.
+            // - There are no datapaths that will yield any mutable pointers or references
+            //   to this, ensuring that it will not be mutated as per the aliasing rules.
+            mpeg_file.as_mut()
+        };
+        let mpeg_pin = mpeg_ref.map(|mpeg| unsafe { Pin::new_unchecked(mpeg) });
+        mpeg_pin.map(|mpeg| MPEGFile::new(mpeg))
     }
 }
