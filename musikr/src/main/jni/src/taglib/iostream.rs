@@ -18,7 +18,7 @@ pub(super) struct BridgedIOStream<'a> {
 impl<'a> BridgedIOStream<'a> {
     pub fn new<T : IOStream + 'a>(stream: T) -> Self {
         let mut rs_stream = Box::pin(DynIOStream(Box::new(stream)));
-        let cpp_stream = unsafe { bridge::wrap_RsIOStream(rs_stream.as_mut()) };
+        let cpp_stream = bridge::wrap_RsIOStream(rs_stream.as_mut());
         BridgedIOStream {
             rs_stream,
             cpp_stream

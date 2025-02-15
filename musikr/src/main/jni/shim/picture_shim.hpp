@@ -3,10 +3,24 @@
 #include "taglib/flacpicture.h"
 #include "taglib/tstring.h"
 #include "taglib/tbytevector.h"
+#include "tk_shim.hpp"
 #include <memory>
+#include <vector>
 
 namespace taglib_shim {
-    std::unique_ptr<TagLib::String> Picture_mimeType(const TagLib::FLAC::Picture& picture);
-    std::unique_ptr<TagLib::String> Picture_description(const TagLib::FLAC::Picture& picture);
+    using PictureList = TagLib::List<TagLib::FLAC::Picture *>;
+
+    class WrappedPicture {
+    public:
+        WrappedPicture(const TagLib::FLAC::Picture* picture) : picture(picture) {}
+        const TagLib::FLAC::Picture* inner() const { return picture; }
+    private:
+        const TagLib::FLAC::Picture* picture;
+    };
+    std::unique_ptr<PictureList> FLACFile_pictureList(TagLib::FLAC::File& file);
+    std::unique_ptr<PictureList> XiphComment_pictureList(TagLib::Ogg::XiphComment& comment);
+
+    std::unique_ptr<std::vector<WrappedPicture>> PictureList_to_vector(const PictureList& list);
+
     std::unique_ptr<TagLib::ByteVector> Picture_data(const TagLib::FLAC::Picture& picture);
 } 

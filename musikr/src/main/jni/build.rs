@@ -119,6 +119,8 @@ fn main() {
         .file("shim/iostream_shim.cpp")
         .file("shim/file_shim.cpp")
         .file("shim/tk_shim.cpp")
+        .file("shim/picture_shim.cpp")
+        .file("shim/xiph_shim.cpp")
         .include(format!("taglib/pkg/{}/include", target))
         .include(".") // Add the current directory to include path
         .flag_if_supported("-std=c++14");
@@ -129,12 +131,6 @@ fn main() {
     builder.compile("taglib_cxx_bindings");
 
     // Rebuild if shim files change
-    println!("cargo:rerun-if-changed=shim/iostream_shim.hpp");
-    println!("cargo:rerun-if-changed=shim/iostream_shim.cpp");
-    println!("cargo:rerun-if-changed=shim/file_shim.hpp");
-    println!("cargo:rerun-if-changed=shim/file_shim.cpp");
-    println!("cargo:rerun-if-changed=shim/tk_shim.hpp");
-    println!("cargo:rerun-if-changed=shim/tk_shim.cpp");
-    println!("cargo:rerun-if-changed=src/taglib/ffi.rs");
+    println!("cargo:rerun-if-changed=shim/");
     println!("cargo:rerun-if-changed=taglib/");
 }

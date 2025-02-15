@@ -1,7 +1,10 @@
 pub use super::bridge::CPPFLACFile;
 pub use super::bridge::CPPFLACPicture;
 pub use super::xiph::XiphComment;
-use super::bridge::{FLACFile_pictureList_to_vector, String_to_string, ByteVector_to_bytes, Picture_mimeType, Picture_description, Picture_data};
+use super::bridge::{CPPPictureList, PictureList_to_vector, FLACFile_pictureList, Picture_data};
+use super::tk::ByteVector;
+use std::marker::PhantomData;
+use cxx::UniquePtr;
 use std::pin::Pin;
 
 pub struct FLACFile<'a> {
@@ -15,15 +18,7 @@ impl<'a> FLACFile<'a> {
 
     pub fn xiph_comments(&mut self) -> Option<XiphComment> {
         let this = self.this.as_mut();
-        let tag = unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The value is a pointer that does not depend on the address of self.
-            // SAFETY: This is a C++ FFI function ensured to call correctly.
-            this.xiphComment(false)
-        };
+        let tag = this.xiphComment(false);
         let tag_ref = unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
@@ -33,11 +28,35 @@ impl<'a> FLACFile<'a> {
         tag_pin.map(|tag| XiphComment::new(tag))
     }
 
-    pub fn picture_list(&mut self) -> Vec<Picture<'a>> {
-        let pictures = FLACFile_pictureList_to_vector(self.this.as_mut());
+    pub fn picture_list(&mut self) -> PictureList {
+        let pictures = FLACFile_pictureList(self.this.as_mut());
+        PictureList::new(pictures)
+    }
+}
+
+pub struct PictureList<'a> {
+    // PictureList is implicitly tied to the lifetime of the parent that owns it,
+    // so we need to track that lifetime.
+    _data: PhantomData<&'a CPPFLACPicture>,
+    this: UniquePtr<CPPPictureList>,
+}
+
+impl<'a> PictureList<'a> {
+    pub(super) fn new(this: UniquePtr<CPPPictureList>) -> Self {
+        Self { _data: PhantomData, this }
+    }
+
+    pub fn to_vec(&self) -> Vec<Picture> {
+        let pictures = PictureList_to_vector(unsafe {
+            // SAFETY: This pin is only used in this unsafe scope.
+            // The pin is used as a C++ this pointer in the ffi call, which does
+            // not change address by C++ semantics.
+            Pin::new_unchecked(self.this.as_ref().unwrap())
+        });
+
         let mut result = Vec::new();
         for picture_ref in pictures.iter() {
-            let picture_ptr = picture_ref.get();
+            let picture_ptr = picture_ref.inner();
             let picture_ref = unsafe {
                 // SAFETY: This pointer is a valid type, and can only used and accessed
                 // via this function and thus cannot be mutated, satisfying the aliasing rules.
@@ -59,31 +78,8 @@ impl<'a> Picture<'a> {
         Self { this }
     }
 
-    pub fn mime_type(&self) -> String {
-        String_to_string(Picture_mimeType(self.this.get_ref()).as_ref().unwrap())
-    }
-
-    pub fn description(&self) -> String {
-        String_to_string(Picture_description(self.this.get_ref()).as_ref().unwrap())
-    }
-
-    pub fn width(&self) -> i32 {
-        self.this.width()
-    }
-
-    pub fn height(&self) -> i32 {
-        self.this.height()
-    }
-
-    pub fn color_depth(&self) -> i32 {
-        self.this.colorDepth()
-    }
-
-    pub fn num_colors(&self) -> i32 {
-        self.this.numColors()
-    }
-
-    pub fn data(&self) -> Vec<u8> {
-        ByteVector_to_bytes(Picture_data(self.this.get_ref()).as_ref().unwrap()).iter().map(|b| *b).collect()
+    pub fn data(&self) -> ByteVector<'a> {
+        let data = Picture_data(self.this);
+        ByteVector::new(data)
     }
 }

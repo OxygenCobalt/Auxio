@@ -1,51 +1,22 @@
-use std::collections::HashMap;
+use super::bridge::{self, CPPByteVector, CPPString, CPPStringList};
+use cxx::UniquePtr;
+use std::marker::PhantomData;
 use std::pin::Pin;
 use std::{ffi::CStr, string::ToString};
-use super::bridge::{self, CPPSimplePropertyMap, CPPString, CPPStringList};
 
-pub struct SimplePropertyMap<'a> {
-    this: Pin<&'a CPPSimplePropertyMap>,
+pub struct String<'a> {
+    this: Pin<&'a CPPString>,
 }
 
-impl<'a> SimplePropertyMap<'a> {
-    pub(super) fn new(this: Pin<&'a CPPSimplePropertyMap>) -> Self {
+impl<'a> String<'a> {
+    pub(super) fn new(this: Pin<&'a CPPString>) -> Self {
         Self { this }
     }
 }
 
-impl<'a> SimplePropertyMap<'a> {
-    pub fn to_hashmap(&self) -> HashMap<String, Vec<String>> {
-        let cxx_vec = bridge::SimplePropertyMap_to_vector(self.this);
-        cxx_vec
-            .iter()
-            .map(|property| unsafe {
-                // SAFETY:
-                // - This pin is only used in this unsafe scope.
-                // - The pin is used as a C++ this pointer in the ffi call, which does
-                //   not change address by C++ semantics.
-                // - The values returned are copied and thus not dependent on the address
-                //   of self.
-                let property_pin = Pin::new_unchecked(property);
-                let key = property_pin.key().to_string();
-                let value = property_pin.value().to_vec();
-                (key, value)
-            })
-            .collect()
-    }
-}
-
-impl ToString for CPPString {
-    fn to_string(&self) -> String {
-        let c_str = unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The value returned are pointers and thus not dependent on the address
-            //   of self.
-            let this: Pin<&CPPString> = Pin::new_unchecked(self);
-            this.thisToCString(true)
-        };
+impl<'a> ToString for String<'a> {
+    fn to_string(&self) -> std::string::String {
+        let c_str = self.this.toCString(true);
         unsafe {
             // SAFETY:
             // - This is a C-string returned by a C++ method guaranteed to have
@@ -63,18 +34,64 @@ impl ToString for CPPString {
     }
 }
 
-impl CPPStringList {
-    pub fn to_vec(&self) -> Vec<String> {
-        let cxx_values = unsafe {
+pub struct StringList<'a> {
+    this: Pin<&'a CPPStringList>,
+}
+
+impl<'a> StringList<'a> {
+    pub(super) fn new(this: Pin<&'a CPPStringList>) -> Self {
+        Self { this }
+    }
+
+    pub fn to_vec(&self) -> Vec<std::string::String> {
+        let cxx_values = bridge::StringList_to_vector(self.this);
+        cxx_values
+            .iter()
+            .map(|value| {
+                let this = unsafe {
+                    Pin::new_unchecked(value)
+                };
+                String::new(this).to_string()
+            })
+            .collect()
+    }
+}
+
+pub struct ByteVector<'a> {
+    // ByteVector is implicitly tied to the lifetime of the parent that owns it,
+    // so we need to track that lifetime. Only reason why it's a UniquePtr is because
+    // we can't marshal over ownership of the ByteVector by itself over cxx.
+    _data: PhantomData<&'a CPPByteVector>,
+    this: UniquePtr<CPPByteVector>,
+}
+
+impl<'a> ByteVector<'a> {
+    pub(super) fn new(this: UniquePtr<CPPByteVector>) -> Self {
+        Self {
+            _data: PhantomData,
+            this,
+        }
+    }
+
+    pub fn to_vec(&self) -> Vec<u8> {
+        let this_ref = self.this.as_ref().unwrap();
+        let this = unsafe {
             // SAFETY:
             // - This pin is only used in this unsafe scope.
             // - The pin is used as a C++ this pointer in the ffi call, which does
             //   not change address by C++ semantics.
-            // - The value returned is a unique ptr to a copied vector that is not
-            //   dependent on the address of self.
-            let this = Pin::new_unchecked(self);
-            bridge::StringList_to_vector(this)
+            Pin::new_unchecked(this_ref)
         };
-        cxx_values.iter().map(|value| value.to_string()).collect()
+        let size = this.size().try_into().unwrap();
+        let data = this.data();
+        // Re-cast to u8
+        let data: *const u8 = data as *const u8;
+        unsafe {
+            // SAFETY:
+            // - data points to a valid buffer of size 'size' owned by the C++ ByteVector
+            // - we're creating a new Vec and copying the data, not taking ownership
+            // - the source data won't be modified while we're reading from it
+            std::slice::from_raw_parts(data, size).to_vec()
+        }
     }
 }

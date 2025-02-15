@@ -1,8 +1,9 @@
 pub use super::bridge::CPPXiphComment;
-pub use super::flac::Picture;
-use super::bridge::XiphComment_pictureList_to_vector;
-use super::tk::SimplePropertyMap;
+pub use super::flac::PictureList;
+use super::bridge::{CPPFieldListMap, FieldListMap_to_entries, XiphComment_pictureList};
+use super::tk;
 use std::pin::Pin;
+use std::collections::HashMap;
 
 pub struct XiphComment<'a> {
     this: Pin<&'a mut CPPXiphComment>
@@ -13,25 +14,49 @@ impl<'a> XiphComment<'a> {
         Self { this }
     }
 
-    pub fn field_list_map(&'a self) -> SimplePropertyMap<'a> {
+    pub fn field_list_map(&'a self) -> FieldListMap<'a> {
         let map = self.this.as_ref().fieldListMap();
         let map_pin = unsafe { Pin::new_unchecked(map) };
-        SimplePropertyMap::new(map_pin)
+        FieldListMap::new(map_pin)
     }
 
-    pub fn picture_list(&mut self) -> Vec<Picture<'a>> {
-        let pictures = XiphComment_pictureList_to_vector(self.this.as_mut());
-        let mut result = Vec::new();
-        for picture_ref in pictures.iter() {
-            let picture_ptr = picture_ref.get();
-            let picture_ref = unsafe {
-                // SAFETY: This pointer is a valid type, and can only used and accessed
-                // via this function and thus cannot be mutated, satisfying the aliasing rules.
-                picture_ptr.as_ref().unwrap()
-            };
-            let picture_pin = unsafe { Pin::new_unchecked(picture_ref) };
-            result.push(Picture::new(picture_pin));
-        }
-        result
+    pub fn picture_list(&mut self) -> PictureList<'a> {
+        let pictures = XiphComment_pictureList(self.this.as_mut());
+        PictureList::new(pictures)
+    }
+}
+
+pub struct FieldListMap<'a> {
+    this: Pin<&'a CPPFieldListMap>,
+}
+
+impl<'a> FieldListMap<'a> {
+    pub(super) fn new(this: Pin<&'a CPPFieldListMap>) -> Self {
+        Self { this }
+    }
+}
+
+impl<'a> FieldListMap<'a> {
+    pub fn to_hashmap(&self) -> HashMap<String, Vec<String>> {
+        let cxx_vec = FieldListMap_to_entries(self.this);
+        cxx_vec
+            .iter()
+            .map(|property| {
+                // SAFETY:
+                // - This pin is only used in this unsafe scope.
+                // - The pin is used as a C++ this pointer in the ffi call, which does
+                //   not change address by C++ semantics.
+                // - The values returned are copied and thus not dependent on the address
+                //   of self.
+                let property_pin = unsafe { Pin::new_unchecked(property) };
+                let key_ref = property_pin.key();
+                let key_pin = unsafe { Pin::new_unchecked(key_ref) };
+                let key = tk::String::new(key_pin).to_string();
+                let value_ref = property_pin.value();
+                let value_pin = unsafe { Pin::new_unchecked(value_ref) };
+                let value = tk::StringList::new(value_pin).to_vec();
+                (key, value)
+            })
+            .collect()
     }
 }
