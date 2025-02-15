@@ -1,6 +1,18 @@
 #include "id3_shim.hpp"
 
 namespace taglib_shim {
+    std::unique_ptr<TagLib::ID3v2::FrameList> Tag_frameList(const TagLib::ID3v2::Tag& tag) {
+        return std::make_unique<TagLib::ID3v2::FrameList>(tag.frameList());
+    }
+
+    std::unique_ptr<std::vector<FramePointer>> FrameList_to_vector(const TagLib::ID3v2::FrameList& list) {
+        auto frames = std::make_unique<std::vector<FramePointer>>();
+        for (const auto& frame : list) {
+            frames->push_back(FramePointer{frame});
+        }
+        return frames;
+    }
+
     const TagLib::ID3v2::TextIdentificationFrame* Frame_asTextIdentification(const TagLib::ID3v2::Frame* frame) {
         return dynamic_cast<const TagLib::ID3v2::TextIdentificationFrame*>(frame);
     }
@@ -25,15 +37,4 @@ namespace taglib_shim {
         return std::make_unique<TagLib::StringList>(frame.fieldList());
     }
 
-    TagLib::ID3v2::Tag* File_ID3v2Tag(TagLib::MPEG::File* file, bool create) {
-        return file->ID3v2Tag(create);
-    }
-
-    std::unique_ptr<std::vector<WrappedFrame>> Tag_frameList(const TagLib::ID3v2::Tag& tag) {
-        auto frames = std::make_unique<std::vector<WrappedFrame>>();
-        for (const auto& frame : tag.frameList()) {
-            frames->push_back(WrappedFrame{frame});
-        }
-        return frames;
-    }
 } 

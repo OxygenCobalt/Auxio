@@ -56,8 +56,8 @@ impl<'file_ref> PictureList<'file_ref> {
         });
 
         let mut result = Vec::new();
-        for picture_ref in pictures.iter() {
-            let picture_ptr = picture_ref.inner();
+        for picture_ptr in pictures.iter() {
+            let picture_ptr = picture_ptr.get();
             let picture_ref = unsafe {
                 // SAFETY: This pointer is a valid type, and can only used and accessed
                 // via this function and thus cannot be mutated, satisfying the aliasing rules.

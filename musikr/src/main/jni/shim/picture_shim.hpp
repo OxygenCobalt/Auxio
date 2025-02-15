@@ -10,17 +10,17 @@
 namespace taglib_shim {
     using PictureList = TagLib::List<TagLib::FLAC::Picture *>;
 
-    class WrappedPicture {
+    class PicturePointer {
     public:
-        WrappedPicture(const TagLib::FLAC::Picture* picture) : picture(picture) {}
-        const TagLib::FLAC::Picture* inner() const { return picture; }
+        PicturePointer(const TagLib::FLAC::Picture* picture) : picture(picture) {}
+        const TagLib::FLAC::Picture* get() const { return picture; }
     private:
         const TagLib::FLAC::Picture* picture;
     };
     std::unique_ptr<PictureList> FLACFile_pictureList(TagLib::FLAC::File& file);
     std::unique_ptr<PictureList> XiphComment_pictureList(TagLib::Ogg::XiphComment& comment);
 
-    std::unique_ptr<std::vector<WrappedPicture>> PictureList_to_vector(const PictureList& list);
+    std::unique_ptr<std::vector<PicturePointer>> PictureList_to_vector(const PictureList& list);
 
     std::unique_ptr<TagLib::ByteVector> Picture_data(const TagLib::FLAC::Picture& picture);
 } 

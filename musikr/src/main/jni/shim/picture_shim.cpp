@@ -10,8 +10,8 @@ namespace taglib_shim {
         return std::make_unique<PictureList>(file.pictureList());
     }
 
-    std::unique_ptr<std::vector<WrappedPicture>> PictureList_to_vector(const PictureList& list) {
-        auto result = std::make_unique<std::vector<WrappedPicture>>();
+    std::unique_ptr<std::vector<PicturePointer>> PictureList_to_vector(const PictureList& list) {
+        auto result = std::make_unique<std::vector<PicturePointer>>();
         for (const auto* picture : list) {
             result->emplace_back(picture);
         }

@@ -38,19 +38,16 @@ mod bridge_impl {
         #[namespace = "TagLib"]
         #[cxx_name = "IOStream"]
         type CPPIOStream;
-        // Create a RustIOStream from a BridgeStream
         fn wrap_RsIOStream(stream: Pin<&mut DynIOStream>) -> UniquePtr<CPPIOStream>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "FileRef"]
         type CPPFileRef;
+        unsafe fn new_FileRef(stream: *mut CPPIOStream) -> UniquePtr<CPPFileRef>;
         #[cxx_name = "isNull"]
         fn isNull(self: Pin<&CPPFileRef>) -> bool;
         #[cxx_name = "file"]
         fn file(self: Pin<&CPPFileRef>) -> *mut CPPFile;
-
-        // Create a FileRef from an iostream
-        unsafe fn new_FileRef(stream: *mut CPPIOStream) -> UniquePtr<CPPFileRef>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "File"]
@@ -108,12 +105,12 @@ mod bridge_impl {
         #[cxx_name = "PictureList"]
         type CPPPictureList;
         #[namespace = "taglib_shim"]
-        fn PictureList_to_vector(list: Pin<&CPPPictureList>) -> UniquePtr<CxxVector<CPPWrappedPicture>>;
+        fn PictureList_to_vector(list: Pin<&CPPPictureList>) -> UniquePtr<CxxVector<CPPFLACPicturePointer>>;
 
         #[namespace = "taglib_shim"]
-        #[cxx_name = "WrappedPicture"]
-        type CPPWrappedPicture;
-        fn inner(self: &CPPWrappedPicture) -> *const CPPFLACPicture;
+        #[cxx_name = "PicturePointer"]
+        type CPPFLACPicturePointer;
+        fn get(self: &CPPFLACPicturePointer) -> *const CPPFLACPicture;
 
         #[namespace = "TagLib::MPEG"]
         #[cxx_name = "File"]
@@ -161,7 +158,18 @@ mod bridge_impl {
         #[cxx_name = "Tag"]
         type CPPID3v2Tag;
         #[namespace = "taglib_shim"]
-        fn Tag_frameList(tag: Pin<&CPPID3v2Tag>) -> UniquePtr<CxxVector<WrappedFrame>>;
+        fn Tag_frameList(tag: Pin<&CPPID3v2Tag>) -> UniquePtr<CPPID3v2FrameList>;
+
+        #[namespace = "TagLib::ID3v2"]
+        #[cxx_name = "FrameList"]
+        type CPPID3v2FrameList;
+        #[namespace = "taglib_shim"]
+        fn FrameList_to_vector(list: Pin<&CPPID3v2FrameList>) -> UniquePtr<CxxVector<CPPFramePointer>>;
+        
+        #[namespace = "taglib_shim"]
+        #[cxx_name = "FramePointer"]
+        type CPPFramePointer;
+        fn get(self: &CPPFramePointer) -> *const CPPID3v2Frame;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "Frame"]
@@ -173,9 +181,6 @@ mod bridge_impl {
         #[namespace = "taglib_shim"]
         unsafe fn Frame_asAttachedPicture(frame: *const CPPID3v2Frame) -> *const CPPID3v2AttachedPictureFrame;
 
-        #[namespace = "taglib_shim"]
-        type WrappedFrame;
-        fn get(self: &WrappedFrame) -> *const CPPID3v2Frame;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "TextIdentificationFrame"]

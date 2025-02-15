@@ -10,10 +10,14 @@
 #include "taglib/mpegfile.h"
 
 namespace taglib_shim {
-    struct WrappedFrame {
+    struct FramePointer {
         const TagLib::ID3v2::Frame* inner;
         const TagLib::ID3v2::Frame* get() const { return inner; }
     };
+
+    std::unique_ptr<TagLib::ID3v2::FrameList> Tag_frameList(const TagLib::ID3v2::Tag& tag);
+
+    std::unique_ptr<std::vector<FramePointer>> FrameList_to_vector(const TagLib::ID3v2::FrameList& list);
 
     // Frame type checking and casting
     const TagLib::ID3v2::TextIdentificationFrame* Frame_asTextIdentification(const TagLib::ID3v2::Frame* frame);
@@ -27,5 +31,4 @@ namespace taglib_shim {
 
     // ID3v2 tag access
     TagLib::ID3v2::Tag* File_ID3v2Tag(TagLib::MPEG::File* file, bool create);
-    std::unique_ptr<std::vector<WrappedFrame>> Tag_frameList(const TagLib::ID3v2::Tag& tag);
 } 

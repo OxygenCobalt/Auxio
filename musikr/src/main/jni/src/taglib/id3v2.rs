@@ -1,9 +1,11 @@
 use super::bridge::{
     self, CPPID3v2Frame, CPPID3v2TextIdentificationFrame,
-    CPPID3v2UserTextIdentificationFrame, CPPID3v2AttachedPictureFrame, CPPID3v2Tag
+    CPPID3v2UserTextIdentificationFrame, CPPID3v2AttachedPictureFrame, CPPID3v2Tag, CPPID3v2FrameList
 };
 use super::tk::{ByteVector, StringList};
 use std::pin::Pin;
+use std::marker::PhantomData;
+use cxx::UniquePtr;
 
 pub struct ID3v2Tag<'file_ref> {
     this: Pin<&'file_ref CPPID3v2Tag>
@@ -14,8 +16,25 @@ impl<'file_ref> ID3v2Tag<'file_ref> {
         Self { this }
     }
 
-    pub fn frames(&self) -> Vec<Frame<'file_ref>> {
+    pub fn frames(&self) -> FrameList<'file_ref> {
         let frames = bridge::Tag_frameList(self.this.as_ref());
+        FrameList::new(frames)
+    }
+}
+
+pub struct FrameList<'file_ref> {
+    _data: PhantomData<&'file_ref CPPID3v2FrameList>,
+    this: UniquePtr<CPPID3v2FrameList>
+}
+
+impl<'file_ref> FrameList<'file_ref> {
+    pub(super) fn new(this: UniquePtr<CPPID3v2FrameList>) -> Self {
+        Self { _data: PhantomData, this }
+    }
+
+    pub fn to_vec(&self) -> Vec<Frame<'file_ref>> {
+        let this = unsafe { Pin::new_unchecked(self.this.as_ref().unwrap()) };
+        let frames = bridge::FrameList_to_vector(this);
         frames.iter().map(|frame| {
             let frame_ptr = frame.get();
             let frame_ref = unsafe { frame_ptr.as_ref().unwrap() };
@@ -71,7 +90,7 @@ impl<'file_ref> TextIdentificationFrame<'file_ref> {
         Self { this }
     }
 
-    pub fn field_list<'slf>(&'slf self) -> StringList<'file_ref> {
+    pub fn field_list(&self) -> StringList<'file_ref> {
         let field_list = bridge::TextIdentificationFrame_fieldList(self.this);
         StringList::owned(field_list)
     }
@@ -86,7 +105,7 @@ impl<'file_ref> UserTextIdentificationFrame<'file_ref> {
         Self { this }
     }
 
-    pub fn values<'slf>(&'slf self) -> StringList<'file_ref> {
+    pub fn values(&self) -> StringList<'file_ref> {
         let values = bridge::UserTextIdentificationFrame_fieldList(self.this);
         StringList::owned(values)
     }
