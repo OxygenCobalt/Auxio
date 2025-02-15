@@ -44,9 +44,6 @@ impl<'a> Drop for BridgedIOStream<'a> {
 pub(super) struct DynIOStream<'a>(Box<dyn IOStream + 'a>);
 
 impl<'a> DynIOStream<'a> {
-    pub fn new<T: IOStream + 'a>(stream: T) -> Self {
-        DynIOStream(Box::new(stream))
-    }
 
     // Implement the exposed functions for cxx bridge
     pub fn name(&mut self) -> String {
