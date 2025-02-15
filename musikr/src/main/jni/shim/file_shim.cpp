@@ -2,6 +2,9 @@
 
 namespace taglib_shim
 {
+    std::unique_ptr<TagLib::FileRef> new_FileRef(std::unique_ptr<TagLib::IOStream> stream) {
+        return std::make_unique<TagLib::FileRef>(stream.release());
+    }
 
     TagLib::Ogg::Vorbis::File *File_asVorbis(TagLib::File *file)
     {

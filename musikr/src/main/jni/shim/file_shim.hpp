@@ -16,6 +16,7 @@
 
 namespace taglib_shim
 {
+    std::unique_ptr<TagLib::FileRef> new_FileRef(TagLib::IOStream *stream);
 
     TagLib::Ogg::Vorbis::File *File_asVorbis(TagLib::File *file);
     TagLib::Ogg::Opus::File *File_asOpus(TagLib::File *file);

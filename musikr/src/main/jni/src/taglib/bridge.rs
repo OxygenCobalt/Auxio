@@ -1,18 +1,20 @@
+use super::iostream::DynIOStream;
+
 #[cxx::bridge]
 mod bridge_impl {
     // Expose Rust IOStream to C++
     extern "Rust" {
-        #[cxx_name = "BridgeStream"]
-        type TIOStream<'a>;
+        #[cxx_name = "RsIOStream"]
+        type DynIOStream<'a>;
 
-        fn name(self: &mut TIOStream<'_>) -> String;
-        fn read(self: &mut TIOStream<'_>, buffer: &mut [u8]) -> usize;
-        fn write(self: &mut TIOStream<'_>, data: &[u8]);
-        fn seek(self: &mut TIOStream<'_>, offset: i64, whence: i32);
-        fn truncate(self: &mut TIOStream<'_>, length: i64);
-        fn tell(self: &mut TIOStream<'_>) -> i64;
-        fn length(self: &mut TIOStream<'_>) -> i64;
-        fn is_readonly(self: &TIOStream<'_>) -> bool;
+        fn name(self: &mut DynIOStream<'_>) -> String;
+        fn read(self: &mut DynIOStream<'_>, buffer: &mut [u8]) -> usize;
+        fn write(self: &mut DynIOStream<'_>, data: &[u8]);
+        fn seek(self: &mut DynIOStream<'_>, offset: i64, whence: i32);
+        fn truncate(self: &mut DynIOStream<'_>, length: i64);
+        fn tell(self: &mut DynIOStream<'_>) -> i64;
+        fn length(self: &mut DynIOStream<'_>) -> i64;
+        fn is_readonly(self: &mut DynIOStream<'_>) -> bool;
     }
 
     #[namespace = "taglib_shim"]
@@ -22,12 +24,14 @@ mod bridge_impl {
         include!("taglib/tstringlist.h");
         include!("taglib/vorbisfile.h");
         include!("taglib/xiphcomment.h");
+        include!("taglib/tiostream.h");
         include!("shim/iostream_shim.hpp");
         include!("shim/file_shim.hpp");
         include!("shim/tk_shim.hpp");
 
-        #[cxx_name = "RustIOStream"]
-        type RustIOStream;
+        #[namespace = "TagLib"]
+        #[cxx_name = "IOStream"]
+        type CPPIOStream;
 
         #[namespace = "TagLib"]
         #[cxx_name = "FileRef"]
@@ -38,9 +42,9 @@ mod bridge_impl {
         fn thisFile(self: Pin<&TFileRef>) -> *mut BaseFile;
 
         // Create a RustIOStream from a BridgeStream
-        unsafe fn new_RustIOStream(stream: Pin<&mut TIOStream>) -> UniquePtr<RustIOStream>;
+        unsafe fn wrap_RsIOStream(stream: Pin<&mut DynIOStream>) -> UniquePtr<CPPIOStream>;
         // Create a FileRef from an iostream
-        fn new_FileRef_from_stream(stream: UniquePtr<RustIOStream>) -> UniquePtr<TFileRef>;
+        unsafe fn new_FileRef(stream: *mut CPPIOStream) -> UniquePtr<TFileRef>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "File"]
@@ -152,60 +156,3 @@ mod bridge_impl {
 }
 
 pub use bridge_impl::*;
-
-use std::io::SeekFrom;
-use std::pin::Pin;
-use super::file::IOStream;
-
-#[repr(C)]
-pub(super) struct TIOStream<'a>(Box<dyn IOStream + 'a>);
-
-impl<'a> TIOStream<'a> {
-    pub fn new<T: IOStream + 'a>(stream: T) -> Pin<Box<Self>> {
-        Box::pin(TIOStream(Box::new(stream)))
-    }
-
-
-    // Implement the exposed functions for cxx bridge
-    pub fn name(&mut self) -> String {
-        self.0.name()
-    }
-
-    pub fn read(&mut self, buffer: &mut [u8]) -> usize {
-        self.0.read(buffer).unwrap_or(0)
-    }
-
-    pub fn write(&mut self, data: &[u8]) {
-        self.0.write_all(data).unwrap();
-    }
-
-    pub fn seek(&mut self, offset: i64, whence: i32) {
-        let pos = match whence {
-            0 => SeekFrom::Start(offset as u64),
-            1 => SeekFrom::Current(offset),
-            2 => SeekFrom::End(offset),
-            _ => panic!("Invalid seek whence"),
-        };
-        self.0.seek(pos).unwrap();
-    }
-
-    pub fn truncate(&mut self, length: i64) {
-        self.0.seek(SeekFrom::Start(length as u64)).unwrap();
-        // TODO: Actually implement truncate once we have a better trait bound
-    }
-
-    pub fn tell(&mut self) -> i64 {
-        self.0.seek(SeekFrom::Current(0)).unwrap() as i64
-    }
-
-    pub fn length(&mut self) -> i64 {
-        let current = self.0.seek(SeekFrom::Current(0)).unwrap();
-        let end = self.0.seek(SeekFrom::End(0)).unwrap();
-        self.0.seek(SeekFrom::Start(current)).unwrap();
-        end as i64
-    }
-
-    pub fn is_readonly(&self) -> bool {
-        self.0.is_readonly()
-    }
-}

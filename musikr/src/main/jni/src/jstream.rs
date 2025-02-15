@@ -1,4 +1,4 @@
-use crate::taglib::file::IOStream;
+use crate::taglib::iostream::IOStream;
 use jni::objects::{JObject, JValue};
 use std::io::{Read, Seek, SeekFrom, Write};
 use crate::SharedEnv;
@@ -18,7 +18,7 @@ impl<'local, 'a> JInputStream<'local> {
 }
 
 impl<'local> IOStream for JInputStream<'local> {
-    fn name(&mut self) -> String {
+    fn name(&self) -> String {
         // Call the Java name() method safely
         let name = self
             .env

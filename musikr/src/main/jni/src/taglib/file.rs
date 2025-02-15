@@ -1,22 +1,22 @@
 use cxx::UniquePtr;
-use super::bridge::{self, TFileRef, TIOStream};
+use super::bridge::{self, TFileRef};
+use super::iostream::{IOStream, BridgedIOStream};
 pub use super::bridge::{BaseFile as File, AudioProperties};
 use super::xiph::{OpusFile, VorbisFile, FLACFile};
-use std::io::{Read, Write, Seek};
 use std::pin::Pin;
 
 pub struct FileRef<'a> {
-    stream: Pin<Box<TIOStream<'a>>>,
+    stream: BridgedIOStream<'a>,
     file_ref: UniquePtr<TFileRef>
 }
 
 impl <'a> FileRef<'a> {
     pub fn new<T : IOStream + 'a>(stream: T) -> FileRef<'a> {
-        let mut bridge_stream  = TIOStream::new(stream);
-        let iostream = unsafe { bridge::new_RustIOStream(bridge_stream.as_mut()) };
-        let file_ref = bridge::new_FileRef_from_stream(iostream);
+        let stream  = BridgedIOStream::new(stream);
+        let cpp_stream = stream.cpp_stream().as_mut_ptr();
+        let file_ref = unsafe { bridge::new_FileRef(cpp_stream) };
         FileRef {
-            stream: bridge_stream,
+            stream,
             file_ref
         }
     }
@@ -194,9 +194,4 @@ impl <'a> Drop for FileRef<'a> {
             std::ptr::drop_in_place(&mut self.stream);
         }
     }
-}
-
-pub trait IOStream: Read + Write + Seek {
-    fn name(&mut self) -> String;
-    fn is_readonly(&self) -> bool;
 }

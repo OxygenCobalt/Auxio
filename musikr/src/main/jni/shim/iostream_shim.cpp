@@ -4,57 +4,57 @@
 #include <vector>
 #include "metadatajni/src/taglib/bridge.rs.h"
 
-// These are the functions we'll define in Rust
-extern "C"
-{
-    const char *rust_stream_name(const void *stream);
-    size_t rust_stream_read(void *stream, uint8_t *buffer, size_t length);
-    void rust_stream_write(void *stream, const uint8_t *data, size_t length);
-    void rust_stream_seek(void *stream, int64_t offset, int32_t whence);
-    void rust_stream_truncate(void *stream, int64_t length);
-    int64_t rust_stream_tell(const void *stream);
-    int64_t rust_stream_length(const void *stream);
-    bool rust_stream_is_readonly(const void *stream);
-}
-
 namespace taglib_shim
 {
 
-    // Factory function to create a new RustIOStream
-    std::unique_ptr<RustIOStream> new_RustIOStream(BridgeStream& stream)
+    // C++ implementation of TagLib::IOStream that delegates to Rust
+    class WrappedRsIOStream : public TagLib::IOStream
     {
-        return std::unique_ptr<RustIOStream>(new RustIOStream(stream));
-    }
+    public:
+        explicit WrappedRsIOStream(RsIOStream& stream);
+        ~WrappedRsIOStream() override;
 
-    // Factory function to create a FileRef from a stream
-    std::unique_ptr<TagLib::FileRef> new_FileRef_from_stream(std::unique_ptr<RustIOStream> stream)
-    {
-        return std::make_unique<TagLib::FileRef>(stream.release(), true);
-    }
-    
-    RustIOStream::RustIOStream(BridgeStream& stream) : rust_stream(stream) {}
+        // TagLib::IOStream interface implementation
+        TagLib::FileName name() const override;
+        TagLib::ByteVector readBlock(size_t length) override;
+        void writeBlock(const TagLib::ByteVector &data) override;
+        void insert(const TagLib::ByteVector &data, TagLib::offset_t start = 0, size_t replace = 0) override;
+        void removeBlock(TagLib::offset_t start = 0, size_t length = 0) override;
+        void seek(TagLib::offset_t offset, Position p = Beginning) override;
+        void clear() override;
+        void truncate(TagLib::offset_t length) override;
+        TagLib::offset_t tell() const override;
+        TagLib::offset_t length() override;
+        bool readOnly() const override;
+        bool isOpen() const override;
 
-    RustIOStream::~RustIOStream() = default;
+    private:
+        RsIOStream& rust_stream;
+    };
 
-    TagLib::FileName RustIOStream::name() const
+    WrappedRsIOStream::WrappedRsIOStream(RsIOStream& stream) : rust_stream(stream) {}
+
+    WrappedRsIOStream::~WrappedRsIOStream() = default;
+
+    TagLib::FileName WrappedRsIOStream::name() const
     {
         return rust::string(rust_stream.name()).c_str();
     }
 
-    TagLib::ByteVector RustIOStream::readBlock(size_t length)
+    TagLib::ByteVector WrappedRsIOStream::readBlock(size_t length)
     {
         std::vector<uint8_t> buffer(length);
         size_t bytes_read = rust_stream.read(rust::Slice<uint8_t>(buffer.data(), length));
         return TagLib::ByteVector(reinterpret_cast<char *>(buffer.data()), bytes_read);
     }
 
-    void RustIOStream::writeBlock(const TagLib::ByteVector &data)
+    void WrappedRsIOStream::writeBlock(const TagLib::ByteVector &data)
     {
         rust_stream.write(rust::Slice<const uint8_t>(
             reinterpret_cast<const uint8_t *>(data.data()), data.size()));
     }
 
-    void RustIOStream::insert(const TagLib::ByteVector &data, TagLib::offset_t start, size_t replace)
+    void WrappedRsIOStream::insert(const TagLib::ByteVector &data, TagLib::offset_t start, size_t replace)
     {
         // Save current position
         auto current = tell();
@@ -75,7 +75,7 @@ namespace taglib_shim
         seek(current);
     }
 
-    void RustIOStream::removeBlock(TagLib::offset_t start, size_t length)
+    void WrappedRsIOStream::removeBlock(TagLib::offset_t start, size_t length)
     {
         if (length == 0)
             return;
@@ -101,7 +101,7 @@ namespace taglib_shim
         seek(current);
     }
 
-    void RustIOStream::seek(TagLib::offset_t offset, Position p)
+    void WrappedRsIOStream::seek(TagLib::offset_t offset, Position p)
     {
         int32_t whence;
         switch (p)
@@ -121,35 +121,41 @@ namespace taglib_shim
         rust_stream.seek(offset, whence);
     }
 
-    void RustIOStream::clear()
+    void WrappedRsIOStream::clear()
     {
         truncate(0);
         seek(0);
     }
 
-    void RustIOStream::truncate(TagLib::offset_t length)
+    void WrappedRsIOStream::truncate(TagLib::offset_t length)
     {
         rust_stream.truncate(length);
     }
 
-    TagLib::offset_t RustIOStream::tell() const
+    TagLib::offset_t WrappedRsIOStream::tell() const
     {
         return rust_stream.tell();
     }
 
-    TagLib::offset_t RustIOStream::length()
+    TagLib::offset_t WrappedRsIOStream::length()
     {
         return rust_stream.length();
     }
 
-    bool RustIOStream::readOnly() const
+    bool WrappedRsIOStream::readOnly() const
     {
         return rust_stream.is_readonly();
     }
 
-    bool RustIOStream::isOpen() const
+    bool WrappedRsIOStream::isOpen() const
     {
         return true; // If we have a stream, it's open
+    }
+
+    // Factory function to create a new RustIOStream
+    std::unique_ptr<TagLib::IOStream> wrap_RsIOStream(RsIOStream& stream)
+    {
+        return std::unique_ptr<TagLib::IOStream>(new WrappedRsIOStream(stream));
     }
 
 } // namespace taglib_shim
