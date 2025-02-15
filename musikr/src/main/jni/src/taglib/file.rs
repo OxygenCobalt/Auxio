@@ -5,7 +5,7 @@ use super::mpeg::MPEGFile;
 use super::ogg::OpusFile;
 use super::ogg::VorbisFile;
 use super::flac::FLACFile;
-use super::id3::Tag;
+use super::id3v2::ID3v2Tag;
 
 pub struct File<'file_ref> {
     this: Pin<&'file_ref mut CPPFile>

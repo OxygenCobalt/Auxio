@@ -9,4 +9,4 @@ pub mod flac;
 pub mod xiph;
 pub mod mpeg;
 pub mod tk;
-pub mod id3;
+pub mod id3v2;

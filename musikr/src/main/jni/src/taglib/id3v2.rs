@@ -5,11 +5,11 @@ use super::bridge::{
 use super::tk::{ByteVector, StringList};
 use std::pin::Pin;
 
-pub struct Tag<'file_ref> {
+pub struct ID3v2Tag<'file_ref> {
     this: Pin<&'file_ref CPPID3v2Tag>
 }
 
-impl<'file_ref> Tag<'file_ref> {
+impl<'file_ref> ID3v2Tag<'file_ref> {
     pub(super) fn new(this: Pin<&'file_ref CPPID3v2Tag>) -> Self {
         Self { this }
     }
