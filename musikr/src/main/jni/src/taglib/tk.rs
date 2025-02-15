@@ -1,17 +1,17 @@
 use super::bridge::{self, CPPByteVector, CPPString, CPPStringList};
-use cxx::{UniquePtr, memory::UniquePtrTarget};
+use cxx::{memory::UniquePtrTarget, UniquePtr};
 use std::marker::PhantomData;
 use std::pin::Pin;
 use std::{ffi::CStr, string::ToString};
 
-enum This<'file_ref, T : UniquePtrTarget> {
+enum This<'file_ref, T: UniquePtrTarget> {
     Owned {
         data: PhantomData<&'file_ref T>,
         this: UniquePtr<T>,
-    }, 
+    },
     Ref {
         this: Pin<&'file_ref T>,
-    }
+    },
 }
 
 pub struct String<'file_ref> {
@@ -23,7 +23,6 @@ impl<'file_ref> String<'file_ref> {
         Self { this }
     }
 }
-
 
 impl<'file_ref> ToString for String<'file_ref> {
     fn to_string(&self) -> std::string::String {
@@ -51,11 +50,18 @@ pub struct StringList<'file_ref> {
 
 impl<'file_ref> StringList<'file_ref> {
     pub(super) fn owned(this: UniquePtr<CPPStringList>) -> Self {
-        Self { this: This::Owned { data: PhantomData, this } }
+        Self {
+            this: This::Owned {
+                data: PhantomData,
+                this,
+            },
+        }
     }
 
     pub(super) fn reference(this: Pin<&'file_ref CPPStringList>) -> Self {
-        Self { this: This::Ref { this } }
+        Self {
+            this: This::Ref { this },
+        }
     }
 
     pub fn to_vec(&self) -> Vec<std::string::String> {
@@ -67,9 +73,7 @@ impl<'file_ref> StringList<'file_ref> {
         cxx_values
             .iter()
             .map(|value| {
-                let this = unsafe {
-                    Pin::new_unchecked(value)
-                };
+                let this = unsafe { Pin::new_unchecked(value) };
                 String::new(this).to_string()
             })
             .collect()

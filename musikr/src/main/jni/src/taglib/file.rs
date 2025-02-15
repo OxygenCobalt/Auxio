@@ -1,14 +1,14 @@
-use std::pin::Pin;
-use super::bridge::{self, CPPFile, CPPMPEGFile};
 use super::audioproperties::AudioProperties;
+use super::bridge::{self, CPPFile, CPPMPEGFile};
+use super::flac::FLACFile;
+use super::id3v2::ID3v2Tag;
 use super::mpeg::MPEGFile;
 use super::ogg::OpusFile;
 use super::ogg::VorbisFile;
-use super::flac::FLACFile;
-use super::id3v2::ID3v2Tag;
+use std::pin::Pin;
 
 pub struct File<'file_ref> {
-    this: Pin<&'file_ref mut CPPFile>
+    this: Pin<&'file_ref mut CPPFile>,
 }
 
 impl<'file_ref> File<'file_ref> {
@@ -17,7 +17,7 @@ impl<'file_ref> File<'file_ref> {
     }
 
     pub fn audio_properties(&self) -> Option<AudioProperties<'file_ref>> {
-        let props_ptr =  self.this.as_ref().audioProperties();
+        let props_ptr = self.this.as_ref().audioProperties();
         let props_ref = unsafe {
             // SAFETY:
             // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
@@ -47,7 +47,7 @@ impl<'file_ref> File<'file_ref> {
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             opus_file.as_mut()
-        };  
+        };
         let opus_pin = opus_ref.map(|opus| unsafe { Pin::new_unchecked(opus) });
         opus_pin.map(|opus| OpusFile::new(opus))
     }

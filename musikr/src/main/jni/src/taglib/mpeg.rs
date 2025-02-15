@@ -1,9 +1,9 @@
-use std::pin::Pin;
 use super::bridge::{self, CPPMPEGFile};
 use super::id3v2::ID3v2Tag;
+use std::pin::Pin;
 
 pub struct MPEGFile<'file_ref> {
-    this: Pin<&'file_ref mut CPPMPEGFile>
+    this: Pin<&'file_ref mut CPPMPEGFile>,
 }
 
 impl<'file_ref> MPEGFile<'file_ref> {

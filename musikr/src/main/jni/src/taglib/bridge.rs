@@ -77,7 +77,7 @@ mod bridge_impl {
         #[cxx_name = "sampleRate"]
         fn sampleRate(self: Pin<&CppAudioProperties>) -> i32;
         #[cxx_name = "channels"]
-         fn channels(self: Pin<&CppAudioProperties>) -> i32;
+        fn channels(self: Pin<&CppAudioProperties>) -> i32;
 
         #[namespace = "TagLib::Ogg::Vorbis"]
         #[cxx_name = "File"]
@@ -105,7 +105,9 @@ mod bridge_impl {
         #[cxx_name = "PictureList"]
         type CPPPictureList;
         #[namespace = "taglib_shim"]
-        fn PictureList_to_vector(list: Pin<&CPPPictureList>) -> UniquePtr<CxxVector<CPPFLACPicturePointer>>;
+        fn PictureList_to_vector(
+            list: Pin<&CPPPictureList>,
+        ) -> UniquePtr<CxxVector<CPPFLACPicturePointer>>;
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "PicturePointer"]
@@ -136,7 +138,7 @@ mod bridge_impl {
         #[cxx_name = "XiphComment"]
         type CPPXiphComment;
         #[cxx_name = "fieldListMap"]
-        fn fieldListMap(self: Pin<& CPPXiphComment>) -> &CPPFieldListMap;
+        fn fieldListMap(self: Pin<&CPPXiphComment>) -> &CPPFieldListMap;
 
         #[namespace = "TagLib"]
         #[cxx_name = "SimplePropertyMap"]
@@ -164,8 +166,10 @@ mod bridge_impl {
         #[cxx_name = "FrameList"]
         type CPPID3v2FrameList;
         #[namespace = "taglib_shim"]
-        fn FrameList_to_vector(list: Pin<&CPPID3v2FrameList>) -> UniquePtr<CxxVector<CPPFramePointer>>;
-        
+        fn FrameList_to_vector(
+            list: Pin<&CPPID3v2FrameList>,
+        ) -> UniquePtr<CxxVector<CPPFramePointer>>;
+
         #[namespace = "taglib_shim"]
         #[cxx_name = "FramePointer"]
         type CPPFramePointer;
@@ -175,30 +179,41 @@ mod bridge_impl {
         #[cxx_name = "Frame"]
         type CPPID3v2Frame;
         #[namespace = "taglib_shim"]
-        unsafe fn Frame_asTextIdentification(frame: *const CPPID3v2Frame) -> *const CPPID3v2TextIdentificationFrame;
+        unsafe fn Frame_asTextIdentification(
+            frame: *const CPPID3v2Frame,
+        ) -> *const CPPID3v2TextIdentificationFrame;
         #[namespace = "taglib_shim"]
-        unsafe fn Frame_asUserTextIdentification(frame: *const CPPID3v2Frame) -> *const CPPID3v2UserTextIdentificationFrame;
+        unsafe fn Frame_asUserTextIdentification(
+            frame: *const CPPID3v2Frame,
+        ) -> *const CPPID3v2UserTextIdentificationFrame;
         #[namespace = "taglib_shim"]
-        unsafe fn Frame_asAttachedPicture(frame: *const CPPID3v2Frame) -> *const CPPID3v2AttachedPictureFrame;
-
+        unsafe fn Frame_asAttachedPicture(
+            frame: *const CPPID3v2Frame,
+        ) -> *const CPPID3v2AttachedPictureFrame;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "TextIdentificationFrame"]
         type CPPID3v2TextIdentificationFrame;
         #[namespace = "taglib_shim"]
-        fn TextIdentificationFrame_fieldList(frame: Pin<&CPPID3v2TextIdentificationFrame>) -> UniquePtr<CPPStringList>;
+        fn TextIdentificationFrame_fieldList(
+            frame: Pin<&CPPID3v2TextIdentificationFrame>,
+        ) -> UniquePtr<CPPStringList>;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "UserTextIdentificationFrame"]
         type CPPID3v2UserTextIdentificationFrame;
         #[namespace = "taglib_shim"]
-        fn UserTextIdentificationFrame_fieldList(frame: Pin<&CPPID3v2UserTextIdentificationFrame>) -> UniquePtr<CPPStringList>;
+        fn UserTextIdentificationFrame_fieldList(
+            frame: Pin<&CPPID3v2UserTextIdentificationFrame>,
+        ) -> UniquePtr<CPPStringList>;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "AttachedPictureFrame"]
         type CPPID3v2AttachedPictureFrame;
         #[namespace = "taglib_shim"]
-        fn AttachedPictureFrame_picture(frame: Pin<&CPPID3v2AttachedPictureFrame>) -> UniquePtr<CPPByteVector>;
+        fn AttachedPictureFrame_picture(
+            frame: Pin<&CPPID3v2AttachedPictureFrame>,
+        ) -> UniquePtr<CPPByteVector>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "String"]
@@ -210,8 +225,10 @@ mod bridge_impl {
         #[cxx_name = "StringList"]
         type CPPStringList;
         #[namespace = "taglib_shim"]
-        fn StringList_to_vector(string_list: Pin<&CPPStringList>) -> UniquePtr<CxxVector<CPPString>>;
-        
+        fn StringList_to_vector(
+            string_list: Pin<&CPPStringList>,
+        ) -> UniquePtr<CxxVector<CPPString>>;
+
         #[namespace = "TagLib"]
         #[cxx_name = "ByteVector"]
         type CPPByteVector;

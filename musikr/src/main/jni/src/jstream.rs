@@ -1,7 +1,7 @@
 use crate::taglib::iostream::IOStream;
+use crate::SharedEnv;
 use jni::objects::{JObject, JValue};
 use std::io::{Read, Seek, SeekFrom, Write};
-use crate::SharedEnv;
 
 pub struct JInputStream<'local> {
     env: SharedEnv<'local>,
@@ -9,10 +9,7 @@ pub struct JInputStream<'local> {
 }
 
 impl<'local, 'a> JInputStream<'local> {
-    pub fn new(
-        env: SharedEnv<'local>,
-        input: JObject<'local>,
-    ) -> Self {
+    pub fn new(env: SharedEnv<'local>, input: JObject<'local>) -> Self {
         Self { env, input }
     }
 }

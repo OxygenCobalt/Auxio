@@ -47,7 +47,7 @@ fn main() {
         } else {
             panic!("Unsupported Android target: {}", target);
         };
-    
+
         let clang_path = env::var("CLANG_PATH").expect("CLANG_PATH env var not set");
         let toolchains_marker = "/toolchains";
         let ndk_path = if let Some(pos) = clang_path.find(toolchains_marker) {

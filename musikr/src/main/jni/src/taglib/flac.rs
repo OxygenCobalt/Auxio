@@ -1,14 +1,14 @@
 pub use super::bridge::CPPFLACFile;
 pub use super::bridge::CPPFLACPicture;
-pub use super::xiph::XiphComment;
-use super::bridge::{CPPPictureList, PictureList_to_vector, FLACFile_pictureList, Picture_data};
+use super::bridge::{CPPPictureList, FLACFile_pictureList, PictureList_to_vector, Picture_data};
 use super::tk::ByteVector;
-use std::marker::PhantomData;
+pub use super::xiph::XiphComment;
 use cxx::UniquePtr;
+use std::marker::PhantomData;
 use std::pin::Pin;
 
 pub struct FLACFile<'file_ref> {
-    this: Pin<&'file_ref mut CPPFLACFile>
+    this: Pin<&'file_ref mut CPPFLACFile>,
 }
 
 impl<'file_ref> FLACFile<'file_ref> {
@@ -44,7 +44,10 @@ pub struct PictureList<'file_ref> {
 
 impl<'file_ref> PictureList<'file_ref> {
     pub(super) fn new(this: UniquePtr<CPPPictureList>) -> Self {
-        Self { _data: PhantomData, this }
+        Self {
+            _data: PhantomData,
+            this,
+        }
     }
 
     pub fn to_vec(&self) -> Vec<Picture<'file_ref>> {
@@ -71,7 +74,7 @@ impl<'file_ref> PictureList<'file_ref> {
 }
 
 pub struct Picture<'file_ref> {
-    this: Pin<&'file_ref CPPFLACPicture>
+    this: Pin<&'file_ref CPPFLACPicture>,
 }
 
 impl<'file_ref> Picture<'file_ref> {

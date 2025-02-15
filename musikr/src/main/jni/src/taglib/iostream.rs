@@ -1,27 +1,25 @@
-
 use super::bridge::{self, CPPIOStream};
-use std::io::{Read, Write, Seek, SeekFrom};
-use std::pin::Pin;
 use cxx::UniquePtr;
+use std::io::{Read, Seek, SeekFrom, Write};
+use std::pin::Pin;
 
-pub trait IOStream : Read + Write + Seek {
+pub trait IOStream: Read + Write + Seek {
     fn name(&self) -> String;
     fn is_readonly(&self) -> bool;
 }
 
-
 pub(super) struct BridgedIOStream<'io_stream> {
     rs_stream: Pin<Box<DynIOStream<'io_stream>>>,
-    cpp_stream: UniquePtr<CPPIOStream>
+    cpp_stream: UniquePtr<CPPIOStream>,
 }
 
 impl<'io_stream> BridgedIOStream<'io_stream> {
-    pub fn new<T : IOStream + 'io_stream>(stream: T) -> Self {
+    pub fn new<T: IOStream + 'io_stream>(stream: T) -> Self {
         let mut rs_stream = Box::pin(DynIOStream(Box::new(stream)));
         let cpp_stream = bridge::wrap_RsIOStream(rs_stream.as_mut());
         BridgedIOStream {
             rs_stream,
-            cpp_stream
+            cpp_stream,
         }
     }
 
@@ -32,7 +30,7 @@ impl<'io_stream> BridgedIOStream<'io_stream> {
 
 impl<'io_stream> Drop for BridgedIOStream<'io_stream> {
     fn drop(&mut self) {
-        unsafe { 
+        unsafe {
             // CPP stream references the rust stream, so it must be dropped first
             std::ptr::drop_in_place(&mut self.cpp_stream);
             std::ptr::drop_in_place(&mut self.rs_stream);
@@ -44,7 +42,6 @@ impl<'io_stream> Drop for BridgedIOStream<'io_stream> {
 pub(super) struct DynIOStream<'io_stream>(Box<dyn IOStream + 'io_stream>);
 
 impl<'io_stream> DynIOStream<'io_stream> {
-
     // Implement the exposed functions for cxx bridge
     pub fn name(&mut self) -> String {
         self.0.name()

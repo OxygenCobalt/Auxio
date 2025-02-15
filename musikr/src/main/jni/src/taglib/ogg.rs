@@ -3,7 +3,7 @@ use super::xiph::XiphComment;
 use std::pin::Pin;
 
 pub struct VorbisFile<'file_ref> {
-    this: Pin<&'file_ref mut CPPVorbisFile>
+    this: Pin<&'file_ref mut CPPVorbisFile>,
 }
 
 impl<'file_ref> VorbisFile<'file_ref> {
@@ -25,7 +25,7 @@ impl<'file_ref> VorbisFile<'file_ref> {
 }
 
 pub struct OpusFile<'file_ref> {
-    this: Pin<&'file_ref mut CPPOpusFile>
+    this: Pin<&'file_ref mut CPPOpusFile>,
 }
 
 impl<'file_ref> OpusFile<'file_ref> {

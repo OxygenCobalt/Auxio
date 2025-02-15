@@ -2,7 +2,7 @@ use super::bridge::CppAudioProperties;
 use std::pin::Pin;
 
 pub struct AudioProperties<'file_ref> {
-    this: Pin<&'file_ref CppAudioProperties>
+    this: Pin<&'file_ref CppAudioProperties>,
 }
 
 impl<'file_ref> AudioProperties<'file_ref> {
@@ -24,5 +24,5 @@ impl<'file_ref> AudioProperties<'file_ref> {
 
     pub fn channels(&self) -> i32 {
         self.this.as_ref().channels()
-    }   
+    }
 }

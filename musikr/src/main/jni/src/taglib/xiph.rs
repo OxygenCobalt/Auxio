@@ -1,12 +1,12 @@
 pub use super::bridge::CPPXiphComment;
-pub use super::flac::PictureList;
 use super::bridge::{CPPFieldListMap, FieldListMap_to_entries, XiphComment_pictureList};
+pub use super::flac::PictureList;
 use super::tk;
-use std::pin::Pin;
 use std::collections::HashMap;
+use std::pin::Pin;
 
 pub struct XiphComment<'file_ref> {
-    this: Pin<&'file_ref mut CPPXiphComment>
+    this: Pin<&'file_ref mut CPPXiphComment>,
 }
 
 impl<'file_ref> XiphComment<'file_ref> {
@@ -17,7 +17,7 @@ impl<'file_ref> XiphComment<'file_ref> {
     pub fn field_list_map<'slf>(&'slf self) -> FieldListMap<'file_ref> {
         // To call the method we need, we have to get our mut reference down to an immutable
         // reference. The safe API can do this, but shortens the lifecycle to at most self, even
-        // though the reference really lives as long as file_ref. Sadly, this requires us to transmute 
+        // though the reference really lives as long as file_ref. Sadly, this requires us to transmute
         // to extend the lifecycle back. This new pointer is really unsafe (we now have both a mut
         // and an immutable reference to the same object), but it's dropped after this call.
         // The value returned is unable to actually mutate this object, so it's safe.
