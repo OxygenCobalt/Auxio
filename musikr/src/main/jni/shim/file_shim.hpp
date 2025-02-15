@@ -24,7 +24,4 @@ namespace taglib_shim
     TagLib::FLAC::File *File_asFLAC(TagLib::File *file);
     TagLib::MP4::File *File_asMP4(TagLib::File *file);
     TagLib::RIFF::WAV::File *File_asWAV(TagLib::File *file);
-    // TagLib::WavPack::File *File_asWavPack(TagLib::File *file);
-    // TagLib::APE::File *File_asAPE(TagLib::File *file);
-
 } // namespace taglib_shim

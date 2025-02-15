@@ -32,75 +32,73 @@ mod bridge_impl {
         #[namespace = "TagLib"]
         #[cxx_name = "IOStream"]
         type CPPIOStream;
+        // Create a RustIOStream from a BridgeStream
+        unsafe fn wrap_RsIOStream(stream: Pin<&mut DynIOStream>) -> UniquePtr<CPPIOStream>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "FileRef"]
-        type TFileRef;
+        type CPPFileRef;
         #[cxx_name = "isNull"]
-        fn thisIsNull(self: Pin<&TFileRef>) -> bool;
+        fn isNull(self: Pin<&CPPFileRef>) -> bool;
         #[cxx_name = "file"]
-        fn thisFile(self: Pin<&TFileRef>) -> *mut BaseFile;
+        fn file(self: Pin<&CPPFileRef>) -> *mut CPPFile;
 
-        // Create a RustIOStream from a BridgeStream
-        unsafe fn wrap_RsIOStream(stream: Pin<&mut DynIOStream>) -> UniquePtr<CPPIOStream>;
         // Create a FileRef from an iostream
-        unsafe fn new_FileRef(stream: *mut CPPIOStream) -> UniquePtr<TFileRef>;
+        unsafe fn new_FileRef(stream: *mut CPPIOStream) -> UniquePtr<CPPFileRef>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "File"]
-        type BaseFile;
+        type CPPFile;
         #[cxx_name = "audioProperties"]
-        fn thisAudioProperties(self: Pin<&BaseFile>) -> *mut AudioProperties;
+        fn audioProperties(self: Pin<&CPPFile>) -> *mut CppAudioProperties;
 
         #[namespace = "TagLib"]
-        type AudioProperties;
+        #[cxx_name = "AudioProperties"]
+        type CppAudioProperties;
         #[cxx_name = "lengthInMilliseconds"]
-        fn thisLengthInMilliseconds(self: Pin<&AudioProperties>) -> i32;
+        fn lengthInMilliseconds(self: Pin<&CppAudioProperties>) -> i32;
         #[cxx_name = "bitrate"]
-        fn thisBitrate(self: Pin<&AudioProperties>) -> i32;
+        fn bitrate(self: Pin<&CppAudioProperties>) -> i32;
         #[cxx_name = "sampleRate"]
-        fn thisSampleRate(self: Pin<&AudioProperties>) -> i32;
+        fn sampleRate(self: Pin<&CppAudioProperties>) -> i32;
         #[cxx_name = "channels"]
-        fn thisChannels(self: Pin<&AudioProperties>) -> i32;
+        fn channels(self: Pin<&CppAudioProperties>) -> i32;
 
         #[namespace = "TagLib::Ogg"]
-        #[cxx_name = "File"]
-        type OggFile;
-
-        #[namespace = "TagLib::Ogg"]
-        type XiphComment;
+        #[cxx_name = "XiphComment"]
+        type CPPXiphComment;
         #[cxx_name = "fieldListMap"]
-        unsafe fn thisFieldListMap(self: Pin<&XiphComment>) -> &SimplePropertyMap;
+        fn fieldListMap(self: Pin<&CPPXiphComment>) -> &CPPSimplePropertyMap;
 
         #[namespace = "TagLib::Ogg::Vorbis"]
         #[cxx_name = "File"]
-        type VorbisFile;
+        type CPPVorbisFile;
         #[cxx_name = "tag"]
-        unsafe fn vorbisThisTag(self: Pin<&VorbisFile>) -> *mut XiphComment;
+        unsafe fn vorbisTag(self: Pin<&CPPVorbisFile>) -> *mut CPPXiphComment;
 
         #[namespace = "TagLib::Ogg::Opus"]
         #[cxx_name = "File"]
-        type OpusFile;
+        type CPPOpusFile;
         #[cxx_name = "tag"]
-        unsafe fn opusThisTag(self: Pin<&OpusFile>) -> *mut XiphComment;
+        unsafe fn opusTag(self: Pin<&CPPOpusFile>) -> *mut CPPXiphComment;
 
         #[namespace = "TagLib::FLAC"]
         #[cxx_name = "File"]
-        type FLACFile;
+        type CPPFLACFile;
         #[cxx_name = "xiphComment"]
-        unsafe fn flacThisXiphComment(self: Pin<&mut FLACFile>, create: bool) -> *mut XiphComment;
+        unsafe fn xiphComment(self: Pin<&mut CPPFLACFile>, create: bool) -> *mut CPPXiphComment;
 
         #[namespace = "TagLib::MPEG"]
         #[cxx_name = "File"]
-        type MPEGFile;
+        type CPPMPEGFile;
 
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "File"]
-        type MP4File;
+        type CPPMP4File;
 
         #[namespace = "TagLib::RIFF::WAV"]
         #[cxx_name = "File"]
-        type WAVFile;
+        type CPPWAVFile;
 
         // #[namespace = "TagLib::WavPack"]
         // #[cxx_name = "File"]
@@ -111,47 +109,45 @@ mod bridge_impl {
         // type APEFile;
 
         #[namespace = "taglib_shim"]
-        unsafe fn File_asVorbis(file: *mut BaseFile) -> *mut VorbisFile;
+        unsafe fn File_asVorbis(file: *mut CPPFile) -> *mut CPPVorbisFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asOpus(file: *mut BaseFile) -> *mut OpusFile;
+        unsafe fn File_asOpus(file: *mut CPPFile) -> *mut CPPOpusFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asMPEG(file: *mut BaseFile) -> *mut MPEGFile;
+        unsafe fn File_asMPEG(file: *mut CPPFile) -> *mut CPPMPEGFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asFLAC(file: *mut BaseFile) -> *mut FLACFile;
+        unsafe fn File_asFLAC(file: *mut CPPFile) -> *mut CPPFLACFile;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asMP4(file: *mut BaseFile) -> *mut MP4File;
+        unsafe fn File_asMP4(file: *mut CPPFile) -> *mut CPPMP4File;
         #[namespace = "taglib_shim"]
-        unsafe fn File_asWAV(file: *mut BaseFile) -> *mut WAVFile;
-        // #[namespace = "taglib_shim"]
-        // unsafe fn File_asWavPack(file: *mut BaseFile) -> *mut WavPackFile;
-        // #[namespace = "taglib_shim"]
-        // unsafe fn File_asAPE(file: *mut BaseFile) -> *mut APEFile;
+        unsafe fn File_asWAV(file: *mut CPPFile) -> *mut CPPWAVFile;
 
         #[namespace = "TagLib"]
-        type SimplePropertyMap;
+        #[cxx_name = "SimplePropertyMap"]
+        type CPPSimplePropertyMap;
         #[namespace = "taglib_shim"]
         fn SimplePropertyMap_to_vector(
-            field_list_map: Pin<&SimplePropertyMap>,
-        ) -> UniquePtr<CxxVector<Property>>;
+            field_list_map: Pin<&CPPSimplePropertyMap>,
+        ) -> UniquePtr<CxxVector<CPPProperty>>;
 
         #[namespace = "taglib_shim"]
-        type Property;
+        #[cxx_name = "Property"]
+        type CPPProperty;
         #[cxx_name = "key"]
-        fn thisKey(self: Pin<&Property>) -> &TString;
+        fn key(self: Pin<&CPPProperty>) -> &CPPString;
         #[cxx_name = "value"]
-        unsafe fn thisValue(self: Pin<&Property>) -> &TStringList;
+        unsafe fn value(self: Pin<&CPPProperty>) -> &CPPStringList;
 
         #[namespace = "TagLib"]
         #[cxx_name = "String"]
-        type TString;
+        type CPPString;
         #[cxx_name = "toCString"]
-        unsafe fn thisToCString(self: Pin<&TString>, unicode: bool) -> *const c_char;
+        unsafe fn thisToCString(self: Pin<&CPPString>, unicode: bool) -> *const c_char;
 
         #[namespace = "TagLib"]
         #[cxx_name = "StringList"]
-        type TStringList;
+        type CPPStringList;
         #[namespace = "taglib_shim"]
-        fn StringList_to_vector(string_list: Pin<&TStringList>) -> UniquePtr<CxxVector<TString>>;
+        fn StringList_to_vector(string_list: Pin<&CPPStringList>) -> UniquePtr<CxxVector<CPPString>>;
     }
 }
 

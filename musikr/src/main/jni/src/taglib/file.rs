@@ -1,89 +1,44 @@
-use cxx::UniquePtr;
-use super::bridge::{self, TFileRef};
-use super::iostream::{IOStream, BridgedIOStream};
-pub use super::bridge::{BaseFile as File, AudioProperties};
-use super::xiph::{OpusFile, VorbisFile, FLACFile};
 use std::pin::Pin;
+use super::bridge::{self, CPPFile};
+use super::audioproperties::AudioProperties;
+use super::ogg::OpusFile;
+use super::ogg::VorbisFile;
+use super::flac::FLACFile;
 
-pub struct FileRef<'a> {
-    stream: BridgedIOStream<'a>,
-    file_ref: UniquePtr<TFileRef>
+pub struct File<'a> {
+    this: Pin<&'a mut CPPFile>
 }
 
-impl <'a> FileRef<'a> {
-    pub fn new<T : IOStream + 'a>(stream: T) -> FileRef<'a> {
-        let stream  = BridgedIOStream::new(stream);
-        let cpp_stream = stream.cpp_stream().as_mut_ptr();
-        let file_ref = unsafe { bridge::new_FileRef(cpp_stream) };
-        FileRef {
-            stream,
-            file_ref
-        }
+
+impl<'a> File<'a> {
+    pub(super) fn new(this: Pin<&'a mut CPPFile>) -> Self {
+        Self { this }
     }
 
-    pub fn file(&self) -> Option<&mut File> {
-        let file = unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The file data is a pointer that does not depend on the
-            //   address of self.
-            let this = Pin::new_unchecked(&*self.file_ref);
-            // Note: This is not the rust ptr "is_null", but a taglib isNull method
-            // that checks for file validity. Without this check, we can get corrupted
-            // file ptrs.
-            if !this.thisIsNull() {
-                Some(this.thisFile())
-            } else {
-                None
-            }
-        };
-        file.and_then(|file| unsafe {
+    pub fn audio_properties(&self) -> Option<AudioProperties<'a>> {
+        let props_ptr =  self.this.as_ref().audioProperties();
+        let props_ref = unsafe {
             // SAFETY:
             // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
             // - The null-safe version is being used.
             // - This points to a C++FFI type ensured to be valid by cxx's codegen.
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
-            file.as_mut()
-        })
-    }
-}
-
-impl File {
-    pub fn audio_properties(&self) -> Option<&AudioProperties> {
-        let props = unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The audio properties data is a pointer that does not depend on the
-            //   address of self.
-            let this: Pin<&File> = Pin::new_unchecked(self);
-            this.thisAudioProperties()
+            props_ptr.as_ref()
         };
-        unsafe {
-            // SAFETY:
-            // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
-            // - The null-safe version is being used.
-            // - This points to a C++FFI type ensured to be valid by cxx's codegen.
-            // - There are no datapaths that will yield any mutable pointers or references
-            //   to this, ensuring that it will not be mutated as per the aliasing rules.
-            props.as_ref()
-        }
+        let props_pin = props_ref.map(|props| unsafe { Pin::new_unchecked(props) });
+        props_pin.map(|props| AudioProperties::new(props))
     }
 
-    pub fn as_opus(&mut self) -> Option<&mut OpusFile> {
-        let ptr_self = self as *mut Self;
+    pub fn as_opus(&mut self) -> Option<OpusFile<'a>> {
         let opus_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
             // the file can be cased down to an opus file. If the cast fails, a null
             // pointer is returned, which will be handled by as_ref's null checking.
-            bridge::File_asOpus(ptr_self)
+            bridge::File_asOpus(self.this.as_mut().get_unchecked_mut() as *mut CPPFile)
         };
-        unsafe {
+        let opus_ref = unsafe {
             // SAFETY:
             // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
             // - The null-safe version is being used.
@@ -91,39 +46,41 @@ impl File {
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             opus_file.as_mut()
-        }
+        };  
+        let opus_pin = opus_ref.map(|opus| unsafe { Pin::new_unchecked(opus) });
+        opus_pin.map(|opus| OpusFile::new(opus))
     }
 
-    pub fn as_vorbis(&mut self) -> Option<&VorbisFile> {
-        let ptr_self = self as *mut Self;
+    pub fn as_vorbis(&mut self) -> Option<VorbisFile<'a>> {
         let vorbis_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
             // the file can be cased down to an opus file. If the cast fails, a null
             // pointer is returned, which will be handled by as_ref's null checking.
-            bridge::File_asVorbis(ptr_self)
+            bridge::File_asVorbis(self.this.as_mut().get_unchecked_mut() as *mut CPPFile)
         };
-        unsafe {
+        let vorbis_ref = unsafe {
             // SAFETY:
             // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
             // - The null-safe version is being used.
             // - This points to a C++FFI type ensured to be valid by cxx's codegen.
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
-            vorbis_file.as_ref()
-        }
+            vorbis_file.as_mut()
+        };
+        let vorbis_pin = vorbis_ref.map(|vorbis| unsafe { Pin::new_unchecked(vorbis) });
+        vorbis_pin.map(|vorbis| VorbisFile::new(vorbis))
     }
 
-    pub fn as_flac(&mut self) -> Option<&mut FLACFile> {
-        let ptr_self = self as *mut Self;
+    pub fn as_flac(&mut self) -> Option<FLACFile<'a>> {
         let flac_file = unsafe {
             // SAFETY:
             // This FFI function will be a simple C++ dynamic_cast, which checks if
             // the file can be cased down to an opus file. If the cast fails, a null
             // pointer is returned, which will be handled by as_ref's null checking.
-            bridge::File_asFLAC(ptr_self)
+            bridge::File_asFLAC(self.this.as_mut().get_unchecked_mut() as *mut CPPFile)
         };
-        unsafe {
+        let flac_ref = unsafe {
             // SAFETY:
             // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.
             // - The null-safe version is being used.
@@ -131,67 +88,16 @@ impl File {
             // - There are no datapaths that will yield any mutable pointers or references
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             flac_file.as_mut()
-        }
+        };
+        let flac_pin = flac_ref.map(|flac| unsafe { Pin::new_unchecked(flac) });
+        flac_pin.map(|flac| FLACFile::new(flac))
     }
 }
 
-impl AudioProperties {
-    pub fn length_in_milliseconds(&self) -> i32 {
-        unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The value is copied and thus not dependent on the address of self.
-            let this = Pin::new_unchecked(self);
-            this.thisLengthInMilliseconds()
-        }
-    }
-
-    pub fn bitrate(&self) -> i32 {
-        unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The value is copied and thus not dependent on the address of self.
-            let this = Pin::new_unchecked(self);
-            this.thisBitrate()
-        }
-    }
-
-    pub fn sample_rate(&self) -> i32 {
-        unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The value is copied and thus not dependent on the address of self.
-            let this = Pin::new_unchecked(self);
-            this.thisSampleRate()
-        }
-    }
-
-    pub fn channels(&self) -> i32 {
-        unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The value is copied and thus not dependent on the address of self.
-            let this = Pin::new_unchecked(self);
-            this.thisChannels()
-        }
-    }
-}
-
-impl <'a> Drop for FileRef<'a> {
+impl<'a> Drop for File<'a> {
     fn drop(&mut self) {
-        // First drop the file, since it has a pointer to the stream.
-        // Then drop the stream
         unsafe {
-            std::ptr::drop_in_place(&mut self.file_ref);
-            std::ptr::drop_in_place(&mut self.stream);
+            std::ptr::drop_in_place(&mut self.this);
         }
     }
 }

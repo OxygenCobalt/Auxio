@@ -7,7 +7,7 @@ use jni::JNIEnv;
 mod taglib;
 mod jstream;
 
-use taglib::file::FileRef;
+use taglib::file_ref::FileRef;
 use jstream::JInputStream;
 
 type SharedEnv<'local> = Rc<RefCell<JNIEnv<'local>>>;
@@ -22,7 +22,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     let shared_env = Rc::new(RefCell::new(env));
     let mut stream = JInputStream::new(shared_env.clone(), input);
     let file_ref = FileRef::new(stream);
-    let title = file_ref.file().and_then(|file| {
+    let title = file_ref.file().and_then(|mut file| {
         let audio_properties = file.audio_properties();
 
         if let Some(vorbis_file) = file.as_vorbis() {
@@ -39,7 +39,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
                 .and_then(|comments| comments.get("TITLE").cloned())
                 .and_then(|title| title.first().cloned())
                 .map(|s| s.to_string())
-        } else if let Some(flac_file) = file.as_flac() {
+        } else if let Some(mut flac_file) = file.as_flac() {
             flac_file
                 .xiph_comments()
                 .map(|comments| comments.field_list_map().to_hashmap())

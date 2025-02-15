@@ -1,44 +1,40 @@
-use std::{ffi::CStr, string::ToString};
-use std::pin::Pin;
 use std::collections::HashMap;
+use std::pin::Pin;
+use std::{ffi::CStr, string::ToString};
+use super::bridge::{self, CPPSimplePropertyMap, CPPString, CPPStringList};
 
-use super::bridge::{self, Property};
-pub use super::bridge::{TString, TStringList, SimplePropertyMap}; 
+pub struct SimplePropertyMap<'a> {
+    this: Pin<&'a CPPSimplePropertyMap>,
+}
 
-impl SimplePropertyMap {
+impl<'a> SimplePropertyMap<'a> {
+    pub(super) fn new(this: Pin<&'a CPPSimplePropertyMap>) -> Self {
+        Self { this }
+    }
+}
+
+impl<'a> SimplePropertyMap<'a> {
     pub fn to_hashmap(&self) -> HashMap<String, Vec<String>> {
-        let cxx_vec = unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The value is a unique_ptr to a copied vector that is not dependent
-            //   on the address of self.
-            let this = Pin::new_unchecked(self);
-            bridge::SimplePropertyMap_to_vector(this)
-        };
-        cxx_vec.iter().map(|property| property.to_tuple()).collect()
+        let cxx_vec = bridge::SimplePropertyMap_to_vector(self.this);
+        cxx_vec
+            .iter()
+            .map(|property| unsafe {
+                // SAFETY:
+                // - This pin is only used in this unsafe scope.
+                // - The pin is used as a C++ this pointer in the ffi call, which does
+                //   not change address by C++ semantics.
+                // - The values returned are copied and thus not dependent on the address
+                //   of self.
+                let property_pin = Pin::new_unchecked(property);
+                let key = property_pin.key().to_string();
+                let value = property_pin.value().to_vec();
+                (key, value)
+            })
+            .collect()
     }
 }
 
-impl Property {
-    pub fn to_tuple(&self) -> (String, Vec<String>) {
-        unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            // - The values returned are copied and thus not dependent on the address
-            //   of self.
-            let this = Pin::new_unchecked(self);
-            let key = this.thisKey().to_string();
-            let value = this.thisValue().to_vec();
-            (key, value)
-        }
-    }
-}
-
-impl ToString for TString {
+impl ToString for CPPString {
     fn to_string(&self) -> String {
         let c_str = unsafe {
             // SAFETY:
@@ -47,7 +43,7 @@ impl ToString for TString {
             //   not change address by C++ semantics.
             // - The value returned are pointers and thus not dependent on the address
             //   of self.
-            let this: Pin<&TString> = Pin::new_unchecked(self);
+            let this: Pin<&CPPString> = Pin::new_unchecked(self);
             this.thisToCString(true)
         };
         unsafe {
@@ -67,7 +63,7 @@ impl ToString for TString {
     }
 }
 
-impl TStringList {
+impl CPPStringList {
     pub fn to_vec(&self) -> Vec<String> {
         let cxx_values = unsafe {
             // SAFETY:

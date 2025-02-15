@@ -36,14 +36,4 @@ namespace taglib_shim
         return dynamic_cast<TagLib::RIFF::WAV::File *>(file);
     }
 
-    // TagLib::WavPack::File *File_asWavPack(TagLib::File *file)
-    // {
-    //     return dynamic_cast<TagLib::WavPack::File *>(file);
-    // }
-
-    // TagLib::APE::File *File_asAPE(TagLib::File *file)
-    // {
-    //     return dynamic_cast<TagLib::APE::File *>(file);
-    // }
-
 } // namespace taglib_shim
