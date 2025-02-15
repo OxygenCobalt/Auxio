@@ -24,7 +24,7 @@ impl<'a> VorbisFile<'a> {
         let tag_ref = unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
-            tag.as_ref()
+            tag.as_mut()
         };
         let tag_pin = tag_ref.map(|tag| unsafe { Pin::new_unchecked(tag) });
         tag_pin.map(|tag| XiphComment::new(tag))
@@ -53,7 +53,7 @@ impl <'a> OpusFile<'a> {
         let tag_ref = unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
-            tag.as_ref()
+            tag.as_mut()
         };
         let tag_pin = tag_ref.map(|tag| unsafe { Pin::new_unchecked(tag) });
         tag_pin.map(|tag| XiphComment::new(tag))

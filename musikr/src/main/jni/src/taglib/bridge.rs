@@ -25,9 +25,12 @@ mod bridge_impl {
         include!("taglib/vorbisfile.h");
         include!("taglib/xiphcomment.h");
         include!("taglib/tiostream.h");
+        include!("taglib/flacpicture.h");
+        include!("taglib/tbytevector.h");
         include!("shim/iostream_shim.hpp");
         include!("shim/file_shim.hpp");
         include!("shim/tk_shim.hpp");
+        include!("shim/picture_shim.hpp");
 
         #[namespace = "TagLib"]
         #[cxx_name = "IOStream"]
@@ -63,6 +66,28 @@ mod bridge_impl {
         fn sampleRate(self: Pin<&CppAudioProperties>) -> i32;
         #[cxx_name = "channels"]
         fn channels(self: Pin<&CppAudioProperties>) -> i32;
+
+        #[namespace = "TagLib::FLAC"]
+        #[cxx_name = "Picture"]
+        type CPPFLACPicture;
+        #[namespace = "taglib_shim"]
+        fn Picture_mimeType(picture: &CPPFLACPicture) -> UniquePtr<CPPString>;
+        #[namespace = "taglib_shim"]
+        fn Picture_description(picture: &CPPFLACPicture) -> UniquePtr<CPPString>;
+        #[cxx_name = "width"]
+        fn width(self: Pin<&CPPFLACPicture>) -> i32;
+        #[cxx_name = "height"]
+        fn height(self: Pin<&CPPFLACPicture>) -> i32;
+        #[cxx_name = "colorDepth"]
+        fn colorDepth(self: Pin<&CPPFLACPicture>) -> i32;
+        #[cxx_name = "numColors"]
+        fn numColors(self: Pin<&CPPFLACPicture>) -> i32;
+        #[namespace = "taglib_shim"]
+        fn Picture_data(picture: &CPPFLACPicture) -> UniquePtr<CPPByteVector>;
+
+        #[namespace = "TagLib"]
+        #[cxx_name = "ByteVector"]
+        type CPPByteVector;
 
         #[namespace = "TagLib::Ogg"]
         #[cxx_name = "XiphComment"]
@@ -148,6 +173,20 @@ mod bridge_impl {
         type CPPStringList;
         #[namespace = "taglib_shim"]
         fn StringList_to_vector(string_list: Pin<&CPPStringList>) -> UniquePtr<CxxVector<CPPString>>;
+
+        #[namespace = "taglib_shim"]
+        type PictureRef;
+        fn get(self: &PictureRef) -> *const CPPFLACPicture;
+
+        #[namespace = "taglib_shim"]
+        fn FLACFile_pictureList_to_vector(file: Pin<&mut CPPFLACFile>) -> UniquePtr<CxxVector<PictureRef>>;
+        #[namespace = "taglib_shim"]
+        fn XiphComment_pictureList_to_vector(comment: Pin<&mut CPPXiphComment>) -> UniquePtr<CxxVector<PictureRef>>;
+
+        #[namespace = "taglib_shim"]
+        fn String_to_string(str: &CPPString) -> String;
+        #[namespace = "taglib_shim"]
+        fn ByteVector_to_bytes(data: &CPPByteVector) -> UniquePtr<CxxVector<u8>>;
     }
 }
 
