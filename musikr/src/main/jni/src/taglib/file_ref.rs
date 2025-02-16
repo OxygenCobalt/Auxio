@@ -1,6 +1,7 @@
 use super::bridge::{self, CPPFileRef};
 use super::file::File;
 use super::iostream::{BridgedIOStream, IOStream};
+use super::this::RefThisMut;
 use cxx::UniquePtr;
 use std::pin::Pin;
 
@@ -47,8 +48,8 @@ impl<'io> FileRef<'io> {
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             file.as_mut()
         });
-        let file_pin = file_ref.map(|file| unsafe { Pin::new_unchecked(file) });
-        file_pin.map(|file| File::new(file))
+        let file_this = file_ref.map(|file| unsafe { RefThisMut::new(file) });
+        file_this.map(|this| File::new(this))
     }
 }
 

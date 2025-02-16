@@ -1,32 +1,24 @@
 use super::bridge::{self, CPPByteVector, CPPString, CPPStringList};
+use super::this::{RefThis, RefThisMut, This, OwnedThis};
 use cxx::{memory::UniquePtrTarget, UniquePtr};
 use std::marker::PhantomData;
 use std::pin::Pin;
 use std::{ffi::CStr, string::ToString};
 
-enum This<'file_ref, T: UniquePtrTarget> {
-    Owned {
-        data: PhantomData<&'file_ref T>,
-        this: UniquePtr<T>,
-    },
-    Ref {
-        this: Pin<&'file_ref T>,
-    },
+pub(super) struct String<'file_ref, T: This<'file_ref, CPPString>> {
+    _data: PhantomData<&'file_ref ()>,
+    this: T,
 }
 
-pub struct String<'file_ref> {
-    this: Pin<&'file_ref CPPString>,
-}
-
-impl<'file_ref> String<'file_ref> {
-    pub(super) fn new(this: Pin<&'file_ref CPPString>) -> Self {
-        Self { this }
+impl<'file_ref, T: This<'file_ref, CPPString>> String<'file_ref, T> {
+    pub(super) fn new(this: T) -> Self {
+        Self { _data: PhantomData, this }
     }
 }
 
-impl<'file_ref> ToString for String<'file_ref> {
+impl<'file_ref, T: This<'file_ref, CPPString>> ToString for String<'file_ref, T> {
     fn to_string(&self) -> std::string::String {
-        let c_str = self.this.toCString(true);
+        let c_str = self.this.pin().toCString(true);
         unsafe {
             // SAFETY:
             // - This is a C-string returned by a C++ method guaranteed to have
@@ -44,67 +36,47 @@ impl<'file_ref> ToString for String<'file_ref> {
     }
 }
 
-pub struct StringList<'file_ref> {
-    this: This<'file_ref, CPPStringList>,
+pub type OwnedString<'file_ref> = String<'file_ref, OwnedThis<'file_ref, CPPString>>;
+pub type RefString<'file_ref> = String<'file_ref, RefThis<'file_ref, CPPString>>;
+pub type RefStringMut<'file_ref> = String<'file_ref, RefThisMut<'file_ref, CPPString>>;
+pub(super) struct StringList<'file_ref, T: This<'file_ref, CPPStringList>> {
+    _data: PhantomData<&'file_ref ()>,
+    this: T,
 }
 
-impl<'file_ref> StringList<'file_ref> {
-    pub(super) fn owned(this: UniquePtr<CPPStringList>) -> Self {
-        Self {
-            this: This::Owned {
-                data: PhantomData,
-                this,
-            },
-        }
-    }
+pub type OwnedStringList<'file_ref> = StringList<'file_ref, OwnedThis<'file_ref, CPPStringList>>;
+pub type RefStringList<'file_ref> = StringList<'file_ref, RefThis<'file_ref, CPPStringList>>;
+pub type RefStringListMut<'file_ref> = StringList<'file_ref, RefThisMut<'file_ref, CPPStringList>>;
 
-    pub(super) fn reference(this: Pin<&'file_ref CPPStringList>) -> Self {
-        Self {
-            this: This::Ref { this },
-        }
+impl<'file_ref, T: This<'file_ref, CPPStringList>> StringList<'file_ref, T> {
+    pub(super) fn new(this: T) -> Self {
+        Self { _data: PhantomData, this }
     }
 
     pub fn to_vec(&self) -> Vec<std::string::String> {
-        let pin = match &self.this {
-            This::Owned { this, .. } => unsafe { Pin::new_unchecked(this.as_ref().unwrap()) },
-            This::Ref { this } => *this,
-        };
-        let cxx_values = bridge::StringList_to_vector(pin);
+        let cxx_values = bridge::StringList_to_vector(self.this.pin());
         cxx_values
             .iter()
             .map(|value| {
-                let this = unsafe { Pin::new_unchecked(value) };
+                let this = unsafe { RefThis::new(value) };
                 String::new(this).to_string()
             })
             .collect()
     }
 }
 
-pub struct ByteVector<'file_ref> {
-    // ByteVector is implicitly tied to the lifetime of the parent that owns it,
-    // so we need to track that lifetime. Only reason why it's a UniquePtr is because
-    // we can't marshal over ownership of the ByteVector by itself over cxx.
+pub struct ByteVector<'file_ref, T: This<'file_ref, CPPByteVector>> {
     _data: PhantomData<&'file_ref CPPByteVector>,
-    this: UniquePtr<CPPByteVector>,
+    this: T,
 }
 
-impl<'file_ref> ByteVector<'file_ref> {
-    pub(super) fn new(this: UniquePtr<CPPByteVector>) -> Self {
-        Self {
-            _data: PhantomData,
-            this,
-        }
+impl<'file_ref, T: This<'file_ref, CPPByteVector>> ByteVector<'file_ref, T> {
+    pub(super) fn new(this: T) -> Self {
+        Self { _data: PhantomData, this }
     }
 
     pub fn to_vec(&self) -> Vec<u8> {
-        let this_ref = self.this.as_ref().unwrap();
-        let this = unsafe {
-            // SAFETY:
-            // - This pin is only used in this unsafe scope.
-            // - The pin is used as a C++ this pointer in the ffi call, which does
-            //   not change address by C++ semantics.
-            Pin::new_unchecked(this_ref)
-        };
+        let this = self.this.pin();
         let size = this.size().try_into().unwrap();
         let data = this.data();
         // Re-cast to u8
@@ -118,3 +90,7 @@ impl<'file_ref> ByteVector<'file_ref> {
         }
     }
 }
+
+pub type OwnedByteVector<'file_ref> = ByteVector<'file_ref, OwnedThis<'file_ref, CPPByteVector>>;
+pub type RefByteVector<'file_ref> = ByteVector<'file_ref, RefThis<'file_ref, CPPByteVector>>;
+pub type RefByteVectorMut<'file_ref> = ByteVector<'file_ref, RefThisMut<'file_ref, CPPByteVector>>;

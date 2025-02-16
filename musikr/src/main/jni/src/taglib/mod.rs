@@ -10,3 +10,4 @@ pub mod mpeg;
 pub mod ogg;
 pub mod tk;
 pub mod xiph;
+pub mod this;
