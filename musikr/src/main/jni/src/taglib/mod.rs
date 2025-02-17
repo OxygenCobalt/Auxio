@@ -12,3 +12,4 @@ pub mod tk;
 pub mod id3v2;
 pub mod id3v1;
 pub mod mp4;
+pub mod riff;

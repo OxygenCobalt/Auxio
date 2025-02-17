@@ -132,6 +132,8 @@ mod bridge_impl {
         #[namespace = "TagLib::RIFF::WAV"]
         #[cxx_name = "File"]
         type CPPWAVFile;
+        #[cxx_name = "ID3v2Tag"]
+        fn WAVID3v2Tag(self: &CPPWAVFile) -> *mut CPPID3v2Tag;
 
         #[namespace = "TagLib::FLAC"]
         #[cxx_name = "Picture"]
