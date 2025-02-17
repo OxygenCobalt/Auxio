@@ -1,6 +1,7 @@
 pub use super::bridge::CPPFLACFile;
 pub use super::bridge::CPPFLACPicture;
 use super::bridge::{CPPPictureList, FLACFile_pictureList, PictureList_to_vector, Picture_data, CPPByteVector};
+use super::id3v1::ID3v1Tag;
 use super::id3v2::ID3v2Tag;
 use super::tk::{ByteVector, OwnedByteVector};
 pub use super::xiph::XiphComment;
@@ -18,12 +19,6 @@ impl<'file_ref> FLACFile<'file_ref> {
         Self { this }
     }
 
-    pub fn id3v2_tag(&mut self) -> Option<ID3v2Tag<'file_ref>> {
-        let tag = self.this.pin_mut().FLACID3v2Tag(false);
-        let tag_ref = unsafe { tag.as_mut() };
-        let tag_this = tag_ref.map(|tag| unsafe { RefThisMut::new(tag) });
-        tag_this.map(|this| ID3v2Tag::new(this))
-    }
 
     pub fn xiph_comments(&mut self) -> Option<XiphComment<'file_ref>> {
         let tag = self.this.pin_mut().xiphComment(false);
@@ -40,6 +35,20 @@ impl<'file_ref> FLACFile<'file_ref> {
         let pictures = FLACFile_pictureList(self.this.pin_mut());
         let this = unsafe { OwnedThis::new(pictures) };
         this.map(|this| PictureList::new(this))
+    }
+
+    pub fn id3v1_tag(&mut self) -> Option<ID3v1Tag<'file_ref>> {
+        let tag = self.this.pin_mut().FLACID3v1Tag(false);
+        let tag_ref = unsafe { tag.as_mut() };
+        let tag_this = tag_ref.map(|tag| unsafe { RefThisMut::new(tag) });
+        tag_this.map(|this| ID3v1Tag::new(this))
+    }
+
+    pub fn id3v2_tag(&mut self) -> Option<ID3v2Tag<'file_ref>> {
+        let tag = self.this.pin_mut().FLACID3v2Tag(false);
+        let tag_ref = unsafe { tag.as_mut() };
+        let tag_this = tag_ref.map(|tag| unsafe { RefThisMut::new(tag) });
+        tag_this.map(|this| ID3v2Tag::new(this))
     }
 }
 
