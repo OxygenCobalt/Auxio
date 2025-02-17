@@ -34,6 +34,7 @@ mod bridge_impl {
         include!("shim/xiph_shim.hpp");
         include!("shim/id3v2_shim.hpp");
         include!("shim/id3v1_shim.hpp");
+        include!("shim/mp4_shim.hpp");
         include!("taglib/mpegfile.h");
 
         #[namespace = "TagLib"]
@@ -45,15 +46,12 @@ mod bridge_impl {
         #[cxx_name = "FileRef"]
         type CPPFileRef;
         unsafe fn new_FileRef(stream: *mut CPPIOStream) -> UniquePtr<CPPFileRef>;
-        #[cxx_name = "isNull"]
         fn isNull(self: Pin<&CPPFileRef>) -> bool;
-        #[cxx_name = "file"]
         fn file(self: Pin<&CPPFileRef>) -> *mut CPPFile;
 
         #[namespace = "TagLib"]
         #[cxx_name = "File"]
         type CPPFile;
-        #[cxx_name = "audioProperties"]
         fn audioProperties(self: Pin<&CPPFile>) -> *mut CppAudioProperties;
         #[namespace = "taglib_shim"]
         unsafe fn File_asVorbis(file: *mut CPPFile) -> *mut CPPVorbisFile;
@@ -71,13 +69,9 @@ mod bridge_impl {
         #[namespace = "TagLib"]
         #[cxx_name = "AudioProperties"]
         type CppAudioProperties;
-        #[cxx_name = "lengthInMilliseconds"]
         fn lengthInMilliseconds(self: Pin<&CppAudioProperties>) -> i32;
-        #[cxx_name = "bitrate"]
         fn bitrate(self: Pin<&CppAudioProperties>) -> i32;
-        #[cxx_name = "sampleRate"]
         fn sampleRate(self: Pin<&CppAudioProperties>) -> i32;
-        #[cxx_name = "channels"]
         fn channels(self: Pin<&CppAudioProperties>) -> i32;
 
         #[namespace = "TagLib::Ogg::Vorbis"]
@@ -97,7 +91,6 @@ mod bridge_impl {
         #[namespace = "TagLib::FLAC"]
         #[cxx_name = "File"]
         type CPPFLACFile;
-        #[cxx_name = "xiphComment"]
         fn xiphComment(self: Pin<&mut CPPFLACFile>, create: bool) -> *mut CPPXiphComment;
         #[namespace = "taglib_shim"]
         fn FLACFile_pictureList(file: Pin<&mut CPPFLACFile>) -> UniquePtr<CPPPictureList>;
@@ -118,7 +111,6 @@ mod bridge_impl {
         #[namespace = "TagLib::MPEG"]
         #[cxx_name = "File"]
         type CPPMPEGFile;
-        #[cxx_name = "ID3v2Tag"]
         fn ID3v2Tag(self: Pin<&mut CPPMPEGFile>, create: bool) -> *mut CPPID3v2Tag;
 
         #[namespace = "TagLib::MP4"]
@@ -140,7 +132,6 @@ mod bridge_impl {
         type CPPXiphComment;
         // Explicit lifecycle definition to state while the Pin is temporary, the CPPFieldListMap
         // ref returned actually has the same lifetime as the CPPXiphComment.
-        #[cxx_name = "fieldListMap"]
         fn fieldListMap<'slf, 'file_ref>(self: Pin<&'slf CPPXiphComment>) -> &'file_ref CPPFieldListMap;
 
         #[namespace = "TagLib"]
@@ -154,9 +145,7 @@ mod bridge_impl {
         #[namespace = "taglib_shim"]
         #[cxx_name = "FieldListEntry"]
         type CPPFieldListEntry;
-        #[cxx_name = "key"]
         fn key(self: Pin<&CPPFieldListEntry>) -> &CPPString;
-        #[cxx_name = "value"]
         fn value(self: Pin<&CPPFieldListEntry>) -> &CPPStringList;
 
         #[namespace = "TagLib::ID3v2"]
@@ -221,7 +210,6 @@ mod bridge_impl {
         #[namespace = "TagLib"]
         #[cxx_name = "String"]
         type CPPString;
-        #[cxx_name = "toCString"]
         fn toCString(self: Pin<&CPPString>, unicode: bool) -> *const c_char;
 
         #[namespace = "TagLib"]
@@ -249,6 +237,27 @@ mod bridge_impl {
         fn ID3v1Tag_genreIndex(tag: Pin<&CPPID3v1Tag>) -> u32;
         fn ID3v1Tag_year(tag: Pin<&CPPID3v1Tag>) -> u32;
         fn ID3v1Tag_track(tag: Pin<&CPPID3v1Tag>) -> u32;
+
+        #[namespace = "TagLib::MP4"]
+        #[cxx_name = "Tag"]
+        type CPPMP4Tag;
+
+        #[namespace = "TagLib::MP4"]
+        #[cxx_name = "ItemMap"]
+        type CPPItemMap;
+        fn itemMap<'slf, 'file_ref>(self: Pin<&'slf CPPMP4Tag>) -> &'file_ref CPPItemMap;
+        fn ItemMap_to_entries(map: Pin<&CPPItemMap>) -> UniquePtr<CxxVector<CPPItemMapEntry>>;
+
+        #[namespace = "taglib_shim"]
+        #[cxx_name = "ItemMapEntry"]
+        type CPPItemMapEntry;
+        fn key(self: Pin<&CPPItemMapEntry>) -> &CPPString;
+        fn value(self: Pin<&CPPItemMapEntry>) -> &CPPMP4Item;
+
+        #[namespace = "TagLib::MP4"]
+        #[cxx_name = "Item"]
+        type CPPMP4Item;
+
     }
 }
 
