@@ -18,7 +18,7 @@ impl<'file_ref, T: This<'file_ref, CPPString>> String<'file_ref, T> {
 
 impl<'file_ref, T: This<'file_ref, CPPString>> ToString for String<'file_ref, T> {
     fn to_string(&self) -> std::string::String {
-        let c_str = self.this.pin().toCString(true);
+        let c_str = self.this.as_ref().toCString(true);
         unsafe {
             // SAFETY:
             // - This is a C-string returned by a C++ method guaranteed to have
@@ -54,7 +54,7 @@ impl<'file_ref, T: This<'file_ref, CPPStringList>> StringList<'file_ref, T> {
     }
 
     pub fn to_vec(&self) -> Vec<std::string::String> {
-        let cxx_values = bridge::StringList_to_vector(self.this.pin());
+        let cxx_values = bridge::StringList_to_vector(self.this.as_ref());
         cxx_values
             .iter()
             .map(|value| {
@@ -76,7 +76,7 @@ impl<'file_ref, T: This<'file_ref, CPPByteVector>> ByteVector<'file_ref, T> {
     }
 
     pub fn to_vec(&self) -> Vec<u8> {
-        let this = self.this.pin();
+        let this = self.this.as_ref();
         let size = this.size().try_into().unwrap();
         let data = this.data();
         // Re-cast to u8
@@ -106,7 +106,7 @@ impl<'file_ref, T: This<'file_ref, CPPByteVectorList>> ByteVectorList<'file_ref,
     }
 
     pub fn to_vec(&self) -> Vec<Vec<u8>> {
-        let cxx_values = bridge::ByteVectorList_to_vector(self.this.pin());
+        let cxx_values = bridge::ByteVectorList_to_vector(self.this.as_ref());
         cxx_values
             .iter()
             .map(|value| ByteVector::new(unsafe { RefThis::new(value) }).to_vec())

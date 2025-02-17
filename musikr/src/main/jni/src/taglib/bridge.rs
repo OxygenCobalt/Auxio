@@ -46,13 +46,13 @@ mod bridge_impl {
         #[cxx_name = "FileRef"]
         type CPPFileRef;
         unsafe fn new_FileRef(stream: *mut CPPIOStream) -> UniquePtr<CPPFileRef>;
-        fn isNull(self: Pin<&CPPFileRef>) -> bool;
-        fn file(self: Pin<&CPPFileRef>) -> *mut CPPFile;
+        fn isNull(self: &CPPFileRef) -> bool;
+        fn file(self: &CPPFileRef) -> *mut CPPFile;
 
         #[namespace = "TagLib"]
         #[cxx_name = "File"]
         type CPPFile;
-        fn audioProperties(self: Pin<&CPPFile>) -> *mut CppAudioProperties;
+        fn audioProperties(self: &CPPFile) -> *mut CppAudioProperties;
         #[namespace = "taglib_shim"]
         unsafe fn File_asVorbis(file: *mut CPPFile) -> *mut CPPVorbisFile;
         #[namespace = "taglib_shim"]
@@ -69,16 +69,16 @@ mod bridge_impl {
         #[namespace = "TagLib"]
         #[cxx_name = "AudioProperties"]
         type CppAudioProperties;
-        fn lengthInMilliseconds(self: Pin<&CppAudioProperties>) -> i32;
-        fn bitrate(self: Pin<&CppAudioProperties>) -> i32;
-        fn sampleRate(self: Pin<&CppAudioProperties>) -> i32;
-        fn channels(self: Pin<&CppAudioProperties>) -> i32;
+        fn lengthInMilliseconds(self: &CppAudioProperties) -> i32;
+        fn bitrate(self: &CppAudioProperties) -> i32;
+        fn sampleRate(self: &CppAudioProperties) -> i32;
+        fn channels(self: &CppAudioProperties) -> i32;
 
         #[namespace = "TagLib::Ogg::Vorbis"]
         #[cxx_name = "File"]
         type CPPVorbisFile;
         #[cxx_name = "tag"]
-        fn vorbisTag(self: Pin<&CPPVorbisFile>) -> *mut CPPXiphComment;
+        fn vorbisTag(self: &CPPVorbisFile) -> *mut CPPXiphComment;
         #[namespace = "taglib_shim"]
         fn XiphComment_pictureList(comment: Pin<&mut CPPXiphComment>) -> UniquePtr<CPPPictureList>;
 
@@ -86,7 +86,7 @@ mod bridge_impl {
         #[cxx_name = "File"]
         type CPPOpusFile;
         #[cxx_name = "tag"]
-        fn opusTag(self: Pin<&CPPOpusFile>) -> *mut CPPXiphComment;
+        fn opusTag(self: &CPPOpusFile) -> *mut CPPXiphComment;
 
         #[namespace = "TagLib::FLAC"]
         #[cxx_name = "File"]
@@ -100,7 +100,7 @@ mod bridge_impl {
         type CPPPictureList;
         #[namespace = "taglib_shim"]
         fn PictureList_to_vector(
-            list: Pin<&CPPPictureList>,
+            list: &CPPPictureList,
         ) -> UniquePtr<CxxVector<CPPFLACPicturePointer>>;
 
         #[namespace = "taglib_shim"]
@@ -125,41 +125,41 @@ mod bridge_impl {
         #[cxx_name = "Picture"]
         type CPPFLACPicture;
         #[namespace = "taglib_shim"]
-        fn Picture_data(picture: Pin<&CPPFLACPicture>) -> UniquePtr<CPPByteVector>;
+        fn Picture_data(picture: &CPPFLACPicture) -> UniquePtr<CPPByteVector>;
 
         #[namespace = "TagLib::Ogg"]
         #[cxx_name = "XiphComment"]
         type CPPXiphComment;
         // Explicit lifecycle definition to state while the Pin is temporary, the CPPFieldListMap
         // ref returned actually has the same lifetime as the CPPXiphComment.
-        fn fieldListMap<'slf, 'file_ref>(self: Pin<&'slf CPPXiphComment>) -> &'file_ref CPPFieldListMap;
+        fn fieldListMap<'slf, 'file_ref>(self: &'slf CPPXiphComment) -> &'file_ref CPPFieldListMap;
 
         #[namespace = "TagLib"]
         #[cxx_name = "SimplePropertyMap"]
         type CPPFieldListMap;
         #[namespace = "taglib_shim"]
         fn FieldListMap_to_entries(
-            field_list_map: Pin<&CPPFieldListMap>,
+            field_list_map: &CPPFieldListMap,
         ) -> UniquePtr<CxxVector<CPPFieldListEntry>>;
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "FieldListEntry"]
         type CPPFieldListEntry;
-        fn key<'slf, 'file_ref>(self: Pin<&'slf CPPFieldListEntry>) -> &'file_ref CPPString;
-        fn value<'slf, 'file_ref>(self: Pin<&'slf CPPFieldListEntry>) -> &'file_ref CPPStringList;
+        fn key<'slf, 'file_ref>(self: &'slf CPPFieldListEntry) -> &'file_ref CPPString;
+        fn value<'slf, 'file_ref>(self: &'slf CPPFieldListEntry) -> &'file_ref CPPStringList;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "Tag"]
         type CPPID3v2Tag;
         #[namespace = "taglib_shim"]
-        fn Tag_frameList(tag: Pin<&CPPID3v2Tag>) -> UniquePtr<CPPID3v2FrameList>;
+        fn Tag_frameList(tag: &CPPID3v2Tag) -> UniquePtr<CPPID3v2FrameList>;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "FrameList"]
         type CPPID3v2FrameList;
         #[namespace = "taglib_shim"]
         fn FrameList_to_vector(
-            list: Pin<&CPPID3v2FrameList>,
+            list: &CPPID3v2FrameList,
         ) -> UniquePtr<CxxVector<CPPFramePointer>>;
 
         #[namespace = "taglib_shim"]
@@ -188,7 +188,7 @@ mod bridge_impl {
         type CPPID3v2TextIdentificationFrame;
         #[namespace = "taglib_shim"]
         fn TextIdentificationFrame_fieldList(
-            frame: Pin<&CPPID3v2TextIdentificationFrame>,
+            frame: &CPPID3v2TextIdentificationFrame,
         ) -> UniquePtr<CPPStringList>;
 
         #[namespace = "TagLib::ID3v2"]
@@ -196,7 +196,7 @@ mod bridge_impl {
         type CPPID3v2UserTextIdentificationFrame;
         #[namespace = "taglib_shim"]
         fn UserTextIdentificationFrame_fieldList(
-            frame: Pin<&CPPID3v2UserTextIdentificationFrame>,
+            frame: &CPPID3v2UserTextIdentificationFrame,
         ) -> UniquePtr<CPPStringList>;
 
         #[namespace = "TagLib::ID3v2"]
@@ -204,45 +204,45 @@ mod bridge_impl {
         type CPPID3v2AttachedPictureFrame;
         #[namespace = "taglib_shim"]
         fn AttachedPictureFrame_picture(
-            frame: Pin<&CPPID3v2AttachedPictureFrame>,
+            frame: &CPPID3v2AttachedPictureFrame,
         ) -> UniquePtr<CPPByteVector>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "String"]
         type CPPString;
-        fn toCString(self: Pin<&CPPString>, unicode: bool) -> *const c_char;
+        fn toCString(self: &CPPString, unicode: bool) -> *const c_char;
 
         #[namespace = "TagLib"]
         #[cxx_name = "StringList"]
         type CPPStringList;
         #[namespace = "taglib_shim"]
         fn StringList_to_vector(
-            string_list: Pin<&CPPStringList>,
+            string_list: &CPPStringList,
         ) -> UniquePtr<CxxVector<CPPString>>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "ByteVectorList"]
         type CPPByteVectorList;
         #[namespace = "taglib_shim"]
-        fn ByteVectorList_to_vector(list: Pin<&CPPByteVectorList>) -> UniquePtr<CxxVector<CPPByteVector>>;
+        fn ByteVectorList_to_vector(list: &CPPByteVectorList) -> UniquePtr<CxxVector<CPPByteVector>>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "ByteVector"]
         type CPPByteVector;
-        fn size(self: Pin<&CPPByteVector>) -> u32;
-        fn data(self: Pin<&CPPByteVector>) -> *const c_char;
+        fn size(self: &CPPByteVector) -> u32;
+        fn data(self: &CPPByteVector) -> *const c_char;
 
         #[namespace = "TagLib::ID3v1"]
         #[cxx_name = "Tag"]
         type CPPID3v1Tag;
 
-        fn ID3v1Tag_title(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
-        fn ID3v1Tag_artist(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
-        fn ID3v1Tag_album(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
-        fn ID3v1Tag_comment(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
-        fn ID3v1Tag_genreIndex(tag: Pin<&CPPID3v1Tag>) -> u32;
-        fn ID3v1Tag_year(tag: Pin<&CPPID3v1Tag>) -> u32;
-        fn ID3v1Tag_track(tag: Pin<&CPPID3v1Tag>) -> u32;
+        fn ID3v1Tag_title(tag: &CPPID3v1Tag) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_artist(tag: &CPPID3v1Tag) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_album(tag: &CPPID3v1Tag) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_comment(tag: &CPPID3v1Tag) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_genreIndex(tag: &CPPID3v1Tag) -> u32;
+        fn ID3v1Tag_year(tag: &CPPID3v1Tag) -> u32;
+        fn ID3v1Tag_track(tag: &CPPID3v1Tag) -> u32;
 
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "Tag"]
@@ -251,52 +251,52 @@ mod bridge_impl {
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "ItemMap"]
         type CPPItemMap;
-        fn itemMap<'slf, 'file_ref>(self: Pin<&'slf CPPMP4Tag>) -> &'file_ref CPPItemMap;
-        fn ItemMap_to_entries(map: Pin<&CPPItemMap>) -> UniquePtr<CxxVector<CPPItemMapEntry>>;
+        fn itemMap<'slf, 'file_ref>(self: &'slf CPPMP4Tag) -> &'file_ref CPPItemMap;
+        fn ItemMap_to_entries(map: &CPPItemMap) -> UniquePtr<CxxVector<CPPItemMapEntry>>;
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "ItemMapEntry"]
         type CPPItemMapEntry;
-        fn key<'slf, 'file_ref>(self: Pin<&'slf CPPItemMapEntry>) -> &'file_ref CPPString;
-        fn value<'slf, 'file_ref>(self: Pin<&'slf CPPItemMapEntry>) -> &'file_ref CPPMP4Item;
+        fn key<'slf, 'file_ref>(self: &'slf CPPItemMapEntry) -> &'file_ref CPPString;
+        fn value<'slf, 'file_ref>(self: &'slf CPPItemMapEntry) -> &'file_ref CPPMP4Item;
 
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "Item"]
         type CPPMP4Item;
-        fn isValid(self: Pin<&CPPMP4Item>) -> bool;
-        fn toBool(self: Pin<&CPPMP4Item>) -> bool;
-        fn toInt(self: Pin<&CPPMP4Item>) -> i32;
-        fn toByte(self: Pin<&CPPMP4Item>) -> u8;
-        fn toUInt(self: Pin<&CPPMP4Item>) -> u32;
+        fn isValid(self: &CPPMP4Item) -> bool;
+        fn toBool(self: &CPPMP4Item) -> bool;
+        fn toInt(self: &CPPMP4Item) -> i32;
+        fn toByte(self: &CPPMP4Item) -> u8;
+        fn toUInt(self: &CPPMP4Item) -> u32;
 
-        fn Item_type(item: Pin<&CPPMP4Item>) -> u32;
+        fn Item_type(item: &CPPMP4Item) -> u32;
         #[namespace = "taglib_shim"]
-        fn Item_toIntPair(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPIntPair>;
+        fn Item_toIntPair(item: &CPPMP4Item) -> UniquePtr<CPPIntPair>;
         #[namespace = "taglib_shim"]
-        fn Item_toStringList(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPStringList>;
+        fn Item_toStringList(item: &CPPMP4Item) -> UniquePtr<CPPStringList>;
         #[namespace = "taglib_shim"]
-        fn Item_toByteVectorList(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPByteVectorList>;
+        fn Item_toByteVectorList(item: &CPPMP4Item) -> UniquePtr<CPPByteVectorList>;
         #[namespace = "taglib_shim"]
-        fn Item_toCoverArtList(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPCoverArtList>;
+        fn Item_toCoverArtList(item: &CPPMP4Item) -> UniquePtr<CPPCoverArtList>;
         #[namespace = "taglib_shim"]
-        fn Item_toLongLong(item: Pin<&CPPMP4Item>) -> i64; 
+        fn Item_toLongLong(item: &CPPMP4Item) -> i64; 
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "IntPair"]
         type CPPIntPair;
-        fn first(self: Pin<&CPPIntPair>) -> i32;
-        fn second(self: Pin<&CPPIntPair>) -> i32;
+        fn first(self: &CPPIntPair) -> i32;
+        fn second(self: &CPPIntPair) -> i32;
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "CoverArtList"]
         type CPPCoverArtList;
-        fn to_vector(self: Pin<&CPPCoverArtList>) -> UniquePtr<CxxVector<CPPCoverArt>>;
+        fn to_vector(self: &CPPCoverArtList) -> UniquePtr<CxxVector<CPPCoverArt>>;
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "CoverArt"]
         type CPPCoverArt;
-        fn format(self: Pin<&CPPCoverArt>) -> u32;
-        fn data(self: Pin<&CPPCoverArt>) -> UniquePtr<CPPByteVector>;
+        fn format(self: &CPPCoverArt) -> u32;
+        fn data(self: &CPPCoverArt) -> UniquePtr<CPPByteVector>;
     }
 }
 

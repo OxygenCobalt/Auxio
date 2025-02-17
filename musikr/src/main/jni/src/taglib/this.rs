@@ -4,24 +4,12 @@ use cxx::{UniquePtr, memory::UniquePtrTarget};
 
 /// A taglib-FFI-specific trait representing a C++ object returned by the library.
 ///
-/// This trait is used to provide a temporary pin of the object for use in C++
-/// member function calls.
-///
 /// `This` instances must hold the following contract:
 /// - This object will remain valid as long as TagLib's FileRef object is valid,
 ///   and will be dropped when the FileRef is dropped.
 /// - This object will not move or be mutated over the FileRef's lifetime, this way
 ///   it can be temporarily pinned for use as a `this` pointer.
-pub trait This<'file_ref, T> {
-    /// Temporarily pin the object for use in C++ member function calls.
-    /// 
-    /// When C++ member functions are called, the object is temporarily pinned
-    /// as a `this` pointer. In turn, cxx requires a `Pin<&T>` to be used in it's
-    /// member function bindings, hence this method.
-    /// 
-    /// This is safe to call assuming the contract of `This` is upheld.
-    fn pin(&self) -> Pin<&T>;
-}
+pub trait This<'file_ref, T> : AsRef<T> {}
 
 /// A taglib-FFI-specific trait representing a C++ object returned by the library.
 ///
@@ -66,11 +54,13 @@ impl<'file_ref, T> RefThis<'file_ref, T> {
     }
 }
 
-impl<'file_ref, T> This<'file_ref, T> for RefThis<'file_ref, T> {
-    fn pin(&self) -> Pin<&T> {
-        unsafe { Pin::new_unchecked(self.this) }
+impl<'file_ref, T> AsRef<T> for RefThis<'file_ref, T> {
+    fn as_ref(&self) -> &T {
+        self.this
     }
 }
+
+impl<'file_ref, T> This<'file_ref, T> for RefThis<'file_ref, T> {}
 
 /// A [ThisMut] instance that is a reference to a C++ object.
 /// 
@@ -110,11 +100,13 @@ impl<'file_ref, T> RefThisMut<'file_ref, T> {
     }
 }
 
-impl<'file_ref, T> This<'file_ref, T> for RefThisMut<'file_ref, T> {
-    fn pin(&self) -> Pin<&T> {
-        unsafe { Pin::new_unchecked(self.this) }
+impl<'file_ref, T> AsRef<T> for RefThisMut<'file_ref, T> {
+    fn as_ref(&self) -> &T {
+        self.this
     }
 }
+
+impl<'file_ref, T> This<'file_ref, T> for RefThisMut<'file_ref, T> {}
 
 impl<'file_ref, T> ThisMut<'file_ref, T> for RefThisMut<'file_ref, T> {
     fn pin_mut(&mut self) -> Pin<&mut T> {
@@ -154,11 +146,13 @@ impl<'file_ref, T : UniquePtrTarget> OwnedThis<'file_ref, T> {
     }
 }
 
-impl<'file_ref, T : UniquePtrTarget> This<'file_ref, T> for OwnedThis<'file_ref, T> {
-    fn pin(&self) -> Pin<&T> {
-        unsafe { Pin::new_unchecked(self.this.as_ref().unwrap()) }
+impl<'file_ref, T : UniquePtrTarget> AsRef<T> for OwnedThis<'file_ref, T> {
+    fn as_ref(&self) -> &T {
+        self.this.as_ref().unwrap()
     }
 }
+
+impl<'file_ref, T : UniquePtrTarget> This<'file_ref, T> for OwnedThis<'file_ref, T> {}
 
 impl<'file_ref, T : UniquePtrTarget> ThisMut<'file_ref, T> for OwnedThis<'file_ref, T> {
     fn pin_mut(&mut self) -> Pin<&mut T> {

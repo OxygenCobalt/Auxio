@@ -45,7 +45,7 @@ impl<'file_ref> PictureList<'file_ref> {
     }
 
     pub fn to_vec(&self) -> Vec<Picture<'file_ref>> {
-        let pictures = PictureList_to_vector(self.this.pin());
+        let pictures = PictureList_to_vector(self.this.as_ref());
         let mut result = Vec::new();
         for picture_ptr in pictures.iter() {
             let picture_ptr = picture_ptr.get();
@@ -71,7 +71,7 @@ impl<'file_ref> Picture<'file_ref> {
     }
 
     pub fn data(&self) -> Option<OwnedByteVector<'file_ref>> {
-        let data = Picture_data(self.this.pin());
+        let data = Picture_data(self.this.as_ref());
         let this = unsafe { OwnedThis::new(data) };
         this.map(|this| ByteVector::new(this))
     }

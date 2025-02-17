@@ -18,7 +18,7 @@ impl<'file_ref> File<'file_ref> {
     }
 
     pub fn audio_properties(&self) -> Option<AudioProperties<'file_ref>> {
-        let props_ptr = self.this.pin().audioProperties();
+        let props_ptr = self.this.as_ref().audioProperties();
         let props_ref = unsafe {
             // SAFETY:
             // - This points to a C++ FFI type ensured to be aligned by cxx's codegen.

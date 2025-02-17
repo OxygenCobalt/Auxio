@@ -15,7 +15,7 @@ impl<'file_ref> MP4Tag<'file_ref> {
     }
 
     pub fn item_map(&self) -> ItemMap<'file_ref> {
-        let map: &'file_ref CPPItemMap = self.this.pin().itemMap();
+        let map: &'file_ref CPPItemMap = self.this.as_ref().itemMap();
         let map_this = unsafe { RefThis::new(map) };
         ItemMap::new(map_this)
     }
@@ -31,7 +31,7 @@ impl<'file_ref> ItemMap<'file_ref> {
     }
 
     pub fn to_hashmap(&self) -> HashMap<String, MP4Item<'file_ref>> {
-        let cxx_vec = ItemMap_to_entries(self.this.pin());
+        let cxx_vec = ItemMap_to_entries(self.this.as_ref());
         let vec: Vec<(String, MP4Item<'file_ref>)> =
         cxx_vec.iter()
             .map(|property| {
@@ -41,12 +41,11 @@ impl<'file_ref> ItemMap<'file_ref> {
                 //   not change address by C++ semantics.
                 // - The values returned are copied and thus not dependent on the address
                 //   of self.
-                let property_pin = unsafe { Pin::new_unchecked(property) };
-                let key_ref = property_pin.key();
+                let key_ref = property.key();
                 let key_this = unsafe { RefThis::new(key_ref) };
                 let key = tk::String::new(key_this).to_string();
                 
-                let value_ref = property_pin.value();
+                let value_ref = property.value();
                 let value_this = unsafe { RefThis::new(value_ref) };
                 let value = MP4Item::new(value_this);
                 
@@ -68,35 +67,35 @@ impl<'file_ref> MP4Item<'file_ref> {
     }
 
     pub fn data(&self) -> Option<MP4Data<'file_ref>> {
-        if !self.this.pin().isValid() {
+        if !self.this.as_ref().isValid() {
             return None;
         }
 
-        let item_type = MP4ItemType::from_u32(super::bridge::Item_type(self.this.pin()));
+        let item_type = MP4ItemType::from_u32(super::bridge::Item_type(self.this.as_ref()));
         item_type.and_then(|item_type| match item_type {
             MP4ItemType::Void => Some(MP4Data::Void),
-            MP4ItemType::Bool => Some(MP4Data::Bool(self.this.pin().toBool())),
-            MP4ItemType::Int => Some(MP4Data::Int(self.this.pin().toInt())),
+            MP4ItemType::Bool => Some(MP4Data::Bool(self.this.as_ref().toBool())),
+            MP4ItemType::Int => Some(MP4Data::Int(self.this.as_ref().toInt())),
             MP4ItemType::IntPair => {
-                let pair = super::bridge::Item_toIntPair(self.this.pin());
+                let pair = super::bridge::Item_toIntPair(self.this.as_ref());
                 let pair_this = unsafe { OwnedThis::new(pair) };
                 pair_this.map(|this| MP4Data::IntPair(IntPair::new(this)))
             },
-            MP4ItemType::Byte => Some(MP4Data::Byte(self.this.pin().toByte())),
-            MP4ItemType::UInt => Some(MP4Data::UInt(self.this.pin().toUInt())),
-            MP4ItemType::LongLong => Some(MP4Data::LongLong(super::bridge::Item_toLongLong(self.this.pin()))),
+            MP4ItemType::Byte => Some(MP4Data::Byte(self.this.as_ref().toByte())),
+            MP4ItemType::UInt => Some(MP4Data::UInt(self.this.as_ref().toUInt())),
+            MP4ItemType::LongLong => Some(MP4Data::LongLong(super::bridge::Item_toLongLong(self.this.as_ref()))),
             MP4ItemType::StringList => {
-                let string_list = super::bridge::Item_toStringList(self.this.pin());
+                let string_list = super::bridge::Item_toStringList(self.this.as_ref());
                 let string_list_this = unsafe { OwnedThis::new(string_list) };
                 string_list_this.map(|this| MP4Data::StringList(tk::StringList::new(this)))
             },
             MP4ItemType::ByteVectorList => {
-                let byte_vector_list = super::bridge::Item_toByteVectorList(self.this.pin());
+                let byte_vector_list = super::bridge::Item_toByteVectorList(self.this.as_ref());
                 let byte_vector_list_this = unsafe { OwnedThis::new(byte_vector_list) };
                 byte_vector_list_this.map(|this| MP4Data::ByteVectorList(tk::ByteVectorList::new(this)))
             },
             MP4ItemType::CoverArtList => {
-                let cover_art_list = super::bridge::Item_toCoverArtList(self.this.pin());
+                let cover_art_list = super::bridge::Item_toCoverArtList(self.this.as_ref());
                 let cover_art_list_this = unsafe { OwnedThis::new(cover_art_list) };
                 cover_art_list_this.map(|this| MP4Data::CoverArtList(CoverArtList::new(this)))
             }
@@ -114,13 +113,12 @@ impl<'file_ref> CoverArtList<'file_ref> {
     }
 
     pub fn to_vec(&self) -> Vec<CoverArt> {
-        let cover_arts = self.this.pin().to_vector();
+        let cover_arts = self.this.as_ref().to_vector();
         cover_arts
             .iter()
             .map(|ca| {
-                let ca_pin = unsafe { Pin::new_unchecked(ca) };
-                let format = CoverArtFormat::from_u32(ca_pin.format());
-                let data = ca_pin.data();
+                let format = CoverArtFormat::from_u32(ca.format());
+                let data = ca.data();
                 let data_this = unsafe { RefThis::new(&*data) };
                 let data = tk::ByteVector::new(data_this).to_vec();
                 CoverArt { format, data }
@@ -139,7 +137,7 @@ impl<'file_ref> IntPair<'file_ref> {
     }
 
     pub fn to_tuple(&self) -> Option<(i32, i32)> {
-        let this = self.this.pin();
+        let this = self.this.as_ref();
         let first = this.first();
         let second = this.second();
         Some((first, second))

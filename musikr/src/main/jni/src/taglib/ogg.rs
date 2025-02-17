@@ -13,7 +13,7 @@ impl<'file_ref> VorbisFile<'file_ref> {
     }
 
     pub fn xiph_comments(&self) -> Option<XiphComment<'file_ref>> {
-        let tag = self.this.pin().vorbisTag();
+        let tag = self.this.as_ref().vorbisTag();
         let tag_ref = unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
@@ -34,7 +34,7 @@ impl<'file_ref> OpusFile<'file_ref> {
     }
 
     pub fn xiph_comments(&self) -> Option<XiphComment<'file_ref>> {
-        let tag = self.this.pin().opusTag();
+        let tag = self.this.as_ref().opusTag();
         let tag_ref = unsafe {
             // SAFETY: This pointer is a valid type, and can only used and accessed
             // via this function and thus cannot be mutated, satisfying the aliasing rules.

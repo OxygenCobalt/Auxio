@@ -16,7 +16,7 @@ impl<'file_ref> XiphComment<'file_ref> {
     }
 
     pub fn field_list_map(&self) -> FieldListMap<'file_ref> {
-        let map: &'file_ref CPPFieldListMap = self.this.pin().fieldListMap();
+        let map: &'file_ref CPPFieldListMap = self.this.as_ref().fieldListMap();
         let map_this = unsafe { RefThis::new(map) };
         FieldListMap::new(map_this)
     }
@@ -40,7 +40,7 @@ impl<'file_ref> FieldListMap<'file_ref> {
 
 impl<'file_ref> FieldListMap<'file_ref> {
     pub fn to_hashmap(&self) -> HashMap<String, tk::RefStringList<'file_ref>> {
-        let cxx_vec = FieldListMap_to_entries(self.this.pin());
+        let cxx_vec = FieldListMap_to_entries(self.this.as_ref());
         cxx_vec
             .iter()
             .map(|property| {
@@ -50,11 +50,10 @@ impl<'file_ref> FieldListMap<'file_ref> {
                 //   not change address by C++ semantics.
                 // - The values returned are copied and thus not dependent on the address
                 //   of self.
-                let property_pin = unsafe { Pin::new_unchecked(property) };
-                let key_ref = property_pin.key();
+                let key_ref = property.key();
                 let key_this = unsafe { RefThis::new(key_ref) };
                 let key = tk::String::new(key_this).to_string();
-                let value_ref = property_pin.value();
+                let value_ref = property.value();
                 let value_this = unsafe { RefThis::new(value_ref) };
                 let value = tk::StringList::new(value_this);
                 (key, value)
