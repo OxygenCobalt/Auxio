@@ -2,7 +2,7 @@ use super::bridge::{
     self, CPPID3v2AttachedPictureFrame, CPPID3v2Frame, CPPID3v2FrameList, CPPID3v2Tag,
     CPPID3v2TextIdentificationFrame, CPPID3v2UserTextIdentificationFrame, CPPStringList, CPPByteVector,
 };
-use super::tk::{ByteVector, StringList, OwnedByteVector, OwnedStringList};
+use super::tk::{self, ByteVector, StringList, OwnedByteVector, OwnedStringList};
 use super::this::{OwnedThis, RefThisMut, RefThis, This};
 
 pub struct ID3v2Tag<'file_ref> {
@@ -51,6 +51,12 @@ pub struct Frame<'file_ref> {
 impl<'file_ref> Frame<'file_ref> {
     pub(super) fn new(this: RefThis<'file_ref, CPPID3v2Frame>) -> Self {
         Self { this }
+    }
+
+    pub fn id(&self) -> tk::OwnedByteVector<'file_ref> {
+        let id = bridge::Frame_id(self.this.as_ref());
+        let this = unsafe { OwnedThis::new(id).unwrap() };
+        ByteVector::new(this)
     }
 
     pub fn as_text_identification(&mut self) -> Option<TextIdentificationFrame<'file_ref>> {

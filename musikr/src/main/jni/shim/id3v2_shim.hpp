@@ -20,6 +20,7 @@ namespace taglib_shim {
     std::unique_ptr<std::vector<FramePointer>> FrameList_to_vector(const TagLib::ID3v2::FrameList& list);
 
     // Frame type checking and casting
+    std::unique_ptr<TagLib::ByteVector> Frame_id(const TagLib::ID3v2::Frame &frame);
     const TagLib::ID3v2::TextIdentificationFrame* Frame_asTextIdentification(const TagLib::ID3v2::Frame* frame);
     const TagLib::ID3v2::UserTextIdentificationFrame* Frame_asUserTextIdentification(const TagLib::ID3v2::Frame* frame);
     const TagLib::ID3v2::AttachedPictureFrame* Frame_asAttachedPicture(const TagLib::ID3v2::Frame* frame);

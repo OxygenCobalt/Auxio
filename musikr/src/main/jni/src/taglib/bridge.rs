@@ -171,6 +171,8 @@ mod bridge_impl {
         #[cxx_name = "Frame"]
         type CPPID3v2Frame;
         #[namespace = "taglib_shim"]
+        fn Frame_id(frame: &CPPID3v2Frame) -> UniquePtr<CPPByteVector>;
+        #[namespace = "taglib_shim"]
         unsafe fn Frame_asTextIdentification(
             frame: *const CPPID3v2Frame,
         ) -> *const CPPID3v2TextIdentificationFrame;

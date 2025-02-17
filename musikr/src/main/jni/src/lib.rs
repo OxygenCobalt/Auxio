@@ -6,9 +6,12 @@ use std::rc::Rc;
 
 mod jstream;
 mod taglib;
+mod tagmap;
+mod jbuilder;
 
 use jstream::JInputStream;
 use taglib::file_ref::FileRef;
+use jbuilder::JMetadataBuilder;
 
 type SharedEnv<'local> = Rc<RefCell<JNIEnv<'local>>>;
 

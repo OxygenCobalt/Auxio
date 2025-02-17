@@ -25,6 +25,10 @@ namespace taglib_shim {
         return dynamic_cast<const TagLib::ID3v2::AttachedPictureFrame*>(frame);
     }
 
+    std::unique_ptr<TagLib::ByteVector> Frame_id(const TagLib::ID3v2::Frame& frame) {
+        return std::make_unique<TagLib::ByteVector>(frame.frameID());
+    }
+
     std::unique_ptr<TagLib::ByteVector> AttachedPictureFrame_picture(const TagLib::ID3v2::AttachedPictureFrame& frame) {
         return std::make_unique<TagLib::ByteVector>(frame.picture());
     }

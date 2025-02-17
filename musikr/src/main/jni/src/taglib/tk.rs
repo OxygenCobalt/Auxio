@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 use std::pin::Pin;
 use std::{ffi::CStr, string::ToString};
 
-pub(super) struct String<'file_ref, T: This<'file_ref, CPPString>> {
+pub struct String<'file_ref, T: This<'file_ref, CPPString>> {
     _data: PhantomData<&'file_ref ()>,
     this: T,
 }
@@ -39,7 +39,7 @@ impl<'file_ref, T: This<'file_ref, CPPString>> ToString for String<'file_ref, T>
 pub type OwnedString<'file_ref> = String<'file_ref, OwnedThis<'file_ref, CPPString>>;
 pub type RefString<'file_ref> = String<'file_ref, RefThis<'file_ref, CPPString>>;
 pub type RefStringMut<'file_ref> = String<'file_ref, RefThisMut<'file_ref, CPPString>>;
-pub(super) struct StringList<'file_ref, T: This<'file_ref, CPPStringList>> {
+pub struct StringList<'file_ref, T: This<'file_ref, CPPStringList>> {
     _data: PhantomData<&'file_ref ()>,
     this: T,
 }
@@ -88,6 +88,15 @@ impl<'file_ref, T: This<'file_ref, CPPByteVector>> ByteVector<'file_ref, T> {
             // - the source data won't be modified while we're reading from it
             std::slice::from_raw_parts(data, size).to_vec()
         }
+    }
+
+    pub fn to_string_lossy(&self) -> std::string::String {
+        let this = self.this.as_ref();
+        let size = this.size().try_into().unwrap();
+        let data = this.data();
+        let data: *const u8 = data as *const u8;
+        let slice = unsafe { std::slice::from_raw_parts(data, size) };
+        std::string::String::from_utf8_lossy(slice).to_string()
     }
 }
 

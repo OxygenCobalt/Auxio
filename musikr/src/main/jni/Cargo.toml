@@ -8,6 +8,7 @@ name = "metadatajni"
 crate-type = ["cdylib"]
 
 [dependencies]
+bytemuck = "1.21.0"
 cxx = "1.0.137"
 jni = "0.21.1"
 
