@@ -14,7 +14,7 @@ impl<'file_ref> MP4Tag<'file_ref> {
         Self { this }
     }
 
-    pub fn item_map<'slf>(&'slf self) -> ItemMap<'file_ref> {
+    pub fn item_map(&self) -> ItemMap<'file_ref> {
         let map: &'file_ref CPPItemMap = self.this.pin().itemMap();
         let map_this = unsafe { RefThis::new(map) };
         ItemMap::new(map_this)

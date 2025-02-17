@@ -15,7 +15,7 @@ impl<'file_ref> XiphComment<'file_ref> {
         Self { this }
     }
 
-    pub fn field_list_map<'slf>(&'slf self) -> FieldListMap<'file_ref> {
+    pub fn field_list_map(&self) -> FieldListMap<'file_ref> {
         let map: &'file_ref CPPFieldListMap = self.this.pin().fieldListMap();
         let map_this = unsafe { RefThis::new(map) };
         FieldListMap::new(map_this)
