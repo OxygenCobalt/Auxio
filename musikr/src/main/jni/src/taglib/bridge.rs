@@ -145,8 +145,8 @@ mod bridge_impl {
         #[namespace = "taglib_shim"]
         #[cxx_name = "FieldListEntry"]
         type CPPFieldListEntry;
-        fn key(self: Pin<&CPPFieldListEntry>) -> &CPPString;
-        fn value(self: Pin<&CPPFieldListEntry>) -> &CPPStringList;
+        fn key<'slf, 'file_ref>(self: Pin<&'slf CPPFieldListEntry>) -> &'file_ref CPPString;
+        fn value<'slf, 'file_ref>(self: Pin<&'slf CPPFieldListEntry>) -> &'file_ref CPPStringList;
 
         #[namespace = "TagLib::ID3v2"]
         #[cxx_name = "Tag"]

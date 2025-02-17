@@ -39,7 +39,7 @@ impl<'file_ref> FieldListMap<'file_ref> {
 }
 
 impl<'file_ref> FieldListMap<'file_ref> {
-    pub fn to_hashmap(&self) -> HashMap<String, Vec<String>> {
+    pub fn to_hashmap(&self) -> HashMap<String, tk::RefStringList<'file_ref>> {
         let cxx_vec = FieldListMap_to_entries(self.this.pin());
         cxx_vec
             .iter()
@@ -56,7 +56,7 @@ impl<'file_ref> FieldListMap<'file_ref> {
                 let key = tk::String::new(key_this).to_string();
                 let value_ref = property_pin.value();
                 let value_this = unsafe { RefThis::new(value_ref) };
-                let value = tk::StringList::new(value_this).to_vec();
+                let value = tk::StringList::new(value_this);
                 (key, value)
             })
             .collect()

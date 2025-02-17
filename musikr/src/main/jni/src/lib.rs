@@ -22,34 +22,6 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     let shared_env = Rc::new(RefCell::new(env));
     let mut stream = JInputStream::new(shared_env.clone(), input);
     let file_ref = FileRef::new(stream);
-    let title = file_ref.file().and_then(|mut file| {
-        let audio_properties = file.audio_properties();
-
-        if let Some(vorbis_file) = file.as_vorbis() {
-            vorbis_file
-                .xiph_comments()
-                .map(|comments| comments.field_list_map().to_hashmap())
-                .and_then(|comments| comments.get("TITLE").cloned())
-                .and_then(|title| title.first().cloned())
-                .map(|s| s.to_string())
-        } else if let Some(opus_file) = file.as_opus() {
-            opus_file
-                .xiph_comments()
-                .map(|comments| comments.field_list_map().to_hashmap())
-                .and_then(|comments| comments.get("TITLE").cloned())
-                .and_then(|title| title.first().cloned())
-                .map(|s| s.to_string())
-        } else if let Some(mut flac_file) = file.as_flac() {
-            flac_file
-                .xiph_comments()
-                .map(|comments| comments.field_list_map().to_hashmap())
-                .and_then(|comments| comments.get("TITLE").cloned())
-                .and_then(|title| title.first().cloned())
-                .map(|s| s.to_string())
-        } else {
-            None
-        }
-    });
 
     // Return the title
     let output = shared_env
