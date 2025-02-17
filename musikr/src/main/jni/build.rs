@@ -121,7 +121,8 @@ fn main() {
         .file("shim/tk_shim.cpp")
         .file("shim/picture_shim.cpp")
         .file("shim/xiph_shim.cpp")
-        .file("shim/id3_shim.cpp")
+        .file("shim/id3v1_shim.cpp")
+        .file("shim/id3v2_shim.cpp")
         .include(format!("taglib/pkg/{}/include", target))
         .include(".") // Add the current directory to include path
         .flag_if_supported("-std=c++14");

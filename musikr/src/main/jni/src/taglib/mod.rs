@@ -1,13 +1,13 @@
 mod bridge;
-
-pub mod audioproperties;
-pub mod file;
-pub mod file_ref;
-pub mod flac;
-pub mod id3v2;
+mod this;
 pub mod iostream;
-pub mod mpeg;
+pub mod file_ref;
+pub mod file;
+pub mod audioproperties;
 pub mod ogg;
-pub mod tk;
+pub mod mpeg;
+pub mod flac;
 pub mod xiph;
-pub mod this;
+pub mod tk;
+pub mod id3v2;
+pub mod id3v1;

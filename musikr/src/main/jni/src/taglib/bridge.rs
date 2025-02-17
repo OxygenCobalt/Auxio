@@ -32,7 +32,8 @@ mod bridge_impl {
         include!("shim/tk_shim.hpp");
         include!("shim/picture_shim.hpp");
         include!("shim/xiph_shim.hpp");
-        include!("shim/id3_shim.hpp");
+        include!("shim/id3v2_shim.hpp");
+        include!("shim/id3v1_shim.hpp");
         include!("taglib/mpegfile.h");
 
         #[namespace = "TagLib"]
@@ -234,6 +235,18 @@ mod bridge_impl {
         type CPPByteVector;
         fn size(self: Pin<&CPPByteVector>) -> u32;
         fn data(self: Pin<&CPPByteVector>) -> *const c_char;
+
+        #[namespace = "TagLib::ID3v1"]
+        #[cxx_name = "Tag"]
+        type CPPID3v1Tag;
+
+        fn ID3v1Tag_title(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_artist(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_album(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_comment(tag: Pin<&CPPID3v1Tag>) -> UniquePtr<CPPString>;
+        fn ID3v1Tag_genreIndex(tag: Pin<&CPPID3v1Tag>) -> u32;
+        fn ID3v1Tag_year(tag: Pin<&CPPID3v1Tag>) -> u32;
+        fn ID3v1Tag_track(tag: Pin<&CPPID3v1Tag>) -> u32;
     }
 }
 
