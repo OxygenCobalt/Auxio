@@ -30,4 +30,6 @@ namespace taglib_shim
 
     std::unique_ptr<std::vector<Property>> SimplePropertyMap_to_vector(const TagLib::SimplePropertyMap &map);
     std::unique_ptr<std::vector<TagLib::String>> StringList_to_vector(const TagLib::StringList &list);
+
+    std::unique_ptr<std::vector<TagLib::ByteVector>> ByteVectorList_to_vector(const TagLib::ByteVectorList &list);
 }

@@ -32,4 +32,14 @@ namespace taglib_shim
         }
         return result;
     }
+
+    std::unique_ptr<std::vector<TagLib::ByteVector>> ByteVectorList_to_vector(const TagLib::ByteVectorList &list)
+    {
+        std::unique_ptr<std::vector<TagLib::ByteVector>> result = std::make_unique<std::vector<TagLib::ByteVector>>();
+        for (const auto &vec : list)
+        {
+            result->push_back(vec);
+        }
+        return result;
+    }
 }

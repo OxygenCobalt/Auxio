@@ -221,6 +221,12 @@ mod bridge_impl {
         ) -> UniquePtr<CxxVector<CPPString>>;
 
         #[namespace = "TagLib"]
+        #[cxx_name = "ByteVectorList"]
+        type CPPByteVectorList;
+        #[namespace = "taglib_shim"]
+        fn ByteVectorList_to_vector(list: Pin<&CPPByteVectorList>) -> UniquePtr<CxxVector<CPPByteVector>>;
+
+        #[namespace = "TagLib"]
         #[cxx_name = "ByteVector"]
         type CPPByteVector;
         fn size(self: Pin<&CPPByteVector>) -> u32;
@@ -251,13 +257,78 @@ mod bridge_impl {
         #[namespace = "taglib_shim"]
         #[cxx_name = "ItemMapEntry"]
         type CPPItemMapEntry;
-        fn key(self: Pin<&CPPItemMapEntry>) -> &CPPString;
-        fn value(self: Pin<&CPPItemMapEntry>) -> &CPPMP4Item;
+        fn key<'slf, 'file_ref>(self: Pin<&'slf CPPItemMapEntry>) -> &'file_ref CPPString;
+        fn value<'slf, 'file_ref>(self: Pin<&'slf CPPItemMapEntry>) -> &'file_ref CPPMP4Item;
 
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "Item"]
         type CPPMP4Item;
+        fn isValid(self: Pin<&CPPMP4Item>) -> bool;
+        fn toBool(self: Pin<&CPPMP4Item>) -> bool;
+        fn toInt(self: Pin<&CPPMP4Item>) -> i32;
+        fn toByte(self: Pin<&CPPMP4Item>) -> u8;
+        fn toUInt(self: Pin<&CPPMP4Item>) -> u32;
 
+        fn Item_type(item: Pin<&CPPMP4Item>) -> u32;
+        #[namespace = "taglib_shim"]
+        fn Item_toIntPair(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPIntPair>;
+        #[namespace = "taglib_shim"]
+        fn Item_toStringList(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPStringList>;
+        #[namespace = "taglib_shim"]
+        fn Item_toByteVectorList(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPByteVectorList>;
+        #[namespace = "taglib_shim"]
+        fn Item_toCoverArtList(item: Pin<&CPPMP4Item>) -> UniquePtr<CPPCoverArtList>;
+        #[namespace = "taglib_shim"]
+        fn Item_toLongLong(item: Pin<&CPPMP4Item>) -> i64; 
+
+        #[namespace = "taglib_shim"]
+        #[cxx_name = "IntPair"]
+        type CPPIntPair;
+        fn first(self: Pin<&CPPIntPair>) -> i32;
+        fn second(self: Pin<&CPPIntPair>) -> i32;
+
+        #[namespace = "taglib_shim"]
+        #[cxx_name = "CoverArtList"]
+        type CPPCoverArtList;
+        fn to_vector(self: Pin<&CPPCoverArtList>) -> UniquePtr<CxxVector<CPPCoverArt>>;
+
+        #[namespace = "taglib_shim"]
+        #[cxx_name = "CoverArt"]
+        type CPPCoverArt;
+        fn format(self: Pin<&CPPCoverArt>) -> u32;
+        fn data(self: Pin<&CPPCoverArt>) -> UniquePtr<CPPByteVector>;
+    }
+}
+
+#[repr(u8)]
+pub enum MP4ItemType {
+    Void,
+    Bool,
+    Int,
+    IntPair,
+    Byte,
+    UInt,
+    LongLong,
+    StringList,
+    ByteVectorList,
+    CoverArtList,
+}
+
+impl MP4ItemType {
+    pub fn from_u32(value: u32) -> Option<Self> {
+        match value {
+            0 => Some(Self::Void),
+            1 => Some(Self::Bool),
+            2 => Some(Self::Int),
+            3 => Some(Self::IntPair),
+            4 => Some(Self::Byte),
+            5 => Some(Self::UInt),
+            6 => Some(Self::LongLong),
+            7 => Some(Self::StringList),
+            8 => Some(Self::ByteVectorList),
+            9 => Some(Self::CoverArtList),
+            _ => None,
+        }
     }
 }
 

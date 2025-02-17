@@ -54,7 +54,6 @@ impl<'io_stream> DynIOStream<'io_stream> {
     pub fn write(&mut self, data: &[u8]) {
         self.0.write_all(data).unwrap();
     }
-
     pub fn seek(&mut self, offset: i64, whence: i32) {
         let pos = match whence {
             0 => SeekFrom::Start(offset as u64),

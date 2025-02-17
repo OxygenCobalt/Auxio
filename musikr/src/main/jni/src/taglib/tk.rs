@@ -1,4 +1,4 @@
-use super::bridge::{self, CPPByteVector, CPPString, CPPStringList};
+use super::bridge::{self, CPPByteVector, CPPByteVectorList, CPPString, CPPStringList};
 use super::this::{RefThis, RefThisMut, This, OwnedThis};
 use cxx::{memory::UniquePtrTarget, UniquePtr};
 use std::marker::PhantomData;
@@ -94,3 +94,27 @@ impl<'file_ref, T: This<'file_ref, CPPByteVector>> ByteVector<'file_ref, T> {
 pub type OwnedByteVector<'file_ref> = ByteVector<'file_ref, OwnedThis<'file_ref, CPPByteVector>>;
 pub type RefByteVector<'file_ref> = ByteVector<'file_ref, RefThis<'file_ref, CPPByteVector>>;
 pub type RefByteVectorMut<'file_ref> = ByteVector<'file_ref, RefThisMut<'file_ref, CPPByteVector>>;
+
+pub struct ByteVectorList<'file_ref, T: This<'file_ref, CPPByteVectorList>> {
+    _data: PhantomData<&'file_ref CPPByteVectorList>,
+    this: T,
+}
+
+impl<'file_ref, T: This<'file_ref, CPPByteVectorList>> ByteVectorList<'file_ref, T> {
+    pub(super) fn new(this: T) -> Self {
+        Self { _data: PhantomData, this }
+    }
+
+    pub fn to_vec(&self) -> Vec<Vec<u8>> {
+        let cxx_values = bridge::ByteVectorList_to_vector(self.this.pin());
+        cxx_values
+            .iter()
+            .map(|value| ByteVector::new(unsafe { RefThis::new(value) }).to_vec())
+            .collect()
+    }
+}
+
+pub type OwnedByteVectorList<'file_ref> = ByteVectorList<'file_ref, OwnedThis<'file_ref, CPPByteVectorList>>;
+pub type RefByteVectorList<'file_ref> = ByteVectorList<'file_ref, RefThis<'file_ref, CPPByteVectorList>>;
+pub type RefByteVectorListMut<'file_ref> = ByteVectorList<'file_ref, RefThisMut<'file_ref, CPPByteVectorList>>;
+
