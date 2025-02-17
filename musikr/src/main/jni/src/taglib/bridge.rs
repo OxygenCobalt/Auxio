@@ -92,6 +92,8 @@ mod bridge_impl {
         #[cxx_name = "File"]
         type CPPFLACFile;
         fn xiphComment(self: Pin<&mut CPPFLACFile>, create: bool) -> *mut CPPXiphComment;
+        #[cxx_name = "ID3v2Tag"]
+        fn FLACID3v2Tag(self: Pin<&mut CPPFLACFile>, create: bool) -> *mut CPPID3v2Tag;
         #[namespace = "taglib_shim"]
         fn FLACFile_pictureList(file: Pin<&mut CPPFLACFile>) -> UniquePtr<CPPPictureList>;
 
@@ -111,7 +113,8 @@ mod bridge_impl {
         #[namespace = "TagLib::MPEG"]
         #[cxx_name = "File"]
         type CPPMPEGFile;
-        fn ID3v2Tag(self: Pin<&mut CPPMPEGFile>, create: bool) -> *mut CPPID3v2Tag;
+        #[cxx_name = "ID3v2Tag"]
+        fn MPEGID3v2Tag(self: Pin<&mut CPPMPEGFile>, create: bool) -> *mut CPPID3v2Tag;
 
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "File"]

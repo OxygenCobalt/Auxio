@@ -25,6 +25,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
     let shared_env = Rc::new(RefCell::new(env));
     let mut stream = JInputStream::new(shared_env.clone(), input);
     let file_ref = FileRef::new(stream);
+    
 
     // Return the title
     let output = shared_env
