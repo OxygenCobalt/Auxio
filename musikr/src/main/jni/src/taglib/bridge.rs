@@ -138,8 +138,10 @@ mod bridge_impl {
         #[namespace = "TagLib::Ogg"]
         #[cxx_name = "XiphComment"]
         type CPPXiphComment;
+        // Explicit lifecycle definition to state while the Pin is temporary, the CPPFieldListMap
+        // ref returned actually has the same lifetime as the CPPXiphComment.
         #[cxx_name = "fieldListMap"]
-        fn fieldListMap(self: Pin<&CPPXiphComment>) -> &CPPFieldListMap;
+        fn fieldListMap<'slf, 'file_ref>(self: Pin<&'slf CPPXiphComment>) -> &'file_ref CPPFieldListMap;
 
         #[namespace = "TagLib"]
         #[cxx_name = "SimplePropertyMap"]

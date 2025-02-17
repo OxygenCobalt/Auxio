@@ -16,12 +16,9 @@ impl<'file_ref> XiphComment<'file_ref> {
     }
 
     pub fn field_list_map<'slf>(&'slf self) -> FieldListMap<'file_ref> {
-        let map: &'slf CPPFieldListMap = self.this.pin().fieldListMap();
-        // CPPFieldListMap exists for as long as the XiphComment, so we can transmute it
-        // to the file_ref lifetime.
-        let extended_map: &'file_ref CPPFieldListMap = unsafe { std::mem::transmute(map) };
-        let map_pin = unsafe { Pin::new_unchecked(extended_map) };
-        FieldListMap::new(map_pin)
+        let map: &'file_ref CPPFieldListMap = self.this.pin().fieldListMap();
+        let map_this = unsafe { RefThis::new(map) };
+        FieldListMap::new(map_this)
     }
 
     pub fn picture_list(&mut self) -> Option<PictureList<'file_ref>> {
@@ -32,18 +29,18 @@ impl<'file_ref> XiphComment<'file_ref> {
 }
 
 pub struct FieldListMap<'file_ref> {
-    this: Pin<&'file_ref CPPFieldListMap>,
+    this: RefThis<'file_ref, CPPFieldListMap>,
 }
 
 impl<'file_ref> FieldListMap<'file_ref> {
-    pub fn new(this: Pin<&'file_ref CPPFieldListMap>) -> Self {
+    pub fn new(this: RefThis<'file_ref, CPPFieldListMap>) -> Self {
         Self { this }
     }
 }
 
 impl<'file_ref> FieldListMap<'file_ref> {
     pub fn to_hashmap(&self) -> HashMap<String, Vec<String>> {
-        let cxx_vec = FieldListMap_to_entries(self.this);
+        let cxx_vec = FieldListMap_to_entries(self.this.pin());
         cxx_vec
             .iter()
             .map(|property| {
