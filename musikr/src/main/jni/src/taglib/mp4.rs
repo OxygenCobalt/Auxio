@@ -1,16 +1,37 @@
 pub use super::bridge::CPPMP4Tag;
-use super::bridge::{CPPItemMap, ItemMap_to_entries, CPPItemMapEntry, CPPMP4Item, MP4ItemType, CPPIntPair};
+use super::bridge::{CPPFile, CPPIntPair, CPPItemMap, CPPItemMapEntry, CPPMP4File, CPPMP4Item, ItemMap_to_entries, MP4ItemType};
 use super::tk;
 use super::this::{OwnedThis, RefThis, RefThisMut, ThisMut, This};
 use std::collections::HashMap;
 use std::pin::Pin;
 
+pub struct MP4File<'file_ref> {
+    this: RefThisMut<'file_ref, CPPMP4File>,
+}
+
+impl<'file_ref> MP4File<'file_ref> {
+    pub fn new(this: RefThisMut<'file_ref, CPPMP4File>) -> Self {
+        Self { this }
+    }
+
+    pub fn tag(&self) -> Option<MP4Tag<'file_ref>> {
+        let this = self.this.as_ref();
+        let tag = unsafe { this.MP4Tag() };
+        let tag_ref = unsafe { tag.as_ref() };
+        tag_ref.map(|tag| {
+            // SAFETY: The tag pointer is guaranteed to be valid for the lifetime of self
+            let tag_this = unsafe { RefThis::new(tag) };
+            MP4Tag::new(tag_this)
+        })
+    }
+}
+
 pub struct MP4Tag<'file_ref> {
-    this: RefThisMut<'file_ref, CPPMP4Tag>,
+    this: RefThis<'file_ref, CPPMP4Tag>,
 }
 
 impl<'file_ref> MP4Tag<'file_ref> {
-    pub fn new(this: RefThisMut<'file_ref, CPPMP4Tag>) -> Self {
+    pub fn new(this: RefThis<'file_ref, CPPMP4Tag>) -> Self {
         Self { this }
     }
 

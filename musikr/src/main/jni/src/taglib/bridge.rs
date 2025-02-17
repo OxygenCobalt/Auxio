@@ -27,6 +27,9 @@ mod bridge_impl {
         include!("taglib/tiostream.h");
         include!("taglib/flacpicture.h");
         include!("taglib/tbytevector.h");
+        include!("taglib/mp4file.h");
+        include!("taglib/mp4tag.h");
+        include!("taglib/mp4item.h");
         include!("shim/iostream_shim.hpp");
         include!("shim/file_shim.hpp");
         include!("shim/tk_shim.hpp");
@@ -123,6 +126,8 @@ mod bridge_impl {
         #[namespace = "TagLib::MP4"]
         #[cxx_name = "File"]
         type CPPMP4File;
+        #[cxx_name = "tag"]
+        fn MP4Tag(self: &CPPMP4File) -> *mut CPPMP4Tag;
 
         #[namespace = "TagLib::RIFF::WAV"]
         #[cxx_name = "File"]

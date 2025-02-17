@@ -2,6 +2,7 @@ use super::audioproperties::AudioProperties;
 use super::bridge::{self, CPPFile, CPPMPEGFile};
 use super::flac::FLACFile;
 use super::id3v2::ID3v2Tag;
+use super::mp4::MP4File;
 use super::mpeg::MPEGFile;
 use super::ogg::OpusFile;
 use super::ogg::VorbisFile;
@@ -38,7 +39,7 @@ impl<'file_ref> File<'file_ref> {
             // This FFI function will be a simple C++ dynamic_cast, which checks if
             // the file can be cased down to an opus file. If the cast fails, a null
             // pointer is returned, which will be handled by as_ref's null checking.
-            bridge::File_asOpus(self.this.ptr_mut() as *mut CPPFile)
+            bridge::File_asOpus(self.this.ptr_mut())
         };
         let opus_ref = unsafe {
             // SAFETY:
@@ -59,7 +60,7 @@ impl<'file_ref> File<'file_ref> {
             // This FFI function will be a simple C++ dynamic_cast, which checks if
             // the file can be cased down to an opus file. If the cast fails, a null
             // pointer is returned, which will be handled by as_ref's null checking.
-            bridge::File_asVorbis(self.this.ptr_mut() as *mut CPPFile)
+            bridge::File_asVorbis(self.this.ptr_mut())
         };
         let vorbis_ref = unsafe {
             // SAFETY:
@@ -80,7 +81,7 @@ impl<'file_ref> File<'file_ref> {
             // This FFI function will be a simple C++ dynamic_cast, which checks if
             // the file can be cased down to an opus file. If the cast fails, a null
             // pointer is returned, which will be handled by as_ref's null checking.
-            bridge::File_asFLAC(self.this.ptr_mut() as *mut CPPFile)
+            bridge::File_asFLAC(self.this.ptr_mut())
         };
         let flac_ref = unsafe {
             // SAFETY:
@@ -101,7 +102,7 @@ impl<'file_ref> File<'file_ref> {
             // This FFI function will be a simple C++ dynamic_cast, which checks if
             // the file can be cased down to an MPEG file. If the cast fails, a null
             // pointer is returned, which will be handled by as_ref's null checking.
-            bridge::File_asMPEG(self.this.ptr_mut() as *mut CPPFile)
+            bridge::File_asMPEG(self.this.ptr_mut())
         };
         let mpeg_ref = unsafe {
             // SAFETY:
@@ -115,4 +116,14 @@ impl<'file_ref> File<'file_ref> {
         let mpeg_this = mpeg_ref.map(|mpeg| unsafe { RefThisMut::new(mpeg) });
         mpeg_this.map(|this| MPEGFile::new(this))
     }
+
+    pub fn as_mp4(&mut self) -> Option<MP4File<'file_ref>> {
+        let mp4_file = unsafe {
+            bridge::File_asMP4(self.this.ptr_mut())
+        };
+        let mp4_ref = unsafe { mp4_file.as_mut() };
+        let mp4_this = mp4_ref.map(|mp4| unsafe { RefThisMut::new(mp4) });
+        mp4_this.map(|this| MP4File::new(this))
+    }
+    
 }

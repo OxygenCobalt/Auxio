@@ -1,5 +1,5 @@
-pub mod bridge;
-pub mod this;
+mod bridge;
+mod this;
 pub mod iostream;
 pub mod file_ref;
 pub mod file;
