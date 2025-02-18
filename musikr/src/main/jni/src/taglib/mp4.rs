@@ -1,7 +1,6 @@
 pub use super::bridge::CPPMP4Tag;
 use super::bridge::{
-    CPPIntPair, CPPItemMap, CPPMP4File, CPPMP4Item, ItemMap_to_entries,
-    MP4ItemType,
+    CPPIntPair, CPPItemMap, CPPMP4File, CPPMP4Item, ItemMap_to_entries, MP4ItemType,
 };
 use super::this::{OwnedThis, RefThis, RefThisMut};
 use super::tk;
@@ -148,7 +147,7 @@ impl<'file_ref> CoverArtList<'file_ref> {
             .map(|ca| {
                 let format = CoverArtFormat::from_u32(ca.format());
                 let data = ca.data();
-                let data_this = unsafe { RefThis::new(&*data) };
+                let data_this = RefThis::new(&*data);
                 let data = tk::ByteVector::new(data_this).to_vec();
                 CoverArt { format, data }
             })
@@ -193,10 +192,6 @@ pub struct CoverArt {
 }
 
 impl CoverArt {
-    pub fn new(format: CoverArtFormat, data: Vec<u8>) -> Self {
-        Self { format, data }
-    }
-
     pub fn format(&self) -> CoverArtFormat {
         self.format
     }

@@ -33,6 +33,10 @@ namespace taglib_shim {
         return std::make_unique<TagLib::ByteVector>(frame.picture());
     }
 
+    uint32_t AttachedPictureFrame_type(const TagLib::ID3v2::AttachedPictureFrame& frame) {
+        return static_cast<uint32_t>(frame.type());
+    }
+
     std::unique_ptr<TagLib::StringList> TextIdentificationFrame_fieldList(const TagLib::ID3v2::TextIdentificationFrame& frame) {
         return std::make_unique<TagLib::StringList>(frame.fieldList());
     }

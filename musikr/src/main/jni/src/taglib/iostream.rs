@@ -1,6 +1,6 @@
 use super::bridge::{self, CPPIOStream};
 use cxx::UniquePtr;
-use std::io::{Seek, SeekFrom};
+use std::io::SeekFrom;
 
 pub trait IOStream {
     fn read_block(&mut self, buffer: &mut [u8]) -> usize;

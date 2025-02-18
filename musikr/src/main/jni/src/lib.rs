@@ -34,21 +34,28 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
             }
             if let Some(vorbis) = file.as_vorbis() {
                 jbuilder.set_mime_type("audio/ogg");
-                if let Some(tag) = vorbis.xiph_comments() {
-                    jbuilder.set_xiph(&tag);
+                if let Some(mut tag) = vorbis.xiph_comments() {
+                    jbuilder.set_xiph(&mut tag);
                 }
             }
             if let Some(opus) = file.as_opus() {
                 jbuilder.set_mime_type("audio/opus");
-                if let Some(tag) = opus.xiph_comments() {
-                    jbuilder.set_xiph(&tag);
+                if let Some(mut tag) = opus.xiph_comments() {
+                    jbuilder.set_xiph(&mut tag);
                 }
             }
             if let Some(mut flac) = file.as_flac() {
                 jbuilder.set_mime_type("audio/flac");
-                if let Some(tag) = flac.xiph_comments() {
-                    jbuilder.set_xiph(&tag);
+                if let Some(tag) = flac.id3v1_tag() {
+                    jbuilder.set_id3v1(&tag);
                 }
+                if let Some(tag) = flac.id3v2_tag() {
+                    jbuilder.set_id3v2(&tag);
+                }
+                if let Some(mut tag) = flac.xiph_comments() {
+                    jbuilder.set_xiph(&mut tag);
+                }
+                jbuilder.set_flac_pictures(&flac.picture_list());
             }
             if let Some(mut mpeg) = file.as_mpeg() {
                 jbuilder.set_mime_type("audio/mpeg");

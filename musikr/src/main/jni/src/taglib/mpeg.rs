@@ -1,4 +1,4 @@
-use super::bridge::{CPPMPEGFile};
+use super::bridge::CPPMPEGFile;
 use super::id3v1::ID3v1Tag;
 use super::id3v2::ID3v2Tag;
 use super::this::{RefThisMut, ThisMut};

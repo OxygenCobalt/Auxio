@@ -3,6 +3,7 @@
 #include "taglib/flacpicture.h"
 #include "taglib/tstring.h"
 #include "taglib/tbytevector.h"
+#include "taglib/tpicturetype.h"
 #include "tk_shim.hpp"
 #include <memory>
 #include <vector>
@@ -22,5 +23,6 @@ namespace taglib_shim {
 
     std::unique_ptr<std::vector<PicturePointer>> PictureList_to_vector(const PictureList& list);
 
+    uint32_t Picture_type(const TagLib::FLAC::Picture& picture);
     std::unique_ptr<TagLib::ByteVector> Picture_data(const TagLib::FLAC::Picture& picture);
 } 

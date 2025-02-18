@@ -71,9 +71,6 @@ impl<'file_ref, T: This<'file_ref, InnerStringList>> StringList<'file_ref, T> {
 }
 
 pub type OwnedStringList<'file_ref> = StringList<'file_ref, OwnedThis<'file_ref, InnerStringList>>;
-pub type RefStringList<'file_ref> = StringList<'file_ref, RefThis<'file_ref, InnerStringList>>;
-pub type RefStringListMut<'file_ref> =
-    StringList<'file_ref, RefThisMut<'file_ref, InnerStringList>>;
 
 pub struct ByteVector<'file_ref, T: This<'file_ref, InnerByteVector>> {
     _data: PhantomData<&'file_ref InnerByteVector>,
@@ -114,9 +111,6 @@ impl<'file_ref, T: This<'file_ref, InnerByteVector>> ByteVector<'file_ref, T> {
 }
 
 pub type OwnedByteVector<'file_ref> = ByteVector<'file_ref, OwnedThis<'file_ref, InnerByteVector>>;
-pub type RefByteVector<'file_ref> = ByteVector<'file_ref, RefThis<'file_ref, InnerByteVector>>;
-pub type RefByteVectorMut<'file_ref> =
-    ByteVector<'file_ref, RefThisMut<'file_ref, InnerByteVector>>;
 
 pub struct ByteVectorList<'file_ref, T: This<'file_ref, InnerByteVectorList>> {
     _data: PhantomData<&'file_ref InnerByteVectorList>,
@@ -135,14 +129,10 @@ impl<'file_ref, T: This<'file_ref, InnerByteVectorList>> ByteVectorList<'file_re
         let cxx_values = bridge::ByteVectorList_to_vector(self.this.as_ref());
         cxx_values
             .iter()
-            .map(|value| ByteVector::new(unsafe { RefThis::new(value) }).to_vec())
+            .map(|value| ByteVector::new(RefThis::new(value)).to_vec())
             .collect()
     }
 }
 
 pub type OwnedByteVectorList<'file_ref> =
     ByteVectorList<'file_ref, OwnedThis<'file_ref, InnerByteVectorList>>;
-pub type RefByteVectorList<'file_ref> =
-    ByteVectorList<'file_ref, RefThis<'file_ref, InnerByteVectorList>>;
-pub type RefByteVectorListMut<'file_ref> =
-    ByteVectorList<'file_ref, RefThisMut<'file_ref, InnerByteVectorList>>;

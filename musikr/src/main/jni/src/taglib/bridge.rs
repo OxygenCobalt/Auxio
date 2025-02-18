@@ -129,8 +129,9 @@ mod bridge_impl {
         #[cxx_name = "Picture"]
         type CPPFLACPicture;
         #[namespace = "taglib_shim"]
+        fn Picture_type(picture: &CPPFLACPicture) -> u32;
+        #[namespace = "taglib_shim"]
         fn Picture_data(picture: &CPPFLACPicture) -> UniquePtr<CPPByteVector>;
-
         // XIPHComment
 
         #[namespace = "TagLib::Ogg"]
@@ -305,6 +306,8 @@ mod bridge_impl {
         #[cxx_name = "AttachedPictureFrame"]
         type CPPID3v2AttachedPictureFrame;
         #[namespace = "taglib_shim"]
+        fn AttachedPictureFrame_type(frame: &CPPID3v2AttachedPictureFrame) -> u32;
+        #[namespace = "taglib_shim"]
         fn AttachedPictureFrame_picture(
             frame: &CPPID3v2AttachedPictureFrame,
         ) -> UniquePtr<CPPByteVector>;
@@ -333,6 +336,60 @@ mod bridge_impl {
         fn ByteVectorList_to_vector(
             list: &CPPByteVectorList,
         ) -> UniquePtr<CxxVector<CPPByteVector>>;
+    }
+}
+
+#[repr(u8)]
+pub enum PictureType {
+    Other,
+    FileIcon,
+    OtherFileIcon,
+    FrontCover,
+    BackCover,
+    LeafletPage,
+    Media,
+    LeadArtist,
+    Artist,
+    Conductor,
+    Band,
+    Composer,
+    Lyricist,
+    RecordingLocation,
+    DuringRecording,
+    DuringPerformance,
+    MovieScreenCapture,
+    ColoredFish,
+    Illustration,
+    BandLogo,
+    PublisherLogo,
+}
+
+impl PictureType {
+    pub fn from_u32(value: u32) -> Option<Self> {
+        match value {
+            0 => Some(Self::Other),
+            1 => Some(Self::FileIcon),
+            2 => Some(Self::OtherFileIcon),
+            3 => Some(Self::FrontCover),
+            4 => Some(Self::BackCover),
+            5 => Some(Self::LeafletPage),
+            6 => Some(Self::Media),
+            7 => Some(Self::LeadArtist),
+            8 => Some(Self::Artist),
+            9 => Some(Self::Conductor),
+            10 => Some(Self::Band),
+            11 => Some(Self::Composer),
+            12 => Some(Self::Lyricist),
+            13 => Some(Self::RecordingLocation),
+            14 => Some(Self::DuringRecording),
+            15 => Some(Self::DuringPerformance),
+            16 => Some(Self::MovieScreenCapture),
+            17 => Some(Self::ColoredFish),
+            18 => Some(Self::Illustration),
+            19 => Some(Self::BandLogo),
+            20 => Some(Self::PublisherLogo),
+            _ => None,
+        }
     }
 }
 

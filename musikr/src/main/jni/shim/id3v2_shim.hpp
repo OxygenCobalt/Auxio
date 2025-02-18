@@ -27,6 +27,7 @@ namespace taglib_shim {
 
     // Frame data access
     std::unique_ptr<TagLib::ByteVector> AttachedPictureFrame_picture(const TagLib::ID3v2::AttachedPictureFrame& frame);
+    uint32_t AttachedPictureFrame_type(const TagLib::ID3v2::AttachedPictureFrame& frame);
     std::unique_ptr<TagLib::StringList> TextIdentificationFrame_fieldList(const TagLib::ID3v2::TextIdentificationFrame& frame);
     std::unique_ptr<TagLib::StringList> UserTextIdentificationFrame_fieldList(const TagLib::ID3v2::UserTextIdentificationFrame& frame);
 

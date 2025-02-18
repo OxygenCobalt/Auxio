@@ -1,9 +1,11 @@
 use super::bridge::{
-    self, CPPID3v2AttachedPictureFrame, CPPID3v2Frame, CPPID3v2FrameList,
-    CPPID3v2Tag, CPPID3v2TextIdentificationFrame, CPPID3v2UserTextIdentificationFrame,
+    self, CPPID3v2AttachedPictureFrame, CPPID3v2Frame, CPPID3v2FrameList, CPPID3v2Tag,
+    CPPID3v2TextIdentificationFrame, CPPID3v2UserTextIdentificationFrame,
 };
 use super::this::{OwnedThis, RefThis, RefThisMut};
 use super::tk::{self, ByteVector, OwnedByteVector, OwnedStringList, StringList};
+
+pub use super::bridge::PictureType;
 
 pub struct ID3v2Tag<'file_ref> {
     this: RefThisMut<'file_ref, CPPID3v2Tag>,
@@ -16,7 +18,7 @@ impl<'file_ref> ID3v2Tag<'file_ref> {
 
     pub fn frames(&self) -> Option<FrameList<'file_ref>> {
         let frames = bridge::Tag_frameList(self.this.as_ref());
-        let this = unsafe { OwnedThis::new(frames) };
+        let this = OwnedThis::new(frames);
         this.map(|this| FrameList::new(this))
     }
 }
@@ -37,7 +39,7 @@ impl<'file_ref> FrameList<'file_ref> {
             .map(|frame| {
                 let frame_ptr = frame.get();
                 let frame_ref = unsafe { frame_ptr.as_ref().unwrap() };
-                let frame_this = unsafe { RefThis::new(frame_ref) };
+                let frame_this = RefThis::new(frame_ref);
                 Frame::new(frame_this)
             })
             .collect()
@@ -94,7 +96,7 @@ impl<'file_ref> TextIdentificationFrame<'file_ref> {
 
     pub fn field_list(&self) -> Option<OwnedStringList<'file_ref>> {
         let field_list = bridge::TextIdentificationFrame_fieldList(self.this.as_ref());
-        let this = unsafe { OwnedThis::new(field_list) };
+        let this = OwnedThis::new(field_list);
         this.map(|this| StringList::new(this))
     }
 }
@@ -110,7 +112,7 @@ impl<'file_ref> UserTextIdentificationFrame<'file_ref> {
 
     pub fn values(&self) -> Option<OwnedStringList<'file_ref>> {
         let values = bridge::UserTextIdentificationFrame_fieldList(self.this.as_ref());
-        let this = unsafe { OwnedThis::new(values) };
+        let this = OwnedThis::new(values);
         this.map(|this| StringList::new(this))
     }
 }
@@ -124,9 +126,14 @@ impl<'file_ref> AttachedPictureFrame<'file_ref> {
         Self { this }
     }
 
+    pub fn picture_type(&self) -> Option<PictureType> {
+        let picture_type = bridge::AttachedPictureFrame_type(self.this.as_ref());
+        PictureType::from_u32(picture_type)
+    }
+
     pub fn picture(&self) -> Option<OwnedByteVector<'file_ref>> {
         let picture = bridge::AttachedPictureFrame_picture(self.this.as_ref());
-        let this = unsafe { OwnedThis::new(picture) };
+        let this = OwnedThis::new(picture);
         this.map(|this| ByteVector::new(this))
     }
 }

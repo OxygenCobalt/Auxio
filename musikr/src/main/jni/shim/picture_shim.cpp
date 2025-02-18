@@ -29,4 +29,8 @@ namespace taglib_shim {
     std::unique_ptr<TagLib::ByteVector> Picture_data(const TagLib::FLAC::Picture& picture) {
         return std::make_unique<TagLib::ByteVector>(picture.data());
     }
+
+    uint32_t Picture_type(const TagLib::FLAC::Picture& picture) {
+        return static_cast<uint32_t>(picture.type());
+    }
 } 

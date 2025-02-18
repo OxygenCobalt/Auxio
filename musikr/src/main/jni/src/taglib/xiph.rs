@@ -1,6 +1,6 @@
 pub use super::bridge::CPPXiphComment;
 use super::bridge::{CPPFieldListMap, FieldListMap_to_entries, XiphComment_pictureList};
-pub use super::flac::PictureList;
+pub use super::flac::FLACPictureList;
 use super::this::{OwnedThis, RefThis, RefThisMut, ThisMut};
 use super::tk;
 use std::collections::HashMap;
@@ -20,10 +20,10 @@ impl<'file_ref> XiphComment<'file_ref> {
         FieldListMap::new(map_this)
     }
 
-    pub fn picture_list(&mut self) -> PictureList<'file_ref> {
+    pub fn picture_list(&mut self) -> FLACPictureList<'file_ref> {
         let pictures = XiphComment_pictureList(self.this.pin_mut());
         let pictures_this = OwnedThis::new(pictures).unwrap();
-        PictureList::new(pictures_this)
+        FLACPictureList::new(pictures_this)
     }
 }
 

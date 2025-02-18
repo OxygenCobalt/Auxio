@@ -6,7 +6,12 @@ use jni::{
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use crate::taglib::{audioproperties, id3v1, id3v2, mp4, xiph};
+use crate::taglib::{
+    audioproperties,
+    flac::PictureType,
+    id3v1, id3v2, mp4,
+    xiph::{self, FLACPictureList},
+};
 
 use crate::tagmap::JTagMap;
 
@@ -84,7 +89,9 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
                         first_pic = picture_frame.picture().map(|p| p.to_vec());
                     }
                     // TODO: Check for front cover type when bindings are available
-                    if front_cover_pic.is_none() {
+                    if let (Some(PictureType::FrontCover), None) =
+                        (picture_frame.picture_type(), &front_cover_pic)
+                    {
                         front_cover_pic = picture_frame.picture().map(|p| p.to_vec());
                     }
                 }
@@ -95,13 +102,12 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
         self.cover = front_cover_pic.or(first_pic);
     }
 
-    pub fn set_xiph(&mut self, tag: &xiph::XiphComment) {
+    pub fn set_xiph(&mut self, tag: &mut xiph::XiphComment<'file_ref>) {
         for (key, values) in tag.field_list_map().to_hashmap() {
             let values: Vec<String> = values.to_vec().into_iter().map(|s| s.to_string()).collect();
             self.xiph.add_id_list(key.to_uppercase(), values);
         }
-
-        // TODO: Handle FLAC pictures when bindings are available
+        self.set_flac_pictures(&tag.picture_list());
     }
 
     pub fn set_mp4(&mut self, tag: &mp4::MP4Tag) {
@@ -155,6 +161,14 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
                     }
                     _ => continue,
                 }
+            }
+        }
+    }
+
+    pub fn set_flac_pictures(&mut self, pictures: &FLACPictureList<'file_ref>) {
+        for picture in pictures.to_vec().into_iter() {
+            if let Some(PictureType::FrontCover) = picture.picture_type() {
+                self.cover = Some(picture.data().to_vec());
             }
         }
     }

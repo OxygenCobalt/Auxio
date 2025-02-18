@@ -1,4 +1,4 @@
-use super::bridge::{CPPWAVFile};
+use super::bridge::CPPWAVFile;
 use super::id3v2::ID3v2Tag;
 use super::this::RefThisMut;
 
