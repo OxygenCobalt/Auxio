@@ -5,16 +5,16 @@ mod bridge_impl {
     // Expose Rust IOStream to C++
     extern "Rust" {
         #[cxx_name = "RsIOStream"]
-        type DynIOStream<'a>;
+        type DynIOStream<'io_stream>;
 
-        fn name(self: &mut DynIOStream<'_>) -> String;
+        fn name(self: &DynIOStream<'_>) -> String;
         fn read(self: &mut DynIOStream<'_>, buffer: &mut [u8]) -> usize;
         fn write(self: &mut DynIOStream<'_>, data: &[u8]);
         fn seek(self: &mut DynIOStream<'_>, offset: i64, whence: i32);
         fn truncate(self: &mut DynIOStream<'_>, length: i64);
-        fn tell(self: &mut DynIOStream<'_>) -> i64;
-        fn length(self: &mut DynIOStream<'_>) -> i64;
-        fn is_readonly(self: &mut DynIOStream<'_>) -> bool;
+        fn tell(self: &DynIOStream<'_>) -> i64;
+        fn length(self: &DynIOStream<'_>) -> i64;
+        fn is_readonly(self: &DynIOStream<'_>) -> bool;
     }
 
     #[namespace = "taglib_shim"]
@@ -42,8 +42,8 @@ mod bridge_impl {
 
         #[namespace = "TagLib"]
         #[cxx_name = "IOStream"]
-        type CPPIOStream;
-        fn wrap_RsIOStream(stream: Pin<&mut DynIOStream>) -> UniquePtr<CPPIOStream>;
+        type CPPIOStream<'io_stream>;
+        fn wrap_RsIOStream<'io_stream>(stream: Box<DynIOStream<'io_stream>>) -> UniquePtr<CPPIOStream<'io_stream>>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "FileRef"]

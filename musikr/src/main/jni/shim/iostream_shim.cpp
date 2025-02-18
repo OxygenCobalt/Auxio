@@ -11,7 +11,7 @@ namespace taglib_shim
     class WrappedRsIOStream : public TagLib::IOStream
     {
     public:
-        explicit WrappedRsIOStream(RsIOStream& stream);
+        explicit WrappedRsIOStream(rust::Box<RsIOStream> stream);
         ~WrappedRsIOStream() override;
 
         // TagLib::IOStream interface implementation
@@ -29,28 +29,28 @@ namespace taglib_shim
         bool isOpen() const override;
 
     private:
-        RsIOStream& rust_stream;
+        rust::Box<RsIOStream> rust_stream;
     };
 
-    WrappedRsIOStream::WrappedRsIOStream(RsIOStream& stream) : rust_stream(stream) {}
+    WrappedRsIOStream::WrappedRsIOStream(rust::Box<RsIOStream> stream) : rust_stream(std::move(stream)) {}
 
     WrappedRsIOStream::~WrappedRsIOStream() = default;
 
     TagLib::FileName WrappedRsIOStream::name() const
     {
-        return rust::string(rust_stream.name()).c_str();
+        return rust::string(rust_stream->name()).c_str();
     }
 
     TagLib::ByteVector WrappedRsIOStream::readBlock(size_t length)
     {
         std::vector<uint8_t> buffer(length);
-        size_t bytes_read = rust_stream.read(rust::Slice<uint8_t>(buffer.data(), length));
+        size_t bytes_read = rust_stream->read(rust::Slice<uint8_t>(buffer.data(), length));
         return TagLib::ByteVector(reinterpret_cast<char *>(buffer.data()), bytes_read);
     }
 
     void WrappedRsIOStream::writeBlock(const TagLib::ByteVector &data)
     {
-        rust_stream.write(rust::Slice<const uint8_t>(
+        rust_stream->write(rust::Slice<const uint8_t>(
             reinterpret_cast<const uint8_t *>(data.data()), data.size()));
     }
 
@@ -118,7 +118,7 @@ namespace taglib_shim
         default:
             throw std::runtime_error("Invalid seek position");
         }
-        rust_stream.seek(offset, whence);
+        rust_stream->seek(offset, whence);
     }
 
     void WrappedRsIOStream::clear()
@@ -129,22 +129,22 @@ namespace taglib_shim
 
     void WrappedRsIOStream::truncate(TagLib::offset_t length)
     {
-        rust_stream.truncate(length);
+        rust_stream->truncate(length);
     }
 
     TagLib::offset_t WrappedRsIOStream::tell() const
     {
-        return rust_stream.tell();
+        return rust_stream->tell();
     }
 
     TagLib::offset_t WrappedRsIOStream::length()
     {
-        return rust_stream.length();
+        return rust_stream->length();
     }
 
     bool WrappedRsIOStream::readOnly() const
     {
-        return rust_stream.is_readonly();
+        return rust_stream->is_readonly();
     }
 
     bool WrappedRsIOStream::isOpen() const
@@ -153,9 +153,9 @@ namespace taglib_shim
     }
 
     // Factory function to create a new RustIOStream
-    std::unique_ptr<TagLib::IOStream> wrap_RsIOStream(RsIOStream& stream)
+    std::unique_ptr<TagLib::IOStream> wrap_RsIOStream(rust::Box<RsIOStream> stream)
     {
-        return std::unique_ptr<TagLib::IOStream>(new WrappedRsIOStream(stream));
+        return std::unique_ptr<TagLib::IOStream>(new WrappedRsIOStream(std::move(stream)));
     }
 
 } // namespace taglib_shim
