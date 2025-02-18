@@ -1,8 +1,7 @@
-use super::bridge::{self, CPPMPEGFile};
+use super::bridge::{CPPMPEGFile};
 use super::id3v1::ID3v1Tag;
 use super::id3v2::ID3v2Tag;
-use super::this::{RefThisMut, This, ThisMut};
-use std::pin::Pin;
+use super::this::{RefThisMut, ThisMut};
 
 pub struct MPEGFile<'file_ref> {
     this: RefThisMut<'file_ref, CPPMPEGFile>,

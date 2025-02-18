@@ -1,7 +1,6 @@
-use super::bridge::{self, CPPWAVFile};
+use super::bridge::{CPPWAVFile};
 use super::id3v2::ID3v2Tag;
-use super::this::{RefThisMut, This, ThisMut};
-use std::pin::Pin;
+use super::this::RefThisMut;
 
 pub struct WAVFile<'file_ref> {
     this: RefThisMut<'file_ref, CPPWAVFile>,
@@ -18,4 +17,4 @@ impl<'file_ref> WAVFile<'file_ref> {
         let tag_this = tag_ref.map(|tag| RefThisMut::new(tag));
         tag_this.map(|this| ID3v2Tag::new(this))
     }
-} 
+}

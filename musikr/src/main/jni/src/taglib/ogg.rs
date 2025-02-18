@@ -1,7 +1,6 @@
 pub use super::bridge::{CPPOpusFile, CPPVorbisFile};
+use super::this::RefThisMut;
 use super::xiph::XiphComment;
-use super::this::{RefThisMut, RefThis, This};
-use std::pin::Pin;
 
 pub struct VorbisFile<'file_ref> {
     this: RefThisMut<'file_ref, CPPVorbisFile>,

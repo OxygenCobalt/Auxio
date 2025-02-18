@@ -1,10 +1,9 @@
 pub use super::bridge::CPPXiphComment;
 use super::bridge::{CPPFieldListMap, FieldListMap_to_entries, XiphComment_pictureList};
 pub use super::flac::PictureList;
+use super::this::{OwnedThis, RefThis, RefThisMut, ThisMut};
 use super::tk;
-use super::this::{OwnedThis, RefThis, RefThisMut, ThisMut, This};
 use std::collections::HashMap;
-use std::pin::Pin;
 
 pub struct XiphComment<'file_ref> {
     this: RefThisMut<'file_ref, CPPXiphComment>,

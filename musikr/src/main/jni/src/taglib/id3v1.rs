@@ -1,6 +1,6 @@
 use super::bridge::{self, CPPID3v1Tag};
-use super::this::{RefThisMut, RefThis, This, OwnedThis};
-use super::tk::{String, OwnedString};
+use super::this::{OwnedThis, RefThisMut};
+use super::tk::{OwnedString, String};
 
 pub struct ID3v1Tag<'file_ref> {
     this: RefThisMut<'file_ref, CPPID3v1Tag>,
@@ -46,4 +46,4 @@ impl<'file_ref> ID3v1Tag<'file_ref> {
     pub fn track(&self) -> u32 {
         bridge::ID3v1Tag_track(self.this.as_ref())
     }
-} 
+}

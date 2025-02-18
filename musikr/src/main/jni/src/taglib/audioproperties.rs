@@ -1,6 +1,5 @@
 use super::bridge::CppAudioProperties;
-use super::this::{RefThis, This};
-use std::pin::Pin;
+use super::this::RefThis;
 
 pub struct AudioProperties<'file_ref> {
     this: RefThis<'file_ref, CppAudioProperties>,

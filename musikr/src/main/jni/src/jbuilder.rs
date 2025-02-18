@@ -1,10 +1,12 @@
-use jni::{objects::{JByteArray, JClass, JMap, JObject, JString, JValueGen}, sys::jlong, JNIEnv};
-use std::rc::Rc;
-use std::cell::RefCell;
-
-use crate::taglib::{
-    id3v1, id3v2, xiph, mp4, tk, audioproperties,
+use jni::{
+    objects::{JObject, JValueGen},
+    sys::jlong,
+    JNIEnv,
 };
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use crate::taglib::{audioproperties, id3v1, id3v2, mp4, xiph};
 
 use crate::tagmap::JTagMap;
 
@@ -41,7 +43,7 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
         self.id3v2.add_id("TALB", tag.album().to_string());
         self.id3v2.add_id("TRCK", tag.track().to_string());
         self.id3v2.add_id("TYER", tag.year().to_string());
-        
+
         let genre = tag.genre_index();
         if genre != 255 {
             self.id3v2.add_id("TCON", genre.to_string());
@@ -56,7 +58,8 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
             for mut frame in frames.to_vec() {
                 if let Some(text_frame) = frame.as_text_identification() {
                     if let Some(field_list) = text_frame.field_list() {
-                        let values: Vec<String> = field_list.to_vec()
+                        let values: Vec<String> = field_list
+                            .to_vec()
                             .into_iter()
                             .map(|s| s.to_string())
                             .collect();
@@ -103,16 +106,19 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
 
     pub fn set_mp4(&mut self, tag: &mp4::MP4Tag) {
         let map = tag.item_map().to_hashmap();
-        
+
         for (key, item) in map {
             if key == "covr" {
                 if let Some(mp4::MP4Data::CoverArtList(cover_list)) = item.data() {
                     let covers = cover_list.to_vec();
                     // Prefer PNG/JPEG covers
                     let preferred_cover = covers.iter().find(|c| {
-                        matches!(c.format(), mp4::CoverArtFormat::PNG | mp4::CoverArtFormat::JPEG)
+                        matches!(
+                            c.format(),
+                            mp4::CoverArtFormat::PNG | mp4::CoverArtFormat::JPEG
+                        )
                     });
-                    
+
                     if let Some(cover) = preferred_cover {
                         self.cover = Some(cover.data().to_vec());
                     } else if let Some(first_cover) = covers.first() {
@@ -125,7 +131,8 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
             if let Some(data) = item.data() {
                 match data {
                     mp4::MP4Data::StringList(list) => {
-                        let values: Vec<String> = list.to_vec().into_iter().map(|s| s.to_string()).collect();
+                        let values: Vec<String> =
+                            list.to_vec().into_iter().map(|s| s.to_string()).collect();
                         if key.starts_with("----") {
                             if let Some(split_idx) = key.find(':') {
                                 let (atom_name, atom_desc) = key.split_at(split_idx);
@@ -158,41 +165,67 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
 
     pub fn build(&self) -> JObject {
         // Create Properties object
-        let properties_class = self.env.borrow_mut().find_class("org/oxycblt/musikr/metadata/Properties").unwrap();
+        let properties_class = self
+            .env
+            .borrow_mut()
+            .find_class("org/oxycblt/musikr/metadata/Properties")
+            .unwrap();
         let properties = if let Some(props) = &self.properties {
             let mime_type = self.mime_type.as_deref().unwrap_or("").to_string();
             let j_mime_type = self.env.borrow().new_string(mime_type).unwrap();
-            
-            self.env.borrow_mut().new_object(
-                properties_class,
-                "(Ljava/lang/String;JII)V",
-                &[
-                    JValueGen::from(&j_mime_type),
-                    (props.length_in_milliseconds() as jlong).into(),
-                    (props.bitrate() as i32).into(),
-                    (props.sample_rate() as i32).into(),
-                ],
-            ).unwrap()
+
+            self.env
+                .borrow_mut()
+                .new_object(
+                    properties_class,
+                    "(Ljava/lang/String;JII)V",
+                    &[
+                        JValueGen::from(&j_mime_type),
+                        (props.length_in_milliseconds() as jlong).into(),
+                        (props.bitrate() as i32).into(),
+                        (props.sample_rate() as i32).into(),
+                    ],
+                )
+                .unwrap()
         } else {
             let empty_mime = self.env.borrow().new_string("").unwrap();
-            self.env.borrow_mut().new_object(
-                properties_class,
-                "(Ljava/lang/String;JII)V",
-                &[JValueGen::from(&empty_mime), 0i64.into(), 0i32.into(), 0i32.into()],
-            ).unwrap()
+            self.env
+                .borrow_mut()
+                .new_object(
+                    properties_class,
+                    "(Ljava/lang/String;JII)V",
+                    &[
+                        JValueGen::from(&empty_mime),
+                        0i64.into(),
+                        0i32.into(),
+                        0i32.into(),
+                    ],
+                )
+                .unwrap()
         };
 
         // Create cover byte array if present
         let cover_array = if let Some(cover_data) = &self.cover {
-            let array = self.env.borrow().new_byte_array(cover_data.len() as i32).unwrap();
-            self.env.borrow().set_byte_array_region(&array, 0, bytemuck::cast_slice(cover_data)).unwrap();
+            let array = self
+                .env
+                .borrow()
+                .new_byte_array(cover_data.len() as i32)
+                .unwrap();
+            self.env
+                .borrow()
+                .set_byte_array_region(&array, 0, bytemuck::cast_slice(cover_data))
+                .unwrap();
             array.into()
         } else {
             JObject::null()
         };
 
         // Create Metadata object
-        let metadata_class = self.env.borrow_mut().find_class("org/oxycblt/musikr/metadata/Metadata").unwrap();
+        let metadata_class = self
+            .env
+            .borrow_mut()
+            .find_class("org/oxycblt/musikr/metadata/Metadata")
+            .unwrap();
         self.env.borrow_mut().new_object(
             metadata_class,
             "(Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;[BLorg/oxycblt/musikr/metadata/Properties;)V",

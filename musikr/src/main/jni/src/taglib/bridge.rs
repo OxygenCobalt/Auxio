@@ -51,7 +51,9 @@ mod bridge_impl {
         #[namespace = "TagLib"]
         #[cxx_name = "IOStream"]
         type CPPIOStream<'io_stream>;
-        fn wrap_RsIOStream<'io_stream>(stream: Box<DynIOStream<'io_stream>>) -> UniquePtr<CPPIOStream<'io_stream>>;
+        fn wrap_RsIOStream<'io_stream>(
+            stream: Box<DynIOStream<'io_stream>>,
+        ) -> UniquePtr<CPPIOStream<'io_stream>>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "FileRef"]
@@ -207,7 +209,7 @@ mod bridge_impl {
         #[namespace = "taglib_shim"]
         fn Item_toCoverArtList(item: &CPPMP4Item) -> UniquePtr<CPPCoverArtList>;
         #[namespace = "taglib_shim"]
-        fn Item_toLongLong(item: &CPPMP4Item) -> i64; 
+        fn Item_toLongLong(item: &CPPMP4Item) -> i64;
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "IntPair"]
@@ -258,9 +260,7 @@ mod bridge_impl {
         #[cxx_name = "FrameList"]
         type CPPID3v2FrameList;
         #[namespace = "taglib_shim"]
-        fn FrameList_to_vector(
-            list: &CPPID3v2FrameList,
-        ) -> UniquePtr<CxxVector<CPPFramePointer>>;
+        fn FrameList_to_vector(list: &CPPID3v2FrameList) -> UniquePtr<CxxVector<CPPFramePointer>>;
 
         #[namespace = "taglib_shim"]
         #[cxx_name = "FramePointer"]
@@ -318,9 +318,7 @@ mod bridge_impl {
         #[cxx_name = "StringList"]
         type CPPStringList;
         #[namespace = "taglib_shim"]
-        fn StringList_to_vector(
-            string_list: &CPPStringList,
-        ) -> UniquePtr<CxxVector<CPPString>>;
+        fn StringList_to_vector(string_list: &CPPStringList) -> UniquePtr<CxxVector<CPPString>>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "ByteVector"]
@@ -332,7 +330,9 @@ mod bridge_impl {
         #[cxx_name = "ByteVectorList"]
         type CPPByteVectorList;
         #[namespace = "taglib_shim"]
-        fn ByteVectorList_to_vector(list: &CPPByteVectorList) -> UniquePtr<CxxVector<CPPByteVector>>;
+        fn ByteVectorList_to_vector(
+            list: &CPPByteVectorList,
+        ) -> UniquePtr<CxxVector<CPPByteVector>>;
     }
 }
 

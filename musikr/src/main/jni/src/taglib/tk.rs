@@ -1,14 +1,12 @@
 use super::bridge;
-use super::this::{RefThis, RefThisMut, This, OwnedThis};
-use cxx::{memory::UniquePtrTarget, UniquePtr};
+use super::this::{OwnedThis, RefThis, RefThisMut, This};
 use std::marker::PhantomData;
-use std::pin::Pin;
 use std::{ffi::CStr, string::ToString};
 
-pub use bridge::CPPString as InnerString;
-pub use bridge::CPPStringList as InnerStringList;
 pub use bridge::CPPByteVector as InnerByteVector;
 pub use bridge::CPPByteVectorList as InnerByteVectorList;
+pub use bridge::CPPString as InnerString;
+pub use bridge::CPPStringList as InnerStringList;
 
 pub struct String<'file_ref, T: This<'file_ref, InnerString>> {
     _data: PhantomData<&'file_ref ()>,
@@ -17,7 +15,10 @@ pub struct String<'file_ref, T: This<'file_ref, InnerString>> {
 
 impl<'file_ref, T: This<'file_ref, InnerString>> String<'file_ref, T> {
     pub(super) fn new(this: T) -> Self {
-        Self { _data: PhantomData, this }
+        Self {
+            _data: PhantomData,
+            this,
+        }
     }
 }
 
@@ -49,13 +50,12 @@ pub struct StringList<'file_ref, T: This<'file_ref, InnerStringList>> {
     this: T,
 }
 
-pub type OwnedStringList<'file_ref> = StringList<'file_ref, OwnedThis<'file_ref, InnerStringList>>;
-pub type RefStringList<'file_ref> = StringList<'file_ref, RefThis<'file_ref, InnerStringList>>;
-pub type RefStringListMut<'file_ref> = StringList<'file_ref, RefThisMut<'file_ref, InnerStringList>>;
-
 impl<'file_ref, T: This<'file_ref, InnerStringList>> StringList<'file_ref, T> {
     pub(super) fn new(this: T) -> Self {
-        Self { _data: PhantomData, this }
+        Self {
+            _data: PhantomData,
+            this,
+        }
     }
 
     pub fn to_vec(&self) -> Vec<std::string::String> {
@@ -70,6 +70,11 @@ impl<'file_ref, T: This<'file_ref, InnerStringList>> StringList<'file_ref, T> {
     }
 }
 
+pub type OwnedStringList<'file_ref> = StringList<'file_ref, OwnedThis<'file_ref, InnerStringList>>;
+pub type RefStringList<'file_ref> = StringList<'file_ref, RefThis<'file_ref, InnerStringList>>;
+pub type RefStringListMut<'file_ref> =
+    StringList<'file_ref, RefThisMut<'file_ref, InnerStringList>>;
+
 pub struct ByteVector<'file_ref, T: This<'file_ref, InnerByteVector>> {
     _data: PhantomData<&'file_ref InnerByteVector>,
     this: T,
@@ -77,7 +82,10 @@ pub struct ByteVector<'file_ref, T: This<'file_ref, InnerByteVector>> {
 
 impl<'file_ref, T: This<'file_ref, InnerByteVector>> ByteVector<'file_ref, T> {
     pub(super) fn new(this: T) -> Self {
-        Self { _data: PhantomData, this }
+        Self {
+            _data: PhantomData,
+            this,
+        }
     }
 
     pub fn to_vec(&self) -> Vec<u8> {
@@ -107,7 +115,8 @@ impl<'file_ref, T: This<'file_ref, InnerByteVector>> ByteVector<'file_ref, T> {
 
 pub type OwnedByteVector<'file_ref> = ByteVector<'file_ref, OwnedThis<'file_ref, InnerByteVector>>;
 pub type RefByteVector<'file_ref> = ByteVector<'file_ref, RefThis<'file_ref, InnerByteVector>>;
-pub type RefByteVectorMut<'file_ref> = ByteVector<'file_ref, RefThisMut<'file_ref, InnerByteVector>>;
+pub type RefByteVectorMut<'file_ref> =
+    ByteVector<'file_ref, RefThisMut<'file_ref, InnerByteVector>>;
 
 pub struct ByteVectorList<'file_ref, T: This<'file_ref, InnerByteVectorList>> {
     _data: PhantomData<&'file_ref InnerByteVectorList>,
@@ -116,7 +125,10 @@ pub struct ByteVectorList<'file_ref, T: This<'file_ref, InnerByteVectorList>> {
 
 impl<'file_ref, T: This<'file_ref, InnerByteVectorList>> ByteVectorList<'file_ref, T> {
     pub(super) fn new(this: T) -> Self {
-        Self { _data: PhantomData, this }
+        Self {
+            _data: PhantomData,
+            this,
+        }
     }
 
     pub fn to_vec(&self) -> Vec<Vec<u8>> {
@@ -128,7 +140,9 @@ impl<'file_ref, T: This<'file_ref, InnerByteVectorList>> ByteVectorList<'file_re
     }
 }
 
-pub type OwnedByteVectorList<'file_ref> = ByteVectorList<'file_ref, OwnedThis<'file_ref, InnerByteVectorList>>;
-pub type RefByteVectorList<'file_ref> = ByteVectorList<'file_ref, RefThis<'file_ref, InnerByteVectorList>>;
-pub type RefByteVectorListMut<'file_ref> = ByteVectorList<'file_ref, RefThisMut<'file_ref, InnerByteVectorList>>;
-
+pub type OwnedByteVectorList<'file_ref> =
+    ByteVectorList<'file_ref, OwnedThis<'file_ref, InnerByteVectorList>>;
+pub type RefByteVectorList<'file_ref> =
+    ByteVectorList<'file_ref, RefThis<'file_ref, InnerByteVectorList>>;
+pub type RefByteVectorListMut<'file_ref> =
+    ByteVectorList<'file_ref, RefThisMut<'file_ref, InnerByteVectorList>>;

@@ -1,24 +1,22 @@
 pub use super::bridge::CPPFLACFile;
 pub use super::bridge::CPPFLACPicture;
-use super::bridge::{CPPPictureList, FLACFile_pictureList, PictureList_to_vector, Picture_data, CPPByteVector};
+use super::bridge::{
+    CPPPictureList, FLACFile_pictureList, PictureList_to_vector, Picture_data,
+};
 use super::id3v1::ID3v1Tag;
 use super::id3v2::ID3v2Tag;
+use super::this::{OwnedThis, RefThis, RefThisMut, ThisMut};
 use super::tk::{ByteVector, OwnedByteVector};
 pub use super::xiph::XiphComment;
-use super::this::{OwnedThis, RefThisMut, RefThis, This, ThisMut};
-use cxx::UniquePtr;
-use std::marker::PhantomData;
-use std::pin::Pin;
 
 pub struct FLACFile<'file_ref> {
-    this: RefThisMut<'file_ref, CPPFLACFile>
+    this: RefThisMut<'file_ref, CPPFLACFile>,
 }
 
 impl<'file_ref> FLACFile<'file_ref> {
     pub(super) fn new(this: RefThisMut<'file_ref, CPPFLACFile>) -> Self {
         Self { this }
     }
-
 
     pub fn xiph_comments(&mut self) -> Option<XiphComment<'file_ref>> {
         let tag = self.this.pin_mut().xiphComment(false);

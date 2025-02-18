@@ -1,16 +1,15 @@
 use super::audioproperties::AudioProperties;
-use super::bridge::{self, CPPFile, CPPMPEGFile};
+use super::bridge::{self, CPPFile};
 use super::flac::FLACFile;
-use super::id3v2::ID3v2Tag;
 use super::mp4::MP4File;
 use super::mpeg::MPEGFile;
 use super::ogg::OpusFile;
 use super::ogg::VorbisFile;
-use super::this::{RefThisMut, RefThis, This, ThisMut};
-use std::pin::Pin;
+use super::riff::WAVFile;
+use super::this::{RefThis, RefThisMut};
 
 pub struct File<'file_ref> {
-    this: RefThisMut<'file_ref, CPPFile>
+    this: RefThisMut<'file_ref, CPPFile>,
 }
 
 impl<'file_ref> File<'file_ref> {
@@ -118,12 +117,16 @@ impl<'file_ref> File<'file_ref> {
     }
 
     pub fn as_mp4(&mut self) -> Option<MP4File<'file_ref>> {
-        let mp4_file = unsafe {
-            bridge::File_asMP4(self.this.ptr_mut())
-        };
+        let mp4_file = unsafe { bridge::File_asMP4(self.this.ptr_mut()) };
         let mp4_ref = unsafe { mp4_file.as_mut() };
         let mp4_this = mp4_ref.map(|mp4| RefThisMut::new(mp4));
         mp4_this.map(|this| MP4File::new(this))
     }
-    
+
+    pub fn as_wav(&mut self) -> Option<WAVFile<'file_ref>> {
+        let wav_file = unsafe { bridge::File_asWAV(self.this.ptr_mut()) };
+        let wav_ref = unsafe { wav_file.as_mut() };
+        let wav_this = wav_ref.map(|wav| RefThisMut::new(wav));
+        wav_this.map(|this| WAVFile::new(this))
+    }
 }

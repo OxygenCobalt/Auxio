@@ -1,13 +1,13 @@
 use super::bridge::{
-    self, CPPID3v2AttachedPictureFrame, CPPID3v2Frame, CPPID3v2FrameList, CPPID3v2Tag,
-    CPPID3v2TextIdentificationFrame, CPPID3v2UserTextIdentificationFrame, CPPStringList, CPPByteVector,
+    self, CPPID3v2AttachedPictureFrame, CPPID3v2Frame, CPPID3v2FrameList,
+    CPPID3v2Tag, CPPID3v2TextIdentificationFrame, CPPID3v2UserTextIdentificationFrame,
 };
-use super::tk::{self, ByteVector, StringList, OwnedByteVector, OwnedStringList};
-use super::this::{OwnedThis, RefThisMut, RefThis, This};
+use super::this::{OwnedThis, RefThis, RefThisMut};
+use super::tk::{self, ByteVector, OwnedByteVector, OwnedStringList, StringList};
 
 pub struct ID3v2Tag<'file_ref> {
     this: RefThisMut<'file_ref, CPPID3v2Tag>,
-}   
+}
 
 impl<'file_ref> ID3v2Tag<'file_ref> {
     pub(super) fn new(this: RefThisMut<'file_ref, CPPID3v2Tag>) -> Self {

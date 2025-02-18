@@ -1,7 +1,6 @@
 use super::bridge::{self, CPPIOStream};
 use cxx::UniquePtr;
-use std::io::{Read, Seek, SeekFrom, Write};
-use std::pin::Pin;
+use std::io::{Seek, SeekFrom};
 
 pub trait IOStream {
     fn read_block(&mut self, buffer: &mut [u8]) -> usize;
@@ -22,9 +21,7 @@ impl<'io_stream> BridgedIOStream<'io_stream> {
     pub fn new<T: IOStream + 'io_stream>(stream: T) -> Self {
         let rs_stream: Box<DynIOStream<'io_stream>> = Box::new(DynIOStream(Box::new(stream)));
         let cpp_stream: UniquePtr<CPPIOStream<'io_stream>> = bridge::wrap_RsIOStream(rs_stream);
-        BridgedIOStream {
-            cpp_stream,
-        }
+        BridgedIOStream { cpp_stream }
     }
 
     pub fn cpp_stream(&self) -> &UniquePtr<CPPIOStream> {

@@ -1,7 +1,7 @@
 use crate::taglib::iostream::IOStream;
 use crate::SharedEnv;
 use jni::objects::{JObject, JValue};
-use std::io::{Read, Seek, SeekFrom, Write};
+use std::io::SeekFrom;
 
 pub struct JInputStream<'local> {
     env: SharedEnv<'local>,
