@@ -63,7 +63,7 @@ impl<'file_ref, T: This<'file_ref, InnerStringList>> StringList<'file_ref, T> {
         cxx_values
             .iter()
             .map(|value| {
-                let this = unsafe { RefThis::new(value) };
+                let this = RefThis::new(value);
                 String::new(this).to_string()
             })
             .collect()

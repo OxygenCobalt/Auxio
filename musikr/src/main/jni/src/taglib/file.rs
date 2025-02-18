@@ -29,7 +29,7 @@ impl<'file_ref> File<'file_ref> {
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             props_ptr.as_ref()
         };
-        let props_this = props_ref.map(|props| unsafe { RefThis::new(props) });
+        let props_this = props_ref.map(|props| RefThis::new(props));
         props_this.map(|this| AudioProperties::new(this))
     }
 
@@ -50,7 +50,7 @@ impl<'file_ref> File<'file_ref> {
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             opus_file.as_mut()
         };
-        let opus_this = opus_ref.map(|opus| unsafe { RefThisMut::new(opus) });
+        let opus_this = opus_ref.map(|opus| RefThisMut::new(opus));
         opus_this.map(|this| OpusFile::new(this))
     }
 
@@ -71,7 +71,7 @@ impl<'file_ref> File<'file_ref> {
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             vorbis_file.as_mut()
         };
-        let vorbis_this = vorbis_ref.map(|vorbis| unsafe { RefThisMut::new(vorbis) });
+        let vorbis_this = vorbis_ref.map(|vorbis| RefThisMut::new(vorbis));
         vorbis_this.map(|this| VorbisFile::new(this))
     }
 
@@ -92,7 +92,7 @@ impl<'file_ref> File<'file_ref> {
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             flac_file.as_mut()
         };
-        let flac_this = flac_ref.map(|flac| unsafe { RefThisMut::new(flac) });
+        let flac_this = flac_ref.map(|flac| RefThisMut::new(flac));
         flac_this.map(|this| FLACFile::new(this))
     }
 
@@ -113,7 +113,7 @@ impl<'file_ref> File<'file_ref> {
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             mpeg_file.as_mut()
         };
-        let mpeg_this = mpeg_ref.map(|mpeg| unsafe { RefThisMut::new(mpeg) });
+        let mpeg_this = mpeg_ref.map(|mpeg| RefThisMut::new(mpeg));
         mpeg_this.map(|this| MPEGFile::new(this))
     }
 
@@ -122,7 +122,7 @@ impl<'file_ref> File<'file_ref> {
             bridge::File_asMP4(self.this.ptr_mut())
         };
         let mp4_ref = unsafe { mp4_file.as_mut() };
-        let mp4_this = mp4_ref.map(|mp4| unsafe { RefThisMut::new(mp4) });
+        let mp4_this = mp4_ref.map(|mp4| RefThisMut::new(mp4));
         mp4_this.map(|this| MP4File::new(this))
     }
     

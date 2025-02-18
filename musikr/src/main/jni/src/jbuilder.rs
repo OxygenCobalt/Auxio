@@ -36,15 +36,9 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
     }
 
     pub fn set_id3v1(&mut self, tag: &id3v1::ID3v1Tag) {
-        if let Some(title) = tag.title() {
-            self.id3v2.add_id("TIT2", title.to_string());
-        }
-        if let Some(artist) = tag.artist() {
-            self.id3v2.add_id("TPE1", artist.to_string());
-        }
-        if let Some(album) = tag.album() {
-            self.id3v2.add_id("TALB", album.to_string());
-        }
+        self.id3v2.add_id("TIT2", tag.title().to_string());
+        self.id3v2.add_id("TPE1", tag.artist().to_string());
+        self.id3v2.add_id("TALB", tag.album().to_string());
         self.id3v2.add_id("TRCK", tag.track().to_string());
         self.id3v2.add_id("TYER", tag.year().to_string());
         

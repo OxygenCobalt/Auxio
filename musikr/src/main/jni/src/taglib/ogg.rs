@@ -19,7 +19,7 @@ impl<'file_ref> VorbisFile<'file_ref> {
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
             tag.as_mut()
         };
-        let tag_this = tag_ref.map(|tag| unsafe { RefThisMut::new(tag) });
+        let tag_this = tag_ref.map(|tag| RefThisMut::new(tag));
         tag_this.map(|this| XiphComment::new(this))
     }
 }
@@ -40,7 +40,7 @@ impl<'file_ref> OpusFile<'file_ref> {
             // via this function and thus cannot be mutated, satisfying the aliasing rules.
             tag.as_mut()
         };
-        let tag_this = tag_ref.map(|tag| unsafe { RefThisMut::new(tag) });
+        let tag_this = tag_ref.map(|tag| RefThisMut::new(tag));
         tag_this.map(|this| XiphComment::new(this))
     }
 }

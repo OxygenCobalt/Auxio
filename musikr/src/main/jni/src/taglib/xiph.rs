@@ -17,14 +17,14 @@ impl<'file_ref> XiphComment<'file_ref> {
 
     pub fn field_list_map(&'file_ref self) -> FieldListMap<'file_ref> {
         let map: &'file_ref CPPFieldListMap = self.this.as_ref().fieldListMap();
-        let map_this = unsafe { RefThis::new(map) };
+        let map_this = RefThis::new(map);
         FieldListMap::new(map_this)
     }
 
-    pub fn picture_list(&mut self) -> Option<PictureList<'file_ref>> {
+    pub fn picture_list(&mut self) -> PictureList<'file_ref> {
         let pictures = XiphComment_pictureList(self.this.pin_mut());
-        let pictures_this = unsafe { OwnedThis::new(pictures) };
-        pictures_this.map(|this| PictureList::new(this))
+        let pictures_this = OwnedThis::new(pictures).unwrap();
+        PictureList::new(pictures_this)
     }
 }
 
@@ -51,10 +51,10 @@ impl<'file_ref> FieldListMap<'file_ref> {
                 // - The values returned are copied and thus not dependent on the address
                 //   of self.
                 let key_ref = property.key();
-                let key_this = unsafe { OwnedThis::new(key_ref) }.unwrap();
+                let key_this = OwnedThis::new(key_ref).unwrap();
                 let key = tk::String::new(key_this).to_string();
                 let value_ref = property.value();
-                let value_this = unsafe { OwnedThis::new(value_ref) }.unwrap();
+                let value_this = OwnedThis::new(value_ref).unwrap();
                 let value = tk::StringList::new(value_this);
                 (key, value)
             })

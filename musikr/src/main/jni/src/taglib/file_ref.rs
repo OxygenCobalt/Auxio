@@ -48,7 +48,7 @@ impl<'io> FileRef<'io> {
             //   to this, ensuring that it will not be mutated as per the aliasing rules.
             file.as_mut()
         });
-        let file_this = file_ref.map(|file| unsafe { RefThisMut::new(file) });
+        let file_this = file_ref.map(|file| RefThisMut::new(file));
         file_this.map(|this| File::new(this))
     }
 }

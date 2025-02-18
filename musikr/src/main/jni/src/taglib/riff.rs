@@ -15,7 +15,7 @@ impl<'file_ref> WAVFile<'file_ref> {
     pub fn id3v2_tag(&mut self) -> Option<ID3v2Tag<'file_ref>> {
         let tag = self.this.as_ref().WAVID3v2Tag();
         let tag_ref = unsafe { tag.as_mut() };
-        let tag_this = tag_ref.map(|tag| unsafe { RefThisMut::new(tag) });
+        let tag_this = tag_ref.map(|tag| RefThisMut::new(tag));
         tag_this.map(|this| ID3v2Tag::new(this))
     }
 } 

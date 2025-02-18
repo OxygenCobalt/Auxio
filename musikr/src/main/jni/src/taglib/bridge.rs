@@ -1,5 +1,11 @@
 use super::iostream::DynIOStream;
 
+pub trait TagLibAllocated {}
+
+pub trait TagLibRef {}
+
+pub trait TagLibShared {}
+
 #[cxx::bridge]
 mod bridge_impl {
     // Expose Rust IOStream to C++
@@ -86,8 +92,6 @@ mod bridge_impl {
         type CPPVorbisFile;
         #[cxx_name = "tag"]
         fn vorbisTag(self: &CPPVorbisFile) -> *mut CPPXiphComment;
-        #[namespace = "taglib_shim"]
-        fn XiphComment_pictureList(comment: Pin<&mut CPPXiphComment>) -> UniquePtr<CPPPictureList>;
 
         #[namespace = "TagLib::Ogg::Opus"]
         #[cxx_name = "File"]
@@ -133,6 +137,8 @@ mod bridge_impl {
         // Explicit lifecycle definition to state while the Pin is temporary, the CPPFieldListMap
         // ref returned actually has the same lifetime as the CPPXiphComment.
         fn fieldListMap(self: &CPPXiphComment) -> &CPPFieldListMap;
+        #[namespace = "taglib_shim"]
+        fn XiphComment_pictureList(comment: Pin<&mut CPPXiphComment>) -> UniquePtr<CPPPictureList>;
 
         #[namespace = "TagLib"]
         #[cxx_name = "SimplePropertyMap"]
@@ -317,16 +323,16 @@ mod bridge_impl {
         ) -> UniquePtr<CxxVector<CPPString>>;
 
         #[namespace = "TagLib"]
-        #[cxx_name = "ByteVectorList"]
-        type CPPByteVectorList;
-        #[namespace = "taglib_shim"]
-        fn ByteVectorList_to_vector(list: &CPPByteVectorList) -> UniquePtr<CxxVector<CPPByteVector>>;
-
-        #[namespace = "TagLib"]
         #[cxx_name = "ByteVector"]
         type CPPByteVector;
         fn size(self: &CPPByteVector) -> u32;
         fn data(self: &CPPByteVector) -> *const c_char;
+
+        #[namespace = "TagLib"]
+        #[cxx_name = "ByteVectorList"]
+        type CPPByteVectorList;
+        #[namespace = "taglib_shim"]
+        fn ByteVectorList_to_vector(list: &CPPByteVectorList) -> UniquePtr<CxxVector<CPPByteVector>>;
     }
 }
 
@@ -363,3 +369,72 @@ impl MP4ItemType {
 }
 
 pub use bridge_impl::*;
+
+impl TagLibAllocated for CPPFileRef {}
+
+impl TagLibRef for CPPFile {}
+
+impl TagLibRef for CppAudioProperties {}
+
+// All of the File implementations are also TagLibRef and TagLibAllocated
+
+impl TagLibRef for CPPVorbisFile {}
+
+impl TagLibRef for CPPOpusFile {}
+
+impl TagLibRef for CPPFLACFile {}
+
+impl TagLibShared for CPPPictureList {}
+
+impl TagLibShared for CPPFLACPicture {}
+
+impl TagLibRef for CPPMPEGFile {}
+
+impl TagLibRef for CPPMP4File {}
+
+impl TagLibRef for CPPMP4Tag {}
+
+impl TagLibRef for CPPItemMap {}
+
+impl TagLibRef for CPPItemMapEntry {}
+
+impl TagLibRef for CPPFieldListMap {}
+
+impl TagLibRef for CPPFieldListEntry {}
+
+impl TagLibRef for CPPWAVFile {}
+
+impl TagLibRef for CPPXiphComment {}
+
+impl TagLibRef for CPPID3v1Tag {}
+
+impl TagLibRef for CPPID3v2Tag {}
+
+impl TagLibShared for CPPID3v2FrameList {}
+
+impl TagLibRef for CPPID3v2Frame {}
+
+impl TagLibRef for CPPID3v2TextIdentificationFrame {}
+
+impl TagLibRef for CPPID3v2UserTextIdentificationFrame {}
+
+impl TagLibRef for CPPID3v2AttachedPictureFrame {}
+
+impl TagLibShared for CPPMP4Item {}
+
+impl TagLibShared for CPPCoverArt {}
+
+impl TagLibShared for CPPIntPair {}
+
+impl TagLibShared for CPPString {}
+
+impl TagLibShared for CPPStringList {}
+
+impl TagLibShared for CPPByteVector {}
+
+impl TagLibShared for CPPByteVectorList {}
+
+impl TagLibShared for CPPCoverArtList {}
+
+impl<T: TagLibShared> TagLibRef for T {}
+impl<T: TagLibRef> TagLibAllocated for T {}

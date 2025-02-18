@@ -11,28 +11,28 @@ impl<'file_ref> ID3v1Tag<'file_ref> {
         Self { this }
     }
 
-    pub fn title(&self) -> Option<OwnedString<'file_ref>> {
+    pub fn title(&self) -> OwnedString<'file_ref> {
         let title = bridge::ID3v1Tag_title(self.this.as_ref());
-        let string_this = unsafe { OwnedThis::new(title) };
-        string_this.map(|this| String::new(this))
+        let this = OwnedThis::new(title).unwrap();
+        String::new(this)
     }
 
-    pub fn artist(&self) -> Option<OwnedString<'file_ref>> {
+    pub fn artist(&self) -> OwnedString<'file_ref> {
         let artist = bridge::ID3v1Tag_artist(self.this.as_ref());
-        let string_this = unsafe { OwnedThis::new(artist) };
-        string_this.map(|this| String::new(this))
+        let this = OwnedThis::new(artist).unwrap();
+        String::new(this)
     }
 
-    pub fn album(&self) -> Option<OwnedString<'file_ref>> {
+    pub fn album(&self) -> OwnedString<'file_ref> {
         let album = bridge::ID3v1Tag_album(self.this.as_ref());
-        let string_this = unsafe { OwnedThis::new(album) };
-        string_this.map(|this| String::new(this))
+        let this = OwnedThis::new(album).unwrap();
+        String::new(this)
     }
 
-    pub fn comment(&self) -> Option<OwnedString<'file_ref>> {
+    pub fn comment(&self) -> OwnedString<'file_ref> {
         let comment = bridge::ID3v1Tag_comment(self.this.as_ref());
-        let string_this = unsafe { OwnedThis::new(comment) };
-        string_this.map(|this| String::new(this))
+        let this = OwnedThis::new(comment).unwrap();
+        String::new(this)
     }
 
     pub fn genre_index(&self) -> u32 {

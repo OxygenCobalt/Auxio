@@ -55,14 +55,14 @@ impl<'file_ref> Frame<'file_ref> {
 
     pub fn id(&self) -> tk::OwnedByteVector<'file_ref> {
         let id = bridge::Frame_id(self.this.as_ref());
-        let this = unsafe { OwnedThis::new(id).unwrap() };
+        let this = OwnedThis::new(id).unwrap();
         ByteVector::new(this)
     }
 
     pub fn as_text_identification(&mut self) -> Option<TextIdentificationFrame<'file_ref>> {
         let frame = unsafe { bridge::Frame_asTextIdentification(self.this.ptr()) };
         let frame_ref = unsafe { frame.as_ref() };
-        let frame_this = frame_ref.map(|frame| unsafe { RefThis::new(frame) });
+        let frame_this = frame_ref.map(|frame| RefThis::new(frame));
         frame_this.map(|this| TextIdentificationFrame::new(this))
     }
 
@@ -71,14 +71,14 @@ impl<'file_ref> Frame<'file_ref> {
     ) -> Option<UserTextIdentificationFrame<'file_ref>> {
         let frame = unsafe { bridge::Frame_asUserTextIdentification(self.this.ptr()) };
         let frame_ref = unsafe { frame.as_ref() };
-        let frame_this = frame_ref.map(|frame| unsafe { RefThis::new(frame) });
+        let frame_this = frame_ref.map(|frame| RefThis::new(frame));
         frame_this.map(|this| UserTextIdentificationFrame::new(this))
     }
 
     pub fn as_attached_picture(&mut self) -> Option<AttachedPictureFrame<'file_ref>> {
         let frame = unsafe { bridge::Frame_asAttachedPicture(self.this.ptr()) };
         let frame_ref = unsafe { frame.as_ref() };
-        let frame_this = frame_ref.map(|frame| unsafe { RefThis::new(frame) });
+        let frame_this = frame_ref.map(|frame| RefThis::new(frame));
         frame_this.map(|this| AttachedPictureFrame::new(this))
     }
 }

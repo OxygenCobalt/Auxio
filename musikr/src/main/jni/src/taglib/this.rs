@@ -1,6 +1,7 @@
 use std::marker::PhantomData;
 use std::pin::Pin;
 use cxx::{UniquePtr, memory::UniquePtrTarget};
+use super::bridge::{TagLibAllocated, TagLibRef, TagLibShared};
 
 /// A taglib-FFI-specific trait representing a C++ object returned by the library.
 ///
@@ -9,7 +10,7 @@ use cxx::{UniquePtr, memory::UniquePtrTarget};
 ///   and will be dropped when the FileRef is dropped.
 /// - This object will not move or be mutated over the FileRef's lifetime, this way
 ///   it can be temporarily pinned for use as a `this` pointer.
-pub trait This<'file_ref, T> : AsRef<T> {}
+pub trait This<'file_ref, T: TagLibAllocated> : AsRef<T> {}
 
 /// A taglib-FFI-specific trait representing a C++ object returned by the library.
 ///
@@ -21,16 +22,16 @@ pub trait This<'file_ref, T> : AsRef<T> {}
 ///   and will be dropped when the FileRef is dropped.
 /// - This object will not move over the FileRef's lifetime, this way it can be
 ///   temporarily pinned for use as a `this` pointer.
-pub trait ThisMut<'file_ref, T> : This<'file_ref, T> {
+pub trait ThisMut<'file_ref, T: TagLibAllocated> : This<'file_ref, T> {
     fn pin_mut(&mut self) -> Pin<&mut T>;
 }
 
 /// A [This] instance that is a reference to a C++ object.
-pub struct RefThis<'file_ref, T> {
+pub struct RefThis<'file_ref, T: TagLibRef> {
     this: &'file_ref T
 }
 
-impl<'file_ref, T> RefThis<'file_ref, T> {
+impl<'file_ref, T: TagLibRef> RefThis<'file_ref, T> {
     /// Create a new [RefThis] from a reference to a C++ object.
     /// 
     /// This is safe to call assuming the contract of [This] is upheld. Since this
@@ -38,7 +39,7 @@ impl<'file_ref, T> RefThis<'file_ref, T> {
     /// responsibility to ensure that the reference is valid for the lifetime of
     /// the `'file_ref` parameter. More or less, if it comes from the TagLib FFI
     /// interface, it is safe to use this.
-    pub unsafe fn new(this: &'file_ref T) -> Self {
+    pub fn new(this: &'file_ref T) -> Self {
         // Rough informal contact is that the reference points to a C++ object
         // that will live and not move for as long as 'file_ref.
         Self { this }
@@ -54,22 +55,22 @@ impl<'file_ref, T> RefThis<'file_ref, T> {
     }
 }
 
-impl<'file_ref, T> AsRef<T> for RefThis<'file_ref, T> {
+impl<'file_ref, T: TagLibRef> AsRef<T> for RefThis<'file_ref, T> {
     fn as_ref(&self) -> &T {
         self.this
     }
 }
 
-impl<'file_ref, T> This<'file_ref, T> for RefThis<'file_ref, T> {}
+impl<'file_ref, T: TagLibRef> This<'file_ref, T> for RefThis<'file_ref, T> {}
 
 /// A [ThisMut] instance that is a reference to a C++ object.
 /// 
 /// This is similar to [RefThis], but allows mutating the object.
-pub struct RefThisMut<'file_ref, T> {
+pub struct RefThisMut<'file_ref, T: TagLibRef> {
     this: &'file_ref mut T,
 }
 
-impl<'file_ref, T> RefThisMut<'file_ref, T> {
+impl<'file_ref, T: TagLibRef> RefThisMut<'file_ref, T> {
     /// Create a new [RefThisMut] from a reference to a C++ object.
     /// 
     /// This is safe to call assuming the contract of [ThisMut] is upheld. Since
@@ -77,7 +78,7 @@ impl<'file_ref, T> RefThisMut<'file_ref, T> {
     /// responsibility to ensure that the reference is valid for the lifetime of
     /// the `'file_ref` parameter. More or less, if it comes from the TagLib FFI
     /// interface, it is safe to use this.
-    pub unsafe fn new(this: &'file_ref mut T) -> Self {
+    pub fn new(this: &'file_ref mut T) -> Self {
         Self { this }
     }
 
@@ -100,15 +101,15 @@ impl<'file_ref, T> RefThisMut<'file_ref, T> {
     }
 }
 
-impl<'file_ref, T> AsRef<T> for RefThisMut<'file_ref, T> {
+impl<'file_ref, T: TagLibRef> AsRef<T> for RefThisMut<'file_ref, T> {
     fn as_ref(&self) -> &T {
         self.this
     }
 }
 
-impl<'file_ref, T> This<'file_ref, T> for RefThisMut<'file_ref, T> {}
+impl<'file_ref, T: TagLibRef> This<'file_ref, T> for RefThisMut<'file_ref, T> {}
 
-impl<'file_ref, T> ThisMut<'file_ref, T> for RefThisMut<'file_ref, T> {
+impl<'file_ref, T: TagLibRef> ThisMut<'file_ref, T> for RefThisMut<'file_ref, T> {
     fn pin_mut(&mut self) -> Pin<&mut T> {
         unsafe { Pin::new_unchecked(self.this) }
     }
@@ -119,12 +120,12 @@ impl<'file_ref, T> ThisMut<'file_ref, T> for RefThisMut<'file_ref, T> {
 /// "Owned" in this context only really means that the object is not a rust reference.
 /// In practice, all "owned" taglib objects are actually shared references, and are
 /// thus tied to the lifetime of the `'file_ref` parameter.
-pub struct OwnedThis<'file_ref, T : UniquePtrTarget> {
+pub struct OwnedThis<'file_ref, T: TagLibShared + UniquePtrTarget> {
     _data: PhantomData<&'file_ref ()>,
     this: UniquePtr<T>,
 }
 
-impl<'file_ref, T : UniquePtrTarget> OwnedThis<'file_ref, T> {
+impl<'file_ref, T: TagLibShared + UniquePtrTarget> OwnedThis<'file_ref, T> {
     /// Create a new [OwnedThis] from a [UniquePtr].
     /// 
     /// This is safe to call assuming the contract of [This] is upheld. Since this
@@ -134,7 +135,7 @@ impl<'file_ref, T : UniquePtrTarget> OwnedThis<'file_ref, T> {
     /// interface, it is safe to use this.
     /// 
     /// This will return `None` if the `UniquePtr` is `null`.
-    pub unsafe fn new(this: UniquePtr<T>) -> Option<Self> {
+    pub fn new(this: UniquePtr<T>) -> Option<Self> {
         if !this.is_null() {
             Some(Self {
                 _data: PhantomData,
@@ -146,15 +147,15 @@ impl<'file_ref, T : UniquePtrTarget> OwnedThis<'file_ref, T> {
     }
 }
 
-impl<'file_ref, T : UniquePtrTarget> AsRef<T> for OwnedThis<'file_ref, T> {
+impl<'file_ref, T: TagLibShared + UniquePtrTarget> AsRef<T> for OwnedThis<'file_ref, T> {
     fn as_ref(&self) -> &T {
         self.this.as_ref().unwrap()
     }
 }
 
-impl<'file_ref, T : UniquePtrTarget> This<'file_ref, T> for OwnedThis<'file_ref, T> {}
+impl<'file_ref, T: TagLibShared + UniquePtrTarget> This<'file_ref, T> for OwnedThis<'file_ref, T> {}
 
-impl<'file_ref, T : UniquePtrTarget> ThisMut<'file_ref, T> for OwnedThis<'file_ref, T> {
+impl<'file_ref, T: TagLibShared + UniquePtrTarget> ThisMut<'file_ref, T> for OwnedThis<'file_ref, T> {
     fn pin_mut(&mut self) -> Pin<&mut T> {
         self.this.as_mut().unwrap()
     }

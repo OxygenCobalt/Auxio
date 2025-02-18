@@ -16,11 +16,11 @@ impl<'file_ref> MP4File<'file_ref> {
 
     pub fn tag(&self) -> Option<MP4Tag<'file_ref>> {
         let this = self.this.as_ref();
-        let tag = unsafe { this.MP4Tag() };
+        let tag = this.MP4Tag();
         let tag_ref = unsafe { tag.as_ref() };
         tag_ref.map(|tag| {
             // SAFETY: The tag pointer is guaranteed to be valid for the lifetime of self
-            let tag_this = unsafe { RefThis::new(tag) };
+            let tag_this = RefThis::new(tag);
             MP4Tag::new(tag_this)
         })
     }
@@ -37,7 +37,7 @@ impl<'file_ref> MP4Tag<'file_ref> {
 
     pub fn item_map(&'file_ref self) -> ItemMap<'file_ref> {
         let map: &'file_ref CPPItemMap = self.this.as_ref().itemMap();
-        let map_this = unsafe { RefThis::new(map) };
+        let map_this = RefThis::new(map);
         ItemMap::new(map_this)
     }
 }
@@ -63,11 +63,11 @@ impl<'file_ref> ItemMap<'file_ref> {
                 // - The values returned are copied and thus not dependent on the address
                 //   of self.
                 let key_ref = property.key();
-                let key_this = unsafe { OwnedThis::new(key_ref) }.unwrap();
+                let key_this = OwnedThis::new(key_ref).unwrap();
                 let key = tk::String::new(key_this).to_string();
                 
                 let value_ref = property.value();
-                let value_this = unsafe { OwnedThis::new(value_ref) }.unwrap();
+                let value_this = OwnedThis::new(value_ref).unwrap();
                 let value = MP4Item::new(value_this);
                 
                 (key, value)
@@ -99,26 +99,26 @@ impl<'file_ref> MP4Item<'file_ref> {
             MP4ItemType::Int => Some(MP4Data::Int(self.this.as_ref().toInt())),
             MP4ItemType::IntPair => {
                 let pair = super::bridge::Item_toIntPair(self.this.as_ref());
-                let pair_this = unsafe { OwnedThis::new(pair) };
-                pair_this.map(|this| MP4Data::IntPair(IntPair::new(this)))
+                let pair_this = OwnedThis::new(pair).unwrap();
+                Some(MP4Data::IntPair(IntPair::new(pair_this)))
             },
             MP4ItemType::Byte => Some(MP4Data::Byte(self.this.as_ref().toByte())),
             MP4ItemType::UInt => Some(MP4Data::UInt(self.this.as_ref().toUInt())),
             MP4ItemType::LongLong => Some(MP4Data::LongLong(super::bridge::Item_toLongLong(self.this.as_ref()))),
             MP4ItemType::StringList => {
                 let string_list = super::bridge::Item_toStringList(self.this.as_ref());
-                let string_list_this = unsafe { OwnedThis::new(string_list) };
-                string_list_this.map(|this| MP4Data::StringList(tk::StringList::new(this)))
+                let string_list_this = OwnedThis::new(string_list).unwrap();
+                Some(MP4Data::StringList(tk::StringList::new(string_list_this)))
             },
             MP4ItemType::ByteVectorList => {
                 let byte_vector_list = super::bridge::Item_toByteVectorList(self.this.as_ref());
-                let byte_vector_list_this = unsafe { OwnedThis::new(byte_vector_list) };
-                byte_vector_list_this.map(|this| MP4Data::ByteVectorList(tk::ByteVectorList::new(this)))
+                let byte_vector_list_this = OwnedThis::new(byte_vector_list).unwrap();
+                Some(MP4Data::ByteVectorList(tk::ByteVectorList::new(byte_vector_list_this)))
             },
             MP4ItemType::CoverArtList => {
                 let cover_art_list = super::bridge::Item_toCoverArtList(self.this.as_ref());
-                let cover_art_list_this = unsafe { OwnedThis::new(cover_art_list) };
-                cover_art_list_this.map(|this| MP4Data::CoverArtList(CoverArtList::new(this)))
+                let cover_art_list_this = OwnedThis::new(cover_art_list).unwrap();
+                Some(MP4Data::CoverArtList(CoverArtList::new(cover_art_list_this)))
             }
         })
     }
