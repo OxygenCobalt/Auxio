@@ -35,14 +35,14 @@ impl<'file_ref> MP4Tag<'file_ref> {
         Self { this }
     }
 
-    pub fn item_map(&self) -> ItemMap<'file_ref> {
+    pub fn item_map(&'file_ref self) -> ItemMap<'file_ref> {
         let map: &'file_ref CPPItemMap = self.this.as_ref().itemMap();
         let map_this = unsafe { RefThis::new(map) };
         ItemMap::new(map_this)
     }
 }
 
-pub struct ItemMap<'file_ref> {
+pub struct ItemMap<'file_ref> { 
     this: RefThis<'file_ref, CPPItemMap>,
 }
 
@@ -63,11 +63,11 @@ impl<'file_ref> ItemMap<'file_ref> {
                 // - The values returned are copied and thus not dependent on the address
                 //   of self.
                 let key_ref = property.key();
-                let key_this = unsafe { RefThis::new(key_ref) };
+                let key_this = unsafe { OwnedThis::new(key_ref) }.unwrap();
                 let key = tk::String::new(key_this).to_string();
                 
                 let value_ref = property.value();
-                let value_this = unsafe { RefThis::new(value_ref) };
+                let value_this = unsafe { OwnedThis::new(value_ref) }.unwrap();
                 let value = MP4Item::new(value_this);
                 
                 (key, value)
@@ -79,11 +79,11 @@ impl<'file_ref> ItemMap<'file_ref> {
 }
 
 pub struct MP4Item<'file_ref> {
-    this: RefThis<'file_ref, CPPMP4Item>,
+    this: OwnedThis<'file_ref, CPPMP4Item>,
 }
 
 impl<'file_ref> MP4Item<'file_ref> {
-    pub fn new(this: RefThis<'file_ref, CPPMP4Item>) -> Self {
+    pub fn new(this: OwnedThis<'file_ref, CPPMP4Item>) -> Self {
         Self { this }
     }
 

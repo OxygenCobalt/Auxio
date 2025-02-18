@@ -10,8 +10,8 @@ namespace taglib_shim {
     class ItemMapEntry {
     public:
         ItemMapEntry(TagLib::String key, TagLib::MP4::Item value);
-        const TagLib::String& key() const;
-        const TagLib::MP4::Item& value() const;
+        std::unique_ptr<TagLib::String> key() const;
+        std::unique_ptr<TagLib::MP4::Item> value() const;
 
     private:
         TagLib::String key_;

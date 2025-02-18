@@ -4,14 +4,14 @@ namespace taglib_shim
 {
     FieldListEntry::FieldListEntry(TagLib::String key, TagLib::StringList value) : key_(key), value_(value) {}
 
-    const TagLib::String &FieldListEntry::key() const
+    std::unique_ptr<TagLib::String> FieldListEntry::key() const
     {
-        return key_;
+        return std::make_unique<TagLib::String>(key_);
     }
 
-    const TagLib::StringList &FieldListEntry::value() const
+    std::unique_ptr<TagLib::StringList> FieldListEntry::value() const
     {
-        return value_;
+        return std::make_unique<TagLib::StringList>(value_);
     }
     
     std::unique_ptr<std::vector<FieldListEntry>> FieldListMap_to_entries(const TagLib::SimplePropertyMap &map)

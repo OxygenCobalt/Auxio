@@ -7,12 +7,12 @@ namespace taglib_shim {
     ItemMapEntry::ItemMapEntry(TagLib::String key, TagLib::MP4::Item value)
         : key_(std::move(key)), value_(std::move(value)) {}
 
-    const TagLib::String& ItemMapEntry::key() const {
-        return key_;
+    std::unique_ptr<TagLib::String> ItemMapEntry::key() const {
+        return std::make_unique<TagLib::String>(key_);
     }
 
-    const TagLib::MP4::Item& ItemMapEntry::value() const {
-        return value_;
+    std::unique_ptr<TagLib::MP4::Item> ItemMapEntry::value() const {
+        return std::make_unique<TagLib::MP4::Item>(value_);
     }
 
     std::unique_ptr<std::vector<ItemMapEntry>> ItemMap_to_entries(const TagLib::MP4::ItemMap& map) {

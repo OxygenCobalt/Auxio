@@ -8,8 +8,8 @@ namespace taglib_shim
     struct FieldListEntry
     {
         FieldListEntry(TagLib::String key, TagLib::StringList value);
-        const TagLib::String &key() const;
-        const TagLib::StringList &value() const;
+        std::unique_ptr<TagLib::String> key() const;
+        std::unique_ptr<TagLib::StringList> value() const;
 
     private:
         TagLib::String key_;
