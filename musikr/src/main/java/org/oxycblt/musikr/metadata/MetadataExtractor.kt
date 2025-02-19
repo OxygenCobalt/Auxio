@@ -38,6 +38,9 @@ private object MetadataExtractorImpl : MetadataExtractor {
         withContext(Dispatchers.IO) {
             val fis = FileInputStream(fd.fileDescriptor)
             val input = NativeInputStream(deviceFile, fis)
-            MetadataJNI.openFile(input).also { fis.close() }
+            MetadataJNI.openFile(input).also {
+                Log.d("MetadataExtractor", "Metadata: ${it?.id3v2}")
+                fis.close()
+            }
         }
 }

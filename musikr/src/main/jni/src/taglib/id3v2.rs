@@ -16,10 +16,10 @@ impl<'file_ref> ID3v2Tag<'file_ref> {
         Self { this }
     }
 
-    pub fn frames(&self) -> Option<FrameList<'file_ref>> {
+    pub fn frames(&self) -> FrameList<'file_ref> {
         let frames = bridge::Tag_frameList(self.this.as_ref());
-        let this = OwnedThis::new(frames);
-        this.map(|this| FrameList::new(this))
+        let this = OwnedThis::new(frames).unwrap();
+        FrameList::new(this)
     }
 }
 
@@ -94,10 +94,10 @@ impl<'file_ref> TextIdentificationFrame<'file_ref> {
         Self { this }
     }
 
-    pub fn field_list(&self) -> Option<OwnedStringList<'file_ref>> {
+    pub fn field_list(&self) -> OwnedStringList<'file_ref> {
         let field_list = bridge::TextIdentificationFrame_fieldList(self.this.as_ref());
-        let this = OwnedThis::new(field_list);
-        this.map(|this| StringList::new(this))
+        let this = OwnedThis::new(field_list).unwrap();
+        StringList::new(this)
     }
 }
 
@@ -110,10 +110,10 @@ impl<'file_ref> UserTextIdentificationFrame<'file_ref> {
         Self { this }
     }
 
-    pub fn values(&self) -> Option<OwnedStringList<'file_ref>> {
+    pub fn values(&self) -> OwnedStringList<'file_ref> {
         let values = bridge::UserTextIdentificationFrame_fieldList(self.this.as_ref());
-        let this = OwnedThis::new(values);
-        this.map(|this| StringList::new(this))
+        let this = OwnedThis::new(values).unwrap();
+        StringList::new(this)
     }
 }
 
@@ -131,9 +131,9 @@ impl<'file_ref> AttachedPictureFrame<'file_ref> {
         PictureType::from_u32(picture_type)
     }
 
-    pub fn picture(&self) -> Option<OwnedByteVector<'file_ref>> {
+    pub fn picture(&self) -> OwnedByteVector<'file_ref> {
         let picture = bridge::AttachedPictureFrame_picture(self.this.as_ref());
-        let this = OwnedThis::new(picture);
-        this.map(|this| ByteVector::new(this))
+        let this = OwnedThis::new(picture).unwrap();
+        ByteVector::new(this)
     }
 }

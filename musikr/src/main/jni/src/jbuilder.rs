@@ -59,41 +59,31 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
         let mut first_pic = None;
         let mut front_cover_pic = None;
 
-        if let Some(frames) = tag.frames() {
-            for mut frame in frames.to_vec() {
-                if let Some(text_frame) = frame.as_text_identification() {
-                    if let Some(field_list) = text_frame.field_list() {
-                        let values: Vec<String> = field_list
-                            .to_vec()
-                            .into_iter()
-                            .map(|s| s.to_string())
-                            .collect();
-                        self.id3v2.add_id_list(frame.id().to_string_lossy(), values);
-                    }
-                } else if let Some(user_text_frame) = frame.as_user_text_identification() {
-                    if let Some(values) = user_text_frame.values() {
-                        let mut values = values.to_vec();
-                        if !values.is_empty() {
-                            let description = values.remove(0);
-                            for value in values {
-                                self.id3v2.add_combined(
-                                    frame.id().to_string_lossy(),
-                                    description.clone(),
-                                    value.to_string(),
-                                );
-                            }
+        for mut frame in tag.frames().to_vec() {
+                if let Some(user_text_frame) = frame.as_user_text_identification() {
+                    let values = user_text_frame.values();
+                    let mut values = values.to_vec();
+                    if !values.is_empty() {
+                        let description = values.remove(0).to_string();
+                            let remaining: Vec<String> = values.into_iter().map(|s| s.to_string()).collect();
+                            self.id3v2.add_combined_list(frame.id().to_string_lossy(), description, remaining);
                         }
-                    }
+                } else if let Some(text_frame) = frame.as_text_identification() {
+                    let field_list = text_frame.field_list();
+                    let values: Vec<String> = field_list
+                        .to_vec()
+                        .into_iter()
+                        .map(|s| s.to_string())
+                        .collect();
+                    self.id3v2.add_id_list(frame.id().to_string_lossy(), values);
                 } else if let Some(picture_frame) = frame.as_attached_picture() {
                     if first_pic.is_none() {
-                        first_pic = picture_frame.picture().map(|p| p.to_vec());
+                        first_pic = Some(picture_frame.picture().to_vec());
                     }
-                    // TODO: Check for front cover type when bindings are available
                     if let (Some(PictureType::FrontCover), None) =
                         (picture_frame.picture_type(), &front_cover_pic)
                     {
-                        front_cover_pic = picture_frame.picture().map(|p| p.to_vec());
-                    }
+                    front_cover_pic = Some(picture_frame.picture().to_vec());
                 }
             }
         }
