@@ -13,6 +13,14 @@ jobs:
     steps:
     - name: Install ninja-build
       run: sudo apt-get install -y ninja-build
+    - name: Setup arm rust target
+      run: rustup target add armv7-linux-androideabi 
+    - name: Setup x86 rust target
+      run: rustup target add i686-linux-android
+    - name: Setup arm64 rust target
+      run: rustup target add aarch64-linux-android
+    - name: Setup x86_64 rust target
+      run: rustup target add x86_64-linux-android 
     - name: Clone repository
       uses: actions/checkout@v4
     - name: Clone submodules
