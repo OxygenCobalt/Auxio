@@ -61,7 +61,7 @@ fn main() {
         cmake_args.extend(vec![
             format!("-DANDROID_NDK_PATH={}", ndk_path),
             format!("-DCMAKE_TOOLCHAIN_FILE={}", ndk_toolchain.to_str().unwrap()),
-            format!("-DANDROID_ABI={}", arch)
+            format!("-DANDROID_ABI={}", arch),
         ]);
     }
 
@@ -130,12 +130,12 @@ fn main() {
         .include(".") // Add the current directory to include path
         .flag_if_supported("-std=c++14");
 
-    
     if is_android {
-        builder.cpp_link_stdlib("c++_static")
-        .flag("-static-libstdc++")
-        .flag("-fexceptions")
-        .flag("-funwind-tables"); // Use shared C++ runtime for Android compatibility
+        builder
+            .cpp_link_stdlib("c++_static")
+            .flag("-static-libstdc++")
+            .flag("-fexceptions")
+            .flag("-funwind-tables"); // Use shared C++ runtime for Android compatibility
     }
     builder.compile("taglib_cxx_bindings");
 

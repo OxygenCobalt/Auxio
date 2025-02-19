@@ -10,13 +10,12 @@ use std::rc::Rc;
 
 mod jbuilder;
 mod jstream;
-mod taglib;
 mod jtagmap;
+mod taglib;
 
 use jbuilder::JMetadataBuilder;
 use jstream::JInputStream;
 use taglib::file_ref::FileRef;
-use android_logger::Filter;
 type SharedEnv<'local> = Rc<RefCell<JNIEnv<'local>>>;
 
 // Initialize the logger and panic hook when the library is loaded
@@ -26,7 +25,7 @@ fn init() {
     android_logger::init_once(
         Config::default()
             .with_max_level(LevelFilter::Error)
-            .with_tag("musikr")
+            .with_tag("musikr"),
     );
 
     // Set custom panic hook
@@ -40,7 +39,12 @@ fn init() {
         };
 
         let location = if let Some(location) = panic_info.location() {
-            format!("{}:{}:{}", location.file(), location.line(), location.column())
+            format!(
+                "{}:{}:{}",
+                location.file(),
+                location.line(),
+                location.column()
+            )
         } else {
             "Unknown location".to_string()
         };
@@ -115,7 +119,6 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
         }
         None => {}
     }
-
 
     let metadata = jbuilder.build();
     metadata.into_raw()
