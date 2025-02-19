@@ -31,8 +31,13 @@ impl<'local> JTagMap<'local> {
         let mut env = self.env.borrow_mut();
         let array_list = env.new_object(&self.array_list_class, "()V", &[]).unwrap();
         
-        for value in values {
-            let j_value = env.new_string(value).unwrap();
+        // Create all JString values first
+        let j_values: Vec<JString> = values.iter()
+            .map(|value| env.new_string(value).unwrap())
+            .collect();
+        
+        // Then add them to the ArrayList
+        for j_value in j_values {
             env.call_method(
                 &array_list,
                 "add",
@@ -58,9 +63,12 @@ impl<'local> JTagMap<'local> {
     }
 
     pub fn add_id_list(&self, id: impl Into<String>, values: Vec<String>) {
+        // Create array list first while holding the borrow
+        let j_values = self.create_array_list(&values);
+        
+        // Then create the id and make the call with a new borrow
         let mut env = self.env.borrow_mut();
         let j_id = env.new_string(id.into()).unwrap();
-        let j_values = self.create_array_list(&values);
         
         env.call_method(
             &self.tag_map,
@@ -84,9 +92,10 @@ impl<'local> JTagMap<'local> {
     }
 
     pub fn add_custom_list(&self, description: impl Into<String>, values: Vec<String>) {
+        let j_values = self.create_array_list(&values);
+        
         let mut env = self.env.borrow_mut();
         let j_description = env.new_string(description.into()).unwrap();
-        let j_values = self.create_array_list(&values);
         
         env.call_method(
             &self.tag_map,
@@ -111,10 +120,11 @@ impl<'local> JTagMap<'local> {
     }
 
     pub fn add_combined_list(&self, id: impl Into<String>, description: impl Into<String>, values: Vec<String>) {
+        let j_values = self.create_array_list(&values);
+        
         let mut env = self.env.borrow_mut();
         let j_id = env.new_string(id.into()).unwrap();
         let j_description = env.new_string(description.into()).unwrap();
-        let j_values = self.create_array_list(&values);
         
         env.call_method(
             &self.tag_map,
