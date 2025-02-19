@@ -11,6 +11,8 @@ crate-type = ["cdylib"]
 bytemuck = "1.21.0"
 cxx = "1.0.137"
 jni = "0.21.1"
+link-cplusplus = {version = "1.0.9", features = ["nothing"]}
 
 [build-dependencies]
 cxx-build = "1.0.137"
+link-cplusplus = {version = "1.0.9", features = ["nothing"]}
