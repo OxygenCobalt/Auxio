@@ -11,7 +11,7 @@ use std::rc::Rc;
 mod jbuilder;
 mod jstream;
 mod taglib;
-mod tagmap;
+mod jtagmap;
 
 use jbuilder::JMetadataBuilder;
 use jstream::JInputStream;

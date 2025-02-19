@@ -13,7 +13,7 @@ use crate::taglib::{
     xiph::{self, FLACPictureList},
 };
 
-use crate::tagmap::JTagMap;
+use crate::jtagmap::JTagMap;
 
 pub struct JMetadataBuilder<'local, 'file_ref> {
     env: Rc<RefCell<JNIEnv<'local>>>,
