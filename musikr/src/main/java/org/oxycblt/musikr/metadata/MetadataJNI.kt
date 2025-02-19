@@ -24,5 +24,5 @@ internal object MetadataJNI {
     }
 
     // This is a rust function, Android Studio has no idea how to link to it
-    external fun openFile(input: NativeInputStream): String
+    external fun openFile(input: NativeInputStream): Metadata?
 }
