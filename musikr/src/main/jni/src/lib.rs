@@ -61,7 +61,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
 ) -> jobject {
     // Create JInputStream from the Java input stream
     let shared_env = Rc::new(RefCell::new(env));
-    let stream = JInputStream::new(shared_env.clone(), input);
+    let stream = JInputStream::new(shared_env.clone(), &input);
     let file_ref = FileRef::new(stream);
     let file = file_ref.file();
     let mut jbuilder = JMetadataBuilder::new(shared_env.clone());

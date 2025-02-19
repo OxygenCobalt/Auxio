@@ -5,11 +5,11 @@ use std::io::SeekFrom;
 
 pub struct JInputStream<'local> {
     env: SharedEnv<'local>,
-    input: JObject<'local>,
+    input: &'local JObject<'local>,
 }
 
 impl<'local, 'a> JInputStream<'local> {
-    pub fn new(env: SharedEnv<'local>, input: JObject<'local>) -> Self {
+    pub fn new(env: SharedEnv<'local>, input: &'local JObject<'local>) -> Self {
         Self { env, input }
     }
 }
