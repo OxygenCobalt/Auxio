@@ -52,14 +52,3 @@ impl<'io> FileRef<'io> {
         file_this.map(|this| File::new(this))
     }
 }
-
-impl<'a> Drop for FileRef<'a> {
-    fn drop(&mut self) {
-        // First drop the file, since it has a pointer to the stream.
-        // Then drop the stream
-        unsafe {
-            std::ptr::drop_in_place(&mut self.this);
-            std::ptr::drop_in_place(&mut self.stream);
-        }
-    }
-}
