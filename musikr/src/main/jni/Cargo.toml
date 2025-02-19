@@ -12,6 +12,9 @@ bytemuck = "1.21.0"
 cxx = "1.0.137"
 jni = "0.21.1"
 link-cplusplus = {version = "1.0.9", features = ["nothing"]}
+android_logger = "0.13.3"
+log = "0.4.20"
+ctor = "0.2.6"
 
 [build-dependencies]
 cxx-build = "1.0.137"

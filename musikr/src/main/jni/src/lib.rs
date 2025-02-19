@@ -1,7 +1,11 @@
+extern crate link_cplusplus;
+use android_logger::Config;
 use jni::objects::{JClass, JObject};
 use jni::sys::jobject;
 use jni::JNIEnv;
+use log::LevelFilter;
 use std::cell::RefCell;
+use std::panic;
 use std::rc::Rc;
 
 mod jbuilder;
@@ -12,8 +16,38 @@ mod tagmap;
 use jbuilder::JMetadataBuilder;
 use jstream::JInputStream;
 use taglib::file_ref::FileRef;
-
+use android_logger::Filter;
 type SharedEnv<'local> = Rc<RefCell<JNIEnv<'local>>>;
+
+// Initialize the logger and panic hook when the library is loaded
+#[ctor::ctor]
+fn init() {
+    // Initialize Android logger
+    android_logger::init_once(
+        Config::default()
+            .with_max_level(LevelFilter::Error)
+            .with_tag("musikr")
+    );
+
+    // Set custom panic hook
+    panic::set_hook(Box::new(|panic_info| {
+        let message = if let Some(s) = panic_info.payload().downcast_ref::<String>() {
+            s.clone()
+        } else if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
+            s.to_string()
+        } else {
+            "Unknown panic message".to_string()
+        };
+
+        let location = if let Some(location) = panic_info.location() {
+            format!("{}:{}:{}", location.file(), location.line(), location.column())
+        } else {
+            "Unknown location".to_string()
+        };
+
+        log::error!(target: "musikr", "Panic occurred at {}: {}", location, message);
+    }));
+}
 
 #[no_mangle]
 pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
