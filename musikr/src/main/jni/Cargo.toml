@@ -23,4 +23,3 @@ link-cplusplus = {version = "1.0.9", features = ["nothing"]}
 [profile.release]
 lto = true
 codegen-units = 1
-strip = true
