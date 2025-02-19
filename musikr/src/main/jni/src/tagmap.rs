@@ -44,57 +44,40 @@ impl<'local> JTagMap<'local> {
     }
 
     pub fn get_object(&self) -> JObject {
-        let map_class = self
-            .env
-            .borrow_mut()
-            .find_class("java/util/HashMap")
-            .unwrap();
-        let map = self
-            .env
-            .borrow_mut()
-            .new_object(&map_class, "()V", &[])
-            .unwrap();
+        let mut env = self.env.borrow_mut();
+        
+        let map_class = env.find_class("java/util/HashMap").unwrap();
+        let map = env.new_object(&map_class, "()V", &[]).unwrap();
+        let array_list_class = env.find_class("java/util/ArrayList").unwrap();
 
         for (key, values) in &self.map {
-            let j_key = self.env.borrow().new_string(key).unwrap();
+            let j_key = env.new_string(key).unwrap();
+            
+            // Create ArrayList for values
+            let array_list = env.new_object(&array_list_class, "()V", &[]).unwrap();
+
+            // Convert all values to Java strings first
             let j_values: Vec<JObject> = values
                 .iter()
-                .map(|v| self.env.borrow().new_string(v).unwrap().into())
+                .map(|v| env.new_string(v).unwrap().into())
                 .collect();
 
-            // Create ArrayList for values
-            let array_list_class = self
-                .env
-                .borrow_mut()
-                .find_class("java/util/ArrayList")
-                .unwrap();
-            let array_list = self
-                .env
-                .borrow_mut()
-                .new_object(array_list_class, "()V", &[])
-                .unwrap();
-
+            // Add all values to ArrayList
             for value in j_values {
-                self.env
-                    .borrow_mut()
-                    .call_method(
-                        &array_list,
-                        "add",
-                        "(Ljava/lang/Object;)Z",
-                        &[JValueGen::from(&value)],
-                    )
-                    .unwrap();
+                env.call_method(
+                    &array_list,
+                    "add",
+                    "(Ljava/lang/Object;)Z",
+                    &[JValueGen::from(&value)],
+                ).unwrap();
             }
 
-            self.env
-                .borrow_mut()
-                .call_method(
-                    &map,
-                    "put",
-                    "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
-                    &[JValueGen::from(&j_key), JValueGen::from(&array_list)],
-                )
-                .unwrap();
+            env.call_method(
+                &map,
+                "put",
+                "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+                &[JValueGen::from(&j_key), JValueGen::from(&array_list)],
+            ).unwrap();
         }
 
         map

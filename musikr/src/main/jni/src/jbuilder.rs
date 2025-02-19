@@ -240,13 +240,17 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
             .borrow_mut()
             .find_class("org/oxycblt/musikr/metadata/Metadata")
             .unwrap();
+        // Get the objects first since they need the env borrow first
+        let id3v2 = self.id3v2.get_object();
+        let xiph = self.xiph.get_object();
+        let mp4 = self.mp4.get_object();
         self.env.borrow_mut().new_object(
             metadata_class,
             "(Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;[BLorg/oxycblt/musikr/metadata/Properties;)V",
             &[
-                JValueGen::from(&self.id3v2.get_object()),
-                JValueGen::from(&self.xiph.get_object()),
-                JValueGen::from(&self.mp4.get_object()),
+                JValueGen::from(&id3v2),
+                JValueGen::from(&xiph),
+                JValueGen::from(&mp4),
                 JValueGen::from(&cover_array),
                 JValueGen::from(&properties),
             ],
