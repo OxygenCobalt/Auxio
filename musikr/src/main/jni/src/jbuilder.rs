@@ -95,7 +95,7 @@ impl<'local, 'file_ref> JMetadataBuilder<'local, 'file_ref> {
     pub fn set_xiph(&mut self, tag: &mut xiph::XiphComment<'file_ref>) {
         for (key, values) in tag.field_list_map().to_hashmap() {
             let values: Vec<String> = values.to_vec().into_iter().map(|s| s.to_string()).collect();
-            self.xiph.add_id_list(key.to_uppercase(), values);
+            self.xiph.add_custom_list(key.to_uppercase(), values);
         }
         self.set_flac_pictures(&tag.picture_list());
     }

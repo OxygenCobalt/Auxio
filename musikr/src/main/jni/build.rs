@@ -144,7 +144,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-link-lib=static=tag");
     println!("cargo:rerun-if-changed=taglib/");
 
-    configure_cxx_bridge(&target)?;
+    configure_cxx_bridge(&target)?; 
     if target.contains("android") {
         // Magic linker flags that statically link the C++ runtime
         // and exception handling to the library.
