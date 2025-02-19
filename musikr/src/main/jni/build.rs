@@ -61,7 +61,7 @@ fn main() {
         cmake_args.extend(vec![
             format!("-DANDROID_NDK_PATH={}", ndk_path),
             format!("-DCMAKE_TOOLCHAIN_FILE={}", ndk_toolchain.to_str().unwrap()),
-            format!("-DANDROID_ABI={}", arch),
+            format!("-DANDROID_ABI={}", arch)
         ]);
     }
 
@@ -111,7 +111,9 @@ fn main() {
         arch_pkg_dir.display()
     );
     println!("cargo:rustc-link-lib=static=tag");
-    // println!("cargo:rustc-link-lib=cc++_static");
+    println!("cargo:rustc-link-lib=static=c++_static");
+    println!("cargo:rustc-link-lib=static=c++abi");
+    println!("cargo:rustc-link-lib=unwind");
 
     // Build the shim and cxx bridge together
     let mut builder = cxx_build::bridge("src/taglib/bridge.rs");
@@ -128,8 +130,12 @@ fn main() {
         .include(".") // Add the current directory to include path
         .flag_if_supported("-std=c++14");
 
+    
     if is_android {
-        builder.cpp_link_stdlib("c++_static"); // Use shared C++ runtime for Android compatibility
+        builder.cpp_link_stdlib("c++_static")
+        .flag("-static-libstdc++")
+        .flag("-fexceptions")
+        .flag("-funwind-tables"); // Use shared C++ runtime for Android compatibility
     }
     builder.compile("taglib_cxx_bindings");
 
