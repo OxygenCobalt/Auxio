@@ -116,5 +116,7 @@ pub extern "C" fn Java_org_oxycblt_musikr_metadata_MetadataJNI_openFile<'local>(
         None => {}
     }
 
-    jbuilder.build().into_raw()
+
+    let metadata = jbuilder.build();
+    metadata.into_raw()
 }

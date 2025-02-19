@@ -116,7 +116,8 @@ namespace taglib_shim
             whence = SEEK_END;
             break;
         default:
-            throw std::runtime_error("Invalid seek position");
+            return;
+            break;
         }
         rust_stream->seek(offset, whence);
     }
