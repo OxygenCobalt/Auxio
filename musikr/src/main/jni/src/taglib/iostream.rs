@@ -14,14 +14,20 @@ pub trait IOStream {
 }
 
 pub(super) struct BridgedIOStream<'io_stream> {
+    stream: Box<DynIOStream<'io_stream>>,
     cpp_stream: UniquePtr<CPPIOStream<'io_stream>>,
 }
 
 impl<'io_stream> BridgedIOStream<'io_stream> {
     pub fn new<T: IOStream + 'io_stream>(stream: T) -> Self {
-        let rs_stream: Box<DynIOStream<'io_stream>> = Box::new(DynIOStream(Box::new(stream)));
-        let cpp_stream: UniquePtr<CPPIOStream<'io_stream>> = bridge::wrap_RsIOStream(rs_stream);
-        BridgedIOStream { cpp_stream }
+        let mut rs_stream: Box<DynIOStream<'io_stream>> = Box::new(DynIOStream(Box::new(stream)));
+        let cpp_stream: UniquePtr<CPPIOStream<'io_stream>> = unsafe {
+            bridge::wrap_RsIOStream(rs_stream.as_mut() as *mut _)
+        };
+        BridgedIOStream {
+            stream: rs_stream,
+            cpp_stream,
+        }
     }
 
     pub fn cpp_stream(&self) -> &UniquePtr<CPPIOStream> {

@@ -12,5 +12,5 @@ struct RsIOStream;
 namespace taglib_shim
 {
     // Factory functions with external linkage
-    std::unique_ptr<TagLib::IOStream> wrap_RsIOStream(rust::Box<RsIOStream> stream);
+    std::unique_ptr<TagLib::IOStream> wrap_RsIOStream(RsIOStream *stream);
 } // namespace taglib_shim

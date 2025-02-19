@@ -51,8 +51,8 @@ mod bridge_impl {
         #[namespace = "TagLib"]
         #[cxx_name = "IOStream"]
         type CPPIOStream<'io_stream>;
-        fn wrap_RsIOStream<'io_stream>(
-            stream: Box<DynIOStream<'io_stream>>,
+        unsafe fn wrap_RsIOStream<'io_stream>(
+            stream: *mut DynIOStream<'io_stream>,
         ) -> UniquePtr<CPPIOStream<'io_stream>>;
 
         #[namespace = "TagLib"]

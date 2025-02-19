@@ -11,7 +11,7 @@ namespace taglib_shim
     class WrappedRsIOStream : public TagLib::IOStream
     {
     public:
-        explicit WrappedRsIOStream(rust::Box<RsIOStream> stream);
+        explicit WrappedRsIOStream(RsIOStream *stream);
         ~WrappedRsIOStream() override;
 
         // TagLib::IOStream interface implementation
@@ -29,10 +29,10 @@ namespace taglib_shim
         bool isOpen() const override;
 
     private:
-        rust::Box<RsIOStream> rust_stream;
+        RsIOStream *rust_stream;
     };
 
-    WrappedRsIOStream::WrappedRsIOStream(rust::Box<RsIOStream> stream) : rust_stream(std::move(stream)) {}
+    WrappedRsIOStream::WrappedRsIOStream(RsIOStream *stream) : rust_stream(stream) {}
 
     WrappedRsIOStream::~WrappedRsIOStream() = default;
 
@@ -154,9 +154,9 @@ namespace taglib_shim
     }
 
     // Factory function to create a new RustIOStream
-    std::unique_ptr<TagLib::IOStream> wrap_RsIOStream(rust::Box<RsIOStream> stream)
+    std::unique_ptr<TagLib::IOStream> wrap_RsIOStream(RsIOStream *stream)
     {
-        return std::unique_ptr<TagLib::IOStream>(new WrappedRsIOStream(std::move(stream)));
+        return std::unique_ptr<TagLib::IOStream>(new WrappedRsIOStream(stream));
     }
 
 } // namespace taglib_shim
