@@ -53,6 +53,9 @@ class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlayl
         builder
             .setTitle(R.string.lbl_confirm_delete_playlist)
             .setPositiveButton(R.string.lbl_delete) { _, _ ->
+                // Normally the navigateUp will occur after this, which then collides with the
+                // playlist view's navigation. Forcefully navigate up to stop this.
+                findNavController().navigateUp()
                 // Now we can delete the playlist for-real this time.
                 musicModel.deletePlaylist(
                     unlikelyToBeNull(pickerModel.currentPlaylistToDelete.value), rude = true)
