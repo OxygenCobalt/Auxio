@@ -106,7 +106,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
     private fun updateAlbum(album: Album?) {
         if (album == null) {
             L.d("No album to show, navigating away")
-            findNavController().navigateUp()
+            exit()
             return
         }
 

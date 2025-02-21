@@ -113,7 +113,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
     private fun updateArtist(artist: Artist?) {
         if (artist == null) {
             L.d("No artist to show, navigating away")
-            findNavController().navigateUp()
+            exit()
             return
         }
         val binding = requireBinding()

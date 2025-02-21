@@ -184,8 +184,7 @@ class PlaylistDetailFragment :
 
     private fun updatePlaylist(playlist: Playlist?, editedPlaylist: List<Song>?) {
         if (playlist == null) {
-            // Playlist we were showing no longer exists.
-            findNavController().navigateUp()
+            exit()
             return
         }
         val binding = requireBinding()
