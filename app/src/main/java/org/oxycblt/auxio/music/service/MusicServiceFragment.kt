@@ -92,6 +92,7 @@ constructor(
 
     fun start() {
         if (musicRepository.indexingState == null) {
+            L.d("Requesting index")
             musicRepository.requestIndex(true)
         }
     }

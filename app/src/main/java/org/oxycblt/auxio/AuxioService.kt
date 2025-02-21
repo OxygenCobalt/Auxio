@@ -34,14 +34,9 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.utils.MediaConstants
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AuxioService :
@@ -52,10 +47,6 @@ class AuxioService :
     @Inject lateinit var musicFragmentFactory: MusicServiceFragment.Factory
     private lateinit var musicFragment: MusicServiceFragment
 
-    private val delayScopeJob = Job() + Dispatchers.Main
-    private val delayScope = CoroutineScope(delayScopeJob)
-    private var currentDelayJob: Job? = null
-
     @SuppressLint("WrongConstant")
     override fun onCreate() {
         super.onCreate()
@@ -63,32 +54,31 @@ class AuxioService :
         musicFragment = musicFragmentFactory.create(this, this, this)
         sessionToken = playbackFragment.attach()
         musicFragment.attach()
+        Timber.d("Service Created")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // TODO: Start command occurring from a foreign service basically implies a detached
         //  service, we might need more handling here.
+        super.onStartCommand(intent, flags, startId)
         onHandleForeground(intent)
-        return super.onStartCommand(intent, flags, startId)
+        // If we die we want to not restart, we will immediately try to foreground in and just
+        // fail to start again since the activity will be dead too. This is not the semantically
+        // "correct" flag (normally you want START_STICKY for playback) but we need this to avoid
+        // weird foreground errors.
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? {
+        val binder = super.onBind(intent)
         onHandleForeground(intent)
-        return super.onBind(intent)
+        return binder
     }
 
     private fun onHandleForeground(intent: Intent?) {
-        currentDelayJob?.cancel()
-        currentDelayJob =
-            delayScope.launch {
-                // The foreground limiter is fussy and doesn't like us starting a foreground
-                // service too early despite having the right to do so at this point. Comply
-                // and artificially delay (to user detriment...)
-                delay(1000)
-                val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
-                musicFragment.start()
-                playbackFragment.start(startId)
-            }
+        val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
+        musicFragment.start()
+        playbackFragment.start(startId)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -98,7 +88,6 @@ class AuxioService :
 
     override fun onDestroy() {
         super.onDestroy()
-        delayScopeJob.cancel()
         musicFragment.release()
         playbackFragment.release()
     }
