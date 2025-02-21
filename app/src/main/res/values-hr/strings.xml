@@ -167,7 +167,7 @@
     <string name="lbl_search">Traži</string>
     <string name="lbl_filter_all">Sve</string>
     <string name="lbl_queue_add">Dodaj u redoslijed</string>
-    <string name="lng_queue_added">Dodano u redoslijed</string>
+    <string name="lng_queue_added">Dodano u redoslijed izvođenja</string>
     <string name="lbl_song_detail">Pogledaj svojstva</string>
     <string name="lbl_artist_details">Idi na izvođača</string>
     <string name="lbl_album_details">Idi na album</string>
@@ -322,4 +322,9 @@
     <string name="cnt_mp4">MPEG-4 sadrži %s</string>
     <string name="set_cover_mode_save_space">Niža kvaliteta</string>
     <string name="set_locations_new">Nova mapa</string>
+    <string name="lng_empty_songs">Tvoje pjesme će se ovdje prikazati.</string>
+    <string name="lng_empty_albums">Tvoji albumi će se ovdje prikazati.</string>
+    <string name="lng_empty_artists">Tvoji izvođači će se ovdje prikazati.</string>
+    <string name="lng_empty_playlists">Tvoji popisi pjesama će se ovdje prikazati.</string>
+    <string name="lng_empty_genres">Tvoji žanrovi će se ovdje prikazati.</string>
 </resources>

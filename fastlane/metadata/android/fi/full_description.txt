@@ -18,6 +18,6 @@ Auxio on paikallisen musiikin soitin nopealla ja luotettavalla käyttöliittymä
 - Tukee kappaleen sisältämiä kansikuvia
 - Hakutoiminto
 - Automaattinen toisto kuulokkeilla
-- Tyylikkäitä widgettejä, jotka mukautuvat automaattisesti kokoonsa
+- Tyylikkäitä vimpaimia, jotka mukautuvat automaattisesti kokoonsa
 - Täysin yksityinen ja verkkoyhteydetön
 - Pyöristämättömät albumin kansikuvat (oletusarvoisesti)

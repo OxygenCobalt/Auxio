@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="info_app_desc">مشغّل موسيقى بسيط ومعقول للأندرويد</string>
+    <string name="info_app_desc">مشغّل موسيقى بسيط ومعقول للأندرويد.</string>
     <string name="lbl_observing">مراقبة مكتبة الموسيقى</string>
     <string name="lbl_retry">إعادة المحاولة</string>
     <string name="lbl_grant">منح</string>
@@ -19,7 +19,7 @@
     <string name="lbl_playlist_add">إضافة لقائمة التشغيل</string>
     <string name="lbl_reset">إعادة ضبط</string>
     <string name="lbl_add">إضافة مجلد</string>
-    <string name="lng_indexing">يتم تحميل مكتبتك الموسيقية</string>
+    <string name="lng_indexing">جارِ تحميل مكتبتك الموسيقية…</string>
     <string name="lng_queue_added">أضيفت للطابور</string>
     <string name="lng_playlist_created">تم إنشاء قائمة التشغيل</string>
     <string name="lbl_artists">فنانون</string>
@@ -117,7 +117,7 @@
     <string name="set_remember_pause_desc">البقاء على التشغيل/الإيقاف عند الانتقال أو تعديل قائمة التشغيل</string>
     <string name="set_remember_pause">تذكر الإيقاف المؤقت</string>
     <string name="set_rescan_desc">مسح ذاكرة التخزين المؤقت للعلامات وإعادة تحميل كامل مكتبة الموسيقى (أبطأ ولكن أكثر اكتمالًا)</string>
-    <string name="err_no_perms">يحتاج Auxio إلى إذن لقراءة مكتبة الموسيقى الخاصة بك.</string>
+    <string name="err_no_perms">يحتاج Auxio إلى إذن لقراءة مكتبتك الموسيقية</string>
     <string name="err_import_failed">غير قادر على استيراد قائمة التشغيل من هذا الملف</string>
     <string name="err_no_app">لم يتم العثور على تطبيق يمكنه التعامل مع هذه المهمة</string>
     <string name="desc_play_pause">تشغيل أو إيقاف مؤقت</string>
@@ -277,4 +277,61 @@
     <string name="lng_playlist_added">تمت إضافته إلى قائمة التشغيل</string>
     <string name="set_root_title">إعدادات</string>
     <string name="set_separators_semicolon">الفاصلة المنقوطة (؛)</string>
+    <string name="lbl_music_sources">اختر المجلدات</string>
+    <string name="lbl_import">استورد</string>
+    <string name="lbl_export">صدّر</string>
+    <string name="lbl_export_playlist">صدّر قائمة التشغيل</string>
+    <string name="lbl_sample_rate">معدل العينة</string>
+    <string name="lbl_path_style">نمط المسار</string>
+    <string name="lbl_selection">تحديد</string>
+    <string name="lbl_feedback">الانطباعات</string>
+    <string name="lbl_github">افتح مشكلة على GitHub</string>
+    <string name="lbl_email">إرسل بريد إلكتروني</string>
+    <string name="lbl_supporters">المؤيدون</string>
+    <string name="lbl_more">المزيد</string>
+    <string name="lbl_path_style_relative">نسبي</string>
+    <string name="lbl_path_style_absolute">مطلق</string>
+    <string name="cdc_unknown">غير معروف</string>
+    <string name="lbl_imported_playlist">قائمة التشغيل استوردت</string>
+    <string name="def_album">ألبوم غير معروف</string>
+    <string name="lbl_sort_mode">افرز حسب</string>
+    <string name="lbl_sort_direction">الاتجاه</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="zero">لا فنان</item>
+        <item quantity="one">فنان</item>
+        <item quantity="two">فنانان</item>
+        <item quantity="few">%d فنانين</item>
+        <item quantity="many">%d فنان</item>
+        <item quantity="other">%d فنان</item>
+    </plurals>
+    <string name="lng_empty_songs">ستظهر أغانيك هنا.</string>
+    <string name="lng_empty_albums">ستظهر ألبوماتك هنا.</string>
+    <string name="lng_empty_artists">سوف يظهر الفنانون الخاص بك هنا.</string>
+    <string name="lng_empty_playlists">سوف تظهر قوائم تشغيلك هنا.</string>
+    <string name="lng_empty_genres">سوف تظهر أنواعك هنا.</string>
+    <string name="lbl_replaygain_album">تعديل الألبوم Replaygain</string>
+    <string name="lbl_replaygain_track">تعديل مسار ReplayGain</string>
+    <string name="lbl_author_name">ألكساندر كيبهارت</string>
+    <string name="lbl_donate">تبرّع</string>
+    <string name="lbl_author">المؤلف</string>
+    <string name="lbl_import_playlist">استورد قائمة التشغيل</string>
+    <string name="lbl_path">المسار</string>
+    <string name="set_locations_new">مجلد جديد</string>
+    <string name="lbl_start_playback">بدء التشغيل</string>
+    <string name="lbl_error_info">معلومات الخطأ</string>
+    <string name="lbl_copied">نُسخت</string>
+    <string name="lbl_report">إبلاغ</string>
+    <string name="lng_tasker_start">يبدأ Auxio باستخدام الحالة المحفوظة مسبقًا. إذا لم تتوفر حالة محفوظة، فسيتم خلط جميع الأغاني. سيبدأ التشغيل على الفور. \n\nتحذير: احرص على التحكم في هذه الخدمة، إذا قمت بإغلاقها ثم حاول استخدامها مرة أخرى، فمن المحتمل أن ينهار التطبيق.</string>
+    <string name="lbl_windows_paths">استخدم مسارات متوافقة مع Windows</string>
+    <string name="set_cover_mode_save_space">وفر المساحة</string>
+    <plurals name="fmt_album_count">
+        <item quantity="zero">لا ألبوم</item>
+        <item quantity="one">ألبوم</item>
+        <item quantity="two">ألبومان</item>
+        <item quantity="few">%d ألبومات</item>
+        <item quantity="many">%d ألبوم</item>
+        <item quantity="other">%d ألبوم</item>
+    </plurals>
+    <string name="cnt_mp4">MPEG-4 تحتوي على %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
 </resources>

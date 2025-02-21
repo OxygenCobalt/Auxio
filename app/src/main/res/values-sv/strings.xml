@@ -144,7 +144,7 @@
     <string name="set_separators_comma">Komma (,)</string>
     <string name="set_separators_slash">Snedstreck (/)</string>
     <string name="set_separators_desc">Konfigurera tecken som separerar flera värden i taggar</string>
-    <string name="set_separators_warning">Varning: Denna inställning kan leda till att vissa taggar separeras felaktigt. För att åtgärda detta, prefixa oönskade separatortecken med ett backslash (\\).</string>
+    <string name="set_separators_warning">Varning: Denna inställning kan leda till att vissa etiketter separeras felaktigt. För att åtgärda detta, prefixa oönskade separatortecken med ett omvänt snedstreck ().</string>
     <string name="set_personalize_desc">Anpassa UI-kontroller och beteende</string>
     <string name="set_cover_mode_off">Av</string>
     <string name="set_headset_autoplay">Autouppspelning med hörlurar</string>
@@ -168,7 +168,7 @@
     <string name="set_cover_mode_balanced">Snabbt</string>
     <string name="set_library">Bibliotek</string>
     <string name="set_reindex">Uppdatera musik</string>
-    <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade taggar</string>
+    <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade etiketter</string>
     <string name="desc_shuffle_all">Blanda alla låtar</string>
     <string name="desc_clear_search">Rensa sökfrågan</string>
     <string name="desc_music_location_delete">Ta bort mapp</string>
@@ -192,18 +192,18 @@
     <string name="set_playback">Uppspelning</string>
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brun</string>
-    <string name="set_headset_autoplay_desc">Alltid börja uppspelning när hörlurar kopplas till (kanske inte fungerar på alla enheter)</string>
+    <string name="set_headset_autoplay_desc">Påbörja alltid uppspelning när hörlurar kopplas till (kanske inte fungerar på alla enheter)</string>
     <string name="set_repeat_pause">Pausa vid upprepning</string>
     <string name="set_pre_amp">ReplayGain försteg</string>
-    <string name="set_pre_amp_without">Justering utan taggar</string>
+    <string name="set_pre_amp_without">Justering utan etiketter</string>
     <string name="set_locations">Musikmappar</string>
-    <string name="set_pre_amp_warning">Varning: Om man ändrar förförstärkaren till ett högt positivt värde kan det leda till toppning på vissa ljudspår.</string>
-    <string name="set_locations_desc">Hantera vart musik läses in ifrån</string>
+    <string name="set_pre_amp_warning">Varning: Att ändra förförstärkaren till ett högt positivt värde kan leda till ett förhöjt ljudtryck på vissa ljudspår.</string>
+    <string name="set_locations_desc">Hantera var musik läses in ifrån</string>
     <string name="set_locations_list">Mappar</string>
     <string name="set_rescan">Skanna om musik</string>
-    <string name="set_rescan_desc">Rensa tagbiblioteket och ladda komplett om musikbiblioteket (långsammare, men mer komplett)</string>
-    <string name="err_no_music">Ingen musik på gång</string>
-    <string name="err_index_failed">Läsa in musik misslyckades</string>
+    <string name="set_rescan_desc">Rensa etikettbiblioteket och ladda komplett om musikbiblioteket (långsammare, men mer komplett)</string>
+    <string name="err_no_music">Ingen musik hittades</string>
+    <string name="err_index_failed">Musikinläsning misslyckades</string>
     <string name="err_no_perms">Auxio måste ges behörighet för att läsa in ditt musikbibliotek</string>
     <string name="err_no_app">Ingen lämplig app kunde hittas</string>
     <string name="err_bad_location">Denna mapp stöds inte</string>
@@ -244,7 +244,7 @@
     <string name="set_square_covers">Tvinga fyrkantiga skivomslag</string>
     <string name="set_square_covers_desc">Beskär alla albumomslag till ett 1:1 sidförhållande</string>
     <string name="set_rewind_prev_desc">Spola tillbaka innan att hoppa till föregående låt</string>
-    <string name="set_pre_amp_with">Justering med taggar</string>
+    <string name="set_pre_amp_with">Justering med etiketter</string>
     <string name="err_no_locations">Inga mappar</string>
     <string name="desc_exit">Stoppa uppspelning</string>
     <string name="desc_remove_song">Ta bort låt</string>
@@ -283,7 +283,7 @@
     <string name="lbl_author">Utvecklare</string>
     <string name="lng_playlist_imported">Spellistan har importerats</string>
     <string name="lng_playlist_exported">Spellistan har exporterats</string>
-    <string name="lng_supporters_promo">Skänk projektet ett bidrag så lägger vi till ditt namn här!</string>
+    <string name="lng_supporters_promo">Bidra till projektet så läggs ditt namn till här!</string>
     <string name="set_remember_pause">Kom ihåg pausat läge</string>
     <string name="set_remember_pause_desc">Fortsätt uppspelning/pausat läge vid spårbyte och listredigering</string>
     <string name="err_export_failed">Kunde inte importera spellistan till denna fil</string>
@@ -311,4 +311,15 @@
     <string name="set_locations_new">Ny mapp</string>
     <string name="cdc_unknown">Okänt</string>
     <string name="lbl_email">Skicka ett mejl</string>
+    <string name="lbl_feedback">Feedback</string>
+    <string name="lng_empty_albums">Dina album kommer visas här.</string>
+    <string name="lng_empty_songs">Dina låtar kommer visas här.</string>
+    <string name="lng_empty_artists">Dina artister kommer visas här.</string>
+    <string name="lng_empty_playlists">Dina spellistor kommer visas här.</string>
+    <string name="lng_empty_genres">Dina genrer kommer visas här.</string>
+    <string name="cdc_alac">Apples förlustfria ljudkodek (ALAC)</string>
+    <string name="lbl_start_playback">Påbörja uppspelning</string>
+    <string name="set_cover_mode_save_space">Spara utrymme</string>
+    <string name="cnt_mp4">MPEG-4 innehållande %s</string>
+    <string name="lng_tasker_start">Påbörjar Auxio med det tidigare sparade tillståndet. Om inget sparad tillstånd är tillgängligt kommer alla låtar blandas. Uppspelning börjar omedelbart. \n\nOBS: Var försiktig vid användning av denna tjänst, om du stänger ner den och sedan försöker använda den igen kommer du troligen få appen att krascha.</string>
 </resources>

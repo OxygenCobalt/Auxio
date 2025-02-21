@@ -314,4 +314,15 @@
     <string name="lbl_github">Crie um problema no GitHub</string>
     <string name="lbl_email">Envie um e-mail</string>
     <string name="lbl_music_sources">Escolha pastas</string>
+    <string name="lng_empty_artists">Os seus artistas aparecerão aqui.</string>
+    <string name="def_album">Álbum desconhecido</string>
+    <string name="lng_empty_songs">As suas músicas aparecerão aqui.</string>
+    <string name="lng_empty_albums">Os seus álbuns aparecerão aqui.</string>
+    <string name="lng_empty_playlists">As suas listas de reprodução aparecerão aqui.</string>
+    <string name="lng_empty_genres">Os seus gêneros aparecerão aqui.</string>
+    <string name="set_locations_new">Nova pasta</string>
+    <string name="set_cover_mode_save_space">Salvar espaco</string>
+    <string name="cnt_mp4">MPEG-4 contendo %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Desconhecido</string>
 </resources>

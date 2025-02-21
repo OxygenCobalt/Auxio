@@ -315,4 +315,19 @@
 \nĮSPĖJIMAS: būk atsargus (-i) valdant šią paslaugą, jei ją uždarysi ir vėl bandysi naudoti, tikriausiai sutriks programėlė.</string>
     <string name="lbl_start_playback">Paleisti įrašo perklausą</string>
     <string name="lbl_more">Daugiau</string>
+    <string name="lbl_feedback">Atsiliepimai</string>
+    <string name="lbl_github">Sukurti problemą svetainėje „GitHub“</string>
+    <string name="cnt_mp4">MPEG-4, kuriame yra %s</string>
+    <string name="def_album">Nežinomas albumas</string>
+    <string name="lng_empty_songs">Čia bus rodomos jūsų dainos.</string>
+    <string name="lng_empty_albums">Čia bus rodomi jūsų albumai.</string>
+    <string name="lng_empty_artists">Čia bus rodomi jūsų atlikėjai.</string>
+    <string name="lng_empty_playlists">Čia bus rodomi jūsų grojaraščiai.</string>
+    <string name="lng_empty_genres">Čia bus rodomi jūsų žanrai.</string>
+    <string name="lbl_music_sources">Pasirinkti aplankus</string>
+    <string name="lbl_email">Siųsti el. laišką</string>
+    <string name="set_locations_new">Naujas aplankas</string>
+    <string name="cdc_alac">„Apple“ be nuostolių garso kodekas (ALAC)</string>
+    <string name="cdc_unknown">Nežinomas</string>
+    <string name="set_cover_mode_save_space">Išsaugoti vietos</string>
 </resources>
