@@ -6,8 +6,7 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 - Snappy UI derived from the latest Material Design guidelines
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
-- Support for disc numbers, multiple artists, release types,
-precise/original dates, sort tags, and more
+- Support for disc numbers, multiple artists, release types, precise/original dates, sort tags, and more
 - Advanced artist system that unifies artists and album artists
 - SD Card-aware folder management
 - Reliable playlisting functionality
@@ -22,4 +21,4 @@ precise/original dates, sort tags, and more
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
-- No rounded album covers (by default)
+- No rounded album covers (if you want them)
