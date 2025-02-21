@@ -35,12 +35,14 @@
 - Fixed playback sheet flickering on warm start
 - No longer possible to save a sort with no direction specified
 - Fixed inconsistent corner radii in widget
+- Possibly fixed foreground start music loading failures
+- Fixed playlist view not exiting on deletion
 
 #### What's Changed
 - Date added is now local to when the app discovers the file and will not
 persist long-term
 - Songs with no album are now "Unknown album" rather than folder name
-- Tab layout no longer changes on device configuration
+- Tab layout no longer changes depending on device configuration
 
 #### Dev/Meta
 - No longer using custom logging setup
