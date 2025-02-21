@@ -29,16 +29,20 @@ namespace taglib_shim
         bool isOpen() const override;
 
     private:
+        std::string _name;
         RsIOStream *rust_stream;
     };
 
-    WrappedRsIOStream::WrappedRsIOStream(RsIOStream *stream) : rust_stream(stream) {}
+    WrappedRsIOStream::WrappedRsIOStream(RsIOStream *stream) : rust_stream(stream)
+    {
+        _name = std::move(std::string(rust_stream->name()));
+    }
 
     WrappedRsIOStream::~WrappedRsIOStream() = default;
 
     TagLib::FileName WrappedRsIOStream::name() const
     {
-        return rust::string(rust_stream->name()).c_str();
+        return _name.c_str();
     }
 
     TagLib::ByteVector WrappedRsIOStream::readBlock(size_t length)
