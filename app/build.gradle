@@ -42,10 +42,6 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-DEBUG"
-
-            ndk {
-                debugSymbolLevel 'FULL'
-            }
         }
 
         release {
