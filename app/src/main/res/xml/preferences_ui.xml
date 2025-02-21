@@ -23,7 +23,7 @@
         app:title="@string/set_black_mode" />
 
     <SwitchPreferenceCompat
-        app:defaultValue="false"
+        app:defaultValue="true"
         app:key="@string/set_key_round_mode"
         app:summary="@string/set_round_mode_desc"
         app:title="@string/set_round_mode" />
