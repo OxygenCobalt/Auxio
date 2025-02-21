@@ -23,6 +23,7 @@
 #include "JObjectRef.h"
 
 #include "taglib/tiostream.h"
+#include "taglib/tstring.h"
 
 class JInputStream: public TagLib::IOStream {
 public:
@@ -36,7 +37,7 @@ public:
     /*!
      * Returns the stream name in the local file system encoding.
      */
-    TagLib::FileName name() const override;
+    TagLib::FileName /* const char * */ name() const override;
 
     /*!
      * Reads a block of size \a length at the current get pointer.
@@ -115,7 +116,7 @@ public:
 private:
     JNIEnv *env;
     jobject jInputStream;
-    jmethodID jInputStreamNameMethod;
+    TagLib::String _name;
     jmethodID jInputStreamReadBlockMethod;
     jmethodID jInputStreamIsOpenMethod;
     jmethodID jInputStreamSeekFromBeginningMethod;

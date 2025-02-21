@@ -31,7 +31,7 @@ JInputStream::JInputStream(JNIEnv *env, jobject jInputStream) : env(env), jInput
     if (!env->IsInstanceOf(jInputStream, *jInputStreamClass)) {
         throw std::runtime_error("Object is not NativeInputStream");
     }
-    jInputStreamNameMethod = jInputStreamClass.method("name",
+    jmethodID jInputStreamNameMethod = jInputStreamClass.method("name",
             "()Ljava/lang/String;");
     jInputStreamReadBlockMethod = jInputStreamClass.method("readBlock",
             "(Ljava/nio/ByteBuffer;)Z");
@@ -44,6 +44,9 @@ JInputStream::JInputStream(JNIEnv *env, jobject jInputStream) : env(env), jInput
             "(J)Z");
     jInputStreamTellMethod = jInputStreamClass.method("tell", "()J");
     jInputStreamLengthMethod = jInputStreamClass.method("length", "()J");
+    JStringRef jName = { env, reinterpret_cast<jstring>(env->CallObjectMethod(
+            jInputStream, jInputStreamNameMethod)) };
+    _name = TagLib::String(env->GetStringUTFChars(*jName, nullptr));
 }
 
 JInputStream::~JInputStream() {
@@ -51,11 +54,8 @@ JInputStream::~JInputStream() {
     // so we don't need to delete any references here
 }
 
-TagLib::FileName JInputStream::name() const {
-    // Not actually used except in FileRef, can safely ignore.
-    JStringRef jName { env, reinterpret_cast<jstring>(env->CallObjectMethod(
-            jInputStream, jInputStreamNameMethod)) };
-    return jName.copy().toCString();
+TagLib::FileName /* const char * */ JInputStream::name() const {
+    return _name.toCString(true);
 }
 
 TagLib::ByteVector JInputStream::readBlock(size_t length) {
