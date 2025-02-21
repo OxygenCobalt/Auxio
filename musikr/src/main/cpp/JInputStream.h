@@ -37,7 +37,7 @@ public:
     /*!
      * Returns the stream name in the local file system encoding.
      */
-    TagLib::FileName /* const char * */ name() const override;
+    TagLib::FileName /* const char * */name() const override;
 
     /*!
      * Reads a block of size \a length at the current get pointer.

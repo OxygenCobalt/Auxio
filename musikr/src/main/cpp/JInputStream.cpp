@@ -54,7 +54,7 @@ JInputStream::~JInputStream() {
     // so we don't need to delete any references here
 }
 
-TagLib::FileName /* const char * */ JInputStream::name() const {
+TagLib::FileName /* const char * */JInputStream::name() const {
     return _name.toCString(true);
 }
 
