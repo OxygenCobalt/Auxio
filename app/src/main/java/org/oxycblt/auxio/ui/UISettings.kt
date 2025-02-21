@@ -72,7 +72,7 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
         }
 
     override val roundMode: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_round_mode), false)
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_round_mode), true)
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {

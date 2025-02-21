@@ -61,7 +61,7 @@ precise/original dates, sort tags, and more
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
-- No rounded album covers (by default)
+- No rounded album covers (if you want them)
 
 ## Permissions
 
