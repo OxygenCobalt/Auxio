@@ -5,4 +5,4 @@
 [submodule "musikr/src/main/cpp/taglib"]
 	path = musikr/src/main/cpp/taglib
 	url = https://github.com/taglib/taglib.git
-	tag = v2.0.2
+	tag = ee1931b
