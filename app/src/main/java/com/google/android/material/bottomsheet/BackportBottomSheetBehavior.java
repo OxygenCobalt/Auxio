@@ -1390,6 +1390,10 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
     return shouldRemoveExpandedCorners;
   }
 
+  public void killCorners() {
+    materialShapeDrawable.setCornerSize(0f);
+  }
+
   /**
    * Gets the current state of the bottom sheet.
    *
@@ -1629,12 +1633,13 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
       return;
     }
     BackEventCompat backEvent = bottomContainerBackHelper.onHandleBackInvoked();
+    boolean canActuallyHide = hideable && isHideableWhenDragging();
     if (backEvent == null || VERSION.SDK_INT < VERSION_CODES.UPSIDE_DOWN_CAKE) {
       // If using traditional button system nav or if pre-U, just hide or collapse the bottom sheet.
-      setState(hideable ? STATE_HIDDEN : STATE_COLLAPSED);
+      setState(canActuallyHide ? STATE_HIDDEN : STATE_COLLAPSED);
       return;
     }
-    if (hideable) {
+    if (canActuallyHide) {
       bottomContainerBackHelper.finishBackProgressNotPersistent(
           backEvent,
           new AnimatorListenerAdapter() {

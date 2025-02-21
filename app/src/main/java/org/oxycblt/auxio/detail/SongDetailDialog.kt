@@ -18,9 +18,7 @@
  
 package org.oxycblt.auxio.detail
 
-import android.content.Context
 import android.os.Bundle
-import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
@@ -32,17 +30,10 @@ import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.detail.list.SongProperty
 import org.oxycblt.auxio.detail.list.SongPropertyAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.music.metadata.AudioProperties
-import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.playback.replaygain.formatDb
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.concatLocalized
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingMaterialDialogFragment] that shows information about a Song.
@@ -71,74 +62,19 @@ class SongDetailDialog : ViewBindingMaterialDialogFragment<DialogSongDetailBindi
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setSong(args.songUid)
         detailModel.toShow.consume()
-        collectImmediately(detailModel.currentSong, detailModel.songAudioProperties, ::updateSong)
+        collectImmediately(detailModel.currentSong, ::updateSong)
+        collectImmediately(detailModel.currentSongProperties, ::updateSongProperties)
     }
 
-    private fun updateSong(song: Song?, info: AudioProperties?) {
+    private fun updateSong(song: Song?) {
+        L.d("No song to show, navigating away")
         if (song == null) {
-            logD("No song to show, navigating away")
             findNavController().navigateUp()
             return
         }
-
-        if (info != null) {
-            val context = requireContext()
-            detailAdapter.update(
-                buildList {
-                    add(SongProperty(R.string.lbl_name, song.zipName(context)))
-                    add(SongProperty(R.string.lbl_album, song.album.zipName(context)))
-                    add(SongProperty(R.string.lbl_artists, song.artists.zipNames(context)))
-                    add(SongProperty(R.string.lbl_genres, song.genres.resolveNames(context)))
-                    song.date?.let { add(SongProperty(R.string.lbl_date, it.resolve(context))) }
-                    song.track?.let {
-                        add(SongProperty(R.string.lbl_track, getString(R.string.fmt_number, it)))
-                    }
-                    song.disc?.let {
-                        val formattedNumber = getString(R.string.fmt_number, it.number)
-                        val zipped =
-                            if (it.name != null) {
-                                getString(R.string.fmt_zipped_names, formattedNumber, it.name)
-                            } else {
-                                formattedNumber
-                            }
-                        add(SongProperty(R.string.lbl_disc, zipped))
-                    }
-                    add(SongProperty(R.string.lbl_path, song.path.resolve(context)))
-                    info.resolvedMimeType.resolveName(context)?.let {
-                        add(SongProperty(R.string.lbl_format, it))
-                    }
-                    add(
-                        SongProperty(
-                            R.string.lbl_size, Formatter.formatFileSize(context, song.size)))
-                    add(SongProperty(R.string.lbl_duration, song.durationMs.formatDurationMs(true)))
-                    info.bitrateKbps?.let {
-                        add(SongProperty(R.string.lbl_bitrate, getString(R.string.fmt_bitrate, it)))
-                    }
-                    info.sampleRateHz?.let {
-                        add(
-                            SongProperty(
-                                R.string.lbl_sample_rate, getString(R.string.fmt_sample_rate, it)))
-                    }
-                    song.replayGainAdjustment.track?.let {
-                        add(SongProperty(R.string.lbl_replaygain_track, it.formatDb(context)))
-                    }
-                    song.replayGainAdjustment.album?.let {
-                        add(SongProperty(R.string.lbl_replaygain_album, it.formatDb(context)))
-                    }
-                },
-                UpdateInstructions.Replace(0))
-        }
     }
 
-    private fun <T : Music> T.zipName(context: Context): String {
-        val name = name
-        return if (name is Name.Known && name.sort != null) {
-            getString(R.string.fmt_zipped_names, name.resolve(context), name.sort)
-        } else {
-            name.resolve(context)
-        }
+    private fun updateSongProperties(songProperties: List<SongProperty>) {
+        detailAdapter.update(songProperties, UpdateInstructions.Replace(0))
     }
-
-    private fun <T : Music> List<T>.zipNames(context: Context) =
-        concatLocalized(context) { it.zipName(context) }
 }

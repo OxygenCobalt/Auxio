@@ -21,23 +21,24 @@ package org.oxycblt.auxio.widgets
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
-import coil.request.ImageRequest
-import coil.size.Size
+import coil3.request.ImageRequest
+import coil3.request.transformations
+import coil3.size.Size
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
-import org.oxycblt.auxio.image.extractor.SquareCropTransformation
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.image.coil.RoundedRectTransformation
+import org.oxycblt.auxio.image.coil.SquareCropTransformation
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getDimenPixels
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A component that manages the "Now Playing" state. This is kept separate from the [WidgetProvider]
@@ -77,7 +78,7 @@ private constructor(
     fun update() {
         val song = playbackManager.currentSong
         if (song == null) {
-            logD("No song, resetting widget")
+            L.d("No song, resetting widget")
             widgetProvider.update(context, uiSettings, null)
             return
         }
@@ -87,7 +88,7 @@ private constructor(
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.isShuffled
 
-        logD("Updating widget with new playback state")
+        L.d("Updating widget with new playback state")
         bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
@@ -95,15 +96,15 @@ private constructor(
                     val cornerRadius =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             // Android 12, always round the cover with the widget's inner radius
-                            logD("Using android 12 corner radius")
+                            L.d("Using android 12 corner radius")
                             context.getDimenPixels(android.R.dimen.system_app_widget_inner_radius)
                         } else if (uiSettings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
-                            logD("Using default corner radius")
-                            context.getDimenPixels(R.dimen.spacing_medium)
+                            L.d("Using default corner radius")
+                            context.getDimenPixels(R.dimen.m3_shape_corners_large)
                         } else {
                             // User did not enable round mode.
-                            logD("Using no corner radius")
+                            L.d("Using no corner radius")
                             0
                         }
 
@@ -124,7 +125,7 @@ private constructor(
 
                 override fun onCompleted(bitmap: Bitmap?) {
                     val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
-                    logD("Bitmap loaded, uploading state $state")
+                    L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }
             })
@@ -136,7 +137,7 @@ private constructor(
         imageSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)
-        widgetProvider.reset(context)
+        widgetProvider.reset(context, uiSettings)
     }
 
     // --- CALLBACKS ---

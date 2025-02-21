@@ -50,8 +50,6 @@
     <string name="lbl_size">Laki</string>
     <string name="lbl_bitrate">Tulin ng mga bit</string>
     <string name="lbl_sample_rate">Tulin ng sample</string>
-    <string name="lbl_state_restored">Naibalik ang kalagayan</string>
-    <string name="lbl_state_saved">Na-save ang kalagayan</string>
     <string name="lbl_shuffle_shortcut_short">Haluin</string>
     <string name="lbl_add">Idagdag</string>
     <string name="lbl_save">I-save</string>

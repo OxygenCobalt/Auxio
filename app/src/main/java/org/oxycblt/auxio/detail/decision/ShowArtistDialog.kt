@@ -32,10 +32,10 @@ import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Artist
+import timber.log.Timber as L
 
 /**
  * A picker [ViewBindingMaterialDialogFragment] intended for when the [Artist] to show is ambiguous.
@@ -85,7 +85,7 @@ class ShowArtistDialog :
 
     private fun updateChoices(choices: ArtistShowChoices?) {
         if (choices == null) {
-            logD("No choices to show, navigating away")
+            L.d("No choices to show, navigating away")
             findNavController().navigateUp()
             return
         }

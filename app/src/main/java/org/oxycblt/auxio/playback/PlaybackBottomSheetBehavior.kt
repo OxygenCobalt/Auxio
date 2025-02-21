@@ -23,13 +23,18 @@ import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.getDimenPixels
+import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The [BaseBottomSheetBehavior] for the playback bottom sheet. This bottom sheet
@@ -38,15 +43,31 @@ import org.oxycblt.auxio.util.getDimen
  */
 class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     BaseBottomSheetBehavior<V>(context, attributeSet) {
-    val sheetBackgroundDrawable =
-        MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-            fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
-            elevation = context.getDimen(R.dimen.elevation_normal)
-        }
+    lateinit var sheetBackgroundDrawable: MaterialShapeDrawable
+
+    fun makeBackgroundDrawable(context: Context) {
+        sheetBackgroundDrawable =
+            MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+                fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerLow)
+                shapeAppearanceModel =
+                    if (uiSettings.roundMode) {
+                        ShapeAppearanceModel.builder(
+                                context,
+                                R.style.ShapeAppearance_Auxio_BottomSheet,
+                                MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                            .build()
+                    } else {
+                        ShapeAppearanceModel.Builder().build()
+                    }
+            }
+    }
 
     init {
         isHideable = true
     }
+
+    override fun getIdealBarHeight(context: Context) =
+        context.getDimenPixels(R.dimen.size_touchable_large)
 
     // Hack around issue where the playback sheet will try to intercept nested scrolling events
     // before the queue sheet.
@@ -56,7 +77,7 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
     // Note: This is an extension to Auxio's vendored BottomSheetBehavior
     override fun isHideableWhenDragging() = false
 
-    override fun createBackground(context: Context) =
+    override fun createBackground(context: Context, uiSettings: UISettings) =
         LayerDrawable(
             arrayOf(
                 // Add another colored background so that there is always an obscuring
@@ -65,4 +86,14 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
                     fillColor = sheetBackgroundDrawable.fillColor
                 },
                 sheetBackgroundDrawable))
+
+    override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
+        super.applyWindowInsets(child, insets)
+        // Offset our expanded panel by the size of the playback bar, as that is shown when
+        // we slide up the panel.
+        val bars = insets.systemBarInsetsCompat
+        expandedOffset = bars.top
+        return insets.replaceSystemBarInsetsCompat(
+            bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
+    }
 }

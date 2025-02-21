@@ -30,25 +30,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemEditHeaderBinding
 import org.oxycblt.auxio.databinding.ItemEditableSongBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [DetailListAdapter] implementing the header, sub-items, and editing state for the [Playlist]
@@ -99,9 +98,9 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
             // Nothing to do.
             return
         }
-        logD("Updating editing state [old: $isEditing new: $editing]")
+        L.d("Updating editing state [old: $isEditing new: $editing]")
         this.isEditing = editing
-        notifyItemRangeChanged(1, currentList.size - 1, PAYLOAD_EDITING_CHANGED)
+        notifyItemRangeChanged(0, currentList.size, PAYLOAD_EDITING_CHANGED)
     }
 
     /** An extended [DetailListAdapter.Listener] for [PlaylistDetailListAdapter]. */
@@ -142,12 +141,12 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
 }
 
 /**
- * A [Header] variant that displays an edit button.
+ * A [PlainHeader] variant that displays an edit button.
  *
  * @param titleRes The string resource to use as the header title
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class EditHeader(@StringRes override val titleRes: Int) : Header
+data class EditHeader(@StringRes override val titleRes: Int) : PlainHeader
 
 /**
  * Displays an [EditHeader] and it's actions. Use [from] to create an instance.
@@ -232,8 +231,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
     override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
-            elevation = binding.context.getDimen(R.dimen.elevation_normal)
+            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
             alpha = 0
         }
 

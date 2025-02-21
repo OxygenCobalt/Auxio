@@ -36,7 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.music.service.MusicServiceFragment
 import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AuxioService :
@@ -54,18 +54,25 @@ class AuxioService :
         musicFragment = musicFragmentFactory.create(this, this, this)
         sessionToken = playbackFragment.attach()
         musicFragment.attach()
+        Timber.d("Service Created")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // TODO: Start command occurring from a foreign service basically implies a detached
         //  service, we might need more handling here.
+        super.onStartCommand(intent, flags, startId)
         onHandleForeground(intent)
-        return super.onStartCommand(intent, flags, startId)
+        // If we die we want to not restart, we will immediately try to foreground in and just
+        // fail to start again since the activity will be dead too. This is not the semantically
+        // "correct" flag (normally you want START_STICKY for playback) but we need this to avoid
+        // weird foreground errors.
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? {
+        val binder = super.onBind(intent)
         onHandleForeground(intent)
-        return super.onBind(intent)
+        return binder
     }
 
     private fun onHandleForeground(intent: Intent?) {
@@ -117,8 +124,7 @@ class AuxioService :
 
     private fun getRootChildrenLimit(): Int {
         return browserRootHints?.getInt(
-            MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4)
-            ?: 4
+            MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4) ?: 4
     }
 
     private fun Bundle.getPage(): MusicServiceFragment.Page? {
@@ -150,11 +156,12 @@ class AuxioService :
     }
 
     override fun invalidateMusic(mediaId: String) {
-        logD(mediaId)
         notifyChildrenChanged(mediaId)
     }
 
     companion object {
+        const val ACTION_START = BuildConfig.APPLICATION_ID + ".service.START"
+
         var isForeground = false
             private set
 

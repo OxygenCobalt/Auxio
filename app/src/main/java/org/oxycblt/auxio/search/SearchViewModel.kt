@@ -30,17 +30,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.device.DeviceLibrary
-import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Library
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * An [ViewModel] that keeps performs search operations and tracks their results.
@@ -79,7 +78,7 @@ constructor(
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (changes.deviceLibrary || changes.userLibrary) {
-            logD("Music changed, re-searching library")
+            L.d("Music changed, re-searching library")
             search(lastQuery)
         }
     }
@@ -95,94 +94,88 @@ constructor(
         currentSearchJob?.cancel()
         lastQuery = query
 
-        val deviceLibrary = musicRepository.deviceLibrary
-        val userLibrary = musicRepository.userLibrary
-        if (query.isNullOrEmpty() || deviceLibrary == null || userLibrary == null) {
-            logD("Cannot search for the current query, aborting")
+        val library = musicRepository.library
+        if (query.isNullOrEmpty() || library == null) {
+            L.d("Cannot search for the current query, aborting")
             _searchResults.value = listOf()
             return
         }
 
         // Searching is time-consuming, so do it in the background.
-        logD("Searching music library for $query")
+        L.d("Searching music library for $query")
         currentSearchJob =
             viewModelScope.launch {
-                _searchResults.value =
-                    searchImpl(deviceLibrary, userLibrary, query).also { yield() }
+                _searchResults.value = searchImpl(library, query).also { yield() }
             }
     }
 
-    private suspend fun searchImpl(
-        deviceLibrary: DeviceLibrary,
-        userLibrary: UserLibrary,
-        query: String
-    ): List<Item> {
+    private suspend fun searchImpl(library: Library, query: String): List<Item> {
         val filter = searchSettings.filterTo
 
         val items =
             if (filter == null) {
                 // A nulled filter type means to not filter anything.
-                logD("No filter specified, using entire library")
+                L.d("No filter specified, using entire library")
                 SearchEngine.Items(
-                    deviceLibrary.songs,
-                    deviceLibrary.albums,
-                    deviceLibrary.artists,
-                    deviceLibrary.genres,
-                    userLibrary.playlists)
+                    library.songs,
+                    library.albums,
+                    library.artists,
+                    library.genres,
+                    library.playlists)
             } else {
-                logD("Filter specified, reducing library")
+                L.d("Filter specified, reducing library")
                 SearchEngine.Items(
-                    songs = if (filter == MusicType.SONGS) deviceLibrary.songs else null,
-                    albums = if (filter == MusicType.ALBUMS) deviceLibrary.albums else null,
-                    artists = if (filter == MusicType.ARTISTS) deviceLibrary.artists else null,
-                    genres = if (filter == MusicType.GENRES) deviceLibrary.genres else null,
-                    playlists = if (filter == MusicType.PLAYLISTS) userLibrary.playlists else null)
+                    songs = if (filter == MusicType.SONGS) library.songs else null,
+                    albums = if (filter == MusicType.ALBUMS) library.albums else null,
+                    artists = if (filter == MusicType.ARTISTS) library.artists else null,
+                    genres = if (filter == MusicType.GENRES) library.genres else null,
+                    playlists = if (filter == MusicType.PLAYLISTS) library.playlists else null)
             }
 
         val results = searchEngine.search(items, query)
 
         return buildList {
             results.artists?.let {
-                logD("Adding ${it.size} artists to search results")
+                L.d("Adding ${it.size} artists to search results")
                 val header = BasicHeader(R.string.lbl_artists)
                 add(header)
                 addAll(SORT.artists(it))
             }
             results.albums?.let {
-                logD("Adding ${it.size} albums to search results")
+                L.d("Adding ${it.size} albums to search results")
                 val header = BasicHeader(R.string.lbl_albums)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)
                 addAll(SORT.albums(it))
             }
             results.playlists?.let {
-                logD("Adding ${it.size} playlists to search results")
+                L.d("Adding ${it.size} playlists to search results")
                 val header = BasicHeader(R.string.lbl_playlists)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)
                 addAll(SORT.playlists(it))
             }
             results.genres?.let {
-                logD("Adding ${it.size} genres to search results")
+                L.d("Adding ${it.size} genres to search results")
                 val header = BasicHeader(R.string.lbl_genres)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)
                 addAll(SORT.genres(it))
             }
             results.songs?.let {
-                logD("Adding ${it.size} songs to search results")
+                L.d("Adding ${it.size} songs to search results")
                 val header = BasicHeader(R.string.lbl_songs)
                 if (isNotEmpty()) {
-                    add(Divider(header))
+                    add(PlainDivider(header))
                 }
 
                 add(header)
@@ -225,7 +218,7 @@ constructor(
                 R.id.option_filter_all -> null
                 else -> error("Invalid option ID provided")
             }
-        logD("Updating filter type to $newFilter")
+        L.d("Updating filter type to $newFilter")
         searchSettings.filterTo = newFilter
         search(lastQuery)
     }

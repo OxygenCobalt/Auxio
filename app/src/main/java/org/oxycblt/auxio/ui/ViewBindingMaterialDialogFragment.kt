@@ -28,8 +28,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.util.fixDoubleRipple
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as L
 
 /**
  * A lifecycle-aware [DialogFragment] that automatically manages the [ViewBinding] lifecycle as a
@@ -109,7 +109,7 @@ abstract class ViewBindingMaterialDialogFragment<VB : ViewBinding> : DialogFragm
         onBindingCreated(requireBinding(), savedInstanceState)
         // Apply the newly-configured view to the dialog.
         (requireDialog() as AlertDialog).setView(view)
-        logD("Fragment created")
+        L.d("Fragment created")
     }
 
     override fun onStart() {
@@ -127,6 +127,6 @@ abstract class ViewBindingMaterialDialogFragment<VB : ViewBinding> : DialogFragm
         onDestroyBinding(unlikelyToBeNull(_binding))
         // Clear binding
         _binding = null
-        logD("Fragment destroyed")
+        L.d("Fragment destroyed")
     }
 }

@@ -1,5 +1,54 @@
 # Changelog
 
+## 4.0.0
+
+#### What's New
+- A total user interface refresh based on the latest Material Design specs
+	- New theme palettes
+	- Improved designs for playback and detail views
+	- New app branding and icon
+	- Refreshed round mode
+	- Less intrusive music loading indicators
+- **Musikr**, a brand new music loading system
+	- Directly accesses user files rather than unreliable media database
+	- Uses faster and more capable native tag parsing
+	- Stores cover data on-device for fast and high-quality access
+	- New interpretation system with many quality-of-life improvements
+- Android 15 support
+
+#### What's Improved
+- Initial music loading is signifigantly faster and less resource intensive
+- Album grouping no longer done with artist
+- MusicBrainz IDs will no longer split albums/artists in less tagged libraries
+- M3U playlist file name is now proposed if one cannot be found within the file
+- Duration is now parsed from certain files that previously could not be parsed
+- ID3v2 tags are now parsed from WAV files
+- NN/TT tracks/discs are now handled in Vorbis
+- Music library will is less likely to fail to respond to updates
+- Hidden audio files can now be loaded
+- Sorting songs by date now uses songs date first, before the earliest album date
+- Added working layouts for small split-screen form factors
+- Added fast scrolling in detail views
+- Added ability to make issues and make feedback e-mails in-app
+
+#### What's Fixed
+- Fixed playback sheet flickering on warm start
+- No longer possible to save a sort with no direction specified
+- Fixed inconsistent corner radii in widget
+- Possibly fixed foreground start music loading failures
+- Fixed playlist view not exiting on deletion
+
+#### What's Changed
+- Date added is now local to when the app discovers the file and will not
+persist long-term
+- Songs with no album are now "Unknown album" rather than folder name
+- Tab layout no longer changes depending on device configuration
+- Round mode is now on by default
+
+#### Dev/Meta
+- No longer using custom logging setup
+- Music loading split off into separate musikr module
+
 ## 3.6.3
 
 #### What's Fixed

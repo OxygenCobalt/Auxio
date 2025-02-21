@@ -32,10 +32,9 @@
     <string name="lng_queue_added">Добавлено в очередь</string>
     <string name="lbl_artist_details">Перейти к исполнителю</string>
     <string name="lbl_album_details">Перейти к альбому</string>
-    <string name="lbl_state_saved">Позиция сохранена</string>
     <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>
-    <string name="err_no_dirs">Нет папок</string>
+    <string name="err_no_locations">Нет папок</string>
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
     <string name="lbl_code">Исходный код</string>
@@ -73,8 +72,6 @@
     <string name="set_repeat_pause">Пауза при повторе</string>
     <string name="set_repeat_pause_desc">Ставить на паузу при повторе трека</string>
     <string name="set_content">Библиотека</string>
-    <string name="set_save_state">Запоминать позицию</string>
-    <string name="set_save_desc">Запоминать позицию в треке</string>
     <string name="set_reindex">Обновить музыку</string>
     <string name="set_reindex_desc">Обновлять библиотеку, при возможности используя кэш тегов</string>
     <!-- Error Namespace | Error Labels -->
@@ -82,7 +79,7 @@
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
     <string name="err_no_perms">Auxio требуется разрешение на чтение музыкальной библиотеки</string>
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
-    <string name="err_bad_dir">Эта папка не поддерживается</string>
+    <string name="err_bad_location">Эта папка не поддерживается</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Найти в библиотеке…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -97,7 +94,7 @@
     <string name="desc_song_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
     <string name="desc_clear_search">Очистить поисковый запрос</string>
-    <string name="desc_music_dir_delete">Удалить папку</string>
+    <string name="desc_music_location_delete">Удалить папку</string>
     <string name="desc_auxio_icon">Иконка Auxio</string>
     <string name="desc_no_cover">Обложка альбома</string>
     <string name="desc_album_cover">Обложка альбома %s</string>
@@ -152,7 +149,6 @@
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_disc">Диск</string>
     <string name="lbl_track">Трек</string>
-    <string name="lbl_state_restored">Позиция восстановлена</string>
     <string name="lbl_cancel">Отмена</string>
     <string name="set_pre_amp_warning">Внимание: Изменение предусиления на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
     <string name="lbl_song_detail">Сведения</string>
@@ -162,7 +158,6 @@
     <string name="lbl_sample_rate">Частота дискретизации</string>
     <string name="set_pre_amp_desc">Предусиление применяется к существующей настройке во время воспроизведения</string>
     <string name="lbl_library_counts">Статистика библиотеки</string>
-    <string name="set_restore_state">Восстановить состояние воспроизведения</string>
     <string name="lbl_duration">Продолжительность</string>
     <string name="lbl_ep">Мини-альбом</string>
     <string name="lbl_eps">Мини-альбомы</string>
@@ -170,11 +165,8 @@
     <string name="lbl_date_added">Дата добавления</string>
     <string name="lbl_singles">Синглы</string>
     <string name="set_pre_amp">Предусиление ReplayGain</string>
-    <string name="set_dirs_mode_exclude">Исключить</string>
     <string name="cdc_aac">AAC</string>
-    <string name="set_wipe_state">Очистить состояние воспроизведения</string>
-    <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будет загружена из указанных папок.</string>
-    <string name="set_dirs_desc">Укажите, откуда надо загружать музыку</string>
+    <string name="set_locations_desc">Укажите, откуда надо загружать музыку</string>
     <string name="fmt_bitrate">%d кбит/с</string>
     <string name="set_observing">Автоматическая перезагрузка</string>
     <string name="cdc_mp3">MPEG-1</string>
@@ -189,9 +181,7 @@
     <string name="lbl_album_live">Концертный альбом</string>
     <string name="lbl_live_group">Концертный</string>
     <string name="lng_observing">Мониторинг изменений в музыкальной библиотеке…</string>
-    <string name="lbl_state_wiped">Позиция сброшена</string>
-    <string name="set_dirs">Папки с музыкой</string>
-    <string name="set_dirs_mode_include">Включить</string>
+    <string name="set_locations">Папки с музыкой</string>
     <string name="lbl_album_remix">Альбом ремиксов</string>
     <string name="lbl_ep_live">Концертный мини-альбом</string>
     <string name="lbl_ep_remix">Мини-альбом ремиксов</string>
@@ -199,14 +189,9 @@
     <string name="lbl_single_live">Концертный сингл</string>
     <string name="lbl_single_remix">Ремикс сингл</string>
     <string name="lbl_compilations">Сборники</string>
-    <string name="set_wipe_desc">Очистить ранее сохраненное состояние воспроизведения (если есть)</string>
     <string name="set_observing_desc">Перезагружать библиотеку при изменении (требует постоянное уведомление)</string>
     <string name="fmt_db_neg">−%.1f дБ</string>
     <string name="fmt_lib_genre_count">Жанров загружено: %d</string>
-    <string name="set_restore_desc">Восстановить предыдущее состояние воспроизведения (если есть)</string>
-    <string name="set_dirs_mode">Режим</string>
-    <string name="set_dirs_mode_include_desc">Музыка будет загружена <b>только</b> из указанных папок.</string>
-    <string name="err_did_not_restore">Не удалось восстановить состояние воспроизведения</string>
     <string name="def_track">Нет трека</string>
     <string name="fmt_sample_rate">%d Гц</string>
     <string name="fmt_lib_artist_count">Исполнителей загружено: %d</string>
@@ -240,8 +225,8 @@
     <string name="set_pre_amp_with">Изменение по тегам</string>
     <string name="set_pre_amp_without">Изменения без тегов</string>
     <string name="set_cover_mode_off">Отключены</string>
-    <string name="set_cover_mode_media_store">Исходные (Быстрая загрузка)</string>
-    <string name="set_cover_mode_quality">Повышенного качества (Медленная загрузка)</string>
+    <string name="set_cover_mode_balanced">Исходные (Быстрая загрузка)</string>
+    <string name="set_cover_mode_high_quality">Повышенного качества (Медленная загрузка)</string>
     <string name="lbl_compilation_live">Сборник концертных записей</string>
     <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
     <string name="set_rescan">Пересканировать музыку</string>
@@ -253,8 +238,6 @@
         <item quantity="many">%d исполнителей</item>
         <item quantity="other">%d исполнителей</item>
     </plurals>
-    <string name="err_did_not_wipe">Не удалось очистить состояние</string>
-    <string name="err_did_not_save">Не удалось сохранить состояние</string>
     <string name="set_separators_warning">Предупреждение: Использование этой настройки может привести к тому, что некоторые теги будут неправильно интерпретироваться как имеющие несколько значений. Вы можете решить эту проблему, добавив к нежелательным символам-разделителям обратную косую черту (\\).</string>
     <string name="fmt_selected">%d выбрано</string>
     <string name="lbl_wiki">Вики</string>
@@ -262,7 +245,7 @@
     <string name="fmt_list">%1$s,%2$s</string>
     <string name="set_play_song_from_genre">Играть жанр</string>
     <string name="set_behavior">Поведение</string>
-    <string name="set_replay_gain">Выравнивание громкости ReplayGain</string>
+    <string name="set_replay_gain">Выравнивание громкости</string>
     <string name="set_music">Музыка</string>
     <string name="set_images">Изображения</string>
     <string name="set_library">Библиотека</string>
@@ -271,15 +254,13 @@
     <string name="set_content_desc">Управляйте загрузкой музыки и изображений</string>
     <string name="set_audio_desc">Настройка звука и поведения при воспроизведении</string>
     <string name="set_playback">Воспроизведение</string>
-    <string name="set_dirs_list">Папки</string>
-    <string name="set_state">Состояние воспроизведения</string>
+    <string name="set_locations_list">Папки</string>
     <string name="lbl_sort_dsc">По убыванию</string>
     <string name="lbl_playlist">Плейлист</string>
     <string name="lbl_playlists">Плейлисты</string>
     <string name="desc_playlist_image">Обложка плейлиста для %s</string>
     <string name="set_intelligent_sorting">Игнорировать артикли при сортировке</string>
     <string name="set_intelligent_sorting_desc">Игнорировать такие слова, как «the», при сортировке по имени (лучше всего работает с англоязычной музыкой)</string>
-    <string name="desc_new_playlist">Создать новый плейлист</string>
     <string name="lbl_new_playlist">Новый плейлист</string>
     <string name="fmt_def_playlist">Плейлист %d</string>
     <string name="lbl_playlist_add">Добавить в плейлист</string>
@@ -337,4 +318,25 @@
     <string name="lng_supporters_promo">Сделайте пожертвование проекту, чтобы ваше имя было добавлено сюда!</string>
     <string name="set_remember_pause_desc">Оставлять воспроизведение/паузу во время пропуска или редактирования очереди</string>
     <string name="set_remember_pause">Запоминать паузу</string>
+    <string name="set_replay_gain_mode_off">Откл.</string>
+    <string name="lng_tasker_start">Запускать Auxio, используя ранее сохранённое состояние. если сохранённое состояние недоступно, все песни будут перетасованы. Воспроизведение начнётся немедленно.
+\n
+\nПредупреждение: будьте осторожны при управлении этой службой, если вы закроете её, а затем попытаетесь использовать снова, вы, вероятно, приведёте к сбою приложения.</string>
+    <string name="lbl_start_playback">Начать воспроизведение</string>
+    <string name="lbl_more">Больше</string>
+    <string name="lbl_feedback">Отзывы</string>
+    <string name="lbl_email">Отправить электронное письмо</string>
+    <string name="lbl_music_sources">Выберите папки</string>
+    <string name="cnt_mp4">MPEG-4, содержащий %s</string>
+    <string name="def_album">Неизвестный альбом</string>
+    <string name="lng_empty_artists">Здесь появятся ваши исполнители.</string>
+    <string name="set_locations_new">Новая папка</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Неизвестный</string>
+    <string name="lng_empty_playlists">Здесь будут отображаться ваши плейлисты.</string>
+    <string name="lng_empty_songs">Ваши песни будут отображаться здесь.</string>
+    <string name="lng_empty_albums">Ваши альбомы будут отображаться здесь.</string>
+    <string name="lng_empty_genres">Здесь будут отображаться ваши жанры.</string>
+    <string name="set_cover_mode_save_space">Экономия места</string>
+    <string name="lbl_github">Сообщить о проблеме на GitHub</string>
 </resources>

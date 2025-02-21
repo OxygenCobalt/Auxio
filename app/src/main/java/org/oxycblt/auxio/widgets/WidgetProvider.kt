@@ -30,13 +30,14 @@ import android.view.View
 import android.widget.RemoteViews
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.service.PlaybackActions
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.ui.UISettingsImpl
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
+import timber.log.Timber as L
 
 /**
  * The [AppWidgetProvider] for the "Now Playing" widget. This widget shows the current playback
@@ -53,7 +54,7 @@ class WidgetProvider : AppWidgetProvider() {
         requestUpdate(context)
         // Revert to the default layout for now until we get a response from WidgetComponent.
         // If we don't, then we will stick with the default widget layout.
-        reset(context)
+        reset(context, UISettingsImpl(context))
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -81,36 +82,72 @@ class WidgetProvider : AppWidgetProvider() {
     fun update(context: Context, uiSettings: UISettings, state: WidgetComponent.PlaybackState?) {
         if (state == null) {
             // No state, use the default widget.
-            logD("No state provided, returning to default")
-            reset(context)
+            L.d("No state provided, returning to default")
+            reset(context, uiSettings)
             return
         }
+
+        val awm = AppWidgetManager.getInstance(context)
 
         // Create and configure each possible layout for the widget. These dimensions seem
         // arbitrary, but they are actually the minimum dimensions required to fit all of
         // the widget elements, plus some leeway for text sizing.
+        val defaultLayout = newThinDockedLayout(context, uiSettings, state)
         val views =
             mapOf(
                 SizeF(180f, 48f) to newThinStickLayout(context, state),
                 SizeF(304f, 48f) to newWideStickLayout(context, state),
                 SizeF(180f, 100f) to newThinWaferLayout(context, uiSettings, state),
                 SizeF(304f, 100f) to newWideWaferLayout(context, uiSettings, state),
-                SizeF(180f, 152f) to newThinDockedLayout(context, uiSettings, state),
+                SizeF(180f, 152f) to defaultLayout,
                 SizeF(304f, 152f) to newWideDockedLayout(context, uiSettings, state),
                 SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state),
                 SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state))
 
+        // This is the order in which we will disable cover art layouts if they exceed the
+        // maximum bitmap memory usage. (See the comment in the loop below for more info.)
+        val victims =
+            mutableSetOf(
+                R.layout.widget_wafer_thin,
+                R.layout.widget_wafer_wide,
+                R.layout.widget_pane_thin,
+                R.layout.widget_pane_wide,
+                R.layout.widget_docked_thin,
+                R.layout.widget_docked_wide,
+            )
+
         // Manually update AppWidgetManager with the new views.
-        val awm = AppWidgetManager.getInstance(context)
         val component = ComponentName(context, this::class.java)
-        try {
-            awm.updateAppWidgetCompat(context, component, views)
-            logD("Successfully updated RemoteViews layout")
-        } catch (e: Exception) {
-            // Layout update failed, gracefully degrade to the default widget.
-            logW("Unable to update widget: $e")
-            reset(context)
+        while (victims.size > 0) {
+            try {
+                awm.updateAppWidgetCompat(context, component, views)
+                L.d("Successfully updated RemoteViews layout")
+                return
+            } catch (e: IllegalArgumentException) {
+                val msg = e.message ?: return
+                if (!msg.startsWith(
+                    "RemoteViews for widget update exceeds maximum bitmap memory usage")) {
+                    throw e
+                }
+                // Some android devices on Android 12-14 suffer from a bug where the maximum bitmap
+                // size calculation does not factor in bitmaps shared across multiple RemoteView
+                // forms.
+                // To mitigate an outright crash, progressively disable layouts that contain cover
+                // art
+                // in order of least to most commonly used until it actually works.
+                val victim = victims.first()
+                val view = views.entries.find { it.value.layoutId == victim } ?: continue
+                view.value.discardCover(context)
+                victims.remove(victim)
+            } catch (e: Exception) {
+                // Layout update failed, gracefully degrade to the default widget.
+                L.w("Unable to update widget: $e")
+                reset(context, uiSettings)
+            }
         }
+        // We flat-out cannot fit the bitmap into the widget. Weird.
+        L.w("Unable to update widget: Bitmap too large")
+        reset(context, uiSettings)
     }
 
     /**
@@ -118,10 +155,11 @@ class WidgetProvider : AppWidgetProvider() {
      *
      * @param context [Context] required to update the widget layout.
      */
-    fun reset(context: Context) {
-        logD("Using default layout")
+    fun reset(context: Context, uiSettings: UISettings) {
+        L.d("Using default layout")
+        val layout = newDefaultLayout(context, uiSettings)
         AppWidgetManager.getInstance(context)
-            .updateAppWidget(ComponentName(context, this::class.java), newDefaultLayout(context))
+            .updateAppWidget(ComponentName(context, this::class.java), layout)
     }
 
     // --- INTERNAL METHODS ---
@@ -132,15 +170,17 @@ class WidgetProvider : AppWidgetProvider() {
      * @param context [Context] required to send update request broadcast.
      */
     private fun requestUpdate(context: Context) {
-        logD("Sending update intent to PlaybackService")
+        L.d("Sending update intent to PlaybackService")
         val intent = Intent(ACTION_WIDGET_UPDATE).addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
         context.sendBroadcast(intent)
     }
 
     // --- LAYOUTS ---
 
-    private fun newDefaultLayout(context: Context) =
+    private fun newDefaultLayout(context: Context, uiSettings: UISettings) =
         newRemoteViews(context, R.layout.widget_default)
+            .setupBackground(uiSettings)
+            .setupBackground(uiSettings)
 
     private fun newThinStickLayout(context: Context, state: WidgetComponent.PlaybackState) =
         newRemoteViews(context, R.layout.widget_stick_thin).setupTimelineControls(context, state)
@@ -284,14 +324,15 @@ class WidgetProvider : AppWidgetProvider() {
                 context.getString(
                     R.string.desc_album_cover, state.song.album.name.resolve(context)))
         } else {
-            // We are unable to use the typical placeholder cover with the song item due to
-            // limitations with the corner radius. Instead use a custom-made album icon as the
-            // placeholder.
-            setImageViewResource(R.id.widget_cover, R.drawable.ic_remote_default_cover_24)
-            setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
+            discardCover(context)
         }
 
         return this
+    }
+
+    private fun RemoteViews.discardCover(context: Context) {
+        setImageViewResource(R.id.widget_cover, R.drawable.ic_remote_default_cover_24)
+        setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }
 
     private fun RemoteViews.setupFillingCover(uiSettings: UISettings): RemoteViews {

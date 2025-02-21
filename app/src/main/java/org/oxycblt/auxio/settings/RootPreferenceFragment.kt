@@ -28,10 +28,9 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as L
 
 /**
  * The [PreferenceFragmentCompat] that displays the root settings list.
@@ -40,7 +39,6 @@ import org.oxycblt.auxio.util.navigateSafe
  */
 @AndroidEntryPoint
 class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +52,8 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_music_dirs)) {
-            findNavController().navigateSafe(RootPreferenceFragmentDirections.musicDirsSettings())
+            findNavController()
+                .navigateSafe(RootPreferenceFragmentDirections.musicLocationsSettings())
         }
     }
 
@@ -64,21 +63,21 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         //  do one.
         when (preference.key) {
             getString(R.string.set_key_ui) -> {
-                logD("Navigating to UI preferences")
+                L.d("Navigating to UI preferences")
                 findNavController().navigateSafe(RootPreferenceFragmentDirections.uiPreferences())
             }
             getString(R.string.set_key_personalize) -> {
-                logD("Navigating to personalization preferences")
+                L.d("Navigating to personalization preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.personalizePreferences())
             }
             getString(R.string.set_key_music) -> {
-                logD("Navigating to music preferences")
+                L.d("Navigating to music preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.musicPreferences())
             }
             getString(R.string.set_key_audio) -> {
-                logD("Navigating to audio preferences")
+                L.d("Navigating to audio preferences")
                 findNavController().navigateSafe(RootPreferenceFragmentDirections.audioPeferences())
             }
             getString(R.string.set_key_reindex) -> musicModel.refresh()

@@ -26,13 +26,13 @@ import androidx.media3.common.audio.BaseAudioProcessor
 import java.nio.ByteBuffer
 import javax.inject.Inject
 import kotlin.math.pow
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.QueueChange
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * An [AudioProcessor] that handles ReplayGain values and their amplification of the audio stream.
@@ -71,7 +71,7 @@ constructor(
     // --- OVERRIDES ---
 
     override fun onIndexMoved(index: Int) {
-        logD("Index moved, updating current song")
+        L.d("Index moved, updating current song")
         applyReplayGain(playbackManager.currentSong)
     }
 
@@ -88,7 +88,7 @@ constructor(
         index: Int,
         isShuffled: Boolean
     ) {
-        logD("New playback started, updating playback information")
+        L.d("New playback started, updating playback information")
         applyReplayGain(playbackManager.currentSong)
     }
 
@@ -106,12 +106,12 @@ constructor(
      */
     private fun applyReplayGain(song: Song?) {
         if (song == null) {
-            logD("Nothing playing, disabling adjustment")
+            L.d("Nothing playing, disabling adjustment")
             volume = 1f
             return
         }
 
-        logD("Applying ReplayGain adjustment for $song")
+        L.d("Applying ReplayGain adjustment for $song")
 
         val gain = song.replayGainAdjustment
         val preAmp = playbackSettings.replayGainPreAmp
@@ -121,44 +121,43 @@ constructor(
             when (playbackSettings.replayGainMode) {
                 // User wants no adjustment.
                 ReplayGainMode.OFF -> {
-                    logD("ReplayGain is off")
+                    L.d("ReplayGain is off")
                     null
                 }
                 // User wants track gain to be preferred. Default to album gain only if
                 // there is no track gain.
                 ReplayGainMode.TRACK -> {
-                    logD("Using track strategy")
+                    L.d("Using track strategy")
                     gain.track ?: gain.album
                 }
                 // User wants album gain to be preferred. Default to track gain only if
                 // here is no album gain.
                 ReplayGainMode.ALBUM -> {
-                    logD("Using album strategy")
+                    L.d("Using album strategy")
                     gain.album ?: gain.track
                 }
                 // User wants album gain to be used when in an album, track gain otherwise.
                 ReplayGainMode.DYNAMIC -> {
-                    logD("Using dynamic strategy")
+                    L.d("Using dynamic strategy")
                     gain.album?.takeIf {
                         playbackManager.parent is Album &&
                             playbackManager.currentSong?.album == playbackManager.parent
-                    }
-                        ?: gain.track
+                    } ?: gain.track
                 }
             }
 
         val amplifiedAdjustment =
             if (resolvedAdjustment != null) {
                 // Successfully resolved an adjustment, apply the corresponding pre-amp
-                logD("Applying with pre-amp")
+                L.d("Applying with pre-amp")
                 resolvedAdjustment + preAmp.with
             } else {
                 // No adjustment found, use the corresponding user-defined pre-amp
-                logD("Applying without pre-amp")
+                L.d("Applying without pre-amp")
                 preAmp.without
             }
 
-        logD("Applying ReplayGain adjustment ${amplifiedAdjustment}db")
+        L.d("Applying ReplayGain adjustment ${amplifiedAdjustment}db")
 
         // Final adjustment along the volume curve.
         volume = 10f.pow(amplifiedAdjustment / 20f)

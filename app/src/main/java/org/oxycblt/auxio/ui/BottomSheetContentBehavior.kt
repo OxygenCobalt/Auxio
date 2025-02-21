@@ -26,9 +26,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import kotlin.math.abs
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import timber.log.Timber as L
 
 /**
  * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
@@ -61,15 +61,15 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         val behavior = dependency.coordinatorLayoutBehavior as BackportBottomSheetBehavior
         val consumed = behavior.calculateConsumedByBar()
         if (consumed == Int.MIN_VALUE) {
-            logD("Not laid out yet, cannot update dependent view")
+            L.d("Not laid out yet, cannot update dependent view")
             return false
         }
 
         if (consumed != lastConsumed) {
-            logD("Consumed amount changed, re-applying insets")
+            L.d("Consumed amount changed, re-applying insets")
             lastConsumed = consumed
             lastInsets?.let(child::dispatchApplyWindowInsets)
-            measureContent(parent, child, consumed)
+            measureContent(parent, child)
             layoutContent(child)
             return true
         }
@@ -85,15 +85,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         parentHeightMeasureSpec: Int,
         heightUsed: Int
     ): Boolean {
-        val dep = dep ?: return false
-        val behavior = dep.coordinatorLayoutBehavior as BackportBottomSheetBehavior
-        val consumed = behavior.calculateConsumedByBar()
-        if (consumed == Int.MIN_VALUE) {
-            return false
-        }
-
-        measureContent(parent, child, consumed)
-
+        measureContent(parent, child)
         return true
     }
 
@@ -114,7 +106,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
                 val bars = insets.systemBarInsetsCompat
 
                 insets.replaceSystemBarInsetsCompat(
-                    bars.left, bars.top, bars.right, (bars.bottom - consumed).coerceAtLeast(0))
+                    bars.left, bars.top, bars.right, consumed.coerceAtLeast(bars.bottom))
             }
 
             setup = true
@@ -123,13 +115,11 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         return true
     }
 
-    private fun measureContent(parent: View, child: View, consumed: Int) {
+    private fun measureContent(parent: View, child: View) {
         val contentWidthSpec =
             View.MeasureSpec.makeMeasureSpec(parent.measuredWidth, View.MeasureSpec.EXACTLY)
         val contentHeightSpec =
-            View.MeasureSpec.makeMeasureSpec(
-                parent.measuredHeight - consumed, View.MeasureSpec.EXACTLY)
-
+            View.MeasureSpec.makeMeasureSpec(parent.measuredHeight, View.MeasureSpec.EXACTLY)
         child.measure(contentWidthSpec, contentHeightSpec)
     }
 

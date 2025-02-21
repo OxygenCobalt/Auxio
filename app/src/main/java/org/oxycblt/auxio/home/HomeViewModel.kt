@@ -27,17 +27,17 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * The ViewModel for managing the tab data and lists of the home view.
@@ -120,6 +120,10 @@ constructor(
     val playlistList: StateFlow<List<Playlist>>
         get() = _playlistList
 
+    private val _empty = MutableStateFlow(false)
+    val empty: StateFlow<Boolean>
+        get() = _empty
+
     private val _playlistInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for how to update [genreList] in the UI. */
     val playlistInstructions: Event<UpdateInstructions>
@@ -155,13 +159,13 @@ constructor(
     /** A marker for whether the user is fast-scrolling in the home view or not. */
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
-    private val _speedDialOpen = MutableStateFlow(false)
-    /** A marker for whether the speed dial is open or not. */
-    val speedDialOpen: StateFlow<Boolean> = _speedDialOpen
-
     private val _showOuter = MutableEvent<Outer>()
     val showOuter: Event<Outer>
         get() = _showOuter
+
+    private val _chooseMusicLocations = MutableEvent<Unit>()
+    val chooseMusicLocations: Event<Unit>
+        get() = _chooseMusicLocations
 
     init {
         homeGenerator.attach()
@@ -170,6 +174,10 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         homeGenerator.release()
+    }
+
+    override fun invalidateEmpty() {
+        _empty.value = homeGenerator.empty()
     }
 
     override fun invalidateMusic(type: MusicType, instructions: UpdateInstructions) {
@@ -253,7 +261,7 @@ constructor(
      * @param pagerPos The new position of the ViewPager2 instance.
      */
     fun synchronizeTabPosition(pagerPos: Int) {
-        logD("Updating current tab to ${currentTabTypes[pagerPos]}")
+        L.d("Updating current tab to ${currentTabTypes[pagerPos]}")
         _currentTabType.value = currentTabTypes[pagerPos]
     }
 
@@ -263,18 +271,12 @@ constructor(
      * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
      */
     fun setFastScrolling(isFastScrolling: Boolean) {
-        logD("Updating fast scrolling state: $isFastScrolling")
+        L.d("Updating fast scrolling state: $isFastScrolling")
         _isFastScrolling.value = isFastScrolling
     }
 
-    /**
-     * Update whether the speed dial is open or not.
-     *
-     * @param speedDialOpen true if the speed dial is open, false otherwise.
-     */
-    fun setSpeedDialOpen(speedDialOpen: Boolean) {
-        logD("Updating speed dial state: $speedDialOpen")
-        _speedDialOpen.value = speedDialOpen
+    fun startChooseMusicLocations() {
+        _chooseMusicLocations.put(Unit)
     }
 
     fun showSettings() {

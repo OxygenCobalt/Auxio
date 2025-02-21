@@ -96,17 +96,17 @@ abstract class SortDialog :
 
     private fun updateButtons() {
         val binding = requireBinding()
-        binding.sortSave.isEnabled = getCurrentSort() != getInitialSort()
+        binding.sortSave.isEnabled = getCurrentSort().let { it != null && it != getInitialSort() }
     }
 
     private fun getCurrentSort(): Sort? {
         val initial = getInitialSort()
-        val mode = modeAdapter.currentMode ?: initial?.mode ?: return null
+        val mode = modeAdapter.currentMode ?: return null
         val direction =
             when (requireBinding().sortDirectionGroup.checkedButtonId) {
                 R.id.sort_direction_asc -> Sort.Direction.ASCENDING
                 R.id.sort_direction_dsc -> Sort.Direction.DESCENDING
-                else -> initial?.direction ?: return null
+                else -> return null
             }
         return Sort(mode, direction)
     }

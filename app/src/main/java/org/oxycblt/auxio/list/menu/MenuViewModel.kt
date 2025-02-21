@@ -23,10 +23,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.PlaySong
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.musikr.MusicParent
+import timber.log.Timber as L
 
 /**
  * Manages the state information for [MenuDialogFragment] implementations.
@@ -55,7 +55,7 @@ class MenuViewModel @Inject constructor(private val musicRepository: MusicReposi
     fun setMenu(parcel: Menu.Parcel) {
         _currentMenu.value = unpackParcel(parcel)
         if (_currentMenu.value == null) {
-            logW("Given menu parcel $parcel was invalid")
+            L.w("Given menu parcel $parcel was invalid")
         }
     }
 
@@ -70,35 +70,35 @@ class MenuViewModel @Inject constructor(private val musicRepository: MusicReposi
         }
 
     private fun unpackSongParcel(parcel: Menu.ForSong.Parcel): Menu.ForSong? {
-        val song = musicRepository.deviceLibrary?.findSong(parcel.songUid) ?: return null
+        val song = musicRepository.library?.findSong(parcel.songUid) ?: return null
         val parent = parcel.playWithUid?.let(musicRepository::find) as MusicParent?
         val playWith = PlaySong.fromIntCode(parcel.playWithCode, parent) ?: return null
         return Menu.ForSong(parcel.res, song, playWith)
     }
 
     private fun unpackAlbumParcel(parcel: Menu.ForAlbum.Parcel): Menu.ForAlbum? {
-        val album = musicRepository.deviceLibrary?.findAlbum(parcel.albumUid) ?: return null
+        val album = musicRepository.library?.findAlbum(parcel.albumUid) ?: return null
         return Menu.ForAlbum(parcel.res, album)
     }
 
     private fun unpackArtistParcel(parcel: Menu.ForArtist.Parcel): Menu.ForArtist? {
-        val artist = musicRepository.deviceLibrary?.findArtist(parcel.artistUid) ?: return null
+        val artist = musicRepository.library?.findArtist(parcel.artistUid) ?: return null
         return Menu.ForArtist(parcel.res, artist)
     }
 
     private fun unpackGenreParcel(parcel: Menu.ForGenre.Parcel): Menu.ForGenre? {
-        val genre = musicRepository.deviceLibrary?.findGenre(parcel.genreUid) ?: return null
+        val genre = musicRepository.library?.findGenre(parcel.genreUid) ?: return null
         return Menu.ForGenre(parcel.res, genre)
     }
 
     private fun unpackPlaylistParcel(parcel: Menu.ForPlaylist.Parcel): Menu.ForPlaylist? {
-        val playlist = musicRepository.userLibrary?.findPlaylist(parcel.playlistUid) ?: return null
+        val playlist = musicRepository.library?.findPlaylist(parcel.playlistUid) ?: return null
         return Menu.ForPlaylist(parcel.res, playlist)
     }
 
     private fun unpackSelectionParcel(parcel: Menu.ForSelection.Parcel): Menu.ForSelection? {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return null
-        val songs = parcel.songUids.mapNotNull(deviceLibrary::findSong)
+        val library = musicRepository.library ?: return null
+        val songs = parcel.songUids.mapNotNull(library::findSong)
         return Menu.ForSelection(parcel.res, songs)
     }
 }

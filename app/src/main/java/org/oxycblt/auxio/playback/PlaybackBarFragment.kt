@@ -26,14 +26,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingFragment] that shows the current playback state in a compact manner.
@@ -71,10 +72,9 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         // Set up actions
         binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
 
-        // Load the track color in manually as it's unclear whether the track actually supports
-        // using a ColorStateList in the resources.
-        binding.playbackProgressBar.trackColor =
-            context.getColorCompat(R.color.sel_track).defaultColor
+        //        binding.playbackProgressBar.wavelength = 48
+        //        binding.playbackProgressBar.speed = 20
+        //        binding.playbackProgressBar.amplitude = 5
 
         // -- VIEWMODEL SETUP ---
         collectImmediately(playbackModel.song, ::updateSong)
@@ -124,7 +124,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         val binding = requireBinding()
         when (actionMode) {
             ActionMode.NEXT -> {
-                logD("Using skip next action")
+                L.d("Using skip next action")
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         setIconResource(R.drawable.ic_skip_next_24)
@@ -136,7 +136,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 }
             }
             ActionMode.REPEAT -> {
-                logD("Using repeat mode action")
+                L.d("Using repeat mode action")
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         contentDescription = getString(R.string.desc_change_repeat)
@@ -149,7 +149,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 }
             }
             ActionMode.SHUFFLE -> {
-                logD("Using shuffle action")
+                L.d("Using shuffle action")
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         setIconResource(R.drawable.sel_shuffle_state_24)

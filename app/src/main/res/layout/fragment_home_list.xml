@@ -1,8 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_recycler"
-    style="@style/Widget.Auxio.RecyclerView.Grid.WithAdaptiveFab"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:listitem="@layout/item_song" />
+    android:layout_height="match_parent">
+
+    <org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
+        android:id="@+id/home_recycler"
+        style="@style/Widget.Auxio.RecyclerView.Grid.WithAdaptiveFab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_song" />
+
+
+    <org.oxycblt.auxio.ui.EdgeFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/home_no_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:visibility="invisible"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_medium">
+
+            <ImageView
+                android:id="@+id/home_no_music_placeholder"
+                android:layout_width="@dimen/size_icon_huge"
+                android:layout_height="@dimen/size_icon_huge"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:src="@drawable/ic_song_48"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/home_no_music_msg"
+                android:layout_width="256dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_small"
+                tools:text="@string/lng_empty_songs"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                android:id="@+id/home_no_music_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_music_sources" />
+
+        </LinearLayout>
+
+    </org.oxycblt.auxio.ui.EdgeFrameLayout>
+</FrameLayout>

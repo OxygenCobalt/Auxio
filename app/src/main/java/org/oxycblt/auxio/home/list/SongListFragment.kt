@@ -22,27 +22,30 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 
 /**
  * A [ListFragment] that shows a list of [Song]s.
@@ -59,6 +62,7 @@ class SongListFragment :
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     private val songAdapter = SongAdapter(this)
+
     // Save memory by re-using the same formatter and string builder when creating popup text
     private val formatterSb = StringBuilder(64)
     private val formatter = Formatter(formatterSb)
@@ -76,7 +80,16 @@ class SongListFragment :
             listener = this@SongListFragment
         }
 
+        binding.homeNoMusicPlaceholder.apply {
+            setImageResource(R.drawable.ic_song_48)
+            contentDescription = getString(R.string.lbl_songs)
+        }
+        binding.homeNoMusicMsg.text = getString(R.string.lng_empty_songs)
+
+        binding.homeNoMusicAction.setOnClickListener { homeModel.startChooseMusicLocations() }
+
         collectImmediately(homeModel.songList, ::updateSongs)
+        collectImmediately(homeModel.empty, musicModel.indexingState, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -98,23 +111,23 @@ class SongListFragment :
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.songSort.mode) {
             // Name -> Use name
-            is Sort.Mode.ByName -> song.name.thumb
+            is Sort.Mode.ByName -> song.name.thumb()
 
             // Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> song.album.artists[0].name.thumb
+            is Sort.Mode.ByArtist -> song.album.artists[0].name.thumb()
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum -> song.album.name.thumb
+            is Sort.Mode.ByAlbum -> song.album.name.thumb()
 
             // Year -> Use Full Year
-            is Sort.Mode.ByDate -> song.album.dates?.resolveDate(requireContext())
+            is Sort.Mode.ByDate -> song.album.dates?.resolve(requireContext())
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> song.durationMs.formatDurationMs(false)
 
             // Last added -> Format as date
             is Sort.Mode.ByDateAdded -> {
-                val dateAddedMillis = song.dateAdded.secsToMs()
+                val dateAddedMillis = song.addedMs
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
                         context,
@@ -144,6 +157,14 @@ class SongListFragment :
 
     private fun updateSongs(songs: List<Song>) {
         songAdapter.update(songs, homeModel.songInstructions.consume())
+    }
+
+    private fun updateNoMusicIndicator(empty: Boolean, indexingState: IndexingState?) {
+        val binding = requireBinding()
+        binding.homeRecycler.isInvisible = empty
+        binding.homeNoMusic.isInvisible = !empty
+        binding.homeNoMusicAction.isVisible =
+            indexingState == null || (empty && indexingState is IndexingState.Completed)
     }
 
     private fun updateSelection(selection: List<Music>) {

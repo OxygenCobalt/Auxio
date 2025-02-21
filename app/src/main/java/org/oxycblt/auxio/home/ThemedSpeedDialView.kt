@@ -39,7 +39,6 @@ import androidx.core.os.BundleCompat
 import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.leinardi.android.speeddial.FabWithLabelView
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -47,6 +46,7 @@ import com.leinardi.android.speeddial.SpeedDialView
 import kotlin.math.roundToInt
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.AnimConfig
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
@@ -78,6 +78,8 @@ class ThemedSpeedDialView : SpeedDialView {
         @AttrRes defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
+    private val stationaryConfig = AnimConfig.of(context, AnimConfig.STANDARD, AnimConfig.MEDIUM2)
+
     init {
         // Work around ripple bug on Android 12 when useCompatPadding = true.
         // @see https://github.com/material-components/material-components-android/issues/2617
@@ -107,7 +109,7 @@ class ThemedSpeedDialView : SpeedDialView {
         val mainFabDrawable =
             RotateDrawable().apply {
                 drawable = mainFab.drawable
-                toDegrees = mainFabAnimationRotateAngle
+                toDegrees = 45f + 90f
             }
         mainFabAnimationRotateAngle = 0f
         setMainFabClosedDrawable(mainFabDrawable)
@@ -116,6 +118,13 @@ class ThemedSpeedDialView : SpeedDialView {
                 override fun onMainActionSelected(): Boolean = false
 
                 override fun onToggleChanged(isOpen: Boolean) {
+                    mainFab.backgroundTintList =
+                        ColorStateList.valueOf(
+                            if (isOpen) mainFabClosedBackgroundColor
+                            else mainFabOpenedBackgroundColor)
+                    mainFab.imageTintList =
+                        ColorStateList.valueOf(
+                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor)
                     mainFabAnimator?.cancel()
                     mainFabAnimator =
                         createMainFabAnimator(isOpen).apply {
@@ -132,22 +141,44 @@ class ThemedSpeedDialView : SpeedDialView {
             })
     }
 
-    private fun createMainFabAnimator(isOpen: Boolean): Animator =
-        AnimatorSet().apply {
-            playTogether(
-                ObjectAnimator.ofArgb(
+    private fun createMainFabAnimator(isOpen: Boolean): Animator {
+        val totalDuration = stationaryConfig.duration
+        val partialDuration = totalDuration / 2 // This is half of the total duration
+        val delay = totalDuration / 4 // This is one fourth of the total duration
+
+        val backgroundTintAnimator =
+            ObjectAnimator.ofArgb(
                     mainFab,
                     VIEW_PROPERTY_BACKGROUND_TINT,
-                    if (isOpen) mainFabOpenedBackgroundColor else mainFabClosedBackgroundColor),
-                ObjectAnimator.ofArgb(
+                    if (isOpen) mainFabOpenedBackgroundColor else mainFabClosedBackgroundColor)
+                .apply {
+                    startDelay = delay
+                    duration = partialDuration
+                }
+
+        val imageTintAnimator =
+            ObjectAnimator.ofArgb(
                     mainFab,
                     IMAGE_VIEW_PROPERTY_IMAGE_TINT,
-                    if (isOpen) mainFabOpenedIconColor else mainFabClosedIconColor),
-                ObjectAnimator.ofInt(
-                    mainFab.drawable, DRAWABLE_PROPERTY_LEVEL, if (isOpen) 10000 else 0))
-            duration = 200
-            interpolator = FastOutSlowInInterpolator()
-        }
+                    if (isOpen) mainFabOpenedIconColor else mainFabClosedIconColor)
+                .apply {
+                    startDelay = delay
+                    duration = partialDuration
+                }
+
+        val levelAnimator =
+            ObjectAnimator.ofInt(
+                    mainFab.drawable, DRAWABLE_PROPERTY_LEVEL, if (isOpen) 10000 else 0)
+                .apply { duration = totalDuration }
+
+        val animatorSet =
+            AnimatorSet().apply {
+                playTogether(backgroundTintAnimator, imageTintAnimator, levelAnimator)
+                interpolator = stationaryConfig.interpolator
+            }
+        animatorSet.start()
+        return animatorSet
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -159,6 +190,8 @@ class ThemedSpeedDialView : SpeedDialView {
             val overlayColor = surfaceColor.defaultColor.withModulatedAlpha(0.87f)
             overlayLayout.setBackgroundColor(overlayColor)
         }
+        // Fix default margins added by library
+        (mainFab.layoutParams as LayoutParams).setMargins(0, 0, 0, 0)
     }
 
     private fun Int.withModulatedAlpha(
@@ -199,13 +232,24 @@ class ThemedSpeedDialView : SpeedDialView {
         return super.addActionItem(actionItem, position, animate)?.apply {
             fab.apply {
                 updateLayoutParams<MarginLayoutParams> {
-                    val horizontalMargin = context.getDimenPixels(R.dimen.spacing_mid_large)
-                    setMargins(horizontalMargin, 0, horizontalMargin, 0)
+                    val rightMargin = context.getDimenPixels(R.dimen.spacing_tiny)
+                    if (position == actionItems.lastIndex) {
+                        val bottomMargin = context.getDimenPixels(R.dimen.spacing_small)
+                        setMargins(0, 0, rightMargin, bottomMargin)
+                    } else {
+                        setMargins(0, 0, rightMargin, 0)
+                    }
                 }
                 useCompatPadding = false
             }
 
             labelBackground.apply {
+                updateLayoutParams<MarginLayoutParams> {
+                    if (position == actionItems.lastIndex) {
+                        val bottomMargin = context.getDimenPixels(R.dimen.spacing_small)
+                        setMargins(0, 0, rightMargin, bottomMargin)
+                    }
+                }
                 useCompatPadding = false
                 setContentPadding(spacingSmall, spacingSmall, spacingSmall, spacingSmall)
                 background =
@@ -262,7 +306,7 @@ class ThemedSpeedDialView : SpeedDialView {
 
         private val DRAWABLE_PROPERTY_LEVEL =
             object : Property<Drawable, Int>(Int::class.java, "level") {
-                override fun get(drawable: Drawable): Int? = drawable.level
+                override fun get(drawable: Drawable): Int = drawable.level
 
                 override fun set(drawable: Drawable, value: Int?) {
                     drawable.level = value!!

@@ -27,7 +27,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as L
 
 /**
  * User configuration specific to the playback system.
@@ -146,7 +146,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
             }
 
         if (sharedPreferences.contains(OLD_KEY_LIB_MUSIC_PLAYBACK_MODE)) {
-            logD("Migrating $OLD_KEY_LIB_MUSIC_PLAYBACK_MODE")
+            L.d("Migrating $OLD_KEY_LIB_MUSIC_PLAYBACK_MODE")
 
             val mode =
                 sharedPreferences
@@ -162,7 +162,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
         }
 
         if (sharedPreferences.contains(OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE)) {
-            logD("Migrating $OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE")
+            L.d("Migrating $OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE")
 
             val mode =
                 sharedPreferences
@@ -183,19 +183,19 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
             getString(R.string.set_key_replay_gain),
             getString(R.string.set_key_pre_amp_with),
             getString(R.string.set_key_pre_amp_without) -> {
-                logD("Dispatching ReplayGain setting change")
+                L.d("Dispatching ReplayGain setting change")
                 listener.onReplayGainSettingsChanged()
             }
             getString(R.string.set_key_notif_action) -> {
-                logD("Dispatching notification setting change")
+                L.d("Dispatching notification setting change")
                 listener.onNotificationActionChanged()
             }
             getString(R.string.set_key_bar_action) -> {
-                logD("Dispatching bar action change")
+                L.d("Dispatching bar action change")
                 listener.onBarActionChanged()
             }
             getString(R.string.set_key_repeat_pause) -> {
-                logD("Dispatching pause on repeat change")
+                L.d("Dispatching pause on repeat change")
                 listener.onPauseOnRepeatChanged()
             }
         }

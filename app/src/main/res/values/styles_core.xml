@@ -18,7 +18,7 @@
     <style name="Theme.Auxio.Base" parent="Theme.Auxio.V31">
 
         <!-- Material configuration -->
-        <item name="colorOutline">@color/overlay_stroke</item>
+<!--        <item name="colorOutline">@color/overlay_stroke</item>-->
         <item name="toolbarStyle">@style/Widget.Auxio.Toolbar</item>
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>

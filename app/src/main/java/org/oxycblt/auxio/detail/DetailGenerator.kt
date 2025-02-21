@@ -23,18 +23,18 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.Disc
-import org.oxycblt.auxio.music.info.ReleaseType
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.tag.Disc
+import org.oxycblt.musikr.tag.ReleaseType
+import timber.log.Timber as L
 
 interface DetailGenerator {
     fun any(uid: Music.UID): Detail<out MusicParent>?
@@ -121,7 +121,7 @@ private class DetailGeneratorImpl(
     }
 
     override fun album(uid: Music.UID): Detail<Album>? {
-        val album = musicRepository.deviceLibrary?.findAlbum(uid) ?: return null
+        val album = musicRepository.library?.findAlbum(uid) ?: return null
         val songs = listSettings.albumSongSort.songs(album.songs)
         val discs = songs.groupBy { it.disc }
         val section =
@@ -134,7 +134,7 @@ private class DetailGeneratorImpl(
     }
 
     override fun artist(uid: Music.UID): Detail<Artist>? {
-        val artist = musicRepository.deviceLibrary?.findArtist(uid) ?: return null
+        val artist = musicRepository.library?.findArtist(uid) ?: return null
         val grouping =
             artist.explicitAlbums.groupByTo(sortedMapOf()) {
                 // Remap the complicated ReleaseType data structure into detail sections
@@ -156,7 +156,7 @@ private class DetailGeneratorImpl(
             }
 
         if (artist.implicitAlbums.isNotEmpty()) {
-            logD("Implicit albums present, adding to list")
+            L.d("Implicit albums present, adding to list")
             grouping[DetailSection.Albums.Category.APPEARANCES] =
                 artist.implicitAlbums.toMutableList()
         }
@@ -173,14 +173,14 @@ private class DetailGeneratorImpl(
     }
 
     override fun genre(uid: Music.UID): Detail<Genre>? {
-        val genre = musicRepository.deviceLibrary?.findGenre(uid) ?: return null
+        val genre = musicRepository.library?.findGenre(uid) ?: return null
         val artists = DetailSection.Artists(GENRE_ARTIST_SORT.artists(genre.artists))
         val songs = DetailSection.Songs(listSettings.genreSongSort.songs(genre.songs))
         return Detail(genre, listOf(artists, songs))
     }
 
     override fun playlist(uid: Music.UID): Detail<Playlist>? {
-        val playlist = musicRepository.userLibrary?.findPlaylist(uid) ?: return null
+        val playlist = musicRepository.library?.findPlaylist(uid) ?: return null
         if (playlist.songs.isNotEmpty()) {
             val songs = DetailSection.Songs(playlist.songs)
             return Detail(playlist, listOf(songs))

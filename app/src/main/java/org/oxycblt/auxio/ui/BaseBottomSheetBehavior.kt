@@ -25,11 +25,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
+import timber.log.Timber as L
 
 /**
  * A BottomSheetBehavior that resolves several issues with the default implementation, including:
@@ -42,6 +44,11 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
 abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     BackportBottomSheetBehavior<V>(context, attributeSet) {
     private var initalized = false
+    private val idealBottomGestureInsets = context.getDimenPixels(R.dimen.spacing_medium)
+
+    // I can't manually inject this, MainFragment must be the one to do it.
+    // TODO: Just use another library. Tired of Hilt.
+    lateinit var uiSettings: UISettings
 
     init {
         // Disable isFitToContents to make the bottom sheet expand to the top of the screen and
@@ -55,7 +62,10 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
      * @param context [Context] that can be used to draw the [Drawable].
      * @return A background drawable.
      */
-    abstract fun createBackground(context: Context): Drawable
+    abstract fun createBackground(context: Context, uiSettings: UISettings): Drawable
+
+    /** Get the ideal bar height to use before the bar is properly measured. */
+    abstract fun getIdealBarHeight(context: Context): Int
 
     /**
      * Called when window insets are being applied to the [View] this [BaseBottomSheetBehavior] is
@@ -70,7 +80,13 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
         // All sheet behaviors derive their peek height from the size of the "bar" (i.e the
         // first child) plus the gesture insets.
         val gestures = insets.systemGestureInsetsCompat
-        peekHeight = (child as ViewGroup).getChildAt(0).height + gestures.bottom
+        val bar = (child as ViewGroup).getChildAt(0)
+        peekHeight =
+            if (bar.measuredHeight > 0) {
+                bar.measuredHeight + gestures.bottom
+            } else {
+                getIdealBarHeight(child.context) + gestures.bottom
+            }
         return insets
     }
 
@@ -84,15 +100,16 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
         val layout = super.onLayoutChild(parent, child, layoutDirection)
         // Don't repeat redundant initialization.
         if (!initalized) {
-            logD("Not initialized, setting up child")
+            L.d("Not initialized, setting up child")
             child.apply {
                 // Set up compat elevation attributes. These are only shown below API 28.
-                translationZ = context.getDimen(R.dimen.elevation_normal)
+                translationZ = context.getDimen(MR.dimen.m3_sys_elevation_level1)
                 // Background differs depending on concrete implementation.
-                background = createBackground(context)
+                background = createBackground(context, uiSettings)
                 setOnApplyWindowInsetsListener(::applyWindowInsets)
             }
             initalized = true
+            peekHeight = getIdealBarHeight(child.context) + idealBottomGestureInsets
         }
         // Sometimes CoordinatorLayout doesn't dispatch window insets to us, likely due to how
         // much we overload it. Ensure that we get them.

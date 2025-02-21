@@ -20,7 +20,7 @@ package org.oxycblt.auxio.list
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.musikr.Music
 
 /**
  * A Fragment containing a selectable list.

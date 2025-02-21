@@ -12,6 +12,7 @@ přesná/původní data, štítky pro řazení a další
 - Správa složek podporující SD karty
 - Spolehlivá funkce seznamů skladeb
 - Uchovávání stavu přehrávání
+- Podpora Android Auto
 - Automatické přehrávání bez mezer
 - Plná podpora ReplayGain (u souborů MP3, FLAC, OGG, OPUS a MP4)
 - Podpora externích přehrávačů (např. Wavelet)
@@ -21,4 +22,4 @@ přesná/původní data, štítky pro řazení a další
 - Automatické přehrávání při připojení sluchátek
 - Stylové widgety, které se automaticky adaptují své velikosti
 - Plně soukromý a offline
-- Žádné zakulacené obaly alb (ve výchozím nastavení)
+- Žádné zaoblené obaly alb (ve výchozím nastavení)

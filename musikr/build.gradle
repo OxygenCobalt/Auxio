@@ -1,0 +1,103 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id "com.google.devtools.ksp"
+    id "com.diffplug.spotless"
+    id "kotlin-parcelize"
+    id "org.jetbrains.dokka"
+}
+
+android {
+    namespace 'org.oxycblt.musikr'
+    compileSdk target_sdk
+    ndkVersion "$ndk_version"
+
+    defaultConfig {
+        minSdk min_sdk
+        targetSdk target_sdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs += "-Xjvm-default=all"
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+}
+
+dependencies {
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
+
+    // AndroidX
+    implementation "androidx.core:core-ktx:$core_version"
+
+    // Database
+    implementation "androidx.room:room-runtime:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+
+    // Build
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugaring_version"
+
+    // Testing
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "io.mockk:mockk:1.13.7"
+    testImplementation "org.robolectric:robolectric:4.11"
+    testImplementation 'androidx.test:core-ktx:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+}
+
+task assembleTaglib(type: Exec) {
+    def jniDir = "$projectDir/src/main/cpp"
+    def libs = new File("$jniDir/taglib/pkg")
+    if (libs.exists()) {
+        commandLine "true"
+        return
+    }
+    commandLine "sh", "-c", "$jniDir/build_taglib.sh $jniDir $android.ndkDirectory"
+}
+
+afterEvaluate {
+    preDebugBuild.dependsOn assembleTaglib
+    preReleaseBuild.dependsOn assembleTaglib
+}
+
+clean {
+    delete "$projectDir/src/main/cpp/taglib/pkg"
+    delete "$projectDir/src/main/cpp/taglib/build"
+}

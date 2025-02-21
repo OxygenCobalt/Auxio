@@ -31,14 +31,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistExportBinding
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.external.ExportConfig
-import org.oxycblt.auxio.music.external.M3U
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.playlist.ExportConfig
+import org.oxycblt.musikr.playlist.m3u.M3U
+import timber.log.Timber as L
 
 /**
  * A dialog that allows the user to configure how a playlist will be exported to a file.
@@ -73,18 +73,18 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
             registerForActivityResult(ActivityResultContracts.CreateDocument(M3U.MIME_TYPE)) { uri
                 ->
                 if (uri == null) {
-                    logW("No URI returned from file picker")
+                    L.w("No URI returned from file picker")
                     return@registerForActivityResult
                 }
 
                 val playlist = pickerModel.currentPlaylistToExport.value
                 if (playlist == null) {
-                    logW("No playlist to export")
+                    L.w("No playlist to export")
                     findNavController().navigateUp()
                     return@registerForActivityResult
                 }
 
-                logD("Received playlist URI $uri")
+                L.d("Received playlist URI $uri")
                 musicModel.exportPlaylist(playlist, uri, pickerModel.currentExportConfig.value)
                 findNavController().navigateUp()
             }
@@ -129,7 +129,7 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
 
     private fun updatePlaylistToExport(playlist: Playlist?) {
         if (playlist == null) {
-            logD("No playlist to export, leaving")
+            L.d("No playlist to export, leaving")
             findNavController().navigateUp()
             return
         }

@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.image
 
-import android.animation.ValueAnimator
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -33,36 +33,38 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.AttrRes
-import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
-import androidx.core.content.res.getIntOrThrow
+import androidx.annotation.Px
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
 import androidx.core.view.updateMarginsRelative
 import androidx.core.widget.ImageViewCompat
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.util.CoilUtils
+import coil3.ImageLoader
+import coil3.asImage
+import coil3.request.ImageRequest
+import coil3.request.target
+import coil3.request.transformations
+import coil3.util.CoilUtils
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.extractor.Cover
-import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
-import org.oxycblt.auxio.image.extractor.SquareCropTransformation
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.image.coil.RoundedRectTransformation
+import org.oxycblt.auxio.image.coil.SquareCropTransformation
+import org.oxycblt.auxio.ui.MaterialFader
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
-import org.oxycblt.auxio.util.getInteger
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.cover.CoverCollection
 
 /**
  * Auxio's extension of [ImageView] that enables cover art loading and playing indicator and
@@ -92,24 +94,41 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private val playbackIndicator: PlaybackIndicator?
     private val selectionBadge: ImageView?
+    private val iconSize: Int?
 
-    private val sizing: Int
-    @DimenRes private val iconSizeRes: Int?
-    @DimenRes private var cornerRadiusRes: Int?
-
-    private var fadeAnimator: ValueAnimator? = null
+    private val fader = MaterialFader.quickLopsided(context)
+    private var fadeAnimator: Animator? = null
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
+
+    private val shapeAppearance: ShapeAppearanceModel
 
     init {
         // Obtain some StyledImageView attributes to use later when theming the custom view.
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.CoverView)
 
-        sizing = styledAttrs.getIntOrThrow(R.styleable.CoverView_sizing)
-        iconSizeRes = SIZING_ICON_SIZE[sizing]
-        cornerRadiusRes = getCornerRadiusRes()
+        val shapeAppearanceRes = styledAttrs.getResourceId(R.styleable.CoverView_shapeAppearance, 0)
+        shapeAppearance =
+            if (uiSettings.roundMode) {
+                if (shapeAppearanceRes != 0) {
+                    ShapeAppearanceModel.builder(context, shapeAppearanceRes, -1).build()
+                } else {
+                    ShapeAppearanceModel.builder(
+                            context,
+                            com.google.android.material.R.style
+                                .ShapeAppearance_Material3_Corner_Medium,
+                            -1)
+                        .build()
+                }
+            } else {
+                ShapeAppearanceModel.builder().build()
+            }
+        iconSize =
+            styledAttrs.getDimensionPixelSize(R.styleable.CoverView_iconSize, -1).takeIf {
+                it != -1
+            }
 
         val playbackIndicatorEnabled =
             styledAttrs.getBoolean(R.styleable.CoverView_enablePlaybackIndicator, true)
@@ -183,7 +202,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // AnimatedVectorDrawable cannot be placed in a StyledDrawable, we must replicate the
         // behavior with a matrix.
         val playbackIndicator = (playbackIndicator ?: return).view
-        val iconSize = iconSizeRes?.let(context::getDimenPixels) ?: (measuredWidth / 2)
+        val iconSize = iconSize ?: (measuredWidth / 2)
         playbackIndicator.apply {
             imageMatrix =
                 indicatorMatrix.apply {
@@ -247,14 +266,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    private fun getCornerRadiusRes() =
-        if (!isInEditMode && uiSettings.roundMode) {
-            SIZING_CORNER_RADII[sizing]
-        } else {
-            null
-        }
-
     private fun applyBackgroundsToChildren() {
+
         // Add backgrounds to each child for visual consistency
         for (child in children) {
             child.apply {
@@ -264,7 +277,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 background =
                     MaterialShapeDrawable().apply {
                         fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                        setCornerSize(cornerRadiusRes?.let(context::getDimen) ?: 0f)
+                        shapeAppearanceModel = shapeAppearance
                     }
             }
         }
@@ -290,43 +303,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun invalidateSelectionIndicatorAlpha(selectionBadge: ImageView) {
-        // Set up a target transition for the selection indicator.
-        val targetAlpha: Float
-        val targetDuration: Long
-
-        if (isActivated) {
-            // View is "activated" (i.e marked as selected), so show the selection indicator.
-            targetAlpha = 1f
-            targetDuration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
-        } else {
-            // View is not "activated", hide the selection indicator.
-            targetAlpha = 0f
-            targetDuration = context.getInteger(R.integer.anim_fade_exit_duration).toLong()
-        }
-
-        if (selectionBadge.alpha == targetAlpha) {
-            // Nothing to do.
-            return
-        }
-
-        if (!isLaidOut) {
-            // Not laid out, initialize it without animation before drawing.
-            selectionBadge.alpha = targetAlpha
-            return
-        }
-
-        if (fadeAnimator != null) {
-            // Cancel any previous animation.
-            fadeAnimator?.cancel()
-            fadeAnimator = null
-        }
-
+        fadeAnimator?.cancel()
         fadeAnimator =
-            ValueAnimator.ofFloat(selectionBadge.alpha, targetAlpha).apply {
-                duration = targetDuration
-                addUpdateListener { selectionBadge.alpha = it.animatedValue as Float }
-                start()
-            }
+            (if (isActivated) fader.fadeIn(selectionBadge) else fader.fadeOut(selectionBadge))
+                .also { it.start() }
     }
 
     /**
@@ -336,7 +316,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(song: Song) =
         bindImpl(
-            listOf(song.cover),
+            song.cover,
             context.getString(R.string.desc_album_cover, song.album.name),
             R.drawable.ic_album_24)
 
@@ -347,7 +327,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(album: Album) =
         bindImpl(
-            album.cover.all,
+            album.covers,
             context.getString(R.string.desc_album_cover, album.name),
             R.drawable.ic_album_24)
 
@@ -358,7 +338,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(artist: Artist) =
         bindImpl(
-            artist.cover.all,
+            artist.covers,
             context.getString(R.string.desc_artist_image, artist.name),
             R.drawable.ic_artist_24)
 
@@ -369,7 +349,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(genre: Genre) =
         bindImpl(
-            genre.cover.all,
+            genre.covers,
             context.getString(R.string.desc_genre_image, genre.name),
             R.drawable.ic_genre_24)
 
@@ -380,7 +360,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     fun bind(playlist: Playlist) =
         bindImpl(
-            playlist.cover?.all ?: emptyList(),
+            playlist.covers,
             context.getString(R.string.desc_playlist_image, playlist.name),
             R.drawable.ic_playlist_24)
 
@@ -392,17 +372,21 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param errorRes The resource of the error drawable to use if the cover cannot be loaded.
      */
     fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) =
-        bindImpl(Cover.order(songs), desc, errorRes)
+        bindImpl(CoverCollection.from(songs.mapNotNull { it.cover }), desc, errorRes)
 
-    private fun bindImpl(covers: List<Cover>, desc: String, @DrawableRes errorRes: Int) {
+    private fun bindImpl(cover: Any?, desc: String, @DrawableRes errorRes: Int) {
         val request =
             ImageRequest.Builder(context)
-                .data(covers)
-                .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSizeRes))
+                .data(cover)
+                .error(
+                    StyledDrawable(context, context.getDrawableCompat(errorRes), iconSize)
+                        .asImage())
                 .target(image)
 
         val cornersTransformation =
-            RoundedRectTransformation(cornerRadiusRes?.let(context::getDimen) ?: 0f)
+            RoundedRectTransformation(
+                shapeAppearance.topLeftCornerSize.getCornerSize(
+                    RectF(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())))
         if (imageSettings.forceSquareCovers) {
             request.transformations(SquareCropTransformation.INSTANCE, cornersTransformation)
         } else {
@@ -422,20 +406,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private class StyledDrawable(
         context: Context,
         private val inner: Drawable,
-        @DimenRes iconSizeRes: Int?
+        @Px val iconSize: Int?
     ) : Drawable() {
         init {
-            // Re-tint the drawable to use the analogous "on surface" color for
+            // Re-tint the drawable to use the analogous "on surfaceg" color for
             // StyledImageView.
             DrawableCompat.setTintList(inner, context.getColorCompat(R.color.sel_on_cover_bg))
         }
 
-        private val dimen = iconSizeRes?.let(context::getDimenPixels)
-
         override fun draw(canvas: Canvas) {
             // Resize the drawable such that it's always 1/4 the size of the image and
             // centered in the middle of the canvas.
-            val adj = dimen?.let { (bounds.width() - it) / 2 } ?: (bounds.width() / 4)
+            val adj = iconSize?.let { (bounds.width() - it) / 2 } ?: (bounds.width() / 4)
             inner.bounds.set(adj, adj, bounds.width() - adj, bounds.height() - adj)
             inner.draw(canvas)
         }
@@ -451,12 +433,5 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-    }
-
-    companion object {
-        val SIZING_CORNER_RADII =
-            arrayOf(
-                R.dimen.size_corners_small, R.dimen.size_corners_small, R.dimen.size_corners_medium)
-        val SIZING_ICON_SIZE = arrayOf(R.dimen.size_icon_small, R.dimen.size_icon_medium, null)
     }
 }

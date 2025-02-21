@@ -18,40 +18,34 @@
  
 package org.oxycblt.auxio.ui
 
-import android.animation.ValueAnimator
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
-import androidx.core.view.isInvisible
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getInteger
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as L
 
 class MultiToolbar
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    private var fadeThroughAnimator: ValueAnimator? = null
+    private var animator: Animator? = null
     private var currentlyVisible = 0
+    private val flipper = MaterialFlipper(context)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         for (i in 1 until childCount) {
-            getChildAt(i).apply {
-                alpha = 0f
-                isInvisible = true
-            }
+            getChildAt(i).apply { flipper.jump(this) }
         }
     }
 
     fun setVisible(@IdRes viewId: Int): Boolean {
         val index = children.indexOfFirst { it.id == viewId }
         if (index == currentlyVisible) return false
-        logD("Switching toolbar visibility from $currentlyVisible -> $index")
+        L.d("Switching toolbar visibility from $currentlyVisible -> $index")
         return animateToolbarsVisibility(currentlyVisible, index).also { currentlyVisible = index }
     }
 
@@ -59,55 +53,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // TODO: Animate nicer Material Fade transitions using animators (Normal transitions
         //  don't work due to translation)
         // Set up the target transitions for both the inner and selection toolbars.
-        val targetFromAlpha = 0f
-        val targetToAlpha = 1f
-        val targetDuration =
-            // Since this view starts with the lowest toolbar index,
-            if (from < to) {
-                logD("Moving higher, use an entrance animation")
-                context.getInteger(R.integer.anim_fade_enter_duration).toLong()
-            } else {
-                logD("Moving lower, use an exit animation")
-                context.getInteger(R.integer.anim_fade_exit_duration).toLong()
-            }
-
-        val fromView = getChildAt(from) as Toolbar
-        val toView = getChildAt(to) as Toolbar
-
-        if (fromView.alpha == targetFromAlpha && toView.alpha == targetToAlpha) {
-            // Nothing to do.
-            return false
-        }
-
-        if (!isLaidOut) {
-            // Not laid out, just change it immediately while are not shown to the user.
-            // This is an initialization, so we return false despite changing.
-            logD("Not laid out, immediately updating visibility")
-            setToolbarsAlpha(fromView, toView, targetFromAlpha)
-            return false
-        }
-
-        logD("Changing toolbar visibility $from -> 0f, $to -> 1f")
-        fadeThroughAnimator?.cancel()
-        fadeThroughAnimator =
-            ValueAnimator.ofFloat(fromView.alpha, targetFromAlpha).apply {
-                duration = targetDuration
-                addUpdateListener { setToolbarsAlpha(fromView, toView, it.animatedValue as Float) }
-                start()
-            }
+        L.d("Changing toolbar visibility $from -> 0f, $to -> 1f")
+        animator?.cancel()
+        animator = flipper.flip(getChildAt(from), getChildAt(to)).also { it.start() }
 
         return true
-    }
-
-    private fun setToolbarsAlpha(from: Toolbar, to: Toolbar, innerAlpha: Float) {
-        from.apply {
-            alpha = innerAlpha
-            isInvisible = innerAlpha == 0f
-        }
-
-        to.apply {
-            alpha = 1 - innerAlpha
-            isInvisible = innerAlpha == 1f
-        }
     }
 }

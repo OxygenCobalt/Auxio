@@ -25,9 +25,10 @@ import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
-import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.musikr.Genre
 
 /**
  * A [FlexibleListAdapter] that displays a list of [Genre] playback choices, for use with

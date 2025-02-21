@@ -31,20 +31,19 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import timber.log.Timber as L
 
 class MusicServiceFragment
 @Inject
 constructor(
-    private val context: Context,
+    context: Context,
     foregroundListener: ForegroundListener,
     private val invalidator: Invalidator,
-    indexerFactory: Indexer.Factory,
+    indexingHolderFactory: IndexingHolder.Factory,
     musicBrowserFactory: MusicBrowser.Factory,
     private val musicRepository: MusicRepository
 ) : MusicBrowser.Invalidator {
-    private val indexer = indexerFactory.create(context, foregroundListener)
+    private val indexer = indexingHolderFactory.create(context, foregroundListener)
     private val musicBrowser = musicBrowserFactory.create(context, this)
     private val dispatchJob = Job()
     private val dispatchScope = CoroutineScope(dispatchJob + Dispatchers.Default)
@@ -54,7 +53,7 @@ constructor(
     class Factory
     @Inject
     constructor(
-        private val indexerFactory: Indexer.Factory,
+        private val indexingHolderFactory: IndexingHolder.Factory,
         private val musicBrowserFactory: MusicBrowser.Factory,
         private val musicRepository: MusicRepository
     ) {
@@ -67,7 +66,7 @@ constructor(
                 context,
                 foregroundListener,
                 invalidator,
-                indexerFactory,
+                indexingHolderFactory,
                 musicBrowserFactory,
                 musicRepository)
     }
@@ -93,6 +92,7 @@ constructor(
 
     fun start() {
         if (musicRepository.indexingState == null) {
+            L.d("Requesting index")
             musicRepository.requestIndex(true)
         }
     }
@@ -124,11 +124,11 @@ constructor(
         try {
             val result = body()
             if (result == null) {
-                logW("Result is null")
+                L.w("Result is null")
             }
             sendResult(result)
         } catch (e: Exception) {
-            logD("Error while dispatching: $e")
+            L.d("Error while dispatching: $e")
             sendResult(null)
         }
     }
@@ -139,11 +139,11 @@ constructor(
             try {
                 val result = body()
                 if (result == null) {
-                    logW("Result is null")
+                    L.w("Result is null")
                 }
                 sendResult(result)
             } catch (e: Exception) {
-                logD("Error while dispatching: $e")
+                L.d("Error while dispatching: $e")
                 sendResult(null)
             }
         }

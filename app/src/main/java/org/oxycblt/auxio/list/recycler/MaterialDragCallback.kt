@@ -25,6 +25,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as MR
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -33,7 +34,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback.ViewHolder
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getInteger
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as L
 
 /**
  * A highly customized [ItemTouchHelper.Callback] that enables some extra eye candy in editable UIs,
@@ -91,12 +92,11 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
 
         // Hook drag events to "lifting" the item (i.e raising it's elevation). Make sure
         // this is only done once when the item is initially picked up.
-        // TODO: I think this is possible to improve with a raw ValueAnimator.
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            logD("Lifting ViewHolder")
+            L.d("Lifting ViewHolder")
 
             val bg = holder.background
-            val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
+            val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
             holder.root
                 .animate()
                 .translationZ(elevation)
@@ -135,10 +135,10 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // This function can be called multiple times, so only start the animation when the view's
         // translationZ is already non-zero.
         if (holder.root.translationZ != 0f) {
-            logD("Lifting ViewHolder")
+            L.d("Lifting ViewHolder")
 
             val bg = holder.background
-            val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
+            val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
             holder.root
                 .animate()
                 .translationZ(0f)

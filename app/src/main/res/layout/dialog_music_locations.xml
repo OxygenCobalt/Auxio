@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <org.oxycblt.auxio.list.recycler.DialogRecyclerView
+        android:id="@+id/locations_recycler"
+        style="@style/Widget.Auxio.RecyclerView.Linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@+id/locations_list_header"
+        tools:listitem="@layout/item_music_location" />
+
+</FrameLayout>

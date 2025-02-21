@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.settings.categories
 
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,8 +27,8 @@ import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as L
 
 /**
  * Display preferences.
@@ -42,7 +41,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
-            logD("Navigating to accent dialog")
+            L.d("Navigating to accent dialog")
             findNavController().navigateSafe(UIPreferenceFragmentDirections.accentSettings())
         }
     }
@@ -50,25 +49,25 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     override fun onSetupPreference(preference: Preference) {
         when (preference.key) {
             getString(R.string.set_key_theme) -> {
-                logD("Configuring theme setting")
+                L.d("Configuring theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, value ->
-                        logD("Theme changed, recreating")
-                        AppCompatDelegate.setDefaultNightMode(value as Int)
+                        L.d("Theme changed, recreating")
+                        requireActivity().recreate()
                         true
                     }
             }
             getString(R.string.set_key_accent) -> {
-                logD("Configuring accent setting")
+                L.d("Configuring accent setting")
                 preference.summary = getString(uiSettings.accent.name)
             }
             getString(R.string.set_key_black_theme) -> {
-                logD("Configuring black theme setting")
+                L.d("Configuring black theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, _ ->
                         val activity = requireActivity()
                         if (activity.isNight) {
-                            logD("Black theme changed in night mode, recreating")
+                            L.d("Black theme changed in night mode, recreating")
                             activity.recreate()
                         }
 

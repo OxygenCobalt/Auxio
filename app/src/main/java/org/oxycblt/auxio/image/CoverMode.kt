@@ -26,12 +26,10 @@ import org.oxycblt.auxio.IntegerTable
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class CoverMode {
-    /** Do not load album covers ("Off"). */
     OFF,
-    /** Load covers from the fast, but lower-quality media store database ("Fast"). */
-    MEDIA_STORE,
-    /** Load high-quality covers directly from music files ("Quality"). */
-    QUALITY;
+    SAVE_SPACE,
+    BALANCED,
+    HIGH_QUALITY;
 
     /**
      * The integer representation of this instance.
@@ -42,8 +40,9 @@ enum class CoverMode {
         get() =
             when (this) {
                 OFF -> IntegerTable.COVER_MODE_OFF
-                MEDIA_STORE -> IntegerTable.COVER_MODE_MEDIA_STORE
-                QUALITY -> IntegerTable.COVER_MODE_QUALITY
+                SAVE_SPACE -> IntegerTable.COVER_MODE_SAVE_SPACE
+                BALANCED -> IntegerTable.COVER_MODE_BALANCED
+                HIGH_QUALITY -> IntegerTable.COVER_MODE_HIGH_QUALITY
             }
 
     companion object {
@@ -57,8 +56,9 @@ enum class CoverMode {
         fun fromIntCode(intCode: Int) =
             when (intCode) {
                 IntegerTable.COVER_MODE_OFF -> OFF
-                IntegerTable.COVER_MODE_MEDIA_STORE -> MEDIA_STORE
-                IntegerTable.COVER_MODE_QUALITY -> QUALITY
+                IntegerTable.COVER_MODE_SAVE_SPACE -> SAVE_SPACE
+                IntegerTable.COVER_MODE_BALANCED -> BALANCED
+                IntegerTable.COVER_MODE_HIGH_QUALITY -> HIGH_QUALITY
                 else -> null
             }
     }

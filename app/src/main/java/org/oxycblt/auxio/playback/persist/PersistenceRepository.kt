@@ -19,11 +19,10 @@
 package org.oxycblt.auxio.playback.persist
 
 import javax.inject.Inject
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
+import org.oxycblt.musikr.MusicParent
+import timber.log.Timber as L
 
 /**
  * Manages the persisted playback state in a structured manner.
@@ -51,7 +50,7 @@ constructor(
 ) : PersistenceRepository {
 
     override suspend fun readState(): PlaybackStateManager.SavedState? {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return null
+        val library = musicRepository.library?.takeIf { !it.empty() } ?: return null
         val playbackState: PlaybackState
         val heapItems: List<QueueHeapItem>
         val mappingItems: List<QueueShuffledMappingItem>
@@ -60,12 +59,12 @@ constructor(
             heapItems = queueDao.getHeap()
             mappingItems = queueDao.getShuffledMapping()
         } catch (e: Exception) {
-            logE("Unable read playback state")
-            logE(e.stackTraceToString())
+            L.e("Unable read playback state")
+            L.e(e.stackTraceToString())
             return null
         }
 
-        val heap = heapItems.map { deviceLibrary.findSong(it.uid) }
+        val heap = heapItems.map { library.findSong(it.uid) }
         val shuffledMapping = mappingItems.map { it.index }
         val parent = playbackState.parentUid?.let { musicRepository.find(it) as? MusicParent }
 
@@ -85,12 +84,12 @@ constructor(
             queueDao.nukeHeap()
             queueDao.nukeShuffledMapping()
         } catch (e: Exception) {
-            logE("Unable to clear previous state")
-            logE(e.stackTraceToString())
+            L.e("Unable to clear previous state")
+            L.e(e.stackTraceToString())
             return false
         }
 
-        logD("Successfully cleared previous state")
+        L.d("Successfully cleared previous state")
         if (state != null) {
             // Transform saved state into raw state, which can then be written to the database.
             val playbackState =
@@ -114,12 +113,12 @@ constructor(
                 queueDao.insertHeap(heap)
                 queueDao.insertShuffledMapping(shuffledMapping)
             } catch (e: Exception) {
-                logE("Unable to write new state")
-                logE(e.stackTraceToString())
+                L.e("Unable to write new state")
+                L.e(e.stackTraceToString())
                 return false
             }
 
-            logD("Successfully wrote new state")
+            L.d("Successfully wrote new state")
         }
 
         return true

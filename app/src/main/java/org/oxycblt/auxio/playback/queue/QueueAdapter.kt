@@ -26,20 +26,19 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemEditableSongBinding
 import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
@@ -82,7 +81,7 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
      * @param isPlaying Whether playback is ongoing or paused.
      */
     fun setPosition(index: Int, isPlaying: Boolean) {
-        logD("Updating index")
+        L.d("Updating index")
         val lastIndex = currentIndex
         currentIndex = index
 
@@ -91,10 +90,10 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
         // TODO: Optimize this by only updating the range between old and new indices?
         // TODO: Don't update when the index has not moved.
         if (currentIndex < lastIndex) {
-            logD("Moved backwards, must update items above last index")
+            L.d("Moved backwards, must update items above last index")
             notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
         } else {
-            logD("Moved forwards, update items after index")
+            L.d("Moved forwards, update items after index")
             notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
         }
 
@@ -120,8 +119,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
     override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
-            elevation = binding.context.getDimen(R.dimen.elevation_normal) * 5
+            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHighest)
             alpha = 0
         }
 
@@ -142,8 +140,8 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
             LayerDrawable(
                 arrayOf(
                     MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-                        fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
-                        elevation = binding.context.getDimen(R.dimen.elevation_normal)
+                        fillColor =
+                            binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
                     },
                     background))
     }

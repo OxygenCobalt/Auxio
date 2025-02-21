@@ -30,11 +30,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditClickListListener
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingFragment] that displays an editable queue.
@@ -122,14 +122,14 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
             // dependent on where we have to scroll to get to the currently playing song.
             if (notInitialized || scrollTo < start) {
                 // We need to scroll upwards, or initialize the scroll, no need to offset
-                logD("Not scrolling downwards, no offset needed")
+                L.d("Not scrolling downwards, no offset needed")
                 binding.queueRecycler.scrollToPosition(scrollTo)
             } else if (scrollTo > end) {
                 // We need to scroll downwards, we need to offset by a screen of songs.
                 // This does have some error due to how many completely visible items on-screen
                 // can vary. This is considered okay.
                 val offset = scrollTo + (end - start)
-                logD("Scrolling downwards, offsetting by $offset")
+                L.d("Scrolling downwards, offsetting by $offset")
                 binding.queueRecycler.scrollToPosition(min(queue.lastIndex, offset))
             }
         }

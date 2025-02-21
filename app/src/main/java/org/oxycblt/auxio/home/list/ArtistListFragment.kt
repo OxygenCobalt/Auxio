@@ -21,28 +21,31 @@ package org.oxycblt.auxio.home.list
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
+import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.positiveOrNull
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 
 /**
  * A [ListFragment] that shows a list of [Artist]s.
@@ -74,7 +77,16 @@ class ArtistListFragment :
             listener = this@ArtistListFragment
         }
 
+        binding.homeNoMusicPlaceholder.apply {
+            setImageResource(R.drawable.ic_artist_48)
+            contentDescription = getString(R.string.lbl_artists)
+        }
+        binding.homeNoMusicMsg.text = getString(R.string.lng_empty_artists)
+
+        binding.homeNoMusicAction.setOnClickListener { homeModel.startChooseMusicLocations() }
+
         collectImmediately(homeModel.artistList, ::updateArtists)
+        collectImmediately(homeModel.empty, musicModel.indexingState, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -94,7 +106,7 @@ class ArtistListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.artistSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> artist.name.thumb
+            is Sort.Mode.ByName -> artist.name.thumb()
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> artist.durationMs?.formatDurationMs(false)
@@ -121,6 +133,14 @@ class ArtistListFragment :
 
     private fun updateArtists(artists: List<Artist>) {
         artistAdapter.update(artists, homeModel.artistInstructions.consume())
+    }
+
+    private fun updateNoMusicIndicator(empty: Boolean, indexingState: IndexingState?) {
+        val binding = requireBinding()
+        binding.homeRecycler.isInvisible = empty
+        binding.homeNoMusic.isInvisible = !empty
+        binding.homeNoMusicAction.isVisible =
+            indexingState == null || (empty && indexingState is IndexingState.Completed)
     }
 
     private fun updateSelection(selection: List<Music>) {

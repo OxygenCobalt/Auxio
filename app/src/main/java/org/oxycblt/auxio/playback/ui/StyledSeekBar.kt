@@ -25,7 +25,7 @@ import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.playback.formatDurationDs
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as L
 
 /**
  * A wrapper around [Slider] that shows position and duration values and sanitizes input to reduce
@@ -81,11 +81,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             // zero, use 1 instead and disable the SeekBar.
             val to = max(value, 1)
             isEnabled = value > 0
-            logD("Value sanitization finished [to=$to, enabled=$isEnabled]")
+            L.d("Value sanitization finished [to=$to, enabled=$isEnabled]")
             // Sanity check 2: If the current value exceeds the new duration value, clamp it
             // down so that we don't crash and instead have an annoying visual flicker.
             if (positionDs > to) {
-                logD("Clamping invalid position [current: $positionDs new max: $to]")
+                L.d("Clamping invalid position [current: $positionDs new max: $to]")
                 binding.seekBarSlider.value = to.toFloat()
             }
             binding.seekBarSlider.valueTo = to.toFloat()
@@ -93,14 +93,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
 
     override fun onStartTrackingTouch(slider: Slider) {
-        logD("Starting seek mode")
+        L.d("Starting seek mode")
         // User has begun seeking, place the SeekBar into a "Suspended" mode in which no
         // position updates are sent and is indicated by the position value turning accented.
         isActivated = true
     }
 
     override fun onStopTrackingTouch(slider: Slider) {
-        logD("Confirming seek")
+        L.d("Confirming seek")
         // End of seek event, send off new value to listener.
         isActivated = false
         listener?.onSeekConfirmed(slider.value.toLong())

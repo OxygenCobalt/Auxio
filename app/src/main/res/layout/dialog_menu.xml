@@ -24,7 +24,7 @@
 
         <org.oxycblt.auxio.image.CoverView
             android:id="@+id/menu_cover"
-            style="@style/Widget.Auxio.Image.Full"
+            style="@style/Widget.Auxio.Image.MidFull"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_medium"
             app:layout_constraintStart_toStartOf="parent"

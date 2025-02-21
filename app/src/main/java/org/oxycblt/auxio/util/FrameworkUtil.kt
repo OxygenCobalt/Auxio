@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.util
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -41,13 +42,13 @@ import androidx.core.view.children
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.MaterialToolbar
 import java.lang.IllegalArgumentException
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
@@ -117,6 +118,7 @@ val ViewBinding.context: Context
  * Override the behavior of a [MaterialToolbar]'s overflow menu to do something else. This is
  * extremely dumb, but required to hook overflow menus to bottom sheet menus.
  */
+@SuppressLint("RestrictedApi")
 fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
     for (toolbarChild in children) {
         if (toolbarChild is ActionMenuView) {
@@ -124,6 +126,8 @@ fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
                 // The overflow menu's view implementation is package-private, so test for the
                 // first child that isn't a plain action button.
                 if (menuChild !is ActionMenuItemView) {
+                    // Override all listeners related to opening the overflow menu.
+                    menuChild.setOnTouchListener(null)
                     menuChild.setOnClickListener(block)
                     return
                 }
@@ -131,12 +135,6 @@ fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
         }
     }
 }
-
-/**
- * Compute if this [RecyclerView] can scroll through their items, or if the items can all fit on one
- * screen.
- */
-fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
 
 /**
  * Shortcut to easily set up a [GridLayoutManager.SpanSizeLookup].
@@ -174,8 +172,8 @@ fun NavController.navigateSafe(directions: NavDirections) =
         navigate(directions)
     } catch (e: IllegalArgumentException) {
         // Nothing to do.
-        logE("Could not navigate from this destination.")
-        logE(e.stackTraceToString())
+        L.e("Could not navigate from this destination.")
+        L.e(e.stackTraceToString())
     }
 
 /**
@@ -317,12 +315,12 @@ fun Context.share(parent: MusicParent) = share(parent.songs)
  */
 fun Context.share(songs: Collection<Song>) {
     if (songs.isEmpty()) return
-    logD("Showing sharesheet for ${songs.size} songs")
+    L.d("Showing sharesheet for ${songs.size} songs")
     val builder = ShareCompat.IntentBuilder(this)
     val mimeTypes = mutableSetOf<String>()
     for (song in songs) {
         builder.addStream(song.uri)
-        mimeTypes.add(song.mimeType.fromFormat ?: song.mimeType.fromExtension)
+        mimeTypes.add(song.format.mimeType)
     }
 
     builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
@@ -334,8 +332,13 @@ fun Context.share(songs: Collection<Song>) {
  * @param uri The URL to open.
  */
 fun Context.openInBrowser(uri: String) {
+    L.d("Opening $uri")
+    startIntent(Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+}
+
+fun Context.startIntent(intent: Intent) {
     fun openAppChooser(intent: Intent) {
-        logD("Opening app chooser for ${intent.action}")
+        L.d("Opening app chooser for ${intent.action}")
         val chooserIntent =
             Intent(Intent.ACTION_CHOOSER)
                 .putExtra(Intent.EXTRA_INTENT, intent)
@@ -343,17 +346,13 @@ fun Context.openInBrowser(uri: String) {
         startActivity(chooserIntent)
     }
 
-    logD("Opening $uri")
-    val browserIntent =
-        Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         // Android 11 seems to now handle the app chooser situations on its own now
         // [along with adding a new permission that breaks the old manual code], so
         // we just do a typical activity launch.
-        logD("Using API 30+ chooser")
+        L.d("Using API 30+ chooser")
         try {
-            startActivity(browserIntent)
+            startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             // No app installed to open the link
             showToast(R.string.err_no_app)
@@ -363,25 +362,25 @@ fun Context.openInBrowser(uri: String) {
         // not work in all cases, especially when no default app was set. If that is the
         // case, we will try to manually handle these cases before we try to launch the
         // browser.
-        logD("Resolving browser activity for chooser")
+        L.d("Resolving browser activity for chooser")
         val pkgName =
-            packageManager.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)?.run {
+            packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)?.run {
                 activityInfo.packageName
             }
 
         if (pkgName != null) {
             if (pkgName == "android") {
                 // No default browser [Must open app chooser, may not be supported]
-                logD("No default browser found")
-                openAppChooser(browserIntent)
-            } else logD("Opening browser intent")
+                L.d("No default browser found")
+                openAppChooser(intent)
+            } else L.d("Opening browser intent")
             try {
-                browserIntent.setPackage(pkgName)
-                startActivity(browserIntent)
+                intent.setPackage(pkgName)
+                startActivity(intent)
             } catch (e: ActivityNotFoundException) {
                 // Not a browser but an app chooser
-                browserIntent.setPackage(null)
-                openAppChooser(browserIntent)
+                intent.setPackage(null)
+                openAppChooser(intent)
             }
         } else {
             // No app installed to open the link

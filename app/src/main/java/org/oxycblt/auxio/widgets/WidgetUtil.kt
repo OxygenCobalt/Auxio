@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.widgets
 
 import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProviderInfo
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
@@ -28,8 +29,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.util.isLandscape
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
+import timber.log.Timber as L
 
 /**
  * Create a [RemoteViews] instance with the specified layout and an automatic click handler to open
@@ -65,6 +66,11 @@ fun RemoteViews.setLayoutDirection(@IdRes viewId: Int, layoutDirection: Int) {
     setInt(viewId, "setLayoutDirection", layoutDirection)
 }
 
+fun AppWidgetManager.setWidgetPreviewCompat(component: ComponentName, remoteViews: RemoteViews) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        setWidgetPreview(component, AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN, remoteViews)
+    }
+}
 /**
  * Update the app widget layouts corresponding to the given [WidgetProvider] [ComponentName] with an
  * adaptive layout, in a version-compatible manner.
@@ -103,7 +109,7 @@ fun AppWidgetManager.updateAppWidgetCompat(
                 width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
                 height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
             }
-            logD("Assuming dimens are ${width}x$height")
+            L.d("Assuming dimens are ${width}x$height")
 
             // Find the layout with the greatest area that fits entirely within
             // the app widget. This is what we will use. Fall back to the smallest layout
@@ -113,7 +119,7 @@ fun AppWidgetManager.updateAppWidgetCompat(
                     .filter { it.width <= width && it.height <= height }
                     .maxByOrNull { it.height * it.width }
                     ?: views.minBy { it.key.width * it.key.height }.key
-            logD("Using layout $layout ${views.contains(layout)}")
+            L.d("Using layout $layout ${views.contains(layout)}")
 
             updateAppWidget(id, views[layout])
         }

@@ -30,9 +30,10 @@ import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.bottomsheet.BackportBottomSheetDialog
 import com.google.android.material.bottomsheet.BackportBottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import javax.inject.Inject
 import org.oxycblt.auxio.util.getDimenPixels
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import timber.log.Timber as L
 
 /**
  * A lifecycle-aware [DialogFragment] that automatically manages the [ViewBinding] lifecycle as a
@@ -43,6 +44,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
     BackportBottomSheetDialogFragment() {
     private var _binding: VB? = null
+    @Inject lateinit var uiSettings: UISettings
 
     override fun onCreateDialog(savedInstanceState: Bundle?): BackportBottomSheetDialog =
         TweakedBottomSheetDialog(requireContext(), theme)
@@ -97,8 +99,11 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!uiSettings.roundMode) {
+            (dialog as BackportBottomSheetDialog).behavior.killCorners()
+        }
         onBindingCreated(requireBinding(), savedInstanceState)
-        logD("Fragment created")
+        L.d("Fragment created")
     }
 
     final override fun onDestroyView() {
@@ -106,7 +111,7 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
         onDestroyBinding(unlikelyToBeNull(_binding))
         // Clear binding
         _binding = null
-        logD("Fragment destroyed")
+        L.d("Fragment destroyed")
     }
 
     private inner class TweakedBottomSheetDialog

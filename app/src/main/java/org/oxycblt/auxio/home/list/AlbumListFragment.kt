@@ -22,6 +22,8 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Formatter
@@ -29,22 +31,23 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
+import org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
 
 /**
  * A [ListFragment] that shows a list of [Album]s.
@@ -79,7 +82,16 @@ class AlbumListFragment :
             listener = this@AlbumListFragment
         }
 
+        binding.homeNoMusicPlaceholder.apply {
+            setImageResource(R.drawable.ic_album_48)
+            contentDescription = getString(R.string.lbl_albums)
+        }
+        binding.homeNoMusicMsg.text = getString(R.string.lng_empty_albums)
+
+        binding.homeNoMusicAction.setOnClickListener { homeModel.startChooseMusicLocations() }
+
         collectImmediately(homeModel.albumList, ::updateAlbums)
+        collectImmediately(homeModel.empty, musicModel.indexingState, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -99,10 +111,10 @@ class AlbumListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.albumSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> album.name.thumb
+            is Sort.Mode.ByName -> album.name.thumb()
 
             // By Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> album.artists[0].name.thumb
+            is Sort.Mode.ByArtist -> album.artists[0].name.thumb()
 
             // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
             is Sort.Mode.ByDate -> album.dates?.run { min.resolve(requireContext()) }
@@ -115,7 +127,7 @@ class AlbumListFragment :
 
             // Last added -> Format as date
             is Sort.Mode.ByDateAdded -> {
-                val dateAddedMillis = album.dateAdded.secsToMs()
+                val dateAddedMillis = album.addedMs
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
                         context,
@@ -145,6 +157,14 @@ class AlbumListFragment :
 
     private fun updateAlbums(albums: List<Album>) {
         albumAdapter.update(albums, homeModel.albumInstructions.consume())
+    }
+
+    private fun updateNoMusicIndicator(empty: Boolean, indexingState: IndexingState?) {
+        val binding = requireBinding()
+        binding.homeRecycler.isInvisible = empty
+        binding.homeNoMusic.isInvisible = !empty
+        binding.homeNoMusicAction.isVisible =
+            indexingState == null || (empty && indexingState is IndexingState.Completed)
     }
 
     private fun updateSelection(selection: List<Music>) {

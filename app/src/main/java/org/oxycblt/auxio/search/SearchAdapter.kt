@@ -21,8 +21,8 @@ package org.oxycblt.auxio.search
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -33,13 +33,12 @@ import org.oxycblt.auxio.list.recycler.DividerViewHolder
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.list.recycler.PlaylistViewHolder
 import org.oxycblt.auxio.list.recycler.SongViewHolder
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
 
 /**
  * An adapter that displays search results.
@@ -57,7 +56,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             is Artist -> ArtistViewHolder.VIEW_TYPE
             is Genre -> GenreViewHolder.VIEW_TYPE
             is Playlist -> PlaylistViewHolder.VIEW_TYPE
-            is Divider -> DividerViewHolder.VIEW_TYPE
+            is PlainDivider -> DividerViewHolder.VIEW_TYPE
             is BasicHeader -> BasicHeaderViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -75,7 +74,6 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        logD(position)
         when (val item = getItem(position)) {
             is Song -> (holder as SongViewHolder).bind(item, listener)
             is Album -> (holder as AlbumViewHolder).bind(item, listener)
@@ -102,7 +100,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
                             GenreViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Playlist && newItem is Playlist ->
                             PlaylistViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
-                        oldItem is Divider && newItem is Divider ->
+                        oldItem is PlainDivider && newItem is PlainDivider ->
                             DividerViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is BasicHeader && newItem is BasicHeader ->
                             BasicHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+
+    <org.oxycblt.auxio.ui.EatInsetsFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="org.oxycblt.auxio.ui.BottomSheetContentBehavior">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/explore_nav_host"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/inner"
+            tools:layout="@layout/fragment_home" />
+
+
+        <org.oxycblt.auxio.ui.EdgeFrameLayout
+            android:id="@+id/main_fab_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|end"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:layout_anchor="@id/home_content">
+
+            <org.oxycblt.auxio.home.ThemedSpeedDialView
+                android:id="@+id/home_new_playlist_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:clickable="true"
+                android:contentDescription="@string/lbl_new_playlist"
+                android:focusable="true"
+                android:gravity="bottom|end"
+                android:layout_margin="@dimen/spacing_medium"
+                app:sdMainFabAnimationRotateAngle="135"
+                app:sdMainFabClosedIconColor="@android:color/white"
+                app:sdMainFabClosedSrc="@drawable/ic_add_24" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/home_shuffle_fab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_medium"
+                android:layout_gravity="bottom|end"
+                android:contentDescription="@string/lbl_shuffle"
+                android:src="@drawable/ic_shuffle_off_24" />
+
+        </org.oxycblt.auxio.ui.EdgeFrameLayout>
+
+    </org.oxycblt.auxio.ui.EatInsetsFrameLayout>
+
+
+    <View
+        android:id="@+id/main_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/main_sheet_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="?attr/colorSurfaceContainerLow" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/playback_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_behavior="org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/playback_bar_fragment"
+            android:name="org.oxycblt.auxio.playback.PlaybackBarFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/Widget.Auxio.DisableDropShadows"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/playback_panel_fragment"
+                android:name="org.oxycblt.auxio.playback.PlaybackPanelFragment"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toStartOf="@+id/queue_sheet"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/queue_sheet"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/playback_panel_fragment">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:gravity="center"
+                    android:text="@string/lbl_queue"
+                    android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintBottom_toBottomOf="@+id/handle"
+                    app:layout_constraintEnd_toEndOf="@+id/handle"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/queue_fragment"
+                    android:name="org.oxycblt.auxio.playback.queue.QueueFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/sheet_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,25 +18,30 @@
  
 package org.oxycblt.auxio
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import android.view.WindowInsets
+import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialFadeThrough
-import com.leinardi.android.speeddial.SpeedDialOverlayLayout
+import com.leinardi.android.speeddial.SpeedDialActionItem
+import com.leinardi.android.speeddial.SpeedDialView
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Field
+import java.lang.reflect.Method
+import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
@@ -45,13 +50,15 @@ import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.Outer
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.IndexingState
+import org.oxycblt.auxio.music.MusicType
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.OpenPanel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
 import org.oxycblt.auxio.ui.DialogAwareNavigationListener
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -59,11 +66,12 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.lazyReflectedField
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and high-level navigation.
@@ -72,7 +80,10 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class MainFragment :
-    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {
+    ViewBindingFragment<FragmentMainBinding>(),
+    ViewTreeObserver.OnPreDrawListener,
+    SpeedDialView.OnActionSelectedListener {
+    private val musicModel: MusicViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
@@ -81,9 +92,13 @@ class MainFragment :
     private var detailBackCallback: DetailBackPressedCallback? = null
     private var selectionBackCallback: SelectionBackPressedCallback? = null
     private var speedDialBackCallback: SpeedDialBackPressedCallback? = null
-    private var selectionNavigationListener: DialogAwareNavigationListener? = null
+    private var navigationListener: DialogAwareNavigationListener? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
+    private var normalCornerSize = 0f
+    private var maxScaleXDistance = 0f
+    private var sheetRising: Boolean? = null
+    @Inject lateinit var uiSettings: UISettings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,10 +113,13 @@ class MainFragment :
 
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
+        playbackSheetBehavior.uiSettings = uiSettings
+        playbackSheetBehavior.makeBackgroundDrawable(requireContext())
         val queueSheetBehavior =
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
+        queueSheetBehavior?.uiSettings = uiSettings
 
-        elevationNormal = binding.context.getDimen(R.dimen.elevation_normal)
+        elevationNormal = binding.context.getDimen(MR.dimen.m3_sys_elevation_level1)
 
         // Currently all back press callbacks are handled in MainFragment, as it's not guaranteed
         // that instantiating these callbacks in their respective fragments would result in the
@@ -114,10 +132,9 @@ class MainFragment :
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
             SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
-        val speedDialBackCallback =
-            SpeedDialBackPressedCallback(homeModel).also { speedDialBackCallback = it }
+        speedDialBackCallback = SpeedDialBackPressedCallback()
 
-        selectionNavigationListener = DialogAwareNavigationListener(listModel::dropSelection)
+        navigationListener = DialogAwareNavigationListener(::onExploreNavigate)
 
         // --- UI SETUP ---
         val context = requireActivity()
@@ -135,30 +152,50 @@ class MainFragment :
 
         if (queueSheetBehavior != null) {
             // In portrait mode, set up click listeners on the stacked sheets.
-            logD("Configuring stacked bottom sheets")
+            L.d("Configuring stacked bottom sheets")
             unlikelyToBeNull(binding.queueHandleWrapper).setOnClickListener {
                 playbackModel.openQueue()
             }
         } else {
             // Dual-pane mode, manually style the static queue sheet.
-            logD("Configuring dual-pane bottom sheet")
+            L.d("Configuring dual-pane bottom sheet")
             binding.queueSheet.apply {
                 // Emulate the elevated bottom sheet style.
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                        fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
-                        elevation = context.getDimen(R.dimen.elevation_normal)
+                        shapeAppearanceModel =
+                            ShapeAppearanceModel.builder(
+                                    context,
+                                    MR.style.ShapeAppearance_Material3_Corner_ExtraLarge,
+                                    MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                                .build()
+                        fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
                     }
-                // Apply bar insets for the queue's RecyclerView to use.
-                setOnApplyWindowInsetsListener { v, insets ->
-                    v.updatePadding(top = insets.systemBarInsetsCompat.top)
-                    insets
-                }
             }
         }
 
-        binding.mainScrim.setOnClickListener { homeModel.setSpeedDialOpen(false) }
-        binding.sheetScrim.setOnClickListener { homeModel.setSpeedDialOpen(false) }
+        normalCornerSize = playbackSheetBehavior.sheetBackgroundDrawable.topLeftCornerResolvedSize
+        maxScaleXDistance =
+            context.getDimen(MR.dimen.m3_back_progress_bottom_container_max_scale_x_distance)
+
+        binding.playbackSheet.elevation = 0f
+
+        binding.mainScrim.setOnClickListener { binding.homeNewPlaylistFab.close() }
+        binding.sheetScrim.setOnClickListener { binding.homeNewPlaylistFab.close() }
+        binding.homeShuffleFab.setOnClickListener { playbackModel.shuffleAll() }
+        binding.homeNewPlaylistFab.apply {
+            inflate(R.menu.new_playlist_actions)
+            setOnActionSelectedListener(this@MainFragment)
+            setChangeListener(::updateSpeedDial)
+        }
+
+        forceHideAllFabs()
+        updateSpeedDial(false)
+        updateFabVisibility(
+            binding,
+            homeModel.songList.value,
+            homeModel.isFastScrolling.value,
+            homeModel.currentTabType.value)
 
         // --- VIEWMODEL SETUP ---
         // This has to be done here instead of the playback panel to make sure that it's prioritized
@@ -168,7 +205,9 @@ class MainFragment :
         collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
         collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
-        collectImmediately(homeModel.speedDialOpen, ::handleSpeedDialState)
+        collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
+        collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
@@ -179,7 +218,7 @@ class MainFragment :
         val binding = requireBinding()
         // Once we add the destination change callback, we will receive another initialization call,
         // so handle that by resetting the flag.
-        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+        requireNotNull(navigationListener) { "NavigationListener was not available" }
             .attach(binding.exploreNavHost.findNavController())
         // Listener could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
@@ -202,7 +241,7 @@ class MainFragment :
     override fun onStop() {
         super.onStop()
         val binding = requireBinding()
-        requireNotNull(selectionNavigationListener) { "NavigationListener was not available" }
+        requireNotNull(navigationListener) { "NavigationListener was not available" }
             .release(binding.exploreNavHost.findNavController())
         binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
     }
@@ -213,13 +252,15 @@ class MainFragment :
         sheetBackCallback = null
         detailBackCallback = null
         selectionBackCallback = null
-        selectionNavigationListener = null
+        navigationListener = null
+        binding.homeNewPlaylistFab.setChangeListener(null)
+        binding.homeNewPlaylistFab.setOnActionSelectedListener(null)
     }
 
     override fun onPreDraw(): Boolean {
-        // TODO: Due to draw caching even *this* isn't effective enough to avoid the bottom
-        //  sheets continually getting stuck. I need something with even more frequent updates,
-        //  or otherwise bottom sheets get stuck.
+        // This is where I shove literally all the UI logic that won't behave any callback
+        // or "normal" method I've tried. Surely running this on every frame will actually cause
+        // it to work properly!
 
         // We overload CoordinatorLayout far too much to rely on any of it's typical
         // listener functionality. Just update all transitions before every draw. Should
@@ -231,28 +272,55 @@ class MainFragment :
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
-        if (playbackRatio > 0f && homeModel.speedDialOpen.value) {
-            // Stupid hack to prevent you from sliding the sheet up without closing the speed
-            // dial. Filtering out ACTION_MOVE events will cause back gestures to close the speed
-            // dial, which is super finicky behavior.
-            homeModel.setSpeedDialOpen(false)
+        // Stupid hack to prevent you from sliding the sheet up without closing the speed
+        // dial. Filtering out ACTION_MOVE events will cause back gestures to close the
+        // speed dial, which is super finicky behavior.
+        val rising = playbackRatio > 0f
+        if (rising != sheetRising) {
+            sheetRising = rising
+            updateFabVisibility(
+                binding,
+                homeModel.songList.value,
+                homeModel.isFastScrolling.value,
+                homeModel.currentTabType.value)
         }
 
-        val outPlaybackRatio = 1 - playbackRatio
-        val halfOutRatio = min(playbackRatio * 2, 1f)
-        val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
+        val playbackOutRatio = 1 - min(playbackRatio * 2, 1f)
+        val playbackInRatio = max(playbackRatio - 0.5f, 0f) * 2
+
+        val playbackMaxXScaleDelta = maxScaleXDistance / binding.playbackSheet.width
+        val playbackEdgeRatio = max(playbackRatio - 0.9f, 0f) / 0.1f
+        val playbackBackRatio =
+            max(1 - ((1 - binding.playbackSheet.scaleX) / playbackMaxXScaleDelta), 0f)
+        val playbackLastStretchRatio = min(playbackEdgeRatio * playbackBackRatio, 1f)
+        binding.mainSheetScrim.alpha = playbackLastStretchRatio
+
+        playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(
+            normalCornerSize * (1 - playbackLastStretchRatio))
+        binding.exploreNavHost.isInvisible = playbackLastStretchRatio == 1f
+        binding.playbackSheet.translationZ = (1 - playbackLastStretchRatio) * elevationNormal
 
         if (queueSheetBehavior != null) {
-            // Queue sheet available, the normal transition applies, but it now much be combined
-            // with another transition where the playback panel disappears and the playback bar
-            // appears as the queue sheet expands.
             val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
-            val halfOutQueueRatio = min(queueRatio * 2, 1f)
-            val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
+            val queueInRatio = max(queueRatio - 0.5f, 0f) * 2
 
-            binding.playbackBarFragment.alpha = max(1 - halfOutRatio, halfInQueueRatio)
-            binding.playbackPanelFragment.alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
-            binding.queueFragment.alpha = queueRatio
+            val queueMaxXScaleDelta = maxScaleXDistance / binding.queueSheet.width
+            val queueBackRatio =
+                max(1 - ((1 - binding.queueSheet.scaleX) / queueMaxXScaleDelta), 0f)
+
+            val queueEdgeRatio = max(queueRatio - 0.9f, 0f) / 0.1f
+
+            val queueBarEdgeRatio = max(queueEdgeRatio - 0.5f, 0f) * 2
+            val queueBarBackRatio = max(queueBackRatio - 0.5f, 0f) * 2
+            val queueBarRatio = min(queueBarEdgeRatio * queueBarBackRatio, 1f)
+
+            val queuePanelEdgeRatio = min(queueEdgeRatio * 2, 1f)
+            val queuePanelBackRatio = min(queueBackRatio * 2, 1f)
+            val queuePanelRatio = 1 - min(queuePanelEdgeRatio * queuePanelBackRatio, 1f)
+
+            binding.playbackBarFragment.alpha = max(playbackOutRatio, queueBarRatio)
+            binding.playbackPanelFragment.alpha = min(playbackInRatio, queuePanelRatio)
+            binding.queueFragment.alpha = queueInRatio
 
             if (playbackModel.song.value != null) {
                 // Playback sheet intercepts queue sheet touch events, prevent that from
@@ -262,33 +330,18 @@ class MainFragment :
             }
         } else {
             // No queue sheet, fade normally based on the playback sheet
-            binding.playbackBarFragment.alpha = 1 - halfOutRatio
-            binding.playbackPanelFragment.alpha = halfInPlaybackRatio
+            binding.playbackBarFragment.alpha = playbackOutRatio
+            binding.playbackPanelFragment.alpha = playbackInRatio
+            (binding.queueSheet.background as MaterialShapeDrawable).shapeAppearanceModel =
+                ShapeAppearanceModel.builder()
+                    .setTopLeftCornerSize(normalCornerSize)
+                    .setTopRightCornerSize(normalCornerSize * (1 - playbackLastStretchRatio))
+                    .build()
         }
-
-        // Fade out the content as the playback panel expands.
-        // TODO: Replace with shadow?
-        binding.exploreNavHost.apply {
-            alpha = outPlaybackRatio
-            // Prevent interactions when the content fully fades out.
-            isInvisible = alpha == 0f
-        }
-
-        // Reduce playback sheet elevation as it expands. This involves both updating the
-        // shadow elevation for older versions, and fading out the background drawable
-        // containing the elevation overlay.
-        binding.playbackSheet.translationZ = elevationNormal * outPlaybackRatio
-        playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
-
         // Fade out the playback bar as the panel expands.
         binding.playbackBarFragment.apply {
             // Prevent interactions when the playback bar fully fades out.
             isInvisible = alpha == 0f
-            // As the playback bar expands, we also want to subtly translate the bar to
-            // align with the top inset. This results in both a smooth transition from the bar
-            // to the playback panel's toolbar, but also a correctly positioned playback bar
-            // for when the queue sheet expands.
-            lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
         }
 
         // Prevent interactions when the playback panel fully fades out.
@@ -296,7 +349,7 @@ class MainFragment :
 
         binding.queueSheet.apply {
             // Queue sheet (not queue content) should fade out with the playback panel.
-            alpha = halfInPlaybackRatio
+            alpha = playbackInRatio
             // Prevent interactions when the queue sheet fully fades out.
             binding.queueSheet.isInvisible = alpha == 0f
         }
@@ -315,7 +368,160 @@ class MainFragment :
         requireNotNull(sheetBackCallback) { "SheetBackPressedCallback was not available" }
             .invalidateEnabled()
 
+        // Stop the FrameLayout containing the fabs from eating touch events elsewhere
+        binding.mainFabContainer.isVisible =
+            binding.homeNewPlaylistFab.mainFab.isVisible || binding.homeShuffleFab.isVisible
+
         return true
+    }
+
+    override fun onActionSelected(actionItem: SpeedDialActionItem): Boolean {
+        when (actionItem.id) {
+            R.id.action_new_playlist -> {
+                L.d("Creating playlist")
+                musicModel.createPlaylist()
+            }
+            R.id.action_import_playlist -> {
+                L.d("Importing playlist")
+                musicModel.importPlaylist()
+            }
+            else -> {}
+        }
+        // Returning false to close the speed dial results in no animation, manually close instead.
+        // Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
+        requireBinding().homeNewPlaylistFab.close()
+        return true
+    }
+
+    private fun onExploreNavigate() {
+        listModel.dropSelection()
+        updateFabVisibility(
+            requireBinding(),
+            homeModel.songList.value,
+            homeModel.isFastScrolling.value,
+            homeModel.currentTabType.value)
+    }
+
+    private fun updateCurrentTab(tabType: MusicType) {
+        val binding = requireBinding()
+        updateFabVisibility(
+            binding, homeModel.songList.value, homeModel.isFastScrolling.value, tabType)
+    }
+
+    private fun updateIndexerState(state: IndexingState?) {
+        if (state is IndexingState.Completed && state.error == null) {
+            L.d("Received ok response")
+            val binding = requireBinding()
+            updateFabVisibility(
+                binding,
+                homeModel.songList.value,
+                homeModel.isFastScrolling.value,
+                homeModel.currentTabType.value)
+        }
+    }
+
+    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
+        val binding = requireBinding()
+        updateFabVisibility(binding, songs, isFastScrolling, homeModel.currentTabType.value)
+    }
+
+    private fun updateFabVisibility(
+        binding: FragmentMainBinding,
+        songs: List<Song>,
+        isFastScrolling: Boolean,
+        tabType: MusicType
+    ) {
+        // If there are no songs, it's likely that the library has not been loaded, so
+        // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
+        // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
+        if (shouldHideAllFabs(binding, songs, isFastScrolling)) {
+            L.d("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
+            forceHideAllFabs()
+        } else {
+            if (tabType != MusicType.PLAYLISTS) {
+                if (binding.homeShuffleFab.isOrWillBeShown) {
+                    return
+                }
+
+                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
+                    L.d("Animating transition")
+                    binding.homeNewPlaylistFab.hide(
+                        object : FloatingActionButton.OnVisibilityChangedListener() {
+                            override fun onHidden(fab: FloatingActionButton) {
+                                super.onHidden(fab)
+                                if (shouldHideAllFabs(
+                                    binding,
+                                    homeModel.songList.value,
+                                    homeModel.isFastScrolling.value)) {
+                                    return
+                                }
+                                binding.homeShuffleFab.show()
+                            }
+                        })
+                } else {
+                    L.d("Showing immediately")
+                    binding.homeShuffleFab.show()
+                }
+            } else {
+                L.d("Showing playlist button")
+                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
+                    return
+                }
+
+                if (binding.homeShuffleFab.isOrWillBeShown) {
+                    L.d("Animating transition")
+                    binding.homeShuffleFab.hide(
+                        object : FloatingActionButton.OnVisibilityChangedListener() {
+                            override fun onHidden(fab: FloatingActionButton) {
+                                super.onHidden(fab)
+                                if (shouldHideAllFabs(
+                                    binding,
+                                    homeModel.songList.value,
+                                    homeModel.isFastScrolling.value)) {
+                                    return
+                                }
+                                binding.homeNewPlaylistFab.show()
+                            }
+                        })
+                } else {
+                    L.d("Showing immediately")
+                    binding.homeNewPlaylistFab.show()
+                }
+            }
+        }
+    }
+
+    private fun shouldHideAllFabs(
+        binding: FragmentMainBinding,
+        songs: List<Song>,
+        isFastScrolling: Boolean
+    ) =
+        binding.exploreNavHost.findNavController().currentDestination?.id != R.id.home_fragment ||
+            sheetRising == true ||
+            songs.isEmpty() ||
+            isFastScrolling
+
+    private fun forceHideAllFabs() {
+        val binding = requireBinding()
+        if (binding.homeShuffleFab.isOrWillBeShown) {
+            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeShuffleFab, null, false)
+        }
+        if (binding.homeNewPlaylistFab.isOpen) {
+            binding.homeNewPlaylistFab.close()
+        }
+        if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
+            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeNewPlaylistFab.mainFab, null, false)
+        }
+    }
+
+    private var scrimAnimator: ValueAnimator? = null
+
+    private fun updateSpeedDial(open: Boolean) {
+        requireNotNull(speedDialBackCallback) { "SpeedDialBackPressedCallback was not available" }
+            .invalidateEnabled(open)
+        val binding = requireBinding()
+        binding.mainScrim.isInvisible = !open
+        binding.sheetScrim.isInvisible = !open
     }
 
     private fun handleShow(show: Show?) {
@@ -343,13 +549,6 @@ class MainFragment :
         homeModel.showOuter.consume()
     }
 
-    private fun handleSpeedDialState(open: Boolean) {
-        requireNotNull(speedDialBackCallback) { "SpeedDialBackPressedCallback was not available" }
-            .invalidateEnabled(open)
-        requireBinding().mainScrim.isVisible = open
-        requireBinding().sheetScrim.isVisible = open
-    }
-
     private fun updateSong(song: Song?) {
         if (song != null) {
             tryShowSheets()
@@ -360,7 +559,7 @@ class MainFragment :
 
     private fun handlePanel(panel: OpenPanel?) {
         if (panel == null) return
-        logD("Trying to update panel to $panel")
+        L.d("Trying to update panel to $panel")
         when (panel) {
             OpenPanel.MAIN -> tryClosePlaybackPanel()
             OpenPanel.PLAYBACK -> tryOpenPlaybackPanel()
@@ -376,7 +575,7 @@ class MainFragment :
 
         if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
             // Playback sheet is not expanded and not hidden, we can expand it.
-            logD("Expanding playback sheet")
+            L.d("Expanding playback sheet")
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
             return
         }
@@ -387,7 +586,7 @@ class MainFragment :
             queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Queue sheet and playback sheet is expanded, close the queue sheet so the
             // playback panel can shown.
-            logD("Collapsing queue sheet")
+            L.d("Collapsing queue sheet")
             queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
         }
     }
@@ -398,7 +597,7 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Playback sheet (and possibly queue) needs to be collapsed.
-            logD("Collapsing playback and queue sheets")
+            L.d("Collapsing playback and queue sheets")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
@@ -424,7 +623,7 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_HIDDEN) {
-            logD("Unhiding and enabling playback sheet")
+            L.d("Unhiding and enabling playback sheet")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             // Queue sheet behavior is either collapsed or expanded, no hiding needed
@@ -445,7 +644,7 @@ class MainFragment :
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
-            logD("Hiding and disabling playback and queue sheets")
+            L.d("Hiding and disabling playback and queue sheets")
 
             // Make both bottom sheets non-draggable so the user can't halt the hiding event.
             queueSheetBehavior?.apply {
@@ -464,19 +663,49 @@ class MainFragment :
         private val playbackSheetBehavior: PlaybackBottomSheetBehavior<*>,
         private val queueSheetBehavior: QueueBottomSheetBehavior<*>?
     ) : OnBackPressedCallback(false) {
-        override fun handleOnBackPressed() {
-            // If expanded, collapse the queue sheet first.
+        override fun handleOnBackStarted(backEvent: BackEventCompat) {
             if (queueSheetShown()) {
-                unlikelyToBeNull(queueSheetBehavior).state =
-                    BackportBottomSheetBehavior.STATE_COLLAPSED
-                logD("Collapsed queue sheet")
+                unlikelyToBeNull(queueSheetBehavior).startBackProgress(backEvent)
+            }
+
+            if (playbackSheetShown()) {
+                playbackSheetBehavior.startBackProgress(backEvent)
+                return
+            }
+        }
+
+        override fun handleOnBackProgressed(backEvent: BackEventCompat) {
+            if (queueSheetShown()) {
+                unlikelyToBeNull(queueSheetBehavior).updateBackProgress(backEvent)
                 return
             }
 
-            // If expanded, collapse the playback sheet next.
             if (playbackSheetShown()) {
-                playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
-                logD("Collapsed playback sheet")
+                playbackSheetBehavior.updateBackProgress(backEvent)
+                return
+            }
+        }
+
+        override fun handleOnBackPressed() {
+            if (queueSheetShown()) {
+                unlikelyToBeNull(queueSheetBehavior).handleBackInvoked()
+                return
+            }
+
+            if (playbackSheetShown()) {
+                playbackSheetBehavior.handleBackInvoked()
+                return
+            }
+        }
+
+        override fun handleOnBackCancelled() {
+            if (queueSheetShown()) {
+                unlikelyToBeNull(queueSheetBehavior).cancelBackProgress()
+                return
+            }
+
+            if (playbackSheetShown()) {
+                playbackSheetBehavior.cancelBackProgress()
                 return
             }
         }
@@ -499,7 +728,7 @@ class MainFragment :
         OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             if (detailModel.dropPlaylistEdit()) {
-                logD("Dropped playlist edits")
+                L.d("Dropped playlist edits")
             }
         }
 
@@ -512,7 +741,7 @@ class MainFragment :
         OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             if (listModel.dropSelection()) {
-                logD("Dropped selection")
+                L.d("Dropped selection")
             }
         }
 
@@ -521,11 +750,11 @@ class MainFragment :
         }
     }
 
-    private inner class SpeedDialBackPressedCallback(private val homeModel: HomeViewModel) :
-        OnBackPressedCallback(false) {
+    private inner class SpeedDialBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            if (homeModel.speedDialOpen.value) {
-                homeModel.setSpeedDialOpen(false)
+            val binding = requireBinding()
+            if (binding.homeNewPlaylistFab.isOpen) {
+                binding.homeNewPlaylistFab.close()
             }
         }
 
@@ -535,7 +764,11 @@ class MainFragment :
     }
 
     private companion object {
-        val SPEED_DIAL_OVERLAY_ANIMATION_DURATION_FIELD: Field by
-            lazyReflectedField(SpeedDialOverlayLayout::class, "mAnimationDuration")
+        val FAB_HIDE_FROM_USER_FIELD: Method by
+            lazyReflectedMethod(
+                FloatingActionButton::class,
+                "hide",
+                FloatingActionButton.OnVisibilityChangedListener::class,
+                Boolean::class)
     }
 }

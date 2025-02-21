@@ -22,8 +22,8 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
+import timber.log.Timber as L
 
 /**
  * Personalization settings interface.
@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.navigateSafe
 class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_home_tabs)) {
-            logD("Navigating to home tab dialog")
+            L.d("Navigating to home tab dialog")
             findNavController().navigateSafe(PersonalizePreferenceFragmentDirections.tabSettings())
         }
     }

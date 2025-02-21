@@ -19,44 +19,32 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import androidx.fragment.app.activityViewModels
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
-import org.oxycblt.auxio.detail.header.GenreDetailHeaderAdapter
-import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.detail.list.GenreDetailListAdapter
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.menu.Menu
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.playback.PlaybackDecision
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
-import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [ListFragment] that shows information for a particular [Genre].
@@ -64,65 +52,21 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class GenreDetailFragment :
-    ListFragment<Music, FragmentDetailBinding>(),
-    DetailHeaderAdapter.Listener,
-    DetailListAdapter.Listener<Music> {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val listModel: ListViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
+class GenreDetailFragment : DetailFragment<Genre, Music>() {
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
     private val args: GenreDetailFragmentArgs by navArgs()
-    private val genreHeaderAdapter = GenreDetailHeaderAdapter(this)
     private val genreListAdapter = GenreDetailListAdapter(this)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-    }
-
-    override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
-
-    override fun getSelectionToolbar(binding: FragmentDetailBinding) =
-        binding.detailSelectionToolbar
+    override fun getDetailListAdapter() = genreListAdapter
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
-        // --- UI SETUP ---
-        binding.detailNormalToolbar.apply {
-            setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@GenreDetailFragment)
-            overrideOnOverflowMenuClick {
-                listModel.openMenu(
-                    R.menu.detail_parent, unlikelyToBeNull(detailModel.currentGenre.value))
-            }
-        }
-
-        binding.detailRecycler.apply {
-            adapter = ConcatAdapter(genreHeaderAdapter, genreListAdapter)
-            (layoutManager as GridLayoutManager).setFullWidthLookup {
-                if (it != 0) {
-                    val item =
-                        detailModel.genreSongList.value.getOrElse(it - 1) {
-                            return@setFullWidthLookup false
-                        }
-                    item is Divider || item is Header
-                } else {
-                    true
-                }
-            }
-        }
-
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setGenre(args.genreUid)
-        collectImmediately(detailModel.currentGenre, ::updatePlaylist)
+        collectImmediately(detailModel.currentGenre, ::updateGenre)
         collectImmediately(detailModel.genreSongList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
@@ -136,8 +80,6 @@ class GenreDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailNormalToolbar.setOnMenuItemClickListener(null)
-        binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.genreSongInstructions.consume()
@@ -151,6 +93,10 @@ class GenreDetailFragment :
         }
     }
 
+    override fun onOpenParentMenu() {
+        listModel.openMenu(R.menu.detail_parent, unlikelyToBeNull(detailModel.currentGenre.value))
+    }
+
     override fun onOpenMenu(item: Music) {
         when (item) {
             is Artist -> listModel.openMenu(R.menu.parent, item)
@@ -159,26 +105,45 @@ class GenreDetailFragment :
         }
     }
 
-    override fun onPlay() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
-    }
-
-    override fun onShuffle() {
-        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
-    }
-
     override fun onOpenSortMenu() {
         findNavController().navigateSafe(GenreDetailFragmentDirections.sort())
     }
 
-    private fun updatePlaylist(genre: Genre?) {
+    private fun updateGenre(genre: Genre?) {
         if (genre == null) {
-            logD("No genre to show, navigating away")
+            L.d("No genre to show, navigating away")
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailNormalToolbar.title = genre.name.resolve(requireContext())
-        genreHeaderAdapter.setParent(genre)
+        val binding = requireBinding()
+        val context = requireContext()
+        val name = genre.name.resolve(context)
+        binding.detailToolbarTitle.text = name
+        binding.detailCover.bind(genre)
+        binding.detailType.text = context.getString(R.string.lbl_genre)
+        binding.detailName.text = genre.name.resolve(context)
+        // Nothing about a genre is applicable to the sub-head text.
+        binding.detailSubhead.isVisible = false
+        // The song and artist count of the genre maps to the info text.
+        binding.detailInfo.text =
+            context.getString(
+                R.string.fmt_two,
+                context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
+                context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
+        binding.detailPlayButton?.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
+        }
+        binding.detailToolbarPlay.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
+        }
+        binding.detailShuffleButton?.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
+        }
+        binding.detailToolbarShuffle.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
+        }
+        updatePlayback(
+            playbackModel.song.value, playbackModel.parent.value, playbackModel.isPlaying.value)
     }
 
     private fun updateList(list: List<Item>) {
@@ -188,7 +153,7 @@ class GenreDetailFragment :
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
-                logD("Navigating to ${show.song}")
+                L.d("Navigating to ${show.song}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showSong(show.song.uid))
             }
@@ -196,7 +161,7 @@ class GenreDetailFragment :
             // Songs should be scrolled to if the album matches, or a new detail
             // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
-                logD("Navigating to the album of ${show.song}")
+                L.d("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showAlbum(show.song.album.uid))
             }
@@ -204,29 +169,29 @@ class GenreDetailFragment :
             // If the album matches, no need to do anything. Otherwise launch a new
             // detail fragment.
             is Show.AlbumDetails -> {
-                logD("Navigating to ${show.album}")
+                L.d("Navigating to ${show.album}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showAlbum(show.album.uid))
             }
 
             // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
-                logD("Navigating to ${show.artist}")
+                L.d("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                logD("Navigating to artist choices for ${show.song}")
+                L.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                logD("Navigating to artist choices for ${show.album}")
+                L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
-                logD("Navigated to this genre")
+                L.d("Navigated to this genre")
                 detailModel.toShow.consume()
             }
             is Show.PlaylistDetails -> {
@@ -267,7 +232,7 @@ class GenreDetailFragment :
         val directions =
             when (decision) {
                 is PlaylistDecision.Add -> {
-                    logD("Adding ${decision.songs.size} songs to a playlist")
+                    L.d("Adding ${decision.songs.size} songs to a playlist")
                     GenreDetailFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -306,7 +271,7 @@ class GenreDetailFragment :
         val directions =
             when (decision) {
                 is PlaybackDecision.PlayFromArtist -> {
-                    logD("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     GenreDetailFragmentDirections.playFromArtist(decision.song.uid)
                 }
                 is PlaybackDecision.PlayFromGenre -> error("Unexpected playback decision $decision")

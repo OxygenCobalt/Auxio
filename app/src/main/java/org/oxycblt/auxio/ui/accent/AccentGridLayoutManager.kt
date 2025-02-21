@@ -39,7 +39,7 @@ class AccentGridLayoutManager(
 ) : GridLayoutManager(context, attrs, defStyleAttr, defStyleRes) {
     // We use 56dp here since that's the rough size of the accent item.
     // This will need to be modified if this is used beyond the accent dialog.
-    private var columnWidth = context.getDimenPixels(R.dimen.size_accent_item)
+    private var columnWidth = context.getDimenPixels(R.dimen.size_touchable_large)
     private var lastWidth = -1
     private var lastHeight = -1
 

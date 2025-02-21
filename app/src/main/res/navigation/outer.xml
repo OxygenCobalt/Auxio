@@ -34,8 +34,8 @@
             android:id="@+id/audio_peferences"
             app:destination="@id/audio_preferences_fragment" />
         <action
-            android:id="@+id/music_dirs_settings"
-            app:destination="@id/music_dirs_dialog" />
+            android:id="@+id/music_locations_settings"
+            app:destination="@id/music_locations_dialog" />
     </fragment>
 
     <fragment
@@ -90,14 +90,14 @@
         android:label="pre_amp_dialog"
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
-        android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.dirs.MusicDirsDialog"
-        android:label="music_dirs_dialog"
-        tools:layout="@layout/dialog_music_dirs" />
+        android:id="@+id/music_locations_dialog"
+        android:name="org.oxycblt.auxio.music.locations.MusicSourcesDialog"
+        android:label="music_locations_dialog"
+        tools:layout="@layout/dialog_music_locations" />
     <dialog
         android:id="@+id/separators_dialog"
-        android:name="org.oxycblt.auxio.music.metadata.SeparatorsDialog"
-        android:label="music_dirs_dialog"
+        android:name="org.oxycblt.auxio.music.interpret.SeparatorsDialog"
+        android:label="separators_dialog"
         tools:layout="@layout/dialog_separators" />
 
     <fragment

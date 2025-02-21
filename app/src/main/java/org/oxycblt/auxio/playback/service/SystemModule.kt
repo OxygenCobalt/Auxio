@@ -30,6 +30,7 @@ import androidx.media3.extractor.mp3.Mp3Extractor
 import androidx.media3.extractor.mp4.FragmentedMp4Extractor
 import androidx.media3.extractor.mp4.Mp4Extractor
 import androidx.media3.extractor.ogg.OggExtractor
+import androidx.media3.extractor.text.DefaultSubtitleParserFactory
 import androidx.media3.extractor.ts.AdtsExtractor
 import androidx.media3.extractor.wav.WavExtractor
 import dagger.Module
@@ -60,10 +61,10 @@ class SystemModule {
         arrayOf(
             FlacExtractor(),
             WavExtractor(),
-            FragmentedMp4Extractor(),
-            Mp4Extractor(),
+            FragmentedMp4Extractor(DefaultSubtitleParserFactory.UNSUPPORTED),
+            Mp4Extractor(DefaultSubtitleParserFactory.UNSUPPORTED),
             OggExtractor(),
-            MatroskaExtractor(),
+            MatroskaExtractor(DefaultSubtitleParserFactory.UNSUPPORTED),
             // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
             AdtsExtractor(AdtsExtractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING),
             Mp3Extractor(Mp3Extractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING))

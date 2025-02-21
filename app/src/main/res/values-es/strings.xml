@@ -32,10 +32,9 @@
     <string name="lng_queue_added">Agregado a la cola</string>
     <string name="lbl_artist_details">Ir al artista</string>
     <string name="lbl_album_details">Ir al álbum</string>
-    <string name="lbl_state_saved">Estado guardado</string>
     <string name="lbl_add">Agregar</string>
     <string name="lbl_save">Guardar</string>
-    <string name="err_no_dirs">Sin carpetas</string>
+    <string name="err_no_locations">Sin carpetas</string>
     <string name="lbl_about">Acerca de</string>
     <string name="lbl_version">Versión</string>
     <string name="lbl_code">Código fuente</string>
@@ -71,8 +70,6 @@
     <string name="set_repeat_pause">Pausar al repetir</string>
     <string name="set_repeat_pause_desc">Pausar cuando se repite una canción</string>
     <string name="set_content">Contenido</string>
-    <string name="set_save_state">Guardar estado de reproducción</string>
-    <string name="set_save_desc">Guardar el estado de reproducción ahora</string>
     <string name="set_reindex">Actualizar música</string>
     <string name="set_reindex_desc">Recargar la biblioteca musical, utilizando las etiquetas en caché cuando sea posible</string>
     <!-- Error Namespace | Error Labels -->
@@ -80,7 +77,7 @@
     <string name="err_index_failed">Falló la carga de música</string>
     <string name="err_no_perms">Auxio necesita permiso para leer su biblioteca de música</string>
     <string name="err_no_app">No se encontró ninguna aplicación que pueda manejar esta tarea</string>
-    <string name="err_bad_dir">Directorio no soportado</string>
+    <string name="err_bad_location">Directorio no soportado</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Buscar en la biblioteca…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -95,7 +92,7 @@
     <string name="desc_song_handle">Mover canción en la cola</string>
     <string name="desc_tab_handle">Mover pestaña</string>
     <string name="desc_clear_search">Borrar búsqueda</string>
-    <string name="desc_music_dir_delete">Quitar carpeta</string>
+    <string name="desc_music_location_delete">Quitar carpeta</string>
     <string name="desc_auxio_icon">Icono de Auxio</string>
     <string name="desc_no_cover">Carátula de álbum</string>
     <string name="desc_album_cover">Carátula de álbum para %s</string>
@@ -150,10 +147,6 @@
     <string name="set_pre_amp_without">Ajuste sin etiquetas</string>
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
     <string name="set_play_song_none">Reproducir desde el elemento que se muestra</string>
-    <string name="set_dirs_mode">Modo</string>
-    <string name="set_dirs_mode_exclude">Excluir</string>
-    <string name="set_dirs_mode_exclude_desc">La música<b>no</b> se cargará de las carpetas que añadas.</string>
-    <string name="set_dirs_mode_include">Incluir</string>
     <string name="cdc_mka">Audio matroska</string>
     <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
@@ -162,10 +155,8 @@
     <string name="fmt_lib_genre_count">Géneros cargados: %d</string>
     <string name="lbl_indexer">Carga de música</string>
     <string name="lbl_song_count">Número de canciones</string>
-    <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
     <string name="set_observing_desc">Recargar la biblioteca musical cada vez que cambie (requiere una notificación persistente)</string>
-    <string name="err_did_not_restore">No es posible restaurar el estado</string>
     <string name="lng_indexing">Cargando tu librería de música…</string>
     <string name="lbl_indexing">Cargando música</string>
     <string name="lbl_observing">Monitorizando la librería de música</string>
@@ -177,11 +168,8 @@
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
     <string name="lbl_cancel">Cancelar</string>
     <string name="set_headset_autoplay">Reproducción automática con auriculares</string>
-    <string name="set_restore_state">Restablecer el estado de reproducción</string>
-    <string name="set_restore_desc">Restablecer el estado de reproducción guardado previamente (si existe)</string>
-    <string name="set_dirs">Carpetas de música</string>
-    <string name="set_dirs_desc">Gestionar de dónde se cargará la música</string>
-    <string name="set_dirs_mode_include_desc">La música <b>solo</b> se cargará de las carpetas que añadas.</string>
+    <string name="set_locations">Carpetas de música</string>
+    <string name="set_locations_desc">Gestionar de dónde se cargará la música</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="lbl_eps">Reproducción extendidas (EPs)</string>
@@ -214,11 +202,8 @@
     <string name="lbl_single_remix">Single remix</string>
     <string name="lbl_compilations">Compilaciones</string>
     <string name="lbl_ep_remix">EP de remixes</string>
-    <string name="set_wipe_desc">Eliminar el estado de reproducción guardado previamente (si existe)</string>
     <string name="desc_queue_bar">Abrir la cola</string>
     <string name="lbl_genre">Género</string>
-    <string name="lbl_state_wiped">Estado limpiado</string>
-    <string name="set_wipe_state">Limpiar el estado de reproducción</string>
     <string name="set_separators">Separadores de varios valores</string>
     <string name="set_exclude_non_music">Excluye los archivos que no sean música</string>
     <string name="set_separators_desc">Configurar caracteres que denotan múltiples valores de la etiqueta</string>
@@ -238,8 +223,8 @@
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
-    <string name="set_cover_mode_quality">Alta calidad</string>
-    <string name="set_cover_mode_media_store">Rápido</string>
+    <string name="set_cover_mode_high_quality">Alta calidad</string>
+    <string name="set_cover_mode_balanced">Rápido</string>
     <string name="set_bar_action">Acción personalizada de la barra de reproducción</string>
     <string name="set_action_mode_next">Saltar al siguiente</string>
     <string name="set_hide_collaborators_desc">Mostrar solo artistas que estén acreditados directamente en un álbum (funciona mejor en bibliotecas bien etiquetadas)</string>
@@ -249,8 +234,6 @@
         <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
-    <string name="err_did_not_save">No se pudo guardar el estado</string>
-    <string name="err_did_not_wipe">No se puede borrar el estado</string>
     <string name="set_rescan_desc">Borrar la caché de las etiquetas y recargar completamente la biblioteca musical (más lento, pero más completo)</string>
     <string name="set_rescan">Volver a escanear la música</string>
     <string name="fmt_selected">%d seleccionado</string>
@@ -259,14 +242,13 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Restablecer</string>
     <string name="set_behavior">Comportamiento</string>
-    <string name="set_replay_gain">Ganancia de la reproducción</string>
+    <string name="set_replay_gain">Normalización del volumen</string>
     <string name="set_content_desc">Controla cómo se cargan la música y las imágenes</string>
     <string name="set_music">Música</string>
     <string name="set_images">Imágenes</string>
     <string name="set_audio_desc">Configurar el comportamiento del sonido y la reproducción</string>
     <string name="set_playback">Reproducción</string>
-    <string name="set_dirs_list">Carpetas</string>
-    <string name="set_state">Persistencia</string>
+    <string name="set_locations_list">Carpetas</string>
     <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>
@@ -276,7 +258,6 @@
     <string name="lbl_playlist">Lista de reproducción</string>
     <string name="set_intelligent_sorting">Ignorar artículos al ordenar</string>
     <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" al ordenar por nombre (funciona mejor con música en inglés)</string>
-    <string name="desc_new_playlist">Crear una nueva lista de reproducción</string>
     <string name="lbl_new_playlist">Nueva lista de reproducción</string>
     <string name="fmt_def_playlist">Lista de reproducción %d</string>
     <string name="lbl_playlist_add">Agregar a la lista de reproducción</string>
@@ -334,4 +315,25 @@
     <string name="lng_supporters_promo">¡Haga una donación al proyecto para que agreguen su nombre aquí!</string>
     <string name="set_remember_pause">Recordar la pausa</string>
     <string name="set_remember_pause_desc">Permanecer en reproducción/pausa al saltar o editar la cola</string>
+    <string name="set_replay_gain_mode_off">Apagar</string>
+    <string name="lbl_start_playback">Iniciar reproducción</string>
+    <string name="lng_tasker_start">Inicia Auxio utilizando el estado previamente guardado. Si no hay ningún estado guardado, todas las canciones se reproducirán aleatoriamente. La reproducción comenzará inmediatamente.
+\n
+\nADVERTENCIA: Ten cuidado al controlar este servicio, si lo cierras y luego intentas usarlo de nuevo, probablemente se bloqueará la aplicación.</string>
+    <string name="lbl_more">Más</string>
+    <string name="lbl_github">Crear una incidencia en GitHub</string>
+    <string name="lbl_email">Enviar un correo electrónico</string>
+    <string name="lbl_feedback">Retroalimentación</string>
+    <string name="lbl_music_sources">Seleccionar carpetas</string>
+    <string name="def_album">Álbum desconocido</string>
+    <string name="cdc_unknown">Desconocido</string>
+    <string name="cnt_mp4">El MPEG-4 contiene %s</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="lng_empty_albums">Tus álbumes aparecerán aquí.</string>
+    <string name="lng_empty_artists">Tus artistas aparecerán aquí.</string>
+    <string name="lng_empty_genres">Tus géneros aparecerán aquí.</string>
+    <string name="set_locations_new">Nueva carpeta</string>
+    <string name="lng_empty_playlists">Tus listas de reproducción aparecerán aquí.</string>
+    <string name="lng_empty_songs">Tus canciones aparecerán aquí.</string>
+    <string name="set_cover_mode_save_space">Ahorra espacio</string>
 </resources>

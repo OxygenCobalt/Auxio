@@ -45,7 +45,7 @@ class StartActionHelper(config: TaskerPluginConfig<Unit>) :
 }
 
 class ActivityConfigStartAction : Activity(), TaskerPluginConfigNoInput {
-    override val context
+    override val context: Context
         get() = applicationContext
 
     private val taskerHelper by lazy { StartActionHelper(this) }
@@ -61,6 +61,7 @@ class StartActionRunner : TaskerPluginRunnerActionNoOutputOrInput() {
         ContextCompat.startForegroundService(
             context,
             Intent(context, AuxioService::class.java)
+                .setAction(AuxioService.ACTION_START)
                 .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_TASKER))
         while (!AuxioService.isForeground) {
             Thread.sleep(100)

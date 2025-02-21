@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:transitionGroup="true">
+
+    <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
+        android:id="@+id/detail_appbar"
+        style="@style/Widget.Auxio.AppBarLayout"
+        app:layout_behavior="org.oxycblt.auxio.detail.ContinuousAppBarLayoutBehavior"
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@id/detail_recycler">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/detail_collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:expandedTitleMargin="0dp"
+            app:forceApplySystemWindowInsetTop="false"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:titleEnabled="false"
+            app:toolbarId="@+id/detail_toolbar">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/detail_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:paddingStart="@dimen/spacing_medium"
+                android:paddingTop="?attr/actionBarSize"
+                android:paddingEnd="@dimen/spacing_medium"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.85">
+
+                <org.oxycblt.auxio.image.CoverView
+                    android:id="@+id/detail_cover"
+                    style="@style/Widget.Auxio.Image.Large"
+                    app:enablePlaybackIndicator="false"
+                    app:enableSelectionBadge="false"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_play_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/detail_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
+                    android:textColor="?attr/colorSecondary"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_name"
+                    app:layout_constraintStart_toEndOf="@+id/detail_cover"
+                    app:layout_constraintTop_toTopOf="@+id/detail_cover"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="Type" />
+
+                <TextView
+                    android:id="@+id/detail_name"
+                    style="@style/Widget.Auxio.TextView.Detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_subhead"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/detail_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_type"
+                    tools:text="Name" />
+
+                <TextView
+                    android:id="@+id/detail_subhead"
+                    style="@style/Widget.Auxio.TextView.Secondary.Ellipsize"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textColor="?android:attr/textColorSecondary"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_info"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/detail_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_name"
+                    tools:text="Info A" />
+
+                <TextView
+                    android:id="@+id/detail_info"
+                    style="@style/Widget.Auxio.TextView.Secondary.Base"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:textColor="?android:attr/textColorSecondary"
+                    app:layout_constraintBottom_toBottomOf="@+id/detail_cover"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/detail_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_subhead"
+                    tools:text="Info B" />
+
+                <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                    android:id="@+id/detail_play_button"
+                    style="@style/Widget.Auxio.Button.Secondary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    android:paddingStart="@dimen/spacing_medium"
+                    android:layout_marginBottom="@dimen/spacing_mid_medium"
+                    android:text="@string/lbl_play"
+                    app:icon="@drawable/ic_play_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_cover" />
+
+                <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                    android:id="@+id/detail_shuffle_button"
+                    style="@style/Widget.Auxio.Button.Primary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:text="@string/lbl_shuffle"
+                    app:icon="@drawable/ic_shuffle_off_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/detail_play_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/detail_play_button"
+                    app:layout_constraintTop_toTopOf="@+id/detail_play_button" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:layout_collapseMode="pin" />
+
+            <org.oxycblt.auxio.ui.MultiToolbar
+                android:id="@+id/detail_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="pin">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/detail_normal_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:menu="@menu/toolbar_detail"
+                    app:navigationIcon="@drawable/ic_back_24">
+
+
+                    <LinearLayout
+                        android:id="@+id/detail_toolbar_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/detail_toolbar_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/spacing_tiny"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:layout_gravity="center_vertical"
+                            android:ellipsize="end"
+                            android:textAppearance="@style/TextAppearance.Auxio.TitleLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            tools:text="Name" />
+
+                        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                            android:id="@+id/detail_toolbar_play"
+                            style="@style/Widget.Auxio.Button.Icon.Small.Secondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:icon="@drawable/ic_play_24" />
+
+                        <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                            android:id="@+id/detail_toolbar_shuffle"
+                            style="@style/Widget.Auxio.Button.Icon.Small.Primary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:icon="@drawable/ic_shuffle_off_24" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.appbar.MaterialToolbar>
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/detail_selection_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:menu="@menu/toolbar_selection"
+                    app:navigationIcon="@drawable/ic_close_24" />
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/detail_edit_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:menu="@menu/toolbar_edit"
+                    app:navigationIcon="@drawable/ic_close_24" />
+
+            </org.oxycblt.auxio.ui.MultiToolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </org.oxycblt.auxio.ui.CoordinatorAppBarLayout>
+
+    <org.oxycblt.auxio.list.recycler.FastScrollRecyclerView
+        android:id="@+id/detail_recycler"
+        style="@style/Widget.Auxio.RecyclerView.Grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:listitem="@layout/item_song" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

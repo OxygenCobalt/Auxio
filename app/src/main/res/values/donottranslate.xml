@@ -9,12 +9,15 @@
     <string name="fmt_number" translatable="false">%d</string>
     <string name="fmt_zipped_names" translatable="false">%1$s (%2$s)</string>
     <string name="fmt_date_range" translatable="false">%s - %s</string>
-    <string name="fmt_path" translatable="false">%1$s/%2$s</string>
 
     <!-- Codec Namespace | Format names -->
     <string name="cdc_vorbis">Vorbis</string>
     <string name="cdc_opus">Opus</string>
     <string name="cdc_wav">Microsoft WAVE</string>
+    <string name="cnt_ogg">Ogg %s</string>
+
+    <!-- Pkg Namespace | Dynamic package names -->
+    <string name="pkg_authority_cover">org.oxycblt.auxio.image.CoverProvider</string>
 
     <!-- Supporter Namespace | Sponsor usernames  -->
 </resources>

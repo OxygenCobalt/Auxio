@@ -19,10 +19,10 @@
 package org.oxycblt.auxio.playback
 
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Playlist
 
 /**
  * Configuration to play a song in a desired way.

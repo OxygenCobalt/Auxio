@@ -20,11 +20,11 @@ package org.oxycblt.auxio.list.sort
 
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
 
 /**
  * A sorting method.
@@ -360,16 +360,16 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override fun sortSongs(songs: MutableList<Song>, direction: Direction) {
                 songs.sortBy { it.name }
                 when (direction) {
-                    Direction.ASCENDING -> songs.sortBy { it.dateAdded }
-                    Direction.DESCENDING -> songs.sortByDescending { it.dateAdded }
+                    Direction.ASCENDING -> songs.sortBy { it.addedMs }
+                    Direction.DESCENDING -> songs.sortByDescending { it.addedMs }
                 }
             }
 
             override fun sortAlbums(albums: MutableList<Album>, direction: Direction) {
                 albums.sortBy { it.name }
                 when (direction) {
-                    Direction.ASCENDING -> albums.sortBy { it.dateAdded }
-                    Direction.DESCENDING -> albums.sortByDescending { it.dateAdded }
+                    Direction.ASCENDING -> albums.sortBy { it.addedMs }
+                    Direction.DESCENDING -> albums.sortByDescending { it.addedMs }
                 }
             }
         }

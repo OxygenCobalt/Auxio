@@ -22,19 +22,21 @@ import javax.inject.Inject
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 interface HomeGenerator {
     fun attach()
 
     fun release()
+
+    fun empty(): Boolean
 
     fun songs(): List<Song>
 
@@ -49,6 +51,8 @@ interface HomeGenerator {
     fun tabs(): List<MusicType>
 
     interface Invalidator {
+        fun invalidateEmpty() {}
+
         fun invalidateMusic(type: MusicType, instructions: UpdateInstructions)
 
         fun invalidateTabs()
@@ -87,6 +91,9 @@ private class HomeGeneratorImpl(
     }
 
     override fun onHideCollaboratorsChanged() {
+        // Changes in the hide collaborator setting will change the artist contents
+        // of the library, consider it a library update.
+        L.d("Collaborator setting changed, forwarding update")
         invalidator.invalidateMusic(MusicType.ARTISTS, UpdateInstructions.Diff)
     }
 
@@ -116,9 +123,11 @@ private class HomeGeneratorImpl(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val deviceLibrary = musicRepository.deviceLibrary
-        if (changes.deviceLibrary && deviceLibrary != null) {
-            logD("Refreshing library")
+        invalidator.invalidateEmpty()
+
+        val library = musicRepository.library
+        if (changes.deviceLibrary && library != null) {
+            L.d("Refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
             invalidator.invalidateMusic(MusicType.SONGS, UpdateInstructions.Diff)
@@ -127,9 +136,8 @@ private class HomeGeneratorImpl(
             invalidator.invalidateMusic(MusicType.GENRES, UpdateInstructions.Diff)
         }
 
-        val userLibrary = musicRepository.userLibrary
-        if (changes.userLibrary && userLibrary != null) {
-            logD("Refreshing playlists")
+        if (changes.userLibrary && library != null) {
+            L.d("Refreshing playlists")
             invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Diff)
         }
     }
@@ -140,30 +148,29 @@ private class HomeGeneratorImpl(
         homeSettings.unregisterListener(this)
     }
 
+    override fun empty() = musicRepository.library?.empty() ?: true
+
     override fun songs() =
-        musicRepository.deviceLibrary?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
+        musicRepository.library?.let { listSettings.songSort.songs(it.songs) } ?: emptyList()
 
     override fun albums() =
-        musicRepository.deviceLibrary?.let { listSettings.albumSort.albums(it.albums) }
-            ?: emptyList()
+        musicRepository.library?.let { listSettings.albumSort.albums(it.albums) } ?: emptyList()
 
     override fun artists() =
-        musicRepository.deviceLibrary?.let { deviceLibrary ->
+        musicRepository.library?.let { deviceLibrary ->
             val sorted = listSettings.artistSort.artists(deviceLibrary.artists)
             if (homeSettings.shouldHideCollaborators) {
                 sorted.filter { it.explicitAlbums.isNotEmpty() }
             } else {
                 sorted
             }
-        }
-            ?: emptyList()
+        } ?: emptyList()
 
     override fun genres() =
-        musicRepository.deviceLibrary?.let { listSettings.genreSort.genres(it.genres) }
-            ?: emptyList()
+        musicRepository.library?.let { listSettings.genreSort.genres(it.genres) } ?: emptyList()
 
     override fun playlists() =
-        musicRepository.userLibrary?.let { listSettings.playlistSort.playlists(it.playlists) }
+        musicRepository.library?.let { listSettings.playlistSort.playlists(it.playlists) }
             ?: emptyList()
 
     override fun tabs() = homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }

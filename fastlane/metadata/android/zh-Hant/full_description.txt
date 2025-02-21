@@ -10,6 +10,7 @@ Auxio 是一款本機音樂播放器，擁有快速且可靠的 UI/UX，不含�
 - 進階藝術家系統，統一藝術家與專輯藝術家
 - 支援 SD 卡的資料夾管理
 - 可靠的播放列表功能
+- 支援 Android Auto
 - 播放狀態持久性
 - 完整的 ReplayGain 支援（適用於 MP3、FLAC、OGG、OPUS 和 MP4 檔案）
 - 外部均衡器支援（例如 Wavelet）

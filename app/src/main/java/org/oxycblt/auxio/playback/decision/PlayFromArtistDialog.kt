@@ -31,13 +31,13 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A picker [ViewBindingMaterialDialogFragment] intended for when [Artist] playback is ambiguous.
@@ -88,7 +88,7 @@ class PlayFromArtistDialog :
 
     private fun updateSong(song: Song?) {
         if (song == null) {
-            logD("No song to show choices for, navigating away")
+            L.d("No song to show choices for, navigating away")
             findNavController().navigateUp()
             return
         }

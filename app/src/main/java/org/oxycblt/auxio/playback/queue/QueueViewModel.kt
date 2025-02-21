@@ -24,13 +24,13 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [ViewModel] that manages the current queue state and allows navigation through the queue.
@@ -62,26 +62,26 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
     }
 
     override fun onIndexMoved(index: Int) {
-        logD("Index moved, synchronizing and scrolling to new position")
+        L.d("Index moved, synchronizing and scrolling to new position")
         _scrollTo.put(index)
         _index.value = index
     }
 
     override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
         // Queue changed trivially due to item mo -> Diff queue, stay at current index.
-        logD("Updating queue display")
+        L.d("Updating queue display")
         _queueInstructions.put(change.instructions)
         _queue.value = queue
         if (change.type != QueueChange.Type.MAPPING) {
             // Index changed, make sure it remains updated without actually scrolling to it.
-            logD("Index changed with queue, synchronizing new position")
+            L.d("Index changed with queue, synchronizing new position")
             _index.value = index
         }
     }
 
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         // Queue changed completely -> Replace queue, update index
-        logD("Queue changed completely, replacing queue and position")
+        L.d("Queue changed completely, replacing queue and position")
         _queueInstructions.put(UpdateInstructions.Replace(0))
         _scrollTo.put(index)
         _queue.value = queue
@@ -95,7 +95,7 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
         isShuffled: Boolean
     ) {
         // Entirely new queue -> Replace queue, update index
-        logD("New playback, replacing queue and position")
+        L.d("New playback, replacing queue and position")
         _queueInstructions.put(UpdateInstructions.Replace(0))
         _scrollTo.put(index)
         _queue.value = queue
@@ -117,7 +117,7 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
         if (adapterIndex !in queue.value.indices) {
             return
         }
-        logD("Going to position $adapterIndex in queue")
+        L.d("Going to position $adapterIndex in queue")
         playbackManager.goto(adapterIndex)
     }
 
@@ -131,7 +131,7 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
         if (adapterIndex !in queue.value.indices) {
             return
         }
-        logD("Removing item $adapterIndex in queue")
+        L.d("Removing item $adapterIndex in queue")
         playbackManager.removeQueueItem(adapterIndex)
     }
 
@@ -146,7 +146,7 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
         if (adapterFrom !in queue.value.indices || adapterTo !in queue.value.indices) {
             return false
         }
-        logD("Moving $adapterFrom to $adapterFrom in queue")
+        L.d("Moving $adapterFrom to $adapterFrom in queue")
         playbackManager.moveQueueItem(adapterFrom, adapterTo)
         return true
     }

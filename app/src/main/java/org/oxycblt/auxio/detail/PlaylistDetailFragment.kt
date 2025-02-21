@@ -19,51 +19,41 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.activityViewModels
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
-import org.oxycblt.auxio.detail.header.PlaylistDetailHeaderAdapter
 import org.oxycblt.auxio.detail.list.PlaylistDetailListAdapter
 import org.oxycblt.auxio.detail.list.PlaylistDragCallback
-import org.oxycblt.auxio.list.Divider
-import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.menu.Menu
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.external.M3U
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.playback.PlaybackDecision
-import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.DialogAwareNavigationListener
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
-import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.playlist.m3u.M3U
+import timber.log.Timber as L
 
 /**
  * A [ListFragment] that shows information for a particular [Playlist].
@@ -72,35 +62,17 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class PlaylistDetailFragment :
-    ListFragment<Song, FragmentDetailBinding>(),
-    DetailHeaderAdapter.Listener,
-    PlaylistDetailListAdapter.Listener {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val listModel: ListViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
+    DetailFragment<Playlist, Song>(), PlaylistDetailListAdapter.Listener {
     // Information about what playlist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an playlist.
     private val args: PlaylistDetailFragmentArgs by navArgs()
-    private val playlistHeaderAdapter = PlaylistDetailHeaderAdapter(this)
     private val playlistListAdapter = PlaylistDetailListAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
     private var editNavigationListener: DialogAwareNavigationListener? = null
     private var getContentLauncher: ActivityResultLauncher<String>? = null
     private var pendingImportTarget: Playlist? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-    }
-
-    override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
-
-    override fun getSelectionToolbar(binding: FragmentDetailBinding) =
-        binding.detailSelectionToolbar
+    override fun getDetailListAdapter() = playlistListAdapter
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -110,52 +82,31 @@ class PlaylistDetailFragment :
         getContentLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
                 if (uri == null) {
-                    logW("No URI returned from file picker")
+                    L.w("No URI returned from file picker")
                     return@registerForActivityResult
                 }
 
-                logD("Received playlist URI $uri")
+                L.d("Received playlist URI $uri")
                 musicModel.importPlaylist(uri, pendingImportTarget)
             }
 
         // --- UI SETUP ---
-        binding.detailNormalToolbar.apply {
-            setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@PlaylistDetailFragment)
-            overrideOnOverflowMenuClick {
-                listModel.openMenu(
-                    R.menu.detail_playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
-            }
-        }
 
         binding.detailEditToolbar.apply {
             setNavigationOnClickListener { detailModel.dropPlaylistEdit() }
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
         }
 
-        binding.detailRecycler.apply {
-            adapter = ConcatAdapter(playlistHeaderAdapter, playlistListAdapter)
-            touchHelper =
-                ItemTouchHelper(PlaylistDragCallback(detailModel)).also {
-                    it.attachToRecyclerView(this)
-                }
-            (layoutManager as GridLayoutManager).setFullWidthLookup {
-                if (it != 0) {
-                    val item =
-                        detailModel.playlistSongList.value.getOrElse(it - 1) {
-                            return@setFullWidthLookup false
-                        }
-                    item is Divider || item is Header
-                } else {
-                    true
-                }
+        touchHelper =
+            ItemTouchHelper(PlaylistDragCallback(detailModel)).also {
+                it.attachToRecyclerView(binding.detailRecycler)
             }
-        }
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setPlaylist(args.playlistUid)
-        collectImmediately(detailModel.currentPlaylist, ::updatePlaylist)
+        collectImmediately(
+            detailModel.currentPlaylist, detailModel.editedPlaylist, ::updatePlaylist)
         collectImmediately(detailModel.playlistSongList, ::updateList)
         collectImmediately(detailModel.editedPlaylist, ::updateEditedList)
         collect(detailModel.toShow.flow, ::handleShow)
@@ -210,41 +161,97 @@ class PlaylistDetailFragment :
         playbackModel.play(item, detailModel.playInPlaylistWith)
     }
 
+    override fun onStartEdit() {
+        detailModel.startPlaylistEdit()
+    }
+
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
         requireNotNull(touchHelper) { "ItemTouchHelper was not available" }.startDrag(viewHolder)
+    }
+
+    override fun onOpenParentMenu() {
+        listModel.openMenu(
+            R.menu.detail_playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onOpenMenu(item: Song) {
         listModel.openMenu(R.menu.playlist_song, item, detailModel.playInPlaylistWith)
     }
 
-    override fun onPlay() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
-    }
-
-    override fun onShuffle() {
-        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
-    }
-
-    override fun onStartEdit() {
-        detailModel.startPlaylistEdit()
-    }
-
     override fun onOpenSortMenu() {
         findNavController().navigateSafe(PlaylistDetailFragmentDirections.sort())
     }
 
-    private fun updatePlaylist(playlist: Playlist?) {
+    private fun updatePlaylist(playlist: Playlist?, editedPlaylist: List<Song>?) {
         if (playlist == null) {
             // Playlist we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
         val binding = requireBinding()
-        binding.detailNormalToolbar.title = playlist.name.resolve(requireContext())
+        binding.detailToolbarTitle.text = playlist.name.resolve(requireContext())
         binding.detailEditToolbar.title =
             getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
-        playlistHeaderAdapter.setParent(playlist)
+
+        if (editedPlaylist != null) {
+            L.d("Binding edited playlist image")
+            binding.detailCover.bind(
+                editedPlaylist,
+                binding.context.getString(R.string.desc_playlist_image, playlist.name),
+                R.drawable.ic_playlist_24)
+        } else {
+            binding.detailCover.bind(playlist)
+        }
+
+        binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
+        binding.detailName.text = playlist.name.resolve(binding.context)
+        // Nothing about a playlist is applicable to the sub-head text.
+        binding.detailSubhead.isVisible = false
+
+        val songs = editedPlaylist ?: playlist.songs
+        val durationMs = editedPlaylist?.sumOf { it.durationMs } ?: playlist.durationMs
+        // The song count of the playlist maps to the info text.
+        binding.detailInfo.text =
+            if (songs.isNotEmpty()) {
+                binding.context.getString(
+                    R.string.fmt_two,
+                    binding.context.getPlural(R.plurals.fmt_song_count, songs.size),
+                    durationMs.formatDurationMs(true))
+            } else {
+                binding.context.getString(R.string.def_song_count)
+            }
+
+        val playable = playlist.songs.isNotEmpty() && editedPlaylist == null
+        if (!playable) {
+            L.d("Playlist is being edited or is empty, disabling playback options")
+        }
+
+        binding.detailPlayButton?.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
+        binding.detailToolbarPlay.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
+        binding.detailShuffleButton?.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
+        binding.detailToolbarShuffle.apply {
+            isEnabled = playable
+            setOnClickListener {
+                playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
+        }
+        updatePlayback(
+            playbackModel.song.value, playbackModel.parent.value, playbackModel.isPlaying.value)
     }
 
     private fun updateList(list: List<Item>) {
@@ -253,11 +260,10 @@ class PlaylistDetailFragment :
 
     private fun updateEditedList(editedPlaylist: List<Song>?) {
         playlistListAdapter.setEditing(editedPlaylist != null)
-        playlistHeaderAdapter.setEditedPlaylist(editedPlaylist)
         listModel.dropSelection()
 
         if (editedPlaylist != null) {
-            logD("Updating save button state")
+            L.d("Updating save button state")
             requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).apply {
                 isEnabled = editedPlaylist != detailModel.currentPlaylist.value?.songs
             }
@@ -269,38 +275,38 @@ class PlaylistDetailFragment :
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
-                logD("Navigating to ${show.song}")
+                L.d("Navigating to ${show.song}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showSong(show.song.uid))
             }
             is Show.SongAlbumDetails -> {
-                logD("Navigating to the album of ${show.song}")
+                L.d("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.song.album.uid))
             }
             is Show.AlbumDetails -> {
-                logD("Navigating to ${show.album}")
+                L.d("Navigating to ${show.album}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.album.uid))
             }
             is Show.ArtistDetails -> {
-                logD("Navigating to ${show.artist}")
+                L.d("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                logD("Navigating to artist choices for ${show.song}")
+                L.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                logD("Navigating to artist choices for ${show.album}")
+                L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(
                         PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.PlaylistDetails -> {
-                logD("Navigated to this playlist")
+                L.d("Navigated to this playlist")
                 detailModel.toShow.consume()
             }
             is Show.GenreDetails -> {
@@ -341,7 +347,7 @@ class PlaylistDetailFragment :
         val directions =
             when (decision) {
                 is PlaylistDecision.Import -> {
-                    logD("Importing playlist")
+                    L.d("Importing playlist")
                     pendingImportTarget = decision.target
                     requireNotNull(getContentLauncher) {
                             "Content picker launcher was not available"
@@ -351,7 +357,7 @@ class PlaylistDetailFragment :
                     return
                 }
                 is PlaylistDecision.Rename -> {
-                    logD("Renaming ${decision.playlist}")
+                    L.d("Renaming ${decision.playlist}")
                     PlaylistDetailFragmentDirections.renamePlaylist(
                         decision.playlist.uid,
                         decision.template,
@@ -359,15 +365,15 @@ class PlaylistDetailFragment :
                         decision.reason)
                 }
                 is PlaylistDecision.Export -> {
-                    logD("Exporting ${decision.playlist}")
+                    L.d("Exporting ${decision.playlist}")
                     PlaylistDetailFragmentDirections.exportPlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Delete -> {
-                    logD("Deleting ${decision.playlist}")
+                    L.d("Deleting ${decision.playlist}")
                     PlaylistDetailFragmentDirections.deletePlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Add -> {
-                    logD("Adding ${decision.songs.size} songs to a playlist")
+                    L.d("Adding ${decision.songs.size} songs to a playlist")
                     PlaylistDetailFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -393,11 +399,11 @@ class PlaylistDetailFragment :
         val directions =
             when (decision) {
                 is PlaybackDecision.PlayFromArtist -> {
-                    logD("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     PlaylistDetailFragmentDirections.playFromArtist(decision.song.uid)
                 }
                 is PlaybackDecision.PlayFromGenre -> {
-                    logD("Launching play from artist dialog for $decision")
+                    L.d("Launching play from artist dialog for $decision")
                     PlaylistDetailFragmentDirections.playFromGenre(decision.song.uid)
                 }
             }
@@ -408,15 +414,15 @@ class PlaylistDetailFragment :
         val id =
             when {
                 detailModel.editedPlaylist.value != null -> {
-                    logD("Currently editing playlist, showing edit toolbar")
+                    L.d("Currently editing playlist, showing edit toolbar")
                     R.id.detail_edit_toolbar
                 }
                 listModel.selected.value.isNotEmpty() -> {
-                    logD("Currently selecting, showing selection toolbar")
+                    L.d("Currently selecting, showing selection toolbar")
                     R.id.detail_selection_toolbar
                 }
                 else -> {
-                    logD("Using normal toolbar")
+                    L.d("Using normal toolbar")
                     R.id.detail_normal_toolbar
                 }
             }

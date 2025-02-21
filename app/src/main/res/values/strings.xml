@@ -16,6 +16,7 @@
     <string name="lbl_observing">Monitoring music library</string>
     <!-- As in to retry loading music -->
     <string name="lbl_retry">Retry</string>
+    <string name="lbl_music_sources">Pick folders</string>
     <!-- As in to show additional information about a music loading error -->
     <string name="lbl_show_error_info">More</string>
     <!-- As in grant permission -->
@@ -171,13 +172,6 @@
 
     <string name="lbl_windows_paths">Use Windows-compatible paths</string>
 
-    <!-- Referring to playback state -->
-    <string name="lbl_state_saved">State saved</string>
-    <!-- Referring to playback state -->
-    <string name="lbl_state_wiped">State cleared</string>
-    <!-- Referring to playback state -->
-    <string name="lbl_state_restored">State restored</string>
-
     <string name="lbl_about">About</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Source code</string>
@@ -195,6 +189,9 @@
 
     <string name="lbl_author">Author</string>
     <string name="lbl_author_name">Alexander Capehart</string>
+    <string name="lbl_feedback">Feedback</string>
+    <string name="lbl_github">Make an issue on GitHub</string>
+    <string name="lbl_email">Send an email</string>
     <string name="lbl_donate">Donate</string>
     <string name="lbl_supporters">Supporters</string>
 
@@ -218,6 +215,11 @@
         Starts Auxio using the previously saved state. If no saved state is available, all songs will be shuffled. Playback will start immediately.
         \n\nWARNING: Be careful controlling this service, if you close it and then try to use it again, you will probably crash the app.
     </string>
+    <string name="lng_empty_songs">Your songs will show up here.</string>
+    <string name="lng_empty_albums">Your albums will show up here.</string>
+    <string name="lng_empty_artists">Your artists will show up here.</string>
+    <string name="lng_empty_genres">Your genres will show up here.</string>
+    <string name="lng_empty_playlists">Your playlists will show up here.</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <eat-comment />
@@ -280,8 +282,9 @@
     <string name="set_images">Images</string>
     <string name="set_cover_mode">Album covers</string>
     <string name="set_cover_mode_off">Off</string>
-    <string name="set_cover_mode_media_store">Fast</string>
-    <string name="set_cover_mode_quality">High quality</string>
+    <string name="set_cover_mode_save_space">Save space</string>
+    <string name="set_cover_mode_balanced">Balanced</string>
+    <string name="set_cover_mode_high_quality">High quality</string>
     <string name="set_square_covers">Force square album covers</string>
     <string name="set_square_covers_desc">Crop all album covers to a 1:1 aspect ratio</string>
 
@@ -309,30 +312,15 @@
     <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
     <string name="set_library">Library</string>
-    <string name="set_dirs">Music folders</string>
-    <string name="set_dirs_desc">Manage where music should be loaded from</string>
-    <string name="set_dirs_list">Folders</string>
-    <!-- As in the mode to be used with the music folders setting -->
-    <string name="set_dirs_mode">Mode</string>
-    <!-- Exclude folders from music loading -->
-    <string name="set_dirs_mode_exclude">Exclude</string>
-    <string name="set_dirs_mode_exclude_desc">Music will <b>not</b> be loaded from the folders you add.</string>
-    <!-- Restrict music loading to selected folders -->
-    <string name="set_dirs_mode_include">Include</string>
-    <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
+    <string name="set_locations">Music folders</string>
+    <string name="set_locations_desc">Manage where music should be loaded from</string>
+    <string name="set_locations_list">Folders</string>
+    <string name="set_locations_new">New folder</string>
     <string name="set_reindex">Refresh music</string>
     <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
     <!-- Different from "Reload music" -->
     <string name="set_rescan">Rescan music</string>
     <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
-
-    <string name="set_state">Persistence</string>
-    <string name="set_save_state">Save playback state</string>
-    <string name="set_save_desc">Save the current playback state now</string>
-    <string name="set_wipe_state">Clear playback state</string>
-    <string name="set_wipe_desc">Clear the previously saved playback state (if any)</string>
-    <string name="set_restore_state">Restore playback state</string>
-    <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>
@@ -342,14 +330,8 @@
     <string name="err_export_failed">Unable to export the playlist to this file</string>
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
-    <string name="err_no_dirs">No folders</string>
-    <string name="err_bad_dir">This folder is not supported</string>
-    <!-- Referring to playback state -->
-    <string name="err_did_not_restore">Unable to restore state</string>
-    <!-- Referring to playback state -->
-    <string name="err_did_not_wipe">Unable to clear state</string>
-    <!-- Referring to playback state -->
-    <string name="err_did_not_save">Unable to save state</string>
+    <string name="err_no_locations">No folders</string>
+    <string name="err_bad_location">This folder is not supported</string>
 
     <!-- Description Namespace | Accessibility Strings -->
 
@@ -361,7 +343,6 @@
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
     <string name="desc_shuffle_all">Shuffle all songs</string>
-    <string name="desc_new_playlist">Create a new playlist</string>
     <string name="desc_exit">Stop playback</string>
 
     <string name="desc_remove_song">Remove this song</string>
@@ -369,7 +350,7 @@
     <string name="desc_queue_bar">Open the queue</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
-    <string name="desc_music_dir_delete">Remove folder</string>
+    <string name="desc_music_location_delete">Remove folder</string>
 
     <string name="desc_auxio_icon">Auxio icon</string>
     <string name="desc_no_cover">Album cover</string>
@@ -382,6 +363,7 @@
     <!-- Default Namespace | Placeholder values -->
     <eat-comment />
 
+    <string name="def_album">Unknown album</string>
     <string name="def_artist">Unknown artist</string>
     <string name="def_genre">Unknown genre</string>
     <string name="def_date">No date</string>
@@ -398,14 +380,20 @@
     <string name="cdc_mp3">MPEG-1 audio</string>
     <!-- "Audio" can optionally be translated -->
     <string name="cdc_mp4">MPEG-4 audio</string>
+    <!-- i.e MPEG-4 containing some codec -->
+    <string name="cnt_mp4">MPEG-4 containing %s</string>
+    <!-- "Advanced Audio Coding" can optionally be translated -->
+    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <!-- "Apple Lossless Audio Codec" can optionally be translated -->
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <!-- "Audio" can optionally be translated -->
     <string name="cdc_ogg">Ogg audio</string>
     <!-- "Audio" can optionally be translated -->
     <string name="cdc_mka">Matroska audio</string>
-    <!-- "Advanced Audio Coding" can optionally be translated -->
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <!-- "Free Lossless Audio Codec" can optionally be translated -->
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <!-- As in unknown format -->
+    <string name="cdc_unknown">Unknown</string>
 
     <!-- Color Label namespace | Accent names -->
     <eat-comment />

@@ -36,7 +36,6 @@
     <string name="lng_queue_added">대기열에 추가했습니다.</string>
     <string name="lbl_artist_details">아티스트로 이동</string>
     <string name="lbl_album_details">앨범으로 이동</string>
-    <string name="lbl_state_saved">상태 저장됨</string>
     <!-- Actual string: Ok -->
     <string name="lbl_ok">확인</string>
     <!-- Actual string: Cancel -->
@@ -86,8 +85,6 @@
     <string name="set_repeat_pause">반복 재생 시 일시 중지</string>
     <string name="set_repeat_pause_desc">곡이 반복 재생될 때 일시 중지</string>
     <string name="set_content">내용</string>
-    <string name="set_save_state">재생 상태 저장</string>
-    <string name="set_save_desc">현재 재생 상태를 지금 저장합니다.</string>
     <string name="set_reindex">음악 새로고침</string>
     <string name="set_reindex_desc">캐시된 태그를 사용하여 음악 라이브러리를 다시 불러옵니다.</string>
     <!-- Error Namespace | Error Labels -->
@@ -95,8 +92,8 @@
     <string name="err_index_failed">음악 불러오기 실패</string>
     <string name="err_no_perms">앱에서 음악 라이브러리를 읽을 수 있는 권한이 필요합니다.</string>
     <string name="err_no_app">이 작업을 처리할 수 있는 앱을 찾을 수 없습니다.</string>
-    <string name="err_no_dirs">폴더 없음</string>
-    <string name="err_bad_dir">지원하지 않는 폴더입니다.</string>
+    <string name="err_no_locations">폴더 없음</string>
+    <string name="err_bad_location">지원하지 않는 폴더입니다</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">라이브러리에서 검색…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -111,7 +108,7 @@
     <string name="desc_song_handle">이 곡 이동</string>
     <string name="desc_tab_handle">이 탭 이동</string>
     <string name="desc_clear_search">검색 기록 삭제</string>
-    <string name="desc_music_dir_delete">폴더 제거</string>
+    <string name="desc_music_location_delete">폴더 제거</string>
     <string name="desc_auxio_icon">Auxio 아이콘</string>
     <string name="desc_no_cover">앨범 커버</string>
     <string name="desc_album_cover">%s의 앨범 커버</string>
@@ -158,9 +155,6 @@
     </plurals>
     <string name="cdc_mp4">MPEG-4 오디오</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
-    <string name="set_wipe_desc">이전에 저장된 재생 상태 초기화</string>
-    <string name="set_dirs_mode_exclude">제외</string>
-    <string name="set_dirs_mode_include_desc"><b>추가한 폴더에서만</b> 음악을 불러옵니다.</string>
     <string name="lbl_props">곡 속성</string>
     <string name="lbl_song_detail">속성 보기</string>
     <string name="lbl_sample_rate">샘플 속도</string>
@@ -179,12 +173,8 @@
     <string name="lbl_shuffle_shortcut_short">무작위 재생</string>
     <string name="set_play_song_none">표시된 항목에서 재생</string>
     <string name="lng_indexing">음악 라이브러리 불러오는 중…</string>
-    <string name="set_wipe_state">재생 상태 지우기</string>
-    <string name="set_restore_state">재생 상태 복원</string>
-    <string name="set_dirs">음악 폴더</string>
-    <string name="set_dirs_desc">음악을 불러오는 위치 관리</string>
-    <string name="set_dirs_mode_exclude_desc">추가한 폴더에서 음악을 <b>불러오지 않습니다</b>.</string>
-    <string name="set_dirs_mode_include">포함</string>
+    <string name="set_locations">음악 폴더</string>
+    <string name="set_locations_desc">음악을 불러오는 위치 관리</string>
     <string name="set_separators">다중 값 구분 기호</string>
     <string name="set_separators_desc">태그 값이 여러 개일 때 태그를 구분할 기호를 설정합니다.</string>
     <string name="set_separators_comma">콤마 (,)</string>
@@ -211,16 +201,12 @@
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="set_cover_mode">앨범 커버</string>
     <string name="set_cover_mode_off">끔</string>
-    <string name="set_cover_mode_media_store">빠름</string>
-    <string name="set_cover_mode_quality">고품질</string>
-    <string name="set_restore_desc">이전에 저장된 재생 상태 복원</string>
-    <string name="err_did_not_restore">재생 상태를 복원할 수 없습니다.</string>
+    <string name="set_cover_mode_balanced">빠름</string>
+    <string name="set_cover_mode_high_quality">고품질</string>
     <string name="set_observing_desc">음악 라이브러리가 변경될 때마다 새로고침 (고정 알림 필요)</string>
-    <string name="lbl_state_wiped">상태 지워짐</string>
     <string name="lbl_indexing">음악 불러오는 중</string>
     <string name="lbl_indexer">음악 불러오는 중</string>
     <string name="lbl_observing">음악 라이브러리 모니터링 중</string>
-    <string name="lbl_state_restored">상태 복원됨</string>
     <string name="lbl_eps">EP 앨범</string>
     <string name="lbl_ep">EP 앨범</string>
     <string name="lbl_singles">싱글</string>
@@ -232,7 +218,6 @@
     <string name="lbl_mixtape">믹스테이프</string>
     <string name="lbl_remix_group">리믹스</string>
     <string name="set_observing">자동 새로고침</string>
-    <string name="set_dirs_mode">모드</string>
     <string name="fmt_indexing">음악 라이브러리를 불러오는 중… (%1$d/%2$d)</string>
     <string name="lbl_genre">장르</string>
     <string name="set_separators_warning">경고: 이 설정을 사용하면 몇몇 태그가 다중 값을 가진 것으로 잘못 나타날 수 있습니다. 태그에서 구분 기호 앞에 백슬래시(\\)를 붙이면 구분 기호로 인식하지 않습니다.</string>
@@ -242,8 +227,6 @@
     <string name="set_exclude_non_music_desc">팟캐스트 등 음악이 아닌 오디오 파일 무시</string>
     <string name="set_hide_collaborators">공동 작업자 숨기기</string>
     <string name="set_hide_collaborators_desc">앨범에 등장하는 아티스트만 표시 (자세히 태그된 라이브러리에 최적화)</string>
-    <string name="err_did_not_wipe">재생 상태를 지울 수 없습니다.</string>
-    <string name="err_did_not_save">재생 상태를 저장할 수 없습니다.</string>
     <string name="set_rescan">음악 재탐색</string>
     <plurals name="fmt_artist_count">
         <item quantity="other">%d 아티스트</item>
@@ -254,16 +237,15 @@
     <string name="lbl_wiki">위키</string>
     <string name="set_play_song_from_genre">장르에서 재생</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">ReplayGain 볼륨 조정</string>
     <string name="set_audio_desc">사운드 및 재생 동작 구성</string>
     <string name="set_playback">재생</string>
-    <string name="set_dirs_list">폴더</string>
+    <string name="set_locations_list">폴더</string>
     <string name="set_ui_desc">앱 테마 및 색상 변경</string>
     <string name="set_music">음악</string>
     <string name="set_library">라이브러리</string>
     <string name="set_images">이미지</string>
     <string name="set_content_desc">음악 및 이미지 불러오기 방식 설정</string>
-    <string name="set_state">지속</string>
     <string name="set_behavior">동작</string>
     <string name="set_personalize_desc">UI 제어 및 동작 사용자 정의</string>
     <string name="lbl_sort_dsc">내림차순</string>
@@ -272,7 +254,6 @@
     <string name="desc_playlist_image">%s의 재생 목록 이미지</string>
     <string name="set_intelligent_sorting">적응형 정렬</string>
     <string name="set_intelligent_sorting_desc">정렬할 때 숫자나 \"the\"와 같은 단어를 무시합니다. 태그가 영어로 되어 있을 때 가장 잘 작동합니다.</string>
-    <string name="desc_new_playlist">새 재생 목록 만들기</string>
     <string name="lbl_new_playlist">새 재생 목록</string>
     <string name="lbl_playlist_add">재생 목록에 추가</string>
     <string name="lng_playlist_created">재생 목록을 만들었습니다.</string>
@@ -330,4 +311,14 @@
     <string name="lbl_replaygain_track">ReplayGain 트랙 조절값</string>
     <string name="lbl_replaygain_album">ReplayGain 앨범 조절값</string>
     <string name="set_remember_pause">일시 중지 기억</string>
+    <string name="set_replay_gain_mode_off">끄기</string>
+    <string name="lbl_start_playback">재생 시작</string>
+    <string name="lng_tasker_start">이전에 저장된 상태에 따라 Auxio를 시작합니다. 저장된 상태가 없으면 모든 곡을 무작위 재생합니다. 재생은 즉시 시작됩니다.
+\n
+\n경고: 이 서비스는 주의하여 사용하세요. 서비스를 닫은 뒤 다시 사용하려고 할 경우 앱이 충돌할 수 있습니다.</string>
+    <string name="lbl_more">더 보기</string>
+    <string name="lbl_music_sources">폴더 선택</string>
+    <string name="lbl_email">전자우편을 전송합니다</string>
+    <string name="lbl_github">깃허브에 문제를 제기합니다</string>
+    <string name="lbl_feedback">응답</string>
 </resources>

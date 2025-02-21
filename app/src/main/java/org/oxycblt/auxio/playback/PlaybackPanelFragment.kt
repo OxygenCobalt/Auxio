@@ -24,6 +24,7 @@ import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.ViewTreeObserver
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
@@ -34,19 +35,18 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.playback.ui.PlaybackPagerAdapter
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingFragment] more information about the currently playing song, alongside all
@@ -61,12 +61,13 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-    SwipeCoverView.OnSwipeListener {
+    SwipeCoverView.OnSwipeListener,
+    ViewTreeObserver.OnGlobalLayoutListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
-    private var coverAdapter: PlaybackPagerAdapter? = null
+    private var lastCoverWidth = 0
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -87,20 +88,13 @@ class PlaybackPanelFragment :
         // --- UI SETUP ---
         binding.root.setOnApplyWindowInsetsListener { view, insets ->
             val bars = insets.systemBarInsetsCompat
-            view.updatePadding(top = bars.top, bottom = bars.bottom)
+            view.updatePadding(bottom = bars.bottom)
             insets
         }
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { playbackModel.openMain() }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
-            overrideOnOverflowMenuClick {
-                playbackModel.song.value?.let {
-                    // No playback options are actually available in the menu, so use a junk
-                    // PlaySong option.
-                    listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
-                }
-            }
         }
 
         binding.playbackCover.onSwipeListener = this
@@ -108,10 +102,16 @@ class PlaybackPanelFragment :
             isSelected = true
             setOnClickListener { navigateToCurrentSong() }
         }
-        binding.playbackArtist.setOnClickListener { navigateToCurrentArtist() }
-        binding.playbackAlbum.setOnClickListener { navigateToCurrentAlbum() }
+        binding.playbackArtist.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentArtist() }
+        }
+        binding.playbackAlbum?.apply {
+            isSelected = true
+            setOnClickListener { navigateToCurrentAlbum() }
+        }
 
-        binding.playbackSeekBar.listener = this
+        binding.playbackSeekBar?.listener = this
 
         // Set up actions
         // TODO: Add better playback button accessibility
@@ -120,6 +120,11 @@ class PlaybackPanelFragment :
         binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
+        binding.playbackMore?.setOnClickListener {
+            playbackModel.song.value?.let {
+                listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
+            }
+        }
 
         // --- VIEWMODEL SETUP --
         collectImmediately(playbackModel.song, ::updateSong)
@@ -130,17 +135,52 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
     }
 
+    override fun onStart() {
+        super.onStart()
+        playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
+        requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireBinding().root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+    }
+
+    override fun onGlobalLayout() {
+        if (binding == null || lastCoverWidth < 0) {
+            return
+        }
+        // Hacky workaround for cover radius not being preserved in between sizing changes
+        // (i.e split screen or landscape mode)
+        // For some reason ConstraintLayout does several passes on 1:1 elements that causes their
+        // size to radically change, so we wait until it stabilizes and then force an image
+        // reload if needed. Optimistically this is a no-op from coil caching, but when the cover
+        // did accidentally load the wrong image (with weird corner radius intended for bigger
+        // covers) we can force it to reload.
+        // If this breaks, it's fine since we also started a load as we normally did w/state
+        // updates, so the cover will not break.
+        val binding = requireBinding()
+        val coverWidth = binding.playbackCover.width
+        if (lastCoverWidth != coverWidth) {
+            lastCoverWidth = coverWidth
+        } else {
+            playbackModel.song.value?.let { binding.playbackCover.bind(it) }
+            lastCoverWidth = -1
+        }
+    }
+
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
-        coverAdapter = null
         binding.playbackSong.isSelected = false
+        binding.playbackArtist.isSelected = false
+        binding.playbackAlbum?.isSelected = false
         binding.playbackToolbar.setOnMenuItemClickListener(null)
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_open_equalizer) {
             // Launch the system equalizer app, if possible.
-            logD("Launching equalizer")
+            L.d("Launching equalizer")
             val equalizerIntent =
                 Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                     // Provide audio session ID so the equalizer can show options for this app
@@ -181,12 +221,12 @@ class PlaybackPanelFragment :
 
         val binding = requireBinding()
         val context = requireContext()
-        logD("Updating song display: $song")
+        L.d("Updating song display: $song")
         binding.playbackCover.bind(song)
         binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)
-        binding.playbackAlbum.text = song.album.name.resolve(context)
-        binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
+        binding.playbackAlbum?.text = song.album.name.resolve(context)
+        binding.playbackSeekBar?.durationDs = song.durationMs.msToDs()
     }
 
     private fun updateParent(parent: MusicParent?) {
@@ -197,7 +237,7 @@ class PlaybackPanelFragment :
     }
 
     private fun updatePosition(positionDs: Long) {
-        requireBinding().playbackSeekBar.positionDs = positionDs
+        requireBinding().playbackSeekBar?.positionDs = positionDs
     }
 
     private fun updateRepeat(repeatMode: RepeatMode) {

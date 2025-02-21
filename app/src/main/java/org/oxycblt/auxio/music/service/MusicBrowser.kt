@@ -27,16 +27,16 @@ import org.oxycblt.auxio.detail.DetailGenerator
 import org.oxycblt.auxio.detail.DetailSection
 import org.oxycblt.auxio.home.HomeGenerator
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.resolveNumber
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.search.SearchEngine
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
 
 class MusicBrowser
 private constructor(
@@ -95,14 +95,13 @@ private constructor(
     }
 
     override fun invalidate(type: MusicType, replace: Int?) {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val userLibrary = musicRepository.userLibrary ?: return
+        val library = musicRepository.library ?: return
         val music =
             when (type) {
-                MusicType.ALBUMS -> deviceLibrary.albums
-                MusicType.ARTISTS -> deviceLibrary.artists
-                MusicType.GENRES -> deviceLibrary.genres
-                MusicType.PLAYLISTS -> userLibrary.playlists
+                MusicType.ALBUMS -> library.albums
+                MusicType.ARTISTS -> library.artists
+                MusicType.GENRES -> library.genres
+                MusicType.PLAYLISTS -> library.playlists
                 else -> return
             }
         if (music.isEmpty()) {
@@ -119,8 +118,7 @@ private constructor(
                 is MediaSessionUID.SingleItem ->
                     musicRepository.find(uid.uid)?.let { musicRepository.find(it.uid) }
                 null -> null
-            }
-                ?: return null
+            } ?: return null
 
         return when (music) {
             is Album -> music.toMediaItem(context)
@@ -132,9 +130,7 @@ private constructor(
     }
 
     fun getChildren(parentId: String, maxTabs: Int): List<MediaItem>? {
-        val deviceLibrary = musicRepository.deviceLibrary
-        val userLibrary = musicRepository.userLibrary
-        if (deviceLibrary == null || userLibrary == null) {
+        if (musicRepository.library == null) {
             return listOf()
         }
         return getMediaItemList(parentId, maxTabs)
@@ -144,15 +140,10 @@ private constructor(
         if (query.isEmpty()) {
             return mutableListOf()
         }
-        val deviceLibrary = musicRepository.deviceLibrary ?: return mutableListOf()
-        val userLibrary = musicRepository.userLibrary ?: return mutableListOf()
+        val library = musicRepository.library ?: return mutableListOf()
         val items =
             SearchEngine.Items(
-                deviceLibrary.songs,
-                deviceLibrary.albums,
-                deviceLibrary.artists,
-                deviceLibrary.genres,
-                userLibrary.playlists)
+                library.songs, library.albums, library.artists, library.genres, library.playlists)
         return searchEngine.search(items, query).toMediaItems()
     }
 
@@ -228,7 +219,7 @@ private constructor(
                     section.items.map { it.toMediaItem(context, header(section.stringRes)) }
                 is DetailSection.Discs ->
                     section.discs.flatMap { (disc, songs) ->
-                        val discString = disc.resolveNumber(context)
+                        val discString = disc.resolve(context)
                         songs.map { it.toMediaItem(context, header(discString)) }
                     }
                 else -> error("Unknown section type: $section")

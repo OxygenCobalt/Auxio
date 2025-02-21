@@ -27,17 +27,18 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMenuBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
 
 /**
  * [MenuDialogFragment] implementation for a [Song].
@@ -112,7 +113,7 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Menu.ForAlbum>() {
     override fun updateMenu(binding: DialogMenuBinding, menu: Menu.ForAlbum) {
         val context = requireContext()
         binding.menuCover.bind(menu.album)
-        binding.menuType.text = getString(menu.album.releaseType.stringRes)
+        binding.menuType.text = menu.album.releaseType.resolve(context)
         binding.menuName.text = menu.album.name.resolve(context)
         binding.menuInfo.text = menu.album.artists.resolveNames(context)
     }

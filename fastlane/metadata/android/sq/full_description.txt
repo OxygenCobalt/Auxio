@@ -1,0 +1,24 @@
+Auxio është një lexues muzikor lokal me një UI/UX të shpejtë dhe të besueshëm, pa shumë veçori të panevojshme të pranishme në lexues të tjerë muzikorë. I ndërtuar mbi bibliotekat moderne të riprodhimit të mediave, Auxio ofron mbështetje superiore për bibliotekën dhe cilësi dëgjimi më të mirë krahasuar me aplikacionet e tjera që përdorin funksione të vjetruara të Android. <b>Me pak fjalë, luan muzikë. </b>
+
+<b>Veçori</b>
+
+- Riprodhim i bazuar në Media3 ExoPlayer
+- UI i shpejtë, i ndërtuar sipas udhëzimeve më të fundit të Material Design
+- UX i thjeshtë dhe funksional që përparëson lehtësinë e përdorimit mbi rastet e rralla
+- Sjellje e personalizueshme
+- Mbështetje për numrat e disqeve, artistë të shumtë, lloje publikimesh, data të sakta/origjinale, etiketa renditjeje, dhe më shumë
+- Sistem i avancuar për artistët, që bashkon artistët dhe artistët e albumeve
+-Menaxhim i dosjeve me njohje për SD Card
+-Funksionalitet i besueshëm për krijimin e listave
+- Ruajtje e gjendjes së riprodhimit
+- Mbështetje për Android Auto
+- Riprodhim automatik pa ndërprerje
+- Mbështetje e plotë për ReplayGain (në skedarët MP3, FLAC, OGG, OPUS dhe MP4)
+- Mbështetje për ekualizues të jashtëm (p.sh., Wavelet)
+- Shtrirje nga një skaj në tjetrin
+- Mbështetje për kopertina të integruara
+- Funksionalitet kërkimi
+- Riprodhim automatik me kufje
+- Widget-e elegante që përshtaten automatikisht me madhësinë e tyre
+- Plotësisht privat dhe offline
+- Nuk përdor kopertina albumesh me kënde të rrumbullakosura (në parazgjedhje)

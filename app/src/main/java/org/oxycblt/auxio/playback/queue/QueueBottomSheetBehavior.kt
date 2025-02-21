@@ -25,10 +25,11 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -49,6 +50,9 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
         isHideable = false
     }
 
+    override fun getIdealBarHeight(context: Context) =
+        context.getDimenPixels(R.dimen.size_touchable_large)
+
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View) =
         dependency.id == R.id.playback_bar_fragment
 
@@ -62,11 +66,18 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
         return false
     }
 
-    override fun createBackground(context: Context) =
+    override fun createBackground(context: Context, uiSettings: UISettings) =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             // The queue sheet's background is a static elevated background.
-            fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
-            elevation = context.getDimen(R.dimen.elevation_normal)
+            fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
+            if (uiSettings.roundMode) {
+                shapeAppearanceModel =
+                    ShapeAppearanceModel.builder(
+                            context,
+                            R.style.ShapeAppearance_Auxio_BottomSheet,
+                            MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                        .build()
+            }
         }
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
@@ -74,7 +85,7 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
         // Offset our expanded panel by the size of the playback bar, as that is shown when
         // we slide up the panel.
         val bars = insets.systemBarInsetsCompat
-        expandedOffset = bars.top + barHeight + barSpacing
+        expandedOffset = barHeight + barSpacing
         return insets.replaceSystemBarInsetsCompat(
             bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
     }

@@ -1,0 +1,25 @@
+Auxio on kohalikus nutiseadmes töötav kiire ja usaldusväärse kasutajaliidesega muusikamängija. Rakendusest on eemaldatud teises sarnastes rakendustes leiduv kasutu lisafunktsionaalsus. Kuna kasutusel on tänapäevased muusikateegid, siis Auxiol on teiste sarnaste rakendustega (kes kasutavad Androidis leiduvat aegunud funktsionaalsust) võrreldes suurepärane muusikakogu tugi ning taasesituse kvaliteet. Lühidalt: Auxio <b>lihtsalt esitab muusikat</b>.
+
+<b>Funktsionaalsus</b>
+
+- taasesitus kasutab Media3 ExoPlayeri teeke
+- viimastest Material Designi põhimõtetest lähtuv kiire kasutajaliides
+- arendajate omal hinnangul põhinev kasutajaliides, mis eelistab kasutuse lihtsust harvaesinevate olukordade lahendamisele
+- kohandatav käitumine
+- plaadinumbrite, mitme esitaja, väljaande tüübi, 
+täpsete avaldamise kuupäevade sortimiseks mõeldud siltide ja palju muu sarnase tugi
+- tavalisest tõhusam esitajate haldus, mis normaliseerib esitajad ning albumi esitajad
+- kaustade haldus, mis saab hakkama SD-kaartidega
+- usaldusväärse esitusloendi loomine
+- taasesituse oleku meeldejätmine
+- tugi Android Auto liidestusele
+- automaatne taasesitus lugudevahelise vaikusteta
+- taasesituse valjuse tundlikkuse tugi (MP3, FLAC, OGG, OPUS ja MP4 failide pihul)
+- välise ekvalaiseri tugi (nt. Wavelet)
+- äärest-ääreni visuaal
+- lõimitud albumikaante tugi
+- otsing
+- automaatne taasesitus kõrvaklappidest
+- stiilsed vidinad, mis automaatselt kohandavad oma suurust
+- täiesti privaatne ja võrguühendust mittevajav
+- plaadikaante ümarad nurgad puuduvad (vaikimisi)

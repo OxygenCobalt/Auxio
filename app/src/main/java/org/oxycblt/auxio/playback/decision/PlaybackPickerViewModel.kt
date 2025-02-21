@@ -23,12 +23,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 /**
  * A [ViewModel] that stores the choices shown in the playback picker dialogs.
@@ -49,8 +48,8 @@ class PlaybackPickerViewModel @Inject constructor(private val musicRepository: M
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (!changes.deviceLibrary) return
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        _currentPickerSong.value = _currentPickerSong.value?.run { deviceLibrary.findSong(uid) }
+        val library = musicRepository.library ?: return
+        _currentPickerSong.value = _currentPickerSong.value?.run { library.findSong(uid) }
     }
 
     override fun onCleared() {
@@ -64,10 +63,10 @@ class PlaybackPickerViewModel @Inject constructor(private val musicRepository: M
      * @param uid The [Music.UID] of the item to show. Must be a [Song].
      */
     fun setPickerSongUid(uid: Music.UID) {
-        logD("Opening picker for song $uid")
-        _currentPickerSong.value = musicRepository.deviceLibrary?.findSong(uid)
+        L.d("Opening picker for song $uid")
+        _currentPickerSong.value = musicRepository.library?.findSong(uid)
         if (_currentPickerSong.value != null) {
-            logW("Given song UID was invalid")
+            L.w("Given song UID was invalid")
         }
     }
 }

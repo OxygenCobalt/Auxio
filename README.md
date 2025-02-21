@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.6.3">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.6.3&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.0.0">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.0.0&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -28,14 +28,12 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 ## Screenshots
 
 <p align="center">
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png" width=200>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png" width=200>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png" width=200>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png" width=200>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png" width=200>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png" width=200>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png" width=200>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png" width=250>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png" width=250>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png" width=250>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png" width=250>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png" width=250>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png" width=250>
 </p>
 
 
@@ -61,7 +59,7 @@ precise/original dates, sort tags, and more
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
-- No rounded album covers (by default)
+- No rounded album covers (if you want them)
 
 ## Permissions
 
@@ -73,23 +71,19 @@ precise/original dates, sort tags, and more
 
 You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even the app itself!
 
-<p align="center"><b>$16/month supporters:</b></p>
-
-<p align="center">
-<a href="https://github.com/yrliet"><img src="https://avatars.githubusercontent.com/u/151430565?v=4" width=100 /><p align="center"><b><a href="https://github.com/yrliet">yrliet</a></b></p></a>
-</p>
-
 <p align="center"><b>$8/month supporters:</b></p>
 
 <p align="center">
     <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
     <a href="https://github.com/dmint789"><img src="https://avatars.githubusercontent.com/u/53250435?v=4" width=50 /></a>
-    <a href="https://github.com/gtsiam"><img src="https://avatars.githubusercontent.com/u/7459196?v=4" width=50 /></a>
+    <a href="https://github.com/adventure-tense"><img src="https://avatars.githubusercontent.com/u/123326084?v=4" width=50 /></a>
+    <a href="https://github.com/slushspirit"><img src="https://avatars.githubusercontent.com/u/95902378?v=4" width=50 /></a>
 </p>
 
 ## Building
 
-Auxio relies on a custom version of Media3 that enables some extra features. This adds some caveats to the build process:
+Auxio relies on a patched version of Media3 that enables some extra playback features, alongside taglib for metadata
+parsing. This adds some caveats to the build process:
 1. `cmake` and `ninja-build` must be installed before building the project.
 2. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
 download the external code.

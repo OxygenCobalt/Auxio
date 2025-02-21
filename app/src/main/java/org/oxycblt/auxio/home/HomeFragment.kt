@@ -22,11 +22,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -41,13 +40,10 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
-import com.leinardi.android.speeddial.SpeedDialActionItem
-import com.leinardi.android.speeddial.SpeedDialView
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.math.abs
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -57,36 +53,29 @@ import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
-import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
+import org.oxycblt.auxio.home.tabs.NamedTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectionFragment
 import org.oxycblt.auxio.list.menu.Menu
-import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.NoAudioPermissionException
-import org.oxycblt.auxio.music.NoMusicException
-import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
-import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.external.M3U
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.lazyReflectedMethod
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.musikr.IndexingProgress
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.playlist.m3u.M3U
+import timber.log.Timber as L
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
@@ -96,9 +85,7 @@ import org.oxycblt.auxio.util.showToast
  */
 @AndroidEntryPoint
 class HomeFragment :
-    SelectionFragment<FragmentHomeBinding>(),
-    AppBarLayout.OnOffsetChangedListener,
-    SpeedDialView.OnActionSelectedListener {
+    SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
     override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -107,19 +94,15 @@ class HomeFragment :
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     private var getContentLauncher: ActivityResultLauncher<String>? = null
     private var pendingImportTarget: Playlist? = null
+    private var lastUpdateTime = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (savedInstanceState != null) {
-            // Orientation change will wipe whatever transition we were using prior, which will
-            // result in no transition when the user navigates back. Make sure we re-initialize
-            // our transitions.
-            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -1)
-            if (axis > -1) {
-                applyAxisTransition(axis)
-            }
-        }
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
@@ -139,11 +122,11 @@ class HomeFragment :
         getContentLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
                 if (uri == null) {
-                    logW("No URI returned from file picker")
+                    L.w("No URI returned from file picker")
                     return@registerForActivityResult
                 }
 
-                logD("Received playlist URI $uri")
+                L.d("Received playlist URI $uri")
                 musicModel.importPlaylist(uri, pendingImportTarget)
             }
 
@@ -154,11 +137,6 @@ class HomeFragment :
             setOnMenuItemClickListener(this@HomeFragment)
             MenuCompat.setGroupDividerEnabled(menu, true)
         }
-
-        // Load the track color in manually as it's unclear whether the track actually supports
-        // using a ColorStateList in the resources
-        binding.homeIndexingProgress.trackColor =
-            requireContext().getColorCompat(R.color.sel_track).defaultColor
 
         binding.homePager.apply {
             // Update HomeViewModel whenever the user swipes through the ViewPager.
@@ -196,25 +174,10 @@ class HomeFragment :
         // re-creating the ViewPager.
         setupPager(binding)
 
-        binding.homeShuffleFab.setOnClickListener { playbackModel.shuffleAll() }
-
-        binding.homeNewPlaylistFab.apply {
-            inflate(R.menu.new_playlist_actions)
-            setOnActionSelectedListener(this@HomeFragment)
-            setChangeListener(homeModel::setSpeedDialOpen)
-        }
-
-        hideAllFabs()
-        updateFabVisibility(
-            homeModel.songList.value,
-            homeModel.isFastScrolling.value,
-            homeModel.currentTabType.value)
-
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
+        collect(homeModel.chooseMusicLocations.flow, ::handleChooseFolders)
         collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
-        collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
-        collect(homeModel.speedDialOpen, ::updateSpeedDial)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -224,37 +187,11 @@ class HomeFragment :
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Stock bottom sheet overlay won't work with our nested UI setup, have to replicate
-        // it ourselves.
-        requireBinding().root.rootView.apply {
-            findViewById<View>(R.id.main_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
-            }
-            findViewById<View>(R.id.sheet_scrim).setOnTouchListener { _, event ->
-                handleSpeedDialBoundaryTouch(event)
-            }
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        val transition = enterTransition
-        if (transition is MaterialSharedAxis) {
-            outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
-        }
-
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
         storagePermissionLauncher = null
         binding.homeAppbar.removeOnOffsetChangedListener(this)
         binding.homeNormalToolbar.setOnMenuItemClickListener(null)
-        binding.homeNewPlaylistFab.setChangeListener(null)
-        binding.homeNewPlaylistFab.setOnActionSelectedListener(null)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -276,18 +213,17 @@ class HomeFragment :
         return when (item.itemId) {
             // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
-                logD("Navigating to search")
-                applyAxisTransition(MaterialSharedAxis.Z)
+                L.d("Navigating to search")
                 findNavController().navigateSafe(HomeFragmentDirections.search())
                 true
             }
             R.id.action_settings -> {
-                logD("Navigating to preferences")
+                L.d("Navigating to preferences")
                 homeModel.showSettings()
                 true
             }
             R.id.action_about -> {
-                logD("Navigating to about")
+                L.d("Navigating to about")
                 homeModel.showAbout()
                 true
             }
@@ -307,28 +243,10 @@ class HomeFragment :
                 true
             }
             else -> {
-                logW("Unexpected menu item selected")
+                L.w("Unexpected menu item selected")
                 false
             }
         }
-    }
-
-    override fun onActionSelected(actionItem: SpeedDialActionItem): Boolean {
-        when (actionItem.id) {
-            R.id.action_new_playlist -> {
-                logD("Creating playlist")
-                musicModel.createPlaylist()
-            }
-            R.id.action_import_playlist -> {
-                logD("Importing playlist")
-                musicModel.importPlaylist()
-            }
-            else -> {}
-        }
-        // Returning false to close th speed dial results in no animation, manually close instead.
-        // Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
-        requireBinding().homeNewPlaylistFab.close()
-        return true
     }
 
     private fun setupPager(binding: FragmentHomeBinding) {
@@ -339,7 +257,7 @@ class HomeFragment :
         if (homeModel.currentTabTypes.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
-            logD("Single tab shown, disabling TabLayout")
+            L.d("Single tab shown, disabling TabLayout")
             binding.homeTabs.isVisible = false
             binding.homeAppbar.setExpanded(true, false)
             toolbarParams.scrollFlags = 0
@@ -352,9 +270,7 @@ class HomeFragment :
 
         // Set up the mapping between the ViewPager and TabLayout.
         TabLayoutMediator(
-                binding.homeTabs,
-                binding.homePager,
-                AdaptiveTabStrategy(requireContext(), homeModel.currentTabTypes))
+                binding.homeTabs, binding.homePager, NamedTabStrategy(homeModel.currentTabTypes))
             .attach()
     }
 
@@ -372,14 +288,12 @@ class HomeFragment :
                 MusicType.GENRES -> R.id.home_genre_recycler
                 MusicType.PLAYLISTS -> R.id.home_playlist_recycler
             }
-
-        updateFabVisibility(homeModel.songList.value, homeModel.isFastScrolling.value, tabType)
     }
 
     private fun handleRecreate(recreate: Unit?) {
         if (recreate == null) return
         val binding = requireBinding()
-        logD("Recreating ViewPager")
+        L.d("Recreating ViewPager")
         // Move back to position zero, as there must be a tab there.
         binding.homePager.currentItem = 0
         // Make sure tabs are set up to also follow the new ViewPager configuration.
@@ -387,104 +301,49 @@ class HomeFragment :
         homeModel.recreateTabs.consume()
     }
 
-    private fun updateIndexerState(state: IndexingState?) {
-        // TODO: Make music loading experience a bit more pleasant
-        //  1. Loading placeholder for item lists
-        //  2. Rework the "No Music" case to not be an error and instead result in a placeholder
-        val binding = requireBinding()
-        when (state) {
-            is IndexingState.Completed -> setupCompleteState(binding, state.error)
-            is IndexingState.Indexing -> setupIndexingState(binding, state.progress)
-            null -> {
-                logD("Indexer is in indeterminate state")
-                binding.homeIndexingContainer.visibility = View.INVISIBLE
-            }
-        }
-    }
-
-    private fun setupCompleteState(binding: FragmentHomeBinding, error: Exception?) {
-        if (error == null) {
-            logD("Received ok response")
-            updateFabVisibility(
-                homeModel.songList.value,
-                homeModel.isFastScrolling.value,
-                homeModel.currentTabType.value)
-            binding.homeIndexingContainer.visibility = View.INVISIBLE
+    private fun handleChooseFolders(unit: Unit?) {
+        if (unit == null) {
             return
         }
-
-        logD("Received non-ok response")
-        val context = requireContext()
-        binding.homeIndexingContainer.visibility = View.VISIBLE
-        binding.homeIndexingProgress.visibility = View.INVISIBLE
-        binding.homeIndexingActions.visibility = View.VISIBLE
-        when (error) {
-            is NoAudioPermissionException -> {
-                logD("Showing permission prompt")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
-                // Configure the action to act as a permission launcher.
-                binding.homeIndexingTry.apply {
-                    text = context.getString(R.string.lbl_grant)
-                    setOnClickListener {
-                        requireNotNull(storagePermissionLauncher) {
-                                "Permission launcher was not available"
-                            }
-                            .launch(PERMISSION_READ_AUDIO)
-                    }
-                }
-                binding.homeIndexingMore.visibility = View.GONE
-            }
-            is NoMusicException -> {
-                logD("Showing no music error")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
-                // Configure the action to act as a reload trigger.
-                binding.homeIndexingTry.apply {
-                    visibility = View.VISIBLE
-                    text = context.getString(R.string.lbl_retry)
-                    setOnClickListener { musicModel.refresh() }
-                }
-                binding.homeIndexingMore.visibility = View.GONE
-            }
-            else -> {
-                logD("Showing generic error")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
-                // Configure the action to act as a reload trigger.
-                binding.homeIndexingTry.apply {
-                    visibility = View.VISIBLE
-                    text = context.getString(R.string.lbl_retry)
-                    setOnClickListener { musicModel.rescan() }
-                }
-                binding.homeIndexingMore.apply {
-                    visibility = View.VISIBLE
-                    setOnClickListener {
-                        findNavController().navigateSafe(HomeFragmentDirections.reportError(error))
-                    }
-                }
-            }
-        }
+        findNavController().navigateSafe(HomeFragmentDirections.chooseLocations())
+        homeModel.chooseMusicLocations.consume()
     }
 
-    private fun setupIndexingState(binding: FragmentHomeBinding, progress: IndexingProgress) {
-        // Remove all content except for the progress indicator.
-        binding.homeIndexingContainer.visibility = View.VISIBLE
-        binding.homeIndexingProgress.visibility = View.VISIBLE
-        binding.homeIndexingActions.visibility = View.INVISIBLE
-
-        when (progress) {
-            is IndexingProgress.Indeterminate -> {
-                // In a query/initialization state, show a generic loading status.
-                binding.homeIndexingStatus.text = getString(R.string.lng_indexing)
-                binding.homeIndexingProgress.isIndeterminate = true
-            }
-            is IndexingProgress.Songs -> {
-                // Actively loading songs, show the current progress.
-                binding.homeIndexingStatus.text =
-                    getString(R.string.fmt_indexing, progress.current, progress.total)
-                binding.homeIndexingProgress.apply {
-                    isIndeterminate = false
-                    max = progress.total
-                    this.progress = progress.current
+    private fun updateIndexerState(state: IndexingState?) {
+        val binding = requireBinding()
+        when (state) {
+            is IndexingState.Completed -> {
+                binding.homeIndexingContainer.isInvisible = state.error == null
+                binding.homeIndexingProgress.isInvisible = state.error != null
+                binding.homeIndexingError.isInvisible = state.error == null
+                if (state.error != null) {
+                    binding.homeIndexingContainer.setOnClickListener {
+                        findNavController()
+                            .navigateSafe(HomeFragmentDirections.reportError(state.error))
+                    }
+                } else {
+                    binding.homeIndexingContainer.setOnClickListener(null)
                 }
+            }
+            is IndexingState.Indexing -> {
+                binding.homeIndexingContainer.isInvisible = false
+                binding.homeIndexingProgress.apply {
+                    isInvisible = false
+                    when (state.progress) {
+                        is IndexingProgress.Songs -> {
+                            isIndeterminate = false
+                            progress = state.progress.loaded
+                            max = state.progress.explored
+                        }
+                        is IndexingProgress.Indeterminate -> {
+                            isIndeterminate = true
+                        }
+                    }
+                }
+                binding.homeIndexingError.isInvisible = true
+            }
+            null -> {
+                binding.homeIndexingContainer.isInvisible = true
             }
         }
     }
@@ -494,14 +353,14 @@ class HomeFragment :
         val directions =
             when (decision) {
                 is PlaylistDecision.New -> {
-                    logD("Creating new playlist")
+                    L.d("Creating new playlist")
                     HomeFragmentDirections.newPlaylist(
                         decision.songs.map { it.uid }.toTypedArray(),
                         decision.template,
                         decision.reason)
                 }
                 is PlaylistDecision.Import -> {
-                    logD("Importing playlist")
+                    L.d("Importing playlist")
                     pendingImportTarget = decision.target
                     requireNotNull(getContentLauncher) {
                             "Content picker launcher was not available"
@@ -511,7 +370,7 @@ class HomeFragment :
                     return
                 }
                 is PlaylistDecision.Rename -> {
-                    logD("Renaming ${decision.playlist}")
+                    L.d("Renaming ${decision.playlist}")
                     HomeFragmentDirections.renamePlaylist(
                         decision.playlist.uid,
                         decision.template,
@@ -519,15 +378,15 @@ class HomeFragment :
                         decision.reason)
                 }
                 is PlaylistDecision.Export -> {
-                    logD("Exporting ${decision.playlist}")
+                    L.d("Exporting ${decision.playlist}")
                     HomeFragmentDirections.exportPlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Delete -> {
-                    logD("Deleting ${decision.playlist}")
+                    L.d("Deleting ${decision.playlist}")
                     HomeFragmentDirections.deletePlaylist(decision.playlist.uid)
                 }
                 is PlaylistDecision.Add -> {
-                    logD("Adding ${decision.songs.size} to a playlist")
+                    L.d("Adding ${decision.songs.size} to a playlist")
                     HomeFragmentDirections.addToPlaylist(
                         decision.songs.map { it.uid }.toTypedArray())
                 }
@@ -555,157 +414,41 @@ class HomeFragment :
         }
     }
 
-    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
-        updateFabVisibility(songs, isFastScrolling, homeModel.currentTabType.value)
-    }
-
-    private fun updateFabVisibility(
-        songs: List<Song>,
-        isFastScrolling: Boolean,
-        tabType: MusicType
-    ) {
-        val binding = requireBinding()
-        // If there are no songs, it's likely that the library has not been loaded, so
-        // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
-        // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
-        if (songs.isEmpty() || isFastScrolling) {
-            logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
-            hideAllFabs()
-        } else {
-            if (tabType != MusicType.PLAYLISTS) {
-                logD("Showing shuffle button")
-                if (binding.homeShuffleFab.isOrWillBeShown) {
-                    logD("Nothing to do")
-                    return
-                }
-
-                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
-                    logD("Animating transition")
-                    binding.homeNewPlaylistFab.hide(
-                        object : FloatingActionButton.OnVisibilityChangedListener() {
-                            override fun onHidden(fab: FloatingActionButton) {
-                                super.onHidden(fab)
-                                binding.homeShuffleFab.show()
-                            }
-                        })
-                } else {
-                    logD("Showing immediately")
-                    binding.homeShuffleFab.show()
-                }
-            } else {
-                logD("Showing playlist button")
-                if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
-                    logD("Nothing to do")
-                    return
-                }
-
-                if (binding.homeShuffleFab.isOrWillBeShown) {
-                    logD("Animating transition")
-                    binding.homeShuffleFab.hide(
-                        object : FloatingActionButton.OnVisibilityChangedListener() {
-                            override fun onHidden(fab: FloatingActionButton) {
-                                super.onHidden(fab)
-                                binding.homeNewPlaylistFab.show()
-                            }
-                        })
-                } else {
-                    logD("Showing immediately")
-                    binding.homeNewPlaylistFab.show()
-                }
-            }
-        }
-    }
-
-    private fun hideAllFabs() {
-        val binding = requireBinding()
-        if (binding.homeShuffleFab.isOrWillBeShown) {
-            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeShuffleFab, null, false)
-        }
-        if (binding.homeNewPlaylistFab.mainFab.isOrWillBeShown) {
-            FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeNewPlaylistFab.mainFab, null, false)
-        }
-    }
-
-    private fun updateSpeedDial(open: Boolean) {
-        val binding = requireBinding()
-
-        if (open) {
-            binding.homeNewPlaylistFab.open(true)
-        } else {
-            binding.homeNewPlaylistFab.close(true)
-        }
-    }
-
-    private fun handleSpeedDialBoundaryTouch(event: MotionEvent): Boolean {
-        val binding = binding ?: return false
-
-        if (homeModel.speedDialOpen.value && binding.homeNewPlaylistFab.isUnder(event.x, event.y)) {
-            // Convert absolute coordinates to relative coordinates
-            val offsetX = event.x - binding.homeNewPlaylistFab.x
-            val offsetY = event.y - binding.homeNewPlaylistFab.y
-
-            // Create a new MotionEvent with relative coordinates
-            val relativeEvent =
-                MotionEvent.obtain(
-                    event.downTime,
-                    event.eventTime,
-                    event.action,
-                    offsetX,
-                    offsetY,
-                    event.metaState)
-
-            // Dispatch the relative MotionEvent to the target child view
-            val handled = binding.homeNewPlaylistFab.dispatchTouchEvent(relativeEvent)
-
-            // Recycle the relative MotionEvent
-            relativeEvent.recycle()
-
-            return handled
-        }
-
-        return false
-    }
-
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
-                logD("Navigating to ${show.song}")
+                L.d("Navigating to ${show.song}")
                 findNavController().navigateSafe(HomeFragmentDirections.showSong(show.song.uid))
             }
             is Show.SongAlbumDetails -> {
-                logD("Navigating to the album of ${show.song}")
-                applyAxisTransition(MaterialSharedAxis.X)
+                L.d("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showAlbum(show.song.album.uid))
             }
             is Show.AlbumDetails -> {
-                logD("Navigating to ${show.album}")
-                applyAxisTransition(MaterialSharedAxis.X)
+                L.d("Navigating to ${show.album}")
                 findNavController().navigateSafe(HomeFragmentDirections.showAlbum(show.album.uid))
             }
             is Show.ArtistDetails -> {
-                logD("Navigating to ${show.artist}")
-                applyAxisTransition(MaterialSharedAxis.X)
+                L.d("Navigating to ${show.artist}")
                 findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDecision -> {
-                logD("Navigating to artist choices for ${show.song}")
+                L.d("Navigating to artist choices for ${show.song}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showArtistChoices(show.song.uid))
             }
             is Show.AlbumArtistDecision -> {
-                logD("Navigating to artist choices for ${show.album}")
+                L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
-                logD("Navigating to ${show.genre}")
-                applyAxisTransition(MaterialSharedAxis.X)
+                L.d("Navigating to ${show.genre}")
                 findNavController().navigateSafe(HomeFragmentDirections.showGenre(show.genre.uid))
             }
             is Show.PlaylistDetails -> {
-                logD("Navigating to ${show.playlist}")
-                applyAxisTransition(MaterialSharedAxis.X)
+                L.d("Navigating to ${show.playlist}")
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showPlaylist(show.playlist.uid))
             }
@@ -733,24 +476,12 @@ class HomeFragment :
             binding.homeSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
             if (binding.homeToolbar.setVisible(R.id.home_selection_toolbar)) {
                 // New selection started, show the AppBarLayout to indicate the new state.
-                logD("Significant selection occurred, expanding AppBar")
+                L.d("Significant selection occurred, expanding AppBar")
                 binding.homeAppbar.expandWithScrollingRecycler()
             }
         } else {
             binding.homeToolbar.setVisible(R.id.home_normal_toolbar)
         }
-    }
-
-    private fun applyAxisTransition(axis: Int) {
-        // Sanity check to avoid in-correct axis transitions
-        check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
-            "Not expecting Y axis transition"
-        }
-
-        enterTransition = MaterialSharedAxis(axis, true)
-        returnTransition = MaterialSharedAxis(axis, false)
-        exitTransition = MaterialSharedAxis(axis, true)
-        reenterTransition = MaterialSharedAxis(axis, false)
     }
 
     /**
@@ -787,6 +518,5 @@ class HomeFragment :
                 "hide",
                 FloatingActionButton.OnVisibilityChangedListener::class,
                 Boolean::class)
-        const val KEY_LAST_TRANSITION_ID = BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }

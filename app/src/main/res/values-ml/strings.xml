@@ -36,12 +36,10 @@
     <string name="set_root_title">ക്രമീകരണങ്ങൾ</string>
     <string name="set_music">സംഗീതം</string>
     <string name="set_images">ചിത്രങ്ങൾ</string>
-    <string name="set_cover_mode_media_store">വേഗം</string>
-    <string name="set_cover_mode_quality">ഉയർന്ന നിലവാരമുള്ളത്</string>
+    <string name="set_cover_mode_balanced">വേഗം</string>
+    <string name="set_cover_mode_high_quality">ഉയർന്ന നിലവാരമുള്ളത്</string>
     <string name="desc_skip_next">അടുത്ത പാട്ടിലേക്ക് പോകുക</string>
     <string name="set_library">ഗ്രന്ഥശാല</string>
-    <string name="set_dirs_mode_exclude">ഒഴിവാക്കുക</string>
-    <string name="set_state">സ്ഥിരോത്സാഹം</string>
     <string name="clr_green">പച്ച</string>
     <string name="desc_skip_prev">അവസാന പാട്ടിലേക്ക് പോകുക</string>
     <string name="desc_play_pause">കളിക്കുക അല്ലെങ്കിൽ താൽക്കാലികമായി നിർത്തുക</string>
@@ -87,11 +85,8 @@
     </plurals>
     <string name="lbl_artist_details">കലാകാരനിലേക്ക് പോകുക</string>
     <string name="lbl_song_detail">സവിശേഷതകൾ കാണുക</string>
-    <string name="lbl_state_saved">സ്ഥിതി സംരക്ഷിച്ചു</string>
     <string name="lbl_sort_dsc">അവരോഹണം</string>
-    <string name="lbl_state_restored">സ്ഥിതി പുനഃസ്ഥാപിച്ചു</string>
     <string name="lbl_wiki">വിക്കി</string>
-    <string name="lbl_state_wiped">സ്ഥിതി മായ്ച്ചു</string>
     <string name="lbl_live_group">തത്സമയം</string>
     <string name="lbl_compilation_live">തത്സമയ സമാഹാരം</string>
     <string name="lbl_song">ഗീതം</string>

@@ -32,10 +32,9 @@
     <string name="lng_queue_added">已加入播放队列</string>
     <string name="lbl_artist_details">查看艺术家</string>
     <string name="lbl_album_details">查看专辑</string>
-    <string name="lbl_state_saved">已保存播放进度</string>
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
-    <string name="err_no_dirs">没有文件夹</string>
+    <string name="err_no_locations">没有文件夹</string>
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
     <string name="lbl_code">源代码</string>
@@ -73,8 +72,6 @@
     <string name="set_repeat_pause">重复播放前暂停</string>
     <string name="set_repeat_pause_desc">曲目重复播放前暂停</string>
     <string name="set_content">内容</string>
-    <string name="set_save_state">保存播放状态</string>
-    <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">刷新音乐</string>
     <string name="set_reindex_desc">重新加载音乐库，如有可能使用缓存的标签</string>
     <!-- Error Namespace | Error Labels -->
@@ -82,7 +79,7 @@
     <string name="err_index_failed">加载音乐失败</string>
     <string name="err_no_perms">Auxio 需要权限来读取音乐库</string>
     <string name="err_no_app">未找到可以处理此任务的应用</string>
-    <string name="err_bad_dir">该目录不受支持</string>
+    <string name="err_bad_location">该目录不受支持</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">在曲库中搜索…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -97,7 +94,7 @@
     <string name="desc_song_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
     <string name="desc_clear_search">清除搜索队列</string>
-    <string name="desc_music_dir_delete">移除文件夹</string>
+    <string name="desc_music_location_delete">移除文件夹</string>
     <string name="desc_auxio_icon">Auxio 图标</string>
     <string name="desc_no_cover">专辑封面</string>
     <string name="desc_album_cover">%s 的专辑封面</string>
@@ -142,11 +139,8 @@
     <string name="set_pre_amp_with">带有标签的调节项</string>
     <string name="set_pre_amp_without">没有标签的调节项</string>
     <string name="set_pre_amp_warning">警告：将前置增益更改为正向高数值或导致某些音轨峰值过高。</string>
-    <string name="set_dirs">音乐文件夹</string>
-    <string name="set_dirs_desc">管理音乐的加载位置</string>
-    <string name="set_dirs_mode">模式</string>
-    <string name="set_dirs_mode_exclude">排除</string>
-    <string name="set_dirs_mode_include">包含</string>
+    <string name="set_locations">音乐文件夹</string>
+    <string name="set_locations_desc">管理音乐的加载位置</string>
     <string name="cdc_mp3">MPEG-1 音频</string>
     <string name="cdc_mp4">MPEG-4 音频</string>
     <string name="cdc_ogg">Ogg 音频</string>
@@ -163,9 +157,7 @@
     <string name="fmt_lib_genre_count">已加载流派数量：%d</string>
     <string name="fmt_lib_total_duration">总计时长：%s</string>
     <string name="set_play_song_none">从展示的项目播放</string>
-    <string name="set_dirs_mode_include_desc">将<b>仅从</b>您添加的目录中加载音乐。</string>
     <string name="set_play_in_parent_with">从项目详情中选择播放时</string>
-    <string name="set_dirs_mode_exclude_desc">将 <b>不会</b>从您添加的目录中加载音乐。</string>
     <string name="cdc_aac">高级音乐编码 (AAC)</string>
     <string name="fmt_lib_album_count">已加载专辑数量：%d</string>
     <string name="lbl_indexer">音乐加载中</string>
@@ -182,19 +174,12 @@
     <string name="lbl_sample_rate">采样率</string>
     <string name="lbl_ok">好的</string>
     <string name="lbl_cancel">取消</string>
-    <string name="set_wipe_state">清除播放状态</string>
-    <string name="set_wipe_desc">清除此前保存的播放状态（如果有）</string>
-    <string name="err_did_not_restore">无法恢复状态</string>
-    <string name="set_restore_state">恢复播放状态</string>
-    <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
     <string name="set_observing">自动重载</string>
     <string name="set_observing_desc">只要发生更改就重新加载曲库（需要持久性通知）</string>
     <string name="desc_queue_bar">打开队列</string>
     <string name="lbl_indexing">正在加载音乐</string>
     <string name="lbl_observing">正在监测曲库</string>
     <string name="lng_observing">正在监测您的曲库以查找更改…</string>
-    <string name="lbl_state_wiped">已清除状态</string>
-    <string name="lbl_state_restored">已恢复状态</string>
     <string name="lbl_eps">EP 专辑</string>
     <string name="lbl_ep">EP 专辑</string>
     <string name="lbl_singles">单曲</string>
@@ -234,17 +219,15 @@
     <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。要解决这个问题，你可以在不想要的分隔符前加上反斜杠 (\\)。</string>
     <string name="set_exclude_non_music_desc">忽略不是音乐的音频文件，例如播客</string>
     <string name="set_exclude_non_music">排除非音乐</string>
-    <string name="set_cover_mode_quality">高质量</string>
+    <string name="set_cover_mode_high_quality">高质量</string>
     <string name="set_cover_mode">专辑封面</string>
     <string name="set_cover_mode_off">关</string>
-    <string name="set_cover_mode_media_store">快速</string>
+    <string name="set_cover_mode_balanced">快速</string>
     <string name="set_hide_collaborators">隐藏协作者</string>
     <string name="set_hide_collaborators_desc">在库中仅显示在出现在“专辑艺术家”标签中的艺术家（在标记良好的库上效果最好）</string>
     <plurals name="fmt_artist_count">
         <item quantity="other">%d 位艺术家</item>
     </plurals>
-    <string name="err_did_not_save">无法保存状态</string>
-    <string name="err_did_not_wipe">无法清除状态</string>
     <string name="set_rescan">重新扫描音乐</string>
     <string name="set_rescan_desc">清除标签缓存并完全重新加载音乐库（更慢，但更完整）</string>
     <string name="fmt_selected">选中了 %d 首</string>
@@ -253,15 +236,14 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">重置</string>
     <string name="set_behavior">行为</string>
-    <string name="set_replay_gain">回放增益</string>
-    <string name="set_state">持久性</string>
+    <string name="set_replay_gain">音量正常化</string>
     <string name="set_ui_desc">更改应用的主题和颜色</string>
     <string name="set_personalize_desc">定制用户界面操控和行为</string>
     <string name="set_content_desc">控制音乐和图片加载方式</string>
     <string name="set_images">图片</string>
     <string name="set_playback">播放</string>
     <string name="set_library">曲库</string>
-    <string name="set_dirs_list">文件夹</string>
+    <string name="set_locations_list">文件夹</string>
     <string name="set_music">音乐</string>
     <string name="set_audio_desc">配置声音和播放行为</string>
     <string name="lbl_sort_dsc">降序</string>
@@ -269,8 +251,7 @@
     <string name="lbl_playlists">播放列表</string>
     <string name="desc_playlist_image">%s 的播放列表图片</string>
     <string name="set_intelligent_sorting">排序时忽略冠词</string>
-    <string name="set_intelligent_sorting_desc">按名称排序时忽略类似“the”这样的冠词（对英文歌曲的效果最好）</string>
-    <string name="desc_new_playlist">创建新的播放列表</string>
+    <string name="set_intelligent_sorting_desc">正确排列以数字或像是 \"the\" 这样的单词开头的名称（对英文歌曲效果最好）</string>
     <string name="lbl_new_playlist">新建播放列表</string>
     <string name="fmt_def_playlist">播放列表 %d</string>
     <string name="lng_playlist_created">已创建播放列表</string>
@@ -328,4 +309,25 @@
     <string name="lng_supporters_promo">要在此添加您的名字请给项目捐款！</string>
     <string name="set_remember_pause_desc">跳过或编辑队列时保留播放/暂停状态</string>
     <string name="set_remember_pause">记住暂停状态</string>
+    <string name="set_replay_gain_mode_off">关闭</string>
+    <string name="lbl_start_playback">开始播放</string>
+    <string name="lng_tasker_start">使用之前使用的状态启动 Auxio。如果没有可用的已保存状态，将打乱所有歌曲的顺序。播放将立刻开始。
+\n
+\n警告：请小心控制此服务，如果将其关闭然后试图再次使用可能造成应用崩溃。</string>
+    <string name="lbl_more">更多</string>
+    <string name="lbl_github">在 GithHub 上开 issue</string>
+    <string name="lbl_email">发送电子邮件</string>
+    <string name="lbl_feedback">反馈</string>
+    <string name="lbl_music_sources">选择文件夹</string>
+    <string name="def_album">未知专辑</string>
+    <string name="cnt_mp4">含 %s 的 MPEG-4</string>
+    <string name="cdc_alac">Apple 无损音频编解码器（ALAC）</string>
+    <string name="cdc_unknown">未知</string>
+    <string name="set_locations_new">新文件夹</string>
+    <string name="set_cover_mode_save_space">节省空间</string>
+    <string name="lng_empty_songs">歌曲会出现在此处。</string>
+    <string name="lng_empty_artists">艺术家会出现在此处。</string>
+    <string name="lng_empty_genres">流派会出现在此处。</string>
+    <string name="lng_empty_albums">专辑会出现在此处。</string>
+    <string name="lng_empty_playlists">播放列表会出现在此处。</string>
 </resources>

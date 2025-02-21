@@ -18,14 +18,13 @@
  
 package org.oxycblt.auxio.playback.ui
 
-import android.animation.ValueAnimator
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.button.MaterialButton
-import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.MaterialCornerAnim
 import org.oxycblt.auxio.ui.RippleFixMaterialButton
-import org.oxycblt.auxio.util.getInteger
-import org.oxycblt.auxio.util.logD
+import timber.log.Timber as L
 
 /**
  * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when
@@ -44,8 +43,8 @@ class AnimatedMaterialButton : RippleFixMaterialButton {
         defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
-    private var currentCornerRadiusRatio = 0f
-    private var animator: ValueAnimator? = null
+    private var animator: Animator? = null
+    private val anim = MaterialCornerAnim(context)
 
     override fun setActivated(activated: Boolean) {
         super.setActivated(activated)
@@ -54,25 +53,13 @@ class AnimatedMaterialButton : RippleFixMaterialButton {
         val targetRadius = if (activated) 0.3f else 0.5f
         if (!isLaidOut) {
             // Not laid out, initialize it without animation before drawing.
-            logD("Not laid out, immediately updating corner radius")
-            updateCornerRadiusRatio(targetRadius)
+            L.d("Not laid out, immediately updating corner radius")
+            shapeAppearanceModel = shapeAppearanceModel.withCornerSize { it.width() * targetRadius }
             return
         }
 
-        logD("Starting corner radius animation")
+        L.d("Starting corner radius animation")
         animator?.cancel()
-        animator =
-            ValueAnimator.ofFloat(currentCornerRadiusRatio, targetRadius).apply {
-                duration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
-                addUpdateListener { updateCornerRadiusRatio(animatedValue as Float) }
-                start()
-            }
-    }
-
-    private fun updateCornerRadiusRatio(ratio: Float) {
-        currentCornerRadiusRatio = ratio
-        // Can't reproduce the intrinsic ratio corner radius, just manually implement it with
-        // a dimension value.
-        shapeAppearanceModel = shapeAppearanceModel.withCornerSize { it.width() * ratio }
+        animator = anim.animate(this, width * targetRadius).also { it.start() }
     }
 }

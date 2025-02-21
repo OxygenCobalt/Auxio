@@ -6,8 +6,4 @@
         android:icon="@drawable/ic_config_24"
         android:title="@string/lbl_equalizer"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/placeholder"
-        android:title=""
-        app:showAsAction="never" />
 </menu>

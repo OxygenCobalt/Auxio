@@ -40,7 +40,7 @@
                         android:hyphenationFrequency="none"
                         android:paddingStart="@dimen/spacing_medium"
                         android:paddingTop="@dimen/spacing_medium"
-                        android:paddingEnd="@dimen/size_copy_button"
+                        android:paddingEnd="@dimen/size_touchable_large"
                         android:paddingBottom="@dimen/spacing_medium"
                         android:typeface="monospace"
                         tools:text="Stack trace here" />

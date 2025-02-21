@@ -19,8 +19,7 @@
 package org.oxycblt.auxio.home.tabs
 
 import org.oxycblt.auxio.music.MusicType
-import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.logW
+import timber.log.Timber as L
 
 /**
  * A representation of a library tab suitable for configuration.
@@ -86,7 +85,7 @@ sealed class Tab(open val type: MusicType) {
             // Like when deserializing, make sure there are no duplicate tabs for whatever reason.
             val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
-                logW(
+                L.w(
                     "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
             }
 
@@ -133,13 +132,13 @@ sealed class Tab(open val type: MusicType) {
             // Make sure there are no duplicate tabs
             val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
-                logW(
+                L.w(
                     "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
             }
 
             // For safety, return null if we have an empty or larger-than-expected tab array.
             if (distinct.isEmpty() || distinct.size < MAX_SEQUENCE_IDX) {
-                logE("Sequence size was ${distinct.size}, which is invalid")
+                L.e("Sequence size was ${distinct.size}, which is invalid")
                 return null
             }
 

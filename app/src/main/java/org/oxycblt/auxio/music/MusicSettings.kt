@@ -19,16 +19,14 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
-import android.os.storage.StorageManager
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.dirs.MusicDirectories
-import org.oxycblt.auxio.music.fs.DocumentPathFactory
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.getSystemServiceCompat
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.musikr.fs.MusicLocation
+import timber.log.Timber as L
 
 /**
  * User configuration specific to music system.
@@ -36,8 +34,10 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface MusicSettings : Settings<MusicSettings.Listener> {
-    /** The configuration on how to handle particular directories in the music library. */
-    var musicDirs: MusicDirectories
+    /** The current library revision. */
+    var revision: UUID?
+    /** The locations of music to load. */
+    var musicLocations: List<MusicLocation>
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to be actively watching for changes in the music library. */
@@ -48,6 +48,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val intelligentSorting: Boolean
 
     interface Listener {
+        /** Called when the current music locations changed. */
+        fun onMusicLocationsChanged() {}
         /** Called when a setting controlling how music is loaded has changed. */
         fun onIndexingSettingChanged() {}
         /** Called when the [shouldBeObserving] configuration has changed. */
@@ -55,31 +57,33 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     }
 }
 
-class MusicSettingsImpl
-@Inject
-constructor(
-    @ApplicationContext context: Context,
-    private val documentPathFactory: DocumentPathFactory
-) : Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
-    private val storageManager = context.getSystemServiceCompat(StorageManager::class)
+class MusicSettingsImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
 
-    override var musicDirs: MusicDirectories
+    override var revision: UUID?
+        get() =
+            sharedPreferences
+                .getString(getString(R.string.set_key_library_revision), null)
+                ?.let(UUID::fromString)
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_library_revision), value.toString())
+                apply()
+            }
+        }
+
+    override var musicLocations: List<MusicLocation>
         get() {
-            val dirs =
-                (sharedPreferences.getStringSet(getString(R.string.set_key_music_dirs), null)
-                        ?: emptySet())
-                    .mapNotNull(documentPathFactory::fromDocumentId)
-            return MusicDirectories(
-                dirs,
-                sharedPreferences.getBoolean(getString(R.string.set_key_music_dirs_include), false))
+            val locations =
+                sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
+                    ?: return emptyList()
+            return MusicLocation.existing(context, locations)
         }
         set(value) {
             sharedPreferences.edit {
-                putStringSet(
-                    getString(R.string.set_key_music_dirs),
-                    value.dirs.map(documentPathFactory::toDocumentId).toSet())
-                putBoolean(getString(R.string.set_key_music_dirs_include), value.shouldInclude)
-                apply()
+                putString(
+                    getString(R.string.set_key_music_locations), MusicLocation.toString(value))
+                this@edit.apply()
             }
         }
 
@@ -107,16 +111,17 @@ constructor(
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
         when (key) {
-            getString(R.string.set_key_exclude_non_music),
-            getString(R.string.set_key_music_dirs),
-            getString(R.string.set_key_music_dirs_include),
+            getString(R.string.set_key_music_locations) -> {
+                L.d("Dispatching music locations change")
+                listener.onMusicLocationsChanged()
+            }
             getString(R.string.set_key_separators),
             getString(R.string.set_key_auto_sort_names) -> {
-                logD("Dispatching indexing setting change for $key")
+                L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()
             }
             getString(R.string.set_key_observing) -> {
-                logD("Dispatching observing setting change")
+                L.d("Dispatching observing setting change")
                 listener.onObservingChanged()
             }
         }

@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback.service
 import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import android.provider.OpenableColumns
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -29,12 +30,13 @@ import androidx.media3.common.Player
 import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.RenderersFactory
-import androidx.media3.exoplayer.audio.AudioCapabilities
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.MediaSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -43,11 +45,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.playback.msToSecs
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.DeferredPlayback
@@ -59,8 +58,9 @@ import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Song
+import timber.log.Timber as L
 
 class ExoPlaybackStateHolder(
     private val context: Context,
@@ -131,10 +131,10 @@ class ExoPlaybackStateHolder(
         get() = player.audioSessionId
 
     override fun resolveQueue(): RawQueue {
-        val deviceLibrary =
-            musicRepository.deviceLibrary
-            // No library, cannot do anything.
-            ?: return RawQueue(emptyList(), emptyList(), 0)
+        val library =
+            musicRepository.library
+                // No library, cannot do anything.
+                ?: return RawQueue(emptyList(), emptyList(), 0)
         val heap = (0 until player.mediaItemCount).map { player.getMediaItemAt(it) }
         val shuffledMapping =
             if (player.shuffleModeEnabled) {
@@ -146,15 +146,15 @@ class ExoPlaybackStateHolder(
     }
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
-        val deviceLibrary =
-            musicRepository.deviceLibrary
-            // No library, cannot do anything.
-            ?: return false
+        val library =
+            musicRepository.library?.takeIf { !it.empty() }
+                // No library, cannot do anything.
+                ?: return false
 
         when (action) {
             // Restore state -> Start a new restoreState job
             is DeferredPlayback.RestoreState -> {
-                logD("Restoring playback state")
+                L.d("Restoring playback state")
                 restoreScope.launch {
                     val state = persistenceRepository.readState()
                     withContext(Dispatchers.Main) {
@@ -173,7 +173,7 @@ class ExoPlaybackStateHolder(
             }
             // Shuffle all -> Start new playback from all songs
             is DeferredPlayback.ShuffleAll -> {
-                logD("Shuffling all tracks")
+                L.d("Shuffling all tracks")
                 playbackManager.play(
                     requireNotNull(commandFactory.all(ShuffleMode.ON)) {
                         "Invalid playback parameters"
@@ -181,13 +181,35 @@ class ExoPlaybackStateHolder(
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
-                logD("Opening specified file")
-                deviceLibrary.findSongForUri(context, action.uri)?.let { song ->
-                    playbackManager.play(
-                        requireNotNull(commandFactory.song(song, ShuffleMode.IMPLICIT)) {
-                            "Invalid playback parameters"
-                        })
-                }
+                L.d("Opening specified file")
+                context.applicationContext.contentResolver
+                    .query(
+                        action.uri,
+                        arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE),
+                        null,
+                        null,
+                        null)
+                    ?.use { cursor ->
+                        val displayNameIndex =
+                            cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                        val sizeIndex = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE)
+                        if (cursor.moveToFirst()) {
+                            val displayName = cursor.getString(displayNameIndex)
+                            val size = cursor.getLong(sizeIndex)
+                            val song =
+                                library.songs.find {
+                                    it.path.name == displayName && it.size == size
+                                }
+                            if (song != null) {
+                                val command =
+                                    requireNotNull(
+                                        commandFactory.songFromAll(song, ShuffleMode.IMPLICIT)) {
+                                            "Invalid playback command"
+                                        }
+                                playbackManager.play(command)
+                            }
+                        }
+                    }
             }
         }
 
@@ -392,9 +414,13 @@ class ExoPlaybackStateHolder(
         }
 
         repeatMode(repeatMode)
-        // Positions in milliseconds will drift during tight restores (i.e what the music loader
-        // does to sanitize the state), compare by seconds instead.
-        if (positionMs.msToSecs() != player.currentPosition.msToSecs() || shouldSeek) {
+        // See if we differ by more than a second. This allows us to avoid a meaningless seek
+        // in the case of a "tight restore" (i.e music was reloaded).
+        // In the case that this is a false positive, it's not very percievable (at least compared
+        // to skipping when updating the library).
+        // TODO: Introduce a better state management system rather than do something finicky like
+        // this.
+        if (shouldSeek || abs(player.currentPosition - positionMs) > 1000L) {
             player.seekTo(positionMs)
         }
 
@@ -430,18 +456,18 @@ class ExoPlaybackStateHolder(
 
         if (player.playWhenReady) {
             // Mark that we have started playing so that the notification can now be posted.
-            logD("Player has started playing")
+            L.d("Player has started playing")
             sessionOngoing = true
             if (!openAudioEffectSession) {
                 // Convention to start an audioeffect session on play/pause rather than
                 // start/stop
-                logD("Opening audio effect session")
+                L.d("Opening audio effect session")
                 broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
                 openAudioEffectSession = true
             }
         } else if (openAudioEffectSession) {
             // Make sure to close the audio session when we stop playback.
-            logD("Closing audio effect session")
+            L.d("Closing audio effect session")
             broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
             openAudioEffectSession = false
         }
@@ -473,7 +499,7 @@ class ExoPlaybackStateHolder(
             Player.EVENT_PLAY_WHEN_READY_CHANGED,
             Player.EVENT_IS_PLAYING_CHANGED,
             Player.EVENT_POSITION_DISCONTINUITY)) {
-            logD("Player state changed, must synchronize state")
+            L.d("Player state changed, must synchronize state")
             playbackManager.ack(this, StateAck.ProgressionChanged)
         }
     }
@@ -481,13 +507,13 @@ class ExoPlaybackStateHolder(
     override fun onPlayerError(error: PlaybackException) {
         // TODO: Replace with no skipping and a notification instead
         // If there's any issue, just go to the next song.
-        logE("Player error occurred")
-        logE(error.stackTraceToString())
+        L.e("Player error occurred")
+        L.e(error.stackTraceToString())
         playbackManager.next()
     }
 
     private fun broadcastAudioEffectAction(event: String) {
-        logD("Broadcasting AudioEffect event: $event")
+        L.d("Broadcasting AudioEffect event: $event")
         context.sendBroadcast(
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
@@ -498,9 +524,9 @@ class ExoPlaybackStateHolder(
     // --- MUSICREPOSITORY METHODS ---
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
+        if (changes.deviceLibrary && musicRepository.library?.takeIf { !it.empty() } != null) {
             // We now have a library, see if we have anything we need to do.
-            logD("Library obtained, requesting action")
+            L.d("Library obtained, requesting action")
             playbackManager.requestAction(this)
         }
     }
@@ -526,17 +552,17 @@ class ExoPlaybackStateHolder(
 
     private fun deferSave() {
         saveJob {
-            logD("Waiting for save buffer")
+            L.d("Waiting for save buffer")
             delay(SAVE_BUFFER)
             yield()
-            logD("Committing saved state")
+            L.d("Committing saved state")
             persistenceRepository.saveState(playbackManager.toSavedState())
         }
     }
 
     private fun saveJob(block: suspend () -> Unit) {
         currentSaveJob?.let {
-            logD("Discarding prior save job")
+            L.d("Discarding prior save job")
             it.cancel()
         }
         currentSaveJob = saveScope.launch { block() }
@@ -610,8 +636,9 @@ class ExoPlaybackStateHolder(
                         MediaCodecSelector.DEFAULT,
                         handler,
                         audioListener,
-                        AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                        replayGainProcessor))
+                        DefaultAudioSink.Builder(context)
+                            .setAudioProcessors(arrayOf(replayGainProcessor))
+                            .build()))
             }
 
             val exoPlayer =

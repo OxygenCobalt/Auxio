@@ -14,10 +14,11 @@
     <string name="set_key_rescan" translatable="false">auxio_rescan</string>
     <string name="set_key_observing" translatable="false">auxio_observing</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
-    <string name="set_key_cover_mode" translatable="false">auxio_cover_mode</string>
+    <string name="set_key_cover_mode" translatable="false">auxio_cover_mode2</string>
     <string name="set_key_square_covers" translatable="false">auxio_square_covers</string>
     <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
     <string name="set_key_exclude_non_music" translatable="false">auxio_exclude_non_music</string>
+    <string name="set_key_music_locations" translatable="false">auxio_music_locations2</string>
     <string name="set_key_separators" translatable="false">auxio_separators</string>
     <string name="set_key_auto_sort_names" translatable="false">auxio_auto_sort_names</string>
 
@@ -52,6 +53,8 @@
     <string name="set_key_artist_songs_sort" translatable="false">auxio_artist_sort</string>
     <string name="set_key_genre_songs_sort" translatable="false">auxio_genre_sort</string>
 
+    <string name="set_key_library_revision" translatable="false">auxio_library_revision</string>
+
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>
         <item>@string/set_theme_day</item>
@@ -72,14 +75,16 @@
 
     <string-array name="entries_cover_mode">
         <item>@string/set_cover_mode_off</item>
-        <item>@string/set_cover_mode_media_store</item>
-        <item>@string/set_cover_mode_quality</item>
+        <item>@string/set_cover_mode_save_space</item>
+        <item>@string/set_cover_mode_balanced</item>
+        <item>@string/set_cover_mode_high_quality</item>
     </string-array>
 
     <integer-array name="values_cover_mode">
         <item>@integer/cover_mode_off</item>
-        <item>@integer/cover_mode_media_store</item>
-        <item>@integer/cover_mode_quality</item>
+        <item>@integer/cover_mode_save_space</item>
+        <item>@integer/cover_mode_balanced</item>
+        <item>@integer/cover_mode_high_quality</item>
     </integer-array>
 
     <string-array name="entries_bar_action">
@@ -173,6 +178,7 @@
     <integer name="action_mode_shuffle">0xA11B</integer>
 
     <integer name="cover_mode_off">0xA11C</integer>
-    <integer name="cover_mode_media_store">0xA11D</integer>
-    <integer name="cover_mode_quality">0xA11E</integer>
+    <integer name="cover_mode_save_space">0xA125</integer>
+    <integer name="cover_mode_balanced">0xA11D</integer>
+    <integer name="cover_mode_high_quality">0xA11E</integer>
 </resources>

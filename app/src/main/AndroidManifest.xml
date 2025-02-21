@@ -48,6 +48,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTask"
+            android:allowCrossUidActivitySwitchFromBelow="false"
             android:roundIcon="@mipmap/ic_launcher"
             android:windowSoftInputMode="adjustPan">
 
@@ -92,11 +93,21 @@
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:exported="true"
-            android:roundIcon="@mipmap/ic_launcher">
+            android:roundIcon="@mipmap/ic_launcher"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
+
+        <!--
+        Expose Auxio's cover data to the android system
+        -->
+        <provider
+            android:name=".image.CoverProvider"
+            android:authorities="@string/pkg_authority_cover"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
 
         <!--
         Work around apps that blindly query for ACTION_MEDIA_BUTTON working.

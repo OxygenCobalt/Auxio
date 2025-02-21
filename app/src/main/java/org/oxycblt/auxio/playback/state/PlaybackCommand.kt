@@ -21,26 +21,31 @@ package org.oxycblt.auxio.playback.state
 import javax.inject.Inject
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
 
 /**
- * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
- * @param queue The queue of [Song]s to play from.
- * @param parent The [MusicParent] to play from, or null if to play from an non-specific collection
- *   of "All [Song]s".
- * @param shuffled Whether to shuffle or not.
+ * A playback command that can be passed to [PlaybackStateManager] to start new playback.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
  */
 interface PlaybackCommand {
+    /** A particular [Song] to play, or null to play the first [Song] in the new queue. * */
     val song: Song?
+    /**
+     * The [MusicParent] to play from, or null if to play from an non-specific collection of "All
+     * [Song]s". *
+     */
     val parent: MusicParent?
+    /** The queue of [Song]s to play from. * */
     val queue: List<Song>
+    /** Whether to shuffle or not. * */
     val shuffled: Boolean
 
     interface Factory {
@@ -89,7 +94,11 @@ constructor(
         override val parent: MusicParent?,
         override val queue: List<Song>,
         override val shuffled: Boolean
-    ) : PlaybackCommand
+    ) : PlaybackCommand {
+        // Only show queue count to reduce memory use
+        override fun toString() =
+            "PlaybackCommand(song=$song, parent=$parent, queue=${queue.size} songs, shuffled=$shuffled)"
+    }
 
     override fun song(song: Song, shuffle: ShuffleMode) =
         newCommand(song, null, listOf(song), shuffle)
@@ -142,8 +151,8 @@ constructor(
     }
 
     private fun newCommand(song: Song?, shuffle: ShuffleMode): PlaybackCommand? {
-        val deviceLibrary = musicRepository.deviceLibrary ?: return null
-        return newCommand(song, null, deviceLibrary.songs, listSettings.songSort, shuffle)
+        val library = musicRepository.library ?: return null
+        return newCommand(song, null, library.songs, listSettings.songSort, shuffle)
     }
 
     private fun newCommand(

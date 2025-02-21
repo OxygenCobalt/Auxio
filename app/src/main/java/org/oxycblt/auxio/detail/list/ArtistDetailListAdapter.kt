@@ -29,12 +29,13 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.musikr.Album
+import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Song
 
 /**
  * A [DetailListAdapter] implementing the header and sub-items for the [Artist] detail view.
@@ -104,8 +105,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         binding.parentName.text = album.name.resolve(binding.context)
         binding.parentInfo.text =
             // Fall back to a friendlier "No date" text if the album doesn't have date information
-            album.dates?.resolveDate(binding.context)
-                ?: binding.context.getString(R.string.def_date)
+            album.dates?.resolve(binding.context) ?: binding.context.getString(R.string.def_date)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {

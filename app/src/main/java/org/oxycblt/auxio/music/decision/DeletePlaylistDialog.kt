@@ -29,11 +29,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogDeletePlaylistBinding
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.musikr.Playlist
+import timber.log.Timber as L
 
 /**
  * A [ViewBindingMaterialDialogFragment] that asks the user to confirm the deletion of a [Playlist].
@@ -52,6 +53,9 @@ class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlayl
         builder
             .setTitle(R.string.lbl_confirm_delete_playlist)
             .setPositiveButton(R.string.lbl_delete) { _, _ ->
+                // Normally the navigateUp will occur after this, which then collides with the
+                // playlist view's navigation. Forcefully navigate up to stop this.
+                findNavController().navigateUp()
                 // Now we can delete the playlist for-real this time.
                 musicModel.deletePlaylist(
                     unlikelyToBeNull(pickerModel.currentPlaylistToDelete.value), rude = true)
@@ -76,7 +80,7 @@ class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlayl
 
     private fun updatePlaylistToDelete(playlist: Playlist?) {
         if (playlist == null) {
-            logD("No playlist to delete, navigating away")
+            L.d("No playlist to delete, navigating away")
             findNavController().navigateUp()
             return
         }

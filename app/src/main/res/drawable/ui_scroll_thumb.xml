@@ -4,13 +4,7 @@
     android:tint="?attr/colorSecondary">
 
     <corners android:radius="8dp" />
-    <padding
-        android:bottom="4dp"
-        android:left="2dp"
-        android:right="2dp"
-        android:top="4dp" />
     <size
-        android:width="8dp"
-        android:height="52dp" />
+        android:width="4dp" />
     <solid android:color="@android:color/white" />
 </shape>
