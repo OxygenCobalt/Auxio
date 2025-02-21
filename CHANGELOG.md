@@ -43,6 +43,7 @@
 persist long-term
 - Songs with no album are now "Unknown album" rather than folder name
 - Tab layout no longer changes depending on device configuration
+- Round mode is now on by default
 
 #### Dev/Meta
 - No longer using custom logging setup
