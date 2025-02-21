@@ -112,7 +112,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
     private fun updateGenre(genre: Genre?) {
         if (genre == null) {
             L.d("No genre to show, navigating away")
-            exit()
+            findNavController().navigateUp()
             return
         }
         val binding = requireBinding()

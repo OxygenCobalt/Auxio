@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.transition.MaterialSharedAxis
@@ -130,11 +129,4 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
     }
 
     abstract fun onOpenParentMenu()
-
-    protected fun exit() {
-        // For some insane and absurd reason we wont actually navigate away in detail views
-        // until this is called twice.
-        findNavController().navigateUp()
-        findNavController().navigateUp()
-    }
 }
