@@ -1,1 +1,1 @@
-Un semplice, razionale lettore musicale
+Un lettore musicale semplice e razionale
