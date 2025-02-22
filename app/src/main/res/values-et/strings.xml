@@ -230,7 +230,7 @@
     <string name="set_separators_comma">Koma (,)</string>
     <string name="set_separators_semicolon">Semikoolon (;)</string>
     <string name="set_separators_plus">Pluss (+)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">Ampersand (and-märk)</string>
     <string name="set_separators_desc">Seadista tähemärke, mis eraldavad siltides mitut väärtust</string>
     <string name="set_separators_slash">Kaldkriips (/)</string>
     <string name="set_separators_warning">Hoiatus: selle seadistuse kasutamisel ei pruugi mitu väärtust siltides olla alati korralikult tuvastatud; seda olukorda saad proovida lahendada täiendava prefiksi lisamisega kurakaldkriipsu näol (\\).</string>
