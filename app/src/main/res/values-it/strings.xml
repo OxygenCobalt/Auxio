@@ -152,9 +152,9 @@
     <string name="set_pre_amp_without">Regolazione senza tag</string>
     <string name="lbl_shuffle_shortcut_short">Casuale</string>
     <string name="lbl_shuffle_shortcut_long">Tutto in casuale</string>
-    <string name="set_pre_amp_with">Regolazione mediante tag</string>
+    <string name="set_pre_amp_with">Regolazione in base ai tag</string>
     <string name="set_pre_amp_desc">Il pre-amp è applicato alla regolazione esistente durante la riproduzione</string>
-    <string name="set_play_song_none">Riproduci dall\'elemento mostrato</string>
+    <string name="set_play_song_none">Riproduci dall\'elemento corrente</string>
     <string name="set_locations_desc">Gestisci le cartelle da dove caricare la musica</string>
     <string name="set_locations">Cartelle musicali</string>
     <string name="cdc_mka">Matroska audio</string>
@@ -182,7 +182,7 @@
     <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (richiede notifica persistente)</string>
     <string name="lbl_indexing">Caricamento musica</string>
     <string name="lbl_observing">Monitoraggio libreria musicale</string>
-    <string name="lbl_date_added">Data aggiunta</string>
+    <string name="lbl_date_added">Data di aggiunta</string>
     <string name="set_observing">Ricaricamento automatico</string>
     <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
@@ -219,7 +219,7 @@
     <string name="set_separators">Separatori multi-valore</string>
     <string name="set_separators_desc">Configura i caratteri che identificano tag con valori multipli</string>
     <string name="set_separators_slash">Barra (/)</string>
-    <string name="set_separators_warning">Attenzione: potrebbero verificarsi degli errori nell\'interpretazione di alcuni tag con valori multipli. Puoi risolvere aggiungendo come prefisso la barra rovesciata () ai separatori indesiderati.</string>
+    <string name="set_separators_warning">Attenzione: potrebbero verificarsi degli errori nell\'interpretazione di alcuni tag con valori multipli. Puoi risolvere aggiungendo come prefisso la barra rovesciata (\\) ai separatori indesiderati.</string>
     <string name="set_separators_and">E commerciale (&amp;)</string>
     <string name="lbl_compilation_live">Compilation live</string>
     <string name="lbl_compilation_remix">Compilation remix</string>
