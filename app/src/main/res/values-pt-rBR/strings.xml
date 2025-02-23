@@ -2,7 +2,7 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Tentar novamente</string>
-    <string name="lbl_grant">Confirmar</string>
+    <string name="lbl_grant">Conceder</string>
     <string name="lbl_genres">Gêneros</string>
     <string name="lbl_artists">Artistas</string>
     <string name="lbl_albums">Álbuns</string>
@@ -91,7 +91,7 @@
     <string name="set_reindex">Recarregar música</string>
     <string name="set_rewind_prev_desc">Retroceder a música antes de voltar para a anterior</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
-    <string name="info_app_desc">Um reprodutor de música simples e racional para android.</string>
+    <string name="info_app_desc">Um reprodutor de música simples e racional para Android.</string>
     <string name="lng_indexing">Carregando a sua biblioteca de músicas…</string>
     <string name="lbl_date">Ano</string>
     <string name="lbl_duration">Duração</string>
@@ -167,17 +167,17 @@
     <string name="lbl_album_live">Álbum ao vivo</string>
     <string name="lbl_soundtracks">Trilhas sonoras</string>
     <string name="lbl_soundtrack">Trilha sonora</string>
-    <string name="lbl_album_remix">Álbum remix</string>
+    <string name="lbl_album_remix">Álbum de remix</string>
     <string name="lbl_ep_live">EP ao vivo</string>
-    <string name="lbl_ep_remix">Álbum de Remix</string>
+    <string name="lbl_ep_remix">EP de remix</string>
     <string name="lbl_single_live">Single ao vivo</string>
     <string name="lng_observing">Monitorando alterações na sua biblioteca de músicas…</string>
     <string name="set_lib_tabs">Abas da biblioteca</string>
     <string name="lbl_genre">Gênero</string>
     <string name="set_play_song_from_artist">Reproduzir do artista</string>
     <string name="set_pre_amp_with">Ajuste em faixas com metadados</string>
-    <string name="lbl_indexer">Carregando música</string>
-    <string name="lbl_indexing">Carregando música</string>
+    <string name="lbl_indexer">Carregamento de músicas</string>
+    <string name="lbl_indexing">Carregando músicas</string>
     <string name="lbl_observing">Monitorando a biblioteca de músicas</string>
     <string name="set_round_mode">Cantos arredondados</string>
     <string name="set_action_mode_next">Pular para o próximo</string>
@@ -219,9 +219,9 @@
     <string name="set_exclude_non_music_desc">Ignora arquivos de áudio que não sejam música, como podcasts</string>
     <string name="set_separators_warning">Aviso: Usar essa configuração pode resultar em alguns metadados serem interpretadas incorretamente como tendo múltiplos valores. Você pode resolver isso pré-definindo caracteres de separador indesejados com uma barra invertida (\\).</string>
     <string name="set_exclude_non_music">Ignorar arquivos que não sejam músicas</string>
-    <string name="set_cover_mode">Capas de álbuns</string>
-    <string name="set_cover_mode_off">Desligado</string>
-    <string name="set_cover_mode_balanced">Rápido</string>
+    <string name="set_cover_mode">Qualidade das capas de álbuns</string>
+    <string name="set_cover_mode_off">Desativado</string>
+    <string name="set_cover_mode_balanced">Equilibrado</string>
     <string name="set_cover_mode_high_quality">Alta qualidade</string>
     <string name="lbl_mixes">Mixagens de DJ</string>
     <string name="lbl_mix">Mixagem de DJ</string>
@@ -332,6 +332,6 @@
     <string name="lng_empty_artists">Os seus artistas aparecerão aqui.</string>
     <string name="lng_empty_playlists">As suas playlists aparecerão aqui.</string>
     <string name="lng_empty_genres">Os seus gêneros aparecerão aqui.</string>
-    <string name="set_cover_mode_save_space">Salvar espaço</string>
+    <string name="set_cover_mode_save_space">Economizar espaço</string>
     <string name="set_locations_new">Nova pasta</string>
 </resources>
