@@ -38,14 +38,14 @@ private data object TagParserImpl : TagParser {
             replayGainTrackAdjustment = metadata.replayGainTrackAdjustment(),
             replayGainAlbumAdjustment = metadata.replayGainAlbumAdjustment(),
             musicBrainzId = metadata.musicBrainzId(),
-            name = metadata.name() ?: unlikelyToBeNull(file.path.name),
+            name = metadata.name() ?: unlikelyToBeNull(file.path.name).split('.').first(),
             sortName = metadata.sortName(),
             track = metadata.track(),
             disc = metadata.disc(),
             subtitle = metadata.subtitle(),
             date = metadata.date(),
             albumMusicBrainzId = metadata.albumMusicBrainzId(),
-            albumName = metadata.albumName(),
+            albumName = metadata.albumName() ?: file.path.directory.name,
             albumSortName = metadata.albumSortName(),
             // Compilation flag implies a compilation release type in the case that
             // we don't have any other release types

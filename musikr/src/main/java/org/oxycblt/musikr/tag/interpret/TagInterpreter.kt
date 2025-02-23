@@ -83,7 +83,8 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             preAlbum = preAlbum,
             preArtists = rawArtists,
             preGenres = rawGenres,
-            cover = song.cover)
+            cover = song.cover,
+            compatAlbumArtistNames = song.tags.albumArtistNames)
     }
 
     private fun makePreAlbum(

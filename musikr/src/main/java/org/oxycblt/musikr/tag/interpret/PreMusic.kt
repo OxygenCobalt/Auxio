@@ -51,7 +51,8 @@ internal data class PreSong(
     val cover: Cover?,
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
-    val preGenres: List<PreGenre>
+    val preGenres: List<PreGenre>,
+    val compatAlbumArtistNames: List<String>
 ) {
     val uid =
         musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
@@ -66,8 +67,10 @@ internal data class PreSong(
                 update(track)
                 update(disc?.number)
 
-                update(preArtists.map { artist -> artist.rawName })
-                update(preAlbum.preArtists.map { artist -> artist.rawName })
+                update(preArtists.mapNotNull { artist -> artist.rawName })
+                // We have to encode the album artist names as-is w/o the interpreter's actions to
+                // maintain UID parity
+                update(compatAlbumArtistNames)
             }
 }
 
