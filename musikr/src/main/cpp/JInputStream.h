@@ -124,6 +124,7 @@ private:
     jmethodID jInputStreamSeekFromEndMethod;
     jmethodID jInputStreamTellMethod;
     jmethodID jInputStreamLengthMethod;
+    jint readBlockImpl(TagLib::ByteVector &buf);
 };
 
 #endif //AUXIO_JINPUTSTREAM_H

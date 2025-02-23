@@ -34,7 +34,7 @@ JInputStream::JInputStream(JNIEnv *env, jobject jInputStream) : env(env), jInput
     jmethodID jInputStreamNameMethod = jInputStreamClass.method("name",
             "()Ljava/lang/String;");
     jInputStreamReadBlockMethod = jInputStreamClass.method("readBlock",
-            "(Ljava/nio/ByteBuffer;)Z");
+            "(Ljava/nio/ByteBuffer;)I");
     jInputStreamIsOpenMethod = jInputStreamClass.method("isOpen", "()Z");
     jInputStreamSeekFromBeginningMethod = jInputStreamClass.method(
             "seekFromBeginning", "(J)Z");
@@ -58,22 +58,31 @@ TagLib::FileName /* const char * */JInputStream::name() const {
     return _name.toCString(true);
 }
 
-TagLib::ByteVector JInputStream::readBlock(size_t length) {
-    // We have to invert the buffer allocation here siits not a perfect system (vykeen instead of korvax0 but i warped all over the hub and i dont think its possible to find a "perfect" purple system like you would withnce the JVM ByteBuffer allocation system
-    // uses a bugged caching mechanism that leaks memory if used in multithreaded contexts.
-    TagLib::ByteVector buf { static_cast<unsigned int>(length), 0 };
+jint JInputStream::readBlockImpl(TagLib::ByteVector &buf) {
     jobject wrappedByteBuffer = env->NewDirectByteBuffer(buf.data(),
             buf.size());
     if (wrappedByteBuffer == nullptr) {
         throw std::runtime_error("Failed to wrap ByteBuffer");
     }
-    JObjectRef byteBuffer = { env, wrappedByteBuffer };
-    jboolean result = env->CallBooleanMethod(jInputStream,
-            jInputStreamReadBlockMethod, *byteBuffer);
-    if (!result) {
+    JObjectRef byteBuffer { env, wrappedByteBuffer };
+    jint read = env->CallIntMethod(jInputStream, jInputStreamReadBlockMethod,
+            *byteBuffer);
+    return read;
+}
+
+TagLib::ByteVector JInputStream::readBlock(size_t length) {
+    // We have to invert the buffer allocation here
+    TagLib::ByteVector buf { static_cast<unsigned int>(length), 0 };
+    jint read = readBlockImpl(buf);
+    if (read >= 0) {
+        buf.resize(read);
+        return buf;
+    } else if (read == -1) {
+        buf.resize(0);
+        return buf;
+    } else {
         throw std::runtime_error("Failed to read block, see logs");
     }
-    return buf;
 }
 
 void JInputStream::writeBlock(const TagLib::ByteVector &data) {

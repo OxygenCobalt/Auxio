@@ -28,13 +28,12 @@ internal class NativeInputStream(private val deviceFile: DeviceFile, fis: FileIn
 
     fun name() = requireNotNull(deviceFile.path.name)
 
-    fun readBlock(buf: ByteBuffer): Boolean {
+    fun readBlock(buf: ByteBuffer): Int {
         try {
-            channel.read(buf)
-            return true
+            return channel.read(buf)
         } catch (e: Exception) {
             Log.d("NativeInputStream", "Error reading block", e)
-            return false
+            return -2
         }
     }
 
