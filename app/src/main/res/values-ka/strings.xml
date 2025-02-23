@@ -99,4 +99,11 @@
     <string name="lng_empty_songs">სიმღერები აქ გამოჩნდება.</string>
     <string name="set_root_title">პარამეტრები</string>
     <string name="set_accent">ფერები</string>
+    <string name="set_observing">ავტომატური ჩატვირთვა</string>
+    <string name="set_images">სურათები</string>
+    <string name="set_locations">მუსიკის საქაღალდე</string>
+    <string name="set_locations_list">საქაღალდეები</string>
+    <string name="set_locations_new">ახალი საქაღალდე</string>
+    <string name="err_no_music">სიმღერები ვერ მოიძებნა</string>
+    <string name="desc_skip_prev">ბოლო სიმღერაზე გადასვლა</string>
 </resources>
