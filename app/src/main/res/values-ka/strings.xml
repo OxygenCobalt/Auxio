@@ -82,7 +82,7 @@
     <string name="lng_queue_added">დაამატე რიგში</string>
     <string name="lng_playlist_imported">დასაკრავი სია იმპორტირებულია</string>
     <string name="lng_playlist_renamed">დასაკრავი სიის სახელი შეცვლილია</string>
-    <string name="lng_search_library">ძებნა</string>
+    <string name="lng_search_library">ძებნა თქვენს ბიბლიოთეკაში…</string>
     <string name="lng_empty_albums">ალბომები აქ გამოჩნდება.</string>
     <string name="lng_empty_artists">არტისტები აქ გამოჩნდება.</string>
     <string name="set_theme">თემა</string>
