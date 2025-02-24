@@ -34,7 +34,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Auxio.App"
         android:appCategory="audio"
-        android:windowOptOutEdgeToEdgeEnforcement="true"
         android:enableOnBackInvokedCallback="true"
         tools:ignore="UnusedAttribute">
 
