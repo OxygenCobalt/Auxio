@@ -19,6 +19,8 @@
 package org.oxycblt.musikr.tag.interpret
 
 import org.oxycblt.musikr.Interpretation
+import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Disc
@@ -29,6 +31,7 @@ import org.oxycblt.musikr.tag.ReplayGainAdjustment
 import org.oxycblt.musikr.tag.format.parseId3GenreNames
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.util.toUuidOrNull
+import org.oxycblt.musikr.util.update
 
 internal interface TagInterpreter {
     fun interpret(song: RawSong): PreSong
@@ -53,13 +56,49 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                 song.tags.albumArtistSortNames,
                 interpretation)
         val preAlbum =
-            makePreAlbum(song.tags, individualPreArtists, albumPreArtists, interpretation)
+            makePreAlbum(
+                song.tags, song.file, individualPreArtists, albumPreArtists, interpretation)
         val rawArtists =
             individualPreArtists.ifEmpty { albumPreArtists }.ifEmpty { listOf(unknownPreArtist()) }
         val rawGenres =
             makePreGenres(song.tags, interpretation).ifEmpty { listOf(unknownPreGenre()) }
         val uri = song.file.uri
+
+        val songNameOrFile = song.tags.name ?: requireNotNull(song.file.path.name)
+        val songNameOrFileWithoutExt =
+            song.tags.name ?: requireNotNull(song.file.path.name).split('.').first()
+        val albumNameOrDir = song.tags.albumName ?: song.file.path.directory.name
+        val v363uid =
+            Music.UID.auxio(Music.UID.Item.SONG) {
+                update(songNameOrFileWithoutExt)
+                update(albumNameOrDir)
+                update(song.tags.date)
+
+                update(song.tags.track)
+                update(song.tags.disc)
+
+                update(song.tags.artistNames)
+                update(song.tags.albumArtistNames)
+            }
+
+        // I was an idiot and accidentally changed the UID spec in v4.0.0, so we need to calculate
+        // the broken UID too and maintain compat for that version.
+        val v400uid =
+            Music.UID.auxio(Music.UID.Item.SONG) {
+                update(songNameOrFile)
+                update(song.tags.albumName)
+                update(song.tags.date)
+
+                update(song.tags.track)
+                update(song.tags.disc)
+
+                update(song.tags.artistNames.ifEmpty { listOf(null) })
+                update(song.tags.albumArtistNames.ifEmpty { listOf(null) })
+            }
+
         return PreSong(
+            v363Uid = v363uid,
+            v400Uid = v400uid,
             uri = uri,
             path = song.file.path,
             size = song.file.size,
@@ -67,8 +106,8 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             modifiedMs = song.file.modifiedMs,
             addedMs = song.addedMs,
             musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull(),
-            name = interpretation.naming.name(song.tags.name, song.tags.sortName),
-            rawName = song.tags.name,
+            name = interpretation.naming.name(songNameOrFileWithoutExt, song.tags.sortName),
+            rawName = songNameOrFileWithoutExt,
             track = song.tags.track,
             disc = song.tags.disc?.let { Disc(it, song.tags.subtitle) },
             date = song.tags.date,
@@ -83,22 +122,21 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             preAlbum = preAlbum,
             preArtists = rawArtists,
             preGenres = rawGenres,
-            cover = song.cover,
-            compatAlbumArtistNames = song.tags.albumArtistNames)
+            cover = song.cover)
     }
 
     private fun makePreAlbum(
         parsedTags: ParsedTags,
+        deviceFile: DeviceFile,
         individualPreArtists: List<PreArtist>,
         albumPreArtists: List<PreArtist>,
         interpretation: Interpretation
     ): PreAlbum {
+        val name = parsedTags.albumName ?: deviceFile.path.directory.name
         return PreAlbum(
             musicBrainzId = parsedTags.albumMusicBrainzId?.toUuidOrNull(),
-            name =
-                interpretation.naming.name(
-                    parsedTags.albumName, parsedTags.albumSortName, Placeholder.ALBUM),
-            rawName = parsedTags.albumName,
+            name = interpretation.naming.name(name, parsedTags.albumSortName, Placeholder.ALBUM),
+            rawName = name,
             releaseType =
                 ReleaseType.parse(interpretation.separators.split(parsedTags.releaseTypes))
                     ?: ReleaseType.Album(null),

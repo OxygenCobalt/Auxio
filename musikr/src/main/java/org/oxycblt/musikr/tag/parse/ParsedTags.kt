@@ -25,7 +25,7 @@ internal data class ParsedTags(
     val replayGainTrackAdjustment: Float? = null,
     val replayGainAlbumAdjustment: Float? = null,
     val musicBrainzId: String? = null,
-    val name: String,
+    val name: String? = null,
     val sortName: String? = null,
     val track: Int? = null,
     val disc: Int? = null,

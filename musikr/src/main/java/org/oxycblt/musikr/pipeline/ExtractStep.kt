@@ -131,7 +131,7 @@ private class ExtractStepImpl(
             metadata
                 .map { fileWith ->
                     if (fileWith.with != null) {
-                        val tags = tagParser.parse(fileWith.file, fileWith.with)
+                        val tags = tagParser.parse(fileWith.with)
                         val cover = fileWith.with.cover?.let { storedCovers.write(it) }
                         RawSong(fileWith.file, fileWith.with.properties, tags, cover, addingMs)
                     } else {

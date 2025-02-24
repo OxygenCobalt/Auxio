@@ -55,7 +55,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private val playlistVertices = mutableSetOf<PlaylistVertex>()
 
     override fun add(preSong: PreSong) {
-        val uid = preSong.uid
+        val uid = preSong.v363Uid
         if (songVertices.containsKey(uid)) {
             return
         }
