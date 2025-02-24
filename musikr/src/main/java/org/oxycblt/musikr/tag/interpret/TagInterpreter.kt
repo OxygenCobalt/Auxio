@@ -92,8 +92,10 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                 update(song.tags.track)
                 update(song.tags.disc)
 
-                update(song.tags.artistNames.ifEmpty { listOf(null) })
-                update(song.tags.albumArtistNames.ifEmpty { listOf(null) })
+                val artistNames = interpretation.separators.split(song.tags.artistNames)
+                update(artistNames.ifEmpty { listOf(null) })
+                val albumArtistNames = interpretation.separators.split(song.tags.albumArtistNames)
+                update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
             }
 
         return PreSong(
