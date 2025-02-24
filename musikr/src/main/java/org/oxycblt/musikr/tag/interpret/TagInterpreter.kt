@@ -68,35 +68,40 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         val songNameOrFileWithoutExt =
             song.tags.name ?: requireNotNull(song.file.path.name).split('.').first()
         val albumNameOrDir = song.tags.albumName ?: song.file.path.directory.name
+
+        val musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull()
         val v363uid =
-            Music.UID.auxio(Music.UID.Item.SONG) {
-                update(songNameOrFileWithoutExt)
-                update(albumNameOrDir)
-                update(song.tags.date)
+            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
+                ?: Music.UID.auxio(Music.UID.Item.SONG) {
+                    update(songNameOrFileWithoutExt)
+                    update(albumNameOrDir)
+                    update(song.tags.date)
 
-                update(song.tags.track)
-                update(song.tags.disc)
+                    update(song.tags.track)
+                    update(song.tags.disc)
 
-                update(song.tags.artistNames)
-                update(song.tags.albumArtistNames)
-            }
+                    update(song.tags.artistNames)
+                    update(song.tags.albumArtistNames)
+                }
 
         // I was an idiot and accidentally changed the UID spec in v4.0.0, so we need to calculate
         // the broken UID too and maintain compat for that version.
         val v400uid =
-            Music.UID.auxio(Music.UID.Item.SONG) {
-                update(songNameOrFile)
-                update(song.tags.albumName)
-                update(song.tags.date)
+            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
+                ?: Music.UID.auxio(Music.UID.Item.SONG) {
+                    update(songNameOrFile)
+                    update(song.tags.albumName)
+                    update(song.tags.date)
 
-                update(song.tags.track)
-                update(song.tags.disc)
+                    update(song.tags.track)
+                    update(song.tags.disc)
 
-                val artistNames = interpretation.separators.split(song.tags.artistNames)
-                update(artistNames.ifEmpty { listOf(null) })
-                val albumArtistNames = interpretation.separators.split(song.tags.albumArtistNames)
-                update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
-            }
+                    val artistNames = interpretation.separators.split(song.tags.artistNames)
+                    update(artistNames.ifEmpty { listOf(null) })
+                    val albumArtistNames =
+                        interpretation.separators.split(song.tags.albumArtistNames)
+                    update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
+                }
 
         return PreSong(
             v363Uid = v363uid,
@@ -107,7 +112,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             format = Format.infer(song.file.mimeType, song.properties.mimeType),
             modifiedMs = song.file.modifiedMs,
             addedMs = song.addedMs,
-            musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull(),
+            musicBrainzId = musicBrainzId,
             name = interpretation.naming.name(songNameOrFileWithoutExt, song.tags.sortName),
             rawName = songNameOrFileWithoutExt,
             track = song.tags.track,
