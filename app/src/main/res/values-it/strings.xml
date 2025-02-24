@@ -219,7 +219,7 @@
     <string name="set_separators">Separatori multi-valore</string>
     <string name="set_separators_desc">Configura i caratteri che identificano tag con valori multipli</string>
     <string name="set_separators_slash">Barra (/)</string>
-    <string name="set_separators_warning">Attenzione: potrebbero verificarsi degli errori nell\'interpretazione di alcuni tag con valori multipli. Puoi risolvere aggiungendo come prefisso la barra rovesciata (\\) ai separatori indesiderati.</string>
+    <string name="set_separators_warning">Attenzione: potrebbero verificarsi degli errori nell\'interpretazione di alcuni tag con valori multipli. Puoi risolvere questo problema aggiungendo come prefisso una barra rovesciata (\\) ai separatori indesiderati.</string>
     <string name="set_separators_and">E commerciale (&amp;)</string>
     <string name="lbl_compilation_live">Compilation live</string>
     <string name="lbl_compilation_remix">Compilation remix</string>
