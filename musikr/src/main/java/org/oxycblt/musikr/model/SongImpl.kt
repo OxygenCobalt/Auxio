@@ -42,7 +42,10 @@ internal interface SongCore {
 internal class SongImpl(private val handle: SongCore) : Song {
     private val preSong = handle.preSong
 
-    override val uid = preSong.uid
+    override val uid = preSong.v363Uid
+
+    val v400Uid = preSong.v400Uid
+
     override val name = preSong.name
     override val track = preSong.track
     override val disc = preSong.disc

@@ -50,7 +50,7 @@ class AlbumImpl internal constructor(private val core: AlbumCore) : Album {
                 // I don't know if there is any situation where an artist will have two albums with
                 // the exact same name, but if there is, I would love to know.
                 update(preAlbum.rawName)
-                update(preAlbum.preArtists.map { it.rawName })
+                update(preAlbum.preArtists.mapNotNull { it.rawName })
             }
     override val name = preAlbum.name
     override val releaseType = preAlbum.releaseType

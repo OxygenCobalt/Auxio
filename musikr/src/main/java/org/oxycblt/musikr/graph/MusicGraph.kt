@@ -55,7 +55,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private val playlistVertices = mutableSetOf<PlaylistVertex>()
 
     override fun add(preSong: PreSong) {
-        val uid = preSong.uid
+        val uid = preSong.v363Uid
         if (songVertices.containsKey(uid)) {
             return
         }
@@ -140,8 +140,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             vertex.genreVertices = vertex.genreVertices.distinct().toMutableList()
 
             playlistVertices.forEach {
-                val pointer = SongPointer.UID(entry.key)
-                it.pointerMap[pointer]?.forEach { index -> it.songVertices[index] = vertex }
+                val v363Pointer = SongPointer.UID(entry.key)
+                it.pointerMap[v363Pointer]?.forEach { index -> it.songVertices[index] = vertex }
+                val v400Pointer = SongPointer.UID(entry.value.preSong.v400Uid)
+                it.pointerMap[v400Pointer]?.forEach { index -> it.songVertices[index] = vertex }
             }
         }
 

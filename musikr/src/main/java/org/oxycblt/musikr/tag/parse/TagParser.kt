@@ -18,12 +18,10 @@
  
 package org.oxycblt.musikr.tag.parse
 
-import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
-import org.oxycblt.musikr.util.unlikelyToBeNull
 
 internal interface TagParser {
-    fun parse(file: DeviceFile, metadata: Metadata): ParsedTags
+    fun parse(metadata: Metadata): ParsedTags
 
     companion object {
         fun new(): TagParser = TagParserImpl
@@ -31,14 +29,14 @@ internal interface TagParser {
 }
 
 private data object TagParserImpl : TagParser {
-    override fun parse(file: DeviceFile, metadata: Metadata): ParsedTags {
+    override fun parse(metadata: Metadata): ParsedTags {
         val compilation = metadata.isCompilation()
         return ParsedTags(
             durationMs = metadata.properties.durationMs,
             replayGainTrackAdjustment = metadata.replayGainTrackAdjustment(),
             replayGainAlbumAdjustment = metadata.replayGainAlbumAdjustment(),
             musicBrainzId = metadata.musicBrainzId(),
-            name = metadata.name() ?: unlikelyToBeNull(file.path.name),
+            name = metadata.name(),
             sortName = metadata.sortName(),
             track = metadata.track(),
             disc = metadata.disc(),

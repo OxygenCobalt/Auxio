@@ -29,9 +29,10 @@ import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
 import org.oxycblt.musikr.tag.ReplayGainAdjustment
-import org.oxycblt.musikr.util.update
 
 internal data class PreSong(
+    val v363Uid: Music.UID,
+    val v400Uid: Music.UID,
     val musicBrainzId: UUID?,
     val name: Name.Known,
     val rawName: String,
@@ -52,24 +53,7 @@ internal data class PreSong(
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>
-) {
-    val uid =
-        musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
-            ?: Music.UID.auxio(Music.UID.Item.SONG) {
-                // Song UIDs are based on the raw data without parsing so that they remain
-                // consistent across music setting changes. Parents are not held up to the
-                // same standard since grouping is already inherently linked to settings.
-                update(rawName)
-                update(preAlbum.rawName)
-                update(date)
-
-                update(track)
-                update(disc?.number)
-
-                update(preArtists.map { artist -> artist.rawName })
-                update(preAlbum.preArtists.map { artist -> artist.rawName })
-            }
-}
+) {}
 
 internal data class PreAlbum(
     val musicBrainzId: UUID?,

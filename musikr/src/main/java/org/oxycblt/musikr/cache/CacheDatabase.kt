@@ -41,7 +41,7 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 58, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 60, exportSchema = false)
 internal abstract class CacheDatabase : RoomDatabase() {
     abstract fun visibleDao(): VisibleCacheDao
 
@@ -97,7 +97,7 @@ internal data class CachedSong(
     val bitrateHz: Int,
     val sampleRateHz: Int,
     val musicBrainzId: String?,
-    val name: String,
+    val name: String?,
     val sortName: String?,
     val track: Int?,
     val disc: Int?,

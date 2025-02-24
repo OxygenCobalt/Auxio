@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.1
+
+#### What's Fixed
+- Fixed music loading hanging on files without tags
+- Fixed playlists being destroyed in poorly tagged libraries
+
 ## 4.0.0
 
 #### What's New
