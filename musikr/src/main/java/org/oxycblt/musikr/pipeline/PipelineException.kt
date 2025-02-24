@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.pipeline
 
-import android.util.Log
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
@@ -55,45 +54,35 @@ sealed interface WhileProcessing {
 
 internal suspend fun <R> wrap(file: DeviceFile, block: suspend (DeviceFile) -> R): R =
     try {
-        Log.d("wrap", "Processing DeviceFile ${file.path}")
         block(file)
     } catch (e: Exception) {
-        Log.e("wrap", "Error while processing DeviceFile ${file.path}", e)
         throw PipelineException(WhileProcessing.AFile(file), e)
     }
 
 internal suspend fun <R> wrap(song: RawSong, block: suspend (RawSong) -> R): R =
     try {
-        Log.d("wrap", "Processing RawSong ${song.file.path}")
         block(song)
     } catch (e: Exception) {
-        Log.e("wrap", "Error while processing RawSong ${song.file.path}", e)
         throw PipelineException(WhileProcessing.ARawSong(song), e)
     }
 
 internal suspend fun <R> wrap(file: PlaylistFile, block: suspend (PlaylistFile) -> R): R =
     try {
-        Log.d("wrap", "Processing PlaylistFile ${file.name}")
         block(file)
     } catch (e: Exception) {
-        Log.e("wrap", "Error while processing PlaylistFile ${file.name}", e)
         throw PipelineException(WhileProcessing.APlaylistFile(file), e)
     }
 
 internal suspend fun <R> wrap(song: PreSong, block: suspend (PreSong) -> R): R =
     try {
-        Log.d("wrap", "Processing PreSong ${song.path}")
         block(song)
     } catch (e: Exception) {
-        Log.e("wrap", "Error while processing PreSong ${song.path}", e)
         throw PipelineException(WhileProcessing.APreSong(song), e)
     }
 
 internal suspend fun <R> wrap(playlist: PrePlaylist, block: suspend (PrePlaylist) -> R): R =
     try {
-        Log.d("wrap", "Processing PrePlaylist ${playlist.name}")
         block(playlist)
     } catch (e: Exception) {
-        Log.e("wrap", "Error while processing PrePlaylist ${playlist.name}", e)
         throw PipelineException(WhileProcessing.APrePlaylist(playlist), e)
     }
