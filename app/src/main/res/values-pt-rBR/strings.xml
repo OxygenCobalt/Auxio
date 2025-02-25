@@ -334,4 +334,6 @@
     <string name="lng_empty_genres">Os seus gêneros aparecerão aqui.</string>
     <string name="set_cover_mode_save_space">Economizar espaço</string>
     <string name="set_locations_new">Nova pasta</string>
+    <string name="set_ignore_hidden_desc">Ignorar arquivos e pastas que estão ocultos (por exemplo, .cache)</string>
+    <string name="set_ignore_hidden">Ignorar arquivos ocultos</string>
 </resources>
