@@ -267,6 +267,8 @@
     <string name="set_observing_desc">Reload the music library whenever it changes (requires persistent notification)</string>
     <string name="set_exclude_non_music">Exclude non-music</string>
     <string name="set_exclude_non_music_desc">Ignore audio files that are not music, such as podcasts</string>
+    <string name="set_ignore_hidden">Ignore hidden files</string>
+    <string name="set_ignore_hidden_desc">Skip files and folders that are hidden (ex. .cache)</string>
     <string name="set_separators">Multi-value separators</string>
     <string name="set_separators_desc">Configure characters that denote multiple tag values</string>
     <string name="set_separators_comma">Comma (,)</string>
