@@ -76,18 +76,19 @@ private class DeviceFilesImpl(private val contentResolver: ContentResolver) : De
                 while (cursor.moveToNext()) {
                     val childId = cursor.getString(childUriIndex)
                     val displayName = cursor.getString(displayNameIndex)
-                    
+
                     // Skip hidden files/directories if ignoreHidden is true
                     if (ignoreHidden && displayName.startsWith(".")) {
                         continue
                     }
-                    
+
                     val newPath = relativePath.file(displayName)
                     val mimeType = cursor.getString(mimeTypeIndex)
                     if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
                         // This does NOT block the current coroutine. Instead, we will
                         // evaluate this flow in parallel later to maximize throughput.
-                        recursive.add(exploreImpl(contentResolver, rootUri, childId, newPath, ignoreHidden))
+                        recursive.add(
+                            exploreImpl(contentResolver, rootUri, childId, newPath, ignoreHidden))
                     } else if (mimeType.startsWith("audio/") && mimeType != "audio/x-mpegurl") {
                         // Immediately emit all files given that it's just an O(1) op.
                         // This also just makes sure the outer flow has a reason to exist
