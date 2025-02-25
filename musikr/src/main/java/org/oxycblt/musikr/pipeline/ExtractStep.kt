@@ -90,7 +90,7 @@ private class ExtractStepImpl(
                 }
                 .flattenMerge()
                 .buffer(Channel.UNLIMITED)
-                
+
         // Divert cache hits and misses
         val cacheFlow =
             cacheResults.divert {
@@ -99,50 +99,47 @@ private class ExtractStepImpl(
                     is CacheResult.Miss -> Divert.Right(it.file)
                 }
             }
-            
+
         // Cache hits can be directly converted to valid songs
         val cachedSongs = cacheFlow.left.map { ExtractedMusic.Valid.Song(it) }
-        
+
         // Process uncached files in parallel
         val uncachedFiles = cacheFlow.right
         val processingDistributedFlow = uncachedFiles.distribute(8)
-        
+
         // Process each uncached file in parallel flows
         val processedSongs =
             processingDistributedFlow.flows
                 .map { flow ->
                     flow
                         .mapNotNull { file ->
-                            wrap(file) { f -> 
-                                // Open file descriptor
-                                val fd = withContext(Dispatchers.IO) {
-                                    context.contentResolver.openFileDescriptor(f.uri, "r")
-                                } ?: return@wrap null
-                                
-                                try {
-                                    // Extract metadata
-                                    val extractedMetadata = metadataExtractor.extract(f, fd)
-                                    
-                                    if (extractedMetadata != null) {
-                                        // Parse tags
-                                        val tags = tagParser.parse(extractedMetadata)
-                                        
-                                        // Store cover if present
-                                        val cover = extractedMetadata.cover?.let { 
-                                            storedCovers.write(it) 
-                                        }
-                                        
-                                        // Create and write the raw song to cache
-                                        val rawSong = RawSong(f, extractedMetadata.properties, tags, cover, addingMs)
-                                        wrap(rawSong, cache::write)
-                                        
-                                        ExtractedMusic.Valid.Song(rawSong)
-                                    } else {
-                                        ExtractedMusic.Invalid
+                            wrap(file) { f ->
+                                withContext(Dispatchers.IO) {
+                                        context.contentResolver.openFileDescriptor(f.uri, "r")
                                     }
-                                } finally {
-                                    withContext(Dispatchers.IO) { fd.close() }
-                                }
+                                    ?.use {
+                                        val extractedMetadata = metadataExtractor.extract(f, fd)
+
+                                        if (extractedMetadata != null) {
+                                            val tags = tagParser.parse(extractedMetadata)
+                                            val cover =
+                                                extractedMetadata.cover?.let {
+                                                    storedCovers.write(it)
+                                                }
+                                            val rawSong =
+                                                RawSong(
+                                                    f,
+                                                    extractedMetadata.properties,
+                                                    tags,
+                                                    cover,
+                                                    addingMs)
+                                            cache.write(rawSong)
+
+                                            ExtractedMusic.Valid.Song(rawSong)
+                                        } else {
+                                            ExtractedMusic.Invalid
+                                        }
+                                    }
                             }
                         }
                         .flowOn(Dispatchers.IO)
@@ -150,16 +147,17 @@ private class ExtractStepImpl(
                 }
                 .flattenMerge()
                 .buffer(Channel.UNLIMITED)
-        
+
         // Separate valid processed songs from invalid ones
-        val processedFlow = processedSongs.divert {
-            when (it) {
-                is ExtractedMusic.Valid.Song -> Divert.Left(it)
-                is ExtractedMusic.Invalid -> Divert.Right(it)
-                else -> Divert.Right(ExtractedMusic.Invalid)
+        val processedFlow =
+            processedSongs.divert {
+                when (it) {
+                    is ExtractedMusic.Valid.Song -> Divert.Left(it)
+                    is ExtractedMusic.Invalid -> Divert.Right(it)
+                    else -> Divert.Right(ExtractedMusic.Invalid)
+                }
             }
-        }
-        
+
         val processedValidSongs = processedFlow.left
         val invalidSongs = processedFlow.right
 
