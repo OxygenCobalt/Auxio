@@ -53,5 +53,8 @@ data class Interpretation(
     val naming: Naming,
 
     /** What separators delimit multi-value audio tags. */
-    val separators: Separators
+    val separators: Separators,
+    
+    /** Whether to ignore hidden files and directories (those starting with a dot). */
+    val ignoreHidden: Boolean = true
 )
