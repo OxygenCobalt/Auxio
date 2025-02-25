@@ -67,6 +67,8 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         val songNameOrFile = song.tags.name ?: requireNotNull(song.file.path.name)
         val songNameOrFileWithoutExt =
             song.tags.name ?: requireNotNull(song.file.path.name).split('.').first()
+        val songNameOrFileWithoutExtCorrect =
+            song.tags.name ?: requireNotNull(song.file.path.name).split('.').dropLast(1).joinToString('.')
         val albumNameOrDir = song.tags.albumName ?: song.file.path.directory.name
 
         val musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull()
@@ -114,7 +116,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             addedMs = song.addedMs,
             musicBrainzId = musicBrainzId,
             name = interpretation.naming.name(songNameOrFileWithoutExt, song.tags.sortName),
-            rawName = songNameOrFileWithoutExt,
+            rawName = songNameOrFileWithoutExtCorrect,
             track = song.tags.track,
             disc = song.tags.disc?.let { Disc(it, song.tags.subtitle) },
             date = song.tags.date,
