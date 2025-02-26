@@ -1,4 +1,4 @@
-Auxio je lokalni glazbeni player s brzim, pouzdanim UI/UX bez mnogih beskorisnih značajki prisutnih u drugim glazbenim playerima. Izgrađen na osnovi modernih biblioteka za reprodukciju, Auxio ima vrhunsku podršku za biblioteku i kvalitetu slušanja u usporedbi s drugim aplikacijama koje koriste zastarjelu funkcionalnost Androida. Ukratko, <b>Reproducira glazbu</b>.
+Auxio je lokalni glazbeni player s brzim, pouzdanim UI/UX bez mnogih beskorisnih značajki prisutnih u drugim glazbenim playerima. Izgrađen na osnovi modernih biblioteka za reprodukciju, Auxio ima vrhunsku podršku za biblioteku i kvalitetu slušanja u usporedbi s drugim aplikacijama koje koriste zastarjelu funkcionalnost Androida. Ukratko, <b>Reproducira glazbu.</b>.
 
 <b>Značajke</b>
 
@@ -6,14 +6,12 @@ Auxio je lokalni glazbeni player s brzim, pouzdanim UI/UX bez mnogih beskorisnih
 - Snappy UI izvedeno iz najnovijih smjernica za materijalni dizajn
 - Iskustveni korisnički doživljaj koji daje prednost jednostavnosti upotrebe u odnosu na rubne slučajeve
 - Prilagodljivo ponašanje
-- Podrška za brojeve diskova, više izvođača, vrste izdanja,
-precizni/izvorni datumi, sortiranje oznaka i više
+- Podrška za brojeve diskova, više izvođača, vrste izdanja, precizni/izvorni datumi, sortiranje oznaka i više
 - Napredni sustav izvođača koji ujedinjuje izvođače i izvođače albuma
 - Upravljanje mapama koje podržava SD karticu
 - Pouzdana funkcija popisa pjesama
-- Automaska podrška za Android
+- Automaska podrška za Android Auto
 - Automatska reprodukcija bez prekida
-- Postojanost stanja reprodukcije
 - Puna podrška za ReplayGain (na MP3, FLAC, OGG, OPUS i MP4 datotekama)
 - Podrška za vanjski ekvilizator (npr. Wavelet)
 - Od ruba do ruba
@@ -22,4 +20,4 @@ precizni/izvorni datumi, sortiranje oznaka i više
 - Automatska reprodukcija slušalica
 - Elegantni widgeti koji se automatski prilagođavaju njihovoj veličini
 - Potpuno privatno i izvan mreže
-- Bez zaobljenih naslovnica albuma (zadano)
+- Bez zaobljenih naslovnica albuma (ako ih želite)

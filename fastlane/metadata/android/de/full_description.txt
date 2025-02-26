@@ -22,4 +22,4 @@ Auxio ist ein lokaler Musik-Player mit einer schnellen, verlässlichen UI/UX, ab
 - Autoplay bei Kopfhörern
 - Stylische Widgets, die ihre Größe anpassen
 - vollständig privat und offline
-- keine abgerundeten Album-Cover (standardmäßig)
+- keine abgerundeten Album-Cover (wenn du willst)
