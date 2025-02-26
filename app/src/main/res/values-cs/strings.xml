@@ -341,4 +341,6 @@
     <string name="lng_empty_artists">Vaši umělci se zobrazí zde.</string>
     <string name="lng_empty_playlists">Vaše seznamy skladeb se zobrazí zde.</string>
     <string name="lng_empty_genres">Vaše žánry se zobrazí zde.</string>
+    <string name="set_ignore_hidden_desc">Přeskočit skryté soubory a složky (např. .cache)</string>
+    <string name="set_ignore_hidden">Ignorovat skryté soubory</string>
 </resources>
