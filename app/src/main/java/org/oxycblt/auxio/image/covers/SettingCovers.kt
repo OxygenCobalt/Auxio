@@ -26,7 +26,6 @@ import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.CoverParams
-import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.MutableCovers

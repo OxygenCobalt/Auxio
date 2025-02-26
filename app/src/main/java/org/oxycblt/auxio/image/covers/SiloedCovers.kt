@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.image.covers
 
 import android.content.Context
@@ -96,8 +96,7 @@ private constructor(
         ): MutableSiloedCovers {
             val core = SiloCore.from(context, silo)
             return MutableSiloedCovers(
-                core.rootDir, silo, MutableFileCovers(core.files, core.format, coverIdentifier)
-            )
+                core.rootDir, silo, MutableFileCovers(core.files, core.format, coverIdentifier))
         }
     }
 }
