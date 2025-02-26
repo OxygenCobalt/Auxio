@@ -22,12 +22,12 @@ import java.io.InputStream
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-interface Covers {
-    suspend fun obtain(id: String): CoverResult<out Cover>
+interface Covers<T : Cover> {
+    suspend fun obtain(id: String): CoverResult<T>
 }
 
-interface MutableCovers : Covers {
-    suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<out Cover>
+interface MutableCovers<T : Cover> : Covers<T> {
+    suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<T>
 
     suspend fun cleanup(excluding: Collection<Cover>)
 }

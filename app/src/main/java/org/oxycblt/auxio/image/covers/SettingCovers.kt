@@ -23,19 +23,23 @@ import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.CoverParams
+import org.oxycblt.musikr.cover.CoverResult
+import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.MutableCovers
 
 interface SettingCovers {
-    suspend fun create(context: Context, revision: UUID): MutableCovers
+    suspend fun obtain(context: Context, id: String): CoverResult<FileCover>
+    suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
 }
 
 class SettingCoversImpl
 @Inject
 constructor(private val imageSettings: ImageSettings, private val identifier: CoverIdentifier) :
     SettingCovers {
-    override suspend fun create(context: Context, revision: UUID): MutableCovers =
+    override suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover> =
         when (imageSettings.coverMode) {
             CoverMode.OFF -> NullCovers(context)
             CoverMode.SAVE_SPACE -> siloedCovers(context, revision, CoverParams.of(500, 70))
@@ -43,6 +47,13 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
             CoverMode.HIGH_QUALITY -> siloedCovers(context, revision, CoverParams.of(1000, 100))
         }
 
+    override suspend fun obtain(context: Context, id: String): CoverResult<FileCover> {
+        val coverId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
+        val siloedCovers = SiloedCovers.from(context, coverId.silo)
+        val covers = CompatCovers(context, siloedCovers)
+        return covers.obtain(coverId.id)
+    }
+
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
-        MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier)
+        MutableCompatCovers(context, MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier))
 }

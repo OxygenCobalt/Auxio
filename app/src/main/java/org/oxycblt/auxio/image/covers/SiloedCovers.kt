@@ -35,8 +35,8 @@ import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.app.AppFiles
 import org.oxycblt.musikr.metadata.Metadata
 
-open class SiloedCovers(private val silo: CoverSilo, private val fileCovers: FileCovers) : Covers {
-    override suspend fun obtain(id: String): CoverResult<SiloedCover> {
+open class SiloedCovers(private val silo: CoverSilo, private val fileCovers: FileCovers) : Covers<FileCover> {
+    override suspend fun obtain(id: String): CoverResult<FileCover> {
         val coverId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
         if (coverId.silo != silo) return CoverResult.Miss()
         return when (val result = fileCovers.obtain(coverId.id)) {
@@ -58,8 +58,8 @@ private constructor(
     private val rootDir: File,
     private val silo: CoverSilo,
     private val fileCovers: MutableFileCovers
-) : SiloedCovers(silo, fileCovers), MutableCovers {
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<out Cover> =
+) : SiloedCovers(silo, fileCovers), MutableCovers<FileCover> {
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FileCover> =
         when (val result = fileCovers.create(file, metadata)) {
             is CoverResult.Hit -> CoverResult.Hit(SiloedCover(silo, result.cover))
             is CoverResult.Miss -> CoverResult.Miss()

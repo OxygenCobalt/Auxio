@@ -25,13 +25,19 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.image.covers.SiloedCoverId
 import org.oxycblt.auxio.image.covers.SiloedCovers
 import org.oxycblt.musikr.cover.CoverResult
+import javax.inject.Inject
 
-class CoverProvider : ContentProvider() {
+@AndroidEntryPoint
+class CoverProvider @Inject constructor(
+    private val settingCovers: SettingCovers
+) : ContentProvider() {
     override fun onCreate(): Boolean = true
 
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
@@ -39,12 +45,10 @@ class CoverProvider : ContentProvider() {
             return null
         }
         val id = uri.lastPathSegment ?: return null
-        val coverId = SiloedCoverId.parse(id) ?: return null
         return runBlocking {
-            val siloedCovers = SiloedCovers.from(requireNotNull(context), coverId.silo)
-            when (val res = siloedCovers.obtain(id)) {
-                is CoverResult.Hit -> res.cover.fd()
-                is CoverResult.Miss -> null
+            when (val result = settingCovers.obtain(requireNotNull(context), id)) {
+                is CoverResult.Hit -> result.cover.fd()
+                else -> null
             }
         }
     }
