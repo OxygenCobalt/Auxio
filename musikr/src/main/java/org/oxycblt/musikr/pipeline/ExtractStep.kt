@@ -118,7 +118,7 @@ private class ExtractStepImpl(
                                         context.contentResolver.openFileDescriptor(f.uri, "r")
                                     }
                                     ?.use {
-                                        val extractedMetadata = metadataExtractor.extract(f, fd)
+                                        val extractedMetadata = metadataExtractor.extract(file, it)
 
                                         if (extractedMetadata != null) {
                                             val tags = tagParser.parse(extractedMetadata)
