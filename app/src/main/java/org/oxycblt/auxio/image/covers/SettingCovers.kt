@@ -27,11 +27,12 @@ import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.cover.CoverResult
+import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.MutableCovers
 
 interface SettingCovers {
-    suspend fun obtain(context: Context, id: String): CoverResult<FileCover>
+    suspend fun immutable(context: Context): Covers<out FileCover>
 
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
 }
@@ -40,6 +41,9 @@ class SettingCoversImpl
 @Inject
 constructor(private val imageSettings: ImageSettings, private val identifier: CoverIdentifier) :
     SettingCovers {
+    override suspend fun immutable(context: Context): Covers<out FileCover> =
+        CompatCovers(context, BaseSiloedCovers(context))
+
     override suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover> =
         when (imageSettings.coverMode) {
             CoverMode.OFF -> NullCovers(context)
@@ -47,13 +51,6 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
             CoverMode.BALANCED -> siloedCovers(context, revision, CoverParams.of(750, 85))
             CoverMode.HIGH_QUALITY -> siloedCovers(context, revision, CoverParams.of(1000, 100))
         }
-
-    override suspend fun obtain(context: Context, id: String): CoverResult<FileCover> {
-        val coverId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
-        val siloedCovers = SiloedCovers.from(context, coverId.silo)
-        val covers = CompatCovers(context, siloedCovers)
-        return covers.obtain(coverId.id)
-    }
 
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
         MutableCompatCovers(

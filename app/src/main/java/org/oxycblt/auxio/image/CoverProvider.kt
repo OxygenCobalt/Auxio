@@ -43,7 +43,7 @@ class CoverProvider @Inject constructor(private val settingCovers: SettingCovers
         }
         val id = uri.lastPathSegment ?: return null
         return runBlocking {
-            when (val result = settingCovers.obtain(requireNotNull(context), id)) {
+            when (val result = settingCovers.immutable(requireNotNull(context)).obtain(id)) {
                 is CoverResult.Hit -> result.cover.fd()
                 else -> null
             }

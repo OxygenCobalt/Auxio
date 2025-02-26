@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.image.covers
 
 import android.content.Context
@@ -35,11 +35,23 @@ import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.app.AppFiles
 import org.oxycblt.musikr.metadata.Metadata
 
+class BaseSiloedCovers(private val context: Context) : Covers<FileCover> {
+    override suspend fun obtain(id: String): CoverResult<FileCover> {
+        val siloedId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
+        val core = SiloCore.from(context, siloedId.silo)
+        val fileCovers = FileCovers(core.files, core.format)
+        return when (val result = fileCovers.obtain(siloedId.id)) {
+            is CoverResult.Hit -> CoverResult.Hit(SiloedCover(siloedId.silo, result.cover))
+            is CoverResult.Miss -> CoverResult.Miss()
+        }
+    }
+}
+
 open class SiloedCovers(private val silo: CoverSilo, private val fileCovers: FileCovers) :
     Covers<FileCover> {
     override suspend fun obtain(id: String): CoverResult<FileCover> {
         val coverId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
-        if (coverId.silo != silo) return CoverResult.Miss()
+        if (silo != coverId.silo) return CoverResult.Miss()
         return when (val result = fileCovers.obtain(coverId.id)) {
             is CoverResult.Hit -> CoverResult.Hit(SiloedCover(silo, result.cover))
             is CoverResult.Miss -> CoverResult.Miss()
@@ -84,7 +96,8 @@ private constructor(
         ): MutableSiloedCovers {
             val core = SiloCore.from(context, silo)
             return MutableSiloedCovers(
-                core.rootDir, silo, MutableFileCovers(core.files, core.format, coverIdentifier))
+                core.rootDir, silo, MutableFileCovers(core.files, core.format, coverIdentifier)
+            )
         }
     }
 }
