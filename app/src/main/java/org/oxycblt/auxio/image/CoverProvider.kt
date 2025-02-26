@@ -26,18 +26,15 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.image.covers.SettingCovers
-import org.oxycblt.auxio.image.covers.SiloedCoverId
-import org.oxycblt.auxio.image.covers.SiloedCovers
 import org.oxycblt.musikr.cover.CoverResult
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class CoverProvider @Inject constructor(
-    private val settingCovers: SettingCovers
-) : ContentProvider() {
+class CoverProvider @Inject constructor(private val settingCovers: SettingCovers) :
+    ContentProvider() {
     override fun onCreate(): Boolean = true
 
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {

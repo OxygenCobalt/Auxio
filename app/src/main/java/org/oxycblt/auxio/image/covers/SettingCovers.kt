@@ -32,6 +32,7 @@ import org.oxycblt.musikr.cover.MutableCovers
 
 interface SettingCovers {
     suspend fun obtain(context: Context, id: String): CoverResult<FileCover>
+
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
 }
 
@@ -55,5 +56,6 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
     }
 
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
-        MutableCompatCovers(context, MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier))
+        MutableCompatCovers(
+            context, MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier))
 }

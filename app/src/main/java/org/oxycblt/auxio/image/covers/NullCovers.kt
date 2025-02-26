@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.image.covers
 
 import android.content.Context
-import org.apache.commons.lang3.ObjectUtils.Null
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.MutableCovers
