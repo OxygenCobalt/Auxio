@@ -334,4 +334,6 @@
     </plurals>
     <string name="cnt_mp4">MPEG-4 تحتوي على %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="set_ignore_hidden">تجاهل الملفات المخفية</string>
+    <string name="set_ignore_hidden_desc">تخطي الملفات والمجلدات المخفية (على سبيل المثال: الذاكرة المخبّأة)</string>
 </resources>
