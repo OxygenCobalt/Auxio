@@ -76,7 +76,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         val v363uid =
             musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
                 ?: Music.UID.auxio(Music.UID.Item.SONG) {
-                    update(songNameOrFileWithoutExt)
+                    update(songNameOrFileWithoutExtCorrect)
                     update(albumNameOrDir)
                     update(song.tags.date)
 
@@ -106,9 +106,24 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                     update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
                 }
 
+        val v401uid =
+            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
+                ?: Music.UID.auxio(Music.UID.Item.SONG) {
+                    update(songNameOrFileWithoutExt)
+                    update(albumNameOrDir)
+                    update(song.tags.date)
+
+                    update(song.tags.track)
+                    update(song.tags.disc)
+
+                    update(song.tags.artistNames)
+                    update(song.tags.albumArtistNames)
+                }
+
         return PreSong(
             v363Uid = v363uid,
             v400Uid = v400uid,
+            v401Uid = v401uid,
             uri = uri,
             path = song.file.path,
             size = song.file.size,

@@ -144,6 +144,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 it.pointerMap[v363Pointer]?.forEach { index -> it.songVertices[index] = vertex }
                 val v400Pointer = SongPointer.UID(entry.value.preSong.v400Uid)
                 it.pointerMap[v400Pointer]?.forEach { index -> it.songVertices[index] = vertex }
+                val v401Pointer = SongPointer.UID(entry.value.preSong.v401Uid)
+                it.pointerMap[v401Pointer]?.forEach { index -> it.songVertices[index] = vertex }
             }
         }
 

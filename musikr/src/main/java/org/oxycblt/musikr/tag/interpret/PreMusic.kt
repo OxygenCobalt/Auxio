@@ -33,6 +33,7 @@ import org.oxycblt.musikr.tag.ReplayGainAdjustment
 internal data class PreSong(
     val v363Uid: Music.UID,
     val v400Uid: Music.UID,
+    val v401Uid: Music.UID,
     val musicBrainzId: UUID?,
     val name: Name.Known,
     val rawName: String,
