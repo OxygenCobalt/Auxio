@@ -25,21 +25,23 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverFormat
 import org.oxycblt.musikr.cover.CoverIdentifier
+import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.FileCovers
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.MutableFileCovers
-import org.oxycblt.musikr.cover.ObtainResult
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.app.AppFiles
+import org.oxycblt.musikr.metadata.Metadata
 
 open class SiloedCovers(private val silo: CoverSilo, private val fileCovers: FileCovers) : Covers {
-    override suspend fun obtain(id: String): ObtainResult<SiloedCover> {
-        val coverId = SiloedCoverId.parse(id) ?: return ObtainResult.Miss()
-        if (coverId.silo != silo) return ObtainResult.Miss()
+    override suspend fun obtain(id: String): CoverResult<SiloedCover> {
+        val coverId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
+        if (coverId.silo != silo) return CoverResult.Miss()
         return when (val result = fileCovers.obtain(coverId.id)) {
-            is ObtainResult.Hit -> ObtainResult.Hit(SiloedCover(silo, result.cover))
-            is ObtainResult.Miss -> ObtainResult.Miss()
+            is CoverResult.Hit -> CoverResult.Hit(SiloedCover(silo, result.cover))
+            is CoverResult.Miss -> CoverResult.Miss()
         }
     }
 
@@ -57,7 +59,11 @@ private constructor(
     private val silo: CoverSilo,
     private val fileCovers: MutableFileCovers
 ) : SiloedCovers(silo, fileCovers), MutableCovers {
-    override suspend fun write(data: ByteArray) = SiloedCover(silo, fileCovers.write(data))
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<out Cover> =
+        when (val result = fileCovers.create(file, metadata)) {
+            is CoverResult.Hit -> CoverResult.Hit(SiloedCover(silo, result.cover))
+            is CoverResult.Miss -> CoverResult.Miss()
+        }
 
     override suspend fun cleanup(excluding: Collection<Cover>) {
         fileCovers.cleanup(excluding.filterIsInstance<SiloedCover>().map { it.innerCover })

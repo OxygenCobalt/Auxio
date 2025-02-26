@@ -20,13 +20,15 @@ package org.oxycblt.auxio.image.covers
 
 import android.content.Context
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.MutableCovers
-import org.oxycblt.musikr.cover.ObtainResult
+import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.metadata.Metadata
 
 class NullCovers(private val context: Context) : MutableCovers {
-    override suspend fun obtain(id: String) = ObtainResult.Hit(NullCover)
+    override suspend fun obtain(id: String) = CoverResult.Hit(NullCover)
 
-    override suspend fun write(data: ByteArray): Cover = NullCover
+    override suspend fun create(file: DeviceFile, metadata: Metadata) = CoverResult.Hit(NullCover)
 
     override suspend fun cleanup(excluding: Collection<Cover>) {
         context.coversDir().listFiles()?.forEach { it.deleteRecursively() }

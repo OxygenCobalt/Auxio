@@ -31,8 +31,8 @@ import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.Covers
-import org.oxycblt.musikr.cover.ObtainResult
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
@@ -122,9 +122,9 @@ internal data class CachedSong(
         val cover =
             when (val result = coverId?.let { covers.obtain(it) }) {
                 // We found the cover.
-                is ObtainResult.Hit -> result.cover
+                is CoverResult.Hit -> result.cover
                 // We actually didn't find the cover, can't safely convert.
-                is ObtainResult.Miss -> return null
+                is CoverResult.Miss -> return null
                 // No cover in the first place, can ignore.
                 null -> null
             }

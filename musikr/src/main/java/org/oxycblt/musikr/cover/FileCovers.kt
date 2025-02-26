@@ -19,17 +19,19 @@
 package org.oxycblt.musikr.cover
 
 import android.os.ParcelFileDescriptor
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.app.AppFile
 import org.oxycblt.musikr.fs.app.AppFiles
+import org.oxycblt.musikr.metadata.Metadata
 
 open class FileCovers(private val appFiles: AppFiles, private val coverFormat: CoverFormat) :
     Covers {
-    override suspend fun obtain(id: String): ObtainResult<FileCover> {
+    override suspend fun obtain(id: String): CoverResult<FileCover> {
         val file = appFiles.find(getFileName(id))
         return if (file != null) {
-            ObtainResult.Hit(FileCoverImpl(id, file))
+            CoverResult.Hit(FileCoverImpl(id, file))
         } else {
-            ObtainResult.Miss()
+            CoverResult.Miss()
         }
     }
 
@@ -41,10 +43,11 @@ class MutableFileCovers(
     private val coverFormat: CoverFormat,
     private val coverIdentifier: CoverIdentifier
 ) : FileCovers(appFiles, coverFormat), MutableCovers {
-    override suspend fun write(data: ByteArray): FileCover {
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FileCover> {
+        val data = metadata.cover ?: return CoverResult.Miss()
         val id = coverIdentifier.identify(data)
-        val file = appFiles.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
-        return FileCoverImpl(id, file)
+        val coverFile = appFiles.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
+        return CoverResult.Hit(FileCoverImpl(id, coverFile))
     }
 
     override suspend fun cleanup(excluding: Collection<Cover>) {

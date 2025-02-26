@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.metadata
 
-internal data class Metadata(
+data class Metadata(
     val id3v2: Map<String, List<String>>,
     val xiph: Map<String, List<String>>,
     val mp4: Map<String, List<String>>,
@@ -53,7 +53,7 @@ internal data class Metadata(
     }
 }
 
-internal data class Properties(
+data class Properties(
     val mimeType: String,
     val durationMs: Long,
     val bitrateKbps: Int,

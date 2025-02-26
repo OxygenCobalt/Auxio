@@ -35,6 +35,7 @@ import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.MetadataExtractor
@@ -62,7 +63,7 @@ private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
     private val cacheFactory: Cache.Factory,
-    private val storedCovers: MutableCovers
+    private val covers: MutableCovers
 ) : ExtractStep {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
@@ -84,7 +85,7 @@ private class ExtractStepImpl(
             readDistributedFlow.flows
                 .map { flow ->
                     flow
-                        .map { wrap(it) { file -> cache.read(file, storedCovers) } }
+                        .map { wrap(it) { file -> cache.read(file, covers) } }
                         .flowOn(Dispatchers.IO)
                         .buffer(Channel.UNLIMITED)
                 }
@@ -123,8 +124,10 @@ private class ExtractStepImpl(
                                         if (extractedMetadata != null) {
                                             val tags = tagParser.parse(extractedMetadata)
                                             val cover =
-                                                extractedMetadata.cover?.let {
-                                                    storedCovers.write(it)
+                                                when (val result =
+                                                    covers.create(f, extractedMetadata)) {
+                                                    is CoverResult.Hit -> result.cover
+                                                    else -> null
                                                 }
                                             val rawSong =
                                                 RawSong(
@@ -175,8 +178,6 @@ private class ExtractStepImpl(
 
         return merged.onCompletion { cache.finalize() }
     }
-
-    private data class FileWith<T>(val file: DeviceFile, val with: T)
 }
 
 internal data class RawSong(

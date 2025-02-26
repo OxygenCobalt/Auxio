@@ -20,7 +20,7 @@ package org.oxycblt.musikr.fs
 
 import android.net.Uri
 
-internal data class DeviceFile(
+data class DeviceFile(
     val uri: Uri,
     val mimeType: String,
     val path: Path,

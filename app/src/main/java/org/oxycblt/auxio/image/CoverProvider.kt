@@ -29,7 +29,7 @@ import kotlinx.coroutines.runBlocking
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.image.covers.SiloedCoverId
 import org.oxycblt.auxio.image.covers.SiloedCovers
-import org.oxycblt.musikr.cover.ObtainResult
+import org.oxycblt.musikr.cover.CoverResult
 
 class CoverProvider : ContentProvider() {
     override fun onCreate(): Boolean = true
@@ -43,8 +43,8 @@ class CoverProvider : ContentProvider() {
         return runBlocking {
             val siloedCovers = SiloedCovers.from(requireNotNull(context), coverId.silo)
             when (val res = siloedCovers.obtain(id)) {
-                is ObtainResult.Hit -> res.cover.fd()
-                is ObtainResult.Miss -> null
+                is CoverResult.Hit -> res.cover.fd()
+                is CoverResult.Miss -> null
             }
         }
     }

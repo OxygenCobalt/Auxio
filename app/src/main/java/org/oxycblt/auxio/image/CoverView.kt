@@ -409,7 +409,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         @Px val iconSize: Int?
     ) : Drawable() {
         init {
-            // Re-tint the drawable to use the analogous "on surfaceg" color for
+            // Re-tint the drawable to use the analogous "on surface" color for
             // StyledImageView.
             DrawableCompat.setTintList(inner, context.getColorCompat(R.color.sel_on_cover_bg))
         }

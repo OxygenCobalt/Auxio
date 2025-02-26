@@ -19,21 +19,23 @@
 package org.oxycblt.musikr.cover
 
 import java.io.InputStream
+import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.metadata.Metadata
 
 interface Covers {
-    suspend fun obtain(id: String): ObtainResult<out Cover>
+    suspend fun obtain(id: String): CoverResult<out Cover>
 }
 
 interface MutableCovers : Covers {
-    suspend fun write(data: ByteArray): Cover
+    suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<out Cover>
 
     suspend fun cleanup(excluding: Collection<Cover>)
 }
 
-sealed interface ObtainResult<T : Cover> {
-    data class Hit<T : Cover>(val cover: T) : ObtainResult<T>
+sealed interface CoverResult<T : Cover> {
+    data class Hit<T : Cover>(val cover: T) : CoverResult<T>
 
-    class Miss<T : Cover> : ObtainResult<T>
+    class Miss<T : Cover> : CoverResult<T>
 }
 
 interface Cover {
