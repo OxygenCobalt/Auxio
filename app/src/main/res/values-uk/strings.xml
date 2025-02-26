@@ -336,4 +336,6 @@
     <string name="lng_empty_playlists">Тут відображатимуться ваші списки відтворення.</string>
     <string name="lng_empty_genres">Тут відображатимуться ваші жанри.</string>
     <string name="lng_empty_artists">Тут з’являться ваші виконавці.</string>
+    <string name="set_ignore_hidden">Ігнорувати приховані файли</string>
+    <string name="set_ignore_hidden_desc">Пропускати приховані файли та папки (наприклад, .cache)</string>
 </resources>
