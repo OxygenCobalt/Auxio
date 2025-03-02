@@ -32,8 +32,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.musikr.cover.CoverResult
 
-@AndroidEntryPoint
-class CoverProvider @Inject constructor(private val settingCovers: SettingCovers) :
+class CoverProvider() :
     ContentProvider() {
     override fun onCreate(): Boolean = true
 
@@ -43,7 +42,7 @@ class CoverProvider @Inject constructor(private val settingCovers: SettingCovers
         }
         val id = uri.lastPathSegment ?: return null
         return runBlocking {
-            when (val result = settingCovers.immutable(requireNotNull(context)).obtain(id)) {
+            when (val result = SettingCovers.immutable(requireNotNull(context)).obtain(id)) {
                 is CoverResult.Hit -> result.cover.fd()
                 else -> null
             }

@@ -18,12 +18,14 @@
  
 package org.oxycblt.musikr.cache
 
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.Covers
+import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 
 abstract class Cache {
-    internal abstract suspend fun read(file: DeviceFile, covers: Covers): CacheResult
+    internal abstract suspend fun read(file: DeviceFile, covers: Covers<out Cover>): CacheResult
 
     internal abstract suspend fun write(song: RawSong)
 

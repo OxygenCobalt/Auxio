@@ -63,7 +63,7 @@ private class ExtractStepImpl(
     private val metadataExtractor: MetadataExtractor,
     private val tagParser: TagParser,
     private val cacheFactory: Cache.Factory,
-    private val covers: MutableCovers
+    private val covers: MutableCovers<out Cover>
 ) : ExtractStep {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun extract(nodes: Flow<ExploreNode>): Flow<ExtractedMusic> {
@@ -126,7 +126,7 @@ private class ExtractStepImpl(
                                             val cover =
                                                 when (val result =
                                                     covers.create(f, extractedMetadata)) {
-                                                    is CoverResult.Hit -> result.cover
+                                                    is CoverResult.Hit<Cover> -> result.cover
                                                     else -> null
                                                 }
                                             val rawSong =

@@ -25,7 +25,7 @@ import org.oxycblt.musikr.fs.app.AppFiles
 import org.oxycblt.musikr.metadata.Metadata
 
 open class FileCovers(private val appFiles: AppFiles, private val coverFormat: CoverFormat) :
-    Covers {
+    Covers<FileCover> {
     override suspend fun obtain(id: String): CoverResult<FileCover> {
         val file = appFiles.find(getFileName(id))
         return if (file != null) {
@@ -42,7 +42,7 @@ class MutableFileCovers(
     private val appFiles: AppFiles,
     private val coverFormat: CoverFormat,
     private val coverIdentifier: CoverIdentifier
-) : FileCovers(appFiles, coverFormat), MutableCovers {
+) : FileCovers(appFiles, coverFormat), MutableCovers<FileCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FileCover> {
         val data = metadata.cover ?: return CoverResult.Miss()
         val id = coverIdentifier.identify(data)
