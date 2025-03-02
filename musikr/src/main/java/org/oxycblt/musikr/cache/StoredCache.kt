@@ -21,7 +21,6 @@ package org.oxycblt.musikr.cache
 import android.content.Context
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.Covers
-import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 

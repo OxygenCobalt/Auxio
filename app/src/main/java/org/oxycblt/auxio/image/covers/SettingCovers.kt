@@ -54,5 +54,4 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
         MutableCompatCovers(
             context, MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier))
-
 }
