@@ -37,9 +37,26 @@ open class FolderCovers(private val context: Context) : Covers<FolderCover> {
             return CoverResult.Miss()
         }
 
+        // TODO: Check if the dir actually exists still to avoid stale uris
         val directoryUri = id.substring("folder:".length)
         val uri = Uri.parse(directoryUri)
-        return CoverResult.Hit(FolderCoverImpl(context, uri))
+
+        // Check if the URI is still valid
+        val exists =
+            withContext(Dispatchers.IO) {
+                try {
+                    context.contentResolver.openFileDescriptor(uri, "r")?.close()
+                    true
+                } catch (e: Exception) {
+                    false
+                }
+            }
+
+        return if (exists) {
+            CoverResult.Hit(FolderCoverImpl(context, uri))
+        } else {
+            CoverResult.Miss()
+        }
     }
 }
 
