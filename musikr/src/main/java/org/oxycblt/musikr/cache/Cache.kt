@@ -20,7 +20,7 @@ package org.oxycblt.musikr.cache
 
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.Covers
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 
 abstract class Cache {

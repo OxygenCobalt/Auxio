@@ -20,7 +20,7 @@ package org.oxycblt.musikr.tag.interpret
 
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Disc

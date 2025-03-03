@@ -34,7 +34,7 @@ import androidx.room.TypeConverters
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.Covers
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Date

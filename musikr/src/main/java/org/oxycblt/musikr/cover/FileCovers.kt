@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.cover
 
 import android.os.ParcelFileDescriptor
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.fs.app.AppFile
 import org.oxycblt.musikr.fs.app.AppFiles
 import org.oxycblt.musikr.metadata.Metadata

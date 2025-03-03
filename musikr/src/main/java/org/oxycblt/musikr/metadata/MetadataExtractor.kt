@@ -22,7 +22,7 @@ import android.os.ParcelFileDescriptor
 import java.io.FileInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 
 internal interface MetadataExtractor {
     suspend fun extract(deviceFile: DeviceFile, fd: ParcelFileDescriptor): Metadata?

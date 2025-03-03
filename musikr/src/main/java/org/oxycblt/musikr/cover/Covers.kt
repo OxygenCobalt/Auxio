@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.cover
 
 import java.io.InputStream
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
 interface Covers<T : Cover> {

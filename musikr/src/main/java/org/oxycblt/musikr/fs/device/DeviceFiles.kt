@@ -24,17 +24,14 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.musikr.fs.DeviceFile
+import kotlinx.coroutines.flow.flatMapMerge
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFiles {
-    fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean = true): Flow<DeviceFile>
+    fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean = true): Flow<DeviceNode>
 
     companion object {
         fun from(context: Context): DeviceFiles = DeviceFilesImpl(context.contentResolverSafe)
@@ -43,23 +40,38 @@ internal interface DeviceFiles {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private class DeviceFilesImpl(private val contentResolver: ContentResolver) : DeviceFiles {
-    override fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean): Flow<DeviceFile> =
+    override fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean): Flow<DeviceNode> =
         locations.flatMapMerge { location ->
-            exploreImpl(
+            // Create a root directory for each location
+            val rootDirectory = DeviceDirectory(
+                uri = location.uri,
+                path = location.path,
+                parent = null,
+                children = emptyFlow()
+            )
+            
+            // Set up the children flow for the root directory
+            rootDirectory.children = exploreDirectoryImpl(
                 contentResolver,
                 location.uri,
                 DocumentsContract.getTreeDocumentId(location.uri),
                 location.path,
-                ignoreHidden)
+                rootDirectory,
+                ignoreHidden
+            )
+            
+            // Return a flow that emits the root directory
+            flow { emit(rootDirectory) }
         }
 
-    private fun exploreImpl(
+    private fun exploreDirectoryImpl(
         contentResolver: ContentResolver,
         rootUri: Uri,
         treeDocumentId: String,
         relativePath: Path,
+        parent: DeviceDirectory,
         ignoreHidden: Boolean
-    ): Flow<DeviceFile> = flow {
+    ): Flow<DeviceNode> = flow {
         contentResolver.useQuery(
             DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
             PROJECTION) { cursor ->
@@ -72,7 +84,7 @@ private class DeviceFilesImpl(private val contentResolver: ContentResolver) : De
                 val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
                 val lastModifiedIndex =
                     cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-                val recursive = mutableListOf<Flow<DeviceFile>>()
+                
                 while (cursor.moveToNext()) {
                     val childId = cursor.getString(childUriIndex)
                     val displayName = cursor.getString(displayNameIndex)
@@ -84,27 +96,44 @@ private class DeviceFilesImpl(private val contentResolver: ContentResolver) : De
 
                     val newPath = relativePath.file(displayName)
                     val mimeType = cursor.getString(mimeTypeIndex)
+                    val lastModified = cursor.getLong(lastModifiedIndex)
+                    val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
+                    
                     if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                        // This does NOT block the current coroutine. Instead, we will
-                        // evaluate this flow in parallel later to maximize throughput.
-                        recursive.add(
-                            exploreImpl(contentResolver, rootUri, childId, newPath, ignoreHidden))
-                    } else if (mimeType.startsWith("audio/") && mimeType != "audio/x-mpegurl") {
-                        // Immediately emit all files given that it's just an O(1) op.
-                        // This also just makes sure the outer flow has a reason to exist
-                        // rather than just being a glorified async.
-                        val lastModified = cursor.getLong(lastModifiedIndex)
+                        // Create a directory node with empty children flow initially
+                        val directory = DeviceDirectory(
+                            uri = childUri,
+                            path = newPath,
+                            parent = parent,
+                            children = emptyFlow()
+                        )
+                        
+                        // Set up the children flow for this directory
+                        directory.children = exploreDirectoryImpl(
+                            contentResolver,
+                            rootUri,
+                            childId,
+                            newPath,
+                            directory,
+                            ignoreHidden
+                        )
+                        
+                        // Emit the directory node
+                        emit(directory)
+                    } else {
                         val size = cursor.getLong(sizeIndex)
                         emit(
                             DeviceFile(
-                                DocumentsContract.buildDocumentUriUsingTree(rootUri, childId),
-                                mimeType,
-                                newPath,
-                                size,
-                                lastModified))
+                                uri = childUri,
+                                mimeType = mimeType,
+                                path = newPath,
+                                size = size,
+                                modifiedMs = lastModified,
+                                parent = parent
+                            )
+                        )
                     }
                 }
-                emitAll(recursive.asFlow().flattenMerge())
             }
     }
 

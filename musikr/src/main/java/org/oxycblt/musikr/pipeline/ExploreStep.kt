@@ -20,17 +20,20 @@ package org.oxycblt.musikr.pipeline
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceDirectory
+import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceNode
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceFiles
 import org.oxycblt.musikr.playlist.PlaylistFile
@@ -54,12 +57,8 @@ private class ExploreStepImpl(
         val audios =
             deviceFiles
                 .explore(locations.asFlow())
-                .mapNotNull {
-                    when {
-                        it.mimeType == M3U.MIME_TYPE -> null
-                        it.mimeType.startsWith("audio/") -> ExploreNode.Audio(it)
-                        else -> null
-                    }
+                .flattenFilter {
+                    it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE
                 }
                 .flowOn(Dispatchers.IO)
                 .buffer()
@@ -69,6 +68,19 @@ private class ExploreStepImpl(
                 .flowOn(Dispatchers.IO)
                 .buffer()
         return merge(audios, playlists)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun Flow<DeviceNode>.flattenFilter(block: (DeviceFile) -> Boolean): Flow<ExploreNode> = flow {
+        collect {
+            val recurse = mutableListOf<Flow<ExploreNode>>()
+            when {
+                it is DeviceFile && block(it) -> emit(ExploreNode.Audio(it))
+                it is DeviceDirectory -> recurse.add(it.children.flattenFilter(block))
+                else -> {}
+            }
+            emitAll(recurse.asFlow().flattenMerge())
+        }
     }
 }
 

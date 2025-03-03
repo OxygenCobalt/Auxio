@@ -16,14 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs
+package org.oxycblt.musikr.fs.device
 
 import android.net.Uri
+import kotlinx.coroutines.flow.Flow
+import org.oxycblt.musikr.fs.Path
+
+sealed interface DeviceNode {
+    val uri: Uri
+    val path: Path
+}
+
+data class DeviceDirectory(
+    override val uri: Uri,
+    override val path: Path,
+    val parent: DeviceDirectory?,
+    var children: Flow<DeviceNode>
+) : DeviceNode
 
 data class DeviceFile(
-    val uri: Uri,
+    override val uri: Uri,
+    override val path: Path,
+    val modifiedMs: Long,
     val mimeType: String,
-    val path: Path,
     val size: Long,
-    val modifiedMs: Long
-)
+    val parent: DeviceDirectory
+) : DeviceNode

@@ -31,7 +31,7 @@ import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.FileCovers
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.cover.MutableFileCovers
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.fs.app.AppFiles
 import org.oxycblt.musikr.metadata.Metadata
 

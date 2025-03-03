@@ -30,7 +30,7 @@ import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.MutableCovers
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
 open class CompatCovers(private val context: Context, private val inner: Covers<FileCover>) :
