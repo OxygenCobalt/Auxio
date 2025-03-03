@@ -31,11 +31,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceDirectory
 import org.oxycblt.musikr.fs.device.DeviceFile
-import org.oxycblt.musikr.fs.device.DeviceNode
-import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceFiles
+import org.oxycblt.musikr.fs.device.DeviceNode
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
@@ -57,9 +57,7 @@ private class ExploreStepImpl(
         val audios =
             deviceFiles
                 .explore(locations.asFlow())
-                .flattenFilter {
-                    it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE
-                }
+                .flattenFilter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
                 .flowOn(Dispatchers.IO)
                 .buffer()
         val playlists =
@@ -71,17 +69,18 @@ private class ExploreStepImpl(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun Flow<DeviceNode>.flattenFilter(block: (DeviceFile) -> Boolean): Flow<ExploreNode> = flow {
-        collect {
-            val recurse = mutableListOf<Flow<ExploreNode>>()
-            when {
-                it is DeviceFile && block(it) -> emit(ExploreNode.Audio(it))
-                it is DeviceDirectory -> recurse.add(it.children.flattenFilter(block))
-                else -> {}
+    private fun Flow<DeviceNode>.flattenFilter(block: (DeviceFile) -> Boolean): Flow<ExploreNode> =
+        flow {
+            collect {
+                val recurse = mutableListOf<Flow<ExploreNode>>()
+                when {
+                    it is DeviceFile && block(it) -> emit(ExploreNode.Audio(it))
+                    it is DeviceDirectory -> recurse.add(it.children.flattenFilter(block))
+                    else -> {}
+                }
+                emitAll(recurse.asFlow().flattenMerge())
             }
-            emitAll(recurse.asFlow().flattenMerge())
         }
-    }
 }
 
 internal sealed interface ExploreNode {

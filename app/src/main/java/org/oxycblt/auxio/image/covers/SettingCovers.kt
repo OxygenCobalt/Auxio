@@ -28,14 +28,16 @@ import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.FileCover
+import org.oxycblt.musikr.cover.FolderCovers
 import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.cover.MutableFolderCovers
 
 interface SettingCovers {
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
 
     companion object {
-        fun immutable(context: Context): Covers<out FileCover> =
-            CompatCovers(context, BaseSiloedCovers(context))
+        fun immutable(context: Context): Covers<FileCover> =
+            Covers.chain(BaseSiloedCovers(context), FolderCovers(context))
     }
 }
 
@@ -52,6 +54,7 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
         }
 
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
-        MutableCompatCovers(
-            context, MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier))
+        MutableCovers.chain(
+            MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier),
+            MutableFolderCovers(context))
 }
