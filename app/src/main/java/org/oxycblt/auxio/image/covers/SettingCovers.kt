@@ -54,19 +54,11 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
             CoverMode.SAVE_SPACE -> siloedCovers(context, revision, CoverParams.of(500, 70))
             CoverMode.BALANCED -> siloedCovers(context, revision, CoverParams.of(750, 85))
             CoverMode.HIGH_QUALITY -> siloedCovers(context, revision, CoverParams.of(1000, 100))
-            CoverMode.AS_IS -> asIsCovers(context)
+            CoverMode.AS_IS -> siloedCovers(context, revision, null)
         }
 
-    private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
+    private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams?) =
         MutableCovers.chain(
             MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier),
-            MutableFolderCovers(context))
-
-    private suspend fun asIsCovers(context: Context) =
-        MutableCovers.chain(
-            MutableFileCovers(
-                AppFiles.at(context.coversDir().resolve("asis").also { it.mkdirs() }),
-                CoverFormat.asIs(),
-                identifier),
             MutableFolderCovers(context))
 }

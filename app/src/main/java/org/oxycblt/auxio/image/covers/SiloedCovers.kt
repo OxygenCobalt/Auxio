@@ -130,7 +130,7 @@ private data class SiloCore(val rootDir: File, val files: AppFiles, val format: 
                 revisionDir = rootDir.resolve(silo.toString()).apply { mkdirs() }
             }
             val files = AppFiles.at(revisionDir)
-            val format = CoverFormat.jpeg(silo.params)
+            val format = silo.params?.let(CoverFormat::jpeg) ?: CoverFormat.asIs()
             return SiloCore(rootDir, files, format)
         }
     }

@@ -21,8 +21,8 @@ package org.oxycblt.auxio.image.covers
 import java.util.UUID
 import org.oxycblt.musikr.cover.CoverParams
 
-data class CoverSilo(val revision: UUID, val params: CoverParams) {
-    override fun toString() = "${revision}.${params.resolution}.${params.quality}"
+data class CoverSilo(val revision: UUID, val params: CoverParams?) {
+    override fun toString() = "${revision}.${params?.let { "${params.resolution}${params.quality}" }}"
 
     companion object {
         fun parse(silo: String): CoverSilo? {
