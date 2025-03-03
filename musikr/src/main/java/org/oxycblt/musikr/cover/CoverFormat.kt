@@ -29,11 +29,13 @@ abstract class CoverFormat {
 
     companion object {
         fun jpeg(params: CoverParams): CoverFormat =
-            CoverFormatImpl("jpg", params, Bitmap.CompressFormat.JPEG)
+            CompressingCoverFormat("jpg", params, Bitmap.CompressFormat.JPEG)
+
+        fun asIs(): CoverFormat = AsIsCoverFormat()
     }
 }
 
-private class CoverFormatImpl(
+private class CompressingCoverFormat(
     override val extension: String,
     private val params: CoverParams,
     private val format: Bitmap.CompressFormat,
@@ -61,5 +63,18 @@ private class CoverFormatImpl(
             }
         }
         return inSampleSize
+    }
+}
+
+private class AsIsCoverFormat : CoverFormat() {
+    override val extension: String = "bin"
+
+    override fun transcodeInto(data: ByteArray, output: OutputStream): Boolean {
+        return try {
+            output.write(data)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 }

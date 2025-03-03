@@ -79,6 +79,7 @@
         <item>@string/set_cover_mode_save_space</item>
         <item>@string/set_cover_mode_balanced</item>
         <item>@string/set_cover_mode_high_quality</item>
+        <item>@string/set_cover_mode_as_is</item>
     </string-array>
 
     <integer-array name="values_cover_mode">
@@ -86,6 +87,7 @@
         <item>@integer/cover_mode_save_space</item>
         <item>@integer/cover_mode_balanced</item>
         <item>@integer/cover_mode_high_quality</item>
+        <item>@integer/cover_mode_as_is</item>
     </integer-array>
 
     <string-array name="entries_bar_action">
@@ -182,4 +184,5 @@
     <integer name="cover_mode_save_space">0xA125</integer>
     <integer name="cover_mode_balanced">0xA11D</integer>
     <integer name="cover_mode_high_quality">0xA11E</integer>
+    <integer name="cover_mode_as_is">0xA126</integer>
 </resources>

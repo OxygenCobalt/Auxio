@@ -141,4 +141,6 @@ object IntegerTable {
     const val PLAY_SONG_BY_ITSELF = 0xA124
     /** CoverMode.SaveSpace */
     const val COVER_MODE_SAVE_SPACE = 0xA125
+    /** CoverMode.AsIs */
+    const val COVER_MODE_AS_IS = 0xA126
 }

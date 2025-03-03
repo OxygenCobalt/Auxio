@@ -24,13 +24,16 @@ import javax.inject.Inject
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverFormat
 import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.CoverParams
 import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.cover.FileCover
 import org.oxycblt.musikr.cover.FolderCovers
 import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.cover.MutableFileCovers
 import org.oxycblt.musikr.cover.MutableFolderCovers
+import org.oxycblt.musikr.fs.app.AppFiles
 
 interface SettingCovers {
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
@@ -51,10 +54,19 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
             CoverMode.SAVE_SPACE -> siloedCovers(context, revision, CoverParams.of(500, 70))
             CoverMode.BALANCED -> siloedCovers(context, revision, CoverParams.of(750, 85))
             CoverMode.HIGH_QUALITY -> siloedCovers(context, revision, CoverParams.of(1000, 100))
+            CoverMode.AS_IS -> asIsCovers(context)
         }
 
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
         MutableCovers.chain(
             MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier),
+            MutableFolderCovers(context))
+
+    private suspend fun asIsCovers(context: Context) =
+        MutableCovers.chain(
+            MutableFileCovers(
+                AppFiles.at(context.coversDir().resolve("asis").also { it.mkdirs() }),
+                CoverFormat.asIs(),
+                identifier),
             MutableFolderCovers(context))
 }

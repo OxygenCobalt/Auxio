@@ -126,7 +126,7 @@ private class ExtractStepImpl(
                                             val cover =
                                                 when (val result =
                                                     covers.create(f, extractedMetadata)) {
-                                                    is CoverResult.Hit<Cover> -> result.cover
+                                                    is CoverResult.Hit -> result.cover
                                                     else -> null
                                                 }
                                             val rawSong =
