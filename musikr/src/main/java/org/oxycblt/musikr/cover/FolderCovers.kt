@@ -99,7 +99,7 @@ class MutableFolderCovers(private val context: Context) :
                 "artwork",
                 "art",
                 "folder",
-                "cover")
+                "coverart")
 
         // Check if the filename matches any common cover art names
         // Also check for case variations (e.g., Cover.jpg, COVER.JPG)
