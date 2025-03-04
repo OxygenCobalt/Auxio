@@ -65,22 +65,22 @@ private val accentThemes =
 
 private val accentBlackThemes =
     intArrayOf(
-        R.style.Theme_Auxio_Black_Red,
-        R.style.Theme_Auxio_Black_Pink,
-        R.style.Theme_Auxio_Black_Purple,
-        R.style.Theme_Auxio_Black_DeepPurple,
-        R.style.Theme_Auxio_Black_Indigo,
-        R.style.Theme_Auxio_Black_Blue,
-        R.style.Theme_Auxio_Black_DeepBlue,
-        R.style.Theme_Auxio_Black_Cyan,
-        R.style.Theme_Auxio_Black_Teal,
-        R.style.Theme_Auxio_Black_Green,
-        R.style.Theme_Auxio_Black_DeepGreen,
-        R.style.Theme_Auxio_Black_Lime,
-        R.style.Theme_Auxio_Black_Yellow,
-        R.style.Theme_Auxio_Black_Orange,
-        R.style.Theme_Auxio_Black_Brown,
-        R.style.Theme_Auxio_Black_Grey,
+        R.style.Theme_Auxio_Red_Black,
+        R.style.Theme_Auxio_Pink_Black,
+        R.style.Theme_Auxio_Purple_Black,
+        R.style.Theme_Auxio_DeepPurple_Black,
+        R.style.Theme_Auxio_Indigo_Black,
+        R.style.Theme_Auxio_Blue_Black,
+        R.style.Theme_Auxio_DeepBlue_Black,
+        R.style.Theme_Auxio_Cyan_Black,
+        R.style.Theme_Auxio_Teal_Black,
+        R.style.Theme_Auxio_Green_Black,
+        R.style.Theme_Auxio_DeepGreen_Black,
+        R.style.Theme_Auxio_Lime_Black,
+        R.style.Theme_Auxio_Yellow_Black,
+        R.style.Theme_Auxio_Orange_Black,
+        R.style.Theme_Auxio_Brown_Black,
+        R.style.Theme_Auxio_Grey_Black,
         R.style.Theme_Auxio_Black // Dynamic colors are on the base theme
         )
 

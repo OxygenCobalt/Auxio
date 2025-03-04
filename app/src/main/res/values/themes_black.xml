@@ -1,71 +1,173 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-
     <style name="Theme.Auxio.Black" parent="Theme.Auxio.Base">
-        <item name="colorSurface">@android:color/black</item>
+        <item name="colorSurface">@color/material_dynamic_neutral0</item>
+        <item name="colorSurfaceDim">@color/material_dynamic_neutral10</item>
+        <item name="colorSurfaceBright">@color/material_dynamic_neutral30</item>
+        <item name="colorSurfaceContainerLowest">@color/material_dynamic_neutral10</item>
+        <item name="colorSurfaceContainerLow">@color/material_dynamic_neutral20</item>
+        <item name="colorSurfaceContainer">@color/material_dynamic_neutral30</item>
+        <item name="colorSurfaceContainerHigh">@color/material_dynamic_neutral40</item>
+        <item name="colorSurfaceContainerHighest">@color/material_dynamic_neutral50</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Red" parent="Theme.Auxio.Red">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Red.Black" parent="Theme.Auxio.Red">
+        <item name="colorSurface">@color/red_surface_black</item>
+        <item name="colorSurfaceDim">@color/red_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/red_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/red_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/red_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/red_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/red_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/red_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Pink" parent="Theme.Auxio.Pink">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Pink.Black" parent="Theme.Auxio.Pink">
+        <item name="colorSurface">@color/pink_surface_black</item>
+        <item name="colorSurfaceDim">@color/pink_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/pink_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/pink_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/pink_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/pink_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/pink_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/pink_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Purple" parent="Theme.Auxio.Purple">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Purple.Black" parent="Theme.Auxio.Purple">
+        <item name="colorSurface">@color/purple_surface_black</item>
+        <item name="colorSurfaceDim">@color/purple_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/purple_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/purple_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/purple_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/purple_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/purple_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/purple_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.DeepPurple" parent="Theme.Auxio.DeepPurple">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.DeepPurple.Black" parent="Theme.Auxio.DeepPurple">
+        <item name="colorSurface">@color/deep_purple_surface_black</item>
+        <item name="colorSurfaceDim">@color/deep_purple_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/deep_purple_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/deep_purple_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/deep_purple_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/deep_purple_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/deep_purple_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/deep_purple_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Indigo" parent="Theme.Auxio.Indigo">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Indigo.Black" parent="Theme.Auxio.Indigo">
+        <item name="colorSurface">@color/indigo_surface_black</item>
+        <item name="colorSurfaceDim">@color/indigo_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/indigo_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/indigo_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/indigo_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/indigo_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/indigo_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/indigo_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Blue" parent="Theme.Auxio.Blue">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Blue.Black" parent="Theme.Auxio.Blue">
+        <item name="colorSurface">@color/blue_surface_black</item>
+        <item name="colorSurfaceDim">@color/blue_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/blue_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/blue_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/blue_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/blue_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/blue_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/blue_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.DeepBlue" parent="Theme.Auxio.DeepBlue">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.DeepBlue.Black" parent="Theme.Auxio.DeepBlue">
+        <item name="colorSurface">@color/deep_blue_surface_black</item>
+        <item name="colorSurfaceDim">@color/deep_blue_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/deep_blue_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/deep_blue_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/deep_blue_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/deep_blue_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/deep_blue_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/deep_blue_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Cyan" parent="Theme.Auxio.Cyan">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Cyan.Black" parent="Theme.Auxio.Cyan">
+        <item name="colorSurface">@color/cyan_surface_black</item>
+        <item name="colorSurfaceDim">@color/cyan_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/cyan_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/cyan_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/cyan_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/cyan_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/cyan_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/cyan_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Teal" parent="Theme.Auxio.Teal">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Teal.Black" parent="Theme.Auxio.Teal">
+        <item name="colorSurface">@color/teal_surface_black</item>
+        <item name="colorSurfaceDim">@color/teal_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/teal_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/teal_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/teal_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/teal_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/teal_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/teal_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Green" parent="Theme.Auxio.Green">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Green.Black" parent="Theme.Auxio.Green">
+        <item name="colorSurface">@color/green_surface_black</item>
+        <item name="colorSurfaceDim">@color/green_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/green_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/green_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/green_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/green_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/green_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/green_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.DeepGreen" parent="Theme.Auxio.DeepGreen">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.DeepGreen.Black" parent="Theme.Auxio.DeepGreen">
+        <item name="colorSurface">@color/deep_green_surface_black</item>
+        <item name="colorSurfaceDim">@color/deep_green_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/deep_green_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/deep_green_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/deep_green_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/deep_green_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/deep_green_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/deep_green_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Lime" parent="Theme.Auxio.Lime">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Lime.Black" parent="Theme.Auxio.Lime">
+        <item name="colorSurface">@color/lime_surface_black</item>
+        <item name="colorSurfaceDim">@color/lime_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/lime_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/lime_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/lime_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/lime_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/lime_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/lime_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Yellow" parent="Theme.Auxio.Yellow">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Yellow.Black" parent="Theme.Auxio.Yellow">
+        <item name="colorSurface">@color/yellow_surface_black</item>
+        <item name="colorSurfaceDim">@color/yellow_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/yellow_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/yellow_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/yellow_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/yellow_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/yellow_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/yellow_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Orange" parent="Theme.Auxio.Orange">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Orange.Black" parent="Theme.Auxio.Orange">
+        <item name="colorSurface">@color/orange_surface_black</item>
+        <item name="colorSurfaceDim">@color/orange_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/orange_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/orange_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/orange_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/orange_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/orange_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/orange_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Brown" parent="Theme.Auxio.Brown">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Brown.Black" parent="Theme.Auxio.Brown">
+        <item name="colorSurface">@color/brown_surface_black</item>
+        <item name="colorSurfaceDim">@color/brown_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/brown_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/brown_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/brown_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/brown_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/brown_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/brown_surfaceContainerHighest_black</item>
     </style>
-
-    <style name="Theme.Auxio.Black.Grey" parent="Theme.Auxio.Grey">
-        <item name="colorSurface">@android:color/black</item>
+    <style name="Theme.Auxio.Grey.Black" parent="Theme.Auxio.Grey">
+        <item name="colorSurface">@color/grey_surface_black</item>
+        <item name="colorSurfaceDim">@color/grey_surfaceDim_black</item>
+        <item name="colorSurfaceBright">@color/grey_surfaceBright_black</item>
+        <item name="colorSurfaceContainerLowest">@color/grey_surfaceContainerLowest_black</item>
+        <item name="colorSurfaceContainerLow">@color/grey_surfaceContainerLow_black</item>
+        <item name="colorSurfaceContainer">@color/grey_surfaceContainer_black</item>
+        <item name="colorSurfaceContainerHigh">@color/grey_surfaceContainerHigh_black</item>
+        <item name="colorSurfaceContainerHighest">@color/grey_surfaceContainerHighest_black</item>
     </style>
 </resources>
