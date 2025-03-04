@@ -20,19 +20,25 @@ package org.oxycblt.auxio.image.covers
 
 import java.util.UUID
 import org.oxycblt.musikr.cover.CoverParams
+import timber.log.Timber
 
 data class CoverSilo(val revision: UUID, val params: CoverParams?) {
     override fun toString() =
-        "${revision}.${params?.let { "${params.resolution}${params.quality}" }}"
+        "${revision}${params?.let { ".${params.resolution}.${params.quality}" } ?: "" }"
 
     companion object {
         fun parse(silo: String): CoverSilo? {
             val parts = silo.split('.')
-            if (parts.size != 3) return null
+            if (parts.size != 1 && parts.size != 3) {
+                return null
+            }
             val revision = parts[0].toUuidOrNull() ?: return null
-            val resolution = parts[1].toIntOrNull() ?: return null
-            val quality = parts[2].toIntOrNull() ?: return null
-            return CoverSilo(revision, CoverParams.of(resolution, quality))
+            if (parts.size > 1) {
+                val resolution = parts[1].toIntOrNull() ?: return null
+                val quality = parts[2].toIntOrNull() ?: return null
+                return CoverSilo(revision, CoverParams.of(resolution, quality))
+            }
+            return CoverSilo(revision, null)
         }
     }
 }
