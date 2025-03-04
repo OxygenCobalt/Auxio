@@ -13,6 +13,7 @@
 #### What's Fixed
 - Fixed incorrect extension stripping on some files
 - Fixed various errors in new branding
+- Fixed MTE segfault from improper string handling
 
 #### What's Changed
 - Hidden files no longer loaded by default
