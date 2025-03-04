@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -59,7 +60,8 @@ private class ExploreStepImpl(
         val audios =
             deviceFiles
                 .explore(locations.asFlow())
-                .flattenFilter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
+                .filter { it.mimeType.startsWith("audio/") && it.mimeType != M3U.MIME_TYPE }
+                .map { ExploreNode.Audio(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer()
         val playlists =
@@ -69,20 +71,6 @@ private class ExploreStepImpl(
                 .buffer()
         return merge(audios, playlists)
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun Flow<DeviceNode>.flattenFilter(block: (DeviceFile) -> Boolean): Flow<ExploreNode> =
-        flow {
-            collect {
-                val recurse = mutableListOf<Flow<ExploreNode>>()
-                when {
-                    it is DeviceFile && block(it) -> emit(ExploreNode.Audio(it))
-                    it is DeviceDirectory -> recurse.add(it.children.flattenFilter(block))
-                    else -> {}
-                }
-                emitAll(recurse.asFlow().flattenMerge())
-            }
-        }
 }
 
 internal sealed interface ExploreNode {

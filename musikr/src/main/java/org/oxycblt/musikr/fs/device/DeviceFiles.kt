@@ -15,23 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.fs.device
 
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFiles {
-    fun explore(locations: Flow<MusicLocation>): Flow<DeviceNode>
+    fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
 
     companion object {
         fun from(context: Context, ignoreHidden: Boolean): DeviceFiles =
@@ -44,91 +49,82 @@ private class DeviceFilesImpl(
     private val contentResolver: ContentResolver,
     private val ignoreHidden: Boolean
 ) : DeviceFiles {
-    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceNode> =
+    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
         locations.flatMapMerge { location ->
-            // Create a root directory for each location
-            val rootDirectory =
-                DeviceDirectory(
-                    uri = location.uri, path = location.path, parent = null, children = emptyFlow())
-
             // Set up the children flow for the root directory
-            rootDirectory.children =
-                exploreDirectoryImpl(
-                    contentResolver,
-                    location.uri,
-                    DocumentsContract.getTreeDocumentId(location.uri),
-                    location.path,
-                    rootDirectory,
-                    ignoreHidden)
-
-            // Return a flow that emits the root directory
-            flow { emit(rootDirectory) }
+            exploreDirectoryImpl(
+                location.uri,
+                DocumentsContract.getTreeDocumentId(location.uri),
+                location.path,
+                null
+            )
         }
 
     private fun exploreDirectoryImpl(
-        contentResolver: ContentResolver,
         rootUri: Uri,
         treeDocumentId: String,
         relativePath: Path,
-        parent: DeviceDirectory,
-        ignoreHidden: Boolean
-    ): Flow<DeviceNode> = flow {
+        parent: Deferred<DeviceDirectory>?
+    ): Flow<DeviceFile> = flow {
+        // Make a kotlin future
+        val uri =
+            DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
+        val directoryDeferred = CompletableDeferred<DeviceDirectory>()
+        val recursive = mutableListOf<Flow<DeviceFile>>()
+        val children = mutableListOf<DeviceNode>()
         contentResolver.useQuery(
-            DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
-            PROJECTION) { cursor ->
-                val childUriIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
-                val displayNameIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
-                val mimeTypeIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
-                val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
-                val lastModifiedIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+            uri, PROJECTION
+        ) { cursor ->
+            val childUriIndex =
+                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+            val displayNameIndex =
+                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+            val mimeTypeIndex =
+                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
+            val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
+            val lastModifiedIndex =
+                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
-                while (cursor.moveToNext()) {
-                    val childId = cursor.getString(childUriIndex)
-                    val displayName = cursor.getString(displayNameIndex)
+            while (cursor.moveToNext()) {
+                val childId = cursor.getString(childUriIndex)
+                val displayName = cursor.getString(displayNameIndex)
 
-                    // Skip hidden files/directories if ignoreHidden is true
-                    if (ignoreHidden && displayName.startsWith(".")) {
-                        continue
-                    }
+                // Skip hidden files/directories if ignoreHidden is true
+                if (ignoreHidden && displayName.startsWith(".")) {
+                    continue
+                }
 
-                    val newPath = relativePath.file(displayName)
-                    val mimeType = cursor.getString(mimeTypeIndex)
-                    val lastModified = cursor.getLong(lastModifiedIndex)
+                val newPath = relativePath.file(displayName)
+                val mimeType = cursor.getString(mimeTypeIndex)
+                val lastModified = cursor.getLong(lastModifiedIndex)
+
+                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                    recursive.add(
+                        exploreDirectoryImpl(
+                            rootUri,
+                            childId,
+                            newPath,
+                            directoryDeferred
+                        )
+                    )
+                } else {
+                    val size = cursor.getLong(sizeIndex)
                     val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
-
-                    if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                        // Create a directory node with empty children flow initially
-                        val directory =
-                            DeviceDirectory(
-                                uri = childUri,
-                                path = newPath,
-                                parent = parent,
-                                children = emptyFlow())
-
-                        // Set up the children flow for this directory
-                        directory.children =
-                            exploreDirectoryImpl(
-                                contentResolver, rootUri, childId, newPath, directory, ignoreHidden)
-
-                        // Emit the directory node
-                        emit(directory)
-                    } else {
-                        val size = cursor.getLong(sizeIndex)
-                        emit(
-                            DeviceFile(
-                                uri = childUri,
-                                mimeType = mimeType,
-                                path = newPath,
-                                size = size,
-                                modifiedMs = lastModified,
-                                parent = parent))
-                    }
+                    emit(
+                        DeviceFile(
+                            uri = childUri,
+                            mimeType = mimeType,
+                            path = newPath,
+                            size = size,
+                            modifiedMs = lastModified,
+                            parent = directoryDeferred
+                        )
+                    )
                 }
             }
+        }
+        directoryDeferred.complete(DeviceDirectory(uri, relativePath, parent, children))
+        emitAll(recursive.asFlow().flattenMerge())
     }
 
     private companion object {
@@ -138,6 +134,7 @@ private class DeviceFilesImpl(
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED
+            )
     }
 }

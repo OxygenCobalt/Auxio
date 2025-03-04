@@ -63,7 +63,7 @@ open class FolderCovers(private val context: Context) : Covers<FolderCover> {
 class MutableFolderCovers(private val context: Context) :
     FolderCovers(context), MutableCovers<FolderCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FolderCover> {
-        val parent = file.parent
+        val parent = file.parent.await()
         val coverFile = findCoverInDirectory(parent) ?: return CoverResult.Miss()
         return CoverResult.Hit(FolderCoverImpl(context, coverFile.uri))
     }

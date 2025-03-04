@@ -19,6 +19,7 @@
 package org.oxycblt.musikr.fs.device
 
 import android.net.Uri
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import org.oxycblt.musikr.fs.Path
 
@@ -30,8 +31,8 @@ sealed interface DeviceNode {
 data class DeviceDirectory(
     override val uri: Uri,
     override val path: Path,
-    val parent: DeviceDirectory?,
-    var children: Flow<DeviceNode>
+    val parent: Deferred<DeviceDirectory>?,
+    val children: List<DeviceNode>
 ) : DeviceNode
 
 data class DeviceFile(
@@ -40,5 +41,5 @@ data class DeviceFile(
     val modifiedMs: Long,
     val mimeType: String,
     val size: Long,
-    val parent: DeviceDirectory
+    val parent: Deferred<DeviceDirectory>
 ) : DeviceNode
