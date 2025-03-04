@@ -24,13 +24,13 @@ import javax.inject.Inject
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.MutableCovers
+import org.oxycblt.musikr.covers.fs.FSCovers
+import org.oxycblt.musikr.covers.fs.MutableFSCovers
 import org.oxycblt.musikr.covers.internal.CoverIdentifier
 import org.oxycblt.musikr.covers.internal.CoverParams
-import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.internal.FileCover
-import org.oxycblt.musikr.covers.fs.FSCovers
-import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.covers.fs.MutableFSCovers
 
 interface SettingCovers {
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
@@ -57,6 +57,5 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams?) =
         MutableCovers.chain(
             MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier),
-            MutableFSCovers(context)
-        )
+            MutableFSCovers(context))
 }

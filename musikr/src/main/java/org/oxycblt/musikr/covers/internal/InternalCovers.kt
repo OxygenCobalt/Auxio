@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Auxio Project
- * FileCovers.kt is part of Auxio.
+ * InternalCovers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +18,22 @@
  
 package org.oxycblt.musikr.covers.internal
 
-import android.os.ParcelFileDescriptor
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.app.AppFile
 import org.oxycblt.musikr.fs.app.AppFS
+import org.oxycblt.musikr.fs.app.AppFile
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
 open class InternalCovers(private val appFS: AppFS, private val coverFormat: CoverFormat) :
-    Covers<FileCover> {
-    override suspend fun obtain(id: String): CoverResult<FileCover> {
+    Covers<FDCover> {
+    override suspend fun obtain(id: String): CoverResult<FDCover> {
         val file = appFS.find(getFileName(id))
         return if (file != null) {
-            CoverResult.Hit(FileCoverImpl(id, file))
+            CoverResult.Hit(InternalCoverImpl(id, file))
         } else {
             CoverResult.Miss()
         }
@@ -46,12 +46,12 @@ class MutableInternalCovers(
     private val appFS: AppFS,
     private val coverFormat: CoverFormat,
     private val coverIdentifier: CoverIdentifier
-) : InternalCovers(appFS, coverFormat), MutableCovers<FileCover> {
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FileCover> {
+) : InternalCovers(appFS, coverFormat), MutableCovers<FDCover> {
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
         val data = metadata.cover ?: return CoverResult.Miss()
         val id = coverIdentifier.identify(data)
         val coverFile = appFS.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
-        return CoverResult.Hit(FileCoverImpl(id, coverFile))
+        return CoverResult.Hit(InternalCoverImpl(id, coverFile))
     }
 
     override suspend fun cleanup(excluding: Collection<Cover>) {
@@ -60,12 +60,8 @@ class MutableInternalCovers(
     }
 }
 
-interface FileCover : Cover {
-    suspend fun fd(): ParcelFileDescriptor?
-}
-
-private data class FileCoverImpl(override val id: String, private val appFile: AppFile) :
-    FileCover {
+private data class InternalCoverImpl(override val id: String, private val appFile: AppFile) :
+    FDCover {
     override suspend fun fd() = appFile.fd()
 
     override suspend fun open() = appFile.open()

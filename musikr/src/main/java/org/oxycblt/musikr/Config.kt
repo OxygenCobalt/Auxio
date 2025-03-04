@@ -28,8 +28,8 @@ import org.oxycblt.musikr.tag.interpret.Separators
 /** Side-effect laden [Storage] for use during music loading and [MutableLibrary] operation. */
 data class Storage(
     /**
-     * A factory producing a repository of cached metadata to read and write from over the course of
-     * music loading. This will only be used during music loading.
+     * A repository of cached metadata to read and write from over the course of music loading. This
+     * will only be used during music loading.
      */
     val cache: MutableCache,
 
@@ -57,5 +57,5 @@ data class Interpretation(
     val separators: Separators,
 
     /** Whether to ignore hidden files and directories (those starting with a dot). */
-    val ignoreHidden: Boolean = true
+    val ignoreHidden: Boolean
 )

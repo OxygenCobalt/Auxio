@@ -38,8 +38,8 @@ import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceDirectory
-import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.fs.device.DeviceFS
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.fs.device.DeviceNode
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * DeviceFiles.kt is part of Auxio.
+ * DeviceFS.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFS {
-    fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean = true): Flow<DeviceNode>
+    fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean): Flow<DeviceNode>
 
     companion object {
         fun from(context: Context): DeviceFS = DeviceFSImpl(context.contentResolverSafe)

@@ -29,20 +29,19 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.covers.internal.FileCover
 import org.oxycblt.musikr.fs.device.DeviceDirectory
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-open class FSCovers(private val context: Context) : Covers<FolderCover> {
-    override suspend fun obtain(id: String): CoverResult<FolderCover> {
+open class FSCovers(private val context: Context) : Covers<FDCover> {
+    override suspend fun obtain(id: String): CoverResult<FDCover> {
         // Parse the ID to get the directory URI
         if (!id.startsWith("folder:")) {
             return CoverResult.Miss()
         }
 
-        // TODO: Check if the dir actually exists still to avoid stale uris
         val directoryUri = id.substring("folder:".length)
         val uri = Uri.parse(directoryUri)
 
@@ -65,9 +64,8 @@ open class FSCovers(private val context: Context) : Covers<FolderCover> {
     }
 }
 
-class MutableFSCovers(private val context: Context) :
-    FSCovers(context), MutableCovers<FolderCover> {
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FolderCover> {
+class MutableFSCovers(private val context: Context) : FSCovers(context), MutableCovers<FDCover> {
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
         val parent = file.parent
         val coverFile = findCoverInDirectory(parent) ?: return CoverResult.Miss()
         return CoverResult.Hit(FolderCoverImpl(context, coverFile.uri))
@@ -88,12 +86,10 @@ class MutableFSCovers(private val context: Context) :
         val filename = requireNotNull(file.path.name).lowercase()
         val mimeType = file.mimeType.lowercase()
 
-        // Check if the file is an image
         if (!mimeType.startsWith("image/")) {
             return false
         }
 
-        // Common cover art filenames
         val coverNames =
             listOf(
                 "cover",
@@ -103,11 +99,8 @@ class MutableFSCovers(private val context: Context) :
                 "front",
                 "artwork",
                 "art",
-                "folder",
-                "cover")
+                "folder")
 
-        // Check if the filename matches any common cover art names
-        // Also check for case variations (e.g., Cover.jpg, COVER.JPG)
         val filenameWithoutExt = filename.substringBeforeLast(".")
         val extension = filename.substringAfterLast(".", "")
 
@@ -120,12 +113,10 @@ class MutableFSCovers(private val context: Context) :
     }
 }
 
-interface FolderCover : FileCover
-
 private data class FolderCoverImpl(
     private val context: Context,
     private val uri: Uri,
-) : FolderCover {
+) : FDCover {
     override val id = "folder:$uri"
 
     override suspend fun fd(): ParcelFileDescriptor? =

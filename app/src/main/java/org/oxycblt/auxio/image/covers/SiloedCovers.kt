@@ -23,13 +23,13 @@ import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.covers.Cover
-import org.oxycblt.musikr.covers.internal.CoverFormat
-import org.oxycblt.musikr.covers.internal.CoverIdentifier
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.MutableCovers
+import org.oxycblt.musikr.covers.internal.CoverFormat
+import org.oxycblt.musikr.covers.internal.CoverIdentifier
 import org.oxycblt.musikr.covers.internal.FileCover
 import org.oxycblt.musikr.covers.internal.InternalCovers
-import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.covers.internal.MutableInternalCovers
 import org.oxycblt.musikr.fs.app.AppFS
 import org.oxycblt.musikr.fs.device.DeviceFile
@@ -96,8 +96,7 @@ private constructor(
         ): MutableSiloedCovers {
             val core = SiloCore.from(context, silo)
             return MutableSiloedCovers(
-                core.rootDir, silo, MutableInternalCovers(core.files, core.format, coverIdentifier)
-            )
+                core.rootDir, silo, MutableInternalCovers(core.files, core.format, coverIdentifier))
         }
     }
 }
