@@ -46,7 +46,8 @@ internal interface ExploreStep {
 
     companion object {
         fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
-            ExploreStepImpl(DeviceFiles.from(context, interpretation.ignoreHidden), storage.storedPlaylists)
+            ExploreStepImpl(
+                DeviceFiles.from(context, interpretation.ignoreHidden), storage.storedPlaylists)
     }
 }
 
