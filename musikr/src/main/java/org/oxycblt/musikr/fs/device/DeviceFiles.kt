@@ -31,16 +31,16 @@ import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFiles {
-    fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean = true): Flow<DeviceNode>
+    fun explore(locations: Flow<MusicLocation>): Flow<DeviceNode>
 
     companion object {
-        fun from(context: Context): DeviceFiles = DeviceFilesImpl(context.contentResolverSafe)
+        fun from(context: Context, ignoreHidden: Boolean): DeviceFiles = DeviceFilesImpl(context.contentResolverSafe, ignoreHidden)
     }
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private class DeviceFilesImpl(private val contentResolver: ContentResolver) : DeviceFiles {
-    override fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean): Flow<DeviceNode> =
+private class DeviceFilesImpl(private val contentResolver: ContentResolver, private val ignoreHidden: Boolean) : DeviceFiles {
+    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceNode> =
         locations.flatMapMerge { location ->
             // Create a root directory for each location
             val rootDirectory =

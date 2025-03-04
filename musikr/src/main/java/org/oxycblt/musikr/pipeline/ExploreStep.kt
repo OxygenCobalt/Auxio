@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceDirectory
@@ -44,8 +45,8 @@ internal interface ExploreStep {
     fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExploreStep =
-            ExploreStepImpl(DeviceFiles.from(context), storage.storedPlaylists)
+        fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
+            ExploreStepImpl(DeviceFiles.from(context, interpretation.ignoreHidden), storage.storedPlaylists)
     }
 }
 

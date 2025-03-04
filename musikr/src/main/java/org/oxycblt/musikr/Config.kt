@@ -57,5 +57,5 @@ data class Interpretation(
     val separators: Separators,
 
     /** Whether to ignore hidden files and directories (those starting with a dot). */
-    val ignoreHidden: Boolean = true
+    val ignoreHidden: Boolean
 )
