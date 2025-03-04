@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.2
+
+#### What's New
+- Added back in support for cover art from cover.png/cover.jpg
+- Added "As is" cover art setting
+- Option to include hidden files or not (off by default)
+
+#### What's Improved
+- Reduced elevation contrast in black theme
+
+#### What's Fixed
+- Fixed incorrect extension stripping on some files
+- Fixed various errors in new branding
+
+#### What's Changed
+- Hidden files no longer loaded by default
+
 ## 4.0.1
 
 #### What's Fixed
