@@ -20,7 +20,7 @@ package org.oxycblt.musikr.model
 
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.cover.CoverCollection
+import org.oxycblt.musikr.covers.CoverCollection
 import org.oxycblt.musikr.playlist.interpret.PrePlaylistInfo
 import org.oxycblt.musikr.tag.Name
 

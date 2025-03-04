@@ -30,16 +30,37 @@ import kotlinx.coroutines.flow.flow
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
-internal interface DeviceFiles {
+internal interface DeviceFS {
     fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean = true): Flow<DeviceNode>
 
     companion object {
-        fun from(context: Context): DeviceFiles = DeviceFilesImpl(context.contentResolverSafe)
+        fun from(context: Context): DeviceFS = DeviceFSImpl(context.contentResolverSafe)
     }
 }
 
+sealed interface DeviceNode {
+    val uri: Uri
+    val path: Path
+}
+
+data class DeviceDirectory(
+    override val uri: Uri,
+    override val path: Path,
+    val parent: DeviceDirectory?,
+    var children: Flow<DeviceNode>
+) : DeviceNode
+
+data class DeviceFile(
+    override val uri: Uri,
+    override val path: Path,
+    val modifiedMs: Long,
+    val mimeType: String,
+    val size: Long,
+    val parent: DeviceDirectory
+) : DeviceNode
+
 @OptIn(ExperimentalCoroutinesApi::class)
-private class DeviceFilesImpl(private val contentResolver: ContentResolver) : DeviceFiles {
+private class DeviceFSImpl(private val contentResolver: ContentResolver) : DeviceFS {
     override fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean): Flow<DeviceNode> =
         locations.flatMapMerge { location ->
             // Create a root directory for each location

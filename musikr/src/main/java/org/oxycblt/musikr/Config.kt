@@ -19,8 +19,8 @@
 package org.oxycblt.musikr
 
 import org.oxycblt.musikr.cache.MutableCache
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators

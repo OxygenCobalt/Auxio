@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Auxio Project
- * FolderCovers.kt is part of Auxio.
+ * FSCovers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.covers.fs
 
 import android.content.Context
 import android.net.Uri
@@ -26,11 +26,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverResult
+import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.MutableCovers
+import org.oxycblt.musikr.covers.internal.FileCover
 import org.oxycblt.musikr.fs.device.DeviceDirectory
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-open class FolderCovers(private val context: Context) : Covers<FolderCover> {
+open class FSCovers(private val context: Context) : Covers<FolderCover> {
     override suspend fun obtain(id: String): CoverResult<FolderCover> {
         // Parse the ID to get the directory URI
         if (!id.startsWith("folder:")) {
@@ -60,8 +65,8 @@ open class FolderCovers(private val context: Context) : Covers<FolderCover> {
     }
 }
 
-class MutableFolderCovers(private val context: Context) :
-    FolderCovers(context), MutableCovers<FolderCover> {
+class MutableFSCovers(private val context: Context) :
+    FSCovers(context), MutableCovers<FolderCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FolderCover> {
         val parent = file.parent
         val coverFile = findCoverInDirectory(parent) ?: return CoverResult.Miss()

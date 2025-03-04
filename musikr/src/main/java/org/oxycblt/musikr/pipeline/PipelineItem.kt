@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.pipeline
 
-import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.playlist.PlaylistFile
@@ -44,7 +44,7 @@ internal sealed interface Extracted : PipelineItem {
     sealed interface Invalid : Extracted
 }
 
-data object InvalidSong : Extracted.Invalid
+internal data object InvalidSong : Extracted.Invalid
 
 internal data class RawPlaylist(val file: PlaylistFile) : Explored.Known, Extracted.Valid
 

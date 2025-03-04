@@ -25,8 +25,8 @@ import java.security.MessageDigest
 import java.util.UUID
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.CoverCollection
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverCollection
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.tag.Date

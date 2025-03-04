@@ -21,8 +21,8 @@ package org.oxycblt.auxio.image.coil
 import coil3.key.Keyer
 import coil3.request.Options
 import javax.inject.Inject
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.CoverCollection
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverCollection
 
 class CoverKeyer @Inject constructor() : Keyer<Cover> {
     override fun key(data: Cover, options: Options) = "${data.id}&${options.size}"

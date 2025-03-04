@@ -21,7 +21,7 @@ package org.oxycblt.musikr.tag.interpret
 import android.net.Uri
 import java.util.UUID
 import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.tag.Date

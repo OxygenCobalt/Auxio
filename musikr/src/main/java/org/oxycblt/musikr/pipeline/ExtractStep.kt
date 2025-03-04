@@ -26,9 +26,9 @@ import kotlinx.coroutines.flow.onCompletion
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.CoverResult
-import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverResult
+import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.parse.TagParser
 

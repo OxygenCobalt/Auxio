@@ -16,18 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.covers.internal
 
 import android.os.ParcelFileDescriptor
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverResult
+import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.fs.app.AppFile
-import org.oxycblt.musikr.fs.app.AppFiles
+import org.oxycblt.musikr.fs.app.AppFS
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-open class FileCovers(private val appFiles: AppFiles, private val coverFormat: CoverFormat) :
+open class InternalCovers(private val appFS: AppFS, private val coverFormat: CoverFormat) :
     Covers<FileCover> {
     override suspend fun obtain(id: String): CoverResult<FileCover> {
-        val file = appFiles.find(getFileName(id))
+        val file = appFS.find(getFileName(id))
         return if (file != null) {
             CoverResult.Hit(FileCoverImpl(id, file))
         } else {
@@ -38,21 +42,21 @@ open class FileCovers(private val appFiles: AppFiles, private val coverFormat: C
     protected fun getFileName(id: String) = "$id.${coverFormat.extension}"
 }
 
-class MutableFileCovers(
-    private val appFiles: AppFiles,
+class MutableInternalCovers(
+    private val appFS: AppFS,
     private val coverFormat: CoverFormat,
     private val coverIdentifier: CoverIdentifier
-) : FileCovers(appFiles, coverFormat), MutableCovers<FileCover> {
+) : InternalCovers(appFS, coverFormat), MutableCovers<FileCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FileCover> {
         val data = metadata.cover ?: return CoverResult.Miss()
         val id = coverIdentifier.identify(data)
-        val coverFile = appFiles.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
+        val coverFile = appFS.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
         return CoverResult.Hit(FileCoverImpl(id, coverFile))
     }
 
     override suspend fun cleanup(excluding: Collection<Cover>) {
         val used = excluding.mapTo(mutableSetOf()) { getFileName(it.id) }
-        appFiles.deleteWhere { it !in used }
+        appFS.deleteWhere { it !in used }
     }
 }
 
