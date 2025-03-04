@@ -2,13 +2,13 @@
 <resources>
     <style name="Theme.Auxio.Black" parent="Theme.Auxio.Base">
         <item name="colorSurface">@android:color/black</item>
-        <item name="colorSurfaceDim">@color/sel_dynamic_surface_dim_black</item>
-        <item name="colorSurfaceBright">@color/sel_dynamic_surface_bright</item>
-        <item name="colorSurfaceContainerLowest">@color/sel_dynamic_surface_container_lowest_black</item>
-        <item name="colorSurfaceContainerLow">@color/sel_dynamic_surface_container_low_black</item>
-        <item name="colorSurfaceContainer">@color/sel_dynamic_surface_container_black</item>
-        <item name="colorSurfaceContainerHigh">@color/sel_dynamic_surface_container_high_black</item>
-        <item name="colorSurfaceContainerHighest">@color/sel_dynamic_surface_container_highest_black</item>
+        <item name="colorSurfaceDim">@color/m3_ref_palette_dynamic_neutral_variant4</item>
+        <item name="colorSurfaceBright">@color/m3_ref_palette_dynamic_neutral_variant12</item>
+        <item name="colorSurfaceContainerLowest">@color/m3_ref_palette_dynamic_neutral_variant0</item>
+        <item name="colorSurfaceContainerLow">@color/m3_ref_palette_dynamic_neutral_variant4</item>
+        <item name="colorSurfaceContainer">@color/m3_ref_palette_dynamic_neutral_variant6</item>
+        <item name="colorSurfaceContainerHigh">@color/m3_ref_palette_dynamic_neutral_variant10</item>
+        <item name="colorSurfaceContainerHighest">@color/m3_ref_palette_dynamic_neutral_variant12</item>
     </style>
     <style name="Theme.Auxio.Red.Black" parent="Theme.Auxio.Red">
         <item name="colorSurface">@color/red_surface_black</item>

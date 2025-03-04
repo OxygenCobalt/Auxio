@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@android:color/black" />
-    <item android:color="@color/m3_sys_color_dynamic_dark_surface_container" android:alpha="0.5" />
-</selector>
