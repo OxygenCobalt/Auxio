@@ -20,7 +20,6 @@ package org.oxycblt.musikr.fs.device
 
 import android.net.Uri
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.flow.Flow
 import org.oxycblt.musikr.fs.Path
 
 sealed interface DeviceNode {

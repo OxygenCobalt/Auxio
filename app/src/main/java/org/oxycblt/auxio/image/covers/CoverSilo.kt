@@ -20,7 +20,6 @@ package org.oxycblt.auxio.image.covers
 
 import java.util.UUID
 import org.oxycblt.musikr.cover.CoverParams
-import timber.log.Timber
 
 data class CoverSilo(val revision: UUID, val params: CoverParams?) {
     override fun toString() =

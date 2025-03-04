@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.fs.device
 
 import android.content.ContentResolver
@@ -28,7 +28,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
@@ -56,8 +55,7 @@ private class DeviceFilesImpl(
                 location.uri,
                 DocumentsContract.getTreeDocumentId(location.uri),
                 location.path,
-                null
-            )
+                null)
         }
 
     private fun exploreDirectoryImpl(
@@ -67,14 +65,11 @@ private class DeviceFilesImpl(
         parent: Deferred<DeviceDirectory>?
     ): Flow<DeviceFile> = flow {
         // Make a kotlin future
-        val uri =
-            DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
+        val uri = DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
         val directoryDeferred = CompletableDeferred<DeviceDirectory>()
         val recursive = mutableListOf<Flow<DeviceFile>>()
         val children = mutableListOf<DeviceNode>()
-        contentResolver.useQuery(
-            uri, PROJECTION
-        ) { cursor ->
+        contentResolver.useQuery(uri, PROJECTION) { cursor ->
             val childUriIndex =
                 cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
             val displayNameIndex =
@@ -128,7 +123,6 @@ private class DeviceFilesImpl(
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED
-            )
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED)
     }
 }
