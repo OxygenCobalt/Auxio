@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
+import org.oxycblt.auxio.music.shim.WriteOnlyMutableCache
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library
@@ -38,7 +39,7 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cache.StoredCache
+import org.oxycblt.musikr.cache.db.MutableDBCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -236,7 +237,7 @@ class MusicRepositoryImpl
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val storedCache: StoredCache,
+    private val dbCache: MutableDBCache,
     private val storedPlaylists: StoredPlaylists,
     private val settingCovers: SettingCovers,
     private val musicSettings: MusicSettings
@@ -388,11 +389,10 @@ constructor(
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
-        val cache = if (withCache) storedCache.visible() else storedCache.invisible()
+        val cache = if (withCache) dbCache else WriteOnlyMutableCache(dbCache)
         val covers = settingCovers.mutate(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators, ignoreHidden)
-
         val result =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work

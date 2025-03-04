@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr
 
-import org.oxycblt.musikr.cache.Cache
+import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
@@ -31,14 +31,14 @@ data class Storage(
      * A factory producing a repository of cached metadata to read and write from over the course of
      * music loading. This will only be used during music loading.
      */
-    val cache: Cache.Factory,
+    val cache: MutableCache,
 
     /**
      * A repository of cover images to for re-use during music loading. Should be kept in lock-step
      * with the cache for best performance. This will be used during music loading and when
      * retrieving cover information from the library.
      */
-    val storedCovers: MutableCovers<out Cover>,
+    val covers: MutableCovers<out Cover>,
 
     /**
      * A repository of user-created playlists that should also be loaded into the library. This will

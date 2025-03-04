@@ -143,6 +143,6 @@ private class LibraryResultImpl(
     override val library: MutableLibrary
 ) : LibraryResult {
     override suspend fun cleanup() {
-        storage.storedCovers.cleanup(library.songs.mapNotNull { it.cover })
+        storage.covers.cleanup(library.songs.mapNotNull { it.cover })
     }
 }
