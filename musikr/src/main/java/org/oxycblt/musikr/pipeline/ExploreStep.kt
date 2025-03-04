@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
@@ -48,9 +49,12 @@ internal interface ExploreStep {
     fun explore(locations: List<MusicLocation>): Flow<Explored>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExploreStep =
+        fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
             ExploreStepImpl(
-                DeviceFS.from(context), storage.cache, storage.covers, storage.storedPlaylists)
+                DeviceFS.from(context, interpretation.withHidden),
+                storage.cache,
+                storage.covers,
+                storage.storedPlaylists)
     }
 }
 
@@ -65,7 +69,9 @@ private class ExploreStepImpl(
         val addingMs = System.currentTimeMillis()
         return merge(
             deviceFS
-                .explore(locations.asFlow())
+                .explore(
+                    locations.asFlow(),
+                )
                 .flattenFilter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
                 .distribute(8)
                 .distributedMap { file ->

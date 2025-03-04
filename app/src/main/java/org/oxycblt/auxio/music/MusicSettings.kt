@@ -41,7 +41,7 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to ignore hidden files and directories during music loading. */
-    val ignoreHidden: Boolean
+    val withHidden: Boolean
     /** Whether to be actively watching for changes in the music library. */
     val shouldBeObserving: Boolean
     /** A [String] of characters representing the desired characters to denote multi-value tags. */
@@ -92,8 +92,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
     override val excludeNonMusic: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
 
-    override val ignoreHidden: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_ignore_hidden), true)
+    override val withHidden: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), true)
 
     override val shouldBeObserving: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_observing), false)
@@ -122,7 +122,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
             getString(R.string.set_key_separators),
             getString(R.string.set_key_auto_sort_names),
-            getString(R.string.set_key_ignore_hidden),
+            getString(R.string.set_key_with_hidden),
             getString(R.string.set_key_exclude_non_music) -> {
                 L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()

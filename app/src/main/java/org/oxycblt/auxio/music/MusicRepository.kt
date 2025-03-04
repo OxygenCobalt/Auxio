@@ -385,7 +385,7 @@ constructor(
                 Naming.simple()
             }
         val locations = musicSettings.musicLocations
-        val ignoreHidden = musicSettings.ignoreHidden
+        val ignoreHidden = musicSettings.withHidden
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()

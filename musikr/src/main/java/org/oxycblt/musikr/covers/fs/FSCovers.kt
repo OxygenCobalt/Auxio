@@ -91,15 +91,7 @@ class MutableFSCovers(private val context: Context) : FSCovers(context), Mutable
         }
 
         val coverNames =
-            listOf(
-                "cover",
-                "folder",
-                "album",
-                "albumart",
-                "front",
-                "artwork",
-                "art",
-                "folder")
+            listOf("cover", "folder", "album", "albumart", "front", "artwork", "art", "folder")
 
         val filenameWithoutExt = filename.substringBeforeLast(".")
         val extension = filename.substringAfterLast(".", "")

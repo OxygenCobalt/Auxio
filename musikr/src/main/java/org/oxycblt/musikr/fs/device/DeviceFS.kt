@@ -31,10 +31,11 @@ import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFS {
-    fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean): Flow<DeviceNode>
+    fun explore(locations: Flow<MusicLocation>): Flow<DeviceNode>
 
     companion object {
-        fun from(context: Context): DeviceFS = DeviceFSImpl(context.contentResolverSafe)
+        fun from(context: Context, withHidden: Boolean): DeviceFS =
+            DeviceFSImpl(context.contentResolverSafe, withHidden)
     }
 }
 
@@ -60,8 +61,11 @@ data class DeviceFile(
 ) : DeviceNode
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private class DeviceFSImpl(private val contentResolver: ContentResolver) : DeviceFS {
-    override fun explore(locations: Flow<MusicLocation>, ignoreHidden: Boolean): Flow<DeviceNode> =
+private class DeviceFSImpl(
+    private val contentResolver: ContentResolver,
+    private val withHidden: Boolean
+) : DeviceFS {
+    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceNode> =
         locations.flatMapMerge { location ->
             // Create a root directory for each location
             val rootDirectory =
@@ -76,7 +80,7 @@ private class DeviceFSImpl(private val contentResolver: ContentResolver) : Devic
                     DocumentsContract.getTreeDocumentId(location.uri),
                     location.path,
                     rootDirectory,
-                    ignoreHidden)
+                    withHidden)
 
             // Return a flow that emits the root directory
             flow { emit(rootDirectory) }
@@ -88,7 +92,7 @@ private class DeviceFSImpl(private val contentResolver: ContentResolver) : Devic
         treeDocumentId: String,
         relativePath: Path,
         parent: DeviceDirectory,
-        ignoreHidden: Boolean
+        withHidden: Boolean
     ): Flow<DeviceNode> = flow {
         contentResolver.useQuery(
             DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
@@ -108,7 +112,7 @@ private class DeviceFSImpl(private val contentResolver: ContentResolver) : Devic
                     val displayName = cursor.getString(displayNameIndex)
 
                     // Skip hidden files/directories if ignoreHidden is true
-                    if (ignoreHidden && displayName.startsWith(".")) {
+                    if (!withHidden && displayName.startsWith(".")) {
                         continue
                     }
 
@@ -129,7 +133,7 @@ private class DeviceFSImpl(private val contentResolver: ContentResolver) : Devic
                         // Set up the children flow for this directory
                         directory.children =
                             exploreDirectoryImpl(
-                                contentResolver, rootUri, childId, newPath, directory, ignoreHidden)
+                                contentResolver, rootUri, childId, newPath, directory, withHidden)
 
                         // Emit the directory node
                         emit(directory)
