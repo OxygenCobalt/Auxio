@@ -16,10 +16,10 @@
             app:title="@string/set_exclude_non_music" />
             
         <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="@string/set_key_ignore_hidden"
-            app:summary="@string/set_ignore_hidden_desc"
-            app:title="@string/set_ignore_hidden" />
+            app:defaultValue="false"
+            app:key="@string/set_key_with_hidden"
+            app:summary="@string/set_with_hidden_desc"
+            app:title="@string/set_with_hidden" />
 
         <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
             app:key="@string/set_key_separators"
