@@ -100,26 +100,20 @@ private class DeviceFilesImpl(
 
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
                     recursive.add(
-                        exploreDirectoryImpl(
-                            rootUri,
-                            childId,
-                            newPath,
-                            directoryDeferred
-                        )
-                    )
+                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred))
                 } else {
                     val size = cursor.getLong(sizeIndex)
                     val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
-                    emit(
+                    val file =
                         DeviceFile(
                             uri = childUri,
                             mimeType = mimeType,
                             path = newPath,
                             size = size,
                             modifiedMs = lastModified,
-                            parent = directoryDeferred
-                        )
-                    )
+                            parent = directoryDeferred)
+                    children.add(file)
+                    emit(file)
                 }
             }
         }
