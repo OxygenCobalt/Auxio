@@ -30,8 +30,6 @@
 #include "taglib/vorbisfile.h"
 #include "taglib/wavfile.h"
 
-
-
 bool parseMpeg(const std::string &name, TagLib::File *file,
         JMetadataBuilder &jBuilder) {
     auto *mpegFile = dynamic_cast<TagLib::MPEG::File*>(file);
@@ -101,7 +99,8 @@ bool parseFlac(const std::string &name, TagLib::File *file,
         try {
             jBuilder.setXiph(*xiphComment);
         } catch (std::exception &e) {
-            LOGE("Unable to parse Xiph comment in %s: %s", name.c_str(), e.what());
+            LOGE("Unable to parse Xiph comment in %s: %s", name.c_str(),
+                    e.what());
         }
     }
     auto pics = flacFile->pictureList();
@@ -120,7 +119,8 @@ bool parseOpus(const std::string &name, TagLib::File *file,
         try {
             jBuilder.setXiph(*tag);
         } catch (std::exception &e) {
-            LOGE("Unable to parse Xiph comment in %s: %s", name.c_str(), e.what());
+            LOGE("Unable to parse Xiph comment in %s: %s", name.c_str(),
+                    e.what());
         }
     }
     return true;
