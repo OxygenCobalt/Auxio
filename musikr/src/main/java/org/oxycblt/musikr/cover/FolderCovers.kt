@@ -32,16 +32,12 @@ import org.oxycblt.musikr.metadata.Metadata
 
 open class FolderCovers(private val context: Context) : Covers<FolderCover> {
     override suspend fun obtain(id: String): CoverResult<FolderCover> {
-        // Parse the ID to get the directory URI
         if (!id.startsWith("folder:")) {
             return CoverResult.Miss()
         }
 
-        // TODO: Check if the dir actually exists still to avoid stale uris
         val directoryUri = id.substring("folder:".length)
         val uri = Uri.parse(directoryUri)
-
-        // Check if the URI is still valid
         val exists =
             withContext(Dispatchers.IO) {
                 try {
