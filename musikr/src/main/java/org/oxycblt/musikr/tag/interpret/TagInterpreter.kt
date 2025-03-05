@@ -20,8 +20,8 @@ package org.oxycblt.musikr.tag.interpret
 
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.Format
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
@@ -67,13 +67,15 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         val songNameOrFile = song.tags.name ?: requireNotNull(song.file.path.name)
         val songNameOrFileWithoutExt =
             song.tags.name ?: requireNotNull(song.file.path.name).split('.').first()
+        val songNameOrFileWithoutExtCorrect =
+            song.tags.name ?: requireNotNull(song.file.path.name).substringBeforeLast(".")
         val albumNameOrDir = song.tags.albumName ?: song.file.path.directory.name
 
         val musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull()
         val v363uid =
             musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
                 ?: Music.UID.auxio(Music.UID.Item.SONG) {
-                    update(songNameOrFileWithoutExt)
+                    update(songNameOrFileWithoutExtCorrect)
                     update(albumNameOrDir)
                     update(song.tags.date)
 
@@ -103,9 +105,24 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                     update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
                 }
 
+        val v401uid =
+            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
+                ?: Music.UID.auxio(Music.UID.Item.SONG) {
+                    update(songNameOrFileWithoutExt)
+                    update(albumNameOrDir)
+                    update(song.tags.date)
+
+                    update(song.tags.track)
+                    update(song.tags.disc)
+
+                    update(song.tags.artistNames)
+                    update(song.tags.albumArtistNames)
+                }
+
         return PreSong(
             v363Uid = v363uid,
             v400Uid = v400uid,
+            v401Uid = v401uid,
             uri = uri,
             path = song.file.path,
             size = song.file.size,
@@ -113,8 +130,8 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             modifiedMs = song.file.modifiedMs,
             addedMs = song.addedMs,
             musicBrainzId = musicBrainzId,
-            name = interpretation.naming.name(songNameOrFileWithoutExt, song.tags.sortName),
-            rawName = songNameOrFileWithoutExt,
+            name = interpretation.naming.name(songNameOrFileWithoutExtCorrect, song.tags.sortName),
+            rawName = songNameOrFileWithoutExtCorrect,
             track = song.tags.track,
             disc = song.tags.disc?.let { Disc(it, song.tags.subtitle) },
             date = song.tags.date,

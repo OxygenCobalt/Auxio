@@ -19,27 +19,79 @@
 package org.oxycblt.musikr.cover
 
 import java.io.InputStream
+import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.metadata.Metadata
 
-interface Covers {
-    suspend fun obtain(id: String): ObtainResult<out Cover>
+interface Covers<T : Cover> {
+    suspend fun obtain(id: String): CoverResult<T>
+
+    companion object {
+        fun <R : Cover, T : R> chain(vararg many: Covers<out T>): Covers<R> =
+            object : Covers<R> {
+                override suspend fun obtain(id: String): CoverResult<R> {
+                    for (cover in many) {
+                        val result = cover.obtain(id)
+                        if (result is CoverResult.Hit) {
+                            return CoverResult.Hit(result.cover)
+                        }
+                    }
+                    return CoverResult.Miss()
+                }
+            }
+    }
 }
 
-interface MutableCovers : Covers {
-    suspend fun write(data: ByteArray): Cover
+interface MutableCovers<T : Cover> : Covers<T> {
+    suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<T>
 
     suspend fun cleanup(excluding: Collection<Cover>)
+
+    companion object {
+        fun <R : Cover, T : R> chain(vararg many: MutableCovers<out T>): MutableCovers<R> =
+            object : MutableCovers<R> {
+                override suspend fun obtain(id: String): CoverResult<R> {
+                    for (cover in many) {
+                        val result = cover.obtain(id)
+                        if (result is CoverResult.Hit) {
+                            return CoverResult.Hit(result.cover)
+                        }
+                    }
+                    return CoverResult.Miss()
+                }
+
+                override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<R> {
+                    for (cover in many) {
+                        val result = cover.create(file, metadata)
+                        if (result is CoverResult.Hit) {
+                            return CoverResult.Hit(result.cover)
+                        }
+                    }
+                    return CoverResult.Miss()
+                }
+
+                override suspend fun cleanup(excluding: Collection<Cover>) {
+                    for (cover in many) {
+                        cover.cleanup(excluding)
+                    }
+                }
+            }
+    }
 }
 
-sealed interface ObtainResult<T : Cover> {
-    data class Hit<T : Cover>(val cover: T) : ObtainResult<T>
+sealed interface CoverResult<T : Cover> {
+    data class Hit<T : Cover>(val cover: T) : CoverResult<T>
 
-    class Miss<T : Cover> : ObtainResult<T>
+    class Miss<T : Cover> : CoverResult<T>
 }
 
 interface Cover {
     val id: String
 
     suspend fun open(): InputStream?
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
 }
 
 class CoverCollection private constructor(val covers: List<Cover>) {

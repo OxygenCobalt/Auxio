@@ -19,6 +19,7 @@
 package org.oxycblt.musikr
 
 import org.oxycblt.musikr.cache.Cache
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.MutableCovers
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
@@ -37,7 +38,7 @@ data class Storage(
      * with the cache for best performance. This will be used during music loading and when
      * retrieving cover information from the library.
      */
-    val storedCovers: MutableCovers,
+    val storedCovers: MutableCovers<out Cover>,
 
     /**
      * A repository of user-created playlists that should also be loaded into the library. This will
@@ -53,5 +54,8 @@ data class Interpretation(
     val naming: Naming,
 
     /** What separators delimit multi-value audio tags. */
-    val separators: Separators
+    val separators: Separators,
+
+    /** Whether to ignore hidden files and directories (those starting with a dot). */
+    val ignoreHidden: Boolean
 )

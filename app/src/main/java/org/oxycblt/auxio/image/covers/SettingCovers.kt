@@ -23,26 +23,39 @@ import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.CoverIdentifier
 import org.oxycblt.musikr.cover.CoverParams
+import org.oxycblt.musikr.cover.Covers
+import org.oxycblt.musikr.cover.FileCover
+import org.oxycblt.musikr.cover.FolderCovers
 import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.cover.MutableFolderCovers
 
 interface SettingCovers {
-    suspend fun create(context: Context, revision: UUID): MutableCovers
+    suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
+
+    companion object {
+        fun immutable(context: Context): Covers<FileCover> =
+            Covers.chain(BaseSiloedCovers(context), FolderCovers(context))
+    }
 }
 
 class SettingCoversImpl
 @Inject
 constructor(private val imageSettings: ImageSettings, private val identifier: CoverIdentifier) :
     SettingCovers {
-    override suspend fun create(context: Context, revision: UUID): MutableCovers =
+    override suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover> =
         when (imageSettings.coverMode) {
             CoverMode.OFF -> NullCovers(context)
             CoverMode.SAVE_SPACE -> siloedCovers(context, revision, CoverParams.of(500, 70))
             CoverMode.BALANCED -> siloedCovers(context, revision, CoverParams.of(750, 85))
             CoverMode.HIGH_QUALITY -> siloedCovers(context, revision, CoverParams.of(1000, 100))
+            CoverMode.AS_IS -> siloedCovers(context, revision, null)
         }
 
-    private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams) =
-        MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier)
+    private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams?) =
+        MutableCovers.chain(
+            MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier),
+            MutableFolderCovers(context))
 }

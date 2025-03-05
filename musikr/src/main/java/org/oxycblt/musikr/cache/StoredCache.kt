@@ -19,8 +19,9 @@
 package org.oxycblt.musikr.cache
 
 import android.content.Context
+import org.oxycblt.musikr.cover.Cover
 import org.oxycblt.musikr.cover.Covers
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 
 interface StoredCache {
@@ -53,7 +54,7 @@ private abstract class BaseStoredCache(protected val writeDao: CacheWriteDao) : 
 
 private class VisibleStoredCache(private val visibleDao: VisibleCacheDao, writeDao: CacheWriteDao) :
     BaseStoredCache(writeDao) {
-    override suspend fun read(file: DeviceFile, covers: Covers): CacheResult {
+    override suspend fun read(file: DeviceFile, covers: Covers<out Cover>): CacheResult {
         val song = visibleDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file, null)
         if (song.modifiedMs != file.modifiedMs) {
             // We *found* this file earlier, but it's out of date.
@@ -77,7 +78,7 @@ private class InvisibleStoredCache(
     private val invisibleCacheDao: InvisibleCacheDao,
     writeDao: CacheWriteDao
 ) : BaseStoredCache(writeDao) {
-    override suspend fun read(file: DeviceFile, covers: Covers) =
+    override suspend fun read(file: DeviceFile, covers: Covers<out Cover>) =
         CacheResult.Miss(file, invisibleCacheDao.selectAddedMs(file.uri.toString()))
 
     class Factory(private val cacheDatabase: CacheDatabase) : Cache.Factory() {

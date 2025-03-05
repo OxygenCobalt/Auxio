@@ -31,9 +31,10 @@ import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.cover.CoverResult
 import org.oxycblt.musikr.cover.Covers
-import org.oxycblt.musikr.cover.ObtainResult
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Date
@@ -41,7 +42,7 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 60, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 61, exportSchema = false)
 internal abstract class CacheDatabase : RoomDatabase() {
     abstract fun visibleDao(): VisibleCacheDao
 
@@ -118,13 +119,13 @@ internal data class CachedSong(
     val replayGainAlbumAdjustment: Float?,
     val coverId: String?,
 ) {
-    suspend fun intoRawSong(file: DeviceFile, covers: Covers): RawSong? {
+    suspend fun intoRawSong(file: DeviceFile, covers: Covers<out Cover>): RawSong? {
         val cover =
             when (val result = coverId?.let { covers.obtain(it) }) {
                 // We found the cover.
-                is ObtainResult.Hit -> result.cover
+                is CoverResult.Hit<out Cover> -> result.cover
                 // We actually didn't find the cover, can't safely convert.
-                is ObtainResult.Miss -> return null
+                is CoverResult.Miss<out Cover> -> return null
                 // No cover in the first place, can ignore.
                 null -> null
             }

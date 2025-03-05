@@ -38,6 +38,7 @@ internal data class LibraryImpl(
 ) : MutableLibrary {
     private val songUidMap = songs.associateBy { it.uid }
     private val v400SongUidMap = songs.associateBy { it.v400Uid }
+    private val v401SongUidMap = songs.associateBy { it.v401Uid }
     private val albumUidMap = albums.associateBy { it.uid }
     private val artistUidMap = artists.associateBy { it.uid }
     private val genreUidMap = genres.associateBy { it.uid }
@@ -46,7 +47,8 @@ internal data class LibraryImpl(
     override fun empty() = songs.isEmpty()
 
     // Compat hack. See TagInterpreter for why this needs to be done
-    override fun findSong(uid: Music.UID) = songUidMap[uid] ?: v400SongUidMap[uid]
+    override fun findSong(uid: Music.UID) =
+        songUidMap[uid] ?: v400SongUidMap[uid] ?: v401SongUidMap[uid]
 
     override fun findSongByPath(path: Path) = songs.find { it.path == path }
 

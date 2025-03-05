@@ -21,4 +21,4 @@ Auxio é um reprodutor de música local com uma interface/experiência de usuár
 - Reprodução automática em fones de ouvido.
 - Widgets elegantes que se adaptam automaticamente ao tamanho.
 - Completamente privado e off-line.
-- Sem capas de álbuns arredondadas (por padrão).
+- Sem capas de álbuns arredondadas (caso queira).

@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.pipeline
 
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreSong

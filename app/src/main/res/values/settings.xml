@@ -18,6 +18,7 @@
     <string name="set_key_square_covers" translatable="false">auxio_square_covers</string>
     <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
     <string name="set_key_exclude_non_music" translatable="false">auxio_exclude_non_music</string>
+    <string name="set_key_with_hidden" translatable="false">auxio_with_hidden</string>
     <string name="set_key_music_locations" translatable="false">auxio_music_locations2</string>
     <string name="set_key_separators" translatable="false">auxio_separators</string>
     <string name="set_key_auto_sort_names" translatable="false">auxio_auto_sort_names</string>
@@ -78,6 +79,7 @@
         <item>@string/set_cover_mode_save_space</item>
         <item>@string/set_cover_mode_balanced</item>
         <item>@string/set_cover_mode_high_quality</item>
+        <item>@string/set_cover_mode_as_is</item>
     </string-array>
 
     <integer-array name="values_cover_mode">
@@ -85,6 +87,7 @@
         <item>@integer/cover_mode_save_space</item>
         <item>@integer/cover_mode_balanced</item>
         <item>@integer/cover_mode_high_quality</item>
+        <item>@integer/cover_mode_as_is</item>
     </integer-array>
 
     <string-array name="entries_bar_action">
@@ -181,4 +184,5 @@
     <integer name="cover_mode_save_space">0xA125</integer>
     <integer name="cover_mode_balanced">0xA11D</integer>
     <integer name="cover_mode_high_quality">0xA11E</integer>
+    <integer name="cover_mode_as_is">0xA126</integer>
 </resources>

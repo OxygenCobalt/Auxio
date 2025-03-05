@@ -24,14 +24,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.fs.device.DeviceFiles
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
@@ -41,8 +42,9 @@ internal interface ExploreStep {
     fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExploreStep =
-            ExploreStepImpl(DeviceFiles.from(context), storage.storedPlaylists)
+        fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
+            ExploreStepImpl(
+                DeviceFiles.from(context, interpretation.ignoreHidden), storage.storedPlaylists)
     }
 }
 
@@ -54,13 +56,8 @@ private class ExploreStepImpl(
         val audios =
             deviceFiles
                 .explore(locations.asFlow())
-                .mapNotNull {
-                    when {
-                        it.mimeType == M3U.MIME_TYPE -> null
-                        it.mimeType.startsWith("audio/") -> ExploreNode.Audio(it)
-                        else -> null
-                    }
-                }
+                .filter { it.mimeType.startsWith("audio/") && it.mimeType != M3U.MIME_TYPE }
+                .map { ExploreNode.Audio(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer()
         val playlists =

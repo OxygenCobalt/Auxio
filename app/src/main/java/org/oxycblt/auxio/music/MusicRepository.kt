@@ -384,13 +384,14 @@ constructor(
                 Naming.simple()
             }
         val locations = musicSettings.musicLocations
+        val ignoreHidden = !musicSettings.withHidden
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) storedCache.visible() else storedCache.invisible()
-        val covers = settingCovers.create(context, newRevision)
+        val covers = settingCovers.mutate(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
-        val interpretation = Interpretation(nameFactory, separators)
+        val interpretation = Interpretation(nameFactory, separators, ignoreHidden)
 
         val result =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)

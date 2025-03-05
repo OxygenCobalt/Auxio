@@ -6,8 +6,7 @@ Auxio je lokální hudební přehrávač s rychlým a spolehlivým UI/UX bez spo
 - Responzivní UI podle nejnovějších pokynů Material Design
 - Příjemné UX, které upřednostňuje snadné používání před okrajovými případy
 - Přizpůsobitelné chování
-- Podpora čísel disků, více interpretů, typů vydání,
-přesná/původní data, štítky pro řazení a další
+- Podpora čísel disků, více interpretů, typů vydání, přesných/původních dat, štítků pro řazení a dalších
 - Pokročilý systém umělců spojující interprety a interprety alb
 - Správa složek podporující SD karty
 - Spolehlivá funkce seznamů skladeb
@@ -22,4 +21,4 @@ přesná/původní data, štítky pro řazení a další
 - Automatické přehrávání při připojení sluchátek
 - Stylové widgety, které se automaticky adaptují své velikosti
 - Plně soukromý a offline
-- Žádné zaoblené obaly alb (ve výchozím nastavení)
+- Žádné zaoblené obaly alb (pokud je nechcete)

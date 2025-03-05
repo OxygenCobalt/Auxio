@@ -27,11 +27,10 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.runBlocking
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.image.covers.SiloedCoverId
-import org.oxycblt.auxio.image.covers.SiloedCovers
-import org.oxycblt.musikr.cover.ObtainResult
+import org.oxycblt.auxio.image.covers.SettingCovers
+import org.oxycblt.musikr.cover.CoverResult
 
-class CoverProvider : ContentProvider() {
+class CoverProvider() : ContentProvider() {
     override fun onCreate(): Boolean = true
 
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
@@ -39,12 +38,10 @@ class CoverProvider : ContentProvider() {
             return null
         }
         val id = uri.lastPathSegment ?: return null
-        val coverId = SiloedCoverId.parse(id) ?: return null
         return runBlocking {
-            val siloedCovers = SiloedCovers.from(requireNotNull(context), coverId.silo)
-            when (val res = siloedCovers.obtain(id)) {
-                is ObtainResult.Hit -> res.cover.fd()
-                is ObtainResult.Miss -> null
+            when (val result = SettingCovers.immutable(requireNotNull(context)).obtain(id)) {
+                is CoverResult.Hit -> result.cover.fd()
+                else -> null
             }
         }
     }

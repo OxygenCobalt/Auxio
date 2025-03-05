@@ -14,3 +14,5 @@ captures/
 *.iml
 .cxx
 .kotlin
+.aider*
+.env
