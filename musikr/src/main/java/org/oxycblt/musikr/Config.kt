@@ -18,9 +18,9 @@
  
 package org.oxycblt.musikr
 
-import org.oxycblt.musikr.cache.Cache
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.cache.MutableCache
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -28,17 +28,17 @@ import org.oxycblt.musikr.tag.interpret.Separators
 /** Side-effect laden [Storage] for use during music loading and [MutableLibrary] operation. */
 data class Storage(
     /**
-     * A factory producing a repository of cached metadata to read and write from over the course of
-     * music loading. This will only be used during music loading.
+     * A repository of cached metadata to read and write from over the course of music loading. This
+     * will only be used during music loading.
      */
-    val cache: Cache.Factory,
+    val cache: MutableCache,
 
     /**
      * A repository of cover images to for re-use during music loading. Should be kept in lock-step
      * with the cache for best performance. This will be used during music loading and when
      * retrieving cover information from the library.
      */
-    val storedCovers: MutableCovers<out Cover>,
+    val covers: MutableCovers<out Cover>,
 
     /**
      * A repository of user-created playlists that should also be loaded into the library. This will
@@ -56,6 +56,6 @@ data class Interpretation(
     /** What separators delimit multi-value audio tags. */
     val separators: Separators,
 
-    /** Whether to ignore hidden files and directories (those starting with a dot). */
-    val ignoreHidden: Boolean
+    /** Whether to include hidden files and directories (those starting with a dot). */
+    val withHidden: Boolean
 )

@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.covers
 
+import android.os.ParcelFileDescriptor
 import java.io.InputStream
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
@@ -92,6 +93,10 @@ interface Cover {
     override fun equals(other: Any?): Boolean
 
     override fun hashCode(): Int
+}
+
+interface FDCover : Cover {
+    suspend fun fd(): ParcelFileDescriptor?
 }
 
 class CoverCollection private constructor(val covers: List<Cover>) {

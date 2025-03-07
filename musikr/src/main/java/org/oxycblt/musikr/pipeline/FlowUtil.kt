@@ -65,7 +65,7 @@ internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Flow<Fl
  * Note that this function requires the "manager" flow to be consumed alongside the split flows in
  * order to function. Without this, all of the newly split flows will simply block.
  */
-internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
+internal fun <T> Flow<T>.distribute(n: Int): Flow<Flow<T>> {
     val posChannels = List(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
@@ -77,6 +77,42 @@ internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
                 channel.close()
             }
         }
-    val hotFlows = posChannels.asFlow().map { it.receiveAsFlow() }
-    return DistributedFlow(managerFlow, hotFlows)
+    return (posChannels.map { it.receiveAsFlow() } + managerFlow).asFlow()
+}
+
+internal fun <T, R> Flow<Flow<T>>.distributedMap(transform: suspend (T) -> R): Flow<Flow<R>> =
+    flow {
+        collect { innerFlow -> emit(innerFlow.tryMap(transform)) }
+    }
+
+internal fun <T, R> Flow<T>.tryMap(transform: suspend (T) -> R): Flow<R> = flow {
+    collect { value ->
+        try {
+            emit(transform(value))
+        } catch (e: Exception) {
+            throw PipelineException(value, e)
+        }
+    }
+}
+
+internal fun <T, R> Flow<T>.tryMapNotNull(transform: suspend (T) -> R?): Flow<R> = flow {
+    collect { value ->
+        try {
+            transform(value)?.let { emit(it) }
+        } catch (e: Exception) {
+            throw PipelineException(value, e)
+        }
+    }
+}
+
+internal fun <A, T> Flow<T>.tryFold(initial: A, operation: suspend (A, T) -> A): Flow<A> = flow {
+    var accumulator = initial
+    collect { value ->
+        try {
+            accumulator = operation(accumulator, value)
+            emit(accumulator)
+        } catch (e: Exception) {
+            throw PipelineException(value, e)
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Auxio Project
+ * Copyright (c) 2025 Auxio Project
  * CoverFormat.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.covers.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

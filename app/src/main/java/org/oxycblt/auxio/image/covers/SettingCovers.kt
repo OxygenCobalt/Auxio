@@ -23,21 +23,21 @@ import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.CoverIdentifier
-import org.oxycblt.musikr.cover.CoverParams
-import org.oxycblt.musikr.cover.Covers
-import org.oxycblt.musikr.cover.FileCover
-import org.oxycblt.musikr.cover.FolderCovers
-import org.oxycblt.musikr.cover.MutableCovers
-import org.oxycblt.musikr.cover.MutableFolderCovers
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.MutableCovers
+import org.oxycblt.musikr.covers.fs.FSCovers
+import org.oxycblt.musikr.covers.fs.MutableFSCovers
+import org.oxycblt.musikr.covers.internal.CoverIdentifier
+import org.oxycblt.musikr.covers.internal.CoverParams
+import org.oxycblt.musikr.covers.internal.FileCover
 
 interface SettingCovers {
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
 
     companion object {
         fun immutable(context: Context): Covers<FileCover> =
-            Covers.chain(BaseSiloedCovers(context), FolderCovers(context))
+            Covers.chain(BaseSiloedCovers(context), FSCovers(context))
     }
 }
 
@@ -57,5 +57,5 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
     private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams?) =
         MutableCovers.chain(
             MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier),
-            MutableFolderCovers(context))
+            MutableFSCovers(context))
 }

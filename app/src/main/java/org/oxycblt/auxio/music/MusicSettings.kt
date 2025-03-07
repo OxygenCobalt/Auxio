@@ -93,7 +93,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
 
     override val withHidden: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), true)
 
     override val shouldBeObserving: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_observing), false)

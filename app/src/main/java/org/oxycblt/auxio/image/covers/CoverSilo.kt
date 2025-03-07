@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.image.covers
 
 import java.util.UUID
-import org.oxycblt.musikr.cover.CoverParams
+import org.oxycblt.musikr.covers.internal.CoverParams
 
 data class CoverSilo(val revision: UUID, val params: CoverParams?) {
     override fun toString() =

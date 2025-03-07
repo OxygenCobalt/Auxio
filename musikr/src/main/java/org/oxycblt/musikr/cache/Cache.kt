@@ -18,25 +18,32 @@
  
 package org.oxycblt.musikr.cache
 
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.Covers
 import org.oxycblt.musikr.fs.device.DeviceFile
-import org.oxycblt.musikr.pipeline.RawSong
+import org.oxycblt.musikr.metadata.Properties
+import org.oxycblt.musikr.tag.parse.ParsedTags
 
-abstract class Cache {
-    internal abstract suspend fun read(file: DeviceFile, covers: Covers<out Cover>): CacheResult
-
-    internal abstract suspend fun write(song: RawSong)
-
-    internal abstract suspend fun finalize()
-
-    abstract class Factory {
-        internal abstract fun open(): Cache
-    }
+interface Cache {
+    suspend fun read(file: DeviceFile): CacheResult
 }
 
-internal sealed interface CacheResult {
-    data class Hit(val song: RawSong) : CacheResult
+interface MutableCache : Cache {
+    suspend fun write(cachedSong: CachedSong)
 
-    data class Miss(val file: DeviceFile, val addedMs: Long?) : CacheResult
+    suspend fun cleanup(excluding: List<CachedSong>)
+}
+
+data class CachedSong(
+    val file: DeviceFile,
+    val properties: Properties,
+    val tags: ParsedTags,
+    val coverId: String?,
+    val addedMs: Long
+)
+
+sealed interface CacheResult {
+    data class Hit(val song: CachedSong) : CacheResult
+
+    data class Miss(val file: DeviceFile) : CacheResult
+
+    data class Stale(val file: DeviceFile, val addedMs: Long) : CacheResult
 }

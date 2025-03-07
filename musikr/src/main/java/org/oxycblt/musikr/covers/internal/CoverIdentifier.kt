@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * CoverParams.kt is part of Auxio.
+ * CoverIdentifier.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.covers.internal
 
-class CoverParams private constructor(val resolution: Int, val quality: Int) {
-    override fun hashCode() = 31 * resolution + quality
+import java.security.MessageDigest
 
-    override fun equals(other: Any?) =
-        other is CoverParams && other.resolution == resolution && other.quality == quality
+interface CoverIdentifier {
+    suspend fun identify(data: ByteArray): String
 
     companion object {
-        fun of(resolution: Int, quality: Int): CoverParams {
-            check(resolution > 0) { "Resolution must be positive" }
-            check(quality in 0..100) { "Quality must be between 0 and 100" }
-            return CoverParams(resolution, quality)
-        }
+        fun md5(): CoverIdentifier = MD5CoverIdentifier()
+    }
+}
+
+private class MD5CoverIdentifier() : CoverIdentifier {
+    @OptIn(ExperimentalStdlibApi::class)
+    override suspend fun identify(data: ByteArray): String {
+        val digest =
+            MessageDigest.getInstance("MD5").run {
+                update(data)
+                digest()
+            }
+        return digest.toHexString()
     }
 }
