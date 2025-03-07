@@ -26,11 +26,11 @@ import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.covers.internal.CoverFormat
-import org.oxycblt.musikr.covers.internal.CoverIdentifier
-import org.oxycblt.musikr.covers.internal.FileCover
-import org.oxycblt.musikr.covers.internal.InternalCovers
-import org.oxycblt.musikr.covers.internal.MutableInternalCovers
+import org.oxycblt.musikr.covers.embedded.CoverFormat
+import org.oxycblt.musikr.covers.embedded.CoverIdentifier
+import org.oxycblt.musikr.covers.embedded.FileCover
+import org.oxycblt.musikr.covers.embedded.EmbeddedCovers
+import org.oxycblt.musikr.covers.embedded.MutableEmbeddedCovers
 import org.oxycblt.musikr.fs.app.AppFS
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
@@ -39,20 +39,20 @@ class BaseSiloedCovers(private val context: Context) : Covers<FileCover> {
     override suspend fun obtain(id: String): CoverResult<FileCover> {
         val siloedId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
         val core = SiloCore.from(context, siloedId.silo)
-        val internalCovers = InternalCovers(core.files, core.format)
-        return when (val result = internalCovers.obtain(siloedId.id)) {
+        val embeddedCovers = EmbeddedCovers(core.files, core.format)
+        return when (val result = embeddedCovers.obtain(siloedId.id)) {
             is CoverResult.Hit -> CoverResult.Hit(SiloedCover(siloedId.silo, result.cover))
             is CoverResult.Miss -> CoverResult.Miss()
         }
     }
 }
 
-open class SiloedCovers(private val silo: CoverSilo, private val internalCovers: InternalCovers) :
+open class SiloedCovers(private val silo: CoverSilo, private val embeddedCovers: EmbeddedCovers) :
     Covers<FileCover> {
     override suspend fun obtain(id: String): CoverResult<FileCover> {
         val coverId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
         if (silo != coverId.silo) return CoverResult.Miss()
-        return when (val result = internalCovers.obtain(coverId.id)) {
+        return when (val result = embeddedCovers.obtain(coverId.id)) {
             is CoverResult.Hit -> CoverResult.Hit(SiloedCover(silo, result.cover))
             is CoverResult.Miss -> CoverResult.Miss()
         }
@@ -61,7 +61,7 @@ open class SiloedCovers(private val silo: CoverSilo, private val internalCovers:
     companion object {
         suspend fun from(context: Context, silo: CoverSilo): SiloedCovers {
             val core = SiloCore.from(context, silo)
-            return SiloedCovers(silo, InternalCovers(core.files, core.format))
+            return SiloedCovers(silo, EmbeddedCovers(core.files, core.format))
         }
     }
 }
@@ -70,7 +70,7 @@ class MutableSiloedCovers
 private constructor(
     private val rootDir: File,
     private val silo: CoverSilo,
-    private val fileCovers: MutableInternalCovers
+    private val fileCovers: MutableEmbeddedCovers
 ) : SiloedCovers(silo, fileCovers), MutableCovers<FileCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FileCover> =
         when (val result = fileCovers.create(file, metadata)) {
@@ -96,7 +96,7 @@ private constructor(
         ): MutableSiloedCovers {
             val core = SiloCore.from(context, silo)
             return MutableSiloedCovers(
-                core.rootDir, silo, MutableInternalCovers(core.files, core.format, coverIdentifier))
+                core.rootDir, silo, MutableEmbeddedCovers(core.files, core.format, coverIdentifier))
         }
     }
 }

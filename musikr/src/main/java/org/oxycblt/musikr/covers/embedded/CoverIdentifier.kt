@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.covers.internal
+package org.oxycblt.musikr.covers.embedded
 
 import java.security.MessageDigest
 

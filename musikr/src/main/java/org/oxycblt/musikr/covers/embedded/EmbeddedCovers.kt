@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.covers.internal
+package org.oxycblt.musikr.covers.embedded
 
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
@@ -28,7 +28,7 @@ import org.oxycblt.musikr.fs.app.AppFile
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-open class InternalCovers(private val appFS: AppFS, private val coverFormat: CoverFormat) :
+open class EmbeddedCovers(private val appFS: AppFS, private val coverFormat: CoverFormat) :
     Covers<FDCover> {
     override suspend fun obtain(id: String): CoverResult<FDCover> {
         val file = appFS.find(getFileName(id))
@@ -42,11 +42,11 @@ open class InternalCovers(private val appFS: AppFS, private val coverFormat: Cov
     protected fun getFileName(id: String) = "$id.${coverFormat.extension}"
 }
 
-class MutableInternalCovers(
+class MutableEmbeddedCovers(
     private val appFS: AppFS,
     private val coverFormat: CoverFormat,
     private val coverIdentifier: CoverIdentifier
-) : InternalCovers(appFS, coverFormat), MutableCovers<FDCover> {
+) : EmbeddedCovers(appFS, coverFormat), MutableCovers<FDCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
         val data = metadata.cover ?: return CoverResult.Miss()
         val id = coverIdentifier.identify(data)

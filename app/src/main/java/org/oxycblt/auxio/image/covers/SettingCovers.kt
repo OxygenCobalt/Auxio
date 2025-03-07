@@ -28,9 +28,9 @@ import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.covers.fs.FSCovers
 import org.oxycblt.musikr.covers.fs.MutableFSCovers
-import org.oxycblt.musikr.covers.internal.CoverIdentifier
-import org.oxycblt.musikr.covers.internal.CoverParams
-import org.oxycblt.musikr.covers.internal.FileCover
+import org.oxycblt.musikr.covers.embedded.CoverIdentifier
+import org.oxycblt.musikr.covers.embedded.CoverParams
+import org.oxycblt.musikr.covers.embedded.FileCover
 
 interface SettingCovers {
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
