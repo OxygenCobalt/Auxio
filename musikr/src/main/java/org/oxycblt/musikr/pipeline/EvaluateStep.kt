@@ -52,7 +52,7 @@ private class EvaluateStepImpl(
     override suspend fun evaluate(extractedMusic: Flow<Extracted>): MutableLibrary =
         extractedMusic
             .filterIsInstance<Extracted.Valid>()
-            .fold(MusicGraph.builder()) { graphBuilder, extracted ->
+            .tryFold(MusicGraph.builder()) { graphBuilder, extracted ->
                 when (extracted) {
                     is RawSong -> graphBuilder.add(tagInterpreter.interpret(extracted))
                     is RawPlaylist ->

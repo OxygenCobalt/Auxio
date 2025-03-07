@@ -75,7 +75,8 @@ private class DeviceFSImpl(
                 location.uri,
                 DocumentsContract.getTreeDocumentId(location.uri),
                 location.path,
-                null)
+                null
+            )
         }
 
     private fun exploreDirectoryImpl(
@@ -99,52 +100,38 @@ private class DeviceFSImpl(
             val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
             val lastModifiedIndex =
                 cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-            contentResolver.useQuery(
-                DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId),
-                PROJECTION
-            ) { cursor ->
-                val childUriIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
-                val displayNameIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
-                val mimeTypeIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
-                val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
-                val lastModifiedIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
-                while (cursor.moveToNext()) {
-                    val childId = cursor.getString(childUriIndex)
-                    val displayName = cursor.getString(displayNameIndex)
+            while (cursor.moveToNext()) {
+                val childId = cursor.getString(childUriIndex)
+                val displayName = cursor.getString(displayNameIndex)
 
-                    // Skip hidden files/directories if ignoreHidden is true
-                    if (!withHidden && displayName.startsWith(".")) {
-                        continue
-                    }
+                // Skip hidden files/directories if ignoreHidden is true
+                if (!withHidden && displayName.startsWith(".")) {
+                    continue
+                }
 
-                    val newPath = relativePath.file(displayName)
-                    val mimeType = cursor.getString(mimeTypeIndex)
-                    val lastModified = cursor.getLong(lastModifiedIndex)
+                val newPath = relativePath.file(displayName)
+                val mimeType = cursor.getString(mimeTypeIndex)
+                val lastModified = cursor.getLong(lastModifiedIndex)
 
-                    if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                        recursive.add(
-                            exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred)
+                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                    recursive.add(
+                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred)
+                    )
+                } else {
+                    val size = cursor.getLong(sizeIndex)
+                    val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
+                    val file =
+                        DeviceFile(
+                            uri = childUri,
+                            mimeType = mimeType,
+                            path = newPath,
+                            size = size,
+                            modifiedMs = lastModified,
+                            parent = directoryDeferred
                         )
-                    } else {
-                        val size = cursor.getLong(sizeIndex)
-                        val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
-                        val file =
-                            DeviceFile(
-                                uri = childUri,
-                                mimeType = mimeType,
-                                path = newPath,
-                                size = size,
-                                modifiedMs = lastModified,
-                                parent = directoryDeferred
-                            )
-                        children.add(file)
-                        emit(file)
-                    }
+                    children.add(file)
+                    emit(file)
                 }
             }
             directoryDeferred.complete(DeviceDirectory(uri, relativePath, parent, children))
@@ -159,6 +146,7 @@ private class DeviceFSImpl(
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED
+            )
     }
 }
