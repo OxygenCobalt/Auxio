@@ -39,7 +39,7 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cache.db.MutableDBCache
+import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -237,7 +237,7 @@ class MusicRepositoryImpl
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val dbCache: MutableDBCache,
+    private val cache: MutableCache,
     private val storedPlaylists: StoredPlaylists,
     private val settingCovers: SettingCovers,
     private val musicSettings: MusicSettings
@@ -389,7 +389,7 @@ constructor(
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
-        val cache = if (withCache) dbCache else WriteOnlyMutableCache(dbCache)
+        val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators, withHidden)

@@ -67,7 +67,9 @@ private class ExploreStepImpl(
         val addingMs = System.currentTimeMillis()
         return merge(
             deviceFS
-                .explore(locations.asFlow(),)
+                .explore(
+                    locations.asFlow(),
+                )
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
                 .distribute(8)
                 .distributedMap { file ->

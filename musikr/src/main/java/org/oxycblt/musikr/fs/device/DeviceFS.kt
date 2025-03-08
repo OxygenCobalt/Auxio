@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.fs.device
 
 import android.content.ContentResolver
@@ -75,8 +75,7 @@ private class DeviceFSImpl(
                 location.uri,
                 DocumentsContract.getTreeDocumentId(location.uri),
                 location.path,
-                null
-            )
+                null)
         }
 
     private fun exploreDirectoryImpl(
@@ -116,8 +115,7 @@ private class DeviceFSImpl(
 
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
                     recursive.add(
-                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred)
-                    )
+                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred))
                 } else {
                     val size = cursor.getLong(sizeIndex)
                     val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
@@ -128,8 +126,7 @@ private class DeviceFSImpl(
                             path = newPath,
                             size = size,
                             modifiedMs = lastModified,
-                            parent = directoryDeferred
-                        )
+                            parent = directoryDeferred)
                     children.add(file)
                     emit(file)
                 }
@@ -146,7 +143,6 @@ private class DeviceFSImpl(
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED
-            )
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED)
     }
 }

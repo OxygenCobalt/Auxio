@@ -23,8 +23,6 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
@@ -76,10 +74,7 @@ class MutableFSCovers(private val context: Context) : FSCovers(context), Mutable
 
     private fun findCoverInDirectory(directory: DeviceDirectory): DeviceFile? {
         return directory.children.firstNotNullOfOrNull { node ->
-            if (node is DeviceFile && isCoverArtFile(
-                    node
-                )
-            ) node else null
+            if (node is DeviceFile && isCoverArtFile(node)) node else null
         }
     }
 

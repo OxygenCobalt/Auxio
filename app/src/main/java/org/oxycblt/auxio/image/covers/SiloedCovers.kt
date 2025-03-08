@@ -25,18 +25,18 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.covers.embedded.CoverFormat
 import org.oxycblt.musikr.covers.embedded.CoverIdentifier
-import org.oxycblt.musikr.covers.embedded.FileCover
 import org.oxycblt.musikr.covers.embedded.EmbeddedCovers
 import org.oxycblt.musikr.covers.embedded.MutableEmbeddedCovers
 import org.oxycblt.musikr.fs.app.AppFS
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-class BaseSiloedCovers(private val context: Context) : Covers<FileCover> {
-    override suspend fun obtain(id: String): CoverResult<FileCover> {
+class BaseSiloedCovers(private val context: Context) : Covers<FDCover> {
+    override suspend fun obtain(id: String): CoverResult<FDCover> {
         val siloedId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
         val core = SiloCore.from(context, siloedId.silo)
         val embeddedCovers = EmbeddedCovers(core.files, core.format)
@@ -48,8 +48,8 @@ class BaseSiloedCovers(private val context: Context) : Covers<FileCover> {
 }
 
 open class SiloedCovers(private val silo: CoverSilo, private val embeddedCovers: EmbeddedCovers) :
-    Covers<FileCover> {
-    override suspend fun obtain(id: String): CoverResult<FileCover> {
+    Covers<FDCover> {
+    override suspend fun obtain(id: String): CoverResult<FDCover> {
         val coverId = SiloedCoverId.parse(id) ?: return CoverResult.Miss()
         if (silo != coverId.silo) return CoverResult.Miss()
         return when (val result = embeddedCovers.obtain(coverId.id)) {
@@ -71,8 +71,8 @@ private constructor(
     private val rootDir: File,
     private val silo: CoverSilo,
     private val fileCovers: MutableEmbeddedCovers
-) : SiloedCovers(silo, fileCovers), MutableCovers<FileCover> {
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FileCover> =
+) : SiloedCovers(silo, fileCovers), MutableCovers<FDCover> {
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> =
         when (val result = fileCovers.create(file, metadata)) {
             is CoverResult.Hit -> CoverResult.Hit(SiloedCover(silo, result.cover))
             is CoverResult.Miss -> CoverResult.Miss()
@@ -101,8 +101,8 @@ private constructor(
     }
 }
 
-data class SiloedCover(private val silo: CoverSilo, val innerCover: FileCover) :
-    FileCover by innerCover {
+data class SiloedCover(private val silo: CoverSilo, val innerCover: FDCover) :
+    FDCover by innerCover {
     private val innerId = SiloedCoverId(silo, innerCover.id)
     override val id = innerId.toString()
 }
