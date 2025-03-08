@@ -1,23 +1,24 @@
-Auxio on paikallisen musiikin soitin nopealla ja luotettavalla käyttöliittymällä ilman useita turhia ominaisuuksia kuten muissa soittimissa. Perustuen moderneihin mediantoistokirjastoihin, Auxiolla on parempi tuki kirjastoille ja äänenlaatu verrattuna muihin sovelluksiin, jotka käyttävät vanhentuneita android toimintoja. Lyhyesti, <b>Se soittaa musiikkia.</b>
+Auxio on paikallinen musiikkisoitin, jossa on nopea ja luotettava käyttöliittymä/UX ilman monia hyödyttömiä ominaisuuksia, joita muissa musiikkisoittimissa on. Nykyaikaisista mediatoistokirjastoista rakennetussa Auxiossa on ylivertainen kirjastotuki ja kuuntelulaatu verrattuna muihin sovelluksiin, jotka käyttävät vanhentuneita Android-toimintoja. Lyhyesti sanottuna <b>Se soittaa musiikkia.</b>
 
 <b>Ominaisuudet</b>
 
 - Toisto perustuu Media3 ExoPlayeriin
-- Tyylikäs käyttöliittymä johdettu viimeisimmistä Material Design ohjeista
-- Omapäinen käyttökokemus joka asettaa helppokäyttöisyyden etusijalle reunatapauksien sijaan
-- Mukautettava käyttäytyminen
-- Tukee levyjen numeroita, moninkertaisia artisteja, julkaisutyyppejä, tarkkoja/alkuperäisiä päivämääriä, tagijärjestystä ynnä muuta
-- Edistynyt esittäjäjärjestelmä, joka yhdistää artistit ja albumiartistit
+- Näppärä käyttöliittymä, joka on johdettu uusimmista materiaalisuunnittelun ohjeista
+- Mielipiteen mukainen UX, joka asettaa helppokäyttöisyyden etusijalle reunakoteloiden sijaan
+- Muokattava käyttäytyminen
+- Tuki levynumeroille, useille esittäjille, julkaisutyypeille, tarkille/alkuperäisille päivämäärille, lajittelutunnisteille ja muille
+- Kehittynyt artistijärjestelmä, joka yhdistää artistit ja albumin artistit
 - SD-korttitietoinen kansionhallinta
-- Varmatoimiset soittolistatoiminnot
-- Android auto-tuki
-- Automaattinen katkoton toisto
-- Täysi ReplayGain tuki (MP3, FLAC, OGG, OPUS ja MP4 tiedostoissa)
-- Tuki ulkoiselle taajuuskorjaimelle (esim. Wavelet)
+- Luotettava soittolistatoiminto
+- Toistotilan pysyvyys
+- Android automaattinen tuki
+- Automaattinen välitön toisto
+- Täysi ReplayGain-tuki (MP3-, FLAC-, OGG-, OPUS- ja MP4-tiedostoissa)
+- Ulkoisen taajuuskorjaimen tuki (esim. Wavelet)
 - Reunasta reunaan
-- Tukee kappaleen sisältämiä kansikuvia
+- Upotettu kansituki
 - Hakutoiminto
-- Automaattinen toisto kuulokkeilla
-- Tyylikkäitä vimpaimia, jotka mukautuvat automaattisesti kokoonsa
-- Täysin yksityinen ja verkkoyhteydetön
-- Pyöristämättömät albumin kansikuvat (oletusarvoisesti)
+- Kuulokkeiden automaattinen toisto
+- Tyylikkäät vimpaimet, jotka mukautuvat automaattisesti kokoonsa
+- Täysin yksityinen ja ei-verkkotilassa
+- Ei pyöristettyjä albumin kansia (jos haluat ne)
