@@ -332,6 +332,4 @@
     <string name="lng_empty_songs">Deine Lieder werden hier angezeigt.</string>
     <string name="lng_empty_genres">Deine Genres werden hier angezeigt.</string>
     <string name="lng_empty_artists">Deine Künstler werden hier angezeigt.</string>
-    <string name="set_ignore_hidden">Versteckte Dateien ignorieren</string>
-    <string name="set_ignore_hidden_desc">Überspringt versteckte Dateien und Ordner (z. B. .cache)</string>
 </resources>
