@@ -216,7 +216,7 @@
     <string name="lbl_mix">Mezcla de DJ</string>
     <string name="lbl_equalizer">Ecualizador</string>
     <string name="set_cover_mode">Portadas de álbumes</string>
-    <string name="set_cover_mode_off">Apagado</string>
+    <string name="set_cover_mode_off">Desactivadas</string>
     <string name="set_action_mode_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
     <string name="set_separators_and">Signo et</string>
@@ -336,4 +336,7 @@
     <string name="lng_empty_playlists">Tus listas de reproducción aparecerán aquí.</string>
     <string name="lng_empty_songs">Tus canciones aparecerán aquí.</string>
     <string name="set_cover_mode_save_space">Ahorra espacio</string>
+    <string name="set_cover_mode_as_is">Original</string>
+    <string name="set_with_hidden_desc">Incluir ficheros de audio ocultos (ej. .cache)</string>
+    <string name="set_with_hidden">Incluir ficheros ocultos</string>
 </resources>
