@@ -25,66 +25,82 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.cache.Cache
+import org.oxycblt.musikr.cache.CacheResult
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverResult
+import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.fs.MusicLocation
-import org.oxycblt.musikr.fs.device.DeviceDirectory
-import org.oxycblt.musikr.fs.device.DeviceFile
-import org.oxycblt.musikr.fs.device.DeviceFiles
-import org.oxycblt.musikr.fs.device.DeviceNode
-import org.oxycblt.musikr.playlist.PlaylistFile
+import org.oxycblt.musikr.fs.device.DeviceFS
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(locations: List<MusicLocation>): Flow<ExploreNode>
+    fun explore(locations: List<MusicLocation>): Flow<Explored>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExploreStep =
-            ExploreStepImpl(DeviceFiles.from(context), storage.storedPlaylists)
+        fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
+            ExploreStepImpl(
+                DeviceFS.from(context, interpretation.withHidden),
+                storage.cache,
+                storage.covers,
+                storage.storedPlaylists)
     }
 }
 
 private class ExploreStepImpl(
-    private val deviceFiles: DeviceFiles,
+    private val deviceFS: DeviceFS,
+    private val cache: Cache,
+    private val covers: Covers<out Cover>,
     private val storedPlaylists: StoredPlaylists
 ) : ExploreStep {
-    override fun explore(locations: List<MusicLocation>): Flow<ExploreNode> {
-        val audios =
-            deviceFiles
-                .explore(locations.asFlow())
-                .flattenFilter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
-                .flowOn(Dispatchers.IO)
-                .buffer()
-        val playlists =
-            flow { emitAll(storedPlaylists.read().asFlow()) }
-                .map { ExploreNode.Playlist(it) }
-                .flowOn(Dispatchers.IO)
-                .buffer()
-        return merge(audios, playlists)
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun Flow<DeviceNode>.flattenFilter(block: (DeviceFile) -> Boolean): Flow<ExploreNode> =
-        flow {
-            collect {
-                val recurse = mutableListOf<Flow<ExploreNode>>()
-                when {
-                    it is DeviceFile && block(it) -> emit(ExploreNode.Audio(it))
-                    it is DeviceDirectory -> recurse.add(it.children.flattenFilter(block))
-                    else -> {}
+    override fun explore(locations: List<MusicLocation>): Flow<Explored> {
+        val addingMs = System.currentTimeMillis()
+        return merge(
+            deviceFS
+                .explore(locations.asFlow(),)
+                .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
+                .distribute(8)
+                .distributedMap { file ->
+                    val cachedSong =
+                        when (val cacheResult = cache.read(file)) {
+                            is CacheResult.Hit -> cacheResult.song
+                            is CacheResult.Stale ->
+                                return@distributedMap NewSong(cacheResult.file, cacheResult.addedMs)
+                            is CacheResult.Miss ->
+                                return@distributedMap NewSong(cacheResult.file, addingMs)
+                        }
+                    val cover =
+                        cachedSong.coverId?.let { coverId ->
+                            when (val coverResult = covers.obtain(coverId)) {
+                                is CoverResult.Hit -> coverResult.cover
+                                else ->
+                                    return@distributedMap NewSong(
+                                        cachedSong.file, cachedSong.addedMs)
+                            }
+                        }
+                    RawSong(
+                        cachedSong.file,
+                        cachedSong.properties,
+                        cachedSong.tags,
+                        cover,
+                        cachedSong.addedMs)
                 }
-                emitAll(recurse.asFlow().flattenMerge())
-            }
-        }
-}
-
-internal sealed interface ExploreNode {
-    data class Audio(val file: DeviceFile) : ExploreNode
-
-    data class Playlist(val file: PlaylistFile) : ExploreNode
+                .flattenMerge()
+                .flowOn(Dispatchers.IO)
+                .buffer(),
+            flow { emitAll(storedPlaylists.read().asFlow()) }
+                .map { RawPlaylist(it) }
+                .flowOn(Dispatchers.IO)
+                .buffer())
+    }
 }

@@ -64,7 +64,7 @@ import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.cover.CoverCollection
+import org.oxycblt.musikr.covers.CoverCollection
 
 /**
  * Auxio's extension of [ImageView] that enables cover art loading and playing indicator and

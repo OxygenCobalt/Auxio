@@ -46,7 +46,7 @@ import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.buffer
 import okio.source
-import org.oxycblt.musikr.cover.CoverCollection
+import org.oxycblt.musikr.covers.CoverCollection
 
 class CoverCollectionFetcher
 private constructor(

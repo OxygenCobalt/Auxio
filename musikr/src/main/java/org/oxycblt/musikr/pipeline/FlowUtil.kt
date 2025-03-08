@@ -26,46 +26,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
 
-internal sealed interface Divert<L, R> {
-    data class Left<L, R>(val value: L) : Divert<L, R>
-
-    data class Right<L, R>(val value: R) : Divert<L, R>
-}
-
-internal class DivertedFlow<L, R>(
-    val manager: Flow<Nothing>,
-    val left: Flow<L>,
-    val right: Flow<R>
-)
-
-internal inline fun <T, L, R> Flow<T>.divert(
-    crossinline predicate: (T) -> Divert<L, R>
-): DivertedFlow<L, R> {
-    val leftChannel = Channel<L>(Channel.UNLIMITED)
-    val rightChannel = Channel<R>(Channel.UNLIMITED)
-    val managedFlow =
-        flow<Nothing> {
-            collect {
-                when (val result = predicate(it)) {
-                    is Divert.Left -> leftChannel.send(result.value)
-                    is Divert.Right -> rightChannel.send(result.value)
-                }
-            }
-            leftChannel.close()
-            rightChannel.close()
-        }
-    return DivertedFlow(managedFlow, leftChannel.receiveAsFlow(), rightChannel.receiveAsFlow())
-}
-
-internal class DistributedFlow<T>(val manager: Flow<Nothing>, val flows: Flow<Flow<T>>)
-
 /**
  * Equally "distributes" the values of some flow across n new flows.
  *
  * Note that this function requires the "manager" flow to be consumed alongside the split flows in
  * order to function. Without this, all of the newly split flows will simply block.
  */
-internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
+internal fun <T> Flow<T>.distribute(n: Int): Flow<Flow<T>> {
     val posChannels = List(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
@@ -77,6 +44,32 @@ internal fun <T> Flow<T>.distribute(n: Int): DistributedFlow<T> {
                 channel.close()
             }
         }
-    val hotFlows = posChannels.asFlow().map { it.receiveAsFlow() }
-    return DistributedFlow(managerFlow, hotFlows)
+    return (posChannels.map { it.receiveAsFlow() } + managerFlow).asFlow()
+}
+
+internal fun <T, R> Flow<Flow<T>>.distributedMap(transform: suspend (T) -> R): Flow<Flow<R>> =
+    flow {
+        collect { innerFlow -> emit(innerFlow.tryMap(transform)) }
+    }
+
+internal fun <T, R> Flow<T>.tryMap(transform: suspend (T) -> R): Flow<R> = flow {
+    collect { value ->
+        try {
+            emit(transform(value))
+        } catch (e: Exception) {
+            throw PipelineException(value, e)
+        }
+    }
+}
+
+internal suspend fun <T, A> Flow<T>.tryFold(initial: A, operation: suspend (A, T) -> A): A {
+    var accumulator = initial
+    collect { value ->
+        try {
+            accumulator = operation(accumulator, value)
+        } catch (e: Exception) {
+            throw PipelineException(value, e)
+        }
+    }
+    return accumulator
 }

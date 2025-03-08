@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red_surface_black">#000000</color>
+    <color name="red_surfaceDim_black">#000000</color>
+    <color name="red_surfaceBright_black">#211b1a</color>
+    <color name="red_surfaceContainerLowest_black">#000000</color>
+    <color name="red_surfaceContainerLow_black">#110c0c</color>
+    <color name="red_surfaceContainer_black">#130e0e</color>
+    <color name="red_surfaceContainerHigh_black">#181413</color>
+    <color name="red_surfaceContainerHighest_black">#1e1918</color>
+
+    <color name="pink_surface_black">#000000</color>
+    <color name="pink_surfaceDim_black">#000000</color>
+    <color name="pink_surfaceBright_black">#201b1b</color>
+    <color name="pink_surfaceContainerLowest_black">#000000</color>
+    <color name="pink_surfaceContainerLow_black">#110c0d</color>
+    <color name="pink_surfaceContainer_black">#130e0f</color>
+    <color name="pink_surfaceContainerHigh_black">#181414</color>
+    <color name="pink_surfaceContainerHighest_black">#1e1819</color>
+
+    <color name="purple_surface_black">#000000</color>
+    <color name="purple_surfaceDim_black">#000000</color>
+    <color name="purple_surfaceBright_black">#1f1b1e</color>
+    <color name="purple_surfaceContainerLowest_black">#000000</color>
+    <color name="purple_surfaceContainerLow_black">#0f0c0f</color>
+    <color name="purple_surfaceContainer_black">#110e11</color>
+    <color name="purple_surfaceContainerHigh_black">#171416</color>
+    <color name="purple_surfaceContainerHighest_black">#1c191c</color>
+
+    <color name="deep_purple_surface_black">#000000</color>
+    <color name="deep_purple_surfaceDim_black">#000000</color>
+    <color name="deep_purple_surfaceBright_black">#1d1c1f</color>
+    <color name="deep_purple_surfaceContainerLowest_black">#000000</color>
+    <color name="deep_purple_surfaceContainerLow_black">#0e0d10</color>
+    <color name="deep_purple_surfaceContainer_black">#100f12</color>
+    <color name="deep_purple_surfaceContainerHigh_black">#161417</color>
+    <color name="deep_purple_surfaceContainerHighest_black">#1b1a1d</color>
+
+    <color name="indigo_surface_black">#000000</color>
+    <color name="indigo_surfaceDim_black">#000000</color>
+    <color name="indigo_surfaceBright_black">#1c1c1f</color>
+    <color name="indigo_surfaceContainerLowest_black">#000000</color>
+    <color name="indigo_surfaceContainerLow_black">#0d0d10</color>
+    <color name="indigo_surfaceContainer_black">#0f0f12</color>
+    <color name="indigo_surfaceContainerHigh_black">#141417</color>
+    <color name="indigo_surfaceContainerHighest_black">#1a1a1d</color>
+
+    <color name="blue_surface_black">#000000</color>
+    <color name="blue_surfaceDim_black">#000000</color>
+    <color name="blue_surfaceBright_black">#1b1c1e</color>
+    <color name="blue_surfaceContainerLowest_black">#000000</color>
+    <color name="blue_surfaceContainerLow_black">#0c0d0f</color>
+    <color name="blue_surfaceContainer_black">#0e1012</color>
+    <color name="blue_surfaceContainerHigh_black">#131517</color>
+    <color name="blue_surfaceContainerHighest_black">#191a1c</color>
+
+    <color name="deep_blue_surface_black">#000000</color>
+    <color name="deep_blue_surfaceDim_black">#000000</color>
+    <color name="deep_blue_surfaceBright_black">#1a1d1e</color>
+    <color name="deep_blue_surfaceContainerLowest_black">#000000</color>
+    <color name="deep_blue_surfaceContainerLow_black">#0b0e0f</color>
+    <color name="deep_blue_surfaceContainer_black">#0d1011</color>
+    <color name="deep_blue_surfaceContainerHigh_black">#121517</color>
+    <color name="deep_blue_surfaceContainerHighest_black">#181a1c</color>
+
+    <color name="cyan_surface_black">#000000</color>
+    <color name="cyan_surfaceDim_black">#000000</color>
+    <color name="cyan_surfaceBright_black">#1a1d1e</color>
+    <color name="cyan_surfaceContainerLowest_black">#000000</color>
+    <color name="cyan_surfaceContainerLow_black">#0b0e0e</color>
+    <color name="cyan_surfaceContainer_black">#0d1010</color>
+    <color name="cyan_surfaceContainerHigh_black">#121515</color>
+    <color name="cyan_surfaceContainerHighest_black">#181b1b</color>
+
+    <color name="teal_surface_black">#000000</color>
+    <color name="teal_surfaceDim_black">#000000</color>
+    <color name="teal_surfaceBright_black">#1a1d1c</color>
+    <color name="teal_surfaceContainerLowest_black">#000000</color>
+    <color name="teal_surfaceContainerLow_black">#0b0e0d</color>
+    <color name="teal_surfaceContainer_black">#0d100f</color>
+    <color name="teal_surfaceContainerHigh_black">#121514</color>
+    <color name="teal_surfaceContainerHighest_black">#181b1a</color>
+
+    <color name="green_surface_black">#000000</color>
+    <color name="green_surfaceDim_black">#000000</color>
+    <color name="green_surfaceBright_black">#1b1d1a</color>
+    <color name="green_surfaceContainerLowest_black">#000000</color>
+    <color name="green_surfaceContainerLow_black">#0c0e0b</color>
+    <color name="green_surfaceContainer_black">#0e100d</color>
+    <color name="green_surfaceContainerHigh_black">#131512</color>
+    <color name="green_surfaceContainerHighest_black">#191b18</color>
+
+    <color name="deep_green_surface_black">#000000</color>
+    <color name="deep_green_surfaceDim_black">#000000</color>
+    <color name="deep_green_surfaceBright_black">#1b1d19</color>
+    <color name="deep_green_surfaceContainerLowest_black">#000000</color>
+    <color name="deep_green_surfaceContainerLow_black">#0d0e0a</color>
+    <color name="deep_green_surfaceContainer_black">#0f100d</color>
+    <color name="deep_green_surfaceContainerHigh_black">#141512</color>
+    <color name="deep_green_surfaceContainerHighest_black">#191b16</color>
+
+    <color name="lime_surface_black">#000000</color>
+    <color name="lime_surfaceDim_black">#000000</color>
+    <color name="lime_surfaceBright_black">#1c1d18</color>
+    <color name="lime_surfaceContainerLowest_black">#000000</color>
+    <color name="lime_surfaceContainerLow_black">#0d0e09</color>
+    <color name="lime_surfaceContainer_black">#10100c</color>
+    <color name="lime_surfaceContainerHigh_black">#141511</color>
+    <color name="lime_surfaceContainerHighest_black">#1a1a16</color>
+
+    <color name="yellow_surface_black">#000000</color>
+    <color name="yellow_surfaceDim_black">#000000</color>
+    <color name="yellow_surfaceBright_black">#1f1c17</color>
+    <color name="yellow_surfaceContainerLowest_black">#000000</color>
+    <color name="yellow_surfaceContainerLow_black">#100d09</color>
+    <color name="yellow_surfaceContainer_black">#120f0b</color>
+    <color name="yellow_surfaceContainerHigh_black">#171410</color>
+    <color name="yellow_surfaceContainerHighest_black">#1d1a15</color>
+
+    <color name="orange_surface_black">#000000</color>
+    <color name="orange_surfaceDim_black">#000000</color>
+    <color name="orange_surfaceBright_black">#201b18</color>
+    <color name="orange_surfaceContainerLowest_black">#000000</color>
+    <color name="orange_surfaceContainerLow_black">#110d0a</color>
+    <color name="orange_surfaceContainer_black">#130f0c</color>
+    <color name="orange_surfaceContainerHigh_black">#181411</color>
+    <color name="orange_surfaceContainerHighest_black">#1d1916</color>
+    <color name="brown_surface_black">#000000</color>
+    <color name="brown_surfaceDim_black">#000000</color>
+    <color name="brown_surfaceBright_black">#1e1c1b</color>
+    <color name="brown_surfaceContainerLowest_black">#000000</color>
+    <color name="brown_surfaceContainerLow_black">#0f0d0d</color>
+    <color name="brown_surfaceContainer_black">#110f0f</color>
+    <color name="brown_surfaceContainerHigh_black">#161414</color>
+    <color name="brown_surfaceContainerHighest_black">#1b1a19</color>
+
+    <color name="grey_surface_black">#000000</color>
+    <color name="grey_surfaceDim_black">#000000</color>
+    <color name="grey_surfaceBright_black">#1d1c1c</color>
+    <color name="grey_surfaceContainerLowest_black">#000000</color>
+    <color name="grey_surfaceContainerLow_black">#0e0d0d</color>
+    <color name="grey_surfaceContainer_black">#100f0f</color>
+    <color name="grey_surfaceContainerHigh_black">#151515</color>
+    <color name="grey_surfaceContainerHighest_black">#1a1a1a</color>
+</resources>

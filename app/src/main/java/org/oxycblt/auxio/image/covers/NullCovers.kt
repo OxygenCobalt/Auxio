@@ -19,9 +19,9 @@
 package org.oxycblt.auxio.image.covers
 
 import android.content.Context
-import org.oxycblt.musikr.cover.Cover
-import org.oxycblt.musikr.cover.CoverResult
-import org.oxycblt.musikr.cover.MutableCovers
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverResult
+import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 

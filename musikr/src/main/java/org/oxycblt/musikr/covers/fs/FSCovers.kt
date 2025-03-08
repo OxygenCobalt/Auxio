@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Auxio Project
- * FolderCovers.kt is part of Auxio.
+ * FSCovers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.covers.fs
 
 import android.content.Context
 import android.net.Uri
@@ -26,22 +26,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverResult
+import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.covers.FDCover
+import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.fs.device.DeviceDirectory
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-open class FolderCovers(private val context: Context) : Covers<FolderCover> {
-    override suspend fun obtain(id: String): CoverResult<FolderCover> {
+open class FSCovers(private val context: Context) : Covers<FDCover> {
+    override suspend fun obtain(id: String): CoverResult<FDCover> {
         // Parse the ID to get the directory URI
         if (!id.startsWith("folder:")) {
             return CoverResult.Miss()
         }
 
-        // TODO: Check if the dir actually exists still to avoid stale uris
         val directoryUri = id.substring("folder:".length)
         val uri = Uri.parse(directoryUri)
-
-        // Check if the URI is still valid
         val exists =
             withContext(Dispatchers.IO) {
                 try {
@@ -60,10 +62,9 @@ open class FolderCovers(private val context: Context) : Covers<FolderCover> {
     }
 }
 
-class MutableFolderCovers(private val context: Context) :
-    FolderCovers(context), MutableCovers<FolderCover> {
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FolderCover> {
-        val parent = file.parent
+class MutableFSCovers(private val context: Context) : FSCovers(context), MutableCovers<FDCover> {
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
+        val parent = file.parent.await()
         val coverFile = findCoverInDirectory(parent) ?: return CoverResult.Miss()
         return CoverResult.Hit(FolderCoverImpl(context, coverFile.uri))
     }
@@ -73,22 +74,23 @@ class MutableFolderCovers(private val context: Context) :
         // that should not be managed by the app
     }
 
-    private suspend fun findCoverInDirectory(directory: DeviceDirectory): DeviceFile? {
-        return directory.children
-            .mapNotNull { node -> if (node is DeviceFile && isCoverArtFile(node)) node else null }
-            .firstOrNull()
+    private fun findCoverInDirectory(directory: DeviceDirectory): DeviceFile? {
+        return directory.children.firstNotNullOfOrNull { node ->
+            if (node is DeviceFile && isCoverArtFile(
+                    node
+                )
+            ) node else null
+        }
     }
 
     private fun isCoverArtFile(file: DeviceFile): Boolean {
         val filename = requireNotNull(file.path.name).lowercase()
         val mimeType = file.mimeType.lowercase()
 
-        // Check if the file is an image
         if (!mimeType.startsWith("image/")) {
             return false
         }
 
-        // Common cover art filenames
         val coverNames =
             listOf(
                 "cover",
@@ -99,10 +101,8 @@ class MutableFolderCovers(private val context: Context) :
                 "artwork",
                 "art",
                 "folder",
-                "cover")
+                "coverart")
 
-        // Check if the filename matches any common cover art names
-        // Also check for case variations (e.g., Cover.jpg, COVER.JPG)
         val filenameWithoutExt = filename.substringBeforeLast(".")
         val extension = filename.substringAfterLast(".", "")
 
@@ -115,12 +115,10 @@ class MutableFolderCovers(private val context: Context) :
     }
 }
 
-interface FolderCover : FileCover
-
 private data class FolderCoverImpl(
     private val context: Context,
     private val uri: Uri,
-) : FolderCover {
+) : FDCover {
     override val id = "folder:$uri"
 
     override suspend fun fd(): ParcelFileDescriptor? =

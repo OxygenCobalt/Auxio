@@ -67,7 +67,7 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
                     true
                 }
         }
-        if (preference.key == getString(R.string.set_key_ignore_hidden)) {
+        if (preference.key == getString(R.string.set_key_with_hidden)) {
             L.d("Configuring ignore hidden files setting")
             preference.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, _ ->

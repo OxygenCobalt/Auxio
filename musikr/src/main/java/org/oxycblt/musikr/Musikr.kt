@@ -71,7 +71,7 @@ interface Musikr {
         fun new(context: Context, storage: Storage, interpretation: Interpretation): Musikr =
             MusikrImpl(
                 storage,
-                ExploreStep.from(context, storage),
+                ExploreStep.from(context, storage, interpretation),
                 ExtractStep.from(context, storage),
                 EvaluateStep.new(storage, interpretation))
     }
@@ -143,6 +143,6 @@ private class LibraryResultImpl(
     override val library: MutableLibrary
 ) : LibraryResult {
     override suspend fun cleanup() {
-        storage.storedCovers.cleanup(library.songs.mapNotNull { it.cover })
+        storage.covers.cleanup(library.songs.mapNotNull { it.cover })
     }
 }

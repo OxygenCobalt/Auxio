@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * DeviceFile.kt is part of Auxio.
+ * CoverParams.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,29 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs.device
+package org.oxycblt.musikr.covers.embedded
 
-import android.net.Uri
-import kotlinx.coroutines.flow.Flow
-import org.oxycblt.musikr.fs.Path
+class CoverParams private constructor(val resolution: Int, val quality: Int) {
+    override fun hashCode() = 31 * resolution + quality
 
-sealed interface DeviceNode {
-    val uri: Uri
-    val path: Path
+    override fun equals(other: Any?) =
+        other is CoverParams && other.resolution == resolution && other.quality == quality
+
+    companion object {
+        fun of(resolution: Int, quality: Int): CoverParams {
+            check(resolution > 0) { "Resolution must be positive" }
+            check(quality in 0..100) { "Quality must be between 0 and 100" }
+            return CoverParams(resolution, quality)
+        }
+    }
 }
-
-data class DeviceDirectory(
-    override val uri: Uri,
-    override val path: Path,
-    val parent: DeviceDirectory?,
-    var children: Flow<DeviceNode>
-) : DeviceNode
-
-data class DeviceFile(
-    override val uri: Uri,
-    override val path: Path,
-    val modifiedMs: Long,
-    val mimeType: String,
-    val size: Long,
-    val parent: DeviceDirectory
-) : DeviceNode
