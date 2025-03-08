@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * AppFS.kt is part of Auxio.
+ * CoverStorage.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs.app
+package org.oxycblt.musikr.covers.stored
 
 import android.os.ParcelFileDescriptor
 import java.io.File
 import java.io.IOException
-import java.io.InputStream
 import java.io.OutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import org.oxycblt.musikr.covers.FDCover
 
-interface AppFS {
-    suspend fun find(name: String): AppFile?
+interface CoverStorage {
+    suspend fun find(name: String): FDCover?
 
-    suspend fun write(name: String, block: suspend (OutputStream) -> Unit): AppFile
+    suspend fun write(name: String, block: suspend (OutputStream) -> Unit): FDCover
 
-    suspend fun deleteWhere(block: (String) -> Boolean)
+    suspend fun ls(exclude: Set<String>): List<String>
+
+    suspend fun rm(file: String)
 
     companion object {
-        suspend fun at(dir: File): AppFS {
+        suspend fun at(dir: File): CoverStorage {
             withContext(Dispatchers.IO) { check(dir.exists() && dir.isDirectory) }
-            return AppFSImpl(dir)
+            return CoverStorageImpl(dir)
         }
     }
 }
 
-interface AppFile {
-    suspend fun fd(): ParcelFileDescriptor?
-
-    suspend fun open(): InputStream?
-}
-
-private class AppFSImpl(private val dir: File) : AppFS {
+private class CoverStorageImpl(private val dir: File) : CoverStorage {
     private val fileMutexes = mutableMapOf<String, Mutex>()
     private val mapMutex = Mutex()
 
@@ -57,16 +53,16 @@ private class AppFSImpl(private val dir: File) : AppFS {
         return mapMutex.withLock { fileMutexes.getOrPut(file) { Mutex() } }
     }
 
-    override suspend fun find(name: String): AppFile? =
+    override suspend fun find(name: String): FDCover? =
         withContext(Dispatchers.IO) {
             try {
-                File(dir, name).takeIf { it.exists() }?.let { AppFileImpl(it) }
+                File(dir, name).takeIf { it.exists() }?.let { StoredCover(it) }
             } catch (e: IOException) {
                 null
             }
         }
 
-    override suspend fun write(name: String, block: suspend (OutputStream) -> Unit): AppFile {
+    override suspend fun write(name: String, block: suspend (OutputStream) -> Unit): FDCover {
         val fileMutex = getMutexForFile(name)
         return fileMutex.withLock {
             val targetFile = File(dir, name)
@@ -77,26 +73,31 @@ private class AppFSImpl(private val dir: File) : AppFS {
                     try {
                         tempFile.outputStream().use { block(it) }
                         tempFile.renameTo(targetFile)
-                        AppFileImpl(targetFile)
+                        StoredCover(targetFile)
                     } catch (e: IOException) {
                         tempFile.delete()
                         throw e
                     }
                 }
             } else {
-                AppFileImpl(targetFile)
+                StoredCover(targetFile)
             }
         }
     }
 
-    override suspend fun deleteWhere(block: (String) -> Boolean) {
+    override suspend fun ls(exclude: Set<String>): List<String> =
         withContext(Dispatchers.IO) {
-            dir.listFiles { file -> block(file.name) }?.forEach { it.deleteRecursively() }
+            dir.listFiles()?.map { it.name }?.filter { exclude.contains(it) } ?: emptyList()
         }
+
+    override suspend fun rm(file: String) {
+        withContext(Dispatchers.IO) { File(dir, file).delete() }
     }
 }
 
-private data class AppFileImpl(private val file: File) : AppFile {
+private data class StoredCover(private val file: File) : FDCover {
+    override val id: String = file.name
+
     override suspend fun fd() =
         withContext(Dispatchers.IO) {
             try {
@@ -107,4 +108,8 @@ private data class AppFileImpl(private val file: File) : AppFile {
         }
 
     override suspend fun open() = withContext(Dispatchers.IO) { file.inputStream() }
+
+    override fun equals(other: Any?) = other is StoredCover && file == other.file
+
+    override fun hashCode() = file.hashCode()
 }

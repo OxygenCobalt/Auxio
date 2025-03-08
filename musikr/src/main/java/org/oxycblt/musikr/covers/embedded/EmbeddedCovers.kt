@@ -18,51 +18,36 @@
  
 package org.oxycblt.musikr.covers.embedded
 
+import java.io.ByteArrayInputStream
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
-import org.oxycblt.musikr.covers.Covers
-import org.oxycblt.musikr.covers.FDCover
+import org.oxycblt.musikr.covers.MemoryCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.app.AppFS
-import org.oxycblt.musikr.fs.app.AppFile
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-open class EmbeddedCovers(private val appFS: AppFS, private val coverFormat: CoverFormat) :
-    Covers<FDCover> {
-    override suspend fun obtain(id: String): CoverResult<FDCover> {
-        val file = appFS.find(getFileName(id))
-        return if (file != null) {
-            CoverResult.Hit(InternalCoverImpl(id, file))
-        } else {
-            CoverResult.Miss()
-        }
-    }
+class EmbeddedCovers(private val coverIdentifier: CoverIdentifier) : MutableCovers<MemoryCover> {
+    override suspend fun obtain(id: String): CoverResult<MemoryCover> = CoverResult.Miss()
 
-    protected fun getFileName(id: String) = "$id.${coverFormat.extension}"
-}
-
-class MutableEmbeddedCovers(
-    private val appFS: AppFS,
-    private val coverFormat: CoverFormat,
-    private val coverIdentifier: CoverIdentifier
-) : EmbeddedCovers(appFS, coverFormat), MutableCovers<FDCover> {
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
+    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<MemoryCover> {
         val data = metadata.cover ?: return CoverResult.Miss()
         val id = coverIdentifier.identify(data)
-        val coverFile = appFS.write(getFileName(id)) { coverFormat.transcodeInto(data, it) }
-        return CoverResult.Hit(InternalCoverImpl(id, coverFile))
+        return CoverResult.Hit(EmbeddedCover(id, data))
     }
 
-    override suspend fun cleanup(excluding: Collection<Cover>) {
-        val used = excluding.mapTo(mutableSetOf()) { getFileName(it.id) }
-        appFS.deleteWhere { it !in used }
-    }
+    override suspend fun cleanup(excluding: Collection<Cover>) {}
 }
 
-private data class InternalCoverImpl(override val id: String, private val appFile: AppFile) :
-    FDCover {
-    override suspend fun fd() = appFile.fd()
+private class EmbeddedCover(override val id: String, private val data: ByteArray) : MemoryCover {
+    override suspend fun open() = ByteArrayInputStream(data)
 
-    override suspend fun open() = appFile.open()
+    override fun data() = data
+
+    override fun hashCode(): Int = id.hashCode()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is EmbeddedCover) return false
+        return id == other.id
+    }
 }

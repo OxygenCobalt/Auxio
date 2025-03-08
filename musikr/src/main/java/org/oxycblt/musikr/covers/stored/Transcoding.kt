@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Auxio Project
- * CoverFormat.kt is part of Auxio.
+ * Transcoding.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,47 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.covers.embedded
+package org.oxycblt.musikr.covers.stored
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import java.io.OutputStream
 
-abstract class CoverFormat {
-    internal abstract val extension: String
+interface Transcoding {
+    val tag: String
 
-    internal abstract fun transcodeInto(data: ByteArray, output: OutputStream): Boolean
+    fun transcodeInto(data: ByteArray, output: OutputStream)
+}
 
-    companion object {
-        fun jpeg(params: CoverParams): CoverFormat =
-            CompressingCoverFormat("jpg", params, Bitmap.CompressFormat.JPEG)
+object NoTranscoding : Transcoding {
+    override val tag = ".img"
 
-        fun asIs(): CoverFormat = AsIsCoverFormat()
+    override fun transcodeInto(data: ByteArray, output: OutputStream) {
+        output.write(data)
     }
 }
 
-private class CompressingCoverFormat(
-    override val extension: String,
-    private val params: CoverParams,
+class Compress(
     private val format: Bitmap.CompressFormat,
-) : CoverFormat() {
-    override fun transcodeInto(data: ByteArray, output: OutputStream) =
+    private val resolution: Int,
+    private val quality: Int,
+) : Transcoding {
+    override val tag = "_${resolution}x${quality}.${format.name.lowercase()}"
+
+    override fun transcodeInto(data: ByteArray, output: OutputStream) {
         BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeByteArray(data, 0, data.size, this)
-            inSampleSize = calculateInSampleSize(params.resolution)
+            inSampleSize = calculateInSampleSize(resolution)
             inJustDecodeBounds = false
-            val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size, this) ?: return@run false
-            bitmap.compress(format, params.quality, output)
+            val bitmap =
+                requireNotNull(BitmapFactory.decodeByteArray(data, 0, data.size, this)) {
+                    "Failed to decode bitmap"
+                }
+            bitmap.compress(format, quality, output)
             true
         }
+    }
 
     private fun BitmapFactory.Options.calculateInSampleSize(size: Int): Int {
         var inSampleSize = 1
@@ -63,18 +70,5 @@ private class CompressingCoverFormat(
             }
         }
         return inSampleSize
-    }
-}
-
-private class AsIsCoverFormat : CoverFormat() {
-    override val extension: String = "bin"
-
-    override fun transcodeInto(data: ByteArray, output: OutputStream): Boolean {
-        return try {
-            output.write(data)
-            true
-        } catch (e: Exception) {
-            false
-        }
     }
 }

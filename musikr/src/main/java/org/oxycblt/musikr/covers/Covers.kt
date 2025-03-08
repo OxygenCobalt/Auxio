@@ -99,6 +99,10 @@ interface FDCover : Cover {
     suspend fun fd(): ParcelFileDescriptor?
 }
 
+interface MemoryCover : Cover {
+    fun data(): ByteArray
+}
+
 class CoverCollection private constructor(val covers: List<Cover>) {
     override fun hashCode() = covers.hashCode()
 

@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.image.covers
 
 import android.content.Context
+import android.graphics.Bitmap
 import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.image.CoverMode
@@ -28,16 +29,21 @@ import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.covers.embedded.CoverIdentifier
-import org.oxycblt.musikr.covers.embedded.CoverParams
+import org.oxycblt.musikr.covers.embedded.EmbeddedCovers
 import org.oxycblt.musikr.covers.fs.FSCovers
 import org.oxycblt.musikr.covers.fs.MutableFSCovers
+import org.oxycblt.musikr.covers.stored.Compress
+import org.oxycblt.musikr.covers.stored.CoverStorage
+import org.oxycblt.musikr.covers.stored.MutableStoredCovers
+import org.oxycblt.musikr.covers.stored.NoTranscoding
+import org.oxycblt.musikr.covers.stored.StoredCovers
 
 interface SettingCovers {
     suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover>
 
     companion object {
-        fun immutable(context: Context): Covers<FDCover> =
-            Covers.chain(BaseSiloedCovers(context), FSCovers(context))
+        suspend fun immutable(context: Context): Covers<FDCover> =
+            Covers.chain(StoredCovers(CoverStorage.at(context.coversDir())), FSCovers(context))
     }
 }
 
@@ -45,17 +51,22 @@ class SettingCoversImpl
 @Inject
 constructor(private val imageSettings: ImageSettings, private val identifier: CoverIdentifier) :
     SettingCovers {
-    override suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover> =
-        when (imageSettings.coverMode) {
-            CoverMode.OFF -> NullCovers(context)
-            CoverMode.SAVE_SPACE -> siloedCovers(context, revision, CoverParams.of(500, 70))
-            CoverMode.BALANCED -> siloedCovers(context, revision, CoverParams.of(750, 85))
-            CoverMode.HIGH_QUALITY -> siloedCovers(context, revision, CoverParams.of(1000, 100))
-            CoverMode.AS_IS -> siloedCovers(context, revision, null)
-        }
-
-    private suspend fun siloedCovers(context: Context, revision: UUID, with: CoverParams?) =
-        MutableCovers.chain(
-            MutableSiloedCovers.from(context, CoverSilo(revision, with), identifier),
-            MutableFSCovers(context))
+    override suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover> {
+        val coverStorage = CoverStorage.at(context.coversDir())
+        val transcoding =
+            when (imageSettings.coverMode) {
+                CoverMode.OFF -> return NullCovers(coverStorage)
+                CoverMode.SAVE_SPACE -> Compress(Bitmap.CompressFormat.JPEG, 500, 70)
+                CoverMode.BALANCED -> Compress(Bitmap.CompressFormat.JPEG, 750, 85)
+                CoverMode.HIGH_QUALITY -> Compress(Bitmap.CompressFormat.JPEG, 1000, 100)
+                CoverMode.AS_IS -> NoTranscoding
+            }
+        val revisionedTranscoding = RevisionedTranscoding(revision, transcoding)
+        val storedCovers =
+            MutableStoredCovers(EmbeddedCovers(identifier), coverStorage, revisionedTranscoding)
+        val fsCovers = MutableFSCovers(context)
+        return MutableCovers.chain(storedCovers, fsCovers)
+    }
 }
+
+private fun Context.coversDir() = filesDir.resolve("covers")

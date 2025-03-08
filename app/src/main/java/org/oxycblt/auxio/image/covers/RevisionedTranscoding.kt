@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2024 Auxio Project
- * CoverUtil.kt is part of Auxio.
+ * Copyright (c) 2025 Auxio Project
+ * RevisionedTranscoding.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
  
 package org.oxycblt.auxio.image.covers
 
-import android.content.Context
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import java.util.UUID
+import org.oxycblt.musikr.covers.stored.Transcoding
 
-suspend fun Context.coversDir() =
-    withContext(Dispatchers.IO) { filesDir.resolve("covers").apply { mkdirs() } }
+class RevisionedTranscoding(revision: UUID, private val inner: Transcoding) : Transcoding by inner {
+    override val tag = "_$revision${inner.tag}"
+}

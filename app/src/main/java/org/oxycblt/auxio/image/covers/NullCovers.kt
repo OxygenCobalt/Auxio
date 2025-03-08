@@ -18,20 +18,20 @@
  
 package org.oxycblt.auxio.image.covers
 
-import android.content.Context
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.MutableCovers
+import org.oxycblt.musikr.covers.stored.CoverStorage
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
-class NullCovers(private val context: Context) : MutableCovers<NullCover> {
+class NullCovers(private val storage: CoverStorage) : MutableCovers<NullCover> {
     override suspend fun obtain(id: String) = CoverResult.Hit(NullCover)
 
     override suspend fun create(file: DeviceFile, metadata: Metadata) = CoverResult.Hit(NullCover)
 
     override suspend fun cleanup(excluding: Collection<Cover>) {
-        context.coversDir().listFiles()?.forEach { it.deleteRecursively() }
+        storage.ls(setOf()).map { storage.rm(it) }
     }
 }
 
