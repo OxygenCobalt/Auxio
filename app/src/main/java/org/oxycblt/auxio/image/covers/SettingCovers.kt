@@ -47,9 +47,7 @@ interface SettingCovers {
     }
 }
 
-class SettingCoversImpl
-@Inject
-constructor(private val imageSettings: ImageSettings, private val identifier: CoverIdentifier) :
+class SettingCoversImpl @Inject constructor(private val imageSettings: ImageSettings) :
     SettingCovers {
     override suspend fun mutate(context: Context, revision: UUID): MutableCovers<out Cover> {
         val coverStorage = CoverStorage.at(context.coversDir())
@@ -63,7 +61,8 @@ constructor(private val imageSettings: ImageSettings, private val identifier: Co
             }
         val revisionedTranscoding = RevisionedTranscoding(revision, transcoding)
         val storedCovers =
-            MutableStoredCovers(EmbeddedCovers(identifier), coverStorage, revisionedTranscoding)
+            MutableStoredCovers(
+                EmbeddedCovers(CoverIdentifier.md5()), coverStorage, revisionedTranscoding)
         val fsCovers = MutableFSCovers(context)
         return MutableCovers.chain(storedCovers, fsCovers)
     }

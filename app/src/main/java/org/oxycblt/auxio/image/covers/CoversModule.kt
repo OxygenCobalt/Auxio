@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2024 Auxio Project
- * CoverSilo.kt is part of Auxio.
+ * Copyright (c) 2023 Auxio Project
+ * CoversModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,13 @@
  
 package org.oxycblt.auxio.image.covers
 
-import java.util.UUID
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-private fun String.toUuidOrNull(): UUID? =
-    try {
-        UUID.fromString(this)
-    } catch (e: IllegalArgumentException) {
-        null
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+interface CoilModule {
+    @Binds fun settingCovers(imageSettings: SettingCoversImpl): SettingCovers
+}
