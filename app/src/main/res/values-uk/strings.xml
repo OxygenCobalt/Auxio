@@ -337,4 +337,6 @@
     <string name="lng_empty_genres">Тут відображатимуться ваші жанри.</string>
     <string name="lng_empty_artists">Тут з’являться ваші виконавці.</string>
     <string name="set_cover_mode_as_is">Як є</string>
+    <string name="set_with_hidden">Включати приховані файли</string>
+    <string name="set_with_hidden_desc">Включати приховані аудіофайли (наприклад, .cache)</string>
 </resources>
