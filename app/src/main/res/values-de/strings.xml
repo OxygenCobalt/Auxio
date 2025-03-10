@@ -332,4 +332,7 @@
     <string name="lng_empty_songs">Deine Lieder werden hier angezeigt.</string>
     <string name="lng_empty_genres">Deine Genres werden hier angezeigt.</string>
     <string name="lng_empty_artists">Deine Künstler werden hier angezeigt.</string>
+    <string name="set_cover_mode_as_is">Unverändert</string>
+    <string name="set_with_hidden_desc">Audio-Dateien einbeziehen, die versteckt sind (z. B. .cache)</string>
+    <string name="set_with_hidden">Versteckte Dateien einbeziehen</string>
 </resources>
