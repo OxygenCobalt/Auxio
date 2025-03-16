@@ -63,7 +63,6 @@ private class ExploreStepImpl(
     private val covers: Covers<out Cover>,
     private val storedPlaylists: StoredPlaylists
 ) : ExploreStep {
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun explore(locations: List<MusicLocation>): Flow<Explored> {
         val addingMs = System.currentTimeMillis()
         return merge(
