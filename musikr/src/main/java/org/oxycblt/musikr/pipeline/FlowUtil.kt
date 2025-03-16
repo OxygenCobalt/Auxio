@@ -18,10 +18,16 @@
  
 package org.oxycblt.musikr.pipeline
 
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.withIndex
@@ -32,7 +38,13 @@ import kotlinx.coroutines.flow.withIndex
  * Note that this function requires the "manager" flow to be consumed alongside the split flows in
  * order to function. Without this, all of the newly split flows will simply block.
  */
-internal fun <T> Flow<T>.distribute(n: Int): Flow<Flow<T>> {
+@OptIn(ExperimentalCoroutinesApi::class)
+internal fun <T, R> Flow<T>.distributedMap(
+    n: Int,
+    on: CoroutineContext = Dispatchers.Main,
+    buffer: Int = Channel.UNLIMITED,
+    block: suspend (T) -> R,
+): Flow<R> {
     val posChannels = List(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
@@ -44,13 +56,11 @@ internal fun <T> Flow<T>.distribute(n: Int): Flow<Flow<T>> {
                 channel.close()
             }
         }
-    return (posChannels.map { it.receiveAsFlow() } + managerFlow).asFlow()
+    return (posChannels.map { it.receiveAsFlow() } + managerFlow)
+        .asFlow()
+        .map { it.tryMap(block).flowOn(on).buffer(buffer) }
+        .flattenMerge()
 }
-
-internal fun <T, R> Flow<Flow<T>>.distributedMap(transform: suspend (T) -> R): Flow<Flow<R>> =
-    flow {
-        collect { innerFlow -> emit(innerFlow.tryMap(transform)) }
-    }
 
 internal fun <T, R> Flow<T>.tryMap(transform: suspend (T) -> R): Flow<R> = flow {
     collect { value ->
