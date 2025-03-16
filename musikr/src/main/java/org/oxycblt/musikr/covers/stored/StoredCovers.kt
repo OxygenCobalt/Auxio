@@ -49,7 +49,10 @@ class MutableStoredCovers(
                 is CoverResult.Hit -> cover.cover
                 is CoverResult.Miss -> return CoverResult.Miss()
             }
-        val coverFile = coverStorage.write(cover.id + transcoding.tag) { transcoding.transcodeInto(cover.data(), it) }
+        val coverFile =
+            coverStorage.write(cover.id + transcoding.tag) {
+                transcoding.transcodeInto(cover.data(), it)
+            }
         return CoverResult.Hit(coverFile)
     }
 
