@@ -77,7 +77,7 @@
     <string name="err_index_failed">Falló la carga de música</string>
     <string name="err_no_perms">Auxio necesita permiso para leer su biblioteca de música</string>
     <string name="err_no_app">No se encontró ninguna aplicación que pueda manejar esta tarea</string>
-    <string name="err_bad_location">Directorio no soportado</string>
+    <string name="err_bad_location">No se admite esta carpeta</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Buscar en la fonoteca…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -148,7 +148,7 @@
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
     <string name="set_play_song_none">Reproducir desde el elemento que se muestra</string>
     <string name="cdc_mka">Audio Matroska</string>
-    <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
+    <string name="cdc_flac">Códec de audio sin pérdida libre (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_indexing">Cargando tu biblioteca de música… (%1$d/%2$d)</string>
     <string name="fmt_lib_artist_count">Artistas cargados: %d</string>
@@ -328,7 +328,7 @@
     <string name="def_album">Álbum desconocido</string>
     <string name="cdc_unknown">Desconocido</string>
     <string name="cnt_mp4">El MPEG-4 contiene %s</string>
-    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_alac">Códec de audio sin pérdida de Apple (ALAC)</string>
     <string name="lng_empty_albums">Sus álbumes aparecerán aquí.</string>
     <string name="lng_empty_artists">Sus artistas aparecerán aquí.</string>
     <string name="lng_empty_genres">Sus géneros aparecerán aquí.</string>
