@@ -39,7 +39,9 @@ interface CoverStorage {
 
     companion object {
         suspend fun at(dir: File): CoverStorage {
-            withContext(Dispatchers.IO) { check(dir.exists() && dir.isDirectory) }
+            withContext(Dispatchers.IO) {
+                if (dir.exists()) check(dir.isDirectory) { "Not a directory" } else check(dir.mkdirs()) { "Cannot create directory" }
+            }
             return CoverStorageImpl(dir)
         }
     }
