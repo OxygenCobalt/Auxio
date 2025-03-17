@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.list.recycler
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -91,8 +92,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val thumbSlider = MaterialSlider.small(context, thumbWidth)
     private var thumbAnimator: Animator? = null
 
+    @SuppressLint("InflateParams")
     private val thumbView =
-        context.inflater.inflate(R.layout.view_scroll_thumb, this).apply {
+        context.inflater.inflate(R.layout.view_scroll_thumb, null).apply {
             thumbSlider.jumpOut(this)
         }
     private val thumbPadding = Rect(0, 0, 0, 0)
