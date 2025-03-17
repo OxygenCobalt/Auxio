@@ -64,8 +64,8 @@ object NoTranscoding : Transcoding {
  * A [Transcoding] implementation that compresses the cover data into a specific format, size, and
  * quality.
  *
- * This is useful if you want to standardize the covers to a specific format and minimize
- * the size of the cover data to save space.
+ * This is useful if you want to standardize the covers to a specific format and minimize the size
+ * of the cover data to save space.
  *
  * @param format The [Bitmap.CompressFormat] to use to compress the cover data.
  * @param resolution The resolution to use for the cover data.

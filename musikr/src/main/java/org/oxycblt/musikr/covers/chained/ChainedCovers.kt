@@ -31,8 +31,8 @@ import org.oxycblt.musikr.metadata.Metadata
  * This is useful for when you want to try multiple sources for a cover, such as first embedded and
  * then filesystem-based covers.
  *
- * This implementation will return the first hit from the provided [Covers] instances.
- * It's assumed that there is no ID overlap between [Covers] outputs.
+ * This implementation will return the first hit from the provided [Covers] instances. It's assumed
+ * that there is no ID overlap between [Covers] outputs.
  *
  * See [MutableChainedCovers] for the mutable variant.
  *
@@ -59,8 +59,8 @@ class ChainedCovers<R : Cover, T : R>(vararg many: Covers<out T>) : Covers<R> {
  * then filesystem-based covers.
  *
  * This implementation will use the first hit from the provided [MutableCovers] instances, and
- * propagate cleanup across all [MutableCovers] instances.
- * It's assumed that there is no ID overlap between [MutableCovers] outputs.
+ * propagate cleanup across all [MutableCovers] instances. It's assumed that there is no ID overlap
+ * between [MutableCovers] outputs.
  *
  * See [ChainedCovers] for the immutable variant.
  *

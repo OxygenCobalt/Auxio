@@ -71,11 +71,11 @@ interface CoverStorage {
 
     companion object {
         /**
-         * Create a [CoverStorage] implementation at some directory. Covers will be written
-         * in that location.
+         * Create a [CoverStorage] implementation at some directory. Covers will be written in that
+         * location.
          *
-         * Note that in the context of Android's scoped storage, the given [File] will need to be
-         * in the app's internal storage
+         * Note that in the context of Android's scoped storage, the given [File] will need to be in
+         * the app's internal storage
          *
          * @param dir The directory to store the covers in.
          * @return A [CoverStorage] instance.
