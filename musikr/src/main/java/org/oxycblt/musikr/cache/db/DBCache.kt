@@ -72,9 +72,10 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
 
     companion object {
         /**
-         * Create a new instance of [DBCache] from the given [context]. This instance should be a
-         * singleton, since it implicitly holds a Room database. As a result, you should only create
-         * EITHER a [DBCache] or a [MutableDBCache].
+         * Create a new instance of [DBCache] from the given [context].
+         *
+         * This instance should be a singleton, since it implicitly holds a Room database. As a
+         * result, you should only create EITHER a [DBCache] or a [MutableDBCache].
          *
          * @param context The context to use to create the Room database.
          * @return A new instance of [DBCache].
@@ -135,9 +136,10 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
 
     companion object {
         /**
-         * Create a new instance of [MutableDBCache] from the given [context]. This instance should
-         * be a singleton, since it implicitly holds a Room database. As a result, you should only
-         * create EITHER a [DBCache] or a [MutableDBCache].
+         * Create a new instance of [MutableDBCache] from the given [context].
+         *
+         * This instance should be a singleton, since it implicitly holds a Room database. As a
+         * result, you should only create EITHER a [DBCache] or a [MutableDBCache].
          *
          * @param context The context to use to create the Room database.
          * @return A new instance of [MutableDBCache].

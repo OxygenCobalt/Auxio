@@ -39,10 +39,13 @@ private const val PREFIX = "mcf:"
 
 /**
  * A [Covers] implementation that obtains cover art from the filesystem, such as cover.jpg.
+ *
  * Cover.jpg is pretty widely used in music libraries to save space, so it's good to use this.
  *
  * This implementation does not search the directory tree given that it cannot access it. Rather, it
  * assumes the provided id ius one yielded by [MutableFSCovers].
+ *
+ * See [MutableFSCovers] for the mutable variant.
  *
  * @param context The [Context] to use to access the filesystem and check for ID validity.
  */
@@ -76,10 +79,13 @@ class FSCovers(private val context: Context) : Covers<FDCover> {
 
 /**
  * A [MutableCovers] implementation that obtains cover art from the filesystem, such as cover.jpg.
+ *
  * Cover.jpg is pretty widely used in music libraries to save space, so it's good to use this.
  *
  * This implementation will search the parent directory for the best cover art. "Best" being defined
  * as having cover-art-ish names and having a good format like png/jpg/webp.
+ *
+ * See [FSCovers] for the immutable variant.
  *
  * @param context The [Context] to use to access the filesystem and check for ID validity.
  */

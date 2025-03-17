@@ -70,6 +70,16 @@ interface CoverStorage {
     suspend fun rm(name: String)
 
     companion object {
+        /**
+         * Create a [CoverStorage] implementation at some directory. Covers will be written
+         * in that location.
+         *
+         * Note that in the context of Android's scoped storage, the given [File] will need to be
+         * in the app's internal storage
+         *
+         * @param dir The directory to store the covers in.
+         * @return A [CoverStorage] instance.
+         */
         suspend fun at(dir: File): CoverStorage {
             withContext(Dispatchers.IO) {
                 if (dir.exists()) check(dir.isDirectory) { "Not a directory" }

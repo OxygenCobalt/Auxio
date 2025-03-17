@@ -120,8 +120,9 @@ interface Cover {
 }
 
 /**
- * A cover that can be opened as a [ParcelFileDescriptor]. This more or less implies that the cover
- * is explicitly stored on-device somewhere.
+ * A cover that can be opened as a [ParcelFileDescriptor].
+ *
+ * This more or less implies that the cover is explicitly stored on-device somewhere.
  */
 interface FDCover : Cover {
     /**

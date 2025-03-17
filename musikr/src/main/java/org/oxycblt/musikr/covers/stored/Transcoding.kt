@@ -46,11 +46,11 @@ interface Transcoding {
 }
 
 /**
- * A [Transcoding] implementation that does not transcode the cover data at all, and simply writes
- * it to the output stream as-is. This is useful for when the cover data is already in the desired
- * format, or when the time/quality tradeoff of transcoding is not worth it. Note that this may mean
- * that large or malformed data may be written to [CoverStorage] and yield bad results when loading
- * the resulting covers.
+ * A [Transcoding] implementation that does not transcode the cover data at all.
+ *
+ * This is useful for when the cover data is already in the desired format, or when the time/quality
+ * tradeoff of transcoding is not worth it. Note that this may mean that large or malformed data may
+ * be written to [CoverStorage] and yield bad results when loading the resulting covers.
  */
 object NoTranscoding : Transcoding {
     override val tag = ".img"
@@ -62,7 +62,9 @@ object NoTranscoding : Transcoding {
 
 /**
  * A [Transcoding] implementation that compresses the cover data into a specific format, size, and
- * quality. This is useful if you want to standardize the covers to a specific format and minimize
+ * quality.
+ *
+ * This is useful if you want to standardize the covers to a specific format and minimize
  * the size of the cover data to save space.
  *
  * @param format The [Bitmap.CompressFormat] to use to compress the cover data.

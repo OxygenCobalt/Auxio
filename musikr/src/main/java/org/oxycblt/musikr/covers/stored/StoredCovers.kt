@@ -30,9 +30,12 @@ import org.oxycblt.musikr.metadata.Metadata
 private const val PREFIX = "mcs:"
 
 /**
- * A [Covers] implementation for stored covers in the backing [CoverStorage]. Note that this
- * instance is [Transcoding]-agnostic, it will yield a cover as long as it exists somewhere in the
- * given storage.
+ * A [Covers] implementation for stored covers in the backing [CoverStorage].
+ *
+ * Note that this instance is [Transcoding]-agnostic, it will yield a cover as long as it exists
+ * somewhere in the given storage.
+ *
+ * See [MutableStoredCovers] for the mutable variant.
  *
  * @param coverStorage The [CoverStorage] to use to obtain the cover data.
  */
@@ -48,13 +51,16 @@ class StoredCovers(private val coverStorage: CoverStorage) : Covers<FDCover> {
 }
 
 /**
- * A [MutableCovers] implementation for stored covers in the backing [CoverStorage]. This will open
- * whatever cover data is yielded by [src], and then write it to the [coverStorage] using the
- * whatever [transcoding] is provided.
+ * A [MutableCovers] implementation for stored covers in the backing [CoverStorage].
+ *
+ * This will open whatever cover data is yielded by [src], and then write it to the [coverStorage]
+ * using the whatever [transcoding] is provided.
  *
  * This allows large in-memory covers yielded by [MutableCovers] to be cached in storage rather than
  * kept in memory. However, it can be used for any asynchronously fetched covers as well to save
  * time, such as ones obtained by network.
+ *
+ * See [StoredCovers] for the immutable variant.
  *
  * @param src The [MutableCovers] to use to obtain the cover data.
  * @param coverStorage The [CoverStorage] to use to write the cover data to.

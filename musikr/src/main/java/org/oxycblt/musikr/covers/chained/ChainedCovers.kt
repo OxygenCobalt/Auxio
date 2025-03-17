@@ -32,8 +32,9 @@ import org.oxycblt.musikr.metadata.Metadata
  * then filesystem-based covers.
  *
  * This implementation will return the first hit from the provided [Covers] instances.
+ * It's assumed that there is no ID overlap between [Covers] outputs.
  *
- * It's assumed that there is no ID overlap between [MutableCovers] outputs.
+ * See [MutableChainedCovers] for the mutable variant.
  *
  * @param many The [Covers] instances to chain together.
  */
@@ -59,8 +60,9 @@ class ChainedCovers<R : Cover, T : R>(vararg many: Covers<out T>) : Covers<R> {
  *
  * This implementation will use the first hit from the provided [MutableCovers] instances, and
  * propagate cleanup across all [MutableCovers] instances.
- *
  * It's assumed that there is no ID overlap between [MutableCovers] outputs.
+ *
+ * See [ChainedCovers] for the immutable variant.
  *
  * @param many The [MutableCovers] instances to chain together.
  */
