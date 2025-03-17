@@ -548,7 +548,9 @@ class ExoPlaybackStateHolder(
 
     private fun save(cb: () -> Unit) {
         saveJob {
-            persistenceRepository.saveState(playbackManager.toSavedState())
+            if (sessionOngoing) {
+                persistenceRepository.saveState(playbackManager.toSavedState())
+            }
             withContext(Dispatchers.Main) { cb() }
         }
     }
@@ -559,7 +561,9 @@ class ExoPlaybackStateHolder(
             delay(SAVE_BUFFER)
             yield()
             L.d("Committing saved state")
-            persistenceRepository.saveState(playbackManager.toSavedState())
+            if (sessionOngoing) {
+                persistenceRepository.saveState(playbackManager.toSavedState())
+            }
         }
     }
 
