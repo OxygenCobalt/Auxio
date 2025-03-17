@@ -27,6 +27,11 @@ import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
+/**
+ * An immutable [Cache] backed by an internal Room database.
+ *
+ * Create an instance with [from].
+ */
 class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
     override suspend fun read(file: DeviceFile): CacheResult {
         val dbSong = readDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file)
@@ -66,12 +71,25 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
     }
 
     companion object {
+        /**
+         * Create a new instance of [DBCache] from the given [context]. This instance should be a
+         * singleton, since it implicitly holds a Room database. As a result, you should only create
+         * EITHER a [DBCache] or a [MutableDBCache].
+         *
+         * @param context The context to use to create the Room database.
+         * @return A new instance of [DBCache].
+         */
         fun from(context: Context) = from(CacheDatabase.from(context))
 
         internal fun from(db: CacheDatabase) = DBCache(db.readDao())
     }
 }
 
+/**
+ * A mutable [Cache] backed by an internal Room database.
+ *
+ * Create an instance with [from].
+ */
 class MutableDBCache
 private constructor(private val inner: DBCache, private val writeDao: CacheWriteDao) :
     MutableCache {
@@ -116,6 +134,14 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
     }
 
     companion object {
+        /**
+         * Create a new instance of [MutableDBCache] from the given [context]. This instance should
+         * be a singleton, since it implicitly holds a Room database. As a result, you should only
+         * create EITHER a [DBCache] or a [MutableDBCache].
+         *
+         * @param context The context to use to create the Room database.
+         * @return A new instance of [MutableDBCache].
+         */
         fun from(context: Context): MutableDBCache {
             val db = CacheDatabase.from(context)
             return MutableDBCache(DBCache.from(db), db.writeDao())
