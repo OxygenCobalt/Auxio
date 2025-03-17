@@ -1309,7 +1309,6 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
               + " should not be set externally.");
     }
     if (!hideable && state == STATE_HIDDEN) {
-      Log.w(TAG, "Cannot set state: " + state);
       return;
     }
     final int finalState;

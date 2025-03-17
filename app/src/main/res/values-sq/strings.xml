@@ -302,7 +302,7 @@
     <string name="clr_brown">Kafe</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_bitrate">%d kbps</string>
-    <string name="fmt_indexing">Duke ngarkuar bibliotekën tuaj muzikore... (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Duke ngarkuar bibliotekën tuaj muzikore… (%1$d/%2$d)</string>
     <string name="fmt_lib_song_count">Këngët e ngarkuara: %d</string>
     <string name="fmt_lib_album_count">Albumet e ngarkuara: %d</string>
     <string name="fmt_lib_artist_count">Artistët e ngarkuar: %d</string>

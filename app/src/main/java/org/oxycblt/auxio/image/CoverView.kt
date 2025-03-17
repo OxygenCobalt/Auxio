@@ -37,6 +37,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
+import androidx.core.view.isEmpty
 import androidx.core.view.updateMarginsRelative
 import androidx.core.widget.ImageViewCompat
 import coil3.ImageLoader
@@ -172,7 +173,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         super.onFinishInflate()
 
         // The image isn't added if other children have populated the body. This is by design.
-        if (childCount == 0) {
+        if (isEmpty()) {
             addView(image)
         }
 

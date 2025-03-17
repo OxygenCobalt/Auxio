@@ -22,11 +22,13 @@ import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.provider.OpenableColumns
+import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.RenderersFactory
@@ -62,6 +64,7 @@ import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
+@OptIn(UnstableApi::class)
 class ExoPlaybackStateHolder(
     private val context: Context,
     private val player: ExoPlayer,

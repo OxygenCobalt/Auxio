@@ -19,9 +19,9 @@
 package org.oxycblt.auxio.image.coil
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import coil3.ImageLoader
 import coil3.asImage
@@ -90,8 +90,7 @@ private constructor(
         val mosaicFrameSize =
             Size(Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2))
 
-        val mosaicBitmap =
-            Bitmap.createBitmap(mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888)
+        val mosaicBitmap = createBitmap(mosaicSize.width, mosaicSize.height)
         val canvas = Canvas(mosaicBitmap)
 
         var x = 0

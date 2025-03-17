@@ -188,8 +188,8 @@ interface MusicRepository {
     /**
      * Flags indicating which kinds of music information changed.
      *
-     * @param deviceLibrary Whether the current [DeviceLibrary] has changed.
-     * @param library Whether the current [Playlist]s have changed.
+     * @param deviceLibrary Whether the current songs/albums/artists/genres has changed.
+     * @param userLibrary Whether the current playlists have changed.
      */
     data class Changes(val deviceLibrary: Boolean, val userLibrary: Boolean)
 
@@ -244,7 +244,7 @@ constructor(
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
-    @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
+    @Volatile private var indexingWorker: IndexingWorker? = null
 
     @Volatile override var library: MutableLibrary? = null
     @Volatile private var previousCompletedState: IndexingState.Completed? = null
@@ -283,7 +283,7 @@ constructor(
     }
 
     @Synchronized
-    override fun registerWorker(worker: MusicRepository.IndexingWorker) {
+    override fun registerWorker(worker: IndexingWorker) {
         if (indexingWorker != null) {
             L.w("Worker is already registered")
             return
@@ -293,7 +293,7 @@ constructor(
     }
 
     @Synchronized
-    override fun unregisterWorker(worker: MusicRepository.IndexingWorker) {
+    override fun unregisterWorker(worker: IndexingWorker) {
         if (indexingWorker !== worker) {
             L.w("Given worker did not match current worker")
             return

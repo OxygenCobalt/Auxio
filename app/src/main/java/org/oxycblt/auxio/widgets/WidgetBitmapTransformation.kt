@@ -20,6 +20,7 @@ package org.oxycblt.auxio.widgets
 
 import android.content.res.Resources
 import android.graphics.Bitmap
+import androidx.core.graphics.scale
 import coil3.size.Size
 import coil3.transform.Transformation
 import kotlin.math.sqrt
@@ -49,7 +50,7 @@ class WidgetBitmapTransformation(reduce: Float) : Transformation() {
             val scale = sqrt(maxBitmapArea / inputArea.toDouble())
             val newWidth = (input.width * scale).toInt()
             val newHeight = (input.height * scale).toInt()
-            return Bitmap.createScaledBitmap(input, newWidth, newHeight, true)
+            return input.scale(newWidth, newHeight)
         }
         return input
     }

@@ -98,7 +98,7 @@ sealed interface ArtistShowChoices {
     val uid: Music.UID
     /** The current [Artist] choices. */
     val choices: List<Artist>
-    /** Sanitize this instance with a [DeviceLibrary]. */
+    /** Sanitize this instance with a [Library]. */
     fun sanitize(newLibrary: Library): ArtistShowChoices?
 
     /** Backing implementation of [ArtistShowChoices] that is based on a [Song]. */

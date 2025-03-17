@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PointF
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
@@ -36,7 +35,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.graphics.Insets
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.core.view.children
 import androidx.navigation.NavController
@@ -105,10 +103,6 @@ private fun isUnderImpl(
 /** Whether this [View] is using an RTL layout direction. */
 val View.isRtl: Boolean
     get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
-
-/** Whether this [Drawable] is using an RTL layout direction. */
-val Drawable.isRtl: Boolean
-    get() = DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
 
 /** Get a [Context] from a [ViewBinding]'s root [View]. */
 val ViewBinding.context: Context
@@ -357,7 +351,7 @@ fun Context.startIntent(intent: Intent) {
             // No app installed to open the link
             showToast(R.string.err_no_app)
         }
-    } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+    } else {
         // On older versions of android, opening links from an ACTION_VIEW intent might
         // not work in all cases, especially when no default app was set. If that is the
         // case, we will try to manually handle these cases before we try to launch the

@@ -34,6 +34,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
+import androidx.core.view.isEmpty
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePaddingRelative
 import androidx.core.widget.TextViewCompat
@@ -91,7 +92,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var thumbAnimator: Animator? = null
 
     private val thumbView =
-        context.inflater.inflate(R.layout.view_scroll_thumb, null).apply {
+        context.inflater.inflate(R.layout.view_scroll_thumb, this).apply {
             thumbSlider.jumpOut(this)
         }
     private val thumbPadding = Rect(0, 0, 0, 0)
@@ -339,7 +340,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // [proportion of scroll position to scroll range] * [total thumb range]
         // This is somewhat adapted from the androidx RecyclerView FastScroller implementation.
         val offsetY = computeVerticalScrollOffset()
-        if (computeVerticalScrollRange() < height || childCount == 0) {
+        if (computeVerticalScrollRange() < height || isEmpty()) {
             fastScrollingPossible = false
             hideThumb()
             hidePopup()

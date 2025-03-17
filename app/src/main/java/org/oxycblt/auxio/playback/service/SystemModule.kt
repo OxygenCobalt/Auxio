@@ -19,6 +19,8 @@
 package org.oxycblt.auxio.playback.service
 
 import android.content.Context
+import androidx.annotation.OptIn
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.ContentDataSource
 import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.source.MediaSource
@@ -41,6 +43,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
+@OptIn(UnstableApi::class)
 class SystemModule {
     @Provides
     fun mediaSourceFactory(

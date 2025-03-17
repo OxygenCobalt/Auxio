@@ -59,8 +59,7 @@ internal interface CacheReadDao {
 
 @Dao
 internal interface CacheWriteDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateSong(CachedSongData: CachedSongData)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(data: CachedSongData)
 
     @Transaction
     suspend fun deleteExcludingUris(uris: Set<String>) {

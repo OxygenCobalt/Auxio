@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.image.coil
 
 import android.graphics.Bitmap
+import androidx.core.graphics.scale
 import coil3.size.Size
 import coil3.size.pxOrElse
 import coil3.transform.Transformation
@@ -46,7 +47,7 @@ class SquareCropTransformation : Transformation() {
         val desiredHeight = size.height.pxOrElse { dstSize }
         if (dstSize != desiredWidth || dstSize != desiredHeight) {
             // Image is not the desired size, upscale it.
-            return Bitmap.createScaledBitmap(dst, desiredWidth, desiredHeight, true)
+            return dst.scale(desiredWidth, desiredHeight)
         }
         return dst
     }

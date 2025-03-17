@@ -20,8 +20,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:background="@drawable/ui_widget_bg_round"
-        android:clipToOutline="true"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,UnusedAttribute" />
 
     <android.widget.LinearLayout
         android:id="@+id/widget_panel"

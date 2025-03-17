@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
@@ -513,8 +512,6 @@ class MainFragment :
             FAB_HIDE_FROM_USER_FIELD.invoke(binding.homeNewPlaylistFab.mainFab, null, false)
         }
     }
-
-    private var scrimAnimator: ValueAnimator? = null
 
     private fun updateSpeedDial(open: Boolean) {
         requireNotNull(speedDialBackCallback) { "SpeedDialBackPressedCallback was not available" }

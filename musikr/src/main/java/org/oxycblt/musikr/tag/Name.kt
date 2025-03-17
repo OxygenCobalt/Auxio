@@ -37,6 +37,10 @@ sealed interface Name : Comparable<Name> {
         /** A tokenized version of the name that will be compared. */
         abstract val tokens: List<Token>
 
+        abstract override fun hashCode(): Int
+
+        abstract override fun equals(other: Any?): Boolean
+
         final override fun compareTo(other: Name) =
             when (other) {
                 is Known -> {
