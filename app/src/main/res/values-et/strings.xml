@@ -324,6 +324,7 @@
     <string name="lng_empty_genres">Sinu žanrid saavad olema nähtavad siin.</string>
     <string name="lng_empty_albums">Sinu albumid saavad olema nähtavad siin.</string>
     <string name="lng_empty_playlists">Sinu esitusloendid saavad olema nähtavad siin.</string>
-    <string name="set_ignore_hidden">Eira peidetud faile</string>
-    <string name="set_ignore_hidden_desc">Jäta vahele peidetud failid ja kaustad (nt. .cache)</string>
+    <string name="set_with_hidden">Kaasa peidetud failid</string>
+    <string name="set_with_hidden_desc">Kaasa peidetud helifailid (nt. .cache)</string>
+    <string name="set_cover_mode_as_is">Sellisena, nagu ta on</string>
 </resources>

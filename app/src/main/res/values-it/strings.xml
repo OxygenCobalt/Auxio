@@ -42,7 +42,7 @@
     <string name="lbl_author_name">Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiche della libreria</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_root_title">Opzioni</string>
+    <string name="set_root_title">Impostazioni</string>
     <string name="set_ui">Aspetto</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Sistema</string>
@@ -330,8 +330,11 @@
     <string name="lng_empty_playlists">Le tue playlist appariranno qui.</string>
     <string name="lbl_more">Espandi</string>
     <string name="set_locations_new">Nuova cartella</string>
-    <string name="set_cover_mode_save_space">Libera spazio</string>
+    <string name="set_cover_mode_save_space">Bassa qualità</string>
     <string name="cnt_mp4">MPEG-4 contenente %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Sconosciuto</string>
+    <string name="set_cover_mode_as_is">Qualità originale</string>
+    <string name="set_with_hidden_desc">Include file audio nascosti (per esempio in .cache)</string>
+    <string name="set_with_hidden">Includi file nascosti</string>
 </resources>

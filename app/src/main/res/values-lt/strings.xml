@@ -330,4 +330,7 @@
     <string name="cdc_alac">„Apple“ be nuostolių garso kodekas (ALAC)</string>
     <string name="cdc_unknown">Nežinomas</string>
     <string name="set_cover_mode_save_space">Išsaugoti vietos</string>
+    <string name="set_cover_mode_as_is">Kaip yra</string>
+    <string name="set_with_hidden">Įtraukti paslėptus failus</string>
+    <string name="set_with_hidden_desc">Įtraukite garso failus, kurie paslėpti (pvz., .cache)</string>
 </resources>

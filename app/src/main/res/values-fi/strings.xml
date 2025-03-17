@@ -322,6 +322,4 @@
     <string name="lng_empty_genres">Tyylilajisi tulevat näkymään tässä.</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="set_cover_mode_save_space">Säätä tilaa</string>
-    <string name="set_ignore_hidden">Ohita piilotetut tiedostot</string>
-    <string name="set_ignore_hidden_desc">Ohita piilotetut tiedostot ja kansiot (esim. .cache)</string>
 </resources>

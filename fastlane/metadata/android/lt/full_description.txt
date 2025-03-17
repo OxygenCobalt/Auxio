@@ -1,4 +1,4 @@
-„Auxio“ – tai vietinis muzikos leistuvė su greita, patikima naudotojo sąsaja ir potyris be daugybės nenaudingų funkcijų, esančių kituose muzikos leistuvėse. Sukurta remiantis iš šiuolaikinių medijos įrašo perklausos bibliotekų, „Auxio“ turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programeles, kurios naudoja pasenusias „Android“ funkcijas. Trumpai tariant, <b>jame leidžiama muziką</b>.
+„Auxio“ – tai vietinė muzikos leistuvė su sparčia, patikima NS / NP be daugybės nenaudingų funkcijų, esančių kituose muzikos leistuvėse. Sukurta remiantis iš šiuolaikinių medijos įrašo perklausos bibliotekų, „Auxio“ turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programeles, kurios naudoja pasenusias „Android“ funkcijas. Trumpai tariant, <b>jame leidžiama muziką</b>.
 
 <b>Funkcijos</b>
 
@@ -6,8 +6,7 @@
 - Sparti naudotojo sąsaja, sukurta pagal naujausias „Material Design“ gaires
 - Nuomonę turintis naudotojo potyris, kuriame prioritetas teikiamas naudojimo paprastumui, o ne kraštutiniam atvejui
 - Pasirinktas elgesys
-- Palaikomas diskų numerių, kelių atlikėjų, leidinių tipų palaikymas,
-tikslias / originalias datas, rūšiavimo žymes ir dar daugiau
+- Palaikomas diskų numerių, kelių atlikėjų, leidinių tipų palaikymas, tikslias / originalias datas, rūšiavimo žymes ir dar daugiau
 - Išplėstinė atlikėjų sistema, kuri suvienija atlikėjus ir albumų atlikėjus
 - SD kortelių aplankų valdymas
 - Patikima grojaraščių sudarymo funkcija
@@ -22,4 +21,4 @@ tikslias / originalias datas, rūšiavimo žymes ir dar daugiau
 - Automatinis ausinių leidimas
 - Stilingi valdikliai, kurie automatiškai prisitaiko prie savo dydžio
 - Visiškai privati ir neprisijungę
-- Jokių suapvalintų albumų viršelių (pagal numatytuosius nustatymus)
+- Jokių suapvalintų albumų viršelių (jei jų norite)

@@ -330,6 +330,7 @@
     <string name="lng_empty_genres">流派会出现在此处。</string>
     <string name="lng_empty_albums">专辑会出现在此处。</string>
     <string name="lng_empty_playlists">播放列表会出现在此处。</string>
-    <string name="set_ignore_hidden_desc">跳过隐藏的文件和文件夹（排除 .cache）</string>
-    <string name="set_ignore_hidden">忽略隐藏的文件</string>
+    <string name="set_cover_mode_as_is">保持原样</string>
+    <string name="set_with_hidden">包括隐藏的文件</string>
+    <string name="set_with_hidden_desc">包括隐藏的音频文件（排除 .cache）</string>
 </resources>
