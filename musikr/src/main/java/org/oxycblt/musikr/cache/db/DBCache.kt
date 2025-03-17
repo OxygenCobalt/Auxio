@@ -27,7 +27,7 @@ import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
-open class DBCache internal constructor(private val readDao: CacheReadDao) : Cache {
+class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
     override suspend fun read(file: DeviceFile): CacheResult {
         val dbSong = readDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file)
         if (dbSong.modifiedMs != file.modifiedMs) {
@@ -66,13 +66,17 @@ open class DBCache internal constructor(private val readDao: CacheReadDao) : Cac
     }
 
     companion object {
-        fun from(context: Context) = DBCache(CacheDatabase.from(context).readDao())
+        fun from(context: Context) = from(CacheDatabase.from(context))
+
+        internal fun from(db: CacheDatabase) = DBCache(db.readDao())
     }
 }
 
 class MutableDBCache
-private constructor(readDao: CacheReadDao, private val writeDao: CacheWriteDao) :
-    MutableCache, DBCache(readDao) {
+private constructor(private val inner: DBCache, private val writeDao: CacheWriteDao) :
+    MutableCache {
+    override suspend fun read(file: DeviceFile) = inner.read(file)
+
     override suspend fun write(cachedSong: CachedSong) {
         val dbSong =
             CachedSongData(
@@ -114,7 +118,7 @@ private constructor(readDao: CacheReadDao, private val writeDao: CacheWriteDao) 
     companion object {
         fun from(context: Context): MutableDBCache {
             val db = CacheDatabase.from(context)
-            return MutableDBCache(db.readDao(), db.writeDao())
+            return MutableDBCache(DBCache.from(db), db.writeDao())
         }
     }
 }
