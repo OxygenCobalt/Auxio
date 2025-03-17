@@ -3,9 +3,7 @@
     <string name="lng_playlist_imported">Lista de reprodução importada</string>
     <string name="lbl_observing">A monitorizar a biblioteca de música</string>
     <string name="lbl_retry">Tentar novamente</string>
-    <string name="lbl_show_error_info">Mais</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para Android.</string>
-    <string name="lbl_grant">Permitir</string>
     <string name="lbl_song">Música</string>
     <string name="lbl_all_songs">Todas as músicas</string>
     <string name="lbl_albums">Álbuns</string>
@@ -77,7 +75,6 @@
     <string name="lbl_edit">Editar</string>
     <string name="lbl_name">Nome</string>
     <string name="lbl_cancel">Cancelar</string>
-    <string name="lbl_add">Adicionar</string>
     <string name="lbl_save">Salvar</string>
     <string name="set_ui_desc">Mudar o tema e cores da app</string>
     <string name="set_theme">Tema</string>
@@ -114,7 +111,6 @@
     <string name="lng_search_library">Procurar na biblioteca…</string>
     <string name="set_replay_gain_mode_off">Desligado</string>
     <string name="set_locations_desc">Configurar onde a música deve ser carregada</string>
-    <string name="set_locations_list">Pastas</string>
     <string name="desc_shuffle">Ativar ou desativar a reprodução aleatória</string>
     <string name="desc_selection_image">Seleção de imagem</string>
     <string name="clr_green">Verde</string>
@@ -185,14 +181,11 @@
     <string name="set_pre_amp_desc">O pré-amplificador é aplicado ao ajuste existente durante a reprodução</string>
     <string name="set_pre_amp_with">Ajustar com etiquetas</string>
     <string name="set_pre_amp_without">Ajustar sem etiquetas</string>
-    <string name="err_no_music">Nenhuma música encontrada</string>
     <string name="err_index_failed">Falha ao carregar música</string>
-    <string name="err_no_perms">O Auxio precisa de permissão para ler a sua biblioteca de músicas</string>
     <string name="desc_track_number">Música %d</string>
     <string name="desc_play_pause">Reproduzir ou pausar</string>
     <string name="desc_skip_next">Pular para a próxima música</string>
     <string name="desc_skip_prev">Pular para a última música</string>
-    <string name="desc_shuffle_all">Embaralhar todas as músicas</string>
     <string name="desc_auxio_icon">Ícone do Auxio</string>
     <string name="desc_no_cover">Capa do álbum</string>
     <string name="def_disc">Nenhum disco</string>
@@ -280,7 +273,6 @@
     <string name="err_import_failed">Não foi possível importar uma lista de reprodução deste ficheiro</string>
     <string name="err_export_failed">Incapaz de exportar a lista de reprodução para este ficheiro</string>
     <string name="err_no_app">Nenhuma aplicação encontrada que possa executar esta tarefa</string>
-    <string name="err_no_locations">Sem pastas</string>
     <string name="err_bad_location">Esta pasta não é compatível</string>
     <string name="desc_change_repeat">Alterar o modo de repetição</string>
     <string name="desc_exit">Parar reprodução</string>
@@ -299,7 +291,6 @@
     <string name="cdc_mp3">Áudio MPEG-1</string>
     <string name="cdc_mp4">Áudio MPEG-4</string>
     <string name="cdc_ogg">Áudio Ogg</string>
-    <string name="cdc_mka">Áudio Matroska</string>
     <string name="clr_deep_blue">Azul profundo</string>
     <string name="clr_teal">Azul-verde</string>
     <string name="clr_grey">Grisalho</string>

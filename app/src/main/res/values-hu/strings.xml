@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Újra</string>
-    <string name="lbl_grant">Engedélyez</string>
     <string name="lbl_genres">Műfajok</string>
     <string name="lbl_artists">Előadók</string>
     <string name="lbl_albums">Albumok</string>
@@ -37,7 +36,6 @@
     <string name="set_audio">Hang</string>
     <string name="set_personalize">Testreszabás</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Nem található zene</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Keresés a könyvtárban…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -112,7 +110,6 @@
     <string name="lbl_mix">DJ Mix</string>
     <string name="lbl_genre">Műfaj</string>
     <string name="lbl_props">Dal tulajdonságai</string>
-    <string name="err_no_locations">Nincs mappa</string>
     <string name="set_black_mode_desc">Tiszta fekete sötét téma használata</string>
     <string name="clr_dynamic">Dinamikus</string>
     <string name="set_cover_mode">Album borítók</string>
@@ -163,7 +160,6 @@
     <string name="lbl_rename_playlist">Lejátszólista átnevezés</string>
     <string name="lbl_rename">Átnevez</string>
     <string name="lbl_date_added">Hozzáadás dátuma</string>
-    <string name="set_locations_list">Mappák</string>
     <string name="lbl_save">Ment</string>
     <string name="lbl_reset">Alaphelyzet</string>
     <string name="lbl_author_name">Fejlesztő Alexander Capehart</string>
@@ -185,7 +181,6 @@
     <string name="def_date">Nincs dátum</string>
     <string name="set_cover_mode_balanced">Gyors</string>
     <string name="set_exclude_non_music">A nem zenei anyagok kizárása</string>
-    <string name="desc_shuffle_all">Keverés minden dalból</string>
     <string name="cdc_ogg">Ogg audio</string>
     <string name="set_display">Megjelenítés</string>
     <string name="lbl_track">Hangsáv</string>
@@ -206,7 +201,6 @@
     <string name="lbl_observing">Zene könyvtár figyelése</string>
     <string name="desc_exit">Lejátszás megállítása</string>
     <string name="info_app_desc">Egyszerű, praktikus zenelejátszó androidra.</string>
-    <string name="cdc_mka">Matroska hang</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_singles">Kislemezek</string>
     <string name="lbl_single">Kislemez</string>
@@ -222,7 +216,6 @@
     <string name="lbl_shuffle_shortcut_short">Keverés</string>
     <string name="lbl_artist">Előadó</string>
     <string name="lbl_remix_group">Remixek</string>
-    <string name="lbl_add">Hozzáad</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="set_separators_slash">Per jel (/)</string>
     <plurals name="fmt_artist_count">
@@ -266,7 +259,6 @@
     <string name="lbl_appears_on">Megjelenik itt,</string>
     <string name="lbl_share">Megoszt</string>
     <string name="lbl_confirm_delete_playlist">Lejátszólista törlése\?</string>
-    <string name="err_no_perms">Az Auxio engedélyt kér a zenei könyvtár olvasásához</string>
     <string name="desc_remove_song">Távolítsa el ezt a dalt</string>
     <string name="desc_auxio_icon">Auxio ikon</string>
     <string name="def_disc">Nincs lemez</string>
@@ -280,7 +272,6 @@
     <string name="lbl_sort_mode">Rendezés</string>
     <string name="lbl_selection">Kiválasztás</string>
     <string name="desc_selection_image">Kép kiválasztás</string>
-    <string name="lbl_show_error_info">További</string>
     <string name="lbl_copied">Másolva</string>
     <string name="lbl_report">Jelentés</string>
     <string name="lbl_error_info">Hiba információ</string>

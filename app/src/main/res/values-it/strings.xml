@@ -5,7 +5,6 @@
     <string name="lng_widget">Visualizza e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
-    <string name="lbl_grant">Autorizza</string>
     <string name="lbl_genres">Generi</string>
     <string name="lbl_artists">Artisti</string>
     <string name="lbl_albums">Album</string>
@@ -32,9 +31,7 @@
     <string name="lng_queue_added">Aggiungi alla coda</string>
     <string name="lbl_artist_details">Vai all\'artista</string>
     <string name="lbl_album_details">Vai all\'album</string>
-    <string name="lbl_add">Aggiungi</string>
     <string name="lbl_save">Salva</string>
-    <string name="err_no_locations">Nessuna cartella</string>
     <string name="lbl_about">Informazioni</string>
     <string name="lbl_version">Versione</string>
     <string name="lbl_code">Codice sorgente</string>
@@ -76,9 +73,7 @@
     <string name="set_reindex">Aggiorna libreria</string>
     <string name="set_reindex_desc">Ricarica la libreria musicale, usando i tag nella cache quando possibile</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Musica non trovata</string>
     <string name="err_index_failed">Caricamento musica fallito</string>
-    <string name="err_no_perms">Auxio ha bisogno del permesso per leggere la tua libreria musicale</string>
     <string name="err_no_app">Nessuna app può completare questa azione</string>
     <string name="err_bad_location">Questa cartella non è supportata</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -90,7 +85,6 @@
     <string name="desc_skip_prev">Passa all\'ultimo brano</string>
     <string name="desc_change_repeat">Cambia modalità ripetizione</string>
     <string name="desc_shuffle">Attiva o disattiva la riproduzione casuale</string>
-    <string name="desc_shuffle_all">Riproduce casualmente tutti i brani</string>
     <string name="desc_remove_song">Rimuovi questo brano</string>
     <string name="desc_song_handle">Sposta questo brano</string>
     <string name="desc_tab_handle">Sposta questa scheda</string>
@@ -157,7 +151,6 @@
     <string name="set_play_song_none">Riproduci dall\'elemento corrente</string>
     <string name="set_locations_desc">Gestisci le cartelle da dove caricare la musica</string>
     <string name="set_locations">Cartelle musicali</string>
-    <string name="cdc_mka">Matroska audio</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_disc_no">Disco %d</string>
@@ -242,7 +235,6 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Ripristina</string>
     <string name="set_behavior">Comportamento</string>
-    <string name="set_locations_list">Cartelle</string>
     <string name="set_music">Musica</string>
     <string name="set_images">Immagini</string>
     <string name="set_library">Libreria</string>
@@ -285,7 +277,6 @@
     <string name="lbl_imported_playlist">Playlist esterna</string>
     <string name="err_export_failed">Impossibile esportare la playlist in questo file</string>
     <string name="lbl_sort_direction">Ordine</string>
-    <string name="lbl_show_error_info">Espandi</string>
     <string name="desc_selection_image">Selezione immagine</string>
     <string name="lbl_selection">Selezione</string>
     <string name="lbl_copied">Copiato</string>

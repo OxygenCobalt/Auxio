@@ -78,7 +78,6 @@
     <string name="set_theme_day">Ljust</string>
     <string name="set_black_mode">Svart tema</string>
     <string name="set_round_mode">Runt läge</string>
-    <string name="lbl_grant">Bevilja</string>
     <string name="info_app_desc">En enkel, rationell musikspelare för Android.</string>
     <string name="lbl_observing">Övervakar musikbibliotek</string>
     <string name="lbl_songs">Spår</string>
@@ -97,7 +96,6 @@
     <string name="lbl_disc">Disk</string>
     <string name="lbl_sort">Sortera</string>
     <string name="lbl_queue_add">Lägg till i kö</string>
-    <string name="lbl_add">Lägg till</string>
     <string name="lbl_bitrate">Överföringskapacitet</string>
     <string name="lbl_reset">Återställ</string>
     <string name="lbl_version">Version</string>
@@ -169,7 +167,6 @@
     <string name="set_library">Bibliotek</string>
     <string name="set_reindex">Uppdatera musik</string>
     <string name="set_reindex_desc">Läs in musik på nytt, vid möjlighet med användning av cachade etiketter</string>
-    <string name="desc_shuffle_all">Blanda alla låtar</string>
     <string name="desc_clear_search">Rensa sökfrågan</string>
     <string name="desc_music_location_delete">Ta bort mapp</string>
     <string name="desc_genre_image">Genrebild för %s</string>
@@ -177,7 +174,6 @@
     <string name="cdc_mp3">MPEG-1-ljud</string>
     <string name="cdc_mp4">MPEG-4-ljud</string>
     <string name="cdc_ogg">OGG-ljud</string>
-    <string name="cdc_mka">Matroska-ljud</string>
     <string name="clr_blue">Blå</string>
     <string name="clr_deep_blue">Mörkblå</string>
     <string name="clr_cyan">Cyanblå</string>
@@ -199,12 +195,9 @@
     <string name="set_locations">Musikmappar</string>
     <string name="set_pre_amp_warning">Varning: Att ändra förförstärkaren till ett högt positivt värde kan leda till ett förhöjt ljudtryck på vissa ljudspår.</string>
     <string name="set_locations_desc">Hantera var musik läses in ifrån</string>
-    <string name="set_locations_list">Mappar</string>
     <string name="set_rescan">Skanna om musik</string>
     <string name="set_rescan_desc">Rensa etikettbiblioteket och ladda komplett om musikbiblioteket (långsammare, men mer komplett)</string>
-    <string name="err_no_music">Ingen musik hittades</string>
     <string name="err_index_failed">Musikinläsning misslyckades</string>
-    <string name="err_no_perms">Auxio måste ges behörighet för att läsa in ditt musikbibliotek</string>
     <string name="err_no_app">Ingen lämplig app kunde hittas</string>
     <string name="err_bad_location">Denna mapp stöds inte</string>
     <string name="desc_track_number">Spår %d</string>
@@ -245,7 +238,6 @@
     <string name="set_square_covers_desc">Beskär alla albumomslag till ett 1:1 sidförhållande</string>
     <string name="set_rewind_prev_desc">Spola tillbaka innan att hoppa till föregående låt</string>
     <string name="set_pre_amp_with">Justering med etiketter</string>
-    <string name="err_no_locations">Inga mappar</string>
     <string name="desc_exit">Stoppa uppspelning</string>
     <string name="desc_remove_song">Ta bort låt</string>
     <string name="desc_auxio_icon">Auxio-ikon</string>
@@ -272,7 +264,6 @@
     <string name="set_replay_gain_mode_dynamic">Föredra album om ett album spelar</string>
     <string name="set_pre_amp_desc">Förförstarkning användas för befintliga justeringar vid uppspelning</string>
     <string name="clr_red">Röd</string>
-    <string name="lbl_show_error_info">Visa mera</string>
     <string name="lbl_song">Låt</string>
     <string name="lbl_imported_playlist">Importerad spellista</string>
     <string name="err_import_failed">Kunde inte importera spellista från denna fil</string>

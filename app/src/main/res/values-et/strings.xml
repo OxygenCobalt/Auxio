@@ -2,8 +2,6 @@
 <resources>
     <string name="lbl_indexer">Muusika on laadimisel</string>
     <string name="lbl_observing">Jälgime muudatusi muusikakogus</string>
-    <string name="lbl_show_error_info">Veel</string>
-    <string name="lbl_grant">Anna õigused</string>
     <string name="lbl_song">Pala</string>
     <string name="lbl_albums">Albumid</string>
     <string name="lbl_album_live">Album elavas esituses muusikaga</string>
@@ -57,7 +55,6 @@
     <string name="lbl_start_playback">Alusta taasesitust</string>
     <string name="lbl_cancel">Katkesta</string>
     <string name="lbl_save">Salvesta</string>
-    <string name="lbl_add">Lisa</string>
     <string name="lbl_path_style">Asukoha kuvamise viis</string>
     <string name="lbl_path_style_absolute">Absoluutne</string>
     <string name="lbl_about">Rakenduse teave</string>
@@ -243,19 +240,15 @@
     <string name="set_library">Muusikakogu</string>
     <string name="set_locations">Muusika kaustad</string>
     <string name="set_locations_desc">Halda kaustu, kust otsime ja laadime muusikat</string>
-    <string name="set_locations_list">Kaustad</string>
     <string name="set_reindex">Värskenda muusika andmed</string>
     <string name="set_reindex_desc">Laadi muusikakogu uuesti ning kui võimalik, siis kasuta puhverdatud silte</string>
     <string name="set_rescan">Laadi muusikakogu uuesti</string>
     <string name="set_rescan_desc">Kustuta puhverdatud siltide andmed ja laadi muusikakogu tervikuna uuesti (aeglasem, aga täpsem tulemus)</string>
-    <string name="err_no_music">Muusikat ei leidu</string>
     <string name="err_index_failed">Muusika laadimine ei õnnestunud</string>
-    <string name="err_no_perms">Auxio vajab muusikakogu töötlemiseks õigust lugeda faile ja kaustu sinu nutiseadmes</string>
     <string name="err_import_failed">Sellest failist ei õnnestu esitusloendit importida</string>
     <string name="err_export_failed">Sellesse faili ei õnnestu esitusloendit eksportida</string>
     <string name="err_no_app">Ei leidu selle ülesande täitmiseks sobilikku rakendust</string>
     <string name="desc_track_number">Lugu %d</string>
-    <string name="err_no_locations">Kaustu pole määratud</string>
     <string name="err_bad_location">See kaust pole toetatud</string>
     <string name="desc_play_pause">Esita või peata</string>
     <string name="desc_change_repeat">Muuda kordamise režiimi</string>
@@ -265,7 +258,6 @@
     <string name="desc_exit">Lõpeta taasesitus</string>
     <string name="desc_queue_bar">Ava esitusjärjekord</string>
     <string name="desc_tab_handle">Liiguta seda vahelehte</string>
-    <string name="desc_shuffle_all">Sega kõik palad</string>
     <string name="desc_remove_song">Eemalda see pala</string>
     <string name="desc_song_handle">Tõsta see pala teise kohta</string>
     <string name="desc_clear_search">Tühjenda otsinguajalugu</string>
@@ -288,7 +280,6 @@
     <string name="cdc_ogg">Ogg Vorbis audio</string>
     <string name="cdc_mp3">MPEG-1 audio</string>
     <string name="cdc_mp4">MPEG-4 audio</string>
-    <string name="cdc_mka">Matroska audio</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_lib_song_count">Laaditud palasid: %d</string>
     <string name="fmt_deletion_info">Kas kustutame %s? Seda tegevust ei saa tagasi pöörata.</string>

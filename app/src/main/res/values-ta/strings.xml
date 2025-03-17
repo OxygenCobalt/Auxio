@@ -9,7 +9,6 @@
     <string name="lbl_disc">வட்டு</string>
     <string name="lbl_track">மின்தடம்</string>
     <string name="lbl_reset">மீட்டமை</string>
-    <string name="lbl_add">கூட்டு</string>
     <string name="set_root_title">அமைப்புகள்</string>
     <string name="set_ui">பாருங்கள் மற்றும் உணருங்கள்</string>
     <string name="set_theme_night">இருண்ட</string>
@@ -53,8 +52,6 @@
     <string name="lbl_observing">கண்காணிப்பு இசை நூலகம்</string>
     <string name="lbl_retry">மீண்டும் முயற்சிக்கவும்</string>
     <string name="lbl_music_sources">கோப்புறைகளைத் தேர்ந்தெடுங்கள்</string>
-    <string name="lbl_show_error_info">மேலும்</string>
-    <string name="lbl_grant">மானியம்</string>
     <string name="lbl_songs">பாடல்கள்</string>
     <string name="lbl_song">பாடல்</string>
     <string name="lbl_all_songs">அனைத்து பாடல்களும்</string>
@@ -240,18 +237,14 @@
     <string name="set_library">நூலகம்</string>
     <string name="set_locations">இசை கோப்புறைகள்</string>
     <string name="set_locations_desc">இசையை எங்கிருந்து ஏற்ற வேண்டும் என்பதை நிர்வகிக்கவும்</string>
-    <string name="set_locations_list">கோப்புறைகள்</string>
     <string name="set_reindex">இசையைப் புதுப்பிக்கவும்</string>
     <string name="set_repeat_pause">மீண்டும்இயக்கையில் இடைநிறுத்தம்</string>
     <string name="set_reindex_desc">முடிந்தவரை தற்காலிக சேமிப்பு குறிச்சொற்களைப் பயன்படுத்தி இசை நூலகத்தை மீண்டும் ஏற்றவும்</string>
     <string name="set_rescan">ரெசான் மியூசிக்</string>
-    <string name="err_no_music">இசை எதுவும் கிடைக்கவில்லை</string>
     <string name="err_index_failed">இசை ஏற்றுதல் தோல்வியடைந்தது</string>
-    <string name="err_no_perms">உங்கள் இசை நூலகத்தைப் படிக்க ஆக்சியோவுக்கு இசைவு தேவை</string>
     <string name="err_import_failed">இந்த கோப்பிலிருந்து ஒரு பிளேலிச்ட்டை இறக்குமதி செய்ய முடியவில்லை</string>
     <string name="err_export_failed">இந்த கோப்பில் பிளேலிச்ட்டை ஏற்றுமதி செய்ய முடியவில்லை</string>
     <string name="err_no_app">இந்த பணியைக் கையாளக்கூடிய எந்த பயன்பாடும் கிடைக்கவில்லை</string>
-    <string name="err_no_locations">கோப்புறைகள் இல்லை</string>
     <string name="err_bad_location">இந்த கோப்புறை ஆதரிக்கப்படவில்லை</string>
     <string name="desc_track_number">ட்ராக் %d</string>
     <string name="desc_play_pause">விளையாடுங்கள் அல்லது இடைநிறுத்தம்</string>
@@ -259,7 +252,6 @@
     <string name="desc_skip_prev">கடைசி பாடலுக்குச் செல்லுங்கள்</string>
     <string name="desc_change_repeat">மீண்டும் பயன்முறையை மாற்றவும்</string>
     <string name="desc_shuffle">கலக்கலை ஆன் அல்லது ஆஃப் செய்யுங்கள்</string>
-    <string name="desc_shuffle_all">எல்லா பாடல்களையும் மாற்றவும்</string>
     <string name="desc_exit">பிளேபேக்கை நிறுத்துங்கள்</string>
     <string name="desc_remove_song">இந்த பாடலை அகற்று</string>
     <string name="desc_song_handle">இந்த பாடலை நகர்த்தவும்</string>
@@ -281,7 +273,6 @@
     <string name="cdc_mp3">MPEG-1 ஆடியோ</string>
     <string name="cdc_mp4">MPEG-4 ஆடியோ</string>
     <string name="cdc_ogg">OGG ஆடியோ</string>
-    <string name="cdc_mka">திருமண ஆடியோ</string>
     <string name="cdc_aac">மேம்பட்ட ஆடியோ குறியீட்டு முறை (AAC)</string>
     <string name="cdc_flac">இலவச இழப்பு இல்லாத ஆடியோ கோடெக் (FLAC)</string>
     <string name="clr_red">சிவப்பு</string>

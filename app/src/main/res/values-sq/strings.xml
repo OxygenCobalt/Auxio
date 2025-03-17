@@ -6,7 +6,6 @@
     <string name="lbl_compilation_live">Kompilim Live</string>
     <string name="lbl_observing">Monitorimi i bibliotekës muzikore</string>
     <string name="lbl_retry">Përsëritje</string>
-    <string name="lbl_show_error_info">Më shumë</string>
     <string name="lbl_songs">Këngët</string>
     <string name="lbl_song">Këngë</string>
     <string name="lbl_all_songs">Të gjitha këngët</string>
@@ -30,7 +29,6 @@
     <string name="lbl_mixtapes">Mixtapes</string>
     <string name="lbl_mixtape">Mixtape</string>
     <string name="lbl_rename_playlist">Riemërto listën e këngëve</string>
-    <string name="lbl_grant">Lejoj</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Demos</string>
     <string name="lbl_mixes">DJ Mixes</string>
@@ -94,7 +92,6 @@
     <string name="lbl_cancel">Anulo</string>
     <string name="lbl_save">Ruaj</string>
     <string name="lbl_reset">Rivendos</string>
-    <string name="lbl_add">Shto</string>
     <string name="lbl_more">Më shumë</string>
     <string name="lbl_path_style_absolute">Absolute</string>
     <string name="lbl_path_style_relative">Relativ</string>
@@ -245,24 +242,19 @@
     <string name="set_pre_amp_warning">Kujdes: Ndryshimi i pre-amplitudës në një vlerë të lartë pozitive mund të shkaktojë teprim në disa shtegtarë audio.</string>
     <string name="set_library">Biblioteka</string>
     <string name="set_locations_desc">Menaxho se nga ku duhet të ngarkohet muzika</string>
-    <string name="set_locations_list">Dosjet</string>
     <string name="set_reindex">Rifresko muzikën</string>
     <string name="set_reindex_desc">Rifreskoni bibliotekën muzikore, duke përdorur etiketat e ruajtura kur është e mundur</string>
     <string name="set_rescan">Rikërkoni muzikën</string>
     <string name="set_rescan_desc">Pastroni cache-n e etiketave dhe rifreskoni plotësisht bibliotekën muzikore (më ngadalë, por më të plotë)</string>
-    <string name="err_no_music">Nuk u gjet muzikë</string>
     <string name="err_index_failed">Ngarkimi i muzikës dështoi</string>
-    <string name="err_no_perms">Auxio ka nevojë për leje për të lexuar bibliotekën tuaj muzikore</string>
     <string name="err_import_failed">Nuk mund të importoni një listë këngësh nga ky skedar</string>
     <string name="err_export_failed">Nuk mund të eksportoni listën e këngëve në këtë skedar</string>
     <string name="err_no_app">Nuk u gjet asnjë aplikacion që mund ta përballojë këtë detyrë</string>
-    <string name="err_no_locations">Nuk ka dosje</string>
     <string name="desc_track_number">Kënga %d</string>
     <string name="desc_play_pause">Luaj ose ndalo</string>
     <string name="desc_skip_next">Kaloni te kënga tjetër</string>
     <string name="desc_skip_prev">Kaloni te kënga e fundit</string>
     <string name="desc_shuffle">Aktivizoni ose çaktivizoni përzierjen</string>
-    <string name="desc_shuffle_all">Përziej të gjitha këngët</string>
     <string name="desc_exit">Ndalo riprodhimin</string>
     <string name="desc_song_handle">Lëviz këtë këngë</string>
     <string name="desc_queue_bar">Hap radhën</string>
@@ -284,7 +276,6 @@
     <string name="cdc_mp3">MPEG-1 audio</string>
     <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="cdc_ogg">Ogg audio</string>
-    <string name="cdc_mka">Matroska audio</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="clr_red">Kuq</string>
     <string name="clr_pink">Rozë</string>

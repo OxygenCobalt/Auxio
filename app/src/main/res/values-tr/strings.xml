@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Yeniden dene</string>
-    <string name="lbl_grant">İzin ver</string>
     <string name="lbl_genres">Türler</string>
     <string name="lbl_artists">Sanatçılar</string>
     <string name="lbl_albums">Albümler</string>
@@ -37,7 +36,6 @@
     <string name="set_audio">Ses</string>
     <string name="set_personalize">Tercihler</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Müzik bulunamadı</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Kitaplığınız taranıyor…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -59,7 +57,6 @@
     <string name="lbl_shuffle_shortcut_long">Hepsini karıştır</string>
     <string name="lbl_ok">Tamam</string>
     <string name="lbl_cancel">İptal</string>
-    <string name="lbl_add">Ekle</string>
     <string name="lbl_save">Kaydet</string>
     <string name="fmt_lib_total_duration">Toplam süre: %s</string>
     <string name="lbl_song_count">Şarkı sayısı</string>
@@ -96,7 +93,6 @@
     <string name="desc_album_cover">%s Albümünün kapağı</string>
     <string name="desc_artist_image">%s Sanatçısının resmi</string>
     <string name="def_track">Parça yok</string>
-    <string name="cdc_mka">Matroska Ses</string>
     <string name="cdc_aac">İleri Düzeyde Ses Kodlama (AAC)</string>
     <string name="cdc_flac">Bağımsız Kayıpsız Ses Kodlama (FLAC)</string>
     <string name="clr_red">Kırmızı</string>
@@ -147,17 +143,14 @@
     <string name="set_keep_shuffle_desc">Yeni bir şarkı çalarken karışık çalmayı açık tut</string>
     <string name="set_reindex">Müziği yenile</string>
     <string name="set_reindex_desc">Mümkün olduğunda önbelleğe alınmış etiketleri kullanarak müzik kitaplığını yeniden yükleyin</string>
-    <string name="err_no_locations">Klasör yok</string>
     <string name="err_bad_location">Bu klasör desteklenmiyor</string>
     <string name="desc_skip_next">Sonraki şarkıya geç</string>
     <string name="desc_skip_prev">Son şarkıya geç</string>
     <string name="desc_change_repeat">Tekrarlama modunu değiştir</string>
     <string name="err_index_failed">Müzik yüklemesi başarısız oldu</string>
-    <string name="err_no_perms">Auxio\'nun müzik kitaplığınızı görüntülemek için izne ihtiyacı var</string>
     <string name="err_no_app">Bu görevi yerine getirebilecek bir uygulama bulunamadı</string>
     <string name="desc_shuffle">Karıştırmayı açın veya kapatın</string>
     <string name="desc_music_location_delete">Klasörü kaldır</string>
-    <string name="desc_shuffle_all">Bütün şarkıları karıştır</string>
     <string name="desc_auxio_icon">Auxio simgesi</string>
     <string name="desc_tab_handle">Bu sekmeyi taşı</string>
     <string name="desc_no_cover">Albüm kapağı</string>
@@ -243,7 +236,6 @@
     <string name="set_library">Kütüphane</string>
     <string name="lbl_sort_dsc">Azalan</string>
     <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
-    <string name="set_locations_list">Klasörler</string>
     <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>
     <string name="set_behavior">Davranış</string>
     <string name="set_replay_gain">Ses normaleştirmesi</string>
@@ -263,7 +255,6 @@
     <string name="set_play_song_by_itself">Şarkıyı kendi kendine çal</string>
     <string name="fmt_def_playlist">Çalma listesi %d</string>
     <string name="lng_playlist_created">Oynatma listesi oluşturuldu</string>
-    <string name="lbl_show_error_info">Daha fazla</string>
     <string name="def_disc">Disk yok</string>
     <string name="lbl_copied">Kopyalandı</string>
     <string name="lbl_playlist_add">Çalma listesine ekle</string>

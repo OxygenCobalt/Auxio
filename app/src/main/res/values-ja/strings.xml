@@ -2,7 +2,6 @@
 <resources>
     <string name="lbl_retry">再試行</string>
     <string name="info_app_desc">Android 用のシンプルで合理的な音楽プレーヤー。</string>
-    <string name="lbl_grant">許可する</string>
     <string name="lbl_artists">アーティスト</string>
     <string name="lbl_genres">ジャンル</string>
     <string name="lbl_duration">曲の長さ</string>
@@ -26,12 +25,10 @@
     <string name="lbl_date">日付け</string>
     <string name="set_cover_mode_high_quality">高クオリティ</string>
     <string name="set_round_mode">ラウンドモード</string>
-    <string name="err_no_music">音楽が見つかりません</string>
     <string name="err_index_failed">音楽の読み込みに失敗</string>
     <string name="cdc_ogg">Ogg オーディオ</string>
     <string name="clr_cyan">シアン</string>
     <string name="clr_deep_blue">紺</string>
-    <string name="lbl_add">追加</string>
     <string name="lbl_save">保存</string>
     <string name="lng_search_library">ライブラリ検索…</string>
     <string name="set_theme_night">暗い</string>
@@ -78,8 +75,6 @@
     <string name="set_replay_gain_mode_track">トラックを優先</string>
     <string name="set_locations_desc">音楽の読み込み元を管理</string>
     <string name="set_reindex">音楽の再読み込み</string>
-    <string name="err_no_perms">Auxio は音楽ライブラリを読む許可を必要とします</string>
-    <string name="err_no_locations">フォルダがありません</string>
     <string name="err_bad_location">このフォルダはサポートされていません</string>
     <string name="desc_track_number">トラック %d</string>
     <string name="desc_play_pause">再生またはポーズ</string>
@@ -149,7 +144,6 @@
     <string name="err_no_app">このタスクを実行できるアプリが見つかりません</string>
     <string name="set_content">コンテンツ</string>
     <string name="set_rescan">音楽の再スキャン</string>
-    <string name="cdc_mka">Matroska オーディオ</string>
     <string name="cdc_aac">高度なオーディオ コーデック (AAC)</string>
     <string name="cdc_flac">品質を損なうことのない無料のオーディオ コーデック (FLAC)</string>
     <string name="clr_grey">グレイ</string>
@@ -176,13 +170,11 @@
     <string name="set_repeat_pause">ポーズと繰り返し</string>
     <string name="set_library">ライブラリ</string>
     <string name="set_pre_amp_without">タグ無しで調整</string>
-    <string name="set_locations_list">フォルダ</string>
     <string name="set_separators_semicolon">セミコロン (;)</string>
     <string name="set_separators_slash">スラッシュ (/)</string>
     <string name="desc_change_repeat">繰り返しモードを変更</string>
     <string name="desc_shuffle">シャフルのオン・オフ</string>
     <string name="desc_skip_next">次の曲にスキップ</string>
-    <string name="desc_shuffle_all">すべての曲をシャフル</string>
     <string name="fmt_sample_rate">%d ヘルツ</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="set_pre_amp_with">タグで調整</string>

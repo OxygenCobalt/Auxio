@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">पुन: प्रयास करें</string>
-    <string name="lbl_grant">अनुदान</string>
     <string name="lbl_artists">कलाकार</string>
     <string name="lbl_albums">एल्बम</string>
     <string name="lbl_songs">गीत</string>
@@ -31,7 +30,6 @@
     <string name="set_audio">ऑडियो</string>
     <string name="set_personalize">चाल चलन</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">कोई संगीत नहीं मिला</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_play_pause">चलाएं/रोकें</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -141,7 +139,6 @@
         <item quantity="other">%d कलाकार</item>
     </plurals>
     <string name="lbl_observing">संगीत लाइब्रेरी की निगरानी</string>
-    <string name="lbl_add">जोड़ें</string>
     <string name="lbl_ep">ईपी</string>
     <string name="lbl_rename">नाम बदलें</string>
     <string name="set_separators_semicolon">अर्धविराम (;)</string>
@@ -202,12 +199,10 @@
     <string name="set_repeat_pause_desc">जब कोई गीत दोहराया जाता है तो रुक जाएं</string>
     <string name="set_pre_amp">रीप्लेगेन प्री-एम्प</string>
     <string name="set_pre_amp_with">टैग के साथ समायोजन</string>
-    <string name="set_locations_list">फ़ोल्डर</string>
     <string name="err_index_failed">संगीत लोड करना विफल रहा</string>
     <string name="err_bad_location">यह फ़ोल्डर समर्थित नहीं है</string>
     <string name="desc_change_repeat">रिपीट मोड बदलें</string>
     <string name="desc_shuffle">शफ़ल चालू या बंद करें</string>
-    <string name="desc_shuffle_all">सभी गीत शफ़ल करें</string>
     <string name="desc_exit">प्लेबैक बंद करो</string>
     <string name="desc_song_handle">इस गीत को इस स्थानांतरित करें</string>
     <string name="def_genre">अज्ञात शैली</string>
@@ -261,8 +256,6 @@
     <string name="set_rewind_prev">वापस जाने से पहले रिवाइंड करें</string>
     <string name="set_replay_gain_mode_track">ट्रैक को प्राथमिकता दें</string>
     <string name="set_rescan_desc">टैग कैश साफ़ करें और संगीत लाइब्रेरी को पूरी तरह पुनः लोड करें (धीमी, लेकिन अधिक पूर्ण)</string>
-    <string name="err_no_perms">Auxio को आपकी संगीत लाइब्रेरी पढ़ने के लिए अनुमति की आवश्यकता है</string>
-    <string name="err_no_locations">कोई फ़ोल्डर नहीं</string>
     <string name="clr_brown">भूरा</string>
     <string name="clr_yellow">पीला</string>
     <string name="clr_lime">नींबू रंग</string>
@@ -271,7 +264,6 @@
     <string name="desc_skip_next">अगले गाने पर जाएं</string>
     <string name="desc_auxio_icon">ऑक्सियो आइकन</string>
     <string name="cdc_ogg">Ogg ऑडियो</string>
-    <string name="cdc_mka">Matroska ऑडियो</string>
     <string name="clr_pink">गुलाबी</string>
     <string name="set_intelligent_sorting">बुद्धिमान छंटाई</string>
     <string name="set_intelligent_sorting_desc">संख्याओं या \"the\" जैसे शब्दों से शुरू होने वाले नामों को सही ढंग से क्रमबद्ध करें (अंग्रेजी भाषा के संगीत के साथ सबसे अच्छा काम करता है)</string>
@@ -283,7 +275,6 @@
     <string name="lbl_error_info">त्रुटि की जानकारी</string>
     <string name="lbl_report">रिपोर्ट करें</string>
     <string name="lbl_copied">कापी किया गया</string>
-    <string name="lbl_show_error_info">और</string>
     <string name="def_album_count">कोई एल्बम नहीं</string>
     <string name="lbl_demo">डेमो</string>
     <string name="lbl_demos">डेमो</string>

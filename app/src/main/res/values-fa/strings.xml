@@ -3,7 +3,6 @@
     <string name="lbl_indexer">بارگیری موسیقی</string>
     <string name="info_app_desc">یک پخش کننده موسیقی ساده و منطقی برای اندروید.</string>
     <string name="lbl_retry">تلاش دوباره</string>
-    <string name="lbl_grant">اجازه دادن</string>
     <string name="lbl_album">آلبوم</string>
     <string name="lbl_album_live">آلبوم زنده</string>
     <string name="lbl_album_remix">آلبوم ریمیکس</string>

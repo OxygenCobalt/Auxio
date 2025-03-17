@@ -5,7 +5,6 @@
     <string name="lng_widget">음악 재생 제어 및 상태 확인</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">다시 시도</string>
-    <string name="lbl_grant">허용</string>
     <string name="lbl_genres">장르</string>
     <string name="lbl_artists">아티스트</string>
     <string name="lbl_albums">앨범</string>
@@ -40,7 +39,6 @@
     <string name="lbl_ok">확인</string>
     <!-- Actual string: Cancel -->
     <string name="lbl_cancel">취소</string>
-    <string name="lbl_add">추가</string>
     <string name="lbl_save">저장</string>
     <string name="lbl_about">정보</string>
     <string name="lbl_version">버전</string>
@@ -88,11 +86,8 @@
     <string name="set_reindex">음악 새로고침</string>
     <string name="set_reindex_desc">캐시된 태그를 사용하여 음악 라이브러리를 다시 불러옵니다.</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">음악 없음</string>
     <string name="err_index_failed">음악 불러오기 실패</string>
-    <string name="err_no_perms">앱에서 음악 라이브러리를 읽을 수 있는 권한이 필요합니다.</string>
     <string name="err_no_app">이 작업을 처리할 수 있는 앱을 찾을 수 없습니다.</string>
-    <string name="err_no_locations">폴더 없음</string>
     <string name="err_bad_location">지원하지 않는 폴더입니다</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">라이브러리에서 검색…</string>
@@ -103,7 +98,6 @@
     <string name="desc_skip_prev">마지막 곡으로 건너뛰기</string>
     <string name="desc_change_repeat">반복 방식 변경</string>
     <string name="desc_shuffle">무작위 재생 켜기 또는 끄기</string>
-    <string name="desc_shuffle_all">모든 곡 무작위 재생</string>
     <string name="desc_remove_song">이 곡 제거</string>
     <string name="desc_song_handle">이 곡 이동</string>
     <string name="desc_tab_handle">이 탭 이동</string>
@@ -163,7 +157,6 @@
     <string name="lbl_shuffle_shortcut_long">모두 무작위 재생</string>
     <string name="desc_exit">재생 중지</string>
     <string name="cdc_ogg">Ogg 오디오</string>
-    <string name="cdc_mka">Matroska 오디오</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_mix">DJ믹스</string>
     <string name="lbl_compilation_live">라이브 컴필레이션</string>
@@ -240,7 +233,6 @@
     <string name="set_replay_gain">ReplayGain 볼륨 조정</string>
     <string name="set_audio_desc">사운드 및 재생 동작 구성</string>
     <string name="set_playback">재생</string>
-    <string name="set_locations_list">폴더</string>
     <string name="set_ui_desc">앱 테마 및 색상 변경</string>
     <string name="set_music">음악</string>
     <string name="set_library">라이브러리</string>
@@ -281,7 +273,6 @@
     <string name="lbl_sort_mode">정렬 기준</string>
     <string name="desc_selection_image">선택 이미지</string>
     <string name="lbl_selection">선택</string>
-    <string name="lbl_show_error_info">더 보기</string>
     <string name="lbl_copied">복사했습니다.</string>
     <string name="lbl_report">오류 보고</string>
     <string name="lbl_error_info">오류 정보</string>

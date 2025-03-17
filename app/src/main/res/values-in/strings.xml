@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Coba lagi</string>
-    <string name="lbl_grant">Izinkan</string>
     <string name="lbl_genres">Aliran</string>
     <string name="lbl_artists">Artis</string>
     <string name="lbl_albums">Album</string>
@@ -38,7 +37,6 @@
     <string name="set_personalize">Personalisasi</string>
     <string name="set_keep_shuffle">Ingat daftar putar acak</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Musik tidak ditemukan</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Telusuri pustaka Anda…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -55,7 +53,6 @@
     <string name="lbl_bitrate">Laju bit</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_cancel">Batal</string>
-    <string name="lbl_add">Tambah</string>
     <string name="lbl_save">Simpan</string>
     <string name="set_black_mode">Tema hitam</string>
     <string name="set_black_mode_desc">Gunakan tema gelap hitam murni</string>
@@ -136,14 +133,11 @@
     <string name="set_pre_amp_without">Penyesuaian tanpa tag</string>
     <string name="set_locations">Folder musik</string>
     <string name="set_play_song_from_artist">Putar dari artis</string>
-    <string name="err_no_perms">Auxio memerlukan izin untuk membaca perpustakaan musik Anda</string>
     <string name="desc_skip_prev">Loncat ke lagu terakhir</string>
-    <string name="desc_shuffle_all">Acak semua lagu</string>
     <string name="def_date">Tidak ada tanggal</string>
     <string name="err_index_failed">Pemuatan musik gagal</string>
     <string name="desc_album_cover">Sampul album untuk %s</string>
     <string name="def_artist">Artis tidak dikenal</string>
-    <string name="err_no_locations">Tidak ada folder</string>
     <string name="desc_skip_next">Loncat ke lagu berikutnya</string>
     <string name="desc_music_location_delete">Hapus folder</string>
     <string name="desc_auxio_icon">Ikon Auxio</string>
@@ -157,7 +151,6 @@
     <string name="fmt_lib_total_duration">Total durasi: %s</string>
     <string name="desc_genre_image">Gambar genre untuk %s</string>
     <string name="def_genre">Genre tidak diketahui</string>
-    <string name="cdc_mka">Audio Matroska</string>
     <string name="clr_deep_green">Hijau tua</string>
     <string name="clr_yellow">Kuning</string>
     <string name="cdc_mp4">Audio MPEG-4</string>
@@ -187,7 +180,6 @@
     <string name="set_cover_mode_off">Nonaktif</string>
     <string name="set_cover_mode_balanced">Cepat</string>
     <string name="lbl_album_remix">Album remix</string>
-    <string name="set_locations_list">Folder</string>
     <string name="lbl_indexing">Memuat musik</string>
     <string name="lbl_observing">Memantau pustaka musik</string>
     <string name="lng_observing">Memantau perubahan pada pustaka musik Anda…</string>
@@ -207,7 +199,6 @@
     <string name="lbl_ep_live">EP Live</string>
     <string name="lbl_compilation">Kompilasi</string>
     <string name="lbl_mixtapes">Kaset campuran</string>
-    <string name="lbl_show_error_info">Lainnya</string>
     <string name="lbl_soundtracks">Soundtrack</string>
     <string name="lbl_album_live">Album live</string>
     <plurals name="fmt_artist_count">

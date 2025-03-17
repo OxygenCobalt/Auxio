@@ -5,7 +5,6 @@
     <string name="lng_widget">查看并控制音乐播放</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">重试</string>
-    <string name="lbl_grant">授予</string>
     <string name="lbl_genres">流派</string>
     <string name="lbl_artists">艺术家</string>
     <string name="lbl_albums">专辑</string>
@@ -32,9 +31,7 @@
     <string name="lng_queue_added">已加入播放队列</string>
     <string name="lbl_artist_details">查看艺术家</string>
     <string name="lbl_album_details">查看专辑</string>
-    <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
-    <string name="err_no_locations">没有文件夹</string>
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
     <string name="lbl_code">源代码</string>
@@ -75,9 +72,7 @@
     <string name="set_reindex">刷新音乐</string>
     <string name="set_reindex_desc">重新加载音乐库，如有可能使用缓存的标签</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">没有找到音乐</string>
     <string name="err_index_failed">加载音乐失败</string>
-    <string name="err_no_perms">Auxio 需要权限来读取音乐库</string>
     <string name="err_no_app">未找到可以处理此任务的应用</string>
     <string name="err_bad_location">该目录不受支持</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -89,7 +84,6 @@
     <string name="desc_skip_prev">切换到上一首歌</string>
     <string name="desc_change_repeat">更改重复播放模式</string>
     <string name="desc_shuffle">开启或关闭随机播放模式</string>
-    <string name="desc_shuffle_all">随机播放所有曲目</string>
     <string name="desc_remove_song">移除队列曲目</string>
     <string name="desc_song_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
@@ -144,7 +138,6 @@
     <string name="cdc_mp3">MPEG-1 音频</string>
     <string name="cdc_mp4">MPEG-4 音频</string>
     <string name="cdc_ogg">Ogg 音频</string>
-    <string name="cdc_mka">Matroska 音频</string>
     <string name="cdc_flac">免费无损音频编码 (FLAC)</string>
     <string name="clr_dynamic">动态</string>
     <string name="fmt_disc_no">碟片 %d</string>
@@ -243,7 +236,6 @@
     <string name="set_images">图片</string>
     <string name="set_playback">播放</string>
     <string name="set_library">曲库</string>
-    <string name="set_locations_list">文件夹</string>
     <string name="set_music">音乐</string>
     <string name="set_audio_desc">配置声音和播放行为</string>
     <string name="lbl_sort_dsc">降序</string>
@@ -280,7 +272,6 @@
     <string name="lbl_selection">选择</string>
     <string name="desc_selection_image">选择图片</string>
     <string name="lbl_report">报告</string>
-    <string name="lbl_show_error_info">更多</string>
     <string name="lbl_copied">已复制</string>
     <string name="lbl_error_info">错误信息</string>
     <string name="def_album_count">无专辑</string>

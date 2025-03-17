@@ -3,7 +3,6 @@
     <string name="lbl_save">രക്ഷിക്കുക</string>
     <string name="set_behavior">പെരുമാറ്റം</string>
     <string name="set_content">ഉള്ളടക്കം</string>
-    <string name="err_no_music">സംഗീതമൊന്നും കണ്ടെത്തിയില്ല</string>
     <string name="desc_queue_bar">വരി തുറക്കുക</string>
     <string name="def_artist">അജ്ഞാത കലാകാരൻ</string>
     <string name="clr_grey">ചാരനിറം</string>
@@ -23,7 +22,6 @@
     <string name="lbl_play_next">അടുത്തത് കളിക്കുക</string>
     <string name="lbl_format">രൂപകല്പന</string>
     <string name="lbl_size">വലിപ്പം</string>
-    <string name="lbl_add">ചേർക്കുക</string>
     <string name="lbl_ok">ശരി</string>
     <string name="lbl_cancel">റദ്ദാക്കുക</string>
     <string name="set_theme_day">വെളിച്ചം</string>
@@ -71,7 +69,6 @@
     <string name="lbl_indexing">സംഗീതം ലോഡ് ചെയ്യുന്നു</string>
     <string name="lbl_observing">സംഗീത ഗ്രന്ഥശാല നിരീക്ഷിക്കുന്നു</string>
     <string name="lbl_retry">വീണ്ടും ശ്രമിക്കുക</string>
-    <string name="lbl_grant">അനുവദിക്കുക</string>
     <string name="lbl_songs">ഗാനങ്ങൾ</string>
     <string name="lbl_song_count">പാട്ടുകളുടെ എണ്ണം</string>
     <string name="lbl_date_added">തീയതി ചേർത്തു</string>

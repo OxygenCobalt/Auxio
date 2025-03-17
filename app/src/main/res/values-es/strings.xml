@@ -5,7 +5,6 @@
     <string name="lng_widget">Ver y controlar la reproducción musical</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Reintentar</string>
-    <string name="lbl_grant">Permitir</string>
     <string name="lbl_genres">Géneros</string>
     <string name="lbl_artists">Artistas</string>
     <string name="lbl_albums">Álbumes</string>
@@ -32,9 +31,7 @@
     <string name="lng_queue_added">Añadido a la cola</string>
     <string name="lbl_artist_details">Ir al artista</string>
     <string name="lbl_album_details">Ir al álbum</string>
-    <string name="lbl_add">Añadir</string>
     <string name="lbl_save">Guardar</string>
-    <string name="err_no_locations">Sin carpetas</string>
     <string name="lbl_about">Acerca de</string>
     <string name="lbl_version">Versión</string>
     <string name="lbl_code">Código fuente</string>
@@ -73,9 +70,7 @@
     <string name="set_reindex">Actualizar música</string>
     <string name="set_reindex_desc">Recargar la biblioteca musical, utilizando las etiquetas en caché cuando sea posible</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">No se ha encontrado música</string>
     <string name="err_index_failed">Falló la carga de música</string>
-    <string name="err_no_perms">Auxio necesita permiso para leer su biblioteca de música</string>
     <string name="err_no_app">No se encontró ninguna aplicación que pueda manejar esta tarea</string>
     <string name="err_bad_location">No se admite esta carpeta</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -87,7 +82,6 @@
     <string name="desc_skip_prev">Saltar a la última canción</string>
     <string name="desc_change_repeat">Cambiar modo de repetición</string>
     <string name="desc_shuffle">Activar o desactivar mezcla</string>
-    <string name="desc_shuffle_all">Mezclar todas las canciones</string>
     <string name="desc_remove_song">Quitar canción de la cola</string>
     <string name="desc_song_handle">Mover canción en la cola</string>
     <string name="desc_tab_handle">Mover pestaña</string>
@@ -147,7 +141,6 @@
     <string name="set_pre_amp_without">Ajuste sin etiquetas</string>
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
     <string name="set_play_song_none">Reproducir desde el elemento que se muestra</string>
-    <string name="cdc_mka">Audio Matroska</string>
     <string name="cdc_flac">Códec de audio sin pérdida libre (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_indexing">Cargando tu biblioteca de música… (%1$d/%2$d)</string>
@@ -248,7 +241,6 @@
     <string name="set_images">Imágenes</string>
     <string name="set_audio_desc">Configurar el comportamiento del sonido y la reproducción</string>
     <string name="set_playback">Reproducción</string>
-    <string name="set_locations_list">Carpetas</string>
     <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>
@@ -285,7 +277,6 @@
     <string name="lbl_sort_direction">Dirección</string>
     <string name="desc_selection_image">Selección de imágenes</string>
     <string name="lbl_selection">Selección</string>
-    <string name="lbl_show_error_info">Más</string>
     <string name="lbl_error_info">Información sobre el error</string>
     <string name="lbl_copied">Copiado</string>
     <string name="lbl_report">Informar</string>

@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Réessayer</string>
-    <string name="lbl_grant">Accorder</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artistes</string>
     <string name="lbl_albums">Albums</string>
@@ -38,7 +37,6 @@
     <string name="set_audio">Audio</string>
     <string name="set_personalize">Comportement</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Pas de musique trouvée</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Morceau %d</string>
     <string name="desc_play_pause">Lecture ou pause</string>
@@ -85,7 +83,6 @@
     <string name="lbl_cancel">Annuler</string>
     <string name="lbl_save">Enregistrer</string>
     <string name="lbl_size">Taille</string>
-    <string name="lbl_add">Ajouter</string>
     <string name="set_display">Affichage</string>
     <string name="set_lib_tabs">Onglets de la bibliothèque</string>
     <string name="info_app_desc">Un lecteur de musique simple et rationnel pour Android.</string>
@@ -125,13 +122,11 @@
     <string name="lbl_album_remix">Album de remix</string>
     <string name="lbl_genre">Genre</string>
     <string name="lbl_equalizer">Égaliseur</string>
-    <string name="desc_shuffle_all">Lecture aléatoire de tous les titres</string>
     <string name="desc_auxio_icon">Icône Auxio</string>
     <string name="desc_no_cover">Couverture de l\'album</string>
     <string name="def_genre">Genre inconnu</string>
     <string name="clr_dynamic">Dynamique</string>
     <string name="clr_cyan">Cyan</string>
-    <string name="err_no_locations">Aucun dossier</string>
     <string name="desc_music_location_delete">Supprimer le dossier</string>
     <string name="def_artist">Artiste inconnu</string>
     <string name="lbl_compilation_live">Compilation en direct</string>
@@ -200,13 +195,11 @@
     <string name="set_replay_gain_mode">Stratégie de normalisation de volume</string>
     <string name="set_replay_gain_mode_track">Par chanson</string>
     <string name="set_replay_gain_mode_album">Par album</string>
-    <string name="set_locations_list">Dossiers</string>
     <string name="set_replay_gain_mode_dynamic">Par album si un album est en lecture</string>
     <string name="set_library">Bibliothèque</string>
     <string name="set_reindex">Actualiser la musique</string>
     <string name="set_rescan_desc">Effacer le cache des étiquettes et recharger entièrement la bibliothèque musicale (lent, mais plus complet)</string>
     <string name="err_no_app">Aucune application trouvée qui puisse gérer cette tâche</string>
-    <string name="err_no_perms">Auxio a besoin de permissions pour lire votre bibliothèque musicale</string>
     <string name="set_intelligent_sorting">Tri intelligent</string>
     <string name="set_intelligent_sorting_desc">Ignorer les nombres ou certains mots comme \"the\" en début de nom lors du tri (fonctionne au mieux avec de la musique en anglais)</string>
     <string name="set_rescan">Scanner à nouveau la musique</string>
@@ -222,7 +215,6 @@
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="desc_skip_prev">Passer à la dernière chanson</string>
     <string name="lbl_playlist_add">Ajouter à la liste de lecture</string>
-    <string name="cdc_mka">Audio Matroska</string>
     <string name="fmt_lib_artist_count">Artistes chargés : %d</string>
     <string name="set_rewind_prev">Rembobiner avant de revenir en arrière</string>
     <string name="desc_artist_image">Image d\'artiste pour %s</string>
@@ -283,7 +275,6 @@
     <string name="lbl_sort_mode">Trier par</string>
     <string name="lbl_sort_direction">Direction</string>
     <string name="lbl_selection">Sélection</string>
-    <string name="lbl_show_error_info">En savoir plus</string>
     <string name="lbl_copied">Copié</string>
     <string name="lbl_report">Signaler</string>
     <string name="lbl_error_info">Info sur l\'erreur</string>

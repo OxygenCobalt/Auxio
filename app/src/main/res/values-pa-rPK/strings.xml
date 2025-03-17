@@ -2,7 +2,6 @@
 <resources>
     <string name="lbl_indexing">سنگیت لوڈ کیتا جا رہا اے</string>
     <string name="lbl_retry">مُڑ لوڈ کرو</string>
-    <string name="lbl_grant">اِجازت دیو</string>
     <string name="lbl_songs">گیت</string>
     <string name="lbl_all_songs">سارے گیت</string>
     <string name="lbl_album">البم</string>

@@ -38,7 +38,6 @@
     <string name="lbl_props">Dainos ypatybės</string>
     <string name="lbl_save">Išsaugoti</string>
     <string name="lbl_about">Apie</string>
-    <string name="lbl_add">Pridėti</string>
     <string name="set_ui">Išvaizda ir pojūtis</string>
     <string name="lbl_format">Formatas</string>
     <string name="lbl_version">Versija</string>
@@ -50,7 +49,6 @@
     <string name="lng_widget">Peržiūrėk ir valdyk muzikos įrašo perklausą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Pakartoti</string>
-    <string name="lbl_grant">Suteikti</string>
     <string name="lbl_indexing">Įkeliama muzika</string>
     <string name="lng_indexing">Įkeliamas tavo muzikos biblioteka…</string>
     <string name="lbl_library_counts">Bibliotekos statistika</string>
@@ -114,7 +112,6 @@
     <string name="lbl_ep_live">Gyvai mini albumas</string>
     <string name="lbl_ep_remix">Remikso mini albumas</string>
     <string name="cdc_mp4">MPEG-4 garsas</string>
-    <string name="cdc_mka">Matroska garsas</string>
     <string name="lbl_album_live">Gyvai albumas</string>
     <string name="lbl_album_remix">Remikso albumas</string>
     <string name="lbl_live_group">Gyvai</string>
@@ -122,7 +119,6 @@
     <string name="cdc_ogg">Ogg garsas</string>
     <string name="lbl_author_name">Aleksandras Keiphartas (angl. Alexander Capehart)</string>
     <string name="set_replay_gain_mode_track">Pageidauti takeliui</string>
-    <string name="err_no_locations">Nėra aplankų</string>
     <string name="err_bad_location">Šis aplankas nepalaikomas.</string>
     <string name="desc_play_pause">Leisti arba pristabdyti</string>
     <string name="desc_skip_next">Praleisti į kitą dainą</string>
@@ -138,7 +134,6 @@
     <string name="desc_song_handle">Perkelti šią dainą</string>
     <string name="desc_tab_handle">Perkelti šį skirtuką</string>
     <string name="err_index_failed">Nepavyko įkelti muzikos.</string>
-    <string name="err_no_perms">„Auxio“ reikia leidimo skaityti tavo muzikos biblioteką.</string>
     <string name="fmt_disc_no">%d diskas</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
@@ -159,7 +154,6 @@
     <string name="lng_search_library">Ieškok savo bibliotekoje…</string>
     <string name="lbl_equalizer">Ekvalaizeris</string>
     <string name="set_observing">Automatinis perkėlimas</string>
-    <string name="err_no_music">Muzika nerasta.</string>
     <string name="desc_exit">Sustabdyti įrašo perklausą</string>
     <string name="def_track">Nėra takelio</string>
     <string name="set_action_mode_next">Praleisti į kitą</string>
@@ -179,7 +173,6 @@
     <string name="fmt_lib_album_count">Įkelti albumai: %d</string>
     <string name="fmt_lib_artist_count">Įkelti atlikėjai: %d</string>
     <string name="fmt_indexing">Įkėliamas tavo muzikos biblioteka… (%1$d/%2$d)</string>
-    <string name="desc_shuffle_all">Maišyti visas dainas</string>
     <string name="set_personalize">Suasmeninti</string>
     <string name="set_pre_amp_warning">Įspėjimas: keičiant išankstinį stiprintuvą į didelę teigiamą reikšmę, kai kuriuose garso takeliuose gali atsirasti tarpų.</string>
     <string name="desc_album_cover">Albumo viršelis %s</string>
@@ -245,7 +238,6 @@
     <string name="set_images">Vaizdai</string>
     <string name="set_playback">Įrašo perklausa</string>
     <string name="set_replay_gain">Garso normalizavimas</string>
-    <string name="set_locations_list">Aplankai</string>
     <string name="lbl_sort_dsc">Mažėjantis</string>
     <string name="set_intelligent_sorting_desc">Teisingai surūšiuok pavadinimus, kurie prasideda skaičiais arba žodžiais, tokiais kaip „the“ (geriausiai veikia su anglų kalbos muzika).</string>
     <string name="set_intelligent_sorting">Išmanusis rūšiavimas</string>
@@ -281,7 +273,6 @@
     <string name="lbl_selection">Pasirinkimas</string>
     <string name="lbl_error_info">Klaidos informacija</string>
     <string name="lbl_copied">Nukopijuota</string>
-    <string name="lbl_show_error_info">Daugiau</string>
     <string name="lbl_report">Pranešti</string>
     <string name="def_album_count">Nėra albumų</string>
     <string name="lbl_demo">Demo versija</string>

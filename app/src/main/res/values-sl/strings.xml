@@ -29,7 +29,6 @@
     <string name="lbl_props">Lastnosti pesmi</string>
     <string name="desc_change_repeat">Spremenite način ponavljanja</string>
     <string name="clr_orange">Oranžna</string>
-    <string name="lbl_add">Dodaj</string>
     <string name="lbl_shuffle">Naključno predvajanje</string>
     <string name="lbl_mix">DJ Miks</string>
     <string name="set_replay_gain_mode_track">Prednost pesmi</string>
@@ -74,7 +73,6 @@
     <string name="lbl_artist">Izvajalec</string>
     <string name="set_intelligent_sorting_desc">Pravilno razvrsti imena, ki se začnejo z številkami ali besedami, kot so \'the\' (najbolje deluje z angleško glasbo)</string>
     <string name="clr_teal">Zelenkasto modra</string>
-    <string name="desc_shuffle_all">Premešaj vse pesmi</string>
     <string name="lng_playlist_created">Seznam predavanja ustvarjen</string>
     <string name="fmt_lib_total_duration">Celoten čas predvajanja: %s</string>
     <string name="set_repeat_pause">Pavza ob ponavljanju</string>
@@ -84,7 +82,6 @@
     <string name="fmt_lib_song_count">Naloženih pesmi: %d</string>
     <string name="desc_song_handle">Premakni to pesem</string>
     <string name="lbl_observing">Spremljanje glasbene knjižnice</string>
-    <string name="lbl_show_error_info">Pokaži več</string>
     <string name="clr_cyan">Ciano modra</string>
     <string name="set_accent">Barvna shema</string>
     <string name="desc_playlist_image">Slika seznama predvajanja za %s</string>
@@ -106,11 +103,9 @@
     <string name="set_audio_desc">Prilagodi zvok in obnašanje predvajanja</string>
     <string name="set_content_desc">Nadzorujte kako se glasba in slike nalagajo</string>
     <string name="set_ui">Izgled in občutek</string>
-    <string name="cdc_mka">Matroska Audio</string>
     <string name="set_repeat_pause_desc">Začasna prekinitev ob ponavljanju</string>
     <string name="lbl_play">Predvajaj</string>
     <string name="lbl_indexing">Nalaganje glasbe</string>
-    <string name="err_no_music">Ni najdenih pesmi</string>
     <string name="lbl_date">Datum</string>
     <string name="set_rescan_desc">Izprazni predpomnilnik oznak in popolnoma ponovno naloži glasbeno knjižnico (počasneje, vendar bolj popolno)</string>
     <string name="set_pre_amp_desc">Pred-ojačevalec se uporablja na obstoječi prilagoditvi med predvajanjem</string>
@@ -152,7 +147,6 @@
     <string name="def_song_count">Ni pesmi</string>
     <string name="lbl_ep">Podaljšano</string>
     <string name="lbl_songs">Pesmi</string>
-    <string name="set_locations_list">Mape</string>
     <string name="set_square_covers_desc">Prireži vse naslovnice albumov v razmerje 1:1</string>
     <string name="set_bar_action">Prilagojeno dejanje na vrstici za predvajanje</string>
     <string name="clr_indigo">Indigo modra</string>
@@ -192,7 +186,6 @@
     <string name="desc_exit">Ustavi predvajanje</string>
     <string name="lbl_mixtape">Mežanica</string>
     <string name="lbl_single_remix">Remiks singla</string>
-    <string name="err_no_perms">Auxio potrebuje dovoljenje za branje vaše glasbene knjižnice</string>
     <string name="set_theme">Tema</string>
     <string name="set_library">Knjižnica</string>
     <string name="lbl_library_counts">Statistika knjižnice</string>
@@ -217,7 +210,6 @@
     <string name="lbl_ok">Vredu</string>
     <string name="lbl_single">Singl</string>
     <string name="lng_playlist_deleted">Seznam predvajanja odstranjen</string>
-    <string name="lbl_grant">Dovoli</string>
     <string name="set_play_song_from_all">Predvajaj iz vseh pesmi</string>
     <string name="set_pre_amp_with">Prilagoditev z oznakami</string>
     <string name="set_headset_autoplay">Predvajanje ob priključitvi slušalk</string>
@@ -257,7 +249,6 @@
     <string name="set_replay_gain_mode">ReplayGain strategija</string>
     <string name="lbl_code">Izvorna koda</string>
     <string name="set_play_song_from_artist">Predvajaj iz izvajalca</string>
-    <string name="err_no_locations">Ni map</string>
     <string name="set_personalize_desc">Prilagoditev kontrol uporabniškega vmesnika in obnašanja</string>
     <string name="lbl_sample_rate">Hitrost vzorčenja</string>
     <string name="lbl_queue">Čakalna vrsta</string>

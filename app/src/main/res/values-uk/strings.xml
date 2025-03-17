@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторити спробу</string>
-    <string name="lbl_grant">Надати</string>
     <string name="lbl_genres">Жанри</string>
     <string name="lbl_artists">Виконавці</string>
     <string name="lbl_albums">Альбоми</string>
@@ -34,7 +33,6 @@
     <string name="set_audio">Аудіо</string>
     <string name="set_personalize">Персоналізація</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Музику не знайдено</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Пошук в бібліотеці…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -95,7 +93,6 @@
     <string name="set_round_mode">Заокруглені обкладинки</string>
     <string name="fmt_lib_genre_count">Завантажено жанрів: %d</string>
     <string name="lbl_props">Властивості пісні</string>
-    <string name="lbl_add">Додати</string>
     <string name="set_repeat_pause_desc">Ставити на паузу при повторенні пісні</string>
     <string name="lbl_date_added">Дата додавання</string>
     <string name="lbl_sample_rate">Частота дискретизації</string>
@@ -179,7 +176,6 @@
     <string name="def_artist">Невідомий виконавець</string>
     <string name="clr_lime">Лаймовий</string>
     <string name="set_separators_and">Амперсанд &amp;</string>
-    <string name="err_no_locations">Немає папок</string>
     <string name="desc_skip_next">Перейти до наступної пісні</string>
     <string name="desc_shuffle">Ввімкніть або вимкніть перемішування</string>
     <string name="desc_exit">Зупинити відтворення</string>
@@ -228,7 +224,6 @@
     <string name="desc_skip_prev">Перейти до попередньої пісні</string>
     <string name="clr_red">Червоний</string>
     <string name="cdc_mp4">Звук MPEG-4</string>
-    <string name="desc_shuffle_all">Перемішати всі пісні</string>
     <string name="desc_auxio_icon">Іконка Auxio</string>
     <string name="clr_pink">Рожевий</string>
     <string name="clr_orange">Помаранчевий</string>
@@ -238,9 +233,7 @@
     <string name="err_index_failed">Не вдалося завантажити музику</string>
     <string name="desc_music_location_delete">Видалити папку</string>
     <string name="cdc_aac">Розширене кодування звуку (AAC)</string>
-    <string name="cdc_mka">Звук Matroska</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="err_no_perms">Auxio потрібен дозвіл на читання вашої музичної бібліотеки</string>
     <string name="set_behavior">Поведінка</string>
     <string name="set_ui_desc">Змініть тему та кольори застосунку</string>
     <string name="set_personalize_desc">Налаштуйте елементи керування та поведінку інтерфейсу користувача</string>
@@ -251,7 +244,6 @@
     <string name="set_replay_gain">Вирівнювання гучності</string>
     <string name="set_library">Бібліотека</string>
     <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
-    <string name="set_locations_list">Папки</string>
     <string name="lbl_sort_dsc">За спаданням</string>
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
     <string name="lbl_playlist">Список відтворення</string>
@@ -285,7 +277,6 @@
     <string name="lbl_sort_direction">Напрямок</string>
     <string name="lbl_selection">Вибрати</string>
     <string name="desc_selection_image">Вибрати зображення</string>
-    <string name="lbl_show_error_info">Докладніше</string>
     <string name="lbl_error_info">Інформація про помилку</string>
     <string name="lbl_copied">Скопійовано</string>
     <string name="lbl_report">Звіт</string>

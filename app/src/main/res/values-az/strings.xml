@@ -3,7 +3,6 @@
     <string name="lbl_indexer">Musiqi yüklənir</string>
     <string name="lbl_indexing">Musiqi yüklənir</string>
     <string name="lbl_retry">Təkrar cəhd et</string>
-    <string name="lbl_grant">Qəbul et</string>
     <string name="lbl_songs">Mahnılar</string>
     <string name="lbl_all_songs">Bütün mahnılar</string>
     <string name="lbl_albums">Albomlar</string>
@@ -35,7 +34,6 @@
     <string name="lbl_artist">Sənətkar</string>
     <string name="lbl_artists">Sənətkarlar</string>
     <string name="lbl_genre">Janr</string>
-    <string name="lbl_show_error_info">Daha çox</string>
     <string name="lbl_song">Mahnı</string>
     <string name="lbl_mixtapes">Qarışıq lentlər</string>
     <string name="lbl_mixtape">Qarışıq lent</string>
@@ -76,7 +74,6 @@
     <string name="lbl_album_details">Alboma keç</string>
     <string name="lbl_parent_detail">Baxış</string>
     <string name="lbl_share">Paylaş</string>
-    <string name="lbl_add">Əlavə et</string>
     <string name="lbl_play">Səsləndir</string>
     <string name="lbl_sort_mode">Çeşidləmə üsulu</string>
     <string name="lbl_sort_direction">Göstəriş</string>

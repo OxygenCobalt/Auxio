@@ -6,7 +6,6 @@
     <string name="lbl_mixtape">ਮਿਕਸਟੇਪ</string>
     <string name="lbl_indexing">ਸੰਗੀਤ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ</string>
     <string name="lbl_retry">ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ</string>
-    <string name="lbl_grant">ਇਜਾਜ਼ਤ ਦਿਉ</string>
     <string name="lbl_all_songs">ਸਾਰੇ ਗੀਤ</string>
     <string name="lbl_albums">ਐਲਬਮ</string>
     <string name="lbl_album">ਐਲਬਮ</string>
@@ -75,7 +74,6 @@
     <string name="lbl_artist_details">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>
     <string name="lbl_bitrate">ਬਿੱਟ ਰੇਟ</string>
     <string name="lbl_sample_rate">ਸੈਂਪਲ ਰੇਟ</string>
-    <string name="lbl_add">ਸ਼ਾਮਿਲ ਕਰੋ</string>
     <string name="lng_observing">ਤਬਦੀਲੀਆਂ ਲਈ ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਦੀ ਨਿਗਰਾਨੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ…</string>
     <string name="lbl_licenses">ਲਾਈਸੈਂਸ</string>
     <string name="lng_widget">ਸੰਗੀਤ ਪਲੇਬੈਕ ਵੇਖੋ ਅਤੇ ਕੰਟਰੋਲ ਕਰੋ</string>
@@ -120,10 +118,8 @@
     <string name="set_replay_gain_mode_album">ਐਲਬਮ ਨੂੰ ਤਰਜੀਹ</string>
     <string name="set_pre_amp_without">ਬਿਨਾਂ ਟੈਗਾਂ ਦੇ ਐਡਜਸਟਮੈਂਟ</string>
     <string name="set_locations_desc">ਪ੍ਰਬੰਧਿਤ ਕਰੋ ਕਿ ਸੰਗੀਤ ਕਿੱਥੋਂ ਲੋਡ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ</string>
-    <string name="set_locations_list">ਫੋਲਡਰ</string>
     <string name="set_reindex">ਸੰਗੀਤ ਤਾਜ਼ਾ-ਤਰੀਨ ਕਰੋ</string>
     <string name="err_no_app">ਕੋਈ ਐਪ ਨਹੀਂ ਮਿਲੀ ਜੋ ਇਸ ਕਾਰਜ ਨੂੰ ਸੰਭਾਲ ਸਕਦੀ ਹੈ</string>
-    <string name="err_no_locations">ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ</string>
     <string name="err_bad_location">ਇਹ ਫੋਲਡਰ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ</string>
     <string name="desc_play_pause">ਚਲਾਓ ਜਾਂ ਰੋਕੋ</string>
     <string name="desc_skip_next">ਅਗਲੇ ਗੀਤ \'ਤੇ ਜਾਓ</string>
@@ -137,9 +133,7 @@
     <string name="set_pre_amp_with">ਟੈਗਸ ਨਾਲ ਐਡਜਸਟਮੈਂਟ</string>
     <string name="set_pre_amp_warning">ਚੇਤਾਵਨੀ: ਪ੍ਰੀ-ਐਂਪ ਨੂੰ ਉੱਚ ਸਕਾਰਾਤਮਕ ਮੁੱਲ ਵਿੱਚ ਬਦਲਣ ਦੇ ਨਤੀਜੇ ਵਜੋਂ ਕੁਝ ਆਡੀਓ ਟਰੈਕਾਂ \'ਤੇ ਸਿਖਰ ਹੋ ਸਕਦਾ ਹੈ।</string>
     <string name="set_rescan_desc">ਟੈਗ ਕੈਸ਼ ਨੂੰ ਸਾਫ਼ ਕਰੋ ਅਤੇ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਨੂੰ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੀਲੋਡ ਕਰੋ (ਹੌਲੀ, ਪਰ ਵਧੇਰੇ ਸੰਪੂਰਨ)</string>
-    <string name="err_no_music">ਕੋਈ ਸੰਗੀਤ ਨਹੀਂ ਮਿਲਿਆ</string>
     <string name="err_index_failed">ਸੰਗੀਤ ਲੋਡ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ</string>
-    <string name="err_no_perms">Auxio ਨੂੰ ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬ੍ਰੇਰੀ ਨੂੰ ਪੜ੍ਹਨ ਲਈ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ</string>
     <string name="desc_track_number">%d ਨੂੰ ਟਰੈਕ ਕਰੋ</string>
     <string name="set_hide_collaborators_desc">ਸਿਰਫ਼ ਉਹਨਾਂ ਕਲਾਕਾਰਾਂ ਨੂੰ ਦਿਖਾਓ ਜੋ ਕਿਸੇ ਐਲਬਮ \'ਤੇ ਸਿੱਧੇ ਤੌਰ \'ਤੇ ਕ੍ਰੈਡਿਟ ਕੀਤੇ ਜਾਂਦੇ ਹਨ (ਚੰਗੀ ਤਰ੍ਹਾਂ ਨਾਲ ਟੈਗ ਕੀਤੀਆਂ ਲਾਇਬ੍ਰੇਰੀਆਂ \'ਤੇ ਵਧੀਆ ਕੰਮ ਕਰਦਾ ਹੈ</string>
     <string name="set_exclude_non_music_desc">ਉਹਨਾਂ ਆਡੀਓ ਫਾਈਲਾਂ ਨੂੰ ਅਣਡਿੱਠ ਕਰੋ ਜੋ ਸੰਗੀਤ ਨਹੀਂ ਹਨ, ਜਿਵੇਂ ਕਿ ਪੌਡਕਾਸਟ</string>
@@ -178,7 +172,6 @@
     <string name="desc_song_handle">ਇਸ ਕਤਾਰ ਗੀਤ ਨੂੰ ਮੂਵ ਕਰੋ</string>
     <string name="desc_change_repeat">ਦੁਹਰਾਓ ਮੋਡ ਬਦਲੋ</string>
     <string name="desc_shuffle">ਸ਼ਫਲ ਚਾਲੂ ਜਾਂ ਬੰਦ ਕਰੋ</string>
-    <string name="desc_shuffle_all">ਸਾਰੇ ਗੀਤਾਂ ਨੂੰ ਸ਼ਫਲ ਕਰੋ</string>
     <string name="desc_exit">ਪਲੇਬੈਕ ਬੰਦ ਕਰੋ</string>
     <string name="lbl_new_playlist">ਨਵੀਂ ਪਲੇਅ-ਲਿਸਟ</string>
     <string name="lbl_playlist_add">ਪਲੇਅ-ਲਿਸਟ ਵਿੱਚ ਜੋੜ੍ਹੋ</string>
@@ -193,7 +186,6 @@
     <string name="lng_playlist_added">ਪਲੇਅ- ਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕੀਤਾ</string>
     <string name="desc_tab_handle">ਇਹ ਟੈਬ ਹਿਲਾਓ</string>
     <string name="def_song_count">ਕੋਈ ਗੀਤ ਨਹੀਂ</string>
-    <string name="cdc_mka">Matroska ਆਡੀਓ</string>
     <string name="clr_deep_purple">ਗੂੜ੍ਹਾ ਜ੍ਹਾਮਣੀ</string>
     <string name="cdc_ogg">Ogg ਆਡੀਓ</string>
     <string name="fmt_lib_song_count">%d: ਗੀਤ ਲੋਡ ਕੀਤੇ</string>
@@ -273,7 +265,6 @@
     <string name="lbl_sort_direction">ਦਿਸ਼ਾ</string>
     <string name="lbl_selection">ਚੋਣ</string>
     <string name="desc_selection_image">ਚੋਣ ਚਿੱਤਰ</string>
-    <string name="lbl_show_error_info">ਹੋਰ</string>
     <string name="lbl_error_info">ਤਰੁੱਟੀ ਦੀ ਜਾਣਕਾਰੀ</string>
     <string name="lbl_copied">ਕਾਪੀ ਕੀਤਾ ਗਿਆ</string>
     <string name="lbl_report">ਰਿਪੋਰਟ ਕਰੋ</string>

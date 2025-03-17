@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Reîncercați</string>
-    <string name="lbl_grant">Permiteți</string>
     <string name="lbl_genres">Genuri</string>
     <string name="lbl_artists">Artiști</string>
     <string name="lbl_albums">Albume</string>
@@ -38,7 +37,6 @@
     <string name="set_audio">Audio</string>
     <string name="set_personalize">Comportament</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Nu a fost găsită muzică</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Căutați în bibliotecă…</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -106,7 +104,6 @@
     <string name="lbl_format">Format</string>
     <string name="lbl_props">Proprietățile cântecului</string>
     <string name="lbl_shuffle_shortcut_short">Amestecare</string>
-    <string name="lbl_add">Adaugă</string>
     <string name="lbl_sample_rate">Frecvența de eșantionare</string>
     <string name="lbl_save">Salvează</string>
     <string name="lbl_genre">Gen</string>
@@ -194,7 +191,6 @@
     <string name="set_rescan">Re-scanează muzica</string>
     <string name="set_rescan_desc">Șterge memoria cache cu taguri și reîncarcă biblioteca de muzică de tot (mai încet, dar mai complet)</string>
     <string name="fmt_lib_song_count">Cântece încărcate %d</string>
-    <string name="desc_shuffle_all">Amestecă toate cântecele</string>
     <string name="clr_cyan">Bleu</string>
     <string name="def_playback">Nu se redă muzică</string>
     <string name="fmt_deletion_info">Ștergi %s? Nu te poți răzgândi după aceea.</string>
@@ -215,10 +211,8 @@
     <string name="desc_genre_image">Imagine gen pentru %s</string>
     <string name="desc_playlist_image">Imagine playlist pentru %s</string>
     <string name="def_artist">Artist necunoscut</string>
-    <string name="lbl_show_error_info">Vezi mai mult</string>
     <string name="set_separators_desc">Configurează caracterele care denotă mai multe valori de taguri</string>
     <string name="set_locations">Foldere cu muzică</string>
-    <string name="set_locations_list">Foldere</string>
     <string name="def_song_count">Fără cântece</string>
     <string name="desc_artist_image">Imagine artist pentru %s</string>
     <string name="lng_playlist_imported">Playlist importat</string>
@@ -258,9 +252,7 @@
     <string name="set_play_song_by_itself">Redă cântecul fără să facă parte din nicio listă</string>
     <string name="set_repeat_pause_desc">Pune pauză atunci când un cântec se repetă</string>
     <string name="err_index_failed">Încărcarea muzicii a eșuat</string>
-    <string name="err_no_perms">Auxio are nevoie de permisiune ca să-ți acceseze biblioteca de muzică</string>
     <string name="desc_song_handle">Mută acest cântec</string>
-    <string name="err_no_locations">Niciun dosar</string>
     <string name="desc_shuffle">Pornește sau oprește amestecarea</string>
     <string name="desc_exit">Oprește redarea</string>
     <string name="desc_remove_song">Elimină acest cântec</string>

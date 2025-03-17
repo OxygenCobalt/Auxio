@@ -2,7 +2,6 @@
 <resources>
     <string name="lbl_observing">Праћење музичке библиотеке</string>
     <string name="lbl_retry">Покушај поново</string>
-    <string name="lbl_grant">Одобрити</string>
     <string name="info_app_desc">Једноставан, рационалан музички плејер за android.</string>
     <string name="lbl_indexer">Музика се учитава</string>
     <string name="lbl_indexing">Учитавање музике</string>

@@ -4,7 +4,6 @@
     <string name="info_app_desc">Een eenvoudige, rationele muziekspeler voor Android.</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Probeer opnieuw</string>
-    <string name="lbl_grant">Sta toe</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artiesten</string>
     <string name="lbl_albums">Albums</string>
@@ -27,9 +26,7 @@
     <string name="lng_queue_added">Toegevoegd aan wachtrij</string>
     <string name="lbl_artist_details">Ga naar artiest</string>
     <string name="lbl_album_details">Ga naar album</string>
-    <string name="lbl_add">Voeg toe</string>
     <string name="lbl_save">Bewaar</string>
-    <string name="err_no_locations">Geen mappen</string>
     <string name="lbl_about">Over</string>
     <string name="lbl_version">Versie</string>
     <string name="lbl_code">Broncode</string>
@@ -54,9 +51,7 @@
     <string name="set_rewind_prev_desc">Terugspoelen voor het overslaan van het vorige nummer</string>
     <string name="set_content">Inhoud</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Geen muziek aangetroffen</string>
     <string name="err_index_failed">Laden van muziek mislukt</string>
-    <string name="err_no_perms">Auxio heeft toestemming nodig om uw muziekbibliotheek te lezen</string>
     <string name="err_no_app">Geen app gevonden die deze taak kan uitvoeren</string>
     <string name="err_bad_location">Deze map wordt niet ondersteund</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -133,7 +128,6 @@
     <string name="desc_shuffle">Schakel shuffle aan of uit</string>
     <string name="set_reindex_desc">Laad de muziekbibliotheek opnieuw, indien mogelijk met behulp van gecashte tags</string>
     <string name="fmt_indexing">Uw muziekbibliotheek wordt geladen… (%1$d/%2$d)</string>
-    <string name="desc_shuffle_all">Shuffle alle nummers</string>
     <string name="set_repeat_pause_desc">Pauze wanneer een nummer wordt herhaald</string>
     <string name="set_reindex">Muziek opnieuw laden</string>
     <string name="set_pre_amp_with">Aanpassing met tags</string>
@@ -158,7 +152,6 @@
     <string name="cdc_mp3">MPEG-1 audio</string>
     <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="cdc_ogg">Ogg audio</string>
-    <string name="cdc_mka">Matroska audio</string>
     <string name="fmt_lib_album_count">Albums geladen: %d</string>
     <string name="fmt_lib_artist_count">Artiesten geladen: %d</string>
     <string name="fmt_lib_genre_count">Genres geladen: %d</string>
@@ -218,7 +211,6 @@
     <string name="lbl_rename_playlist">Hernoem afspeellijst</string>
     <string name="lbl_confirm_delete_playlist">Verwijder afspeellijst?</string>
     <string name="set_action_mode_repeat">Herhaalmodus</string>
-    <string name="set_locations_list">Mappen</string>
     <string name="desc_queue_bar">Open de wachtrij</string>
     <string name="fmt_deletion_info">%s verwijderen\? Dit kan niet ongedaan worden gemaakt.</string>
     <string name="set_cover_mode_off">Uit</string>
@@ -282,7 +274,6 @@
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Demo\'s</string>
     <string name="lbl_sort_mode">Sorteer op</string>
-    <string name="lbl_show_error_info">Meer</string>
     <string name="lbl_sort_direction">Richting</string>
     <string name="lbl_replaygain_track">ReplayGain spoor aanpassing</string>
     <string name="lbl_replaygain_album">ReplayGain album aanpassing</string>

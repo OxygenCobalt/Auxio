@@ -4,7 +4,6 @@
     <string name="lbl_indexer">Llwytho cerddoriaeth</string>
     <string name="lbl_observing">Yn monitro llyfrgell cerddoriaeth</string>
     <string name="lbl_retry">Ceisio eto</string>
-    <string name="lbl_grant">Caniatáu</string>
     <string name="lbl_songs">Caneuon</string>
     <string name="lbl_song">Cân</string>
     <string name="lbl_all_songs">Holl ganeuon</string>
@@ -24,7 +23,6 @@
     <string name="lbl_mixtapes">Tapiau cymysgiad</string>
     <string name="lbl_mixtape">Tâp cymysgiad</string>
     <string name="info_app_desc">Chwaraewr cerddoriaeth syml a synhwyrol.</string>
-    <string name="lbl_show_error_info">Mwy</string>
     <string name="lbl_ep_remix">EP ail-gymysgiad</string>
     <string name="lbl_name">Enw</string>
     <string name="lbl_date">Dyddiad</string>
@@ -34,7 +32,6 @@
     <string name="lbl_track">Trac</string>
     <string name="lbl_sort">Didoli</string>
     <string name="lbl_sort_mode">Didoli gan</string>
-    <string name="set_locations_list">Ffolderi</string>
     <string name="lbl_playlists">Rhestri chwarae</string>
     <string name="lbl_new_playlist">Rhestr chwarae newydd</string>
     <string name="lbl_empty_playlist">Rhestr chwarae gwag</string>
@@ -89,7 +86,6 @@
     <string name="set_locations">Ffolderi cerddoriaeth</string>
     <string name="set_reindex">Adnewyddu cerddoriaeth</string>
     <string name="desc_track_number">Trac %d</string>
-    <string name="desc_shuffle_all">Chwarae pob cân ar hap</string>
     <string name="def_artist">Artist anhysbys</string>
     <string name="def_genre">Genre anhysbys</string>
     <string name="def_date">Dim dyddiad</string>
@@ -157,7 +153,6 @@
     <string name="lbl_cancel">Diddymu</string>
     <string name="lbl_save">Cadw</string>
     <string name="lbl_reset">Ailosod</string>
-    <string name="lbl_add">Ychwanegu</string>
     <string name="lbl_path_style">Dull llwybr</string>
     <string name="lbl_windows_paths">Defnyddio llwybrau Windows</string>
     <string name="lbl_about">Ynghylch</string>
@@ -199,11 +194,8 @@
     <string name="set_replay_gain_mode_track">Ffafrio trac</string>
     <string name="set_replay_gain_mode_album">Ffafrio albwm</string>
     <string name="set_pre_amp_with">Addasiad gyda thagiau</string>
-    <string name="err_no_music">Ni chanfuwyd cerddoriaeth</string>
     <string name="err_index_failed">Methwyd llwytho cerddoriaeth</string>
-    <string name="err_no_perms">Mae ar Auxio angen caniatâd i ddarllen eich llyfrgell gerddoriaeth</string>
     <string name="err_no_app">Methwyd dod o hyd ap sydd yn gallu gwneud y tasg hon</string>
-    <string name="err_no_locations">Dim ffolderi</string>
     <string name="desc_skip_next">Neidio i\'r gân nesaf</string>
     <string name="desc_skip_prev">Neidio i\'r gân ddiwethaf</string>
     <string name="desc_change_repeat">Newid y modd ail-chwarae</string>
@@ -245,7 +237,6 @@
     <string name="desc_remove_song">Tynnu\'r gân hon</string>
     <string name="desc_queue_bar">Agor y ciw</string>
     <string name="cdc_mp4">Sain MPEG-4</string>
-    <string name="cdc_mka">Sain Matroska</string>
     <string name="fmt_deletion_info">Dileu %s? Ni fydd yn bosib dadwneud hyn.</string>
     <plurals name="fmt_song_count">
         <item quantity="zero">%d caneuon</item>

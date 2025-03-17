@@ -3,7 +3,6 @@
     <string name="info_app_desc">مشغّل موسيقى بسيط ومعقول للأندرويد.</string>
     <string name="lbl_observing">مراقبة مكتبة الموسيقى</string>
     <string name="lbl_retry">إعادة المحاولة</string>
-    <string name="lbl_grant">منح</string>
     <string name="lbl_albums">الألبومات</string>
     <string name="lbl_songs">أغاني</string>
     <string name="lbl_song">أغنية</string>
@@ -18,7 +17,6 @@
     <string name="lbl_queue_add">إضافة للطابور</string>
     <string name="lbl_playlist_add">إضافة لقائمة التشغيل</string>
     <string name="lbl_reset">إعادة ضبط</string>
-    <string name="lbl_add">إضافة مجلد</string>
     <string name="lng_indexing">جارِ تحميل مكتبتك الموسيقية…</string>
     <string name="lng_queue_added">أضيفت للطابور</string>
     <string name="lng_playlist_created">تم إنشاء قائمة التشغيل</string>
@@ -85,7 +83,6 @@
     <string name="def_disc">لا قرص</string>
     <string name="cdc_mp4">صوت MPEG-4</string>
     <string name="cdc_ogg">أوغ الصوت</string>
-    <string name="cdc_mka">صوت ماتروسكا</string>
     <string name="cdc_flac">برنامج ترميز الصوت المجاني بدون فقدان البيانات (FLAC)</string>
     <string name="clr_indigo">نيلي</string>
     <string name="clr_blue">أزرق</string>
@@ -109,7 +106,6 @@
     </plurals>
     <string name="set_hide_collaborators_desc">إظهار فقط الفنانين المُعتمدين مباشرة على الألبوم (يعمل بشكل أفضل في المكتبات المعروفة بتوسيماتها الجيدة)</string>
     <string name="set_content">المحتوى</string>
-    <string name="set_locations_list">مجلدات</string>
     <string name="set_hide_collaborators">إخفاء المتعاونين</string>
     <string name="set_audio_desc">ضبط سلوك وصوت التشغيل</string>
     <string name="set_rewind_prev">إعادة التشغيل قبل الانتقال للوراء</string>
@@ -117,7 +113,6 @@
     <string name="set_remember_pause_desc">البقاء على التشغيل/الإيقاف عند الانتقال أو تعديل قائمة التشغيل</string>
     <string name="set_remember_pause">تذكر الإيقاف المؤقت</string>
     <string name="set_rescan_desc">مسح ذاكرة التخزين المؤقت للعلامات وإعادة تحميل كامل مكتبة الموسيقى (أبطأ ولكن أكثر اكتمالًا)</string>
-    <string name="err_no_perms">يحتاج Auxio إلى إذن لقراءة مكتبتك الموسيقية</string>
     <string name="err_import_failed">غير قادر على استيراد قائمة التشغيل من هذا الملف</string>
     <string name="err_no_app">لم يتم العثور على تطبيق يمكنه التعامل مع هذه المهمة</string>
     <string name="desc_play_pause">تشغيل أو إيقاف مؤقت</string>
@@ -140,7 +135,6 @@
     <string name="lbl_demos">تسجيلات تجريبية</string>
     <string name="lbl_mixes">اغاني دي جي</string>
     <string name="lbl_mix">اغنية دي جي</string>
-    <string name="lbl_show_error_info">المزيد</string>
     <string name="desc_selection_image">صورة التحديد</string>
     <string name="desc_remove_song">إزالة هذه الأغنية</string>
     <string name="desc_song_handle">نقل هذه الأغنية</string>
@@ -169,9 +163,7 @@
     <string name="lbl_single_remix">اغنية فردية ريميكس</string>
     <string name="set_images">الصور</string>
     <string name="set_reindex_desc">إعادة تحميل مكتبة الموسيقى، باستخدام العلامات المخزنة مؤقتًا عند الإمكان</string>
-    <string name="err_no_locations">لا توجد مجلدات</string>
     <string name="err_bad_location">هذا المجلد غير مدعوم</string>
-    <string name="desc_shuffle_all">خلط جميع الأغاني</string>
     <string name="clr_cyan">ازرق سماوي</string>
     <string name="fmt_editing">تحرير %s</string>
     <string name="set_theme_auto">تلقائي</string>
@@ -248,7 +240,6 @@
     <string name="set_pre_amp_desc">يتم تطبيق مكبر الصوت المسبق على التعديل الحالي أثناء التشغيل</string>
     <string name="set_pre_amp_with">ضبط مع العلامات</string>
     <string name="set_reindex">تحديث الموسيقى</string>
-    <string name="err_no_music">لم يتم العثور على موسيقى</string>
     <string name="def_track">لا مسار</string>
     <string name="def_playback">لا يوجد تشغيل الموسيقى</string>
     <string name="cdc_aac">ترميز الصوت المتقدم (AAC)</string>

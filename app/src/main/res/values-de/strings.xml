@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Erneut versuchen</string>
-    <string name="lbl_grant">Gewähren</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Künstler</string>
     <string name="lbl_albums">Alben</string>
@@ -24,9 +23,7 @@
     <string name="lng_queue_added">Der Warteschlange hinzugefügt</string>
     <string name="lbl_artist_details">Zum Künstler gehen</string>
     <string name="lbl_album_details">Zum Album gehen</string>
-    <string name="lbl_add">Hinzufügen</string>
     <string name="lbl_save">Speichern</string>
-    <string name="err_no_locations">Keine Ordner</string>
     <string name="lbl_about">Über</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Quellcode</string>
@@ -64,9 +61,7 @@
     <string name="set_reindex">Musik neu laden</string>
     <string name="set_reindex_desc">Musikbibliothek neu laden, verwendet gecachte Tags wenn möglich</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Keine Musik gefunden</string>
     <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
-    <string name="err_no_perms">Auxio benötigt die Berechtigung, um deine Musikbibliothek zu lesen</string>
     <string name="err_no_app">Es konnte keine App gefunden werden, die diese Aufgabe übernehmen kann</string>
     <string name="err_bad_location">Das Verzeichnis wird nicht unterstützt</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -129,7 +124,6 @@
     <string name="set_lib_tabs">Bibliotheks-Registerkarten</string>
     <string name="set_lib_tabs_desc">Sichtbarkeit und Ordnung der Bibliotheksregisterkarten ändern</string>
     <string name="lbl_name">Name</string>
-    <string name="desc_shuffle_all">Alle Lieder zufällig</string>
     <string name="desc_remove_song">Lied in der Warteschlange löschen</string>
     <string name="desc_tab_handle">Tab versetzen</string>
     <string name="def_artist">Unbekannter Künstler</string>
@@ -158,7 +152,6 @@
     <string name="cdc_ogg">Ogg-Audio</string>
     <string name="cdc_mp4">MPEG-4-Audio</string>
     <string name="cdc_mp3">MPEG-1-Audio</string>
-    <string name="cdc_mka">Matroska-Audio</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="fmt_bitrate">%d kB/s</string>
@@ -244,7 +237,6 @@
     <string name="set_music">Musik</string>
     <string name="set_images">Bilder</string>
     <string name="set_library">Bibliothek</string>
-    <string name="set_locations_list">Ordner</string>
     <string name="set_playback">Wiedergabe</string>
     <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
     <string name="set_replay_gain">Lautstärkenormalisierung</string>
@@ -281,7 +273,6 @@
     <string name="lbl_sort_mode">Sortieren nach</string>
     <string name="desc_selection_image">Auswahl-Bild</string>
     <string name="lbl_selection">Auswahl</string>
-    <string name="lbl_show_error_info">Mehr</string>
     <string name="lbl_copied">Kopiert</string>
     <string name="lbl_report">Melden</string>
     <string name="lbl_error_info">Fehlerinformation</string>

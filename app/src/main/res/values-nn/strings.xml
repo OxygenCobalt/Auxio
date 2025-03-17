@@ -15,7 +15,6 @@
     <string name="lbl_shuffle_shortcut_long">Bland alle</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_start_playback">Begynn avspeling</string>
-    <string name="lbl_add">Legg til</string>
     <string name="lbl_path_style_absolute">Absolutt</string>
     <string name="lbl_save">Lagre</string>
     <string name="lbl_code">Kjeldekode</string>
@@ -24,7 +23,6 @@
     <string name="info_app_desc">Ein enkel, rasjonell musikkspillar for Android.</string>
     <string name="lbl_indexer">Musikk vert lasta inn</string>
     <string name="lbl_observing">Held auge med musikkbiblioteket</string>
-    <string name="lbl_grant">Løyv</string>
     <string name="lbl_songs">Spor</string>
     <string name="lbl_song">Spor</string>
     <string name="lbl_all_songs">Alle spor</string>
@@ -89,7 +87,6 @@
     <string name="lbl_author_name">Utvikla av Alexander Capehart</string>
     <string name="lbl_indexing">Lastar inn musikk</string>
     <string name="lbl_retry">Prøv igjen</string>
-    <string name="lbl_show_error_info">Syn meir</string>
     <string name="lbl_single_live">Live-singel</string>
     <string name="lbl_soundtrack">Ljodspor</string>
     <string name="lbl_album_live">Live-album</string>
@@ -187,7 +184,6 @@
     <string name="set_pre_amp_without">Justering utan etikettar</string>
     <string name="set_library">Bibliotek</string>
     <string name="set_locations_desc">Handsam kvar musikk skal lastast inn ifrå</string>
-    <string name="set_locations_list">Mapper</string>
     <string name="set_reindex">Gjenoppfrisk musikk</string>
     <string name="err_import_failed">Kan ikkje importere ei speleliste frå denne fila</string>
     <string name="desc_skip_next">Hopp til neste spor</string>
@@ -257,10 +253,8 @@
     <string name="set_pre_amp_warning">Åtvaring: Å endre forforsterkninga til høge positive verdier, kan forårsake forvrengning ved høge ljodtrykk på nokre spor.</string>
     <string name="set_locations">Musikkmapper</string>
     <string name="set_reindex_desc">Last inn musikkbiblioteket på nytt og bruk hurtiglagra etikettar når mogleg</string>
-    <string name="err_no_music">Fann ikkje musikk</string>
     <string name="set_rescan">Skann musikk på nytt</string>
     <string name="set_rescan_desc">Tøm etiketthurtiglager og last inn heile musikkbiblioteket på nytt (tregare, men meir fullstendig)</string>
-    <string name="err_no_perms">Auxio treng løyve til å lesa musikkbiblioteket ditt</string>
     <string name="desc_artist_image">Artistbilete for %s</string>
     <string name="err_index_failed">Klarte ikkje å laste inn musikk</string>
     <string name="err_export_failed">Kan ikkje eksportere spelelista til denne fila</string>
@@ -269,8 +263,6 @@
     <string name="desc_play_pause">Spel av eller pause</string>
     <string name="desc_auxio_icon">Auxio-ikon</string>
     <string name="desc_track_number">Spor %d</string>
-    <string name="err_no_locations">Ingen mapper</string>
-    <string name="desc_shuffle_all">Bland alle spor</string>
     <string name="desc_remove_song">Fjern dette sporet</string>
     <string name="desc_song_handle">Flytt dette sporet</string>
     <string name="desc_skip_prev">Hopp til siste spor</string>
@@ -289,7 +281,6 @@
     <string name="clr_yellow">Gul</string>
     <string name="clr_orange">Oransje</string>
     <string name="def_disc">Inga plate</string>
-    <string name="cdc_mka">Matroska-ljod</string>
     <string name="def_playback">Ingen musik vert spelt av</string>
     <string name="cdc_mp4">MPEG-4-ljod</string>
     <string name="cdc_aac">Avansert audio-koding (AAC)</string>
