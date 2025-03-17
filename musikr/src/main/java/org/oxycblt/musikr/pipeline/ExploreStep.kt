@@ -101,7 +101,7 @@ private class ExploreStepImpl(
             flow { emitAll(storedPlaylists.read().asFlow()) }
                 .map { RawPlaylist(it) }
                 .flowOn(Dispatchers.IO)
-                .buffer())
+                .buffer(Channel.UNLIMITED))
     }
 
     private sealed interface InternalExploreItem
