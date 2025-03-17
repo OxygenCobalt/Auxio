@@ -435,14 +435,14 @@ class ExoPlaybackStateHolder(
     override fun endSession() {
         // This session has ended, so we need to reset this flag for when the next
         // session starts.
+        playbackManager.playing(false)
         save {
             // User could feasibly start playing again if they were fast enough, so
             // we need to avoid stopping the foreground state if that's the case.
-            if (playbackManager.progression.isPlaying) {
-                playbackManager.playing(false)
+            if (!playbackManager.progression.isPlaying) {
+                sessionOngoing = false
+                playbackManager.ack(this, StateAck.SessionEnded)
             }
-            sessionOngoing = false
-            playbackManager.ack(this, StateAck.SessionEnded)
         }
     }
 
