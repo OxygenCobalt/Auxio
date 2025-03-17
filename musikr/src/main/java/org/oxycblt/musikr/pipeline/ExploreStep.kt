@@ -84,24 +84,13 @@ private class ExploreStepImpl(
                     when (it) {
                         is Finalized -> it
                         is NeedsCover -> {
-                            when (val coverResult = it.song.coverId?.let { covers.obtain(it) }) {
+                            when (val coverResult =
+                                it.cachedSong.coverId?.let { id -> covers.obtain(id) }) {
                                 is CoverResult.Hit ->
-                                    Finalized(
-                                        RawSong(
-                                            it.song.file,
-                                            it.song.properties,
-                                            it.song.tags,
-                                            coverResult.cover,
-                                            it.song.addedMs))
-                                null ->
-                                    Finalized(
-                                        RawSong(
-                                            it.song.file,
-                                            it.song.properties,
-                                            it.song.tags,
-                                            null,
-                                            it.song.addedMs))
-                                else -> Finalized(NewSong(it.song.file, it.song.addedMs))
+                                    Finalized(it.cachedSong.toRawSong(coverResult.cover))
+                                null -> Finalized(it.cachedSong.toRawSong(null))
+                                else ->
+                                    Finalized(NewSong(it.cachedSong.file, it.cachedSong.addedMs))
                             }
                         }
                     }
@@ -117,7 +106,10 @@ private class ExploreStepImpl(
 
     private sealed interface InternalExploreItem
 
-    private data class NeedsCover(val song: CachedSong) : InternalExploreItem
+    private data class NeedsCover(val cachedSong: CachedSong) : InternalExploreItem
 
     private data class Finalized(val explored: Explored) : InternalExploreItem
+
+    private fun CachedSong.toRawSong(cover: Cover?) =
+        RawSong(file, properties, tags, cover, addedMs)
 }

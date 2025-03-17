@@ -75,13 +75,17 @@ private class ExtractStepImpl(
                     is NeedsParsing -> {
                         val tags = tagParser.parse(it.metadata)
                         val cover =
-                            when (val result = covers.create(it.song.file, it.metadata)) {
+                            when (val result = covers.create(it.newSong.file, it.metadata)) {
                                 is CoverResult.Hit -> result.cover
                                 else -> null
                             }
                         NeedsCaching(
                             RawSong(
-                                it.song.file, it.metadata.properties, tags, cover, it.song.addedMs))
+                                it.newSong.file,
+                                it.metadata.properties,
+                                tags,
+                                cover,
+                                it.newSong.addedMs))
                     }
                 }
             }
@@ -91,27 +95,14 @@ private class ExtractStepImpl(
                 when (it) {
                     is Finalized -> it
                     is NeedsCaching -> {
-                        val cachedSong =
-                            CachedSong(
-                                it.song.file,
-                                it.song.properties,
-                                it.song.tags,
-                                it.song.cover?.id,
-                                it.song.addedMs)
-                        cache.write(cachedSong)
-                        Finalized(it.song)
+                        cache.write(it.rawSong.toCachedSong())
+                        Finalized(it.rawSong)
                     }
                 }
             }
             .map {
                 if (it.extracted is RawSong) {
-                    exclude.add(
-                        CachedSong(
-                            it.extracted.file,
-                            it.extracted.properties,
-                            it.extracted.tags,
-                            it.extracted.cover?.id,
-                            it.extracted.addedMs))
+                    exclude.add(it.extracted.toCachedSong())
                 }
                 it.extracted
             }
@@ -122,11 +113,14 @@ private class ExtractStepImpl(
 
     private sealed interface ParsedExtractItem
 
-    private data class NeedsParsing(val song: NewSong, val metadata: Metadata) : ParsedExtractItem
+    private data class NeedsParsing(val newSong: NewSong, val metadata: Metadata) :
+        ParsedExtractItem
 
     private sealed interface ParsedCachingItem
 
-    private data class NeedsCaching(val song: RawSong) : ParsedCachingItem
+    private data class NeedsCaching(val rawSong: RawSong) : ParsedCachingItem
 
     private data class Finalized(val extracted: Extracted) : ParsedExtractItem, ParsedCachingItem
+
+    private fun RawSong.toCachedSong() = CachedSong(file, properties, tags, cover?.id, addedMs)
 }
