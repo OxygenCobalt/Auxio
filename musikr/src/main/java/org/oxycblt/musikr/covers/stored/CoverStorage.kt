@@ -28,14 +28,46 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.covers.FDCover
 
+/**
+ * A cover storage interface backing [StoredCovers].
+ *
+ * Covers written here should be reasonably persisted long-term, and can be queries roughly as a
+ * folder of cover files.
+ */
 interface CoverStorage {
+    /**
+     * Find a cover by a file-name.
+     *
+     * @return A [FDCover] if found, or null if not.
+     */
     suspend fun find(name: String): FDCover?
 
+    /**
+     * Write a cover to the storage, yielding a new Cover instance.
+     *
+     * [block] is a critical section that may require some time to execute, so the specific cover
+     * entry should be locked while it executes.
+     *
+     * @param name The name to write the cover to.
+     * @param block The critical section where the cover data is written to the output stream.
+     */
     suspend fun write(name: String, block: suspend (OutputStream) -> Unit): FDCover
 
+    /**
+     * List all cover files in the storage.
+     *
+     * @param exclude A set of file names to exclude from the result. This can make queries more
+     *   efficient if used with native APIs.
+     * @return A list of file names in the storage, excluding the specified ones.
+     */
     suspend fun ls(exclude: Set<String>): List<String>
 
-    suspend fun rm(file: String)
+    /**
+     * Remove a cover file from the storage.
+     *
+     * @param name The name of the file to remove. Will do nothing if this file does not exist.
+     */
+    suspend fun rm(name: String)
 
     companion object {
         suspend fun at(dir: File): CoverStorage {
@@ -43,12 +75,12 @@ interface CoverStorage {
                 if (dir.exists()) check(dir.isDirectory) { "Not a directory" }
                 else check(dir.mkdirs()) { "Cannot create directory" }
             }
-            return CoverStorageImpl(dir)
+            return FSCoverStorage(dir)
         }
     }
 }
 
-private class CoverStorageImpl(private val dir: File) : CoverStorage {
+private class FSCoverStorage(private val dir: File) : CoverStorage {
     private val fileMutexes = mutableMapOf<String, Mutex>()
     private val mapMutex = Mutex()
 
@@ -59,7 +91,7 @@ private class CoverStorageImpl(private val dir: File) : CoverStorage {
     override suspend fun find(name: String): FDCover? =
         withContext(Dispatchers.IO) {
             try {
-                File(dir, name).takeIf { it.exists() }?.let { StoredCover(it) }
+                File(dir, name).takeIf { it.exists() }?.let { FSStoredCover(it) }
             } catch (e: IOException) {
                 null
             }
@@ -76,29 +108,29 @@ private class CoverStorageImpl(private val dir: File) : CoverStorage {
                     try {
                         tempFile.outputStream().use { block(it) }
                         tempFile.renameTo(targetFile)
-                        StoredCover(targetFile)
+                        FSStoredCover(targetFile)
                     } catch (e: IOException) {
                         tempFile.delete()
                         throw e
                     }
                 }
             } else {
-                StoredCover(targetFile)
+                FSStoredCover(targetFile)
             }
         }
     }
 
     override suspend fun ls(exclude: Set<String>): List<String> =
         withContext(Dispatchers.IO) {
-            dir.listFiles()?.map { it.name }?.filter { exclude.contains(it) } ?: emptyList()
+            dir.listFiles { _, name -> !exclude.contains(name) }?.map { it.name } ?: emptyList()
         }
 
-    override suspend fun rm(file: String) {
-        withContext(Dispatchers.IO) { File(dir, file).delete() }
+    override suspend fun rm(name: String) {
+        withContext(Dispatchers.IO) { File(dir, name).delete() }
     }
 }
 
-private data class StoredCover(private val file: File) : FDCover {
+private data class FSStoredCover(private val file: File) : FDCover {
     override val id: String = file.name
 
     override suspend fun fd() =
@@ -112,7 +144,7 @@ private data class StoredCover(private val file: File) : FDCover {
 
     override suspend fun open() = withContext(Dispatchers.IO) { file.inputStream() }
 
-    override fun equals(other: Any?) = other is StoredCover && file == other.file
+    override fun equals(other: Any?) = other is FSStoredCover && file == other.file
 
     override fun hashCode() = file.hashCode()
 }

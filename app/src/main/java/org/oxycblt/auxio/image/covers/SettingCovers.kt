@@ -28,6 +28,8 @@ import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
+import org.oxycblt.musikr.covers.chained.ChainedCovers
+import org.oxycblt.musikr.covers.chained.MutableChainedCovers
 import org.oxycblt.musikr.covers.embedded.CoverIdentifier
 import org.oxycblt.musikr.covers.embedded.EmbeddedCovers
 import org.oxycblt.musikr.covers.fs.FSCovers
@@ -43,7 +45,7 @@ interface SettingCovers {
 
     companion object {
         suspend fun immutable(context: Context): Covers<FDCover> =
-            Covers.chain(StoredCovers(CoverStorage.at(context.coversDir())), FSCovers(context))
+            ChainedCovers(StoredCovers(CoverStorage.at(context.coversDir())), FSCovers(context))
     }
 }
 
@@ -64,7 +66,7 @@ class SettingCoversImpl @Inject constructor(private val imageSettings: ImageSett
             MutableStoredCovers(
                 EmbeddedCovers(CoverIdentifier.md5()), coverStorage, revisionedTranscoding)
         val fsCovers = MutableFSCovers(context)
-        return MutableCovers.chain(storedCovers, fsCovers)
+        return MutableChainedCovers(storedCovers, fsCovers)
     }
 }
 

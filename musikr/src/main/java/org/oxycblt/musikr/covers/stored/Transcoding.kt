@@ -22,12 +22,36 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import java.io.OutputStream
 
+/** An interface for transforming in-memory cover data into a different format for storage. */
 interface Transcoding {
+    /**
+     * A tag to append to the file name to indicate the transcoding format used, such as a file
+     * extension or additional qualifier.
+     *
+     * This should allow the cover to be uniquely identified in storage, and shouldn't collide with
+     * other [Transcoding] implementations.
+     */
     val tag: String
 
+    /**
+     * Transcode the given cover data into a different format and write it to the output stream.
+     *
+     * You can assume that all code ran here is in a critical section, and that you are the only one
+     * with access to this [OutputStream] right now.
+     *
+     * @param data The cover data to transcode.
+     * @param output The [OutputStream] to write the transcoded data to.
+     */
     fun transcodeInto(data: ByteArray, output: OutputStream)
 }
 
+/**
+ * A [Transcoding] implementation that does not transcode the cover data at all, and simply writes
+ * it to the output stream as-is. This is useful for when the cover data is already in the desired
+ * format, or when the time/quality tradeoff of transcoding is not worth it. Note that this may mean
+ * that large or malformed data may be written to [CoverStorage] and yield bad results when loading
+ * the resulting covers.
+ */
 object NoTranscoding : Transcoding {
     override val tag = ".img"
 
@@ -36,6 +60,15 @@ object NoTranscoding : Transcoding {
     }
 }
 
+/**
+ * A [Transcoding] implementation that compresses the cover data into a specific format, size, and
+ * quality. This is useful if you want to standardize the covers to a specific format and minimize
+ * the size of the cover data to save space.
+ *
+ * @param format The [Bitmap.CompressFormat] to use to compress the cover data.
+ * @param resolution The resolution to use for the cover data.
+ * @param quality The quality to use for the cover data, from 0 to 100.
+ */
 class Compress(
     private val format: Bitmap.CompressFormat,
     private val resolution: Int,

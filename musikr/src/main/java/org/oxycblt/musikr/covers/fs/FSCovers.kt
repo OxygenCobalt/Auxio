@@ -18,9 +18,11 @@
  
 package org.oxycblt.musikr.covers.fs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.ParcelFileDescriptor
+import androidx.core.net.toUri
 import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,24 +31,26 @@ import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.device.DeviceDirectory
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
+private const val PREFIX = "mcf:"
+
 open class FSCovers(private val context: Context) : Covers<FDCover> {
     override suspend fun obtain(id: String): CoverResult<FDCover> {
-        // Parse the ID to get the directory URI
-        if (!id.startsWith("folder:")) {
+        if (!id.startsWith(PREFIX)) {
             return CoverResult.Miss()
         }
 
-        val directoryUri = id.substring("folder:".length)
-        val uri = Uri.parse(directoryUri)
+        val uri = id.substring(PREFIX.length).toUri()
+
+        // Check if the cover file still actually exists. Perhaps the file was deleted at some
+        // point or superceded by a new one.
         val exists =
             withContext(Dispatchers.IO) {
                 try {
-                    context.contentResolver.openFileDescriptor(uri, "r")?.close()
-                    true
+                    context.contentResolver.openFileDescriptor(uri, "r")?.also { it.close() } !=
+                        null
                 } catch (e: Exception) {
                     false
                 }
@@ -62,8 +66,13 @@ open class FSCovers(private val context: Context) : Covers<FDCover> {
 
 class MutableFSCovers(private val context: Context) : FSCovers(context), MutableCovers<FDCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
+        // Since DeviceFiles is a streaming API, we have to wait for the current recursive
+        // query to finally finish to be able to have a complete list of siblings to search for.
         val parent = file.parent.await()
-        val coverFile = findCoverInDirectory(parent) ?: return CoverResult.Miss()
+        val coverFile =
+            parent.children.firstNotNullOfOrNull { node ->
+                if (node is DeviceFile && isCoverArtFile(node)) node else null
+            } ?: return CoverResult.Miss()
         return CoverResult.Hit(FolderCoverImpl(context, coverFile.uri))
     }
 
@@ -72,32 +81,12 @@ class MutableFSCovers(private val context: Context) : FSCovers(context), Mutable
         // that should not be managed by the app
     }
 
-    private fun findCoverInDirectory(directory: DeviceDirectory): DeviceFile? {
-        return directory.children.firstNotNullOfOrNull { node ->
-            if (node is DeviceFile && isCoverArtFile(node)) node else null
-        }
-    }
-
     private fun isCoverArtFile(file: DeviceFile): Boolean {
-        val filename = requireNotNull(file.path.name).lowercase()
-        val mimeType = file.mimeType.lowercase()
-
-        if (!mimeType.startsWith("image/")) {
+        if (!file.mimeType.startsWith("image/", ignoreCase = true)) {
             return false
         }
 
-        val coverNames =
-            listOf(
-                "cover",
-                "folder",
-                "album",
-                "albumart",
-                "front",
-                "artwork",
-                "art",
-                "folder",
-                "coverart")
-
+        val filename = requireNotNull(file.path.name).lowercase()
         val filenameWithoutExt = filename.substringBeforeLast(".")
         val extension = filename.substringAfterLast(".", "")
 
@@ -108,17 +97,35 @@ class MutableFSCovers(private val context: Context) : FSCovers(context), Mutable
                     extension.equals("png", ignoreCase = true))
         }
     }
+
+    private companion object {
+        private val coverNames =
+            listOf(
+                "cover",
+                "folder",
+                "album",
+                "albumart",
+                "front",
+                "artwork",
+                "art",
+                "folder",
+                "coverart")
+    }
 }
 
 private data class FolderCoverImpl(
     private val context: Context,
     private val uri: Uri,
 ) : FDCover {
-    override val id = "folder:$uri"
+    override val id = PREFIX + uri.toString()
 
-    override suspend fun fd(): ParcelFileDescriptor? =
-        withContext(Dispatchers.IO) { context.contentResolver.openFileDescriptor(uri, "r") }
+    // Implies that client will manage freeing the resources themselves.
 
+    @SuppressLint("Recycle")
     override suspend fun open(): InputStream? =
         withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri) }
+
+    @SuppressLint("Recycle")
+    override suspend fun fd(): ParcelFileDescriptor? =
+        withContext(Dispatchers.IO) { context.contentResolver.openFileDescriptor(uri, "r") }
 }

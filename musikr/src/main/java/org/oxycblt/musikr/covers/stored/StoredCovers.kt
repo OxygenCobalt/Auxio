@@ -27,13 +27,39 @@ import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
+private const val PREFIX = "mcs:"
+
+/**
+ * A [Covers] implementation for stored covers in the backing [CoverStorage]. Note that this
+ * instance is [Transcoding]-agnostic, it will yield a cover as long as it exists somewhere in the
+ * given storage.
+ *
+ * @param coverStorage The [CoverStorage] to use to obtain the cover data.
+ */
 class StoredCovers(private val coverStorage: CoverStorage) : Covers<FDCover> {
     override suspend fun obtain(id: String): CoverResult<FDCover> {
-        val cover = coverStorage.find(id) ?: return CoverResult.Miss()
-        return CoverResult.Hit(cover)
+        if (!id.startsWith(PREFIX)) {
+            return CoverResult.Miss()
+        }
+        val file = id.substring(PREFIX.length)
+        val cover = coverStorage.find(file) ?: return CoverResult.Miss()
+        return CoverResult.Hit(StoredCover(cover))
     }
 }
 
+/**
+ * A [MutableCovers] implementation for stored covers in the backing [CoverStorage]. This will open
+ * whatever cover data is yielded by [src], and then write it to the [coverStorage] using the
+ * whatever [transcoding] is provided.
+ *
+ * This allows large in-memory covers yielded by [MutableCovers] to be cached in storage rather than
+ * kept in memory. However, it can be used for any asynchronously fetched covers as well to save
+ * time, such as ones obtained by network.
+ *
+ * @param src The [MutableCovers] to use to obtain the cover data.
+ * @param coverStorage The [CoverStorage] to use to write the cover data to.
+ * @param transcoding The [Transcoding] to use to write the cover data to the [coverStorage].
+ */
 class MutableStoredCovers(
     private val src: MutableCovers<MemoryCover>,
     private val coverStorage: CoverStorage,
@@ -44,24 +70,31 @@ class MutableStoredCovers(
     override suspend fun obtain(id: String): CoverResult<FDCover> = base.obtain(id)
 
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
-        val cover =
+        val memoryCover =
             when (val cover = src.create(file, metadata)) {
                 is CoverResult.Hit -> cover.cover
                 is CoverResult.Miss -> return CoverResult.Miss()
             }
-        val coverFile =
-            coverStorage.write(cover.id + transcoding.tag) {
-                transcoding.transcodeInto(cover.data(), it)
+        val innerCover =
+            coverStorage.write(memoryCover.id + transcoding.tag) {
+                transcoding.transcodeInto(memoryCover.data(), it)
             }
-        return CoverResult.Hit(coverFile)
+        return CoverResult.Hit(StoredCover(innerCover))
     }
 
     override suspend fun cleanup(excluding: Collection<Cover>) {
         src.cleanup(excluding)
-        val used = excluding.mapTo(mutableSetOf()) { it.id }
+        val used =
+            excluding.mapNotNullTo(mutableSetOf()) {
+                it.id.takeIf { id -> id.startsWith(PREFIX) }?.substring(PREFIX.length)
+            }
         val unused = coverStorage.ls(exclude = used).filter { it !in used }
         for (file in unused) {
             coverStorage.rm(file)
         }
     }
+}
+
+private class StoredCover(private val inner: FDCover) : FDCover by inner {
+    override val id = PREFIX + inner.id
 }
