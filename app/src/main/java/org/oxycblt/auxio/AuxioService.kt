@@ -142,6 +142,7 @@ class AuxioService :
             }
             // Nothing changed, but don't show anything music related since we can always
             // index during playback.
+            isForeground = true
         } else {
             musicFragment.createNotification {
                 if (it != null) {

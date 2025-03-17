@@ -66,6 +66,9 @@ class StartActionRunner : TaskerPluginRunnerActionNoOutputOrInput() {
         while (!AuxioService.isForeground) {
             Thread.sleep(100)
         }
+        // Actually need to sleep even longer since for some reason the notification still
+        // won't accept media button events for an arbitrary period.
+        Thread.sleep(100)
         return TaskerPluginResultSucess()
     }
 }
