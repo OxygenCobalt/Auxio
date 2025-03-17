@@ -136,7 +136,7 @@ private class FSCoverStorage(private val dir: File) : CoverStorage {
         }
 
     override suspend fun rm(name: String) {
-        withContext(Dispatchers.IO) { File(dir, name).delete() }
+        withContext(Dispatchers.IO) { File(dir, name).deleteRecursively() }
     }
 }
 
