@@ -99,12 +99,22 @@ private class ExtractStepImpl(
                                 it.song.cover?.id,
                                 it.song.addedMs)
                         cache.write(cachedSong)
-                        exclude.add(cachedSong)
                         Finalized(it.song)
                     }
                 }
             }
-            .map { it.extracted }
+            .map {
+                if (it.extracted is RawSong) {
+                    exclude.add(
+                        CachedSong(
+                            it.extracted.file,
+                            it.extracted.properties,
+                            it.extracted.tags,
+                            it.extracted.cover?.id,
+                            it.extracted.addedMs))
+                }
+                it.extracted
+            }
             .flowOn(Dispatchers.IO)
             .buffer(Channel.UNLIMITED)
             .onCompletion { cache.cleanup(exclude) }
