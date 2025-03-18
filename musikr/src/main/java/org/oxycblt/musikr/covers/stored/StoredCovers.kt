@@ -82,8 +82,12 @@ class MutableStoredCovers(
                 is CoverResult.Miss -> return CoverResult.Miss()
             }
         val innerCover =
-            coverStorage.write(memoryCover.id + transcoding.tag) {
-                transcoding.transcodeInto(memoryCover.data(), it)
+            try {
+                coverStorage.write(memoryCover.id + transcoding.tag) {
+                    transcoding.transcodeInto(memoryCover.data(), it)
+                }
+            } catch (e: Exception) {
+                return CoverResult.Miss()
             }
         return CoverResult.Hit(StoredCover(innerCover))
     }
