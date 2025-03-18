@@ -1,5 +1,28 @@
 # Changelog
 
+## 4.0.3
+
+#### What's Improved
+- Improved music loader pipeline efficiency
+- Made cover.png support more flexible
+- Albums with the same name but different album artists are now split
+if fully tagged with album artists
+
+#### What's Fixed
+- Possibly fixed cache failures on large libraries
+- Possibly fixed playback state saving failing on some devices
+- Fixed issue where artists w/o songs would not have a cover
+- Fixed music not being reloaded when music locations changed
+- Fixed tasker media control not working
+- Fixed tasker playback start command never finishing
+
+#### Dev/Meta
+- Removed useless storage permissions
+- Internal cleanup/simplification of musikr API
+- Removed unused resources
+
+#### What's Fixed
+
 ## 4.0.2
 
 #### What's New
