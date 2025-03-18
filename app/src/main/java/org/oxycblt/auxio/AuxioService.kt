@@ -76,9 +76,8 @@ class AuxioService :
     }
 
     private fun onHandleForeground(intent: Intent?) {
-        val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
         musicFragment.start()
-        playbackFragment.start(startId)
+        playbackFragment.start(intent)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
