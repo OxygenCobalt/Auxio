@@ -101,7 +101,7 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         val bestCover =
             parent.children
                 .filterIsInstance<DeviceFile>()
-                .map { it to coverArtScore(file) }
+                .map { it to coverArtScore(it) }
                 .maxBy { it.second }
         if (bestCover.second > 0) {
             return CoverResult.Hit(FolderCoverImpl(context, bestCover.first.uri))
@@ -136,9 +136,9 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // Multiply the score for preferred formats & extensions. Weirder formats are harder for
         // android to decode, but not the end of the world.
         score *=
-            max(preferredFormats.indexOfFirst { file.mimeType.equals(it, ignoreCase = true) }, 0)
+            max(preferredFormats.indexOfFirst { file.mimeType.equals(it, ignoreCase = true) }, 1)
         score *=
-            max(preferredExtensions.indexOfFirst { extension.equals(it, ignoreCase = true) }, 0)
+            max(preferredExtensions.indexOfFirst { extension.equals(it, ignoreCase = true) }, 1)
         return score
     }
 
