@@ -160,4 +160,5 @@
     <string name="set_remember_pause">記住暫停</string>
     <string name="set_lib_tabs">媒體庫標籤</string>
     <string name="set_ui_desc">更改應用程式的主題和顏色</string>
+    <string name="lbl_music_sources">選擇資料夾</string>
 </resources>
