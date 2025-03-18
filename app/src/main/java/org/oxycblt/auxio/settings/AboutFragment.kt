@@ -72,6 +72,9 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutLicenses.setOnClickListener { requireContext().openInBrowser(LINK_LICENSES) }
         binding.aboutProfile.setOnClickListener { requireContext().openInBrowser(LINK_PROFILE) }
         binding.aboutDonate.setOnClickListener { requireContext().openInBrowser(LINK_DONATE) }
+        binding.aboutSupMarkPitblado.setOnClickListener {
+            requireContext().openInBrowser(LINK_SUP_MARK_PITBLADO)
+        }
         binding.aboutFeedbackGithub.setOnClickListener {
             requireContext().openInBrowser(LINK_NEW_ISSUE)
         }
@@ -113,5 +116,6 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         const val LINK_NEW_ISSUE = "$LINK_SOURCE/issues/new"
         const val LINK_PROFILE = "https://github.com/OxygenCobalt"
         const val LINK_DONATE = "https://github.com/sponsors/OxygenCobalt"
+        const val LINK_SUP_MARK_PITBLADO = "https://github.com/mark-pitblado"
     }
 }
