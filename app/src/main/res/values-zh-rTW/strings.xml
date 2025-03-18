@@ -161,4 +161,10 @@
     <string name="set_lib_tabs">媒體庫標籤</string>
     <string name="set_ui_desc">更改應用程式的主題和顏色</string>
     <string name="lbl_music_sources">選擇資料夾</string>
+    <string name="set_action_mode_repeat">回圈模式</string>
+    <string name="set_action_mode_next">跳轉到下一個歌曲</string>
+    <string name="set_play_song_from_all">從全部的歌曲中開始回放</string>
+    <string name="fmt_lib_song_count">載入了:%d首歌曲</string>
+    <string name="fmt_indexing">正在載入你的音樂資料庫…(%1$d/%2$d)</string>
+    <string name="lbl_email">傳送電子郵件</string>
 </resources>
