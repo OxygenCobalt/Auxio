@@ -70,4 +70,4 @@ class SettingCoversImpl @Inject constructor(private val imageSettings: ImageSett
     }
 }
 
-private fun Context.coversDir() = filesDir.resolve("covers")
+private fun Context.coversDir() = filesDir.resolve("covers").apply { mkdirs() }

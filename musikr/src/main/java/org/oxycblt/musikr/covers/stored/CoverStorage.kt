@@ -82,8 +82,7 @@ interface CoverStorage {
          */
         suspend fun at(dir: File): CoverStorage {
             withContext(Dispatchers.IO) {
-                if (dir.exists()) check(dir.isDirectory) { "Not a directory" }
-                else check(dir.mkdirs()) { "Cannot create directory" }
+                check(dir.exists() && dir.isDirectory) { "Not a existent directory" }
             }
             return FSCoverStorage(dir)
         }
