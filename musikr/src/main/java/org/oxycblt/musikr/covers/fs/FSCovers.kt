@@ -117,7 +117,7 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // that should not be managed by the app
     }
 
-    private fun coverArtScore(file: DeviceFile): Int {
+    private suspend fun coverArtScore(file: DeviceFile): Int {
         if (!file.mimeType.startsWith("image/", ignoreCase = true)) {
             // Not an image file. You lose!
             return 0
@@ -127,9 +127,9 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         val name = filename.substringBeforeLast('.')
         val extension = filename.substringAfterLast('.', "")
         // See if the name contains any of the preferred cover names. This helps weed out
-        // images that are not actually cover art and are just there.
+        // images that are not actually cover art and are just there.,
         var score =
-            preferredCoverNames
+            (preferredCoverNames + requireNotNull(file.parent.await().path.name))
                 .withIndex()
                 .filter { name.contains(it.value, ignoreCase = true) }
                 .sumOf { it.index + 1 }
