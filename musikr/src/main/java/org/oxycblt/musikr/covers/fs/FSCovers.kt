@@ -24,7 +24,6 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import androidx.core.net.toUri
 import java.io.InputStream
-import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.covers.Cover
@@ -135,10 +134,8 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
                 .sumOf { it.index + 1 }
         // Multiply the score for preferred formats & extensions. Weirder formats are harder for
         // android to decode, but not the end of the world.
-        score *=
-           preferredFormats.indexOfFirst { file.mimeType.equals(it, ignoreCase = true) } + 2
-        score *=
-            preferredExtensions.indexOfFirst { extension.equals(it, ignoreCase = true) } + 2
+        score *= preferredFormats.indexOfFirst { file.mimeType.equals(it, ignoreCase = true) } + 2
+        score *= preferredExtensions.indexOfFirst { extension.equals(it, ignoreCase = true) } + 2
         return score
     }
 
