@@ -20,4 +20,5 @@
     <string name="pkg_authority_cover">org.oxycblt.auxio.image.CoverProvider</string>
 
     <!-- Supporter Namespace | Sponsor usernames  -->
+    <string name="sup_mark_pitblado">Mark Pitblado</string>
 </resources>
