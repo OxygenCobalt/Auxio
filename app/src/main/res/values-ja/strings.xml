@@ -310,4 +310,7 @@
     <string name="cdc_alac">アップルロスレスオーディオコーデック（ALAC）</string>
     <string name="lbl_more">さらに</string>
     <string name="lng_tasker_start">事前に保存した状態でAuxioを起動します。保存状態がない場合は、すべての曲がシャッフルされます。再生はすぐに開始されます\n\n警告: このサービスの操作には注意してください。このサービスを終了してから再度使用しようとすると、アプリがクラッシュする可能性があります</string>
+    <string name="lbl_sort_mode">並べ替える</string>
+    <string name="lbl_path_style_absolute">絶対的</string>
+    <string name="lbl_path_style_relative">相対的</string>
 </resources>
