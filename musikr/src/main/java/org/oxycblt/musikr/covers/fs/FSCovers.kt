@@ -136,9 +136,9 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // Multiply the score for preferred formats & extensions. Weirder formats are harder for
         // android to decode, but not the end of the world.
         score *=
-            max(preferredFormats.indexOfFirst { file.mimeType.equals(it, ignoreCase = true) }, 1)
+           preferredFormats.indexOfFirst { file.mimeType.equals(it, ignoreCase = true) } + 2
         score *=
-            max(preferredExtensions.indexOfFirst { extension.equals(it, ignoreCase = true) }, 1)
+            preferredExtensions.indexOfFirst { extension.equals(it, ignoreCase = true) } + 2
         return score
     }
 
