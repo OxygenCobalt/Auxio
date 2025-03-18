@@ -18,16 +18,8 @@
  
 package org.oxycblt.musikr.pipeline
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Storage
@@ -38,7 +30,7 @@ import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
 internal interface EvaluateStep {
-    suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary
+    suspend fun evaluate(extractedMusic: Flow<Extracted>): MutableLibrary
 
     companion object {
         fun new(storage: Storage, interpretation: Interpretation): EvaluateStep =
@@ -56,33 +48,16 @@ private class EvaluateStepImpl(
     private val storedPlaylists: StoredPlaylists,
     private val libraryFactory: LibraryFactory
 ) : EvaluateStep {
-    override suspend fun evaluate(extractedMusic: Flow<ExtractedMusic>): MutableLibrary {
-        val filterFlow =
-            extractedMusic.filterIsInstance<ExtractedMusic.Valid>().divert {
-                when (it) {
-                    is ExtractedMusic.Valid.Song -> Divert.Right(it.song)
-                    is ExtractedMusic.Valid.Playlist -> Divert.Left(it.file)
+    override suspend fun evaluate(extractedMusic: Flow<Extracted>): MutableLibrary =
+        extractedMusic
+            .filterIsInstance<Extracted.Valid>()
+            .tryFold(MusicGraph.builder()) { graphBuilder, extracted ->
+                when (extracted) {
+                    is RawSong -> graphBuilder.add(tagInterpreter.interpret(extracted))
+                    is RawPlaylist ->
+                        graphBuilder.add(playlistInterpreter.interpret(extracted.file))
                 }
+                graphBuilder
             }
-        val rawSongs = filterFlow.right
-        val preSongs =
-            rawSongs
-                .map { wrap(it, tagInterpreter::interpret) }
-                .flowOn(Dispatchers.Default)
-                .buffer(Channel.UNLIMITED)
-        val prePlaylists =
-            filterFlow.left
-                .map { wrap(it, playlistInterpreter::interpret) }
-                .flowOn(Dispatchers.Default)
-                .buffer(Channel.UNLIMITED)
-        val graphBuilder = MusicGraph.builder()
-        val graphBuild =
-            merge(
-                filterFlow.manager,
-                preSongs.onEach { wrap(it, graphBuilder::add) },
-                prePlaylists.onEach { wrap(it, graphBuilder::add) })
-        graphBuild.collect()
-        val graph = graphBuilder.build()
-        return libraryFactory.create(graph, storedPlaylists, playlistInterpreter)
-    }
+            .let { libraryFactory.create(it.build(), storedPlaylists, playlistInterpreter) }
 }

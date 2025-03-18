@@ -16,14 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.cover
+package org.oxycblt.musikr.covers.embedded
 
 import java.security.MessageDigest
 
+/** An interface to transform embedded cover data into cover IDs, used for [EmbeddedCovers]. */
 interface CoverIdentifier {
+    /**
+     * Identify the cover data and return a unique identifier for it. This should use a strong
+     * hashing algorithm to ensure uniqueness and minimize memory use.
+     *
+     * @param data the cover data to identify
+     * @return a unique identifier for the cover data, such as a hash
+     */
     suspend fun identify(data: ByteArray): String
 
     companion object {
+        /**
+         * Returns a default implementation of [CoverIdentifier] that uses the MD5 hashing
+         * algorithm. Reasonably efficient for most default use-cases, but not secure if any
+         * extensions could be brought down by ID collisions.
+         *
+         * @return a [CoverIdentifier] that uses the MD5 hashing algorithm
+         */
         fun md5(): CoverIdentifier = MD5CoverIdentifier()
     }
 }

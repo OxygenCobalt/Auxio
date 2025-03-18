@@ -22,11 +22,13 @@ import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.provider.OpenableColumns
+import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.RenderersFactory
@@ -62,6 +64,7 @@ import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
+@OptIn(UnstableApi::class)
 class ExoPlaybackStateHolder(
     private val context: Context,
     private val player: ExoPlayer,
@@ -432,14 +435,14 @@ class ExoPlaybackStateHolder(
     override fun endSession() {
         // This session has ended, so we need to reset this flag for when the next
         // session starts.
+        playbackManager.playing(false)
         save {
             // User could feasibly start playing again if they were fast enough, so
             // we need to avoid stopping the foreground state if that's the case.
-            if (playbackManager.progression.isPlaying) {
-                playbackManager.playing(false)
+            if (!playbackManager.progression.isPlaying) {
+                sessionOngoing = false
+                playbackManager.ack(this, StateAck.SessionEnded)
             }
-            sessionOngoing = false
-            playbackManager.ack(this, StateAck.SessionEnded)
         }
     }
 
@@ -545,7 +548,9 @@ class ExoPlaybackStateHolder(
 
     private fun save(cb: () -> Unit) {
         saveJob {
-            persistenceRepository.saveState(playbackManager.toSavedState())
+            if (sessionOngoing) {
+                persistenceRepository.saveState(playbackManager.toSavedState())
+            }
             withContext(Dispatchers.Main) { cb() }
         }
     }
@@ -556,7 +561,9 @@ class ExoPlaybackStateHolder(
             delay(SAVE_BUFFER)
             yield()
             L.d("Committing saved state")
-            persistenceRepository.saveState(playbackManager.toSavedState())
+            if (sessionOngoing) {
+                persistenceRepository.saveState(playbackManager.toSavedState())
+            }
         }
     }
 

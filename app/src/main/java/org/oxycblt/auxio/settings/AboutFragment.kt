@@ -20,9 +20,9 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.net.toUri
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -102,7 +102,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     }
 
     private fun Context.sendEmail(recipient: String) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply { data = Uri.parse("mailto:$recipient") }
+        val intent = Intent(Intent.ACTION_SENDTO).apply { data = "mailto:$recipient".toUri() }
         startIntent(intent)
     }
 

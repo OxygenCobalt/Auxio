@@ -19,9 +19,11 @@
 package org.oxycblt.auxio.playback.service
 
 import android.content.Context
+import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
 import javax.inject.Inject
 import kotlinx.coroutines.Job
+import org.oxycblt.auxio.AuxioService.Companion.INTENT_KEY_START_ID
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
@@ -83,18 +85,34 @@ private constructor(
         }
     }
 
-    fun start(startedBy: Int) {
+    fun start(intent: Intent?) {
         // At minimum we want to ensure an active playback state.
         // TODO: Possibly also force to go foreground?
-        L.d("Handling non-native start.")
+        val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1)
         val action =
-            when (startedBy) {
+            when (startId) {
                 IntegerTable.START_ID_ACTIVITY -> null
                 IntegerTable.START_ID_TASKER ->
                     DeferredPlayback.RestoreState(
                         play = true, fallback = DeferredPlayback.ShuffleAll)
-                // External services using Auxio better know what they are doing.
-                else -> DeferredPlayback.RestoreState(play = false)
+                IntegerTable.START_ID_MEDIA_BUTTON -> {
+                    if (!sessionHolder.tryMediaButtonIntent(intent)) {
+                        // Malformed intent, need to restore state immediately
+                        DeferredPlayback.RestoreState(
+                            play = true, fallback = DeferredPlayback.ShuffleAll)
+                    } else {
+                        null
+                    }
+                }
+                else -> {
+                    L.d("Handling non-native start.")
+                    if (intent != null && sessionHolder.tryMediaButtonIntent(intent)) {
+                        // Just a media button intent, move on.
+                        return
+                    }
+                    // External services using Auxio better know what they are doing.
+                    DeferredPlayback.RestoreState(play = false)
+                }
             }
         if (action != null) {
             L.d("Initing service fragment using action $action")

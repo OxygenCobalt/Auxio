@@ -48,7 +48,6 @@
     <string name="lbl_shuffle_shortcut_long">Izmiješaj sve</string>
     <string name="lbl_ok">U redu</string>
     <string name="lbl_cancel">Odustani</string>
-    <string name="lbl_add">Dodaj</string>
     <string name="lbl_save">Spremi</string>
     <string name="lbl_about">O</string>
     <string name="lbl_version">Inačica</string>
@@ -87,16 +86,12 @@
     <string name="set_locations_desc">Upravljaj odakle će se glazba učitati</string>
     <string name="set_observing">Automatsko ponovno učitavanje</string>
     <string name="set_observing_desc">Ponovo učitaj svoju zbirku glazbe čim se dogode promjene (zahtijeva stalno obavještavanje)</string>
-    <string name="err_no_music">Nijedna glazba nije pronađena</string>
     <string name="err_index_failed">Greška u učitvanju glazbe</string>
-    <string name="err_no_perms">Auxio treba dozvolu za čitanje tvoje zbirke glazbe</string>
     <string name="err_no_app">Nijedna aplikacija ne može obraditi ovaj zadatak</string>
-    <string name="err_no_locations">Nema mapa</string>
     <string name="err_bad_location">Ova mapa nije podržana</string>
     <string name="lng_search_library">Pretraži svoju zbirku …</string>
     <string name="desc_track_number">Zvučni zapis %d</string>
     <string name="desc_shuffle">Omogućite ili onemogućite miješanje</string>
-    <string name="desc_shuffle_all">Izmiješaj sve pjesme</string>
     <string name="desc_remove_song">Ukoni ovu pjesmu iz popisa pjesama</string>
     <string name="desc_song_handle">Premjesti ovu pjesmu u popisu pjesama</string>
     <string name="desc_tab_handle">Pomakni ovu karticu</string>
@@ -158,7 +153,6 @@
     <string name="lbl_retry">Pokušaj ponovo</string>
     <string name="lbl_indexer">Učitavanje glazbe</string>
     <string name="lng_widget">Prikaži i upravljaj reprodukcijom glazbe</string>
-    <string name="lbl_grant">Dozvoli</string>
     <string name="lbl_single_live">Singl uživo</string>
     <string name="lbl_single_remix">Singl remiks</string>
     <string name="lbl_single">Singl</string>
@@ -191,7 +185,6 @@
     <string name="desc_skip_prev">Preskoči na prethodnu pjesmu</string>
     <string name="desc_change_repeat">Promijeni način ponavljanja</string>
     <string name="clr_purple">Ljubičasto</string>
-    <string name="cdc_mka">Matroska zvuk</string>
     <string name="desc_queue_bar">Otvori redoslijed</string>
     <string name="lbl_genre">Žanr</string>
     <string name="set_separators_comma">Zarez (,)</string>
@@ -233,7 +226,6 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Resetiraj</string>
     <string name="set_replay_gain">Normalizacija glasnoće</string>
-    <string name="set_locations_list">Mape</string>
     <string name="lbl_sort_dsc">Silazno</string>
     <string name="set_ui_desc">Promijenite temu i boje aplikacije</string>
     <string name="set_personalize_desc">Prilagodite kontrole i ponašanje korisničkog sučelja</string>
@@ -276,7 +268,6 @@
     <string name="lbl_sort_direction">Smjer</string>
     <string name="desc_selection_image">Slika odabira</string>
     <string name="lbl_selection">Odabir</string>
-    <string name="lbl_show_error_info">Više</string>
     <string name="lbl_error_info">Podaci greške</string>
     <string name="lbl_report">Prijavi</string>
     <string name="lbl_copied">Kopirano</string>

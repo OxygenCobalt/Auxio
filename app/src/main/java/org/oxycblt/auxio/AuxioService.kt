@@ -76,9 +76,8 @@ class AuxioService :
     }
 
     private fun onHandleForeground(intent: Intent?) {
-        val startId = intent?.getIntExtra(INTENT_KEY_START_ID, -1) ?: -1
         musicFragment.start()
-        playbackFragment.start(startId)
+        playbackFragment.start(intent)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -142,6 +141,7 @@ class AuxioService :
             }
             // Nothing changed, but don't show anything music related since we can always
             // index during playback.
+            isForeground = true
         } else {
             musicFragment.createNotification {
                 if (it != null) {

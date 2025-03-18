@@ -18,9 +18,7 @@
     <string name="lbl_retry">Retry</string>
     <string name="lbl_music_sources">Pick folders</string>
     <!-- As in to show additional information about a music loading error -->
-    <string name="lbl_show_error_info">More</string>
     <!-- As in grant permission -->
-    <string name="lbl_grant">Grant</string>
 
     <string name="lbl_songs">Songs</string>
     <string name="lbl_song">Song</string>
@@ -163,7 +161,6 @@
     <!-- as in to reset to a default setting -->
     <string name="lbl_reset">Reset</string>
     <!-- As in to add a new folder in the "Music folders" setting -->
-    <string name="lbl_add">Add</string>
     <string name="lbl_more">More</string>
 
     <string name="lbl_path_style">Path style</string>
@@ -268,7 +265,7 @@
     <string name="set_exclude_non_music">Exclude non-music</string>
     <string name="set_exclude_non_music_desc">Ignore audio files that are not music, such as podcasts</string>
     <string name="set_with_hidden">Include hidden files</string>
-    <string name="set_with_hidden_desc">Include files and folders that are hidden (ex. .cache)</string>
+    <string name="set_with_hidden_desc">Include audio files that are hidden (ex. .cache)</string>
     <string name="set_separators">Multi-value separators</string>
     <string name="set_separators_desc">Configure characters that denote multiple tag values</string>
     <string name="set_separators_comma">Comma (,)</string>
@@ -317,7 +314,6 @@
     <string name="set_library">Library</string>
     <string name="set_locations">Music folders</string>
     <string name="set_locations_desc">Manage where music should be loaded from</string>
-    <string name="set_locations_list">Folders</string>
     <string name="set_locations_new">New folder</string>
     <string name="set_reindex">Refresh music</string>
     <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
@@ -326,14 +322,11 @@
     <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">No music found</string>
     <string name="err_index_failed">Music loading failed</string>
-    <string name="err_no_perms">Auxio needs permission to read your music library</string>
     <string name="err_import_failed">Unable to import a playlist from this file</string>
     <string name="err_export_failed">Unable to export the playlist to this file</string>
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
-    <string name="err_no_locations">No folders</string>
     <string name="err_bad_location">This folder is not supported</string>
 
     <!-- Description Namespace | Accessibility Strings -->
@@ -345,7 +338,6 @@
     <string name="desc_skip_prev">Skip to last song</string>
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
-    <string name="desc_shuffle_all">Shuffle all songs</string>
     <string name="desc_exit">Stop playback</string>
 
     <string name="desc_remove_song">Remove this song</string>
@@ -392,7 +384,6 @@
     <!-- "Audio" can optionally be translated -->
     <string name="cdc_ogg">Ogg audio</string>
     <!-- "Audio" can optionally be translated -->
-    <string name="cdc_mka">Matroska audio</string>
     <!-- "Free Lossless Audio Codec" can optionally be translated -->
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <!-- As in unknown format -->

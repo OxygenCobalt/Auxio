@@ -22,18 +22,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
-import org.oxycblt.auxio.BuildConfig
-import timber.log.Timber as L
 
 /**
  * A wrapper around [StateFlow] exposing a one-time consumable event.
@@ -152,72 +145,4 @@ private fun Fragment.launch(
     block: suspend CoroutineScope.() -> Unit
 ) {
     viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
-}
-
-const val DEFAULT_TIMEOUT = 60000L
-
-/**
- * Wraps [SendChannel.send] with a specified timeout.
- *
- * @param element The element to send.
- * @param timeout The timeout in milliseconds. Defaults to 10 seconds.
- * @throws TimeoutException If the timeout is reached, provides context on what element
- *   specifically.
- */
-suspend fun <E> SendChannel<E>.sendWithTimeout(element: E, timeout: Long = DEFAULT_TIMEOUT) {
-    try {
-        withTimeout(timeout) { send(element) }
-    } catch (e: TimeoutCancellationException) {
-        L.e("Failed to send element to channel $e in ${timeout}ms.")
-        if (BuildConfig.DEBUG) {
-            throw TimeoutException("Timed out sending element to channel: $e")
-        } else {
-            L.e(e.stackTraceToString())
-            send(element)
-        }
-    }
-}
-
-/**
- * Wraps a [ReceiveChannel] consumption with a specified timeout. Note that the timeout will only
- * start on the first element received, as to prevent initialization of dependent coroutines being
- * interpreted as a timeout.
- *
- * @param action The action to perform on each element received.
- * @param timeout The timeout in milliseconds. Defaults to 10 seconds.
- * @throws TimeoutException If the timeout is reached, provides context on what element
- *   specifically.
- */
-suspend fun <E> ReceiveChannel<E>.forEachWithTimeout(
-    timeout: Long = DEFAULT_TIMEOUT,
-    action: suspend (E) -> Unit
-) {
-    var exhausted = false
-    var subsequent = false
-    val handler: suspend () -> Unit = {
-        val value = receiveCatching()
-        if (value.isClosed && value.exceptionOrNull() == null) {
-            exhausted = true
-        } else {
-            action(value.getOrThrow())
-        }
-    }
-    while (!exhausted) {
-        try {
-            if (subsequent) {
-                withTimeout(timeout) { handler() }
-            } else {
-                handler()
-                subsequent = true
-            }
-        } catch (e: TimeoutCancellationException) {
-            L.e("Failed to send element to channel $e in ${timeout}ms.")
-            if (BuildConfig.DEBUG) {
-                throw TimeoutException("Timed out sending element to channel: $e")
-            } else {
-                L.e(e.stackTraceToString())
-                handler()
-            }
-        }
-    }
 }

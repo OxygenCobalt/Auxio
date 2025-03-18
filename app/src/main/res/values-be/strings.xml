@@ -23,7 +23,6 @@
     <string name="set_root_title">Налады</string>
     <string name="info_app_desc">Просты, рацыянальны музычны плэер для Android.</string>
     <string name="lbl_observing">Маніторынг музычнай бібліятэкі</string>
-    <string name="lbl_grant">Выдаць</string>
     <string name="lbl_songs">Песні</string>
     <string name="set_ui_desc">Змяніце тэму і колеры праграмы</string>
     <string name="lbl_all_songs">Ўсе песні</string>
@@ -88,7 +87,6 @@
     <string name="lbl_bitrate">Бітрэйт</string>
     <string name="lbl_sample_rate">Частата дыскрэтызацыі</string>
     <string name="lbl_reset">Скінуць</string>
-    <string name="lbl_add">Дадаць</string>
     <string name="lbl_wiki">Вікі</string>
     <string name="lbl_save">Захаваць</string>
     <string name="lbl_version">Версія</string>
@@ -113,15 +111,11 @@
     <string name="set_pre_amp">Папярэдні ўзмацняльнік ReplayGain</string>
     <string name="set_library">Бібліятэка</string>
     <string name="set_locations_desc">Кіруйце месцам загрузкі музыкі</string>
-    <string name="set_locations_list">Тэчкі</string>
     <string name="set_rescan">Перасканаваць музыку</string>
     <string name="set_reindex">Абнавіць музыку</string>
     <string name="set_reindex_desc">Перазагрузіце музычную бібліятэку, выкарыстоўваючы па магчымасці кэшаваныя тэгі</string>
     <string name="set_rescan_desc">Ачысціце кэш тэгаў і цалкам перазагрузіце музычную бібліятэку (павольней, але больш поўна)</string>
-    <string name="err_no_perms">Auxio патрабуецца дазвол на чытанне вашай музычнай бібліятэкі</string>
-    <string name="err_no_music">Музыка не знойдзена</string>
     <string name="err_index_failed">Памылка загрузкі музыкі</string>
-    <string name="err_no_locations">Няма тэчак</string>
     <string name="err_bad_location">Гэтая папка не падтрымліваецца</string>
     <string name="desc_track_number">Кампазіцыя %d</string>
     <string name="desc_song_handle">Перамясціць песню ў чаргу</string>
@@ -133,7 +127,6 @@
     <string name="desc_auxio_icon">Значок Auxio</string>
     <string name="desc_shuffle">Ўключыце або выключыце перамешванне</string>
     <string name="desc_remove_song">Выдаліць гэтую песню з чаргі</string>
-    <string name="desc_shuffle_all">Перамяшаць усе песні</string>
     <string name="desc_exit">Спыніць прайграванне</string>
     <string name="desc_queue_bar">Адкрыйце чаргу</string>
     <string name="desc_clear_search">Ачысціць пошукавы запыт</string>
@@ -148,7 +141,6 @@
     <string name="def_date">Без даты</string>
     <string name="def_track">Няма дарожкі</string>
     <string name="cdc_mp3">MPEG-1 аўдыё</string>
-    <string name="cdc_mka">Matroska аўдыё</string>
     <string name="def_playback">Музыка не грае</string>
     <string name="cdc_mp4">MPEG-4 аўдыё</string>
     <string name="clr_red">Чырвоны</string>
@@ -279,7 +271,6 @@
     <string name="lbl_sort_direction">Напрамак</string>
     <string name="desc_selection_image">Абярыце малюнак</string>
     <string name="lbl_selection">Абярыце</string>
-    <string name="lbl_show_error_info">Дадаткова</string>
     <string name="lbl_copied">Скапіравана</string>
     <string name="lbl_error_info">Інфармацыя пра памылку</string>
     <string name="lbl_report">Справаздача пра памылку</string>

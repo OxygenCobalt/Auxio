@@ -5,7 +5,6 @@
     <string name="lng_widget">عرض وتحكم بشتغيل الموسيقى</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">إعادة المحاولة</string>
-    <string name="lbl_grant">منح</string>
     <string name="lbl_genres">الانواع</string>
     <string name="lbl_artists">فنانين</string>
     <string name="lbl_albums">البومات</string>
@@ -32,9 +31,7 @@
     <string name="lng_queue_added">تمت الإضافة إلى الطابور</string>
     <string name="lbl_artist_details">أذهب إلى الفنان</string>
     <string name="lbl_album_details">أذهب إلى الالبوم</string>
-    <string name="lbl_add">أضف</string>
     <string name="lbl_save">حفظ</string>
-    <string name="err_no_locations">لا مجلد</string>
     <string name="lbl_about">حول</string>
     <string name="lbl_version">الإصدار</string>
     <string name="lbl_code">كود البرنامج</string>
@@ -71,9 +68,7 @@
     <string name="set_repeat_pause_desc">ايقاف مؤقت عند تكرار تشغيل اغنية</string>
     <string name="set_content">محتوى</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">لم يتم ايجاد موسيقى</string>
     <string name="err_index_failed">فشل تحميل الموسيقى</string>
-    <string name="err_no_perms">اوكسيو يحتاج إلى صلاحيات لقراءة للاطلاع على مكتبتك للموسيقى</string>
     <string name="err_no_app">لا يوجد تطبيق لفتح هذا الرابط</string>
     <string name="err_bad_location">هذا المجلد غير مدعوم</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -85,7 +80,6 @@
     <string name="desc_skip_prev">تخطي للاغنية الاخيرة</string>
     <string name="desc_change_repeat">تغيير وضع التكرار</string>
     <string name="desc_shuffle">تشغيل او اطفاء الخلط</string>
-    <string name="desc_shuffle_all">خلط جميع الاغاني</string>
     <string name="desc_remove_song">إزالة اغنية من الطابور</string>
     <string name="desc_song_handle">نقل اغنية من الطابور</string>
     <string name="desc_tab_handle">تحريك التبويت</string>
@@ -190,7 +184,6 @@
     <string name="lbl_playlists">قوائم التشغيل</string>
     <string name="lbl_playlist">قائمة التشغيل</string>
     <string name="lng_playlist_created">تم خلق قائمة التشغيل</string>
-    <string name="lbl_show_error_info">المزيد</string>
     <string name="lbl_delete">حذف</string>
     <string name="lbl_copied">تم النسخ</string>
     <string name="lbl_playlist_add">إضافة إلى قائمة التشغيل</string>

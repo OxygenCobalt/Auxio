@@ -5,7 +5,6 @@
     <string name="lng_widget">Настройки воспроизведения</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторить попытку</string>
-    <string name="lbl_grant">Разрешить</string>
     <string name="lbl_genres">Жанры</string>
     <string name="lbl_artists">Исполнители</string>
     <string name="lbl_albums">Альбомы</string>
@@ -32,9 +31,7 @@
     <string name="lng_queue_added">Добавлено в очередь</string>
     <string name="lbl_artist_details">Перейти к исполнителю</string>
     <string name="lbl_album_details">Перейти к альбому</string>
-    <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>
-    <string name="err_no_locations">Нет папок</string>
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
     <string name="lbl_code">Исходный код</string>
@@ -75,9 +72,7 @@
     <string name="set_reindex">Обновить музыку</string>
     <string name="set_reindex_desc">Обновлять библиотеку, при возможности используя кэш тегов</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Треков нет</string>
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
-    <string name="err_no_perms">Auxio требуется разрешение на чтение музыкальной библиотеки</string>
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
     <string name="err_bad_location">Эта папка не поддерживается</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -89,7 +84,6 @@
     <string name="desc_skip_prev">Вернуться к предыдущему треку</string>
     <string name="desc_change_repeat">Режим повтора</string>
     <string name="desc_shuffle">Перемешивание</string>
-    <string name="desc_shuffle_all">Перемешать все треки</string>
     <string name="desc_remove_song">Удалить трек из очереди</string>
     <string name="desc_song_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
@@ -172,7 +166,6 @@
     <string name="cdc_mp3">MPEG-1</string>
     <string name="cdc_flac">FLAC</string>
     <string name="fmt_lib_total_duration">Общая продолжительность: %s</string>
-    <string name="cdc_mka">Matroska</string>
     <string name="fmt_disc_no">Диск %d</string>
     <string name="fmt_db_pos">+%.1f дБ</string>
     <string name="desc_queue_bar">Открыть очередь</string>
@@ -254,7 +247,6 @@
     <string name="set_content_desc">Управляйте загрузкой музыки и изображений</string>
     <string name="set_audio_desc">Настройка звука и поведения при воспроизведении</string>
     <string name="set_playback">Воспроизведение</string>
-    <string name="set_locations_list">Папки</string>
     <string name="lbl_sort_dsc">По убыванию</string>
     <string name="lbl_playlist">Плейлист</string>
     <string name="lbl_playlists">Плейлисты</string>
@@ -288,7 +280,6 @@
     <string name="lbl_sort_direction">Направление</string>
     <string name="lbl_selection">Выберите</string>
     <string name="desc_selection_image">Выберите изображение</string>
-    <string name="lbl_show_error_info">Дополнительно</string>
     <string name="lbl_error_info">Информация об ошибке</string>
     <string name="lbl_report">Отчёт об ошибке</string>
     <string name="lbl_copied">Скопировано</string>

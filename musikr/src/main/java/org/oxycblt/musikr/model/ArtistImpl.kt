@@ -23,7 +23,7 @@ import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.cover.CoverCollection
+import org.oxycblt.musikr.covers.CoverCollection
 import org.oxycblt.musikr.tag.interpret.PreArtist
 import org.oxycblt.musikr.util.update
 
@@ -55,7 +55,9 @@ internal class ArtistImpl(private val core: ArtistCore) : Artist {
         get() = core.resolveGenres().toList()
 
     override val durationMs = core.songs.sumOf { it.durationMs }
-    override val covers = CoverCollection.from(core.songs.mapNotNull { it.cover })
+    override val covers =
+        CoverCollection.from(
+            core.songs.mapNotNull { it.cover }.ifEmpty { core.albums.flatMap { it.covers.covers } })
 
     private val hashCode =
         31 * (31 * uid.hashCode() + core.preArtist.hashCode()) * core.songs.hashCode()

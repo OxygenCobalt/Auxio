@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2024 Auxio Project
- * CoverUtil.kt is part of Auxio.
+ * Copyright (c) 2023 Auxio Project
+ * CoversModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,13 @@
  
 package org.oxycblt.auxio.image.covers
 
-import android.content.Context
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-suspend fun Context.coversDir() =
-    withContext(Dispatchers.IO) { filesDir.resolve("covers").apply { mkdirs() } }
+@Module
+@InstallIn(SingletonComponent::class)
+interface CoilModule {
+    @Binds fun settingCovers(imageSettings: SettingCoversImpl): SettingCovers
+}

@@ -76,7 +76,6 @@
     <string name="lbl_windows_paths">Използвай съвместими с Windows пътища</string>
     <string name="info_app_desc">Прост, рационален музикален плейър за android.</string>
     <string name="lbl_indexing">Зарежда се музика</string>
-    <string name="lbl_show_error_info">Още</string>
     <string name="lbl_albums">Албуми</string>
     <string name="lbl_ep_live">EP на живо</string>
     <string name="lbl_single_live">Сингъл наживо</string>
@@ -97,7 +96,6 @@
     <string name="lbl_playback">Сега се изпълнява</string>
     <string name="lbl_replaygain_track">ReplayGain Регулиране на песента</string>
     <string name="lbl_shuffle_shortcut_long">Разбъркай всички</string>
-    <string name="lbl_add">Добави</string>
     <string name="lbl_about">Относно</string>
     <string name="lbl_path_style_absolute">Абсолютно</string>
     <string name="lbl_eps">EPs</string>
@@ -186,7 +184,6 @@
     <string name="set_replay_gain">Нормализация на звука</string>
     <string name="set_replay_gain_mode">ReplayGain стратегия</string>
     <string name="set_replay_gain_mode_off">Изключено</string>
-    <string name="lbl_grant">Предоставяне</string>
     <string name="lng_supporters_promo">Дарете за проекта, за да бъде добавено името ви тук!</string>
     <string name="lng_search_library">Търсене във вашата библиотека…</string>
     <string name="set_bar_action">Персонализирано действие на лентата за възпроизвеждане</string>
@@ -210,20 +207,15 @@
     <string name="set_library">Библиотека</string>
     <string name="set_locations">Музикални папки</string>
     <string name="set_locations_desc">Управлявайте откъде да се зарежда музиката</string>
-    <string name="set_locations_list">Папки</string>
     <string name="set_reindex">Обновяване на музика</string>
-    <string name="err_no_music">Няма намерена музика</string>
     <string name="err_index_failed">Неуспешно зареждане на музика</string>
-    <string name="err_no_perms">Auxio се нуждае от разрешение, за да чете вашата музикална библиотека</string>
     <string name="err_export_failed">Плейлиста не може да се изнесе в този файл</string>
     <string name="err_no_app">Няма намерено приложение, което да може да се справи с тази задача</string>
-    <string name="err_no_locations">Няма папки</string>
     <string name="desc_play_pause">Изпълни или пауза</string>
     <string name="desc_skip_next">Премини към следваща песен</string>
     <string name="desc_skip_prev">Премини към последна песен</string>
     <string name="desc_change_repeat">Промени режима на повторение</string>
     <string name="desc_shuffle">Включи или изключи разбъркване</string>
-    <string name="desc_shuffle_all">Разбъркай всички песни</string>
     <string name="desc_exit">Спри възпроизвеждането</string>
     <string name="desc_remove_song">Премахни тази песен</string>
     <string name="desc_song_handle">Премести тази песен</string>
@@ -255,7 +247,6 @@
     <string name="cdc_mp3">MPEG-1 audio</string>
     <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="cdc_ogg">Ogg audio</string>
-    <string name="cdc_mka">Matroska audio</string>
     <string name="clr_pink">Розово</string>
     <string name="clr_red">Червено</string>
     <string name="clr_purple">Лилаво</string>

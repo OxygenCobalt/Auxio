@@ -165,9 +165,9 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                 ReleaseType.parse(interpretation.separators.split(parsedTags.releaseTypes))
                     ?: ReleaseType.Album(null),
             preArtists =
-                albumPreArtists
-                    .ifEmpty { individualPreArtists }
-                    .ifEmpty { listOf(unknownPreArtist()) })
+                PreArtistsFrom.Album(albumPreArtists).takeIf { it.preArtists.isNotEmpty() }
+                    ?: PreArtistsFrom.Individual(
+                        individualPreArtists.ifEmpty { listOf(unknownPreArtist()) }))
     }
 
     private fun makePreArtists(

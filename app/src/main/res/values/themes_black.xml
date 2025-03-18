@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <style name="Theme.Auxio.Black" parent="Theme.Auxio.Base">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+    Can't meaningfully dim the default black theme colors, have to tweak the palette manually
+    -->
+    <style name="Theme.Auxio.Black" parent="Theme.Auxio.Base" tools:ignore="PrivateResource">
         <item name="colorSurface">@android:color/black</item>
         <item name="colorSurfaceDim">@color/m3_ref_palette_dynamic_neutral_variant4</item>
         <item name="colorSurfaceBright">@color/m3_ref_palette_dynamic_neutral_variant12</item>

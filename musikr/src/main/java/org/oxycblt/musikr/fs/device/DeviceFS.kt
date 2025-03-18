@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * DeviceFiles.kt is part of Auxio.
+ * DeviceFS.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,23 +34,43 @@ import kotlinx.coroutines.flow.flow
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
-internal interface DeviceFiles {
+internal interface DeviceFS {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
 
     companion object {
-        fun from(context: Context, ignoreHidden: Boolean): DeviceFiles =
-            DeviceFilesImpl(context.contentResolverSafe, ignoreHidden)
+        fun from(context: Context, withHidden: Boolean): DeviceFS =
+            DeviceFSImpl(context.contentResolverSafe, withHidden)
     }
 }
 
+sealed interface DeviceNode {
+    val uri: Uri
+    val path: Path
+}
+
+data class DeviceDirectory(
+    override val uri: Uri,
+    override val path: Path,
+    val parent: Deferred<DeviceDirectory>?,
+    var children: List<DeviceNode>
+) : DeviceNode
+
+data class DeviceFile(
+    override val uri: Uri,
+    override val path: Path,
+    val modifiedMs: Long,
+    val mimeType: String,
+    val size: Long,
+    val parent: Deferred<DeviceDirectory>
+) : DeviceNode
+
 @OptIn(ExperimentalCoroutinesApi::class)
-private class DeviceFilesImpl(
+private class DeviceFSImpl(
     private val contentResolver: ContentResolver,
-    private val ignoreHidden: Boolean
-) : DeviceFiles {
+    private val withHidden: Boolean
+) : DeviceFS {
     override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
         locations.flatMapMerge { location ->
-            // Set up the children flow for the root directory
             exploreDirectoryImpl(
                 location.uri,
                 DocumentsContract.getTreeDocumentId(location.uri),
@@ -85,7 +105,7 @@ private class DeviceFilesImpl(
                 val displayName = cursor.getString(displayNameIndex)
 
                 // Skip hidden files/directories if ignoreHidden is true
-                if (ignoreHidden && displayName.startsWith(".")) {
+                if (!withHidden && displayName.startsWith(".")) {
                     continue
                 }
 
@@ -111,9 +131,9 @@ private class DeviceFilesImpl(
                     emit(file)
                 }
             }
+            directoryDeferred.complete(DeviceDirectory(uri, relativePath, parent, children))
+            emitAll(recursive.asFlow().flattenMerge())
         }
-        directoryDeferred.complete(DeviceDirectory(uri, relativePath, parent, children))
-        emitAll(recursive.asFlow().flattenMerge())
     }
 
     private companion object {

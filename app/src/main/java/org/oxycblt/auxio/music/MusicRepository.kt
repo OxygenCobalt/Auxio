@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
+import org.oxycblt.auxio.music.shim.WriteOnlyMutableCache
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library
@@ -38,7 +39,7 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cache.StoredCache
+import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -187,8 +188,8 @@ interface MusicRepository {
     /**
      * Flags indicating which kinds of music information changed.
      *
-     * @param deviceLibrary Whether the current [DeviceLibrary] has changed.
-     * @param library Whether the current [Playlist]s have changed.
+     * @param deviceLibrary Whether the current songs/albums/artists/genres has changed.
+     * @param userLibrary Whether the current playlists have changed.
      */
     data class Changes(val deviceLibrary: Boolean, val userLibrary: Boolean)
 
@@ -236,14 +237,14 @@ class MusicRepositoryImpl
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val storedCache: StoredCache,
+    private val cache: MutableCache,
     private val storedPlaylists: StoredPlaylists,
     private val settingCovers: SettingCovers,
     private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
-    @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
+    @Volatile private var indexingWorker: IndexingWorker? = null
 
     @Volatile override var library: MutableLibrary? = null
     @Volatile private var previousCompletedState: IndexingState.Completed? = null
@@ -282,7 +283,7 @@ constructor(
     }
 
     @Synchronized
-    override fun registerWorker(worker: MusicRepository.IndexingWorker) {
+    override fun registerWorker(worker: IndexingWorker) {
         if (indexingWorker != null) {
             L.w("Worker is already registered")
             return
@@ -292,7 +293,7 @@ constructor(
     }
 
     @Synchronized
-    override fun unregisterWorker(worker: MusicRepository.IndexingWorker) {
+    override fun unregisterWorker(worker: IndexingWorker) {
         if (indexingWorker !== worker) {
             L.w("Given worker did not match current worker")
             return
@@ -384,15 +385,14 @@ constructor(
                 Naming.simple()
             }
         val locations = musicSettings.musicLocations
-        val ignoreHidden = !musicSettings.withHidden
+        val withHidden = musicSettings.withHidden
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
-        val cache = if (withCache) storedCache.visible() else storedCache.invisible()
+        val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
-        val interpretation = Interpretation(nameFactory, separators, ignoreHidden)
-
+        val interpretation = Interpretation(nameFactory, separators, withHidden)
         val result =
             Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work

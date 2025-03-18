@@ -51,7 +51,6 @@
     <string name="lbl_bitrate">Tulin ng mga bit</string>
     <string name="lbl_sample_rate">Tulin ng sample</string>
     <string name="lbl_shuffle_shortcut_short">Haluin</string>
-    <string name="lbl_add">Idagdag</string>
     <string name="lbl_save">I-save</string>
     <string name="lbl_about">Tungkol</string>
     <string name="lbl_version">Ulat</string>
@@ -88,7 +87,6 @@
     <string name="lbl_live_group">Live</string>
     <string name="lbl_search">Hanapin</string>
     <string name="lbl_singles">Mga Single</string>
-    <string name="lbl_grant">Bigyan</string>
     <string name="lbl_genres">Mga Genre</string>
     <string name="lng_widget">Tignan at ayusin ang pagtugtog ng kanta</string>
     <string name="set_theme">Tema</string>

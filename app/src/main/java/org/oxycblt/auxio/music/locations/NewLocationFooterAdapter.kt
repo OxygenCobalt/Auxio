@@ -51,7 +51,7 @@ class NewLocationFooterAdapter(private val listener: Listener) :
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a "New Playlist" choice in [NewPlaylistFooterAdapter].
+ * A [RecyclerView.ViewHolder] that displays a "New Playlist" choice in [NewLocationFooterAdapter].
  * Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)

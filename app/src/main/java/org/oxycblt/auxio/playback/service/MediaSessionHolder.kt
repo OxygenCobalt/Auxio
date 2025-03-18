@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback.service
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -28,6 +29,7 @@ import androidx.annotation.DrawableRes
 import androidx.car.app.mediaextensions.MetadataExtras
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
+import androidx.media.session.MediaButtonReceiver
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
@@ -107,6 +109,9 @@ private constructor(
             setCallback(mediaSessionInterface)
         }
     }
+
+    fun tryMediaButtonIntent(intent: Intent): Boolean =
+        MediaButtonReceiver.handleIntent(mediaSession, intent) != null
 
     /**
      * Release this instance, closing the [MediaSessionCompat] and preventing any further updates to

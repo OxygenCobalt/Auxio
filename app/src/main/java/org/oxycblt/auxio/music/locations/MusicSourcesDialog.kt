@@ -25,6 +25,7 @@ import android.view.LayoutInflater
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.ConcatAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -80,7 +81,7 @@ class MusicSourcesDialog :
 
         val locations =
             savedInstanceState?.getStringArrayList(KEY_PENDING_LOCATIONS)?.mapNotNull {
-                MusicLocation.existing(requireContext(), Uri.parse(it))
+                MusicLocation.existing(requireContext(), it.toUri())
             } ?: musicSettings.musicLocations
 
         locationAdapter.addAll(locations)

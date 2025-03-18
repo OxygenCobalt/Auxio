@@ -14,7 +14,6 @@
     <string name="lbl_singles">Sinxelo</string>
     <string name="lbl_compilations">Compilacións</string>
     <string name="lbl_compilation">Compilación</string>
-    <string name="lbl_grant">Permitir</string>
     <string name="lbl_albums">Álbums</string>
     <string name="lbl_single_remix">Sinxelo remix</string>
     <string name="lbl_retry">Volver a intentar</string>
@@ -93,7 +92,6 @@
     <string name="lbl_song_detail">Ver as propiedades</string>
     <string name="lbl_props">Propiedades da canción</string>
     <string name="lbl_save">Gardar</string>
-    <string name="lbl_add">Engadir</string>
     <string name="lbl_licenses">Licenzas</string>
     <string name="lng_queue_added">Engadido á cola</string>
     <string name="set_personalize">Personalizar</string>
@@ -162,7 +160,6 @@
     <string name="set_rescan_desc">Borrar a caché das etiquetas a recargar completamente a biblioteca de música (máis lento, pero máis completo)</string>
     <string name="desc_change_repeat">Cambiar o modo de repetición</string>
     <string name="desc_shuffle">Activar ou desactivar a mezcla</string>
-    <string name="desc_shuffle_all">Mezclar todas as cancións</string>
     <string name="desc_exit">Deter a reprodución</string>
     <string name="desc_queue_bar">Abrir a cola</string>
     <string name="desc_clear_search">Borrar o historial de busca</string>
@@ -179,9 +176,7 @@
     <string name="cdc_mp3">Audio MPEG-1</string>
     <string name="cdc_mp4">Audio MPEG-4</string>
     <string name="err_index_failed">Fallou a carga de música</string>
-    <string name="err_no_perms">Auxio necesita permiso para leer a túa biblioteca de música</string>
     <string name="err_no_app">Non se atopou ningunha aplicación que poda facer esta tarefa</string>
-    <string name="err_no_locations">Sen cartafois</string>
     <string name="cdc_ogg">Audio ogg</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
@@ -227,12 +222,9 @@
     <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" ao ordenar por nome (funciona mellor con música en inglés)</string>
     <string name="set_locations_desc">Xestionar dende onde se carga a música</string>
     <string name="set_repeat_pause_desc">Pausar cando se repite unha canción</string>
-    <string name="set_locations_list">Cartafois</string>
     <string name="def_track">Ningunha pista</string>
     <string name="desc_skip_prev">Saltar á última canción</string>
-    <string name="err_no_music">Sen música</string>
     <string name="desc_track_number">Pista %d</string>
-    <string name="cdc_mka">Audio Matroska</string>
     <string name="lbl_mixtapes">Mixtapes (compilación de cancións)</string>
     <string name="lbl_mixtape">Mixtapes (compilación de cancións)</string>
     <string name="lbl_remix_group">Remix</string>

@@ -119,7 +119,8 @@
                     app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_cover" />
+                    app:layout_constraintTop_toBottomOf="@+id/detail_cover"
+                    tools:ignore="RtlSymmetry" />
 
                 <org.oxycblt.auxio.ui.RippleFixMaterialButton
                     android:id="@+id/detail_shuffle_button"

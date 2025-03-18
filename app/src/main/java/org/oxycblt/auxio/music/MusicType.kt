@@ -27,15 +27,10 @@ import org.oxycblt.auxio.R
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class MusicType {
-    /** @see Song */
     SONGS,
-    /** @see Album */
     ALBUMS,
-    /** @see Artist */
     ARTISTS,
-    /** @see Genre */
     GENRES,
-    /** @see Playlist */
     PLAYLISTS;
 
     /**

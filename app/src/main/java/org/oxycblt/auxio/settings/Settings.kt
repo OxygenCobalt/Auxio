@@ -62,17 +62,13 @@ interface Settings<Listener> {
      */
     abstract class Impl<Listener>(private val context: Context) :
         Settings<Listener>, SharedPreferences.OnSharedPreferenceChangeListener {
-        init {
-            L.d(this::class.simpleName)
-        }
-
         protected val sharedPreferences: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
 
         /** @see [Context.getString] */
         protected fun getString(@StringRes stringRes: Int) = context.getString(stringRes)
 
-        private var listener: Listener? = null
+        protected var listener: Listener? = null
 
         override fun registerListener(listener: Listener) {
             if (this.listener == null) {

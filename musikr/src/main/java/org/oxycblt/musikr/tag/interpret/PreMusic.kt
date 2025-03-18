@@ -21,7 +21,7 @@ package org.oxycblt.musikr.tag.interpret
 import android.net.Uri
 import java.util.UUID
 import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.cover.Cover
+import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.fs.Format
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.tag.Date
@@ -54,15 +54,23 @@ internal data class PreSong(
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
     val preGenres: List<PreGenre>
-) {}
+)
 
 internal data class PreAlbum(
     val musicBrainzId: UUID?,
     val name: Name,
     val rawName: String?,
     val releaseType: ReleaseType,
-    val preArtists: List<PreArtist>
+    val preArtists: PreArtistsFrom,
 )
+
+internal sealed interface PreArtistsFrom {
+    val preArtists: List<PreArtist>
+
+    data class Individual(override val preArtists: List<PreArtist>) : PreArtistsFrom
+
+    data class Album(override val preArtists: List<PreArtist>) : PreArtistsFrom
+}
 
 internal data class PreArtist(val musicBrainzId: UUID?, val name: Name, val rawName: String?)
 

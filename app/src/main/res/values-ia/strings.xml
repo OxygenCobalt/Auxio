@@ -2,8 +2,6 @@
 <resources>
     <string name="lbl_indexing">Cargante le musica</string>
     <string name="lbl_retry">Retentar</string>
-    <string name="lbl_show_error_info">Plus</string>
-    <string name="lbl_grant">Conceder</string>
     <string name="lbl_songs">Cantos</string>
     <string name="lbl_song">Canto</string>
     <string name="lbl_all_songs">Tote le cantos</string>
@@ -45,7 +43,6 @@
     <string name="lbl_play">Reproducer</string>
     <string name="lbl_play_next">Reproducer sequente</string>
     <string name="lbl_queue_add">Adder al cauda</string>
-    <string name="lbl_add">Adder</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Codice fonte</string>
     <string name="lbl_wiki">Wiki</string>
@@ -119,7 +116,6 @@
     <string name="set_play_song_none">Reproducer ab le elemento mostrate</string>
     <string name="set_play_song_from_artist">Reproducer ab artista</string>
     <string name="set_keep_shuffle_desc">Mantener le reproduction aleatori al reproducer un nove canto</string>
-    <string name="err_no_perms">Auxio besonia permission pro leger tu bibliotheca de musica</string>
     <string name="def_genre">Genere incognite</string>
     <string name="fmt_lib_genre_count">Generes cargate: %d</string>
     <string name="desc_genre_image">Imagine de genere ab %s</string>
@@ -139,11 +135,8 @@
     <string name="set_playback">Reproduction</string>
     <string name="set_remember_pause">Rememorar le pausa</string>
     <string name="set_locations">Dossieres de musica</string>
-    <string name="set_locations_list">Dossieres</string>
     <string name="set_reindex">Actualisar le musica</string>
-    <string name="err_no_music">Nulle musica trovate</string>
     <string name="err_index_failed">Falleva le carga del musica</string>
-    <string name="err_no_locations">Necun dossieres</string>
     <string name="err_bad_location">Iste dossier non es supportate</string>
     <string name="desc_track_number">Tracia %d</string>
     <string name="desc_play_pause">Reproducer o pausar</string>
@@ -164,7 +157,6 @@
     <string name="cdc_mp4">Audio MPEG-4</string>
     <string name="cdc_mp3">Audio MPEG-1</string>
     <string name="cdc_ogg">Audio Ogg</string>
-    <string name="cdc_mka">Audio Matroska</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_selected">%d seligite</string>

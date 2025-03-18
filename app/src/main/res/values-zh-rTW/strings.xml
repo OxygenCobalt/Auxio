@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">重試</string>
-    <string name="lbl_grant">取得</string>
     <string name="lbl_genres">類型</string>
     <string name="lbl_artists">演出者</string>
     <string name="lbl_albums">專輯</string>
@@ -38,7 +37,6 @@
     <string name="set_personalize">行為</string>
     <string name="set_keep_shuffle">記住隨機播放</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">找不到音樂</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">音軌 %d</string>
     <string name="desc_play_pause">播放/暫停</string>
@@ -61,7 +59,6 @@
     <string name="lbl_sample_rate">取樣頻率</string>
     <string name="set_black_mode_desc">使用純黑暗色主題</string>
     <string name="set_display">顯示</string>
-    <string name="lbl_add">新增</string>
     <string name="lbl_reset">重設</string>
     <string name="lng_indexing">正在載入你的音樂庫…</string>
     <string name="lbl_genre">流派</string>
@@ -73,7 +70,6 @@
     <string name="lbl_singles">單曲</string>
     <string name="lbl_single">單曲</string>
     <string name="set_round_mode_desc">在更多的用戶界面元素上啟用圓角（需要專輯封面也要設定圓角）</string>
-    <string name="lbl_show_error_info">更多</string>
     <string name="lbl_artist">演出者</string>
     <string name="lbl_new_playlist">新播放隊列</string>
     <string name="lbl_import_playlist">匯入播放隊列</string>

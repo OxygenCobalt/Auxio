@@ -34,6 +34,7 @@
                 android:layout_height="@dimen/size_icon_huge"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:src="@drawable/ic_song_48"
+                tools:ignore="ContentDescription"
                 app:tint="?attr/colorOnSurface" />
 
             <TextView

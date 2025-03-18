@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Προσπάθεια εκ νέου</string>
-    <string name="lbl_grant">Χορήγηση</string>
     <string name="lbl_genres">Είδη</string>
     <string name="lbl_artists">Καλλιτέχνες</string>
     <string name="lbl_albums">Άλμπουμ</string>
@@ -75,10 +74,8 @@
     <string name="fmt_lib_artist_count">Καλλιτέχνες που φορτώθηκαν: %d</string>
     <string name="lbl_date">Έτος</string>
     <string name="lbl_disc">Δίσκος</string>
-    <string name="err_no_music">Δεν βρέθηκε καθόλου μουσική</string>
     <string name="err_index_failed">Η φόρτωση μουσικής απέτυχε</string>
     <string name="fmt_bitrate">%d kbps</string>
-    <string name="lbl_add">Πρόσθεση</string>
     <string name="lbl_props">Ιδιότητες τραγουδιού</string>
     <string name="lbl_song_detail">Προβολή Ιδιοτήτων</string>
     <string name="lbl_library_counts">Στατιστικά συλλογής</string>
@@ -95,7 +92,6 @@
     <string name="lbl_name">Όνομα</string>
     <string name="lbl_duration">Διάρκεια</string>
     <string name="fmt_lib_total_duration">Συνολική διάρκεια: %s</string>
-    <string name="err_no_locations">Καθόλου φάκελοι</string>
     <string name="info_app_desc">Μια απλή, λογική εφαρμογή αναπαραγωγής μουσικής για Android.</string>
     <string name="lbl_indexer">Φόρτωση μουσικής</string>
     <string name="lng_widget">Προβολή και έλεγχος αναπαραγωγής μουσικής</string>

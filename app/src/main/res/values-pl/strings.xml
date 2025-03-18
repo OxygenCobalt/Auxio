@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Ponów</string>
-    <string name="lbl_grant">Zezwól</string>
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
     <string name="lbl_albums">Albumy</string>
@@ -37,7 +36,6 @@
     <string name="set_audio">Dźwięk</string>
     <string name="set_personalize">Interfejs</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Nie znaleziono utworów</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Utwór %d</string>
     <string name="desc_play_pause">Odtwórz albo zapauzuj</string>
@@ -108,7 +106,6 @@
     <string name="lbl_genre">Gatunek</string>
     <string name="lbl_shuffle_shortcut_long">Wszystkie losowo</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="lbl_add">Dodaj</string>
     <string name="set_black_mode">Czarny motyw</string>
     <string name="clr_deep_purple">Ciemny fioletowy</string>
     <string name="fmt_db_neg">-%.1f dB</string>
@@ -129,7 +126,6 @@
     <string name="def_track">Brak utworu</string>
     <string name="lbl_equalizer">Korektor</string>
     <string name="lbl_size">Rozmiar</string>
-    <string name="err_no_locations">Brak folderów</string>
     <string name="set_play_song_from_all">Odtwórz wszystkie utwory</string>
     <string name="set_play_song_from_album">Odtwórz album</string>
     <string name="set_headset_autoplay_desc">Automatycznie odtwórz muzykę po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
@@ -179,7 +175,6 @@
     <string name="set_display">Elementy</string>
     <string name="clr_dynamic">Material You</string>
     <string name="fmt_bitrate">%d kb/s</string>
-    <string name="cdc_mka">Matroska</string>
     <string name="set_locations">Foldery z muzyką</string>
     <string name="set_locations_desc">Wybierz z których folderów importowane są utwory</string>
     <string name="set_rewind_prev">Przewiń przed odtworzeniem poprzedniego utworu</string>
@@ -205,7 +200,6 @@
     <string name="set_repeat_pause_desc">Zatrzymaj odtwarzanie, kiedy utwór się powtórzy</string>
     <string name="set_separators">Znaki oddzielające wartości</string>
     <string name="set_separators_desc">Wybierz znaki oddzielające poszczególne wartości w metadanych</string>
-    <string name="err_no_perms">Auxio wymaga zgody na dostęp do twojej biblioteki muzycznej</string>
     <string name="err_bad_location">Ten folder nie jest wspierany</string>
     <string name="def_playback">Utwory nie są odtwarzane</string>
     <string name="fmt_indexing">Importuję bibliotekę muzyczną… (%1$d/%2$d)</string>
@@ -213,7 +207,6 @@
     <string name="fmt_lib_genre_count">Zaimportowane gatunki: %d</string>
     <string name="fmt_lib_total_duration">Łączny czas trwania: %s</string>
     <string name="desc_change_repeat">Zmień tryb powtarzania</string>
-    <string name="desc_shuffle_all">Odtwórz losowo wszystkie utwory</string>
     <string name="lng_observing">Monitoruję zmiany w bibliotece muzycznej…</string>
     <string name="lbl_indexer">Importowanie utworów</string>
     <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
@@ -234,7 +227,6 @@
     <string name="set_personalize_desc">Dostosuj elementy i funkcje interfejsu</string>
     <string name="set_hide_collaborators_desc">Pokaż tylko artystów bezpośrednio przypisanych do albumu (działa najlepiej w przypadku dobrze otagowanych bibliotek)</string>
     <string name="set_playback">Odtwarzanie</string>
-    <string name="set_locations_list">Foldery</string>
     <string name="set_images">Obrazy</string>
     <string name="set_audio_desc">Zarządzaj dźwiękiem i odtwarzaniem muzyki</string>
     <string name="fmt_selected">Wybrano %d</string>
@@ -295,7 +287,6 @@
     <string name="lbl_export">Eksportuj</string>
     <string name="lbl_path_style">Styl ścieżki</string>
     <string name="desc_selection_image">Wybór obrazu</string>
-    <string name="lbl_show_error_info">Więcej</string>
     <string name="lbl_selection">Zaznaczenie</string>
     <string name="lbl_copied">Skopiowano</string>
     <string name="lbl_author">Autor</string>

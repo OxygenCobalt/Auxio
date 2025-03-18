@@ -55,7 +55,6 @@
     <string name="lbl_cancel">ביטול</string>
     <string name="lbl_save">שמירה</string>
     <string name="lbl_reset">אתחול</string>
-    <string name="lbl_add">הוספה</string>
     <string name="lbl_version">גרסה</string>
     <string name="lbl_code">קוד מקור</string>
     <string name="lbl_wiki">ויקי</string>
@@ -156,7 +155,6 @@
     <string name="set_pre_amp_desc">המגבר מוחל על ההתאמה הקיימת בזמן השמעה</string>
     <string name="lbl_new_playlist">רשימת השמעה חדשה</string>
     <string name="lbl_playlist_add">הוספה לרשימת השמעה</string>
-    <string name="lbl_grant">הענק</string>
     <string name="lbl_playlist">רשימת השמעה (פלייליסט)</string>
     <string name="lbl_playlists">רשימות השמעה</string>
     <string name="lbl_delete">מחיקה</string>
@@ -168,7 +166,6 @@
     <string name="set_locations">תיקיות מוזיקה</string>
     <string name="set_reindex_desc">טעינה מחדש של ספריית המוזיקה, במידה וניתן ייעשה שימוש בתגיות מהמטמון</string>
     <string name="set_rescan">סריקת מוסיקה מחדש</string>
-    <string name="err_no_perms">‏ Auxio צריך הרשאות על מנת לקרוא את ספריית המוזיקה שלך</string>
     <string name="desc_queue_bar">פתיחת התור</string>
     <string name="fmt_lib_total_duration">משך כולל: %s</string>
     <string name="fmt_def_playlist">רשימת השמעה %d</string>
@@ -178,7 +175,6 @@
     <string name="fmt_lib_genre_count">ז\'אנרים טעונים: %d</string>
     <string name="set_library">ספריה</string>
     <string name="err_no_app">לא נמצא יישום שיכול לטפל במשימה זו</string>
-    <string name="err_no_locations">אין תיקיות</string>
     <string name="err_bad_location">תיקייה זו אינה נתמכת</string>
     <string name="desc_skip_prev">דילוג לשיר האחרון</string>
     <string name="desc_change_repeat">שינוי מצב חזרה</string>
@@ -203,14 +199,12 @@
     <string name="def_song_count">אין שירים</string>
     <string name="clr_pink">ורוד</string>
     <string name="lng_playlist_created">נוצרה רשימת השמעה</string>
-    <string name="set_locations_list">תיקיות</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">אומן אחד</item>
         <item quantity="two">שני אומנים</item>
         <item quantity="other">%d אומנים</item>
     </plurals>
     <string name="set_reindex">רענון מוזיקה</string>
-    <string name="err_no_music">לא נמצאה מוזיקה</string>
     <string name="err_index_failed">אירע כשל בטעינה מוזיקה</string>
     <string name="desc_no_cover">עטיפת אלבום</string>
     <plurals name="fmt_song_count">
@@ -226,7 +220,6 @@
     <string name="lng_playlist_renamed">שונה שם רשימת ההשמעה</string>
     <string name="lng_playlist_deleted">רשימת השמעה נמחקה</string>
     <string name="lng_playlist_added">נוסף לרשימת השמעה</string>
-    <string name="desc_shuffle_all">ערבוב כל השירים</string>
     <string name="desc_auxio_icon">סמל Auxio</string>
     <string name="desc_music_location_delete">הסרת תיקייה</string>
     <string name="desc_playlist_image">תמונת רשימת השמעה עבור %s</string>
@@ -262,7 +255,6 @@
     <string name="clr_teal">טורקיז</string>
     <string name="clr_brown">חום</string>
     <string name="fmt_selected">%d נבחרו</string>
-    <string name="lbl_show_error_info">עוד</string>
     <string name="lbl_selection">בחירה</string>
     <string name="lbl_error_info">מידע על השגיאה</string>
     <string name="lbl_report">דיווח</string>
@@ -275,7 +267,6 @@
     <string name="fmt_sample_rate">%d הרץ (Hz)</string>
     <string name="fmt_bitrate">%d קילוביטים לשנייה (kbps)</string>
     <string name="lbl_copied">מועתק</string>
-    <string name="cdc_mka">אודיו Matroska</string>
     <string name="cdc_aac">קודק אודיו מתקדם (AAC)</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="clr_lime">ליים</string>

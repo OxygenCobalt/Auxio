@@ -46,25 +46,25 @@ class AnimConfig(
 
     companion object {
         val STANDARD = MR.attr.motionEasingStandardInterpolator
-        val EMPHASIZED = MR.attr.motionEasingEmphasizedInterpolator
+        //        val EMPHASIZED = MR.attr.motionEasingEmphasizedInterpolator
         val EMPHASIZED_ACCELERATE = MR.attr.motionEasingEmphasizedAccelerateInterpolator
         val EMPHASIZED_DECELERATE = MR.attr.motionEasingEmphasizedDecelerateInterpolator
         val SHORT1 = MR.attr.motionDurationShort1 to 50
-        val SHORT2 = MR.attr.motionDurationShort2 to 100
+        //        val SHORT2 = MR.attr.motionDurationShort2 to 100
         val SHORT3 = MR.attr.motionDurationShort3 to 150
-        val SHORT4 = MR.attr.motionDurationShort4 to 200
+        //        val SHORT4 = MR.attr.motionDurationShort4 to 200
         val MEDIUM1 = MR.attr.motionDurationMedium1 to 250
         val MEDIUM2 = MR.attr.motionDurationMedium2 to 300
         val MEDIUM3 = MR.attr.motionDurationMedium3 to 350
-        val MEDIUM4 = MR.attr.motionDurationMedium4 to 400
-        val LONG1 = MR.attr.motionDurationLong1 to 450
-        val LONG2 = MR.attr.motionDurationLong2 to 500
-        val LONG3 = MR.attr.motionDurationLong3 to 550
-        val LONG4 = MR.attr.motionDurationLong4 to 600
-        val EXTRA_LONG1 = MR.attr.motionDurationExtraLong1 to 700
-        val EXTRA_LONG2 = MR.attr.motionDurationExtraLong2 to 800
-        val EXTRA_LONG3 = MR.attr.motionDurationExtraLong3 to 900
-        val EXTRA_LONG4 = MR.attr.motionDurationExtraLong4 to 1000
+        //        val MEDIUM4 = MR.attr.motionDurationMedium4 to 400
+        //        val LONG1 = MR.attr.motionDurationLong1 to 450
+        //        val LONG2 = MR.attr.motionDurationLong2 to 500
+        //        val LONG3 = MR.attr.motionDurationLong3 to 550
+        //        val LONG4 = MR.attr.motionDurationLong4 to 600
+        //        val EXTRA_LONG1 = MR.attr.motionDurationExtraLong1 to 700
+        //        val EXTRA_LONG2 = MR.attr.motionDurationExtraLong2 to 800
+        //        val EXTRA_LONG3 = MR.attr.motionDurationExtraLong3 to 900
+        //        val EXTRA_LONG4 = MR.attr.motionDurationExtraLong4 to 1000
 
         fun of(context: Context, @AttrRes interpolator: Int, duration: Pair<Int, Int>) =
             AnimConfig(context, interpolator, duration.first, duration.second)
@@ -122,7 +122,7 @@ private constructor(
         }
     }
 
-    fun jumpToFadeIn(view: View) {
+    private fun jumpToFadeIn(view: View) {
         view.apply {
             alpha = 1f
             scaleX = 1.0f

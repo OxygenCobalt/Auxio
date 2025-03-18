@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Tentar novamente</string>
-    <string name="lbl_grant">Permitir</string>
     <string name="lbl_genres">Géneros</string>
     <string name="lbl_artists">Artistas</string>
     <string name="lbl_albums">Álbuns</string>
@@ -39,7 +38,6 @@
     <string name="set_personalize">Personalizar</string>
     <string name="set_keep_shuffle">Memorizar música misturada</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Nenhuma música encontrada</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Música %d</string>
     <string name="desc_play_pause">Reproduzir ou pausar</string>
@@ -95,8 +93,6 @@
     <string name="set_action_mode_repeat">Modo de repetição</string>
     <string name="set_play_song_from_artist">Reproduzir do artista</string>
     <string name="set_repeat_pause">Pausar na repetição</string>
-    <string name="err_no_perms">O Auxio precisa de permissão para ler a sua biblioteca de músicas</string>
-    <string name="err_no_locations">Sem pastas</string>
     <string name="err_bad_location">Esta pasta não é compatível</string>
     <string name="desc_song_handle">Mover esta música da fila</string>
     <string name="desc_music_location_delete">Remover pasta</string>
@@ -119,7 +115,6 @@
     <string name="lbl_song_detail">Propriedades</string>
     <string name="lbl_props">Propriedades da música</string>
     <string name="lbl_ok">OK</string>
-    <string name="lbl_add">Adicionar</string>
     <string name="set_black_mode">Tema preto</string>
     <string name="desc_clear_search">Limpar consulta de pesquisa</string>
     <string name="desc_genre_image">Imagem de gênero para %s</string>
@@ -182,9 +177,7 @@
     <string name="set_play_song_from_all">Reproduzir de todas as músicas</string>
     <string name="set_repeat_pause_desc">Pausar quando uma música é repetida</string>
     <string name="desc_shuffle">Ativar ou desativar a reprodução aleatória</string>
-    <string name="desc_shuffle_all">Embaralhar todas as músicas</string>
     <string name="desc_remove_song">Remover esta música de fila</string>
-    <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
     <string name="lbl_album">Álbum</string>
     <string name="lbl_eps">Miniálbuns</string>
@@ -247,7 +240,6 @@
     <string name="set_images">Imagens</string>
     <string name="set_audio_desc">Configurar o som e comportamento da reprodução</string>
     <string name="set_playback">Reprodução</string>
-    <string name="set_locations_list">Pastas</string>
     <string name="set_library">Biblioteca</string>
     <string name="set_separators_and">E comercial (&amp;)</string>
     <string name="set_behavior">Comportamento</string>
@@ -261,7 +253,6 @@
     <string name="fmt_def_playlist">Lista de reprodução %d</string>
     <string name="lbl_playlist">Lista de reprodução</string>
     <string name="lng_playlist_created">Lista de reprodução criada</string>
-    <string name="lbl_show_error_info">Mais</string>
     <string name="desc_playlist_image">Imagem da lista de reprodução de %s</string>
     <string name="lbl_delete">Eliminar</string>
     <string name="def_disc">Nenhum disco</string>

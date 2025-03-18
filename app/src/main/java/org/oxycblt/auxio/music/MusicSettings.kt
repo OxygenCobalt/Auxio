@@ -85,7 +85,10 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             sharedPreferences.edit {
                 putString(
                     getString(R.string.set_key_music_locations), MusicLocation.toString(value))
-                this@edit.apply()
+                commit()
+                // Sometimes changing this setting just won't actually trigger the listener.
+                // Only this one. No idea why.
+                listener?.onMusicLocationsChanged()
             }
         }
 

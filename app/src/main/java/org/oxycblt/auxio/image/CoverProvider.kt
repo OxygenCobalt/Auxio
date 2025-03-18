@@ -28,9 +28,9 @@ import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.runBlocking
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.image.covers.SettingCovers
-import org.oxycblt.musikr.cover.CoverResult
+import org.oxycblt.musikr.covers.CoverResult
 
-class CoverProvider() : ContentProvider() {
+class CoverProvider : ContentProvider() {
     override fun onCreate(): Boolean = true
 
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {

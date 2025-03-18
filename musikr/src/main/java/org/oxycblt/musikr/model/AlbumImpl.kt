@@ -22,7 +22,7 @@ import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.cover.CoverCollection
+import org.oxycblt.musikr.covers.CoverCollection
 import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.util.update
@@ -50,7 +50,7 @@ class AlbumImpl internal constructor(private val core: AlbumCore) : Album {
                 // I don't know if there is any situation where an artist will have two albums with
                 // the exact same name, but if there is, I would love to know.
                 update(preAlbum.rawName)
-                update(preAlbum.preArtists.mapNotNull { it.rawName })
+                update(preAlbum.preArtists.preArtists.mapNotNull { it.rawName })
             }
     override val name = preAlbum.name
     override val releaseType = preAlbum.releaseType

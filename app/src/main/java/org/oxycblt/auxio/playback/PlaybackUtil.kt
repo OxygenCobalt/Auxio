@@ -49,13 +49,6 @@ fun Long.dsToMs() = times(100)
 fun Long.dsToSecs() = floorDiv(10)
 
 /**
- * Convert seconds into milliseconds.
- *
- * @return A converted millisecond value.
- */
-fun Long.secsToMs() = times(1000)
-
-/**
  * Convert a millisecond value into a string duration.
  *
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--

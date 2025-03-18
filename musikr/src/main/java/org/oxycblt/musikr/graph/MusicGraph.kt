@@ -23,6 +23,7 @@ import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreAlbum
 import org.oxycblt.musikr.tag.interpret.PreArtist
+import org.oxycblt.musikr.tag.interpret.PreArtistsFrom
 import org.oxycblt.musikr.tag.interpret.PreGenre
 import org.oxycblt.musikr.tag.interpret.PreSong
 import org.oxycblt.musikr.util.unlikelyToBeNull
@@ -75,7 +76,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 // Albums themselves have their own parent artists that also need to be
                 // linked up.
                 val albumArtistVertices =
-                    preSong.preAlbum.preArtists.map { preArtist ->
+                    preSong.preAlbum.preArtists.preArtists.map { preArtist ->
                         artistVertices.getOrPut(preArtist) { ArtistVertex(preArtist) }
                     }
                 val albumVertex = AlbumVertex(preSong.preAlbum, albumArtistVertices.toMutableList())
@@ -288,7 +289,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             return
         }
         // No full MBID coverage, discard the MBIDs from the graph.
-        val strippedCluster =
+        val strippedMbidCluster =
             cluster.map {
                 val noMbidPreAlbum = it.preAlbum.copy(musicBrainzId = null)
                 val simpleMbidVertex =
@@ -298,7 +299,31 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 meldAlbumVertices(it, simpleMbidVertex)
                 simpleMbidVertex
             }
-        simplifyAlbumClusterImpl(strippedCluster)
+        val fullAlbumArtistCoverage =
+            strippedMbidCluster.all { it.preAlbum.preArtists is PreArtistsFrom.Album }
+        if (fullAlbumArtistCoverage) {
+            // All albums have album artists, we can reasonably cluster around artists
+            // rather than just name.
+            val albumArtistClusters =
+                strippedMbidCluster.groupBy { it.preAlbum.preArtists.preArtists }
+            for (albumArtistCluster in albumArtistClusters.values) {
+                simplifyAlbumClusterImpl(albumArtistCluster)
+            }
+            return
+        }
+        val strippedAlbumArtistCluster =
+            strippedMbidCluster.map {
+                val noAlbumArtistPreAlbum =
+                    it.preAlbum.copy(
+                        preArtists = PreArtistsFrom.Individual(it.preAlbum.preArtists.preArtists))
+                val simpleAlbumArtistVertex =
+                    albumVertices.getOrPut(noAlbumArtistPreAlbum) {
+                        AlbumVertex(noAlbumArtistPreAlbum, it.artistVertices.toMutableList())
+                    }
+                meldAlbumVertices(it, simpleAlbumArtistVertex)
+                simpleAlbumArtistVertex
+            }
+        simplifyAlbumClusterImpl(strippedAlbumArtistCluster)
     }
 
     private fun simplifyAlbumClusterImpl(cluster: Collection<AlbumVertex>) {

@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.0.2">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.0.2&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.0.3">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.0.3&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -15,7 +15,12 @@
 </p>
 <h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a> | <a href="https://github.com/OxygenCobalt/Auxio#Donate">Donate</a></h4>
 <p align="center">
-    <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
+    <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="250"></a>
+    <a href="https://accrescent.app/app/org.oxycblt.auxio">
+        <img alt="Get it on Accrescent" src="https://accrescent.app/badges/get-it-on.png" width="250">
+    </a>
+</p>
+<p align="center">
     <a href="https://hosted.weblate.org/engage/auxio/"><img height=64 src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>
 </p>
 
@@ -65,7 +70,7 @@ precise/original dates, sort tags, and more
 
 - Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your music files
 - Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing in the background
-- Notifcations (`POST_NOTIFICATION`) to indicate ongoing playback and music loading
+- Notifications (`POST_NOTIFICATION`) to indicate ongoing playback and music loading
 
 ## Donate
 

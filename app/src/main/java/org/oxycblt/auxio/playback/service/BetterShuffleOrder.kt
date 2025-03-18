@@ -18,7 +18,9 @@
  
 package org.oxycblt.auxio.playback.service
 
+import androidx.annotation.OptIn
 import androidx.media3.common.C
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.source.ShuffleOrder
 
 /**
@@ -28,6 +30,7 @@ import androidx.media3.exoplayer.source.ShuffleOrder
  *
  * @author media3 team, Alexander Capehart (OxygenCobalt)
  */
+@OptIn(UnstableApi::class)
 class BetterShuffleOrder(private val shuffled: IntArray) : ShuffleOrder {
     private val indexInShuffled: IntArray = IntArray(shuffled.size)
 

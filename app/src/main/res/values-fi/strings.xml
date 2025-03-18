@@ -4,7 +4,6 @@
     <string name="lbl_indexer">Musiikki latautuu</string>
     <string name="lbl_indexing">Ladataan musiikkia</string>
     <string name="lbl_retry">Yritä uudelleen</string>
-    <string name="lbl_grant">Anna lupa</string>
     <string name="lbl_songs">Kappaleet</string>
     <string name="lbl_all_songs">Kaikki kappaleet</string>
     <string name="lbl_albums">Albumit</string>
@@ -51,7 +50,6 @@
     <string name="lbl_cancel">Peruuta</string>
     <string name="lbl_save">Tallenna</string>
     <string name="lbl_reset">Palauta oletus</string>
-    <string name="lbl_add">Lisää</string>
     <string name="lng_observing">Valvotaa musiikkikirjastoa muutosten varalta…</string>
     <string name="lbl_shuffle_shortcut_short">Sekoita</string>
     <string name="lbl_shuffle_shortcut_long">Sekoita kaikki</string>
@@ -70,7 +68,7 @@
     <string name="set_play_song_from_genre">Toista tyylilajista</string>
     <string name="set_separators">Moniarvoerottimet</string>
     <string name="set_exclude_non_music_desc">Ohita äänitiedostot, jotka eivät ole musiikkia, kuten podcastit</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">Ampersand &amp;</string>
     <string name="set_separators_comma">Pilkku (,)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_separators_semicolon">Puolipiste (;)</string>
@@ -89,7 +87,6 @@
     <string name="set_locations_desc">Määritä mistä musiikki tulee ladata</string>
     <string name="set_rescan">Läpikäy musiikki uudelleen</string>
     <string name="err_no_app">Tähän tehtävään kykenevää sovellusta ei löytynyt</string>
-    <string name="err_no_locations">Ei kansioita</string>
     <string name="desc_track_number">Raita %d</string>
     <string name="desc_skip_next">Siirry seuraavaan kappaleeseen</string>
     <string name="desc_change_repeat">Muuta kertaustilaa</string>
@@ -106,7 +103,6 @@
     <string name="cdc_mp3">MPEG-1-ääni</string>
     <string name="cdc_mp4">MPEG-4-ääni</string>
     <string name="cdc_ogg">Ogg-ääni</string>
-    <string name="cdc_mka">Matroska-ääni</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="clr_red">Punainen</string>
@@ -165,10 +161,8 @@
     <string name="set_round_mode">Pyöristetty tila</string>
     <string name="lbl_soundtracks">Elokuvamusiikit</string>
     <string name="lbl_mixes">DJ-mixaukset</string>
-    <string name="err_no_perms">Auxio tarvitsee luvan lukea musiikkikirjastoa</string>
     <string name="set_root_title">Asetukset</string>
     <string name="lbl_sort">Järjestä</string>
-    <string name="err_no_music">Musiikkia ei löytynyt</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="clr_grey">Harmaa</string>
     <string name="set_ui_desc">Muuta sovelluksen teemaa ja värejä</string>
@@ -205,11 +199,9 @@
     <string name="set_headset_autoplay">Automaattitoisto kuulokkeilla</string>
     <string name="set_headset_autoplay_desc">Aloita aina toisto, kun kuulokkeet yhdistetään (ei välttämättä toimi kaikilla laitteilla)</string>
     <string name="desc_skip_prev">Siirry viimeiseen kappaleeseen</string>
-    <string name="set_locations_list">Kansiot</string>
     <string name="desc_play_pause">Toista tai keskeytä</string>
     <string name="err_bad_location">Tämä kansio ei ole tuettu</string>
     <string name="desc_shuffle">Sekoitus päällä/pois</string>
-    <string name="desc_shuffle_all">Sekoita kaikki kappaleet</string>
     <string name="desc_tab_handle">Siirry tätä välilehteä</string>
     <string name="desc_clear_search">Tyhjennä hakuehto</string>
     <string name="desc_artist_image">Esittäjän %s kuva</string>
@@ -250,7 +242,6 @@
     <string name="set_rescan_desc">Tyhjennä tunnistevälimuisti ja lataa musiikkikirjasto kokonaan uudelleen (hitaampi mutta kattavampi)</string>
     <string name="lbl_song">Kappale</string>
     <string name="lbl_parent_detail">Näytä</string>
-    <string name="lbl_show_error_info">Lisää</string>
     <string name="lbl_copied">Kopioitu</string>
     <string name="lbl_report">Ilmoita virheestä</string>
     <string name="lbl_selection">Valinta</string>

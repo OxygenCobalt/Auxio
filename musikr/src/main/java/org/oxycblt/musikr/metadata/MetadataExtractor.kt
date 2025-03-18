@@ -18,24 +18,29 @@
  
 package org.oxycblt.musikr.metadata
 
-import android.os.ParcelFileDescriptor
+import android.content.ContentResolver
+import android.content.Context
 import java.io.FileInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.fs.device.DeviceFile
 
 internal interface MetadataExtractor {
-    suspend fun extract(deviceFile: DeviceFile, fd: ParcelFileDescriptor): Metadata?
+    suspend fun extract(deviceFile: DeviceFile): Metadata?
 
     companion object {
-        fun new(): MetadataExtractor = MetadataExtractorImpl
+        fun from(context: Context): MetadataExtractor =
+            MetadataExtractorImpl(context.contentResolver)
     }
 }
 
-private object MetadataExtractorImpl : MetadataExtractor {
-    override suspend fun extract(deviceFile: DeviceFile, fd: ParcelFileDescriptor) =
+private class MetadataExtractorImpl(private val contentResolver: ContentResolver) :
+    MetadataExtractor {
+    override suspend fun extract(deviceFile: DeviceFile): Metadata? =
         withContext(Dispatchers.IO) {
-            val fis = FileInputStream(fd.fileDescriptor)
-            TagLibJNI.open(deviceFile, fis).also { fis.close() }
+            contentResolver.openFileDescriptor(deviceFile.uri, "r")?.use { fd ->
+                val fis = FileInputStream(fd.fileDescriptor)
+                TagLibJNI.open(deviceFile, fis).also { fis.close() }
+            }
         }
 }

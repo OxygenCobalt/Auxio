@@ -2,7 +2,6 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Tentar novamente</string>
-    <string name="lbl_grant">Conceder</string>
     <string name="lbl_genres">Gêneros</string>
     <string name="lbl_artists">Artistas</string>
     <string name="lbl_albums">Álbuns</string>
@@ -38,7 +37,6 @@
     <string name="set_personalize">Comportamento</string>
     <string name="set_keep_shuffle">Manter modo aleatório ativado</string>
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Nenhuma música encontrada</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Faixa %d</string>
     <string name="desc_play_pause">Reproduzir ou pausar</string>
@@ -74,7 +72,6 @@
     <string name="lbl_song_detail">Ver propriedades</string>
     <string name="lbl_shuffle_shortcut_short">Aleatório</string>
     <string name="lbl_shuffle_shortcut_long">Aleatorizar tudo</string>
-    <string name="lbl_add">Adicionar</string>
     <string name="lbl_save">Salvar</string>
     <string name="lbl_library_counts">Estatísticas da biblioteca</string>
     <string name="set_notif_action">Usar player de notificação alternativo</string>
@@ -84,13 +81,11 @@
     <string name="set_locations_desc">Gerencia de onde as músicas devem ser carregadas</string>
     <string name="err_index_failed">Falha ao carregar músicas</string>
     <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
-    <string name="err_no_locations">Sem pastas</string>
     <string name="err_bad_location">Esta pasta não é compatível</string>
     <string name="set_reindex_desc">Recarrega a biblioteca de músicas usando metadados salvos em cache quando possível</string>
     <string name="set_rewind_prev">Retroceder antes de voltar</string>
     <string name="set_reindex">Recarregar música</string>
     <string name="set_rewind_prev_desc">Retroceder a música antes de voltar para a anterior</string>
-    <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para Android.</string>
     <string name="lng_indexing">Carregando a sua biblioteca de músicas…</string>
     <string name="lbl_date">Ano</string>
@@ -114,7 +109,6 @@
     <string name="set_repeat_pause_desc">Pausar quando uma música se repete</string>
     <string name="desc_skip_prev">Pular para a música anterior</string>
     <string name="desc_change_repeat">Alterar o modo de repetição</string>
-    <string name="desc_shuffle_all">Aleatorizar todas das músicas</string>
     <string name="desc_remove_song">Remover esta música da fila</string>
     <string name="desc_clear_search">Limpar histórico de pesquisa</string>
     <string name="desc_album_cover">Capa do álbum para %s</string>
@@ -136,7 +130,6 @@
     <string name="cdc_mp3">Áudio MPEG-1</string>
     <string name="cdc_mp4">Áudio MPEG-4</string>
     <string name="cdc_ogg">Áudio Ogg</string>
-    <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="desc_song_handle">Mover esta música da fila</string>
@@ -249,7 +242,6 @@
     <string name="set_replay_gain">Normalização de volume</string>
     <string name="set_library">Biblioteca</string>
     <string name="set_behavior">Comportamento</string>
-    <string name="set_locations_list">Pastas</string>
     <string name="lbl_sort_dsc">Decrescente</string>
     <string name="set_intelligent_sorting">Ignorar artigos ao classificar</string>
     <string name="set_intelligent_sorting_desc">Ignore palavras como \"the\" ao classificar por nome (funciona melhor com músicas em inglês)</string>
@@ -257,7 +249,6 @@
     <string name="fmt_def_playlist">Playlist %d</string>
     <string name="lbl_playlist">Playlist</string>
     <string name="lng_playlist_created">Playlist criada</string>
-    <string name="lbl_show_error_info">Mais</string>
     <string name="lbl_delete">Apagar</string>
     <string name="lbl_copied">Copiado</string>
     <string name="lbl_playlist_add">Adicionar à playlist</string>
@@ -334,6 +325,7 @@
     <string name="lng_empty_genres">Os seus gêneros aparecerão aqui.</string>
     <string name="set_cover_mode_save_space">Economizar espaço</string>
     <string name="set_locations_new">Nova pasta</string>
+    <string name="set_cover_mode_as_is">Qualidade original</string>
     <string name="set_with_hidden_desc">Ignorar arquivos e pastas que estão ocultos (por exemplo, .cache)</string>
     <string name="set_with_hidden">Ignorar arquivos ocultos</string>
 </resources>
