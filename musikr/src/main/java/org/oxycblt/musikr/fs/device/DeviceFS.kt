@@ -43,26 +43,6 @@ internal interface DeviceFS {
     }
 }
 
-sealed interface DeviceNode {
-    val uri: Uri
-    val path: Path
-}
-
-data class DeviceDirectory(
-    override val uri: Uri,
-    override val path: Path,
-    val parent: Deferred<DeviceDirectory>?,
-    var children: List<DeviceNode>
-) : DeviceNode
-
-data class DeviceFile(
-    override val uri: Uri,
-    override val path: Path,
-    val modifiedMs: Long,
-    val mimeType: String,
-    val size: Long,
-    val parent: Deferred<DeviceDirectory>
-) : DeviceNode
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private class DeviceFSImpl(
@@ -88,7 +68,7 @@ private class DeviceFSImpl(
         val uri = DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
         val directoryDeferred = CompletableDeferred<DeviceDirectory>()
         val recursive = mutableListOf<Flow<DeviceFile>>()
-        val children = mutableListOf<DeviceNode>()
+        val children = mutableListOf<DeviceFSEntry>()
         contentResolver.useQuery(uri, PROJECTION) { cursor ->
             val childUriIndex =
                 cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
