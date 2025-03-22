@@ -205,7 +205,7 @@
     <string name="set_separators">فواصل القيم المتعددة</string>
     <string name="set_observing_desc">أعد تحميل مكتبة الموسيقى عندما تتغير (يتطلب إشعار دائم)</string>
     <string name="set_exclude_non_music">استثناء غير الموسيقى</string>
-    <string name="set_separators_and">الرمز التّعجبي (&amp;)</string>
+    <string name="set_separators_and">امبارساند (&amp;)</string>
     <string name="set_separators_comma">الفاصلة (،)</string>
     <string name="set_separators_slash">شرطة مائلة (/)</string>
     <string name="set_cover_mode">أغطية الألبومات</string>
@@ -325,4 +325,7 @@
     </plurals>
     <string name="cnt_mp4">MPEG-4 تحتوي على %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="set_cover_mode_as_is">كما هي</string>
+    <string name="set_with_hidden_desc">ضمّن ملفات الصوت المخفية (مثال: ذاكرة التخزين المؤقت)</string>
+    <string name="set_with_hidden">ضمّن الملفات المخفية</string>
 </resources>
