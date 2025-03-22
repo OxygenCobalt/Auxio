@@ -16,14 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.tag
+package org.oxycblt.musikr.tag.interpret
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import org.oxycblt.musikr.tag.interpret.Naming
+import org.oxycblt.musikr.tag.Name
+import org.oxycblt.musikr.tag.Placeholder
+import org.oxycblt.musikr.tag.Token
 
-class NameTest {
+class NamingTest {
     @Test
     fun name_simple_withoutPunct() {
         val name = Naming.simple().name("Loveless", null)
