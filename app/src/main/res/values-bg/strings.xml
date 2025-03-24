@@ -102,7 +102,7 @@
     <string name="lbl_ep">EP</string>
     <string name="lbl_version">Версия</string>
     <string name="lbl_code">Програмен код</string>
-    <string name="lbl_wiki">Wiki</string>
+    <string name="lbl_wiki">Уики</string>
     <string name="lbl_licenses">Лицензи</string>
     <string name="lbl_library_counts">Библиотечна статистика</string>
     <string name="lbl_selection">Избор</string>
@@ -299,6 +299,21 @@
     <string name="lbl_start_playback">Стартирай възпроизвеждане</string>
     <string name="lbl_more">Още</string>
     <string name="lbl_feedback">Обратна връзка</string>
-    <string name="lbl_github">Направете проблем в GitHub</string>
+    <string name="lbl_github">Създайте проблем в GitHub</string>
     <string name="lbl_email">Изпратете имейл</string>
+    <string name="lbl_music_sources">Изберете папки</string>
+    <string name="cnt_mp4">MPEG-4, съдържащ %s</string>
+    <string name="lng_empty_songs">Вашите песни ще се показват тук.</string>
+    <string name="lng_empty_albums">Вашите албуми ще се показват тук.</string>
+    <string name="lng_empty_playlists">Вашите плейлисти ще се показват тук.</string>
+    <string name="lng_empty_artists">Вашите артисти ще се показват тук.</string>
+    <string name="lng_empty_genres">Вашите жанрове ще се показват тук.</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="def_album">Неизвестен албум</string>
+    <string name="cdc_unknown">Неизвестен</string>
+    <string name="set_with_hidden">Включете скрити файлове</string>
+    <string name="set_with_hidden_desc">Включете аудио файлове, които са скрити (напр. .cache)</string>
+    <string name="set_cover_mode_save_space">Спестете място</string>
+    <string name="set_cover_mode_as_is">Както е</string>
+    <string name="set_locations_new">Нова папка</string>
 </resources>
