@@ -101,4 +101,15 @@
     <string name="set_locations">მუსიკის საქაღალდე</string>
     <string name="set_locations_new">ახალი საქაღალდე</string>
     <string name="desc_skip_prev">ბოლო სიმღერაზე გადასვლა</string>
+    <string name="lbl_library_counts">სტატისტიკა</string>
+    <string name="lbl_licenses">ლიცენზიები</string>
+    <string name="lng_empty_playlists">დასაკრავი სიები გამოჩნდება აქ</string>
+    <string name="fmt_lib_song_count">სიმღერების რაოდენობა: %d</string>
+    <string name="fmt_lib_album_count">ალბომების რაოდენობა: %d</string>
+    <string name="fmt_lib_artist_count">არტისტების რაოდენობა: %d</string>
+    <string name="lbl_queue_add">დაამატე რიგში</string>
+    <string name="lbl_supporters">გულშემატკივრები</string>
+    <string name="lng_empty_genres">ჟანრები აქ გამოჩნდება</string>
+    <string name="fmt_lib_total_duration">სრული ხანგრძლივობა: %s</string>
+    <string name="fmt_lib_genre_count">ჟანრების რაოდენობა: %d</string>
 </resources>
