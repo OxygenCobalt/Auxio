@@ -310,4 +310,13 @@
     <string name="lbl_supporters">תומכים</string>
     <string name="lbl_github">יצירת דוח ב-GitHub</string>
     <string name="lbl_email">שליחת מייל</string>
+    <string name="lng_empty_songs">השירים שלך יופיעו כאן.</string>
+    <string name="lng_empty_albums">האלבומים שלך יופיעו כאן.</string>
+    <string name="lng_empty_artists">האמנים שלך יופיעו כאן.</string>
+    <string name="lng_empty_playlists">הפלייליסטים שלך יופיעו כאן.</string>
+    <string name="set_with_hidden">כלול קבצים מוסתרים</string>
+    <string name="lng_empty_genres">הז\'אנרים שלך יופיעו כאן.</string>
+    <string name="set_with_hidden_desc">כלול קובצי אודיו מוסתרים (לדוגמה .cache)</string>
+    <string name="set_cover_mode_as_is">כפי שהוא</string>
+    <string name="set_cover_mode_save_space">חיסכון מקום</string>
 </resources>
