@@ -44,11 +44,11 @@
     <string name="set_root_title">Nustatymai</string>
     <string name="set_theme">Tema</string>
     <string name="set_black_mode_desc">Naudok grynai juodą tamsią temą.</string>
-    <string name="info_app_desc">Paprastas, racionalus „Android“ muzikos leistuvė.</string>
+    <string name="info_app_desc">Paprasta, racionali „Android“ muzikos leistuvė.</string>
     <string name="lbl_indexer">Muzikos įkėlimas</string>
     <string name="lng_widget">Peržiūrėk ir valdyk muzikos įrašo perklausą</string>
     <string name="lbl_genres">Žanrai</string>
-    <string name="lbl_retry">Pakartoti</string>
+    <string name="lbl_retry">Kartoti</string>
     <string name="lbl_indexing">Įkeliama muzika</string>
     <string name="lng_indexing">Įkeliamas tavo muzikos biblioteka…</string>
     <string name="lbl_library_counts">Bibliotekos statistika</string>
