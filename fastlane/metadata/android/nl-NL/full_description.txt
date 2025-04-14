@@ -21,4 +21,4 @@ exacte/originele data, sorteertags en meer
 - Automatisch afspelen voor koptelefoon
 - Stijlvolle widgets die zich automatisch aanpassen aan hun grootte
 - Volledig privé en offline
-- Geen afgeronde albumhoezen (standaard)
+- Geen afgeronde albumhoezen (als u wilt)
