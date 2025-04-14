@@ -304,4 +304,25 @@
     <string name="lbl_windows_paths">Gebruik Windows-compatibele paden</string>
     <string name="lbl_report">Rapporteer</string>
     <string name="lng_playlist_exported">Afspeellijst geëxporteerd</string>
+    <string name="lbl_music_sources">Kies mappen</string>
+    <string name="set_cover_mode_as_is">Zoals</string>
+    <string name="lbl_more">Meer</string>
+    <string name="lng_tasker_start">Begint Auxio met de vorige redde staat. Als er geen gerede staat beschikbaar is, worden alle liedjes geschud. Playback zal onmiddellijk beginnen.\n\nWees voorzichtig met het controleren van deze dienst, als je het sluit en het weer probeert te gebruiken, zal je waarschijnlijk de app crashen.</string>
+    <string name="cdc_alac">Appel Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_unknown">Onbekend</string>
+    <string name="lng_empty_songs">Je nummers zullen hier worden weergegeven.</string>
+    <string name="lng_empty_playlists">Je afspeellijsten zullen hier worden weergegeven.</string>
+    <string name="set_with_hidden">Inclusief verborgen bestanden</string>
+    <string name="lbl_github">Meld een probleem met GitHub</string>
+    <string name="lbl_email">Stuur een e-mail</string>
+    <string name="lng_empty_albums">Je albums zullen hier worden weergegeven.</string>
+    <string name="lng_empty_artists">Je artiesten zullen hier worden weergegeven.</string>
+    <string name="lng_empty_genres">Je genres zullen hier worden weergegeven.</string>
+    <string name="def_album">Onbekend album</string>
+    <string name="cnt_mp4">MPEG-4 bevat %s</string>
+    <string name="set_cover_mode_save_space">Ruimte besparen</string>
+    <string name="set_locations_new">Nieuwe map</string>
+    <string name="lbl_feedback">Feedback</string>
+    <string name="lbl_start_playback">Afspelen</string>
+    <string name="set_with_hidden_desc">Inclusief audiobestanden die verborgen zijn (excl. .cache)</string>
 </resources>
