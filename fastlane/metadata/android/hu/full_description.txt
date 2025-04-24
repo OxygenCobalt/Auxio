@@ -1,25 +1,24 @@
-Az Auxio egy helyi zenelejátszó gyors, megbízható felhasználói felülettel/UX-szel, anélkül, hogy a többi zenelejátszóban jelen lévő sok haszontalan funkciót tartalmazna. A modern médialejátszó könyvtárakra épülő Auxio kiváló könyvtártámogatással és zenehallgatási minőséggel rendelkezik, mint más, elavult Android-funkciókat használó alkalmazások. Röviden: <b>Zenét játszik.</b>
+Az Auxio egy helyi zenelejátszó gyors, megbízható UI/UX felülettel, anélkül, hogy a többi zenelejátszóban előforduló sok felesleges funkcióval rendelkezne. Modern média lejátszó könyvtárakra építve, az Auxio kiváló könyvtámtámogatással és hallgatási minőséggel rendelkezik, összehasonlítva az elavult androidos funkciókat használó egyéb alkalmazásokkal. Röviden: <b>Zenét játszik le.</b>
 
 <b>Funkciók</b>
 
-- Lejátszás Media3 ExoPlayer alapú
-- A legfrissebb anyagtervezési irányelvekből származó, lendületes felhasználói felület
-- Véleményes UX, amely előnyben részesíti a könnyű használatot a szélső esetekben
+- Lejátszás a Media3 ExoPlayer alapjain
+- Gyors UI, amely a legújabb Material Design irányelvekből származik
+- Szubjektív UX, amely a használhatóságot helyezi előtérbe a szélsőséges esetekkel szemben
 - Testreszabható viselkedés
-- Lemezszámok, több előadó, kiadástípusok támogatása,
-pontos/eredeti dátumok, címkék rendezése stb
-- Fejlett előadói rendszer, amely egyesíti az előadókat és az album előadókat
-- SD-kártya-tudatos mappakezelés
+- Támogatás a lemezszámokhoz, több előadóhoz, kiadási típusokhoz, pontos/eredeti dátumokhoz, rendezési címkékhez és még sok máshoz
+- Fejlett előadói rendszer, amely egyesíti az előadókat és az albumelőadókat
+- SD kártya-érzékeny mappa kezelés
 - Megbízható lejátszási lista funkció
-- Lejátszási állapot fennmaradása
-- Android automatikus támogatás
-- Automatikus hézagmentes lejátszás
-- Teljes ReplayGain támogatás (MP3, FLAC, OGG, OPUS és MP4 fájlokon)
-- Külső hangszínszabályzó támogatás (pl. Wavelet)
-- Éltől szélig
+- Lejátszási állapot megőrzése
+- Android Auto támogatás
+- Automatikus gapless lejátszás
+- Teljes ReplayGain támogatás (MP3, FLAC, OGG, OPUS és MP4 fájlokhoz)
+- Külső ekvalizátor támogatás (pl. Wavelet)
+- Szélről-szélre
 - Beágyazott borítók támogatása
-- Keresés funkció
-- Headset automatikus lejátszása
-- Stílusos kütyük, amelyek automatikusan alkalmazkodnak a méretükhöz
+- Keresési funkció
+- Fejhallgató automatikus lejátszása
+- Stílusos widgetek, amelyek automatikusan alkalmazkodnak a méretükhöz
 - Teljesen privát és offline
-- Nincsenek lekerekített albumborítók (alapértelmezés szerint)
+- Nincsenek lekerekített albumborítók (ha nem szeretnél)
