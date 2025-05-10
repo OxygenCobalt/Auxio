@@ -15,19 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.tag.parse
-
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.metadata.Properties
-import org.oxycblt.musikr.tag.Date
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [30])
@@ -36,18 +34,18 @@ class TagParserTest {
 
     @Test
     fun tagParser_parse_basic() {
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TIT2" to listOf("Test Song"),
-                "TALB" to listOf("Test Album"),
-                "TPE1" to listOf("Test Artist"),
-                "TPE2" to listOf("Test Album Artist"),
-                "TYER" to listOf("2020"),
-                "TRCK" to listOf("1/10"),
-                "TPOS" to listOf("1/2"),
-                "TCON" to listOf("Rock", "Electronic")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                id3v2Tags =
+                    mapOf(
+                        "TIT2" to listOf("Test Song"),
+                        "TALB" to listOf("Test Album"),
+                        "TPE1" to listOf("Test Artist"),
+                        "TPE2" to listOf("Test Album Artist"),
+                        "TYER" to listOf("2020"),
+                        "TRCK" to listOf("1/10"),
+                        "TPOS" to listOf("1/2"),
+                        "TCON" to listOf("Rock", "Electronic")))
 
         val tags = tagParser.parse(metadata)
 
@@ -64,20 +62,11 @@ class TagParserTest {
     @Test
     fun tagParser_parse_multipleFormats() {
         // Test priority handling between different tag formats
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TIT2" to listOf("ID3 Song"),
-                "TALB" to listOf("ID3 Album")
-            ),
-            xiphTags = mapOf(
-                "TITLE" to listOf("Xiph Song"),
-                "ALBUM" to listOf("Xiph Album")
-            ),
-            mp4Tags = mapOf(
-                "©nam" to listOf("MP4 Song"),
-                "©alb" to listOf("MP4 Album")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                id3v2Tags = mapOf("TIT2" to listOf("ID3 Song"), "TALB" to listOf("ID3 Album")),
+                xiphTags = mapOf("TITLE" to listOf("Xiph Song"), "ALBUM" to listOf("Xiph Album")),
+                mp4Tags = mapOf("©nam" to listOf("MP4 Song"), "©alb" to listOf("MP4 Album")))
 
         val tags = tagParser.parse(metadata)
 
@@ -89,11 +78,7 @@ class TagParserTest {
     @Test
     fun tagParser_parse_compilation() {
         // Test compilation album behavior
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TCMP" to listOf("1")
-            )
-        )
+        val metadata = createTestMetadata(id3v2Tags = mapOf("TCMP" to listOf("1")))
 
         val tags = tagParser.parse(metadata)
 
@@ -104,12 +89,10 @@ class TagParserTest {
     @Test
     fun tagParser_parse_compilationWithReleaseType() {
         // Test compilation album with explicit release type
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TCMP" to listOf("1"),
-                "TXXX:RELEASETYPE" to listOf("soundtrack")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                id3v2Tags =
+                    mapOf("TCMP" to listOf("1"), "TXXX:RELEASETYPE" to listOf("soundtrack")))
 
         val tags = tagParser.parse(metadata)
 
@@ -130,14 +113,14 @@ class TagParserTest {
 
     @Test
     fun tagParser_musicBrainzIds() {
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TXXX:MUSICBRAINZ RELEASE TRACK ID" to listOf("track-id-123"),
-                "TXXX:MUSICBRAINZ ALBUM ID" to listOf("album-id-456"),
-                "TXXX:MUSICBRAINZ ARTIST ID" to listOf("artist-id-789"),
-                "TXXX:MUSICBRAINZ ALBUM ARTIST ID" to listOf("album-artist-id-012")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                id3v2Tags =
+                    mapOf(
+                        "TXXX:MUSICBRAINZ RELEASE TRACK ID" to listOf("track-id-123"),
+                        "TXXX:MUSICBRAINZ ALBUM ID" to listOf("album-id-456"),
+                        "TXXX:MUSICBRAINZ ARTIST ID" to listOf("artist-id-789"),
+                        "TXXX:MUSICBRAINZ ALBUM ARTIST ID" to listOf("album-artist-id-012")))
 
         val tags = tagParser.parse(metadata)
 
@@ -149,12 +132,12 @@ class TagParserTest {
 
     @Test
     fun tagParser_replayGain() {
-        val metadata = createTestMetadata(
-            xiphTags = mapOf(
-                "REPLAYGAIN_TRACK_GAIN" to listOf("-3.5 dB"),
-                "REPLAYGAIN_ALBUM_GAIN" to listOf("-2.1 dB")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                xiphTags =
+                    mapOf(
+                        "REPLAYGAIN_TRACK_GAIN" to listOf("-3.5 dB"),
+                        "REPLAYGAIN_ALBUM_GAIN" to listOf("-2.1 dB")))
 
         val tags = tagParser.parse(metadata)
 

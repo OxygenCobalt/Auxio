@@ -43,7 +43,6 @@ internal interface DeviceFS {
     }
 }
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 private class DeviceFSImpl(
     private val contentResolver: ContentResolver,

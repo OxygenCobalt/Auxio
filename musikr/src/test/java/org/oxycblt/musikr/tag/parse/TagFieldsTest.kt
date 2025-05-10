@@ -15,21 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.tag.parse
-
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.metadata.Properties
-import org.oxycblt.musikr.tag.Date
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [30])
@@ -50,11 +48,11 @@ class TagFieldsTest {
         assertEquals("Xiph Title", metadata.name())
 
         // Test priority (xiph > mp4 > id3v2)
-        metadata = createTestMetadata(
-            id3v2Tags = mapOf("TIT2" to listOf("ID3 Title")),
-            mp4Tags = mapOf("©nam" to listOf("MP4 Title")),
-            xiphTags = mapOf("TITLE" to listOf("Xiph Title"))
-        )
+        metadata =
+            createTestMetadata(
+                id3v2Tags = mapOf("TIT2" to listOf("ID3 Title")),
+                mp4Tags = mapOf("©nam" to listOf("MP4 Title")),
+                xiphTags = mapOf("TITLE" to listOf("Xiph Title")))
         assertEquals("Xiph Title", metadata.name())
     }
 
@@ -73,21 +71,15 @@ class TagFieldsTest {
         assertEquals(7, metadata.track())
 
         // Test Xiph format
-        metadata = createTestMetadata(
-            xiphTags = mapOf(
-                "TRACKNUMBER" to listOf("9"),
-                "TOTALTRACKS" to listOf("15")
-            )
-        )
+        metadata =
+            createTestMetadata(
+                xiphTags = mapOf("TRACKNUMBER" to listOf("9"), "TOTALTRACKS" to listOf("15")))
         assertEquals(9, metadata.track())
 
         // Test Xiph alternative total tracks
-        metadata = createTestMetadata(
-            xiphTags = mapOf(
-                "TRACKNUMBER" to listOf("8"),
-                "TRACKTOTAL" to listOf("16")
-            )
-        )
+        metadata =
+            createTestMetadata(
+                xiphTags = mapOf("TRACKNUMBER" to listOf("8"), "TRACKTOTAL" to listOf("16")))
         assertEquals(8, metadata.track())
     }
 
@@ -102,21 +94,15 @@ class TagFieldsTest {
         assertEquals(1, metadata.disc())
 
         // Test Xiph format
-        metadata = createTestMetadata(
-            xiphTags = mapOf(
-                "DISCNUMBER" to listOf("3"),
-                "TOTALDISCS" to listOf("4")
-            )
-        )
+        metadata =
+            createTestMetadata(
+                xiphTags = mapOf("DISCNUMBER" to listOf("3"), "TOTALDISCS" to listOf("4")))
         assertEquals(3, metadata.disc())
 
         // Test Xiph alternative total discs
-        metadata = createTestMetadata(
-            xiphTags = mapOf(
-                "DISCNUMBER" to listOf("2"),
-                "DISCTOTAL" to listOf("5")
-            )
-        )
+        metadata =
+            createTestMetadata(
+                xiphTags = mapOf("DISCNUMBER" to listOf("2"), "DISCTOTAL" to listOf("5")))
         assertEquals(2, metadata.disc())
     }
 
@@ -129,10 +115,10 @@ class TagFieldsTest {
         assertEquals("Rarities", metadata.subtitle())
 
         // Test priority
-        metadata = createTestMetadata(
-            id3v2Tags = mapOf("TSST" to listOf("ID3 Subtitle")),
-            xiphTags = mapOf("DISCSUBTITLE" to listOf("Xiph Subtitle"))
-        )
+        metadata =
+            createTestMetadata(
+                id3v2Tags = mapOf("TSST" to listOf("ID3 Subtitle")),
+                xiphTags = mapOf("DISCSUBTITLE" to listOf("Xiph Subtitle")))
         assertEquals("Xiph Subtitle", metadata.subtitle())
     }
 
@@ -155,12 +141,10 @@ class TagFieldsTest {
         assertEquals("2021-12-25", metadata.date().toString())
 
         // Test date priority (ORIGINALDATE > DATE)
-        metadata = createTestMetadata(
-            xiphTags = mapOf(
-                "DATE" to listOf("2023-01-01"),
-                "ORIGINALDATE" to listOf("2021-01-01")
-            )
-        )
+        metadata =
+            createTestMetadata(
+                xiphTags =
+                    mapOf("DATE" to listOf("2023-01-01"), "ORIGINALDATE" to listOf("2021-01-01")))
         assertEquals("2021-01-01", metadata.date().toString())
 
         // Test MP4 date
@@ -171,13 +155,14 @@ class TagFieldsTest {
     @Test
     fun metadata_id3v23Date() {
         // Test ID3v2.3 date components
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TYER" to listOf("2019"),
-                "TDAT" to listOf("0523"), // May 23
-                "TIME" to listOf("2145") // 21:45
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                id3v2Tags =
+                    mapOf(
+                        "TYER" to listOf("2019"),
+                        "TDAT" to listOf("0523"), // May 23
+                        "TIME" to listOf("2145") // 21:45
+                        ))
         val date = metadata.date()
         assertEquals(2019, date?.year)
         assertEquals(5, date?.month)
@@ -188,13 +173,13 @@ class TagFieldsTest {
 
     @Test
     fun metadata_albumInfo() {
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TALB" to listOf("Album Name"),
-                "TSOA" to listOf("Sort Album Name"),
-                "TXXX:RELEASETYPE" to listOf("compilation")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                id3v2Tags =
+                    mapOf(
+                        "TALB" to listOf("Album Name"),
+                        "TSOA" to listOf("Sort Album Name"),
+                        "TXXX:RELEASETYPE" to listOf("compilation")))
 
         assertEquals("Album Name", metadata.albumName())
         assertEquals("Sort Album Name", metadata.albumSortName())
@@ -203,14 +188,14 @@ class TagFieldsTest {
 
     @Test
     fun metadata_artistInfo() {
-        val metadata = createTestMetadata(
-            id3v2Tags = mapOf(
-                "TPE1" to listOf("Artist 1"),
-                "TPE2" to listOf("Album Artist 1"),
-                "TSOP" to listOf("Artist 1 Sort"),
-                "TSO2" to listOf("Album Artist 1 Sort")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                id3v2Tags =
+                    mapOf(
+                        "TPE1" to listOf("Artist 1"),
+                        "TPE2" to listOf("Album Artist 1"),
+                        "TSOP" to listOf("Artist 1 Sort"),
+                        "TSO2" to listOf("Album Artist 1 Sort")))
 
         assertEquals(listOf("Artist 1"), metadata.artistNames())
         assertEquals(listOf("Album Artist 1"), metadata.albumArtistNames())
@@ -221,23 +206,24 @@ class TagFieldsTest {
     @Test
     fun metadata_musicBrainzIds() {
         // Test different formats and variants of MusicBrainz identifiers
-        val metadata = createTestMetadata(
-            xiphTags = mapOf(
-                "MUSICBRAINZ_RELEASETRACKID" to listOf("track-mb-id"),
-                "MUSICBRAINZ_ALBUMID" to listOf("album-mb-id")
-            )
-        )
+        val metadata =
+            createTestMetadata(
+                xiphTags =
+                    mapOf(
+                        "MUSICBRAINZ_RELEASETRACKID" to listOf("track-mb-id"),
+                        "MUSICBRAINZ_ALBUMID" to listOf("album-mb-id")))
 
         assertEquals("track-mb-id", metadata.musicBrainzId())
         assertEquals("album-mb-id", metadata.albumMusicBrainzId())
 
         // Test Apple iTunes MP4 variants
-        val metadata2 = createTestMetadata(
-            mp4Tags = mapOf(
-                "----:COM.APPLE.ITUNES:MUSICBRAINZ RELEASE TRACK ID" to listOf("track-mb-id-2"),
-                "----:COM.APPLE.ITUNES:MUSICBRAINZ ALBUM ID" to listOf("album-mb-id-2")
-            )
-        )
+        val metadata2 =
+            createTestMetadata(
+                mp4Tags =
+                    mapOf(
+                        "----:COM.APPLE.ITUNES:MUSICBRAINZ RELEASE TRACK ID" to
+                            listOf("track-mb-id-2"),
+                        "----:COM.APPLE.ITUNES:MUSICBRAINZ ALBUM ID" to listOf("album-mb-id-2")))
 
         assertEquals("track-mb-id-2", metadata2.musicBrainzId())
         assertEquals("album-mb-id-2", metadata2.albumMusicBrainzId())
@@ -246,76 +232,53 @@ class TagFieldsTest {
     @Test
     fun metadata_isCompilation() {
         // Test various compilation flags
-        var metadata = createTestMetadata(
-            id3v2Tags = mapOf("TCMP" to listOf("1"))
-        )
+        var metadata = createTestMetadata(id3v2Tags = mapOf("TCMP" to listOf("1")))
         assertTrue(metadata.isCompilation())
 
-        metadata = createTestMetadata(
-            id3v2Tags = mapOf("TCMP" to listOf("0"))
-        )
+        metadata = createTestMetadata(id3v2Tags = mapOf("TCMP" to listOf("0")))
         assertFalse(metadata.isCompilation())
 
-        metadata = createTestMetadata(
-            xiphTags = mapOf("COMPILATION" to listOf("1"))
-        )
+        metadata = createTestMetadata(xiphTags = mapOf("COMPILATION" to listOf("1")))
         assertTrue(metadata.isCompilation())
 
-        metadata = createTestMetadata(
-            mp4Tags = mapOf("cpil" to listOf("1"))
-        )
+        metadata = createTestMetadata(mp4Tags = mapOf("cpil" to listOf("1")))
         assertTrue(metadata.isCompilation())
 
         // Test invalid value
-        metadata = createTestMetadata(
-            id3v2Tags = mapOf("TCMP" to listOf("yes"))
-        )
+        metadata = createTestMetadata(id3v2Tags = mapOf("TCMP" to listOf("yes")))
         assertFalse(metadata.isCompilation())
     }
 
     @Test
     fun metadata_replayGain() {
         // Test ReplayGain track adjustment
-        var metadata = createTestMetadata(
-            xiphTags = mapOf("REPLAYGAIN_TRACK_GAIN" to listOf("-5.5 dB"))
-        )
+        var metadata =
+            createTestMetadata(xiphTags = mapOf("REPLAYGAIN_TRACK_GAIN" to listOf("-5.5 dB")))
         assertEquals(-5.5f, metadata.replayGainTrackAdjustment())
 
         // Test ReplayGain album adjustment
-        metadata = createTestMetadata(
-            xiphTags = mapOf("REPLAYGAIN_ALBUM_GAIN" to listOf("3.2 dB"))
-        )
+        metadata = createTestMetadata(xiphTags = mapOf("REPLAYGAIN_ALBUM_GAIN" to listOf("3.2 dB")))
         assertEquals(3.2f, metadata.replayGainAlbumAdjustment())
 
         // Test R128 track gain
-        metadata = createTestMetadata(
-            xiphTags = mapOf("R128_TRACK_GAIN" to listOf("-2560"))
-        )
+        metadata = createTestMetadata(xiphTags = mapOf("R128_TRACK_GAIN" to listOf("-2560")))
         // R128 is converted to match ReplayGain scale (-2560/256 + 5 = -5.0)
         assertEquals(-5.0f, metadata.replayGainTrackAdjustment())
 
         // Test zero value
-        metadata = createTestMetadata(
-            xiphTags = mapOf("REPLAYGAIN_TRACK_GAIN" to listOf("0.0 dB"))
-        )
+        metadata = createTestMetadata(xiphTags = mapOf("REPLAYGAIN_TRACK_GAIN" to listOf("0.0 dB")))
         assertNull(metadata.replayGainTrackAdjustment())
     }
 
     @Test
     fun metadata_genreNames() {
-        var metadata = createTestMetadata(
-            id3v2Tags = mapOf("TCON" to listOf("Rock", "Electronic"))
-        )
+        var metadata = createTestMetadata(id3v2Tags = mapOf("TCON" to listOf("Rock", "Electronic")))
         assertEquals(listOf("Rock", "Electronic"), metadata.genreNames())
 
-        metadata = createTestMetadata(
-            mp4Tags = mapOf("©gen" to listOf("Hip Hop", "Jazz"))
-        )
+        metadata = createTestMetadata(mp4Tags = mapOf("©gen" to listOf("Hip Hop", "Jazz")))
         assertEquals(listOf("Hip Hop", "Jazz"), metadata.genreNames())
 
-        metadata = createTestMetadata(
-            xiphTags = mapOf("GENRE" to listOf("Classical", "Ambient"))
-        )
+        metadata = createTestMetadata(xiphTags = mapOf("GENRE" to listOf("Classical", "Ambient")))
         assertEquals(listOf("Classical", "Ambient"), metadata.genreNames())
     }
 
