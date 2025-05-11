@@ -178,7 +178,7 @@ internal class DeviceFSCache(private val context: Context) {
     suspend fun saveCache() =
         withContext(Dispatchers.IO) {
             try {
-                val cacheFile = File(context.filesDir, CACHE_FILE_NAME)
+                val cacheFile = File(context.cacheDir, CACHE_FILE_NAME)
                 val cacheData = CacheData(schemaVersion = SCHEMA_VERSION, entries = cache)
                 cacheFile.writeText(Json.encodeToString(CacheData.serializer(), cacheData))
             } catch (e: Exception) {
@@ -190,7 +190,7 @@ internal class DeviceFSCache(private val context: Context) {
     suspend fun loadCache() =
         withContext(Dispatchers.IO) {
             try {
-                val cacheFile = File(context.filesDir, CACHE_FILE_NAME)
+                val cacheFile = File(context.cacheDir, CACHE_FILE_NAME)
                 if (cacheFile.exists()) {
                     val cacheDataString = cacheFile.readText()
                     val cacheData = Json.decodeFromString<CacheData>(cacheDataString)
