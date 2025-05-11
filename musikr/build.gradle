@@ -7,7 +7,6 @@ plugins {
     id "com.diffplug.spotless"
     id "kotlin-parcelize"
     id "org.jetbrains.dokka"
-    id "org.jetbrains.kotlin.plugin.serialization"
 }
 
 android {
@@ -62,8 +61,6 @@ dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
-
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0'
 
     // AndroidX
     implementation "androidx.core:core-ktx:$core_version"
