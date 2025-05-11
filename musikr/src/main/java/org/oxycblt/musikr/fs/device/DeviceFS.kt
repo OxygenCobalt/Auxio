@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.fs.device
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -35,7 +34,6 @@ import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
@@ -51,35 +49,34 @@ internal interface DeviceFS {
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private class DeviceFSImpl(
-    private val context: Context,
-    private val withHidden: Boolean
-) : DeviceFS {
+private class DeviceFSImpl(private val context: Context, private val withHidden: Boolean) :
+    DeviceFS {
     private val contentResolver = context.contentResolverSafe
     private val cache = DeviceFSCache(context)
 
     override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
         flow {
-            // Initialize the cache
-            cache.loadCache()
-            // Start a new traversal to track processed URIs for cleanup
-            cache.resetTraversalTracking()
+                // Initialize the cache
+                cache.loadCache()
+                // Start a new traversal to track processed URIs for cleanup
+                cache.resetTraversalTracking()
 
-            emitAll(
-                locations.flatMapMerge { location ->
-                    exploreDirectoryImpl(
-                        location.uri,
-                        DocumentsContract.getTreeDocumentId(location.uri),
-                        location.path,
-                        null
-                    )
-                }.flowOn(Dispatchers.IO)
-            )
-        }.onCompletion {
-            // Cleanup and save cache when exploration is complete
-            cache.cleanupCache()
-            cache.saveCache()
-        }
+                emitAll(
+                    locations
+                        .flatMapMerge { location ->
+                            exploreDirectoryImpl(
+                                location.uri,
+                                DocumentsContract.getTreeDocumentId(location.uri),
+                                location.path,
+                                null)
+                        }
+                        .flowOn(Dispatchers.IO))
+            }
+            .onCompletion {
+                // Cleanup and save cache when exploration is complete
+                cache.cleanupCache()
+                cache.saveCache()
+            }
 
     private fun exploreDirectoryImpl(
         rootUri: Uri,
@@ -117,18 +114,18 @@ private class DeviceFSImpl(
                         // For directories, recursively process them
                         val childId = DocumentsContract.getDocumentId(childUri)
                         recursive.add(
-                            exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred)
-                        )
+                            exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred))
                     } else {
                         // For files, create DeviceFile objects and emit them
-                        val file = DeviceFile(
-                            uri = childUri,
-                            mimeType = "", // We don't cache mime type but it's not used elsewhere
-                            path = newPath,
-                            size = 0, // We don't cache size but it's not used elsewhere
-                            modifiedMs = child.modifiedDate,
-                            parent = directoryDeferred
-                        )
+                        val file =
+                            DeviceFile(
+                                uri = childUri,
+                                mimeType =
+                                    "", // We don't cache mime type but it's not used elsewhere
+                                path = newPath,
+                                size = 0, // We don't cache size but it's not used elsewhere
+                                modifiedMs = child.modifiedDate,
+                                parent = directoryDeferred)
                         children.add(file)
                         emit(file)
                     }
