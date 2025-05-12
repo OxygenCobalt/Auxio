@@ -50,11 +50,13 @@ private class DeviceFSImpl(
 ) : DeviceFS {
     override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
         locations.flatMapMerge { location ->
-            exploreDirectoryImpl(
-                location.uri,
-                DocumentsContract.getTreeDocumentId(location.uri),
-                location.path,
-                null)
+            val (_, query) =
+                exploreDirectoryImpl(
+                    location.uri,
+                    DocumentsContract.getTreeDocumentId(location.uri),
+                    location.path,
+                    null)
+            query
         }
 
     private fun exploreDirectoryImpl(
@@ -62,57 +64,65 @@ private class DeviceFSImpl(
         treeDocumentId: String,
         relativePath: Path,
         parent: Deferred<DeviceDirectory>?
-    ): Flow<DeviceFile> = flow {
+    ): Pair<DeviceDirectory, Flow<DeviceFile>> {
         // Make a kotlin future
         val uri = DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
         val directoryDeferred = CompletableDeferred<DeviceDirectory>()
-        val recursive = mutableListOf<Flow<DeviceFile>>()
-        val children = mutableListOf<DeviceFSEntry>()
-        contentResolver.useQuery(uri, PROJECTION) { cursor ->
-            val childUriIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
-            val displayNameIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
-            val mimeTypeIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
-            val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
-            val lastModifiedIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+        val childrenDeferred = CompletableDeferred<List<DeviceFSEntry>>()
+        val dir = DeviceDirectory(uri, relativePath, parent, childrenDeferred)
+        val query = flow {
+            val recursive = mutableListOf<Flow<DeviceFile>>()
+            val children = mutableListOf<DeviceFSEntry>()
+            contentResolver.useQuery(uri, PROJECTION) { cursor ->
+                val childUriIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+                val displayNameIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+                val mimeTypeIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
+                val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
+                val lastModifiedIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
-            while (cursor.moveToNext()) {
-                val childId = cursor.getString(childUriIndex)
-                val displayName = cursor.getString(displayNameIndex)
+                while (cursor.moveToNext()) {
+                    val childId = cursor.getString(childUriIndex)
+                    val displayName = cursor.getString(displayNameIndex)
 
-                // Skip hidden files/directories if ignoreHidden is true
-                if (!withHidden && displayName.startsWith(".")) {
-                    continue
+                    // Skip hidden files/directories if ignoreHidden is true
+                    if (!withHidden && displayName.startsWith(".")) {
+                        continue
+                    }
+
+                    val newPath = relativePath.file(displayName)
+                    val mimeType = cursor.getString(mimeTypeIndex)
+                    val lastModified = cursor.getLong(lastModifiedIndex)
+
+                    if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                        val (dir, query) =
+                            exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred)
+                        children.add(dir)
+                        recursive.add(query)
+                    } else {
+                        val size = cursor.getLong(sizeIndex)
+                        val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
+                        val file =
+                            DeviceFile(
+                                uri = childUri,
+                                mimeType = mimeType,
+                                path = newPath,
+                                size = size,
+                                modifiedMs = lastModified,
+                                parent = directoryDeferred)
+                        children.add(file)
+                        emit(file)
+                    }
                 }
-
-                val newPath = relativePath.file(displayName)
-                val mimeType = cursor.getString(mimeTypeIndex)
-                val lastModified = cursor.getLong(lastModifiedIndex)
-
-                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                    recursive.add(
-                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred))
-                } else {
-                    val size = cursor.getLong(sizeIndex)
-                    val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
-                    val file =
-                        DeviceFile(
-                            uri = childUri,
-                            mimeType = mimeType,
-                            path = newPath,
-                            size = size,
-                            modifiedMs = lastModified,
-                            parent = directoryDeferred)
-                    children.add(file)
-                    emit(file)
-                }
+                childrenDeferred.complete(children)
+                directoryDeferred.complete(dir)
+                emitAll(recursive.asFlow().flattenMerge())
             }
-            directoryDeferred.complete(DeviceDirectory(uri, relativePath, parent, children))
-            emitAll(recursive.asFlow().flattenMerge())
         }
+        return dir to query
     }
 
     private companion object {
