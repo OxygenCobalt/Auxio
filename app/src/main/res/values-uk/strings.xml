@@ -175,7 +175,7 @@
     <string name="err_bad_location">Ця папка не підтримується</string>
     <string name="def_artist">Невідомий виконавець</string>
     <string name="clr_lime">Лаймовий</string>
-    <string name="set_separators_and">Амперсанд &amp;</string>
+    <string name="set_separators_and">Амперсанд (&amp;)</string>
     <string name="desc_skip_next">Перейти до наступної пісні</string>
     <string name="desc_shuffle">Ввімкніть або вимкніть перемішування</string>
     <string name="desc_exit">Зупинити відтворення</string>
