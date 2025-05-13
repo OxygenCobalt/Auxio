@@ -31,7 +31,7 @@ data class DeviceDirectory(
     override val uri: Uri,
     override val path: Path,
     val parent: Deferred<DeviceDirectory>?,
-    var children: Deferred<List<DeviceFSEntry>>
+    var children: List<DeviceFSEntry>
 ) : DeviceFSEntry
 
 data class DeviceFile(

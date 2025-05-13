@@ -99,7 +99,6 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         val parent = file.parent.await()
         val bestCover =
             parent.children
-                .await()
                 .filterIsInstance<DeviceFile>()
                 .map { it to coverArtScore(it) }
                 .maxBy { it.second }
