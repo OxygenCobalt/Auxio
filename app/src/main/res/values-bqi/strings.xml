@@ -1,2 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="lbl_observing">واجۊری کۊلیکسیون آرنگ</string>
+    <string name="lbl_retry">قپ ریت دوواره</string>
+    <string name="lbl_music_sources">دوبلگه یل ن پسند کۊنین</string>
+    <string name="lbl_songs">آرنگا</string>
+    <string name="lbl_song">آرنگ</string>
+    <string name="lbl_all_songs">پوی آرنگا</string>
+    <string name="lbl_albums">آلبوما</string>
+    <string name="lbl_album">آلبوم</string>
+    <string name="lbl_album_live">آلبوم زنده</string>
+    <string name="lbl_eps">آلبوما کۊتال</string>
+    <string name="lbl_ep">آلبوم کۊتال</string>
+    <string name="lbl_ep_live">آلبوم کۊتال زنده</string>
+    <string name="lbl_singles">تک آرنگا</string>
+    <string name="lbl_single_remix">ریمیکس زنده</string>
+    <string name="lbl_soundtracks">آرنگا هؽل</string>
+    <string name="lbl_demo">دمو</string>
+    <string name="lbl_demos">دمو یل</string>
+    <string name="lbl_live_group">زنده</string>
+    <string name="lbl_remix_group">ریمیکسا</string>
+    <string name="lbl_appears_on">دیاری ابۊ</string>
+    <string name="lbl_artist">هونرمند</string>
+    <string name="lbl_genre">ژانر</string>
+    <string name="lbl_new_playlist">نومگه پشک نۊ</string>
+    <string name="lbl_empty_playlist">نومگه پشک پتی</string>
+    <string name="lbl_import">و من ٱووردن</string>
+    <string name="lbl_import_playlist">و من ٱووردن نومگه پشک</string>
+    <string name="lbl_mix">دیجی میکس</string>
+    <string name="lbl_indexing">آرنگ هونی بار ونی ابۊ</string>
+    <string name="info_app_desc">ی پشک کوننده آرنگ ساڌه وو منتقی سی ٱندروید</string>
+    <string name="lbl_indexer">بار ونی آرنگ</string>
+    <string name="lbl_album_remix">آلبوم ریمیکس</string>
+    <string name="lbl_ep_remix">آلبوم کۊتال ریمیکس</string>
+    <string name="lbl_single_live">تک آرنگ زنده</string>
+    <string name="lbl_mixes">دیجی میکسا</string>
+    <string name="lbl_imported_playlist">نومگه پشک و من ٱووڌه</string>
+    <string name="lbl_artists">هونرمندۉݩ</string>
+    <string name="lbl_soundtrack">آرنگ هؽل</string>
+    <string name="lbl_playlist">نومگه پشک</string>
+    <string name="lbl_single">تک آرنگ</string>
+    <string name="lbl_genres">ژانرا</string>
+</resources>
