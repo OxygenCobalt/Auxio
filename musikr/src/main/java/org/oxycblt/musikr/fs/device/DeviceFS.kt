@@ -22,26 +22,21 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
-import kotlinx.coroutines.CompletableDeferred
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.takeWhile
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
-import org.oxycblt.musikr.fs.device.FiniteHotFlow.HotObject
 
 internal interface DeviceFS {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory>
@@ -58,98 +53,113 @@ private class DeviceFSImpl(
     private val withHidden: Boolean
 ) : DeviceFS {
     override fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory> =
-        locations.map { location ->
-            coroutineScope {
-                DeviceDirectoryImpl(
-                    location.uri,
-                    DocumentsContract.getTreeDocumentId(location.uri),
-                    location.path,
-                    null,
-                    coroutineScope = CoroutineScope(Dispatchers.IO),
-                    contentResolver = contentResolver,
-                    withHidden = withHidden
-                )
+        locations.mapNotNull { location ->
+            val treeDocumentId =
+                DocumentsContract.getTreeDocumentId(location.uri)
+            val uri = DocumentsContract.buildDocumentUriUsingTree(location.uri, treeDocumentId)
+            val modifiedMs = contentResolver.useQuery(
+                uri,
+                arrayOf(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+            ) { cursor ->
+                if (!cursor.moveToFirst()) return@useQuery null
+                val lastModifiedIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+                cursor.getLong(lastModifiedIndex)
             }
+            if (modifiedMs == null) {
+                return@mapNotNull null
+            }
+            query(
+                location.uri,
+                treeDocumentId,
+                location.path,
+                0,
+                null
+            )
         }
-}
 
-private class DeviceDirectoryImpl(
-    rootUri: Uri,
-    treeDocumentId: String,
-    override val path: Path,
-    override val parent: DeviceDirectoryImpl?,
-    coroutineScope: CoroutineScope,
-    contentResolver: ContentResolver,
-    withHidden: Boolean
-) : DeviceDirectory {
-    private sealed interface HotObject {
-        data class More(val value: DeviceFSEntry) : HotObject
-        data object Done : HotObject
+    private suspend fun query(
+        rootUri: Uri,
+        treeDocumentId: String,
+        path: Path,
+        modifiedMs: Long,
+        parent: DeviceDirectory?,
+    ): DeviceDirectory = coroutineScope {
+        val dir = DeviceDirectoryImpl(
+            uri = DocumentsContract.buildDocumentUriUsingTree(rootUri, treeDocumentId),
+            path = path,
+            modifiedMs = modifiedMs,
+            parent = parent,
+            children = emptyFlow()
+        )
+        dir.children = flow {
+            Log.d("DeviceFS", "Finished querying $path")
+            contentResolver.useQuery(
+                DocumentsContract.buildChildDocumentsUriUsingTree(
+                    rootUri,
+                    treeDocumentId
+                ), PROJECTION
+            ) { cursor ->
+                val childUriIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+                val displayNameIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+                val mimeTypeIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
+                val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
+                val lastModifiedIndex =
+                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+
+                while (cursor.moveToNext()) {
+                    val childId = cursor.getString(childUriIndex)
+                    val displayName = cursor.getString(displayNameIndex)
+
+                    // Skip hidden files/directories if ignoreHidden is true
+                    if (!withHidden && displayName.startsWith(".")) {
+                        continue
+                    }
+
+                    val newPath = path.file(displayName)
+                    val mimeType = cursor.getString(mimeTypeIndex)
+                    val lastModified = cursor.getLong(lastModifiedIndex)
+
+                    if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                        val subdir =
+                            query(
+                                rootUri = rootUri,
+                                treeDocumentId = childId,
+                                path = newPath,
+                                modifiedMs = modifiedMs,
+                                parent = dir
+                            )
+                        emit(StreamedFile.More(subdir))
+                    } else {
+                        val size = cursor.getLong(sizeIndex)
+                        val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
+                        val file =
+                            DeviceFile(
+                                uri = childUri,
+                                mimeType = mimeType,
+                                path = newPath,
+                                size = size,
+                                modifiedMs = lastModified,
+                                parent = dir
+                            )
+                        emit(StreamedFile.More(file))
+                    }
+                }
+                emit(StreamedFile.Done)
+            }
+        }.shareIn(this, SharingStarted.Eagerly, replay = Int.MAX_VALUE)
+            .takeWhile { it is StreamedFile.More }
+            .map { (it as StreamedFile.More).value }
+        dir
     }
 
-    override val uri: Uri = DocumentsContract.buildDocumentUriUsingTree(rootUri, treeDocumentId)
-    override val children = flow {
-        contentResolver.useQuery(
-            DocumentsContract.buildChildDocumentsUriUsingTree(
-                rootUri,
-                treeDocumentId
-            ), PROJECTION
-        ) { cursor ->
-            val childUriIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
-            val displayNameIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
-            val mimeTypeIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
-            val sizeIndex = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE)
-            val lastModifiedIndex =
-                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-
-            while (cursor.moveToNext()) {
-                val childId = cursor.getString(childUriIndex)
-                val displayName = cursor.getString(displayNameIndex)
-
-                // Skip hidden files/directories if ignoreHidden is true
-                if (!withHidden && displayName.startsWith(".")) {
-                    continue
-                }
-
-                val newPath = path.file(displayName)
-                val mimeType = cursor.getString(mimeTypeIndex)
-                val lastModified = cursor.getLong(lastModifiedIndex)
-
-                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                    val dir =
-                        DeviceDirectoryImpl(
-                            rootUri,
-                            childId,
-                            path = newPath,
-                            parent = this@DeviceDirectoryImpl,
-                            coroutineScope,
-                            contentResolver,
-                            withHidden
-                        )
-                    emit(HotObject.More(dir))
-                } else {
-                    val size = cursor.getLong(sizeIndex)
-                    val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
-                    val file =
-                        DeviceFile(
-                            uri = childUri,
-                            mimeType = mimeType,
-                            path = newPath,
-                            size = size,
-                            modifiedMs = lastModified,
-                            parent = this@DeviceDirectoryImpl
-                        )
-                    emit(HotObject.More(file))
-                }
-            }
-            emit(HotObject.Done)
-        }
-    }.shareIn(coroutineScope, SharingStarted.Lazily, replay = Int.MAX_VALUE)
-        .takeWhile { it is HotObject.More }
-        .map { (it as HotObject.More).value }
+    private sealed interface StreamedFile {
+        data class More(val value: DeviceFSEntry) : StreamedFile
+        data object Done : StreamedFile
+    }
 
     private companion object {
         private val PROJECTION =
@@ -162,5 +172,14 @@ private class DeviceDirectoryImpl(
             )
     }
 }
+
+private class DeviceDirectoryImpl(
+    override val uri: Uri,
+    override val path: Path,
+    override val modifiedMs: Long,
+    override val parent: DeviceDirectory?,
+    override var children: Flow<DeviceFSEntry>,
+) : DeviceDirectory
+
 
 

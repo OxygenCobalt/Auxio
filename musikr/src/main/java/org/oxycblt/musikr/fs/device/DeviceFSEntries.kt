@@ -32,6 +32,7 @@ import org.oxycblt.musikr.fs.Path
 sealed interface DeviceFSEntry {
     val uri: Uri
     val path: Path
+    val modifiedMs: Long
 }
 
 interface DeviceDirectory : DeviceFSEntry {
@@ -42,7 +43,7 @@ interface DeviceDirectory : DeviceFSEntry {
 data class DeviceFile(
     override val uri: Uri,
     override val path: Path,
-    val modifiedMs: Long,
+    override val modifiedMs: Long,
     val mimeType: String,
     val size: Long,
     val parent: DeviceDirectory
