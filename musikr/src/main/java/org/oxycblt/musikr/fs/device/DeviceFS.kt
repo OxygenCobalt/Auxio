@@ -22,62 +22,69 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
-import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.core.net.toUri
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.takeWhile
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.fs.path.DocumentPathFactory
 
 internal interface DeviceFS {
-    suspend fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory>
+    fun explore(locations: Flow<MusicLocation>, fileTree: FileTree): Flow<DeviceDirectory>
 
     companion object {
         fun from(context: Context, withHidden: Boolean): DeviceFS =
-            DeviceFSImpl(context.contentResolverSafe, JsonFileTreeCache(context), withHidden)
+            DeviceFSImpl(context.contentResolverSafe, withHidden)
     }
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private class DeviceFSImpl(
     private val contentResolver: ContentResolver,
-    private val cache: FileTreeCache,
     private val withHidden: Boolean
 ) : DeviceFS {
-    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory> {
+    override fun explore(locations: Flow<MusicLocation>, fileTree: FileTree) =
         locations.mapNotNull { location ->
-            val treeDocumentId =
-                DocumentsContract.getTreeDocumentId(location.uri)
-            val uri = DocumentsContract.buildDocumentUriUsingTree(location.uri, treeDocumentId)
-            val modifiedMs = contentResolver.useQuery(
-                uri,
-                arrayOf(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-            ) { cursor ->
-                if (!cursor.moveToFirst()) return@useQuery null
-                val lastModifiedIndex =
-                    cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-                cursor.getLong(lastModifiedIndex)
-            }
-            if (modifiedMs == null) {
-                return@mapNotNull null
-            }
-            query(
-                location.uri,
-                treeDocumentId,
-                location.path,
-                modifiedMs,
-                null
-            )
+            queryRoot(location, fileTree)
         }
+
+    private suspend fun queryRoot(
+        location: MusicLocation,
+        fileTree: FileTree
+    ): DeviceDirectory? {
+        val treeDocumentId =
+            DocumentsContract.getTreeDocumentId(location.uri)
+        val uri = DocumentsContract.buildDocumentUriUsingTree(location.uri, treeDocumentId)
+        val modifiedMs = contentResolver.useQuery(
+            uri,
+            arrayOf(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+        ) { cursor ->
+            if (!cursor.moveToFirst()) return@useQuery null
+            val lastModifiedIndex =
+                cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+            cursor.getLong(lastModifiedIndex)
+        }
+        if (modifiedMs == null) {
+            return null
+        }
+        return query(
+            location.uri,
+            treeDocumentId,
+            location.path,
+            modifiedMs,
+            null,
+            fileTree
+        )
     }
 
     private suspend fun query(
@@ -86,9 +93,20 @@ private class DeviceFSImpl(
         path: Path,
         modifiedMs: Long,
         parent: DeviceDirectory?,
+        fileTree: FileTree
     ): DeviceDirectory = coroutineScope {
+        val uri = DocumentsContract.buildDocumentUriUsingTree(rootUri, treeDocumentId)
+        val cached = fileTree.queryDirectory(uri)
+        if (cached != null && cached.modifiedMs == modifiedMs) {
+            return@coroutineScope hydrateCached(
+                cached = cached,
+                parentDir = parent,
+                path = path,
+                fileTree = fileTree
+            )
+        }
         val dir = DeviceDirectoryImpl(
-            uri = DocumentsContract.buildDocumentUriUsingTree(rootUri, treeDocumentId),
+            uri = uri,
             path = path,
             modifiedMs = modifiedMs,
             parent = parent,
@@ -111,6 +129,9 @@ private class DeviceFSImpl(
                 val lastModifiedIndex =
                     cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
+                val childSubdirUris = mutableListOf<String>()
+                val childFileUris = mutableListOf<String>()
+
                 while (cursor.moveToNext()) {
                     val childId = cursor.getString(childUriIndex)
                     val displayName = cursor.getString(displayNameIndex)
@@ -131,8 +152,10 @@ private class DeviceFSImpl(
                                 treeDocumentId = childId,
                                 path = newPath,
                                 modifiedMs = modifiedMs,
-                                parent = dir
+                                parent = dir,
+                                fileTree = fileTree
                             )
+                        childSubdirUris.add(subdir.uri.toString())
                         emit(StreamedFile.More(subdir))
                     } else {
                         val size = cursor.getLong(sizeIndex)
@@ -146,15 +169,68 @@ private class DeviceFSImpl(
                                 modifiedMs = lastModified,
                                 parent = dir
                             )
+                        val write = CachedFile(
+                            uri = childUri.toString(),
+                            name = displayName,
+                            modifiedMs = lastModified,
+                            mimeType = mimeType,
+                            size = size
+                        )
+                        fileTree.updateFile(childUri, write)
+                        childFileUris.add(childUri.toString())
                         emit(StreamedFile.More(file))
                     }
                 }
+                val writeDir = CachedDirectory(
+                    uri = uri.toString(),
+                    name = requireNotNull(path.name),
+                    modifiedMs = modifiedMs,
+                    subdirUris = childSubdirUris,
+                    fileUris = childFileUris
+                )
+                fileTree.updateDirectory(uri, writeDir)
                 emit(StreamedFile.Done)
             }
         }.shareIn(this, SharingStarted.Eagerly, replay = Int.MAX_VALUE)
             .takeWhile { it is StreamedFile.More }
             .map { (it as StreamedFile.More).value }
         dir
+    }
+
+    private fun hydrateCached(
+        cached: CachedDirectory,
+        parentDir: DeviceDirectory?,
+        path: Path,
+        fileTree: FileTree
+    ): DeviceDirectory {
+        val dir = DeviceDirectoryImpl(
+            uri = cached.uri.toUri(),
+            path = path,
+            modifiedMs = cached.modifiedMs,
+            parent = parentDir,
+            children = emptyFlow()
+        )
+        dir.children = merge(
+            cached.subdirUris.asFlow().map { subdirUriString ->
+                val subdirUri = subdirUriString.toUri()
+                val cachedSubdir = requireNotNull(fileTree.queryDirectory(subdirUri)) {
+                    "No cached subdir for $subdirUri, malformed cache! Rescan needed."
+                }
+                hydrateCached(cachedSubdir, dir, dir.path.file(cachedSubdir.name), fileTree)
+            },
+            cached.fileUris.asFlow().map {
+                val cachedFile = requireNotNull(fileTree.queryFile(it.toUri()))
+                DeviceFile(
+                    uri = it.toUri(),
+                    path = dir.path.file(cachedFile.name),
+                    modifiedMs = cachedFile.modifiedMs,
+                    mimeType = cachedFile.mimeType,
+                    size = cachedFile.size,
+                    parent = dir
+                )
+            }
+        )
+        return dir
     }
 
     private sealed interface StreamedFile {
