@@ -29,14 +29,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.takeWhile
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.fs.device.FiniteHotFlow.HotObject
 
 internal interface DeviceFS {
     fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory>
@@ -77,8 +82,13 @@ private class DeviceDirectoryImpl(
     contentResolver: ContentResolver,
     withHidden: Boolean
 ) : DeviceDirectory {
+    private sealed interface HotObject {
+        data class More(val value: DeviceFSEntry) : HotObject
+        data object Done : HotObject
+    }
+
     override val uri: Uri = DocumentsContract.buildDocumentUriUsingTree(rootUri, treeDocumentId)
-    override val children = FiniteHotFlow<DeviceFSEntry>(coroutineScope) { emit ->
+    override val children = flow {
         contentResolver.useQuery(
             DocumentsContract.buildChildDocumentsUriUsingTree(
                 rootUri,
@@ -109,17 +119,17 @@ private class DeviceDirectoryImpl(
                 val lastModified = cursor.getLong(lastModifiedIndex)
 
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                    emit(
+                    val dir =
                         DeviceDirectoryImpl(
                             rootUri,
                             childId,
                             path = newPath,
-                            parent = this,
+                            parent = this@DeviceDirectoryImpl,
                             coroutineScope,
                             contentResolver,
                             withHidden
                         )
-                    )
+                    emit(HotObject.More(dir))
                 } else {
                     val size = cursor.getLong(sizeIndex)
                     val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
@@ -130,13 +140,16 @@ private class DeviceDirectoryImpl(
                             path = newPath,
                             size = size,
                             modifiedMs = lastModified,
-                            parent = this
+                            parent = this@DeviceDirectoryImpl
                         )
-                    emit(file)
+                    emit(HotObject.More(file))
                 }
             }
+            emit(HotObject.Done)
         }
-    }
+    }.shareIn(coroutineScope, SharingStarted.Lazily, replay = Int.MAX_VALUE)
+        .takeWhile { it is HotObject.More }
+        .map { (it as HotObject.More).value }
 
     private companion object {
         private val PROJECTION =

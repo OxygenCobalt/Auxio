@@ -101,7 +101,7 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // query to finally finish to be able to have a complete list of siblings to search for.
         val parent = file.parent
         val bestCover =
-            parent.children.flow()
+            parent.children
                 .filterIsInstance<DeviceFile>()
                 .map { it to coverArtScore(it) }
                 .toList()

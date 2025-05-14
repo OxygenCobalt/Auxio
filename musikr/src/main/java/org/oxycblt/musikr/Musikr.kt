@@ -19,6 +19,7 @@
 package org.oxycblt.musikr
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
@@ -119,6 +120,7 @@ private class MusikrImpl(
         locations: List<MusicLocation>,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
+        val start = System.currentTimeMillis()
         var exploredCount = 0
         var extractedCount = 0
         val explored =
@@ -134,6 +136,9 @@ private class MusikrImpl(
                 .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
                 .onCompletion { onProgress(IndexingProgress.Indeterminate) }
         val library = evaluateStep.evaluate(extracted)
+        Log.d(
+            "Musikr",
+            "Loaded ${library.songs.size} songs in ${System.currentTimeMillis() - start}ms")
         LibraryResultImpl(storage, library)
     }
 }

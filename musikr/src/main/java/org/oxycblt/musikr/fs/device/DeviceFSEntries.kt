@@ -22,7 +22,10 @@ import android.net.Uri
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import org.oxycblt.musikr.fs.Path
 
@@ -33,7 +36,7 @@ sealed interface DeviceFSEntry {
 
 interface DeviceDirectory : DeviceFSEntry {
     val parent: DeviceDirectory?
-    val children: FiniteHotFlow<DeviceFSEntry>
+    val children: Flow<DeviceFSEntry>
 }
 
 data class DeviceFile(
@@ -46,9 +49,13 @@ data class DeviceFile(
 ) : DeviceFSEntry
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun DeviceDirectory.flatten(): Flow<DeviceFile> = children.flow().flatMapMerge {
-    when (it) {
-        is DeviceDirectory -> it.flatten()
-        is DeviceFile -> flowOf(it)
+fun DeviceDirectory.flatten(): Flow<DeviceFile> = flow {
+    val recursive = mutableListOf<Flow<DeviceFile>>()
+    children.collect {
+        when (it) {
+            is DeviceDirectory -> recursive.add(it.flatten())
+            is DeviceFile -> emit(it)
+        }
     }
+    emitAll(recursive.asFlow().flatMapMerge { it })
 }
