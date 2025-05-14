@@ -39,20 +39,21 @@ import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFS {
-    fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory>
+    suspend fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory>
 
     companion object {
         fun from(context: Context, withHidden: Boolean): DeviceFS =
-            DeviceFSImpl(context.contentResolverSafe, withHidden)
+            DeviceFSImpl(context.contentResolverSafe, JsonFileTreeCache(context), withHidden)
     }
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private class DeviceFSImpl(
     private val contentResolver: ContentResolver,
+    private val cache: FileTreeCache,
     private val withHidden: Boolean
 ) : DeviceFS {
-    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory> =
+    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceDirectory> {
         locations.mapNotNull { location ->
             val treeDocumentId =
                 DocumentsContract.getTreeDocumentId(location.uri)
@@ -73,10 +74,11 @@ private class DeviceFSImpl(
                 location.uri,
                 treeDocumentId,
                 location.path,
-                0,
+                modifiedMs,
                 null
             )
         }
+    }
 
     private suspend fun query(
         rootUri: Uri,
@@ -93,7 +95,6 @@ private class DeviceFSImpl(
             children = emptyFlow()
         )
         dir.children = flow {
-            Log.d("DeviceFS", "Finished querying $path")
             contentResolver.useQuery(
                 DocumentsContract.buildChildDocumentsUriUsingTree(
                     rootUri,
