@@ -22,14 +22,20 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
+import android.util.Log
 import androidx.core.net.toUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
@@ -48,11 +54,11 @@ internal interface DeviceFS {
     }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 private class DeviceFSImpl(
     private val contentResolver: ContentResolver,
     private val withHidden: Boolean
 ) : DeviceFS {
+    private val explorationScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     override fun explore(locations: Flow<MusicLocation>, fileTree: FileTree) =
         locations.mapNotNull { location ->
             queryRoot(location, fileTree)
@@ -113,11 +119,12 @@ private class DeviceFSImpl(
             children = emptyFlow()
         )
         dir.children = flow {
+            Log.d("DeviceFS", "Querying $uri")
             contentResolver.useQuery(
                 DocumentsContract.buildChildDocumentsUriUsingTree(
                     rootUri,
-                    treeDocumentId
-                ), PROJECTION
+                    treeDocumentId,
+                ), projection = PROJECTION, sortOrder = "${DocumentsContract.Document.COLUMN_DISPLAY_NAME} DESC"
             ) { cursor ->
                 val childUriIndex =
                     cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
@@ -131,6 +138,8 @@ private class DeviceFSImpl(
 
                 val childSubdirUris = mutableListOf<String>()
                 val childFileUris = mutableListOf<String>()
+
+                val subqueries = mutableListOf<DeviceDirectory>()
 
                 while (cursor.moveToNext()) {
                     val childId = cursor.getString(childUriIndex)
@@ -158,6 +167,7 @@ private class DeviceFSImpl(
                         childSubdirUris.add(subdir.uri.toString())
                         emit(StreamedFile.More(subdir))
                     } else {
+                        Log.d("DeviceFS", "Querying file $childId")
                         val size = cursor.getLong(sizeIndex)
                         val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
                         val file =
@@ -191,18 +201,18 @@ private class DeviceFSImpl(
                 fileTree.updateDirectory(uri, writeDir)
                 emit(StreamedFile.Done)
             }
-        }.shareIn(this, SharingStarted.Eagerly, replay = Int.MAX_VALUE)
+        }.shareIn(explorationScope, SharingStarted.Lazily, replay = Int.MAX_VALUE)
             .takeWhile { it is StreamedFile.More }
             .map { (it as StreamedFile.More).value }
         dir
     }
 
-    private fun hydrateCached(
+    private suspend fun hydrateCached(
         cached: CachedDirectory,
         parentDir: DeviceDirectory?,
         path: Path,
         fileTree: FileTree
-    ): DeviceDirectory {
+    ): DeviceDirectory = coroutineScope {
         val dir = DeviceDirectoryImpl(
             uri = cached.uri.toUri(),
             path = path,
@@ -210,27 +220,36 @@ private class DeviceFSImpl(
             parent = parentDir,
             children = emptyFlow()
         )
-        dir.children = merge(
-            cached.subdirUris.asFlow().map { subdirUriString ->
-                val subdirUri = subdirUriString.toUri()
-                val cachedSubdir = requireNotNull(fileTree.queryDirectory(subdirUri)) {
-                    "No cached subdir for $subdirUri, malformed cache! Rescan needed."
-                }
-                hydrateCached(cachedSubdir, dir, dir.path.file(cachedSubdir.name), fileTree)
-            },
-            cached.fileUris.asFlow().map {
-                val cachedFile = requireNotNull(fileTree.queryFile(it.toUri()))
-                DeviceFile(
-                    uri = it.toUri(),
-                    path = dir.path.file(cachedFile.name),
-                    modifiedMs = cachedFile.modifiedMs,
-                    mimeType = cachedFile.mimeType,
-                    size = cachedFile.size,
-                    parent = dir
-                )
-            }
-        )
-        return dir
+        dir.children = flow {
+            emitAll(
+                merge(
+                    cached.subdirUris.asFlow().map { subdirUriString ->
+                        val subdirUri = subdirUriString.toUri()
+                        val cachedSubdir = requireNotNull(fileTree.queryDirectory(subdirUri)) {
+                            "No cached subdir for $subdirUri, malformed cache! Rescan needed."
+                        }
+                        hydrateCached(cachedSubdir, dir, dir.path.file(cachedSubdir.name), fileTree)
+                    },
+                    cached.fileUris.asFlow().map {
+                        val cachedFile = requireNotNull(fileTree.queryFile(it.toUri()))
+                        DeviceFile(
+                            uri = it.toUri(),
+                            path = dir.path.file(cachedFile.name),
+                            modifiedMs = cachedFile.modifiedMs,
+                            mimeType = cachedFile.mimeType,
+                            size = cachedFile.size,
+                            parent = dir
+                        )
+                    }
+                ).map { StreamedFile.More(it) }
+            )
+            emit(StreamedFile.Done)
+        }
+            .flowOn(Dispatchers.IO)
+            .shareIn(explorationScope, SharingStarted.Lazily, replay = Int.MAX_VALUE)
+            .takeWhile { it is StreamedFile.More }
+            .map { (it as StreamedFile.More).value }
+        dir
     }
 
     private sealed interface StreamedFile {

@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.transform
 import org.oxycblt.musikr.fs.Path
 
 sealed interface DeviceFSEntry {
@@ -49,14 +50,9 @@ data class DeviceFile(
     val parent: DeviceDirectory
 ) : DeviceFSEntry
 
-@OptIn(ExperimentalCoroutinesApi::class)
-fun DeviceDirectory.flatten(): Flow<DeviceFile> = flow {
-    val recursive = mutableListOf<Flow<DeviceFile>>()
-    children.collect {
+fun DeviceDirectory.flatten(): Flow<DeviceFile> = children.transform {
         when (it) {
-            is DeviceDirectory -> recursive.add(it.flatten())
+            is DeviceDirectory -> emitAll(it.flatten())
             is DeviceFile -> emit(it)
         }
     }
-    emitAll(recursive.asFlow().flatMapMerge { it })
-}
