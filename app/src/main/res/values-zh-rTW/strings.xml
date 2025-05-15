@@ -241,7 +241,7 @@
     <string name="clr_orange">橘色</string>
     <string name="clr_dynamic">動態</string>
     <string name="clr_indigo">靛青色</string>
-    <string name="lbl_demo">樣本</string>
+    <string name="lbl_demo">試聽帶</string>
     <string name="lbl_mixes">混音</string>
     <string name="desc_skip_next">移至下一首</string>
     <string name="desc_queue_bar">開啟佇列</string>
@@ -286,7 +286,7 @@
     <string name="lbl_soundtrack">原聲帶</string>
     <string name="lbl_mixtapes">混音帶</string>
     <string name="lbl_mixtape">混音帶</string>
-    <string name="lbl_demos">樣本</string>
+    <string name="lbl_demos">試聽帶</string>
     <string name="lbl_author">作者</string>
     <string name="lbl_author_name">由 Alexander Capehart 開發</string>
     <string name="set_play_song_from_artist">播放演出者</string>
