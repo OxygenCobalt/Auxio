@@ -19,14 +19,8 @@
 package org.oxycblt.musikr.fs.device
 
 import android.net.Uri
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.transform
 import org.oxycblt.musikr.fs.Path
 
@@ -50,7 +44,8 @@ data class DeviceFile(
     val parent: DeviceDirectory
 ) : DeviceFSEntry
 
-fun DeviceDirectory.flatten(): Flow<DeviceFile> = children.transform {
+fun DeviceDirectory.flatten(): Flow<DeviceFile> =
+    children.transform {
         when (it) {
             is DeviceDirectory -> emitAll(it.flatten())
             is DeviceFile -> emit(it)

@@ -128,9 +128,7 @@ private class MusikrImpl(
                 .explore(locations)
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
-                .onEach {
-                    onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount))
-                }
+                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
         val extracted =
             extractStep
                 .extract(explored)

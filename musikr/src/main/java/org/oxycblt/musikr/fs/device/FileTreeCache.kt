@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.musikr.fs.device
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import java.io.File
+import kotlinx.serialization.json.Json
 
 interface FileTreeCache {
     fun read(): FileTree
@@ -35,11 +35,13 @@ interface FileTreeCache {
 
 interface FileTree {
     suspend fun queryDirectory(uri: Uri): CachedDirectory?
+
     suspend fun updateDirectory(uri: Uri, directory: CachedDirectory)
 
     suspend fun queryFile(uri: Uri): CachedFile?
+
     suspend fun updateFile(uri: Uri, file: CachedFile)
-    
+
     suspend fun write()
 }
 
@@ -78,20 +80,23 @@ class FileTreeCacheImpl(private val context: Context) : FileTreeCache {
     companion object {
         private const val TAG = "FileTreeCache"
         private const val CACHE_FILENAME = "file_tree_cache.json"
-        private val json = Json { 
-            ignoreUnknownKeys = true 
+        private val json = Json {
+            ignoreUnknownKeys = true
             prettyPrint = true
         }
     }
-    
+
     override fun read(): FileTree {
         val cacheFile = File(context.cacheDir, CACHE_FILENAME)
-        
+
         return if (cacheFile.exists()) {
             try {
                 val jsonContent = cacheFile.readText()
                 val fileTreeCache = json.decodeFromString<FileTreeData>(jsonContent)
-                FileTreeImpl(context, fileTreeCache.directories.toMutableMap(), fileTreeCache.files.toMutableMap())
+                FileTreeImpl(
+                    context,
+                    fileTreeCache.directories.toMutableMap(),
+                    fileTreeCache.files.toMutableMap())
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to read cache file", e)
                 FileTreeImpl(context, mutableMapOf(), mutableMapOf())
@@ -111,8 +116,8 @@ class FileTreeImpl(
     companion object {
         private const val TAG = "FileTree"
         private const val CACHE_FILENAME = "file_tree_cache.json"
-        private val json = Json { 
-            ignoreUnknownKeys = true 
+        private val json = Json {
+            ignoreUnknownKeys = true
             prettyPrint = true
         }
     }
@@ -142,22 +147,22 @@ class FileTreeImpl(
         val uriString = uri.toString()
         mutableFiles[uriString] = file
     }
-    
-    override suspend fun write() = withContext(Dispatchers.IO) {
-        Log.d(TAG, "Writing cache to disk")
-        val cacheFile = File(context.cacheDir, CACHE_FILENAME)
-        try {
-            val fileTreeCache = FileTreeData(
-                directories = mutableDirectories.toMap(),
-                files = mutableFiles.toMap()
-            )
-            
-            val jsonContent = json.encodeToString(fileTreeCache)
-            cacheFile.writeText(jsonContent)
-            Log.d(TAG, "Successfully wrote cache to disk")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to write cache file", e)
+
+    override suspend fun write() =
+        withContext(Dispatchers.IO) {
+            Log.d(TAG, "Writing cache to disk")
+            val cacheFile = File(context.cacheDir, CACHE_FILENAME)
+            try {
+                val fileTreeCache =
+                    FileTreeData(
+                        directories = mutableDirectories.toMap(), files = mutableFiles.toMap())
+
+                val jsonContent = json.encodeToString(fileTreeCache)
+                cacheFile.writeText(jsonContent)
+                Log.d(TAG, "Successfully wrote cache to disk")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to write cache file", e)
+            }
+            Unit
         }
-        Unit
-    }
 }
