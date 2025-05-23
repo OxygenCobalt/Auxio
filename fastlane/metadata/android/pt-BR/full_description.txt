@@ -2,23 +2,23 @@ Auxio é um reprodutor de música local com uma interface/experiência de usuár
 
 <b>Recursos:</b>
 
-- Reprodução baseada no Media3 ExoPlayer.
-- Interface de usuário rápida derivada das últimas diretrizes do Material Design.
-- Experiência de usuário opinativa que prioriza a facilidade de uso ao invés de priorizar situações incomuns.
-- Comportamento customizável.
-- Suporte a números de disco, vários artistas, tipos de lançamento, datas precisas/originais, metadados organizados e mais.
+- Reprodução baseada no Media3 ExoPlayer
+- Interface de usuário rápida derivada das últimas diretrizes do Material Design
+- Experiência de usuário opinativa que prioriza a facilidade de uso ao invés de priorizar situações incomuns
+- Comportamento customizável
+- Suporte a números de disco, vários artistas, tipos de lançamento, datas precisas/originais, metadados organizados e mais
 - Sistema de artistas avançado que unifica artistas e artistas de álbum.
-- Gerenciamento de pastas com suporte a cartão SD.
-- Funcionalidade confiável de criação de playlists.
-- Persistência do estado de reprodução.
-- Suporte ao Android Auto.
-- Reprodução automática sem interrupções.
-- Suporte completo a ReplayGain (nos arquivos FLAC, MP3, MP4, OGG e OPUS).
-- Suporte externo a equalizador (por exemplo, Wavelet).
-- De ponta a ponta.
-- Suporte a capas embutidas.
-- Função de pesquisa.
-- Reprodução automática em fones de ouvido.
+- Gerenciamento de pastas com suporte a cartão SD
+- Funcionalidade confiável de criação de playlists
+- Persistência do estado de reprodução
+- Suporte ao Android Auto
+- Reprodução automática sem interrupções
+- Suporte completo a ReplayGain (nos arquivos FLAC, MP3, MP4, OGG e OPUS)
+- Suporte externo a equalizador (por exemplo, Wavelet)
+- De ponta a ponta
+- Suporte a capas embutidas
+- Função de pesquisa
+- Reprodução automática em fones de ouvido
 - Widgets elegantes que se adaptam automaticamente ao tamanho.
-- Completamente privado e off-line.
-- Sem capas de álbuns arredondadas (caso queira).
+- Completamente privado e off-line
+- Sem capas de álbuns arredondadas (caso queira)
