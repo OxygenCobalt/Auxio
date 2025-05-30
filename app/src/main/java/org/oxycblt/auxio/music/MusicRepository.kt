@@ -29,8 +29,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
-import org.oxycblt.auxio.music.shim.WriteOnlyMutableCache
 import org.oxycblt.auxio.music.shim.WriteOnlyFileTreeCache
+import org.oxycblt.auxio.music.shim.WriteOnlyMutableCache
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library
@@ -40,8 +40,8 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.fs.device.FileTreeCache
 import org.oxycblt.musikr.cache.MutableCache
+import org.oxycblt.musikr.fs.device.FileTreeCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -393,7 +393,9 @@ constructor(
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
-        val fileTreeCache = if (withCache) FileTreeCache.from(context) else WriteOnlyFileTreeCache(FileTreeCache.from(context))
+        val fileTreeCache =
+            if (withCache) FileTreeCache.from(context)
+            else WriteOnlyFileTreeCache(FileTreeCache.from(context))
         val storage = Storage(cache, covers, storedPlaylists, fileTreeCache)
         val interpretation = Interpretation(nameFactory, separators, withHidden)
         val result =

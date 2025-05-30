@@ -48,9 +48,7 @@ data class Storage(
      */
     val storedPlaylists: StoredPlaylists,
 
-    /**
-     * A cache for file tree information to optimize file system exploration.
-     */
+    /** A cache for file tree information to optimize file system exploration. */
     val fileTreeCache: FileTreeCache
 )
 
