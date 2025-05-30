@@ -57,6 +57,26 @@ interface Musikr {
         locations: List<MusicLocation>,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): LibraryResult
+    
+    /**
+     * Update a music location with a set of subdirectories to exclude from scanning.
+     * 
+     * @param context The context to use for loading resources.
+     * @param uri The URI of the music location to update.
+     * @param excludedSubdirs The set of subdirectory names to exclude when scanning this location.
+     * @return The updated [MusicLocation] or null if the location doesn't exist.
+     */
+    fun updateLocationExclusions(context: Context, uri: android.net.Uri, excludedSubdirs: Set<String>): MusicLocation?
+    
+    /**
+     * Create a new music location with a set of subdirectories to exclude from scanning.
+     * 
+     * @param context The context to use for loading resources.
+     * @param uri The URI of the music location to create.
+     * @param excludedSubdirs The set of subdirectory names to exclude when scanning this location.
+     * @return The new [MusicLocation] or null if the location couldn't be created.
+     */
+    fun newLocationWithExclusions(context: Context, uri: android.net.Uri, excludedSubdirs: Set<String>): MusicLocation?
 
     companion object {
         /**
@@ -116,6 +136,14 @@ private class MusikrImpl(
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
 ) : Musikr {
+    override fun updateLocationExclusions(context: Context, uri: android.net.Uri, excludedSubdirs: Set<String>): MusicLocation? {
+        return MusicLocation.existing(context, uri, excludedSubdirs)
+    }
+    
+    override fun newLocationWithExclusions(context: Context, uri: android.net.Uri, excludedSubdirs: Set<String>): MusicLocation? {
+        return MusicLocation.new(context, uri, excludedSubdirs)
+    }
+    
     override suspend fun run(
         locations: List<MusicLocation>,
         onProgress: suspend (IndexingProgress) -> Unit
