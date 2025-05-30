@@ -26,7 +26,7 @@ import org.oxycblt.musikr.fs.device.contentResolverSafe
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.musikr.util.splitEscaped
 
-class MusicLocation private constructor(val uri: Uri, val path: Path, val excludedSubdirs: Set<String> = emptySet()) {
+class MusicLocation private constructor(val uri: Uri, val path: Path) {
     override fun equals(other: Any?) = other is MusicLocation && uri == other.uri
 
     override fun hashCode() = 31 * uri.hashCode()
@@ -34,7 +34,7 @@ class MusicLocation private constructor(val uri: Uri, val path: Path, val exclud
     override fun toString(): String = uri.toString()
 
     companion object {
-        fun new(context: Context, uri: Uri, excludedSubdirs: Set<String> = emptySet()): MusicLocation? {
+        fun new(context: Context, uri: Uri): MusicLocation? {
             if (!DocumentsContract.isTreeUri(uri)) return null
             val documentPathFactory = DocumentPathFactory.from(context)
             val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
@@ -47,10 +47,10 @@ class MusicLocation private constructor(val uri: Uri, val path: Path, val exclud
                     uri,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             }
-            return MusicLocation(uri, path, excludedSubdirs)
+            return MusicLocation(uri, path)
         }
 
-        fun existing(context: Context, uri: Uri, excludedSubdirs: Set<String> = emptySet()): MusicLocation? {
+        fun existing(context: Context, uri: Uri): MusicLocation? {
             val documentPathFactory = DocumentPathFactory.from(context)
             if (!DocumentsContract.isTreeUri(uri)) return null
             val notPersisted =
@@ -59,28 +59,14 @@ class MusicLocation private constructor(val uri: Uri, val path: Path, val exclud
                 }
             if (notPersisted) return null
             val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
-            return MusicLocation(uri, path, excludedSubdirs)
+            return MusicLocation(uri, path)
         }
 
-        fun toString(list: List<MusicLocation>): String {
-            return list.joinToString(";") { location ->
-                val uriStr = location.uri.toString().replace(";", "\\;")
-                val excludedSubdirsStr = location.excludedSubdirs.joinToString(",") { it.replace(",", "\\,").replace(";", "\\;") }
-                if (excludedSubdirsStr.isEmpty()) uriStr else "$uriStr|$excludedSubdirsStr"
-            }
-        }
+        fun toString(list: List<MusicLocation>) =
+            list.joinToString(";") { it.uri.toString().replace(";", "\\;") }
 
         fun existing(context: Context, string: String): List<MusicLocation> {
-            return string.splitEscaped { it == ';' }.mapNotNull { entry ->
-                val parts = entry.split("|", limit = 2)
-                val uriStr = parts[0]
-                val excludedSubdirs = if (parts.size > 1) {
-                    parts[1].splitEscaped { it == ',' }.toSet()
-                } else {
-                    emptySet()
-                }
-                existing(context, Uri.parse(uriStr), excludedSubdirs)
-            }
+            return string.splitEscaped { it == ';' }.mapNotNull { existing(context, Uri.parse(it)) }
         }
     }
 }
