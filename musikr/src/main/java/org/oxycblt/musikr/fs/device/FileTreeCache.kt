@@ -31,6 +31,10 @@ import kotlinx.serialization.json.Json
 
 interface FileTreeCache {
     fun read(): FileTree
+
+    companion object {
+        fun from(context: Context): FileTreeCache = FileTreeCacheImpl(context)
+    }
 }
 
 interface FileTree {
@@ -47,7 +51,7 @@ interface FileTree {
 
 // Define the sealed interface
 @Serializable
-sealed interface FileSystemEntry {
+private sealed interface FileSystemEntry {
     val uri: String
     val modifiedMs: Long
 }
@@ -71,14 +75,13 @@ data class CachedFile(
 ) : FileSystemEntry
 
 @Serializable
-data class FileTreeData(
+private data class FileTreeData(
     val directories: Map<String, CachedDirectory> = mapOf(),
     val files: Map<String, CachedFile> = mapOf()
 )
 
-class FileTreeCacheImpl(private val context: Context) : FileTreeCache {
+private class FileTreeCacheImpl(private val context: Context) : FileTreeCache {
     companion object {
-        private const val TAG = "FileTreeCache"
         private const val CACHE_FILENAME = "file_tree_cache.json"
         private val json = Json {
             ignoreUnknownKeys = true
@@ -98,17 +101,15 @@ class FileTreeCacheImpl(private val context: Context) : FileTreeCache {
                     fileTreeCache.directories.toMutableMap(),
                     fileTreeCache.files.toMutableMap())
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to read cache file", e)
                 FileTreeImpl(context, mutableMapOf(), mutableMapOf())
             }
         } else {
-            Log.i(TAG, "Cache file does not exist, creating new FileTree")
             FileTreeImpl(context, mutableMapOf(), mutableMapOf())
         }
     }
 }
 
-class FileTreeImpl(
+private class FileTreeImpl(
     private val context: Context,
     private val mutableDirectories: MutableMap<String, CachedDirectory> = mutableMapOf(),
     private val mutableFiles: MutableMap<String, CachedFile> = mutableMapOf()
@@ -124,26 +125,22 @@ class FileTreeImpl(
 
     // Directory operations
     override suspend fun queryDirectory(uri: Uri): CachedDirectory? {
-        Log.d("FileTreeCache", "Querying directory: $uri ${mutableDirectories[uri.toString()]}")
         val uriString = uri.toString()
         return mutableDirectories[uriString]
     }
 
     override suspend fun updateDirectory(uri: Uri, directory: CachedDirectory) {
-        Log.d("FileTreeCache", "Updating directory: $uri")
         val uriString = uri.toString()
         mutableDirectories[uriString] = directory
     }
 
     // File operations
     override suspend fun queryFile(uri: Uri): CachedFile? {
-        Log.d("FileTreeCache", "Querying file: $uri")
         val uriString = uri.toString()
         return mutableFiles[uriString]
     }
 
     override suspend fun updateFile(uri: Uri, file: CachedFile) {
-        Log.d("FileTreeCache", "Updating file: $uri")
         val uriString = uri.toString()
         mutableFiles[uriString] = file
     }

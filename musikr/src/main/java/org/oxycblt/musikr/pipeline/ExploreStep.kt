@@ -44,7 +44,6 @@ import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceFS
 import org.oxycblt.musikr.fs.device.FileTreeCache
-import org.oxycblt.musikr.fs.device.FileTreeCacheImpl
 import org.oxycblt.musikr.fs.device.flatten
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
@@ -58,7 +57,7 @@ internal interface ExploreStep {
                 DeviceFS.from(context, interpretation.withHidden),
                 storage.cache,
                 storage.covers,
-                FileTreeCacheImpl(context),
+                storage.fileTreeCache,
                 storage.storedPlaylists)
     }
 }
