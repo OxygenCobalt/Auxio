@@ -51,10 +51,8 @@ internal interface DeviceFS {
     fun explore(query: Query, fileTree: FileTree): Flow<DeviceDirectory>
 
     companion object {
-        fun from(
-            context: Context,
-            withHidden: Boolean
-        ): DeviceFS = DeviceFSImpl(context.contentResolverSafe, withHidden)
+        fun from(context: Context, withHidden: Boolean): DeviceFS =
+            DeviceFSImpl(context.contentResolverSafe, withHidden)
     }
 }
 
@@ -65,9 +63,15 @@ private class DeviceFSImpl(
     private val explorationScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun explore(query: Query, fileTree: FileTree) =
-        query.source.asFlow().mapNotNull { location -> queryRoot(location, fileTree, query.exclude) }
+        query.source.asFlow().mapNotNull { location ->
+            queryRoot(location, fileTree, query.exclude)
+        }
 
-    private suspend fun queryRoot(location: OpenedLocation, fileTree: FileTree, exclude: List<Location>): DeviceDirectory? {
+    private suspend fun queryRoot(
+        location: OpenedLocation,
+        fileTree: FileTree,
+        exclude: List<Location>
+    ): DeviceDirectory? {
         val treeDocumentId = DocumentsContract.getTreeDocumentId(location.uri)
         val uri = DocumentsContract.buildDocumentUriUsingTree(location.uri, treeDocumentId)
         val modifiedMs =
@@ -82,7 +86,8 @@ private class DeviceFSImpl(
         if (modifiedMs == null) {
             return null
         }
-        return query(location.uri, treeDocumentId, location.path, modifiedMs, null, fileTree, exclude)
+        return query(
+            location.uri, treeDocumentId, location.path, modifiedMs, null, fileTree, exclude)
     }
 
     private suspend fun query(
@@ -159,7 +164,7 @@ private class DeviceFSImpl(
                                             // Check if the current path matches the excluded path
                                             // exactly
                                             excluded.path.volume == newPath.volume &&
-                                                    excluded.path.components == newPath.components
+                                                excluded.path.components == newPath.components
                                         }
                                     if (shouldExclude) {
                                         continue
@@ -250,7 +255,7 @@ private class DeviceFSImpl(
                                         val shouldExclude =
                                             exclude.any { excluded ->
                                                 excluded.path.volume == subdirPath.volume &&
-                                                        excluded.path.components ==
+                                                    excluded.path.components ==
                                                         subdirPath.components
                                             }
 
@@ -258,7 +263,9 @@ private class DeviceFSImpl(
                                             return@transform
                                         }
 
-                                        emit(hydrateCached(cachedSubdir, dir, subdirPath, fileTree, exclude))
+                                        emit(
+                                            hydrateCached(
+                                                cachedSubdir, dir, subdirPath, fileTree, exclude))
                                     }
                                     .filterNotNull(),
                                 cached.fileUris.asFlow().map {

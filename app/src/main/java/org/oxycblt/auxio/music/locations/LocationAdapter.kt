@@ -25,7 +25,6 @@ import org.oxycblt.auxio.databinding.ItemMusicLocationBinding
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.OpenedLocation
 import timber.log.Timber as L
 
@@ -38,7 +37,8 @@ import timber.log.Timber as L
 class LocationAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
     private val _locations = mutableListOf<OpenedLocation>()
     /**
-     * The current list of [OpenedLocation]s, may not line up with [OpenedLocation]s due to removals.
+     * The current list of [OpenedLocation]s, may not line up with [OpenedLocation]s due to
+     * removals.
      */
     val locations: List<OpenedLocation> = _locations
 

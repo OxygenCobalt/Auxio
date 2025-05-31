@@ -42,7 +42,6 @@ import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
-import org.oxycblt.musikr.fs.OpenedLocation
 import org.oxycblt.musikr.fs.device.DeviceFS
 import org.oxycblt.musikr.fs.device.FileTreeCache
 import org.oxycblt.musikr.fs.device.flatten
@@ -55,9 +54,7 @@ internal interface ExploreStep {
     companion object {
         fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
             ExploreStepImpl(
-                DeviceFS.from(
-                    context = context,
-                    withHidden = interpretation.withHidden),
+                DeviceFS.from(context = context, withHidden = interpretation.withHidden),
                 storage.cache,
                 storage.covers,
                 storage.fileTreeCache,

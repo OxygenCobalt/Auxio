@@ -117,31 +117,29 @@ private class MusikrImpl(
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
 ) : Musikr {
-    override suspend fun run(
-        query: Query,
-        onProgress: suspend (IndexingProgress) -> Unit
-    ) = coroutineScope {
-        val start = System.currentTimeMillis()
-        var exploredCount = 0
-        var extractedCount = 0
-        val explored =
-            exploreStep
-                .explore(query)
-                .buffer(Channel.UNLIMITED)
-                .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
-                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
-        val extracted =
-            extractStep
-                .extract(explored)
-                .buffer(Channel.UNLIMITED)
-                .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
-                .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-        val library = evaluateStep.evaluate(extracted)
-        Log.d(
-            "Musikr",
-            "Loaded ${library.songs.size} songs in ${System.currentTimeMillis() - start}ms")
-        LibraryResultImpl(storage, library)
-    }
+    override suspend fun run(query: Query, onProgress: suspend (IndexingProgress) -> Unit) =
+        coroutineScope {
+            val start = System.currentTimeMillis()
+            var exploredCount = 0
+            var extractedCount = 0
+            val explored =
+                exploreStep
+                    .explore(query)
+                    .buffer(Channel.UNLIMITED)
+                    .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
+                    .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
+            val extracted =
+                extractStep
+                    .extract(explored)
+                    .buffer(Channel.UNLIMITED)
+                    .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
+                    .onCompletion { onProgress(IndexingProgress.Indeterminate) }
+            val library = evaluateStep.evaluate(extracted)
+            Log.d(
+                "Musikr",
+                "Loaded ${library.songs.size} songs in ${System.currentTimeMillis() - start}ms")
+            LibraryResultImpl(storage, library)
+        }
 }
 
 private class LibraryResultImpl(

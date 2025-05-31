@@ -85,8 +85,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         }
         set(value) {
             sharedPreferences.edit {
-                putString(
-                    getString(R.string.set_key_music_locations), value.stringify())
+                putString(getString(R.string.set_key_music_locations), value.stringify())
                 commit()
                 // Sometimes changing this setting just won't actually trigger the listener.
                 // Only this one. No idea why.
@@ -138,7 +137,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
     }
-
 
     private fun List<OpenedLocation>.stringify(): String =
         joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
