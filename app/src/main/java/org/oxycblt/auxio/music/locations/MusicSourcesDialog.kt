@@ -35,7 +35,8 @@ import org.oxycblt.auxio.databinding.DialogMusicLocationsBinding
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.showToast
-import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.OpenedLocation
 import timber.log.Timber as L
 
 /**
@@ -81,7 +82,8 @@ class MusicSourcesDialog :
 
         val locations =
             savedInstanceState?.getStringArrayList(KEY_PENDING_LOCATIONS)?.mapNotNull {
-                MusicLocation.existing(requireContext(), it.toUri())
+                val context = requireContext()
+                Location.from(context, it.toUri())?.open(context)
             } ?: musicSettings.musicLocations
 
         locationAdapter.addAll(locations)
@@ -99,7 +101,7 @@ class MusicSourcesDialog :
         binding.locationsRecycler.adapter = null
     }
 
-    override fun onRemoveLocation(location: MusicLocation) {
+    override fun onRemoveLocation(location: OpenedLocation) {
         locationAdapter.remove(location)
     }
 
@@ -117,7 +119,7 @@ class MusicSourcesDialog :
     }
 
     /**
-     * Add a Document Tree [Uri] chosen by the user to the current [MusicLocation]s.
+     * Add a Document Tree [Uri] chosen by the user to the current [OpenedLocation]s.
      *
      * @param uri The document tree [Uri] to add, chosen by the user. Will do nothing if the [Uri]
      *   is null or not valid.
@@ -128,7 +130,8 @@ class MusicSourcesDialog :
             L.d("No URI given (user closed the dialog)")
             return
         }
-        val location = MusicLocation.new(requireContext(), uri)
+        val context = requireContext()
+        val location = Location.from(context, uri)?.open(context)
 
         if (location != null) {
             locationAdapter.add(location)

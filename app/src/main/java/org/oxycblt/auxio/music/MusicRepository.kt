@@ -37,6 +37,7 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Query
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.MutableCache
@@ -392,9 +393,10 @@ constructor(
         val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
         val storage = Storage(cache, covers, storedPlaylists)
+        val query = Query(source = locations, exclude = emptyList())
         val interpretation = Interpretation(nameFactory, separators, withHidden)
         val result =
-            Musikr.new(context, storage, interpretation).run(locations, ::emitIndexingProgress)
+            Musikr.new(context, storage, interpretation).run(query, ::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work
         // later.
         musicSettings.revision = newRevision

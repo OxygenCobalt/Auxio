@@ -26,11 +26,13 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Interpretation
+import org.oxycblt.musikr.Query
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
@@ -38,18 +40,20 @@ import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
-import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.fs.OpenedLocation
 import org.oxycblt.musikr.fs.device.DeviceFS
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(locations: List<MusicLocation>): Flow<Explored>
+    fun explore(query: Query): Flow<Explored>
 
     companion object {
         fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
             ExploreStepImpl(
-                DeviceFS.from(context, interpretation.withHidden),
+                DeviceFS.from(
+                    context = context,
+                    withHidden = interpretation.withHidden),
                 storage.cache,
                 storage.covers,
                 storage.storedPlaylists)
@@ -62,13 +66,11 @@ private class ExploreStepImpl(
     private val covers: Covers<out Cover>,
     private val storedPlaylists: StoredPlaylists
 ) : ExploreStep {
-    override fun explore(locations: List<MusicLocation>): Flow<Explored> {
+    override fun explore(query: Query): Flow<Explored> {
         val addingMs = System.currentTimeMillis()
         return merge(
             deviceFS
-                .explore(
-                    locations.asFlow(),
-                )
+                .explore(query)
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
                 .distributedMap(n = 8, on = Dispatchers.IO, buffer = Channel.UNLIMITED) { file ->
                     when (val cacheResult = cache.read(file)) {

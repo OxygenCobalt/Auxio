@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.ExtractStep
@@ -47,13 +46,13 @@ interface Musikr {
     /**
      * Start loading music from the given [locations] and the configuration provided earlier.
      *
-     * @param locations The [MusicLocation]s to search for music in.
+     * @param query The [Query] to load music from.
      * @param onProgress Optional callback to receive progress on the current status of the music
      *   pipeline. Warning: These events will be rapid-fire.
      * @return A handle to the newly created library alongside further cleanup.
      */
     suspend fun run(
-        locations: List<MusicLocation>,
+        query: Query,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): LibraryResult
 
@@ -70,6 +69,7 @@ interface Musikr {
          */
         fun new(context: Context, storage: Storage, interpretation: Interpretation): Musikr =
             MusikrImpl(
+                context,
                 storage,
                 ExploreStep.from(context, storage, interpretation),
                 ExtractStep.from(context, storage),
@@ -96,7 +96,7 @@ sealed interface IndexingProgress {
     /**
      * Currently indexing and extracting tags from device music.
      *
-     * @param explored The amount of music currently found from the given [MusicLocation]s.
+     * @param explored The amount of music currently found from the given [Query].
      * @param loaded The amount of music that has had metadata extracted and parsed.
      */
     data class Songs(val loaded: Int, val explored: Int) : IndexingProgress
@@ -110,20 +110,21 @@ sealed interface IndexingProgress {
 }
 
 private class MusikrImpl(
+    private val context: Context,
     private val storage: Storage,
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
 ) : Musikr {
     override suspend fun run(
-        locations: List<MusicLocation>,
+        query: Query,
         onProgress: suspend (IndexingProgress) -> Unit
     ) = coroutineScope {
         var exploredCount = 0
         var extractedCount = 0
         val explored =
             exploreStep
-                .explore(locations)
+                .explore(query)
                 .buffer(Channel.UNLIMITED)
                 .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
                 .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }

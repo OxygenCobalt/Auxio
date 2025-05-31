@@ -28,18 +28,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
+import org.oxycblt.musikr.Query
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFS {
-    fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile>
+    fun explore(query: Query): Flow<DeviceFile>
 
     companion object {
-        fun from(context: Context, withHidden: Boolean): DeviceFS =
-            DeviceFSImpl(context.contentResolverSafe, withHidden)
+        fun from(
+            context: Context,
+            withHidden: Boolean
+        ): DeviceFS = DeviceFSImpl(context.contentResolverSafe, withHidden)
     }
 }
 
@@ -48,14 +50,15 @@ private class DeviceFSImpl(
     private val contentResolver: ContentResolver,
     private val withHidden: Boolean
 ) : DeviceFS {
-    override fun explore(locations: Flow<MusicLocation>): Flow<DeviceFile> =
-        locations.flatMapMerge { location ->
+    override fun explore(query: Query): Flow<DeviceFile> =
+        query.source.asFlow().flatMapMerge { location ->
             exploreDirectoryImpl(
                 location.uri,
                 DocumentsContract.getTreeDocumentId(location.uri),
                 location.path,
                 null)
         }
+
 
     private fun exploreDirectoryImpl(
         rootUri: Uri,
@@ -94,7 +97,8 @@ private class DeviceFSImpl(
 
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
                     recursive.add(
-                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred))
+                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred)
+                    )
                 } else {
                     val size = cursor.getLong(sizeIndex)
                     val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
@@ -105,7 +109,8 @@ private class DeviceFSImpl(
                             path = newPath,
                             size = size,
                             modifiedMs = lastModified,
-                            parent = directoryDeferred)
+                            parent = directoryDeferred
+                        )
                     children.add(file)
                     emit(file)
                 }

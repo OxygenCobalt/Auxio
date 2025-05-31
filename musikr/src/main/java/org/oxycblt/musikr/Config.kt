@@ -21,9 +21,16 @@ package org.oxycblt.musikr
 import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.MutableCovers
+import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.OpenedLocation
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
+
+data class Query(
+    val source: List<OpenedLocation>,
+    val exclude: List<Location>
+)
 
 /** Side-effect laden [Storage] for use during music loading and [MutableLibrary] operation. */
 data class Storage(
