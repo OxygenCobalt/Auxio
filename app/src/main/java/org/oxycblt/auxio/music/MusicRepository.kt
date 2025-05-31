@@ -386,14 +386,15 @@ constructor(
                 Naming.simple()
             }
         val locations = musicSettings.musicLocations
+        val excludedLocations = musicSettings.excludedLocations
         val withHidden = musicSettings.withHidden
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
+        val query = Query(source = locations, exclude = excludedLocations)
         val storage = Storage(cache, covers, storedPlaylists)
-        val query = Query(source = locations, exclude = emptyList())
         val interpretation = Interpretation(nameFactory, separators, withHidden)
         val result = Musikr.new(context, storage, interpretation).run(query, ::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work

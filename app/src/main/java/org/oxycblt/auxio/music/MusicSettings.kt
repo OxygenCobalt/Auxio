@@ -40,6 +40,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var revision: UUID?
     /** The locations of music to load. */
     var musicLocations: List<OpenedLocation>
+    /** The locations to exclude from music loading. */
+    var excludedLocations: List<Location>
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to ignore hidden files and directories during music loading. */
@@ -93,6 +95,21 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
+    override var excludedLocations: List<Location>
+        get() {
+            val locations =
+                sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
+                    ?: return emptyList()
+            return locations.toLocations()
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_excluded_locations), value.stringifyLocations())
+                commit()
+                listener?.onMusicLocationsChanged()
+            }
+        }
+
     override val excludeNonMusic: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
 
@@ -120,7 +137,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
         when (key) {
-            getString(R.string.set_key_music_locations) -> {
+            getString(R.string.set_key_music_locations),
+            getString(R.string.set_key_excluded_locations) -> {
                 L.d("Dispatching music locations change")
                 listener.onMusicLocationsChanged()
             }
@@ -143,6 +161,12 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
 
     private fun String.toOpenedLocations(): List<OpenedLocation> =
         splitEscaped { it == ';' }.mapNotNull { Location.from(context, it.toUri())?.open(context) }
+
+    private fun List<Location>.stringifyLocations(): String =
+        joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
+
+    private fun String.toLocations(): List<Location> =
+        splitEscaped { it == ';' }.mapNotNull { Location.from(context, it.toUri()) }
 
     private inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
         val split = mutableListOf<String>()
