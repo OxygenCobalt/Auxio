@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ExcludedLocationsDialog.kt is part of Auxio.
+ * MusicSourcesDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,36 +28,37 @@ import org.oxycblt.musikr.fs.Location
 import javax.inject.Inject
 
 /**
- * Dialog that manages the excluded locations setting.
+ * Dialog that manages the music locations setting.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class ExcludedLocationsDialog : LocationsDialog<Location.Unopened>() {
-    override val locationAdapter = ExcludedLocationAdapter(this)
+class MusicLocationsDialog : LocationsDialog<Location.Opened>() {
+    override val locationAdapter = MusicLocationAdapter(this)
 
     @Inject
     override lateinit var musicSettings: MusicSettings
 
-    override fun getDialogTitle(): Int = R.string.set_excluded_locations
+    override fun getDialogTitle(): Int = R.string.set_locations
 
-    override fun getCurrentLocations(): List<Location.Unopened> = musicSettings.excludedLocations
+    override fun getCurrentLocations(): List<Location.Opened> = musicSettings.musicLocations
 
-    override fun saveLocations(locations: List<Location.Unopened>) {
-        musicSettings.excludedLocations = locations
+    override fun saveLocations(locations: List<Location.Opened>) {
+        musicSettings.musicLocations = locations
     }
 
-    override fun getPendingLocationsKey(): String = KEY_PENDING_EXCLUDED_LOCATIONS
+    override fun getPendingLocationsKey(): String = KEY_PENDING_LOCATIONS
 
-    override fun convertUriToLocation(uri: Uri): Location.Unopened? {
-        return Location.Unopened.from(requireContext(), uri)
+    override fun convertUriToLocation(uri: Uri): Location.Opened? {
+        val context = requireContext()
+        return Location.Unopened.from(context, uri)?.open(context)
     }
 
-    override fun createLocationFromUri(context: Context, uri: Uri): Location.Unopened? {
-        return Location.Unopened.from(context, uri)
+    override fun createLocationFromUri(context: Context, uri: Uri): Location.Opened? {
+        return Location.Unopened.from(context, uri)?.open(context)
     }
 
     private companion object {
-        const val KEY_PENDING_EXCLUDED_LOCATIONS = BuildConfig.APPLICATION_ID + ".key.PENDING_EXCLUDED_LOCATIONS"
+        const val KEY_PENDING_LOCATIONS = BuildConfig.APPLICATION_ID + ".key.PENDING_LOCATIONS"
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ExcludedLocationAdapter.kt is part of Auxio.
+ * LocationAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,23 +24,23 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.musikr.fs.Location
 
 /**
- * [LocationAdapter] that manages a list of [Location.Unopened] excluded directory instances.
+ * [LocationAdapter] that manages a list of [Location.Opened] music directory instances.
  *
  * @param listener A [LocationAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ExcludedLocationAdapter(listener: LocationAdapter.Listener<Location.Unopened>) : LocationAdapter<Location.Unopened>(listener) {
-    override fun createViewHolder(parent: ViewGroup): LocationViewHolder<Location.Unopened> =
-        ExcludedLocationViewHolder.from(parent)
+class MusicLocationAdapter(listener: LocationAdapter.Listener<Location.Opened>) : LocationAdapter<Location.Opened>(listener) {
+    override fun createViewHolder(parent: ViewGroup): LocationViewHolder<Location.Opened> =
+        MusicLocationViewHolder.from(parent)
 }
 
 /**
- * A [LocationViewHolder] that displays a [Location.Unopened]. Use [from] to create an instance.
+ * A [LocationViewHolder] that displays a [Location.Opened]. Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ExcludedLocationViewHolder private constructor(binding: ItemMusicLocationBinding) :
-    LocationViewHolder<Location.Unopened>(binding) {
+class MusicLocationViewHolder private constructor(binding: ItemMusicLocationBinding) :
+    LocationViewHolder<Location.Opened>(binding) {
 
     companion object {
         /**
@@ -50,6 +50,6 @@ class ExcludedLocationViewHolder private constructor(binding: ItemMusicLocationB
          * @return A new instance.
          */
         fun from(parent: ViewGroup) =
-            ExcludedLocationViewHolder(ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
+            MusicLocationViewHolder(ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
     }
 }

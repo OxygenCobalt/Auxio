@@ -57,7 +57,7 @@ private class DeviceFSImpl(
                 null)
         }
 
-    private fun exploreDirectoryImpl(
+    private suspend fun exploreDirectoryImpl(
         rootUri: Uri,
         treeDocumentId: String,
         relativePath: Path,

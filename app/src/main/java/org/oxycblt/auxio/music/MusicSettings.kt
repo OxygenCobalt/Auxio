@@ -27,7 +27,6 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.musikr.fs.Location
-import org.oxycblt.musikr.fs.OpenedLocation
 import timber.log.Timber as L
 
 /**
@@ -39,9 +38,9 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The current library revision. */
     var revision: UUID?
     /** The locations of music to load. */
-    var musicLocations: List<OpenedLocation>
+    var musicLocations: List<Location.Opened>
     /** The locations to exclude from music loading. */
-    var excludedLocations: List<Location>
+    var excludedLocations: List<Location.Unopened>
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to ignore hidden files and directories during music loading. */
@@ -78,7 +77,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
-    override var musicLocations: List<OpenedLocation>
+    override var musicLocations: List<Location.Opened>
         get() {
             val locations =
                 sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
@@ -95,12 +94,12 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
-    override var excludedLocations: List<Location>
+    override var excludedLocations: List<Location.Unopened>
         get() {
             val locations =
                 sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
                     ?: return emptyList()
-            return locations.toLocations()
+            return locations.toUnopenedLocations()
         }
         set(value) {
             sharedPreferences.edit {
@@ -157,17 +156,17 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         }
     }
 
-    private fun List<OpenedLocation>.stringify(): String =
+    private fun List<Location.Opened>.stringify(): String =
         joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
 
-    private fun String.toOpenedLocations(): List<OpenedLocation> =
-        splitEscaped { it == ';' }.mapNotNull { Location.from(context, it.toUri())?.open(context) }
+    private fun String.toOpenedLocations(): List<Location.Opened> =
+        splitEscaped { it == ';' }.mapNotNull { Location.Unopened.from(context, it.toUri())?.open(context) }
 
     private fun List<Location>.stringifyLocations(): String =
         joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
 
-    private fun String.toLocations(): List<Location> =
-        splitEscaped { it == ';' }.mapNotNull { Location.from(context, it.toUri()) }
+    private fun String.toUnopenedLocations(): List<Location.Unopened> =
+        splitEscaped { it == ';' }.mapNotNull { Location.Unopened.from(context, it.toUri()) }
 
     private inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
         val split = mutableListOf<String>()
