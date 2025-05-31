@@ -33,6 +33,11 @@
             app:summary="@string/set_locations_desc"
             app:title="@string/set_locations" />
 
+        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+            app:key="@string/set_key_excluded_dirs"
+            app:summary="@string/set_excluded_locations_desc"
+            app:title="@string/set_excluded_locations" />
+
         <Preference
             app:key="@string/set_key_reindex"
             app:summary="@string/set_reindex_desc"
