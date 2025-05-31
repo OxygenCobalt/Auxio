@@ -388,6 +388,7 @@ constructor(
                 Naming.simple()
             }
         val locations = musicSettings.musicLocations
+        val excludedLocations = musicSettings.excludedLocations
         val withHidden = musicSettings.withHidden
 
         val currentRevision = musicSettings.revision
@@ -397,7 +398,7 @@ constructor(
         val fileTreeCache =
             if (withCache) FileTreeCache.from(context)
             else WriteOnlyFileTreeCache(FileTreeCache.from(context))
-        val query = Query(source = locations, exclude = emptyList())
+        val query = Query(source = locations, exclude = excludedLocations)
         val storage = Storage(cache, covers, storedPlaylists, fileTreeCache)
         val interpretation = Interpretation(nameFactory, separators, withHidden)
         val result = Musikr.new(context, storage, interpretation).run(query, ::emitIndexingProgress)
