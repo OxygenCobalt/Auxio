@@ -104,7 +104,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         }
         set(value) {
             sharedPreferences.edit {
-                putString(getString(R.string.set_key_excluded_locations), value.stringifyLocations())
+                putString(
+                    getString(R.string.set_key_excluded_locations), value.stringifyLocations())
                 commit()
                 listener?.onMusicLocationsChanged()
             }
