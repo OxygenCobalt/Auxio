@@ -8,7 +8,7 @@ The filesystem package provides abstraction layers for accessing music files on 
 
 ### Core Types
 
-**OpenedLocation** (`OpenedLocation.kt`)
+**Location.Opened** (`Location.Opened.kt`)
 - Represents a location to search for music
 - Can be a device storage location or content URI
 
@@ -50,7 +50,7 @@ The filesystem package provides abstraction layers for accessing music files on 
 
 ## Usage Flow
 
-1. User provides `OpenedLocation`s to scan
+1. User provides `Location.Opened`s to scan
 2. `DeviceFS` traverses these locations
 3. `FileTreeCache` optimizes subsequent scans
 4. Discovered files are passed to the pipeline for processing

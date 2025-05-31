@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.transform
 import org.oxycblt.musikr.Query
 import org.oxycblt.musikr.fs.Location
-import org.oxycblt.musikr.fs.OpenedLocation
+import org.oxycblt.musikr.fs.Location.Opened
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFS {
@@ -68,7 +68,7 @@ private class DeviceFSImpl(
         }
 
     private suspend fun queryRoot(
-        location: OpenedLocation,
+        location: Location.Opened,
         fileTree: FileTree,
         exclude: List<Location>
     ): DeviceDirectory? {

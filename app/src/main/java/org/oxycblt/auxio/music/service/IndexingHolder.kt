@@ -36,7 +36,7 @@ import org.oxycblt.auxio.music.shim.UpdateTrackerFactory
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.musikr.MusicParent
-import org.oxycblt.musikr.fs.OpenedLocation
+import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.track.UpdateTracker
 import timber.log.Timber as L
 
@@ -168,7 +168,7 @@ private constructor(
         }
     }
 
-    override fun onUpdate(location: OpenedLocation) {
+    override fun onUpdate(location: Location.Opened) {
         if (musicSettings.shouldBeObserving) {
             musicRepository.requestIndex(true)
         }

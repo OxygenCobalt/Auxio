@@ -49,7 +49,7 @@ The `PipelineItem.kt` defines the data types that flow through the pipeline:
 ## Pipeline Flow
 
 ```
-OpenedLocation → ExploreStep → ExtractStep → EvaluateStep → Library
+Location.Opened → ExploreStep → ExtractStep → EvaluateStep → Library
 ```
 
 Data flows through the pipeline using Kotlin's Flow API, with extensive use of parallel processing and buffering to optimize performance.

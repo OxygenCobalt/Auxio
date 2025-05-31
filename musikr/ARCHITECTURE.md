@@ -38,7 +38,7 @@ graph LR
 ## Module Structure
 
 ### 1. File System (`fs` package)
-- **OpenedLocation** - Represents a location to search for music
+- **Location.Opened** - Represents a location to search for music
 - **DeviceFS** - Provides access to device storage
 - **FileTreeCache** - Caches filesystem structure for faster indexing
 
