@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -40,15 +41,20 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.takeWhile
-import org.oxycblt.musikr.fs.MusicLocation
+import kotlinx.coroutines.flow.transform
+import org.oxycblt.musikr.Query
+import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.OpenedLocation
 import org.oxycblt.musikr.fs.Path
 
 internal interface DeviceFS {
-    fun explore(locations: Flow<MusicLocation>, fileTree: FileTree): Flow<DeviceDirectory>
+    fun explore(query: Query, fileTree: FileTree): Flow<DeviceDirectory>
 
     companion object {
-        fun from(context: Context, withHidden: Boolean): DeviceFS =
-            DeviceFSImpl(context.contentResolverSafe, withHidden)
+        fun from(
+            context: Context,
+            withHidden: Boolean
+        ): DeviceFS = DeviceFSImpl(context.contentResolverSafe, withHidden)
     }
 }
 
@@ -58,10 +64,10 @@ private class DeviceFSImpl(
 ) : DeviceFS {
     private val explorationScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    override fun explore(locations: Flow<MusicLocation>, fileTree: FileTree) =
-        locations.mapNotNull { location -> queryRoot(location, fileTree) }
+    override fun explore(query: Query, fileTree: FileTree) =
+        query.source.asFlow().mapNotNull { location -> queryRoot(location, fileTree, query.exclude) }
 
-    private suspend fun queryRoot(location: MusicLocation, fileTree: FileTree): DeviceDirectory? {
+    private suspend fun queryRoot(location: OpenedLocation, fileTree: FileTree, exclude: List<Location>): DeviceDirectory? {
         val treeDocumentId = DocumentsContract.getTreeDocumentId(location.uri)
         val uri = DocumentsContract.buildDocumentUriUsingTree(location.uri, treeDocumentId)
         val modifiedMs =
@@ -76,7 +82,7 @@ private class DeviceFSImpl(
         if (modifiedMs == null) {
             return null
         }
-        return query(location.uri, treeDocumentId, location.path, modifiedMs, null, fileTree)
+        return query(location.uri, treeDocumentId, location.path, modifiedMs, null, fileTree, exclude)
     }
 
     private suspend fun query(
@@ -85,13 +91,14 @@ private class DeviceFSImpl(
         path: Path,
         modifiedMs: Long,
         parent: DeviceDirectory?,
-        fileTree: FileTree
+        fileTree: FileTree,
+        exclude: List<Location>
     ): DeviceDirectory = coroutineScope {
         val uri = DocumentsContract.buildDocumentUriUsingTree(rootUri, treeDocumentId)
         val cached = fileTree.queryDirectory(uri)
         if (cached != null && cached.modifiedMs == modifiedMs) {
             return@coroutineScope hydrateCached(
-                cached = cached, parentDir = parent, path = path, fileTree = fileTree)
+                cached = cached, parentDir = parent, path = path, fileTree = fileTree, exclude)
         }
         val dir =
             DeviceDirectoryImpl(
@@ -145,6 +152,19 @@ private class DeviceFSImpl(
                                 val lastModified = cursor.getLong(lastModifiedIndex)
 
                                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                                    // Check if this directory should be excluded
+
+                                    val shouldExclude =
+                                        exclude.any { excluded ->
+                                            // Check if the current path matches the excluded path
+                                            // exactly
+                                            excluded.path.volume == newPath.volume &&
+                                                    excluded.path.components == newPath.components
+                                        }
+                                    if (shouldExclude) {
+                                        continue
+                                    }
+
                                     val subdir =
                                         query(
                                             rootUri = rootUri,
@@ -152,7 +172,8 @@ private class DeviceFSImpl(
                                             path = newPath,
                                             modifiedMs = modifiedMs,
                                             parent = dir,
-                                            fileTree = fileTree)
+                                            fileTree = fileTree,
+                                            exclude = exclude)
                                     childSubdirUris.add(subdir.uri.toString())
                                     emit(StreamedFile.More(subdir))
                                 } else {
@@ -202,7 +223,8 @@ private class DeviceFSImpl(
         cached: CachedDirectory,
         parentDir: DeviceDirectory?,
         path: Path,
-        fileTree: FileTree
+        fileTree: FileTree,
+        exclude: List<Location>
     ): DeviceDirectory = coroutineScope {
         val dir =
             DeviceDirectoryImpl(
@@ -215,18 +237,30 @@ private class DeviceFSImpl(
             flow {
                     emitAll(
                         merge(
-                                cached.subdirUris.asFlow().map { subdirUriString ->
-                                    val subdirUri = subdirUriString.toUri()
-                                    val cachedSubdir =
-                                        requireNotNull(fileTree.queryDirectory(subdirUri)) {
-                                            "No cached subdir for $subdirUri, malformed cache! Rescan needed."
+                                cached.subdirUris
+                                    .asFlow()
+                                    .transform { subdirUriString ->
+                                        val subdirUri = subdirUriString.toUri()
+                                        val cachedSubdir =
+                                            requireNotNull(fileTree.queryDirectory(subdirUri)) {
+                                                "No cached subdir for $subdirUri, malformed cache! Rescan needed."
+                                            }
+                                        val subdirPath = dir.path.file(cachedSubdir.name)
+
+                                        val shouldExclude =
+                                            exclude.any { excluded ->
+                                                excluded.path.volume == subdirPath.volume &&
+                                                        excluded.path.components ==
+                                                        subdirPath.components
+                                            }
+
+                                        if (shouldExclude) {
+                                            return@transform
                                         }
-                                    hydrateCached(
-                                        cachedSubdir,
-                                        dir,
-                                        dir.path.file(cachedSubdir.name),
-                                        fileTree)
-                                },
+
+                                        emit(hydrateCached(cachedSubdir, dir, subdirPath, fileTree, exclude))
+                                    }
+                                    .filterNotNull(),
                                 cached.fileUris.asFlow().map {
                                     val cachedFile = requireNotNull(fileTree.queryFile(it.toUri()))
                                     DeviceFile(

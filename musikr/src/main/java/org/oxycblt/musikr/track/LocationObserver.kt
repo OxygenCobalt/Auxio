@@ -22,11 +22,11 @@ import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
 import android.os.Looper
-import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.fs.OpenedLocation
 
 internal class LocationObserver(
     private val context: Context,
-    private val location: MusicLocation,
+    private val location: OpenedLocation,
     private val listener: UpdateTracker.Callback
 ) : ContentObserver(Handler(Looper.getMainLooper())), Runnable {
     private val handler = Handler(Looper.getMainLooper())

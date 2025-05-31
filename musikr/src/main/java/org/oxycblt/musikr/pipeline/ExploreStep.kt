@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onCompletion
 import org.oxycblt.musikr.Interpretation
+import org.oxycblt.musikr.Query
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
@@ -41,7 +42,7 @@ import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
-import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.fs.OpenedLocation
 import org.oxycblt.musikr.fs.device.DeviceFS
 import org.oxycblt.musikr.fs.device.FileTreeCache
 import org.oxycblt.musikr.fs.device.flatten
@@ -49,12 +50,14 @@ import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(locations: List<MusicLocation>): Flow<Explored>
+    fun explore(query: Query): Flow<Explored>
 
     companion object {
         fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
             ExploreStepImpl(
-                DeviceFS.from(context, interpretation.withHidden),
+                DeviceFS.from(
+                    context = context,
+                    withHidden = interpretation.withHidden),
                 storage.cache,
                 storage.covers,
                 storage.fileTreeCache,
@@ -70,12 +73,12 @@ private class ExploreStepImpl(
     private val storedPlaylists: StoredPlaylists
 ) : ExploreStep {
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun explore(locations: List<MusicLocation>): Flow<Explored> {
+    override fun explore(query: Query): Flow<Explored> {
         val addingMs = System.currentTimeMillis()
         val fileTree = fileTreeCache.read()
         return merge(
             deviceFS
-                .explore(locations.asFlow(), fileTree)
+                .explore(query, fileTree)
                 .flatMapMerge { it.flatten() }
                 .onCompletion { fileTree.write() }
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
