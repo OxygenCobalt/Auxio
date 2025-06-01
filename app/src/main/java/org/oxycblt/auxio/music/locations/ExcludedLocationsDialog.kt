@@ -21,11 +21,11 @@ package org.oxycblt.auxio.music.locations
 import android.content.Context
 import android.net.Uri
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.musikr.fs.Location
-import javax.inject.Inject
 
 /**
  * Dialog that manages the excluded locations setting.
@@ -36,8 +36,7 @@ import javax.inject.Inject
 class ExcludedLocationsDialog : LocationsDialog<Location.Unopened>() {
     override val locationAdapter = ExcludedLocationAdapter(this)
 
-    @Inject
-    override lateinit var musicSettings: MusicSettings
+    @Inject override lateinit var musicSettings: MusicSettings
 
     override fun getDialogTitle(): Int = R.string.set_excluded_locations
 
@@ -58,6 +57,7 @@ class ExcludedLocationsDialog : LocationsDialog<Location.Unopened>() {
     }
 
     private companion object {
-        const val KEY_PENDING_EXCLUDED_LOCATIONS = BuildConfig.APPLICATION_ID + ".key.PENDING_EXCLUDED_LOCATIONS"
+        const val KEY_PENDING_EXCLUDED_LOCATIONS =
+            BuildConfig.APPLICATION_ID + ".key.PENDING_EXCLUDED_LOCATIONS"
     }
 }

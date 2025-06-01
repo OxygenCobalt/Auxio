@@ -160,7 +160,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
 
     private fun String.toOpenedLocations(): List<Location.Opened> =
-        splitEscaped { it == ';' }.mapNotNull { Location.Unopened.from(context, it.toUri())?.open(context) }
+        splitEscaped { it == ';' }
+            .mapNotNull { Location.Unopened.from(context, it.toUri())?.open(context) }
 
     private fun List<Location>.stringifyLocations(): String =
         joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }

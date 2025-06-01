@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * BaseLocationsDialog.kt is part of Auxio.
+ * LocationsDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,8 @@ abstract class LocationsDialog<T : Location> :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            getPendingLocationsKey(), ArrayList(locationAdapter.locations.map { it.uri.toString() }))
+            getPendingLocationsKey(),
+            ArrayList(locationAdapter.locations.map { it.uri.toString() }))
     }
 
     override fun onDestroyBinding(binding: DialogMusicLocationsBinding) {
@@ -122,9 +123,14 @@ abstract class LocationsDialog<T : Location> :
     }
 
     protected abstract fun getDialogTitle(): Int
+
     protected abstract fun getCurrentLocations(): List<T>
+
     protected abstract fun saveLocations(locations: List<T>)
+
     protected abstract fun getPendingLocationsKey(): String
+
     protected abstract fun convertUriToLocation(uri: Uri): T?
+
     protected abstract fun createLocationFromUri(context: android.content.Context, uri: Uri): T?
 }
