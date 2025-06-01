@@ -324,4 +324,6 @@
     <string name="set_cover_mode_as_is">保持原样</string>
     <string name="set_with_hidden">包括隐藏的文件</string>
     <string name="set_with_hidden_desc">包括隐藏的音频文件（排除 .cache）</string>
+    <string name="set_excluded_locations_desc">管理要排除在音乐加载以外的文件夹</string>
+    <string name="set_excluded_locations">排除的文件夹</string>
 </resources>

@@ -200,7 +200,7 @@
     <string name="lbl_indexing">Zene betöltése</string>
     <string name="lbl_observing">Zene könyvtár figyelése</string>
     <string name="desc_exit">Lejátszás megállítása</string>
-    <string name="info_app_desc">Egyszerű, praktikus zenelejátszó androidra.</string>
+    <string name="info_app_desc">Egyszerű, praktikus zenelejátszó Androidra.</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_singles">Kislemezek</string>
     <string name="lbl_single">Kislemez</string>
@@ -302,4 +302,25 @@
     <string name="lng_playlist_imported">Lejátszási lista importálva</string>
     <string name="err_import_failed">Nem sikerült importálni a lejátszási listát ebből a fájlból</string>
     <string name="err_export_failed">Nem sikerült exportálni a lejátszási listát ebbe a fájlba</string>
+    <string name="lbl_music_sources">Válassz mappákat</string>
+    <string name="set_locations_new">Új mappa</string>
+    <string name="def_album">Ismeretlen album</string>
+    <string name="lng_empty_songs">Itt fognak megjelenni a számaid.</string>
+    <string name="set_with_hidden">Rejtett fájlok megjelenítése</string>
+    <string name="set_with_hidden_desc">Rejtett audió fájlok megjelenítése (pl. .cache)</string>
+    <string name="lbl_more">Több</string>
+    <string name="lbl_email">Küldj egy e-mailt</string>
+    <string name="lng_empty_albums">Itt fognak megjelenni az albumaid.</string>
+    <string name="lng_empty_artists">Itt fognak megjelenni az előadóid.</string>
+    <string name="lng_empty_genres">Itt fognak megjelenni a műfajaid.</string>
+    <string name="set_cover_mode_as_is">Ahogy van</string>
+    <string name="cnt_mp4">MPEG-4, amely tartalmazza a %s-t</string>
+    <string name="lbl_start_playback">Indítsd el a lejátszást</string>
+    <string name="lng_tasker_start">Elindítja az Auxio-t a korábban mentett állapot használatával. Ha nincs mentett állapot, akkor minden szám véletlenszerűen lejátszásra kerül. A lejátszás azonnal elindul.\n\nFIGYELEM: Légy óvatos a szolgáltatás vezérlésével, mert ha bezárod, majd újra próbálod használni, valószínűleg összeomlik az alkalmazás.</string>
+    <string name="lng_empty_playlists">Itt fognak megjelenni a lejátszási listáid.</string>
+    <string name="set_cover_mode_save_space">Helytakarékos</string>
+    <string name="cdc_alac">Apple veszteségmentes audió kodek (ALAC)</string>
+    <string name="cdc_unknown">Ismeretlen</string>
+    <string name="lbl_feedback">Visszajelzés</string>
+    <string name="lbl_github">Hozz létre egy hibajegyet a GitHubon</string>
 </resources>

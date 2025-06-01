@@ -78,13 +78,13 @@
     <string name="set_pre_amp_desc">A pré-amplificação é aplicada em cima da normalização de volume</string>
     <string name="set_pre_amp_warning">Aviso: Alterar a pré-amplificação para um valor positivo muito alto pode resultar em picos de volume em algumas faixas.</string>
     <string name="set_locations">Pastas de música</string>
-    <string name="set_locations_desc">Gerencia de onde as músicas devem ser carregadas</string>
+    <string name="set_locations_desc">Gerencie de onde as músicas devem ser carregadas</string>
     <string name="err_index_failed">Falha ao carregar músicas</string>
     <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
     <string name="err_bad_location">Esta pasta não é compatível</string>
     <string name="set_reindex_desc">Recarrega a biblioteca de músicas usando metadados salvos em cache quando possível</string>
     <string name="set_rewind_prev">Retroceder antes de voltar</string>
-    <string name="set_reindex">Recarregar música</string>
+    <string name="set_reindex">Recarregar músicas</string>
     <string name="set_rewind_prev_desc">Retroceder a música antes de voltar para a anterior</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para Android.</string>
     <string name="lng_indexing">Carregando a sua biblioteca de músicas…</string>
@@ -223,7 +223,7 @@
         <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
-    <string name="set_rescan">Re-escanear músicas</string>
+    <string name="set_rescan">Reescanear músicas</string>
     <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de música (lento, porém mais completo)</string>
     <string name="set_hide_collaborators">Ocultar artistas colaboradores</string>
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
@@ -328,4 +328,6 @@
     <string name="set_cover_mode_as_is">Qualidade original</string>
     <string name="set_with_hidden_desc">Ignorar arquivos e pastas que estão ocultos (por exemplo, .cache)</string>
     <string name="set_with_hidden">Ignorar arquivos ocultos</string>
+    <string name="set_excluded_locations_desc">Gerencie as pastas a serem ignoradas no carregamento de músicas</string>
+    <string name="set_excluded_locations">Pastas ignoradas</string>
 </resources>

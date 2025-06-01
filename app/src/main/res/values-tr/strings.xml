@@ -319,4 +319,7 @@
     <string name="lbl_email">E-posta yolla</string>
     <string name="lbl_github">Github\'da rapor aç</string>
     <string name="err_export_failed">Bu dosyaya bir oynatma listesi aktarılamıyor</string>
+    <string name="set_with_hidden">Gizli dosyaları içer</string>
+    <string name="set_with_hidden_desc">Gizli olan ses dosyalarını içer (örn. .cache)</string>
+    <string name="set_cover_mode_as_is">Olduğu gibi</string>
 </resources>
