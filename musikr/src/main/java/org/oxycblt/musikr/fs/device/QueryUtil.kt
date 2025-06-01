@@ -74,4 +74,4 @@ internal inline fun <reified R> ContentResolver.useQuery(
     args: Array<String>? = null,
     sortOrder: String? = null,
     block: (Cursor) -> R
-) = safeQuery(uri, projection, selector, args, sortOrder).use(block)
+) = query(uri, projection, selector, args, sortOrder)?.use(block)
