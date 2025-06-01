@@ -326,4 +326,5 @@
     <string name="set_cover_mode_as_is">Unverändert</string>
     <string name="set_with_hidden_desc">Audio-Dateien einbeziehen, die versteckt sind (z. B. .cache)</string>
     <string name="set_with_hidden">Versteckte Dateien einbeziehen</string>
+    <string name="set_excluded_locations">Ausgeschlossene Ordner</string>
 </resources>
