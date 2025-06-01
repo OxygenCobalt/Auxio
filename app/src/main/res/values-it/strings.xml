@@ -328,4 +328,6 @@
     <string name="set_cover_mode_as_is">Qualità originale</string>
     <string name="set_with_hidden_desc">Include file audio nascosti (per esempio in .cache)</string>
     <string name="set_with_hidden">Includi file nascosti</string>
+    <string name="set_excluded_locations">Cartelle da escludere</string>
+    <string name="set_excluded_locations_desc">Seleziona le cartelle da escludere dal caricamento della musica</string>
 </resources>
