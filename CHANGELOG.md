@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.5
+
+#### What's Improved
+- Re-added folder exclusion
+
+#### What's Fixed
+- Fixed slow loading on large libraries
+
 ## 4.0.3
 
 #### What's Improved
