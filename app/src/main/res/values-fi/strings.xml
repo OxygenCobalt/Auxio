@@ -316,4 +316,6 @@
     <string name="set_with_hidden_desc">Sisällytä piilotetut äänitiedostot (esim. .cache)</string>
     <string name="set_with_hidden">Sisällytä piilotetut tiedostot</string>
     <string name="set_cover_mode_as_is">Sellaisenaan</string>
+    <string name="set_excluded_locations">Poissuljetut kansiot</string>
+    <string name="set_excluded_locations_desc">Hallinnoi kansioita, joista ei ladata musiikkia</string>
 </resources>
