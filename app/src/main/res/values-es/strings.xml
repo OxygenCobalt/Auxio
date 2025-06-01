@@ -330,4 +330,6 @@
     <string name="set_cover_mode_as_is">Original</string>
     <string name="set_with_hidden_desc">Incluir ficheros de audio ocultos (ej. .cache)</string>
     <string name="set_with_hidden">Incluir ficheros ocultos</string>
+    <string name="set_excluded_locations">Directorios excluidos</string>
+    <string name="set_excluded_locations_desc">Administrar exclusión de directorios</string>
 </resources>

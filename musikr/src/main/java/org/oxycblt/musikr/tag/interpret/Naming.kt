@@ -41,12 +41,12 @@ abstract class Naming {
     }
 }
 
-private data object IntelligentNaming : Naming() {
-    override fun name(raw: String, sort: String?) = IntelligentKnownName(raw, sort)
+data object IntelligentNaming : Naming() {
+    override fun name(raw: String, sort: String?): Name.Known = IntelligentKnownName(raw, sort)
 }
 
-private data object SimpleNaming : Naming() {
-    override fun name(raw: String, sort: String?) = SimpleKnownName(raw, sort)
+data object SimpleNaming : Naming() {
+    override fun name(raw: String, sort: String?): Name.Known = SimpleKnownName(raw, sort)
 }
 
 private val collator: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }

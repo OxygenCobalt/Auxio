@@ -68,7 +68,7 @@
     <string name="set_play_song_from_genre">Toista tyylilajista</string>
     <string name="set_separators">Moniarvoerottimet</string>
     <string name="set_exclude_non_music_desc">Ohita äänitiedostot, jotka eivät ole musiikkia, kuten podcastit</string>
-    <string name="set_separators_and">Ampersand &amp;</string>
+    <string name="set_separators_and">Ja-merkki (&amp;)</string>
     <string name="set_separators_comma">Pilkku (,)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_separators_semicolon">Puolipiste (;)</string>
@@ -313,4 +313,9 @@
     <string name="lng_empty_genres">Tyylilajisi tulevat näkymään tässä.</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="set_cover_mode_save_space">Säätä tilaa</string>
+    <string name="set_with_hidden_desc">Sisällytä piilotetut äänitiedostot (esim. .cache)</string>
+    <string name="set_with_hidden">Sisällytä piilotetut tiedostot</string>
+    <string name="set_cover_mode_as_is">Sellaisenaan</string>
+    <string name="set_excluded_locations">Poissuljetut kansiot</string>
+    <string name="set_excluded_locations_desc">Hallinnoi kansioita, joista ei ladata musiikkia</string>
 </resources>

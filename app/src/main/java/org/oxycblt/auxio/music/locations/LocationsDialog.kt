@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2021 Auxio Project
- * MusicSourcesDialog.kt is part of Auxio.
+ * Copyright (c) 2024 Auxio Project
+ * LocationsDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,42 +27,33 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.ConcatAdapter
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicLocationsBinding
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.showToast
-import org.oxycblt.musikr.fs.MusicLocation
+import org.oxycblt.musikr.fs.Location
 import timber.log.Timber as L
 
-/**
- * Dialog that manages the music locations setting.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-@AndroidEntryPoint
-class MusicSourcesDialog :
+abstract class LocationsDialog<T : Location> :
     ViewBindingMaterialDialogFragment<DialogMusicLocationsBinding>(),
-    LocationAdapter.Listener,
+    LocationAdapter.Listener<T>,
     NewLocationFooterAdapter.Listener {
-    private val locationAdapter = LocationAdapter(this)
+    protected abstract val locationAdapter: LocationAdapter<T>
     private val locationFooterAdapter = NewLocationFooterAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    @Inject lateinit var musicSettings: MusicSettings
+    abstract val musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicLocationsBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
-            .setTitle(R.string.set_locations)
+            .setTitle(getDialogTitle())
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val newDirs = locationAdapter.locations
-                musicSettings.musicLocations = newDirs
+                saveLocations(newDirs)
             }
     }
 
@@ -80,9 +71,9 @@ class MusicSourcesDialog :
         }
 
         val locations =
-            savedInstanceState?.getStringArrayList(KEY_PENDING_LOCATIONS)?.mapNotNull {
-                MusicLocation.existing(requireContext(), it.toUri())
-            } ?: musicSettings.musicLocations
+            savedInstanceState?.getStringArrayList(getPendingLocationsKey())?.mapNotNull {
+                convertUriToLocation(it.toUri())
+            } ?: getCurrentLocations()
 
         locationAdapter.addAll(locations)
     }
@@ -90,17 +81,14 @@ class MusicSourcesDialog :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_LOCATIONS, ArrayList(locationAdapter.locations.map { it.uri.toString() }))
+            getPendingLocationsKey(),
+            ArrayList(locationAdapter.locations.map { it.uri.toString() }))
     }
 
     override fun onDestroyBinding(binding: DialogMusicLocationsBinding) {
         super.onDestroyBinding(binding)
         openDocumentTreeLauncher = null
         binding.locationsRecycler.adapter = null
-    }
-
-    override fun onRemoveLocation(location: MusicLocation) {
-        locationAdapter.remove(location)
     }
 
     override fun onNewLocation() {
@@ -111,24 +99,17 @@ class MusicSourcesDialog :
         try {
             launcher.launch(null)
         } catch (e: ActivityNotFoundException) {
-            // User doesn't have a capable file manager.
             requireContext().showToast(R.string.err_no_app)
         }
     }
 
-    /**
-     * Add a Document Tree [Uri] chosen by the user to the current [MusicLocation]s.
-     *
-     * @param uri The document tree [Uri] to add, chosen by the user. Will do nothing if the [Uri]
-     *   is null or not valid.
-     */
     private fun addDocumentTreeUriToDirs(uri: Uri?) {
         if (uri == null) {
-            // A null URI means that the user left the file picker without picking a locationectory
             L.d("No URI given (user closed the dialog)")
             return
         }
-        val location = MusicLocation.new(requireContext(), uri)
+        val context = requireContext()
+        val location = createLocationFromUri(context, uri)
 
         if (location != null) {
             locationAdapter.add(location)
@@ -137,7 +118,19 @@ class MusicSourcesDialog :
         }
     }
 
-    private companion object {
-        const val KEY_PENDING_LOCATIONS = BuildConfig.APPLICATION_ID + ".key.PENDING_LOCATIONS"
+    override fun onRemoveLocation(location: T) {
+        locationAdapter.remove(location)
     }
+
+    protected abstract fun getDialogTitle(): Int
+
+    protected abstract fun getCurrentLocations(): List<T>
+
+    protected abstract fun saveLocations(locations: List<T>)
+
+    protected abstract fun getPendingLocationsKey(): String
+
+    protected abstract fun convertUriToLocation(uri: Uri): T?
+
+    protected abstract fun createLocationFromUri(context: android.content.Context, uri: Uri): T?
 }

@@ -305,6 +305,24 @@
     <string name="lbl_replaygain_album">Ajuste de ReplayGain do álbum</string>
     <string name="lbl_path_style_relative">Relativo</string>
     <string name="lbl_windows_paths">Usar caminhos compatíveis com Windows</string>
-    <string name="lng_tasker_start">Inicia o Auxio utilizando o estado anteriormente guardado. Se não existir nenhum estado guardado, todas as músicas serão reproduzidas aleatoriamente. A reprodução começará imediatamente.\n\nAVISO: Tenha cuidado ao controlar este serviço. Se o fechar e tentar utilizá-lo novamente, provavelmente irá causar uma falha na aplicação.</string>
+    <string name="lng_tasker_start">Inicia o Auxio usando o estado gravado anteriormente. Se nenhum estado gravado estiver disponível, todas as músicas serão baralhadas. A reprodução começará imediatamente.\n\nAVISO: Tenha cuidado ao controlar este serviço, se fechá-lo e tentar usá-lo novamente, provavelmente irá travar a app.</string>
     <string name="lbl_start_playback">Iniciar reprodução</string>
+    <string name="lbl_music_sources">Escolha pastas</string>
+    <string name="def_album">Álbum desconhecido</string>
+    <string name="set_locations_new">Nova pasta</string>
+    <string name="lbl_feedback">Opinião</string>
+    <string name="set_with_hidden">Ignorar ficheiros ocultos</string>
+    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="set_cover_mode_save_space">Gravar espaço</string>
+    <string name="cnt_mp4">MPEG-4 contendo %s</string>
+    <string name="cdc_unknown">Desconhecido</string>
+    <string name="lbl_more">Mais</string>
+    <string name="lng_empty_songs">As suas músicas aparecerão aqui.</string>
+    <string name="lng_empty_albums">Os seus álbuns aparecerão aqui.</string>
+    <string name="lng_empty_artists">Os seus artistas aparecerão aqui.</string>
+    <string name="lng_empty_genres">Os seus gêneros aparecerão aqui.</string>
+    <string name="lng_empty_playlists">As suas listas de reprodução aparecerão aqui.</string>
+    <string name="set_with_hidden_desc">Ignorar ficheiros e pastas que estão ocultos (por exemplo, .cache)</string>
+    <string name="lbl_email">Envie um e-mail</string>
+    <string name="lbl_github">Crie um problema no GitHub</string>
 </resources>

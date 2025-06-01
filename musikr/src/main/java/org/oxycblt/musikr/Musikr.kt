@@ -19,13 +19,13 @@
 package org.oxycblt.musikr
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.ExtractStep
@@ -47,13 +47,13 @@ interface Musikr {
     /**
      * Start loading music from the given [locations] and the configuration provided earlier.
      *
-     * @param locations The [MusicLocation]s to search for music in.
+     * @param query The [Query] to load music from.
      * @param onProgress Optional callback to receive progress on the current status of the music
      *   pipeline. Warning: These events will be rapid-fire.
      * @return A handle to the newly created library alongside further cleanup.
      */
     suspend fun run(
-        locations: List<MusicLocation>,
+        query: Query,
         onProgress: suspend (IndexingProgress) -> Unit = {}
     ): LibraryResult
 
@@ -70,6 +70,7 @@ interface Musikr {
          */
         fun new(context: Context, storage: Storage, interpretation: Interpretation): Musikr =
             MusikrImpl(
+                context,
                 storage,
                 ExploreStep.from(context, storage, interpretation),
                 ExtractStep.from(context, storage),
@@ -96,7 +97,7 @@ sealed interface IndexingProgress {
     /**
      * Currently indexing and extracting tags from device music.
      *
-     * @param explored The amount of music currently found from the given [MusicLocation]s.
+     * @param explored The amount of music currently found from the given [Query].
      * @param loaded The amount of music that has had metadata extracted and parsed.
      */
     data class Songs(val loaded: Int, val explored: Int) : IndexingProgress
@@ -110,32 +111,35 @@ sealed interface IndexingProgress {
 }
 
 private class MusikrImpl(
+    private val context: Context,
     private val storage: Storage,
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
 ) : Musikr {
-    override suspend fun run(
-        locations: List<MusicLocation>,
-        onProgress: suspend (IndexingProgress) -> Unit
-    ) = coroutineScope {
-        var exploredCount = 0
-        var extractedCount = 0
-        val explored =
-            exploreStep
-                .explore(locations)
-                .buffer(Channel.UNLIMITED)
-                .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
-                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
-        val extracted =
-            extractStep
-                .extract(explored)
-                .buffer(Channel.UNLIMITED)
-                .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
-                .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-        val library = evaluateStep.evaluate(extracted)
-        LibraryResultImpl(storage, library)
-    }
+    override suspend fun run(query: Query, onProgress: suspend (IndexingProgress) -> Unit) =
+        coroutineScope {
+            val start = System.currentTimeMillis()
+            var exploredCount = 0
+            var extractedCount = 0
+            val explored =
+                exploreStep
+                    .explore(query)
+                    .buffer(Channel.UNLIMITED)
+                    .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
+                    .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
+            val extracted =
+                extractStep
+                    .extract(explored)
+                    .buffer(Channel.UNLIMITED)
+                    .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
+                    .onCompletion { onProgress(IndexingProgress.Indeterminate) }
+            val library = evaluateStep.evaluate(extracted)
+            Log.d(
+                "Musikr",
+                "Loaded ${library.songs.size} songs in ${System.currentTimeMillis() - start}ms")
+            LibraryResultImpl(storage, library)
+        }
 }
 
 private class LibraryResultImpl(

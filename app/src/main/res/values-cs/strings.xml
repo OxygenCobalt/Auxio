@@ -335,4 +335,6 @@
     <string name="set_with_hidden">Zahrnout skryté soubory</string>
     <string name="set_with_hidden_desc">Zahrnout skryté zvukové soubory (např. .cache)</string>
     <string name="set_cover_mode_as_is">Původní</string>
+    <string name="set_excluded_locations_desc">Spravovat složky, ze kterých ze hudba nemá načítat</string>
+    <string name="set_excluded_locations">Vyloučené složky</string>
 </resources>

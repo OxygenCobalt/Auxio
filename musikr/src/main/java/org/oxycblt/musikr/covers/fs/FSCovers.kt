@@ -25,6 +25,9 @@ import android.os.ParcelFileDescriptor
 import androidx.core.net.toUri
 import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
@@ -96,11 +99,12 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
     override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
         // Since DeviceFiles is a streaming API, we have to wait for the current recursive
         // query to finally finish to be able to have a complete list of siblings to search for.
-        val parent = file.parent.await()
+        val parent = file.parent
         val bestCover =
             parent.children
                 .filterIsInstance<DeviceFile>()
                 .map { it to coverArtScore(it) }
+                .toList()
                 .maxBy { it.second }
         if (bestCover.second > 0) {
             return CoverResult.Hit(FolderCoverImpl(context, bestCover.first.uri))
@@ -128,7 +132,7 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // See if the name contains any of the preferred cover names. This helps weed out
         // images that are not actually cover art and are just there.,
         var score =
-            (preferredCoverNames + requireNotNull(file.parent.await().path.name))
+            (preferredCoverNames + requireNotNull(file.parent.path.name))
                 .withIndex()
                 .filter { name.contains(it.value, ignoreCase = true) }
                 .sumOf { it.index + 1 }

@@ -1,0 +1,24 @@
+Auxio adalah pemutar musik lokal dengan antarmuka pengguna (UI/UX) yang cepat dan andal, tanpa fitur-fitur tidak berguna yang ada pada pemutar musik lainnya. Dibangun menggunakan pustaka pemutaran media modern, Auxio memiliki dukungan perpustakaan dan kualitas mendengarkan yang lebih unggul dibandingkan aplikasi lain yang menggunakan fungsionalitas Android yang sudah ketinggalan zaman. Singkatnya, <b>Ini memutar musik.</b>
+
+<b>Fitur</b>
+
+- Pemutaran berbasis Media3 ExoPlayer
+- UI responsif yang mengikuti pedoman Material Design terbaru
+- UX yang jelas dengan prioritas pada kemudahan penggunaan dibandingkan kasus-kasus ekstrim
+- Perilaku yang dapat disesuaikan
+- Dukungan untuk nomor disk, banyak artis, jenis rilisan, tanggal pasti/original, tag urut, dan lainnya
+- Sistem artis canggih yang menyatukan artis dan artis album
+- Manajemen folder yang peka terhadap kartu SD
+- Fungsionalitas pemutaran daftar putar yang dapat diandalkan
+- Persistensi status pemutaran
+- Dukungan Android Auto
+- Pemutaran tanpa jeda otomatis
+- Dukungan penuh untuk ReplayGain (Pada file MP3, FLAC, OGG, OPUS, dan MP4)
+- Dukungan equalizer eksternal (mis. Wavelet)
+- Tampilan edge-to-edge
+- Dukungan sampul yang tertanam
+- Fungsionalitas pencarian
+- Pemutaran otomatis dengan headset
+- Widget bergaya yang secara otomatis menyesuaikan dengan ukuran mereka
+- Sepenuhnya privat dan offline
+- Tanpa sampul album bulat (jika Anda menginginkannya)
