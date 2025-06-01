@@ -318,4 +318,6 @@
     <string name="set_with_hidden">Kaasa peidetud failid</string>
     <string name="set_with_hidden_desc">Kaasa peidetud helifailid (nt. .cache)</string>
     <string name="set_cover_mode_as_is">Sellisena, nagu ta on</string>
+    <string name="set_excluded_locations">Välistatud kaustad</string>
+    <string name="set_excluded_locations_desc">Halda kaustu, kust muusikat ei otsita</string>
 </resources>
