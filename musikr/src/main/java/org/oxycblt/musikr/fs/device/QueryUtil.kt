@@ -30,6 +30,15 @@ import android.net.Uri
 internal val Context.contentResolverSafe: ContentResolver
     get() = applicationContext.contentResolver
 
+internal val Context.rateLimitedContentResolver: RateLimitedContentResolver
+    get() =
+        RateLimitedContentResolver(
+            contentResolver = contentResolverSafe,
+            maxTokens = 100, // Maximum burst capacity
+            refillRate = 1000.0, // 1000 queries per second (100 queries per 100ms)
+            maxConcurrency = 10 // Maximum concurrent queries
+            )
+
 /**
  * A shortcut for querying the [ContentResolver] database.
  *
@@ -74,4 +83,4 @@ internal inline fun <reified R> ContentResolver.useQuery(
     args: Array<String>? = null,
     sortOrder: String? = null,
     block: (Cursor) -> R
-) = query(uri, projection, selector, args, sortOrder)?.use(block)
+) = safeQuery(uri, projection, selector, args, sortOrder).use(block)

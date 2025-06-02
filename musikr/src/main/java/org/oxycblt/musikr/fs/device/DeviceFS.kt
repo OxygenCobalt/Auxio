@@ -18,7 +18,6 @@
  
 package org.oxycblt.musikr.fs.device
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -52,12 +51,12 @@ internal interface DeviceFS {
 
     companion object {
         fun from(context: Context, withHidden: Boolean): DeviceFS =
-            DeviceFSImpl(context.contentResolverSafe, withHidden)
+            DeviceFSImpl(context.rateLimitedContentResolver, withHidden)
     }
 }
 
 private class DeviceFSImpl(
-    private val contentResolver: ContentResolver,
+    private val contentResolver: RateLimitedContentResolver,
     private val withHidden: Boolean
 ) : DeviceFS {
     private val explorationScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
