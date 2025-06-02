@@ -323,4 +323,6 @@
     <string name="cdc_unknown">Ismeretlen</string>
     <string name="lbl_feedback">Visszajelzés</string>
     <string name="lbl_github">Hozz létre egy hibajegyet a GitHubon</string>
+    <string name="set_excluded_locations">Kizárt mappák</string>
+    <string name="set_excluded_locations_desc">Mappák kihagyása a zenevizsgálatból</string>
 </resources>
