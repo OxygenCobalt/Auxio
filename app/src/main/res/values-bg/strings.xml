@@ -135,7 +135,7 @@
     <string name="set_black_mode_desc">Използвай чисто черна тъмна тема</string>
     <string name="set_round_mode">Кръгъл режим</string>
     <string name="set_round_mode_desc">Активирай заоблените ъгли на допълнителните елементи на потребителския интерфейс (изисква обложките на албумите да са заоблени)</string>
-    <string name="set_personalize">Персонализирайте</string>
+    <string name="set_personalize">Персонализиране</string>
     <string name="set_personalize_desc">Персонализирайте контролите и поведението на потребителския интерфейс</string>
     <string name="set_display">Дисплей</string>
     <string name="set_lib_tabs">Раздели на библиотеката</string>
@@ -316,4 +316,6 @@
     <string name="set_cover_mode_save_space">Спестете място</string>
     <string name="set_cover_mode_as_is">Както е</string>
     <string name="set_locations_new">Нова папка</string>
+    <string name="set_excluded_locations">Изключени папки</string>
+    <string name="set_excluded_locations_desc">Управление на папки, които да се изключат от зареждането на музика</string>
 </resources>
