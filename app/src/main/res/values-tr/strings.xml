@@ -66,7 +66,7 @@
     <string name="lbl_bitrate">Bit hızı</string>
     <string name="lbl_sample_rate">Örnek hızı</string>
     <string name="lng_widget">Müzik çalmayı görüntüle ve kontrol et</string>
-    <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
+    <string name="info_app_desc">Android için basit, akıllı bir müzik çalar.</string>
     <string name="lbl_indexer">Müzik yükleniyor</string>
     <string name="lng_indexing">Müzik kitaplığınız yükleniyor…</string>
     <string name="lbl_name">Ad</string>
@@ -322,4 +322,6 @@
     <string name="set_with_hidden">Gizli dosyaları içer</string>
     <string name="set_with_hidden_desc">Gizli olan ses dosyalarını içer (örn. .cache)</string>
     <string name="set_cover_mode_as_is">Olduğu gibi</string>
+    <string name="set_excluded_locations_desc">Müzik yüklemesinde sayılmayacak klasörleri yönet</string>
+    <string name="set_excluded_locations">Sayılmayan klasörler</string>
 </resources>
