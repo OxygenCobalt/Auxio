@@ -51,15 +51,9 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
     }
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
-        when (preference.key) {
-            getString(R.string.set_key_music_dirs) -> {
-                findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.musicLocationsSettings())
-            }
-            getString(R.string.set_key_excluded_dirs) -> {
-                findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.excludedLocationsSettings())
-            }
+        if (preference.key == getString(R.string.set_key_music_dirs)) {
+            findNavController()
+                .navigateSafe(RootPreferenceFragmentDirections.musicLocationsSettings())
         }
     }
 

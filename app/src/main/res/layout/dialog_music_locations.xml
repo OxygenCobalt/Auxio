@@ -17,4 +17,3 @@
         tools:listitem="@layout/item_music_location" />
 
 </FrameLayout>
-

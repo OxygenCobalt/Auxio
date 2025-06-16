@@ -20,21 +20,17 @@ package org.oxycblt.musikr.pipeline
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onCompletion
 import org.oxycblt.musikr.Interpretation
-import org.oxycblt.musikr.Query
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
@@ -42,22 +38,20 @@ import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
+import org.oxycblt.musikr.fs.MusicLocation
 import org.oxycblt.musikr.fs.device.DeviceFS
-import org.oxycblt.musikr.fs.device.FileTreeCache
-import org.oxycblt.musikr.fs.device.flatten
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(query: Query): Flow<Explored>
+    fun explore(locations: List<MusicLocation>): Flow<Explored>
 
     companion object {
         fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
             ExploreStepImpl(
-                DeviceFS.from(context = context, withHidden = interpretation.withHidden),
+                DeviceFS.from(context, interpretation.withHidden),
                 storage.cache,
                 storage.covers,
-                storage.fileTreeCache,
                 storage.storedPlaylists)
     }
 }
@@ -66,18 +60,15 @@ private class ExploreStepImpl(
     private val deviceFS: DeviceFS,
     private val cache: Cache,
     private val covers: Covers<out Cover>,
-    private val fileTreeCache: FileTreeCache,
     private val storedPlaylists: StoredPlaylists
 ) : ExploreStep {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun explore(query: Query): Flow<Explored> {
+    override fun explore(locations: List<MusicLocation>): Flow<Explored> {
         val addingMs = System.currentTimeMillis()
-        val fileTree = fileTreeCache.read()
         return merge(
             deviceFS
-                .explore(query, fileTree)
-                .flatMapMerge { it.flatten() }
-                .onCompletion { fileTree.write() }
+                .explore(
+                    locations.asFlow(),
+                )
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
                 .distributedMap(n = 8, on = Dispatchers.IO, buffer = Channel.UNLIMITED) { file ->
                     when (val cacheResult = cache.read(file)) {

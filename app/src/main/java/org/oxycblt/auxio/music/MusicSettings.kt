@@ -20,13 +20,12 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import androidx.core.content.edit
-import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.UUID
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.MusicLocation
 import timber.log.Timber as L
 
 /**
@@ -38,9 +37,7 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The current library revision. */
     var revision: UUID?
     /** The locations of music to load. */
-    var musicLocations: List<Location.Opened>
-    /** The locations to exclude from music loading. */
-    var excludedLocations: List<Location.Unopened>
+    var musicLocations: List<MusicLocation>
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to ignore hidden files and directories during music loading. */
@@ -77,35 +74,20 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
-    override var musicLocations: List<Location.Opened>
+    override var musicLocations: List<MusicLocation>
         get() {
             val locations =
                 sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
                     ?: return emptyList()
-            return locations.toOpenedLocations()
-        }
-        set(value) {
-            sharedPreferences.edit {
-                putString(getString(R.string.set_key_music_locations), value.stringify())
-                commit()
-                // Sometimes changing this setting just won't actually trigger the listener.
-                // Only this one. No idea why.
-                listener?.onMusicLocationsChanged()
-            }
-        }
-
-    override var excludedLocations: List<Location.Unopened>
-        get() {
-            val locations =
-                sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
-                    ?: return emptyList()
-            return locations.toUnopenedLocations()
+            return MusicLocation.existing(context, locations)
         }
         set(value) {
             sharedPreferences.edit {
                 putString(
-                    getString(R.string.set_key_excluded_locations), value.stringifyLocations())
+                    getString(R.string.set_key_music_locations), MusicLocation.toString(value))
                 commit()
+                // Sometimes changing this setting just won't actually trigger the listener.
+                // Only this one. No idea why.
                 listener?.onMusicLocationsChanged()
             }
         }
@@ -137,8 +119,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
         when (key) {
-            getString(R.string.set_key_music_locations),
-            getString(R.string.set_key_excluded_locations) -> {
+            getString(R.string.set_key_music_locations) -> {
                 L.d("Dispatching music locations change")
                 listener.onMusicLocationsChanged()
             }
@@ -154,56 +135,5 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                 listener.onObservingChanged()
             }
         }
-    }
-
-    private fun List<Location.Opened>.stringify(): String =
-        joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
-
-    private fun String.toOpenedLocations(): List<Location.Opened> =
-        splitEscaped { it == ';' }
-            .mapNotNull { Location.Unopened.from(context, it.toUri())?.open(context) }
-
-    private fun List<Location>.stringifyLocations(): String =
-        joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
-
-    private fun String.toUnopenedLocations(): List<Location.Unopened> =
-        splitEscaped { it == ';' }.mapNotNull { Location.Unopened.from(context, it.toUri()) }
-
-    private inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
-        val split = mutableListOf<String>()
-        var currentString = ""
-        var i = 0
-
-        while (i < length) {
-            val a = get(i)
-            val b = getOrNull(i + 1)
-
-            if (selector(a)) {
-                // Non-escaped separator, split the string here, making sure any stray whitespace
-                // is removed.
-                split.add(currentString)
-                currentString = ""
-                i++
-                continue
-            }
-
-            if (b != null && a == '\\' && selector(b)) {
-                // Is an escaped character, add the non-escaped variant and skip two
-                // characters to move on to the next one.
-                currentString += b
-                i += 2
-            } else {
-                // Non-escaped, increment normally.
-                currentString += a
-                i++
-            }
-        }
-
-        if (currentString.isNotEmpty()) {
-            // Had an in-progress split string that is now terminated, add it.
-            split.add(currentString)
-        }
-
-        return split
     }
 }

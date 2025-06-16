@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Auxio Project
+ * Copyright (c) 2021 Auxio Project
  * LocationAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,59 +18,106 @@
  
 package org.oxycblt.auxio.music.locations
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicLocationBinding
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
-import org.oxycblt.musikr.fs.Location
+import org.oxycblt.auxio.util.inflater
+import org.oxycblt.musikr.fs.MusicLocation
 import timber.log.Timber as L
 
-abstract class LocationAdapter<T : Location>(private val listener: Listener<T>) :
-    RecyclerView.Adapter<LocationViewHolder<T>>() {
-    private val _locations = mutableListOf<T>()
-    val locations: List<T> = _locations
+/**
+ * [RecyclerView.Adapter] that manages a list of [MusicLocation] music directory instances.
+ *
+ * @param listener A [LocationAdapter.Listener] to bind interactions to.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class LocationAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
+    private val _locations = mutableListOf<MusicLocation>()
+    /**
+     * The current list of [MusicLocation]s, may not line up with [MusicLocation]s due to removals.
+     */
+    val locations: List<MusicLocation> = _locations
 
     override fun getItemCount() = locations.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = createViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        MusicDirViewHolder.from(parent)
 
-    override fun onBindViewHolder(holder: LocationViewHolder<T>, position: Int) =
+    override fun onBindViewHolder(holder: MusicDirViewHolder, position: Int) =
         holder.bind(locations[position], listener)
 
-    fun add(location: T) {
+    /**
+     * Add a [MusicLocation] to the end of the list.
+     *
+     * @param location The [MusicLocation] to add.
+     */
+    fun add(location: MusicLocation) {
         if (_locations.contains(location)) return
         L.d("Adding $location")
         _locations.add(location)
         notifyItemInserted(_locations.lastIndex)
     }
 
-    fun addAll(locations: List<T>) {
+    /**
+     * Add a list of [MusicLocation] instances to the end of the list.
+     *
+     * @param locations The [MusicLocation] instances to add.
+     */
+    fun addAll(locations: List<MusicLocation>) {
         L.d("Adding ${locations.size} locations")
-        val oldSize = _locations.size
+        val oldLastIndex = locations.lastIndex
         _locations.addAll(locations)
-        notifyItemRangeInserted(oldSize, locations.size)
+        notifyItemRangeInserted(oldLastIndex, locations.size)
     }
 
-    fun remove(location: T) {
+    /**
+     * Remove a [MusicLocation] from the list.
+     *
+     * @param location The [MusicLocation] to remove. Must exist in the list.
+     */
+    fun remove(location: MusicLocation) {
         L.d("Removing $location")
         val idx = _locations.indexOf(location)
         _locations.removeAt(idx)
         notifyItemRemoved(idx)
     }
 
-    protected abstract fun createViewHolder(parent: ViewGroup): LocationViewHolder<T>
-
-    interface Listener<T : Location> {
-        fun onRemoveLocation(location: T)
+    /** A Listener for [LocationAdapter] interactions. */
+    interface Listener {
+        /** Called when the delete button on a directory item is clicked. */
+        fun onRemoveLocation(location: MusicLocation)
     }
 }
 
-abstract class LocationViewHolder<T : Location>(protected val binding: ItemMusicLocationBinding) :
+/**
+ * A [RecyclerView.Recycler] that displays a [MusicLocation]. Use [from] to create an instance.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class MusicDirViewHolder private constructor(private val binding: ItemMusicLocationBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
-
-    fun bind(location: T, listener: LocationAdapter.Listener<T>) {
+    /**
+     * Bind new data to this instance.
+     *
+     * @param location The new [MusicLocation] to bind.
+     * @param listener A [LocationAdapter.Listener] to bind interactions to.
+     */
+    fun bind(location: MusicLocation, listener: LocationAdapter.Listener) {
         binding.locationPath.text = location.path.resolve(binding.context)
         binding.locationDelete.setOnClickListener { listener.onRemoveLocation(location) }
+    }
+
+    companion object {
+        /**
+         * Create a new instance.
+         *
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
+        fun from(parent: View) =
+            MusicDirViewHolder(ItemMusicLocationBinding.inflate(parent.context.inflater))
     }
 }

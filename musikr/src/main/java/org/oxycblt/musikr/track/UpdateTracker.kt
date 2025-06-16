@@ -19,15 +19,15 @@
 package org.oxycblt.musikr.track
 
 import android.content.Context
-import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.MusicLocation
 
 interface UpdateTracker {
-    fun track(locations: List<Location.Opened>)
+    fun track(locations: List<MusicLocation>)
 
     fun release()
 
     interface Callback {
-        fun onUpdate(location: Location.Opened)
+        fun onUpdate(location: MusicLocation)
     }
 
     companion object {
@@ -42,7 +42,7 @@ private class UpdateTrackerImpl(
 ) : UpdateTracker {
     private val observers = mutableListOf<LocationObserver>()
 
-    override fun track(locations: List<Location.Opened>) {
+    override fun track(locations: List<MusicLocation>) {
         release()
         observers.addAll(locations.map { LocationObserver(context, it, callback) })
     }

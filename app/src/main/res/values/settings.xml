@@ -14,13 +14,11 @@
     <string name="set_key_rescan" translatable="false">auxio_rescan</string>
     <string name="set_key_observing" translatable="false">auxio_observing</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
-    <string name="set_key_excluded_dirs" translatable="false">auxio_excluded_dirs</string>
     <string name="set_key_cover_mode" translatable="false">auxio_cover_mode2</string>
     <string name="set_key_square_covers" translatable="false">auxio_square_covers</string>
     <string name="set_key_exclude_non_music" translatable="false">auxio_exclude_non_music</string>
     <string name="set_key_with_hidden" translatable="false">auxio_with_hidden</string>
     <string name="set_key_music_locations" translatable="false">auxio_music_locations2</string>
-    <string name="set_key_excluded_locations" translatable="false">auxio_excluded_locations</string>
     <string name="set_key_separators" translatable="false">auxio_separators</string>
     <string name="set_key_auto_sort_names" translatable="false">auxio_auto_sort_names</string>
 
