@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * MusicLocationsDialog.kt is part of Auxio.
+ * MusicSourcesDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,11 @@ package org.oxycblt.auxio.music.locations
 import android.content.Context
 import android.net.Uri
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.musikr.fs.Location
+import javax.inject.Inject
 
 /**
  * Dialog that manages the music locations setting.
@@ -36,7 +36,8 @@ import org.oxycblt.musikr.fs.Location
 class MusicLocationsDialog : LocationsDialog<Location.Opened>() {
     override val locationAdapter = MusicLocationAdapter(this)
 
-    @Inject override lateinit var musicSettings: MusicSettings
+    @Inject
+    override lateinit var musicSettings: MusicSettings
 
     override fun getDialogTitle(): Int = R.string.set_locations
 

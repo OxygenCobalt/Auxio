@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * MusicLocationAdapter.kt is part of Auxio.
+ * LocationAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,7 @@ import org.oxycblt.musikr.fs.Location
  * @param listener A [LocationAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MusicLocationAdapter(listener: LocationAdapter.Listener<Location.Opened>) :
-    LocationAdapter<Location.Opened>(listener) {
+class MusicLocationAdapter(listener: LocationAdapter.Listener<Location.Opened>) : LocationAdapter<Location.Opened>(listener) {
     override fun createViewHolder(parent: ViewGroup): LocationViewHolder<Location.Opened> =
         MusicLocationViewHolder.from(parent)
 }
@@ -51,7 +50,6 @@ class MusicLocationViewHolder private constructor(binding: ItemMusicLocationBind
          * @return A new instance.
          */
         fun from(parent: ViewGroup) =
-            MusicLocationViewHolder(
-                ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
+            MusicLocationViewHolder(ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
     }
 }

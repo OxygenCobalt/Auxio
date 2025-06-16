@@ -38,8 +38,7 @@ sealed class Location(val uri: Uri, val path: Path) {
                 try {
                     context.contentResolverSafe.takePersistableUriPermission(
                         uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 } catch (e: Exception) {
                     // Not fully sure what happens if I'm disallowed to take the permission,
                     // check for both circumstances (error or no-op)
@@ -69,7 +68,8 @@ sealed class Location(val uri: Uri, val path: Path) {
     }
 
     class Opened internal constructor(uri: Uri, path: Path) : Location(uri, path) {
-        override fun equals(other: Any?) = other is Opened && uri == other.uri && path == other.path
+        override fun equals(other: Any?) =
+            other is Opened && uri == other.uri && path == other.path
 
         override fun hashCode() = 31 * uri.hashCode() + path.hashCode()
     }

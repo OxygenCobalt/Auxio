@@ -23,7 +23,6 @@ import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.Location.Opened
-import org.oxycblt.musikr.fs.device.FileTreeCache
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -50,10 +49,7 @@ data class Storage(
      * be used during music loading and mutated when creating, renaming, or deleting playlists in
      * the library.
      */
-    val storedPlaylists: StoredPlaylists,
-
-    /** A cache for file tree information to optimize file system exploration. */
-    val fileTreeCache: FileTreeCache
+    val storedPlaylists: StoredPlaylists
 )
 
 /** Configuration for how to interpret and extrapolate certain audio tags. */
