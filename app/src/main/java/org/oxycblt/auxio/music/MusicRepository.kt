@@ -395,8 +395,7 @@ constructor(
         val storage = Storage(cache, covers, storedPlaylists)
         val query = Query(source = locations, exclude = emptyList())
         val interpretation = Interpretation(nameFactory, separators, withHidden)
-        val result =
-            Musikr.new(context, storage, interpretation).run(query, ::emitIndexingProgress)
+        val result = Musikr.new(context, storage, interpretation).run(query, ::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work
         // later.
         musicSettings.revision = newRevision

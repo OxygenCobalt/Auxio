@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -40,7 +39,6 @@ import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
-import org.oxycblt.musikr.fs.OpenedLocation
 import org.oxycblt.musikr.fs.device.DeviceFS
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.m3u.M3U
@@ -51,9 +49,7 @@ internal interface ExploreStep {
     companion object {
         fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
             ExploreStepImpl(
-                DeviceFS.from(
-                    context = context,
-                    withHidden = interpretation.withHidden),
+                DeviceFS.from(context = context, withHidden = interpretation.withHidden),
                 storage.cache,
                 storage.covers,
                 storage.storedPlaylists)
