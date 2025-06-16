@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2024 Auxio Project
- * BaseLocationAdapter.kt is part of Auxio.
+ * LocationAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,14 +26,14 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.musikr.fs.Location
 import timber.log.Timber as L
 
-abstract class LocationAdapter<T : Location>(private val listener: Listener<T>) : RecyclerView.Adapter<LocationViewHolder<T>>() {
+abstract class LocationAdapter<T : Location>(private val listener: Listener<T>) :
+    RecyclerView.Adapter<LocationViewHolder<T>>() {
     private val _locations = mutableListOf<T>()
     val locations: List<T> = _locations
 
     override fun getItemCount() = locations.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        createViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = createViewHolder(parent)
 
     override fun onBindViewHolder(holder: LocationViewHolder<T>, position: Int) =
         holder.bind(locations[position], listener)

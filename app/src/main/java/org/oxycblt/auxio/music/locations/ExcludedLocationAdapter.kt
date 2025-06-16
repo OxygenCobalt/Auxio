@@ -29,7 +29,8 @@ import org.oxycblt.musikr.fs.Location
  * @param listener A [LocationAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ExcludedLocationAdapter(listener: LocationAdapter.Listener<Location.Unopened>) : LocationAdapter<Location.Unopened>(listener) {
+class ExcludedLocationAdapter(listener: LocationAdapter.Listener<Location.Unopened>) :
+    LocationAdapter<Location.Unopened>(listener) {
     override fun createViewHolder(parent: ViewGroup): LocationViewHolder<Location.Unopened> =
         ExcludedLocationViewHolder.from(parent)
 }
@@ -50,6 +51,7 @@ class ExcludedLocationViewHolder private constructor(binding: ItemMusicLocationB
          * @return A new instance.
          */
         fun from(parent: ViewGroup) =
-            ExcludedLocationViewHolder(ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
+            ExcludedLocationViewHolder(
+                ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
     }
 }
