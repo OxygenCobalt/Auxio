@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2024 Auxio Project
- * DeviceFS.kt is part of Auxio.
+ * Copyright (c) 2025 Auxio Project
+ * SAF.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs.device
+package org.oxycblt.musikr.fs.saf
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -30,24 +31,17 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.musikr.Query
+import org.oxycblt.musikr.fs.DeviceDirectory
+import org.oxycblt.musikr.fs.DeviceFSEntry
+import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.FS
+import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.Path
 
-internal interface DeviceFS {
-    fun explore(query: Query): Flow<DeviceFile>
-
-    companion object {
-        fun from(context: Context, withHidden: Boolean): DeviceFS =
-            DeviceFSImpl(context.rateLimitedContentResolver, withHidden)
-    }
-}
-
 @OptIn(ExperimentalCoroutinesApi::class)
-private class DeviceFSImpl(
-    private val contentResolver: RateLimitedContentResolver,
-    private val withHidden: Boolean
-) : DeviceFS {
-    override fun explore(query: Query): Flow<DeviceFile> =
+class SAF
+private constructor(private val contentResolver: ContentResolver, private val query: Query) : FS {
+    override fun explore(): Flow<DeviceFile> =
         query.source.asFlow().flatMapMerge { location ->
             exploreDirectoryImpl(
                 location.uri,
@@ -57,7 +51,7 @@ private class DeviceFSImpl(
                 query.exclude.mapTo(mutableSetOf()) { it.uri })
         }
 
-    private suspend fun exploreDirectoryImpl(
+    private fun exploreDirectoryImpl(
         rootUri: Uri,
         treeDocumentId: String,
         relativePath: Path,
@@ -85,7 +79,7 @@ private class DeviceFSImpl(
                 val displayName = cursor.getString(displayNameIndex)
 
                 // Skip hidden files/directories if ignoreHidden is true
-                if (!withHidden && displayName.startsWith(".")) {
+                if (!query.withHidden && displayName.startsWith(".")) {
                     continue
                 }
 
@@ -122,8 +116,16 @@ private class DeviceFSImpl(
         }
     }
 
-    private companion object {
-        val PROJECTION =
+    data class Query(
+        val source: List<Location.Opened>,
+        val exclude: List<Location.Unopened>,
+        val withHidden: Boolean
+    )
+
+    companion object {
+        fun from(context: Context, query: Query) = SAF(context.contentResolverSafe, query)
+
+        private val PROJECTION =
             arrayOf(
                 DocumentsContract.Document.COLUMN_DOCUMENT_ID,
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,

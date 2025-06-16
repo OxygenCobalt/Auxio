@@ -20,7 +20,7 @@ package org.oxycblt.musikr.covers
 
 import android.os.ParcelFileDescriptor
 import java.io.InputStream
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
 /**

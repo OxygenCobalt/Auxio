@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Auxio Project
- * DeviceFSEntries.kt is part of Auxio.
+ * FS.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs.device
+package org.oxycblt.musikr.fs
 
 import android.net.Uri
 import kotlinx.coroutines.Deferred
-import org.oxycblt.musikr.fs.Path
+import kotlinx.coroutines.flow.Flow
+
+interface FS {
+    fun explore(): Flow<DeviceFile>
+}
 
 sealed interface DeviceFSEntry {
     val uri: Uri

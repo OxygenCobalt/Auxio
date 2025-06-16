@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.cache
 
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 

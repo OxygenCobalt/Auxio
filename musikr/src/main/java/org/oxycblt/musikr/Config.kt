@@ -21,15 +21,14 @@ package org.oxycblt.musikr
 import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.Location
-import org.oxycblt.musikr.fs.Location.Opened
+import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
 
-data class Query(val source: List<Location.Opened>, val exclude: List<Location>)
+data class Config(val fs: FS, val storage: Storage, val interpretation: Interpretation)
 
-/** Side-effect laden [Storage] for use during music loading and [MutableLibrary] operation. */
+/** Side-effect laden [Config] for use during music loading and [MutableLibrary] operation. */
 data class Storage(
     /**
      * A repository of cached metadata to read and write from over the course of music loading. This
@@ -49,17 +48,13 @@ data class Storage(
      * be used during music loading and mutated when creating, renaming, or deleting playlists in
      * the library.
      */
-    val storedPlaylists: StoredPlaylists
+    val storedPlaylists: StoredPlaylists,
 )
 
-/** Configuration for how to interpret and extrapolate certain audio tags. */
 data class Interpretation(
     /** How to construct names from audio tags. */
     val naming: Naming,
 
     /** What separators delimit multi-value audio tags. */
     val separators: Separators,
-
-    /** Whether to include hidden files and directories (those starting with a dot). */
-    val withHidden: Boolean
 )

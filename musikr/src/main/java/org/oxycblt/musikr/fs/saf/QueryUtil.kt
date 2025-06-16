@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.fs.device
+package org.oxycblt.musikr.fs.saf
 
 import android.content.ContentResolver
 import android.content.Context
@@ -29,15 +29,6 @@ import android.net.Uri
  */
 internal val Context.contentResolverSafe: ContentResolver
     get() = applicationContext.contentResolver
-
-internal val Context.rateLimitedContentResolver: RateLimitedContentResolver
-    get() =
-        RateLimitedContentResolver(
-            contentResolver = contentResolverSafe,
-            maxTokens = 100, // Maximum burst capacity
-            refillRate = 1000.0, // 1000 queries per second (100 queries per 100ms)
-            maxConcurrency = 10 // Maximum concurrent queries
-            )
 
 /**
  * A shortcut for querying the [ContentResolver] database.

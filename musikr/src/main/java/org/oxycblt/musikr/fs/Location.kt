@@ -22,8 +22,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
-import org.oxycblt.musikr.fs.device.contentResolverSafe
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
+import org.oxycblt.musikr.fs.saf.contentResolverSafe
 
 sealed class Location(val uri: Uri, val path: Path) {
     override fun equals(other: Any?) = other is Location && uri == other.uri

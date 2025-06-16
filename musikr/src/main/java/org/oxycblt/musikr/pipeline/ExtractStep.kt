@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.covers.Cover
@@ -40,9 +40,12 @@ internal interface ExtractStep {
     fun extract(nodes: Flow<Explored>): Flow<Extracted>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExtractStep =
+        fun from(context: Context, config: Config): ExtractStep =
             ExtractStepImpl(
-                MetadataExtractor.from(context), TagParser.new(), storage.cache, storage.covers)
+                MetadataExtractor.from(context),
+                TagParser.new(),
+                config.storage.cache,
+                config.storage.covers)
     }
 }
 

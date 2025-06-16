@@ -21,7 +21,7 @@ package org.oxycblt.auxio.music.shim
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 
 class WriteOnlyMutableCache(private val inner: MutableCache) : MutableCache {
     override suspend fun read(file: DeviceFile): CacheResult {

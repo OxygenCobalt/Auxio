@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.metadata
 
 import java.io.FileInputStream
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 
 internal object TagLibJNI {
     init {

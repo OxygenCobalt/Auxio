@@ -20,9 +20,9 @@ package org.oxycblt.musikr.pipeline
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
+import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
-import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
@@ -33,11 +33,11 @@ internal interface EvaluateStep {
     suspend fun evaluate(extractedMusic: Flow<Extracted>): MutableLibrary
 
     companion object {
-        fun new(storage: Storage, interpretation: Interpretation): EvaluateStep =
+        fun new(config: Config, interpretation: Interpretation): EvaluateStep =
             EvaluateStepImpl(
                 TagInterpreter.new(interpretation),
                 PlaylistInterpreter.new(interpretation),
-                storage.storedPlaylists,
+                config.storage.storedPlaylists,
                 LibraryFactory.new())
     }
 }

@@ -22,7 +22,7 @@ import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.covers.stored.CoverStorage
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
 class NullCovers(private val storage: CoverStorage) : MutableCovers<NullCover> {

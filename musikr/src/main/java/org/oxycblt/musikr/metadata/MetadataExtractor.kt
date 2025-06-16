@@ -23,7 +23,7 @@ import android.content.Context
 import java.io.FileInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 
 internal interface MetadataExtractor {
     suspend fun extract(deviceFile: DeviceFile): Metadata?

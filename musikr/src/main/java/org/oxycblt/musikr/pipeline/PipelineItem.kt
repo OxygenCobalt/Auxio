@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.pipeline
 
 import org.oxycblt.musikr.covers.Cover
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.tag.parse.ParsedTags

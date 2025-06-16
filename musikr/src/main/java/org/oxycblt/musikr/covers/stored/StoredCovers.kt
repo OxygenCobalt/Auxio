@@ -24,7 +24,7 @@ import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MemoryCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.metadata.Metadata
 
 private const val PREFIX = "mcs:"
