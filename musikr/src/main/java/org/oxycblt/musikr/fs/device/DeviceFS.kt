@@ -53,14 +53,16 @@ private class DeviceFSImpl(
                 location.uri,
                 DocumentsContract.getTreeDocumentId(location.uri),
                 location.path,
-                null)
+                null,
+                query.exclude.mapTo(mutableSetOf()) { it.uri })
         }
 
     private suspend fun exploreDirectoryImpl(
         rootUri: Uri,
         treeDocumentId: String,
         relativePath: Path,
-        parent: Deferred<DeviceDirectory>?
+        parent: Deferred<DeviceDirectory>?,
+        exclude: Set<Uri>
     ): Flow<DeviceFile> = flow {
         // Make a kotlin future
         val uri = DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
@@ -90,13 +92,19 @@ private class DeviceFSImpl(
                 val newPath = relativePath.file(displayName)
                 val mimeType = cursor.getString(mimeTypeIndex)
                 val lastModified = cursor.getLong(lastModifiedIndex)
+                val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
+
+                // We can check for direct equality as if we block out an excluded directory we
+                // will by proxy block out it's children.
+                if (childUri in exclude) {
+                    continue
+                }
 
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
                     recursive.add(
-                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred))
+                        exploreDirectoryImpl(rootUri, childId, newPath, directoryDeferred, exclude))
                 } else {
                     val size = cursor.getLong(sizeIndex)
-                    val childUri = DocumentsContract.buildDocumentUriUsingTree(rootUri, childId)
                     val file =
                         DeviceFile(
                             uri = childUri,
