@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
+import org.oxycblt.auxio.music.shim.NoOpFileTreeCache
 import org.oxycblt.auxio.music.shim.WriteOnlyFileTreeCache
 import org.oxycblt.auxio.music.shim.WriteOnlyMutableCache
 import org.oxycblt.musikr.IndexingProgress
@@ -396,8 +397,12 @@ constructor(
         val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
         val fileTreeCache =
-            if (withCache) FileTreeCache.from(context)
-            else WriteOnlyFileTreeCache(FileTreeCache.from(context))
+            if (musicSettings.useFileTreeCache) {
+                if (withCache) FileTreeCache.from(context)
+                else WriteOnlyFileTreeCache(FileTreeCache.from(context))
+            } else {
+                NoOpFileTreeCache()
+            }
         val query = Query(source = locations, exclude = excludedLocations)
         val storage = Storage(cache, covers, storedPlaylists, fileTreeCache)
         val interpretation = Interpretation(nameFactory, separators, withHidden)
