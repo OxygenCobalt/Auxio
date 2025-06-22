@@ -27,15 +27,15 @@ interface FS {
 }
 
 sealed interface DeviceFSEntry {
-    val uri: Uri
+    val uri: Uri?
     val path: Path
 }
 
 data class DeviceDirectory(
-    override val uri: Uri,
+    override val uri: Uri?,
     override val path: Path,
     val parent: Deferred<DeviceDirectory>?,
-    var children: List<DeviceFSEntry>
+    var children: List<DeviceFile>
 ) : DeviceFSEntry
 
 data class DeviceFile(

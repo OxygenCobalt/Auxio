@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import org.oxycblt.musikr.fs.DeviceDirectory
-import org.oxycblt.musikr.fs.DeviceFSEntry
 import org.oxycblt.musikr.fs.DeviceFile
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.Location
@@ -62,7 +61,7 @@ private constructor(private val contentResolver: ContentResolver, private val qu
         val uri = DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
         val directoryDeferred = CompletableDeferred<DeviceDirectory>()
         val recursive = mutableListOf<Flow<DeviceFile>>()
-        val children = mutableListOf<DeviceFSEntry>()
+        val children = mutableListOf<DeviceFile>()
         contentResolver.useQuery(uri, PROJECTION) { cursor ->
             val childUriIndex =
                 cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
