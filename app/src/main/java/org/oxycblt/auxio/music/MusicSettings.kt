@@ -136,7 +136,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_auto_sort_names), true)
 
     override val useFileTreeCache: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_fs_cache), true)
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_fs_cache), false)
 
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
