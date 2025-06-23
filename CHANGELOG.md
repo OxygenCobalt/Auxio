@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.6
+
+#### What's Improved
+- Added option to enable/disable the file tree cache (disabled by default)
+to prevent the library from not being updated on Samsung devices
+
+#### What's Fixed
+- Fixed loading failing/crashing the app on some devices
+- Fixed file tree cache being stored in cache storage rather than app storage
+
 ## 4.0.5
 
 #### What's Improved
