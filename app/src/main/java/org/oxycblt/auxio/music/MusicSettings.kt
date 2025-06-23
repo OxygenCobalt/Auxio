@@ -51,6 +51,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var separators: String
     /** Whether to enable more advanced sorting by articles and numbers. */
     val intelligentSorting: Boolean
+    /** Whether to use the file-system cache for improved loading times. */
+    val useFileTreeCache: Boolean
 
     interface Listener {
         /** Called when the current music locations changed. */
@@ -133,6 +135,9 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
     override val intelligentSorting: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_auto_sort_names), true)
 
+    override val useFileTreeCache: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_fs_cache), false)
+
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
@@ -145,7 +150,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             getString(R.string.set_key_separators),
             getString(R.string.set_key_auto_sort_names),
             getString(R.string.set_key_with_hidden),
-            getString(R.string.set_key_exclude_non_music) -> {
+            getString(R.string.set_key_exclude_non_music),
+            getString(R.string.set_key_fs_cache) -> {
                 L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()
             }

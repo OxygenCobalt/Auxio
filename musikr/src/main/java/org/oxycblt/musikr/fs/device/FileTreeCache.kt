@@ -25,9 +25,9 @@ import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 
 interface FileTreeCache {
     fun read(): FileTree
@@ -94,8 +94,7 @@ private class FileTreeCacheImpl(private val context: Context) : FileTreeCache {
 
         return if (cacheFile.exists()) {
             try {
-                val jsonContent = cacheFile.readText()
-                val fileTreeCache = json.decodeFromString<FileTreeData>(jsonContent)
+                val fileTreeCache = json.decodeFromStream<FileTreeData>(cacheFile.inputStream())
                 FileTreeImpl(
                     context,
                     fileTreeCache.directories.toMutableMap(),
@@ -153,9 +152,7 @@ private class FileTreeImpl(
                 val fileTreeCache =
                     FileTreeData(
                         directories = mutableDirectories.toMap(), files = mutableFiles.toMap())
-
-                val jsonContent = json.encodeToString(fileTreeCache)
-                cacheFile.writeText(jsonContent)
+                json.encodeToStream(fileTreeCache, cacheFile.outputStream())
                 Log.d(TAG, "Successfully wrote cache to disk")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to write cache file", e)
