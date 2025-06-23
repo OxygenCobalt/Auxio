@@ -63,6 +63,12 @@
             </intent-filter>
 
             <intent-filter>
+                <!-- Support voice actions-->
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <intent-filter>
                 <!--
                 Signal that we can take audio of *any* format, file or content. This is important,
                 as some apps use this to determine if Auxio is eligible to be a default music
