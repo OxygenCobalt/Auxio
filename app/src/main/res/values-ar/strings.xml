@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="info_app_desc">مشغّل موسيقى بسيط ومعقول للأندرويد.</string>
+    <string name="info_app_desc">مشغّل موسيقى بسيط ومنطقي للأندرويد.</string>
     <string name="lbl_observing">مراقبة مكتبة الموسيقى</string>
     <string name="lbl_retry">إعادة المحاولة</string>
     <string name="lbl_albums">الألبومات</string>
