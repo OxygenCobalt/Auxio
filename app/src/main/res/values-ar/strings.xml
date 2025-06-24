@@ -177,7 +177,7 @@
     <string name="set_observing">إعادة التحميل التلقائي</string>
     <string name="set_separators_desc">ضبط الأحرف التي تشير إلى قيم علامات متعددة</string>
     <string name="set_headset_autoplay_desc">البدء التلقائي في التشغيل عند توصيل سماعة الرأس (قد لا يعمل على جميع الأجهزة)</string>
-    <string name="lbl_soundtracks">اصوات تصويرية</string>
+    <string name="lbl_soundtracks">موسيقى تصويرية</string>
     <string name="set_content_desc">التحكم في كيفية تحميل الموسيقى والصور</string>
     <string name="set_keep_shuffle_desc">حافظ على خاصية الخلط عند تشغيل أغنية جديدة</string>
     <string name="set_headset_autoplay">سماعة الرأس تشغيل تلقائي</string>
@@ -185,7 +185,7 @@
     <string name="set_repeat_pause">إيقاف مؤقت عند التكرار</string>
     <string name="set_repeat_pause_desc">إيقاف مؤقت عند تكرار الأغنية</string>
     <string name="desc_track_number">المسار %d</string>
-    <string name="lbl_compilation_remix">البوم اغاني ريميكس</string>
+    <string name="lbl_compilation_remix">تجميعة ريميكس</string>
     <string name="def_album_count">لا توجد ألبومات</string>
     <string name="set_rescan">إعادة فحص الموسيقى</string>
     <string name="desc_album_cover">غلاف الألبوم لـ %s</string>
@@ -205,7 +205,7 @@
     <string name="set_separators">فواصل القيم المتعددة</string>
     <string name="set_observing_desc">أعد تحميل مكتبة الموسيقى عندما تتغير (يتطلب إشعار دائم)</string>
     <string name="set_exclude_non_music">استثناء غير الموسيقى</string>
-    <string name="set_separators_and">امبارساند (&amp;)</string>
+    <string name="set_separators_and">اشارة مع (&amp;)</string>
     <string name="set_separators_comma">الفاصلة (،)</string>
     <string name="set_separators_slash">شرطة مائلة (/)</string>
     <string name="set_cover_mode">أغطية الألبومات</string>
@@ -283,7 +283,7 @@
     <string name="lbl_path_style_relative">نسبي</string>
     <string name="lbl_path_style_absolute">مطلق</string>
     <string name="cdc_unknown">غير معروف</string>
-    <string name="lbl_imported_playlist">قائمة التشغيل استوردت</string>
+    <string name="lbl_imported_playlist">قائمة تشغيل مستوردة</string>
     <string name="def_album">ألبوم غير معروف</string>
     <string name="lbl_sort_mode">افرز حسب</string>
     <string name="lbl_sort_direction">الاتجاه</string>
@@ -324,7 +324,7 @@
         <item quantity="other">%d ألبوم</item>
     </plurals>
     <string name="cnt_mp4">MPEG-4 تحتوي على %s</string>
-    <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="cdc_alac">ترميز صوتي بدون خسارة (ALAC)</string>
     <string name="set_cover_mode_as_is">كما هي</string>
     <string name="set_with_hidden_desc">ضمّن ملفات الصوت المخفية (مثال: ذاكرة التخزين المؤقت)</string>
     <string name="set_with_hidden">ضمّن الملفات المخفية</string>
