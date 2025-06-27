@@ -18,7 +18,7 @@
     <string name="set_action_mode_repeat">மீண்டும் பயன்முறை</string>
     <string name="set_separators">பல மதிப்பு பிரிப்பான்கள்</string>
     <string name="set_separators_plus">பிளச் (+)</string>
-    <string name="set_separators_and">ஆம்பர்சண்ட் (&amp;)</string>
+    <string name="set_separators_and">உம்மைக் குறி (&amp;)</string>
     <string name="set_hide_collaborators">ஒத்துழைப்பாளர்களை மறைக்கவும்</string>
     <string name="set_images">படங்கள்</string>
     <string name="set_audio">ஆடியோ</string>
