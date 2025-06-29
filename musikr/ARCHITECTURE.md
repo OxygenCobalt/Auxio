@@ -1,135 +1,125 @@
-# Musikr Architecture
+# Musikr Architecture Overview
 
-## Overview
+Musikr is a highly opinionated, multi-threaded music loading library for Android that bypasses Android's MediaStore and uses the Storage Access Framework (SAF) with TagLib for enhanced music indexing capabilities.
 
-Musikr is a highly opinionated multithreaded music loader that provides advanced music functionality for Auxio. It bypasses Android's MediaStore to directly access music files using the Storage Access Framework (SAF) and [TagLib](https://taglib.org/) for metadata extraction.
+## Core Design Principles
 
-## Core Components
+1. **Stateless API**: Side-effects are contained within the Storage layer
+2. **No Defaults**: All parameters must be explicitly configured
+3. **Pipeline Architecture**: Three-step processing pipeline for music loading
+4. **Native Integration**: JNI bridge to TagLib for metadata extraction
+5. **Coroutine-Based**: Uses Kotlin coroutines for async operations
 
-### Pipeline Architecture
+## High-Level Architecture
 
-Musikr uses a three-stage pipeline for music indexing:
-
-1. **Explore Step** - Discovers music files on the device
-2. **Extract Step** - Extracts metadata from discovered files
-3. **Evaluate Step** - Processes extracted data to build the music library
-
-```mermaid
-graph LR
-    A[Music Locations] --> B[Explore Step]
-    B --> C[Extract Step]
-    C --> D[Evaluate Step]
-    D --> E[Library]
-    
-    subgraph Pipeline
-    B
-    C
-    D
-    end
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       Application Layer                       │
+│                    (Auxio or other apps)                     │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                         Musikr API                           │
+│                    (Musikr.kt interface)                     │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Pipeline Architecture                      │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   │
+│  │ ExploreStep  │ → │ ExtractStep  │ → │ EvaluateStep │   │
+│  └──────────────┘   └──────────────┘   └──────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                ┌───────────┴───────────┐
+                │                       │
+                ▼                       ▼
+┌──────────────────────┐   ┌──────────────────────────────┐
+│   Storage Layer      │   │     Native Layer (JNI)       │
+│  - Cache             │   │  - TagLib integration        │
+│  - Covers            │   │  - Metadata extraction       │
+│  - Playlists         │   │  - Format support            │
+└──────────────────────┘   └──────────────────────────────┘
 ```
 
-### Key Interfaces
+## Pipeline Steps
 
-- **Musikr** - Main entry point for the library
-- **Storage** - Manages persistent storage needs
-- **Library** - Represents the loaded music collection
-- **MutableLibrary** - Modifiable version of the library
+### 1. ExploreStep
+- **Purpose**: Discover music files on the device
+- **Process**:
+  - Uses FS module to explore file system via SAF
+  - Filters for audio MIME types and playlists
+  - Checks cache for previously indexed files
+  - Manages cover art retrieval
+- **Output**: Stream of `Explored` items (songs/playlists to process)
 
-## Module Structure
+### 2. ExtractStep
+- **Purpose**: Extract metadata from discovered files
+- **Process**:
+  - Uses JNI bridge to TagLib for metadata extraction
+  - Handles multiple tag formats (ID3v1/v2, MP4, Xiph, etc.)
+  - Extracts audio properties (bitrate, duration, etc.)
+  - Manages cover art extraction
+- **Output**: Stream of `Extracted` items with full metadata
 
-### 1. File System (`fs` package)
-- **Location.Opened** - Represents a location to search for music
-- **DeviceFS** - Provides access to device storage
-- **FileTreeCache** - Caches filesystem structure for faster indexing
+### 3. EvaluateStep
+- **Purpose**: Build the music graph from extracted metadata
+- **Process**:
+  - Creates relationships between songs, albums, artists, genres
+  - Resolves naming conflicts and duplicates
+  - Applies user interpretation preferences
+  - Builds final library structure
+- **Output**: Complete `MutableLibrary` with all relationships
 
-### 2. Pipeline (`pipeline` package)
-- **ExploreStep** - Discovers music files on the device
-- **ExtractStep** - Extracts metadata from discovered files
-- **EvaluateStep** - Processes extracted data to build the library
-- **PipelineItem** - Data items flowing through the pipeline
+## Key Components
 
-### 3. Metadata (`metadata` package)
-- **Metadata** - Extracted file metadata
-- **MetadataExtractor** - Extracts metadata using TagLib
-- **TagLibJNI** - JNI bridge to native TagLib library
+### Config & Storage
+- **Config**: Main configuration container
+  - `fs`: File system access configuration
+  - `storage`: Persistent storage components
+  - `interpretation`: Tag interpretation rules
 
-### 4. Tag Processing (`tag` package)
-- **TagParser** - Parses raw tag data into structured format
-- **TagInterpreter** - Interprets tags based on user preferences
-- **ParsedTags** - Represents parsed metadata tags
+- **Storage**: Side-effect laden components
+  - `cache`: Metadata caching (Room database)
+  - `covers`: Cover art storage and retrieval
+  - `storedPlaylists`: User playlist management
 
-### 5. Model (`model` package)
-- **LibraryImpl** - Implementation of the music library
-- **SongImpl**, **AlbumImpl**, **ArtistImpl**, **GenreImpl** - Music entity implementations
-- **LibraryFactory** - Creates library instances from pipeline data
+### Data Models
+- **Music**: Base interface for all music items
+  - Uses UID system for unique identification
+  - Supports MusicBrainz IDs
+- **Song**: Individual track with full metadata
+- **Album**: Collection of songs (includes EPs, singles, etc.)
+- **Artist**: Can have explicit (album artist) and implicit (track artist) albums
+- **Genre**: Grouping by musical genre
+- **Playlist**: User-created or imported playlists
 
-### 6. Covers (`covers` package)
-- **Covers** - Interface for album cover management
-- **EmbeddedCovers** - Extracts covers embedded in music files
-- **FSCovers** - Discovers cover art in the filesystem
-- **StoredCovers** - Manages persistent storage of covers
+### File System (FS)
+- Abstraction over Android's Storage Access Framework
+- Supports multiple storage locations
+- Handles permissions and URI management
 
-### 7. Cache (`cache` package)
-- **Cache** - Caches processed music data
-- **DBCache** - Database implementation of caching
-
-### 8. Playlist (`playlist` package)
-- **PlaylistFile** - Represents a playlist file
-- **ExternalPlaylistManager** - Manages external playlist files
-- **PlaylistInterpreter** - Interprets playlist formats
-
-## Native Component
-
-Musikr includes a native component built with TagLib for fast and accurate metadata extraction:
-
-```mermaid
-graph TD
-    A[TagLibJNI] --> B[JNI Bridge]
-    B --> C[TagLib Library]
-    C --> D[Music File Metadata]
-```
-
-### Native Files (`cpp` directory)
-- **taglib_jni.cpp** - Main JNI implementation
-- **JMetadataBuilder** - Builds metadata objects from TagLib
-- **JTagMap** - Maps between Java and C++ tag structures
-- **JInputStream** - Input stream adapter for TagLib
-
-## Data Flow
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Musikr
-    participant ExploreStep
-    participant ExtractStep
-    participant EvaluateStep
-    participant Storage
-    
-    User->>Musikr: run(locations)
-    Musikr->>ExploreStep: explore(locations)
-    ExploreStep->>Storage: Read cache
-    ExploreStep-->>Musikr: Explored files
-    Musikr->>ExtractStep: extract(explored)
-    ExtractStep->>TagLibJNI: Extract metadata
-    ExtractStep-->>Musikr: Extracted metadata
-    Musikr->>EvaluateStep: evaluate(extracted)
-    EvaluateStep->>Storage: Store processed data
-    EvaluateStep-->>Musikr: Library
-    Musikr-->>User: LibraryResult
-```
+### Native Layer (C++)
+- TagLib integration for metadata extraction
+- JNI wrappers for Java/Kotlin interop
+- Support for various audio formats
+- Custom patches for enhanced functionality
 
 ## Threading Model
+- **Coroutine-based**: All operations use Kotlin coroutines
+- **Multi-threaded extraction**: Parallel metadata extraction
+- **Buffered channels**: For efficient pipeline communication
+- **Dispatcher control**: Explicit IO dispatcher usage
 
-Musikr uses Kotlin Coroutines for concurrent processing:
+## Error Handling
+- **Pipeline exceptions**: Custom exception types
+- **Graceful degradation**: Continue on individual file errors
+- **Logging**: Comprehensive error logging
+- **Cache invalidation**: Automatic stale cache detection
 
-- Pipeline stages use `flatMapMerge` and `distributedMap` for parallel processing
-- Bounded buffer channels manage backpressure
-- IO operations are dispatched to `Dispatchers.IO`
-
-## Best Practices for Extension
-
-1. The API is minimized and unstable - be prepared to fork and modify
-2. No defaults are provided - carefully consider parameter choices
-3. Musikr is stateless except for Storage - manage long-term state yourself
-4. When adding functionality, follow the pipeline architecture pattern
+## Performance Optimizations
+- **Caching**: Aggressive metadata caching
+- **Parallel processing**: Multi-threaded file processing
+- **Lazy evaluation**: On-demand cover loading
+- **Memory efficiency**: Streaming pipeline architecture

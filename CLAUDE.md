@@ -4,120 +4,162 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Auxio is a modern Android music player written in Kotlin that emphasizes simplicity and performance. It uses Media3 ExoPlayer for playback and includes a custom native music indexing library called musikr.
+Auxio is a simple, rational music player for Android built on Media3 ExoPlayer. It features gapless playback, ReplayGain support, Android Auto integration, and advanced music indexing capabilities.
 
-## Build System & Commands
+## Essential Build Commands
 
 ### Prerequisites
-- `cmake` and `ninja-build` must be installed before building
-- Project uses git submodules - clone with `git clone --recurse-submodules`
-- **Cannot build on Windows** - requires Unix-based system for Media3 build scripts
+- Unix-based system (cannot build on Windows)
+- Install `cmake` and `ninja-build`
+- Clone with submodules: `git clone --recurse-submodules`
 
-### Common Build Commands
+### Build Commands
 ```bash
-# Build debug version
+# Build debug APK
 ./gradlew assembleDebug
 
-# Build release version  
+# Build release APK
 ./gradlew assembleRelease
 
-# Run tests
-./gradlew test
+# Clean build
+./gradlew clean build
 
-# Run connected tests
-./gradlew connectedAndroidTest
-
-# Code formatting (Spotless)
-./gradlew spotlessApply
-
-# Check code formatting
-./gradlew spotlessCheck
+# Install debug build on device
+./gradlew installDebug
 ```
 
-### Development Modules
-- `app/` - Main Android application
-- `musikr/` - Native music indexing library with TagLib integration
-- `media/` - Patched Media3 ExoPlayer libraries (git submodule)
+### Code Quality Commands
+```bash
+# Check code formatting (MUST pass before committing)
+./gradlew spotlessCheck
+
+# Apply code formatting fixes
+./gradlew spotlessApply
+
+# Run Android lint
+./gradlew lint
+
+# Run lint with automatic fixes
+./gradlew lintFix
+```
+
+### Testing Commands
+```bash
+# Run unit tests
+./gradlew test
+
+# Run debug unit tests
+./gradlew testDebugUnitTest
+
+# Run musikr module tests specifically
+./gradlew musikr:testDebug
+
+# Run instrumentation tests (requires device/emulator)
+./gradlew connectedAndroidTest
+```
+
+### Development Workflow
+```bash
+# Before committing: format code and run checks
+./gradlew spotlessApply
+./gradlew check
+
+# Run a single test class
+./gradlew test --tests "org.oxycblt.auxio.YourTestClass"
+
+# Run a single test method
+./gradlew test --tests "org.oxycblt.auxio.YourTestClass.yourTestMethod"
+```
 
 ## Architecture Overview
 
-### Core Architecture Pattern
-- **MVVM** with ViewModels for each major screen (Home, Detail, Playback, Search)
-- **Repository Pattern** - MusicRepository as single source of truth for music data
-- **Dependency Injection** - Hilt/Dagger for modular dependency management
-- **Single Activity Architecture** with Navigation Components
-- **Service-Oriented** background music processing
+### High-Level Architecture
+- **Pattern**: MVVM (Model-View-ViewModel) with Dagger Hilt dependency injection
+- **Navigation**: Single Activity architecture with Navigation Component
+- **UI**: Material Design 3 with edge-to-edge display
+- **Data**: Repository pattern with Room database and custom Musikr library
+- **Playback**: MediaBrowserServiceCompat with vendored Media3/ExoPlayer
 
-### Key Modules & Components
+### Key Components
 
-#### Music Management (`app/src/main/java/org/oxycblt/auxio/music/`)
-- `MusicRepository` - Central music library state management
-- `MusicViewModel` - UI layer for music data access
-- `service/` - MediaBrowserServiceCompat integration
-- `shim/` - Abstraction layer for musikr integration
+#### Service Architecture
+- `AuxioService` - Main MediaBrowserService for background playback
+- `PlaybackServiceFragment` - Handles all playback operations
+- `MusicServiceFragment` - Manages music browsing and library
 
-#### Playback Engine (`app/src/main/java/org/oxycblt/auxio/playback/`)
-- `PlaybackViewModel` - Main playback UI interface
-- `PlaybackStateManager` - Core playback state management
-- `service/` - Background ExoPlayer integration
-- `queue/` - Playback queue management
-- `persist/` - Playback state persistence (Room database)
-- `replaygain/` - Audio processing for volume normalization
+#### Data Layer
+- `MusicRepository` - Primary interface for music data access
+- `PersistenceRepository` - Handles playback state and playlists
+- `Musikr` - Custom music indexing library (separate module)
+  - Bypasses MediaStore limitations
+  - Supports advanced metadata and tags
+  - Background indexing with progress
 
-#### UI Structure (`app/src/main/java/org/oxycblt/auxio/`)
-- `home/` - Main library browsing with customizable tabs
-- `detail/` - Album, artist, genre, and playlist detail views
-- `search/` - Music search functionality
-- `list/` - Shared list components with sorting/filtering
-- `ui/` - Custom UI components, theming, animations
+#### UI Layer Structure
+```
+app/src/main/java/org/oxycblt/auxio/
+├── MainActivity.kt          # Single activity host
+├── MainFragment.kt         # Main container with bottom sheets
+├── home/                   # Home screen tabs (songs, albums, artists, etc.)
+├── detail/                 # Detail screens for albums/artists
+├── playback/              # Playback UI and controls
+├── search/                # Search functionality
+├── settings/              # Preferences screens
+├── list/                  # Reusable list components
+└── music/                 # Music data models and repository
+```
 
-#### Native Music Library (`musikr/`)
-- **Pipeline-based indexing** - Multi-stage scanning (Explore → Extract → Evaluate)
-- **TagLib integration** - Native C++ metadata extraction
-- **File system caching** - Device storage access optimization
-- **Cover art management** - Embedded and external cover support
+#### State Management
+- StateFlow/MutableStateFlow for reactive state
+- Shared ViewModels between fragments
+- Event wrapper pattern for one-time UI events
+- Lifecycle-aware observers
 
-### Data Flow
-1. musikr scans and indexes music files from device storage
-2. MusicRepository manages indexed library and exposes to UI
-3. ViewModels provide reactive state for UI components using StateFlow
-4. PlaybackService handles audio playback via ExoPlayer
-5. UI observes ViewModels and updates reactively
+### Navigation Flow
+1. `MainActivity` hosts all navigation
+2. Two navigation graphs: `inner.xml` (main) and `outer.xml` (onboarding)
+3. Bottom sheet for playback UI
+4. Dialog destinations for popups
 
-## Code Conventions
+### Dependency Injection Setup
+- `@HiltAndroidApp` on Auxio application class
+- `@AndroidEntryPoint` on activities/fragments
+- Modules: `MusicModule`, `PlaybackModule`, `UIModule`
+- Scoped with `@Singleton` for app-wide instances
 
-### Language & Libraries
-- **Kotlin** - Primary language with coroutines for async operations
-- **Hilt/Dagger** - Dependency injection
-- **Room** - Local database for persistence
-- **Navigation Components** - Fragment navigation
-- **ViewBinding** - Type-safe view access
-- **StateFlow/LiveData** - Reactive state management
-- **Coil** - Image loading for cover art
+## Important Development Notes
 
 ### Code Style
-- Uses Spotless with ktfmt Dropbox style formatting
-- License header required (see NOTICE file)
-- C++ code uses Eclipse CDT formatting (eclipse-cdt.xml)
+- Kotlin code formatted with ktfmt (Dropbox style)
+- C++ code uses Eclipse CDT formatting
+- Spotless enforces formatting automatically
+- License headers required (enforced by Spotless)
 
-## Testing
+### Git Workflow
+- Default branch: `dev` (development)
+- PRs should target `dev` branch
+- `master` contains stable releases only
 
-### Test Structure
-- Unit tests: `src/test/` directories
-- Integration tests: `src/androidTest/` directories
-- musikr module includes Robolectric tests
+### Architectural Constraints
+- Stick to F-Droid inclusion guidelines
+- No proprietary dependencies
+- Feature additions unlikely to be accepted
+- Major UI changes discouraged
 
-### Test Dependencies
-- JUnit 4 for unit testing
-- MockK for mocking
-- Robolectric for Android unit tests
-- Espresso for UI tests
+### Testing Requirements
+- Test all changes thoroughly
+- Unit tests for business logic
+- Consider edge cases for music metadata
+- Test on different Android versions (min SDK 24)
 
-## Key Development Notes
+### Key Libraries
+- AndroidX Navigation, Room, Media3
+- Dagger Hilt for DI
+- Kotlin Coroutines for async
+- Coil for image loading
+- Material Design Components 3
 
-- **Custom Media3**: Uses patched Media3 ExoPlayer for enhanced playback features
-- **Native Dependencies**: musikr module builds TagLib from source during compilation
-- **Permission Handling**: Requires storage permissions for music file access
-- **Background Services**: Foreground service for continuous music playback
-- **Widget Support**: Multiple widget layouts with automatic sizing adaptation
-- **ReplayGain**: Full support for MP3, FLAC, OGG, OPUS, and MP4 files
+### Custom Modifications
+- Vendored/patched Media3 in `media/` directory
+- Custom patches for ExoPlayer features
+- Modified libraries shouldn't be updated directly
