@@ -331,5 +331,5 @@
     <string name="set_excluded_locations_desc">تحديد المجلدات التي لا تُحمّل منها الموسيقى</string>
     <string name="set_excluded_locations">المجلدات المستثناة</string>
     <string name="set_fs_cache">استخدم ذاكرة التخزين المؤقت لنظام الملفات</string>
-    <string name="set_fs_cache_desc">يحسن أوقات التحميل، ولكنه قد يمنع إضافة موسيقى جديدة</string>
+    <string name="set_fs_cache_desc">يحسن أوقات التحميل، ولكنه قد يمنع إضافة صوت جديد</string>
 </resources>
