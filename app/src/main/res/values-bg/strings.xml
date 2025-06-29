@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lbl_indexer">Зареждане на музика</string>
+    <string name="lbl_indexer">Музиката се зарежда</string>
     <string name="lbl_observing">Мониторинг на музикална библиотека</string>
     <string name="lbl_retry">Опитайте отново</string>
     <string name="lbl_songs">Песни</string>
@@ -24,7 +24,7 @@
     <string name="lbl_demos">Демонстрации</string>
     <string name="lbl_mixes">DJ миксове</string>
     <string name="lbl_live_group">На живо</string>
-    <string name="lbl_remix_group">Ремикси</string>
+    <string name="lbl_remix_group">Ремиксове</string>
     <string name="lbl_appears_on">Появява се на</string>
     <string name="lbl_artist">Изпълнител</string>
     <string name="lbl_artists">Изпълнители</string>
@@ -75,17 +75,17 @@
     <string name="lbl_path_style_relative">Относително</string>
     <string name="lbl_windows_paths">Използвай съвместими с Windows пътища</string>
     <string name="info_app_desc">Прост, рационален музикален плейър за android.</string>
-    <string name="lbl_indexing">Зарежда се музика</string>
+    <string name="lbl_indexing">Зареждане на музика</string>
     <string name="lbl_albums">Албуми</string>
     <string name="lbl_ep_live">EP на живо</string>
-    <string name="lbl_single_live">Сингъл наживо</string>
+    <string name="lbl_single_live">Сингъл на живо</string>
     <string name="lbl_imported_playlist">Внесен плейлист</string>
     <string name="lbl_rename_playlist">Преименувай плейлист</string>
     <string name="lbl_song_count">Брой песни</string>
     <string name="lbl_date_added">Дата на добавяне</string>
     <string name="lbl_sort">Вид</string>
     <string name="lbl_mix">DJ микс</string>
-    <string name="lbl_track">Писта</string>
+    <string name="lbl_track">Песен</string>
     <string name="lbl_sort_mode">Сортирай по</string>
     <string name="lbl_equalizer">Еквалайзер</string>
     <string name="lbl_demo">Демонстрация</string>
@@ -197,7 +197,7 @@
     <string name="set_images">Изображения</string>
     <string name="set_repeat_pause_desc">Пауза когато песента се повтаря</string>
     <string name="set_remember_pause_desc">Останете в режим на изпълнение/пауза, когато прескачате или редактирате опашка</string>
-    <string name="set_replay_gain_mode_track">Предпочитам песен</string>
+    <string name="set_replay_gain_mode_track">Предпочитана песен</string>
     <string name="set_replay_gain_mode_album">Предпочитам албум</string>
     <string name="set_replay_gain_mode_dynamic">Предпочитам албум, ако се пуска такъв</string>
     <string name="set_pre_amp">ReplayGain предусилвател</string>
@@ -238,7 +238,7 @@
     <string name="desc_playlist_image">Изображение на плейлист за %s</string>
     <string name="set_rescan_desc">Изчистете кеша на етикетите и презаредете напълно музикалната библиотека (по-бавно, но по-пълно)</string>
     <string name="def_artist">Неизвестен изпълнител</string>
-    <string name="def_date">Без дата</string>
+    <string name="def_date">Няма дата</string>
     <string name="def_disc">Няма диск</string>
     <string name="def_track">Няма песен</string>
     <string name="def_song_count">Няма песни</string>
@@ -277,7 +277,7 @@
     <string name="clr_brown">Кафяво</string>
     <string name="fmt_selected">%d Избрано</string>
     <string name="fmt_indexing">Вашата музикална библиотека се зарежда… (%1$d/%2$d)</string>
-    <string name="fmt_deletion_info">Изтрий %s? Това не може да бъде отменено.</string>
+    <string name="fmt_deletion_info">Изтриване %s? Това не може да бъде отменено.</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d песен</item>
         <item quantity="other">%d песени</item>
