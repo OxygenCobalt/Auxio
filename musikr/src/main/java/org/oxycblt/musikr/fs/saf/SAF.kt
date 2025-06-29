@@ -25,22 +25,30 @@ import android.provider.DocumentsContract
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.musikr.fs.DeviceDirectory
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.Directory
 import org.oxycblt.musikr.fs.FS
+import org.oxycblt.musikr.fs.FSUpdate
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.fs.track.LocationObserver
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SAF
-private constructor(private val contentResolver: ContentResolver, private val query: Query) : FS {
-    override fun explore(): Flow<DeviceFile> =
+private constructor(
+    private val context: Context,
+    private val contentResolver: ContentResolver,
+    private val query: Query
+) : FS {
+    override fun explore(): Flow<File> =
         query.source.asFlow().flatMapMerge { location ->
             exploreDirectoryImpl(
                 location.uri,
@@ -50,18 +58,32 @@ private constructor(private val contentResolver: ContentResolver, private val qu
                 query.exclude.mapTo(mutableSetOf()) { it.uri })
         }
 
+    override fun track(): Flow<FSUpdate> = callbackFlow {
+        val observers = mutableListOf<LocationObserver>()
+
+        query.source.forEach { location ->
+            val observer =
+                LocationObserver(context, location.uri) {
+                    trySend(FSUpdate.LocationChanged(location))
+                }
+            observers.add(observer)
+        }
+
+        awaitClose { observers.forEach { observer -> observer.release() } }
+    }
+
     private fun exploreDirectoryImpl(
         rootUri: Uri,
         treeDocumentId: String,
         relativePath: Path,
-        parent: Deferred<DeviceDirectory>?,
+        parent: Deferred<Directory>?,
         exclude: Set<Uri>
-    ): Flow<DeviceFile> = flow {
+    ): Flow<File> = flow {
         // Make a kotlin future
         val uri = DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
-        val directoryDeferred = CompletableDeferred<DeviceDirectory>()
-        val recursive = mutableListOf<Flow<DeviceFile>>()
-        val children = mutableListOf<DeviceFile>()
+        val directoryDeferred = CompletableDeferred<Directory>()
+        val recursive = mutableListOf<Flow<File>>()
+        val children = mutableListOf<File>()
         contentResolver.useQuery(uri, PROJECTION) { cursor ->
             val childUriIndex =
                 cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
@@ -99,7 +121,7 @@ private constructor(private val contentResolver: ContentResolver, private val qu
                 } else {
                     val size = cursor.getLong(sizeIndex)
                     val file =
-                        DeviceFile(
+                        File(
                             uri = childUri,
                             mimeType = mimeType,
                             path = newPath,
@@ -110,7 +132,7 @@ private constructor(private val contentResolver: ContentResolver, private val qu
                     emit(file)
                 }
             }
-            directoryDeferred.complete(DeviceDirectory(uri, relativePath, parent, children))
+            directoryDeferred.complete(Directory(uri, relativePath, parent, children))
             emitAll(recursive.asFlow().flattenMerge())
         }
     }
@@ -122,7 +144,7 @@ private constructor(private val contentResolver: ContentResolver, private val qu
     )
 
     companion object {
-        fun from(context: Context, query: Query) = SAF(context.contentResolverSafe, query)
+        fun from(context: Context, query: Query) = SAF(context, context.contentResolverSafe, query)
 
         private val PROJECTION =
             arrayOf(

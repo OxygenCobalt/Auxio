@@ -39,8 +39,4 @@ class MusikrShimModule {
     @Singleton
     @Provides
     fun storedPlaylists(@ApplicationContext context: Context) = StoredPlaylists.from(context)
-
-    @Provides
-    fun updateTrackerFactory(@ApplicationContext context: Context): UpdateTrackerFactory =
-        UpdateTrackerFactoryImpl(context)
 }

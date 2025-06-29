@@ -23,7 +23,7 @@ import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
@@ -33,7 +33,7 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
  * Create an instance with [from].
  */
 class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
-    override suspend fun read(file: DeviceFile): CacheResult {
+    override suspend fun read(file: File): CacheResult {
         val dbSong = readDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file)
         if (dbSong.modifiedMs != file.modifiedMs) {
             return CacheResult.Stale(file, dbSong.addedMs)
@@ -94,7 +94,7 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
 class MutableDBCache
 private constructor(private val inner: DBCache, private val writeDao: CacheWriteDao) :
     MutableCache {
-    override suspend fun read(file: DeviceFile) = inner.read(file)
+    override suspend fun read(file: File) = inner.read(file)
 
     override suspend fun write(cachedSong: CachedSong) {
         val dbSong =

@@ -23,10 +23,10 @@ import android.content.Context
 import java.io.FileInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.File
 
 internal interface MetadataExtractor {
-    suspend fun extract(deviceFile: DeviceFile): Metadata?
+    suspend fun extract(deviceFile: File): Metadata?
 
     companion object {
         fun from(context: Context): MetadataExtractor =
@@ -36,7 +36,7 @@ internal interface MetadataExtractor {
 
 private class MetadataExtractorImpl(private val contentResolver: ContentResolver) :
     MetadataExtractor {
-    override suspend fun extract(deviceFile: DeviceFile): Metadata? =
+    override suspend fun extract(deviceFile: File): Metadata? =
         withContext(Dispatchers.IO) {
             contentResolver.openFileDescriptor(deviceFile.uri, "r")?.use { fd ->
                 val fis = FileInputStream(fd.fileDescriptor)

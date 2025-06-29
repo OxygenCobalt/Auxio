@@ -23,26 +23,32 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 
 interface FS {
-    fun explore(): Flow<DeviceFile>
+    fun explore(): Flow<File>
+
+    fun track(): Flow<FSUpdate>
 }
 
-sealed interface DeviceFSEntry {
+sealed interface FSEntry {
     val uri: Uri?
     val path: Path
 }
 
-data class DeviceDirectory(
+data class Directory(
     override val uri: Uri?,
     override val path: Path,
-    val parent: Deferred<DeviceDirectory>?,
-    var children: List<DeviceFile>
-) : DeviceFSEntry
+    val parent: Deferred<Directory>?,
+    var children: List<File>
+) : FSEntry
 
-data class DeviceFile(
+data class File(
     override val uri: Uri,
     override val path: Path,
     val modifiedMs: Long,
     val mimeType: String,
     val size: Long,
-    val parent: Deferred<DeviceDirectory>
-) : DeviceFSEntry
+    val parent: Deferred<Directory>
+) : FSEntry
+
+sealed interface FSUpdate {
+    data class LocationChanged(val location: Location.Opened?) : FSUpdate
+}

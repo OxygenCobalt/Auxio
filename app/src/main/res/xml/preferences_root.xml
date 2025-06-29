@@ -38,13 +38,6 @@
             app:summary="@string/set_excluded_locations_desc"
             app:title="@string/set_excluded_locations" />
 
-
-        <SwitchPreferenceCompat
-            app:key="@string/set_key_fs_cache"
-            app:summary="@string/set_fs_cache_desc"
-            app:title="@string/set_fs_cache"
-            app:defaultValue="false" />
-
         <Preference
             app:key="@string/set_key_reindex"
             app:summary="@string/set_reindex_desc"

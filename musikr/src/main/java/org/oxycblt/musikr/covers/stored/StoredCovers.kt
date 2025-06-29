@@ -24,7 +24,7 @@ import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MemoryCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Metadata
 
 private const val PREFIX = "mcs:"
@@ -75,7 +75,7 @@ class MutableStoredCovers(
 
     override suspend fun obtain(id: String): CoverResult<FDCover> = base.obtain(id)
 
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
+    override suspend fun create(file: File, metadata: Metadata): CoverResult<FDCover> {
         val memoryCover =
             when (val cover = src.create(file, metadata)) {
                 is CoverResult.Hit -> cover.cover

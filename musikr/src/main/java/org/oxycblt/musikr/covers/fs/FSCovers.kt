@@ -31,7 +31,7 @@ import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Metadata
 
 private const val PREFIX = "mcf:"
@@ -93,13 +93,13 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
 
     override suspend fun obtain(id: String): CoverResult<FDCover> = inner.obtain(id)
 
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<FDCover> {
+    override suspend fun create(file: File, metadata: Metadata): CoverResult<FDCover> {
         // Since DeviceFiles is a streaming API, we have to wait for the current recursive
         // query to finally finish to be able to have a complete list of siblings to search for.
         val parent = file.parent.await()
         val bestCover =
             parent.children
-                .filterIsInstance<DeviceFile>()
+                .filterIsInstance<File>()
                 .map { it to coverArtScore(it) }
                 .maxBy { it.second }
         if (bestCover.second > 0) {
@@ -116,7 +116,7 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // that should not be managed by the app
     }
 
-    private suspend fun coverArtScore(file: DeviceFile): Int {
+    private suspend fun coverArtScore(file: File): Int {
         if (!file.mimeType.startsWith("image/", ignoreCase = true)) {
             // Not an image file. You lose!
             return 0
