@@ -201,8 +201,8 @@
     <string name="set_replay_gain_mode_album">Предпочитам албум</string>
     <string name="set_replay_gain_mode_dynamic">Предпочитам албум, ако се пуска такъв</string>
     <string name="set_pre_amp">ReplayGain предусилвател</string>
-    <string name="set_pre_amp_desc">Предусилвателят се прилага към съществуващата настройка по време на възпроизвеждане.</string>
-    <string name="set_pre_amp_with">Регулиране с етикети</string>
+    <string name="set_pre_amp_desc">Предусилвателят се прилага към съществуващата настройка по време на възпроизвеждане</string>
+    <string name="set_pre_amp_with">Корекция с етикети</string>
     <string name="set_pre_amp_without">Корекция без етикети</string>
     <string name="set_library">Библиотека</string>
     <string name="set_locations">Музикални папки</string>
