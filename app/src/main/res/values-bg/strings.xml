@@ -66,7 +66,7 @@
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_sample_rate">Честота на дискретизация</string>
     <string name="lbl_replaygain_album">ReplayGain Регулиране на албум</string>
-    <string name="lbl_shuffle_shortcut_short">Разбъркано</string>
+    <string name="lbl_shuffle_shortcut_short">Разбъркай</string>
     <string name="lbl_ok">Добре</string>
     <string name="lbl_cancel">Отказ</string>
     <string name="lbl_save">Запази</string>
@@ -197,7 +197,7 @@
     <string name="set_images">Изображения</string>
     <string name="set_repeat_pause_desc">Пауза когато песента се повтаря</string>
     <string name="set_remember_pause_desc">Останете в режим на изпълнение/пауза, когато прескачате или редактирате опашка</string>
-    <string name="set_replay_gain_mode_track">Предпочитана песен</string>
+    <string name="set_replay_gain_mode_track">Предпочитам песен</string>
     <string name="set_replay_gain_mode_album">Предпочитам албум</string>
     <string name="set_replay_gain_mode_dynamic">Предпочитам албум, ако се пуска такъв</string>
     <string name="set_pre_amp">ReplayGain предусилвател</string>
