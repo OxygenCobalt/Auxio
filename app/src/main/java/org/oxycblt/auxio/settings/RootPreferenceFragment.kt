@@ -56,10 +56,6 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.musicLocationsSettings())
             }
-            getString(R.string.set_key_excluded_dirs) -> {
-                findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.excludedLocationsSettings())
-            }
         }
     }
 

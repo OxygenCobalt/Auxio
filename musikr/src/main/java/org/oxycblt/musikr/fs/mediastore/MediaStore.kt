@@ -33,6 +33,7 @@ import org.oxycblt.musikr.fs.Directory
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.FSUpdate
 import org.oxycblt.musikr.fs.File
+import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.fs.path.MediaStorePathInterpreter
 import org.oxycblt.musikr.fs.path.VolumeManager
@@ -48,7 +49,7 @@ class MediaStoreFS
 private constructor(
     private val context: Context,
     private val volumeManager: VolumeManager,
-    private val excludeNonMusic: Boolean = true
+    private val query: Query
 ) : FS {
     private val pathInterpreterFactory = MediaStorePathInterpreter.Factory.from(volumeManager)
 
@@ -59,8 +60,25 @@ private constructor(
         val args = mutableListOf<String>()
 
         // Filter out audio that is not music, if enabled
-        if (excludeNonMusic) {
+        if (query.excludeNonMusic) {
             selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
+        }
+
+        // Handle include/exclude directories
+        if (query.include.isNotEmpty()) {
+            val pathSelector = pathInterpreterFactory.createSelector(query.include.map { it.path })
+            if (pathSelector != null) {
+                selector += " AND (${pathSelector.template})"
+                args.addAll(pathSelector.args)
+            }
+        }
+
+        if (query.exclude.isNotEmpty()) {
+            val pathSelector = pathInterpreterFactory.createSelector(query.exclude.map { it.path })
+            if (pathSelector != null) {
+                selector += " AND NOT (${pathSelector.template})"
+                args.addAll(pathSelector.args)
+            }
         }
 
         // Collect all files and track unique directories
@@ -196,12 +214,16 @@ private constructor(
         }
     }
 
+    data class Query(
+        val include: List<Location.Unopened>,
+        val exclude: List<Location.Unopened>,
+        val excludeNonMusic: Boolean
+    )
+
     companion object {
-        fun from(context: Context) =
+        fun from(context: Context, query: Query) =
             MediaStoreFS(
-                context = context,
-                volumeManager = VolumeManager.from(context),
-                excludeNonMusic = true)
+                context = context, volumeManager = VolumeManager.from(context), query = query)
 
         /**
          * The base selector that works across all versions of android. Excludes files with zero

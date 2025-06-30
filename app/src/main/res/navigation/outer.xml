@@ -36,9 +36,6 @@
         <action
             android:id="@+id/music_locations_settings"
             app:destination="@id/music_locations_dialog" />
-        <action
-            android:id="@+id/excluded_locations_settings"
-            app:destination="@id/excluded_locations_dialog" />
     </fragment>
 
     <fragment
@@ -94,7 +91,7 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_locations_dialog"
-        android:name="org.oxycblt.auxio.music.locations.MusicLocationsDialog"
+        android:name="org.oxycblt.auxio.music.locations.LocationsDialog"
         android:label="music_locations_dialog"
         tools:layout="@layout/dialog_music_locations" />
     <dialog
@@ -102,11 +99,6 @@
         android:name="org.oxycblt.auxio.music.interpret.SeparatorsDialog"
         android:label="separators_dialog"
         tools:layout="@layout/dialog_separators" />
-    <dialog
-        android:id="@+id/excluded_locations_dialog"
-        android:name="org.oxycblt.auxio.music.locations.ExcludedLocationsDialog"
-        android:label="excluded_locations_dialog"
-        tools:layout="@layout/dialog_music_locations" />
 
     <fragment
         android:id="@+id/about_fragment"

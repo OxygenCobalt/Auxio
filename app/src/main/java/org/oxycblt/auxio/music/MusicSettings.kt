@@ -27,7 +27,19 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.mediastore.MediaStoreFS
+import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
+
+/**
+ * Represents the mode for loading music locations.
+ */
+enum class MusicLocationMode {
+    /** Use Storage Access Framework (file picker) to select specific folders */
+    SAF,
+    /** Use system MediaStore database to load all music */
+    SYSTEM
+}
 
 /**
  * User configuration specific to music system.
@@ -41,6 +53,10 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var musicLocations: List<Location.Opened>
     /** The locations to exclude from music loading. */
     var excludedLocations: List<Location.Unopened>
+    /** The currently configured SAF query (if any) * */
+    val safQuery: SAF.Query?
+    /** The currently configured MediaStore query (if any) * */
+    val mediaStoreQuery: MediaStoreFS.Query?
     /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
     /** Whether to ignore hidden files and directories during music loading. */
@@ -53,6 +69,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val intelligentSorting: Boolean
     /** Whether to use the file-system cache for improved loading times. */
     val useFileTreeCache: Boolean
+    /** The mode for loading music locations (SAF or System database). */
+    var locationMode: MusicLocationMode
 
     interface Listener {
         /** Called when the current music locations changed. */
@@ -137,6 +155,39 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
 
     override val useFileTreeCache: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_fs_cache), false)
+
+    override var locationMode: MusicLocationMode
+        get() {
+            val ordinal = sharedPreferences.getInt(getString(R.string.set_key_saf_mode), 0)
+            return MusicLocationMode.values().getOrNull(ordinal) ?: MusicLocationMode.SAF
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_saf_mode), value.ordinal)
+                apply()
+            }
+        }
+
+    override val safQuery: SAF.Query?
+        get() {
+            // SAF query is used when in SAF mode and we have music locations configured
+            if (locationMode != MusicLocationMode.SAF) return null
+            val locations = musicLocations
+            if (locations.isEmpty()) return null
+            return SAF.Query(
+                source = locations, exclude = excludedLocations, withHidden = withHidden)
+        }
+
+    override val mediaStoreQuery: MediaStoreFS.Query?
+        get() {
+            // MediaStore query is used when in system database mode
+            if (locationMode != MusicLocationMode.SYSTEM) return null
+
+            return MediaStoreFS.Query(
+                include = emptyList(), // No include filter in system database mode
+                exclude = excludedLocations,
+                excludeNonMusic = excludeNonMusic)
+        }
 
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"

@@ -16,9 +16,33 @@
     <string name="lbl_observing">Monitoring music library</string>
     <!-- As in to retry loading music -->
     <string name="lbl_retry">Retry</string>
-    <string name="lbl_music_sources">Pick folders</string>
+    <string name="lbl_music_sources">Music Sources</string>
     <!-- As in to show additional information about a music loading error -->
     <!-- As in grant permission -->
+    <string name="lbl_grant">Grant</string>
+    
+    <!-- Music location dialog strings -->
+    <string name="lbl_load_from">Load From</string>
+    <string name="lbl_file_picker">File Picker</string>
+    <string name="lbl_system_database">System</string>
+    <string name="desc_file_picker">Load music from the folders that you select. Slower, but more reliable. Requires the vanilla file manager app to be installed.</string>
+    <string name="desc_system_database">Load music that the Android OS automatically detects. Faster, but less reliable. Manufacturers might break this.</string>
+    <string name="lbl_grant_storage_anyway">Storage Access Recommended</string>
+    <string name="desc_grant_storage_anyway">Granting external storage permissions can fix issues on some devices.</string>
+    <string name="lbl_grant_storage">Storage Access Required</string>
+    <string name="desc_grant_storage_required">Grant external storage permissions to enable this option.</string>
+    <string name="lbl_folders_to_load">Folders to Load</string>
+    <string name="lbl_folders_to_ignore">Folders to Ignore</string>
+    <string name="lbl_filtered_folders">Filtered Folders</string>
+    <string name="lbl_filter_mode">Filter Mode</string>
+    <string name="lbl_include">Include</string>
+    <string name="lbl_exclude">Exclude</string>
+    <string name="desc_include_folders">Audio files outside of the selected folders will be ignored.</string>
+    <string name="desc_exclude_folders">Audio files in the selected folders will be ignored.</string>
+    <string name="lbl_exclude_non_music">Exclude Non-Music</string>
+    <string name="lbl_load_hidden_folders">Load Hidden Folders</string>
+    <string name="lbl_extra_settings">Extra Settings</string>
+    <string name="desc_add_folder">Add Folder</string>
 
     <string name="lbl_songs">Songs</string>
     <string name="lbl_song">Song</string>
@@ -332,6 +356,7 @@
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_bad_location">This folder is not supported</string>
+    <string name="lbl_no_folders">No Folders</string>
 
     <!-- Description Namespace | Accessibility Strings -->
 
