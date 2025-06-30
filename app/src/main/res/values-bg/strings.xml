@@ -164,7 +164,7 @@
     <string name="set_separators_semicolon">Точка и запетая (;)</string>
     <string name="set_separators_slash">Наклонена черта (/)</string>
     <string name="set_separators_plus">Плюс (+)</string>
-    <string name="set_separators_and">Амперсанд (&amp;)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="set_intelligent_sorting">Интелигентно сортиране</string>
     <string name="set_cover_mode">Обложки на албум</string>
     <string name="set_cover_mode_off">Изключено</string>
