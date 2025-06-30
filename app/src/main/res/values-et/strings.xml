@@ -320,4 +320,6 @@
     <string name="set_cover_mode_as_is">Sellisena, nagu ta on</string>
     <string name="set_excluded_locations">Välistatud kaustad</string>
     <string name="set_excluded_locations_desc">Halda kaustu, kust muusikat ei otsita</string>
+    <string name="set_fs_cache">Kasuta failisüsteemipõhist puhverdamist</string>
+    <string name="set_fs_cache_desc">Kiirendab meedia laadimise aega, kuid võib takistada uue muusika lisamist</string>
 </resources>
