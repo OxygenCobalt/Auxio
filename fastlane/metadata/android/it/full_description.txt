@@ -1,25 +1,24 @@
-Auxio è un lettore musicale locale veloce e con un'interfaccia immediata, senza le numerose funzioni inutili presenti in altri lettori musicali. Basato su moderne librerie di riproduzione multimediale, Auxio ha un supporto di libreria e una qualità di ascolto superiore rispetto ad altre applicazioni che utilizzano funzionalità Android obsolete. In breve, <b>riproduce musica</b>.
+Auxio è un lettore musicale locale veloce, con un'interfaccia utente intuitiva e privo delle numerose funzioni superflue che caratterizzano altri lettori musicali. Sviluppato su moderne librerie di riproduzione multimediale, Auxio offre un supporto di libreria e una qualità di ascolto superiori rispetto ad altre applicazioni che utilizzano funzionalità Android obsolete. In breve, <b>riproduce musica</b>.
 
 <b>Caratteristiche</b>
 
 - Riproduzione basata su ExoPlayer di Media3
-- Interfaccia utente scattante derivata dalle ultime linee guida del Material Design
-- Interfaccia utente autorevole che privilegia la facilità d'uso rispetto ai casi limite
+- Interfaccia utente reattiva, derivata dalle ultime linee guida del Material Design
+- UX ben definita che privilegia la facilità d'uso rispetto a situazioni rare o complesse
 - Comportamento personalizzabile
-- Supporto per numeri di disco, artisti multipli, tipi di release,
-date precise/originali, tag di ordinamento e altro ancora
-- Organizzazione di artisti avanzata che unifica gli artisti e gli artisti degli album
+- Supporto per numeri di disco, artisti multipli, tipi di rilascio, date precise/originali, tag di ordinamento e altro ancora
+- Sistema avanzato di gestione artisti che unifica artisti e artisti degli album
 - Gestione delle cartelle consapevole delle schede SD
 - Gestione affidabile delle playlist
 - Persistenza dello stato di riproduzione
-- Riproduzione automatica senza silenzio
+- Riproduzione gapless automatica
 - Supporto Android Auto
 - Supporto completo di ReplayGain (su file MP3, FLAC, OGG, OPUS e MP4)
-- Supporto di equalizzatori esterni (es. Wavelet)
-- Edge-to-edge
-- Supporto delle copertine incorporate
+- Supporto di equalizzatori esterni (come Wavelet)
+- Visualizzazione edge-to-edge
+- Supporto per copertine integrate
 - Funzionalità di ricerca
-- Riproduzione automatica delle cuffie
+- Riproduzione automatica con le cuffie
 - Widget eleganti che si adattano automaticamente alle loro dimensioni
 - Completamente privato e offline
-- Niente copertine arrotondate degli album (comportamento predefinito)
+- Nessuna copertura arrotondata degli album (se non desiderato)

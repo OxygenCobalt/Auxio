@@ -318,4 +318,6 @@
     <string name="cdc_unknown">Desconhecido</string>
     <string name="set_with_hidden_desc">Ignorar ficheiros e pastas que estão ocultos (por exemplo, .cache)</string>
     <string name="set_with_hidden">Ignorar ficheiros ocultos</string>
+    <string name="set_excluded_locations">Pastas excluídas</string>
+    <string name="set_excluded_locations_desc">Gerir pastas para excluir do carregamento de música</string>
 </resources>
