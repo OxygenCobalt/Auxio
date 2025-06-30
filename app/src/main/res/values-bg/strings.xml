@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_indexer">Музиката се зарежда</string>
-    <string name="lbl_observing">Мониторинг на музикална библиотека</string>
+    <string name="lbl_observing">Наблюдение на музикална библиотека</string>
     <string name="lbl_retry">Опитайте отново</string>
     <string name="lbl_songs">Песни</string>
     <string name="lbl_song">Песен</string>
@@ -37,10 +37,10 @@
     <string name="lbl_import">Внасяне</string>
     <string name="lbl_import_playlist">Внасяне на плейлист</string>
     <string name="lbl_export_playlist">Изнасяне на плейлист</string>
-    <string name="lbl_rename">Преименувай</string>
-    <string name="lbl_delete">Изтрий</string>
-    <string name="lbl_confirm_delete_playlist">Изтрий плейлист?</string>
-    <string name="lbl_edit">Редактирай</string>
+    <string name="lbl_rename">Преименуване</string>
+    <string name="lbl_delete">Изтриване</string>
+    <string name="lbl_confirm_delete_playlist">Изтриване на плейлист?</string>
+    <string name="lbl_edit">Редактиране</string>
     <string name="lbl_search">Търсене</string>
     <string name="lbl_filter">Филтър</string>
     <string name="lbl_filter_all">Всички</string>
@@ -73,14 +73,14 @@
     <string name="lbl_reset">Нулирай</string>
     <string name="lbl_path_style">Стил на пътя</string>
     <string name="lbl_path_style_relative">Относително</string>
-    <string name="lbl_windows_paths">Използвай съвместими с Windows пътища</string>
+    <string name="lbl_windows_paths">Използване на съвместими с Windows пътища</string>
     <string name="info_app_desc">Прост, рационален музикален плейър за android.</string>
     <string name="lbl_indexing">Зареждане на музика</string>
     <string name="lbl_albums">Албуми</string>
     <string name="lbl_ep_live">EP на живо</string>
     <string name="lbl_single_live">Сингъл на живо</string>
     <string name="lbl_imported_playlist">Внесен плейлист</string>
-    <string name="lbl_rename_playlist">Преименувай плейлист</string>
+    <string name="lbl_rename_playlist">Преименуване на плейлист</string>
     <string name="lbl_song_count">Брой песни</string>
     <string name="lbl_date_added">Дата на добавяне</string>
     <string name="lbl_sort">Вид</string>
@@ -115,7 +115,7 @@
     <string name="lbl_supporters">Поддръжници</string>
     <string name="lng_widget">Преглед и контрол на възпроизвеждането на музика</string>
     <string name="lng_indexing">Вашата музикална библиотека се зарежда…</string>
-    <string name="lng_observing">Наблюдение на музикалната ви библиотека за промени…</string>
+    <string name="lng_observing">Наблюдение на вашата музикална библиотека за промени…</string>
     <string name="lng_queue_added">Добави към опашката</string>
     <string name="lng_playlist_created">Създаден плейлист</string>
     <string name="lng_playlist_imported">Внесен плейлист</string>
@@ -132,7 +132,7 @@
     <string name="set_theme_night">Тъмна</string>
     <string name="set_accent">Цветова схема</string>
     <string name="set_black_mode">Черна тема</string>
-    <string name="set_black_mode_desc">Използвай чисто черна тъмна тема</string>
+    <string name="set_black_mode_desc">Използване на чисто черна тъмна тема</string>
     <string name="set_round_mode">Кръгъл режим</string>
     <string name="set_round_mode_desc">Активиране на заоблени ъгли на допълнителни елементи от потребителския интерфейс (изисква се кориците на албумите да са заоблени)</string>
     <string name="set_personalize">Персонализиране</string>
@@ -318,6 +318,6 @@
     <string name="set_locations_new">Нова папка</string>
     <string name="set_excluded_locations">Изключени папки</string>
     <string name="set_excluded_locations_desc">Управление на папки, които да се изключат от зареждането на музика</string>
-    <string name="set_fs_cache">Използвайте кеш на файловата система</string>
+    <string name="set_fs_cache">Използване на кеш на файловата система</string>
     <string name="set_fs_cache_desc">Подобрява времето за зареждане, но може да попречи на добавянето на нова музика</string>
 </resources>
