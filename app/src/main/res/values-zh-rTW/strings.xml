@@ -322,5 +322,5 @@
     <string name="set_excluded_locations">排除資料夾</string>
     <string name="set_excluded_locations_desc">管理不需讀取音樂的資料夾</string>
     <string name="set_fs_cache">使用檔案系統快取</string>
-    <string name="set_fs_cache_desc">改善讀取時間，但會阻擋新增音樂</string>
+    <string name="set_fs_cache_desc">改善讀取時間，但會阻擋音樂新增</string>
 </resources>
