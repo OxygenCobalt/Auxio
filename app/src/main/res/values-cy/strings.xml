@@ -132,11 +132,11 @@
     <string name="lbl_search">Chwilio</string>
     <string name="lbl_filter">Hidlo</string>
     <string name="lbl_sort_dsc">Disgynnol</string>
-    <string name="lbl_playback">Yn chwarae nawr</string>
+    <string name="lbl_playback">Yn chwarae rŵan</string>
     <string name="lbl_equalizer">Gosodiadau sain</string>
     <string name="lbl_play">Chwarae</string>
     <string name="lbl_shuffle">Chwarae ar hap</string>
-    <string name="lbl_queue">Ciwio</string>
+    <string name="lbl_queue">Ciw</string>
     <string name="lbl_sort_asc">Esgynnol</string>
     <string name="lbl_play_next">Chwarae nesaf</string>
     <string name="lbl_queue_add">Ychwanegu i\'r ciw</string>
@@ -332,4 +332,6 @@
     <string name="set_with_hidden_desc">Cynnwys ffeiliau sain cudd (e.e. .cache)</string>
     <string name="set_cover_mode_save_space">Cadw lle storfa</string>
     <string name="set_locations_new">Ychwanegu ffolder</string>
+    <string name="set_fs_cache">Defnyddio cof dros dro y system</string>
+    <string name="set_fs_cache_desc">Yn gwella amseroedd llwytho, ond gall atal cerddoriaeth newydd rhag cael ei hychwanegu</string>
 </resources>
