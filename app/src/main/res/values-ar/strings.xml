@@ -82,8 +82,8 @@
     <string name="def_genre">نوع غير معروف</string>
     <string name="def_disc">لا قرص</string>
     <string name="cdc_mp4">صوت MPEG-4</string>
-    <string name="cdc_ogg">أوغ الصوت</string>
-    <string name="cdc_flac">برنامج ترميز الصوت المجاني بدون فقدان البيانات (FLAC)</string>
+    <string name="cdc_ogg">أوغ (Ogg) الصوت</string>
+    <string name="cdc_flac">برنامج ترميز الصوت المجاني دون فقدان البيانات (FLAC)</string>
     <string name="clr_indigo">نيلي</string>
     <string name="clr_blue">أزرق</string>
     <string name="clr_deep_green">أخضر عميق</string>
@@ -324,7 +324,7 @@
         <item quantity="other">%d ألبوم</item>
     </plurals>
     <string name="cnt_mp4">MPEG-4 تحتوي على %s</string>
-    <string name="cdc_alac">ترميز صوتي بدون خسارة (ALAC)</string>
+    <string name="cdc_alac">ترميز Apple صوتي دون خسارة (ALAC)</string>
     <string name="set_cover_mode_as_is">كما هي</string>
     <string name="set_with_hidden_desc">ضمّن ملفات الصوت المخفية (مثال: ذاكرة التخزين المؤقت)</string>
     <string name="set_with_hidden">ضمّن الملفات المخفية</string>
