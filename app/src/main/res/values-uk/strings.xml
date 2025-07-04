@@ -334,16 +334,11 @@
     <string name="set_excluded_locations_desc">Керування папками, які потрібно виключити із завантаження музики</string>
     <string name="set_fs_cache">Використовуйте кеш-систему файлів</string>
     <string name="set_fs_cache_desc">Покращує час завантаження, але може запобігти додаванню нової музики</string>
-    <string name="lbl_grant">Грант</string>
     <string name="lbl_load_from">Завантажити з</string>
     <string name="lbl_file_picker">Вибір файлів</string>
     <string name="lbl_system_database">Система</string>
-    <string name="desc_file_picker">Завантаження музики з вибраних вами папок. Повільніше, але надійніше. Потрібно встановити стандартний файловий менеджер.</string>
-    <string name="desc_system_database">Завантажуйте музику, яку ОС Android автоматично розпізнає. Швидше, але менш надійно. Виробники можуть це зламати.</string>
     <string name="lbl_grant_storage_anyway">Рекомендований доступ до сховища</string>
-    <string name="desc_grant_storage_anyway">Надання дозволів на зовнішнє сховище може вирішити проблеми на деяких пристроях.</string>
     <string name="lbl_grant_storage">Потрібен доступ до сховища</string>
-    <string name="desc_grant_storage_required">Щоб увімкнути цю опцію, надайте дозволи на зовнішнє сховище.</string>
     <string name="lbl_folders_to_load">Папки для завантаження</string>
     <string name="lbl_folders_to_ignore">Папки, які слід ігнорувати</string>
     <string name="lbl_filtered_folders">Відфільтровані папки</string>

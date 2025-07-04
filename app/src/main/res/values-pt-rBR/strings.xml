@@ -336,16 +336,11 @@
     <string name="lbl_load_hidden_folders">Carregar pastas ocultas</string>
     <string name="lbl_extra_settings">Configurações extras</string>
     <string name="desc_add_folder">Adicionar pasta</string>
-    <string name="lbl_grant">Conceder</string>
     <string name="lbl_load_from">Carregar do</string>
     <string name="lbl_file_picker">Seletor de arquivos</string>
     <string name="lbl_system_database">Sistema</string>
-    <string name="desc_file_picker">Carrega as músicas das pastas que você selecionar. Mais lento, porém mais confiável. Requer que o aplicativo de gerenciador de arquivos padrão esteja instalado.</string>
-    <string name="desc_system_database">Carrega as músicas que o sistema Android detecta automaticamente. Mais rápido, porém menos confiável. As fabricantes dos dispositivos podem quebrar isso.</string>
     <string name="lbl_grant_storage_anyway">Acesso ao armazenamento recomendado</string>
-    <string name="desc_grant_storage_anyway">Conceder as permissões de armazenamento externo pode corrigir problemas em alguns dispositivos.</string>
     <string name="lbl_grant_storage">Acesso ao armazenamento obrigatório</string>
-    <string name="desc_grant_storage_required">Conceda as permissões de armazenamento externo para ativar esta opção.</string>
     <string name="lbl_folders_to_load">Pastas para carregar</string>
     <string name="lbl_folders_to_ignore">Pastas para ignorar</string>
     <string name="lbl_filtered_folders">Pastas filtradas</string>
