@@ -311,7 +311,6 @@
     <string name="set_separators_desc">Ffurfweddu llythrennau sydd yn dynodi mwy nag un gwerth tag</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="set_audio_desc">Ffurfweddu sain ac ymarweddiad chwarae</string>
-    <string name="lbl_music_sources">Dewis ffolderi</string>
     <string name="lbl_feedback">Adborth</string>
     <string name="lbl_github">Creu issue ar GitHub</string>
     <string name="lbl_email">Anfon ebost</string>
@@ -331,7 +330,6 @@
     <string name="set_cover_mode_as_is">Paid â newid</string>
     <string name="set_with_hidden_desc">Cynnwys ffeiliau sain cudd (e.e. .cache)</string>
     <string name="set_cover_mode_save_space">Cadw lle storfa</string>
-    <string name="set_locations_new">Ychwanegu ffolder</string>
     <string name="set_fs_cache">Defnyddio cof dros dro y system</string>
     <string name="set_fs_cache_desc">Yn gwella amseroedd llwytho, ond gall atal cerddoriaeth newydd rhag cael ei hychwanegu</string>
 </resources>

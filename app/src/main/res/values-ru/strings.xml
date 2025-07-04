@@ -317,11 +317,9 @@
     <string name="lbl_more">Больше</string>
     <string name="lbl_feedback">Отзывы</string>
     <string name="lbl_email">Отправить электронное письмо</string>
-    <string name="lbl_music_sources">Выберите папки</string>
     <string name="cnt_mp4">MPEG-4, содержащий %s</string>
     <string name="def_album">Неизвестный альбом</string>
     <string name="lng_empty_artists">Здесь появятся ваши исполнители.</string>
-    <string name="set_locations_new">Новая папка</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Неизвестный</string>
     <string name="lng_empty_playlists">Здесь будут отображаться ваши плейлисты.</string>

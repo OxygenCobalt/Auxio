@@ -295,11 +295,9 @@
     <string name="lbl_windows_paths">Använd Windowskompatibla sökvägar</string>
     <string name="def_album_count">Inga album</string>
     <string name="set_replay_gain_mode_off">Av</string>
-    <string name="lbl_music_sources">Välj mappar</string>
     <string name="lbl_github">Skapa ett ärende på GitHub</string>
     <string name="lbl_more">Mer</string>
     <string name="def_album">Okänt album</string>
-    <string name="set_locations_new">Ny mapp</string>
     <string name="cdc_unknown">Okänt</string>
     <string name="lbl_email">Skicka ett mejl</string>
     <string name="lbl_feedback">Feedback</string>

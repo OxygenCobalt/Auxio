@@ -268,7 +268,6 @@
     <string name="lng_playlist_added">تمت إضافته إلى قائمة التشغيل</string>
     <string name="set_root_title">إعدادات</string>
     <string name="set_separators_semicolon">الفاصلة المنقوطة (؛)</string>
-    <string name="lbl_music_sources">اختر المجلدات</string>
     <string name="lbl_import">استورد</string>
     <string name="lbl_export">صدّر</string>
     <string name="lbl_export_playlist">صدّر قائمة التشغيل</string>
@@ -307,7 +306,6 @@
     <string name="lbl_author">المؤلف</string>
     <string name="lbl_import_playlist">استورد قائمة التشغيل</string>
     <string name="lbl_path">المسار</string>
-    <string name="set_locations_new">مجلد جديد</string>
     <string name="lbl_start_playback">بدء التشغيل</string>
     <string name="lbl_error_info">معلومات الخطأ</string>
     <string name="lbl_copied">نُسخت</string>

@@ -12,7 +12,6 @@
     <string name="lbl_eps">EP-ები</string>
     <string name="lbl_all_songs">ყველა სიმღერა</string>
     <string name="lbl_album">ალბომი</string>
-    <string name="lbl_music_sources">შეარჩიე საქაღალდეები</string>
     <string name="lbl_indexer">მუსიკის ჩატვირთვა</string>
     <string name="lbl_ep_live">პირდაპირი EP</string>
     <string name="lbl_singles">სინგლები</string>
@@ -99,7 +98,6 @@
     <string name="set_observing">ავტომატური ჩატვირთვა</string>
     <string name="set_images">სურათები</string>
     <string name="set_locations">მუსიკის საქაღალდე</string>
-    <string name="set_locations_new">ახალი საქაღალდე</string>
     <string name="desc_skip_prev">ბოლო სიმღერაზე გადასვლა</string>
     <string name="lbl_library_counts">სტატისტიკა</string>
     <string name="lbl_licenses">ლიცენზიები</string>

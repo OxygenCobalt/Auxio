@@ -160,7 +160,6 @@
     <string name="set_remember_pause">記憶暫停</string>
     <string name="set_lib_tabs">管理分頁</string>
     <string name="set_ui_desc">變更主題與色彩</string>
-    <string name="lbl_music_sources">選擇資料夾</string>
     <string name="set_action_mode_repeat">循環模式</string>
     <string name="set_action_mode_next">移至下一首</string>
     <string name="set_play_song_from_all">播放所有曲目</string>
@@ -262,7 +261,6 @@
     <string name="set_play_song_from_album">播放專輯</string>
     <string name="set_separators_and">與號 (&amp;)</string>
     <string name="set_play_song_by_itself">播放單曲</string>
-    <string name="set_locations_new">新資料夾</string>
     <string name="desc_music_location_delete">刪除資料夾</string>
     <string name="lbl_compilations">合輯</string>
     <string name="lbl_ok">確定</string>

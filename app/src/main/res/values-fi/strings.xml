@@ -293,7 +293,6 @@
     <string name="set_remember_pause_desc">Pysy toisto/keskeytystilassa ohittaessa kappaleita tai muokatessa jonoa</string>
     <string name="set_separators_desc">Valitse merkit, jotka erottavat tagiarvot toisistaan</string>
     <string name="set_pre_amp_warning">Varoitus: Esivahvistuksen asettaminen korkeaan positiiviseen arvoon saattaa johtaa säröilyyn joissain kappaleissa.</string>
-    <string name="lbl_music_sources">Valitse kansiot</string>
     <string name="lbl_github">Ilmoita viasta GitHubissa</string>
     <string name="lbl_email">Lähetä sähköpostia</string>
     <string name="lbl_more">Lisää</string>
@@ -303,7 +302,6 @@
     <string name="set_pre_amp_desc">Esivahvistinta käytetään olemassa olevaan säätöön toiston aikana</string>
     <string name="set_pre_amp_with">Säätö tunnisteilla</string>
     <string name="def_album">Tuntematon albumi</string>
-    <string name="set_locations_new">Uusi kansio</string>
     <string name="cnt_mp4">MPEG-4 sisältäen %s</string>
     <string name="cdc_unknown">Tuntematon</string>
     <string name="lng_empty_songs">Kappaleesi tulevat näkymään tässä.</string>

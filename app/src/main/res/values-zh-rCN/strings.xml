@@ -309,12 +309,10 @@
     <string name="lbl_github">在 GithHub 上开 issue</string>
     <string name="lbl_email">发送电子邮件</string>
     <string name="lbl_feedback">反馈</string>
-    <string name="lbl_music_sources">选择文件夹</string>
     <string name="def_album">未知专辑</string>
     <string name="cnt_mp4">含 %s 的 MPEG-4</string>
     <string name="cdc_alac">Apple 无损音频编解码器（ALAC）</string>
     <string name="cdc_unknown">未知</string>
-    <string name="set_locations_new">新文件夹</string>
     <string name="set_cover_mode_save_space">节省空间</string>
     <string name="lng_empty_songs">歌曲会出现在此处。</string>
     <string name="lng_empty_artists">艺术家会出现在此处。</string>

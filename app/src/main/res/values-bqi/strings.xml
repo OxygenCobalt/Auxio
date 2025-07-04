@@ -2,7 +2,6 @@
 <resources>
     <string name="lbl_observing">واجۊری کۊلیکسیون آرنگ</string>
     <string name="lbl_retry">قپ ریت دوواره</string>
-    <string name="lbl_music_sources">دوبلگه یل ن پسند کۊنین</string>
     <string name="lbl_songs">آرنگا</string>
     <string name="lbl_song">آرنگ</string>
     <string name="lbl_all_songs">پوی آرنگا</string>

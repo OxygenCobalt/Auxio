@@ -311,12 +311,10 @@
     <string name="lbl_github">Ein Issue auf GitHub erstellen</string>
     <string name="lbl_feedback">Rückmeldung</string>
     <string name="lbl_email">Eine E-Mail senden</string>
-    <string name="lbl_music_sources">Ordner auswählen</string>
     <string name="cnt_mp4">MPEG-4, enthält %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Unbekannt</string>
     <string name="def_album">Unbekanntes Album</string>
-    <string name="set_locations_new">Neuer Ordner</string>
     <string name="set_cover_mode_save_space">Speicherplatz sparen</string>
     <string name="lng_empty_albums">Deine Alben werden hier angezeigt.</string>
     <string name="lng_empty_playlists">Deine Wiedergabelisten werden hier angezeigt.</string>

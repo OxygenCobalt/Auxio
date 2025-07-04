@@ -19,7 +19,6 @@
     <string name="lbl_album">एल्बम</string>
     <string name="lbl_indexing">गीतहरु लोड गर्दै</string>
     <string name="lbl_observing">सङ्गीत लाइब्रेरी निगरानी गर्दै</string>
-    <string name="lbl_music_sources">फोल्डर छान्नुहोस्</string>
     <string name="lbl_songs">गीतहरु</string>
     <string name="lbl_song">गीत</string>
     <string name="lbl_all_songs">सबै गीत</string>

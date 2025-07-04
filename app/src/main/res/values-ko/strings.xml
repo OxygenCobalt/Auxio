@@ -308,7 +308,6 @@
 \n
 \n경고: 이 서비스는 주의하여 사용하세요. 서비스를 닫은 뒤 다시 사용하려고 할 경우 앱이 충돌할 수 있습니다.</string>
     <string name="lbl_more">더 보기</string>
-    <string name="lbl_music_sources">폴더 선택</string>
     <string name="lbl_email">전자우편을 전송합니다</string>
     <string name="lbl_github">깃허브에 문제를 제기합니다</string>
     <string name="lbl_feedback">응답</string>

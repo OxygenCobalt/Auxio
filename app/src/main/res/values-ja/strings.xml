@@ -279,9 +279,7 @@
     <string name="set_replay_gain_mode_off">オフ</string>
     <string name="err_import_failed">このファイルからプレイリストをインポートできません</string>
     <string name="err_export_failed">このファイルにプレイリストをエクスポートできません</string>
-    <string name="lbl_music_sources">フォルダを選択</string>
     <string name="set_cover_mode_as_is">そのまま</string>
-    <string name="set_locations_new">新しいフォルダー</string>
     <string name="def_album">不明なアルバム</string>
     <string name="cnt_mp4">%sを含むMPEG-4</string>
     <string name="set_play_song_by_itself">曲を単独で再生</string>
