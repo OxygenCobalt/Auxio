@@ -161,16 +161,13 @@ private constructor(
 
     private fun startTracking() {
         stopTracking()
-        val fs = when (musicSettings.locationMode) {
-            LocationMode.MEDIA_STORE -> MediaStore.from(workerContext, musicSettings.mediaStoreQuery)
-            LocationMode.SAF -> SAF.from(workerContext, musicSettings.safQuery)
-        }
-        trackingJob =
-            indexScope.launch {
-                fs.track().collect {
-                    requestIndex(true)
-                }
+        val fs =
+            when (musicSettings.locationMode) {
+                LocationMode.MEDIA_STORE ->
+                    MediaStore.from(workerContext, musicSettings.mediaStoreQuery)
+                LocationMode.SAF -> SAF.from(workerContext, musicSettings.safQuery)
             }
+        trackingJob = indexScope.launch { fs.track().collect { requestIndex(true) } }
     }
 
     private fun stopTracking() {

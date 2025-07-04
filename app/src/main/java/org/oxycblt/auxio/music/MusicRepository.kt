@@ -396,8 +396,7 @@ constructor(
         val fs =
             when (musicSettings.locationMode) {
                 LocationMode.SAF -> SAF.from(context, musicSettings.safQuery)
-                LocationMode.MEDIA_STORE ->
-                    MediaStore.from(context, musicSettings.mediaStoreQuery)
+                LocationMode.MEDIA_STORE -> MediaStore.from(context, musicSettings.mediaStoreQuery)
             }
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
