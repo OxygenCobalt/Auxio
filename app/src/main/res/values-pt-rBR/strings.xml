@@ -312,7 +312,7 @@
     <string name="lbl_more">Mais</string>
     <string name="lbl_email">Envie um e-mail</string>
     <string name="lbl_github">Crie uma issue no GitHub</string>
-    <string name="lbl_music_sources">Escolher pastas</string>
+    <string name="lbl_music_sources">Fontes de músicas</string>
     <string name="cnt_mp4">MPEG-4 contendo %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Desconhecido</string>
@@ -336,4 +336,13 @@
     <string name="lbl_load_hidden_folders">Carregar pastas ocultas</string>
     <string name="lbl_extra_settings">Configurações extras</string>
     <string name="desc_add_folder">Adicionar pasta</string>
+    <string name="lbl_grant">Conceder</string>
+    <string name="lbl_load_from">Carregar a partir de</string>
+    <string name="lbl_file_picker">Selecionador de arquivos</string>
+    <string name="lbl_system_database">Sistema</string>
+    <string name="desc_file_picker">Carregar músicas das pastas que você selecionar. Mais lento, porém mais confiável. Requer o aplicativo de gerenciador de arquivos original instalado.</string>
+    <string name="desc_system_database">Carregar músicas que o SO Android automaticamente detecta. Mias rápido, porém menos confiável. Fabricantes podem quebrar isso.</string>
+    <string name="lbl_grant_storage_anyway">Acesso de armazenamento recomendado</string>
+    <string name="desc_grant_storage_anyway">Conceder as permissões de armazenamento externo pode corrigir problemas em alguns dispositivos.</string>
+    <string name="lbl_grant_storage">Acesso de armazenamento requirido</string>
 </resources>
