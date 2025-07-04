@@ -31,9 +31,7 @@ import org.oxycblt.musikr.fs.mediastore.MediaStoreFS
 import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
 
-/**
- * Represents the mode for loading music locations.
- */
+/** Represents the mode for loading music locations. */
 enum class MusicLocationMode {
     /** Use Storage Access Framework (file picker) to select specific folders */
     SAF,
@@ -65,6 +63,12 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val useFileTreeCache: Boolean
     /** The mode for loading music locations (SAF or System database). */
     var locationMode: MusicLocationMode
+    /** The list of music locations to include when using SAF mode. */
+    var musicLocations: List<Location.Opened>
+    /** The list of locations to exclude. */
+    var excludedLocations: List<Location.Unopened>
+    /** Whether to exclude non-music files when using MediaStore. */
+    val excludeNonMusic: Boolean
 
     interface Listener {
         /** Called when the current music locations changed. */
@@ -141,13 +145,19 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             // MediaStore query is used when in system database mode
             if (locationMode != MusicLocationMode.SYSTEM) return null
 
+            // Determine filter mode based on whether we have excluded locations
+            val filterMode =
+                if (excludedLocations.isEmpty()) {
+                    MediaStoreFS.FilterMode.INCLUDE
+                } else {
+                    MediaStoreFS.FilterMode.EXCLUDE
+                }
+
             return MediaStoreFS.Query(
-                include = emptyList(), // No include filter in system database mode
-                exclude = excludedLocations,
-                excludeNonMusic = excludeNonMusic)
+                mode = filterMode, filtered = excludedLocations, excludeNonMusic = excludeNonMusic)
         }
 
-    private var musicLocations: List<Location.Opened>
+    override var musicLocations: List<Location.Opened>
         get() {
             val locations =
                 sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
@@ -164,7 +174,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
-    private var excludedLocations: List<Location.Unopened>
+    override var excludedLocations: List<Location.Unopened>
         get() {
             val locations =
                 sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
@@ -180,7 +190,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
-    private val excludeNonMusic: Boolean
+    override val excludeNonMusic: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
 
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {

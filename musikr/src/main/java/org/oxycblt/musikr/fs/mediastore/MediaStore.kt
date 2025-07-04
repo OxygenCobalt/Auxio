@@ -65,19 +65,22 @@ private constructor(
         }
 
         // Handle include/exclude directories
-        if (query.include.isNotEmpty()) {
-            val pathSelector = pathInterpreterFactory.createSelector(query.include.map { it.path })
-            if (pathSelector != null) {
-                selector += " AND (${pathSelector.template})"
-                args.addAll(pathSelector.args)
+        when (query.mode) {
+            FilterMode.INCLUDE -> {
+                val pathSelector =
+                    pathInterpreterFactory.createSelector(query.filtered.map { it.path })
+                if (pathSelector != null) {
+                    selector += " AND (${pathSelector.template})"
+                    args.addAll(pathSelector.args)
+                }
             }
-        }
-
-        if (query.exclude.isNotEmpty()) {
-            val pathSelector = pathInterpreterFactory.createSelector(query.exclude.map { it.path })
-            if (pathSelector != null) {
-                selector += " AND NOT (${pathSelector.template})"
-                args.addAll(pathSelector.args)
+            FilterMode.EXCLUDE -> {
+                val pathSelector =
+                    pathInterpreterFactory.createSelector(query.filtered.map { it.path })
+                if (pathSelector != null) {
+                    selector += " AND NOT (${pathSelector.template})"
+                    args.addAll(pathSelector.args)
+                }
             }
         }
 
@@ -215,10 +218,15 @@ private constructor(
     }
 
     data class Query(
-        val include: List<Location.Unopened>,
-        val exclude: List<Location.Unopened>,
+        val mode: FilterMode,
+        val filtered: List<Location>,
         val excludeNonMusic: Boolean
     )
+
+    enum class FilterMode {
+        INCLUDE,
+        EXCLUDE
+    }
 
     companion object {
         fun from(context: Context, query: Query) =

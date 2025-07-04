@@ -387,18 +387,17 @@ constructor(
             } else {
                 Naming.simple()
             }
-        val locations = musicSettings.musicLocations
-        val excludedLocations = musicSettings.excludedLocations
-        val withHidden = musicSettings.withHidden
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
-        val fs = when (musicSettings.locationMode) {
-            MusicLocationMode.SAF -> SAF.from(context, musicSettings.safQuery ?: return)
-            MusicLocationMode.SYSTEM -> MediaStoreFS.from(context, musicSettings.mediaStoreQuery ?: return)
-        }
+        val fs =
+            when (musicSettings.locationMode) {
+                MusicLocationMode.SAF -> SAF.from(context, musicSettings.safQuery ?: return)
+                MusicLocationMode.SYSTEM ->
+                    MediaStoreFS.from(context, musicSettings.mediaStoreQuery ?: return)
+            }
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
         val config = Config(fs, storage, interpretation)
