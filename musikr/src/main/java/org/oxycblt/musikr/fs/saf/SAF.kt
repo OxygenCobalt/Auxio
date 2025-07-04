@@ -55,7 +55,7 @@ private constructor(
                 DocumentsContract.getTreeDocumentId(location.uri),
                 location.path,
                 null,
-                query.exclude.mapTo(mutableSetOf()) { it.uri })
+                query.exclude.mapTo(mutableSetOf()) { it.path })
         }
 
     override fun track(): Flow<FSUpdate> = callbackFlow {
@@ -77,7 +77,7 @@ private constructor(
         treeDocumentId: String,
         relativePath: Path,
         parent: Deferred<Directory>?,
-        exclude: Set<Uri>
+        exclude: Set<Path>
     ): Flow<File> = flow {
         // Make a kotlin future
         val uri = DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, treeDocumentId)
@@ -111,7 +111,7 @@ private constructor(
 
                 // We can check for direct equality as if we block out an excluded directory we
                 // will by proxy block out it's children.
-                if (childUri in exclude) {
+                if (newPath in exclude) {
                     continue
                 }
 
