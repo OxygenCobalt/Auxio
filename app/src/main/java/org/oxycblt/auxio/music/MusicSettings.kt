@@ -49,16 +49,10 @@ enum class MusicLocationMode {
 interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The current library revision. */
     var revision: UUID?
-    /** The locations of music to load. */
-    var musicLocations: List<Location.Opened>
-    /** The locations to exclude from music loading. */
-    var excludedLocations: List<Location.Unopened>
     /** The currently configured SAF query (if any) * */
     val safQuery: SAF.Query?
     /** The currently configured MediaStore query (if any) * */
     val mediaStoreQuery: MediaStoreFS.Query?
-    /** Whether to exclude non-music audio files from the music library. */
-    val excludeNonMusic: Boolean
     /** Whether to ignore hidden files and directories during music loading. */
     val withHidden: Boolean
     /** Whether to be actively watching for changes in the music library. */
@@ -96,42 +90,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                 apply()
             }
         }
-
-    override var musicLocations: List<Location.Opened>
-        get() {
-            val locations =
-                sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
-                    ?: return emptyList()
-            return locations.toOpenedLocations()
-        }
-        set(value) {
-            sharedPreferences.edit {
-                putString(getString(R.string.set_key_music_locations), value.stringify())
-                commit()
-                // Sometimes changing this setting just won't actually trigger the listener.
-                // Only this one. No idea why.
-                listener?.onMusicLocationsChanged()
-            }
-        }
-
-    override var excludedLocations: List<Location.Unopened>
-        get() {
-            val locations =
-                sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
-                    ?: return emptyList()
-            return locations.toUnopenedLocations()
-        }
-        set(value) {
-            sharedPreferences.edit {
-                putString(
-                    getString(R.string.set_key_excluded_locations), value.stringifyLocations())
-                commit()
-                listener?.onMusicLocationsChanged()
-            }
-        }
-
-    override val excludeNonMusic: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
 
     override val withHidden: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
@@ -188,6 +146,42 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                 exclude = excludedLocations,
                 excludeNonMusic = excludeNonMusic)
         }
+
+    private var musicLocations: List<Location.Opened>
+        get() {
+            val locations =
+                sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
+                    ?: return emptyList()
+            return locations.toOpenedLocations()
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_music_locations), value.stringify())
+                commit()
+                // Sometimes changing this setting just won't actually trigger the listener.
+                // Only this one. No idea why.
+                listener?.onMusicLocationsChanged()
+            }
+        }
+
+    private var excludedLocations: List<Location.Unopened>
+        get() {
+            val locations =
+                sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
+                    ?: return emptyList()
+            return locations.toUnopenedLocations()
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putString(
+                    getString(R.string.set_key_excluded_locations), value.stringifyLocations())
+                commit()
+                listener?.onMusicLocationsChanged()
+            }
+        }
+
+    private val excludeNonMusic: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
 
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
