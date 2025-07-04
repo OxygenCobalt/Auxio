@@ -347,7 +347,11 @@
     <string name="lbl_filter_mode">Modo de filtro</string>
     <string name="lbl_include">Incluir</string>
     <string name="lbl_exclude">Excluir</string>
-    <string name="desc_include_folders">Os arquivos de áudio fora das pastas selecionadas serão ignorados.</string>
-    <string name="desc_exclude_folders">Os arquivos de áudio dentro pastas selecionadas serão ignorados.</string>
+    <string name="desc_include_folders">As músicas fora das pastas selecionadas serão ignoradas.</string>
+    <string name="desc_exclude_folders">As músicas dentro das pastas selecionadas serão ignoradas.</string>
     <string name="lbl_no_folders">Sem pastas</string>
+    <string name="lng_grant_storage_anyway">Conceder as permissões de armazenamento externo pode corrigir problemas em alguns dispositivos.</string>
+    <string name="lng_grant_storage_required">Conceda as permissões de armazenamento externo para ativar esta opção.</string>
+    <string name="lng_file_picker">Carrega as músicas das pastas que você selecionar. Mais lento, porém mais confiável. Requer que o aplicativo de gerenciador de arquivos padrão esteja instalado.</string>
+    <string name="lng_system_database">Carrega as músicas que o sistema Android detecta automaticamente. Mais rápido, porém menos confiável. As fabricantes de dispositivos podem quebrar isso.</string>
 </resources>
