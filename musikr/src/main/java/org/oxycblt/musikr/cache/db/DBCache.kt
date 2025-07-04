@@ -19,6 +19,8 @@
 package org.oxycblt.musikr.cache.db
 
 import android.content.Context
+import android.net.Uri
+import kotlinx.coroutines.sync.Mutex
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedSong
@@ -33,8 +35,15 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
  * Create an instance with [from].
  */
 class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
+    private var mapping: Map<Uri, CachedSongData>? = null
+    private val mappingLock = Mutex()
     override suspend fun read(file: File): CacheResult {
-        val dbSong = readDao.selectSong(file.uri.toString()) ?: return CacheResult.Miss(file)
+        mappingLock.lock()
+        val currentMapping = mapping ?: readDao.selectAllSongs().associateBy { it.uri }.also {
+            mapping = it
+        }
+        mappingLock.unlock()
+        val dbSong = currentMapping[file.uri] ?: return CacheResult.Miss(file)
         if (dbSong.modifiedMs != file.modifiedMs) {
             return CacheResult.Stale(file, dbSong.addedMs)
         }
