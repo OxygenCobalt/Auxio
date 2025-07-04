@@ -21,4 +21,4 @@ kesin/orijinal tarihler, sıralama etiketleri ve daha fazlası
 - Kulaklık otomatik oynatma
 - Boyutlarına otomatik olarak uyum sağlayan şık widget'lar
 - Tamamen özel ve çevrimdışı
-- Yuvarlak albüm kapakları yok (İstemediğiniz sürece. O zaman yapabilirsiniz.)
+- Yuvarlak albüm kapakları yok (isterseniz.)

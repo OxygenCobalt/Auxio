@@ -41,7 +41,7 @@
     <string name="desc_track_number">音軌 %d</string>
     <string name="desc_play_pause">播放 / 暫停</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="lng_search_library">正在搜尋媒體…</string>
+    <string name="lng_search_library">搜尋您的媒體…</string>
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
         <item quantity="other">%d 首歌曲</item>
@@ -69,7 +69,7 @@
     <string name="lbl_album">專輯</string>
     <string name="lbl_singles">單曲</string>
     <string name="lbl_single">單曲</string>
-    <string name="set_round_mode_desc">更多介面元素套用圓角(專輯封面需另外啟用)</string>
+    <string name="set_round_mode_desc">更多介面元素套用圓角（專輯封面需另外啟用）</string>
     <string name="lbl_artist">演出者</string>
     <string name="lbl_new_playlist">新的播放清單</string>
     <string name="lbl_import_playlist">匯入播放清單</string>
@@ -95,7 +95,7 @@
     <string name="lbl_playlist">播放清單</string>
     <string name="lbl_playlists">播放清單</string>
     <string name="lbl_delete">刪除</string>
-    <string name="lbl_song_count">歌曲計數</string>
+    <string name="lbl_song_count">歌曲數量</string>
     <string name="lbl_mix">DJ 混音</string>
     <string name="lbl_confirm_delete_playlist">刪除播放清單？</string>
     <string name="lbl_sort_dsc">降序</string>
@@ -199,20 +199,20 @@
     <string name="set_keep_shuffle_desc">播放新曲目時保留隨機播放</string>
     <string name="set_content">內容</string>
     <string name="set_separators_desc">配置符號時表示多個標籤數值</string>
-    <string name="set_observing_desc">隨時掃描媒體資料變化(需要啟用持續性通知)</string>
+    <string name="set_observing_desc">隨時掃描媒體資料變化（需要啟用持續性通知）</string>
     <string name="set_separators_semicolon">分號 (;)</string>
     <string name="set_separators_comma">逗號 (,)</string>
     <string name="set_separators_slash">斜線號 (/)</string>
-    <string name="set_hide_collaborators_desc">專輯封面僅顯示單一演出者(對標籤完善的媒體庫效果最佳)</string>
+    <string name="set_hide_collaborators_desc">專輯封面僅顯示單一演出者（對標籤完善的媒體庫效果最佳）</string>
     <string name="set_square_covers_desc">將所有專輯封面裁剪為 1：1</string>
-    <string name="set_headset_autoplay_desc">連接耳機時立即播放音樂 (可能不適用所有裝置)</string>
+    <string name="set_headset_autoplay_desc">連接耳機時立即播放音樂（可能不適用所有裝置）</string>
     <string name="set_remember_pause_desc">編輯或略過清單時保留播放狀態</string>
     <string name="set_replay_gain_mode">重播增益模式</string>
     <string name="set_replay_gain_mode_album">偏好專輯</string>
     <string name="set_pre_amp">重播增益前級擴大</string>
     <string name="set_pre_amp_desc">播放期間為現有調整套用前級擴大</string>
     <string name="set_pre_amp_with">調整標籤</string>
-    <string name="set_rescan_desc">清除所有標籤快取並重新載入媒體 (完整但速度較慢)</string>
+    <string name="set_rescan_desc">清除所有標籤快取並重新載入媒體（完整但速度較慢）</string>
     <string name="err_no_app">找不到可處理這項操作的應用程式</string>
     <string name="desc_remove_song">刪除歌曲</string>
     <string name="desc_auxio_icon">Auxio 圖示</string>
@@ -257,7 +257,7 @@
     <string name="cdc_mp4">MPEG-4</string>
     <string name="clr_purple">紫色</string>
     <string name="desc_change_repeat">變更循環播放模式</string>
-    <string name="set_intelligent_sorting_desc">準確排序以單字或數字為首的名稱(例如 The，對英文效果最佳)</string>
+    <string name="set_intelligent_sorting_desc">準確排序以單字或數字為首的名稱（例如 The，對英文效果最佳）</string>
     <string name="lbl_appears_on">登場</string>
     <string name="set_play_song_from_album">播放專輯</string>
     <string name="set_separators_and">與號 (&amp;)</string>
@@ -266,7 +266,7 @@
     <string name="desc_music_location_delete">刪除資料夾</string>
     <string name="lbl_compilations">合輯</string>
     <string name="lbl_ok">確定</string>
-    <string name="lbl_wiki">維基百科</string>
+    <string name="lbl_wiki">線上百科</string>
     <string name="lbl_selection">選取項目</string>
     <string name="lbl_github">在 GitHub 張貼問題</string>
     <string name="lbl_donate">贊助</string>
@@ -278,7 +278,7 @@
     <string name="set_cover_mode_balanced">平衡</string>
     <string name="set_cover_mode_high_quality">高畫質</string>
     <string name="desc_shuffle">啟用 / 停用隨機播放</string>
-    <string name="def_date">沒有日期</string>
+    <string name="def_date">無日期</string>
     <string name="desc_selection_image">選取影像</string>
     <string name="set_separators_warning">警告：啟用可能會誤判某些符號具有多重數值。您可在不需要的分隔符號前插入後斜線 (\\)。</string>
     <string name="lbl_compilation_remix">混音合輯</string>
@@ -291,7 +291,7 @@
     <string name="lbl_author_name">由 Alexander Capehart 開發</string>
     <string name="set_play_song_from_artist">播放演出者</string>
     <string name="set_play_song_from_genre">播放類型</string>
-    <string name="set_with_hidden_desc">讀取隱藏音訊檔案 (例如 .cache)</string>
+    <string name="set_with_hidden_desc">讀取隱藏音訊檔案（例如 .cache）</string>
     <string name="set_cover_mode_as_is">原始</string>
     <string name="set_repeat_pause_desc">重播單曲時暫停</string>
     <string name="set_pre_amp_without">不調整標籤</string>
@@ -319,4 +319,8 @@
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="cdc_flac">自由無損音訊編碼 (FLAC)</string>
     <string name="cdc_alac">Apple 無損音訊編碼 (ALAC)</string>
+    <string name="set_excluded_locations">排除資料夾</string>
+    <string name="set_excluded_locations_desc">管理不需讀取音樂的資料夾</string>
+    <string name="set_fs_cache">使用檔案系統快取</string>
+    <string name="set_fs_cache_desc">改善讀取時間，但會阻擋音樂新增</string>
 </resources>

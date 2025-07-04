@@ -337,4 +337,6 @@
     <string name="set_cover_mode_as_is">Původní</string>
     <string name="set_excluded_locations_desc">Spravovat složky, ze kterých ze hudba nemá načítat</string>
     <string name="set_excluded_locations">Vyloučené složky</string>
+    <string name="set_fs_cache">Použít mezipaměť v souborovém systému</string>
+    <string name="set_fs_cache_desc">Zlepší dobu načítání, ale může zabránit přidání nové hudby</string>
 </resources>
