@@ -311,7 +311,7 @@
     <string name="lng_tasker_start">Avvia Auxio utilizzando le ultime impostazioni di riproduzione salvate. Se non è disponibile alcuna impostazione di riproduzione, i brani verranno riprodotti in ordine casuale. La riproduzione inizierà immediatamente.\n\nAttenzione: fai attenzione a controllare questa impostazione; se lo chiudi e poi provi a usarlo di nuovo, è probabile che l\'app si blocchi.</string>
     <string name="lbl_music_sources">Scegli le cartelle</string>
     <string name="lbl_feedback">Feedback</string>
-    <string name="lbl_email">Invia un\'email</string>
+    <string name="lbl_email">Invia un\'e-mail</string>
     <string name="lbl_github">Apri un\'issue su GitHub</string>
     <string name="def_album">Album sconosciuto</string>
     <string name="lng_empty_genres">I tuoi generi appariranno qui.</string>
