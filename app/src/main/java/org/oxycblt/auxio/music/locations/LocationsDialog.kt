@@ -18,13 +18,17 @@
  
 package org.oxycblt.auxio.music.locations
 
+import android.Manifest
 import android.content.ActivityNotFoundException
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import com.google.android.material.R as MR
@@ -47,6 +51,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         object : LocationAdapter.Listener {
             override fun onRemoveLocation(location: Location) {
                 includeLocationAdapter.remove(location as Location.Opened)
+                updateSaveButtonState()
             }
         }
 
@@ -54,6 +59,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         object : LocationAdapter.Listener {
             override fun onRemoveLocation(location: Location) {
                 excludeLocationAdapter.remove(location as Location.Unopened)
+                updateSaveButtonState()
             }
         }
 
@@ -61,6 +67,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         object : LocationAdapter.Listener {
             override fun onRemoveLocation(location: Location) {
                 filterLocationAdapter.remove(location as Location.Unopened)
+                updateSaveButtonState()
             }
         }
 
@@ -71,6 +78,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
     private val filterLocationAdapter: LocationAdapter<Location.Unopened> =
         LocationAdapter(filterLocationListener)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
+    private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     @Inject lateinit var musicSettings: MusicSettings
 
     private var isFilePickerMode = true
@@ -96,6 +104,14 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         openDocumentTreeLauncher =
             registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
                 addDocumentTreeUriToDirs(uri)
+            }
+
+        storagePermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                L.d("Storage permission granted: $isGranted")
+                hasStoragePermission = isGranted
+                updateModeUI(binding)
+                updateSaveButtonState()
             }
 
         binding.locationsIncludeRecycler.apply {
@@ -143,10 +159,12 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 R.id.locations_mode_exclude -> {
                     isFilePickerMode = true
                     updateModeUI(binding)
+                    updateSaveButtonState()
                 }
                 R.id.locations_mode_include -> {
                     isFilePickerMode = false
                     updateModeUI(binding)
+                    updateSaveButtonState()
                 }
             }
         }
@@ -173,28 +191,33 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             pendingLocationCallback = { location ->
                 location.open(requireContext())?.let { opened ->
                     includeLocationAdapter.add(opened)
+                    updateSaveButtonState()
                 }
             }
             onNewLocation()
         }
         binding.locationsExcludeAdd.setOnClickListener {
-            pendingLocationCallback = { location -> excludeLocationAdapter.add(location) }
+            pendingLocationCallback = { location ->
+                excludeLocationAdapter.add(location)
+                updateSaveButtonState()
+            }
             onNewLocation()
         }
         binding.locationsFilterAdd.setOnClickListener {
-            pendingLocationCallback = { location -> filterLocationAdapter.add(location) }
+            pendingLocationCallback = { location ->
+                filterLocationAdapter.add(location)
+                updateSaveButtonState()
+            }
             onNewLocation()
         }
 
         // Set up grant permission card click
-        binding.locationsPermsContainer.setOnClickListener {
-            // TODO: Implement permission request
-            L.d("Grant permission clicked")
-        }
+        binding.locationsPermsCard.setOnClickListener { requestStoragePermission() }
 
         // Initialize UI state
         updateModeUI(binding)
         updateExtrasVisibility(binding)
+        updateSaveButtonState()
     }
 
     private fun loadInitialState(binding: DialogMusicLocationsBinding) {
@@ -222,8 +245,14 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             binding.folderModeGroup.check(R.id.locations_mode_include)
         }
 
-        // TODO: Check storage permission status
-        hasStoragePermission = false
+        // Check storage permission status
+        hasStoragePermission = checkStoragePermission()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Update save button state after dialog is shown
+        updateSaveButtonState()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -234,6 +263,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
     override fun onDestroyBinding(binding: DialogMusicLocationsBinding) {
         super.onDestroyBinding(binding)
         openDocumentTreeLauncher = null
+        storagePermissionLauncher = null
         binding.locationsIncludeRecycler.adapter = null
         binding.locationsExcludeRecycler.adapter = null
         binding.locationsFilterRecycler.adapter = null
@@ -384,7 +414,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
     private fun updatePermissionCardVisibility(binding: DialogMusicLocationsBinding) {
         with(binding) {
             // Hide the permission card when permissions are granted
-            locationsPermsContainer.isVisible = !hasStoragePermission
+            locationsPermsCard.isVisible = !hasStoragePermission
         }
     }
 
@@ -455,7 +485,8 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         val binding = requireBinding()
 
         // Save the mode setting
-        musicSettings.locationMode = if (isFilePickerMode) MusicLocationMode.SAF else MusicLocationMode.SYSTEM
+        musicSettings.locationMode =
+            if (isFilePickerMode) MusicLocationMode.SAF else MusicLocationMode.SYSTEM
 
         if (isFilePickerMode) {
             // File picker mode - save include and exclude locations
@@ -492,5 +523,54 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 }
             }
         }
+    }
+
+    private fun checkStoragePermission(): Boolean {
+        val permission =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_AUDIO
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+        return ContextCompat.checkSelfPermission(requireContext(), permission) ==
+            PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestStoragePermission() {
+        val permission =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_AUDIO
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+
+        val launcher =
+            requireNotNull(storagePermissionLauncher) {
+                "Storage permission launcher was not available"
+            }
+
+        try {
+            L.d("Requesting storage permission: $permission")
+            launcher.launch(permission)
+        } catch (e: Exception) {
+            L.e("Failed to request storage permission")
+            L.e(e.stackTraceToString())
+            requireContext().showToast(R.string.err_no_app)
+        }
+    }
+
+    private fun updateSaveButtonState() {
+        val dialog = dialog as? AlertDialog ?: return
+
+        val isEnabled =
+            if (isFilePickerMode) {
+                // File Picker mode: Enable save only if there's at least one folder
+                includeLocationAdapter.locations.isNotEmpty()
+            } else {
+                // System mode: Enable save only if permission is granted
+                hasStoragePermission
+            }
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = isEnabled
     }
 }
