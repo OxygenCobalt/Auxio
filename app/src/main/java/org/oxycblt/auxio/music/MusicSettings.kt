@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music
 
 import android.content.Context
@@ -30,7 +30,7 @@ import org.oxycblt.auxio.music.locations.LocationMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.fs.Location
-import org.oxycblt.musikr.fs.mediastore.MediaStoreFS
+import org.oxycblt.musikr.fs.mediastore.MediaStore
 import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
 
@@ -50,7 +50,7 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var safQuery: SAF.Query
 
     /** The currently configured MediaStore query (if any) * */
-    var mediaStoreQuery: MediaStoreFS.Query
+    var mediaStoreQuery: MediaStore.Query
 
     /** Whether to be actively watching for changes in the music library. */
     val shouldBeObserving: Boolean
@@ -115,8 +115,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() {
             val mode =
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_locations_mode), IntegerTable.LOCATION_MODE_SAF
-                )
+                    getString(R.string.set_key_locations_mode), IntegerTable.LOCATION_MODE_SAF)
             return LocationMode.fromInt(mode) ?: LocationMode.SAF
         }
         set(value) {
@@ -130,22 +129,19 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() {
             val locations =
                 unlikelyToBeNull(
-                    sharedPreferences
-                        .getString(getString(R.string.set_key_music_locations), "")
-                        .also { L.d("$it") })
+                        sharedPreferences
+                            .getString(getString(R.string.set_key_music_locations), "")
+                            .also { L.d("$it") })
                     .toOpenedLocations()
             val excludedLocations =
                 unlikelyToBeNull(
-                    sharedPreferences.getString(
-                        getString(R.string.set_key_excluded_locations), ""
-                    )
-                )
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_excluded_locations), ""))
                     .toUnopenedLocations()
             val withHidden =
                 sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
             return SAF.Query(
-                source = locations, exclude = excludedLocations, withHidden = withHidden
-            )
+                source = locations, exclude = excludedLocations, withHidden = withHidden)
         }
         set(value) {
             sharedPreferences.edit {
@@ -156,44 +152,39 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
-    override var mediaStoreQuery: MediaStoreFS.Query
+    override var mediaStoreQuery: MediaStore.Query
         get() {
             val filterMode =
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_filter_mode), IntegerTable.FILTER_MODE_EXCLUDE
-                )
+                    getString(R.string.set_key_filter_mode), IntegerTable.FILTER_MODE_EXCLUDE)
             val filteredLocations =
                 unlikelyToBeNull(
-                    sharedPreferences.getString(
-                        getString(R.string.set_key_filtered_locations), ""
-                    )
-                )
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_filtered_locations), ""))
                     .toUnopenedLocations()
             val excludeNonMusic =
                 sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
             L.d("${excludeNonMusic}")
-            return MediaStoreFS.Query(
+            return MediaStore.Query(
                 mode =
                     when (filterMode) {
-                        IntegerTable.FILTER_MODE_INCLUDE -> MediaStoreFS.FilterMode.INCLUDE
-                        IntegerTable.FILTER_MODE_EXCLUDE -> MediaStoreFS.FilterMode.EXCLUDE
-                        else -> MediaStoreFS.FilterMode.EXCLUDE
+                        IntegerTable.FILTER_MODE_INCLUDE -> MediaStore.FilterMode.INCLUDE
+                        IntegerTable.FILTER_MODE_EXCLUDE -> MediaStore.FilterMode.EXCLUDE
+                        else -> MediaStore.FilterMode.EXCLUDE
                     },
                 filtered = filteredLocations,
-                excludeNonMusic = excludeNonMusic
-            )
+                excludeNonMusic = excludeNonMusic)
         }
         set(value) {
             sharedPreferences.edit {
                 val filterMode =
                     when (value.mode) {
-                        MediaStoreFS.FilterMode.INCLUDE -> IntegerTable.FILTER_MODE_INCLUDE
-                        MediaStoreFS.FilterMode.EXCLUDE -> IntegerTable.FILTER_MODE_EXCLUDE
+                        MediaStore.FilterMode.INCLUDE -> IntegerTable.FILTER_MODE_INCLUDE
+                        MediaStore.FilterMode.EXCLUDE -> IntegerTable.FILTER_MODE_EXCLUDE
                     }
                 putInt(getString(R.string.set_key_filter_mode), filterMode)
                 putString(
-                    getString(R.string.set_key_filtered_locations), value.filtered.stringify()
-                )
+                    getString(R.string.set_key_filtered_locations), value.filtered.stringify())
                 putBoolean(getString(R.string.set_key_exclude_non_music), value.excludeNonMusic)
                 apply()
             }
@@ -208,19 +199,16 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                 L.d("Dispatching music locations change")
                 listener.onMusicLocationsChanged()
             }
-
             getString(R.string.set_key_excluded_locations),
             getString(R.string.set_key_with_hidden),
             getString(R.string.set_key_filter_mode),
             getString(R.string.set_key_filtered_locations),
             getString(R.string.set_key_exclude_non_music),
             getString(R.string.set_key_separators),
-            getString(R.string.set_key_auto_sort_names),
-                -> {
+            getString(R.string.set_key_auto_sort_names), -> {
                 L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()
             }
-
             getString(R.string.set_key_observing) -> {
                 L.d("Dispatching observing setting change")
                 listener.onObservingChanged()

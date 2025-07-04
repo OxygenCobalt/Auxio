@@ -40,7 +40,7 @@ import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.fs.Location
-import org.oxycblt.musikr.fs.mediastore.MediaStoreFS
+import org.oxycblt.musikr.fs.mediastore.MediaStore
 import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
 
@@ -251,7 +251,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             L.d("${query.excludeNonMusic}")
             binding.locationsExcludeNonMusic.isChecked = query.excludeNonMusic
 
-            isIncludeMode = query.mode == MediaStoreFS.FilterMode.INCLUDE
+            isIncludeMode = query.mode == MediaStore.FilterMode.INCLUDE
             binding.locationsExcludeModeGroup.check(
                 if (isIncludeMode) R.id.locations_exclude_mode_exclude
                 else R.id.locations_exclude_mode_include)
@@ -509,13 +509,13 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             // System database mode - create and save MediaStore query
             val filterMode =
                 if (isIncludeMode) {
-                    MediaStoreFS.FilterMode.INCLUDE
+                    MediaStore.FilterMode.INCLUDE
                 } else {
-                    MediaStoreFS.FilterMode.EXCLUDE
+                    MediaStore.FilterMode.EXCLUDE
                 }
 
             val mediaStoreQuery =
-                MediaStoreFS.Query(
+                MediaStore.Query(
                     mode = filterMode,
                     filtered = filterLocationAdapter.locations,
                     excludeNonMusic = binding.locationsExcludeNonMusic.isChecked)

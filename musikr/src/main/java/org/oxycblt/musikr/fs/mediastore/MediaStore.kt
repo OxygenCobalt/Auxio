@@ -20,7 +20,7 @@ package org.oxycblt.musikr.fs.mediastore
 
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
+import android.provider.MediaStore as AOSPMediaStore
 import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +45,7 @@ import org.oxycblt.musikr.fs.track.LocationObserver
  * MediaStore implementation of [FS] that queries the Android MediaStore database for audio files
  * and yields them as [File] instances.
  */
-class MediaStoreFS
+class MediaStore
 private constructor(
     private val context: Context,
     private val volumeManager: VolumeManager,
@@ -61,7 +61,7 @@ private constructor(
 
         // Filter out audio that is not music, if enabled
         if (query.excludeNonMusic) {
-            selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
+            selector += " AND ${AOSPMediaStore.Audio.AudioColumns.IS_MUSIC}=1"
         }
 
         // Handle include/exclude directories
@@ -88,17 +88,17 @@ private constructor(
         val allFiles = mutableListOf<File>()
 
         context.contentResolverSafe.useQuery(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             projection,
             selector,
             args.toTypedArray()) { cursor ->
                 val pathInterpreter = pathInterpreterFactory.wrap(cursor)
-                val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
+                val idIndex = cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns._ID)
                 val mimeTypeIndex =
-                    cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
-                val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
+                    cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.MIME_TYPE)
+                val sizeIndex = cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.SIZE)
                 val dateModifiedIndex =
-                    cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_MODIFIED)
+                    cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.DATE_MODIFIED)
 
                 while (cursor.moveToNext()) {
                     val path = pathInterpreter.extract() ?: continue
@@ -106,7 +106,7 @@ private constructor(
                     val id = cursor.getLong(idIndex)
                     val uri =
                         Uri.withAppendedPath(
-                            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
+                            AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
                     val mimeType = cursor.getStringOrNull(mimeTypeIndex) ?: "audio/*"
                     val size = cursor.getLong(sizeIndex)
                     val dateModified =
@@ -135,7 +135,7 @@ private constructor(
 
     override fun track(): Flow<FSUpdate> = callbackFlow {
         val observer =
-            LocationObserver(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI) {
+            LocationObserver(context, AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI) {
                 trySend(FSUpdate.LocationChanged(null))
             }
         awaitClose { observer.release() }
@@ -230,21 +230,21 @@ private constructor(
 
     companion object {
         fun from(context: Context, query: Query) =
-            MediaStoreFS(
+            MediaStore(
                 context = context, volumeManager = VolumeManager.from(context), query = query)
 
         /**
          * The base selector that works across all versions of android. Excludes files with zero
          * size.
          */
-        private const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
+        private const val BASE_SELECTOR = "NOT ${AOSPMediaStore.Audio.Media.SIZE}=0"
 
         /** The base projection that works across all versions of android. */
         private val BASE_PROJECTION =
             arrayOf(
-                MediaStore.Audio.AudioColumns._ID,
-                MediaStore.Audio.AudioColumns.DATE_MODIFIED,
-                MediaStore.Audio.AudioColumns.SIZE,
-                MediaStore.Audio.AudioColumns.MIME_TYPE)
+                AOSPMediaStore.Audio.AudioColumns._ID,
+                AOSPMediaStore.Audio.AudioColumns.DATE_MODIFIED,
+                AOSPMediaStore.Audio.AudioColumns.SIZE,
+                AOSPMediaStore.Audio.AudioColumns.MIME_TYPE)
     }
 }
