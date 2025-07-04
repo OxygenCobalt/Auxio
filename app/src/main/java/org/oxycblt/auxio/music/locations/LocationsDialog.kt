@@ -243,12 +243,13 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         musicSettings.safQuery.let { query ->
             includeLocationAdapter.addAll(query.source)
             excludeLocationAdapter.addAll(query.exclude)
-            binding.configSwitchFilePicker.isChecked = query.withHidden
+            binding.locationsWithHidden.isChecked = query.withHidden
         }
         // Load MediaStore data
         musicSettings.mediaStoreQuery.let { query ->
             filterLocationAdapter.addAll(query.filtered)
-            binding.configSwitchSystem.isChecked = query.excludeNonMusic
+            L.d("${query.excludeNonMusic}")
+            binding.locationsExcludeNonMusic.isChecked = query.excludeNonMusic
 
             isIncludeMode = query.mode == MediaStoreFS.FilterMode.INCLUDE
             binding.locationsExcludeModeGroup.check(
@@ -310,20 +311,20 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         with(binding) {
             if (isFilePickerMode) {
                 // File Picker mode
-                locationsModeDesc.setText(R.string.desc_file_picker)
+                locationsModeDesc.setText(R.string.lng_file_picker)
 
                 // Update permission section
                 locationsPermsDesc.setText(R.string.lbl_grant_storage_anyway)
-                locationsPermsSubtitle.setText(R.string.desc_grant_storage_anyway)
+                locationsPermsSubtitle.setText(R.string.lng_grant_storage_anyway)
 
                 // File Picker mode - no need to update switch text as it's set in XML
             } else {
                 // System Database mode
-                locationsModeDesc.setText(R.string.desc_system_database)
+                locationsModeDesc.setText(R.string.lng_system_database)
 
                 // Update permission section
                 locationsPermsDesc.setText(R.string.lbl_grant_storage)
-                locationsPermsSubtitle.setText(R.string.desc_grant_storage_required)
+                locationsPermsSubtitle.setText(R.string.lng_grant_storage_required)
 
                 // Update exclude mode description based on selection
                 updateExcludeModeUI(binding)
@@ -376,8 +377,8 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             locationsFilterAdd.isEnabled = isEnabled
             locationsFilterRecycler.isEnabled = isEnabled
 
-            configSwitchFilePicker.isEnabled = isEnabled
-            configSwitchSystem.isEnabled = isEnabled
+            locationsWithHidden.isEnabled = isEnabled
+            locationsExcludeNonMusic.isEnabled = isEnabled
         }
     }
 
@@ -456,8 +457,8 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
                 // Config section
                 configDivider.isVisible = isExtrasExpanded
-                configSwitchFilePicker.isVisible = isExtrasExpanded
-                configSwitchSystem.isVisible = false
+                locationsWithHidden.isVisible = isExtrasExpanded
+                locationsExcludeNonMusic.isVisible = false
             } else {
                 // System Database mode - show filter mode when expanded
                 // Hide include section
@@ -483,8 +484,8 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
                 // Config section
                 configDivider.isVisible = isExtrasExpanded
-                configSwitchFilePicker.isVisible = false
-                configSwitchSystem.isVisible = isExtrasExpanded
+                locationsWithHidden.isVisible = false
+                locationsExcludeNonMusic.isVisible = isExtrasExpanded
             }
         }
     }
@@ -502,7 +503,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 SAF.Query(
                     source = includeLocationAdapter.locations,
                     exclude = excludeLocationAdapter.locations,
-                    withHidden = binding.configSwitchFilePicker.isChecked)
+                    withHidden = binding.locationsWithHidden.isChecked)
             musicSettings.safQuery = safQuery
         } else {
             // System database mode - create and save MediaStore query
@@ -517,7 +518,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 MediaStoreFS.Query(
                     mode = filterMode,
                     filtered = filterLocationAdapter.locations,
-                    excludeNonMusic = !binding.configSwitchSystem.isChecked)
+                    excludeNonMusic = binding.locationsExcludeNonMusic.isChecked)
             musicSettings.mediaStoreQuery = mediaStoreQuery
         }
     }

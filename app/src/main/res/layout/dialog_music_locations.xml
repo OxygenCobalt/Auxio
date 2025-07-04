@@ -353,10 +353,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/locations_exclude_recycler" />
 
-        <!-- "Load Hidden Folders" for File Picker mode -->
-
         <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/config_switch_file_picker"
+            android:id="@+id/locations_with_hidden"
             style="@style/Widget.Auxio.RecyclerView.Linear"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -366,6 +364,7 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:overScrollMode="never"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             android:text="@string/lbl_load_hidden_folders"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -373,10 +372,8 @@
             tools:itemCount="1"
             tools:listitem="@layout/item_music_location" />
 
-        <!-- "Exclude non-music" for System Database mode -->
-
         <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/config_switch_system"
+            android:id="@+id/locations_exclude_non_music"
             style="@style/Widget.Auxio.RecyclerView.Linear"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -387,6 +384,7 @@
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:text="@string/lbl_exclude_non_music"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/config_divider"
