@@ -332,4 +332,8 @@
     <string name="set_excluded_locations">Pastas ignoradas</string>
     <string name="set_fs_cache">Usar o cache do sistema de arquivos</string>
     <string name="set_fs_cache_desc">Melhora o tempo de carregamento, mas impede que novas músicas sejam adicionadas.</string>
+    <string name="lbl_exclude_non_music">Excluir arquivos que não são músicas</string>
+    <string name="lbl_load_hidden_folders">Carregar pastas ocultas</string>
+    <string name="lbl_extra_settings">Configurações extras</string>
+    <string name="desc_add_folder">Adicionar pasta</string>
 </resources>
