@@ -353,6 +353,6 @@
     <string name="lbl_include">Incluir</string>
     <string name="lbl_exclude">Excluir</string>
     <string name="desc_include_folders">Os arquivos de áudio fora das pastas selecionadas serão ignorados.</string>
-    <string name="desc_exclude_folders">Os arquivos de áudio nas pastas selecionadas serão ignoradas.</string>
+    <string name="desc_exclude_folders">Os arquivos de áudio dentro pastas selecionadas serão ignoradas.</string>
     <string name="lbl_no_folders">Sem pastas</string>
 </resources>
