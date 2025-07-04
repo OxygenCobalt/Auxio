@@ -153,7 +153,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
-            android:text="@string/lbl_folders_to_load"
+            android:text="@string/set_folders_to_load"
             tools:text="Folders to Load"
             app:layout_constraintTop_toBottomOf="@+id/locations_include_list_header_divider" />
 
@@ -195,7 +195,7 @@
             android:background="@drawable/ui_item_ripple"
             android:paddingEnd="@dimen/spacing_large"
             android:paddingVertical="@dimen/spacing_medium"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMediumEmphasis"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleSmall"
             tools:text="Extra Settings"
             app:layout_constraintTop_toBottomOf="@+id/locations_exclude_list_header_divider" />
 
@@ -280,7 +280,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
-            android:text="@string/lbl_filtered_folders"
+            android:text="@string/set_filtered_folders"
             app:layout_constraintTop_toBottomOf="@+id/locations_filter_mode_divider" />
 
         <org.oxycblt.auxio.ui.RippleFixMaterialButton
@@ -320,7 +320,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
-            android:text="@string/lbl_folders_to_ignore"
+            android:text="@string/set_folders_to_ignore"
             app:layout_constraintTop_toBottomOf="@+id/locations_exclude_list_divider" />
 
         <org.oxycblt.auxio.ui.RippleFixMaterialButton
@@ -365,7 +365,7 @@
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-            android:text="@string/lbl_load_hidden_folders"
+            android:text="@string/set_with_hidden"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/config_divider"
@@ -383,7 +383,7 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:text="@string/lbl_exclude_non_music"
+            android:text="@string/set_exclude_non_music"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

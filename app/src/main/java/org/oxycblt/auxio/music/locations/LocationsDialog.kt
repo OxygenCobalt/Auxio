@@ -92,7 +92,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
-            .setTitle(R.string.lbl_music_sources)
+            .setTitle(R.string.set_locations)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ -> saveChanges() }
     }
@@ -133,17 +133,17 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         loadInitialState(binding)
 
         // Set up string resources
-        binding.locationsModeHeader.setText(R.string.lbl_load_from)
-        binding.locationsModeExclude.setText(R.string.lbl_file_picker)
-        binding.locationsModeInclude.setText(R.string.lbl_system_database)
-        binding.locationsExcludeModeHeader.setText(R.string.lbl_filter_mode)
-        binding.locationsExcludeModeExclude.setText(R.string.lbl_include)
-        binding.locationsExcludeModeInclude.setText(R.string.lbl_exclude)
-        binding.locationsIncludeListHeader.setText(R.string.lbl_folders_to_load)
+        binding.locationsModeHeader.setText(R.string.set_load_from)
+        binding.locationsModeExclude.setText(R.string.set_file_picker)
+        binding.locationsModeInclude.setText(R.string.set_system_database)
+        binding.locationsExcludeModeHeader.setText(R.string.set_filter_mode)
+        binding.locationsExcludeModeExclude.setText(R.string.set_include)
+        binding.locationsExcludeModeInclude.setText(R.string.set_exclude)
+        binding.locationsIncludeListHeader.setText(R.string.set_folders_to_load)
         binding.locationsIncludeAdd.contentDescription = getString(R.string.desc_add_folder)
         binding.locationsExcludeAdd.contentDescription = getString(R.string.desc_add_folder)
         binding.locationsFilterAdd.contentDescription = getString(R.string.desc_add_folder)
-        binding.locationsExtrasDropdown.setText(R.string.lbl_extra_settings)
+        binding.locationsExtrasDropdown.setText(R.string.set_extra_settings)
 
         // Set up extras dropdown click listener
         binding.locationsExtrasDropdown.setOnClickListener {
@@ -314,7 +314,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 locationsModeDesc.setText(R.string.lng_file_picker)
 
                 // Update permission section
-                locationsPermsDesc.setText(R.string.lbl_grant_storage_anyway)
+                locationsPermsDesc.setText(R.string.set_grant_storage_anyway)
                 locationsPermsSubtitle.setText(R.string.lng_grant_storage_anyway)
 
                 // File Picker mode - no need to update switch text as it's set in XML
@@ -323,7 +323,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 locationsModeDesc.setText(R.string.lng_system_database)
 
                 // Update permission section
-                locationsPermsDesc.setText(R.string.lbl_grant_storage)
+                locationsPermsDesc.setText(R.string.set_grant_storage)
                 locationsPermsSubtitle.setText(R.string.lng_grant_storage_required)
 
                 // Update exclude mode description based on selection
@@ -346,9 +346,9 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
     private fun updateExcludeModeUI(binding: DialogMusicLocationsBinding) {
         with(binding) {
             if (isIncludeMode) {
-                locationsExcludeModeDesc.setText(R.string.desc_include_folders)
+                locationsExcludeModeDesc.setText(R.string.lng_include_folders)
             } else {
-                locationsExcludeModeDesc.setText(R.string.desc_exclude_folders)
+                locationsExcludeModeDesc.setText(R.string.lng_exclude_folders)
             }
         }
     }

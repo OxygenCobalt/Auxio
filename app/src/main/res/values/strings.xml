@@ -16,24 +16,6 @@
     <string name="lbl_observing">Monitoring music library</string>
     <!-- As in to retry loading music -->
     <string name="lbl_retry">Retry</string>
-    <string name="lbl_music_sources">Music Sources</string>
-    <string name="lbl_load_from">Load From</string>
-    <string name="lbl_file_picker">File Picker</string>
-    <string name="lbl_system_database">System</string>
-    <string name="lbl_grant_storage_anyway">Storage Access Recommended</string>
-    <string name="lbl_grant_storage">Storage Access Required</string>
-    <string name="lbl_folders_to_load">Folders to Load</string>
-    <string name="lbl_folders_to_ignore">Folders to Ignore</string>
-    <string name="lbl_filtered_folders">Filtered Folders</string>
-    <string name="lbl_filter_mode">Filter Mode</string>
-    <string name="lbl_include">Include</string>
-    <string name="lbl_exclude">Exclude</string>
-    <string name="desc_include_folders">Music outside of the selected folders will be ignored.</string>
-    <string name="desc_exclude_folders">Music inside the selected folders will be ignored.</string>
-    <string name="lbl_exclude_non_music">Exclude Non-Music</string>
-    <string name="lbl_load_hidden_folders">Load Hidden Folders</string>
-    <string name="lbl_extra_settings">Extra Settings</string>
-    <string name="desc_add_folder">Add Folder</string>
 
     <string name="lbl_songs">Songs</string>
     <string name="lbl_song">Song</string>
@@ -236,6 +218,8 @@
     <string name="lng_system_database">Load music that the Android OS automatically detects. Faster, but less reliable. Manufacturers might break this.</string>
     <string name="lng_grant_storage_anyway">Granting external storage permissions can fix issues on some devices.</string>
     <string name="lng_grant_storage_required">Grant external storage permissions to enable this option.</string>
+    <string name="lng_include_folders">Music outside of the selected folders will be ignored.</string>
+    <string name="lng_exclude_folders">Music inside the selected folders will be ignored.</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <eat-comment />
@@ -331,9 +315,20 @@
     <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
     <string name="set_library">Library</string>
-    <string name="set_locations">Music folders</string>
+    <string name="set_locations">Music sources</string>
     <string name="set_locations_desc">Manage where music should be loaded from</string>
-    <string name="set_locations_new">New folder</string>
+    <string name="set_load_from">Load From</string>
+    <string name="set_file_picker">File picker</string>
+    <string name="set_system_database">System</string>
+    <string name="set_grant_storage_anyway">Storage access recommended</string>
+    <string name="set_grant_storage">Storage access required</string>
+    <string name="set_folders_to_load">Folders to Load</string>
+    <string name="set_folders_to_ignore">Folders to Ignore</string>
+    <string name="set_filtered_folders">Filtered Folders</string>
+    <string name="set_filter_mode">Filter Mode</string>
+    <string name="set_include">Include</string>
+    <string name="set_exclude">Exclude</string>
+    <string name="set_extra_settings">More settings</string>
     <string name="set_fs_cache">Use file-system cache</string>
     <string name="set_fs_cache_desc">Improves loading times, but can prevent new music from being added</string>
     <string name="set_excluded_locations">Excluded folders</string>
@@ -369,6 +364,7 @@
     <string name="desc_queue_bar">Open the queue</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
+    <string name="desc_add_folder">Add Folder</string>
     <string name="desc_music_location_delete">Remove folder</string>
 
     <string name="desc_auxio_icon">Auxio icon</string>
@@ -378,6 +374,7 @@
     <string name="desc_genre_image">Genre image for %s</string>
     <string name="desc_playlist_image">Playlist image for %s</string>
     <string name="desc_selection_image">Selection image</string>
+
 
     <!-- Default Namespace | Placeholder values -->
     <eat-comment />
