@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
+import org.oxycblt.auxio.music.locations.LocationMode
 import org.oxycblt.auxio.music.shim.WriteOnlyMutableCache
 import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.IndexingProgress
@@ -394,9 +395,9 @@ constructor(
         val covers = settingCovers.mutate(context, newRevision)
         val fs =
             when (musicSettings.locationMode) {
-                MusicLocationMode.SAF -> SAF.from(context, musicSettings.safQuery ?: return)
-                MusicLocationMode.SYSTEM ->
-                    MediaStoreFS.from(context, musicSettings.mediaStoreQuery ?: return)
+                LocationMode.SAF -> SAF.from(context, musicSettings.safQuery)
+                LocationMode.MEDIA_STORE ->
+                    MediaStoreFS.from(context, musicSettings.mediaStoreQuery)
             }
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)

@@ -29,19 +29,19 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.core.view.isVisible
 import com.google.android.material.R as MR
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicLocationsBinding
-import org.oxycblt.auxio.music.MusicLocationMode
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.mediastore.MediaStoreFS
+import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
 
 @AndroidEntryPoint
@@ -222,31 +222,39 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
     private fun loadInitialState(binding: DialogMusicLocationsBinding) {
         // Determine mode based on the locationMode setting
-        isFilePickerMode = musicSettings.locationMode == MusicLocationMode.SAF
+        isFilePickerMode = musicSettings.locationMode == LocationMode.SAF
 
+        // Load data for the initial mode
+        loadModeData(binding)
+
+        // Set the initial toggle button selection
         if (isFilePickerMode) {
-            // File picker mode - load music locations and excluded locations
-            includeLocationAdapter.addAll(musicSettings.musicLocations)
-            excludeLocationAdapter.addAll(musicSettings.excludedLocations)
-            binding.configSwitchFilePicker.isChecked = musicSettings.withHidden
             binding.folderModeGroup.check(R.id.locations_mode_exclude)
         } else {
-            // System database mode - load excluded locations
-            // Filter locations come from exclude list
-            filterLocationAdapter.addAll(musicSettings.excludedLocations)
-            binding.configSwitchSystem.isChecked = !musicSettings.excludeNonMusic
-
-            // Determine include/exclude mode based on whether we have exclude locations
-            // If we have exclude locations, we're in exclude mode
-            isIncludeMode = musicSettings.excludedLocations.isEmpty()
-            binding.locationsExcludeModeGroup.check(
-                if (isIncludeMode) R.id.locations_exclude_mode_exclude
-                else R.id.locations_exclude_mode_include)
             binding.folderModeGroup.check(R.id.locations_mode_include)
         }
 
         // Check storage permission status
         hasStoragePermission = checkStoragePermission()
+    }
+
+    private fun loadModeData(binding: DialogMusicLocationsBinding) {
+        // Load SAF data
+        musicSettings.safQuery.let { query ->
+            includeLocationAdapter.addAll(query.source)
+            excludeLocationAdapter.addAll(query.exclude)
+            binding.configSwitchFilePicker.isChecked = query.withHidden
+        }
+        // Load MediaStore data
+        musicSettings.mediaStoreQuery.let { query ->
+            filterLocationAdapter.addAll(query.filtered)
+            binding.configSwitchSystem.isChecked = query.excludeNonMusic
+
+            isIncludeMode = query.mode == MediaStoreFS.FilterMode.INCLUDE
+            binding.locationsExcludeModeGroup.check(
+                if (isIncludeMode) R.id.locations_exclude_mode_exclude
+                else R.id.locations_exclude_mode_include)
+        }
     }
 
     override fun onStart() {
@@ -486,42 +494,31 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
         // Save the mode setting
         musicSettings.locationMode =
-            if (isFilePickerMode) MusicLocationMode.SAF else MusicLocationMode.SYSTEM
+            if (isFilePickerMode) LocationMode.SAF else LocationMode.MEDIA_STORE
 
         if (isFilePickerMode) {
-            // File picker mode - save include and exclude locations
-            musicSettings.musicLocations = includeLocationAdapter.locations
-            musicSettings.excludedLocations = excludeLocationAdapter.locations
-
-            // Update withHidden setting
-            val withHidden = binding.configSwitchFilePicker.isChecked
-            if (musicSettings.withHidden != withHidden) {
-                binding.root.context.getSharedPreferences("auxio_preferences", 0).edit {
-                    putBoolean(getString(R.string.set_key_with_hidden), withHidden)
-                    apply()
-                }
-            }
+            // File picker mode - create and save SAF query
+            val safQuery =
+                SAF.Query(
+                    source = includeLocationAdapter.locations,
+                    exclude = excludeLocationAdapter.locations,
+                    withHidden = binding.configSwitchFilePicker.isChecked)
+            musicSettings.safQuery = safQuery
         } else {
-            // System database mode - clear music locations and save filter locations
-            musicSettings.musicLocations = emptyList()
-
-            // In include mode, we don't have any excluded locations
-            // In exclude mode, we save the filter locations as excluded
-            musicSettings.excludedLocations =
+            // System database mode - create and save MediaStore query
+            val filterMode =
                 if (isIncludeMode) {
-                    emptyList()
+                    MediaStoreFS.FilterMode.INCLUDE
                 } else {
-                    filterLocationAdapter.locations
+                    MediaStoreFS.FilterMode.EXCLUDE
                 }
 
-            // Update excludeNonMusic setting
-            val excludeNonMusic = !binding.configSwitchSystem.isChecked
-            if (musicSettings.excludeNonMusic != excludeNonMusic) {
-                binding.root.context.getSharedPreferences("auxio_preferences", 0).edit {
-                    putBoolean(getString(R.string.set_key_exclude_non_music), excludeNonMusic)
-                    apply()
-                }
-            }
+            val mediaStoreQuery =
+                MediaStoreFS.Query(
+                    mode = filterMode,
+                    filtered = filterLocationAdapter.locations,
+                    excludeNonMusic = !binding.configSwitchSystem.isChecked)
+            musicSettings.mediaStoreQuery = mediaStoreQuery
         }
     }
 

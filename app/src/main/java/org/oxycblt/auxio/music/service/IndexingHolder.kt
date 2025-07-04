@@ -159,13 +159,12 @@ private constructor(
 
     private fun startTracking() {
         stopTracking()
-        val locations = musicSettings.musicLocations
-        if (locations.isEmpty()) return
+        val safQuery = musicSettings.safQuery
+        if (safQuery == null || safQuery.source.isEmpty()) return
 
         trackingJob =
             indexScope.launch {
-                val query = SAF.Query(source = locations, exclude = emptyList(), withHidden = false)
-                SAF.from(workerContext, query).track().collect {
+                SAF.from(workerContext, safQuery).track().collect {
                     if (musicSettings.shouldBeObserving) {
                         musicRepository.requestIndex(true)
                     }

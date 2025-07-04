@@ -219,7 +219,7 @@ private constructor(
 
     data class Query(
         val mode: FilterMode,
-        val filtered: List<Location>,
+        val filtered: List<Location.Unopened>,
         val excludeNonMusic: Boolean
     )
 

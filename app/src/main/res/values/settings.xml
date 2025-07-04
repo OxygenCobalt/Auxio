@@ -22,6 +22,8 @@
     <string name="set_key_with_hidden" translatable="false">auxio_with_hidden</string>
     <string name="set_key_music_locations" translatable="false">auxio_music_locations2</string>
     <string name="set_key_excluded_locations" translatable="false">auxio_excluded_locations</string>
+    <string name="set_key_filter_mode" translatable="false">auxio_filter_mode</string>
+    <string name="set_key_filtered_locations" translatable="false">auxio_filtered_locations</string>
     <string name="set_key_separators" translatable="false">auxio_separators</string>
     <string name="set_key_auto_sort_names" translatable="false">auxio_auto_sort_names</string>
     <string name="set_key_saf_mode" translatable="false">auxio_saf_mode</string>

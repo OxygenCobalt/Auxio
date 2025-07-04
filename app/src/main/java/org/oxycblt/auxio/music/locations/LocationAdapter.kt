@@ -93,6 +93,20 @@ class LocationAdapter<T : Location>(private val listener: Listener) :
         }
     }
 
+    fun clear() {
+        L.d("Clearing all locations")
+        val wasEmpty = _locations.isEmpty()
+        val oldSize = _locations.size
+        _locations.clear()
+        if (!wasEmpty) {
+            if (oldSize == 1) {
+                notifyItemChanged(0)
+            } else {
+                notifyDataSetChanged()
+            }
+        }
+    }
+
     interface Listener {
         fun onRemoveLocation(location: Location)
     }

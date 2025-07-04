@@ -24,20 +24,15 @@ import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.UUID
 import javax.inject.Inject
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.locations.LocationMode
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.mediastore.MediaStoreFS
 import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
-
-/** Represents the mode for loading music locations. */
-enum class MusicLocationMode {
-    /** Use Storage Access Framework (file picker) to select specific folders */
-    SAF,
-    /** Use system MediaStore database to load all music */
-    SYSTEM
-}
 
 /**
  * User configuration specific to music system.
@@ -47,12 +42,12 @@ enum class MusicLocationMode {
 interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The current library revision. */
     var revision: UUID?
+    /** The mode for loading music locations (SAF or System database). */
+    var locationMode: LocationMode
     /** The currently configured SAF query (if any) * */
-    val safQuery: SAF.Query?
+    var safQuery: SAF.Query
     /** The currently configured MediaStore query (if any) * */
-    val mediaStoreQuery: MediaStoreFS.Query?
-    /** Whether to ignore hidden files and directories during music loading. */
-    val withHidden: Boolean
+    var mediaStoreQuery: MediaStoreFS.Query
     /** Whether to be actively watching for changes in the music library. */
     val shouldBeObserving: Boolean
     /** A [String] of characters representing the desired characters to denote multi-value tags. */
@@ -61,14 +56,6 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val intelligentSorting: Boolean
     /** Whether to use the file-system cache for improved loading times. */
     val useFileTreeCache: Boolean
-    /** The mode for loading music locations (SAF or System database). */
-    var locationMode: MusicLocationMode
-    /** The list of music locations to include when using SAF mode. */
-    var musicLocations: List<Location.Opened>
-    /** The list of locations to exclude. */
-    var excludedLocations: List<Location.Unopened>
-    /** Whether to exclude non-music files when using MediaStore. */
-    val excludeNonMusic: Boolean
 
     interface Listener {
         /** Called when the current music locations changed. */
@@ -95,9 +82,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
-    override val withHidden: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
-
     override val shouldBeObserving: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_observing), false)
 
@@ -118,80 +102,81 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
     override val useFileTreeCache: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_fs_cache), false)
 
-    override var locationMode: MusicLocationMode
+    override var locationMode: LocationMode
         get() {
-            val ordinal = sharedPreferences.getInt(getString(R.string.set_key_saf_mode), 0)
-            return MusicLocationMode.values().getOrNull(ordinal) ?: MusicLocationMode.SAF
+            val mode =
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_saf_mode), IntegerTable.LOCATION_MODE_SAF)
+            return LocationMode.fromInt(mode) ?: LocationMode.SAF
         }
         set(value) {
             sharedPreferences.edit {
-                putInt(getString(R.string.set_key_saf_mode), value.ordinal)
+                putInt(getString(R.string.set_key_saf_mode), value.intCode)
                 apply()
             }
         }
 
-    override val safQuery: SAF.Query?
+    override var safQuery: SAF.Query
         get() {
-            // SAF query is used when in SAF mode and we have music locations configured
-            if (locationMode != MusicLocationMode.SAF) return null
-            val locations = musicLocations
-            if (locations.isEmpty()) return null
+            val locations =
+                unlikelyToBeNull(
+                        sharedPreferences
+                            .getString(getString(R.string.set_key_music_locations), "")
+                            .also { L.d("$it") })
+                    .toOpenedLocations()
+            val excludedLocations =
+                unlikelyToBeNull(
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_excluded_locations), ""))
+                    .toUnopenedLocations()
+            val withHidden =
+                sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
             return SAF.Query(
                 source = locations, exclude = excludedLocations, withHidden = withHidden)
         }
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_music_locations), value.source.stringify())
+                putString(getString(R.string.set_key_excluded_locations), value.exclude.stringify())
+                putBoolean(getString(R.string.set_key_with_hidden), value.withHidden)
+            }
+        }
 
-    override val mediaStoreQuery: MediaStoreFS.Query?
+    override var mediaStoreQuery: MediaStoreFS.Query
         get() {
-            // MediaStore query is used when in system database mode
-            if (locationMode != MusicLocationMode.SYSTEM) return null
-
-            // Determine filter mode based on whether we have excluded locations
             val filterMode =
-                if (excludedLocations.isEmpty()) {
-                    MediaStoreFS.FilterMode.INCLUDE
-                } else {
-                    MediaStoreFS.FilterMode.EXCLUDE
-                }
-
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_filter_mode), IntegerTable.FILTER_MODE_EXCLUDE)
+            val filteredLocations =
+                unlikelyToBeNull(
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_filtered_locations), ""))
+                    .toUnopenedLocations()
+            val excludeNonMusic =
+                sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
             return MediaStoreFS.Query(
-                mode = filterMode, filtered = excludedLocations, excludeNonMusic = excludeNonMusic)
-        }
-
-    override var musicLocations: List<Location.Opened>
-        get() {
-            val locations =
-                sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
-                    ?: return emptyList()
-            return locations.toOpenedLocations()
-        }
-        set(value) {
-            sharedPreferences.edit {
-                putString(getString(R.string.set_key_music_locations), value.stringify())
-                commit()
-                // Sometimes changing this setting just won't actually trigger the listener.
-                // Only this one. No idea why.
-                listener?.onMusicLocationsChanged()
-            }
-        }
-
-    override var excludedLocations: List<Location.Unopened>
-        get() {
-            val locations =
-                sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
-                    ?: return emptyList()
-            return locations.toUnopenedLocations()
+                mode =
+                    when (filterMode) {
+                        IntegerTable.FILTER_MODE_INCLUDE -> MediaStoreFS.FilterMode.INCLUDE
+                        IntegerTable.FILTER_MODE_EXCLUDE -> MediaStoreFS.FilterMode.EXCLUDE
+                        else -> MediaStoreFS.FilterMode.EXCLUDE
+                    },
+                filtered = filteredLocations,
+                excludeNonMusic = excludeNonMusic)
         }
         set(value) {
             sharedPreferences.edit {
+                val filterMode =
+                    when (value.mode) {
+                        MediaStoreFS.FilterMode.INCLUDE -> IntegerTable.FILTER_MODE_INCLUDE
+                        MediaStoreFS.FilterMode.EXCLUDE -> IntegerTable.FILTER_MODE_EXCLUDE
+                    }
+                putInt(getString(R.string.set_key_filter_mode), filterMode)
                 putString(
-                    getString(R.string.set_key_excluded_locations), value.stringifyLocations())
-                commit()
-                listener?.onMusicLocationsChanged()
+                    getString(R.string.set_key_filtered_locations), value.filtered.stringify())
+                putBoolean(getString(R.string.set_key_exclude_non_music), value.excludeNonMusic)
             }
         }
-
-    override val excludeNonMusic: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
 
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
@@ -216,15 +201,12 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         }
     }
 
-    private fun List<Location.Opened>.stringify(): String =
+    private fun List<Location>.stringify(): String =
         joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
 
     private fun String.toOpenedLocations(): List<Location.Opened> =
         splitEscaped { it == ';' }
             .mapNotNull { Location.Unopened.from(context, it.toUri())?.open(context) }
-
-    private fun List<Location>.stringifyLocations(): String =
-        joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
 
     private fun String.toUnopenedLocations(): List<Location.Unopened> =
         splitEscaped { it == ';' }.mapNotNull { Location.Unopened.from(context, it.toUri()) }
