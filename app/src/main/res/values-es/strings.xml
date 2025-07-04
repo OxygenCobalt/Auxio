@@ -315,7 +315,6 @@
     <string name="lbl_github">Crear una incidencia en GitHub</string>
     <string name="lbl_email">Enviar un correo electrónico</string>
     <string name="lbl_feedback">Retroalimentación</string>
-    <string name="lbl_music_sources">Seleccionar carpetas</string>
     <string name="def_album">Álbum desconocido</string>
     <string name="cdc_unknown">Desconocido</string>
     <string name="cnt_mp4">El MPEG-4 contiene %s</string>
@@ -323,7 +322,6 @@
     <string name="lng_empty_albums">Sus álbumes aparecerán aquí.</string>
     <string name="lng_empty_artists">Sus artistas aparecerán aquí.</string>
     <string name="lng_empty_genres">Sus géneros aparecerán aquí.</string>
-    <string name="set_locations_new">Nueva carpeta</string>
     <string name="lng_empty_playlists">Sus listas de reproducción aparecerán aquí.</string>
     <string name="lng_empty_songs">Sus canciones aparecerán aquí.</string>
     <string name="set_cover_mode_save_space">Ahorra espacio</string>

@@ -306,13 +306,11 @@
     <string name="lbl_feedback">Povratne informacije</string>
     <string name="lbl_github">Prijavi problem na GitHubu</string>
     <string name="lbl_email">Pošalji e-mail</string>
-    <string name="lbl_music_sources">Odaberi mape</string>
     <string name="cdc_alac">Appleov kodek zvuka bez gubitaka (ALAC)</string>
     <string name="def_album">Nepoznat album</string>
     <string name="cdc_unknown">Nepoznato</string>
     <string name="cnt_mp4">MPEG-4 sadrži %s</string>
     <string name="set_cover_mode_save_space">Niža kvaliteta</string>
-    <string name="set_locations_new">Nova mapa</string>
     <string name="lng_empty_songs">Tvoje pjesme će se ovdje prikazati.</string>
     <string name="lng_empty_albums">Tvoji albumi će se ovdje prikazati.</string>
     <string name="lng_empty_artists">Tvoji izvođači će se ovdje prikazati.</string>

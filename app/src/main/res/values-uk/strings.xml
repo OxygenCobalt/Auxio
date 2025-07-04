@@ -312,7 +312,6 @@
 \n
 \nПопередження: будьте обережні при керуванні цією службою, якщо ви закриєте її, а потім спробуєте використовувати знову, ви, ймовірно, призведе до збою застосунка.</string>
     <string name="lbl_more">Більше</string>
-    <string name="lbl_music_sources">Джерела музики</string>
     <string name="lbl_feedback">Зворотній зв\'язок</string>
     <string name="lbl_github">Зробіть випуск на GitHub</string>
     <string name="lbl_email">Надіслати електронний лист</string>
@@ -320,7 +319,6 @@
     <string name="cnt_mp4">MPEG-4, що містить %s</string>
     <string name="cdc_unknown">Невідомий</string>
     <string name="cdc_alac">Аудіокодек Apple без втрат (ALAC)</string>
-    <string name="set_locations_new">Нова папка</string>
     <string name="set_cover_mode_save_space">Економія місця</string>
     <string name="lng_empty_songs">Ваші пісні відображатимуться тут.</string>
     <string name="lng_empty_albums">Ваші альбоми відображатимуться тут.</string>
@@ -334,22 +332,6 @@
     <string name="set_excluded_locations_desc">Керування папками, які потрібно виключити із завантаження музики</string>
     <string name="set_fs_cache">Використовуйте кеш-систему файлів</string>
     <string name="set_fs_cache_desc">Покращує час завантаження, але може запобігти додаванню нової музики</string>
-    <string name="lbl_load_from">Завантажити з</string>
-    <string name="lbl_file_picker">Вибір файлів</string>
-    <string name="lbl_system_database">Система</string>
-    <string name="lbl_grant_storage_anyway">Рекомендований доступ до сховища</string>
-    <string name="lbl_grant_storage">Потрібен доступ до сховища</string>
-    <string name="lbl_folders_to_load">Папки для завантаження</string>
-    <string name="lbl_folders_to_ignore">Папки, які слід ігнорувати</string>
-    <string name="lbl_filtered_folders">Відфільтровані папки</string>
-    <string name="lbl_filter_mode">Режим фільтра</string>
-    <string name="lbl_include">Включити</string>
-    <string name="lbl_exclude">Виключити</string>
-    <string name="desc_include_folders">Аудіофайли поза вибраними папками будуть ігноруватися.</string>
-    <string name="desc_exclude_folders">Аудіофайли у вибраних папках будуть ігноруватися.</string>
-    <string name="lbl_exclude_non_music">Виключити немузичне</string>
-    <string name="lbl_load_hidden_folders">Завантажити приховані папки</string>
-    <string name="lbl_extra_settings">Додаткові налаштування</string>
     <string name="desc_add_folder">Додати папку</string>
     <string name="lbl_no_folders">Немає папок</string>
 </resources>

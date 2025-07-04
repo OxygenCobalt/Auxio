@@ -303,12 +303,10 @@
     <string name="lbl_feedback">Tagasiside</string>
     <string name="lbl_github">Koosta GitHubis veateade või ettepanek</string>
     <string name="lbl_email">Saada e-kiri</string>
-    <string name="lbl_music_sources">Vali kaustad</string>
     <string name="def_album">Tundmatu album</string>
     <string name="cnt_mp4">MPEG-4 %s koodekiga</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Teadmata</string>
-    <string name="set_locations_new">Uus kaust</string>
     <string name="set_cover_mode_save_space">Säästa ruumi</string>
     <string name="lng_empty_songs">Sinu muusikapalad saavad olema nähtavad siin.</string>
     <string name="lng_empty_artists">Sinu esitajad saavad olema nähtavad siin.</string>

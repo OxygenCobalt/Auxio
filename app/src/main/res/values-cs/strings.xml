@@ -320,12 +320,10 @@
     <string name="lbl_feedback">Zpětná vazba</string>
     <string name="lbl_github">Vytvořit problém na GitHubu</string>
     <string name="lbl_email">Poslat e-mail</string>
-    <string name="lbl_music_sources">Vybrat složky</string>
     <string name="def_album">Neznámé album</string>
     <string name="cnt_mp4">MPEG-4 obsahující %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Neznámý</string>
-    <string name="set_locations_new">Nová složka</string>
     <string name="set_cover_mode_save_space">Úspora místa</string>
     <string name="lng_empty_songs">Vaše skladby se zobrazí zde.</string>
     <string name="lng_empty_albums">Vaše alba se zobrazí zde.</string>

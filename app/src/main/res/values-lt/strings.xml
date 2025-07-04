@@ -315,9 +315,7 @@
     <string name="lng_empty_artists">Čia bus rodomi jūsų atlikėjai.</string>
     <string name="lng_empty_playlists">Čia bus rodomi jūsų grojaraščiai.</string>
     <string name="lng_empty_genres">Čia bus rodomi jūsų žanrai.</string>
-    <string name="lbl_music_sources">Pasirinkti aplankus</string>
     <string name="lbl_email">Siųsti el. laišką</string>
-    <string name="set_locations_new">Naujas aplankas</string>
     <string name="cdc_alac">„Apple“ nenuostolingas garso kodekas (ALAC)</string>
     <string name="cdc_unknown">Nežinomas</string>
     <string name="set_cover_mode_save_space">Išsaugoti vietos</string>

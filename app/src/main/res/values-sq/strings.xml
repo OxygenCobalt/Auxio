@@ -301,14 +301,12 @@
     <string name="fmt_lib_total_duration">Kohëzgjatja totale: %s</string>
     <string name="fmt_deletion_info">A dëshironi të fshini %s? Kjo nuk mund të anulohet.</string>
     <string name="clr_indigo">Lejla</string>
-    <string name="lbl_music_sources">Zgjidh dosjet</string>
     <string name="def_album">Album i panjohur</string>
     <string name="lng_empty_songs">Këngët e tua do të shfaqen këtu.</string>
     <string name="lng_empty_albums">Albumet tuaja do të shfaqen këtu.</string>
     <string name="lng_empty_artists">Artistët e tu do të shfaqen këtu.</string>
     <string name="lng_empty_playlists">Listat tuaja për luajtje do të shfaqen këtu.</string>
     <string name="lng_empty_genres">Zhanret tuaja do të shfaqen këtu.</string>
-    <string name="set_locations_new">Dosje e re</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">E panjohur</string>
     <string name="set_cover_mode_save_space">Kurseni hapësirë</string>

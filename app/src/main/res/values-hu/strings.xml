@@ -302,8 +302,6 @@
     <string name="lng_playlist_imported">Lejátszási lista importálva</string>
     <string name="err_import_failed">Nem sikerült importálni a lejátszási listát ebből a fájlból</string>
     <string name="err_export_failed">Nem sikerült exportálni a lejátszási listát ebbe a fájlba</string>
-    <string name="lbl_music_sources">Válassz mappákat</string>
-    <string name="set_locations_new">Új mappa</string>
     <string name="def_album">Ismeretlen album</string>
     <string name="lng_empty_songs">Itt fognak megjelenni a számaid.</string>
     <string name="set_with_hidden">Rejtett fájlok megjelenítése</string>

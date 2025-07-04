@@ -201,7 +201,6 @@
     <string name="lng_playlist_renamed">تم إعادة تسمية قائمة التشغيل</string>
     <string name="lbl_rename_playlist">إعادة تسمية قائمة التشغيل</string>
     <string name="lbl_appears_on">يظهر على</string>
-    <string name="lbl_music_sources">إختيار المجلد</string>
     <string name="lbl_demos">مقاطع تجريبية</string>
     <string name="lbl_import">استيراد</string>
     <string name="lbl_export">تصدير</string>
@@ -260,7 +259,6 @@
     <string name="set_observing_desc">اعادة تحميل مكتبة الموسيقى عند حصول تغيير(يتطلب تنبيه ثابت)</string>
     <string name="set_separators_warning">تحذير: استخدام هذا الاعداد قد ينتج عنه ان يتم تفسير بعض العلامات بشكل خاطئ مثل ان تحتوي على قيم متعددة. يمكن ان يتم حل هذا بتقديم الفواصل الغير مرغوبةبالشارحة الخلفية(\\).</string>
     <string name="set_remember_pause">تذكر الايقاف</string>
-    <string name="set_locations_new">مجلد جديد</string>
     <string name="set_headset_autoplay">تشغيل تلقائي لسماعة الرأس</string>
     <string name="set_square_covers">اجبار استخدام غلاف البوم مربع</string>
     <string name="set_audio_desc">تحديد الصوت وسلوك العرض</string>

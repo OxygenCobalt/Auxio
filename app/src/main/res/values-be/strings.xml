@@ -306,12 +306,10 @@
 \n
 \nПапярэджанне: будзьце асцярожныя пры кіраванні гэтай службай, калі вы закрыеце яе, а затым паспрабуеце выкарыстоўваць зноў, вы, верагодна, прывядзеце да збою прыкладання.</string>
     <string name="lbl_more">Больш</string>
-    <string name="lbl_music_sources">Абярыце тэчкі</string>
     <string name="cnt_mp4">MPEG-4, які змяшчае %s</string>
     <string name="def_album">Невядомы альбом</string>
     <string name="lng_empty_albums">Вашыя альбомы будуць адлюстроўвацца тут.</string>
     <string name="lng_empty_genres">Тут будуць адлюстроўвацца вашыя жанры.</string>
-    <string name="set_locations_new">Новая тэчка</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Невядомы</string>
     <string name="lbl_email">Адправіць электронны ліст</string>

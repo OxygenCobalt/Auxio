@@ -275,7 +275,6 @@
     <string name="fmt_deletion_info">%s silinsin mi\? Geri alınamaz.</string>
     <string name="lbl_appears_on">Üzerinde görünür</string>
     <string name="def_album_count">Albüm yok</string>
-    <string name="lbl_music_sources">Klasör şeç</string>
     <string name="lbl_export_playlist">Oynatma listesini dışa aktar</string>
     <string name="lbl_demos">Denemeler</string>
     <string name="lbl_replaygain_album">ReplayGain albüm ayarlaması</string>
@@ -303,7 +302,6 @@
     <string name="lbl_import_playlist">Oynatma listesi aktar</string>
     <string name="lbl_empty_playlist">Boş oynatma listesi</string>
     <string name="lbl_path">Dosya yolu</string>
-    <string name="set_locations_new">Yeni klasör</string>
     <string name="lbl_export">Dışa aktar</string>
     <string name="lbl_import">İçe aktar</string>
     <string name="lbl_more">Daha fazla</string>

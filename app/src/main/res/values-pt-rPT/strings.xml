@@ -307,9 +307,7 @@
     <string name="lbl_windows_paths">Usar caminhos compatíveis com Windows</string>
     <string name="lng_tasker_start">Inicia o Auxio usando o estado gravado anteriormente. Se nenhum estado gravado estiver disponível, todas as músicas serão baralhadas. A reprodução começará imediatamente.\n\nAVISO: Tenha cuidado ao controlar este serviço, se fechá-lo e tentar usá-lo novamente, provavelmente irá travar a app.</string>
     <string name="lbl_start_playback">Iniciar reprodução</string>
-    <string name="lbl_music_sources">Escolha pastas</string>
     <string name="def_album">Álbum desconhecido</string>
-    <string name="set_locations_new">Nova pasta</string>
     <string name="lbl_feedback">Opinião</string>
     <string name="set_with_hidden">Ignorar ficheiros ocultos</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>

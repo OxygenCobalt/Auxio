@@ -301,7 +301,6 @@
     <string name="lbl_feedback">Обратна връзка</string>
     <string name="lbl_github">Създайте проблем в GitHub</string>
     <string name="lbl_email">Изпратете имейл</string>
-    <string name="lbl_music_sources">Изберете папки</string>
     <string name="cnt_mp4">MPEG-4, съдържащ %s</string>
     <string name="lng_empty_songs">Вашите песни ще се показват тук.</string>
     <string name="lng_empty_albums">Вашите албуми ще се показват тук.</string>
@@ -315,7 +314,6 @@
     <string name="set_with_hidden_desc">Включете аудио файлове, които са скрити (напр. .cache)</string>
     <string name="set_cover_mode_save_space">Спестете място</string>
     <string name="set_cover_mode_as_is">Както е</string>
-    <string name="set_locations_new">Нова папка</string>
     <string name="set_excluded_locations">Изключени папки</string>
     <string name="set_excluded_locations_desc">Управление на папки, които да се изключат от зареждането на музика</string>
     <string name="set_fs_cache">Използване на кеш на файловата система</string>
