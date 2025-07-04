@@ -37,11 +37,11 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
 class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
     private var mapping: Map<Uri, CachedSongData>? = null
     private val mappingLock = Mutex()
+
     override suspend fun read(file: File): CacheResult {
         mappingLock.lock()
-        val currentMapping = mapping ?: readDao.selectAllSongs().associateBy { it.uri }.also {
-            mapping = it
-        }
+        val currentMapping =
+            mapping ?: readDao.selectAllSongs().associateBy { it.uri }.also { mapping = it }
         mappingLock.unlock()
         val dbSong = currentMapping[file.uri] ?: return CacheResult.Miss(file)
         if (dbSong.modifiedMs != file.modifiedMs) {

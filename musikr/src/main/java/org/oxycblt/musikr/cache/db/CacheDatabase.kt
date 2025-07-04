@@ -53,8 +53,7 @@ internal abstract class CacheDatabase : RoomDatabase() {
 
 @Dao
 internal interface CacheReadDao {
-    @Query("SELECT * FROM CachedSongData")
-    suspend fun selectAllSongs(): List<CachedSongData>
+    @Query("SELECT * FROM CachedSongData") suspend fun selectAllSongs(): List<CachedSongData>
 }
 
 @Dao
