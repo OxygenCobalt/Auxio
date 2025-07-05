@@ -20,7 +20,6 @@ package org.oxycblt.musikr.cache.db
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.oxycblt.musikr.cache.Cache

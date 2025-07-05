@@ -23,7 +23,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.DocumentsContract
-import android.util.Log
+import android.provider.MediaStore as AOSPMediaStore
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
@@ -43,9 +43,7 @@ import org.oxycblt.musikr.fs.FSUpdate
 import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.Path
-import org.oxycblt.musikr.fs.mediastore.MediaStore
 import org.oxycblt.musikr.fs.track.LocationObserver
-import android.provider.MediaStore as AOSPMediaStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SAF
@@ -134,11 +132,12 @@ private constructor(
                             size = size,
                             modifiedMs = lastModified,
                             parent = directoryDeferred,
-                            addedMs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                JoinAddedMs(context, childUri)
-                            } else {
-                                NullAddedMs
-                            })
+                            addedMs =
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                    JoinAddedMs(context, childUri)
+                                } else {
+                                    NullAddedMs
+                                })
                     children.add(file)
                     emit(file)
                 }
@@ -158,14 +157,16 @@ private constructor(
     private class JoinAddedMs(private val context: Context, private val uri: Uri) : AddedMs {
         override suspend fun resolve(): Long? {
             val mediaUri = AOSPMediaStore.getMediaUri(context, uri) ?: return null
-            return context.contentResolverSafe.useQuery(mediaUri, arrayOf(AOSPMediaStore.Files.FileColumns.DATE_ADDED)) {
-                if (it.moveToFirst()) {
-                    val dateAddedIndex = it.getColumnIndexOrThrow(AOSPMediaStore.Files.FileColumns.DATE_ADDED)
-                    it.getLong(dateAddedIndex) * 1000
-                } else {
-                    null
+            return context.contentResolverSafe.useQuery(
+                mediaUri, arrayOf(AOSPMediaStore.Files.FileColumns.DATE_ADDED)) {
+                    if (it.moveToFirst()) {
+                        val dateAddedIndex =
+                            it.getColumnIndexOrThrow(AOSPMediaStore.Files.FileColumns.DATE_ADDED)
+                        it.getLong(dateAddedIndex) * 1000
+                    } else {
+                        null
+                    }
                 }
-            }
         }
     }
 

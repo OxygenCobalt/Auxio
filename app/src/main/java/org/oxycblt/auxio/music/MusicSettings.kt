@@ -129,8 +129,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() {
             val locations =
                 unlikelyToBeNull(
-                        sharedPreferences
-                            .getString(getString(R.string.set_key_music_locations), ""))
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_music_locations), ""))
                     .toOpenedLocations()
             val excludedLocations =
                 unlikelyToBeNull(

@@ -20,8 +20,6 @@ package org.oxycblt.musikr.fs.mediastore
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import android.provider.MediaStore as AOSPMediaStore
 import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,10 +28,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.yield
+import org.oxycblt.musikr.fs.AddedMs
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.FSUpdate
 import org.oxycblt.musikr.fs.File
-import org.oxycblt.musikr.fs.AddedMs
 import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.path.MediaStorePathInterpreter
 import org.oxycblt.musikr.fs.path.VolumeManager
@@ -111,8 +109,7 @@ private constructor(
                             AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
                     val mimeType = cursor.getStringOrNull(mimeTypeIndex) ?: "audio/*"
                     val size = cursor.getLong(sizeIndex)
-                    val dateAdded =
-                        cursor.getLong(dateAddedIndex) * 1000 // Convert to milliseconds
+                    val dateAdded = cursor.getLong(dateAddedIndex) * 1000 // Convert to milliseconds
                     val dateModified =
                         cursor.getLong(dateModifiedIndex) * 1000 // Convert to milliseconds
 

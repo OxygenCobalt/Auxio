@@ -56,8 +56,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
                 .distributedMap(n = 8, on = Dispatchers.IO, buffer = Channel.UNLIMITED) { file ->
                     when (val cacheResult = storage.cache.read(file)) {
                         is CacheResult.Hit -> NeedsCover(cacheResult.song)
-                        is CacheResult.Stale ->
-                            Finalized(NewSong(cacheResult.file))
+                        is CacheResult.Stale -> Finalized(NewSong(cacheResult.file))
                         is CacheResult.Miss -> Finalized(NewSong(cacheResult.file))
                     }
                 }
@@ -72,8 +71,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
                                 is CoverResult.Hit ->
                                     Finalized(it.cachedSong.toRawSong(coverResult.cover))
                                 null -> Finalized(it.cachedSong.toRawSong(null))
-                                else ->
-                                    Finalized(NewSong(it.cachedSong.file))
+                                else -> Finalized(NewSong(it.cachedSong.file))
                             }
                         }
                     }

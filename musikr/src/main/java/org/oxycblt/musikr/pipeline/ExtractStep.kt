@@ -19,7 +19,6 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -91,7 +90,8 @@ private class ExtractStepImpl(
                                 tags,
                                 cover,
                                 // The thing about date added is that it's resolution can actually
-                                // be expensive in some modes (ex. saf backend), so we resolve this by
+                                // be expensive in some modes (ex. saf backend), so we resolve this
+                                // by
                                 // moving date added extraction as an extraction operation rather
                                 // than doing the redundant work during exploration (well, kind of,
                                 // MediaStore's date added query is basically free, it's only saf
