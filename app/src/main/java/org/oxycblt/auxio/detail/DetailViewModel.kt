@@ -471,7 +471,7 @@ constructor(
     fun applyPlaylistSongSort(sort: Sort) {
         val playlist = _currentPlaylist.value ?: return
         _editedPlaylist.value = sort.songs(_editedPlaylist.value ?: return)
-        refreshPlaylist(playlist.uid, UpdateInstructions.Replace(2))
+        refreshPlaylist(playlist.uid, UpdateInstructions.Replace(1))
     }
 
     /**
