@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.7
+
+#### What's New
+- The MediaStore backend is back, enabling faster loading at without a file manager
+the cost of reliability.
+- All of the loading options added prior have been consolidated into a single
+"music sources" dialog
+
+#### Date Added
+- Date added now reflects FileSystem date added
+
+#### What's Fixed
+- Fixed playlist songs incorrectly updating when resorting
+- Fixed artists without songs having enabled play/pause toolbar options
+
 ## 4.0.6
 
 #### What's Improved
