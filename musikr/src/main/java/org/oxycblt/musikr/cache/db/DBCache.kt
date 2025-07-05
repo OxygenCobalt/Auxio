@@ -20,7 +20,9 @@ package org.oxycblt.musikr.cache.db
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedSong
@@ -39,10 +41,10 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
     private val mappingLock = Mutex()
 
     override suspend fun read(file: File): CacheResult {
-        mappingLock.lock()
         val currentMapping =
-            mapping ?: readDao.selectAllSongs().associateBy { it.uri }.also { mapping = it }
-        mappingLock.unlock()
+            mappingLock.withLock {
+                mapping ?: readDao.selectAllSongs().associateBy { it.uri }.also { mapping = it }
+            }
         val dbSong = currentMapping[file.uri] ?: return CacheResult.Miss(file)
         if (dbSong.modifiedMs != file.modifiedMs) {
             return CacheResult.Stale(file, dbSong.addedMs)
