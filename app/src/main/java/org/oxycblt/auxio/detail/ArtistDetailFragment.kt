@@ -149,8 +149,10 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
 
             // In the case that this header used to he configured to have no songs,
             // we want to reset the visibility of all information that was hidden.
-            binding.detailPlayButton?.isVisible = true
-            binding.detailShuffleButton?.isVisible = true
+            binding.detailPlayButton?.isEnabled = true
+            binding.detailShuffleButton?.isEnabled = true
+            binding.detailToolbarPlay.isEnabled = true
+            binding.detailToolbarShuffle.isEnabled = true
         } else {
             // The artist does not have any songs, so hide functionality that makes no sense.
             // ex. Play and Shuffle, Song Counts, and Genre Information.
@@ -159,6 +161,8 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
             binding.detailSubhead.isVisible = false
             binding.detailPlayButton?.isEnabled = false
             binding.detailShuffleButton?.isEnabled = false
+            binding.detailToolbarPlay.isEnabled = false
+            binding.detailToolbarShuffle.isEnabled = false
         }
 
         binding.detailPlayButton?.setOnClickListener {
