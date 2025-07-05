@@ -19,6 +19,7 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -56,6 +57,7 @@ private class ExtractStepImpl(
     private val covers: MutableCovers<out Cover>
 ) : ExtractStep {
     override fun extract(nodes: Flow<Explored>): Flow<Extracted> {
+        val addingMs = System.currentTimeMillis()
         val exclude = mutableListOf<CachedSong>()
         return nodes
             // Cover art is huge, so we have to kneecap the concurrency here to avoid excessive
@@ -88,7 +90,14 @@ private class ExtractStepImpl(
                                 it.metadata.properties,
                                 tags,
                                 cover,
-                                it.newSong.addedMs))
+                                // The thing about date added is that it's resolution can actually
+                                // be expensive in some modes (ex. saf backend), so we resolve this by
+                                // moving date added extraction as an extraction operation rather
+                                // than doing the redundant work during exploration (well, kind of,
+                                // MediaStore's date added query is basically free, it's only saf
+                                // that has it's slow hacky workaround that we must accommodate
+                                // here.)
+                                it.newSong.file.addedMs.resolve() ?: addingMs))
                     }
                 }
             }

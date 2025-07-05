@@ -21,7 +21,10 @@ package org.oxycblt.musikr.fs.saf
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.provider.DocumentsContract
+import android.util.Log
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,13 +36,16 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
+import org.oxycblt.musikr.fs.AddedMs
 import org.oxycblt.musikr.fs.Directory
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.FSUpdate
 import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.fs.mediastore.MediaStore
 import org.oxycblt.musikr.fs.track.LocationObserver
+import android.provider.MediaStore as AOSPMediaStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SAF
@@ -127,7 +133,12 @@ private constructor(
                             path = newPath,
                             size = size,
                             modifiedMs = lastModified,
-                            parent = directoryDeferred)
+                            parent = directoryDeferred,
+                            addedMs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                JoinAddedMs(context, childUri)
+                            } else {
+                                NullAddedMs
+                            })
                     children.add(file)
                     emit(file)
                 }
@@ -142,6 +153,25 @@ private constructor(
         val exclude: List<Location.Unopened>,
         val withHidden: Boolean
     )
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private class JoinAddedMs(private val context: Context, private val uri: Uri) : AddedMs {
+        override suspend fun resolve(): Long? {
+            val mediaUri = AOSPMediaStore.getMediaUri(context, uri) ?: return null
+            return context.contentResolverSafe.useQuery(mediaUri, arrayOf(AOSPMediaStore.Files.FileColumns.DATE_ADDED)) {
+                if (it.moveToFirst()) {
+                    val dateAddedIndex = it.getColumnIndexOrThrow(AOSPMediaStore.Files.FileColumns.DATE_ADDED)
+                    it.getLong(dateAddedIndex) * 1000
+                } else {
+                    null
+                }
+            }
+        }
+    }
+
+    private object NullAddedMs : AddedMs {
+        override suspend fun resolve(): Long? = null
+    }
 
     companion object {
         fun from(context: Context, query: Query) = SAF(context, context.contentResolverSafe, query)

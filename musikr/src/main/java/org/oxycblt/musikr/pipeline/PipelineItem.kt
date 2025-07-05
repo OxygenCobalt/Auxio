@@ -36,7 +36,7 @@ internal sealed interface Explored : PipelineItem {
     sealed interface Known : Explored, Complete
 }
 
-internal data class NewSong(val file: File, val addedMs: Long) : Explored.New
+internal data class NewSong(val file: File) : Explored.New
 
 internal sealed interface Extracted : PipelineItem {
     sealed interface Valid : Complete, Extracted

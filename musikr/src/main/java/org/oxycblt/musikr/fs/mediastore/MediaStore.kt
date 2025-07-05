@@ -20,6 +20,8 @@ package org.oxycblt.musikr.fs.mediastore
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import android.provider.MediaStore as AOSPMediaStore
 import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +33,7 @@ import kotlinx.coroutines.yield
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.FSUpdate
 import org.oxycblt.musikr.fs.File
+import org.oxycblt.musikr.fs.AddedMs
 import org.oxycblt.musikr.fs.Location
 import org.oxycblt.musikr.fs.path.MediaStorePathInterpreter
 import org.oxycblt.musikr.fs.path.VolumeManager
@@ -94,6 +97,8 @@ private constructor(
                 val mimeTypeIndex =
                     cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.MIME_TYPE)
                 val sizeIndex = cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.SIZE)
+                val dateAddedIndex =
+                    cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.DATE_ADDED)
                 val dateModifiedIndex =
                     cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.DATE_MODIFIED)
 
@@ -106,6 +111,8 @@ private constructor(
                             AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
                     val mimeType = cursor.getStringOrNull(mimeTypeIndex) ?: "audio/*"
                     val size = cursor.getLong(sizeIndex)
+                    val dateAdded =
+                        cursor.getLong(dateAddedIndex) * 1000 // Convert to milliseconds
                     val dateModified =
                         cursor.getLong(dateModifiedIndex) * 1000 // Convert to milliseconds
 
@@ -117,6 +124,7 @@ private constructor(
                             modifiedMs = dateModified,
                             mimeType = mimeType,
                             size = size,
+                            addedMs = ForwardDateAdded(dateAdded),
                             parent = null)
 
                     allFiles.add(deviceFile)
@@ -145,6 +153,10 @@ private constructor(
         EXCLUDE
     }
 
+    private class ForwardDateAdded(val dateAdded: Long) : AddedMs {
+        override suspend fun resolve() = dateAdded
+    }
+
     companion object {
         fun from(context: Context, query: Query) =
             MediaStore(
@@ -160,6 +172,7 @@ private constructor(
         private val BASE_PROJECTION =
             arrayOf(
                 AOSPMediaStore.Audio.AudioColumns._ID,
+                AOSPMediaStore.Audio.AudioColumns.DATE_ADDED,
                 AOSPMediaStore.Audio.AudioColumns.DATE_MODIFIED,
                 AOSPMediaStore.Audio.AudioColumns.SIZE,
                 AOSPMediaStore.Audio.AudioColumns.MIME_TYPE)

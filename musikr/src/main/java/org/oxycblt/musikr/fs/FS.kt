@@ -43,6 +43,7 @@ data class Directory(
 data class File(
     override val uri: Uri,
     override val path: Path,
+    val addedMs: AddedMs,
     val modifiedMs: Long,
     val mimeType: String,
     val size: Long,
@@ -51,4 +52,8 @@ data class File(
 
 sealed interface FSUpdate {
     data class LocationChanged(val location: Location.Opened?) : FSUpdate
+}
+
+interface AddedMs {
+    suspend fun resolve(): Long?
 }

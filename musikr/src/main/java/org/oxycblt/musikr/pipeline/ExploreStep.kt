@@ -50,7 +50,6 @@ internal interface ExploreStep {
 
 private class ExploreStepImpl(private val fs: FS, private val storage: Storage) : ExploreStep {
     override fun explore(): Flow<Explored> {
-        val addingMs = System.currentTimeMillis()
         return merge(
             fs.explore()
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
@@ -58,8 +57,8 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
                     when (val cacheResult = storage.cache.read(file)) {
                         is CacheResult.Hit -> NeedsCover(cacheResult.song)
                         is CacheResult.Stale ->
-                            Finalized(NewSong(cacheResult.file, cacheResult.addedMs))
-                        is CacheResult.Miss -> Finalized(NewSong(cacheResult.file, addingMs))
+                            Finalized(NewSong(cacheResult.file))
+                        is CacheResult.Miss -> Finalized(NewSong(cacheResult.file))
                     }
                 }
                 .flowOn(Dispatchers.IO)
@@ -74,7 +73,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
                                     Finalized(it.cachedSong.toRawSong(coverResult.cover))
                                 null -> Finalized(it.cachedSong.toRawSong(null))
                                 else ->
-                                    Finalized(NewSong(it.cachedSong.file, it.cachedSong.addedMs))
+                                    Finalized(NewSong(it.cachedSong.file))
                             }
                         }
                     }
