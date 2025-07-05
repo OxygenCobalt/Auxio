@@ -46,7 +46,7 @@ data class File(
     val modifiedMs: Long,
     val mimeType: String,
     val size: Long,
-    val parent: Deferred<Directory>
+    val parent: Deferred<Directory>?
 ) : FSEntry
 
 sealed interface FSUpdate {

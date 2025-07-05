@@ -113,7 +113,6 @@ private constructor(
                         cursor.getLong(dateModifiedIndex) * 1000 // Convert to milliseconds
 
                     // Create file with empty deferred parent
-                    val parentDeferred = CompletableDeferred<Directory>()
                     val deviceFile =
                         File(
                             uri = uri,
@@ -121,16 +120,13 @@ private constructor(
                             modifiedMs = dateModified,
                             mimeType = mimeType,
                             size = size,
-                            parent = parentDeferred)
+                            parent = null)
 
                     allFiles.add(deviceFile)
                     emit(deviceFile)
                     yield()
                 }
             }
-
-        // Build directory hierarchy
-        buildDirectoryHierarchy(allFiles)
     }
 
     override fun track(): Flow<FSUpdate> = callbackFlow {
@@ -139,82 +135,6 @@ private constructor(
                 trySend(FSUpdate.LocationChanged(null))
             }
         awaitClose { observer.release() }
-    }
-
-    private fun buildDirectoryHierarchy(files: List<File>) {
-        // Map to store directories by their path
-        val directoryMap = mutableMapOf<Path, Directory>()
-
-        // Group files by their parent directory path
-        val filesByParent = files.groupBy { it.path.directory }
-
-        // First pass: Create all directories and complete file parent deferreds
-        for ((dirPath, dirFiles) in filesByParent) {
-            val directory =
-                directoryMap.getOrPut(dirPath) {
-                    // Create parent deferred for this directory
-                    val parentDeferred =
-                        if (dirPath.components.components.isEmpty()) {
-                            // Root directory has no parent
-                            null
-                        } else {
-                            CompletableDeferred<Directory>()
-                        }
-
-                    Directory(
-                        uri = null, // Directories don't have MediaStore URIs
-                        path = dirPath,
-                        parent = parentDeferred,
-                        children = dirFiles)
-                }
-
-            // Update children if directory already existed
-            if (directory.children.isEmpty()) {
-                directory.children = dirFiles
-            }
-
-            // Complete parent deferreds for all files in this directory
-            dirFiles.forEach { file ->
-                (file.parent as CompletableDeferred<Directory>).complete(directory)
-            }
-        }
-
-        // Second pass: Create any missing parent directories
-        val directories = directoryMap.values.toList()
-        for (directory in directories) {
-            var currentPath = directory.path
-            while (currentPath.components.components.isNotEmpty()) {
-                val parentPath = currentPath.directory
-                if (!directoryMap.containsKey(parentPath)) {
-                    val grandParentDeferred =
-                        if (parentPath.components.components.isEmpty()) {
-                            null
-                        } else {
-                            CompletableDeferred<Directory>()
-                        }
-
-                    directoryMap[parentPath] =
-                        Directory(
-                            uri = null,
-                            path = parentPath,
-                            parent = grandParentDeferred,
-                            children = emptyList())
-                }
-                currentPath = parentPath
-            }
-        }
-
-        // Third pass: Complete all directory parent deferreds
-        for (directory in directoryMap.values) {
-            val parentDeferred = directory.parent as? CompletableDeferred<Directory>
-            if (parentDeferred != null && !parentDeferred.isCompleted) {
-                val parentPath = directory.path.directory
-                val parentDirectory = directoryMap[parentPath]
-                if (parentDirectory != null) {
-                    parentDeferred.complete(parentDirectory)
-                }
-            }
-        }
     }
 
     data class Query(

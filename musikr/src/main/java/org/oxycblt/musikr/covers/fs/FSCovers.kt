@@ -33,6 +33,7 @@ import org.oxycblt.musikr.covers.FDCover
 import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Metadata
+import org.oxycblt.musikr.util.unlikelyToBeNull
 
 private const val PREFIX = "mcf:"
 
@@ -96,10 +97,9 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
     override suspend fun create(file: File, metadata: Metadata): CoverResult<FDCover> {
         // Since DeviceFiles is a streaming API, we have to wait for the current recursive
         // query to finally finish to be able to have a complete list of siblings to search for.
-        val parent = file.parent.await()
+        val parent = (file.parent ?: return CoverResult.Miss()).await()
         val bestCover =
             parent.children
-                .filterIsInstance<File>()
                 .map { it to coverArtScore(it) }
                 .maxBy { it.second }
         if (bestCover.second > 0) {
@@ -128,7 +128,7 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // See if the name contains any of the preferred cover names. This helps weed out
         // images that are not actually cover art and are just there.,
         var score =
-            (preferredCoverNames + requireNotNull(file.parent.await().path.name))
+            (preferredCoverNames + requireNotNull(unlikelyToBeNull(file.parent).await().path.name))
                 .withIndex()
                 .filter { name.contains(it.value, ignoreCase = true) }
                 .sumOf { it.index + 1 }
