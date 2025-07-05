@@ -130,8 +130,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             val locations =
                 unlikelyToBeNull(
                         sharedPreferences
-                            .getString(getString(R.string.set_key_music_locations), "")
-                            .also { L.d("$it") })
+                            .getString(getString(R.string.set_key_music_locations), ""))
                     .toOpenedLocations()
             val excludedLocations =
                 unlikelyToBeNull(
@@ -164,7 +163,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                     .toUnopenedLocations()
             val excludeNonMusic =
                 sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
-            L.d("${excludeNonMusic}")
             return MediaStore.Query(
                 mode =
                     when (filterMode) {
