@@ -55,11 +55,11 @@ internal fun <T, R> Flow<T>.distributedMap(
             for (channel in posChannels) {
                 channel.close()
             }
-        }
+        }.buffer()
     return (posChannels.map { it.receiveAsFlow() } + managerFlow)
         .asFlow()
-        .map { it.tryMap(block).flowOn(on).buffer(buffer) }
-        .flattenMerge()
+        .map { it.tryMap(block).flowOn(on) }
+        .flattenMerge(concurrency = n + 1)
 }
 
 internal fun <T, R> Flow<T>.tryMap(transform: suspend (T) -> R): Flow<R> = flow {
