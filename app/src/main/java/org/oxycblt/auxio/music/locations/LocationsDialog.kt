@@ -243,13 +243,12 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         musicSettings.safQuery.let { query ->
             includeLocationAdapter.addAll(query.source)
             excludeLocationAdapter.addAll(query.exclude)
-            binding.locationsWithHidden.isChecked = query.withHidden
+            binding.locationsWithHiddenSwitch.isChecked = query.withHidden
         }
         // Load MediaStore data
         musicSettings.mediaStoreQuery.let { query ->
             filterLocationAdapter.addAll(query.filtered)
-            L.d("${query.excludeNonMusic}")
-            binding.locationsExcludeNonMusic.isChecked = query.excludeNonMusic
+            binding.locationsExcludeNonMusicSwitch.isChecked = query.excludeNonMusic
 
             isIncludeMode = query.mode == MediaStore.FilterMode.INCLUDE
             binding.locationsExcludeModeGroup.check(
@@ -377,7 +376,12 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             locationsFilterAdd.isEnabled = isEnabled
             locationsFilterRecycler.isEnabled = isEnabled
 
+            locationsWithHiddenTitle.isEnabled = isEnabled
+            locationsWithHiddenDesc.isEnabled = isEnabled
             locationsWithHidden.isEnabled = isEnabled
+
+            locationsExcludeNonMusicTitle.isEnabled = isEnabled
+            locationsExcludeNonMusicDesc.isEnabled = isEnabled
             locationsExcludeNonMusic.isEnabled = isEnabled
         }
     }
@@ -457,7 +461,12 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
                 // Config section
                 configDivider.isVisible = isExtrasExpanded
+                locationsWithHiddenTitle.isVisible = isExtrasExpanded
+                locationsWithHiddenDesc.isVisible = isExtrasExpanded
                 locationsWithHidden.isVisible = isExtrasExpanded
+
+                locationsExcludeNonMusicTitle.isVisible = false
+                locationsExcludeNonMusicDesc.isVisible = false
                 locationsExcludeNonMusic.isVisible = false
             } else {
                 // System Database mode - show filter mode when expanded
@@ -484,7 +493,12 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
                 // Config section
                 configDivider.isVisible = isExtrasExpanded
+                locationsWithHiddenTitle.isVisible = false
+                locationsWithHiddenDesc.isVisible = false
                 locationsWithHidden.isVisible = false
+
+                locationsExcludeNonMusicTitle.isVisible = isExtrasExpanded
+                locationsExcludeNonMusicDesc.isVisible = isExtrasExpanded
                 locationsExcludeNonMusic.isVisible = isExtrasExpanded
             }
         }
@@ -503,7 +517,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 SAF.Query(
                     source = includeLocationAdapter.locations,
                     exclude = excludeLocationAdapter.locations,
-                    withHidden = binding.locationsWithHidden.isChecked)
+                    withHidden = binding.locationsWithHiddenSwitch.isChecked)
             musicSettings.safQuery = safQuery
         } else {
             // System database mode - create and save MediaStore query
@@ -518,7 +532,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 MediaStore.Query(
                     mode = filterMode,
                     filtered = filterLocationAdapter.locations,
-                    excludeNonMusic = binding.locationsExcludeNonMusic.isChecked)
+                    excludeNonMusic = binding.locationsExcludeNonMusicSwitch.isChecked)
             musicSettings.mediaStoreQuery = mediaStoreQuery
         }
     }

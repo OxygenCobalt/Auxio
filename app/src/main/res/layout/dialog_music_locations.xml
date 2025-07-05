@@ -303,6 +303,7 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:overScrollMode="never"
+            tools:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/locations_filter_list_header"
             tools:itemCount="1"
             tools:listitem="@layout/item_music_location" />
@@ -311,6 +312,7 @@
             android:id="@+id/locations_exclude_list_divider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/locations_filter_recycler" />
 
         <TextView
@@ -321,6 +323,7 @@
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
             android:text="@string/set_folders_to_ignore"
+            tools:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/locations_exclude_list_divider" />
 
         <org.oxycblt.auxio.ui.RippleFixMaterialButton
@@ -331,6 +334,7 @@
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:contentDescription="@string/desc_add_folder"
             app:icon="@drawable/ic_add_24"
+            tools:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/locations_exclude_list_header"
             app:layout_constraintTop_toBottomOf="@+id/locations_exclude_list_divider" />
 
@@ -343,6 +347,7 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:overScrollMode="never"
+            tools:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/locations_exclude_list_header"
             tools:itemCount="1"
             tools:listitem="@layout/item_music_location" />
@@ -353,43 +358,112 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/locations_exclude_recycler" />
 
-        <com.google.android.material.materialswitch.MaterialSwitch
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/locations_with_hidden"
-            style="@style/Widget.Auxio.RecyclerView.Linear"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_large"
-            android:layout_marginVertical="@dimen/spacing_small"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-            android:text="@string/set_with_hidden"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginVertical="@dimen/spacing_medium"
             app:layout_constraintTop_toBottomOf="@+id/config_divider"
-            tools:itemCount="1"
-            tools:listitem="@layout/item_music_location" />
+            tools:layout_editor_absoluteX="24dp">
 
-        <com.google.android.material.materialswitch.MaterialSwitch
+            <TextView
+                android:id="@+id/locations_with_hidden_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/set_with_hidden"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+                app:layout_constraintBottom_toTopOf="@+id/locations_with_hidden_desc"
+                app:layout_constraintEnd_toStartOf="@+id/locations_with_hidden_switch"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/locations_with_hidden_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/set_with_hidden_desc"
+                android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/locations_with_hidden_switch"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/locations_with_hidden_title" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/locations_with_hidden_switch"
+                style="@style/Widget.Auxio.RecyclerView.Linear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_music_location" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/locations_exclude_non_music"
-            style="@style/Widget.Auxio.RecyclerView.Linear"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_large"
-            android:layout_marginVertical="@dimen/spacing_small"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:text="@string/set_exclude_non_music"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/config_divider"
-            tools:itemCount="1"
-            tools:listitem="@layout/item_music_location" />
+            android:layout_marginVertical="@dimen/spacing_medium"
+            app:layout_constraintTop_toBottomOf="@+id/locations_with_hidden"
+            tools:layout_editor_absoluteX="24dp">
+
+            <TextView
+                android:id="@+id/locations_exclude_non_music_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                android:text="@string/set_exclude_non_music"
+                android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+                app:layout_constraintBottom_toTopOf="@+id/locations_exclude_non_music_desc"
+                app:layout_constraintEnd_toStartOf="@+id/locations_exclude_non_music_switch"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/locations_exclude_non_music_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                android:text="@string/set_exclude_non_music_desc"
+                android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/locations_exclude_non_music_switch"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/locations_exclude_non_music_title" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/locations_exclude_non_music_switch"
+                style="@style/Widget.Auxio.RecyclerView.Linear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_music_location" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

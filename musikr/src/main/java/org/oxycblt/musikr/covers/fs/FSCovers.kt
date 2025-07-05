@@ -98,10 +98,7 @@ class MutableFSCovers(private val context: Context) : MutableCovers<FDCover> {
         // Since DeviceFiles is a streaming API, we have to wait for the current recursive
         // query to finally finish to be able to have a complete list of siblings to search for.
         val parent = (file.parent ?: return CoverResult.Miss()).await()
-        val bestCover =
-            parent.children
-                .map { it to coverArtScore(it) }
-                .maxBy { it.second }
+        val bestCover = parent.children.map { it to coverArtScore(it) }.maxBy { it.second }
         if (bestCover.second > 0) {
             return CoverResult.Hit(FolderCoverImpl(context, bestCover.first.uri))
         }

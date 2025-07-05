@@ -215,7 +215,7 @@
     <string name="lng_empty_genres">Your genres will show up here.</string>
     <string name="lng_empty_playlists">Your playlists will show up here.</string>
     <string name="lng_file_picker">Load music from the folders that you select. Slower, but more reliable. Requires the vanilla file manager app to be installed.</string>
-    <string name="lng_system_database">Load music that the Android OS automatically detects. Faster, but less reliable. Manufacturers might break this.</string>
+    <string name="lng_system_database">Load music that the Android OS automatically detects. Faster, but less reliable. No support for filesystem-dependent features like cover.jpg.</string>
     <string name="lng_grant_storage_anyway">Granting external storage permissions can fix issues on some devices.</string>
     <string name="lng_grant_storage_required">Grant external storage permissions to enable this option.</string>
     <string name="lng_include_folders">Music outside of the selected folders will be ignored.</string>
