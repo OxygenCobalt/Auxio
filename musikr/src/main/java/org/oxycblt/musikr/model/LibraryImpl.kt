@@ -28,11 +28,11 @@ import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.playlist.interpret.PrePlaylistInfo
 
 internal data class LibraryImpl(
-    override val songs: Collection<SongImpl>,
-    override val albums: Collection<AlbumImpl>,
-    override val artists: Collection<ArtistImpl>,
-    override val genres: Collection<GenreImpl>,
-    override val playlists: Collection<PlaylistImpl>,
+    override val songs: Set<SongImpl>,
+    override val albums: Set<AlbumImpl>,
+    override val artists: Set<ArtistImpl>,
+    override val genres: Set<GenreImpl>,
+    override val playlists: Set<PlaylistImpl>,
     private val storedPlaylists: StoredPlaylists,
     private val playlistInterpreter: PlaylistInterpreter
 ) : MutableLibrary {

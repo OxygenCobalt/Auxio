@@ -105,6 +105,15 @@ class MutableStoredCovers(
     }
 }
 
-private class StoredCover(private val inner: FDCover) : FDCover by inner {
+private data class StoredCover(private val inner: FDCover) : FDCover by inner {
     override val id = PREFIX + inner.id
+
+    // For some reason delegation takes priority over the data class definition?
+    // Manually define equals/hashCode instead to avoid breaking the equals impl.
+
+    override fun equals(other: Any?): Boolean {
+        return other is StoredCover && inner == other.inner
+    }
+
+    override fun hashCode(): Int = id.hashCode()
 }
