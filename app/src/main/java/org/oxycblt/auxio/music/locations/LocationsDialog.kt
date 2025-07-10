@@ -86,6 +86,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
     private var hasStoragePermission = false
     private var isExtrasExpanded = false
     private var pendingLocationCallback: ((Location.Unopened) -> Unit)? = null
+    private var permissionGrantedInSession = false
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicLocationsBinding.inflate(inflater)
@@ -110,6 +111,9 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 L.d("Storage permission granted: $isGranted")
                 hasStoragePermission = isGranted
+                if (isGranted && !permissionGrantedInSession) {
+                    permissionGrantedInSession = true
+                }
                 updateModeUI(binding)
                 updateSaveButtonState()
             }
@@ -507,33 +511,60 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
     private fun saveChanges() {
         val binding = requireBinding()
 
-        // Save the mode setting
-        musicSettings.locationMode =
-            if (isFilePickerMode) LocationMode.SAF else LocationMode.MEDIA_STORE
+        // Check if configuration has actually changed
+        val currentMode = musicSettings.locationMode
+        val modeChanged =
+            currentMode != (if (isFilePickerMode) LocationMode.SAF else LocationMode.MEDIA_STORE)
+
+        var configChanged = modeChanged
 
         if (isFilePickerMode) {
-            // File picker mode - create and save SAF query
-            val safQuery =
+            // Check if SAF query changed
+            val currentSafQuery = musicSettings.safQuery
+            val newSafQuery =
                 SAF.Query(
                     source = includeLocationAdapter.locations,
                     exclude = excludeLocationAdapter.locations,
                     withHidden = binding.locationsWithHiddenSwitch.isChecked)
-            musicSettings.safQuery = safQuery
+
+            if (!modeChanged && currentMode == LocationMode.SAF) {
+                configChanged = currentSafQuery != newSafQuery
+            }
+
+            // Save the new SAF query
+            musicSettings.safQuery = newSafQuery
         } else {
-            // System database mode - create and save MediaStore query
+            // Check if MediaStore query changed
+            val currentMediaStoreQuery = musicSettings.mediaStoreQuery
             val filterMode =
                 if (isIncludeMode) {
                     MediaStore.FilterMode.INCLUDE
                 } else {
                     MediaStore.FilterMode.EXCLUDE
                 }
-
-            val mediaStoreQuery =
+            val newMediaStoreQuery =
                 MediaStore.Query(
                     mode = filterMode,
                     filtered = filterLocationAdapter.locations,
                     excludeNonMusic = binding.locationsExcludeNonMusicSwitch.isChecked)
-            musicSettings.mediaStoreQuery = mediaStoreQuery
+
+            if (!modeChanged && currentMode == LocationMode.MEDIA_STORE) {
+                configChanged = currentMediaStoreQuery != newMediaStoreQuery
+            }
+
+            // Save the new MediaStore query
+            musicSettings.mediaStoreQuery = newMediaStoreQuery
+        }
+
+        // Save the mode setting
+        musicSettings.locationMode =
+            if (isFilePickerMode) LocationMode.SAF else LocationMode.MEDIA_STORE
+
+        // If no configuration changed but permission was granted in this session,
+        // force a location update
+        if (!configChanged && permissionGrantedInSession) {
+            L.d("No config changes detected, but permission was granted - forcing location update")
+            musicSettings.forceLocationUpdate()
         }
     }
 

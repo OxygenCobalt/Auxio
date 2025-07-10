@@ -64,6 +64,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     /** Whether to use the file-system cache for improved loading times. */
     val useFileTreeCache: Boolean
 
+    fun forceLocationUpdate()
+
     interface Listener {
         /** Called when the current music locations changed. */
         fun onMusicLocationsChanged() {}
@@ -188,12 +190,22 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
         }
 
+    override fun forceLocationUpdate() {
+        // TODO: Temporary!!! This is really dumb, just need to ship a workaround for this rn
+        val cur = sharedPreferences.getInt(getString(R.string.set_key_locations_mode), 0)
+        sharedPreferences.edit {
+            putInt(getString(R.string.set_key_force_reload_workaround), cur + 1)
+            apply()
+        }
+    }
+
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
         when (key) {
             getString(R.string.set_key_locations_mode),
-            getString(R.string.set_key_music_locations) -> {
+            getString(R.string.set_key_music_locations),
+            getString(R.string.set_key_force_reload_workaround) -> {
                 L.d("Dispatching music locations change")
                 listener.onMusicLocationsChanged()
             }

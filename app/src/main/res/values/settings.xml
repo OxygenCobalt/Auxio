@@ -61,6 +61,8 @@
 
     <string name="set_key_library_revision" translatable="false">auxio_library_revision</string>
 
+    <string name="set_key_force_reload_workaround" translatable="false">auxio_force_reload</string>
+
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>
         <item>@string/set_theme_day</item>
