@@ -132,11 +132,11 @@
     <string name="lbl_search">Chwilio</string>
     <string name="lbl_filter">Hidlo</string>
     <string name="lbl_sort_dsc">Disgynnol</string>
-    <string name="lbl_playback">Yn chwarae nawr</string>
+    <string name="lbl_playback">Yn chwarae rŵan</string>
     <string name="lbl_equalizer">Gosodiadau sain</string>
     <string name="lbl_play">Chwarae</string>
     <string name="lbl_shuffle">Chwarae ar hap</string>
-    <string name="lbl_queue">Ciwio</string>
+    <string name="lbl_queue">Ciw</string>
     <string name="lbl_sort_asc">Esgynnol</string>
     <string name="lbl_play_next">Chwarae nesaf</string>
     <string name="lbl_queue_add">Ychwanegu i\'r ciw</string>
@@ -311,7 +311,6 @@
     <string name="set_separators_desc">Ffurfweddu llythrennau sydd yn dynodi mwy nag un gwerth tag</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="set_audio_desc">Ffurfweddu sain ac ymarweddiad chwarae</string>
-    <string name="lbl_music_sources">Dewis ffolderi</string>
     <string name="lbl_feedback">Adborth</string>
     <string name="lbl_github">Creu issue ar GitHub</string>
     <string name="lbl_email">Anfon ebost</string>
@@ -320,4 +319,17 @@
     <string name="cdc_unknown">Anhysbys</string>
     <string name="cnt_mp4">MPEG-4 gan gynnwys %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
+    <string name="lng_empty_artists">Bydd eich artistiaid yn ymddangos yma.</string>
+    <string name="lng_empty_songs">Bydd eich caneuon yn ymddangos yma.</string>
+    <string name="lng_empty_albums">Bydd eich albymau yn ymddangos yma.</string>
+    <string name="lng_empty_playlists">Bydd eich rhestri chwarae yn ymddangos yma.</string>
+    <string name="set_with_hidden">Cynnwys ffeiliau cudd</string>
+    <string name="set_excluded_locations">Ffolderi wedi\'u eithrio</string>
+    <string name="set_excluded_locations_desc">Rheoli ffolderi i\'w heithrio rhag llwytho cerddoriaeth</string>
+    <string name="lng_empty_genres">Bydd eich genres yn ymddangos yma.</string>
+    <string name="set_cover_mode_as_is">Paid â newid</string>
+    <string name="set_with_hidden_desc">Cynnwys ffeiliau sain cudd (e.e. .cache)</string>
+    <string name="set_cover_mode_save_space">Cadw lle storfa</string>
+    <string name="set_fs_cache">Defnyddio cof dros dro y system</string>
+    <string name="set_fs_cache_desc">Yn gwella amseroedd llwytho, ond gall atal cerddoriaeth newydd rhag cael ei hychwanegu</string>
 </resources>

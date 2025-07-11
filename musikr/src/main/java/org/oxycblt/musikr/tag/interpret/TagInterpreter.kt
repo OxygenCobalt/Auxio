@@ -20,8 +20,8 @@ package org.oxycblt.musikr.tag.interpret
 
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.fs.Format
-import org.oxycblt.musikr.fs.device.DeviceFile
 import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
@@ -151,7 +151,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
 
     private fun makePreAlbum(
         parsedTags: ParsedTags,
-        deviceFile: DeviceFile,
+        deviceFile: File,
         individualPreArtists: List<PreArtist>,
         albumPreArtists: List<PreArtist>,
         interpretation: Interpretation

@@ -298,7 +298,6 @@
     <string name="lbl_path_style_relative">Relatif</string>
     <string name="lbl_error_info">Informasi kesalahan</string>
     <string name="set_intelligent_sorting_desc">Sortir nama yang dimulai dengan nomor atau kata seperti \"the\" dengan benar (bekerja paling baik dengan lagu berbahasa Inggris)</string>
-    <string name="lbl_music_sources">Pilih folder</string>
     <string name="lbl_more">Lebih banyak</string>
     <string name="lng_empty_songs">Lagu-lagu Anda akan muncul di sini.</string>
     <string name="lbl_start_playback">Mulai pemutaran</string>

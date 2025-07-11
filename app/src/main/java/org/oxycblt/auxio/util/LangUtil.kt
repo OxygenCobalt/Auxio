@@ -63,3 +63,48 @@ fun lazyReflectedMethod(clazz: KClass<*>, method: String, vararg params: KClass<
         it.isAccessible = true
     }
 }
+
+/**
+ * Split a [String] by the given selector, automatically handling escaped characters that satisfy
+ * the selector.
+ *
+ * @param selector A block that determines if the string should be split at a given character.
+ * @return One or more [String]s split by the selector.
+ */
+internal fun String.splitEscaped(selector: Char): List<String> {
+    val split = mutableListOf<String>()
+    var currentString = ""
+    var i = 0
+
+    while (i < length) {
+        val a = get(i)
+        val b = getOrNull(i + 1)
+
+        if (a == selector) {
+            // Non-escaped separator, split the string here, making sure any stray whitespace
+            // is removed.
+            split.add(currentString)
+            currentString = ""
+            i++
+            continue
+        }
+
+        if (b != null && a == '\\' && a == selector) {
+            // Is an escaped character, add the non-escaped variant and skip two
+            // characters to move on to the next one.
+            currentString += b
+            i += 2
+        } else {
+            // Non-escaped, increment normally.
+            currentString += a
+            i++
+        }
+    }
+
+    if (currentString.isNotEmpty()) {
+        // Had an in-progress split string that is now terminated, add it.
+        split.add(currentString)
+    }
+
+    return split
+}

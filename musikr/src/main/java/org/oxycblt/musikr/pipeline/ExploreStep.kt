@@ -20,71 +20,44 @@ package org.oxycblt.musikr.pipeline
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onCompletion
-import org.oxycblt.musikr.Interpretation
-import org.oxycblt.musikr.Query
+import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.Storage
-import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
-import org.oxycblt.musikr.covers.Covers
-import org.oxycblt.musikr.fs.device.DeviceFS
-import org.oxycblt.musikr.fs.device.FileTreeCache
-import org.oxycblt.musikr.fs.device.flatten
-import org.oxycblt.musikr.playlist.db.StoredPlaylists
+import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.playlist.m3u.M3U
 
 internal interface ExploreStep {
-    fun explore(query: Query): Flow<Explored>
+    fun explore(): Flow<Explored>
 
     companion object {
-        fun from(context: Context, storage: Storage, interpretation: Interpretation): ExploreStep =
-            ExploreStepImpl(
-                DeviceFS.from(context = context, withHidden = interpretation.withHidden),
-                storage.cache,
-                storage.covers,
-                storage.fileTreeCache,
-                storage.storedPlaylists)
+        fun from(context: Context, config: Config): ExploreStep =
+            ExploreStepImpl(config.fs, config.storage)
     }
 }
 
-private class ExploreStepImpl(
-    private val deviceFS: DeviceFS,
-    private val cache: Cache,
-    private val covers: Covers<out Cover>,
-    private val fileTreeCache: FileTreeCache,
-    private val storedPlaylists: StoredPlaylists
-) : ExploreStep {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun explore(query: Query): Flow<Explored> {
-        val addingMs = System.currentTimeMillis()
-        val fileTree = fileTreeCache.read()
+private class ExploreStepImpl(private val fs: FS, private val storage: Storage) : ExploreStep {
+    override fun explore(): Flow<Explored> {
         return merge(
-            deviceFS
-                .explore(query, fileTree)
-                .flatMapMerge { it.flatten() }
-                .onCompletion { fileTree.write() }
+            fs.explore()
                 .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
                 .distributedMap(n = 8, on = Dispatchers.IO, buffer = Channel.UNLIMITED) { file ->
-                    when (val cacheResult = cache.read(file)) {
+                    when (val cacheResult = storage.cache.read(file)) {
                         is CacheResult.Hit -> NeedsCover(cacheResult.song)
-                        is CacheResult.Stale ->
-                            Finalized(NewSong(cacheResult.file, cacheResult.addedMs))
-                        is CacheResult.Miss -> Finalized(NewSong(cacheResult.file, addingMs))
+                        is CacheResult.Stale -> Finalized(NewSong(cacheResult.file))
+                        is CacheResult.Miss -> Finalized(NewSong(cacheResult.file))
                     }
                 }
                 .flowOn(Dispatchers.IO)
@@ -94,12 +67,11 @@ private class ExploreStepImpl(
                         is Finalized -> it
                         is NeedsCover -> {
                             when (val coverResult =
-                                it.cachedSong.coverId?.let { id -> covers.obtain(id) }) {
+                                it.cachedSong.coverId?.let { id -> storage.covers.obtain(id) }) {
                                 is CoverResult.Hit ->
                                     Finalized(it.cachedSong.toRawSong(coverResult.cover))
                                 null -> Finalized(it.cachedSong.toRawSong(null))
-                                else ->
-                                    Finalized(NewSong(it.cachedSong.file, it.cachedSong.addedMs))
+                                else -> Finalized(NewSong(it.cachedSong.file))
                             }
                         }
                     }
@@ -107,7 +79,7 @@ private class ExploreStepImpl(
                 .map { it.explored }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED),
-            flow { emitAll(storedPlaylists.read().asFlow()) }
+            flow { emitAll(storage.storedPlaylists.read().asFlow()) }
                 .map { RawPlaylist(it) }
                 .flowOn(Dispatchers.IO)
                 .buffer(Channel.UNLIMITED))

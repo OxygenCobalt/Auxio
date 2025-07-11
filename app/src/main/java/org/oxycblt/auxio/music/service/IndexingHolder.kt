@@ -32,47 +32,38 @@ import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.shim.UpdateTrackerFactory
+import org.oxycblt.auxio.music.locations.LocationMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.musikr.MusicParent
-import org.oxycblt.musikr.fs.Location
-import org.oxycblt.musikr.track.UpdateTracker
+import org.oxycblt.musikr.fs.mediastore.MediaStore
+import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
 
 class IndexingHolder
 private constructor(
-    workerContext: Context,
+    private val workerContext: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
-    private val imageLoader: ImageLoader,
-    updateTrackerFactory: UpdateTrackerFactory
+    private val imageLoader: ImageLoader
 ) :
     MusicRepository.IndexingWorker,
     MusicRepository.IndexingListener,
     MusicRepository.UpdateListener,
-    MusicSettings.Listener,
-    UpdateTracker.Callback {
+    MusicSettings.Listener {
     class Factory
     @Inject
     constructor(
         private val playbackManager: PlaybackStateManager,
         private val musicRepository: MusicRepository,
         private val musicSettings: MusicSettings,
-        private val imageLoader: ImageLoader,
-        private val updateTrackerFactory: UpdateTrackerFactory
+        private val imageLoader: ImageLoader
     ) {
         fun create(context: Context, listener: ForegroundListener) =
             IndexingHolder(
-                context,
-                listener,
-                playbackManager,
-                musicRepository,
-                musicSettings,
-                imageLoader,
-                updateTrackerFactory)
+                context, listener, playbackManager, musicRepository, musicSettings, imageLoader)
     }
 
     private val indexJob = Job()
@@ -85,18 +76,18 @@ private constructor(
             .getSystemServiceCompat(PowerManager::class)
             .newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexingComponent")
-    private val updateTracker = updateTrackerFactory.create(this)
+    private var trackingJob: Job? = null
 
     fun attach() {
         musicSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
         musicRepository.addIndexingListener(this)
         musicRepository.registerWorker(this)
-        updateTracker.track(musicSettings.musicLocations)
+        startTracking()
     }
 
     fun release() {
-        updateTracker.release()
+        stopTracking()
         musicRepository.unregisterWorker(this)
         musicRepository.removeIndexingListener(this)
         musicRepository.removeUpdateListener(this)
@@ -168,15 +159,25 @@ private constructor(
         }
     }
 
-    override fun onUpdate(location: Location.Opened) {
-        if (musicSettings.shouldBeObserving) {
-            musicRepository.requestIndex(true)
-        }
+    private fun startTracking() {
+        stopTracking()
+        val fs =
+            when (musicSettings.locationMode) {
+                LocationMode.MEDIA_STORE ->
+                    MediaStore.from(workerContext, musicSettings.mediaStoreQuery)
+                LocationMode.SAF -> SAF.from(workerContext, musicSettings.safQuery)
+            }
+        trackingJob = indexScope.launch { fs.track().collect { requestIndex(true) } }
+    }
+
+    private fun stopTracking() {
+        trackingJob?.cancel()
+        trackingJob = null
     }
 
     override fun onMusicLocationsChanged() {
         super.onMusicLocationsChanged()
-        updateTracker.track(musicSettings.musicLocations)
+        startTracking()
         musicRepository.requestIndex(true)
     }
 

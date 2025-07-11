@@ -19,7 +19,6 @@
 package org.oxycblt.musikr
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.buffer
@@ -45,36 +44,32 @@ import org.oxycblt.musikr.pipeline.ExtractStep
  */
 interface Musikr {
     /**
-     * Start loading music from the given [locations] and the configuration provided earlier.
+     * Start loading music using the given config and the configuration provided earlier.
      *
-     * @param query The [Query] to load music from.
      * @param onProgress Optional callback to receive progress on the current status of the music
      *   pipeline. Warning: These events will be rapid-fire.
      * @return A handle to the newly created library alongside further cleanup.
      */
-    suspend fun run(
-        query: Query,
-        onProgress: suspend (IndexingProgress) -> Unit = {}
-    ): LibraryResult
+    suspend fun run(onProgress: suspend (IndexingProgress) -> Unit = {}): LibraryResult
 
     companion object {
         /**
          * Create a new instance from the given configuration.
          *
          * @param context The context to use for loading resources.
-         * @param storage Side-effect laden storage for use within the music loader **and** when
+         * @param config Side-effect laden storage for use within the music loader **and** when
          *   mutating [MutableLibrary]. You should take responsibility for managing their long-term
          *   state.
          * @param interpretation The configuration to use for interpreting certain vague tags. This
          *   should be configured by the user, if possible.
          */
-        fun new(context: Context, storage: Storage, interpretation: Interpretation): Musikr =
+        fun new(context: Context, config: Config): Musikr =
             MusikrImpl(
                 context,
-                storage,
-                ExploreStep.from(context, storage, interpretation),
-                ExtractStep.from(context, storage),
-                EvaluateStep.new(storage, interpretation))
+                config,
+                ExploreStep.from(context, config),
+                ExtractStep.from(context, config),
+                EvaluateStep.new(config, config.interpretation))
     }
 }
 
@@ -112,41 +107,34 @@ sealed interface IndexingProgress {
 
 private class MusikrImpl(
     private val context: Context,
-    private val storage: Storage,
+    private val config: Config,
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
 ) : Musikr {
-    override suspend fun run(query: Query, onProgress: suspend (IndexingProgress) -> Unit) =
-        coroutineScope {
-            val start = System.currentTimeMillis()
-            var exploredCount = 0
-            var extractedCount = 0
-            val explored =
-                exploreStep
-                    .explore(query)
-                    .buffer(Channel.UNLIMITED)
-                    .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
-                    .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
-            val extracted =
-                extractStep
-                    .extract(explored)
-                    .buffer(Channel.UNLIMITED)
-                    .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
-                    .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-            val library = evaluateStep.evaluate(extracted)
-            Log.d(
-                "Musikr",
-                "Loaded ${library.songs.size} songs in ${System.currentTimeMillis() - start}ms")
-            LibraryResultImpl(storage, library)
-        }
+    override suspend fun run(onProgress: suspend (IndexingProgress) -> Unit) = coroutineScope {
+        var exploredCount = 0
+        var extractedCount = 0
+        val explored =
+            exploreStep
+                .explore()
+                .buffer(Channel.UNLIMITED)
+                .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
+                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
+        val extracted =
+            extractStep
+                .extract(explored)
+                .buffer(Channel.UNLIMITED)
+                .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
+                .onCompletion { onProgress(IndexingProgress.Indeterminate) }
+        val library = evaluateStep.evaluate(extracted)
+        LibraryResultImpl(config, library)
+    }
 }
 
-private class LibraryResultImpl(
-    private val storage: Storage,
-    override val library: MutableLibrary
-) : LibraryResult {
+private class LibraryResultImpl(private val config: Config, override val library: MutableLibrary) :
+    LibraryResult {
     override suspend fun cleanup() {
-        storage.covers.cleanup(library.songs.mapNotNull { it.cover })
+        config.storage.covers.cleanup(library.songs.mapNotNull { it.cover })
     }
 }

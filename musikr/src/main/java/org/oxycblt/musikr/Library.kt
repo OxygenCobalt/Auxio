@@ -99,7 +99,7 @@ interface Library {
 /**
  * A mutable extension of [Library].
  *
- * Operations here will cause side-effects within the [Storage] used when this library was loaded.
+ * Operations here will cause side-effects within the [Config] used when this library was loaded.
  * However, it won't actually mutate the [Library] itself, rather return a cloned instance with the
  * changes applied. It is up to the client to update their reference to the library within their
  * state handling.
@@ -108,7 +108,7 @@ interface MutableLibrary : Library {
     /**
      * Create a new [Playlist] with the given name and songs.
      *
-     * This will commit the new playlist to the stored playlists in the [Storage] used to load the
+     * This will commit the new playlist to the stored playlists in the [Config] used to load the
      * library.
      *
      * @param name the name of the playlist

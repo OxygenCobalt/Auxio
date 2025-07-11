@@ -48,18 +48,19 @@ internal fun <T, R> Flow<T>.distributedMap(
     val posChannels = List(n) { Channel<T>(Channel.UNLIMITED) }
     val managerFlow =
         flow<Nothing> {
-            withIndex().collect {
-                val index = it.index % n
-                posChannels[index].send(it.value)
+                withIndex().collect {
+                    val index = it.index % n
+                    posChannels[index].send(it.value)
+                }
+                for (channel in posChannels) {
+                    channel.close()
+                }
             }
-            for (channel in posChannels) {
-                channel.close()
-            }
-        }
+            .buffer()
     return (posChannels.map { it.receiveAsFlow() } + managerFlow)
         .asFlow()
         .map { it.tryMap(block).flowOn(on).buffer(buffer) }
-        .flattenMerge()
+        .flattenMerge(concurrency = n + 1)
 }
 
 internal fun <T, R> Flow<T>.tryMap(transform: suspend (T) -> R): Flow<R> = flow {

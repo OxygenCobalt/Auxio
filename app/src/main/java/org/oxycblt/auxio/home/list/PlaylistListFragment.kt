@@ -149,7 +149,7 @@ class PlaylistListFragment :
         } else {
             binding.homeNoMusicAction.isVisible =
                 indexingState == null || (empty && indexingState is IndexingState.Completed)
-            binding.homeNoMusicAction.text = getString(R.string.lbl_music_sources)
+            binding.homeNoMusicAction.text = getString(R.string.set_locations)
             binding.homeNoMusicAction.setOnClickListener { homeModel.startChooseMusicLocations() }
         }
     }

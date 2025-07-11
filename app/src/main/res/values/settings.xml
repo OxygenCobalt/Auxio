@@ -22,8 +22,11 @@
     <string name="set_key_with_hidden" translatable="false">auxio_with_hidden</string>
     <string name="set_key_music_locations" translatable="false">auxio_music_locations2</string>
     <string name="set_key_excluded_locations" translatable="false">auxio_excluded_locations</string>
+    <string name="set_key_filter_mode" translatable="false">auxio_filter_mode</string>
+    <string name="set_key_filtered_locations" translatable="false">auxio_filtered_locations</string>
     <string name="set_key_separators" translatable="false">auxio_separators</string>
     <string name="set_key_auto_sort_names" translatable="false">auxio_auto_sort_names</string>
+    <string name="set_key_locations_mode" translatable="false">auxio_locations_mode</string>
 
     <string name="set_key_headset_autoplay" translatable="false">auxio_headset_autoplay</string>
     <string name="set_key_replay_gain" translatable="false">auxio_replay_gain</string>
@@ -57,6 +60,8 @@
     <string name="set_key_genre_songs_sort" translatable="false">auxio_genre_sort</string>
 
     <string name="set_key_library_revision" translatable="false">auxio_library_revision</string>
+
+    <string name="set_key_force_reload_workaround" translatable="false">auxio_force_reload</string>
 
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>

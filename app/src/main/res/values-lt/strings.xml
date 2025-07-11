@@ -124,7 +124,7 @@
     <string name="desc_skip_next">Praleisti į sekančią dainą</string>
     <string name="desc_skip_prev">Praleisti į paskutinę dainą</string>
     <string name="lbl_mixtape">Mikso juosta</string>
-    <string name="lbl_mixtapes">Misko juostos</string>
+    <string name="lbl_mixtapes">Mikso juostos</string>
     <string name="set_lib_tabs">Bibliotekos skirtukai</string>
     <string name="set_lib_tabs_desc">Keisk bibliotekos skirtukų matomumą ir tvarką.</string>
     <string name="set_replay_gain_mode_album">Pageidauti albumą</string>
@@ -315,13 +315,13 @@
     <string name="lng_empty_artists">Čia bus rodomi jūsų atlikėjai.</string>
     <string name="lng_empty_playlists">Čia bus rodomi jūsų grojaraščiai.</string>
     <string name="lng_empty_genres">Čia bus rodomi jūsų žanrai.</string>
-    <string name="lbl_music_sources">Pasirinkti aplankus</string>
     <string name="lbl_email">Siųsti el. laišką</string>
-    <string name="set_locations_new">Naujas aplankas</string>
     <string name="cdc_alac">„Apple“ nenuostolingas garso kodekas (ALAC)</string>
     <string name="cdc_unknown">Nežinomas</string>
     <string name="set_cover_mode_save_space">Išsaugoti vietos</string>
     <string name="set_cover_mode_as_is">Kaip yra</string>
     <string name="set_with_hidden">Įtraukti paslėptus failus</string>
     <string name="set_with_hidden_desc">Įtraukite garso failus, kurie paslėpti (pvz., .cache)</string>
+    <string name="set_excluded_locations">Neįtraukti aplankai</string>
+    <string name="set_excluded_locations_desc">Tvarkykite aplankus, kuriuos norite neįtraukti iš muzikos įkėlimo.</string>
 </resources>

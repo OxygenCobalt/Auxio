@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-import org.oxycblt.musikr.Storage
+import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.covers.Cover
@@ -40,9 +40,12 @@ internal interface ExtractStep {
     fun extract(nodes: Flow<Explored>): Flow<Extracted>
 
     companion object {
-        fun from(context: Context, storage: Storage): ExtractStep =
+        fun from(context: Context, config: Config): ExtractStep =
             ExtractStepImpl(
-                MetadataExtractor.from(context), TagParser.new(), storage.cache, storage.covers)
+                MetadataExtractor.from(context),
+                TagParser.new(),
+                config.storage.cache,
+                config.storage.covers)
     }
 }
 
@@ -53,6 +56,7 @@ private class ExtractStepImpl(
     private val covers: MutableCovers<out Cover>
 ) : ExtractStep {
     override fun extract(nodes: Flow<Explored>): Flow<Extracted> {
+        val addingMs = System.currentTimeMillis()
         val exclude = mutableListOf<CachedSong>()
         return nodes
             // Cover art is huge, so we have to kneecap the concurrency here to avoid excessive
@@ -85,7 +89,15 @@ private class ExtractStepImpl(
                                 it.metadata.properties,
                                 tags,
                                 cover,
-                                it.newSong.addedMs))
+                                // The thing about date added is that it's resolution can actually
+                                // be expensive in some modes (ex. saf backend), so we resolve this
+                                // by
+                                // moving date added extraction as an extraction operation rather
+                                // than doing the redundant work during exploration (well, kind of,
+                                // MediaStore's date added query is basically free, it's only saf
+                                // that has it's slow hacky workaround that we must accommodate
+                                // here.)
+                                it.newSong.file.addedMs.resolve() ?: addingMs))
                     }
                 }
             }

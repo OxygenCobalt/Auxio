@@ -145,4 +145,12 @@ object IntegerTable {
     const val COVER_MODE_SAVE_SPACE = 0xA125
     /** CoverMode.AsIs */
     const val COVER_MODE_AS_IS = 0xA126
+    /** LocationMode.SAF */
+    const val LOCATION_MODE_SAF = 0xA127
+    /** LocationMode.MediaStore */
+    const val LOCATION_MODE_MEDIA_STORE = 0xA128
+    /** LocationMode.FileSystem */
+    const val FILTER_MODE_INCLUDE = 0xA129
+    /** LocationMode.FileSystem */
+    const val FILTER_MODE_EXCLUDE = 0xA12A
 }

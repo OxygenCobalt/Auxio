@@ -19,7 +19,7 @@
 package org.oxycblt.musikr.pipeline
 
 import org.oxycblt.musikr.covers.Cover
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.playlist.PlaylistFile
 import org.oxycblt.musikr.tag.parse.ParsedTags
@@ -36,7 +36,7 @@ internal sealed interface Explored : PipelineItem {
     sealed interface Known : Explored, Complete
 }
 
-internal data class NewSong(val file: DeviceFile, val addedMs: Long) : Explored.New
+internal data class NewSong(val file: File) : Explored.New
 
 internal sealed interface Extracted : PipelineItem {
     sealed interface Valid : Complete, Extracted
@@ -49,7 +49,7 @@ internal data object InvalidSong : Extracted.Invalid
 internal data class RawPlaylist(val file: PlaylistFile) : Explored.Known, Extracted.Valid
 
 internal data class RawSong(
-    val file: DeviceFile,
+    val file: File,
     val properties: Properties,
     val tags: ParsedTags,
     val cover: Cover?,

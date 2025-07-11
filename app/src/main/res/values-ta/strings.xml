@@ -18,7 +18,7 @@
     <string name="set_action_mode_repeat">மீண்டும் பயன்முறை</string>
     <string name="set_separators">பல மதிப்பு பிரிப்பான்கள்</string>
     <string name="set_separators_plus">பிளச் (+)</string>
-    <string name="set_separators_and">ஆம்பர்சண்ட் (&amp;)</string>
+    <string name="set_separators_and">உம்மைக் குறி (&amp;)</string>
     <string name="set_hide_collaborators">ஒத்துழைப்பாளர்களை மறைக்கவும்</string>
     <string name="set_images">படங்கள்</string>
     <string name="set_audio">ஆடியோ</string>
@@ -51,7 +51,6 @@
     <string name="lbl_indexing">இசையை ஏற்றுகிறது</string>
     <string name="lbl_observing">கண்காணிப்பு இசை நூலகம்</string>
     <string name="lbl_retry">மீண்டும் முயற்சிக்கவும்</string>
-    <string name="lbl_music_sources">கோப்புறைகளைத் தேர்ந்தெடுங்கள்</string>
     <string name="lbl_songs">பாடல்கள்</string>
     <string name="lbl_song">பாடல்</string>
     <string name="lbl_all_songs">அனைத்து பாடல்களும்</string>
@@ -302,4 +301,18 @@
     </plurals>
     <string name="lbl_ep_live">நிகழ்நிலை ஈபி</string>
     <string name="fmt_db_neg">-%.1f டெசிபெல்</string>
+    <string name="set_cover_mode_as_is">மாறாமல்</string>
+    <string name="cnt_mp4">%s கொண்ட MPEG-4</string>
+    <string name="def_album">தெரியாத ஆல்பம்</string>
+    <string name="lng_empty_albums">உங்களுடைய ஆல்பங்கள் இங்கே காணப்படும்.</string>
+    <string name="lng_empty_playlists">உங்களுடைய இசைப் பட்டியல்கள் இங்கே காணப்படும்.</string>
+    <string name="set_excluded_locations">மறுக்கப்பட்ட கோப்புறைகள்</string>
+    <string name="set_excluded_locations_desc">இசை ஏற்றத்தில் இருந்து விலக்க வேண்டிய கோப்புறைகளை நிர்வகிக்கவும்</string>
+    <string name="cdc_unknown">தெரியாதவை</string>
+    <string name="set_with_hidden">மறைக்கப்பட்ட கோப்புகளை உட்படுத்து</string>
+    <string name="set_with_hidden_desc">மறைக்கப்பட்ட ஒலி கோப்புகளை உட்படுத்தவும் (உதா. .cache)</string>
+    <string name="set_cover_mode_save_space">இடத்தை சேமிக்கவும்</string>
+    <string name="lng_empty_songs">உங்களுடைய பாடல்கள் இங்கே காணப்படும்.</string>
+    <string name="lng_empty_genres">உங்களுடைய இசை வகைகள் இங்கே காணப்படும்.</string>
+    <string name="lng_empty_artists">உங்களுடைய கலைஞர்கள் இங்கே காணப்படும்.</string>
 </resources>

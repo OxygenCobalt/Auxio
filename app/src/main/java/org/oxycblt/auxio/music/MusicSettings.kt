@@ -24,9 +24,14 @@ import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.UUID
 import javax.inject.Inject
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.locations.LocationMode
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.fs.Location
+import org.oxycblt.musikr.fs.mediastore.MediaStore
+import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
 
 /**
@@ -37,28 +42,37 @@ import timber.log.Timber as L
 interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The current library revision. */
     var revision: UUID?
-    /** The locations of music to load. */
-    var musicLocations: List<Location.Opened>
-    /** The locations to exclude from music loading. */
-    var excludedLocations: List<Location.Unopened>
-    /** Whether to exclude non-music audio files from the music library. */
-    val excludeNonMusic: Boolean
-    /** Whether to ignore hidden files and directories during music loading. */
-    val withHidden: Boolean
+
+    /** The mode for loading music locations (SAF or System database). */
+    var locationMode: LocationMode
+
+    /** The currently configured SAF query (if any) * */
+    var safQuery: SAF.Query
+
+    /** The currently configured MediaStore query (if any) * */
+    var mediaStoreQuery: MediaStore.Query
+
     /** Whether to be actively watching for changes in the music library. */
     val shouldBeObserving: Boolean
+
     /** A [String] of characters representing the desired characters to denote multi-value tags. */
     var separators: String
+
     /** Whether to enable more advanced sorting by articles and numbers. */
     val intelligentSorting: Boolean
+
     /** Whether to use the file-system cache for improved loading times. */
     val useFileTreeCache: Boolean
+
+    fun forceLocationUpdate()
 
     interface Listener {
         /** Called when the current music locations changed. */
         fun onMusicLocationsChanged() {}
+
         /** Called when a setting controlling how music is loaded has changed. */
         fun onIndexingSettingChanged() {}
+
         /** Called when the [shouldBeObserving] configuration has changed. */
         fun onObservingChanged() {}
     }
@@ -78,45 +92,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                 apply()
             }
         }
-
-    override var musicLocations: List<Location.Opened>
-        get() {
-            val locations =
-                sharedPreferences.getString(getString(R.string.set_key_music_locations), null)
-                    ?: return emptyList()
-            return locations.toOpenedLocations()
-        }
-        set(value) {
-            sharedPreferences.edit {
-                putString(getString(R.string.set_key_music_locations), value.stringify())
-                commit()
-                // Sometimes changing this setting just won't actually trigger the listener.
-                // Only this one. No idea why.
-                listener?.onMusicLocationsChanged()
-            }
-        }
-
-    override var excludedLocations: List<Location.Unopened>
-        get() {
-            val locations =
-                sharedPreferences.getString(getString(R.string.set_key_excluded_locations), null)
-                    ?: return emptyList()
-            return locations.toUnopenedLocations()
-        }
-        set(value) {
-            sharedPreferences.edit {
-                putString(
-                    getString(R.string.set_key_excluded_locations), value.stringifyLocations())
-                commit()
-                listener?.onMusicLocationsChanged()
-            }
-        }
-
-    override val excludeNonMusic: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
-
-    override val withHidden: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
 
     override val shouldBeObserving: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_observing), false)
@@ -138,20 +113,109 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
     override val useFileTreeCache: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_fs_cache), false)
 
+    override var locationMode: LocationMode
+        get() {
+            val mode =
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_locations_mode), IntegerTable.LOCATION_MODE_SAF)
+            return LocationMode.fromInt(mode) ?: LocationMode.SAF
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_locations_mode), value.intCode)
+                apply()
+            }
+        }
+
+    override var safQuery: SAF.Query
+        get() {
+            val locations =
+                unlikelyToBeNull(
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_music_locations), ""))
+                    .toOpenedLocations()
+            val excludedLocations =
+                unlikelyToBeNull(
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_excluded_locations), ""))
+                    .toUnopenedLocations()
+            val withHidden =
+                sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
+            return SAF.Query(
+                source = locations, exclude = excludedLocations, withHidden = withHidden)
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_music_locations), value.source.stringify())
+                putString(getString(R.string.set_key_excluded_locations), value.exclude.stringify())
+                putBoolean(getString(R.string.set_key_with_hidden), value.withHidden)
+                apply()
+            }
+        }
+
+    override var mediaStoreQuery: MediaStore.Query
+        get() {
+            val filterMode =
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_filter_mode), IntegerTable.FILTER_MODE_EXCLUDE)
+            val filteredLocations =
+                unlikelyToBeNull(
+                        sharedPreferences.getString(
+                            getString(R.string.set_key_filtered_locations), ""))
+                    .toUnopenedLocations()
+            val excludeNonMusic =
+                sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
+            return MediaStore.Query(
+                mode =
+                    when (filterMode) {
+                        IntegerTable.FILTER_MODE_INCLUDE -> MediaStore.FilterMode.INCLUDE
+                        IntegerTable.FILTER_MODE_EXCLUDE -> MediaStore.FilterMode.EXCLUDE
+                        else -> MediaStore.FilterMode.EXCLUDE
+                    },
+                filtered = filteredLocations,
+                excludeNonMusic = excludeNonMusic)
+        }
+        set(value) {
+            sharedPreferences.edit {
+                val filterMode =
+                    when (value.mode) {
+                        MediaStore.FilterMode.INCLUDE -> IntegerTable.FILTER_MODE_INCLUDE
+                        MediaStore.FilterMode.EXCLUDE -> IntegerTable.FILTER_MODE_EXCLUDE
+                    }
+                putInt(getString(R.string.set_key_filter_mode), filterMode)
+                putString(
+                    getString(R.string.set_key_filtered_locations), value.filtered.stringify())
+                putBoolean(getString(R.string.set_key_exclude_non_music), value.excludeNonMusic)
+                apply()
+            }
+        }
+
+    override fun forceLocationUpdate() {
+        // TODO: Temporary!!! This is really dumb, just need to ship a workaround for this rn
+        val cur = sharedPreferences.getInt(getString(R.string.set_key_locations_mode), 0)
+        sharedPreferences.edit {
+            putInt(getString(R.string.set_key_force_reload_workaround), cur + 1)
+            apply()
+        }
+    }
+
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
         //  (just need to manipulate data)
         when (key) {
+            getString(R.string.set_key_locations_mode),
             getString(R.string.set_key_music_locations),
-            getString(R.string.set_key_excluded_locations) -> {
+            getString(R.string.set_key_force_reload_workaround) -> {
                 L.d("Dispatching music locations change")
                 listener.onMusicLocationsChanged()
             }
-            getString(R.string.set_key_separators),
-            getString(R.string.set_key_auto_sort_names),
+            getString(R.string.set_key_excluded_locations),
             getString(R.string.set_key_with_hidden),
+            getString(R.string.set_key_filter_mode),
+            getString(R.string.set_key_filtered_locations),
             getString(R.string.set_key_exclude_non_music),
-            getString(R.string.set_key_fs_cache) -> {
+            getString(R.string.set_key_separators),
+            getString(R.string.set_key_auto_sort_names), -> {
                 L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()
             }
@@ -162,15 +226,12 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         }
     }
 
-    private fun List<Location.Opened>.stringify(): String =
+    private fun List<Location>.stringify(): String =
         joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
 
     private fun String.toOpenedLocations(): List<Location.Opened> =
         splitEscaped { it == ';' }
             .mapNotNull { Location.Unopened.from(context, it.toUri())?.open(context) }
-
-    private fun List<Location>.stringifyLocations(): String =
-        joinToString(separator = ";") { it.uri.toString().replace(";", "\\;") }
 
     private fun String.toUnopenedLocations(): List<Location.Unopened> =
         splitEscaped { it == ';' }.mapNotNull { Location.Unopened.from(context, it.toUri()) }

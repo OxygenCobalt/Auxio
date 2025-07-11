@@ -22,7 +22,7 @@ import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.Covers
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Metadata
 
 /**
@@ -72,7 +72,7 @@ class MutableChainedCovers<R : Cover, T : R>(vararg many: MutableCovers<out T>) 
 
     override suspend fun obtain(id: String): CoverResult<R> = inner.obtain(id)
 
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<R> {
+    override suspend fun create(file: File, metadata: Metadata): CoverResult<R> {
         for (cover in _many) {
             val result = cover.create(file, metadata)
             if (result is CoverResult.Hit) {

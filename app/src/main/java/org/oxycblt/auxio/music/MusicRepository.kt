@@ -29,9 +29,9 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.image.covers.SettingCovers
 import org.oxycblt.auxio.music.MusicRepository.IndexingWorker
-import org.oxycblt.auxio.music.shim.NoOpFileTreeCache
-import org.oxycblt.auxio.music.shim.WriteOnlyFileTreeCache
+import org.oxycblt.auxio.music.locations.LocationMode
 import org.oxycblt.auxio.music.shim.WriteOnlyMutableCache
+import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.Library
@@ -39,11 +39,11 @@ import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Musikr
 import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Playlist
-import org.oxycblt.musikr.Query
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.MutableCache
-import org.oxycblt.musikr.fs.device.FileTreeCache
+import org.oxycblt.musikr.fs.mediastore.MediaStore
+import org.oxycblt.musikr.fs.saf.SAF
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
@@ -388,25 +388,20 @@ constructor(
             } else {
                 Naming.simple()
             }
-        val locations = musicSettings.musicLocations
-        val excludedLocations = musicSettings.excludedLocations
-        val withHidden = musicSettings.withHidden
 
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
         val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
         val covers = settingCovers.mutate(context, newRevision)
-        val fileTreeCache =
-            if (musicSettings.useFileTreeCache) {
-                if (withCache) FileTreeCache.from(context)
-                else WriteOnlyFileTreeCache(FileTreeCache.from(context))
-            } else {
-                NoOpFileTreeCache()
+        val fs =
+            when (musicSettings.locationMode) {
+                LocationMode.SAF -> SAF.from(context, musicSettings.safQuery)
+                LocationMode.MEDIA_STORE -> MediaStore.from(context, musicSettings.mediaStoreQuery)
             }
-        val query = Query(source = locations, exclude = excludedLocations)
-        val storage = Storage(cache, covers, storedPlaylists, fileTreeCache)
-        val interpretation = Interpretation(nameFactory, separators, withHidden)
-        val result = Musikr.new(context, storage, interpretation).run(query, ::emitIndexingProgress)
+        val storage = Storage(cache, covers, storedPlaylists)
+        val interpretation = Interpretation(nameFactory, separators)
+        val config = Config(fs, storage, interpretation)
+        val result = Musikr.new(context, config).run(::emitIndexingProgress)
         // Music loading completed, update the revision right now so we re-use this work
         // later.
         musicSettings.revision = newRevision

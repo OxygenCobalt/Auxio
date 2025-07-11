@@ -23,7 +23,7 @@ import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.covers.MemoryCover
 import org.oxycblt.musikr.covers.MutableCovers
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Metadata
 
 /**
@@ -44,7 +44,7 @@ import org.oxycblt.musikr.metadata.Metadata
 class EmbeddedCovers(private val coverIdentifier: CoverIdentifier) : MutableCovers<MemoryCover> {
     override suspend fun obtain(id: String): CoverResult<MemoryCover> = CoverResult.Miss()
 
-    override suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<MemoryCover> {
+    override suspend fun create(file: File, metadata: Metadata): CoverResult<MemoryCover> {
         val data = metadata.cover ?: return CoverResult.Miss()
         val id = coverIdentifier.identify(data)
         return CoverResult.Hit(EmbeddedCover(id, data))

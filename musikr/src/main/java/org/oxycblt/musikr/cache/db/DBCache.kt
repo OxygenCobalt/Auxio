@@ -21,11 +21,12 @@ package org.oxycblt.musikr.cache.db
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
@@ -35,20 +36,15 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
  * Create an instance with [from].
  */
 class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
-    @Volatile private var mapping: MutableMap<Uri, CachedSongData>? = null
-    private var mappingLock = Mutex()
+    private var mapping: Map<Uri, CachedSongData>? = null
+    private val mappingLock = Mutex()
 
-    override suspend fun read(file: DeviceFile): CacheResult {
-        mappingLock.lock()
-        val mapping =
-            this.mapping
-                ?: readDao
-                    .selectAllSongs()
-                    .associateBy { it.uri }
-                    .toMutableMap()
-                    .also { mapping = it }
-        mappingLock.unlock()
-        val dbSong = mapping[file.uri] ?: return CacheResult.Miss(file)
+    override suspend fun read(file: File): CacheResult {
+        val currentMapping =
+            mappingLock.withLock {
+                mapping ?: readDao.selectAllSongs().associateBy { it.uri }.also { mapping = it }
+            }
+        val dbSong = currentMapping[file.uri] ?: return CacheResult.Miss(file)
         if (dbSong.modifiedMs != file.modifiedMs) {
             return CacheResult.Stale(file, dbSong.addedMs)
         }
@@ -108,7 +104,7 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
 class MutableDBCache
 private constructor(private val inner: DBCache, private val writeDao: CacheWriteDao) :
     MutableCache {
-    override suspend fun read(file: DeviceFile) = inner.read(file)
+    override suspend fun read(file: File) = inner.read(file)
 
     override suspend fun write(cachedSong: CachedSong) {
         val dbSong =

@@ -20,57 +20,140 @@ package org.oxycblt.auxio.music.locations
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemMusicLocationBinding
+import org.oxycblt.auxio.databinding.ItemNoLocationsBinding
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.inflater
 import org.oxycblt.musikr.fs.Location
 import timber.log.Timber as L
 
-abstract class LocationAdapter<T : Location>(private val listener: Listener<T>) :
-    RecyclerView.Adapter<LocationViewHolder<T>>() {
+class LocationAdapter<T : Location>(private val listener: Listener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val _locations = mutableListOf<T>()
     val locations: List<T> = _locations
 
-    override fun getItemCount() = locations.size
+    override fun getItemCount() = if (locations.isEmpty()) 1 else locations.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = createViewHolder(parent)
+    override fun getItemViewType(position: Int): Int {
+        return if (locations.isEmpty()) VIEW_TYPE_EMPTY else VIEW_TYPE_LOCATION
+    }
 
-    override fun onBindViewHolder(holder: LocationViewHolder<T>, position: Int) =
-        holder.bind(locations[position], listener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_EMPTY -> EmptyLocationViewHolder.from(parent)
+            VIEW_TYPE_LOCATION -> LocationViewHolder.from<T>(parent)
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is LocationViewHolder<*> -> {
+                @Suppress("UNCHECKED_CAST")
+                (holder as LocationViewHolder<T>).bind(locations[position], listener)
+            }
+            is EmptyLocationViewHolder -> holder.bind()
+        }
+    }
 
     fun add(location: T) {
         if (_locations.contains(location)) return
         L.d("Adding $location")
+        val wasEmpty = _locations.isEmpty()
         _locations.add(location)
-        notifyItemInserted(_locations.lastIndex)
+        if (wasEmpty) {
+            notifyItemChanged(0)
+        } else {
+            notifyItemInserted(_locations.lastIndex)
+        }
     }
 
     fun addAll(locations: List<T>) {
         L.d("Adding ${locations.size} locations")
+        val wasEmpty = _locations.isEmpty()
         val oldSize = _locations.size
         _locations.addAll(locations)
-        notifyItemRangeInserted(oldSize, locations.size)
+        if (wasEmpty && locations.isNotEmpty()) {
+            notifyItemChanged(0)
+        } else if (locations.isNotEmpty()) {
+            notifyItemRangeInserted(oldSize, locations.size)
+        }
     }
 
     fun remove(location: T) {
         L.d("Removing $location")
         val idx = _locations.indexOf(location)
         _locations.removeAt(idx)
-        notifyItemRemoved(idx)
+        if (_locations.isEmpty()) {
+            notifyItemChanged(0)
+        } else {
+            notifyItemRemoved(idx)
+        }
     }
 
-    protected abstract fun createViewHolder(parent: ViewGroup): LocationViewHolder<T>
+    fun clear() {
+        L.d("Clearing all locations")
+        val wasEmpty = _locations.isEmpty()
+        val oldSize = _locations.size
+        _locations.clear()
+        if (!wasEmpty) {
+            if (oldSize == 1) {
+                notifyItemChanged(0)
+            } else {
+                notifyDataSetChanged()
+            }
+        }
+    }
 
-    interface Listener<T : Location> {
-        fun onRemoveLocation(location: T)
+    interface Listener {
+        fun onRemoveLocation(location: Location)
+    }
+
+    companion object {
+        private const val VIEW_TYPE_EMPTY = 0
+        private const val VIEW_TYPE_LOCATION = 1
     }
 }
 
-abstract class LocationViewHolder<T : Location>(protected val binding: ItemMusicLocationBinding) :
+class LocationViewHolder<T : Location>(private val binding: ItemMusicLocationBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
 
-    fun bind(location: T, listener: LocationAdapter.Listener<T>) {
+    fun bind(location: T, listener: LocationAdapter.Listener) {
         binding.locationPath.text = location.path.resolve(binding.context)
         binding.locationDelete.setOnClickListener { listener.onRemoveLocation(location) }
+    }
+
+    companion object {
+        /**
+         * Create a new instance.
+         *
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
+        fun <T : Location> from(parent: ViewGroup) =
+            LocationViewHolder<T>(
+                ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
+    }
+}
+
+class EmptyLocationViewHolder(private val binding: ItemNoLocationsBinding) :
+    DialogRecyclerView.ViewHolder(binding.root) {
+
+    fun bind() {
+        binding.locationPath.text = binding.context.getString(R.string.lbl_no_folders)
+    }
+
+    companion object {
+        /**
+         * Create a new instance.
+         *
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
+        fun from(parent: ViewGroup) =
+            EmptyLocationViewHolder(
+                ItemNoLocationsBinding.inflate(parent.context.inflater, parent, false))
     }
 }

@@ -20,7 +20,7 @@ package org.oxycblt.musikr.covers
 
 import android.os.ParcelFileDescriptor
 import java.io.InputStream
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Metadata
 
 /**
@@ -54,11 +54,11 @@ interface MutableCovers<T : Cover> : Covers<T> {
      * This could result in side-effect-laden storage, or be a simple translation into a lazily
      * loaded [Cover] instance.
      *
-     * @param file The [DeviceFile] to of the file to create a cover for.
+     * @param file The [File] to of the file to create a cover for.
      * @param metadata The [Metadata] to use to create the cover.
      * @return a [CoverResult] indicating whether the cover was created or not
      */
-    suspend fun create(file: DeviceFile, metadata: Metadata): CoverResult<T>
+    suspend fun create(file: File, metadata: Metadata): CoverResult<T>
 
     /**
      * Cleanup the cover repository by removing any covers that are not in the [excluding]

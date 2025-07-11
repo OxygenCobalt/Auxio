@@ -66,7 +66,7 @@
     <string name="lbl_bitrate">Bit hızı</string>
     <string name="lbl_sample_rate">Örnek hızı</string>
     <string name="lng_widget">Müzik çalmayı görüntüle ve kontrol et</string>
-    <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
+    <string name="info_app_desc">Android için basit, akıllı bir müzik çalar.</string>
     <string name="lbl_indexer">Müzik yükleniyor</string>
     <string name="lng_indexing">Müzik kitaplığınız yükleniyor…</string>
     <string name="lbl_name">Ad</string>
@@ -275,7 +275,6 @@
     <string name="fmt_deletion_info">%s silinsin mi\? Geri alınamaz.</string>
     <string name="lbl_appears_on">Üzerinde görünür</string>
     <string name="def_album_count">Albüm yok</string>
-    <string name="lbl_music_sources">Klasör şeç</string>
     <string name="lbl_export_playlist">Oynatma listesini dışa aktar</string>
     <string name="lbl_demos">Denemeler</string>
     <string name="lbl_replaygain_album">ReplayGain albüm ayarlaması</string>
@@ -303,7 +302,6 @@
     <string name="lbl_import_playlist">Oynatma listesi aktar</string>
     <string name="lbl_empty_playlist">Boş oynatma listesi</string>
     <string name="lbl_path">Dosya yolu</string>
-    <string name="set_locations_new">Yeni klasör</string>
     <string name="lbl_export">Dışa aktar</string>
     <string name="lbl_import">İçe aktar</string>
     <string name="lbl_more">Daha fazla</string>
@@ -322,4 +320,6 @@
     <string name="set_with_hidden">Gizli dosyaları içer</string>
     <string name="set_with_hidden_desc">Gizli olan ses dosyalarını içer (örn. .cache)</string>
     <string name="set_cover_mode_as_is">Olduğu gibi</string>
+    <string name="set_excluded_locations_desc">Müzik yüklemesinde sayılmayacak klasörleri yönet</string>
+    <string name="set_excluded_locations">Sayılmayan klasörler</string>
 </resources>

@@ -53,9 +53,6 @@ internal abstract class CacheDatabase : RoomDatabase() {
 
 @Dao
 internal interface CacheReadDao {
-    @Query("SELECT * FROM CachedSongData WHERE uri = :uri")
-    suspend fun selectSong(uri: String): CachedSongData?
-
     @Query("SELECT * FROM CachedSongData") suspend fun selectAllSongs(): List<CachedSongData>
 }
 

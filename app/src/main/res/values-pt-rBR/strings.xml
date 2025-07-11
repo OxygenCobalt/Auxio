@@ -211,7 +211,7 @@
     <string name="set_separators_desc">Define caracteres que indiquem mais de um valor nos metadados</string>
     <string name="set_exclude_non_music_desc">Ignora arquivos de áudio que não sejam música, como podcasts</string>
     <string name="set_separators_warning">Aviso: Usar essa configuração pode resultar em alguns metadados serem interpretadas incorretamente como tendo múltiplos valores. Você pode resolver isso pré-definindo caracteres de separador indesejados com uma barra invertida (\\).</string>
-    <string name="set_exclude_non_music">Ignorar arquivos que não sejam músicas</string>
+    <string name="set_exclude_non_music">Ignorar os arquivos que não sejam músicas</string>
     <string name="set_cover_mode">Qualidade das capas de álbuns</string>
     <string name="set_cover_mode_off">Desativado</string>
     <string name="set_cover_mode_balanced">Equilibrado</string>
@@ -312,7 +312,6 @@
     <string name="lbl_more">Mais</string>
     <string name="lbl_email">Envie um e-mail</string>
     <string name="lbl_github">Crie uma issue no GitHub</string>
-    <string name="lbl_music_sources">Escolher pastas</string>
     <string name="cnt_mp4">MPEG-4 contendo %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
     <string name="cdc_unknown">Desconhecido</string>
@@ -324,10 +323,13 @@
     <string name="lng_empty_playlists">As suas playlists aparecerão aqui.</string>
     <string name="lng_empty_genres">Os seus gêneros aparecerão aqui.</string>
     <string name="set_cover_mode_save_space">Economizar espaço</string>
-    <string name="set_locations_new">Nova pasta</string>
     <string name="set_cover_mode_as_is">Qualidade original</string>
     <string name="set_with_hidden_desc">Ignorar arquivos e pastas que estão ocultos (por exemplo, .cache)</string>
     <string name="set_with_hidden">Ignorar arquivos ocultos</string>
     <string name="set_excluded_locations_desc">Gerencie as pastas a serem ignoradas no carregamento de músicas</string>
     <string name="set_excluded_locations">Pastas ignoradas</string>
+    <string name="set_fs_cache">Usar o cache do sistema de arquivos</string>
+    <string name="set_fs_cache_desc">Melhora o tempo de carregamento, mas pode impedir que novas músicas sejam adicionadas</string>
+    <string name="desc_add_folder">Adicionar pasta</string>
+    <string name="lbl_no_folders">Sem pastas</string>
 </resources>

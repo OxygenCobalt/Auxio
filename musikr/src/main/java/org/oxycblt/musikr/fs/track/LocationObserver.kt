@@ -16,23 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.musikr.track
+package org.oxycblt.musikr.fs.track
 
 import android.content.Context
 import android.database.ContentObserver
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import org.oxycblt.musikr.fs.Location
 
 internal class LocationObserver(
     private val context: Context,
-    private val location: Location.Opened,
-    private val listener: UpdateTracker.Callback
+    private val uri: Uri,
+    private val onUpdate: () -> Unit
 ) : ContentObserver(Handler(Looper.getMainLooper())), Runnable {
     private val handler = Handler(Looper.getMainLooper())
 
     init {
-        context.applicationContext.contentResolver.registerContentObserver(location.uri, true, this)
+        context.applicationContext.contentResolver.registerContentObserver(uri, true, this)
     }
 
     fun release() {
@@ -47,7 +47,7 @@ internal class LocationObserver(
     }
 
     override fun run() {
-        listener.onUpdate(location)
+        onUpdate()
     }
 
     private companion object {

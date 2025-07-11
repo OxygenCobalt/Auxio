@@ -18,7 +18,7 @@
  
 package org.oxycblt.musikr.cache
 
-import org.oxycblt.musikr.fs.device.DeviceFile
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
@@ -37,10 +37,10 @@ interface Cache {
      * Read a [CachedSong] corresponding to the given [file] from the cache. This can result in
      * several outcomes represented by [CacheResult].
      *
-     * @param file the [DeviceFile] to read from the cache
+     * @param file the [File] to read from the cache
      * @return a [CacheResult] representing the result of the operation.
      */
-    suspend fun read(file: DeviceFile): CacheResult
+    suspend fun read(file: File): CacheResult
 }
 
 /**
@@ -56,7 +56,7 @@ interface MutableCache : Cache {
      * Write a [CachedSong] to the cache.
      *
      * This should commit the metadata to the repository in such a way that it can be retrieved
-     * later by [read] using only the [DeviceFile].
+     * later by [read] using only the [File].
      *
      * @param cachedSong the [CachedSong] to write to the cache
      */
@@ -78,7 +78,7 @@ interface MutableCache : Cache {
 /** A cached song entry containing the data needed by the rest of the loader. */
 data class CachedSong(
     /** The file this song corresponds to. */
-    val file: DeviceFile,
+    val file: File,
     /** The properties of the song. */
     val properties: Properties,
     /** The parsed tags of the song. */
@@ -107,15 +107,15 @@ sealed interface CacheResult {
     /**
      * A cache entry was not found.
      *
-     * @param file the [DeviceFile] that could not be found in the cache.
+     * @param file the [File] that could not be found in the cache.
      */
-    data class Miss(val file: DeviceFile) : CacheResult
+    data class Miss(val file: File) : CacheResult
 
     /**
      * A cache entry was found, but it's out of date compared to the [file] given.
      *
-     * @param file the [DeviceFile] that was found in the cache.
+     * @param file the [File] that was found in the cache.
      * @param addedMs the time the song was added to the cache.
      */
-    data class Stale(val file: DeviceFile, val addedMs: Long) : CacheResult
+    data class Stale(val file: File, val addedMs: Long) : CacheResult
 }

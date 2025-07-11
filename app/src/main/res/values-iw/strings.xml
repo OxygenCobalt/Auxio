@@ -289,7 +289,6 @@
     <string name="lng_playlist_exported">רשימת השמעה יוצאה</string>
     <string name="lbl_export_playlist">יצא רשימת השמעה</string>
     <string name="err_export_failed">אין יכולת לייצא רשימת השמעה מהקובץ הנ”ל</string>
-    <string name="lbl_music_sources">בחר תיקיות</string>
     <string name="lbl_start_playback">התחל השמעה</string>
     <string name="set_remember_pause">זכור השהיה</string>
     <string name="set_replay_gain_mode_off">כבוי</string>
@@ -301,7 +300,6 @@
     <string name="lbl_replaygain_track">תיקון רצועות ReplayGain</string>
     <string name="lbl_replaygain_album">תיקון אלבומים ReplayGain</string>
     <string name="lbl_author">יוצר</string>
-    <string name="set_locations_new">תיקיה חדשה</string>
     <string name="lng_supporters_promo">תרמו לפרויקט כדי להוסיף את שמכם כאן!</string>
     <string name="lng_tasker_start">מפעיל Auxio במצב שנשמר קודם לכן. אם אין מצב שמור זמין, כל השירים יתערבבו. השמעה תתחיל מידית.\n\nאזהרה: היזהר בשליטה בשירות זה, אם תסגרו אותו ואחר כך תנסו להשתמש בו שוב, ייתכן שתקרסו את האפליקציה.</string>
     <string name="set_remember_pause_desc">הישאר בניגון/בהשהיה בעת דילוג או עריכה של התור</string>

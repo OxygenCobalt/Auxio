@@ -301,5 +301,4 @@
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_lib_album_count">Innlasta album: %d</string>
     <string name="fmt_lib_total_duration">Total lengd: %s</string>
-    <string name="lbl_music_sources">Vel mapper</string>
 </resources>

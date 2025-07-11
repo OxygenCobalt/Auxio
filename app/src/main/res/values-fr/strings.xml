@@ -311,7 +311,6 @@
     <string name="lbl_feedback">Avis</string>
     <string name="lbl_github">Faire un ticket sur GitHub</string>
     <string name="lbl_email">Envoyer un courriel</string>
-    <string name="lbl_music_sources">Choisir des dossiers</string>
     <string name="cdc_unknown">Inconnu</string>
     <string name="cnt_mp4">MPEG-4 contenant %s</string>
     <string name="lng_empty_songs">Vos chansons s\'afficheront ici.</string>
@@ -321,9 +320,10 @@
     <string name="lng_empty_albums">Vos albums vont s\'afficher ici.</string>
     <string name="lng_empty_artists">Vos artistes vont s\'afficher ici.</string>
     <string name="set_with_hidden">Inclure les fichiers cachés</string>
-    <string name="set_locations_new">Nouveau dossier</string>
     <string name="set_cover_mode_save_space">Économiser de l\'espace</string>
     <string name="def_album">Album inconnu</string>
     <string name="cdc_alac">Codec audio sans perte Apple (ALAC)</string>
     <string name="set_cover_mode_as_is">Telle quelle</string>
+    <string name="set_excluded_locations">Dossiers exclus</string>
+    <string name="set_excluded_locations_desc">Gérer les dossiers pour exclure du chargement de musique</string>
 </resources>
