@@ -11,7 +11,7 @@ buildscript {
 
         min_sdk = 24
         target_sdk = 35
-        ndk_version = "27.2.12479018"
+        ndk_version = "28.2.13676358"
 
     }
 
