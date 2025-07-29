@@ -156,7 +156,11 @@ private constructor(
     @RequiresApi(Build.VERSION_CODES.Q)
     private class JoinAddedMs(private val context: Context, private val uri: Uri) : AddedMs {
         override suspend fun resolve(): Long? {
-            val mediaUri = AOSPMediaStore.getMediaUri(context, uri) ?: return null
+            val mediaUri = try {
+                AOSPMediaStore.getMediaUri(context, uri)
+            } catch (e: Exception) {
+                null
+            } ?: return null
             return context.contentResolverSafe.useQuery(
                 mediaUri, arrayOf(AOSPMediaStore.Files.FileColumns.DATE_ADDED)) {
                     if (it.moveToFirst()) {
