@@ -46,7 +46,6 @@ import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.tag.Name
-import timber.log.Timber as L
 
 class MediaSessionInterface
 @Inject
@@ -81,7 +80,6 @@ constructor(
         val parentUid =
             extras?.getString(MusicBrowser.KEY_CHILD_OF)?.let { MediaSessionUID.fromString(it) }
         val command = expandUidIntoCommand(uid, parentUid)
-        L.d(extras?.getString(MusicBrowser.KEY_CHILD_OF))
         playbackManager.play(requireNotNull(command) { "Invalid playback configuration" })
     }
 
