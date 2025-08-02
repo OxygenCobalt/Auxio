@@ -238,7 +238,7 @@
     <string name="set_pre_amp_without">Kohandamine ilma siltides leiduvate väärtusteta</string>
     <string name="set_pre_amp_warning">Hoiatus: kui muudad eelvõimenduse väärtuse suureks positiivseks väärtuseks, siis mõnede lugude puhul võib see tähendada liiga kõrgeid toone.</string>
     <string name="set_library">Muusikakogu</string>
-    <string name="set_locations">Muusika kaustad</string>
+    <string name="set_locations">Muusika allikad</string>
     <string name="set_locations_desc">Halda kaustu, kust otsime ja laadime muusikat</string>
     <string name="set_reindex">Värskenda muusika andmed</string>
     <string name="set_reindex_desc">Laadi muusikakogu uuesti ning kui võimalik, siis kasuta puhverdatud silte</string>
@@ -320,4 +320,25 @@
     <string name="set_excluded_locations_desc">Halda kaustu, kust muusikat ei otsita</string>
     <string name="set_fs_cache">Kasuta failisüsteemipõhist puhverdamist</string>
     <string name="set_fs_cache_desc">Kiirendab meedia laadimise aega, kuid võib takistada uue muusika lisamist</string>
+    <string name="lng_play_next">Järgmisena esitatav pala</string>
+    <string name="lng_file_picker">Laadi muusikat sinu valitud kaustadest. See on aeglasem, kuid töökindlam. Eeldab, et nutiseadmes leidub standardne failihaldur.</string>
+    <string name="lng_system_database">Laadi muusikat, mida Android automaatselt tuvastab. Kiirem, kuid vähem töökindel. Sel juhul failisüsteemist sõltuvate funktsionaalsuste (nagu cover.jpg) tugi puudub.</string>
+    <string name="lng_grant_storage_anyway">Mõnedes nutiseadmetes võib välise andmeruumi kasutamise lubamine parandada ligipääsuga seotud vigu.</string>
+    <string name="lng_grant_storage_required">Selle valiku kasutamiseks luba välise andmeruumi kasutamine.</string>
+    <string name="lng_include_folders">Väljaspool valitud kaustu asuv muusika jääb kasutamata.</string>
+    <string name="lng_exclude_folders">Valitud kaustades asuv muusika jääb kasutamata.</string>
+    <string name="set_load_from">Laadi siit</string>
+    <string name="set_file_picker">Failivalija</string>
+    <string name="set_system_database">Süsteem</string>
+    <string name="set_grant_storage_anyway">Ligipääs andmeruumile on soovitatav</string>
+    <string name="set_grant_storage">Ligipääs andmeruumile on nõutav</string>
+    <string name="set_folders_to_load">Laaditavad kaustad</string>
+    <string name="set_folders_to_ignore">Eiratavad kaustad</string>
+    <string name="set_filtered_folders">Filtreeritud kaustad</string>
+    <string name="set_filter_mode">Filtreerimisrežiim</string>
+    <string name="set_include">Kaasamine</string>
+    <string name="set_exclude">Välistamine</string>
+    <string name="set_extra_settings">Lisaseadistused</string>
+    <string name="lbl_no_folders">Kaustu pole määratud</string>
+    <string name="desc_add_folder">Lisa kaust</string>
 </resources>
