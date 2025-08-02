@@ -77,7 +77,7 @@
     <string name="set_notif_action">Usar player de notificação alternativo</string>
     <string name="set_pre_amp_desc">A pré-amplificação é aplicada em cima da normalização de volume</string>
     <string name="set_pre_amp_warning">Aviso: Alterar a pré-amplificação para um valor positivo muito alto pode resultar em picos de volume em algumas faixas.</string>
-    <string name="set_locations">Pastas de música</string>
+    <string name="set_locations">Fontes de música</string>
     <string name="set_locations_desc">Gerencie de onde as músicas devem ser carregadas</string>
     <string name="err_index_failed">Falha ao carregar músicas</string>
     <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
@@ -332,4 +332,21 @@
     <string name="set_fs_cache_desc">Melhora o tempo de carregamento, mas pode impedir que novas músicas sejam adicionadas</string>
     <string name="desc_add_folder">Adicionar pasta</string>
     <string name="lbl_no_folders">Sem pastas</string>
+    <string name="lng_file_picker">Carrega músicas a partir das pastas que você selecionou. Mais lento, porém mais confiável. Requer o aplicativo do gerenciador de arquivos original instalado.</string>
+    <string name="lng_system_database">Carrega as músicas que o Android detecta. Mais rápido, porém menos confiável. Não suporta a recursos que dependem do sistema de arquivos, como cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Conceder as permissões de armazenamento externo pode corrigir problemas em alguns dispositivos.</string>
+    <string name="lng_grant_storage_required">Conceda as permissões de armazenamento externo para ativar esta opção.</string>
+    <string name="lng_include_folders">As músicas fora das pastas selecionadas serão ignoradas.</string>
+    <string name="lng_exclude_folders">As músicas dentro das pastas selecionadas serão ignoradas.</string>
+    <string name="set_file_picker">Seletor de arquivos</string>
+    <string name="set_system_database">Sistema</string>
+    <string name="set_grant_storage_anyway">Acesso recomendado ao armazenamento</string>
+    <string name="set_grant_storage">Acesso obrigatório ao armazenamento</string>
+    <string name="set_folders_to_load">Pastas para carregar</string>
+    <string name="set_folders_to_ignore">Pastas para ignorar</string>
+    <string name="set_filtered_folders">Pastas filtradas</string>
+    <string name="set_filter_mode">Modo de filtro</string>
+    <string name="set_include">Incluir</string>
+    <string name="set_exclude">Excluir</string>
+    <string name="set_extra_settings">Configurações adicionais</string>
 </resources>
