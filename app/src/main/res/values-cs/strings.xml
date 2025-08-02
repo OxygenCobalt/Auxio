@@ -337,4 +337,13 @@
     <string name="set_excluded_locations">Vyloučené složky</string>
     <string name="set_fs_cache">Použít mezipaměť v souborovém systému</string>
     <string name="set_fs_cache_desc">Zlepší dobu načítání, ale může zabránit přidání nové hudby</string>
+    <string name="set_exclude">Vyloučit</string>
+    <string name="set_include">Zahrnout</string>
+    <string name="desc_add_folder">Přidat Složku</string>
+    <string name="lbl_no_folders">Žádné Složky</string>
+    <string name="set_folders_to_load">Složky k Načtení</string>
+    <string name="set_folders_to_ignore">Složky k Ignorování</string>
+    <string name="set_filtered_folders">Filtrované Složky</string>
+    <string name="set_filter_mode">Režim Filtru</string>
+    <string name="set_extra_settings">Další nastavení</string>
 </resources>
