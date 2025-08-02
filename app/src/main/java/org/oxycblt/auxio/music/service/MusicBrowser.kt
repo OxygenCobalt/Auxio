@@ -220,7 +220,9 @@ private constructor(
                 is DetailSection.Discs ->
                     section.discs.flatMap { (disc, songs) ->
                         val discString = disc.resolve(context)
-                        songs.map { it.toMediaItem(context, header(discString), child(detail.parent)) }
+                        songs.map {
+                            it.toMediaItem(context, header(discString), child(detail.parent))
+                        }
                     }
                 else -> error("Unknown section type: $section")
             }
