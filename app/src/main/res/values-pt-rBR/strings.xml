@@ -349,4 +349,5 @@
     <string name="set_include">Incluir</string>
     <string name="set_exclude">Excluir</string>
     <string name="set_extra_settings">Configurações adicionais</string>
+    <string name="set_load_from">Carregar de</string>
 </resources>
