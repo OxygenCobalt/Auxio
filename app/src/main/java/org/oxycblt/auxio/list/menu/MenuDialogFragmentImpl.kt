@@ -74,7 +74,7 @@ class SongMenuDialogFragment : MenuDialogFragment<Menu.ForSong>() {
             R.id.action_shuffle -> playbackModel.shuffleExplicit(menu.song, menu.playWith)
             R.id.action_play_next -> {
                 playbackModel.playNext(menu.song)
-                requireContext().showToast(R.string.lng_queue_added)
+                requireContext().showToast(R.string.lng_play_next)
             }
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(menu.song)
@@ -125,7 +125,7 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Menu.ForAlbum>() {
             R.id.action_detail -> detailModel.showAlbum(menu.album)
             R.id.action_play_next -> {
                 playbackModel.playNext(menu.album)
-                requireContext().showToast(R.string.lng_queue_added)
+                requireContext().showToast(R.string.lng_play_next)
             }
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(menu.album)
@@ -198,7 +198,7 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Menu.ForArtist>() {
             R.id.action_detail -> detailModel.showArtist(menu.artist)
             R.id.action_play_next -> {
                 playbackModel.playNext(menu.artist)
-                requireContext().showToast(R.string.lng_queue_added)
+                requireContext().showToast(R.string.lng_play_next)
             }
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(menu.artist)
@@ -249,7 +249,7 @@ class GenreMenuDialogFragment : MenuDialogFragment<Menu.ForGenre>() {
             R.id.action_detail -> detailModel.showGenre(menu.genre)
             R.id.action_play_next -> {
                 playbackModel.playNext(menu.genre)
-                requireContext().showToast(R.string.lng_queue_added)
+                requireContext().showToast(R.string.lng_play_next)
             }
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(menu.genre)
@@ -315,7 +315,7 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
             R.id.action_detail -> detailModel.showPlaylist(menu.playlist)
             R.id.action_play_next -> {
                 playbackModel.playNext(menu.playlist)
-                requireContext().showToast(R.string.lng_queue_added)
+                requireContext().showToast(R.string.lng_play_next)
             }
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(menu.playlist)
@@ -366,7 +366,7 @@ class SelectionMenuDialogFragment : MenuDialogFragment<Menu.ForSelection>() {
             R.id.action_shuffle -> playbackModel.shuffle(menu.songs)
             R.id.action_play_next -> {
                 playbackModel.playNext(menu.songs)
-                requireContext().showToast(R.string.lng_queue_added)
+                requireContext().showToast(R.string.lng_play_next)
             }
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(menu.songs)

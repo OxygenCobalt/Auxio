@@ -63,7 +63,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
         when (item.itemId) {
             R.id.action_selection_play_next -> {
                 playbackModel.playNext(listModel.takeSelection())
-                requireContext().showToast(R.string.lng_queue_added)
+                requireContext().showToast(R.string.lng_play_next)
                 true
             }
             R.id.action_selection_playlist_add -> {
