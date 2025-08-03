@@ -357,4 +357,5 @@
     <string name="set_system_database">Systém</string>
     <string name="set_grant_storage_anyway">Doporučen přístup k úložišti</string>
     <string name="set_grant_storage">Vyžadován přístup k úložišti</string>
+    <string name="lng_play_next">Skladba bude přehrána jako další</string>
 </resources>
