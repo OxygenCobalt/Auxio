@@ -338,4 +338,5 @@
     <string name="set_extra_settings">Още настройки</string>
     <string name="lbl_no_folders">Няма папки</string>
     <string name="desc_add_folder">Добавяне на папка</string>
+    <string name="lng_play_next">Песента ще се изпълни след малко</string>
 </resources>
