@@ -34,7 +34,7 @@
     <string name="set_theme_night">Escuro</string>
     <string name="set_accent">Paleta de cor</string>
     <string name="set_audio">Áudio</string>
-    <string name="set_personalize">Comportamento</string>
+    <string name="set_personalize">Personalizar</string>
     <string name="set_keep_shuffle">Manter modo aleatório ativado</string>
     <!-- Error Namespace | Error Labels -->
     <!-- Description Namespace | Accessibility Strings -->
@@ -236,7 +236,7 @@
     <string name="set_images">Imagens</string>
     <string name="set_ui_desc">Mude o tema e as cores do aplicativo</string>
     <string name="set_playback">Reprodução</string>
-    <string name="set_personalize_desc">Customize os controles da interface e o comportamento</string>
+    <string name="set_personalize_desc">Personalize os controles da interface e o comportamento</string>
     <string name="set_music">Música</string>
     <string name="set_content_desc">Controle como as músicas e imagens são carregadas</string>
     <string name="set_replay_gain">Normalização de volume</string>
