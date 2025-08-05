@@ -333,4 +333,5 @@
     <string name="set_fs_cache_desc">Mejora los tiempos de carga, pero puede impedir que se agregue nueva música</string>
     <string name="set_fs_cache">Usar la caché del sistema de archivos</string>
     <string name="lng_play_next">Esta canción se reproducirá a continuación</string>
+    <string name="lng_file_picker">Cargar música desde las carpetas elegidas. Más lento pero fiable. Requiere el explorador de ficheros por defecto.</string>
 </resources>
