@@ -328,7 +328,7 @@
     <string name="lng_empty_genres">Здесь будут отображаться ваши жанры.</string>
     <string name="set_cover_mode_save_space">Экономия места</string>
     <string name="lbl_github">Сообщить о проблеме на GitHub</string>
-    <string name="set_with_hidden">Со скрытыми файлами</string>
+    <string name="set_with_hidden">Включать скрытые файлы</string>
     <string name="set_with_hidden_desc">Показывать скрытые аудио (например, те, что в .cache)</string>
     <string name="set_cover_mode_as_is">Как есть</string>
     <string name="lng_play_next">Следующая песня</string>
