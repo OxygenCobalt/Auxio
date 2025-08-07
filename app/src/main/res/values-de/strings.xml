@@ -328,4 +328,5 @@
     <string name="set_excluded_locations_desc">Ordner verwalten, aus denen keine Musik geladen wird</string>
     <string name="set_fs_cache">Dateisystem-Cache benutzen</string>
     <string name="set_fs_cache_desc">Verbessert Ladezeiten, kann aber verhindern, dass neue Musik hinzugefügt wird</string>
+    <string name="lng_file_picker">Musik aus den ausgewählten Ordern laden. Langsamer, aber zuverlässiger. Der Standard-Dateimanager muss installiert sein.</string>
 </resources>
