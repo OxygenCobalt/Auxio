@@ -1,25 +1,24 @@
-Auxio es un reproductor de música local con una interfaz de usuario y una experiencia de usuario rápidas y fiables sin las numerosas funciones inútiles presentes en otros reproductores de música. Creado a partir de bibliotecas de reproducción de medios modernas, Auxio tiene un soporte de biblioteca y una calidad de escucha superiores en comparación con otras aplicaciones que utilizan funciones obsoletas de Android. En resumen, <b>reproduce música</b>.
+Auxio es un reproductor de música local con una interfaz de usuario (IU) rápida y fiable, sin las numerosas funciones inútiles de otros reproductores. Creado con bibliotecas de reproducción multimedia modernas, Auxio ofrece una compatibilidad con bibliotecas y una calidad de escucha superiores a las de otras aplicaciones que utilizan funciones obsoletas de Android. En resumen, reproduce música.
 
 <b>Características</b>
 
-- Reproducción basada en ExoPlayer media 3
-- Interfaz de usuario ágil basada en las últimas directrices de Material Design
-- Experiencia de usuario que prioriza la facilidad de uso sobre los casos extremos
+- Reproducción basada en Media3 ExoPlayer
+- Interfaz de usuario ágil derivada de las últimas pautas de Material Design
+- Experiencia de usuario con opiniones firmes que prioriza la facilidad de uso sobre los casos extremos
 - Comportamiento personalizable
-- Soporte para números de disco, múltiples artistas, tipos de lanzamiento
-fechas precisas/originales, etiquetas de clasificación, etc.
-- Sistema avanzado de artistas que unifica artistas y artistas de álbumes
+- Soporte para números de disco, múltiples artistas, tipos de lanzamiento, fechas precisas/originales, etiquetas de clasificación y más
+- Sistema de artistas avanzado que unifica artistas y artistas de álbumes.
 - Gestión de carpetas compatible con tarjetas SD
-- Funcionalidad fiable de listas de reproducción
+- Funcionalidad de lista de reproducción confiable
 - Persistencia del estado de reproducción
-- Compatibilidad con Android auto
+- Compatibilidad con Android Auto
 - Reproducción automática sin pausas
-- Compatibilidad total con ReplayGain (en archivos MP3, FLAC, OGG, OPUS y MP4)
-- Compatibilidad con ecualizadores externos (por ejemplo, Wavelet)
-- Borde a borde
-- Compatibilidad con carátulas incrustadas
-- Función de búsqueda
-- Reproducción automática con auriculares
-- Widgets elegantes que se adaptan automáticamente a su tamaño
+- Compatibilidad completa con ReplayGain (en archivos MP3, FLAC, OGG, OPUS y MP4)
+- Soporte para ecualizador externo (ej. Wavelet)
+- Del principio al final
+- Soporte de cubiertas integradas
+- Funcionalidad de búsqueda
+- Reproducción automática de auriculares
+- Widgets elegantes que se adaptan automáticamente a su tamaño.
 - Completamente privado y sin conexión
-- Sin carátulas redondeadas (por defecto)
+- No hay portadas de álbumes redondeadas (si las quieres)
