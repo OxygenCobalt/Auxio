@@ -303,7 +303,7 @@
     <string name="lbl_supporters">Partidarios</string>
     <string name="lbl_replaygain_album">Ajuste del álbum de ganancia de reproducción</string>
     <string name="lbl_author">Autor</string>
-    <string name="lng_supporters_promo">¡Haga una donación al proyecto para que agreguen su nombre aquí!</string>
+    <string name="lng_supporters_promo">¡Haz una donación al proyecto para que tu nombre aparezca aquí!</string>
     <string name="set_remember_pause">Recordar la pausa</string>
     <string name="set_remember_pause_desc">Permanecer en reproducción/pausa al saltar o editar la cola</string>
     <string name="set_replay_gain_mode_off">Apagar</string>
