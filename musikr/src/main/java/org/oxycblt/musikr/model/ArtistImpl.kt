@@ -45,7 +45,9 @@ internal class ArtistImpl(private val core: ArtistCore) : Artist {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         core.preArtist.musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.ARTIST, it) }
-            ?: Music.UID.auxio(Music.UID.Item.ARTIST) { update(core.preArtist.rawName.also { Log.d("ArtistImpl", it.toString()) }) }
+            ?: Music.UID.auxio(Music.UID.Item.ARTIST) {
+                update(core.preArtist.rawName.also { Log.d("ArtistImpl", it.toString()) })
+            }
     override val name = core.preArtist.name
 
     override val songs = core.songs

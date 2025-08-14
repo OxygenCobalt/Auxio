@@ -29,7 +29,6 @@ import org.oxycblt.musikr.tag.interpret.PreArtistsFrom
 import org.oxycblt.musikr.tag.interpret.PreGenre
 import org.oxycblt.musikr.tag.interpret.PreSong
 import org.oxycblt.musikr.util.unlikelyToBeNull
-import java.util.UUID
 
 internal data class MusicGraph(
     val songVertex: List<SongVertex>,
@@ -255,9 +254,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             simplifyArtistCluster(cluster)
         }
         // second pass: cluster artists by mbid and identify invalid ones
-        // (i.e artists with the same mbid but different metdata)
-        val mbidClusters =
-            artistVertices.values.groupBy { it.preArtist.musicBrainzId }
+        // (i.e artists with the same mbid but different metadata)
+        val mbidClusters = artistVertices.values.groupBy { it.preArtist.musicBrainzId }
         for (cluster in mbidClusters.values) {
             // everything in the cluster must have the same pre-artist
             val canon = cluster.maxBy { it.songVertices.size }.preArtist
@@ -273,7 +271,6 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             }
         }
 
-
         // first pass: cluster albums by name and process MBIDs where valid
         val albumClusters = albumVertices.values.groupBy { it.preAlbum.rawName?.lowercase() }
         for (cluster in albumClusters.values) {
@@ -281,8 +278,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         }
         // second pass: cluster albums by mbid and identify invalid ones
         // (i.e albums with the same mbid but different metadata)
-        val mbidAlbumClusters =
-            albumVertices.values.groupBy { it.preAlbum.musicBrainzId }
+        val mbidAlbumClusters = albumVertices.values.groupBy { it.preAlbum.musicBrainzId }
         for (cluster in mbidAlbumClusters.values) {
             // everything in the cluster must have the same pre-album
             val canon = cluster.maxBy { it.songVertices.size }.preAlbum
