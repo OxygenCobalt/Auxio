@@ -18,7 +18,10 @@
  
 package org.oxycblt.musikr.pipeline
 
+import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.channels.Channel
+import org.oxycblt.musikr.BuildConfig
 import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
@@ -32,8 +35,9 @@ internal interface EvaluateStep {
     suspend fun evaluate(extractedMusic: Channel<Extracted>): MutableLibrary
 
     companion object {
-        fun new(config: Config, interpretation: Interpretation): EvaluateStep =
+        fun new(context: Context, config: Config, interpretation: Interpretation): EvaluateStep =
             EvaluateStepImpl(
+                context,
                 TagInterpreter.new(interpretation),
                 PlaylistInterpreter.new(interpretation),
                 config.storage.storedPlaylists,
@@ -42,6 +46,7 @@ internal interface EvaluateStep {
 }
 
 private class EvaluateStepImpl(
+    private val context: Context,
     private val tagInterpreter: TagInterpreter,
     private val playlistInterpreter: PlaylistInterpreter,
     private val storedPlaylists: StoredPlaylists,
@@ -57,6 +62,21 @@ private class EvaluateStepImpl(
             }
             builder
         }
-        return libraryFactory.create(builder.build(), storedPlaylists, playlistInterpreter)
+        val graph = builder.build()
+
+        // Render graph to Graphviz in debug mode
+        if (BuildConfig.DEBUG) {
+            try {
+                val fileName = "music_graph_debug.dot"
+                graph.renderToGraphviz(context, fileName)
+                val filePath = context.filesDir.resolve(fileName).absolutePath
+                Log.d("EvaluateStep", "Music graph rendered to: $filePath")
+                Log.d("EvaluateStep", "To pull the file, run: adb pull $filePath")
+            } catch (e: Exception) {
+                Log.e("EvaluateStep", "Failed to render music graph", e)
+            }
+        }
+
+        return libraryFactory.create(graph, storedPlaylists, playlistInterpreter)
     }
 }

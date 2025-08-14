@@ -59,20 +59,35 @@ fun <T> CoroutineScope.tryAsyncWith(
         }
     }
 
-fun <T, R> CoroutineScope.tryParWith(
-    n: Int,
-    channel: Channel<T>,
+fun <T, R> CoroutineScope.map(
+    input: Channel<T>,
     output: Channel<R>,
     context: CoroutineContext = Dispatchers.Default,
-    block: suspend (T) -> R,
+    block: suspend (T) -> R?,
+): Deferred<Result<Unit>> {
+    return tryAsync(context) {
+        for (item in input) {
+            block(item)?.let { output.send(it) }
+        }
+        output.close()
+        Unit
+    }
+}
+
+fun <T, R> CoroutineScope.mapParallel(
+    n: Int,
+    input: Channel<T>,
+    output: Channel<R>,
+    context: CoroutineContext = Dispatchers.Default,
+    block: suspend (T) -> R?,
 ): Deferred<Result<Unit>> {
     return tryAsync(context) {
         val deferreds = ArrayList<Deferred<Result<Unit>>>()
         for (i in 0 until n) {
             val deferred =
                 tryAsync(context) {
-                    for (item in channel) {
-                        output.send(block(item))
+                    for (item in input) {
+                        block(item)?.let { output.send(it) }
                     }
                 }
             deferreds.add(deferred)

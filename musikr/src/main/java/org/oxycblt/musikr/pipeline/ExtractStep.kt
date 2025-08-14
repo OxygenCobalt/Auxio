@@ -32,9 +32,10 @@ import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.parse.TagParser
+import org.oxycblt.musikr.util.map
+import org.oxycblt.musikr.util.mapParallel
 import org.oxycblt.musikr.util.merge
 import org.oxycblt.musikr.util.tryAsyncWith
-import org.oxycblt.musikr.util.tryParWith
 
 internal interface ExtractStep {
     suspend fun extract(
@@ -67,7 +68,7 @@ private class ExtractStepImpl(
         val addingMs = System.currentTimeMillis()
         val extract = Channel<ParsedExtractItem>(8)
         val extractTask =
-            scope.tryParWith(8, explored, extract, Dispatchers.IO) { item ->
+            scope.mapParallel(8, explored, extract, Dispatchers.IO) { item ->
                 when (item) {
                     is RawSong -> Finalized(item)
                     is RawPlaylist -> Finalized(item)
@@ -80,37 +81,32 @@ private class ExtractStepImpl(
             }
         val parsed = Channel<ParsedCachingItem>(Channel.UNLIMITED)
         val parsedTask =
-            scope.tryAsyncWith(parsed, Dispatchers.IO) {
-                for (item in extract) {
-                    val result =
-                        when (item) {
-                            is Finalized -> item
-                            is NeedsParsing -> {
-                                val tags = tagParser.parse(item.metadata)
-                                val cover =
-                                    when (val result =
-                                        covers.create(item.newSong.file, item.metadata)) {
-                                        is CoverResult.Hit -> result.cover
-                                        else -> null
-                                    }
-                                NeedsCaching(
-                                    RawSong(
-                                        item.newSong.file,
-                                        item.metadata.properties,
-                                        tags,
-                                        cover,
-                                        // The thing about date added is that it's resolution can
-                                        // actually be expensive in some modes (ex. saf backend), so
-                                        // we resolve this by moving date added extraction as an
-                                        // extraction operation rather than doing the redundant work
-                                        // during exploration (well, kind of, MediaStore's date
-                                        // added query is basically free, it's only saf that has
-                                        // it's slow hacky workaround that we must accommodate
-                                        // here.)
-                                        item.newSong.file.addedMs.resolve() ?: addingMs))
+            scope.map(extract, parsed, Dispatchers.IO) { item ->
+                when (item) {
+                    is Finalized -> item
+                    is NeedsParsing -> {
+                        val tags = tagParser.parse(item.metadata)
+                        val cover =
+                            when (val result = covers.create(item.newSong.file, item.metadata)) {
+                                is CoverResult.Hit -> result.cover
+                                else -> null
                             }
-                        }
-                    parsed.send(result)
+                        NeedsCaching(
+                            RawSong(
+                                item.newSong.file,
+                                item.metadata.properties,
+                                tags,
+                                cover,
+                                // The thing about date added is that it's resolution can
+                                // actually be expensive in some modes (ex. saf backend), so
+                                // we resolve this by moving date added extraction as an
+                                // extraction operation rather than doing the redundant work
+                                // during exploration (well, kind of, MediaStore's date
+                                // added query is basically free, it's only saf that has
+                                // it's slow hacky workaround that we must accommodate
+                                // here.)
+                                item.newSong.file.addedMs.resolve() ?: addingMs))
+                    }
                 }
             }
         val finalizedTask =

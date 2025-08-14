@@ -32,6 +32,7 @@ import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.playlist.m3u.M3U
+import org.oxycblt.musikr.util.map
 import org.oxycblt.musikr.util.merge
 import org.oxycblt.musikr.util.tryAsyncWith
 
@@ -54,39 +55,32 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
 
         val classified = Channel<Classified>(Channel.UNLIMITED)
         val classifiedTask =
-            scope.tryAsyncWith(classified, Dispatchers.IO) {
-                for (file in files) {
-                    if (file.mimeType.startsWith("audio/") || file.mimeType == M3U.MIME_TYPE) {
-                        val cacheResult = storage.cache.read(file)
-                        when (cacheResult) {
-                            is CacheResult.Hit -> it.send(NeedsCover(cacheResult.song))
-                            is CacheResult.Stale -> it.send(Finalized(NewSong(cacheResult.file)))
-                            is CacheResult.Miss -> it.send(Finalized(NewSong(cacheResult.file)))
-                        }
-                    }
+            scope.map(files, classified, Dispatchers.IO) { file ->
+                if (!file.mimeType.startsWith("audio/") && file.mimeType != M3U.MIME_TYPE) {
+                    return@map null
+                }
+                val cacheResult = storage.cache.read(file)
+                when (cacheResult) {
+                    is CacheResult.Hit -> NeedsCover(cacheResult.song)
+                    is CacheResult.Stale -> Finalized(NewSong(cacheResult.file))
+                    is CacheResult.Miss -> Finalized(NewSong(cacheResult.file))
                 }
             }
 
-        val finalized = Channel<Explored>(Channel.UNLIMITED)
+        val finalized = Channel<Finalized>(Channel.UNLIMITED)
         val exploredTask =
-            scope.tryAsyncWith(finalized, Dispatchers.IO) {
-                for (item in classified) {
-                    val result =
-                        when (item) {
-                            is Finalized -> item
-                            is NeedsCover -> {
-                                when (val coverResult =
-                                    item.cachedSong.coverId?.let { id ->
-                                        storage.covers.obtain(id)
-                                    }) {
-                                    is CoverResult.Hit ->
-                                        Finalized(item.cachedSong.toRawSong(coverResult.cover))
-                                    null -> Finalized(item.cachedSong.toRawSong(null))
-                                    else -> Finalized(NewSong(item.cachedSong.file))
-                                }
-                            }
+            scope.map(classified, finalized, Dispatchers.IO) { item ->
+                when (item) {
+                    is Finalized -> item
+                    is NeedsCover -> {
+                        when (val coverResult =
+                            item.cachedSong.coverId?.let { id -> storage.covers.obtain(id) }) {
+                            is CoverResult.Hit ->
+                                Finalized(item.cachedSong.toRawSong(coverResult.cover))
+                            null -> Finalized(item.cachedSong.toRawSong(null))
+                            else -> Finalized(NewSong(item.cachedSong.file))
                         }
-                    it.send(result.explored)
+                    }
                 }
             }
         val playlists = Channel<Explored>(Channel.UNLIMITED)
@@ -101,7 +95,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
         val mergeTask =
             scope.tryAsyncWith(explored, Dispatchers.Main) {
                 for (item in finalized) {
-                    it.send(item)
+                    it.send(item.explored)
                 }
                 for (playlist in playlists) {
                     it.send(playlist)

@@ -89,6 +89,7 @@ class Compress(
                     "Failed to decode bitmap"
                 }
             bitmap.compress(format, quality, output)
+            bitmap.recycle()
             true
         }
     }

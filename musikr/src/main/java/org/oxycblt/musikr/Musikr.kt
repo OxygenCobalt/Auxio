@@ -19,6 +19,7 @@
 package org.oxycblt.musikr
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
@@ -69,7 +70,7 @@ interface Musikr {
                 config,
                 ExploreStep.from(context, config),
                 ExtractStep.from(context, config),
-                EvaluateStep.new(config, config.interpretation))
+                EvaluateStep.new(context, config, config.interpretation))
     }
 }
 
@@ -141,6 +142,7 @@ private class MusikrImpl(
             }
         val library = evaluateStep.evaluate(trackedExtractedChannel)
         merge(exploredTask, extractedTask, trackedExploredTask, trackedExtractedTask).await()
+        Log.d("Musikr", "Indexing took ${System.currentTimeMillis() - start}ms")
         LibraryResultImpl(config, library)
     }
 }
