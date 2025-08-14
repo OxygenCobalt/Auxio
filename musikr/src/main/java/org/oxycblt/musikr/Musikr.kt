@@ -19,15 +19,16 @@
 package org.oxycblt.musikr
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
+import org.oxycblt.musikr.pipeline.Explored
 import org.oxycblt.musikr.pipeline.ExtractStep
+import org.oxycblt.musikr.pipeline.Extracted
+import org.oxycblt.musikr.util.merge
+import org.oxycblt.musikr.util.tryAsyncWith
 
 /**
  * A highly opinionated, multi-threaded device music library.
@@ -65,7 +66,6 @@ interface Musikr {
          */
         fun new(context: Context, config: Config): Musikr =
             MusikrImpl(
-                context,
                 config,
                 ExploreStep.from(context, config),
                 ExtractStep.from(context, config),
@@ -106,28 +106,41 @@ sealed interface IndexingProgress {
 }
 
 private class MusikrImpl(
-    private val context: Context,
     private val config: Config,
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
     private val evaluateStep: EvaluateStep
 ) : Musikr {
     override suspend fun run(onProgress: suspend (IndexingProgress) -> Unit) = coroutineScope {
-        var exploredCount = 0
-        var extractedCount = 0
-        val explored =
-            exploreStep
-                .explore()
-                .buffer(Channel.UNLIMITED)
-                .onStart { onProgress(IndexingProgress.Songs(0, 0)) }
-                .onEach { onProgress(IndexingProgress.Songs(extractedCount, ++exploredCount)) }
-        val extracted =
-            extractStep
-                .extract(explored)
-                .buffer(Channel.UNLIMITED)
-                .onEach { onProgress(IndexingProgress.Songs(++extractedCount, exploredCount)) }
-                .onCompletion { onProgress(IndexingProgress.Indeterminate) }
-        val library = evaluateStep.evaluate(extracted)
+        onProgress(IndexingProgress.Songs(0, 0))
+        val start = System.currentTimeMillis()
+        var explored = 0
+        var loaded = 0
+        val exploredChannel = Channel<Explored>(Channel.UNLIMITED)
+        val exploredTask = exploreStep.explore(this, exploredChannel)
+        val trackedExploredChannel = Channel<Explored>(Channel.UNLIMITED)
+        val trackedExploredTask =
+            tryAsyncWith(trackedExploredChannel, Dispatchers.Main) {
+                for (item in exploredChannel) {
+                    explored++
+                    onProgress(IndexingProgress.Songs(loaded, explored))
+                    trackedExploredChannel.send(item)
+                }
+            }
+        val extractedChannel = Channel<Extracted>(Channel.UNLIMITED)
+        val extractedTask = extractStep.extract(this, trackedExploredChannel, extractedChannel)
+        val trackedExtractedChannel = Channel<Extracted>(Channel.UNLIMITED)
+        val trackedExtractedTask =
+            tryAsyncWith(trackedExtractedChannel, Dispatchers.Main) {
+                for (item in extractedChannel) {
+                    loaded++
+                    onProgress(IndexingProgress.Songs(loaded, explored))
+                    trackedExtractedChannel.send(item)
+                }
+                onProgress(IndexingProgress.Indeterminate)
+            }
+        val library = evaluateStep.evaluate(trackedExtractedChannel)
+        merge(exploredTask, extractedTask, trackedExploredTask, trackedExtractedTask).await()
         LibraryResultImpl(config, library)
     }
 }

@@ -19,13 +19,10 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onCompletion
 import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
@@ -35,9 +32,16 @@ import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.parse.TagParser
+import org.oxycblt.musikr.util.merge
+import org.oxycblt.musikr.util.tryAsyncWith
+import org.oxycblt.musikr.util.tryParWith
 
 internal interface ExtractStep {
-    fun extract(nodes: Flow<Explored>): Flow<Extracted>
+    suspend fun extract(
+        scope: CoroutineScope,
+        explored: Channel<Explored>,
+        extracted: Channel<Extracted>
+    ): Deferred<Result<Unit>>
 
     companion object {
         fun from(context: Context, config: Config): ExtractStep =
@@ -55,72 +59,81 @@ private class ExtractStepImpl(
     private val cache: MutableCache,
     private val covers: MutableCovers<out Cover>
 ) : ExtractStep {
-    override fun extract(nodes: Flow<Explored>): Flow<Extracted> {
+    override suspend fun extract(
+        scope: CoroutineScope,
+        explored: Channel<Explored>,
+        extracted: Channel<Extracted>
+    ): Deferred<Result<Unit>> {
         val addingMs = System.currentTimeMillis()
-        val exclude = mutableListOf<CachedSong>()
-        return nodes
-            // Cover art is huge, so we have to kneecap the concurrency here to avoid excessive
-            // GCs. We still reap the concurrency benefits here, just not as much as we could.
-            .distributedMap(on = Dispatchers.IO, n = 8, buffer = Channel.RENDEZVOUS) {
-                when (it) {
-                    is RawSong -> Finalized(it)
-                    is RawPlaylist -> Finalized(it)
+        val extract = Channel<ParsedExtractItem>(8)
+        val extractTask =
+            scope.tryParWith(8, explored, extract, Dispatchers.IO) { item ->
+                when (item) {
+                    is RawSong -> Finalized(item)
+                    is RawPlaylist -> Finalized(item)
                     is NewSong -> {
-                        val metadata = metadataExtractor.extract(it.file)
-                        if (metadata != null) NeedsParsing(it, metadata) else Finalized(InvalidSong)
+                        val metadata = metadataExtractor.extract(item.file)
+                        if (metadata != null) NeedsParsing(item, metadata)
+                        else Finalized(InvalidSong)
                     }
                 }
             }
-            .flowOn(Dispatchers.IO)
-            .buffer(Channel.RENDEZVOUS)
-            .distributedMap(on = Dispatchers.IO, n = 8, buffer = Channel.UNLIMITED) {
-                when (it) {
-                    is Finalized -> it
-                    is NeedsParsing -> {
-                        val tags = tagParser.parse(it.metadata)
-                        val cover =
-                            when (val result = covers.create(it.newSong.file, it.metadata)) {
-                                is CoverResult.Hit -> result.cover
-                                else -> null
+        val parsed = Channel<ParsedCachingItem>(Channel.UNLIMITED)
+        val parsedTask =
+            scope.tryAsyncWith(parsed, Dispatchers.IO) {
+                for (item in extract) {
+                    val result =
+                        when (item) {
+                            is Finalized -> item
+                            is NeedsParsing -> {
+                                val tags = tagParser.parse(item.metadata)
+                                val cover =
+                                    when (val result =
+                                        covers.create(item.newSong.file, item.metadata)) {
+                                        is CoverResult.Hit -> result.cover
+                                        else -> null
+                                    }
+                                NeedsCaching(
+                                    RawSong(
+                                        item.newSong.file,
+                                        item.metadata.properties,
+                                        tags,
+                                        cover,
+                                        // The thing about date added is that it's resolution can
+                                        // actually be expensive in some modes (ex. saf backend), so
+                                        // we resolve this by moving date added extraction as an
+                                        // extraction operation rather than doing the redundant work
+                                        // during exploration (well, kind of, MediaStore's date
+                                        // added query is basically free, it's only saf that has
+                                        // it's slow hacky workaround that we must accommodate
+                                        // here.)
+                                        item.newSong.file.addedMs.resolve() ?: addingMs))
                             }
-                        NeedsCaching(
-                            RawSong(
-                                it.newSong.file,
-                                it.metadata.properties,
-                                tags,
-                                cover,
-                                // The thing about date added is that it's resolution can actually
-                                // be expensive in some modes (ex. saf backend), so we resolve this
-                                // by
-                                // moving date added extraction as an extraction operation rather
-                                // than doing the redundant work during exploration (well, kind of,
-                                // MediaStore's date added query is basically free, it's only saf
-                                // that has it's slow hacky workaround that we must accommodate
-                                // here.)
-                                it.newSong.file.addedMs.resolve() ?: addingMs))
+                        }
+                    parsed.send(result)
+                }
+            }
+        val finalizedTask =
+            scope.tryAsyncWith(extracted, Dispatchers.IO) {
+                val exclude = mutableListOf<CachedSong>()
+                for (item in parsed) {
+                    val result =
+                        when (item) {
+                            is Finalized -> item
+                            is NeedsCaching -> {
+                                cache.write(item.rawSong.toCachedSong())
+                                Finalized(item.rawSong)
+                            }
+                        }
+                    if (result.extracted is RawSong) {
+                        exclude.add(result.extracted.toCachedSong())
                     }
+                    it.send(result.extracted)
                 }
+                cache.cleanup(exclude)
             }
-            .flowOn(Dispatchers.IO)
-            .buffer(Channel.UNLIMITED)
-            .distributedMap(on = Dispatchers.IO, n = 8, buffer = Channel.UNLIMITED) {
-                when (it) {
-                    is Finalized -> it
-                    is NeedsCaching -> {
-                        cache.write(it.rawSong.toCachedSong())
-                        Finalized(it.rawSong)
-                    }
-                }
-            }
-            .map {
-                if (it.extracted is RawSong) {
-                    exclude.add(it.extracted.toCachedSong())
-                }
-                it.extracted
-            }
-            .flowOn(Dispatchers.IO)
-            .buffer(Channel.UNLIMITED)
-            .onCompletion { cache.cleanup(exclude) }
+
+        return scope.merge(extractTask, parsedTask, finalizedTask)
     }
 
     private sealed interface ParsedExtractItem

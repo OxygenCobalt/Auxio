@@ -18,8 +18,7 @@
  
 package org.oxycblt.musikr.pipeline
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.channels.Channel
 import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.Interpretation
 import org.oxycblt.musikr.MutableLibrary
@@ -30,7 +29,7 @@ import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
 
 internal interface EvaluateStep {
-    suspend fun evaluate(extractedMusic: Flow<Extracted>): MutableLibrary
+    suspend fun evaluate(extractedMusic: Channel<Extracted>): MutableLibrary
 
     companion object {
         fun new(config: Config, interpretation: Interpretation): EvaluateStep =
@@ -48,16 +47,16 @@ private class EvaluateStepImpl(
     private val storedPlaylists: StoredPlaylists,
     private val libraryFactory: LibraryFactory
 ) : EvaluateStep {
-    override suspend fun evaluate(extractedMusic: Flow<Extracted>): MutableLibrary =
-        extractedMusic
-            .filterIsInstance<Extracted.Valid>()
-            .tryFold(MusicGraph.builder()) { graphBuilder, extracted ->
-                when (extracted) {
-                    is RawSong -> graphBuilder.add(tagInterpreter.interpret(extracted))
-                    is RawPlaylist ->
-                        graphBuilder.add(playlistInterpreter.interpret(extracted.file))
-                }
-                graphBuilder
+    override suspend fun evaluate(extractedMusic: Channel<Extracted>): MutableLibrary {
+        val builder = MusicGraph.builder()
+        for (extracted in extractedMusic) {
+            when (extracted) {
+                is RawSong -> builder.add(tagInterpreter.interpret(extracted))
+                is RawPlaylist -> builder.add(playlistInterpreter.interpret(extracted.file))
+                is InvalidSong -> {}
             }
-            .let { libraryFactory.create(it.build(), storedPlaylists, playlistInterpreter) }
+            builder
+        }
+        return libraryFactory.create(builder.build(), storedPlaylists, playlistInterpreter)
+    }
 }
