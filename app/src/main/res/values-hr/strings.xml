@@ -319,8 +319,8 @@
     <string name="lng_play_next">Pjesma će se sljedeća svirati</string>
     <string name="lng_file_picker">Učitaj glazbu iz odabranih mapa. Sporije, ali pouzdanije. Zahtijeva instalaciju obične aplikacije za upravljanje datotekama.</string>
     <string name="lng_system_database">Učitaj glazbu koju Android OS automatski prepoznaje. Brže, ali manje pouzdano. Nema podrške za funkcije koje ovise o datotečnom sustavu poput cover.jpg.</string>
-    <string name="lng_grant_storage_anyway">Davanje dozvola za eksterno spremanje može riješiti probleme na nekim uređajima.</string>
-    <string name="lng_grant_storage_required">Za aktiviranje ove opcije dodijeli dozvole za eksterno spremanje.</string>
+    <string name="lng_grant_storage_anyway">Davanje dozvola za eksterno spremište može riješiti probleme na nekim uređajima.</string>
+    <string name="lng_grant_storage_required">Za aktiviranje ove opcije dodijeli dozvole za eksterno spremište.</string>
     <string name="lng_include_folders">Glazba izvan odabranih mapa će se ignorirati.</string>
     <string name="lng_exclude_folders">Glazba unutar odabranih mapa će se ignorirati.</string>
     <string name="set_with_hidden">Uključuje skrivene datoteke</string>
@@ -329,4 +329,19 @@
     <string name="set_load_from">Učitaj iz</string>
     <string name="set_file_picker">Birač datotka</string>
     <string name="set_system_database">Sustav</string>
+    <string name="set_grant_storage_anyway">Preporučuje se pristup spremištu</string>
+    <string name="set_grant_storage">Potreban je pristup spremištu</string>
+    <string name="set_folders_to_load">Mape za učitavanje</string>
+    <string name="set_folders_to_ignore">Mape za zanemariti</string>
+    <string name="set_filtered_folders">Filtrirane mape</string>
+    <string name="set_filter_mode">Modus filtra</string>
+    <string name="set_include">Uključi</string>
+    <string name="set_exclude">Isključi</string>
+    <string name="set_extra_settings">Više postavki</string>
+    <string name="set_fs_cache">Koristi predmemoriju datotečnog sustava</string>
+    <string name="set_fs_cache_desc">Poboljšava vrijeme učitavanja, ali može spriječiti dodavanje nove glazbe</string>
+    <string name="set_excluded_locations">Isključene mape</string>
+    <string name="set_excluded_locations_desc">Upravljaj mapama iz kojih se neće učitavati glazba</string>
+    <string name="lbl_no_folders">Nema mapa</string>
+    <string name="desc_add_folder">Dodaj mapu</string>
 </resources>
