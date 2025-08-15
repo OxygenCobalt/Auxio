@@ -257,7 +257,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         // (i.e artists with the same mbid but different metadata)
         // this only applies to artists w/mbids, if we dont do this well meld all non-mbid
         // artists into a single vertex which is incorrect
-        val mbidClusters = artistVertices.values.groupBy { it.preArtist.musicBrainzId }.filter { it.key != null }
+        val mbidClusters =
+            artistVertices.values.groupBy { it.preArtist.musicBrainzId }.filter { it.key != null }
         for (cluster in mbidClusters.values) {
             // everything in the cluster must have the same pre-artist
             val canon = cluster.maxBy { it.songVertices.size }.preArtist
@@ -282,7 +283,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         // (i.e albums with the same mbid but different metadata)
         // this only applies to albums w/mbids, if we dont do this well meld all non-mbid
         // albums into a single vertex which is incorrect
-        val mbidAlbumClusters = albumVertices.values.groupBy { it.preAlbum.musicBrainzId }.filter { it.key != null }
+        val mbidAlbumClusters =
+            albumVertices.values.groupBy { it.preAlbum.musicBrainzId }.filter { it.key != null }
         for (cluster in mbidAlbumClusters.values) {
             // everything in the cluster must have the same pre-album
             val canon = cluster.maxBy { it.songVertices.size }.preAlbum
