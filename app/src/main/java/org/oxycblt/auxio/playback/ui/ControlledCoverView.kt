@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * SwipeCoverView.kt is part of Auxio.
+ * ControlledCoverView.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.GestureDetector
+import android.view.GestureDetector.OnDoubleTapListener
 import android.view.GestureDetector.OnGestureListener
 import android.view.MotionEvent
 import android.view.ViewConfiguration
@@ -30,12 +31,13 @@ import kotlin.math.abs
 import org.oxycblt.auxio.image.CoverView
 import org.oxycblt.auxio.util.isRtl
 
-class SwipeCoverView
+class ControlledCoverView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    CoverView(context, attrs, defStyleAttr), OnGestureListener {
+    CoverView(context, attrs, defStyleAttr), OnGestureListener, OnDoubleTapListener {
 
-    private val gestureDetector = GestureDetector(context, this)
+    private val gestureDetector =
+        GestureDetector(context, this).apply { setOnDoubleTapListener(this@ControlledCoverView) }
     private val viewConfig = ViewConfiguration.get(context)
 
     var onSwipeListener: OnSwipeListener? = null
@@ -90,6 +92,35 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun onLongPress(e: MotionEvent) = Unit
 
+    override fun onSingleTapConfirmed(e: MotionEvent): Boolean = false
+
+    override fun onDoubleTap(e: MotionEvent): Boolean {
+        val width = width
+        val tapX = e.x
+
+        when {
+            tapX < width * 0.33f -> {
+                if (isRtl) {
+                    onSwipeListener?.onStepForward()
+                } else {
+                    onSwipeListener?.onStepBack()
+                }
+                return true
+            }
+            tapX > width * 0.67f -> {
+                if (isRtl) {
+                    onSwipeListener?.onStepBack()
+                } else {
+                    onSwipeListener?.onStepForward()
+                }
+                return true
+            }
+            else -> return false
+        }
+    }
+
+    override fun onDoubleTapEvent(e: MotionEvent): Boolean = false
+
     private fun onSwipeRight() {
         onSwipeListener?.run { if (isRtl) onSwipeNext() else onSwipePrevious() }
     }
@@ -103,5 +134,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         fun onSwipePrevious()
 
         fun onSwipeNext()
+
+        fun onStepBack()
+
+        fun onStepForward()
     }
 }

@@ -38,8 +38,8 @@ import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.ui.ControlledCoverView
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
-import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
@@ -61,7 +61,7 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-    SwipeCoverView.OnSwipeListener,
+    ControlledCoverView.OnSwipeListener,
     ViewTreeObserver.OnGlobalLayoutListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -211,6 +211,14 @@ class PlaybackPanelFragment :
 
     override fun onSwipeNext() {
         playbackModel.next()
+    }
+
+    override fun onStepBack() {
+        playbackModel.stepBack()
+    }
+
+    override fun onStepForward() {
+        playbackModel.stepForward()
     }
 
     private fun updateSong(song: Song?) {

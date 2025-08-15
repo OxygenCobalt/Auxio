@@ -20,7 +20,7 @@
         app:titleTextAppearance="@style/TextAppearance.Auxio.LabelLarge"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.playback.ui.SwipeCoverView
+    <org.oxycblt.auxio.playback.ui.ControlledCoverView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_margin="@dimen/spacing_medium"

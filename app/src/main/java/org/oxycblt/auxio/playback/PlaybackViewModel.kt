@@ -424,6 +424,25 @@ constructor(
         playbackManager.seekTo(positionDs.dsToMs())
     }
 
+    /** Step back by 10 seconds in the current song. */
+    fun stepBack() {
+        L.d("Stepping back 10 seconds")
+        val currentPositionMs = playbackManager.progression.calculateElapsedPositionMs()
+        val newPositionMs = (currentPositionMs - 10000).coerceAtLeast(0)
+        playbackManager.seekTo(newPositionMs)
+    }
+
+    /** Step forward by 10 seconds in the current song. */
+    fun stepForward() {
+        L.d("Stepping forward 10 seconds")
+        val currentPositionMs = playbackManager.progression.calculateElapsedPositionMs()
+        val currentSong = playbackManager.currentSong
+        if (currentSong != null) {
+            val newPositionMs = (currentPositionMs + 10000).coerceAtMost(currentSong.durationMs)
+            playbackManager.seekTo(newPositionMs)
+        }
+    }
+
     // --- QUEUE FUNCTIONS ---
 
     /** Skip to the next [Song]. */
