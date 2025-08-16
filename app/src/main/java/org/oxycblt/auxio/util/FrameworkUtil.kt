@@ -46,6 +46,7 @@ import java.lang.IllegalArgumentException
 import org.oxycblt.auxio.R
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
+import org.oxycblt.musikr.Album
 import timber.log.Timber as L
 
 /**
@@ -300,7 +301,17 @@ fun Context.share(song: Song) = share(listOf(song))
  *
  * @param parent The [MusicParent] to share.
  */
-fun Context.share(parent: MusicParent) = share(parent.songs)
+fun Context.share(parent: MusicParent) {
+    if (parent is Album) {
+        // share songs in album order
+        val sorted = parent.songs.sortedWith(
+            compareBy({ it.disc ?: 0 }, { it.track ?: 0 }))
+        share(sorted)
+    } else {
+        share(parent.songs)
+    }
+}
+
 
 /**
  * Share an arbitrary list of [Song]s.
