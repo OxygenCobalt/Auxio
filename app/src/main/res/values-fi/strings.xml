@@ -327,4 +327,16 @@
     <string name="set_extra_settings">Lisää asetuksia</string>
     <string name="lbl_no_folders">Ei kansioita</string>
     <string name="desc_add_folder">Lisää kansio</string>
+    <string name="lng_play_next">Kappale soi seuraavaksi</string>
+    <string name="lng_file_picker">Lataa musiikki valitsemistasi kansioista. Hitaampi, mutta luotettavampi. Alkuperäisen tiedostoselaimen täytyy olla asennettuna.</string>
+    <string name="lng_system_database">Lataa musiikki, jonka Android-käyttöjärjestelmä havaitsee itse. Nopeampi, mutta vähemmän luotettava. Ei tue tiedostojärjestelmästä riippuvaisia ominaisuuksia kuten mm. cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Ulkoisen tallennustilan käyttöoikeuden myöntäminen saattaa korjata ongelmia joillain laitteilla.</string>
+    <string name="lng_grant_storage_required">Myönnä ulkoisen tallennustilan käyttöoikeus käyttääksesi tätä ominaisuutta.</string>
+    <string name="lng_include_folders">Musiikki valittujen kansioiden ulkopuolella jätetään huomiotta.</string>
+    <string name="lng_exclude_folders">Musiikki valituissa kansioissa jätetään huomiotta.</string>
+    <string name="set_load_from">Lataa kohteesta</string>
+    <string name="set_grant_storage_anyway">Ulkoisen tallennustilan käyttöoikeus on suositeltavaa</string>
+    <string name="set_grant_storage">Ulkoisen tallennustilan käyttöoikeus vaaditaan</string>
+    <string name="set_fs_cache">Käytä tiedostojärjestelmän välimuistia</string>
+    <string name="set_fs_cache_desc">Parantaa latausaikoja, mutta saattaa estää uuden musiikin lisäämisen kirjastoon</string>
 </resources>
