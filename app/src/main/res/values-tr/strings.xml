@@ -322,4 +322,6 @@
     <string name="set_cover_mode_as_is">Olduğu gibi</string>
     <string name="set_excluded_locations_desc">Müzik yüklemesinde sayılmayacak klasörleri yönet</string>
     <string name="set_excluded_locations">Sayılmayan klasörler</string>
+    <string name="lng_play_next">Şarkı bundan sonra başlayacak</string>
+    <string name="lng_file_picker">Şeçtiğiniz klasörlerden müzik yükler. Daha yavaştır fakat daha güvenilirdir.</string>
 </resources>
