@@ -175,7 +175,7 @@
     <string name="lbl_replaygain_track">重播增益音軌調整</string>
     <string name="lbl_compilation_live">現場合輯</string>
     <string name="set_rewind_prev_desc">移至上一首曲目前倒帶</string>
-    <string name="set_locations">音樂資料夾</string>
+    <string name="set_locations">音樂來源</string>
     <string name="err_export_failed">無法將播放清單匯出至檔案</string>
     <string name="err_bad_location">不支援這個資料夾</string>
     <string name="desc_song_handle">移動歌曲</string>
@@ -321,4 +321,25 @@
     <string name="set_excluded_locations_desc">管理不需讀取音樂的資料夾</string>
     <string name="set_fs_cache">使用檔案系統快取</string>
     <string name="set_fs_cache_desc">改善讀取時間，但會阻擋音樂新增</string>
+    <string name="lng_file_picker">讀取您所選取資料夾中的音樂，穩定但速度較慢。需要安裝 Vanilla 檔案管理。</string>
+    <string name="lng_play_next">將於下次播放曲目</string>
+    <string name="lng_system_database">讀取 Android 系統自動偵測的音樂，不穩定但速度較快。不支援如 cover.jpg 的檔案系統附加功能。</string>
+    <string name="lng_grant_storage_anyway">授予外部儲存空間權限可修正部分裝置問題。</string>
+    <string name="lng_grant_storage_required">授予外部儲存空間權限以啟用這個選項。</string>
+    <string name="lng_include_folders">將會略過選取資料夾外的音樂。</string>
+    <string name="lng_exclude_folders">將會略過選取資料夾內的音樂。</string>
+    <string name="set_load_from">讀取自</string>
+    <string name="set_file_picker">選取檔案</string>
+    <string name="set_system_database">系統</string>
+    <string name="set_grant_storage_anyway">建議存取儲存空間</string>
+    <string name="set_grant_storage">需要存取儲存空間</string>
+    <string name="set_folders_to_load">讀取資料夾</string>
+    <string name="set_folders_to_ignore">排除資料夾</string>
+    <string name="set_filtered_folders">篩選的資料夾</string>
+    <string name="set_filter_mode">篩選模式</string>
+    <string name="set_include">包含</string>
+    <string name="set_exclude">排除</string>
+    <string name="set_extra_settings">更多設定</string>
+    <string name="lbl_no_folders">沒有資料夾</string>
+    <string name="desc_add_folder">新增資料夾</string>
 </resources>

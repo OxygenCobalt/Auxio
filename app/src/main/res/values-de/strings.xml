@@ -146,7 +146,7 @@
     <string name="set_pre_amp_warning">Warnung: Das Erhöhen der Vorverstärkung zu einem hohen positiven Wert könnte zu einer Übersteuerung bei einigen Audiospuren führen.</string>
     <string name="set_play_in_parent_with">Wenn ein Lied aus den Elementdetails abgespielt wird</string>
     <string name="set_play_song_none">Vom dargestellten Element abspielen</string>
-    <string name="set_locations">Musikordner</string>
+    <string name="set_locations">Musikquellen</string>
     <string name="set_locations_desc">Verwalten, von wo die Musik geladen werden soll</string>
     <string name="def_track">Kein Titel</string>
     <string name="cdc_ogg">Ogg-Audio</string>
@@ -328,4 +328,25 @@
     <string name="set_excluded_locations_desc">Ordner verwalten, aus denen keine Musik geladen wird</string>
     <string name="set_fs_cache">Dateisystem-Cache benutzen</string>
     <string name="set_fs_cache_desc">Verbessert Ladezeiten, kann aber verhindern, dass neue Musik hinzugefügt wird</string>
+    <string name="lng_file_picker">Musik aus den ausgewählten Ordern laden. Langsamer, aber zuverlässiger. Der Standard-Dateimanager muss installiert sein.</string>
+    <string name="lng_play_next">Lied wird als nächstes wiedergegeben</string>
+    <string name="lng_system_database">Musik laden, die das Android-System automatisch erkennt. Schneller, aber weniger zuverlässig. Funktioniert bei manchen Herstellern nicht.</string>
+    <string name="lng_grant_storage_anyway">Das Erteilen der Berechtigung „Zugriff auf alle Dateien“ kann Probleme auf einigen Geräten beheben.</string>
+    <string name="lng_grant_storage_required">Erteilen Sie die Berechtigung „Zugriff auf alle Dateien“, um diese Option zu aktivieren.</string>
+    <string name="lng_include_folders">Musik außerhalb der ausgewählten Ordner wird ignoriert.</string>
+    <string name="lng_exclude_folders">Musik in den ausgewählten Ordnern wird ignoriert.</string>
+    <string name="set_load_from">Laden von</string>
+    <string name="set_file_picker">Dateiauswahl</string>
+    <string name="set_system_database">System</string>
+    <string name="set_grant_storage_anyway">Speicherzugriff empfohlen</string>
+    <string name="set_grant_storage">Speicherzugriff erforderlich</string>
+    <string name="set_folders_to_load">Ordner, die geladen werden</string>
+    <string name="set_folders_to_ignore">Ordner, die ignoriert werden</string>
+    <string name="set_filtered_folders">Gefilterte Ordner</string>
+    <string name="set_filter_mode">Filtermodus</string>
+    <string name="set_include">Einschließen</string>
+    <string name="set_exclude">Ausschließen</string>
+    <string name="set_extra_settings">Mehr Einstellungen</string>
+    <string name="lbl_no_folders">Keine Ordner</string>
+    <string name="desc_add_folder">Ordner hinzufügen</string>
 </resources>
