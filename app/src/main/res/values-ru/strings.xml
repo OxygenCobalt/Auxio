@@ -340,7 +340,7 @@
     <string name="lng_exclude_folders">Музыка из выбранных папок будет проигнорирована.</string>
     <string name="set_load_from">Загрузить из</string>
     <string name="set_file_picker">Выбор файла</string>
-    <string name="set_grant_storage_anyway">Рекомендуется дать доступ к хранилищу</string>
+    <string name="set_grant_storage_anyway">Рекомендуется предоставить доступ к хранилищу</string>
     <string name="set_grant_storage">Требуется доступ к хранилищу</string>
     <string name="set_folders_to_load">Папки для загрузки</string>
     <string name="set_folders_to_ignore">Папки для игнорирования</string>
