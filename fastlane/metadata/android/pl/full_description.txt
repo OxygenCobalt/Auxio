@@ -4,13 +4,13 @@ Auxio jest lokalnym odtwarzaczem muzyki z szybkim i niezawodnym interfejsem uży
 
 - Odtwarzanie oparte na Media3 ExoPlayer
 - Szybki interfejs oparty na najnowszych wytycznych Material Design
-- Przemyślane UX, które priorytyzuje prostotę użytkowania nad skrajnymi przypadkami
-- Personalizowalne zachowanie
+- Przemyślane UX, które przedkłada prostotę użytkowania nad skrajnymi przypadkami
+- Konfigurowalne zachowania
 - Wsparcie dla numerów dysków, wielu artystów, rodzajów wydań,
 precyzyjnych/oryginalnych dat wydania, tagów sortujących i więcej
-- Zaawansowany system artistów, który łączy artystów i artystów z albumu
+- Zaawansowany system artystów, który łączy artystów i artystów z albumu
 - Zarządzanie folderami z wsparciem dla kart SD
-- Niezawodna funkcjonalność z playlistami
+- Niezawodna funkcjonalność list odtwarzania
 - Utrzymanie stanu odtwarzania
 - Wsparcie dla Android auto
 - Automatyczne bezproblemowe odtwarzanie
@@ -19,7 +19,7 @@ precyzyjnych/oryginalnych dat wydania, tagów sortujących i więcej
 - Obsługa ekranu od krawędzi do krawędzi
 - Obsługa wbudowanych okładek
 - Funkcje wyszukiwania
-- Automatyczne odtwarzanie z headsetem
-- Stylowe widgety dostosowujące się do ich rozmiaru
-- Całkowicie prywatny i działający offline
-- Bez zakrąglonych okładek (domyślnie)
+- Automatyczne odtwarzanie z zestawem słuchawkowym
+- Stylowe widżety, dostosowujące się do ich rozmiaru
+- Całkowicie prywatny i działający w trybie offline
+- Bez zaokrąglonych okładek albumów (jeśli chcesz je mieć)

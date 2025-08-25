@@ -174,7 +174,7 @@
     <string name="lbl_size">Velikost</string>
     <string name="lbl_bitrate">Přenosová rychlost</string>
     <string name="lbl_sample_rate">Vzorkovací frekvence</string>
-    <string name="set_locations">Složky s hudbou</string>
+    <string name="set_locations">Zdroje hudby</string>
     <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
     <string name="lng_observing">Sledování změn v hudební knihovně…</string>
@@ -337,4 +337,25 @@
     <string name="set_excluded_locations">Vyloučené složky</string>
     <string name="set_fs_cache">Použít mezipaměť v souborovém systému</string>
     <string name="set_fs_cache_desc">Zlepší dobu načítání, ale může zabránit přidání nové hudby</string>
+    <string name="set_exclude">Vyloučit</string>
+    <string name="set_include">Zahrnout</string>
+    <string name="desc_add_folder">Přidat Složku</string>
+    <string name="lbl_no_folders">Žádné Složky</string>
+    <string name="set_folders_to_load">Složky k načtení</string>
+    <string name="set_folders_to_ignore">Složky k ignorování</string>
+    <string name="set_filtered_folders">Filtrované složky</string>
+    <string name="set_filter_mode">Režim filtru</string>
+    <string name="set_extra_settings">Další nastavení</string>
+    <string name="lng_file_picker">Načíst hudbu ze složek, které vyberete. Pomalejší, ale spolehlivější. Vyžaduje nainstalovanou výchozí aplikaci správce souborů.</string>
+    <string name="lng_system_database">Načíst hudbu, kterou automaticky detekuje systém Android. Rychlejší, ale méně spolehlivé. Bez podpory pro funkce závisející na souborovém systému, jako cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Udělení oprávnění k externímu úložišti může na některých zařízeních opravit problémy.</string>
+    <string name="lng_grant_storage_required">Udělte oprávnění k externímu úložišti pro povolení této možnosti.</string>
+    <string name="lng_include_folders">Hudba mimo vybrané složky bude ignorována.</string>
+    <string name="lng_exclude_folders">Hudba uvnitř vybraných složek bude ignorována.</string>
+    <string name="set_load_from">Načíst z</string>
+    <string name="set_file_picker">Výběr souborů</string>
+    <string name="set_system_database">Systém</string>
+    <string name="set_grant_storage_anyway">Doporučen přístup k úložišti</string>
+    <string name="set_grant_storage">Vyžadován přístup k úložišti</string>
+    <string name="lng_play_next">Skladba bude přehrána jako další</string>
 </resources>

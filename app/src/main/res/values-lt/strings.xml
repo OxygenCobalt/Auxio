@@ -180,7 +180,7 @@
     <string name="def_playback">Nėra leidžiamos muzikos</string>
     <string name="set_repeat_pause_desc">Sustabdyk, kai daina kartojasi.</string>
     <string name="set_content">Turinys</string>
-    <string name="set_locations">Muzikos aplankai</string>
+    <string name="set_locations">Muzikos šaltiniai</string>
     <string name="set_reindex">Atnaujinti muziką</string>
     <string name="set_reindex_desc">Įkelkite iš naujo muzikos biblioteką, naudojant podėlio žymes, kai įmanoma.</string>
     <string name="set_bar_action">Pasirinktinis įrašo perklausos juostos veiksmas</string>
@@ -324,4 +324,27 @@
     <string name="set_with_hidden_desc">Įtraukite garso failus, kurie paslėpti (pvz., .cache)</string>
     <string name="set_excluded_locations">Neįtraukti aplankai</string>
     <string name="set_excluded_locations_desc">Tvarkykite aplankus, kuriuos norite neįtraukti iš muzikos įkėlimo.</string>
+    <string name="lng_file_picker">Įkelkite muziką iš jūsų pasirinktų aplankų. Lėtesnis, bet patikimesnis. Reikia įdiegti pagrindinę failų tvarkytuvės programėlę.</string>
+    <string name="lng_system_database">Įkelkite muziką, kurią „Android“ operacinė sistema automatiškai aptinka. Spartesnis, bet mažiau patikimas. Gamintojai gali tai sugadinti.</string>
+    <string name="lng_grant_storage_anyway">Suteikus išorinės saugyklos leidimus, kai kuriuose įrenginiuose galima ištaisyti problemas.</string>
+    <string name="lng_grant_storage_required">Suteikite išorinės saugyklos leidimus, kad įjungtumėte šią parinktį.</string>
+    <string name="lng_include_folders">Muzika, esanti už pasirinktų aplankų, bus ignoruojama.</string>
+    <string name="lng_exclude_folders">Muzika, esanti pasirinktuose aplankuose, bus ignoruojama.</string>
+    <string name="set_load_from">Įkelti iš</string>
+    <string name="set_file_picker">Failų parinkiklio</string>
+    <string name="set_system_database">Sistemos</string>
+    <string name="set_grant_storage_anyway">Saugyklos prieiga rekomenduojama</string>
+    <string name="set_grant_storage">Saugyklos prieiga privaloma</string>
+    <string name="set_folders_to_load">Aplankus įkelti</string>
+    <string name="set_folders_to_ignore">Aplankus ignoruoti</string>
+    <string name="set_filtered_folders">Filtruoti aplankai</string>
+    <string name="set_filter_mode">Filtravimo režimas</string>
+    <string name="set_include">Įtraukti</string>
+    <string name="set_exclude">Neįtraukti</string>
+    <string name="set_extra_settings">Daugiau nustatymų</string>
+    <string name="set_fs_cache">Naudoti failų sistemos podėlį</string>
+    <string name="set_fs_cache_desc">Pagerina įkėlimo laiką, bet gali trukdyti pridėti naują muziką.</string>
+    <string name="lbl_no_folders">Nėra aplankų</string>
+    <string name="desc_add_folder">Įtraukti aplanką</string>
+    <string name="lng_play_next">Daina bus leidžiama toliau</string>
 </resources>

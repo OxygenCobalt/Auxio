@@ -77,13 +77,13 @@
     <string name="set_images">Lluniau</string>
     <string name="set_cover_mode">Cloriau albwm</string>
     <string name="set_cover_mode_off">I ffwrdd</string>
-    <string name="set_cover_mode_balanced">Yn gyflym</string>
+    <string name="set_cover_mode_balanced">Cytbwys</string>
     <string name="set_cover_mode_high_quality">Ansawdd uwch</string>
     <string name="set_square_covers">Gorfodi cloriau albwm sgwâr</string>
     <string name="set_audio">Sain</string>
     <string name="set_replay_gain_mode_off">I ffwrdd</string>
     <string name="set_library">Llyfrgell</string>
-    <string name="set_locations">Ffolderi cerddoriaeth</string>
+    <string name="set_locations">Ffynnonellau\'r gerddoriaeth</string>
     <string name="set_reindex">Adnewyddu cerddoriaeth</string>
     <string name="desc_track_number">Trac %d</string>
     <string name="def_artist">Artist anhysbys</string>
@@ -173,7 +173,7 @@
     <string name="set_black_mode">Thema ddu</string>
     <string name="set_round_mode_desc">Galluogi corneli crwn ar elfennau UI ychwanegol (angen cloriau albwm i fod yn grwn)</string>
     <string name="set_personalize">Personoleiddio</string>
-    <string name="set_display">Arddangos</string>
+    <string name="set_display">Arddangosydd</string>
     <string name="set_lib_tabs">Tabiau\'r llyfrgell</string>
     <string name="set_action_mode_next">Neidio i\'r nesaf</string>
     <string name="set_action_mode_repeat">Modd ailadrodd</string>
@@ -332,4 +332,17 @@
     <string name="set_cover_mode_save_space">Cadw lle storfa</string>
     <string name="set_fs_cache">Defnyddio cof dros dro y system</string>
     <string name="set_fs_cache_desc">Yn gwella amseroedd llwytho, ond gall atal cerddoriaeth newydd rhag cael ei hychwanegu</string>
+    <string name="lng_play_next">Bydd y cân yn chwarae nesaf</string>
+    <string name="set_load_from">Llwytho o</string>
+    <string name="set_file_picker">Detholydd ffeiliau</string>
+    <string name="set_system_database">System</string>
+    <string name="set_grant_storage_anyway">Argymhellir mynediad i\'r storfa</string>
+    <string name="set_grant_storage">Angen mynediad i\'r storfa</string>
+    <string name="set_folders_to_load">Ffolderi i\'w llwytho</string>
+    <string name="set_filtered_folders">Ffolderi wedi\'u hidlo</string>
+    <string name="set_filter_mode">Modd hidlo</string>
+    <string name="set_include">Cynnwys</string>
+    <string name="set_extra_settings">Gosodiadau ychwanegol</string>
+    <string name="lbl_no_folders">Dim ffolderi</string>
+    <string name="desc_add_folder">Ychwanegu ffolder</string>
 </resources>

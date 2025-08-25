@@ -205,7 +205,7 @@
     <string name="set_pre_amp_with">Регулиране с етикети</string>
     <string name="set_pre_amp_without">Регулиране без етикети</string>
     <string name="set_library">Библиотека</string>
-    <string name="set_locations">Музикални папки</string>
+    <string name="set_locations">Музикални източници</string>
     <string name="set_locations_desc">Управление откъде да се зарежда музиката</string>
     <string name="set_reindex">Обновяване на музика</string>
     <string name="err_index_failed">Неуспешно зареждане на музика</string>
@@ -318,4 +318,25 @@
     <string name="set_excluded_locations_desc">Управление на папки, които да се изключат от зареждането на музика</string>
     <string name="set_fs_cache">Използване на кеш на файловата система</string>
     <string name="set_fs_cache_desc">Подобрява времето за зареждане, но може да попречи на добавянето на нова музика</string>
+    <string name="lng_file_picker">Зарежда музика от избраните от вас папки. По-бавно, но по-надеждно. Изисква инсталиране на обикновеното приложение за файлов мениджър.</string>
+    <string name="lng_system_database">Зарежда музика, която Android OS автоматично разпознава. По-бързо, но по-малко надеждно. Производителите може да повредят това.</string>
+    <string name="lng_grant_storage_anyway">Предоставянето на разрешения за външно хранилище може да отстрани проблеми на някои устройства.</string>
+    <string name="lng_grant_storage_required">Предоставете разрешения за външно хранилище, за да активирате тази опция.</string>
+    <string name="lng_include_folders">Музиката извън избраните папки ще бъде игнорирана.</string>
+    <string name="lng_exclude_folders">Музиката в избраните папки ще бъде игнорирана.</string>
+    <string name="set_load_from">Зареждане от</string>
+    <string name="set_file_picker">Избор на файлове</string>
+    <string name="set_system_database">Система</string>
+    <string name="set_grant_storage_anyway">Препоръчва се достъп до хранилище</string>
+    <string name="set_grant_storage">Изисква се достъп до хранилището</string>
+    <string name="set_folders_to_load">Папки за зареждане</string>
+    <string name="set_folders_to_ignore">Папки за игнориране</string>
+    <string name="set_filtered_folders">Филтрирани папки</string>
+    <string name="set_filter_mode">Режим на филтриране</string>
+    <string name="set_include">Включване</string>
+    <string name="set_exclude">Изключване</string>
+    <string name="set_extra_settings">Още настройки</string>
+    <string name="lbl_no_folders">Няма папки</string>
+    <string name="desc_add_folder">Добавяне на папка</string>
+    <string name="lng_play_next">Песента ще се изпълни след малко</string>
 </resources>

@@ -100,7 +100,7 @@
     <string name="set_reindex">Оновити музику</string>
     <string name="lbl_remix_group">Ремікси</string>
     <string name="lbl_mixtape">Мікстейп</string>
-    <string name="set_locations">Папки з музикою</string>
+    <string name="set_locations">Музичні джерела</string>
     <string name="lbl_reset">Скинути</string>
     <string name="set_black_mode">Чорна тема</string>
     <string name="set_lib_tabs_desc">Зміна видимості та порядку вкладок бібліотеки</string>
@@ -334,4 +334,23 @@
     <string name="set_fs_cache_desc">Покращує час завантаження, але може запобігти додаванню нової музики</string>
     <string name="desc_add_folder">Додати папку</string>
     <string name="lbl_no_folders">Немає папок</string>
+    <string name="lng_play_next">Далі буде грати пісня</string>
+    <string name="lng_file_picker">Завантаження музики з вибраних вами папок. Повільніше, але надійніше. Потрібно встановити стандартний файловий менеджер.</string>
+    <string name="lng_system_database">Завантажує музику, яку ОС Android автоматично розпізнає. Швидше, але менш надійно. Немає підтримки функцій, залежних від файлової системи, таких як cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Надання дозволів на зовнішнє сховище може вирішити проблеми на деяких пристроях.</string>
+    <string name="lng_grant_storage_required">Щоб увімкнути цю опцію, надайте дозволи на зовнішнє сховище.</string>
+    <string name="lng_include_folders">Музика поза вибраними папками буде ігнорована.</string>
+    <string name="lng_exclude_folders">Музика у вибраних папках буде ігноруватися.</string>
+    <string name="set_load_from">Завантажити з</string>
+    <string name="set_file_picker">Вибір файлів</string>
+    <string name="set_system_database">Система</string>
+    <string name="set_grant_storage_anyway">Рекомендований доступ до сховища</string>
+    <string name="set_grant_storage">Потрібен доступ до сховища</string>
+    <string name="set_folders_to_load">Папки для завантаження</string>
+    <string name="set_folders_to_ignore">Папки, які слід ігнорувати</string>
+    <string name="set_filtered_folders">Відфільтровані папки</string>
+    <string name="set_filter_mode">Режим фільтра</string>
+    <string name="set_include">Включити</string>
+    <string name="set_exclude">Виключити</string>
+    <string name="set_extra_settings">Більше налаштувань</string>
 </resources>
