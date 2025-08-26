@@ -353,4 +353,10 @@
     <string name="set_include">Включити</string>
     <string name="set_exclude">Виключити</string>
     <string name="set_extra_settings">Більше налаштувань</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d секунда</item>
+        <item quantity="few">%d секунди</item>
+        <item quantity="many">%d секунд</item>
+        <item quantity="other">%d секунд</item>
+    </plurals>
 </resources>
