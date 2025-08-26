@@ -40,6 +40,8 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.ControlledCoverView
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
+import org.oxycblt.auxio.playback.ui.stepper.DisplayPortion
+import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
@@ -61,8 +63,8 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-    ControlledCoverView.OnSwipeListener,
-    ViewTreeObserver.OnGlobalLayoutListener {
+    ViewTreeObserver.OnGlobalLayoutListener,
+    PlayerFastSeekOverlay.PerformListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
@@ -97,7 +99,14 @@ class PlaybackPanelFragment :
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
         }
 
-        binding.playbackCover.onSwipeListener = this
+        // Disable swipe gestures on cover for now
+        binding.playbackCover.onSwipeListener = null
+        
+        // Set up fast seek overlay
+        binding.playbackFastSeekOverlay?.apply {
+            performListener(this@PlaybackPanelFragment)
+            seekSecondsSupplier { 10 } // 10 seconds per double-tap
+        }
         binding.playbackSong.apply {
             isSelected = true
             setOnClickListener { navigateToCurrentSong() }
@@ -205,21 +214,6 @@ class PlaybackPanelFragment :
         playbackModel.seekTo(positionDs)
     }
 
-    override fun onSwipePrevious() {
-        playbackModel.prev()
-    }
-
-    override fun onSwipeNext() {
-        playbackModel.next()
-    }
-
-    override fun onStepBack() {
-        playbackModel.stepBack()
-    }
-
-    override fun onStepForward() {
-        playbackModel.stepForward()
-    }
 
     private fun updateSong(song: Song?) {
         if (song == null) {
@@ -273,5 +267,32 @@ class PlaybackPanelFragment :
 
     private fun navigateToCurrentAlbum() {
         playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
+    }
+    
+    // PlayerFastSeekOverlay.PerformListener implementation
+    override fun onDoubleTap() {
+        // Already handled by onStepForward/onStepBack
+    }
+    
+    override fun onDoubleTapEnd() {
+        // Animation cleanup is handled by the overlay
+    }
+    
+    override fun getFastSeekDirection(portion: DisplayPortion): PlayerFastSeekOverlay.PerformListener.FastSeekDirection {
+        return when (portion) {
+            DisplayPortion.LEFT, DisplayPortion.LEFT_HALF -> 
+                PlayerFastSeekOverlay.PerformListener.FastSeekDirection.BACKWARD
+            DisplayPortion.RIGHT, DisplayPortion.RIGHT_HALF -> 
+                PlayerFastSeekOverlay.PerformListener.FastSeekDirection.FORWARD
+            else -> PlayerFastSeekOverlay.PerformListener.FastSeekDirection.NONE
+        }
+    }
+    
+    override fun seek(forward: Boolean) {
+        if (forward) {
+            playbackModel.stepForward()
+        } else {
+            playbackModel.stepBack()
+        }
     }
 }
