@@ -342,4 +342,7 @@
     <string name="set_extra_settings">更多設定</string>
     <string name="lbl_no_folders">沒有資料夾</string>
     <string name="desc_add_folder">新增資料夾</string>
+    <plurals name="fmt_seconds">
+        <item quantity="other">%d 秒</item>
+    </plurals>
 </resources>
