@@ -347,4 +347,7 @@
     <string name="lbl_no_folders">无文件夹</string>
     <string name="desc_add_folder">添加文件夹</string>
     <string name="lng_play_next">下一首播放的歌曲</string>
+    <plurals name="fmt_seconds">
+        <item quantity="other">%d 秒</item>
+    </plurals>
 </resources>
