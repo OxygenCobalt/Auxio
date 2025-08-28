@@ -351,4 +351,9 @@
     <string name="set_extra_settings">Configurações adicionais</string>
     <string name="set_load_from">Carregar de</string>
     <string name="lng_play_next">A musica tocará a seguir</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d segundo</item>
+        <item quantity="many">%d segundos</item>
+        <item quantity="other">%d segundos</item>
+    </plurals>
 </resources>
