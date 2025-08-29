@@ -70,11 +70,14 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
         circleClipTapView.alpha = 0f
         secondsView.visibility = INVISIBLE
         circleClipTapView.visibility = INVISIBLE
-        
+
         // Set up gesture detection
-        gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onDown(e: MotionEvent) = true
-        })
+        gestureDetector =
+            GestureDetector(
+                context,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onDown(e: MotionEvent) = true
+                })
         gestureDetector.setOnDoubleTapListener(this)
 
         addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
@@ -95,7 +98,7 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     // Indicates whether this (double) tap is the first of a series
     // Decides whether to call performListener.onAnimationStart or not
     private var initTap: Boolean = false
-    
+
     // Track if we're currently animating to avoid redundant animations
     private var isAnimatingIn: Boolean = false
     private var fadeOutRunnable: Runnable? = null
@@ -121,11 +124,11 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
                     "initTap = [$initTap], ")
 
         // Cancel any pending fade out
-        fadeOutRunnable?.let { 
+        fadeOutRunnable?.let {
             removeCallbacks(it)
             fadeOutRunnable = null
         }
-        
+
         /*
          * Check if a initial tap occurred or if direction was switched
          */
@@ -145,15 +148,13 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
                     isAnimatingIn = true
                     secondsView.visibility = VISIBLE
                     circleClipTapView.visibility = VISIBLE
-                    secondsView.animate()
+                    secondsView
+                        .animate()
                         .alpha(1f)
                         .setDuration(200)
                         .withEndAction { isAnimatingIn = false }
                         .start()
-                    circleClipTapView.animate()
-                        .alpha(1f)
-                        .setDuration(200)
-                        .start()
+                    circleClipTapView.animate().alpha(1f).setDuration(200).start()
                 }
             }
         } else {
@@ -179,28 +180,24 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
         initTap = false
 
         secondsView.stopAnimation()
-        
+
         // Cancel any existing fade out
-        fadeOutRunnable?.let { 
-            removeCallbacks(it)
-        }
-        
+        fadeOutRunnable?.let { removeCallbacks(it) }
+
         // Schedule fade out overlay after a delay
         fadeOutRunnable = Runnable {
             isAnimatingIn = false
-            secondsView.animate()
+            secondsView
+                .animate()
                 .alpha(0f)
                 .setDuration(200)
-                .withEndAction {
-                    secondsView.visibility = INVISIBLE
-                }
+                .withEndAction { secondsView.visibility = INVISIBLE }
                 .start()
-            circleClipTapView.animate()
+            circleClipTapView
+                .animate()
                 .alpha(0f)
                 .setDuration(200)
-                .withEndAction {
-                    circleClipTapView.visibility = INVISIBLE
-                }
+                .withEndAction { circleClipTapView.visibility = INVISIBLE }
                 .start()
             fadeOutRunnable = null
         }
@@ -238,20 +235,21 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
     }
-    
+
     // GestureDetector.OnDoubleTapListener implementation
     override fun onSingleTapConfirmed(e: MotionEvent) = false
-    
+
     override fun onDoubleTap(e: MotionEvent): Boolean {
         val width = width
         val tapX = e.x
-        
-        val portion = when {
-            tapX < width * 0.33f -> DisplayPortion.LEFT_HALF
-            tapX > width * 0.67f -> DisplayPortion.RIGHT_HALF  
-            else -> DisplayPortion.MIDDLE
-        }
-        
+
+        val portion =
+            when {
+                tapX < width * 0.33f -> DisplayPortion.LEFT_HALF
+                tapX > width * 0.67f -> DisplayPortion.RIGHT_HALF
+                else -> DisplayPortion.MIDDLE
+            }
+
         if (portion != DisplayPortion.MIDDLE) {
             onDoubleTapStarted(portion)
             onDoubleTapProgressDown(portion)
@@ -260,9 +258,9 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
         }
         return false
     }
-    
+
     override fun onDoubleTapEvent(e: MotionEvent) = false
-    
+
     companion object {
         private const val TAG = "PlayerFastSeekOverlay"
         private val DEBUG = BuildConfig.DEBUG

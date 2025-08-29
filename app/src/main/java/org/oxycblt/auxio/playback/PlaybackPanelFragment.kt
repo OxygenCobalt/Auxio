@@ -38,7 +38,6 @@ import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.playback.ui.ControlledCoverView
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.stepper.DisplayPortion
 import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
@@ -101,7 +100,7 @@ class PlaybackPanelFragment :
 
         // Disable swipe gestures on cover for now
         binding.playbackCover.onSwipeListener = null
-        
+
         // Set up fast seek overlay
         binding.playbackFastSeekOverlay?.apply {
             performListener(this@PlaybackPanelFragment)
@@ -214,7 +213,6 @@ class PlaybackPanelFragment :
         playbackModel.seekTo(positionDs)
     }
 
-
     private fun updateSong(song: Song?) {
         if (song == null) {
             // Nothing to do.
@@ -268,26 +266,30 @@ class PlaybackPanelFragment :
     private fun navigateToCurrentAlbum() {
         playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
     }
-    
+
     // PlayerFastSeekOverlay.PerformListener implementation
     override fun onDoubleTap() {
         // Already handled by onStepForward/onStepBack
     }
-    
+
     override fun onDoubleTapEnd() {
         // Animation cleanup is handled by the overlay
     }
-    
-    override fun getFastSeekDirection(portion: DisplayPortion): PlayerFastSeekOverlay.PerformListener.FastSeekDirection {
+
+    override fun getFastSeekDirection(
+        portion: DisplayPortion
+    ): PlayerFastSeekOverlay.PerformListener.FastSeekDirection {
         return when (portion) {
-            DisplayPortion.LEFT, DisplayPortion.LEFT_HALF -> 
+            DisplayPortion.LEFT,
+            DisplayPortion.LEFT_HALF ->
                 PlayerFastSeekOverlay.PerformListener.FastSeekDirection.BACKWARD
-            DisplayPortion.RIGHT, DisplayPortion.RIGHT_HALF -> 
+            DisplayPortion.RIGHT,
+            DisplayPortion.RIGHT_HALF ->
                 PlayerFastSeekOverlay.PerformListener.FastSeekDirection.FORWARD
             else -> PlayerFastSeekOverlay.PerformListener.FastSeekDirection.NONE
         }
     }
-    
+
     override fun seek(forward: Boolean) {
         if (forward) {
             playbackModel.stepForward()
