@@ -25,8 +25,13 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.UISettings
 
 enum class DisplayPortion {
     LEFT,
@@ -44,8 +49,11 @@ interface DoubleTapListener {
     fun onDoubleTapFinished()
 }
 
+@AndroidEntryPoint
 class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs), DoubleTapListener, GestureDetector.OnDoubleTapListener {
+
+    @Inject lateinit var uiSettings: UISettings
 
     private var leftSecondsView: SecondsView
     private var rightSecondsView: SecondsView
@@ -54,15 +62,49 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     private var rootConstraintLayout: ConstraintLayout
 
     private val gestureDetector: GestureDetector
+    private val shapeAppearance: ShapeAppearanceModel
 
     init {
         LayoutInflater.from(context).inflate(R.layout.player_fast_seek_overlay, this, true)
+
+        // Set up shape appearance based on UISettings similar to CoverView
+        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.PlayerFastSeekOverlay)
+        val shapeAppearanceRes =
+            styledAttrs.getResourceId(R.styleable.PlayerFastSeekOverlay_shapeAppearance, 0)
+
+        shapeAppearance =
+            if (uiSettings.roundMode) {
+                if (shapeAppearanceRes != 0) {
+                    ShapeAppearanceModel.builder(context, shapeAppearanceRes, -1).build()
+                } else {
+                    ShapeAppearanceModel.builder(
+                            context,
+                            com.google.android.material.R.style
+                                .ShapeAppearance_Material3_Corner_Medium,
+                            -1)
+                        .build()
+                }
+            } else {
+                ShapeAppearanceModel.builder().build()
+            }
+
+        styledAttrs.recycle()
 
         leftSecondsView = findViewById(R.id.left_seconds_view)
         rightSecondsView = findViewById(R.id.right_seconds_view)
         leftCircleClipTapView = findViewById(R.id.left_circle_clip_tap_view)
         rightCircleClipTapView = findViewById(R.id.right_circle_clip_tap_view)
         rootConstraintLayout = findViewById(R.id.root_constraint_layout)
+
+        // Apply shape clipping to the overlay
+        clipToOutline = true
+        background =
+            MaterialShapeDrawable().apply {
+                shapeAppearanceModel = shapeAppearance
+                // Set transparent background as we only want the clipping
+                fillColor =
+                    android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT)
+            }
 
         // Hide overlay elements by default
         leftSecondsView.alpha = 0f

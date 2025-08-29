@@ -34,8 +34,10 @@
 
     <org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
         android:id="@+id/playback_fast_seek_overlay"
+        style="@style/Widget.Auxio.Image.Full"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_margin="@dimen/spacing_medium"
         app:layout_constraintBottom_toTopOf="@+id/playback_info_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

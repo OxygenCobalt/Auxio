@@ -17,6 +17,10 @@
         <attr name="enableSelectionBadge" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="PlayerFastSeekOverlay">
+        <attr name="shapeAppearance" />
+    </declare-styleable>
+
     <declare-styleable name="IntListPreference">
         <attr name="entries" format="reference" />
         <attr name="entryValues" format="reference" />
