@@ -358,4 +358,9 @@
     <string name="set_grant_storage_anyway">Doporučen přístup k úložišti</string>
     <string name="set_grant_storage">Vyžadován přístup k úložišti</string>
     <string name="lng_play_next">Skladba bude přehrána jako další</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d sekunda</item>
+        <item quantity="few">%d sekundy</item>
+        <item quantity="other">%d sekund</item>
+    </plurals>
 </resources>
