@@ -315,4 +315,8 @@
     <string name="lng_empty_songs">உங்களுடைய பாடல்கள் இங்கே காணப்படும்.</string>
     <string name="lng_empty_genres">உங்களுடைய இசை வகைகள் இங்கே காணப்படும்.</string>
     <string name="lng_empty_artists">உங்களுடைய கலைஞர்கள் இங்கே காணப்படும்.</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d வினாடி</item>
+        <item quantity="other">%d வினாடிகள்</item>
+    </plurals>
 </resources>
