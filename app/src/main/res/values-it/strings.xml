@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">Un lettore musicale semplice e razionale per Android.</string>
+    <string name="info_app_desc">Un lettore musicale semplice ed intuitivo per Android.</string>
     <string name="lng_widget">Visualizza e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
@@ -345,7 +345,7 @@
     <string name="set_exclude">Escludi</string>
     <string name="set_extra_settings">Altre impostazioni</string>
     <string name="set_fs_cache">Utilizza la cache dell’archiviazione</string>
-    <string name="set_fs_cache_desc">Migliora i tempi di caricamento, ma può impedire l’aggiunta di nuova musica.</string>
+    <string name="set_fs_cache_desc">Migliora i tempi di caricamento, ma può impedire l’aggiunta di nuova musica</string>
     <string name="lbl_no_folders">Nessuna cartella</string>
     <string name="desc_add_folder">Aggiungi cartella</string>
     <plurals name="fmt_seconds">
