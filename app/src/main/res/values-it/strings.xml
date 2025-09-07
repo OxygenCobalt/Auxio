@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">Un lettore musicale semplice e razionale per Android.</string>
+    <string name="info_app_desc">Un lettore musicale semplice ed intuitivo per Android.</string>
     <string name="lng_widget">Visualizza e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
@@ -67,7 +67,7 @@
     <string name="set_keep_shuffle_desc">Mantiene la riproduzione casuale quando viene riprodotto un nuovo brano</string>
     <string name="set_rewind_prev">Riavvolgi prima di tornare indietro</string>
     <string name="set_rewind_prev_desc">Riavvolge il brano in riproduzione prima di passare a quello precedente</string>
-    <string name="set_repeat_pause">Pausa alla ripetizione</string>
+    <string name="set_repeat_pause">Pausa su ripetizione</string>
     <string name="set_repeat_pause_desc">Mette in pausa quando un brano si ripete</string>
     <string name="set_content">Contenuti</string>
     <string name="set_reindex">Aggiorna libreria</string>
@@ -110,7 +110,7 @@
     <string name="clr_blue">Blu</string>
     <string name="clr_deep_blue">Blu scuro</string>
     <string name="clr_cyan">Ciano</string>
-    <string name="clr_teal">Alzavola</string>
+    <string name="clr_teal">Verde ottanio</string>
     <string name="clr_green">Verde</string>
     <string name="clr_deep_green">Verde scuro</string>
     <string name="clr_lime">Lime</string>
@@ -171,7 +171,7 @@
     <string name="lbl_bitrate">Velocità in bit</string>
     <string name="lbl_cancel">Annulla</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
-    <string name="lng_observing">Sto monitorando i cambiamenti nella tua libreria musicale…</string>
+    <string name="lng_observing">Monitoraggio dei cambiamenti nella libreria musicale…</string>
     <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (richiede notifica persistente)</string>
     <string name="lbl_indexing">Caricamento musica</string>
     <string name="lbl_observing">Monitoraggio libreria musicale</string>
@@ -284,7 +284,7 @@
     <string name="lbl_author">Autore</string>
     <string name="lbl_donate">Dona</string>
     <string name="lbl_supporters">Sostenitori</string>
-    <string name="lbl_error_info">Informazioni sull\'errore</string>
+    <string name="lbl_error_info">Dettagli errore</string>
     <string name="def_album_count">Nessun album</string>
     <string name="lbl_path">Percorso</string>
     <string name="lbl_empty_playlist">Playlist vuota</string>
@@ -345,7 +345,7 @@
     <string name="set_exclude">Escludi</string>
     <string name="set_extra_settings">Altre impostazioni</string>
     <string name="set_fs_cache">Utilizza la cache dell’archiviazione</string>
-    <string name="set_fs_cache_desc">Migliora i tempi di caricamento, ma può impedire l’aggiunta di nuova musica.</string>
+    <string name="set_fs_cache_desc">Migliora i tempi di caricamento, ma può impedire l’aggiunta di nuova musica</string>
     <string name="lbl_no_folders">Nessuna cartella</string>
     <string name="desc_add_folder">Aggiungi cartella</string>
     <plurals name="fmt_seconds">
