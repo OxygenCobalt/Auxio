@@ -345,4 +345,10 @@
     <string name="lbl_no_folders">Nėra aplankų</string>
     <string name="desc_add_folder">Įtraukti aplanką</string>
     <string name="lng_play_next">Daina bus leidžiama toliau</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d sekundė</item>
+        <item quantity="few">%d sekundės</item>
+        <item quantity="many">%d sekundžių</item>
+        <item quantity="other">%d sekundžių</item>
+    </plurals>
 </resources>
