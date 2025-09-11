@@ -1,0 +1,5 @@
+Auxio 4.0.0 completely overhauls the user experience, with a refreshed design based on the latest Material Design specs
+and a brand new music loader with signifigant improvements to device and tag support.
+This patch introducess several optimizations and fixes to the music loader, alongside several UX improvements.
+New features are coming soon!
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v4.0.9.

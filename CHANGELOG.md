@@ -1,4 +1,19 @@
-# Changelog
+## v4.0.9
+
+## What's new
+- Stepping gestures added to playback screen
+    - This was prioritized by a sponsor, @kalex8!
+    - Gesture indicators for skipping/stepping coming in the next update!
+
+#### What's Improved
+- Sped up loading signifigantly on large libraries
+- Play next result text has been made more distinct
+- Fix incorrect/inconsistent items in playlist song menu
+
+#### What's Fixed
+- Fix System loading failing on some devices
+- Fixed some libraries producing invalid artists that freeze the app when navigated to
+- Enabled support for m4b decoding below Android 8
 
 ## 4.0.7
 
