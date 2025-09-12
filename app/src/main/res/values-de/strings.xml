@@ -349,4 +349,8 @@
     <string name="set_extra_settings">Mehr Einstellungen</string>
     <string name="lbl_no_folders">Keine Ordner</string>
     <string name="desc_add_folder">Ordner hinzufügen</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d Sekunde</item>
+        <item quantity="other">%d Sekunden</item>
+    </plurals>
 </resources>
