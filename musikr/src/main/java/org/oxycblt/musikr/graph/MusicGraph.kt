@@ -265,8 +265,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             val same = cluster.all { it.preArtist == canon }
             if (!same) {
                 // invalid mbid setup, collapse verts to one canon vert
-                val simpleMbidVertex =
-                    artistVertices.getOrPut(canon) { ArtistVertex(canon) }
+                val simpleMbidVertex = artistVertices.getOrPut(canon) { ArtistVertex(canon) }
                 for (artist in cluster) {
                     meldArtistVertices(artist, simpleMbidVertex)
                 }
@@ -291,9 +290,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             if (!same) {
                 // invalid mbid setup, collapse verts to one canon vert
                 val simpleMbidVertex =
-                    albumVertices.getOrPut(canon) {
-                        AlbumVertex(canon, mutableListOf())
-                    }
+                    albumVertices.getOrPut(canon) { AlbumVertex(canon, mutableListOf()) }
                 for (album in cluster) {
                     meldAlbumVertices(album, simpleMbidVertex)
                 }
