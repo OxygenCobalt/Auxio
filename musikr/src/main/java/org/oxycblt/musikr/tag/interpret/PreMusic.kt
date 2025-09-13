@@ -29,6 +29,7 @@ import org.oxycblt.musikr.tag.Disc
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.ReleaseType
 import org.oxycblt.musikr.tag.ReplayGainAdjustment
+import org.oxycblt.musikr.util.update
 
 internal data class PreSong(
     val v363Uid: Music.UID,
@@ -62,7 +63,18 @@ internal data class PreAlbum(
     val rawName: String?,
     val releaseType: ReleaseType,
     val preArtists: PreArtistsFrom,
-)
+) {
+    val uid =
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
+        musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.ALBUM, it) }
+            ?: Music.UID.auxio(Music.UID.Item.ALBUM) {
+                // Hash based on only names despite the presence of a date to increase stability.
+                // I don't know if there is any situation where an artist will have two albums with
+                // the exact same name, but if there is, I would love to know.
+                update(rawName)
+                update(preArtists.preArtists.mapNotNull { it.rawName })
+            }
+}
 
 internal sealed interface PreArtistsFrom {
     val preArtists: List<PreArtist>
@@ -72,7 +84,12 @@ internal sealed interface PreArtistsFrom {
     data class Album(override val preArtists: List<PreArtist>) : PreArtistsFrom
 }
 
-internal data class PreArtist(val musicBrainzId: UUID?, val name: Name, val rawName: String?)
+internal data class PreArtist(val musicBrainzId: UUID?, val name: Name, val rawName: String?) {
+    val uid =
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
+        musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.ARTIST, it) }
+            ?: Music.UID.auxio(Music.UID.Item.ARTIST) { update(rawName) }
+}
 
 internal data class PreGenre(
     val name: Name,
