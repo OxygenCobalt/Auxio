@@ -28,7 +28,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.music.MusicViewModel
@@ -65,16 +64,11 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
-
-        binding.aboutVersion.text = BuildConfig.VERSION_NAME
         binding.aboutCode.setOnClickListener { requireContext().openInBrowser(LINK_SOURCE) }
         binding.aboutWiki.setOnClickListener { requireContext().openInBrowser(LINK_WIKI) }
         binding.aboutLicenses.setOnClickListener { requireContext().openInBrowser(LINK_LICENSES) }
         binding.aboutProfile.setOnClickListener { requireContext().openInBrowser(LINK_PROFILE) }
         binding.aboutDonate.setOnClickListener { requireContext().openInBrowser(LINK_DONATE) }
-        binding.aboutSupMarkPitblado.setOnClickListener {
-            requireContext().openInBrowser(LINK_SUP_MARK_PITBLADO)
-        }
         binding.aboutFeedbackGithub.setOnClickListener {
             requireContext().openInBrowser(LINK_NEW_ISSUE)
         }
@@ -116,6 +110,5 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         const val LINK_NEW_ISSUE = "$LINK_SOURCE/issues/new"
         const val LINK_PROFILE = "https://github.com/OxygenCobalt"
         const val LINK_DONATE = "https://github.com/sponsors/OxygenCobalt"
-        const val LINK_SUP_MARK_PITBLADO = "https://github.com/mark-pitblado"
     }
 }
