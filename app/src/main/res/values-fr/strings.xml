@@ -107,7 +107,7 @@
     <string name="lbl_compilation">Compilation</string>
     <string name="lbl_live_group">Live</string>
     <string name="lbl_indexing">Chargement de la musique</string>
-    <string name="lbl_observing">Surveillance de la bibliothèque musicale en cours</string>
+    <string name="lbl_observing">Suivi de la bibliothèque musicale en cours</string>
     <string name="lbl_eps">EPs</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_singles">Singles</string>
@@ -349,4 +349,9 @@
     <string name="set_fs_cache_desc">Améliore le temps de chargement, mais peut empêcher des nouveaux fichiers de musiques d\'être ajoutés</string>
     <string name="lbl_no_folders">Aucun dossier</string>
     <string name="desc_add_folder">Ajouter dossier</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d seconde</item>
+        <item quantity="many">%d secondes</item>
+        <item quantity="other">%d secondes</item>
+    </plurals>
 </resources>
