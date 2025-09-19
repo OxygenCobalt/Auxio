@@ -1,9 +1,9 @@
 <p align="center"><img src="fastlane/metadata/android/en-US/images/icon.png" width="150"></p>
 <h1 align="center"><b>Auxio</b></h1>
-<h4 align="center">A simple, rational music player for android.</h4>
+<h4 align="center">A simple, rational music player for Android.</h4>
 <p align="center">
     <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.0.8">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.0.8&color=64B5F6&style=flat">
+        <img alt="Latest version" src="https://img.shields.io/static/v1?label=tag&message=v4.0.8&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -15,10 +15,10 @@
 </p>
 <h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a> | <a href="https://github.com/OxygenCobalt/Auxio#Donate">Donate</a></h4>
 <p align="center">
-    <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="250"></a>
     <a href="https://accrescent.app/app/org.oxycblt.auxio">
         <img alt="Get it on Accrescent" src="https://accrescent.app/badges/get-it-on.png" width="250">
     </a>
+    <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="250"></a>
 </p>
 <p align="center">
     <a href="https://hosted.weblate.org/engage/auxio/"><img height=64 src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>
@@ -26,7 +26,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
+Auxio is a local music player with a fast, reliable user experience and user interface. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that may use outdated Android functionality. In short, <b>it plays music.</b>
 
 **The default branch is the development version of the repository. For a stable version, see the master branch.**
 
@@ -44,26 +44,25 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 
 ## Features
 
-- Playback based on [Media3 ExoPlayer](https://developer.android.com/guide/topics/media/exoplayer)
-- Snappy UI derived from the latest Material Design guidelines
-- Opinionated UX that prioritizes ease of use over edge cases
+- Playback based on Media3 ExoPlayer
+- Opinionated user experience that prioritizes ease of use over edge cases
+- Snappy user interface derived from the Material 3 Expressive guidelines
 - Customizable behavior
-- Support for disc numbers, multiple artists, release types,
-precise/original dates, sort tags, and more
+- Support for disc numbers, multiple artists, release types, precise/original dates, sort tags, and more
 - Advanced artist system that unifies artists and album artists
-- SD Card-aware folder management
+- External storage-aware folder management
 - Reliable playlisting functionality
 - Playback state persistence
-- Android auto support
+- Android Auto support
 - Automatic gapless playback
-- Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)
-- External equalizer support (ex. Wavelet)
-- Edge-to-edge
+- Full ReplayGain support (On FLAC, MP3, MP4, OGG, and OPUS files)
+- External equalizer support
+- Edge-to-edge support
 - Embedded covers support
 - Search functionality
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
-- Completely private and offline
+- Completely offline and private
 - No rounded album covers (if you want them)
 
 ## Permissions
@@ -74,7 +73,7 @@ precise/original dates, sort tags, and more
 
 ## Donate
 
-You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even the app itself!
+You can support Auxio's development through [my GitHub Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, release notes, and even the app itself!
 
 <p align="center"><b>$8/month supporters:</b></p>
 
@@ -86,6 +85,7 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
 
 Auxio relies on a patched version of Media3 that enables some extra playback features, alongside taglib for metadata
 parsing. This adds some caveats to the build process:
+
 1. `cmake` and `ninja-build` must be installed before building the project.
 2. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
 download the external code.
@@ -99,8 +99,6 @@ Auxio accepts most contributions as long as they follow the [Contribution Guidel
 However, feature additions and major UI changes are less likely to be accepted. See
 [Why Are These Features Missing?](https://github.com/OxygenCobalt/Auxio/wiki/Why-Are-These-Features-Missing%3F)
 for more information.
-
-
 
 ## License
 
