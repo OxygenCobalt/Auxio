@@ -112,7 +112,6 @@
     <string name="lbl_copied">ذخیره شد</string>
     <string name="lbl_report">گزارش</string>
     <string name="lbl_author">پدیدآور</string>
-    <string name="lbl_author_name"></string>
     <string name="lbl_feedback">بازخورد</string>
     <string name="lbl_github">ایجاد یک مشکل در GitHub</string>
     <string name="lbl_email">ارسال پست الکترونیکی</string>
