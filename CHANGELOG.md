@@ -42,6 +42,13 @@ to prevent the library from not being updated on Samsung devices
 
 ## 4.0.5
 
+#### Date Added
+- Date added now reflects FileSystem date added
+
+#### What's Fixed
+- Fixed playlist songs incorrectly updating when resorting
+- Fixed artists without songs having enabled play/pause toolbar options
+
 #### What's Improved
 - Re-added folder exclusion
 
