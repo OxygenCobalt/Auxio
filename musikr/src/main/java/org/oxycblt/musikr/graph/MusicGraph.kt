@@ -253,19 +253,16 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         for (cluster in artistClusters.values) {
             simplifyArtistCluster(cluster)
         }
-        // second pass: cluster artists by mbid and identify invalid ones
-        // (i.e artists with the same mbid but different metadata)
-        // this only applies to artists w/mbids, if we dont do this well meld all non-mbid
-        // artists into a single vertex which is incorrect
-        val mbidClusters =
-            artistVertices.values.groupBy { it.preArtist.musicBrainzId }.filter { it.key != null }
-        for (cluster in mbidClusters.values) {
+        // second pass: check for identical uids and meld together vertices w/the same uid
+        // to prevent broken artist objects
+        val artistUidClusters = artistVertices.values.groupBy { it.preArtist.uid }
+        for (cluster in artistUidClusters.values) {
             // everything in the cluster must have the same pre-artist
             val canon = cluster.maxBy { it.songVertices.size }.preArtist
             val same = cluster.all { it.preArtist == canon }
             if (!same) {
                 // invalid mbid setup, strip mbids from all artists in the cluster
-                val noMbidPreArtist = canon.copy(musicBrainzId = null)
+                val noMbidPreArtist = canon
                 val simpleMbidVertex =
                     artistVertices.getOrPut(noMbidPreArtist) { ArtistVertex(noMbidPreArtist) }
                 for (artist in cluster) {
@@ -279,19 +276,14 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
         for (cluster in albumClusters.values) {
             simplifyAlbumCluster(cluster)
         }
-        // second pass: cluster albums by mbid and identify invalid ones
-        // (i.e albums with the same mbid but different metadata)
-        // this only applies to albums w/mbids, if we dont do this well meld all non-mbid
-        // albums into a single vertex which is incorrect
-        val mbidAlbumClusters =
-            albumVertices.values.groupBy { it.preAlbum.musicBrainzId }.filter { it.key != null }
-        for (cluster in mbidAlbumClusters.values) {
-            // everything in the cluster must have the same pre-album
+        // second pass: check for identical uids and meld together vertices w/the same uid
+        // to prevent broken album objects
+        val uidClusters = albumVertices.values.groupBy { it.preAlbum.uid }
+        for (cluster in uidClusters.values) {
             val canon = cluster.maxBy { it.songVertices.size }.preAlbum
             val same = cluster.all { it.preAlbum == canon }
             if (!same) {
-                // invalid mbid setup, strip mbids from all albums in the cluster
-                val noMbidPreAlbum = canon.copy(musicBrainzId = null)
+                val noMbidPreAlbum = canon
                 val simpleMbidVertex =
                     albumVertices.getOrPut(noMbidPreAlbum) {
                         AlbumVertex(noMbidPreAlbum, mutableListOf())

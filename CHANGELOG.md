@@ -1,4 +1,19 @@
-# Changelog
+## v4.0.9
+
+## What's new
+- Stepping gestures added to playback screen
+    - This was prioritized by a sponsor, @kalex8!
+    - Gesture indicators for skipping/stepping coming in the next update!
+
+#### What's Improved
+- Sped up loading signifigantly on large libraries
+- Play next result text has been made more distinct
+- Fix incorrect/inconsistent items in playlist song menu
+
+#### What's Fixed
+- Fix System loading failing on some devices
+- Fixed some libraries producing invalid artists that freeze the app when navigated to
+- Enabled support for m4b decoding below Android 8
 
 ## 4.0.7
 
@@ -26,6 +41,13 @@ to prevent the library from not being updated on Samsung devices
 - Fixed file tree cache being stored in cache storage rather than app storage
 
 ## 4.0.5
+
+#### Date Added
+- Date added now reflects FileSystem date added
+
+#### What's Fixed
+- Fixed playlist songs incorrectly updating when resorting
+- Fixed artists without songs having enabled play/pause toolbar options
 
 #### What's Improved
 - Re-added folder exclusion
