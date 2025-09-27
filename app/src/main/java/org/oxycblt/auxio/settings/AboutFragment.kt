@@ -28,6 +28,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.music.MusicViewModel
@@ -64,6 +65,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
+        binding.aboutVersion.text = BuildConfig.VERSION_NAME
         binding.aboutCode.setOnClickListener { requireContext().openInBrowser(LINK_SOURCE) }
         binding.aboutWiki.setOnClickListener { requireContext().openInBrowser(LINK_WIKI) }
         binding.aboutLicenses.setOnClickListener { requireContext().openInBrowser(LINK_LICENSES) }
