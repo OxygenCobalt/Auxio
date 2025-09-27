@@ -20,9 +20,91 @@ package org.oxycblt.musikr.util
 
 import java.security.MessageDigest
 import java.util.UUID
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import org.oxycblt.musikr.BuildConfig
 import org.oxycblt.musikr.tag.Date
+
+fun CoroutineScope.tryAsync(
+    context: CoroutineContext,
+    block: suspend () -> Unit
+): Deferred<Result<Unit>> = async {
+    try {
+        block()
+        Result.success(Unit)
+    } catch (e: Throwable) {
+        Result.failure(e)
+    }
+}
+
+fun <T> CoroutineScope.tryAsyncWith(
+    channel: Channel<T>,
+    context: CoroutineContext,
+    block: suspend (Channel<T>) -> Unit,
+): Deferred<Result<Unit>> =
+    async(context) {
+        try {
+            block(channel)
+            channel.close()
+            Result.success(Unit)
+        } catch (e: Throwable) {
+            channel.close(e)
+            Result.failure(e)
+        }
+    }
+
+fun <T, R> CoroutineScope.map(
+    input: Channel<T>,
+    output: Channel<R>,
+    context: CoroutineContext = Dispatchers.Default,
+    block: suspend (T) -> R?,
+): Deferred<Result<Unit>> {
+    return tryAsync(context) {
+        for (item in input) {
+            block(item)?.let { output.send(it) }
+        }
+        output.close()
+        Unit
+    }
+}
+
+fun <T, R> CoroutineScope.mapParallel(
+    n: Int,
+    input: Channel<T>,
+    output: Channel<R>,
+    context: CoroutineContext = Dispatchers.Default,
+    block: suspend (T) -> R?,
+): Deferred<Result<Unit>> {
+    return tryAsync(context) {
+        val deferreds = ArrayList<Deferred<Result<Unit>>>()
+        for (i in 0 until n) {
+            val deferred =
+                tryAsync(context) {
+                    for (item in input) {
+                        block(item)?.let { output.send(it) }
+                    }
+                }
+            deferreds.add(deferred)
+        }
+        deferreds.tryAwaitAll()
+        output.close()
+        Unit
+    }
+}
+
+suspend fun List<Deferred<Result<Unit>>>.tryAwaitAll() = awaitAll().forEach { it.getOrThrow() }
+
+fun CoroutineScope.merge(vararg deferreds: Deferred<Result<Unit>>): Deferred<Result<Unit>> =
+    tryAsync(Dispatchers.Main) {
+        val results = awaitAll(*deferreds)
+        results.forEach { result -> result.getOrThrow() }
+    }
 
 /**
  * Sanitizes a value that is unlikely to be null. On debug builds, this aliases to [requireNotNull],

@@ -133,7 +133,7 @@
     <string name="set_pre_amp_with">带有标签的调节项</string>
     <string name="set_pre_amp_without">没有标签的调节项</string>
     <string name="set_pre_amp_warning">警告：将前置增益更改为正向高数值或导致某些音轨峰值过高。</string>
-    <string name="set_locations">音乐文件夹</string>
+    <string name="set_locations">音乐源</string>
     <string name="set_locations_desc">管理音乐的加载位置</string>
     <string name="cdc_mp3">MPEG-1 音频</string>
     <string name="cdc_mp4">MPEG-4 音频</string>
@@ -326,4 +326,25 @@
     <string name="set_excluded_locations">排除的文件夹</string>
     <string name="set_fs_cache">使用文件系统缓存</string>
     <string name="set_fs_cache_desc">改进加载时间，但可能阻止添加新音乐</string>
+    <string name="lng_file_picker">从你选择的文件夹加载音乐。较慢，但更稳定。需要内置文件管理器。</string>
+    <string name="lng_system_database">加载安卓系统自动检测到的音乐文件。较快，但不那么稳定。不支持诸如封面图等取决于文件系统的特性。</string>
+    <string name="lng_grant_storage_anyway">授予外部存储权限可以修复某些设备上的问题。</string>
+    <string name="lng_grant_storage_required">要启用此选项请授予外部存储权限。</string>
+    <string name="lng_include_folders">将忽略所选文件夹之外的音乐文件。</string>
+    <string name="lng_exclude_folders">所选文件夹内的音乐文件将被忽略。</string>
+    <string name="set_load_from">加载源</string>
+    <string name="set_file_picker">文件选择器</string>
+    <string name="set_system_database">系统</string>
+    <string name="set_grant_storage_anyway">推荐授予存储权限</string>
+    <string name="set_grant_storage">需要存储权限</string>
+    <string name="set_folders_to_load">要加载的文件夹</string>
+    <string name="set_folders_to_ignore">要忽略的文件夹</string>
+    <string name="set_filtered_folders">已过滤的文件夹</string>
+    <string name="set_filter_mode">过滤模式</string>
+    <string name="set_include">包括</string>
+    <string name="set_exclude">排除</string>
+    <string name="set_extra_settings">更多设置</string>
+    <string name="lbl_no_folders">无文件夹</string>
+    <string name="desc_add_folder">添加文件夹</string>
+    <string name="lng_play_next">下一首播放的歌曲</string>
 </resources>

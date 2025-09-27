@@ -18,6 +18,8 @@
  
 package org.oxycblt.musikr.graph
 
+import android.content.Context
+import java.io.File
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
@@ -45,6 +47,133 @@ internal data class MusicGraph(
 
     companion object {
         fun builder(): Builder = MusicGraphBuilderImpl()
+    }
+
+    fun renderToGraphviz(context: Context, fileName: String = "music_graph.dot") {
+        val dot = buildString {
+            appendLine("digraph MusicGraph {")
+            appendLine("  rankdir=LR;")
+            appendLine("  node [shape=rectangle];")
+            appendLine()
+
+            // Define node styles for different vertex types
+            appendLine("  // Songs")
+            appendLine("  node [style=filled,fillcolor=lightblue];")
+            songVertex.forEachIndexed { index, song ->
+                val songId = "song_$index"
+                val name = song.preSong.rawName ?: "Unknown Song"
+                val uid = song.preSong.v401Uid
+                val label = "${escape(name)}\\nUID: $uid"
+                appendLine("  $songId [label=\"$label\"];")
+            }
+            appendLine()
+
+            appendLine("  // Albums")
+            appendLine("  node [style=filled,fillcolor=lightgreen];")
+            albumVertex.forEachIndexed { index, album ->
+                val albumId = "album_$index"
+                val name = album.preAlbum.rawName ?: "Unknown Album"
+                val mbid = album.preAlbum.musicBrainzId?.let { "\\nMBID: $it" } ?: ""
+                val label = "${escape(name)}$mbid"
+                appendLine("  $albumId [label=\"$label\"];")
+            }
+            appendLine()
+
+            appendLine("  // Artists")
+            appendLine("  node [style=filled,fillcolor=lightyellow];")
+            artistVertex.forEachIndexed { index, artist ->
+                val artistId = "artist_$index"
+                val name = artist.preArtist.rawName ?: "Unknown Artist"
+                val mbid = artist.preArtist.musicBrainzId?.let { "\\nMBID: $it" } ?: ""
+                val label = "${escape(name)}$mbid"
+                appendLine("  $artistId [label=\"$label\"];")
+            }
+            appendLine()
+
+            appendLine("  // Genres")
+            appendLine("  node [style=filled,fillcolor=lightcoral];")
+            genreVertex.forEachIndexed { index, genre ->
+                val genreId = "genre_$index"
+                val label = genre.preGenre.rawName ?: "Unknown Genre"
+                appendLine("  $genreId [label=\"${escape(label)}\"];")
+            }
+            appendLine()
+
+            appendLine("  // Playlists")
+            appendLine("  node [style=filled,fillcolor=lavender];")
+            playlistVertex.forEachIndexed { index, playlist ->
+                val playlistId = "playlist_$index"
+                val label = playlist.prePlaylist.rawName ?: "Unknown Playlist"
+                appendLine("  $playlistId [label=\"${escape(label)}\"];")
+            }
+            appendLine()
+
+            // Create edges
+            appendLine("  // Song -> Album edges")
+            songVertex.forEachIndexed { songIndex, song ->
+                val albumIndex = albumVertex.indexOf(song.albumVertex)
+                if (albumIndex >= 0) {
+                    appendLine("  song_$songIndex -> album_$albumIndex [color=blue];")
+                }
+            }
+            appendLine()
+
+            appendLine("  // Song -> Artist edges")
+            songVertex.forEachIndexed { songIndex, song ->
+                song.artistVertices.forEach { artistVertex ->
+                    val artistIndex = this@MusicGraph.artistVertex.indexOf(artistVertex)
+                    if (artistIndex >= 0) {
+                        appendLine("  song_$songIndex -> artist_$artistIndex [color=green];")
+                    }
+                }
+            }
+            appendLine()
+
+            appendLine("  // Song -> Genre edges")
+            songVertex.forEachIndexed { songIndex, song ->
+                song.genreVertices.forEach { genreVertex ->
+                    val genreIndex = this@MusicGraph.genreVertex.indexOf(genreVertex)
+                    if (genreIndex >= 0) {
+                        appendLine("  song_$songIndex -> genre_$genreIndex [color=red];")
+                    }
+                }
+            }
+            appendLine()
+
+            appendLine("  // Album -> Artist edges")
+            albumVertex.forEachIndexed { albumIndex, album ->
+                album.artistVertices.forEach { artistVertex ->
+                    val artistIndex = this@MusicGraph.artistVertex.indexOf(artistVertex)
+                    if (artistIndex >= 0) {
+                        appendLine("  album_$albumIndex -> artist_$artistIndex [color=purple];")
+                    }
+                }
+            }
+            appendLine()
+
+            appendLine("  // Playlist -> Song edges")
+            playlistVertex.forEachIndexed { playlistIndex, playlist ->
+                playlist.songVertices.forEachIndexed { _, songVertex ->
+                    songVertex?.let {
+                        val songIndex = this@MusicGraph.songVertex.indexOf(it)
+                        if (songIndex >= 0) {
+                            appendLine(
+                                "  playlist_$playlistIndex -> song_$songIndex [color=orange];")
+                        }
+                    }
+                }
+            }
+
+            appendLine("}")
+        }
+
+        // Write to internal storage
+        val file = File(context.filesDir, fileName)
+        file.writeText(dot)
+    }
+
+    private fun escape(text: String, maxLength: Int = 50): String {
+        return text.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").take(maxLength)
     }
 }
 
@@ -119,14 +248,50 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             simplifyGenreCluster(cluster)
         }
 
+        // first pass: cluster artists by name and process MBIDs where valid
         val artistClusters = artistVertices.values.groupBy { it.preArtist.rawName?.lowercase() }
         for (cluster in artistClusters.values) {
             simplifyArtistCluster(cluster)
         }
+        // second pass: check for identical uids and meld together vertices w/the same uid
+        // to prevent broken artist objects
+        val artistUidClusters = artistVertices.values.groupBy { it.preArtist.uid }
+        for (cluster in artistUidClusters.values) {
+            // everything in the cluster must have the same pre-artist
+            val canon = cluster.maxBy { it.songVertices.size }.preArtist
+            val same = cluster.all { it.preArtist == canon }
+            if (!same) {
+                // invalid mbid setup, strip mbids from all artists in the cluster
+                val noMbidPreArtist = canon
+                val simpleMbidVertex =
+                    artistVertices.getOrPut(noMbidPreArtist) { ArtistVertex(noMbidPreArtist) }
+                for (artist in cluster) {
+                    meldArtistVertices(artist, simpleMbidVertex)
+                }
+            }
+        }
 
+        // first pass: cluster albums by name and process MBIDs where valid
         val albumClusters = albumVertices.values.groupBy { it.preAlbum.rawName?.lowercase() }
         for (cluster in albumClusters.values) {
             simplifyAlbumCluster(cluster)
+        }
+        // second pass: check for identical uids and meld together vertices w/the same uid
+        // to prevent broken album objects
+        val uidClusters = albumVertices.values.groupBy { it.preAlbum.uid }
+        for (cluster in uidClusters.values) {
+            val canon = cluster.maxBy { it.songVertices.size }.preAlbum
+            val same = cluster.all { it.preAlbum == canon }
+            if (!same) {
+                val noMbidPreAlbum = canon
+                val simpleMbidVertex =
+                    albumVertices.getOrPut(noMbidPreAlbum) {
+                        AlbumVertex(noMbidPreAlbum, mutableListOf())
+                    }
+                for (album in cluster) {
+                    meldAlbumVertices(album, simpleMbidVertex)
+                }
+            }
         }
 
         // Remove any edges that wound up connecting to the same artist or genre

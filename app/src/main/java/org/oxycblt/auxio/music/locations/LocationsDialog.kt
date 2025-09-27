@@ -420,7 +420,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                     binding.locationsPermsDesc.setTextColor(
                         context.getAttrColorCompat(MR.attr.colorOnErrorContainer))
                     binding.locationsPermsSubtitle.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorError))
+                        context.getAttrColorCompat(androidx.appcompat.R.attr.colorError))
                     binding.locationsPermsOpen.imageTintList =
                         context.getAttrColorCompat(MR.attr.colorOnErrorContainer)
                 }

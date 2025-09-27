@@ -19,17 +19,10 @@
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CacheResult
@@ -37,10 +30,14 @@ import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.fs.FS
+import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.playlist.m3u.M3U
+import org.oxycblt.musikr.util.map
+import org.oxycblt.musikr.util.merge
+import org.oxycblt.musikr.util.tryAsyncWith
 
 internal interface ExploreStep {
-    fun explore(): Flow<Explored>
+    suspend fun explore(scope: CoroutineScope, explored: Channel<Explored>): Deferred<Result<Unit>>
 
     companion object {
         fun from(context: Context, config: Config): ExploreStep =
@@ -49,47 +46,70 @@ internal interface ExploreStep {
 }
 
 private class ExploreStepImpl(private val fs: FS, private val storage: Storage) : ExploreStep {
-    override fun explore(): Flow<Explored> {
-        return merge(
-            fs.explore()
-                .filter { it.mimeType.startsWith("audio/") || it.mimeType == M3U.MIME_TYPE }
-                .distributedMap(n = 8, on = Dispatchers.IO, buffer = Channel.UNLIMITED) { file ->
-                    when (val cacheResult = storage.cache.read(file)) {
-                        is CacheResult.Hit -> NeedsCover(cacheResult.song)
-                        is CacheResult.Stale -> Finalized(NewSong(cacheResult.file))
-                        is CacheResult.Miss -> Finalized(NewSong(cacheResult.file))
-                    }
+    override suspend fun explore(
+        scope: CoroutineScope,
+        explored: Channel<Explored>
+    ): Deferred<Result<Unit>> {
+        val files = Channel<File>(Channel.UNLIMITED)
+        val filesTask = fs.explore(files)
+
+        val classified = Channel<Classified>(Channel.UNLIMITED)
+        val classifiedTask =
+            scope.map(files, classified, Dispatchers.IO) { file ->
+                if (!file.mimeType.startsWith("audio/") && file.mimeType != M3U.MIME_TYPE) {
+                    return@map null
                 }
-                .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED)
-                .distributedMap(n = 8, on = Dispatchers.IO, buffer = Channel.UNLIMITED) {
-                    when (it) {
-                        is Finalized -> it
-                        is NeedsCover -> {
-                            when (val coverResult =
-                                it.cachedSong.coverId?.let { id -> storage.covers.obtain(id) }) {
-                                is CoverResult.Hit ->
-                                    Finalized(it.cachedSong.toRawSong(coverResult.cover))
-                                null -> Finalized(it.cachedSong.toRawSong(null))
-                                else -> Finalized(NewSong(it.cachedSong.file))
-                            }
+                val cacheResult = storage.cache.read(file)
+                when (cacheResult) {
+                    is CacheResult.Hit -> NeedsCover(cacheResult.song)
+                    is CacheResult.Stale -> Finalized(NewSong(cacheResult.file))
+                    is CacheResult.Miss -> Finalized(NewSong(cacheResult.file))
+                }
+            }
+
+        val finalized = Channel<Finalized>(Channel.UNLIMITED)
+        val exploredTask =
+            scope.map(classified, finalized, Dispatchers.IO) { item ->
+                when (item) {
+                    is Finalized -> item
+                    is NeedsCover -> {
+                        when (val coverResult =
+                            item.cachedSong.coverId?.let { id -> storage.covers.obtain(id) }) {
+                            is CoverResult.Hit ->
+                                Finalized(item.cachedSong.toRawSong(coverResult.cover))
+                            null -> Finalized(item.cachedSong.toRawSong(null))
+                            else -> Finalized(NewSong(item.cachedSong.file))
                         }
                     }
                 }
-                .map { it.explored }
-                .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED),
-            flow { emitAll(storage.storedPlaylists.read().asFlow()) }
-                .map { RawPlaylist(it) }
-                .flowOn(Dispatchers.IO)
-                .buffer(Channel.UNLIMITED))
+            }
+        val playlists = Channel<Explored>(Channel.UNLIMITED)
+        val playlistsTask =
+            scope.tryAsyncWith(playlists, Dispatchers.IO) {
+                for (playlist in storage.storedPlaylists.read()) {
+                    val rawPlaylist = RawPlaylist(playlist)
+                    it.send(rawPlaylist)
+                }
+            }
+
+        val mergeTask =
+            scope.tryAsyncWith(explored, Dispatchers.Main) {
+                for (item in finalized) {
+                    it.send(item.explored)
+                }
+                for (playlist in playlists) {
+                    it.send(playlist)
+                }
+            }
+
+        return scope.merge(filesTask, classifiedTask, exploredTask, playlistsTask, mergeTask)
     }
 
-    private sealed interface InternalExploreItem
+    private sealed interface Classified
 
-    private data class NeedsCover(val cachedSong: CachedSong) : InternalExploreItem
+    private data class NeedsCover(val cachedSong: CachedSong) : Classified
 
-    private data class Finalized(val explored: Explored) : InternalExploreItem
+    private data class Finalized(val explored: Explored) : Classified
 
     private fun CachedSong.toRawSong(cover: Cover?) =
         RawSong(file, properties, tags, cover, addedMs)
