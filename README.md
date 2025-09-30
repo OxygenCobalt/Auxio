@@ -96,36 +96,50 @@ will only work on unix-based systems.
 
 #### Install Android Studio.
 
-Debian:
-
-´´´bash 
-asdasd
-´´´´
 Arch:
+
+```bash
+yay -S android-studio
+```
 
 #### Configuring Android Studio:
 
-- Be sure to have NDK tools, version 28.2.13... You can search it on Languages & Frameworks > Android SDK.
+- Be sure to have NDK tools, version 28.2.13676358. You can search it on Languages & Frameworks > Android SDK.
 - Install Java-21
-- Configurate it in gradle.properties:
-    - org.gradle.java.home=/usr/lib/jvm/java-21-openjdk
-
+    ```bash
+    sudo pacman -S jdk21-openjdk
+    ```
+    Set java version to jdk21-openjdk
+    Arch:
+    ```bash
+    sudo archlinux-java set java-21-openjdk    
+    ```
 - Run ./gradlew assembleDebug
-
 
 #### Connecting to your Android Device
 
 You can connect your Mobile Phone through USB to run the app. 
 
-[Explain more]
+1. **Enable Developer Options on your phone**
+   - Go to **Settings > About phone**  
+   - Tap **Build number** 7 times until you see *"You are now a developer!"*
 
-#### Install a device
+2. **Enable USB debugging**
+   - Go to **Settings > Developer options**  
+   - Turn on **USB debugging**
+
+3. **Connect your phone to the computer**
+   - Use a USB cable  
+   - On your phone, accept the *Allow USB debugging?* prompt
+
+4. **Verify that your device is detected**
+   ```bash
+   cd ~/Android/Sdk/platform-tools
+   ./adb devices
+
+#### Install a device (emulator)
 
 To run the application without a physical Android device, you can use an Emulator. To install it you need to: 
-
-Debian
-```bash
-```
 
 Arch
 ```bash
