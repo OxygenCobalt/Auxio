@@ -92,6 +92,81 @@ download the external code.
 3. You are **unable** to build this project on windows, as the custom Media3 build runs shell scripts that
 will only work on unix-based systems.
 
+### Set up Android Studio
+
+#### Install Android Studio.
+
+Debian:
+
+´´´bash 
+asdasd
+´´´´
+Arch:
+
+#### Configuring Android Studio:
+
+- Be sure to have NDK tools, version 28.2.13... You can search it on Languages & Frameworks > Android SDK.
+- Install Java-21
+- Configurate it in gradle.properties:
+    - org.gradle.java.home=/usr/lib/jvm/java-21-openjdk
+
+- Run ./gradlew assembleDebug
+
+
+#### Connecting to your Android Device
+
+You can connect your Mobile Phone through USB to run the app. 
+
+[Explain more]
+
+#### Install a device
+
+To run the application without a physical Android device, you can use an Emulator. To install it you need to: 
+
+Debian
+```bash
+```
+
+Arch
+```bash
+yay -S android-sdk-platform-tools
+yay -S android-emulator
+```
+
+Install a version of an Android Phone:
+
+```bash
+cd ~/Android/Sdk/cmdline-tools/latest/bin
+./sdkmanager --install "system-images;android-33;google_apis;x86_64"
+```
+
+Run the emulator
+
+```bash
+cd ~/Android/Sdk/cmdline-tools/latest/bin
+./avdmanager create avd -n auxio-avd -k "system-images;android-33;google_apis;x86_64" --device "pixel"
+```
+
+```bash
+cd ~/Android/Sdk/cmdline-tools/latest/bin
+./sdkmanager "emulator"
+cd /home/porky/Android/Sdk/emulator
+./emulator -avd auxio-avd -netdelay none -netspeed full
+```
+
+#### Install the app on the Android Phone
+
+```bash
+./gradlew installDebug
+```
+
+#### Load music to Auxio
+
+```bash
+cd ~/Android/Sdk/platform-tools
+./adb push ~Music/ /sdcard/Music
+```
+
 ## Contributing
 
 Auxio accepts most contributions as long as they follow the [Contribution Guidelines](/.github/CONTRIBUTING.md).
