@@ -106,11 +106,14 @@ yay -S android-studio
 
 - Be sure to have NDK tools, version 28.2.13676358. You can search it on Languages & Frameworks > Android SDK.
 - Install Java-21
+
     ```bash
     sudo pacman -S jdk21-openjdk
     ```
     Set java version to jdk21-openjdk
+
     Arch:
+
     ```bash
     sudo archlinux-java set java-21-openjdk    
     ```
@@ -136,6 +139,7 @@ You can connect your Mobile Phone through USB to run the app.
    ```bash
    cd ~/Android/Sdk/platform-tools
    ./adb devices
+   ```
 
 #### Install a device (emulator)
 
@@ -169,12 +173,17 @@ cd /home/porky/Android/Sdk/emulator
 ```
 
 #### Install the app on the Android Phone
+To install the app on your physical device or emulator, run this command:
 
 ```bash
 ./gradlew installDebug
 ```
 
-#### Load music to Auxio
+Auxio should now appear in the list of Apps
+
+#### Load music to Auxio (Optional)
+
+You can move files from your pc to your device / emulator to test the music using this command:
 
 ```bash
 cd ~/Android/Sdk/platform-tools
