@@ -21,4 +21,4 @@ Auxio është një lexues muzikor lokal me një UI/UX të shpejtë dhe të besue
 - Riprodhim automatik me kufje
 - Widget-e elegante që përshtaten automatikisht me madhësinë e tyre
 - Plotësisht privat dhe offline
-- Nuk përdor kopertina albumesh me kënde të rrumbullakosura (në parazgjedhje)
+- Pa kopertina të rrumbullakosura albumesh (nëse i dëshironi)
