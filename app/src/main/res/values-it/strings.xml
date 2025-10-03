@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">Un lettore musicale semplice e razionale per android.</string>
+    <string name="info_app_desc">Un lettore musicale semplice ed intuitivo per Android.</string>
     <string name="lng_widget">Visualizza e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
@@ -28,7 +28,7 @@
     <string name="lbl_queue">Coda</string>
     <string name="lbl_play_next">Riproduci come successivo</string>
     <string name="lbl_queue_add">Aggiungi alla coda</string>
-    <string name="lng_queue_added">Aggiungi alla coda</string>
+    <string name="lng_queue_added">Aggiunto alla coda</string>
     <string name="lbl_artist_details">Vai all\'artista</string>
     <string name="lbl_album_details">Vai all\'album</string>
     <string name="lbl_save">Salva</string>
@@ -67,7 +67,7 @@
     <string name="set_keep_shuffle_desc">Mantiene la riproduzione casuale quando viene riprodotto un nuovo brano</string>
     <string name="set_rewind_prev">Riavvolgi prima di tornare indietro</string>
     <string name="set_rewind_prev_desc">Riavvolge il brano in riproduzione prima di passare a quello precedente</string>
-    <string name="set_repeat_pause">Pausa alla ripetizione</string>
+    <string name="set_repeat_pause">Pausa su ripetizione</string>
     <string name="set_repeat_pause_desc">Mette in pausa quando un brano si ripete</string>
     <string name="set_content">Contenuti</string>
     <string name="set_reindex">Aggiorna libreria</string>
@@ -110,7 +110,7 @@
     <string name="clr_blue">Blu</string>
     <string name="clr_deep_blue">Blu scuro</string>
     <string name="clr_cyan">Ciano</string>
-    <string name="clr_teal">Alzavola</string>
+    <string name="clr_teal">Verde ottanio</string>
     <string name="clr_green">Verde</string>
     <string name="clr_deep_green">Verde scuro</string>
     <string name="clr_lime">Lime</string>
@@ -171,7 +171,7 @@
     <string name="lbl_bitrate">Velocità in bit</string>
     <string name="lbl_cancel">Annulla</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
-    <string name="lng_observing">Sto monitorando i cambiamenti nella tua libreria musicale…</string>
+    <string name="lng_observing">Monitoraggio dei cambiamenti nella libreria musicale…</string>
     <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (richiede notifica persistente)</string>
     <string name="lbl_indexing">Caricamento musica</string>
     <string name="lbl_observing">Monitoraggio libreria musicale</string>
@@ -284,7 +284,7 @@
     <string name="lbl_author">Autore</string>
     <string name="lbl_donate">Dona</string>
     <string name="lbl_supporters">Sostenitori</string>
-    <string name="lbl_error_info">Informazioni sull\'errore</string>
+    <string name="lbl_error_info">Dettagli errore</string>
     <string name="def_album_count">Nessun album</string>
     <string name="lbl_path">Percorso</string>
     <string name="lbl_empty_playlist">Playlist vuota</string>
@@ -328,4 +328,32 @@
     <string name="set_with_hidden">Includi file nascosti</string>
     <string name="set_excluded_locations">Cartelle da escludere</string>
     <string name="set_excluded_locations_desc">Seleziona le cartelle da escludere dal caricamento della musica</string>
+    <string name="lng_file_picker">Carica la musica dalle cartelle selezionate. Più lento, ma più affidabile. Richiede che il file manager di sistema sia installato.</string>
+    <string name="lng_system_database">Carica la musica rilevata automaticamente da Android. Più veloce, ma meno affidabile. Non supporta le funzioni basate sul file system come cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Concedere le autorizzazioni di archiviazione esterna può risolvere problemi su alcuni dispositivi.</string>
+    <string name="lng_grant_storage_required">Concedi le autorizzazioni di archiviazione esterna per abilitare questa opzione.</string>
+    <string name="lng_include_folders">La musica al di fuori delle cartelle selezionate verrà ignorata.</string>
+    <string name="lng_exclude_folders">La musica all\'interno delle cartelle selezionate verrà ignorata.</string>
+    <string name="set_load_from">Carica da</string>
+    <string name="set_file_picker">File</string>
+    <string name="set_system_database">Sistema</string>
+    <string name="set_grant_storage_anyway">Accesso all’archiviazione consigliato</string>
+    <string name="set_grant_storage">Accesso all’archiviazione richiesto</string>
+    <string name="set_folders_to_load">Cartelle da caricare</string>
+    <string name="set_folders_to_ignore">Cartelle da ignorare</string>
+    <string name="set_include">Includi</string>
+    <string name="set_exclude">Escludi</string>
+    <string name="set_extra_settings">Altre impostazioni</string>
+    <string name="set_fs_cache">Utilizza la cache dell’archiviazione</string>
+    <string name="set_fs_cache_desc">Migliora i tempi di caricamento, ma può impedire l’aggiunta di nuova musica</string>
+    <string name="lbl_no_folders">Nessuna cartella</string>
+    <string name="desc_add_folder">Aggiungi cartella</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d secondo</item>
+        <item quantity="many">%d secondi</item>
+        <item quantity="other">%d secondi</item>
+    </plurals>
+    <string name="lng_play_next">Prossimo brano in riproduzione</string>
+    <string name="set_filtered_folders">Cartelle con filtro</string>
+    <string name="set_filter_mode">Tipo di filtro</string>
 </resources>

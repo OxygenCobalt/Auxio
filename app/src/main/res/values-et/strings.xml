@@ -341,4 +341,8 @@
     <string name="set_extra_settings">Lisaseadistused</string>
     <string name="lbl_no_folders">Kaustu pole määratud</string>
     <string name="desc_add_folder">Lisa kaust</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d sekund</item>
+        <item quantity="other">%d sekundit</item>
+    </plurals>
 </resources>

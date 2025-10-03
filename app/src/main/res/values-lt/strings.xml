@@ -5,7 +5,7 @@
     <string name="lbl_search">Paieška</string>
     <string name="lbl_filter">Filtruoti</string>
     <string name="lbl_filter_all">Visi</string>
-    <string name="lbl_sort">Rūšiuoti</string>
+    <string name="lbl_sort">Rikiuoti</string>
     <string name="lbl_name">Pavadinimas</string>
     <string name="lbl_date">Data</string>
     <string name="lbl_duration">Trukmė</string>
@@ -13,8 +13,8 @@
     <string name="lbl_disc">Diskas</string>
     <string name="lbl_date_added">Pridėta data</string>
     <string name="lbl_sort_asc">Didėjantis</string>
-    <string name="lbl_play_next">Leisti kitą</string>
-    <string name="lbl_queue_add">Pridėti į eilę</string>
+    <string name="lbl_play_next">Leisti sekančią</string>
+    <string name="lbl_queue_add">Įtraukti į eilę</string>
     <string name="lbl_queue">Eilė</string>
     <string name="lbl_artist_details">Eiti į atlikėją</string>
     <string name="lbl_album_details">Eiti į albumą</string>
@@ -34,7 +34,7 @@
     <string name="lbl_play">Leisti</string>
     <string name="lbl_licenses">Licencijos</string>
     <string name="lbl_shuffle">Maišyti</string>
-    <string name="lng_queue_added">Pridėta į eilę</string>
+    <string name="lng_queue_added">Įtraukta į eilę</string>
     <string name="lbl_props">Dainos ypatybės</string>
     <string name="lbl_save">Išsaugoti</string>
     <string name="lbl_about">Apie</string>
@@ -46,13 +46,13 @@
     <string name="set_black_mode_desc">Naudok grynai juodą tamsią temą.</string>
     <string name="info_app_desc">Paprasta, racionali „Android“ muzikos leistuvė.</string>
     <string name="lbl_indexer">Muzikos įkėlimas</string>
-    <string name="lng_widget">Peržiūrėk ir valdyk muzikos įrašo perklausą</string>
+    <string name="lng_widget">Peržiūrėkite ir valdykite muzikos įrašo perklausą</string>
     <string name="lbl_genres">Žanrai</string>
-    <string name="lbl_retry">Kartoti</string>
+    <string name="lbl_retry">Pakartoti</string>
     <string name="lbl_indexing">Įkeliama muzika</string>
-    <string name="lng_indexing">Įkeliamas tavo muzikos biblioteka…</string>
+    <string name="lng_indexing">Įkeliama jūsų muzikos biblioteka…</string>
     <string name="lbl_library_counts">Bibliotekos statistika</string>
-    <string name="clr_pink">Rožinis</string>
+    <string name="clr_pink">Rožinė</string>
     <string name="lbl_album">Albumas</string>
     <string name="lbl_ep">Mini albumas</string>
     <string name="lbl_single">Singlas</string>
@@ -69,7 +69,7 @@
     <string name="desc_no_cover">Albumo viršelis</string>
     <string name="clr_deep_purple">Giliai violetinė</string>
     <string name="lbl_observing">Stebima muzikos biblioteka</string>
-    <string name="lng_observing">Stebimas tavo muzikos biblioteka dėl pakeitimų…</string>
+    <string name="lng_observing">Stebima jūsų muzikos biblioteka dėl pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Maišyti</string>
     <string name="lbl_shuffle_shortcut_long">Maišyti viską</string>
     <string name="lbl_cancel">Atšaukti</string>
@@ -129,11 +129,11 @@
     <string name="set_lib_tabs_desc">Keisk bibliotekos skirtukų matomumą ir tvarką.</string>
     <string name="set_replay_gain_mode_album">Pageidauti albumą</string>
     <string name="set_replay_gain_mode_dynamic">Pageidauti albumą, jei vienas leidžiamas</string>
-    <string name="err_no_app">Programėlę nerasta, kuri galėtų atlikti šią užduotį.</string>
+    <string name="err_no_app">Programos nerasta, kuri galėtų atlikti šią užduotį.</string>
     <string name="desc_auxio_icon">„Auxio“ piktograma</string>
     <string name="desc_song_handle">Perkelti šią dainą</string>
     <string name="desc_tab_handle">Perkelti šią kortelę</string>
-    <string name="err_index_failed">Nepavyko įkelti muzikos.</string>
+    <string name="err_index_failed">Muzikos įkėlimas nepavyko.</string>
     <string name="fmt_disc_no">%d diskas</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
@@ -151,10 +151,10 @@
     <string name="set_play_in_parent_with">Kai leidžiant iš elemento informacijos</string>
     <string name="desc_music_location_delete">Šalinti aplanką</string>
     <string name="lbl_genre">Žanras</string>
-    <string name="lng_search_library">Ieškok savo bibliotekoje…</string>
+    <string name="lng_search_library">Ieškokite savo bibliotekoje…</string>
     <string name="lbl_equalizer">Ekvalaizeris</string>
     <string name="set_observing">Automatinis perkėlimas</string>
-    <string name="desc_exit">Sustabdyti įrašo perklausą</string>
+    <string name="desc_exit">Stabdyti įrašo perklausą</string>
     <string name="def_track">Nėra takelio</string>
     <string name="set_action_mode_next">Praleisti į kitą</string>
     <string name="set_headset_autoplay">Automatinis ausinių leidimas</string>
@@ -172,7 +172,7 @@
     <string name="fmt_lib_genre_count">Įkeltos žanros: %d</string>
     <string name="fmt_lib_album_count">Įkelti albumai: %d</string>
     <string name="fmt_lib_artist_count">Įkelti atlikėjai: %d</string>
-    <string name="fmt_indexing">Įkėliamas tavo muzikos biblioteka… (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Įkeliama jūsų muzikos biblioteka… (%1$d/%2$d)</string>
     <string name="set_personalize">Suasmeninti</string>
     <string name="set_pre_amp_warning">Įspėjimas: keičiant išankstinį stiprintuvą į didelę teigiamą reikšmę, kai kuriuose garso takeliuose gali atsirasti tarpų.</string>
     <string name="desc_album_cover">Albumo viršelis, skirtas „%s“</string>
@@ -230,7 +230,7 @@
     <string name="lbl_reset">Atkurti</string>
     <string name="set_library">Biblioteka</string>
     <string name="set_behavior">Elgesys</string>
-    <string name="set_ui_desc">Pakeisk programėlės temą ir spalvas.</string>
+    <string name="set_ui_desc">Pakeiskite programos temą ir spalvas.</string>
     <string name="set_content_desc">Valdyk, kaip muzika ir vaizdai įkeliami.</string>
     <string name="set_audio_desc">Konfigūruok garso ir įrašo perklausos elgesį.</string>
     <string name="set_personalize_desc">Pritaikyk naudotojo sąsajos valdiklius ir elgseną.</string>
@@ -245,8 +245,8 @@
     <string name="lbl_playlists">Grojaraščiai</string>
     <string name="desc_playlist_image">Grojaraščio vaizdas, skirtas „%s“</string>
     <string name="lbl_new_playlist">Naujas grojaraštis</string>
-    <string name="lbl_playlist_add">Pridėti į grojaraštį</string>
-    <string name="lng_playlist_added">Pridėta į grojaraštį</string>
+    <string name="lbl_playlist_add">Įtraukti į grojaraštį</string>
+    <string name="lng_playlist_added">Įtraukta į grojaraštį</string>
     <string name="lbl_delete">Ištrinti</string>
     <string name="fmt_deletion_info">Ištrinti %s\? To negalima atkurti.</string>
     <string name="lbl_rename">Pervadinti</string>
@@ -255,19 +255,19 @@
     <string name="def_song_count">Nėra dainų</string>
     <string name="lbl_edit">Redaguoti</string>
     <string name="lbl_share">Bendrinti</string>
-    <string name="lng_playlist_renamed">Pervadintas grojaraštis</string>
+    <string name="lng_playlist_renamed">Grojaraštis pervadintas</string>
     <string name="fmt_def_playlist">%d grojaraštis</string>
-    <string name="lng_playlist_created">Sukurtas grojaraštis</string>
-    <string name="lng_playlist_deleted">Ištrintas grojaraštis</string>
+    <string name="lng_playlist_created">Grojaraštis sukurtas</string>
+    <string name="lng_playlist_deleted">Grojaraštis ištrintas</string>
     <string name="def_disc">Nėra disko</string>
-    <string name="fmt_editing">%s redaguojama</string>
+    <string name="fmt_editing">Redaguojama „%s“</string>
     <string name="lbl_appears_on">Pasirodo</string>
     <string name="lbl_song">Daina</string>
     <string name="lbl_parent_detail">Peržiūrėti</string>
     <string name="set_square_covers_desc">Apkarpyk visus albumų viršelius iki 1:1 kraštinių koeficiento.</string>
     <string name="set_square_covers">Priversti kvadratinių albumų viršelius</string>
     <string name="set_play_song_by_itself">Leisti dainą pačią</string>
-    <string name="lbl_sort_mode">Rūšiuoti pagal</string>
+    <string name="lbl_sort_mode">Rikiuoti pagal</string>
     <string name="lbl_sort_direction">Kryptis</string>
     <string name="desc_selection_image">Pasirinkimo vaizdas</string>
     <string name="lbl_selection">Pasirinkimas</string>
@@ -278,15 +278,15 @@
     <string name="lbl_demo">Demo versija</string>
     <string name="lbl_demos">Demo versijos</string>
     <string name="lbl_imported_playlist">Importuotas grojaraštis</string>
-    <string name="lng_playlist_imported">Importuotas grojaraštis</string>
-    <string name="lng_playlist_exported">Eksportuotas grojaraštis</string>
+    <string name="lng_playlist_imported">Grojaraštis importuotas</string>
+    <string name="lng_playlist_exported">Grojaraštis eksportuotas</string>
     <string name="err_export_failed">Nepavyksta eksportuoti grojaraščio į šį failą.</string>
     <string name="lbl_replaygain_track">„ReplayGain“ takelio koregavimas</string>
     <string name="lbl_replaygain_album">„ReplayGain“ albumo koregavimas</string>
     <string name="lbl_author">Autorius</string>
     <string name="lbl_donate">Aukoti</string>
     <string name="lbl_supporters">Palaikytojai</string>
-    <string name="lng_supporters_promo">Paaukok projektui, kad tavo vardas būtų pridėtas čia!</string>
+    <string name="lng_supporters_promo">Paaukokite projektui, kad jūsų vardas būtų pridėtas čia!</string>
     <string name="err_import_failed">Nepavyksta importuoti grojaraščio iš šio failo.</string>
     <string name="lbl_empty_playlist">Tuščias grojaraštis</string>
     <string name="lbl_import_playlist">Importuoti grojaraštį</string>
@@ -301,13 +301,11 @@
     <string name="set_remember_pause">Prisiminti pauzę</string>
     <string name="set_remember_pause_desc">Išlaikykite leidžiamą / pristabdymą praleidžiant arba redaguojant eilę.</string>
     <string name="set_replay_gain_mode_off">Išjungta</string>
-    <string name="lng_tasker_start">Paleidžia „Auxio“ naudojant anksčiau išsaugotą būseną. Jei nėra išsaugotos būsenos, visos dainos bus išmaišytos. Įrašo perklausa bus pradėta iš karto.
-\n
-\nĮSPĖJIMAS: būk atsargus (-i) valdant šią paslaugą, jei ją uždarysi ir vėl bandysi naudoti, tikriausiai sutriks programėlė.</string>
-    <string name="lbl_start_playback">Paleisti įrašo perklausą</string>
+    <string name="lng_tasker_start">Paleidžia „Auxio“ naudojant anksčiau išsaugotą būseną. Jei nėra išsaugotos būsenos, visos dainos bus išmaišytos. Įrašo perklausa bus pradėta iš karto. \n \nĮSPĖJIMAS: būkite atsargūs valdant šią paslaugą, jei ją uždarysite ir vėl bandysite naudoti, tikriausiai sutriks programa.</string>
+    <string name="lbl_start_playback">Pradėti įrašo perklausą</string>
     <string name="lbl_more">Daugiau</string>
     <string name="lbl_feedback">Atsiliepimai</string>
-    <string name="lbl_github">Sukurti problemą svetainėje „GitHub“</string>
+    <string name="lbl_github">Sukurti problemą platformoje „GitHub“</string>
     <string name="cnt_mp4">MPEG-4, turintis %s</string>
     <string name="def_album">Nežinomas albumas</string>
     <string name="lng_empty_songs">Čia bus rodomos jūsų dainos.</string>
@@ -324,7 +322,7 @@
     <string name="set_with_hidden_desc">Įtraukite garso failus, kurie paslėpti (pvz., .cache)</string>
     <string name="set_excluded_locations">Neįtraukti aplankai</string>
     <string name="set_excluded_locations_desc">Tvarkykite aplankus, kuriuos norite neįtraukti iš muzikos įkėlimo.</string>
-    <string name="lng_file_picker">Įkelkite muziką iš jūsų pasirinktų aplankų. Lėtesnis, bet patikimesnis. Reikia įdiegti pagrindinę failų tvarkytuvės programėlę.</string>
+    <string name="lng_file_picker">Įkelkite muziką iš jūsų pasirinktų aplankų. Lėtesnis, bet patikimesnis. Reikia įdiegti pagrindinę failų tvarkytuvės programą.</string>
     <string name="lng_system_database">Įkelkite muziką, kurią „Android“ operacinė sistema automatiškai aptinka. Spartesnis, bet mažiau patikimas. Gamintojai gali tai sugadinti.</string>
     <string name="lng_grant_storage_anyway">Suteikus išorinės saugyklos leidimus, kai kuriuose įrenginiuose galima ištaisyti problemas.</string>
     <string name="lng_grant_storage_required">Suteikite išorinės saugyklos leidimus, kad įjungtumėte šią parinktį.</string>
@@ -347,4 +345,10 @@
     <string name="lbl_no_folders">Nėra aplankų</string>
     <string name="desc_add_folder">Įtraukti aplanką</string>
     <string name="lng_play_next">Daina bus leidžiama toliau</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d sekundė</item>
+        <item quantity="few">%d sekundės</item>
+        <item quantity="many">%d sekundžių</item>
+        <item quantity="other">%d sekundžių</item>
+    </plurals>
 </resources>

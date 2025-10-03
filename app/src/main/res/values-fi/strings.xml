@@ -339,4 +339,8 @@
     <string name="set_grant_storage">Ulkoisen tallennustilan käyttöoikeus vaaditaan</string>
     <string name="set_fs_cache">Käytä tiedostojärjestelmän välimuistia</string>
     <string name="set_fs_cache_desc">Parantaa latausaikoja, mutta saattaa estää uuden musiikin lisäämisen kirjastoon</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d sekunti</item>
+        <item quantity="other">%d sekuntia</item>
+    </plurals>
 </resources>

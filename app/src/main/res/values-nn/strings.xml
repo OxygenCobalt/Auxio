@@ -339,4 +339,8 @@
     <string name="cnt_mp4">MPEG-4 som inneheld %s</string>
     <string name="cdc_alac">Apples tapsfrie ljodkodek (ALAC)</string>
     <string name="cdc_unknown">Ukjent</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d sekund</item>
+        <item quantity="other">%d sekund</item>
+    </plurals>
 </resources>

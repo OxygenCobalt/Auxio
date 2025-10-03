@@ -340,7 +340,7 @@
     <string name="lng_exclude_folders">Музыка из выбранных папок будет проигнорирована.</string>
     <string name="set_load_from">Загрузить из</string>
     <string name="set_file_picker">Выбор файла</string>
-    <string name="set_grant_storage_anyway">Рекомендуется дать доступ к хранилищу</string>
+    <string name="set_grant_storage_anyway">Рекомендуется предоставить доступ к хранилищу</string>
     <string name="set_grant_storage">Требуется доступ к хранилищу</string>
     <string name="set_folders_to_load">Папки для загрузки</string>
     <string name="set_folders_to_ignore">Папки для игнорирования</string>
@@ -356,4 +356,10 @@
     <string name="desc_add_folder">Добавить папку</string>
     <string name="set_system_database">Система</string>
     <string name="set_excluded_locations_desc">Управление папками, исключенными из загрузки музыки</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d секунда</item>
+        <item quantity="few">%d секунды</item>
+        <item quantity="many">%d секунд</item>
+        <item quantity="other">%d секунд</item>
+    </plurals>
 </resources>

@@ -89,7 +89,7 @@
     <string name="set_play_song_none">Gösterilen öğeden çal</string>
     <string name="set_play_song_from_all">Tüm şarkılardan çal</string>
     <string name="set_play_song_from_album">Albümden çal</string>
-    <string name="set_locations">Müzik klasörleri</string>
+    <string name="set_locations">Müzik kaynakları</string>
     <string name="desc_album_cover">%s Albümünün kapağı</string>
     <string name="desc_artist_image">%s Sanatçısının resmi</string>
     <string name="def_track">Parça yok</string>
@@ -322,4 +322,31 @@
     <string name="set_cover_mode_as_is">Olduğu gibi</string>
     <string name="set_excluded_locations_desc">Müzik yüklemesinde sayılmayacak klasörleri yönet</string>
     <string name="set_excluded_locations">Sayılmayan klasörler</string>
+    <string name="lng_play_next">Şarkı bundan sonra başlayacak</string>
+    <string name="lng_file_picker">Şeçtiğiniz klasörlerden müzik yükler. Daha yavaştır fakat daha güvenilirdir. Standart dosya yönetici uygulamasının kurulu olması gerekir.</string>
+    <string name="lng_system_database">Android\'in otomatik olarak tespit ettiği müzikleri yükler. Daha hızlıdır fakat daha az güvenilirdir. Dosya sistemine bağımlı özellikleri desteklemez. Mesela, cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Dış depolama izinleri vermek bazı cihazlarda sorunları giderebilir.</string>
+    <string name="lng_grant_storage_required">Bu şeçeneği etkinleştirmek için dış depolama izinleri verin.</string>
+    <string name="lng_include_folders">Seçili klasörlerin dışındaki müzikler görmezden gelinecek.</string>
+    <string name="lng_exclude_folders">Seçili klasörlerin içindeki müzikler görmezden gelinecek.</string>
+    <string name="set_load_from">Şurdan yükle</string>
+    <string name="set_file_picker">Dosya şeçici</string>
+    <string name="set_system_database">Sistem</string>
+    <string name="set_grant_storage_anyway">Depolama izni önerilir</string>
+    <string name="set_grant_storage">Depolama izni gerekli</string>
+    <string name="set_folders_to_load">Yüklenecek klasörler</string>
+    <string name="set_folders_to_ignore">Görmezden gelinecek klasörler</string>
+    <string name="set_filtered_folders">Ayrıştırılmış klasörler</string>
+    <string name="set_filter_mode">Ayırma modu</string>
+    <string name="set_include">Dahil et</string>
+    <string name="set_exclude">Hariç et</string>
+    <string name="set_extra_settings">Daha fazla ayar</string>
+    <string name="set_fs_cache">Dosya sistemi önbelleğini kullan</string>
+    <string name="set_fs_cache_desc">Yükleme zamanlarını azaltır ama yeni müzik eklenmesini önleyebilir</string>
+    <string name="lbl_no_folders">Klasör yok</string>
+    <string name="desc_add_folder">Klasör ekle</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d saniye</item>
+        <item quantity="other">%d saniye</item>
+    </plurals>
 </resources>

@@ -353,4 +353,9 @@
     <string name="set_extra_settings">Más Configuraciones</string>
     <string name="lbl_no_folders">No hay ningún carpeta</string>
     <string name="desc_add_folder">Agregar Carpeta</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d segundo</item>
+        <item quantity="many">%d segundos</item>
+        <item quantity="other">%d segundos</item>
+    </plurals>
 </resources>
