@@ -330,4 +330,28 @@
     <string name="set_excluded_locations">المجلدات المستثناة</string>
     <string name="set_fs_cache">استخدم ذاكرة التخزين المؤقت لنظام الملفات</string>
     <string name="set_fs_cache_desc">يحسن أوقات التحميل، ولكنه قد يمنع إضافة صوت جديد</string>
+    <string name="lng_grant_storage_anyway">قد يؤدي منح أذونات التخزين الخارجي إلى إصلاح المشكلات في بعض الأجهزة.</string>
+    <string name="lng_grant_storage_required">امنح أذونات التخزين الخارجي لتفعيل هذا الخيار.</string>
+    <string name="set_load_from">حمّل من</string>
+    <string name="set_file_picker">منتقي الملفات</string>
+    <string name="set_system_database">النظام</string>
+    <string name="set_grant_storage_anyway">يوصى بالوصول إلى التخزين</string>
+    <string name="set_grant_storage">مطلوب الوصول إلى التخزين</string>
+    <string name="set_folders_to_load">المجلدات المراد تحميلها</string>
+    <string name="set_folders_to_ignore">مجلدات مراد تجاهلها</string>
+    <string name="set_filtered_folders">المجلدات المصفاة</string>
+    <string name="set_filter_mode">وضع التصفية</string>
+    <string name="set_include">ضمّن</string>
+    <string name="set_exclude">استثنِ</string>
+    <string name="set_extra_settings">إعدادات أكثر</string>
+    <string name="lbl_no_folders">لا مجلدات</string>
+    <string name="desc_add_folder">أضف مجلد</string>
+    <plurals name="fmt_seconds">
+        <item quantity="zero">%d ثانية</item>
+        <item quantity="one">ثانية</item>
+        <item quantity="two">ثانيتان</item>
+        <item quantity="few">%d ثوانِ</item>
+        <item quantity="many">%d ثانية</item>
+        <item quantity="other">%d ثانية</item>
+    </plurals>
 </resources>
