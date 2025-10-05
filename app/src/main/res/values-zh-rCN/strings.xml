@@ -279,7 +279,7 @@
     <string name="lbl_demos">样曲</string>
     <string name="lbl_imported_playlist">导入了播放列表</string>
     <string name="lbl_path">路径</string>
-    <string name="lbl_empty_playlist">清空播放列表</string>
+    <string name="lbl_empty_playlist">新建播放列表</string>
     <string name="err_import_failed">无法从此文件导入播放列表</string>
     <string name="lbl_path_style_absolute">绝对</string>
     <string name="lbl_import">导入</string>
