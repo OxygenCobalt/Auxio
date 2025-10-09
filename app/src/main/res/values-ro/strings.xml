@@ -12,7 +12,7 @@
     <string name="lbl_filter_all">Toate</string>
     <string name="lbl_sort">Sortează</string>
     <string name="lbl_sort_asc">Crescător</string>
-    <string name="lbl_play">Redă</string>
+    <string name="lbl_play">Redare</string>
     <string name="lbl_shuffle">Redare aleatorie</string>
     <string name="lbl_playback">În curs de redare</string>
     <string name="lbl_queue">Coada de redare</string>
@@ -131,7 +131,7 @@
     <string name="lbl_sort_dsc">Descrescător</string>
     <string name="set_action_mode_next">Treceți la următoarea</string>
     <string name="set_play_song_from_artist">Redă de la artist</string>
-    <string name="set_play_song_from_genre">Redă din genul</string>
+    <string name="set_play_song_from_genre">Redă după gen</string>
     <string name="lbl_reset">Resetează</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lng_widget">Vizualizează și controlează redarea muzicii</string>
@@ -139,15 +139,15 @@
     <string name="set_lib_tabs">Taburi din bibliotecă</string>
     <string name="set_keep_shuffle">Nu uita de shuffle</string>
     <string name="set_play_song_from_all">Redă din toate melodiile</string>
-    <string name="set_play_in_list_with">În timpul redării din bibliotecă</string>
-    <string name="set_play_song_none">Redă de la articolul afișat</string>
+    <string name="set_play_in_list_with">Când redai din bibliotecă</string>
+    <string name="set_play_song_none">Redă din elementul afișat</string>
     <string name="set_content">Conținut</string>
     <string name="set_notif_action">Acțiune de notificare personalizată</string>
     <string name="set_keep_shuffle_desc">Menține funcția shuffle activată la redarea unei melodii noi</string>
     <string name="set_bar_action">Personalizarea acțiunii bării de redare</string>
     <string name="set_action_mode_repeat">Modul de repetare</string>
     <string name="set_play_song_from_album">Redă din album</string>
-    <string name="set_play_in_parent_with">În timpul redării de la detaliile articolului</string>
+    <string name="set_play_in_parent_with">Când redai din detaliile elementului</string>
     <string name="set_behavior">Comportament</string>
     <string name="lbl_new_playlist">Listă de redare nouă</string>
     <string name="set_exclude_non_music_desc">Ignoră fișiere audio care nu sunt muzică, precum podcasturi</string>
@@ -228,7 +228,7 @@
     <string name="fmt_lib_genre_count">Genuri încărcate: %d</string>
     <string name="set_playback">Redare</string>
     <string name="set_repeat_pause">Pauză la repetare</string>
-    <string name="set_audio_desc">Configurează comportamentul sunetului și redării</string>
+    <string name="set_audio_desc">Configurează sunetul și comportamentul redării</string>
     <string name="def_track">Fără track</string>
     <string name="set_locations_desc">Configurează de unde se încarcă muzica</string>
     <string name="set_reindex">Reîncarcă muzica</string>
@@ -249,7 +249,7 @@
     <string name="lbl_error_info">Informații despre eroare</string>
     <string name="lbl_copied">Copiat</string>
     <string name="lbl_report">Raportează</string>
-    <string name="set_play_song_by_itself">Redă cântecul fără să facă parte din nicio listă</string>
+    <string name="set_play_song_by_itself">Redă doar melodia</string>
     <string name="set_repeat_pause_desc">Pune pauză atunci când un cântec se repetă</string>
     <string name="err_index_failed">Încărcarea muzicii a eșuat</string>
     <string name="desc_song_handle">Mută acest cântec</string>
