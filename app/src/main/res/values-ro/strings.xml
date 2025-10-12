@@ -192,7 +192,7 @@
     <string name="set_rescan_desc">Șterge memoria cache cu taguri și reîncarcă biblioteca de muzică de tot (mai încet, dar mai complet)</string>
     <string name="fmt_lib_song_count">Cântece încărcate %d</string>
     <string name="clr_cyan">Bleu</string>
-    <string name="def_playback">Nu se redă muzică</string>
+    <string name="def_playback">Nicio melodie redată</string>
     <string name="fmt_deletion_info">Ștergi %s? Nu te poți răzgândi după aceea.</string>
     <string name="fmt_lib_artist_count">Artiști încărcați: %d</string>
     <string name="lbl_imported_playlist">Playlist importat</string>
@@ -220,7 +220,7 @@
     <string name="lbl_donate">Donează</string>
     <string name="lng_playlist_exported">Playlist exportat</string>
     <string name="lng_supporters_promo">Donează proiectului ca să ai numele adăugat aici!</string>
-    <string name="set_headset_autoplay">Redă automat la conectarea căștilor</string>
+    <string name="set_headset_autoplay">Redare automată la conectarea căștilor</string>
     <string name="err_no_app">N-a fost găsită nicio aplicație care poate face asta</string>
     <string name="fmt_editing">Se editează %s</string>
     <string name="fmt_disc_no">Discul %d</string>
