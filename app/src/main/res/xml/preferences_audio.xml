@@ -27,6 +27,12 @@
             app:summary="@string/set_remember_pause_desc"
             app:title="@string/set_remember_pause" />
 
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/set_key_continue_app_closed"
+            app:summary="@string/set_continue_app_closed_desc"
+            app:title="@string/set_continue_app_closed" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/set_replay_gain">

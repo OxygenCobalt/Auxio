@@ -60,6 +60,8 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
     val pauseOnRepeat: Boolean
     /** Whether to maintain the play/pause state when skipping or editing the queue */
     val rememberPause: Boolean
+    /** Whether playback should continue when the app is dismissed from recents. */
+    val continueWhenAppClosed: Boolean
 
     interface Listener {
         /** Called when one of the ReplayGain configurations have changed. */
@@ -133,6 +135,11 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
 
     override val rememberPause: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_remember_pause), false)
+
+    override val continueWhenAppClosed: Boolean
+        get() =
+            sharedPreferences.getBoolean(
+                getString(R.string.set_key_continue_app_closed), true)
 
     override fun migrate() {
         // MusicMode was converted to PlaySong in 3.2.0

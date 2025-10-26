@@ -303,6 +303,8 @@
     <string name="set_repeat_pause_desc">Pause when a song repeats</string>
     <string name="set_remember_pause">Remember pause</string>
     <string name="set_remember_pause_desc">Remain playing/paused when skipping or editing queue</string>
+    <string name="set_continue_app_closed">Continue when app closed</string>
+    <string name="set_continue_app_closed_desc">Continue playback when app is swiped away from recents</string>
     <string name="set_replay_gain">Volume normalization</string>
     <string name="set_replay_gain_mode">ReplayGain strategy</string>
     <string name="set_replay_gain_mode_off">Off</string>
