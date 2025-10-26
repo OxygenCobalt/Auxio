@@ -150,11 +150,12 @@ private constructor(
                                         NullAddedMs
                                     })
                         children.add(file)
-                        files.send(file)
                     }
                 }
-                directoryDeferred.complete(Directory(uri, relativePath, parent, children))
             }
+            val directory = Directory(uri, relativePath, parent, children)
+            directoryDeferred.complete(directory)
+            children.forEach { file -> files.send(file) }
             recursive.tryAwaitAll()
         }
 
