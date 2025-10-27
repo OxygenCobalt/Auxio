@@ -32,8 +32,8 @@ import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.playlist.m3u.M3U
-import org.oxycblt.musikr.util.map
 import org.oxycblt.musikr.util.merge
+import org.oxycblt.musikr.util.mapParallel
 import org.oxycblt.musikr.util.tryAsyncWith
 
 internal interface ExploreStep {
@@ -55,9 +55,9 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
 
         val classified = Channel<Classified>(Channel.UNLIMITED)
         val classifiedTask =
-            scope.map(files, classified, Dispatchers.IO) { file ->
+            scope.mapParallel(PARALLELISM, files, classified, Dispatchers.IO) { file ->
                 if (!file.mimeType.startsWith("audio/") && file.mimeType != M3U.MIME_TYPE) {
-                    return@map null
+                    return@mapParallel null
                 }
                 val cacheResult = storage.cache.read(file)
                 when (cacheResult) {
@@ -69,7 +69,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
 
         val finalized = Channel<Finalized>(Channel.UNLIMITED)
         val exploredTask =
-            scope.map(classified, finalized, Dispatchers.IO) { item ->
+            scope.mapParallel(PARALLELISM, classified, finalized, Dispatchers.IO) { item ->
                 when (item) {
                     is Finalized -> item
                     is NeedsCover -> {
@@ -113,4 +113,8 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
 
     private fun CachedSong.toRawSong(cover: Cover?) =
         RawSong(file, properties, tags, cover, addedMs)
+
+    private companion object {
+        const val PARALLELISM = 8
+    }
 }
