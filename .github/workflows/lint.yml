@@ -1,4 +1,4 @@
-name: Android Build
+name: Android Lint
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: []
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,10 +25,7 @@ jobs:
         cache: gradle
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build debug APK with Gradle
-      run: ./gradlew app:packageDebug
-    - name: Upload debug APK artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Auxio_Canary
-        path: ./app/build/outputs/apk/debug/app-debug.apk
+    - name: Check formatting with spotless
+      run: ./gradlew spotlessCheck
+    - name: Test musikr with Gradle
+      run: ./gradlew musikr:testDebug
