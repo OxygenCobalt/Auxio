@@ -54,6 +54,13 @@ android {
                 includeInBundle = false
             }
         }
+
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            matchingFallbacks += ["release"]
+        }
     }
 
     packagingOptions {
