@@ -490,4 +490,23 @@
         <item quantity="one">%d second</item>
         <item quantity="other">%d seconds</item>
     </plurals>
+    <string name="pref_gap">pref_gap</string>
+    <string name="pref_gap_title">الفاصل الزمني بين الأغاني</string>
+    <string-array name="gap_entries">
+        <item>بدون فاصل (افتراضي)</item>
+        <item>1 ثانية</item>
+        <item>2 ثانية</item>
+        <item>3 ثواني</item>
+        <item>5 ثواني</item>
+        <item>10 ثواني</item>
+    </string-array>
+    <string-array name="gap_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+    </string-array>
+    
 </resources>

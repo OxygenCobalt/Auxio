@@ -44,4 +44,13 @@
             app:title="@string/set_pre_amp" />
 
     </PreferenceCategory>
+<ListPreference
+    android:defaultValue="0"
+    android:dialogTitle="@string/pref_gap_title"
+    android:entries="@array/gap_entries"
+    android:entryValues="@array/gap_values"
+    android:key="@string/pref_gap"
+    android:summary="%s"
+    android:title="@string/pref_gap_title" />
+    
 </PreferenceScreen>
