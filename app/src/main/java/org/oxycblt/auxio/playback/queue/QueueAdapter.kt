@@ -73,6 +73,11 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
         viewHolder.updatePlayingIndicator(position == currentIndex, isPlaying)
     }
 
+    override fun onViewRecycled(holder: QueueSongViewHolder) {
+        holder.resetDragState()
+        super.onViewRecycled(holder)
+    }
+
     /**
      * Set the position of the currently playing item in the queue. This will mark the item as
      * playing and any previous items as played.
@@ -154,6 +159,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
      */
     @SuppressLint("ClickableViewAccessibility")
     fun bind(song: Song, listener: EditClickListListener<Song>) {
+        resetDragState()
         listener.bind(song, this, body, binding.songDragHandle)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.name.resolve(binding.context)
@@ -161,6 +167,15 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
         // Not swiping this ViewHolder if it's being re-bound, ensure that the background is
         // not visible. See QueueDragCallback for why this is done.
         binding.background.isInvisible = true
+    }
+
+    fun resetDragState() {
+        root.animate().cancel()
+        root.translationZ = 0f
+        root.translationY = 0f
+        body.translationX = 0f
+        delete.isInvisible = true
+        background.alpha = 0
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
