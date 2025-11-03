@@ -145,6 +145,23 @@ class TagParserTest {
         assertEquals(-2.1f, tags.replayGainAlbumAdjustment)
     }
 
+    @Test
+    fun tagParser_composerFallbackForArtistInfo() {
+        val metadata =
+            createTestMetadata(
+                id3v2Tags =
+                    mapOf(
+                        "TCOM" to listOf("Composer Artist"),
+                        "TSOC" to listOf("Composer Artist Sort"),
+                        "TXXX:MUSICBRAINZ COMPOSER ID" to listOf("composer-artist-mbid")))
+
+        val tags = tagParser.parse(metadata)
+
+        assertEquals(listOf("Composer Artist"), tags.artistNames)
+        assertEquals(listOf("Composer Artist Sort"), tags.artistSortNames)
+        assertEquals(listOf("composer-artist-mbid"), tags.artistMusicBrainzIds)
+    }
+
     private fun createTestMetadata(
         id3v2Tags: Map<String, List<String>> = emptyMap(),
         xiphTags: Map<String, List<String>> = emptyMap(),
