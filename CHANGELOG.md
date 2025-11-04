@@ -1,8 +1,5 @@
 ## v4.0.10
 
-#### What's Improved
-- Realigned fast scroll thumb to be more visible
-
 #### What's Fixed
 - Fixed major music loading slowdown when using cover.jpg files
 
