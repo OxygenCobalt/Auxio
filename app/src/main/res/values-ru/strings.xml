@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <!-- Info namespace | App labels -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools" ns0:ignore="MissingTranslation">
+
     <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель.</string>
     <string name="lng_widget">Настройки воспроизведения</string>
-    <!-- Label Namespace | Static Labels -->
+
     <string name="lbl_retry">Повторить попытку</string>
     <string name="lbl_genres">Жанры</string>
     <string name="lbl_artists">Исполнители</string>
@@ -37,7 +37,7 @@
     <string name="lbl_code">Исходный код</string>
     <string name="lbl_licenses">Лицензии</string>
     <string name="lbl_author_name">Разработано Александром Кейпхартом</string>
-    <!-- Settings namespace | Settings-related labels -->
+
     <string name="set_root_title">Настройки</string>
     <string name="set_ui">Внешний вид</string>
     <string name="set_theme">Тема</string>
@@ -71,13 +71,13 @@
     <string name="set_content">Библиотека</string>
     <string name="set_reindex">Обновить музыку</string>
     <string name="set_reindex_desc">Обновлять библиотеку, при возможности используя кэш тегов</string>
-    <!-- Error Namespace | Error Labels -->
+
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
     <string name="err_bad_location">Эта папка не поддерживается</string>
-    <!-- Hint Namespace | EditText Hints -->
+
     <string name="lng_search_library">Найти в библиотеке…</string>
-    <!-- Description Namespace | Accessibility Strings -->
+
     <string name="desc_track_number">Трек %d</string>
     <string name="desc_play_pause">Играть или остановить</string>
     <string name="desc_skip_next">Перейти к следующему треку</string>
@@ -94,12 +94,12 @@
     <string name="desc_album_cover">Обложка альбома %s</string>
     <string name="desc_artist_image">Фото исполнителя %s</string>
     <string name="desc_genre_image">Картинка жанра %s</string>
-    <!-- Default Namespace | Placeholder values -->
+
     <string name="def_artist">Неизвестный исполнитель</string>
     <string name="def_genre">Неизвестный жанр</string>
     <string name="def_date">Дата не указана</string>
     <string name="def_playback">Музыка не играет</string>
-    <!-- Color Label namespace | Accent names -->
+
     <string name="clr_red">Красный</string>
     <string name="clr_pink">Розовый</string>
     <string name="clr_purple">Пурпурный</string>
@@ -116,7 +116,7 @@
     <string name="clr_orange">Оранжевый</string>
     <string name="clr_brown">Коричневый</string>
     <string name="clr_grey">Серый</string>
-    <!-- Format Namespace | Value formatting/plurals -->
+
     <string name="fmt_lib_song_count">Композиций загружено: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d трек</item>
@@ -356,10 +356,4 @@
     <string name="desc_add_folder">Добавить папку</string>
     <string name="set_system_database">Система</string>
     <string name="set_excluded_locations_desc">Управление папками, исключенными из загрузки музыки</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d секунда</item>
-        <item quantity="few">%d секунды</item>
-        <item quantity="many">%d секунд</item>
-        <item quantity="other">%d секунд</item>
-    </plurals>
 </resources>

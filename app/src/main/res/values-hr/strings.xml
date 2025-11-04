@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="lbl_indexing">Učitavanje glazbe</string>
     <string name="lng_indexing">Učitavanje tvoje zbirke glazbe …</string>
@@ -344,9 +344,4 @@
     <string name="set_excluded_locations_desc">Upravljaj mapama iz kojih se neće učitavati glazba</string>
     <string name="lbl_no_folders">Nema mapa</string>
     <string name="desc_add_folder">Dodaj mapu</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d sekunda</item>
-        <item quantity="few">%d sekunde</item>
-        <item quantity="other">%d sekundi</item>
-    </plurals>
 </resources>

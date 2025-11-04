@@ -345,8 +345,4 @@
     <string name="set_fs_cache_desc">Yükleme zamanlarını azaltır ama yeni müzik eklenmesini önleyebilir</string>
     <string name="lbl_no_folders">Klasör yok</string>
     <string name="desc_add_folder">Klasör ekle</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d saniye</item>
-        <item quantity="other">%d saniye</item>
-    </plurals>
 </resources>

@@ -210,10 +210,6 @@
         <item quantity="one">%d هنرمند</item>
         <item quantity="other">%d هنرمندان</item>
     </plurals>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d ثانیه</item>
-        <item quantity="other">%d ثانیه‌ها</item>
-    </plurals>
     <string name="set_cover_mode_save_space">حفظ فضا</string>
     <string name="set_cover_mode_balanced">متعادل</string>
     <string name="set_cover_mode_high_quality">کیفیت بالا</string>

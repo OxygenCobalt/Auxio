@@ -339,8 +339,4 @@
     <string name="lbl_no_folders">Няма папки</string>
     <string name="desc_add_folder">Добавяне на папка</string>
     <string name="lng_play_next">Песента ще се изпълни след малко</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d секунда</item>
-        <item quantity="other">%d секунди</item>
-    </plurals>
 </resources>

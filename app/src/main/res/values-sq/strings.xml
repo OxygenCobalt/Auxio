@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="lbl_indexer">Ngarkimi i muzikës</string>
     <string name="lbl_indexing">Duke ngarkuar muzikën</string>
@@ -339,8 +339,4 @@
     <string name="set_excluded_locations_desc">Menaxho dosjet për t\'i përjashtuar nga ngarkimi i muzikës</string>
     <string name="lbl_no_folders">Pa dosje</string>
     <string name="desc_add_folder">Shto dosje</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d sekondë</item>
-        <item quantity="other">%d sekonda</item>
-    </plurals>
 </resources>

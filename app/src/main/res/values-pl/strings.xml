@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Label Namespace | Static Labels -->
+
     <string name="lbl_retry">Ponów</string>
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
@@ -25,7 +25,7 @@
     <string name="lbl_version">Wersja</string>
     <string name="lbl_code">Kod źródłowy</string>
     <string name="lbl_licenses">Licencje</string>
-    <!-- Settings namespace | Settings-related labels -->
+
     <string name="set_root_title">Ustawienia</string>
     <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
@@ -35,13 +35,13 @@
     <string name="set_accent">Kolor akcentów</string>
     <string name="set_audio">Dźwięk</string>
     <string name="set_personalize">Interfejs</string>
-    <!-- Error Namespace | Error Labels -->
-    <!-- Description Namespace | Accessibility Strings -->
+
+
     <string name="desc_track_number">Utwór %d</string>
     <string name="desc_play_pause">Odtwórz albo zapauzuj</string>
-    <!-- Hint Namespace | EditText Hints -->
+
     <string name="lng_search_library">Szukaj w bibliotece…</string>
-    <!-- Color Label namespace | Accent names -->
+
     <string name="clr_red">Czerwony</string>
     <string name="clr_pink">Różowy</string>
     <string name="clr_purple">Fioletowy</string>
@@ -55,7 +55,7 @@
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
-    <!-- Format Namespace | Value formatting/plurals -->
+
     <plurals name="fmt_song_count">
         <item quantity="one">%d utwór</item>
         <item quantity="few">%d utwory</item>
@@ -352,10 +352,4 @@
     <string name="set_excluded_locations_desc">Zarządzaj folderami, które mają być wykluczone z ładowania muzyki</string>
     <string name="lbl_no_folders">Brak folderów</string>
     <string name="desc_add_folder">Dodaj folder</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d sekunda</item>
-        <item quantity="few">%d sekundy</item>
-        <item quantity="many">%d sekund</item>
-        <item quantity="other">%d sekund</item>
-    </plurals>
 </resources>

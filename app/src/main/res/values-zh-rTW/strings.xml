@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Label Namespace | Static Labels -->
+
     <string name="lbl_retry">重試</string>
     <string name="lbl_genres">類型</string>
     <string name="lbl_artists">演出者</string>
@@ -25,7 +25,7 @@
     <string name="lbl_version">版本</string>
     <string name="lbl_code">原始碼</string>
     <string name="lbl_licenses">授權</string>
-    <!-- Settings namespace | Settings-related labels -->
+
     <string name="set_root_title">設定</string>
     <string name="set_ui">外觀</string>
     <string name="set_theme">主題</string>
@@ -36,13 +36,13 @@
     <string name="set_audio">音訊</string>
     <string name="set_personalize">個人化</string>
     <string name="set_keep_shuffle">記憶隨機播放</string>
-    <!-- Error Namespace | Error Labels -->
-    <!-- Description Namespace | Accessibility Strings -->
+
+
     <string name="desc_track_number">音軌 %d</string>
     <string name="desc_play_pause">播放 / 暫停</string>
-    <!-- Hint Namespace | EditText Hints -->
+
     <string name="lng_search_library">搜尋您的媒體…</string>
-    <!-- Format Namespace | Value formatting/plurals -->
+
     <plurals name="fmt_song_count">
         <item quantity="other">%d 首歌曲</item>
     </plurals>
@@ -342,7 +342,4 @@
     <string name="set_extra_settings">更多設定</string>
     <string name="lbl_no_folders">沒有資料夾</string>
     <string name="desc_add_folder">新增資料夾</string>
-    <plurals name="fmt_seconds">
-        <item quantity="other">%d 秒</item>
-    </plurals>
 </resources>
