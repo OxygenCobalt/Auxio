@@ -305,9 +305,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             }
 
         val popupAnchorY = popupHeight / 2
+        val thumbAnchorY = thumbView.height / 2
 
         val popupTop =
-            (thumbTop - popupAnchorY)
+            (thumbTop + thumbAnchorY - popupAnchorY)
                 .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
                 .coerceAtMost(
                     height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
