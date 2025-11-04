@@ -32,8 +32,8 @@ import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.playlist.m3u.M3U
-import org.oxycblt.musikr.util.merge
 import org.oxycblt.musikr.util.mapParallel
+import org.oxycblt.musikr.util.merge
 import org.oxycblt.musikr.util.tryAsyncWith
 
 internal interface ExploreStep {
