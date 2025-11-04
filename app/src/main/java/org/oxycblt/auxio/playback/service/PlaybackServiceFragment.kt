@@ -27,7 +27,6 @@ import org.oxycblt.auxio.AuxioService.Companion.INTENT_KEY_START_ID
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -38,7 +37,6 @@ private constructor(
     context: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
-    private val playbackSettings: PlaybackSettings,
     exoHolderFactory: ExoPlaybackStateHolder.Factory,
     sessionHolderFactory: MediaSessionHolder.Factory,
     widgetComponentFactory: WidgetComponent.Factory,
@@ -48,7 +46,6 @@ private constructor(
     @Inject
     constructor(
         private val playbackManager: PlaybackStateManager,
-        private val playbackSettings: PlaybackSettings,
         private val exoHolderFactory: ExoPlaybackStateHolder.Factory,
         private val sessionHolderFactory: MediaSessionHolder.Factory,
         private val widgetComponentFactory: WidgetComponent.Factory,
@@ -59,7 +56,6 @@ private constructor(
                 context,
                 foregroundListener,
                 playbackManager,
-                playbackSettings,
                 exoHolderFactory,
                 sessionHolderFactory,
                 widgetComponentFactory,
@@ -84,7 +80,7 @@ private constructor(
     }
 
     fun handleTaskRemoved() {
-        if (!playbackSettings.continueWhenAppClosed || !playbackManager.progression.isPlaying) {
+        if (!playbackManager.progression.isPlaying) {
             playbackManager.endSession()
         }
     }
