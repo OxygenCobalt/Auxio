@@ -1,4 +1,4 @@
 Auxio 4.0.0 completely overhauls the user experience, with a refreshed design based on the latest Material Design specs
 and a brand new music loader with signifigant improvements to device and tag support.
-This patch fixes a major slowdown in the music loader when using cover.jpg files and minor UX improvements.
+This patch fixes a major slowdown in the music loader when using cover.jpg files alongside minor UX improvements.
 For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v4.0.10.

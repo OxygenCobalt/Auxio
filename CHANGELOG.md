@@ -6,6 +6,10 @@
 #### What's Fixed
 - Fixed major music loading slowdown when using cover.jpg files
 
+#### Dev/Meta
+- Updated translations
+- Split lint/build steps in CI
+
 ## v4.0.9
 
 ## What's new
