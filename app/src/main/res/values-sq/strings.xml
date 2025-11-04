@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="lbl_indexer">Ngarkimi i muzikës</string>
-    <string name="lbl_indexing">Po ngarkohet muzika</string>
+    <string name="lbl_indexing">Duke ngarkuar muzikën</string>
     <string name="info_app_desc">Një luajtës muzikor i thjeshtë dhe racional për android.</string>
     <string name="lbl_compilation_live">Kompilim Live</string>
     <string name="lbl_observing">Monitorimi i bibliotekës muzikore</string>
@@ -210,7 +210,7 @@
         <item quantity="one">%d album</item>
         <item quantity="other">%d albume</item>
     </plurals>
-    <string name="set_locations">Dosjet e muzikës</string>
+    <string name="set_locations">Burimet e muzikës</string>
     <string name="err_bad_location">Kjo dosje nuk mbështetet</string>
     <string name="desc_change_repeat">Ndryshoni mënyrën e përsëritjes</string>
     <string name="desc_remove_song">Hiq këtë këngë</string>
@@ -311,4 +311,32 @@
     <string name="cdc_unknown">E panjohur</string>
     <string name="set_cover_mode_save_space">Kurseni hapësirë</string>
     <string name="cnt_mp4">MPEG-4 që përmban %s</string>
+    <string name="lng_play_next">Kënga do të luhet më pas</string>
+    <string name="lng_file_picker">Ngarko muzikë nga dosjet që zgjidhni. Më ngadalë, por më e besueshme. Kërkon që aplikacioni standard i menaxhimit të skedarëve të jetë i instaluar.</string>
+    <string name="lng_system_database">Ngarko muzikën që sistemi operativ Android e zbulon automatikisht. Më i shpejtë, por më pak i besueshëm. Nuk ka mbështetje për veçoritë që varen nga sistemi i skedarëve, si cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Dhënia e lejeve për ruajtjen e jashtme mund të rregullojë problemet në disa pajisje.</string>
+    <string name="lng_grant_storage_required">Jepni lejet për ruajtjen e jashtme për të aktivizuar këtë opsion.</string>
+    <string name="lng_include_folders">Muzika jashtë dosjeve të përzgjedhura do të injorohet.</string>
+    <string name="lng_exclude_folders">Muzika brenda dosjeve të përzgjedhura do të injorohet.</string>
+    <string name="set_with_hidden">Përfshi skedarët e fshehur.</string>
+    <string name="set_with_hidden_desc">Përfshi skedarët audio që janë të fshehur (p.sh. .cache).</string>
+    <string name="set_cover_mode_as_is">Siç është</string>
+    <string name="set_load_from">Ngarko nga</string>
+    <string name="set_file_picker">Zgjedhësi i skedarëve</string>
+    <string name="set_system_database">Sistemi</string>
+    <string name="set_grant_storage_anyway">Rekomandohet qasja në ruajtje</string>
+    <string name="set_grant_storage">Kërkohet qasje në ruajtje</string>
+    <string name="set_folders_to_load">Dosjet për të ngarkuar</string>
+    <string name="set_folders_to_ignore">Dosjet për t\'u injoruar</string>
+    <string name="set_filtered_folders">Dosjet e filtruara</string>
+    <string name="set_filter_mode">Mënyra e filtrimit</string>
+    <string name="set_include">Përfshi</string>
+    <string name="set_exclude">Përjashto</string>
+    <string name="set_extra_settings">Më shumë cilësime</string>
+    <string name="set_fs_cache">Përdor memorien e përkohshme të sistemit të skedarëve</string>
+    <string name="set_fs_cache_desc">Përmirëson kohën e ngarkimit, por mund të parandalojë shtimin e muzikës së re</string>
+    <string name="set_excluded_locations">Dosjet e përjashtuara</string>
+    <string name="set_excluded_locations_desc">Menaxho dosjet për t\'i përjashtuar nga ngarkimi i muzikës</string>
+    <string name="lbl_no_folders">Pa dosje</string>
+    <string name="desc_add_folder">Shto dosje</string>
 </resources>

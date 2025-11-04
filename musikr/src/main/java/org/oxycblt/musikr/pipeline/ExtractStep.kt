@@ -32,7 +32,6 @@ import org.oxycblt.musikr.covers.MutableCovers
 import org.oxycblt.musikr.metadata.Metadata
 import org.oxycblt.musikr.metadata.MetadataExtractor
 import org.oxycblt.musikr.tag.parse.TagParser
-import org.oxycblt.musikr.util.map
 import org.oxycblt.musikr.util.mapParallel
 import org.oxycblt.musikr.util.merge
 import org.oxycblt.musikr.util.tryAsyncWith
@@ -66,9 +65,9 @@ private class ExtractStepImpl(
         extracted: Channel<Extracted>
     ): Deferred<Result<Unit>> {
         val addingMs = System.currentTimeMillis()
-        val extract = Channel<ParsedExtractItem>(8)
+        val extract = Channel<ParsedExtractItem>(PARALLELISM)
         val extractTask =
-            scope.mapParallel(8, explored, extract, Dispatchers.IO) { item ->
+            scope.mapParallel(PARALLELISM, explored, extract, Dispatchers.IO) { item ->
                 when (item) {
                     is RawSong -> Finalized(item)
                     is RawPlaylist -> Finalized(item)
@@ -81,7 +80,7 @@ private class ExtractStepImpl(
             }
         val parsed = Channel<ParsedCachingItem>(Channel.UNLIMITED)
         val parsedTask =
-            scope.map(extract, parsed, Dispatchers.IO) { item ->
+            scope.mapParallel(PARALLELISM, extract, parsed, Dispatchers.IO) { item ->
                 when (item) {
                     is Finalized -> item
                     is NeedsParsing -> {
@@ -144,4 +143,8 @@ private class ExtractStepImpl(
     private data class Finalized(val extracted: Extracted) : ParsedExtractItem, ParsedCachingItem
 
     private fun RawSong.toCachedSong() = CachedSong(file, properties, tags, cover?.id, addedMs)
+
+    private companion object {
+        const val PARALLELISM = 8
+    }
 }

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Label Namespace | Static Labels -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+
     <string name="lbl_retry">Erneut versuchen</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Künstler</string>
@@ -29,7 +29,7 @@
     <string name="lbl_code">Quellcode</string>
     <string name="lbl_licenses">Lizenzen</string>
     <string name="lbl_author_name">Entwickelt von Alexander Capehart</string>
-    <!-- Settings namespace | Settings-related labels -->
+
     <string name="set_root_title">Einstellungen</string>
     <string name="set_ui">Erscheinungsbild</string>
     <string name="set_theme">Farbschema</string>
@@ -55,18 +55,18 @@
     <string name="set_play_in_list_with">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
-    <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
+    <string name="set_rewind_prev" ns0:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
     <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorherigen Lied gewechselt wird</string>
     <string name="set_content">Inhalt</string>
     <string name="set_reindex">Musik neu laden</string>
     <string name="set_reindex_desc">Musikbibliothek neu laden, verwendet gecachte Tags wenn möglich</string>
-    <!-- Error Namespace | Error Labels -->
+
     <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
     <string name="err_no_app">Es konnte keine App gefunden werden, die diese Aufgabe übernehmen kann</string>
     <string name="err_bad_location">Das Verzeichnis wird nicht unterstützt</string>
-    <!-- Hint Namespace | EditText Hints -->
+
     <string name="lng_search_library">Musikbibliothek durchsuchen…</string>
-    <!-- Description Namespace | Accessibility Strings -->
+
     <string name="desc_track_number">Titel %d</string>
     <string name="desc_play_pause">Abspielen oder pausieren</string>
     <string name="desc_skip_prev">Zum letzten Lied springen</string>
@@ -77,10 +77,10 @@
     <string name="desc_album_cover">Albumcover für %s</string>
     <string name="desc_artist_image">Künstlerbild für %s</string>
     <string name="desc_genre_image">Genrebild für %s</string>
-    <!-- Placeholder Namespace | Placeholder values -->
+
     <string name="def_genre">Unbekanntes Genre</string>
     <string name="def_date">Kein Datum</string>
-    <!-- Color Label namespace | Accent names -->
+
     <string name="clr_red">Rot</string>
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Lila</string>
@@ -97,7 +97,7 @@
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Braun</string>
     <string name="clr_grey">Grau</string>
-    <!-- Format Namespace | Value formatting/plurals -->
+
     <string name="fmt_lib_song_count">Geladene Lieder: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d Lied</item>

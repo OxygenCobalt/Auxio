@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="lbl_indexing">Učitavanje glazbe</string>
     <string name="lng_indexing">Učitavanje tvoje zbirke glazbe …</string>

@@ -1,24 +1,24 @@
-„Auxio“ – tai vietinė muzikos leistuvė su sparčia, patikima NS / NP be daugybės nenaudingų funkcijų, esančių kituose muzikos leistuvėse. Sukurta remiantis iš šiuolaikinių medijos įrašo perklausos bibliotekų, „Auxio“ turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programeles, kurios naudoja pasenusias „Android“ funkcijas. Trumpai tariant, <b>jame leidžiama muziką</b>.
+„Auxio“ – tai vietinė muzikos leistuvė su sparčia, patikima NS / NP be daugybės nenaudingų funkcijų, esančių kituose muzikos leistuvėse. Sukurta remiantis iš šiuolaikinių medijos įrašo perklausos bibliotekų, „Auxio“ turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programėles, kurios naudoja pasenusias „Android“ funkcijas. Trumpai tariant, <b>jame leidžiama muziką</b>.
 
 <b>Funkcijos</b>
 
-- „Media3 ExoPlayer“ pagrįstas įrašo perklausa
+- „Media3 ExoPlayer“ pagrįsta įrašo perklausa
 - Sparti naudotojo sąsaja, sukurta pagal naujausias „Material Design“ gaires
 - Nuomonę turintis naudotojo potyris, kuriame prioritetas teikiamas naudojimo paprastumui, o ne kraštutiniam atvejui
-- Pasirinktas elgesys
-- Palaikomas diskų numerių, kelių atlikėjų, leidinių tipų palaikymas, tikslias / originalias datas, rūšiavimo žymes ir dar daugiau
+- Tinkiniama elgsena
+- Palaikoma diskų numerių, daugybę atlikėjų, leidinių tipų palaikymas, tikslių / originalių datų, rūšiavimo žymių ir daugiau
 - Išplėstinė atlikėjų sistema, kuri suvienija atlikėjus ir albumų atlikėjus
 - SD kortelių aplankų valdymas
-- Patikima grojaraščių sudarymo funkcija
+- Patikima grojaraščių sukūrimo funkcija
 - Įrašo perklausos būsenos išsaugojimas
 - „Android Auto“ palaikymas
-- Automatinis įrašo perklausa be tarpų
+- Automatinė betarpinė įrašo perklausa
 - Visiškas „ReplayGain“ palaikymas (MP3, MP4, FLAC, OGG, OPUS ir MP4 failuose)
 - Išorinio ekvalaizerio funkcija (pvz., „Wavelet“)
-- Krašto iki krašto
+- Kraštas iki krašto
 - Įterptųjų viršelių palaikymas
 - Paieškos funkcija
 - Automatinis ausinių leidimas
 - Stilingi valdikliai, kurie automatiškai prisitaiko prie savo dydžio
-- Visiškai privati ir neprisijungę
+- Visiškai privati ir neprisijungus
 - Jokių suapvalintų albumų viršelių (jei jų norite)
