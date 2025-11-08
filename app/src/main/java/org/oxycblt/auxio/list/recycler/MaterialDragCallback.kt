@@ -44,7 +44,7 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
-    private var shouldLift = true
+    private var activeHolder: ViewHolder? = null
 
     final override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -90,25 +90,15 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
     ) {
         val holder = viewHolder as ViewHolder
 
-        // Hook drag events to "lifting" the item (i.e raising it's elevation). Make sure
-        // this is only done once when the item is initially picked up.
-        if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            L.d("Lifting ViewHolder")
-
-            val bg = holder.background
-            val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
-            holder.root
-                .animate()
-                .translationZ(elevation)
-                .setDuration(
-                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
-                .setUpdateListener {
-                    bg.alpha = ((holder.root.translationZ / elevation) * 255).toInt()
-                }
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .start()
-
-            shouldLift = false
+        // Hook drag events to "lifting" the item (i.e raising its elevation). Make sure this is
+        // only done when a *new* ViewHolder is actively being dragged so that we can finalize the
+        // previous one immediately.
+        if (isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            if (activeHolder !== holder) {
+                activeHolder?.let { dropHolder(recyclerView, it) }
+                liftHolder(recyclerView, holder)
+                activeHolder = holder
+            }
         }
 
         // We show a background with a delete icon behind the item each time one is swiped
@@ -132,31 +122,59 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // When an elevated item is cleared, we reset the elevation using another animation.
         val holder = viewHolder as ViewHolder
 
-        // This function can be called multiple times, so only start the animation when the view's
-        // translationZ is already non-zero.
-        if (holder.root.translationZ != 0f) {
-            L.d("Lifting ViewHolder")
-
-            val bg = holder.background
-            val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
-            holder.root
-                .animate()
-                .translationZ(0f)
-                .setDuration(
-                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
-                .setUpdateListener {
-                    bg.alpha = ((holder.root.translationZ / elevation) * 255).toInt()
-                }
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .start()
+        dropHolder(recyclerView, holder)
+        if (activeHolder === holder) {
+            activeHolder = null
         }
-
-        shouldLift = true
 
         // Reset translations. We do not call the default implementation, so we must do
         // this ourselves.
         holder.body.translationX = 0f
         holder.root.translationY = 0f
+        holder.delete.isInvisible = true
+    }
+
+    private fun liftHolder(recyclerView: RecyclerView, holder: ViewHolder) {
+        L.d("Lifting ViewHolder")
+
+        val bg = holder.background
+        val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
+        holder.root.animate().cancel()
+        holder.root
+            .animate()
+            .translationZ(elevation)
+            .setDuration(
+                recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
+            .setUpdateListener {
+                bg.alpha = ((holder.root.translationZ / elevation) * 255).toInt()
+            }
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .start()
+    }
+
+    private fun dropHolder(recyclerView: RecyclerView, holder: ViewHolder) {
+        if (holder.root.translationZ == 0f) {
+            holder.root.animate().cancel()
+            holder.background.alpha = 0
+            return
+        }
+
+        L.d("Dropping ViewHolder")
+
+        val bg = holder.background
+        val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
+        holder.root.animate().cancel()
+        holder.root
+            .animate()
+            .translationZ(0f)
+            .setDuration(
+                recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
+            .setUpdateListener {
+                bg.alpha = ((holder.root.translationZ / elevation) * 255).toInt()
+            }
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .withEndAction { bg.alpha = 0 }
+            .start()
     }
 
     // Long-press events are too buggy, only allow dragging with the handle.
