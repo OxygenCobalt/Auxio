@@ -152,6 +152,43 @@ internal fun Metadata.artistSortNames() =
         ?: id3v2["TXXX:ARTISTSORT"]
         ?: id3v2["TXXX:ARTIST SORT"])
 
+internal fun Metadata.composerMusicBrainzIds() =
+    (xiph["MUSICBRAINZ_COMPOSERID"]
+        ?: xiph["MUSICBRAINZ COMPOSER ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ COMPOSER ID"]
+        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_COMPOSERID"]
+        ?: id3v2["TXXX:MUSICBRAINZ COMPOSER ID"]
+        ?: id3v2["TXXX:MUSICBRAINZ_COMPOSERID"])
+
+internal fun Metadata.composerNames() =
+    (xiph["COMPOSERS"]
+        ?: xiph["COMPOSER"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERS"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPOSER"]
+        ?: mp4["©wrt"]
+        ?: id3v2["TXXX:COMPOSERS"]
+        ?: id3v2["TCOM"]
+        ?: id3v2["TXXX:COMPOSER"])
+
+internal fun Metadata.composerSortNames() =
+    (xiph["COMPOSERSSORT"]
+        ?: xiph["COMPOSERS_SORT"]
+        ?: xiph["COMPOSERS SORT"]
+        ?: xiph["COMPOSERSORT"]
+        ?: xiph["COMPOSER SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERSSORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERS_SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERS SORT"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERSORT"]
+        ?: mp4["soCo"]
+        ?: mp4["----:COM.APPLE.ITUNES:COMPOSER SORT"]
+        ?: id3v2["TXXX:COMPOSERSSORT"]
+        ?: id3v2["TXXX:COMPOSERS_SORT"]
+        ?: id3v2["TXXX:COMPOSERS SORT"]
+        ?: id3v2["TXXX:COMPOSERSORT"]
+        ?: id3v2["TSOC"]
+        ?: id3v2["TXXX:COMPOSER SORT"])
+
 internal fun Metadata.albumArtistMusicBrainzIds() =
     (xiph["MUSICBRAINZ_ALBUMARTISTID"]
         ?: xiph["MUSICBRAINZ ALBUM ARTIST ID"]
