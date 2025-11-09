@@ -29,10 +29,15 @@ jobs:
       run: ./gradlew spotlessCheck
     - name: Test musikr with Gradle
       run: ./gradlew musikr:testDebug
-    - name: Build debug APK with Gradle
-      run: ./gradlew app:packageDebug
+    - name: Build debug and benchmark APKs with Gradle
+      run: ./gradlew app:packageDebug assembleBenchmark
     - name: Upload debug APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: Auxio_Canary
         path: ./app/build/outputs/apk/debug/app-debug.apk
+    - name: Upload benchmark APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Auxio_Benchmark
+        path: ./app/build/outputs/apk/benchmark/app-benchmark-unsigned.apk
