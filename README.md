@@ -92,6 +92,104 @@ download the external code.
 3. You are **unable** to build this project on windows, as the custom Media3 build runs shell scripts that
 will only work on unix-based systems.
 
+### Set up Android Studio
+
+#### Install Android Studio.
+
+Arch:
+
+```bash
+yay -S android-studio
+```
+
+#### Configuring Android Studio:
+
+- Be sure to have NDK tools, version 28.2.13676358. You can search it on Languages & Frameworks > Android SDK.
+- Install Java-21
+
+    ```bash
+    sudo pacman -S jdk21-openjdk
+    ```
+    Set java version to jdk21-openjdk
+
+    Arch:
+
+    ```bash
+    sudo archlinux-java set java-21-openjdk    
+    ```
+- Run ./gradlew assembleDebug
+
+#### Connecting to your Android Device
+
+You can connect your Mobile Phone through USB to run the app. 
+
+1. **Enable Developer Options on your phone**
+   - Go to **Settings > About phone**  
+   - Tap **Build number** 7 times until you see *"You are now a developer!"*
+
+2. **Enable USB debugging**
+   - Go to **Settings > Developer options**  
+   - Turn on **USB debugging**
+
+3. **Connect your phone to the computer**
+   - Use a USB cable  
+   - On your phone, accept the *Allow USB debugging?* prompt
+
+4. **Verify that your device is detected**
+   ```bash
+   cd ~/Android/Sdk/platform-tools
+   ./adb devices
+   ```
+
+#### Install a device (emulator)
+
+To run the application without a physical Android device, you can use an Emulator. To install it you need to: 
+
+Arch
+```bash
+yay -S android-sdk-platform-tools
+yay -S android-emulator
+```
+
+Install a version of an Android Phone:
+
+```bash
+cd ~/Android/Sdk/cmdline-tools/latest/bin
+./sdkmanager --install "system-images;android-33;google_apis;x86_64"
+```
+
+Run the emulator
+
+```bash
+cd ~/Android/Sdk/cmdline-tools/latest/bin
+./avdmanager create avd -n auxio-avd -k "system-images;android-33;google_apis;x86_64" --device "pixel"
+```
+
+```bash
+cd ~/Android/Sdk/cmdline-tools/latest/bin
+./sdkmanager "emulator"
+cd /home/porky/Android/Sdk/emulator
+./emulator -avd auxio-avd -netdelay none -netspeed full
+```
+
+#### Install the app on the Android Phone
+To install the app on your physical device or emulator, run this command:
+
+```bash
+./gradlew installDebug
+```
+
+Auxio should now appear in the list of Apps
+
+#### Load music to Auxio (Optional)
+
+You can move files from your pc to your device / emulator to test the music using this command:
+
+```bash
+cd ~/Android/Sdk/platform-tools
+./adb push ~Music/ /sdcard/Music
+```
+
 ## Contributing
 
 Auxio accepts most contributions as long as they follow the [Contribution Guidelines](/.github/CONTRIBUTING.md).
