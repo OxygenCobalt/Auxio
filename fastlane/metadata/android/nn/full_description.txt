@@ -1,4 +1,4 @@
-Auxio er ein lokal musikkavspelar med ein snøgg, påliteleg brukaroppleving utan dei mange fåfengde funksjonane til stades i andre musikkavspelarar. Byggd med moderne avspelingsbibliotek, har Auxio betre støtte for samlingar og ljodkvalitet jamført med andre appar som nyttar utdatert Android-funksjonar. Kort sagt, <b>han spelar av musikk.</b>
+Auxio er ein lokal musikkspelar med ei snøgg, påliteleg brukaroppleving utan dei mange fåfengde funksjonane til stades i andre musikkspelarar. Byggd med moderne avspelingsbibliotek, har Auxio betre stytte for samlingar og ljodkvalitet jamført med andre appar som nøyter utdaterte Android-funksjonar. Kort sagt, <b>han spelar musikk.</b>
 
 <b>Funksjonar</b>
 
@@ -6,17 +6,17 @@ Auxio er ein lokal musikkavspelar med ein snøgg, påliteleg brukaroppleving uta
 - Snøgt brukargrensesnitt avleia frå dei seinaste Material Design-riktingslinjene
 - Meiningsfylt brukaroppleving som gjev nyttehugnad forrang framfor ekstremtilfelle
 - Tilpasseleg åtferd
-- Støtte for platetal, fleire artistar, sleppingstypar, omhyggjelege/opphavelege datoar, etikettsortering med meir
+- Stytte for platetal, fleire artistar, utgåvetypar, omhyggjelege/opphavelege datoar, etikettsortering med meir
 - Avansert artistsystem som sameinar artistar og albumartistar
-- Mappehandsaming med støtte for SD-kort
+- Mappehandsaming med stytte for SD-kort
 - Pålitelege spelelister
 - Varetaking av avspelingstilstand
-- Støtte for Android Auto
+- Stytte for Android Auto
 - Automatisk holfri avspeling
-- Full støtte for ReplayGain (På MP3, FLAC, OGG, OPUS og MP4-filer)
-- Støtte for ekstern tonekontroll (t.d. Wavelet)
+- Full stytte for ReplayGain (På MP3, FLAC, OGG, OPUS og MP4-filer)
+- Stytte for ekstern tonekontroll (t.d. Wavelet)
 - Rand-til-rand
-- Støtte for innebyggde omslag
+- Stytte for innebyggde omslag
 - Søkjefunksjon
 - Autoavspeling med hovudsett
 - Stilige widgetar som tilpassar seg sjølvverkande til storleiken deira
