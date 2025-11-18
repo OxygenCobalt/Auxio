@@ -326,11 +326,20 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      *
      * @param album The [Album] to bind to the view.
      */
-    fun bind(album: Album) =
+    fun bind(album: Album) {
+        // Find the most prominent cover by grouping by ID and taking the one with most instances
+        val mostProminentCover =
+            album.covers.covers
+                .groupBy { it.id }
+                .maxByOrNull { it.value.size }
+                ?.value
+                ?.firstOrNull()
+
         bindImpl(
-            album.covers,
+            mostProminentCover,
             context.getString(R.string.desc_album_cover, album.name),
             R.drawable.ic_album_24)
+    }
 
     /**
      * Bind an [Artist]'s image to this view.
