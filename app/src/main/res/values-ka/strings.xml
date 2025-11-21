@@ -97,7 +97,7 @@
     <string name="set_accent">ფერები</string>
     <string name="set_observing">ავტომატური ჩატვირთვა</string>
     <string name="set_images">სურათები</string>
-    <string name="set_locations">მუსიკის საქაღალდე</string>
+    <string name="set_locations">მუსიკის წყაროები</string>
     <string name="desc_skip_prev">ბოლო სიმღერაზე გადასვლა</string>
     <string name="lbl_library_counts">სტატისტიკა</string>
     <string name="lbl_licenses">ლიცენზიები</string>
@@ -110,4 +110,16 @@
     <string name="lng_empty_genres">თქვენი ჟანრები აქ გამოჩნდება.</string>
     <string name="fmt_lib_total_duration">სრული ხანგრძლივობა: %s</string>
     <string name="fmt_lib_genre_count">ჟანრების რაოდენობა: %d</string>
+    <plurals name="fmt_song_count">
+        <item quantity="one">%d სიმღერა</item>
+        <item quantity="other">%d სიმღერა</item>
+    </plurals>
+    <plurals name="fmt_album_count">
+        <item quantity="one">%d ალბომი</item>
+        <item quantity="other">%d ალბომი</item>
+    </plurals>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d შემსრულებელი</item>
+        <item quantity="other">%d შემსრულებელი</item>
+    </plurals>
 </resources>
