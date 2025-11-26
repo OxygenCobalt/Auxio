@@ -327,8 +327,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param album The [Album] to bind to the view.
      */
     fun bind(album: Album) {
-        // Generally it's not desirable for many albums to show all of their covers since unlike artists/genres they don't really change.
-        // Therefore just pick the most "prominent" cover (the one with the most instances) and load that like you would a song instead.
+        // Generally it's not desirable for many albums to show all of their covers since unlike
+        // artists/genres they don't really change.
+        // Therefore just pick the most "prominent" cover (the one with the most instances) and load
+        // that like you would a song instead.
         val mostProminentCover =
             album.covers.covers
                 .groupBy { it.id }
