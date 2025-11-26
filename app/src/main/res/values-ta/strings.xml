@@ -315,10 +315,6 @@
     <string name="lng_empty_songs">உங்களுடைய பாடல்கள் இங்கே காணப்படும்.</string>
     <string name="lng_empty_genres">உங்களுடைய இசை வகைகள் இங்கே காணப்படும்.</string>
     <string name="lng_empty_artists">உங்களுடைய கலைஞர்கள் இங்கே காணப்படும்.</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d வினாடி</item>
-        <item quantity="other">%d வினாடிகள்</item>
-    </plurals>
     <string name="lng_play_next">அடுத்தது பாடல் இசைக்கப்படும்</string>
     <string name="lng_file_picker">நீங்கள் தேர்ந்தெடுக்கும் கோப்புறை்களிலிருந்து இசையை ஏற்று. மெதுவாக இருக்கும், ஆனால் நம்பகமானது. இது இயல்பான கோப்புக்கோப்பாளர் (Vanilla File Manager) பயன்பாட்டை நிறுவியிருக்க வேண்டும்.</string>
     <string name="lng_system_database">ஆண்ட்ராய்டு இயங்குதளம் தானாகக் கண்டுபிடிக்கும் இசையை ஏற்று. வேகமாக இருக்கும், ஆனால் நம்பகத்தன்மை குறைவாக இருக்கலாம். cover.jpg போன்ற கோப்பு முறைமையைப் பொறுத்த சேமிப்புகள் ஆதரிக்கப்படவில்லை.</string>

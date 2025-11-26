@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="lbl_track">Spor</string>
     <string name="lbl_sort">Sorter</string>

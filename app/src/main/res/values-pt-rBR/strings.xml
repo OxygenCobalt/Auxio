@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Label Namespace | Static Labels -->
+
     <string name="lbl_retry">Tentar novamente</string>
     <string name="lbl_genres">Gêneros</string>
     <string name="lbl_artists">Artistas</string>
@@ -25,7 +25,7 @@
     <string name="lbl_code">Código-fonte</string>
     <string name="lbl_licenses">Licenças</string>
     <string name="lbl_author_name">Desenvolvido por Alexander Capehart</string>
-    <!-- Settings namespace | Settings-related labels -->
+
     <string name="set_root_title">Configurações</string>
     <string name="set_ui">Visualização e Aparência</string>
     <string name="set_theme">Tema</string>
@@ -36,13 +36,13 @@
     <string name="set_audio">Áudio</string>
     <string name="set_personalize">Personalizar</string>
     <string name="set_keep_shuffle">Manter modo aleatório ativado</string>
-    <!-- Error Namespace | Error Labels -->
-    <!-- Description Namespace | Accessibility Strings -->
+
+
     <string name="desc_track_number">Faixa %d</string>
     <string name="desc_play_pause">Reproduzir ou pausar</string>
-    <!-- Hint Namespace | EditText Hints -->
+
     <string name="lng_search_library">Pesquise na sua biblioteca…</string>
-    <!-- Color Label namespace | Accent names -->
+
     <string name="clr_red">Vermelho</string>
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Roxo</string>
@@ -56,7 +56,7 @@
     <string name="clr_orange">Laranja</string>
     <string name="clr_brown">Marrom</string>
     <string name="clr_grey">Cinza</string>
-    <!-- Format Namespace | Value formatting/plurals -->
+
     <string name="fmt_lib_song_count">Músicas carregadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d música</item>
