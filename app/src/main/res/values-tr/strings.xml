@@ -10,15 +10,15 @@
     <string name="lbl_search">Ara</string>
     <string name="lbl_filter">Filtrele</string>
     <string name="lbl_filter_all">Hepsi</string>
-    <string name="lbl_sort">Sıralama</string>
+    <string name="lbl_sort">Sırala</string>
     <string name="lbl_sort_asc">Artan</string>
     <string name="lbl_play">Çal</string>
-    <string name="lbl_shuffle">Karıştır</string>
+    <string name="lbl_shuffle">Karışık Çal</string>
     <string name="lbl_playback">Şu an çalan</string>
-    <string name="lbl_queue">Kuyruk</string>
-    <string name="lbl_play_next">Sonraki şarkı</string>
-    <string name="lbl_queue_add">Kuyruğa ekle</string>
-    <string name="lng_queue_added">Kuyruğa eklendi</string>
+    <string name="lbl_queue">Çalma Sırası</string>
+    <string name="lbl_play_next">Sırada çal</string>
+    <string name="lbl_queue_add">Çalma sırasına ekle</string>
+    <string name="lng_queue_added">Çalma sırasına eklendi</string>
     <string name="lbl_artist_details">Sanatçıya git</string>
     <string name="lbl_album_details">Albüme git</string>
     <string name="lbl_about">Hakkında</string>
@@ -27,14 +27,14 @@
     <string name="lbl_licenses">Lisanslar</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Ayarlar</string>
-    <string name="set_ui">Dış görünüş</string>
+    <string name="set_ui">Arayüz görünüşü</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Otomatik</string>
     <string name="set_theme_day">Açık</string>
     <string name="set_theme_night">Koyu</string>
     <string name="set_accent">Ana Renk</string>
     <string name="set_audio">Ses</string>
-    <string name="set_personalize">Tercihler</string>
+    <string name="set_personalize">Kişiselleştir</string>
     <!-- Error Namespace | Error Labels -->
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Kitaplığınız taranıyor…</string>
@@ -44,15 +44,15 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
         <item quantity="one">%d şarkı</item>
-        <item quantity="other">%d şarkılar</item>
+        <item quantity="other">%d şarkı</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d albüm</item>
-        <item quantity="other">%d albümler</item>
+        <item quantity="other">%d albüm</item>
     </plurals>
     <string name="lbl_song_detail">Özellikleri görüntüle</string>
     <string name="lbl_props">Şarkı özellikleri</string>
-    <string name="lbl_format">Biçim</string>
+    <string name="lbl_format">Format</string>
     <string name="lbl_shuffle_shortcut_short">Karıştır</string>
     <string name="lbl_shuffle_shortcut_long">Hepsini karıştır</string>
     <string name="lbl_ok">Tamam</string>
@@ -101,7 +101,7 @@
     <string name="clr_deep_purple">Koyu mor</string>
     <string name="clr_green">Yeşil</string>
     <string name="clr_deep_green">Koyu yeşil</string>
-    <string name="clr_lime">Kireç</string>
+    <string name="clr_lime">Misket limonu</string>
     <string name="clr_yellow">Sarı</string>
     <string name="clr_orange">Turuncu</string>
     <string name="set_play_in_list_with">Kitaplıktan çalarken</string>
@@ -129,14 +129,14 @@
     <string name="fmt_indexing">Müzik kitaplığınız yükleniyor… (%1$d/%2$d)</string>
     <string name="fmt_lib_song_count">Yüklenen şarkılar: %d</string>
     <string name="fmt_lib_album_count">Yüklenen albümler: %d</string>
-    <string name="set_notif_action">Özel bildirim eylemi</string>
+    <string name="set_notif_action">Bildirim eylemi</string>
     <string name="set_replay_gain_mode_dynamic">Çalan bir albüm varsa tercih et</string>
     <string name="set_headset_autoplay">Kulaklıkta otomatik çalma</string>
     <string name="set_headset_autoplay_desc">Bir kulaklık takıldığında müzik çalmaya başlar (bütün cihazlarda çalışmayabilir)</string>
     <string name="set_replay_gain_mode_track">Parçayı tercih et</string>
     <string name="set_replay_gain_mode_album">Albümü tercih et</string>
-    <string name="set_rewind_prev">Geri atlamadan önce geriye sar</string>
-    <string name="set_rewind_prev_desc">Önceki şarkıya atlamadan önce geri sar</string>
+    <string name="set_rewind_prev">Öncekine geçmeden önce başa sar</string>
+    <string name="set_rewind_prev_desc">Önceki şarkıya geçmeden önce şimdiki şarkıyı başa sar</string>
     <string name="set_repeat_pause_desc">Bir şarkı tekrarlandığında duraklat</string>
     <string name="set_content">İçerik</string>
     <string name="set_keep_shuffle">Karıştırmayı hatırla</string>
@@ -154,7 +154,7 @@
     <string name="desc_auxio_icon">Auxio simgesi</string>
     <string name="desc_tab_handle">Bu sekmeyi taşı</string>
     <string name="desc_no_cover">Albüm kapağı</string>
-    <string name="desc_clear_search">Arama sorgusunu temizle</string>
+    <string name="desc_clear_search">Arama geçmişini temizle</string>
     <string name="set_locations_desc">Müziğin nereden yükleneceğini yönetin</string>
     <string name="def_date">Tarih yok</string>
     <string name="clr_deep_blue">Koyu mavi</string>
@@ -171,7 +171,7 @@
     <string name="lbl_date_added">Eklendiği tarih</string>
     <string name="lbl_album_remix">Remiks albüm</string>
     <string name="lbl_album_live">Canlı albüm</string>
-    <string name="desc_remove_song">Bu şarkıyı kuyruktan kaldır</string>
+    <string name="desc_remove_song">Bu şarkıyı çalma sırasından kaldır</string>
     <string name="lbl_singles">Tekliler</string>
     <string name="lbl_single">Tekli</string>
     <string name="lbl_mixtape">Karışık kaset</string>
@@ -193,16 +193,16 @@
     <string name="lbl_remix_group">Remiksler</string>
     <string name="lbl_soundtracks">Film Müzikleri</string>
     <string name="lbl_soundtrack">Film Müziği</string>
-    <string name="set_cover_mode_high_quality">Yüksek kaliteli</string>
+    <string name="set_cover_mode_high_quality">Yüksek kalite</string>
     <string name="set_hide_collaborators">Katılımcaları gizleyin</string>
     <string name="set_hide_collaborators_desc">Yalnızca bir albümde doğrudan adı geçen sanatçıları gösterin (iyi etiketlenmiş kütüphanelerde en iyi sonucu verir)</string>
     <string name="set_cover_mode">Albüm kapakları</string>
     <string name="set_cover_mode_off">Kapalı</string>
-    <string name="set_cover_mode_balanced">Hızlı</string>
+    <string name="set_cover_mode_balanced">Dengeli</string>
     <string name="fmt_selected">%d Seçili</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d sanatçı</item>
-        <item quantity="other">%d sanatçılar</item>
+        <item quantity="other">%d sanatçı</item>
     </plurals>
     <string name="lbl_mixes">DJ Miksleri</string>
     <string name="lbl_mix">DJ Miksi</string>
@@ -214,19 +214,19 @@
     <string name="set_separators_plus">Artı (+)</string>
     <string name="set_separators_and">Ve (&amp;)</string>
     <string name="desc_exit">Çalmayı durdur</string>
-    <string name="lbl_wiki">Viki</string>
+    <string name="lbl_wiki">Wiki</string>
     <string name="set_rescan">Müzikleri yeniden tara</string>
-    <string name="set_bar_action">Özel çalma çubuğu eylemi</string>
+    <string name="set_bar_action">Çalma çubuğu eylemi</string>
     <string name="set_action_mode_next">Sonrakine geç</string>
     <string name="set_separators_slash">Eğik çizgi (/)</string>
-    <string name="desc_queue_bar">Kuyruğu aç</string>
-    <string name="set_action_mode_repeat">Tekrar kipi</string>
+    <string name="desc_queue_bar">Çalma sırasını aç</string>
+    <string name="set_action_mode_repeat">Tekrarla</string>
     <string name="set_play_song_from_genre">Türden çal</string>
     <string name="set_exclude_non_music_desc">Podcast\'ler gibi müzik olmayan ses dosyalarını yok say</string>
     <string name="set_separators_warning">Uyarı: Bu ayarın kullanılması bazı etiketlerin yanlışlıkla birden fazla değere sahip olarak yorumlanmasına neden olabilir. Bunu istenmeyen ayırıcı karakterlerin önüne ters eğik çizgi (\\) koyarak çözebilirsiniz.</string>
     <string name="set_exclude_non_music">Müzik olmayanları hariç tut</string>
     <string name="set_replay_gain_mode">ReplayGain yöntemi</string>
-    <string name="desc_song_handle">Bu şarkıyı kuyrukta taşı</string>
+    <string name="desc_song_handle">Bu şarkıyı çalma sırasında taşı</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="set_content_desc">Müzik ve görüntülerin nasıl yükleneceğini denetleyin</string>
     <string name="set_music">Müzik</string>
@@ -286,7 +286,7 @@
     <string name="lbl_supporters">Destekçiler</string>
     <string name="lng_supporters_promo">İsminizin buraya eklenmesi için projeye bağış yapabilirsiniz!</string>
     <string name="set_remember_pause">Durmayı hatırla</string>
-    <string name="set_remember_pause_desc">Şarkı durduğunda sonraki şarkılara geçildiği zaman ve ya şarkı kuyruğunu düzenlerken durmaya devam et</string>
+    <string name="set_remember_pause_desc">Şarkı durduğunda sonraki şarkılara geçildiği zaman veya çalma sırasını düzenlerken durmaya devam et</string>
     <string name="set_replay_gain_mode_off">Kapalı</string>
     <string name="err_import_failed">Bu dosyadan bir çalma listesi yüklenemiyor</string>
     <string name="cdc_unknown">Bilinmeyen biçim</string>
@@ -307,7 +307,7 @@
     <string name="lbl_more">Daha fazla</string>
     <string name="lng_empty_artists">Sanatçılarınız burada gösterilecek.</string>
     <string name="lng_empty_songs">Şarkılarınız burada gösterilecek.</string>
-    <string name="lbl_start_playback">Oynatmayı başlat</string>
+    <string name="lbl_start_playback">Çalmayı başlat</string>
     <string name="lbl_windows_paths">Windows uyumlu yollar kullan</string>
     <string name="lng_tasker_start">Auxio\'yu önceden kaydedilen durumla başlatır. Eğer kayıtlı bir durum yoksa bütün şarkılar hemen karışık olarak çalmaya başlanacak.\n\nUYARI: Bu servisi kullanırken dikkatli olun. Kapatırsanız ve sonra tekrar kullanmaya çalışırsanız muhtemelen uygulamayı çökertirsiniz.</string>
     <string name="set_cover_mode_save_space">Az alan kullan</string>
@@ -321,7 +321,7 @@
     <string name="set_with_hidden_desc">Gizli olan ses dosyalarını içer (örn. .cache)</string>
     <string name="set_cover_mode_as_is">Olduğu gibi</string>
     <string name="set_excluded_locations_desc">Müzik yüklemesinde sayılmayacak klasörleri yönet</string>
-    <string name="set_excluded_locations">Sayılmayan klasörler</string>
+    <string name="set_excluded_locations">Görmezden gelinen klasörler</string>
     <string name="lng_play_next">Şarkı bundan sonra başlayacak</string>
     <string name="lng_file_picker">Seçtiğiniz klasörlerden müzik yükler. Daha yavaştır fakat daha güvenilirdir. Standart dosya yönetici uygulamasının kurulu olması gerekir.</string>
     <string name="lng_system_database">Android\'in otomatik olarak tespit ettiği müzikleri yükler. Daha hızlıdır fakat daha az güvenilirdir. Dosya sistemine bağımlı özellikleri desteklemez. Mesela, cover.jpg.</string>
