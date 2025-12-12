@@ -61,7 +61,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         val rawArtists =
             individualPreArtists.ifEmpty { albumPreArtists }.ifEmpty { listOf(unknownPreArtist()) }
         val rawGenres =
-            makePreGenres(song.tags, interpretation).ifEmpty { listOf(unknownPreGenre()) }
+            makePreGenres(song.tags, interpretation)
         val uri = song.file.uri
 
         val songNameOrFile = song.tags.name ?: requireNotNull(song.file.path.name)
