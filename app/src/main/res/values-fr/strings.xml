@@ -1,6 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="lbl_retry">Réessayer</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artistes</string>
@@ -26,7 +25,6 @@
     <string name="lbl_code">Code source</string>
     <string name="lbl_licenses">Licences</string>
     <string name="lbl_author_name">Développé par Alexandre Capehart</string>
-
     <string name="set_root_title">Paramètres</string>
     <string name="set_ui">Apparence</string>
     <string name="set_theme">Thème</string>
@@ -36,13 +34,9 @@
     <string name="set_accent">Couleur d\'accentuation</string>
     <string name="set_audio">Audio</string>
     <string name="set_personalize">Personnalisation</string>
-
-
     <string name="desc_track_number">Morceau %d</string>
     <string name="desc_play_pause">Lecture ou pause</string>
-
     <string name="lng_search_library">Recherchez dans votre bibliothèque…</string>
-
     <string name="clr_red">Rouge</string>
     <string name="clr_pink">Rose</string>
     <string name="clr_purple">Violet</string>
@@ -57,7 +51,6 @@
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gris</string>
-
     <string name="fmt_lib_song_count">Titres chargés : %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d titre</item>
@@ -94,11 +87,11 @@
     <string name="lbl_album">Album</string>
     <string name="lbl_date">Année</string>
     <string name="lbl_duration">Durée</string>
-    <string name="lbl_song_count">Nombre de chansons</string>
+    <string name="lbl_song_count">Nombre de titres</string>
     <string name="lbl_disc">Disque</string>
     <string name="lbl_track">Piste</string>
     <string name="lbl_song_detail">Voir les propriétés</string>
-    <string name="lbl_props">Propriétés de la chanson</string>
+    <string name="lbl_props">Propriétés du titre</string>
     <string name="lbl_ep_live">EP live</string>
     <string name="lbl_ep_remix">EP de remix</string>
     <string name="lbl_single_live">Single live</string>
@@ -158,7 +151,7 @@
     <string name="set_separators_and">Esperluette (&amp;)</string>
     <string name="lbl_playlist">Playlist</string>
     <string name="set_play_in_parent_with">Pour la lecture à partir des détails de l\'élément</string>
-    <string name="set_keep_shuffle_desc">Garde la lecture aléatoire après la lecture d\'une autre chanson</string>
+    <string name="set_keep_shuffle_desc">Laissez la lecture aléatoire activée lors de la lecture d\'un nouveau titre</string>
     <string name="set_play_song_none">Lire à partir de l\'élément affiché</string>
     <string name="set_keep_shuffle">Garder la lecture aléatoire</string>
     <string name="set_content_desc">Contrôler le chargement de la musique et des images</string>
@@ -176,7 +169,7 @@
     <string name="set_play_in_list_with">Pour la lecture à partir de la bibliothèque</string>
     <string name="set_separators">Séparateurs multi-valeurs</string>
     <string name="set_observing">Rechargement automatique</string>
-    <string name="set_play_song_from_all">Lire depuis toutes les chansons</string>
+    <string name="set_play_song_from_all">Lire depuis tous les titres</string>
     <string name="set_play_song_from_artist">Lire depuis l\'artiste</string>
     <string name="set_play_song_from_genre">Lire à partir du genre</string>
     <string name="set_separators_comma">Virgule (,)</string>
@@ -193,7 +186,7 @@
     <string name="set_playback">Lecture</string>
     <string name="set_headset_autoplay_desc">Toujours commencer la lecture lorsqu\'un périphérique audio est connecté (peut ne pas fonctionner sur tous les appareils)</string>
     <string name="set_replay_gain_mode">Stratégie ReplayGain</string>
-    <string name="set_replay_gain_mode_track">Par chanson</string>
+    <string name="set_replay_gain_mode_track">Préférer le titre</string>
     <string name="set_replay_gain_mode_album">Par album</string>
     <string name="set_replay_gain_mode_dynamic">Par album si un album est en lecture</string>
     <string name="set_library">Bibliothèque</string>
@@ -210,10 +203,10 @@
     <string name="set_pre_amp">Préampli ReplayGain</string>
     <string name="set_reindex_desc">Recharge la bibliothèque musicale, en se servant de balises en cache si possible</string>
     <string name="lbl_new_playlist">Nouvelle playlist</string>
-    <string name="desc_skip_next">Passer à la chanson suivante</string>
+    <string name="desc_skip_next">Passer au titre suivant</string>
     <string name="desc_shuffle">Activer ou désactiver la lecture aléatoire</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="desc_skip_prev">Passer à la dernière chanson</string>
+    <string name="desc_skip_prev">Revenir au titre précédent</string>
     <string name="lbl_playlist_add">Ajouter à la playlist</string>
     <string name="fmt_lib_artist_count">Artistes chargés : %d</string>
     <string name="set_rewind_prev">Rembobiner avant de passer en arrière</string>
@@ -221,7 +214,7 @@
     <string name="def_track">Aucune piste</string>
     <string name="def_playback">Aucune musique en cours de lecture</string>
     <string name="lbl_delete">Supprimer</string>
-    <string name="set_repeat_pause_desc">Pause quand une chanson se répète</string>
+    <string name="set_repeat_pause_desc">Pause lorsqu\'un titre se répète</string>
     <string name="desc_tab_handle">Déplacer cet onglet</string>
     <string name="lbl_rename">Renommer</string>
     <string name="desc_change_repeat">Modifier le mode de répétition</string>
@@ -238,7 +231,7 @@
     </plurals>
     <string name="lbl_edit">Modifier</string>
     <string name="set_repeat_pause">Pause en cas de répétition</string>
-    <string name="set_rewind_prev_desc">Rembobine avant de passer à la chanson précédente</string>
+    <string name="set_rewind_prev_desc">Revenez en arrière avant de passer au titre précédent</string>
     <string name="desc_exit">Arrêter la lecture</string>
     <string name="lng_playlist_created">Playlist créée</string>
     <string name="lng_playlist_renamed">Playlist renommée</string>
@@ -249,15 +242,15 @@
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_deletion_info">Supprimer %s ? Cette opération ne peut pas être annulée.</string>
     <string name="set_pre_amp_warning">Attention&amp;nbsp;: Le fait de régler le préampli très fort peut entraîner des distortions audibles sur certaines pistes audio.</string>
-    <string name="fmt_def_playlist">Liste de lecture %d</string>
+    <string name="fmt_def_playlist">Playlist %d</string>
     <string name="lbl_appears_on">Apparaît sur</string>
     <string name="lbl_rename_playlist">Renommer la playlist</string>
     <string name="lbl_confirm_delete_playlist">Supprimer la playlist ?</string>
     <string name="lbl_share">Partager</string>
-    <string name="desc_remove_song">Retirer cette chanson</string>
-    <string name="desc_song_handle">Déplacer cette chanson</string>
+    <string name="desc_remove_song">Supprimer ce titre</string>
+    <string name="desc_song_handle">Déplacer ce titre</string>
     <string name="desc_queue_bar">Ouvrir la file d\'attente</string>
-    <string name="def_song_count">Aucune chanson</string>
+    <string name="def_song_count">Aucun titre</string>
     <string name="fmt_editing">Modification de %s</string>
     <string name="fmt_lib_genre_count">Genres chargés : %d</string>
     <string name="desc_genre_image">Image de genre pour %s</string>
@@ -270,7 +263,7 @@
     <string name="set_square_covers_desc">Recadrer toutes les pochettes d\'album à l\'aspect 1:1</string>
     <string name="lbl_song">Titre</string>
     <string name="lbl_parent_detail">Voir</string>
-    <string name="set_play_song_by_itself">Lire la chanson par elle-même</string>
+    <string name="set_play_song_by_itself">Lire le titre seul</string>
     <string name="desc_selection_image">Image de sélection</string>
     <string name="lbl_sort_mode">Trier par</string>
     <string name="lbl_sort_direction">Direction</string>
@@ -296,7 +289,7 @@
     <string name="lbl_supporters">Soutiens</string>
     <string name="lng_supporters_promo">Faites un don au projet pour que votre nom soit ajouté ici !</string>
     <string name="set_remember_pause">Garder la pause</string>
-    <string name="set_remember_pause_desc">Reste en lecture ou en pause quand vous passez une chanson ou modifiez la file d’attente</string>
+    <string name="set_remember_pause_desc">La lecture/pause reste active lors du passage à la file d\'attente ou de sa modification</string>
     <string name="lbl_export">Exporter</string>
     <string name="lbl_export_playlist">Exporter la playlist</string>
     <string name="lbl_import">Importer</string>
@@ -313,12 +306,12 @@
     <string name="lbl_email">Envoyer un courriel</string>
     <string name="cdc_unknown">Inconnu</string>
     <string name="cnt_mp4">MPEG-4 contenant %s</string>
-    <string name="lng_empty_songs">Vos chansons s\'afficheront ici.</string>
-    <string name="lng_empty_playlists">Vos playlists vont s\'afficher ici.</string>
-    <string name="lng_empty_genres">Les genres musicaux vont s\'afficher ici.</string>
+    <string name="lng_empty_songs">Vos titres s\'afficheront ici.</string>
+    <string name="lng_empty_playlists">Vos playlists s\'afficheront ici.</string>
+    <string name="lng_empty_genres">Les genres musicaux s\'afficheront ici.</string>
     <string name="set_with_hidden_desc">Inclure les fichiers audios qui sont cachés (ex. .cache)</string>
-    <string name="lng_empty_albums">Vos albums vont s\'afficher ici.</string>
-    <string name="lng_empty_artists">Vos artistes vont s\'afficher ici.</string>
+    <string name="lng_empty_albums">Vos albums s\'afficheront ici.</string>
+    <string name="lng_empty_artists">Vos artistes s\'afficheront ici.</string>
     <string name="set_with_hidden">Inclure les fichiers cachés</string>
     <string name="set_cover_mode_save_space">Économie d\'espace</string>
     <string name="def_album">Album inconnu</string>
@@ -326,7 +319,7 @@
     <string name="set_cover_mode_as_is">Tel quel</string>
     <string name="set_excluded_locations">Dossiers exclus</string>
     <string name="set_excluded_locations_desc">Gérer les dossiers pour exclure du chargement de musique</string>
-    <string name="lng_play_next">La chanson va être lu juste après</string>
+    <string name="lng_play_next">Le titre suivant sera joué</string>
     <string name="lng_file_picker">Charger de la musique à partir des dossiers que vous allez sélectionner. Moins rapide, mais plus fiable. La présence de l\'application de navigateur fichier natif sera requise.</string>
     <string name="lng_system_database">Charger de la musique détectée par Android automatiquement. Plus rapide, mais moins fiable. Les fonctionnalités nécessitant l\'accès au système de fichiers, comme les fichiers d\'image de pochettes, ne seront pas disponible.</string>
     <string name="lng_grant_storage_anyway">Accorder l\'accès au stockage externe peut corriger des problèmes sur certains appareils.</string>
