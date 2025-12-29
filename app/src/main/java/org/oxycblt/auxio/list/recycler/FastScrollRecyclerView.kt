@@ -1,21 +1,3 @@
-/*
- * Copyright (c) 2021 Auxio Project
- * FastScrollRecyclerView.kt is part of Auxio.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
- 
 package org.oxycblt.auxio.list.recycler
 
 import android.animation.Animator
@@ -86,6 +68,56 @@ class FastScrollRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AuxioRecyclerView(context, attrs, defStyleAttr) {
+
+    /**
+     * Fast scroll can be extremely expensive for huge lists because we do a large jump scrollBy(),
+     * which forces RecyclerView to synchronously recycle/layout many children on the main thread.
+     */
+    var fastScrollMaxItems: Int = DEFAULT_FAST_SCROLL_MAX_ITEMS
+        set(value) {
+            field = value
+            updateFastScrollAllowedBySize()
+        }
+
+    private var fastScrollAllowedBySize: Boolean = true
+
+    private val adapterObserver =
+        object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() = updateFastScrollAllowedBySize()
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) =
+                updateFastScrollAllowedBySize()
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) =
+                updateFastScrollAllowedBySize()
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) =
+                updateFastScrollAllowedBySize()
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) =
+                updateFastScrollAllowedBySize()
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) =
+                updateFastScrollAllowedBySize()
+        }
+
+    private fun updateFastScrollAllowedBySize() {
+        val count = adapter?.itemCount ?: 0
+        val allowed = count <= fastScrollMaxItems
+        if (fastScrollAllowedBySize == allowed) return
+
+        fastScrollAllowedBySize = allowed
+
+        // If the list grew beyond the threshold mid-drag, force-stop and hide UI immediately.
+        if (!fastScrollAllowedBySize) {
+            dragging = false
+            removeCallbacks(hideThumbRunnable)
+            hideThumb()
+            hidePopup()
+        } else {
+            // Re-evaluate thumb state when becoming allowed again.
+            updateThumbState()
+        }
+    }
+
+    private val isFastScrollEffectivelyEnabled: Boolean
+        get() = fastScrollingEnabled && fastScrollAllowedBySize
+
     // Thumb
     private val thumbWidth = context.getDimenPixels(R.dimen.spacing_mid_medium)
     private val thumbHeight = context.getDimenPixels(R.dimen.size_touchable_medium)
@@ -227,6 +259,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             })
     }
 
+    override fun setAdapter(adapter: Adapter<*>?) {
+        val old = this.adapter
+        if (old != null) {
+            old.unregisterAdapterDataObserver(adapterObserver)
+        }
+        super.setAdapter(adapter)
+        if (adapter != null) {
+            adapter.registerAdapterDataObserver(adapterObserver)
+        }
+        updateFastScrollAllowedBySize()
+    }
+
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
 
     private fun onPreDraw() {
@@ -258,10 +302,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val provider = popupProvider
         if (firstAdapterPos != NO_POSITION && provider != null) {
             popupView.isInvisible = false
-            // Get the popup text. If there is none, we default to "?".
             popupText = provider.getPopup(firstAdapterPos) ?: "?"
         } else {
-            // No valid position or provider, do not show the popup.
             popupView.isInvisible = false
             popupText = ""
         }
@@ -342,7 +384,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // [proportion of scroll position to scroll range] * [total thumb range]
         // This is somewhat adapted from the androidx RecyclerView FastScroller implementation.
         val offsetY = computeVerticalScrollOffset()
-        if (computeVerticalScrollRange() < height || isEmpty()) {
+        if (!fastScrollAllowedBySize || computeVerticalScrollRange() < height || isEmpty()) {
             fastScrollingPossible = false
             hideThumb()
             hidePopup()
@@ -351,10 +393,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val extentY = computeVerticalScrollExtent()
         val fraction = (offsetY).toFloat() / (computeVerticalScrollRange() - extentY)
         thumbOffset = (thumbOffsetRange * fraction).toInt()
+        fastScrollingPossible = true
     }
 
     private fun onItemTouch(event: MotionEvent): Boolean {
-        if (!fastScrollingEnabled || !fastScrollingPossible) {
+        if (!isFastScrollEffectivelyEnabled || !fastScrollingPossible) {
             dragging = false
             return false
         }
@@ -419,8 +462,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val newThumbOffset = thumbOffset.coerceAtLeast(0).coerceAtMost(thumbOffsetRange)
         val newOffsetY = rangeY * (newThumbOffset / thumbOffsetRange.toFloat())
         if (newOffsetY == 0f) {
-            // Hacky workaround to drift in vertical scroll offset where we just snap
-            // to the top if the thumb offset hit zero.
             scrollToPosition(0)
             return
         }
@@ -436,7 +477,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun showScrollbar() {
-        if (!fastScrollingEnabled || !fastScrollingPossible) {
+        if (!isFastScrollEffectivelyEnabled || !fastScrollingPossible) {
             return
         }
         if (showingThumb) {
@@ -459,7 +500,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun showPopup() {
-        if (!fastScrollingEnabled || !fastScrollingPossible) {
+        if (!isFastScrollEffectivelyEnabled || !fastScrollingPossible) {
             return
         }
         if (showingPopup) {
@@ -521,5 +562,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private companion object {
         const val AUTO_HIDE_SCROLLBAR_DELAY_MILLIS = 500
+        const val DEFAULT_FAST_SCROLL_MAX_ITEMS = 1000
     }
 }
