@@ -482,6 +482,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val newThumbOffset = thumbOffset.coerceAtLeast(0).coerceAtMost(thumbOffsetRange)
         val newOffsetY = rangeY * (newThumbOffset / thumbOffsetRange.toFloat())
         if (newOffsetY == 0f) {
+            // Hacky workaround to drift in vertical scroll offset where we just snap
+            // to the top if the thumb offset hit zero.
             scrollToPosition(0)
             return
         }
