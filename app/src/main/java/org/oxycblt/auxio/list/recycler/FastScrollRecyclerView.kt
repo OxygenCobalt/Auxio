@@ -320,8 +320,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val provider = popupProvider
         if (firstAdapterPos != NO_POSITION && provider != null) {
             popupView.isInvisible = false
+            // Get the popup text. If there is none, we default to "?".
             popupText = provider.getPopup(firstAdapterPos) ?: "?"
         } else {
+            // No valid position or provider, do not show the popup.
             popupView.isInvisible = false
             popupText = ""
         }
