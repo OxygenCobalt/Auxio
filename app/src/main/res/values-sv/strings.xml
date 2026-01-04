@@ -29,7 +29,7 @@
     <string name="lbl_playlists">Spellistor</string>
     <string name="lbl_new_playlist">Ny spellista</string>
     <string name="lbl_rename_playlist">Byt namn på spellista</string>
-    <string name="lbl_confirm_delete_playlist">Ta bort spellista\?</string>
+    <string name="lbl_confirm_delete_playlist">Ta bort spellista?</string>
     <string name="lbl_search">Sök</string>
     <string name="lbl_filter">Filtrera</string>
     <string name="lbl_name">Namn</string>
