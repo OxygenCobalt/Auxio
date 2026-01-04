@@ -302,9 +302,7 @@
     <string name="set_hide_collaborators_desc">Dangos dim ond artistiaid sy\'n cael eu cydnabyddiaeth ar albwm (mae\'n gweithio gorau ar llyfrgelloedd gyda thagiau da)</string>
     <string name="set_headset_autoplay_desc">Dechrau chwarae bob amser pan fydd clustffon wedi\'i gysylltu (efallai na fydd yn gweithio gyda phob un dyfeisiau)</string>
     <string name="set_pre_amp_desc">Mae\'r pre-amp yn cael ei gymhwyso i\'r addasiad presennol yn ystod chwarae</string>
-    <string name="lng_tasker_start">Yn dechrau Auxio yn y cyflwr wedi\'i gadw\'n barod. Os nad yw cyflwr sydd wedi\'i gadw ar gael, bydd pob cân yn cael eu chwarae ar hap. Bydd chwarae yn dechrau\'n syth.
-\n
-\nRHYBUDD: Byddwch yn ofalus wrth reoli\'r gwasanaeth hwn. Os ydych yn ei gau ac yna\'n ceisio ei ddefnyddio, mae\'n debygol y byddwch yn chwalu\'r ap.</string>
+    <string name="lng_tasker_start">Yn dechrau Auxio yn y cyflwr wedi\'i gadw\'n barod. Os nad yw cyflwr sydd wedi\'i gadw ar gael, bydd pob cân yn cael eu chwarae ar hap. Bydd chwarae yn dechrau\'n syth. \n \nRHYBUDD: Byddwch yn ofalus wrth reoli\'r gwasanaeth hwn. Os ydych yn ei gau ac yna\'n ceisio ei ddefnyddio, mae\'n debygol y byddwch yn chwalu\'r ap.</string>
     <string name="set_keep_shuffle_desc">Cadw y modd chwarae ar hap wrth chwarae cân newydd</string>
     <string name="set_content_desc">Rheoli sut mae cerddoriaeth a lluniau\'n cael eu llwytho</string>
     <string name="set_observing_desc">Ail-lwytho\'r llyfrgell cerddoriaeth pryd bynnag y bydd yn ei newid (mae angen hysbysiad di-ball)</string>
