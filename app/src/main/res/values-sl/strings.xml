@@ -195,7 +195,7 @@
     <string name="desc_genre_image">Slika žanra za %s</string>
     <string name="set_locations_desc">Nastavitev virov za nalaganje glasbe</string>
     <string name="lbl_mixes">DJ Miksi</string>
-    <string name="lbl_confirm_delete_playlist">Odstrani seznam predvajanja\?</string>
+    <string name="lbl_confirm_delete_playlist">Odstrani seznam predvajanja?</string>
     <string name="clr_blue">Modra</string>
     <string name="clr_deep_blue">Temno modra</string>
     <string name="set_round_mode">Zaobljen način</string>
@@ -263,7 +263,7 @@
     <string name="set_content">Vsebina</string>
     <string name="lbl_rename_playlist">Preimenuj seznam predvajanja</string>
     <string name="lbl_bitrate">Bitna hitrost</string>
-    <string name="fmt_deletion_info">Odstraniti %s\? Tega ni mogoče razveljaviti.</string>
+    <string name="fmt_deletion_info">Odstraniti %s? Tega ni mogoče razveljaviti.</string>
     <string name="set_root_title">Nastavitve</string>
     <string name="set_separators_desc">Konfigurirajte znake, ki označujejo več vrednosti zaporedoma</string>
     <string name="def_track">Ni skladbe</string>
