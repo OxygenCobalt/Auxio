@@ -93,7 +93,7 @@
     <string name="lbl_playlists">प्लेलिस्टें</string>
     <string name="set_round_mode">गोल मोड</string>
     <string name="set_play_song_from_all">सभी गीतों से चलाएं</string>
-    <string name="fmt_deletion_info">%s हटाएँ\? इसे पूर्ववत नहीं किया जा सकता।</string>
+    <string name="fmt_deletion_info">%s हटाएँ? इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="fmt_lib_song_count">लोड किए गए गाने: %d</string>
     <string name="lbl_sort_dsc">अवरोही</string>
     <string name="set_lib_tabs_desc">लायब्रेरी टैब की दृश्यता और क्रम बदलें</string>
@@ -109,7 +109,7 @@
     <string name="lbl_single_live">लाइव सिंगल</string>
     <string name="lbl_single_remix">रीमिक्स सिंगल</string>
     <string name="lbl_compilations">संकलन</string>
-    <string name="lbl_confirm_delete_playlist">प्लेलिस्ट हटाएँ\?</string>
+    <string name="lbl_confirm_delete_playlist">प्लेलिस्ट हटाएँ?</string>
     <string name="set_black_mode">ब्लैक थीम</string>
     <string name="lng_widget">संगीत प्लेबैक देखें और नियंत्रित करें</string>
     <string name="lbl_reset">रीसेट</string>
@@ -303,7 +303,5 @@
     <string name="set_remember_pause_desc">कतार छोड़ते या संपादित करते समय चलता/रोका रखिए</string>
     <string name="set_replay_gain_mode_off">बंद</string>
     <string name="lbl_start_playback">प्लेबैक शुरू करें</string>
-    <string name="lng_tasker_start">पहले से सहेजे गए स्टेट का उपयोग करके Auxio को शुरू करता है। यदि कोई सहेजा हुआ स्टेट उपलब्ध नहीं है, तो सभी गाने शफल पर चलेंगे और प्लेबैक तुरंत शुरू हो जाएगा।
-\n
-\nचेतावनी: इस सेवा को नियंत्रित करते समय सावधान रहें, यदि आप इसे बंद करके फिर से उपयोग करने का प्रयास करते हैं, तो संभवतः ऐप क्रैश हो जाएगा।</string>
+    <string name="lng_tasker_start">पहले से सहेजे गए स्टेट का उपयोग करके Auxio को शुरू करता है। यदि कोई सहेजा हुआ स्टेट उपलब्ध नहीं है, तो सभी गाने शफल पर चलेंगे और प्लेबैक तुरंत शुरू हो जाएगा। \n \nचेतावनी: इस सेवा को नियंत्रित करते समय सावधान रहें, यदि आप इसे बंद करके फिर से उपयोग करने का प्रयास करते हैं, तो संभवतः ऐप क्रैश हो जाएगा।</string>
 </resources>
