@@ -195,10 +195,10 @@
     </plurals>
     <string name="lbl_rename">ਨਾਂ ਬਦਲੋ</string>
     <string name="lbl_rename_playlist">ਪਲੇਅ-ਲਿਸਟ ਦਾ ਨਾਂ ਬਦਲੋ</string>
-    <string name="lbl_confirm_delete_playlist">ਪਲੇਅ-ਲਿਸਟ ਮਿਟਾਓ\?</string>
+    <string name="lbl_confirm_delete_playlist">ਪਲੇਅ-ਲਿਸਟ ਮਿਟਾਓ?</string>
     <string name="set_intelligent_sorting">ਸੂਝ-ਬੂਝ ਨਾਲ ਲੜੀਬੱਧ</string>
     <string name="set_intelligent_sorting_desc">ਉਹਨਾਂ ਨਾਵਾਂ ਨੂੰ ਠੀਕ ਤਰ੍ਹਾਂ ਲੜੀਬੱਧ ਕਰੋ ਜੋ ਨੰਬਰਾਂ ਜਾਂ ਸ਼ਬਦਾਂ ਨਾਲ ਸ਼ੁਰੂ ਹੁੰਦੇ ਹਨ ਜਿਵੇਂ ਕਿ \"ਦਾ\" (ਅੰਗਰੇਜ਼ੀ-ਭਾਸ਼ਾ ਦੇ ਸੰਗੀਤ ਦੇ ਨਾਲ ਸਭ ਤੋਂ ਵਧੀਆ ਕੰਮ ਕਰਦਾ ਹੈ)</string>
-    <string name="fmt_deletion_info">%s ਹਟਾਉਣਾ ਹੈ\? ਇਸ ਨੂੰ ਅਣਕੀਤਾ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।</string>
+    <string name="fmt_deletion_info">%s ਹਟਾਉਣਾ ਹੈ? ਇਸ ਨੂੰ ਅਣਕੀਤਾ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।</string>
     <string name="clr_deep_blue">ਗੂੜ੍ਹਾ ਨੀਲਾ</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d ਕਲਾਕਾਰ</item>
@@ -296,7 +296,5 @@
     <string name="set_remember_pause">ਵਿਰਾਮ ਯਾਦ ਰੱਖੋ</string>
     <string name="set_replay_gain_mode_off">ਬੰਦ</string>
     <string name="lbl_start_playback">ਪਲੇਬੈਕ ਸ਼ੁਰੂ ਕਰੋ</string>
-    <string name="lng_tasker_start">ਪਹਿਲਾਂ ਸੁਰੱਖਿਅਤ ਕੀਤੀ ਸਥਿਤੀ ਦੀ ਵਰਤੋਂ ਕਰਕੇ Auxio ਨੂੰ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ। ਜੇਕਰ ਕੋਈ ਰੱਖਿਅਤ ਸਥਿਤੀ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਸਾਰੇ ਗੀਤ ਸ਼ਫਲ ਤੇ ਚੱਲਣਗੇ ਅਤੇ ਪਲੇਬੈਕ ਤੁਰੰਤ ਸ਼ੁਰੂ ਹੋ ਜਾਵੇਗਾ।
-\n
-\nਚੇਤਾਵਨੀ: ਇਸ ਸੇਵਾ ਨੂੰ ਨਿਯੰਤਰਿਤ ਕਰਨ ਵਿੱਚ ਸਾਵਧਾਨ ਰਹੋ, ਜੇਕਰ ਤੁਸੀਂ ਇਸਨੂੰ ਬੰਦ ਕਰਦੇ ਹੋ ਅਤੇ ਫਿਰ ਇਸਨੂੰ ਦੁਬਾਰਾ ਵਰਤਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰਦੇ ਹੋ, ਤਾਂ ਤੁਸੀਂ ਸ਼ਾਇਦ ਐਪ ਨੂੰ ਕ੍ਰੈਸ਼ ਕਰ ਦਿਓਗੇ।</string>
+    <string name="lng_tasker_start">ਪਹਿਲਾਂ ਸੁਰੱਖਿਅਤ ਕੀਤੀ ਸਥਿਤੀ ਦੀ ਵਰਤੋਂ ਕਰਕੇ Auxio ਨੂੰ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ। ਜੇਕਰ ਕੋਈ ਰੱਖਿਅਤ ਸਥਿਤੀ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਸਾਰੇ ਗੀਤ ਸ਼ਫਲ ਤੇ ਚੱਲਣਗੇ ਅਤੇ ਪਲੇਬੈਕ ਤੁਰੰਤ ਸ਼ੁਰੂ ਹੋ ਜਾਵੇਗਾ। \n \nਚੇਤਾਵਨੀ: ਇਸ ਸੇਵਾ ਨੂੰ ਨਿਯੰਤਰਿਤ ਕਰਨ ਵਿੱਚ ਸਾਵਧਾਨ ਰਹੋ, ਜੇਕਰ ਤੁਸੀਂ ਇਸਨੂੰ ਬੰਦ ਕਰਦੇ ਹੋ ਅਤੇ ਫਿਰ ਇਸਨੂੰ ਦੁਬਾਰਾ ਵਰਤਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰਦੇ ਹੋ, ਤਾਂ ਤੁਸੀਂ ਸ਼ਾਇਦ ਐਪ ਨੂੰ ਕ੍ਰੈਸ਼ ਕਰ ਦਿਓਗੇ।</string>
 </resources>
