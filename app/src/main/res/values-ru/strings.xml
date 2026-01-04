@@ -113,13 +113,13 @@
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>
         <item quantity="many">%d треков</item>
-        <item quantity="other">%d трека</item>
+        <item quantity="other">%d треков</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d альбом</item>
         <item quantity="few">%d альбома</item>
         <item quantity="many">%d альбомов</item>
-        <item quantity="other">%d альбомы</item>
+        <item quantity="other">%d альбомов</item>
     </plurals>
     <string name="lbl_indexer">Музыка загружается</string>
     <string name="lbl_indexing">Загрузка музыки</string>
