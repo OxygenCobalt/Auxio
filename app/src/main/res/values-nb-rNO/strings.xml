@@ -113,7 +113,7 @@
     <string name="set_intelligent_sorting">Intelligent sortering</string>
     <string name="lbl_rename">Gi nytt navn</string>
     <string name="lbl_rename_playlist">Gi spillelisten nytt navn</string>
-    <string name="lbl_confirm_delete_playlist">Slett spilleliste\?</string>
+    <string name="lbl_confirm_delete_playlist">Slett spilleliste?</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_version">Versjon</string>
     <string name="lbl_wiki">Wiki</string>
