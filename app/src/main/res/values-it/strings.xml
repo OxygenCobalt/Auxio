@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un lettore musicale semplice ed intuitivo per Android.</string>
@@ -37,7 +37,6 @@
     <string name="lbl_licenses">Licenze</string>
     <string name="lbl_author_name">Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiche della libreria</string>
-
     <string name="set_root_title">Impostazioni</string>
     <string name="set_ui">Aspetto</string>
     <string name="set_theme">Tema</string>
@@ -71,13 +70,10 @@
     <string name="set_content">Contenuti</string>
     <string name="set_reindex">Aggiorna libreria</string>
     <string name="set_reindex_desc">Ricarica la libreria musicale, usando i tag nella cache quando possibile</string>
-
     <string name="err_index_failed">Caricamento musica fallito</string>
     <string name="err_no_app">Nessuna app può completare questa azione</string>
     <string name="err_bad_location">Questa cartella non è supportata</string>
-
     <string name="lng_search_library">Cerca nella libreria…</string>
-
     <string name="desc_track_number">Traccia %d</string>
     <string name="desc_play_pause">Riproduci o metti in pausa</string>
     <string name="desc_skip_next">Passa al brano successivo</string>
@@ -94,13 +90,11 @@
     <string name="desc_album_cover">Copertina album di %s</string>
     <string name="desc_artist_image">Immagine artista per %s</string>
     <string name="desc_genre_image">Immagine genere per %s</string>
-
     <string name="def_artist">Artista sconosciuto</string>
     <string name="def_genre">Genere sconosciuto</string>
     <string name="def_date">Data sconosciuta</string>
     <string name="def_track">Nessuna traccia</string>
     <string name="def_playback">Nessun brano in riproduzione</string>
-
     <string name="clr_red">Rosso</string>
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Viola</string>
@@ -117,7 +111,6 @@
     <string name="clr_orange">Arancione</string>
     <string name="clr_brown">Marrone</string>
     <string name="clr_grey">Grigio</string>
-
     <string name="fmt_lib_song_count">Brani trovati: %d</string>
     <string name="fmt_lib_album_count">Album trovati: %d</string>
     <string name="fmt_lib_artist_count">Artisti trovati: %d</string>
