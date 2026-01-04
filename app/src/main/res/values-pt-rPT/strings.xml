@@ -349,9 +349,4 @@
     <string name="lbl_no_folders">Sem pastas</string>
     <string name="desc_add_folder">Adicionar pasta</string>
     <string name="lng_play_next">Música vai ser reproduzida a seguir</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one"></item>
-        <item quantity="many"></item>
-        <item quantity="other"></item>
-    </plurals>
 </resources>
