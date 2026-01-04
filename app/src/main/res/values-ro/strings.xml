@@ -160,7 +160,7 @@
     <string name="set_square_covers_desc">Taie toate coperțile de album la raportul de aspect 1:1</string>
     <string name="set_intelligent_sorting">Sortare inteligentă</string>
     <string name="lbl_rename_playlist">Redenumiți lista da redare</string>
-    <string name="lbl_confirm_delete_playlist">Șterge lista de redare\?</string>
+    <string name="lbl_confirm_delete_playlist">Șterge lista de redare?</string>
     <string name="lbl_rename">Redenumiți</string>
     <string name="set_content_desc">Controlează cum muzica și imaginile sunt încărcate</string>
     <string name="lbl_sort_mode">Sortează după</string>
