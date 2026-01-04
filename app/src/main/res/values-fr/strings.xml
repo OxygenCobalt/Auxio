@@ -240,7 +240,7 @@
     <string name="fmt_bitrate">%d kbits/s</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="fmt_deletion_info">Supprimer %s ? Cette opération ne peut pas être annulée.</string>
+    <string name="fmt_deletion_info">Supprimer %s ? Cette opération ne peut pas être annulée.</string>
     <string name="set_pre_amp_warning">Attention&amp;nbsp;: Le fait de régler le préampli très fort peut entraîner des distortions audibles sur certaines pistes audio.</string>
     <string name="fmt_def_playlist">Playlist %d</string>
     <string name="lbl_appears_on">Apparaît sur</string>
