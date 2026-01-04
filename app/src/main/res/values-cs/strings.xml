@@ -251,8 +251,8 @@
     <string name="lbl_new_playlist">Nový seznam skladeb</string>
     <string name="fmt_def_playlist">Seznam skladeb %d</string>
     <string name="lbl_delete">Odstranit</string>
-    <string name="lbl_confirm_delete_playlist">Odstranit seznam skladeb\?</string>
-    <string name="fmt_deletion_info">Odstranit seznam %s\? Tato akce je nevratná.</string>
+    <string name="lbl_confirm_delete_playlist">Odstranit seznam skladeb?</string>
+    <string name="fmt_deletion_info">Odstranit seznam %s? Tato akce je nevratná.</string>
     <string name="lbl_rename">Přejmenovat</string>
     <string name="lng_playlist_renamed">Seznam skladeb přejmenován</string>
     <string name="lng_playlist_deleted">Seznam skladeb odstraněn</string>
@@ -302,9 +302,7 @@
     <string name="set_remember_pause">Zapamatovat pozastavení</string>
     <string name="set_replay_gain_mode_off">Vypnuto</string>
     <string name="lbl_start_playback">Spustit přehrávání</string>
-    <string name="lng_tasker_start">Spustí Auxio pomocí naposledy uloženého stavu. Pokud není dostupný žádný uložený stav, budou náhodně přehrány všechny skladby. Přehrávání se spustí ihned.
-\n
-\nVAROVÁNÍ: při ovládání této služby buďte opatrní, pokud ji zavřete a pak se ji znovu pokusíte použít, aplikace nejspíše spadne.</string>
+    <string name="lng_tasker_start">Spustí Auxio pomocí naposledy uloženého stavu. Pokud není dostupný žádný uložený stav, budou náhodně přehrány všechny skladby. Přehrávání se spustí ihned. \n \nVAROVÁNÍ: při ovládání této služby buďte opatrní, pokud ji zavřete a pak se ji znovu pokusíte použít, aplikace nejspíše spadne.</string>
     <string name="lbl_more">Více</string>
     <string name="lbl_feedback">Zpětná vazba</string>
     <string name="lbl_github">Vytvořit problém na GitHubu</string>
@@ -350,6 +348,7 @@
     <plurals name="fmt_seconds">
         <item quantity="one">%d sekunda</item>
         <item quantity="few">%d sekundy</item>
+        <item quantity="many">%d sekund</item>
         <item quantity="other">%d sekund</item>
     </plurals>
 </resources>
