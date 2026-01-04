@@ -276,7 +276,7 @@
     <string name="set_square_covers">Forçar capas em formato quadrado</string>
     <string name="lng_playlist_renamed">Lista de reprodução renomeada</string>
     <string name="lbl_rename_playlist">Renomear lista de reprodução</string>
-    <string name="fmt_deletion_info">Excluir %s\? Não pode ser desfeito.</string>
+    <string name="fmt_deletion_info">Excluir %s? Não pode ser desfeito.</string>
     <string name="lbl_appears_on">Só aparecer</string>
     <string name="set_replay_gain_mode_off">Desligado</string>
     <string name="err_export_failed">Incapaz de exportar a lista de reprodução para este ficheiro</string>
