@@ -251,10 +251,10 @@
     <string name="lng_playlist_added">Dodano do listy odtwarzania</string>
     <string name="fmt_def_playlist">Playlista %d</string>
     <string name="lbl_delete">Usuń</string>
-    <string name="fmt_deletion_info">Usunąć %s\? Tego nie da się cofnąć.</string>
+    <string name="fmt_deletion_info">Usunąć %s? Tego nie da się cofnąć.</string>
     <string name="lbl_rename">Zmień nazwę</string>
     <string name="lbl_rename_playlist">Zmień nazwę listy odtwarzania</string>
-    <string name="lbl_confirm_delete_playlist">Usunąć playlistę\?</string>
+    <string name="lbl_confirm_delete_playlist">Usunąć playlistę?</string>
     <string name="lbl_edit">Edytuj</string>
     <string name="lbl_appears_on">Pojawia się na</string>
     <string name="lbl_share">Udostępnij</string>
