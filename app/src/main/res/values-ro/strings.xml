@@ -185,8 +185,7 @@
     <string name="lbl_sort_direction">Direcție</string>
     <string name="def_date">Fără dată</string>
     <string name="lbl_empty_playlist">Playlist gol</string>
-    <string name="set_separators_warning">Atenție: Folosirea acestei setări poate rezulta în unele taguri interpretate greșit ca având mai multe valori.
-\nPoți rezolva asta punând un backslash (\\) înaintea caracterelor de separare nedorite.</string>
+    <string name="set_separators_warning">Atenție: Folosirea acestei setări poate rezulta în unele taguri interpretate greșit ca având mai multe valori. \nPoți rezolva asta punând un backslash (\\) înaintea caracterelor de separare nedorite.</string>
     <string name="set_headset_autoplay_desc">Pornește mereu redarea când niște căști sunt conectate (s-ar putea să nu meargă pe toate dispozitivele)</string>
     <string name="set_rescan">Rescanează muzica</string>
     <string name="set_rescan_desc">Șterge memoria cache cu taguri și reîncarcă biblioteca de muzică de tot (mai încet, dar mai complet)</string>
