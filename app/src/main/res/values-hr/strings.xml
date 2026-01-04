@@ -248,13 +248,13 @@
     <string name="fmt_def_playlist">Popis pjesama %d</string>
     <string name="lbl_rename">Preimenuj</string>
     <string name="lbl_rename_playlist">Preimenuj popis pjesama</string>
-    <string name="lbl_confirm_delete_playlist">Izbrisati popis pjesama\?</string>
+    <string name="lbl_confirm_delete_playlist">Izbrisati popis pjesama?</string>
     <string name="lng_playlist_created">Popis pjesama je stvoren</string>
     <string name="lng_playlist_renamed">Popis pjesama je preimenovan</string>
     <string name="lng_playlist_deleted">Popis pjesama je izbrisan</string>
     <string name="lng_playlist_added">Dodano u popis pjesama</string>
     <string name="lbl_edit">Uredi</string>
-    <string name="fmt_deletion_info">Izbrisati %s\? To je nepovratna radnja.</string>
+    <string name="fmt_deletion_info">Izbrisati %s? To je nepovratna radnja.</string>
     <string name="fmt_editing">Uređivanje popisa pjesama %s</string>
     <string name="lbl_appears_on">Sudjeluje u</string>
     <string name="lbl_share">Dijeli</string>
@@ -299,9 +299,7 @@
     <string name="set_remember_pause_desc">Nastavi reprodukciju/pauziranje prilikom preskakanja ili uređivanja redoslijeda</string>
     <string name="set_replay_gain_mode_off">Isključeno</string>
     <string name="lbl_start_playback">Pokreni reprodukciju</string>
-    <string name="lng_tasker_start">Pokreće Auxio koristeći prethodno spremljeno stanje. Ako nijedno spremljeno stanje nije dostupno, sve će se pjesme nasumično reproducirati. Reprodukcija će započeti odmah.
-\n
-\nUPOZORENJE: Oprez pri upravljanju ovom uslugom. Ako je zatvoriš i zatim je pokušaš ponovo koristiti, aplikacija će se vjerojatno zatvoriti.</string>
+    <string name="lng_tasker_start">Pokreće Auxio koristeći prethodno spremljeno stanje. Ako nijedno spremljeno stanje nije dostupno, sve će se pjesme nasumično reproducirati. Reprodukcija će započeti odmah. \n \nUPOZORENJE: Oprez pri upravljanju ovom uslugom. Ako je zatvoriš i zatim je pokušaš ponovo koristiti, aplikacija će se vjerojatno zatvoriti.</string>
     <string name="lbl_more">Više</string>
     <string name="lbl_feedback">Povratne informacije</string>
     <string name="lbl_github">Prijavi problem na GitHubu</string>
