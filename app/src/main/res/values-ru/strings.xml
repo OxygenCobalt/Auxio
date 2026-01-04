@@ -253,11 +253,11 @@
     <string name="lbl_delete">Удалить</string>
     <string name="lbl_rename">Переименовать</string>
     <string name="lbl_rename_playlist">Переименовать плейлист</string>
-    <string name="lbl_confirm_delete_playlist">Удалить плейлист\?</string>
+    <string name="lbl_confirm_delete_playlist">Удалить плейлист?</string>
     <string name="lng_playlist_renamed">Плейлист переименован</string>
     <string name="lng_playlist_deleted">Плейлист удалён</string>
     <string name="lbl_edit">Редактировать</string>
-    <string name="fmt_deletion_info">Удалить %s\? Это действие не может быть отменено.</string>
+    <string name="fmt_deletion_info">Удалить %s? Это действие не может быть отменено.</string>
     <string name="lbl_appears_on">Появляется на</string>
     <string name="fmt_editing">Редактирование %s</string>
     <string name="def_disc">Нет диска</string>
@@ -301,9 +301,7 @@
     <string name="set_remember_pause_desc">Оставлять воспроизведение/паузу во время пропуска или редактирования очереди</string>
     <string name="set_remember_pause">Запоминать паузу</string>
     <string name="set_replay_gain_mode_off">Откл.</string>
-    <string name="lng_tasker_start">Запускать Auxio, используя ранее сохранённое состояние. если сохранённое состояние недоступно, все песни будут перетасованы. Воспроизведение начнётся немедленно.
-\n
-\nПредупреждение: будьте осторожны при управлении этой службой, если вы закроете её, а затем попытаетесь использовать снова, вы, вероятно, приведёте к сбою приложения.</string>
+    <string name="lng_tasker_start">Запускать Auxio, используя ранее сохранённое состояние. если сохранённое состояние недоступно, все песни будут перетасованы. Воспроизведение начнётся немедленно. \n \nПредупреждение: будьте осторожны при управлении этой службой, если вы закроете её, а затем попытаетесь использовать снова, вы, вероятно, приведёте к сбою приложения.</string>
     <string name="lbl_start_playback">Начать воспроизведение</string>
     <string name="lbl_more">Больше</string>
     <string name="lbl_feedback">Отзывы</string>
