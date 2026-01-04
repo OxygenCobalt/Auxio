@@ -343,4 +343,9 @@
     <string name="lng_play_next">Prossimo brano in riproduzione</string>
     <string name="set_filtered_folders">Cartelle con filtro</string>
     <string name="set_filter_mode">Tipo di filtro</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one"></item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
