@@ -1,6 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="lbl_retry">Повторити спробу</string>
     <string name="lbl_genres">Жанри</string>
     <string name="lbl_artists">Виконавці</string>
@@ -24,7 +23,6 @@
     <string name="lbl_version">Версія</string>
     <string name="lbl_code">Вихідний код</string>
     <string name="lbl_licenses">Ліцензії</string>
-
     <string name="set_root_title">Налаштування</string>
     <string name="set_ui">Вигляд</string>
     <string name="set_theme">Тема</string>
@@ -32,13 +30,9 @@
     <string name="set_theme_night">Темна</string>
     <string name="set_audio">Аудіо</string>
     <string name="set_personalize">Персоналізація</string>
-
-
     <string name="lng_search_library">Пошук в бібліотеці…</string>
-
     <string name="desc_track_number">Пісня %d</string>
     <string name="desc_play_pause">Відтворити/Зупинити</string>
-
     <string name="fmt_lib_song_count">Завантажено пісень: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d пісня</item>
@@ -257,8 +251,8 @@
     <string name="lng_playlist_created">Список відтворення створено</string>
     <string name="def_song_count">Немає пісень</string>
     <string name="lbl_delete">Видалити</string>
-    <string name="lbl_confirm_delete_playlist">Видалити список відтворення\?</string>
-    <string name="fmt_deletion_info">Видалити %s\? Цю дію не можна скасувати.</string>
+    <string name="lbl_confirm_delete_playlist">Видалити список відтворення?</string>
+    <string name="fmt_deletion_info">Видалити %s? Цю дію не можна скасувати.</string>
     <string name="lng_playlist_deleted">Список відтворення видалено</string>
     <string name="lbl_rename">Перейменувати</string>
     <string name="lbl_rename_playlist">Перейменувати список відтворення</string>
