@@ -235,7 +235,7 @@
     <string name="def_disc">אין דיסק</string>
     <string name="clr_deep_green">ירוק עמוק</string>
     <string name="clr_yellow">צהוב</string>
-    <string name="fmt_deletion_info">למחוק את %s\? פעולה זו לא ניתן לביטול.</string>
+    <string name="fmt_deletion_info">למחוק את %s? פעולה זו לא ניתן לביטול.</string>
     <string name="lbl_song">שיר</string>
     <string name="set_intelligent_sorting">מיון חכם</string>
     <string name="lbl_parent_detail">הצגה</string>
