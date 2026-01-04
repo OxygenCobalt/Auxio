@@ -1,6 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="lbl_retry">Ponów</string>
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
@@ -25,7 +24,6 @@
     <string name="lbl_version">Wersja</string>
     <string name="lbl_code">Kod źródłowy</string>
     <string name="lbl_licenses">Licencje</string>
-
     <string name="set_root_title">Ustawienia</string>
     <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
@@ -35,13 +33,9 @@
     <string name="set_accent">Kolor akcentów</string>
     <string name="set_audio">Dźwięk</string>
     <string name="set_personalize">Interfejs</string>
-
-
     <string name="desc_track_number">Utwór %d</string>
     <string name="desc_play_pause">Odtwórz albo zapauzuj</string>
-
     <string name="lng_search_library">Szukaj w bibliotece…</string>
-
     <string name="clr_red">Czerwony</string>
     <string name="clr_pink">Różowy</string>
     <string name="clr_purple">Fioletowy</string>
@@ -55,7 +49,6 @@
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d utwór</item>
         <item quantity="few">%d utwory</item>
