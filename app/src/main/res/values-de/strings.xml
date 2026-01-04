@@ -243,10 +243,10 @@
     <string name="lbl_playlist_add">Zur Wiedergabeliste hinzufügen</string>
     <string name="lng_playlist_created">Wiedergabeliste erstellt</string>
     <string name="lbl_delete">Löschen</string>
-    <string name="lbl_confirm_delete_playlist">Wiedergabeliste löschen\?</string>
+    <string name="lbl_confirm_delete_playlist">Wiedergabeliste löschen?</string>
     <string name="def_song_count">Keine Lieder</string>
     <string name="fmt_def_playlist">Wiedergabeliste %d</string>
-    <string name="fmt_deletion_info">%s löschen\? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="fmt_deletion_info">%s löschen? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="lbl_rename">Umbenennen</string>
     <string name="lbl_rename_playlist">Wiedergabeliste umbenennen</string>
     <string name="lng_playlist_renamed">Wiedergabeliste umbenannt</string>
