@@ -175,7 +175,7 @@
     <string name="set_separators_comma">Virgule (,)</string>
     <string name="set_separators_semicolon">Point-virgule (;)</string>
     <string name="set_exclude_non_music_desc">Ignore les fichiers audio qui ne sont pas de la musique, tels que les podcasts</string>
-    <string name="set_separators_warning">Attention : L\'utilisation de ce paramètre peut entraîner l\'interprétation incorrecte de certaines balises comme ayant plusieurs valeurs. Vous pouvez résoudre ce problème en préfixant les caractères de séparation indésirables avec une barre oblique inverse (\\).</string>
+    <string name="set_separators_warning">Attention : L\'utilisation de ce paramètre peut entraîner l\'interprétation incorrecte de certaines balises comme ayant plusieurs valeurs. Vous pouvez résoudre ce problème en préfixant les caractères de séparation indésirables avec une barre oblique inverse (\\).</string>
     <string name="set_exclude_non_music">Exclure non-musique</string>
     <string name="set_play_song_from_album">Lire depuis l\'album</string>
     <string name="set_separators_slash">Barre oblique (/)</string>
@@ -245,7 +245,7 @@
     <string name="fmt_def_playlist">Playlist %d</string>
     <string name="lbl_appears_on">Apparaît sur</string>
     <string name="lbl_rename_playlist">Renommer la playlist</string>
-    <string name="lbl_confirm_delete_playlist">Supprimer la playlist ?</string>
+    <string name="lbl_confirm_delete_playlist">Supprimer la playlist ?</string>
     <string name="lbl_share">Partager</string>
     <string name="desc_remove_song">Supprimer ce titre</string>
     <string name="desc_song_handle">Déplacer ce titre</string>
@@ -299,7 +299,7 @@
     <string name="lbl_windows_paths">Utiliser les chemins compatibles Windows</string>
     <string name="set_replay_gain_mode_off">Désactivé</string>
     <string name="lbl_start_playback">Démarrer la lecture</string>
-    <string name="lng_tasker_start">Démarre Auxio en utilisant le dernier état enregistré. S\'il n\'y en a aucun, tous les titres seront remélangés et la lecture commencera immédiatement.\n\nATTENTION : Faites attention en contrôlant ce service, si vous le fermez puis essayez de l\'utiliser à nouveau, vous ferez probablement planter l\'appli.</string>
+    <string name="lng_tasker_start">Démarre Auxio en utilisant le dernier état enregistré. S\'il n\'y en a aucun, tous les titres seront remélangés et la lecture commencera immédiatement.\n\nATTENTION : Faites attention en contrôlant ce service, si vous le fermez puis essayez de l\'utiliser à nouveau, vous ferez probablement planter l\'appli.</string>
     <string name="lbl_more">Plus</string>
     <string name="lbl_feedback">Avis</string>
     <string name="lbl_github">Faire un ticket sur GitHub</string>
