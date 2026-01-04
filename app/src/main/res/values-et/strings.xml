@@ -166,9 +166,7 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Laadime sinu muusikakogu… (%1$d/%2$d)</string>
-    <string name="lng_tasker_start">Auxio käivitub varem salvestatud olekus. Kui sellist olekut ei leidu, siis segatakse kõikide lugude järjekord ning taasesitus algab koheselt.
-\n
-\nHOIATUS: Ole selle teenuse kasutamisel hoolikas - kui sa ta sulged ja siis proovid uuesti kasutada, siis rakendus ilmselt jookseb kokku.</string>
+    <string name="lng_tasker_start">Auxio käivitub varem salvestatud olekus. Kui sellist olekut ei leidu, siis segatakse kõikide lugude järjekord ning taasesitus algab koheselt. \n \nHOIATUS: Ole selle teenuse kasutamisel hoolikas - kui sa ta sulged ja siis proovid uuesti kasutada, siis rakendus ilmselt jookseb kokku.</string>
     <string name="set_personalize">Kohanda endale sobivaks</string>
     <string name="set_personalize_desc">Seadista kasutajaliidese juhtnuppe ning käitumist</string>
     <string name="set_display">Ekraan</string>
