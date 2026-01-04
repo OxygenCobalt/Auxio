@@ -252,13 +252,13 @@
     <string name="fmt_editing">Editando %s</string>
     <string name="lbl_sort_mode">Organizar por</string>
     <string name="lbl_song">Música</string>
-    <string name="lbl_confirm_delete_playlist">Apagar playlist\?</string>
+    <string name="lbl_confirm_delete_playlist">Apagar playlist?</string>
     <string name="lng_playlist_deleted">Playlist deletada</string>
     <string name="lbl_new_playlist">Nova playlist</string>
     <string name="lng_playlist_renamed">Playlist renomeada</string>
     <string name="lbl_rename_playlist">Renomear playlist</string>
     <string name="lbl_appears_on">Aparece em</string>
-    <string name="fmt_deletion_info">Apagar %s\? Esta ação não pode ser desfeita.</string>
+    <string name="fmt_deletion_info">Apagar %s? Esta ação não pode ser desfeita.</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_imported_playlist">Playlist importada</string>
     <string name="lbl_parent_detail">Visualizar</string>
@@ -299,9 +299,7 @@
     <string name="set_play_song_by_itself">Reproduzir música sozinha</string>
     <string name="desc_selection_image">Imagem de seleção</string>
     <string name="lbl_start_playback">Iniciar a reprodução</string>
-    <string name="lng_tasker_start">Inicia o Auxio usando o estado salvo anteriormente. Se nenhum estado salvo estiver disponível, todas as músicas serão reproduzidas aleatoriamente.
-\n
-\nAVISO: Tenha cuidado ao controlar este serviço. Se você fechá-lo e então tentar usá-lo novamente, provavelmente ocasionará um crash no aplicativo.</string>
+    <string name="lng_tasker_start">Inicia o Auxio usando o estado salvo anteriormente. Se nenhum estado salvo estiver disponível, todas as músicas serão reproduzidas aleatoriamente. \n \nAVISO: Tenha cuidado ao controlar este serviço. Se você fechá-lo e então tentar usá-lo novamente, provavelmente ocasionará um crash no aplicativo.</string>
     <string name="lbl_more">Mais</string>
     <string name="lbl_email">Envie um e-mail</string>
     <string name="lbl_github">Crie uma issue no GitHub</string>
