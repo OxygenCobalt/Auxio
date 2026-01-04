@@ -124,7 +124,7 @@
     <string name="lng_playlist_added">Lejátszólistához adva</string>
     <string name="set_rewind_prev">Visszatekerés visszaugrás előtt</string>
     <string name="set_repeat_pause">Ismétlés szünet</string>
-    <string name="fmt_deletion_info">%s törlése\? Ez nem fordítható vissza.</string>
+    <string name="fmt_deletion_info">%s törlése? Ez nem fordítható vissza.</string>
     <string name="lbl_soundtracks">Hangsáv</string>
     <string name="set_keep_shuffle_desc">Új dal lejátszásakor a keverési mód bekapcsolva tartása</string>
     <string name="set_intelligent_sorting_desc">A számokkal vagy \"the\" típusú szavakkal kezdődő nevek helyes rendezése (legjobban angol nyelvű zenékkel működik)</string>
@@ -258,7 +258,7 @@
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="lbl_appears_on">Megjelenik itt,</string>
     <string name="lbl_share">Megoszt</string>
-    <string name="lbl_confirm_delete_playlist">Lejátszólista törlése\?</string>
+    <string name="lbl_confirm_delete_playlist">Lejátszólista törlése?</string>
     <string name="desc_remove_song">Távolítsa el ezt a dalt</string>
     <string name="desc_auxio_icon">Auxio ikon</string>
     <string name="def_disc">Nincs lemez</string>
