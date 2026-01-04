@@ -272,7 +272,7 @@
     <string name="lbl_error_info">Hata bilgisi</string>
     <string name="set_square_covers">Kare albüm kapaklarına zorla</string>
     <string name="lng_playlist_renamed">Çalma listesi yeniden adlandırıldı</string>
-    <string name="fmt_deletion_info">%s silinsin mi\? Geri alınamaz.</string>
+    <string name="fmt_deletion_info">%s silinsin mi? Geri alınamaz.</string>
     <string name="lbl_appears_on">Üzerinde görünür</string>
     <string name="def_album_count">Albüm yok</string>
     <string name="lbl_export_playlist">Çalma listesini dışa aktar</string>
