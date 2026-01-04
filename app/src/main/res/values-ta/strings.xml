@@ -342,4 +342,5 @@
         <item quantity="one"></item>
         <item quantity="other"></item>
     </plurals>
+    <string name="cdc_alac"></string>
 </resources>
