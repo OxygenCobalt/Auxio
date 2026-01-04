@@ -310,7 +310,7 @@
     <string name="lbl_start_playback">Påbörja uppspelning</string>
     <string name="set_cover_mode_save_space">Spara utrymme</string>
     <string name="cnt_mp4">MPEG-4 innehållande %s</string>
-    <string name="lng_tasker_start">Påbörjar Auxio med det tidigare sparade tillståndet. Om inget sparad tillstånd är tillgängligt kommer alla låtar blandas. Uppspelning börjar omedelbart. \n\nOBS: Var försiktig vid användning av denna tjänst, om du stänger ner den och sedan försöker använda den igen kommer du troligen få appen att krascha.</string>
+    <string name="lng_tasker_start">Påbörjar Auxio med det tidigare sparade tillståndet. Om inget sparad tillstånd är tillgängligt kommer alla låtar blandas. Uppspelning börjar omedelbart. \n\nOBS: Var försiktig vid användning av denna tjänst, om du stänger ner den och sedan försöker använda den igen kommer du troligen få appen att krascha.</string>
     <string name="set_include"></string>
     <string name="lbl_no_folders"></string>
     <string name="set_file_picker"></string>
