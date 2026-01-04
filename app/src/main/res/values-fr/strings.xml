@@ -51,7 +51,7 @@
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gris</string>
-    <string name="fmt_lib_song_count">Titres chargés : %d</string>
+    <string name="fmt_lib_song_count">Titres chargés : %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d titre</item>
         <item quantity="many">%d titres</item>
@@ -287,7 +287,7 @@
     <string name="lbl_donate">Faire un don</string>
     <string name="lng_playlist_imported">Playlist importée</string>
     <string name="lbl_supporters">Soutiens</string>
-    <string name="lng_supporters_promo">Faites un don au projet pour que votre nom soit ajouté ici !</string>
+    <string name="lng_supporters_promo">Faites un don au projet pour que votre nom soit ajouté ici !</string>
     <string name="set_remember_pause">Garder la pause</string>
     <string name="set_remember_pause_desc">La lecture/pause reste active lors du passage à la file d\'attente ou de sa modification</string>
     <string name="lbl_export">Exporter</string>
