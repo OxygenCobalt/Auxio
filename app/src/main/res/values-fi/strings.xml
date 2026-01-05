@@ -343,4 +343,5 @@
         <item quantity="one">%d sekunti</item>
         <item quantity="other">%d sekuntia</item>
     </plurals>
+    <string name="fmt_lib_total_size">Koko yhteensä: %s</string>
 </resources>
