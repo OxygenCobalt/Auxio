@@ -343,4 +343,5 @@
         <item quantity="one">%d Sekunde</item>
         <item quantity="other">%d Sekunden</item>
     </plurals>
+    <string name="fmt_lib_total_size">Gesamte Größe: %s</string>
 </resources>
