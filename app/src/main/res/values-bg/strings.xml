@@ -343,4 +343,5 @@
         <item quantity="one">%d секунда</item>
         <item quantity="other">%d секунди</item>
     </plurals>
+    <string name="fmt_lib_total_size">Общ размер: %s</string>
 </resources>
