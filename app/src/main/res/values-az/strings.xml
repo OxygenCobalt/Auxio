@@ -343,4 +343,5 @@
     <string name="set_bar_action">Fərdi səsləndirmə barı hərəkəti</string>
     <string name="set_rewind_prev">Geri atlamadan əvvəl geri sar</string>
     <string name="set_rewind_prev_desc">Əvvəlki mahnıya keçmədən əvvəl geri sar</string>
+    <string name="fmt_lib_total_size">Ümumi ölçü: %s</string>
 </resources>
