@@ -317,35 +317,4 @@
     <string name="set_with_hidden_desc">כלול קובצי אודיו מוסתרים (לדוגמה .cache)</string>
     <string name="set_cover_mode_as_is">כפי שהוא</string>
     <string name="set_cover_mode_save_space">חיסכון מקום</string>
-    <string name="set_include"></string>
-    <string name="lbl_no_folders"></string>
-    <string name="set_file_picker"></string>
-    <string name="lng_play_next"></string>
-    <string name="desc_add_folder"></string>
-    <string name="set_system_database"></string>
-    <string name="set_excluded_locations"></string>
-    <string name="lng_exclude_folders"></string>
-    <string name="fmt_lib_total_size"></string>
-    <string name="set_folders_to_load"></string>
-    <string name="set_load_from"></string>
-    <string name="lng_grant_storage_required"></string>
-    <string name="set_folders_to_ignore"></string>
-    <string name="set_excluded_locations_desc"></string>
-    <string name="lng_file_picker"></string>
-    <string name="lng_grant_storage_anyway"></string>
-    <string name="set_fs_cache_desc"></string>
-    <string name="set_filter_mode"></string>
-    <string name="lng_system_database"></string>
-    <string name="set_grant_storage_anyway"></string>
-    <string name="set_filtered_folders"></string>
-    <string name="set_fs_cache"></string>
-    <string name="lng_include_folders"></string>
-    <string name="set_exclude"></string>
-    <plurals name="fmt_seconds">
-        <item quantity="one"></item>
-        <item quantity="two"></item>
-        <item quantity="other"></item>
-    </plurals>
-    <string name="set_extra_settings"></string>
-    <string name="set_grant_storage"></string>
 </resources>
