@@ -344,4 +344,9 @@
     <string name="set_filtered_folders">Cartelle con filtro</string>
     <string name="set_filter_mode">Tipo di filtro</string>
     <string name="fmt_lib_total_size"></string>
+    <plurals name="fmt_seconds">
+        <item quantity="one"></item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
