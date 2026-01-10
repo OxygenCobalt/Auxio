@@ -339,4 +339,8 @@
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one"></item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
