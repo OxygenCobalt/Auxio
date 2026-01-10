@@ -351,4 +351,5 @@
         <item quantity="many">%d секунд</item>
         <item quantity="other">%d секунд</item>
     </plurals>
+    <string name="fmt_lib_total_size">Загальний розмір: %s</string>
 </resources>
