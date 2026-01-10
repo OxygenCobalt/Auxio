@@ -347,4 +347,5 @@
         <item quantity="few">%d sekunde</item>
         <item quantity="other">%d sekundi</item>
     </plurals>
+    <string name="fmt_lib_total_size"></string>
 </resources>
