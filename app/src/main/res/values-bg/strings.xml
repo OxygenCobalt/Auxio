@@ -65,7 +65,7 @@
     <string name="lbl_size">Размер</string>
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_sample_rate">Честота на дискретизация</string>
-    <string name="lbl_replaygain_album">ReplayGain Регулиране на албум</string>
+    <string name="lbl_replaygain_album">ReplayGain регулиране на албум</string>
     <string name="lbl_shuffle_shortcut_short">Разбъркай</string>
     <string name="lbl_ok">Добре</string>
     <string name="lbl_cancel">Отказ</string>
@@ -94,7 +94,7 @@
     <string name="lbl_sort_asc">Възходящо</string>
     <string name="lbl_sort_dsc">Низходящо</string>
     <string name="lbl_playback">Сега се изпълнява</string>
-    <string name="lbl_replaygain_track">ReplayGain Регулиране на песен</string>
+    <string name="lbl_replaygain_track">ReplayGain регулиране на песен</string>
     <string name="lbl_shuffle_shortcut_long">Разбъркай всички</string>
     <string name="lbl_about">Относно</string>
     <string name="lbl_path_style_absolute">Абсолютно</string>
@@ -124,7 +124,7 @@
     <string name="lng_playlist_deleted">Изтрит плейлист</string>
     <string name="lng_playlist_added">Добави към плейлист</string>
     <string name="set_root_title">Настройки</string>
-    <string name="set_ui">Виж и Усети</string>
+    <string name="set_ui">Виж и усети</string>
     <string name="set_ui_desc">Промени темата и цветовете на приложението</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_auto">Автоматична</string>
@@ -275,7 +275,7 @@
     <string name="clr_blue">Синьо</string>
     <string name="clr_deep_blue">Наситено синьо</string>
     <string name="clr_brown">Кафяво</string>
-    <string name="fmt_selected">%d Избрано</string>
+    <string name="fmt_selected">%d избрано</string>
     <string name="fmt_indexing">Вашата музикална библиотека се зарежда… (%1$d/%2$d)</string>
     <string name="fmt_deletion_info">Изтриване %s? Това не може да бъде отменено.</string>
     <plurals name="fmt_song_count">
