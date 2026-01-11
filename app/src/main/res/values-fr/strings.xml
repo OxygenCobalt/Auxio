@@ -67,7 +67,7 @@
     <string name="lbl_ok">OK</string>
     <string name="lbl_library_counts">Statistiques de la bibliothèque</string>
     <string name="set_black_mode">Thème noir</string>
-    <string name="set_black_mode_desc">Utiliser un thème noir pur</string>
+    <string name="set_black_mode_desc">Utiliser un thème noir intense</string>
     <string name="set_lib_tabs_desc">Modifier la visibilité et l\'ordre des onglets de la bibliothèque</string>
     <string name="lbl_bitrate">Débit binaire</string>
     <string name="set_notif_action">Utiliser une autre action de notification</string>
@@ -276,8 +276,8 @@
     <string name="lbl_demos">Démos</string>
     <string name="lbl_imported_playlist">Playlist importée</string>
     <string name="lng_playlist_exported">Playlist exportée</string>
-    <string name="lbl_replaygain_track">Ajustement piste ReplayGain</string>
-    <string name="lbl_replaygain_album">Ajustement album ReplayGain</string>
+    <string name="lbl_replaygain_track">Réglage du titre ReplayGain</string>
+    <string name="lbl_replaygain_album">Réglage de l\'album ReplayGain</string>
     <string name="err_export_failed">Impossible d\'exporter la playlist dans ce fichier</string>
     <string name="lbl_author">Auteur</string>
     <string name="err_import_failed">Impossible d’importer une playlist depuis ce fichier</string>
@@ -341,7 +341,7 @@
     <string name="set_fs_cache">Utiliser cache du sys. de fichier</string>
     <string name="set_fs_cache_desc">Améliore le temps de chargement, mais peut empêcher des nouveaux fichiers de musiques d\'être ajoutés</string>
     <string name="lbl_no_folders">Aucun dossier</string>
-    <string name="desc_add_folder">Ajouter dossier</string>
+    <string name="desc_add_folder">Ajouter un dossier</string>
     <plurals name="fmt_seconds">
         <item quantity="one">%d seconde</item>
         <item quantity="many">%d secondes</item>
