@@ -347,5 +347,5 @@
         <item quantity="many">%d secondes</item>
         <item quantity="other">%d secondes</item>
     </plurals>
-    <string name="fmt_lib_total_size">Taille totale : %s</string>
+    <string name="fmt_lib_total_size">Taille totale : %s</string>
 </resources>
