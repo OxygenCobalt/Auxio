@@ -343,4 +343,21 @@
     <string name="set_extra_settings">Gosodiadau ychwanegol</string>
     <string name="lbl_no_folders">Dim ffolderi</string>
     <string name="desc_add_folder">Ychwanegu ffolder</string>
+    <string name="lng_exclude_folders"></string>
+    <string name="fmt_lib_total_size"></string>
+    <string name="lng_grant_storage_required"></string>
+    <string name="set_folders_to_ignore"></string>
+    <string name="lng_file_picker"></string>
+    <string name="lng_grant_storage_anyway"></string>
+    <string name="lng_system_database"></string>
+    <string name="lng_include_folders"></string>
+    <string name="set_exclude"></string>
+    <plurals name="fmt_seconds">
+        <item quantity="zero"></item>
+        <item quantity="one"></item>
+        <item quantity="two"></item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
