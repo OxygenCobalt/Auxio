@@ -27,7 +27,7 @@
     <string name="lbl_licenses">Lisensi</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Pengaturan</string>
-    <string name="set_ui">Tampilan</string>
+    <string name="set_ui">Tampilan dan nuansa</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Otomatis</string>
     <string name="set_theme_day">Cerah</string>
@@ -55,7 +55,7 @@
     <string name="lbl_cancel">Batal</string>
     <string name="lbl_save">Simpan</string>
     <string name="set_black_mode">Tema hitam</string>
-    <string name="set_black_mode_desc">Gunakan tema gelap hitam murni</string>
+    <string name="set_black_mode_desc">Gunakan tema gelap hitam pekat</string>
     <string name="set_display">Tampilan</string>
     <string name="set_lib_tabs_desc">Atur tab pustaka yang ditampilkan dan urutannya</string>
     <string name="set_headset_autoplay">Putar otomatis headset</string>
@@ -225,7 +225,7 @@
     <string name="set_exclude_non_music">Kecualikan item non-musik</string>
     <string name="set_square_covers">Paksa sampul album kotak</string>
     <string name="set_square_covers_desc">Potong semua sampul album ke aspek rasio 1:1</string>
-    <string name="fmt_selected">%d terpilih</string>
+    <string name="fmt_selected">%d dipilih</string>
     <string name="lbl_rename">Ubah nama</string>
     <string name="lbl_rename_playlist">Ubah nama daftar putar</string>
     <string name="lbl_confirm_delete_playlist">Hapus daftar putar?</string>
@@ -239,7 +239,7 @@
     <string name="lbl_sort_mode">Urutkan berdasarkan</string>
     <string name="lbl_sort_dsc">Turun</string>
     <string name="lbl_replaygain_track">Penyesuaian Trek ReplayGain</string>
-    <string name="lbl_replaygain_album">Penyesuaian Album ReplayGain</string>
+    <string name="lbl_replaygain_album">Penyesuaian album ReplayGain</string>
     <string name="lbl_copied">Disalin</string>
     <string name="lbl_report">Laporkan</string>
     <string name="def_song_count">Tidak ada lagu</string>
@@ -320,15 +320,15 @@
     <string name="set_with_hidden_desc">Sertakan berkas audio yang tersembunyi (misalnya .cache)</string>
     <string name="set_cover_mode_save_space">Hemat ruang</string>
     <string name="set_cover_mode_as_is">Seperti yang ada</string>
-    <string name="set_load_from">Muat Dari</string>
+    <string name="set_load_from">Muat dari</string>
     <string name="set_file_picker">Pemilih berkas</string>
     <string name="set_system_database">Sistem</string>
     <string name="set_grant_storage_anyway">Akses penyimpanan disarankan</string>
     <string name="set_grant_storage">Akses penyimpanan diperlukan</string>
-    <string name="set_folders_to_load">Folder yang akan dimuat</string>
-    <string name="set_folders_to_ignore">Folder yang Diabaikan</string>
-    <string name="set_filtered_folders">Folder yang Disaring</string>
-    <string name="set_filter_mode">Mode Filter</string>
+    <string name="set_folders_to_load">Folder untuk dimuat</string>
+    <string name="set_folders_to_ignore">Folder untuk diabaikan</string>
+    <string name="set_filtered_folders">Folder yang difilter</string>
+    <string name="set_filter_mode">Mode filter</string>
     <string name="set_include">Sertakan</string>
     <string name="set_exclude">Kecualikan</string>
     <string name="set_extra_settings">Pengaturan tambahan</string>
@@ -336,8 +336,8 @@
     <string name="set_fs_cache_desc">Mempercepat waktu pemuatan, tetapi dapat mencegah penambahan musik baru</string>
     <string name="set_excluded_locations">Folder yang dikecualikan</string>
     <string name="set_excluded_locations_desc">Kelola folder yang akan dikecualikan dari proses pemuatan musik</string>
-    <string name="lbl_no_folders">Tidak Ada Folder</string>
-    <string name="desc_add_folder">Tambahkan Folder</string>
+    <string name="lbl_no_folders">Tidak ada folder</string>
+    <string name="desc_add_folder">Tambahkan folder</string>
     <string name="def_album">Album yang tidak diketahui</string>
     <string name="cnt_mp4">MPEG-4 yang berisi %s</string>
     <string name="cdc_alac">Apple Lossless Audio Codec (ALAC)</string>
@@ -345,4 +345,5 @@
     <plurals name="fmt_seconds">
         <item quantity="other">%d detik</item>
     </plurals>
+    <string name="fmt_lib_total_size">Total ukuran: %s</string>
 </resources>
