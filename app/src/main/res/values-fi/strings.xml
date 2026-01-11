@@ -157,7 +157,7 @@
     <string name="lbl_about">Tietoja</string>
     <string name="lbl_library_counts">Kirjaston tilastot</string>
     <string name="lng_queue_added">Lisätty jonoon</string>
-    <string name="set_black_mode_desc">Käytä mustaa teemaa</string>
+    <string name="set_black_mode_desc">Käytä täysin mustaa tummaa teemaa</string>
     <string name="set_round_mode">Pyöristetty tila</string>
     <string name="lbl_soundtracks">Elokuvamusiikit</string>
     <string name="lbl_mixes">DJ-mixaukset</string>
