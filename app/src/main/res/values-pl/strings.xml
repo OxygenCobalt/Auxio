@@ -25,7 +25,7 @@
     <string name="lbl_code">Kod źródłowy</string>
     <string name="lbl_licenses">Licencje</string>
     <string name="set_root_title">Ustawienia</string>
-    <string name="set_ui">Wygląd</string>
+    <string name="set_ui">Wygląd i poczucie</string>
     <string name="set_theme">Motyw</string>
     <string name="set_theme_auto">Systemowy</string>
     <string name="set_theme_day">Jasny</string>
@@ -164,7 +164,7 @@
     <string name="set_replay_gain_mode_track">Preferuj utwór</string>
     <string name="set_lib_tabs">Karty w bibliotece</string>
     <string name="set_lib_tabs_desc">Zmień widoczność i kolejność kart w bibliotece</string>
-    <string name="set_black_mode_desc">Użyj czarnego motywu</string>
+    <string name="set_black_mode_desc">Używaj czarnego motywu</string>
     <string name="set_display">Elementy</string>
     <string name="clr_dynamic">Material You</string>
     <string name="fmt_bitrate">%d kb/s</string>
