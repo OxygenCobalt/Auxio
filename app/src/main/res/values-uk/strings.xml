@@ -24,7 +24,7 @@
     <string name="lbl_code">Вихідний код</string>
     <string name="lbl_licenses">Ліцензії</string>
     <string name="set_root_title">Налаштування</string>
-    <string name="set_ui">Вигляд</string>
+    <string name="set_ui">Зовнішній вигляд і відчуття</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_day">Світла</string>
     <string name="set_theme_night">Темна</string>
@@ -130,7 +130,7 @@
     <string name="set_play_song_from_album">Відтворити альбом</string>
     <string name="set_play_in_list_with">При відтворенні з бібліотеки</string>
     <string name="set_replay_gain_mode_dynamic">Віддавати перевагу альбому, якщо він відтворюється</string>
-    <string name="set_black_mode_desc">Використовувати повністю чорну тему</string>
+    <string name="set_black_mode_desc">Використовуйте чисто чорну темну тему</string>
     <string name="set_hide_collaborators_desc">Показувати лише тих виконавців, які безпосередньо зазначені в альбомі (найкраще працює в добре позначених бібліотеках)</string>
     <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до спотворення звуку в деяких піснях.</string>
     <string name="set_play_in_parent_with">При відтворенні з деталей предмета</string>
@@ -175,7 +175,7 @@
     <string name="desc_exit">Зупинити відтворення</string>
     <string name="cdc_flac">Вільний аудіокодек без втрат (FLAC)</string>
     <string name="clr_deep_purple">Темно-фіолетовий</string>
-    <string name="fmt_selected">Вибрано: %d</string>
+    <string name="fmt_selected">Вибрано %d</string>
     <string name="fmt_indexing">Завантаження музичної бібліотеки… (%1$d/%2$d)</string>
     <string name="fmt_bitrate">%d кбіт/с</string>
     <string name="fmt_sample_rate">%d Гц</string>
@@ -294,8 +294,8 @@
     <string name="lbl_import_playlist">Імпортувати список відтворення</string>
     <string name="lbl_donate">Пожертвувати</string>
     <string name="lbl_supporters">Прибічники</string>
-    <string name="lbl_replaygain_track">Підлаштування ReplayGain пісні</string>
-    <string name="lbl_replaygain_album">Підлаштування ReplayGain альбому</string>
+    <string name="lbl_replaygain_track">Налаштування треку ReplayGain</string>
+    <string name="lbl_replaygain_album">Налаштування альбому ReplayGain</string>
     <string name="lng_supporters_promo">Пожертвуйте на проєкт, щоб ваше ім\'я було додано сюди!</string>
     <string name="lbl_author">Автор</string>
     <string name="set_remember_pause_desc">Залишати відтворення/паузу під час пропуску або редагування черги</string>
