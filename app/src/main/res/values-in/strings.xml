@@ -345,5 +345,4 @@
     <plurals name="fmt_seconds">
         <item quantity="other">%d detik</item>
     </plurals>
-    <string name="fmt_lib_total_size"></string>
 </resources>
