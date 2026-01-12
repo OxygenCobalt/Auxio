@@ -136,7 +136,7 @@
     <string name="set_theme_day">Hele kujundus</string>
     <string name="set_black_mode">Must kujundus</string>
     <string name="set_theme_night">Tume kujundus</string>
-    <string name="set_black_mode_desc">Tumeda kujunduse puhul kasuta päris musta kujundust</string>
+    <string name="set_black_mode_desc">Tumeda kujunduse puhul kasuta süsimusta kujundust</string>
     <string name="set_accent">Värviteema</string>
     <string name="clr_purple">Purpurpunane</string>
     <string name="clr_deep_purple">Sügav purpurpunane</string>
@@ -160,7 +160,7 @@
     <string name="clr_dynamic">Dünaamiline värv</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="fmt_selected">%d valitud</string>
+    <string name="fmt_selected">%d on valitud</string>
     <string name="fmt_editing">Muudame esitusloendit %s</string>
     <string name="fmt_disc_no">%d. plaat</string>
     <string name="fmt_db_pos">+%.1f dB</string>
@@ -344,4 +344,5 @@
         <item quantity="other">%d sekundit</item>
     </plurals>
     <string name="fmt_lib_total_size">Maht kokku: %s</string>
+    <string name="err_weird_location">Hoiatus: see kaust on hallatud kolmanda osapoole poolt</string>
 </resources>
