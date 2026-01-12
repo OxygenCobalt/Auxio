@@ -344,4 +344,5 @@
         <item quantity="other">%d Sekunden</item>
     </plurals>
     <string name="fmt_lib_total_size">Gesamte Größe: %s</string>
+    <string name="err_weird_location">Achtung: Dieser Ordner von einer Drittpartei verwaltet</string>
 </resources>
