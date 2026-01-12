@@ -348,4 +348,5 @@
         <item quantity="other">%d secondes</item>
     </plurals>
     <string name="fmt_lib_total_size">Taille totale : %s</string>
+    <string name="err_weird_location">Avertissement : ce dossier est géré par un tiers</string>
 </resources>
