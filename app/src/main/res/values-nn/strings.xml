@@ -135,12 +135,12 @@
     <string name="set_black_mode">Svart drakt</string>
     <string name="set_black_mode_desc">Nøyt ei heilsvart mørk drakt</string>
     <string name="set_round_mode">Avrunda hjørne</string>
-    <string name="set_round_mode_desc">Slå på avrunda hjørne på fleire grensesnittselement (krev at albumomslag er òg avrunda)</string>
+    <string name="set_round_mode_desc">Slå på avrunda hjørne på fleire grensesnedselement (krev at albumomslag er òg avrunda)</string>
     <string name="set_display">Skjerm</string>
     <string name="set_lib_tabs">Samlingsfaner</string>
     <string name="set_action_mode_next">Hopp til neste</string>
-    <string name="set_action_mode_repeat">Gjentakingsmodus</string>
-    <string name="set_behavior">Åtferd</string>
+    <string name="set_action_mode_repeat">Tvitakingsmodus</string>
+    <string name="set_behavior">Framferd</string>
     <string name="set_play_in_list_with">Ved avspeling frå samlinga</string>
     <string name="set_play_song_from_album">Spel frå album</string>
     <string name="set_play_song_from_genre">Spel frå sjanger</string>
@@ -164,12 +164,12 @@
     <string name="set_cover_mode_balanced">Raskt</string>
     <string name="set_square_covers">Påtving firkanta albumomslag</string>
     <string name="set_square_covers_desc">Avskjer alle albumomslag til 1:1-sideforhold</string>
-    <string name="set_audio_desc">Still inn ljod- og avspelingsåtferd</string>
+    <string name="set_audio_desc">Still inn ljod- og avspelingsframferd</string>
     <string name="set_playback">Avspeling</string>
     <string name="set_headset_autoplay">Automatisk avspeling med hovudsett</string>
     <string name="set_rewind_prev">Spol att før spor vert hoppa over</string>
     <string name="set_rewind_prev_desc">Spol att før Auxio hoppar til førre song</string>
-    <string name="set_repeat_pause">Pause ved gjentaking</string>
+    <string name="set_repeat_pause">Pausa ved tvitaking</string>
     <string name="set_remember_pause">Hugs pausemodus</string>
     <string name="set_remember_pause_desc">Vert spelande/pausa ved sporbytting eller købrigding</string>
     <string name="set_replay_gain">Volumnormalisering</string>
@@ -184,10 +184,10 @@
     <string name="set_pre_amp_without">Justering utan etikettar</string>
     <string name="set_library">Samling</string>
     <string name="set_locations_desc">Handsam kvar musikk skal lastast inn ifrå</string>
-    <string name="set_reindex">Gjenoppfrisk musikk</string>
+    <string name="set_reindex">Attoppfrisk musikk</string>
     <string name="err_import_failed">Kan ikkje importere ei speleliste frå denne fila</string>
     <string name="desc_skip_next">Hopp til neste song</string>
-    <string name="desc_change_repeat">Brigd gjentakingsmodus</string>
+    <string name="desc_change_repeat">Brigd tvitakingsmodus</string>
     <string name="desc_shuffle">Slå på/av blanding</string>
     <string name="desc_queue_bar">Opne køen</string>
     <string name="desc_no_cover">Albumomslag</string>
@@ -224,13 +224,13 @@
     <string name="lbl_feedback">Gjev attmelding</string>
     <string name="lng_indexing">Lastar inn musikksamlinga di…</string>
     <string name="lng_playlist_created">Speleliste oppretta</string>
-    <string name="lng_tasker_start">Startar Auxio med den førre lagra tilstanden. Dersom ingen lagra tilstand er tilgjengeleg, skal alle songar blandast. Avspeling byrjar med éin gong.\n\nÅTVARING: Ver varsam med å styre denne tenesta; om du lèt ho att og så prøver å nøyte ho att, skal det nok få appen til å krasje.</string>
+    <string name="lng_tasker_start">Startar Auxio med den førre lagra tilstanden. Dersom ingen lagra tilstand er tilgjengeleg, skal alle songar blandast. Avspeling byrjar med éin gong.\n\nVARING: Ver varsam med å styra denne tenesta; om du lèt ho att og så prøver å nøyta henne atter, skal det nok få appen til å krasja.</string>
     <string name="set_root_title">Innstillingar</string>
     <string name="set_ui_desc">Brigd drakta og programfargane</string>
     <string name="set_theme_day">Ljos</string>
     <string name="set_theme_night">Mørk</string>
     <string name="set_personalize">Tilpass</string>
-    <string name="set_personalize_desc">Tilpass grensesnittskontrollar og åtferd</string>
+    <string name="set_personalize_desc">Tilpass grensesnedskontrollar og framferd</string>
     <string name="set_bar_action">Eigendefinert avspelingsfelthandling</string>
     <string name="set_notif_action">Eigendefinert merknadshandling</string>
     <string name="set_lib_tabs_desc">Brigd synlegdom og rekkjefylgje på samlingsfaner</string>
@@ -246,11 +246,11 @@
     <string name="set_separators_slash">Skråstrek (/)</string>
     <string name="set_separators_plus">Plussteikn (+)</string>
     <string name="set_separators_and">Og-teikn (&amp;)</string>
-    <string name="set_separators_warning">Åtvaring: Om dette valet er påslege, kan enkelte etikettar verte feiltolka som om dei har fleire verdiar. Dette kan løysast ved å leggje ein omvend skråstrek (\\) bak skiljeteiknet som ikkje skal skilja verdiar.</string>
+    <string name="set_separators_warning">Åtvaring: Om denne funksjonen er påslegen, kan enkelte etikettar verta feiltolka som om dei har fleire verdiar. Dette kan verta løyst ved å leggja eit omvendt skråstrek (\\) bak skiljeteiknet som ikkje skal skilja verdiar.</string>
     <string name="set_audio">Ljod</string>
     <string name="set_headset_autoplay_desc">Byrja alltid avspeling når hovudtelefonar vert kopla til (fungerer kanskje ikkje på alle einingar)</string>
-    <string name="set_repeat_pause_desc">Pause når ein song vert gjenteken</string>
-    <string name="set_pre_amp_warning">Åtvaring: Å brigde førestyrkinga til høge positive verdiar kan valde forvrenging ved høge ljodtrykk på nokre spor.</string>
+    <string name="set_repeat_pause_desc">Pausa når ein song vert tviteken</string>
+    <string name="set_pre_amp_warning">Varing: Å brigda førestyrkinga til høge positive verdiar kan føra til renging ved høge ljodtrykk på somme spor.</string>
     <string name="set_locations">Musikkkjelder</string>
     <string name="set_reindex_desc">Last inn musikksamlinga på nytt og nøyt hurtiglagra etikettar når mogleg</string>
     <string name="set_rescan">Skann musikk på nytt</string>
@@ -322,7 +322,7 @@
     <string name="set_system_database">System</string>
     <string name="set_grant_storage_anyway">Tilgang til lagring tilrådd</string>
     <string name="set_grant_storage">Tilgang til lagring krevst</string>
-    <string name="set_folders_to_load">Mapper som skal lastast inn</string>
+    <string name="set_folders_to_load">Mapper som skal ladast inn</string>
     <string name="set_folders_to_ignore">Mapper som skal ignorerast</string>
     <string name="set_filtered_folders">Filtrerte mapper</string>
     <string name="set_filter_mode">Filtreringsmodus</string>
@@ -343,4 +343,6 @@
         <item quantity="one">%d sekund</item>
         <item quantity="other">%d sekund</item>
     </plurals>
+    <string name="err_weird_location">Varing: Denne mappa er handsama av ein tredje part</string>
+    <string name="fmt_lib_total_size">Total storleik: %s</string>
 </resources>
