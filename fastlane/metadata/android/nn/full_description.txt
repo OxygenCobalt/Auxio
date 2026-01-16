@@ -1,22 +1,22 @@
-Auxio er ein lokal musikkspelar med ei snøgg, påliteleg brukaroppleving utan dei mange fåfengde funksjonane til stades i andre musikkspelarar. Byggd med moderne avspelingsbibliotek, har Auxio betre stytte for samlingar og ljodkvalitet jamført med andre appar som nøyter utdaterte Android-funksjonar. Kort sagt, <b>han spelar musikk.</b>
+Auxio er ein lokal musikkspelar med ei snøgg, pålitade nøytaroppleving utan dei mange fåfengde funksjonane til stadar i andre musikkspelarar. Bygd med moderne avspelingsbibliotek, har Auxio betre støtte for samlingar og ljodkvalitet jamførd med andre appar som nøyter utdaterte Android-funksjonar. Kort sagt, <b>han spelar musikk.</b>
 
 <b>Funksjonar</b>
 
 - Avspeling med grunnlag i Media3 ExoPlayer
-- Snøgt brukargrensesnitt avleia frå dei seinaste Material Design-riktingslinjene
-- Meiningsfylt brukaroppleving som gjev nyttehugnad forrang framfor ekstremtilfelle
-- Tilpasseleg åtferd
-- Stytte for platetal, fleire artistar, utgåvetypar, omhyggjelege/opphavelege datoar, etikettsortering med meir
-- Avansert artistsystem som sameinar artistar og albumartistar
-- Mappehandsaming med stytte for SD-kort
-- Pålitelege spelelister
+- Snøgt nøytargrensesned avleidd frå dei seinaste Material Design-riktingslinene
+- Meiningsfylt nøytaroppleving som gjev nyttehugnad forrang framfor ekstremtilfelle
+- Tilpasseleg framferd
+- Støtte for platetal, fleire artistar, utgåvetypar, noggrane/opphavlege datoar, etikettsortering med meir
+- Avansert artistsystem som samlar artistar og albumartistar
+- Mappehandsaming med støtte for SD-kort
+- Pålitande spelelister
 - Varetaking av avspelingstilstand
-- Stytte for Android Auto
+- Støtte for Android Auto
 - Automatisk holfri avspeling
-- Full stytte for ReplayGain (På MP3, FLAC, OGG, OPUS og MP4-filer)
-- Stytte for ekstern tonekontroll (t.d. Wavelet)
-- Rand-til-rand
-- Stytte for innebyggde omslag
+- Full støtte for ReplayGain (på MP3, FLAC, OGG, OPUS og MP4-filer)
+- Støtte for ekstern tonekontroll (t.d. Wavelet)
+- Rand-til-rand nøytargrensesned
+- Støtte for innebyggde omslag
 - Søkjefunksjon
 - Autoavspeling med hovudsett
 - Stilige widgetar som tilpassar seg sjølvverkande til storleiken deira
