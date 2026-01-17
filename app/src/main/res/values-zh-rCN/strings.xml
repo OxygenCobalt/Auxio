@@ -340,5 +340,4 @@
         <item quantity="other">%d 秒</item>
     </plurals>
     <string name="fmt_lib_total_size">总大小：%s</string>
-    <string name="err_weird_location">警告：此文件夹由第三方管理</string>
 </resources>

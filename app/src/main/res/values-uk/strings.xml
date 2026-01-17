@@ -352,5 +352,4 @@
         <item quantity="other">%d секунд</item>
     </plurals>
     <string name="fmt_lib_total_size">Загальний розмір: %s</string>
-    <string name="err_weird_location">Попередження: Цією папкою керує третя сторона</string>
 </resources>

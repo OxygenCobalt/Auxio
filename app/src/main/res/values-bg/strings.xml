@@ -344,5 +344,4 @@
         <item quantity="other">%d секунди</item>
     </plurals>
     <string name="fmt_lib_total_size">Общ размер: %s</string>
-    <string name="err_weird_location">Предупреждение: Тази папка се управлява от трета страна</string>
 </resources>

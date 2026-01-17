@@ -352,5 +352,4 @@
         <item quantity="other">%d sekund</item>
     </plurals>
     <string name="fmt_lib_total_size">Celková velikost: %s</string>
-    <string name="err_weird_location">Varování: tato složka je spravována třetí stranou</string>
 </resources>

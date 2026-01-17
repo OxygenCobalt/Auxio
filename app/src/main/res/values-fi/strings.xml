@@ -344,5 +344,4 @@
         <item quantity="other">%d sekuntia</item>
     </plurals>
     <string name="fmt_lib_total_size">Koko yhteensä: %s</string>
-    <string name="err_weird_location">Varoitus: Tämä kansio on kolmannen osapuolen hallinnassa</string>
 </resources>

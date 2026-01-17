@@ -343,6 +343,5 @@
         <item quantity="one">%d sekund</item>
         <item quantity="other">%d sekund</item>
     </plurals>
-    <string name="err_weird_location">Varing: Denne mappa er handsama av ein tredje part</string>
     <string name="fmt_lib_total_size">Total storleik: %s</string>
 </resources>

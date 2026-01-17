@@ -352,5 +352,4 @@
         <item quantity="other">%d секунд</item>
     </plurals>
     <string name="fmt_lib_total_size">Общий размер: %s</string>
-    <string name="err_weird_location">Предупреждение: эта папка управляется сторонним приложением</string>
 </resources>
