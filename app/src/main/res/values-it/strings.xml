@@ -343,4 +343,10 @@
     <string name="lng_play_next">Prossimo brano in riproduzione</string>
     <string name="set_filtered_folders">Cartelle con filtro</string>
     <string name="set_filter_mode">Tipo di filtro</string>
+    <string name="fmt_lib_total_size">Dimensione: %s</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d secondo</item>
+        <item quantity="many">%d secondi</item>
+        <item quantity="other">%d secondi</item>
+    </plurals>
 </resources>
