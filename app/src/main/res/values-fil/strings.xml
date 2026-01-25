@@ -342,4 +342,6 @@
     <string name="desc_music_location_delete"></string>
     <string name="set_grant_storage"></string>
     <string name="fmt_sample_rate"></string>
+    <string name="set_behavior"></string>
+    <string name="set_replay_gain"></string>
 </resources>
