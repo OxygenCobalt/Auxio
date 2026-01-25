@@ -351,5 +351,4 @@
         <item quantity="many">%d sekundžių</item>
         <item quantity="other">%d sekundžių</item>
     </plurals>
-    <string name="fmt_lib_total_size"></string>
 </resources>

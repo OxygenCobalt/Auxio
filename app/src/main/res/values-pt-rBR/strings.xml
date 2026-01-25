@@ -347,5 +347,4 @@
         <item quantity="many">%d segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
-    <string name="fmt_lib_total_size"></string>
 </resources>

@@ -354,10 +354,4 @@
         <item quantity="many">%d ثانية</item>
         <item quantity="other">%d ثانية</item>
     </plurals>
-    <string name="lng_play_next"></string>
-    <string name="lng_exclude_folders"></string>
-    <string name="fmt_lib_total_size"></string>
-    <string name="lng_file_picker"></string>
-    <string name="lng_system_database"></string>
-    <string name="lng_include_folders"></string>
 </resources>
