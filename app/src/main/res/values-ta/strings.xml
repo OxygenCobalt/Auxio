@@ -342,4 +342,6 @@
         <item quantity="one"></item>
         <item quantity="other"></item>
     </plurals>
+    <string name="fmt_lib_total_size"></string>
+    <string name="cdc_alac"></string>
 </resources>
