@@ -351,4 +351,6 @@
         <item quantity="other">%d sekund</item>
     </plurals>
     <string name="fmt_lib_total_size">Celková velikost: %s</string>
+    <string name="set_task_exit">Vždy ukončit při zavření</string>
+    <string name="set_task_exit_desc">Zastavit přehrávání při odstranění z nedávných, i když hraje hudba</string>
 </resources>
