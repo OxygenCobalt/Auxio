@@ -351,4 +351,6 @@
         <item quantity="other">%d секунд</item>
     </plurals>
     <string name="fmt_lib_total_size">Загальний розмір: %s</string>
+    <string name="set_task_exit">Завжди виходьте після закриття</string>
+    <string name="set_task_exit_desc">Зупинити відтворення, якщо видалити з нещодавніх, навіть під час відтворення</string>
 </resources>
