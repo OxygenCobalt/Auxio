@@ -347,4 +347,6 @@
         <item quantity="other">%d secondes</item>
     </plurals>
     <string name="fmt_lib_total_size">Taille totale : %s</string>
+    <string name="set_task_exit">Toujours quitter à la fermeture</string>
+    <string name="set_task_exit_desc">Interrompre la lecture lorsque le lecteur est supprimé des fichiers récents, même s\'il est en cours de lecture</string>
 </resources>
