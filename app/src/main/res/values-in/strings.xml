@@ -78,7 +78,6 @@
     <string name="lbl_format">Format</string>
     <string name="lbl_author_name">Dikembangkan oleh Alexander Capehart</string>
     <string name="lbl_library_counts">Statistik pustaka</string>
-    <string name="set_notif_action">Tindakan notifikasi khusus</string>
     <string name="lbl_shuffle_shortcut_short">Acak</string>
     <string name="lbl_shuffle_shortcut_long">Acak semua</string>
     <string name="set_replay_gain_mode_track">Utamakan trek</string>

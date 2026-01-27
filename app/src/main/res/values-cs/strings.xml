@@ -58,7 +58,6 @@
     <string name="set_lib_tabs_desc">Změnit viditelnost a pořadí karet knihovny</string>
     <string name="set_round_mode">Zaoblený režim</string>
     <string name="set_round_mode_desc">Povolit zaoblené rohy u dodatečných prvků rozhraní (vyžaduje zaoblené rohy obalů alb)</string>
-    <string name="set_notif_action">Použít alternativní akci oznámení</string>
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Automatické přehrávání se sluchátky</string>
     <string name="set_headset_autoplay_desc">Při připojení sluchátek vždy spustit přehrávání (nemusí fungovat na všech zařízeních)</string>

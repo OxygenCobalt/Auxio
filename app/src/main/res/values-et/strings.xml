@@ -197,7 +197,6 @@
     <string name="set_replay_gain_mode_album">Eelista albumikohast esitusvaljuse tundlikkust</string>
     <string name="set_replay_gain_mode_dynamic">Kui album juba on esitamisel, siis eelista albumikohast esitusvaljuse tundlikkust</string>
     <string name="set_pre_amp">Esitusvaljuse tundlikkuse eelvõimendus</string>
-    <string name="set_notif_action">Kohandatud toimingud teavitusel</string>
     <string name="set_bar_action">Kohandatud toimingud taasesitusribal</string>
     <string name="set_play_in_list_with">Esitamisel muusikakogust</string>
     <string name="set_play_song_none">Esita näidatud palast</string>

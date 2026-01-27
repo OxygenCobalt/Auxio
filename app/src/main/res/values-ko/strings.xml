@@ -61,7 +61,6 @@
     <string name="set_lib_tabs_desc">라이브러리 탭 순서 및 표시할 탭 변경</string>
     <string name="set_round_mode">둥근 UI 모드</string>
     <string name="set_round_mode_desc">앨범 커버를 포함한 기타 UI의 가장자리를 둥글게 표시합니다.</string>
-    <string name="set_notif_action">알림 동작 사용자 정의</string>
     <string name="set_audio">소리</string>
     <string name="set_headset_autoplay">헤드셋 자동 재생</string>
     <string name="set_headset_autoplay_desc">헤드셋을 연결하면 항상 자동으로 음악 재생 (기기에 따라 작동하지 않을 수 있음)</string>

@@ -49,7 +49,6 @@
     <string name="set_lib_tabs_desc">更改媒体库标签页面的可见性和顺序</string>
     <string name="set_round_mode">专辑封面圆角</string>
     <string name="set_round_mode_desc">在其他 UI 元素上启用圆角（需要圆角专辑封面）</string>
-    <string name="set_notif_action">使用替代通知操作方案</string>
     <string name="set_audio">音频</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>

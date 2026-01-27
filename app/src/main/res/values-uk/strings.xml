@@ -151,7 +151,6 @@
     <string name="set_rewind_prev">Перемотати назад перед відтворенням попередньої пісні</string>
     <string name="set_rescan">Пересканувати музику</string>
     <string name="set_separators_warning">Попередження: Використання цього параметра може призвести до того, що деякі теги будуть неправильно інтерпретовані як такі, що мають кілька значень. Ви можете вирішити це, додавши перед небажаними символами-роздільниками зворотну скісну риску (\\).</string>
-    <string name="set_notif_action">Кнопка в сповіщенні</string>
     <string name="set_separators">Багатозначні роздільники</string>
     <string name="set_pre_amp_with">Регулювання на основі тегів</string>
     <string name="set_replay_gain_mode">Налаштування ReplayGain</string>

@@ -111,7 +111,6 @@
     <string name="set_personalize">Anpassa</string>
     <string name="set_lib_tabs_desc">Ändra synlighet och ordningsföljd på bibliotekflikar</string>
     <string name="set_bar_action">Anpassad åtgärd för uppspelningsfält</string>
-    <string name="set_notif_action">Anpassad aviseringsåtgärd</string>
     <string name="set_action_mode_next">Hoppa till nästa</string>
     <string name="set_action_mode_repeat">Upprepningsmodus</string>
     <string name="set_behavior">Beteende</string>

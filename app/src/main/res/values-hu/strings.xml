@@ -177,7 +177,6 @@
     <string name="desc_tab_handle">Mozgassa ezt a lapot</string>
     <string name="desc_clear_search">Keresési lekérdezés törlése</string>
     <string name="def_playback">Nincs zenelejátszás</string>
-    <string name="set_notif_action">Egyéni értesítési művelet</string>
     <string name="def_date">Nincs dátum</string>
     <string name="set_cover_mode_balanced">Gyors</string>
     <string name="set_exclude_non_music">A nem zenei anyagok kizárása</string>

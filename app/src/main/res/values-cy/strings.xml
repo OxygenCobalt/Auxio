@@ -283,7 +283,6 @@
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="set_personalize_desc">Addasu rheolaethau\'r UI ac ymarweddiad</string>
     <string name="set_bar_action">Gweithred addasedig ar y bar chwarae</string>
-    <string name="set_notif_action">Gweithred hysbysiad addasedig</string>
     <string name="set_separators">Gwahanydd aml-werth</string>
     <string name="set_square_covers_desc">Tocio pob clawr albwm i gymhareb agwedd 1:1</string>
     <string name="set_pre_amp_warning">Rhybudd: Gall newid y pre-amp i lefel bositif uchel yn achosi uchafbwyntiau ar rai traciau sain.</string>

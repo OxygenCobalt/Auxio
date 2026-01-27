@@ -142,7 +142,6 @@
     <string name="set_play_in_list_with">Când redai din bibliotecă</string>
     <string name="set_play_song_none">Redă din elementul afișat</string>
     <string name="set_content">Conținut</string>
-    <string name="set_notif_action">Acțiune de notificare personalizată</string>
     <string name="set_keep_shuffle_desc">Menține funcția shuffle activată la redarea unei melodii noi</string>
     <string name="set_bar_action">Personalizarea acțiunii bării de redare</string>
     <string name="set_action_mode_repeat">Modul de repetare</string>

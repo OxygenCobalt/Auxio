@@ -51,7 +51,6 @@
     <string name="set_lib_tabs_desc">Cambia la visibilità e l\'ordine delle schede della libreria</string>
     <string name="set_round_mode">Copertine arrotondate</string>
     <string name="set_round_mode_desc">Abilita gli angoli arrotondati su ulteriori elementi dell\'interfaccia (richiede che le copertine degli album siano arrotondate)</string>
-    <string name="set_notif_action">Personalizza azione notifica</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Riproduzione automatica</string>
     <string name="set_headset_autoplay_desc">Inizia la riproduzione ogni volta che vengono connesse delle cuffie (potrebbe non funzionare su tutti i dispositivi)</string>

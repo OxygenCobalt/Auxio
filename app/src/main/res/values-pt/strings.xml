@@ -39,7 +39,6 @@
     <string name="set_root_title">Definições</string>
     <string name="set_lib_tabs">Abas da biblioteca</string>
     <string name="set_lib_tabs_desc">Altere a visibilidade e a ordem das abas da biblioteca</string>
-    <string name="set_notif_action">Personalizar notificações</string>
     <string name="lbl_empty_playlist">Lista de reprodução vazia</string>
     <string name="lbl_import_playlist">Importar lista de reprodução</string>
     <string name="lbl_search">Procurar</string>

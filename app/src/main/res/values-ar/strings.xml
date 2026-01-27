@@ -121,7 +121,6 @@
     <string name="clr_purple">أرجواني</string>
     <string name="clr_deep_purple">الأرجواني العميق</string>
     <string name="lng_playlist_imported">تم استيراد قائمة التشغيل</string>
-    <string name="set_notif_action">إجراء الإشعارات المخصص</string>
     <string name="set_action_mode_next">الانتقال إلى التالي</string>
     <string name="desc_no_cover">غلاف الألبوم</string>
     <string name="err_export_failed">غير قادر على تصدير قائمة التشغيل إلى هذا الملف</string>

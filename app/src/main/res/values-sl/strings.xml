@@ -219,7 +219,6 @@
     <string name="lbl_filter">Filtriraj</string>
     <string name="set_exclude_non_music_desc">Prezri avdio datoteke, ki niso glasba, na primer podkaste</string>
     <string name="lbl_soundtrack">Glasbena podlaga</string>
-    <string name="set_notif_action">Prilagojeno dejanje v obvestilu</string>
     <string name="lbl_reset">Ponastavi nastavitve</string>
     <string name="lbl_report">Prijavi napako</string>
     <string name="set_exclude_non_music">Izključi ne-glasbo</string>

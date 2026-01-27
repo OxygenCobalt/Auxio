@@ -232,7 +232,6 @@
     <string name="set_personalize">Tilpass</string>
     <string name="set_personalize_desc">Tilpass grensesnedskontrollar og framferd</string>
     <string name="set_bar_action">Eigendefinert avspelingsfelthandling</string>
-    <string name="set_notif_action">Eigendefinert merknadshandling</string>
     <string name="set_lib_tabs_desc">Brigd synleik og rekkjefylgje på samlingsfaner</string>
     <string name="set_play_song_none">Spela frå synt element</string>
     <string name="set_play_in_parent_with">Ved avspeling frå elementsdetaljar</string>

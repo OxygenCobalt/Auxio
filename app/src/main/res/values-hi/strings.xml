@@ -155,7 +155,6 @@
     <string name="lbl_song_detail">गुणधर्म देखें</string>
     <string name="lbl_props">गीत के गुणधर्म</string>
     <string name="set_display">डिस्पले</string>
-    <string name="set_notif_action">कस्टम नोटीफिकेशन एक्शन</string>
     <string name="set_play_song_from_artist">कलाकार से चलाएं</string>
     <string name="set_play_song_from_genre">शैली से चलाएं</string>
     <string name="set_keep_shuffle">फेरबदल याद रखें</string>

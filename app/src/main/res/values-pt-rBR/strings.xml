@@ -67,7 +67,6 @@
     <string name="lbl_shuffle_shortcut_long">Aleatorizar tudo</string>
     <string name="lbl_save">Salvar</string>
     <string name="lbl_library_counts">Estatísticas da biblioteca</string>
-    <string name="set_notif_action">Usar player de notificação alternativo</string>
     <string name="set_pre_amp_desc">A pré-amplificação é aplicada em cima da normalização de volume</string>
     <string name="set_pre_amp_warning">Aviso: Alterar a pré-amplificação para um valor positivo muito alto pode resultar em picos de volume em algumas faixas.</string>
     <string name="set_locations">Fontes de música</string>

@@ -192,7 +192,6 @@
     <string name="lng_playlist_deleted">Spilleliste slettet</string>
     <string name="lng_playlist_added">Lagt til i spilleliste</string>
     <string name="set_action_mode_next">Hopp til neste</string>
-    <string name="set_notif_action">Egendefinert varslingshandling</string>
     <string name="set_replay_gain_mode_track">Foretrekk spor</string>
     <string name="set_repeat_pause_desc">Pause når et spor gjentas</string>
     <string name="set_rewind_prev">Spol tilbake før spor hoppes over</string>

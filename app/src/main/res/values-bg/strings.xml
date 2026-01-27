@@ -140,7 +140,6 @@
     <string name="set_display">Дисплей</string>
     <string name="set_lib_tabs">Раздели на библиотеката</string>
     <string name="set_lib_tabs_desc">Промени видимостта и реда на разделите на библиотеката</string>
-    <string name="set_notif_action">Персонализирано действие за известие</string>
     <string name="set_action_mode_next">Премини към следваща</string>
     <string name="set_action_mode_repeat">Режим на повторение</string>
     <string name="set_behavior">Поведение</string>

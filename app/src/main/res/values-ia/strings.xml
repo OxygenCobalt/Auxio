@@ -197,7 +197,6 @@
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_indexing">Cargante le bibliotheca de musica… (%1$d/%2$d)</string>
     <string name="lbl_import_playlist">Importar lista de reproduction</string>
-    <string name="set_notif_action">Action de notification personalisate</string>
     <string name="set_content_desc">Controlar le cargamento del musica e imagines</string>
     <string name="set_pre_amp_without">Adjustamento sin etiquettas</string>
     <string name="set_rescan">Rescannar le musica</string>

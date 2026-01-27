@@ -150,7 +150,6 @@
     <string name="def_track">トラックなし</string>
     <string name="fmt_lib_total_duration">全再生時間: %s</string>
     <string name="desc_skip_prev">最後の曲にスキップ</string>
-    <string name="set_notif_action">カスタム通知</string>
     <string name="set_cover_mode">アルバムカバー</string>
     <string name="lbl_soundtrack">サウンドトラック</string>
     <string name="lbl_compilation_live">ライブオムニバス</string>

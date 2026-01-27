@@ -159,7 +159,6 @@
     <string name="set_lib_tabs">Musiqi kitabxanası teblərı</string>
     <string name="set_lib_tabs_desc">Musiqi kitabxanası teblərinin görünürlüyünü və sırasını dəyiş</string>
     <string name="set_display">Displey</string>
-    <string name="set_notif_action">Fərdi bildiriş əməliyyatı</string>
     <string name="set_action_mode_next">Növbətiyə keç</string>
     <string name="set_action_mode_repeat">Təkrar rejimi</string>
     <string name="set_behavior">Davranış</string>

@@ -168,7 +168,6 @@
     <string name="set_cover_mode">Capas de álbuns</string>
     <string name="set_cover_mode_off">Desligado</string>
     <string name="set_round_mode">Modo redondo</string>
-    <string name="set_notif_action">Personalizar notificações</string>
     <string name="set_headset_autoplay">Reprodução automática dos auscultadores</string>
     <string name="set_headset_autoplay_desc">Iniciar música quando os auscultadores forem conectados (pode não funcionar em todos os aparelhos)</string>
     <string name="set_replay_gain_mode">Estratégia do ganho de repetição</string>

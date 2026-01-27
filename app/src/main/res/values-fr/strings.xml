@@ -70,7 +70,6 @@
     <string name="set_black_mode_desc">Utiliser un thème noir intense</string>
     <string name="set_lib_tabs_desc">Modifier la visibilité et l\'ordre des onglets de la bibliothèque</string>
     <string name="lbl_bitrate">Débit binaire</string>
-    <string name="set_notif_action">Utiliser une autre action de notification</string>
     <string name="lbl_sample_rate">Taux d\'échantillonnage</string>
     <string name="lbl_shuffle_shortcut_long">Tout mélanger</string>
     <string name="lbl_cancel">Annuler</string>

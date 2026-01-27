@@ -49,7 +49,6 @@
     <string name="set_lib_tabs_desc">Cambiar visibilidad y orden de las pestañas de la biblioteca</string>
     <string name="set_round_mode">Modo redondeado</string>
     <string name="set_round_mode_desc">Habilitar las esquinas redondeadas en los elementos adicionales de la interfaz del usuario (requiere que las portadas de los álbumes estén redondeadas)</string>
-    <string name="set_notif_action">Usar acciones de notificación personalizadas</string>
     <string name="set_audio">Sonido</string>
     <string name="set_replay_gain_mode">Estrategia de la ganancia de la repetición</string>
     <string name="set_replay_gain_mode_track">Preferir pista</string>

@@ -180,7 +180,6 @@
     <string name="err_no_app">Nie znaleziono odpowiedniej aplikacji</string>
     <string name="lbl_library_counts">Statystyki biblioteki</string>
     <string name="fmt_lib_artist_count">Zaimportowani artyści: %d</string>
-    <string name="set_notif_action">Użyj alternatywnej akcji w powiadomieniu</string>
     <string name="set_repeat_pause">Zatrzymaj odtwarzanie przy powtórzeniu</string>
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>

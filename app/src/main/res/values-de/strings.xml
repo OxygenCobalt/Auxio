@@ -38,7 +38,6 @@
     <string name="set_display">Anzeige</string>
     <string name="set_round_mode">Abgerundete Cover</string>
     <string name="set_round_mode_desc">Abgerundete Ecken für weitere UI-Elemente aktivieren (benötigt abgerundete Album-Cover)</string>
-    <string name="set_notif_action">Alternative Aktionstaste verwenden</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
