@@ -343,4 +343,6 @@
         <item quantity="other">%d sekundit</item>
     </plurals>
     <string name="fmt_lib_total_size">Maht kokku: %s</string>
+    <string name="set_task_exit">Sulgemisel alati lõpeta rakenduse töö</string>
+    <string name="set_task_exit_desc">Viimatikasutatud rakenduste loendist eemaldamisel lõpeta taasesitus, seda ka siis kui just on kuulamine pooleli</string>
 </resources>
