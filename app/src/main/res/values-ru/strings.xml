@@ -351,4 +351,6 @@
         <item quantity="other">%d секунд</item>
     </plurals>
     <string name="fmt_lib_total_size">Общий размер: %s</string>
+    <string name="set_task_exit">Всегда выходить при закрытии</string>
+    <string name="set_task_exit_desc">Останавливать воспроизведение при удалении из списка недавних, даже если оно активно</string>
 </resources>
