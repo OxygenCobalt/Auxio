@@ -339,4 +339,6 @@
         <item quantity="other">%d 秒</item>
     </plurals>
     <string name="fmt_lib_total_size">总大小：%s</string>
+    <string name="set_task_exit">关闭时始终退出</string>
+    <string name="set_task_exit_desc">从最近使用的应用列表删除时停止播放，即使正在播放</string>
 </resources>
