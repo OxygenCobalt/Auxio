@@ -343,4 +343,6 @@
         <item quantity="other">%d Sekunden</item>
     </plurals>
     <string name="fmt_lib_total_size">Gesamte Größe: %s</string>
+    <string name="set_task_exit">Beim Schließen immer beenden</string>
+    <string name="set_task_exit_desc">Wiedergabe stoppen, wenn App geschlossen wird, auch beim Abspielen</string>
 </resources>
