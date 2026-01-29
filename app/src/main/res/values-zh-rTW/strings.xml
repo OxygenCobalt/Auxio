@@ -339,4 +339,6 @@
         <item quantity="other">%d 秒</item>
     </plurals>
     <string name="fmt_lib_total_size">大小總計：%s</string>
+    <string name="set_task_exit_desc">無論播放狀態，從「最近」移除時停止執行</string>
+    <string name="set_task_exit">離開時一律關閉</string>
 </resources>
