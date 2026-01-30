@@ -155,7 +155,7 @@
     <string name="lbl_size">大小</string>
     <string name="lbl_bitrate">比特率</string>
     <string name="lbl_sample_rate">采样率</string>
-    <string name="lbl_ok">好的</string>
+    <string name="lbl_ok">确定</string>
     <string name="lbl_cancel">取消</string>
     <string name="set_observing">自动重载</string>
     <string name="set_observing_desc">只要发生更改就重新加载曲库（需要持久性通知）</string>
