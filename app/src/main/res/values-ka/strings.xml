@@ -122,4 +122,8 @@
         <item quantity="one">%d შემსრულებელი</item>
         <item quantity="other">%d შემსრულებელი</item>
     </plurals>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d წამი</item>
+        <item quantity="other">%d წამი</item>
+    </plurals>
 </resources>
