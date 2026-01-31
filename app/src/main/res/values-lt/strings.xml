@@ -333,7 +333,7 @@
     <string name="set_grant_storage_anyway">Saugyklos prieiga rekomenduotina</string>
     <string name="set_grant_storage">Saugyklos prieiga privaloma</string>
     <string name="set_folders_to_load">Aplankus įkelti</string>
-    <string name="set_folders_to_ignore">Aplankus ignoruoti</string>
+    <string name="set_folders_to_ignore">Aplankus nepaisyti</string>
     <string name="set_filtered_folders">Filtruoti aplankai</string>
     <string name="set_filter_mode">Filtravimo režimas</string>
     <string name="set_include">Įtraukti</string>
@@ -350,4 +350,7 @@
         <item quantity="many">%d sekundžių</item>
         <item quantity="other">%d sekundžių</item>
     </plurals>
+    <string name="set_task_exit">Visada išeiti užveriant</string>
+    <string name="set_task_exit_desc">Sustabdyti įrašo perklausą, kai pašalinama iš naujausių, net jei leidžiama.</string>
+    <string name="fmt_lib_total_size">Bendras dydis: %s</string>
 </resources>
