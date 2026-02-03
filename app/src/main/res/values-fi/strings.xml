@@ -343,4 +343,6 @@
         <item quantity="other">%d sekuntia</item>
     </plurals>
     <string name="fmt_lib_total_size">Koko yhteensä: %s</string>
+    <string name="set_task_exit">Sulje aina poistuessa</string>
+    <string name="set_task_exit_desc">Lopeta toistaminen kun sovellus poistetaan viimeaikaisista, vaikka musiikkia soitettaisiin</string>
 </resources>
