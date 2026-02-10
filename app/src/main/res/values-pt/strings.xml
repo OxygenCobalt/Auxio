@@ -85,9 +85,9 @@
     <string name="lbl_report">Relatório</string>
     <string name="lng_widget">Vêr e controlar a reprodução da música</string>
     <string name="lng_playlist_created">Lista de reprodução criada</string>
-    <string name="set_ui">Aparência</string>
+    <string name="set_ui">Aparência e sensação</string>
     <string name="set_black_mode">Tema preto</string>
-    <string name="set_black_mode_desc">Utilizar tema preto puro</string>
+    <string name="set_black_mode_desc">Use um tema escuro totalmente preto.</string>
     <string name="set_round_mode">Modo redondo</string>
     <string name="set_round_mode_desc">Ativar cantos arredondados em elementos adicionais da interface do utilizador (requer que as capas dos álbuns sejam arredondadas)</string>
     <string name="set_personalize">Personalizar</string>
@@ -126,8 +126,8 @@
     </plurals>
     <string name="lbl_demo">Demo</string>
     <string name="set_replay_gain">Normalização de volume</string>
-    <string name="lbl_replaygain_track">Ajuste de ReplayGain da faixa</string>
-    <string name="lbl_replaygain_album">Ajuste de ReplayGain do álbum</string>
+    <string name="lbl_replaygain_track">Ajuste de faixa ReplayGain</string>
+    <string name="lbl_replaygain_album">Ajuste do álbum ReplayGain</string>
     <string name="lbl_author_name">Desenvolvido por Alexander Capehart</string>
     <string name="lbl_supporters">Apoiadores</string>
     <string name="set_display">Mostrar</string>
@@ -140,7 +140,7 @@
     <string name="set_rewind_prev_desc">Retrocede a música antes de voltar para a anterior</string>
     <string name="set_repeat_pause">Pausar na repetição</string>
     <string name="set_repeat_pause_desc">Pausar quando uma música é repetida</string>
-    <string name="set_locations">Pastas de música</string>
+    <string name="set_locations">Fontes musicais</string>
     <string name="set_remember_pause">Lembrar pausa</string>
     <string name="set_remember_pause_desc">Continuar a reproduzir/pausado quando ao pular ou editar a fila</string>
     <string name="set_replay_gain_mode">Estratégia do ganho de repetição</string>
@@ -295,7 +295,7 @@
     <string name="clr_grey">Grisalho</string>
     <string name="clr_dynamic">Dinâmico</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="fmt_selected">%d Selecionadas</string>
+    <string name="fmt_selected">%d selecionado</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
     <string name="lbl_more">Mais</string>
     <string name="lbl_start_playback">Iniciar a reprodução</string>
@@ -317,4 +317,36 @@
     <string name="set_with_hidden">Ignorar ficheiros ocultos</string>
     <string name="set_excluded_locations">Pastas excluídas</string>
     <string name="set_excluded_locations_desc">Gerir pastas para excluir do carregamento de música</string>
+    <string name="lng_play_next">A próxima música será tocada</string>
+    <string name="lng_file_picker">Carregue músicas das pastas que você selecionar. Mais lento, porém mais confiável. Requer a instalação do gerenciador de arquivos padrão.</string>
+    <string name="lng_system_database">Carrega músicas que o sistema operacional Android detecta automaticamente. Mais rápido, porém menos confiável. Não há suporte para recursos dependentes do sistema de arquivos, como cover.jpg.</string>
+    <string name="lng_grant_storage_anyway">Conceder permissões de armazenamento externo pode resolver problemas em alguns dispositivos.</string>
+    <string name="lng_grant_storage_required">Conceda permissões de armazenamento externo para ativar esta opção.</string>
+    <string name="lng_include_folders">Músicas fora das pastas selecionadas serão ignoradas.</string>
+    <string name="lng_exclude_folders">As músicas dentro das pastas selecionadas serão ignoradas.</string>
+    <string name="set_task_exit">Sempre sair ao fechar</string>
+    <string name="set_task_exit_desc">Interrompa a reprodução ao ser removido dos aplicativos recentes, mesmo que esteja em reprodução</string>
+    <string name="set_cover_mode_as_is">Como é</string>
+    <string name="set_load_from">Carregar de</string>
+    <string name="set_file_picker">Seletor de arquivos</string>
+    <string name="set_system_database">Sistema</string>
+    <string name="set_grant_storage_anyway">Recomenda-se acesso ao armazenamento</string>
+    <string name="set_grant_storage">É necessário acesso ao espaço de armazenamento</string>
+    <string name="set_folders_to_load">Pastas para carregar</string>
+    <string name="set_folders_to_ignore">Pastas a ignorar</string>
+    <string name="set_filtered_folders">Pastas filtradas</string>
+    <string name="set_filter_mode">Modo de filtro</string>
+    <string name="set_include">Incluir</string>
+    <string name="set_exclude">Excluir</string>
+    <string name="set_extra_settings">Mais configurações</string>
+    <string name="set_fs_cache">Usar o cache do sistema de arquivos</string>
+    <string name="set_fs_cache_desc">Melhora os tempos de carregamento, mas pode impedir a adição de novas músicas</string>
+    <string name="lbl_no_folders">Sem pastas</string>
+    <string name="desc_add_folder">Adicionar pasta</string>
+    <string name="fmt_lib_total_size">Tamanho total: %s</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d segundos</item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
