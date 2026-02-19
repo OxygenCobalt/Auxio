@@ -94,7 +94,7 @@
     <string name="clr_orange">البرتقالي</string>
     <string name="fmt_lib_total_duration">المدة الإجمالية: %s</string>
     <string name="clr_grey">رمادي</string>
-    <string name="fmt_selected">تم تحديد %d</string>
+    <string name="fmt_selected">%d محدد</string>
     <string name="fmt_db_neg">-%.1f ديسيبل</string>
     <plurals name="fmt_song_count">
         <item quantity="zero">%d أغنية</item>
@@ -298,7 +298,7 @@
     <string name="lng_empty_artists">سوف يظهر الفنانون الخاص بك هنا.</string>
     <string name="lng_empty_playlists">سوف تظهر قوائم تشغيلك هنا.</string>
     <string name="lng_empty_genres">سوف تظهر أنواعك هنا.</string>
-    <string name="lbl_replaygain_album">تعديل الألبوم Replaygain</string>
+    <string name="lbl_replaygain_album">تعديل الألبوم ReplayGain</string>
     <string name="lbl_replaygain_track">تعديل مسار ReplayGain</string>
     <string name="lbl_author_name">ألكساندر كيبهارت</string>
     <string name="lbl_donate">تبرّع</string>
@@ -353,4 +353,7 @@
         <item quantity="many">%d ثانية</item>
         <item quantity="other">%d ثانية</item>
     </plurals>
+    <string name="fmt_lib_total_size">الحجم الكلي: %s</string>
+    <string name="set_task_exit">أنهي دائمًا عند الإغلاق</string>
+    <string name="set_task_exit_desc">أوقف التشغيل عند الإزالة من الحديثة، حتى في حالة التشغيل</string>
 </resources>
