@@ -75,7 +75,7 @@
     <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
     <string name="err_bad_location">Esta pasta não é compatível</string>
     <string name="set_reindex_desc">Recarrega a biblioteca de músicas usando metadados salvos em cache quando possível</string>
-    <string name="set_rewind_prev">Retroceder antes de voltar</string>
+    <string name="set_rewind_prev">Retroceder antes de voltar para a faixa anterior</string>
     <string name="set_reindex">Recarregar músicas</string>
     <string name="set_rewind_prev_desc">Retroceder a música antes de voltar para a anterior</string>
     <string name="info_app_desc">Um reprodutor de música simples e funcional para Android.</string>
