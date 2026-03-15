@@ -301,7 +301,7 @@ fun Context.share(songs: Collection<Song>) {
     try {
         builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
     } catch (e: RuntimeException) {
-        if (e.contains<TransactionTooLargeException>()) {
+        if (e.hasCauseOfType<TransactionTooLargeException>()) {
             L.w(e, "Share payload exceeded transaction size limits")
             showToast(R.string.err_share_too_large)
         } else {
@@ -310,7 +310,8 @@ fun Context.share(songs: Collection<Song>) {
     }
 }
 
-private inline fun <reified T : Throwable> Throwable.contains(): Boolean {
+/** Returns true if this exception or one of its causes matches [T]. */
+private inline fun <reified T : Throwable> Throwable.hasCauseOfType(): Boolean {
     var current: Throwable? = this
     while (current != null) {
         if (current is T) return true
