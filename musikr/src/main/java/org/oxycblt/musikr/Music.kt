@@ -295,6 +295,8 @@ interface Song : Music {
     val bitrateKbps: Int
     /** The sample rate of the audio file, in Hz. */
     val sampleRateHz: Int
+    /** The amount of channels in the audio file. */
+    val channelCount: Int
     /** The ReplayGain adjustment to apply during playback. */
     val replayGainAdjustment: ReplayGainAdjustment
     /**

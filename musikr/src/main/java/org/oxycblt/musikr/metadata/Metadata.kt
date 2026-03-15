@@ -58,4 +58,5 @@ data class Properties(
     val durationMs: Long,
     val bitrateKbps: Int,
     val sampleRateHz: Int,
+    val channelCount: Int,
 )

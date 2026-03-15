@@ -48,6 +48,7 @@ internal data class PreSong(
     val durationMs: Long,
     val bitrateKbps: Int,
     val sampleRateHz: Int,
+    val channelCount: Int,
     val replayGainAdjustment: ReplayGainAdjustment,
     val modifiedMs: Long,
     val addedMs: Long,

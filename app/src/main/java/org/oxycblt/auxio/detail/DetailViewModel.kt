@@ -553,6 +553,12 @@ constructor(
                     SongProperty.Value.SampleRate(song.sampleRateHz),
                 )
             )
+            add(
+                SongProperty(
+                    R.string.lbl_channels,
+                    SongProperty.Value.ChannelCount(song.channelCount),
+                )
+            )
             song.replayGainAdjustment.track?.let {
                 add(SongProperty(R.string.lbl_replaygain_track, SongProperty.Value.Decibels(it)))
             }

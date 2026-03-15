@@ -59,6 +59,7 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
                             dbSong.durationMs!!,
                             dbSong.bitrateKbps!!,
                             dbSong.sampleRateHz!!,
+                            dbSong.channelCount!!,
                         ),
                         ParsedTags(
                             musicBrainzId = dbSong.musicBrainzId,
@@ -127,6 +128,7 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
                 durationMs = cachedFile.audio?.properties?.durationMs,
                 bitrateKbps = cachedFile.audio?.properties?.bitrateKbps,
                 sampleRateHz = cachedFile.audio?.properties?.sampleRateHz,
+                channelCount = cachedFile.audio?.properties?.channelCount,
                 musicBrainzId = cachedFile.audio?.tags?.musicBrainzId,
                 name = cachedFile.audio?.tags?.name,
                 sortName = cachedFile.audio?.tags?.sortName,

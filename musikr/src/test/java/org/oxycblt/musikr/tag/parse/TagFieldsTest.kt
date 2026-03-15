@@ -329,9 +329,10 @@ class TagFieldsTest {
         durationMs: Long = 1000,
         bitrateKbps: Int = 320,
         sampleRateHz: Int = 44100,
+        channelCount: Int = 2,
         mimeType: String = "audio/mpeg",
     ): Metadata {
-        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz)
+        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz, channelCount)
         return Metadata(id3v2Tags, xiphTags, mp4Tags, cover, properties)
     }
 }

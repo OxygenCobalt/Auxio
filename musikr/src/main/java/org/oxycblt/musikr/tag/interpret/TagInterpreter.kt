@@ -145,6 +145,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             durationMs = song.tags.durationMs,
             bitrateKbps = song.properties.bitrateKbps,
             sampleRateHz = song.properties.sampleRateHz,
+            channelCount = song.properties.channelCount,
             replayGainAdjustment =
                 ReplayGainAdjustment(
                     song.tags.replayGainTrackAdjustment,

@@ -85,6 +85,8 @@ data class SongProperty(@StringRes val name: Int, val value: Value) {
 
         data class SampleRate(val hz: Int) : Value
 
+        data class ChannelCount(val value: Int) : Value
+
         data class Decibels(val value: Float) : Value
     }
 }
@@ -146,6 +148,20 @@ class SongPropertyViewHolder private constructor(private val binding: ItemSongPr
             is SongProperty.Value.SampleRate -> {
                 val hz = property.value.hz
                 binding.propertyValue.setText(context.getString(R.string.fmt_sample_rate, hz))
+            }
+            is SongProperty.Value.ChannelCount -> {
+                val channelCount = property.value.value
+                binding.propertyValue.setText(
+                    when (channelCount) {
+                        1 -> context.getString(R.string.lbl_channel_mode_mono)
+                        2 -> context.getString(R.string.lbl_channel_mode_stereo)
+                        else -> context.resources.getQuantityString(
+                            R.plurals.fmt_channel_count,
+                            channelCount,
+                            channelCount,
+                        )
+                    }
+                )
             }
             is SongProperty.Value.Decibels -> {
                 val value = property.value.value
