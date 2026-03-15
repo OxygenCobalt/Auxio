@@ -346,7 +346,7 @@
     <string name="err_import_failed">Unable to import a playlist from this file</string>
     <string name="err_export_failed">Unable to export the playlist to this file</string>
     <string name="err_no_app">No app found that can handle this task</string>
-    <string name="err_share_too_large">Unable to share: playlist is too large</string>
+    <string name="err_share_too_large">Playlist is too large</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_bad_location">This folder is not supported</string>
     <string name="lbl_no_folders">No folders</string>

@@ -303,10 +303,10 @@ fun Context.share(songs: Collection<Song>) {
     } catch (e: RuntimeException) {
         if (e.hasCauseOfType<TransactionTooLargeException>()) {
             L.w(e, "Share payload exceeded transaction size limits")
-            showToast(R.string.err_share_too_large)
         } else {
-            throw e
+            L.w(e, "Share failed due to runtime exception")
         }
+        showToast(R.string.err_share_too_large)
     }
 }
 
