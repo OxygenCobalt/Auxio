@@ -25,6 +25,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.os.Build
+import android.os.TransactionTooLargeException
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
@@ -297,7 +298,25 @@ fun Context.share(songs: Collection<Song>) {
         mimeTypes.add(song.format.mimeType)
     }
 
-    builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
+    try {
+        builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
+    } catch (e: RuntimeException) {
+        if (e.contains<TransactionTooLargeException>()) {
+            L.w(e, "Share payload exceeded transaction size limits")
+            showToast(R.string.err_share_too_large)
+        } else {
+            throw e
+        }
+    }
+}
+
+private inline fun <reified T : Throwable> Throwable.contains(): Boolean {
+    var current: Throwable? = this
+    while (current != null) {
+        if (current is T) return true
+        current = current.cause
+    }
+    return false
 }
 
 /**
