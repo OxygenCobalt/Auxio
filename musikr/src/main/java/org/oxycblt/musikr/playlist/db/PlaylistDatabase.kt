@@ -165,4 +165,26 @@ internal abstract class PlaylistDao {
     /** Internal, do not use. */
     @Query("DELETE FROM PlaylistSongCrossRef where playlistUid = :playlistUid")
     abstract suspend fun deleteRefs(playlistUid: Music.UID)
+
+    /**
+     * Migrate all playlist references from [oldUid] to [newUid]. Used when a song gains a
+     * MusicBrainz ID and its canonical UID changes from a hash-based UID to a MusicBrainz UID.
+     *
+     * @param oldUid The hash-based [Music.UID] previously stored in playlists.
+     * @param newUid The MusicBrainz [Music.UID] that now identifies the same song.
+     */
+    @Transaction
+    open suspend fun migrateSongUid(oldUid: Music.UID, newUid: Music.UID) {
+        insertSongs(listOf(PlaylistSong(newUid)))
+        updateCrossRefSongUid(oldUid, newUid)
+        deleteSong(oldUid)
+    }
+
+    /** Internal, do not use. */
+    @Query("UPDATE PlaylistSongCrossRef SET songUid = :newUid WHERE songUid = :oldUid")
+    abstract suspend fun updateCrossRefSongUid(oldUid: Music.UID, newUid: Music.UID)
+
+    /** Internal, do not use. */
+    @Query("DELETE FROM PlaylistSong WHERE songUid = :songUid")
+    abstract suspend fun deleteSong(songUid: Music.UID)
 }

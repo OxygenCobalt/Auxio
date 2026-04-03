@@ -30,6 +30,8 @@ abstract class StoredPlaylists {
 
     internal abstract suspend fun read(): List<PlaylistFile>
 
+    internal abstract suspend fun migrate(migrations: Map<Music.UID, Music.UID>)
+
     companion object {
         fun from(context: Context): StoredPlaylists =
             StoredPlaylistsImpl(PlaylistDatabase.from(context).playlistDao())
@@ -51,4 +53,10 @@ private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : Stored
                 StoredPlaylistHandle(it.playlistInfo, playlistDao),
             )
         }
+
+    override suspend fun migrate(migrations: Map<Music.UID, Music.UID>) {
+        for ((oldUid, newUid) in migrations) {
+            playlistDao.migrateSongUid(oldUid, newUid)
+        }
+    }
 }

@@ -65,6 +65,10 @@ private class EvaluateStepImpl(
         }
         val graph = builder.build()
 
+        // Migrate playlist DB entries for songs whose UID changed from hash to MusicBrainz.
+        // This runs after every index but is a no-op when no songs have changed UID.
+        storedPlaylists.migrate(graph.uidMigrations)
+
         // Render graph to Graphviz in debug mode
         if (BuildConfig.DEBUG) {
             try {

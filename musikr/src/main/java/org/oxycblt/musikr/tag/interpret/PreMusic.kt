@@ -35,6 +35,9 @@ internal data class PreSong(
     val v363Uid: Music.UID,
     val v400Uid: Music.UID,
     val v401Uid: Music.UID,
+    /** Hash-based UIDs this song carried before a MusicBrainz ID superseded them. Empty when no
+     * MusicBrainz ID is present (the v3xx UIDs already are the hash UIDs). */
+    val legacyUids: List<Music.UID>,
     val musicBrainzId: UUID?,
     val name: Name.Known,
     val rawName: String,
