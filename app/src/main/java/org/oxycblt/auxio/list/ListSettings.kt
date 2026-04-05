@@ -43,6 +43,10 @@ interface ListSettings : Settings<ListSettings.Listener> {
     var artistSongSort: Sort
     /** The [Sort] mode used in a Genre's Song list. */
     var genreSongSort: Sort
+    /** The [Sort] mode used in a Folder's Song list. */
+    var folderSongSort: Sort
+    /** The [Sort] mode used in Folder lists. */
+    var folderSort: Sort
 
     interface Listener {
         fun onSongSortChanged() {}
@@ -60,6 +64,10 @@ interface ListSettings : Settings<ListSettings.Listener> {
         fun onGenreSongSortChanged() {}
 
         fun onPlaylistSortChanged() {}
+
+        fun onFolderSortChanged() {}
+
+        fun onFolderSongSortChanged() {}
     }
 }
 
@@ -170,6 +178,33 @@ class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Cont
             }
         }
 
+    override var folderSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_folder_sort), Int.MIN_VALUE)
+            ) ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_folder_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var folderSongSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_folder_songs_sort),
+                    Int.MIN_VALUE,
+                )
+            ) ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_folder_songs_sort), value.intCode)
+                apply()
+            }
+        }
+
     override fun onSettingChanged(key: String, listener: ListSettings.Listener) {
         when (key) {
             getString(R.string.set_key_songs_sort) -> listener.onSongSortChanged()
@@ -180,6 +215,8 @@ class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Cont
             getString(R.string.set_key_genres_sort) -> listener.onGenreSortChanged()
             getString(R.string.set_key_genre_songs_sort) -> listener.onGenreSongSortChanged()
             getString(R.string.set_key_playlists_sort) -> listener.onPlaylistSortChanged()
+            getString(R.string.set_key_folder_sort) -> listener.onFolderSortChanged()
+            getString(R.string.set_key_folder_songs_sort) -> listener.onFolderSongSortChanged()
         }
     }
 }

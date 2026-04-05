@@ -34,6 +34,7 @@ import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
@@ -115,10 +116,23 @@ constructor(
     val genreSort: Sort
         get() = listSettings.genreSort
 
+    val folderSort: Sort
+        get() = listSettings.folderSort
+
     private val _playlistList = MutableStateFlow(listOf<Playlist>())
     /** A list of [Playlist]s, sorted by the preferred [Sort], to be shown in the home view. */
     val playlistList: StateFlow<List<Playlist>>
         get() = _playlistList
+
+    val folderList: StateFlow<List<Folder>>
+        get() = _folderList
+
+    val folderInstructions: Event<UpdateInstructions>
+        get() = _folderInstructions
+
+    private val _folderList = MutableStateFlow(listOf<Folder>())
+
+    private val _folderInstructions = MutableEvent<UpdateInstructions>()
 
     private val _empty = MutableStateFlow(false)
     val empty: StateFlow<Boolean>
@@ -202,6 +216,10 @@ constructor(
                 _playlistInstructions.put(instructions)
                 _playlistList.value = homeGenerator.playlists()
             }
+            MusicType.FOLDERS -> {
+                _folderInstructions.put(instructions)
+                _folderList.value = homeGenerator.folders()
+            }
         }
     }
 
@@ -253,6 +271,15 @@ constructor(
      */
     fun applyPlaylistSort(sort: Sort) {
         listSettings.playlistSort = sort
+    }
+
+    /**
+     * Apply a new [Sort] to [folderList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyFolderSort(sort: Sort) {
+        listSettings.folderSort = sort
     }
 
     /**

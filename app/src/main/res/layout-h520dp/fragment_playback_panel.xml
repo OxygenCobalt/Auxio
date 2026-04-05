@@ -147,7 +147,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/playback_repeat"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Large.Narrow" />
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium.Narrow" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_play_pause"
@@ -159,7 +159,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/playback_skip_next"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/playback_skip_prev"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Large"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
                 tools:icon="@drawable/ic_play_24" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
@@ -172,7 +172,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/playback_shuffle"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Large.Narrow" />
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium.Narrow" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_shuffle"
@@ -186,7 +186,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
                 app:layout_constraintTop_toTopOf="parent"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
                 app:tint="@color/sel_activatable_icon" />
 
         </com.google.android.material.button.MaterialButtonGroup>

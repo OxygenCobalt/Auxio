@@ -25,6 +25,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Playlist
@@ -55,6 +56,7 @@ interface SearchEngine {
      * @param artists A list of [Artist]s, null if empty.
      * @param genres A list of [Genre]s, null if empty.
      * @param playlists A list of [Playlist], null if empty.
+     * @param folders A list of [Folder], null if empty.
      */
     data class Items(
         val songs: Collection<Song>? = null,
@@ -62,6 +64,7 @@ interface SearchEngine {
         val artists: Collection<Artist>? = null,
         val genres: Collection<Genre>? = null,
         val playlists: Collection<Playlist>? = null,
+        val folders: Collection<Folder>? = null,
     )
 }
 
@@ -78,6 +81,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
             artists = items.artists?.searchListImpl(query),
             genres = items.genres?.searchListImpl(query),
             playlists = items.playlists?.searchListImpl(query),
+            folders = items.folders?.searchListImpl(query),
         )
     }
 

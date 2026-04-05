@@ -39,6 +39,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Library
 import org.oxycblt.musikr.Music
@@ -282,6 +283,7 @@ constructor(
             is Artist -> commandFactory.artist(music, ShuffleMode.IMPLICIT)
             is Genre -> commandFactory.genre(music, ShuffleMode.IMPLICIT)
             is Playlist -> commandFactory.playlist(music, ShuffleMode.IMPLICIT)
+            is Folder -> commandFactory.folder(music, ShuffleMode.IMPLICIT)
         }
 
     private fun expandSongIntoCommand(music: Song, parent: MusicParent?) =
@@ -294,6 +296,7 @@ constructor(
                 commandFactory.songFromGenre(music, parent, ShuffleMode.IMPLICIT)
                     ?: commandFactory.songFromGenre(music, music.genres[0], ShuffleMode.IMPLICIT)
             is Playlist -> commandFactory.songFromPlaylist(music, parent, ShuffleMode.IMPLICIT)
+            is Folder -> commandFactory.songFromFolder(music, parent, ShuffleMode.IMPLICIT)
             null -> commandFactory.songFromAll(music, ShuffleMode.IMPLICIT)
         }
 

@@ -26,6 +26,7 @@ import org.oxycblt.musikr.MutableLibrary
 import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.graph.AlbumVertex
 import org.oxycblt.musikr.graph.ArtistVertex
+import org.oxycblt.musikr.graph.FolderVertex
 import org.oxycblt.musikr.graph.GenreVertex
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.graph.PlaylistVertex
@@ -72,12 +73,17 @@ private class LibraryFactoryImpl() : LibraryFactory {
             graph.playlistVertex.mapTo(mutableSetOf()) { vertex ->
                 PlaylistImpl(PlaylistVertexCore(vertex))
             }
+        val folders =
+            graph.folderVertex.mapTo(mutableSetOf()) { vertex ->
+                FolderImpl(FolderVertexCore(vertex))
+            }
         return LibraryImpl(
             songs,
             albums,
             artists,
             genres,
             playlists,
+            folders,
             storedPlaylists,
             playlistInterpreter,
         )
@@ -122,6 +128,13 @@ private class LibraryFactoryImpl() : LibraryFactory {
 
     private class PlaylistVertexCore(vertex: PlaylistVertex) : PlaylistCore {
         override val prePlaylist = vertex.prePlaylist
+
+        override val songs: List<Song> =
+            vertex.songVertices.mapNotNull { vertex -> vertex?.let { tag(it) } }
+    }
+
+    private class FolderVertexCore(vertex: FolderVertex) : FolderCore {
+        override val preFolder = vertex.preFolder
 
         override val songs: List<Song> =
             vertex.songVertices.mapNotNull { vertex -> vertex?.let { tag(it) } }

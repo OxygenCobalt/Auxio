@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_play"
+        android:icon="@drawable/ic_play_24"
+        android:title="@string/lbl_play" />
+    <item
+        android:id="@+id/action_shuffle"
+        android:icon="@drawable/ic_shuffle_off_24"
+        android:title="@string/lbl_shuffle" />
+    <item
+        android:id="@+id/action_play_next"
+        android:icon="@drawable/ic_play_next_24"
+        android:title="@string/lbl_play_next" />
+    <item
+        android:id="@+id/action_queue_add"
+        android:icon="@drawable/ic_queue_add_24"
+        android:title="@string/lbl_queue_add" />
+    <item
+        android:id="@+id/action_playlist_add"
+        android:icon="@drawable/ic_playlist_add_24"
+        android:title="@string/lbl_playlist_add" />
+    <item
+        android:id="@+id/action_artist_details"
+        android:icon="@drawable/ic_artist_24"
+        android:title="@string/lbl_artist_details" />
+    <item
+        android:id="@+id/action_album_details"
+        android:icon="@drawable/ic_album_24"
+        android:title="@string/lbl_album_details" />
+    <item
+        android:id="@+id/action_detail"
+        android:icon="@drawable/ic_details_24"
+        android:title="@string/lbl_song_detail" />
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share_24"
+        android:title="@string/lbl_share" />
+</menu>

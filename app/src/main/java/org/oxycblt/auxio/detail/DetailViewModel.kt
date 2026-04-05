@@ -47,6 +47,7 @@ import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
@@ -161,7 +162,7 @@ constructor(
 
     private val _genreSongInstructions = MutableEvent<UpdateInstructions>()
 
-    /** Instructions for updating [artistSongList] in the UI. */
+    /** Instructions for updating [genreSongList] in the UI. */
     val genreSongInstructions: Event<UpdateInstructions>
         get() = _genreSongInstructions
 
@@ -201,11 +202,40 @@ constructor(
     val editedPlaylist: StateFlow<List<Song>?>
         get() = _editedPlaylist
 
-    /** The [PlaySong] instructions to use when playing a [Song] from [Genre] details. */
+    /** The [PlaySong] instructions to use when playing a [Song] from [Playlist] details. */
     val playInPlaylistWith
         get() =
             playbackSettings.inParentPlaybackMode
                 ?: PlaySong.FromPlaylist(unlikelyToBeNull(currentPlaylist.value))
+
+    // --- FOLDER ---
+
+    private val _currentFolder = MutableStateFlow<Folder?>(null)
+
+    /** The current [Folder] to display. Null if there is nothing to do. */
+    val currentFolder: StateFlow<Folder?>
+        get() = _currentFolder
+
+    private val _folderSongList = MutableStateFlow(listOf<Item>())
+
+    /** The current list data derived from [currentFolder] */
+    val folderSongList: StateFlow<List<Item>> = _folderSongList
+
+    private val _folderSongInstructions = MutableEvent<UpdateInstructions>()
+
+    /** Instructions for updating [folderSongList] in the UI. */
+    val folderSongInstructions: Event<UpdateInstructions>
+        get() = _folderSongInstructions
+
+    /** The current [Sort] used for [Song]s in [folderSongList]. */
+    val folderSongSort: Sort
+        get() = listSettings.folderSongSort
+
+    /** The [PlaySong] instructions to use when playing a [Song] from [Folder] details. */
+    val playInFolderWith
+        get() =
+            playbackSettings.inParentPlaybackMode
+                ?: PlaySong.FromFolder(unlikelyToBeNull(currentFolder.value))
 
     private val detailGenerator = detailGeneratorFactory.create(this)
 
@@ -239,6 +269,9 @@ constructor(
             }
             MusicType.PLAYLISTS -> {
                 refreshPlaylist(currentPlaylist.value?.uid ?: return)
+            }
+            MusicType.FOLDERS -> {
+                refreshFolder(currentFolder.value?.uid ?: return, replace)
             }
             else -> error("Unexpected music type $type")
         }
@@ -315,6 +348,13 @@ constructor(
      * @param playlist The [Playlist] to navigate with.
      */
     fun showPlaylist(playlist: Playlist) = showImpl(Show.PlaylistDetails(playlist))
+
+    /**
+     * Navigate to the details of a [Folder].
+     *
+     * @param folder The [Folder] to navigate with.
+     */
+    fun showFolder(folder: Folder) = showImpl(Show.FolderDetails(folder))
 
     private fun showImpl(show: Show) {
         val existing = toShow.flow.value
@@ -412,6 +452,15 @@ constructor(
      */
     fun applyGenreSongSort(sort: Sort) {
         listSettings.genreSongSort = sort
+    }
+
+    /**
+     * Apply a new [Sort] to [folderSongList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyFolderSongSort(sort: Sort) {
+        listSettings.folderSongSort = sort
     }
 
     /**
@@ -620,6 +669,20 @@ constructor(
         list.value = newList
     }
 
+    fun setFolder(uid: Music.UID) {
+        L.d("Opening folder $uid")
+        if (uid === _currentFolder.value?.uid) {
+            return
+        }
+        refreshFolder(uid)
+    }
+
+    private fun refreshFolder(uid: Music.UID, replace: Int? = null) {
+        L.d("Refreshing folder list")
+        val folder = detailGenerator.folder(uid)
+        refreshDetail(folder, _currentFolder, _folderSongList, _folderSongInstructions, replace)
+    }
+
     private fun refreshPlaylist(
         uid: Music.UID,
         instructions: UpdateInstructions = UpdateInstructions.Diff,
@@ -714,4 +777,11 @@ sealed interface Show {
      * @param playlist The [Playlist] to navigate with.
      */
     data class PlaylistDetails(val playlist: Playlist) : Show
+
+    /**
+     * Navigate to the details of a [Folder].
+     *
+     * @param folder The [Folder] to navigate with.
+     */
+    data class FolderDetails(val folder: Folder) : Show
 }

@@ -327,6 +327,9 @@ class PlaylistDetailFragment :
                 L.d("Navigated to this playlist")
                 detailModel.toShow.consume()
             }
+            is Show.FolderDetails -> {
+                error("Unexpected show command $show")
+            }
             is Show.GenreDetails -> {
                 error("Unexpected show command $show")
             }
@@ -341,11 +344,13 @@ class PlaylistDetailFragment :
                 is Menu.ForSong -> PlaylistDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForPlaylist ->
                     PlaylistDetailFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForFolder -> PlaylistDetailFragmentDirections.openFolderMenu(menu.parcel)
                 is Menu.ForSelection ->
                     PlaylistDetailFragmentDirections.openSelectionMenu(menu.parcel)
                 is Menu.ForArtist,
                 is Menu.ForAlbum,
                 is Menu.ForGenre -> error("Unexpected menu $menu")
+                is Menu.ForFolder -> error("Unexpected menu $menu")
             }
         findNavController().navigateSafe(directions)
     }

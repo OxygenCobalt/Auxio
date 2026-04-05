@@ -58,6 +58,7 @@ import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
@@ -204,6 +205,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             is Artist -> detailModel.showArtist(item)
             is Genre -> detailModel.showGenre(item)
             is Playlist -> detailModel.showPlaylist(item)
+            is Folder -> detailModel.showFolder(item)
         }
     }
 
@@ -214,6 +216,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             is Artist -> listModel.openMenu(R.menu.parent, item)
             is Genre -> listModel.openMenu(R.menu.parent, item)
             is Playlist -> listModel.openMenu(R.menu.playlist, item)
+            is Folder -> listModel.openMenu(R.menu.folder, item)
         }
     }
 
@@ -270,6 +273,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showPlaylist(show.playlist.uid))
             }
+            is Show.FolderDetails -> {
+                L.d("Navigating to ${show.folder}")
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.showFolder(show.folder.uid))
+            }
             null -> {}
         }
 
@@ -286,6 +294,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 is Menu.ForArtist -> SearchFragmentDirections.openArtistMenu(menu.parcel)
                 is Menu.ForGenre -> SearchFragmentDirections.openGenreMenu(menu.parcel)
                 is Menu.ForPlaylist -> SearchFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForFolder -> SearchFragmentDirections.openFolderMenu(menu.parcel)
                 is Menu.ForSelection -> SearchFragmentDirections.openSelectionMenu(menu.parcel)
             }
         findNavController().navigateSafe(directions)

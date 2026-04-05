@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
@@ -47,6 +48,8 @@ interface HomeGenerator {
     fun genres(): List<Genre>
 
     fun playlists(): List<Playlist>
+
+    fun folders(): List<Folder>
 
     fun tabs(): List<MusicType>
 
@@ -122,6 +125,11 @@ private class HomeGeneratorImpl(
         invalidator.invalidateMusic(MusicType.PLAYLISTS, UpdateInstructions.Replace(0))
     }
 
+    override fun onFolderSortChanged() {
+        super.onFolderSortChanged()
+        invalidator.invalidateMusic(MusicType.FOLDERS, UpdateInstructions.Replace(0))
+    }
+
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         invalidator.invalidateEmpty()
 
@@ -134,6 +142,7 @@ private class HomeGeneratorImpl(
             invalidator.invalidateMusic(MusicType.ALBUMS, UpdateInstructions.Diff)
             invalidator.invalidateMusic(MusicType.ARTISTS, UpdateInstructions.Diff)
             invalidator.invalidateMusic(MusicType.GENRES, UpdateInstructions.Diff)
+            invalidator.invalidateMusic(MusicType.FOLDERS, UpdateInstructions.Diff)
         }
 
         if (changes.userLibrary && library != null) {
@@ -172,6 +181,9 @@ private class HomeGeneratorImpl(
     override fun playlists() =
         musicRepository.library?.let { listSettings.playlistSort.playlists(it.playlists) }
             ?: emptyList()
+
+    override fun folders() =
+        musicRepository.library?.let { listSettings.folderSort.folders(it.folders) } ?: emptyList()
 
     override fun tabs() = homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
 }

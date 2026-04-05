@@ -28,6 +28,9 @@
             android:id="@+id/sort_playlists"
             app:destination="@+id/playlist_sort_dialog" />
         <action
+            android:id="@+id/sort_folders"
+            app:destination="@+id/folder_sort_dialog" />
+        <action
             android:id="@+id/show_song"
             app:destination="@id/song_detail_dialog" />
         <action
@@ -43,6 +46,9 @@
             android:id="@+id/show_playlist"
             app:destination="@id/playlist_detail_fragment" />
         <action
+            android:id="@+id/show_folder"
+            app:destination="@id/folder_detail_fragment" />
+        <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
         <action
@@ -57,6 +63,9 @@
         <action
             android:id="@+id/open_playlist_menu"
             app:destination="@id/playlist_menu_dialog" />
+        <action
+            android:id="@+id/open_folder_menu"
+            app:destination="@id/folder_menu_dialog" />
         <action
             android:id="@+id/open_selection_menu"
             app:destination="@id/selection_menu_dialog" />
@@ -133,6 +142,12 @@
         tools:layout="@layout/dialog_sort" />
 
     <dialog
+        android:id="@+id/folder_sort_dialog"
+        android:name="org.oxycblt.auxio.home.sort.FolderSortDialog"
+        android:label="folder_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
         android:id="@+id/song_detail_dialog"
         android:name="org.oxycblt.auxio.detail.SongDetailDialog"
         android:label="song_detail_dialog"
@@ -163,6 +178,9 @@
             android:id="@+id/show_playlist"
             app:destination="@id/playlist_detail_fragment" />
         <action
+            android:id="@+id/show_folder"
+            app:destination="@id/folder_detail_fragment" />
+        <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
         <action
@@ -180,6 +198,9 @@
         <action
             android:id="@+id/open_playlist_menu"
             app:destination="@id/playlist_menu_dialog" />
+        <action
+            android:id="@+id/open_folder_menu"
+            app:destination="@id/folder_menu_dialog" />
         <action
             android:id="@+id/rename_playlist"
             app:destination="@id/rename_playlist_dialog" />
@@ -226,6 +247,12 @@
         <action
             android:id="@+id/show_artist_choices"
             app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
+        <action
+            android:id="@+id/show_folder"
+            app:destination="@id/folder_detail_fragment" />
         <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
@@ -276,6 +303,12 @@
             android:id="@+id/show_artist_choices"
             app:destination="@id/show_artist_choices_dialog" />
         <action
+            android:id="@+id/show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
+        <action
+            android:id="@+id/show_folder"
+            app:destination="@id/folder_detail_fragment" />
+        <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
         <action
@@ -324,6 +357,12 @@
         <action
             android:id="@+id/show_artist_choices"
             app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
+        <action
+            android:id="@+id/show_folder"
+            app:destination="@id/folder_detail_fragment" />
         <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
@@ -374,11 +413,81 @@
             android:id="@+id/show_artist_choices"
             app:destination="@id/show_artist_choices_dialog" />
         <action
+            android:id="@+id/show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
+        <action
+            android:id="@+id/show_folder"
+            app:destination="@id/folder_detail_fragment" />
+        <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
         <action
             android:id="@+id/open_playlist_menu"
             app:destination="@id/playlist_menu_dialog" />
+        <action
+            android:id="@+id/open_folder_menu"
+            app:destination="@id/folder_menu_dialog" />
+        <action
+            android:id="@+id/open_selection_menu"
+            app:destination="@id/selection_menu_dialog" />
+        <action
+            android:id="@+id/rename_playlist"
+            app:destination="@id/rename_playlist_dialog" />
+        <action
+            android:id="@+id/export_playlist"
+            app:destination="@id/export_playlist_dialog" />
+        <action
+            android:id="@+id/delete_playlist"
+            app:destination="@id/delete_playlist_dialog" />
+        <action
+            android:id="@+id/add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
+            android:id="@+id/play_from_artist"
+            app:destination="@id/play_from_artist_dialog" />
+        <action
+            android:id="@+id/play_from_genre"
+            app:destination="@id/play_from_genre_dialog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/folder_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.FolderDetailFragment"
+        android:label="folder_detail_fragment"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="folderUid"
+            app:argType="org.oxycblt.musikr.Music$UID" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@+id/folder_song_sort_dialog" />
+        <action
+            android:id="@+id/show_song"
+            app:destination="@id/song_detail_dialog" />
+        <action
+            android:id="@+id/show_album"
+            app:destination="@id/album_detail_fragment" />
+        <action
+            android:id="@+id/show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/show_artist_choices"
+            app:destination="@id/show_artist_choices_dialog" />
+        <action
+            android:id="@+id/show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
+        <action
+            android:id="@+id/show_folder"
+            app:destination="@id/folder_detail_fragment" />
+        <action
+            android:id="@+id/open_song_menu"
+            app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_playlist_menu"
+            app:destination="@id/playlist_menu_dialog" />
+        <action
+            android:id="@+id/open_folder_menu"
+            app:destination="@id/folder_menu_dialog" />
         <action
             android:id="@+id/open_selection_menu"
             app:destination="@id/selection_menu_dialog" />
@@ -406,6 +515,12 @@
         android:id="@+id/playlist_song_sort_dialog"
         android:name="org.oxycblt.auxio.detail.sort.PlaylistSongSortDialog"
         android:label="playlist_song_sort_dialog"
+        tools:layout="@layout/dialog_sort" />
+
+    <dialog
+        android:id="@+id/folder_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.FolderSongSortDialog"
+        android:label="folder_song_sort_dialog"
         tools:layout="@layout/dialog_sort" />
 
     <dialog
@@ -556,6 +671,16 @@
         <argument
             android:name="parcel"
             app:argType="org.oxycblt.auxio.list.menu.Menu$ForPlaylist$Parcel" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/folder_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.FolderMenuDialogFragment"
+        android:label="folder_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForFolder$Parcel" />
     </dialog>
 
     <dialog

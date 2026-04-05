@@ -31,6 +31,7 @@ interface Library {
     val artists: Collection<Artist>
     val genres: Collection<Genre>
     val playlists: Collection<Playlist>
+    val folders: Collection<Folder>
 
     /**
      * Whether this library is empty (i.e no songs, which means no other music item)
@@ -94,6 +95,10 @@ interface Library {
      * @return the playlist if found, null otherwise
      */
     fun findPlaylistByName(name: String): Playlist?
+
+    fun findFolder(uid: Music.UID): Folder?
+
+    fun findFolderByName(name: String): Folder?
 }
 
 /**

@@ -27,6 +27,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
@@ -46,6 +47,8 @@ interface DetailGenerator {
     fun genre(uid: Music.UID): Detail<Genre>?
 
     fun playlist(uid: Music.UID): Detail<Playlist>?
+
+    fun folder(uid: Music.UID): Detail<Folder>?
 
     fun attach()
 
@@ -93,11 +96,17 @@ private class DetailGeneratorImpl(
         invalidator.invalidate(MusicType.GENRES, -1)
     }
 
+    override fun onFolderSongSortChanged() {
+        super.onFolderSongSortChanged()
+        invalidator.invalidate(MusicType.FOLDERS, -1)
+    }
+
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (changes.deviceLibrary) {
             invalidator.invalidate(MusicType.ALBUMS, null)
             invalidator.invalidate(MusicType.ARTISTS, null)
             invalidator.invalidate(MusicType.GENRES, null)
+            invalidator.invalidate(MusicType.FOLDERS, null)
         }
         if (changes.userLibrary) {
             invalidator.invalidate(MusicType.PLAYLISTS, null)
@@ -116,6 +125,7 @@ private class DetailGeneratorImpl(
             is Artist -> artist(uid)
             is Genre -> genre(uid)
             is Playlist -> playlist(uid)
+            is Folder -> folder(uid)
             else -> null
         }
     }
@@ -186,6 +196,15 @@ private class DetailGeneratorImpl(
             return Detail(playlist, listOf(songs))
         }
         return Detail(playlist, listOf())
+    }
+
+    override fun folder(uid: Music.UID): Detail<Folder>? {
+        val folder = musicRepository.library?.findFolder(uid) ?: return null
+        if (folder.songs.isNotEmpty()) {
+            val songs = DetailSection.Songs(listSettings.folderSongSort.songs(folder.songs))
+            return Detail(folder, listOf(songs))
+        }
+        return Detail(folder, listOf())
     }
 
     private companion object {

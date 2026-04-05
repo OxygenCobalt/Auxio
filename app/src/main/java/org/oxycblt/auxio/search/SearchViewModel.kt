@@ -122,6 +122,7 @@ constructor(
                     library.artists,
                     library.genres,
                     library.playlists,
+                    library.folders,
                 )
             } else {
                 L.d("Filter specified, reducing library")
@@ -131,6 +132,7 @@ constructor(
                     artists = if (filter == MusicType.ARTISTS) library.artists else null,
                     genres = if (filter == MusicType.GENRES) library.genres else null,
                     playlists = if (filter == MusicType.PLAYLISTS) library.playlists else null,
+                    folders = if (filter == MusicType.FOLDERS) library.folders else null,
                 )
             }
 
@@ -162,6 +164,16 @@ constructor(
 
                 add(header)
                 addAll(SORT.playlists(it))
+            }
+            results.folders?.let {
+                L.d("Adding ${it.size} folders to search results")
+                val header = BasicHeader(R.string.lbl_folders)
+                if (isNotEmpty()) {
+                    add(PlainDivider(header))
+                }
+
+                add(header)
+                addAll(SORT.folders(it))
             }
             results.genres?.let {
                 L.d("Adding ${it.size} genres to search results")
@@ -199,6 +211,7 @@ constructor(
             MusicType.ARTISTS -> R.id.option_filter_artists
             MusicType.GENRES -> R.id.option_filter_genres
             MusicType.PLAYLISTS -> R.id.option_filter_playlists
+            MusicType.FOLDERS -> R.id.option_filter_folders
             // Null maps to filtering nothing.
             null -> R.id.option_filter_all
         }
@@ -216,6 +229,7 @@ constructor(
                 R.id.option_filter_artists -> MusicType.ARTISTS
                 R.id.option_filter_genres -> MusicType.GENRES
                 R.id.option_filter_playlists -> MusicType.PLAYLISTS
+                R.id.option_filter_folders -> MusicType.FOLDERS
                 // Null maps to filtering nothing.
                 R.id.option_filter_all -> null
                 else -> error("Invalid option ID provided")

@@ -210,6 +210,9 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
             is Show.PlaylistDetails -> {
                 error("Unexpected show command $show")
             }
+            is Show.FolderDetails -> {
+                error("Unexpected show command $show")
+            }
             null -> {}
         }
     }
@@ -224,6 +227,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
                 is Menu.ForSelection -> GenreDetailFragmentDirections.openSelectionMenu(menu.parcel)
                 is Menu.ForAlbum,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")
+                is Menu.ForFolder -> error("Unexpected menu $menu")
             }
         findNavController().navigateSafe(directions)
     }

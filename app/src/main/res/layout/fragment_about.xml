@@ -336,7 +336,7 @@
                         style="@style/Widget.Auxio.TextView.Icon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:drawableStartCompat="@drawable/ic_album_24"
+                        app:drawableStartCompat="@drawable/ic_song_24"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_licenses"

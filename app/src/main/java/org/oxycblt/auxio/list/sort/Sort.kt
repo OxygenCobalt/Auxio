@@ -22,6 +22,7 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
@@ -96,6 +97,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
         return mutable
     }
 
+    fun folders(folders: Collection<Folder>): List<Folder> {
+        val mutable = folders.toMutableList()
+        mode.sortFolders(mutable, direction)
+        return mutable
+    }
+
     /**
      * The integer representation of this instance.
      *
@@ -136,6 +143,10 @@ data class Sort(val mode: Mode, val direction: Direction) {
             throw NotImplementedError("Sorting playlists is not supported for this mode")
         }
 
+        fun sortFolders(folders: MutableList<Folder>, direction: Direction) {
+            throw NotImplementedError("Sorting folders is not supported for this mode")
+        }
+
         data object ByName : Mode {
             override val intCode = IntegerTable.SORT_BY_NAME
             override val stringRes = R.string.lbl_name
@@ -172,6 +183,13 @@ data class Sort(val mode: Mode, val direction: Direction) {
                 when (direction) {
                     Direction.ASCENDING -> playlists.sortBy { it.name }
                     Direction.DESCENDING -> playlists.sortByDescending { it.name }
+                }
+            }
+
+            override fun sortFolders(folders: MutableList<Folder>, direction: Direction) {
+                when (direction) {
+                    Direction.ASCENDING -> folders.sortBy { it.name }
+                    Direction.DESCENDING -> folders.sortByDescending { it.name }
                 }
             }
         }
@@ -286,6 +304,14 @@ data class Sort(val mode: Mode, val direction: Direction) {
                     Direction.DESCENDING -> playlists.sortByDescending { it.durationMs }
                 }
             }
+
+            override fun sortFolders(folders: MutableList<Folder>, direction: Direction) {
+                folders.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> folders.sortBy { it.durationMs }
+                    Direction.DESCENDING -> folders.sortByDescending { it.durationMs }
+                }
+            }
         }
 
         data object ByCount : Mode {
@@ -321,6 +347,14 @@ data class Sort(val mode: Mode, val direction: Direction) {
                 when (direction) {
                     Direction.ASCENDING -> playlists.sortBy { it.songs.size }
                     Direction.DESCENDING -> playlists.sortByDescending { it.songs.size }
+                }
+            }
+
+            override fun sortFolders(folders: MutableList<Folder>, direction: Direction) {
+                folders.sortBy { it.name }
+                when (direction) {
+                    Direction.ASCENDING -> folders.sortBy { it.songs.size }
+                    Direction.DESCENDING -> folders.sortByDescending { it.songs.size }
                 }
             }
         }

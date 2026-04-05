@@ -11,7 +11,7 @@
         android:title="@string/lbl_artist_details" />
     <item
         android:id="@+id/action_album_details"
-        android:icon="@drawable/ic_album_24"
+        android:icon="@drawable/ic_song_24"
         android:title="@string/lbl_album_details"
         app:showAsAction="never" />
     <item

@@ -104,6 +104,7 @@ sealed interface Music {
             ARTIST(0xA109, 'r'),
             GENRE(0xA108, 'g'),
             PLAYLIST(0xA107, 'p'),
+            FOLDER(0xA106, 'f'),
         }
 
         /**
@@ -217,6 +218,7 @@ sealed interface Music {
                             Item.ARTIST.microNamespace -> Item.ARTIST
                             Item.GENRE.microNamespace -> Item.GENRE
                             Item.PLAYLIST.microNamespace -> Item.PLAYLIST
+                            Item.FOLDER.microNamespace -> Item.FOLDER
                             else -> return null
                         }
                     if (uid.length < 4) {
@@ -399,5 +401,14 @@ interface Playlist : MusicParent {
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
     /** Useful information to quickly obtain a (single) cover for a Genre. */
+    val covers: CoverCollection
+}
+
+interface Folder : MusicParent {
+    override val name: Name.Known
+    override val songs: List<Song>
+    /** The total duration of the songs in this folder, in milliseconds. */
+    val durationMs: Long
+    /** Useful information to quickly obtain a (single) cover for a Folder. */
     val covers: CoverCollection
 }

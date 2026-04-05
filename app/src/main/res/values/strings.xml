@@ -83,8 +83,12 @@
 
     <string name="lbl_playlist">Playlist</string>
     <string name="lbl_playlists">Playlists</string>
+    <string name="lbl_folder">Folder</string>
+    <string name="lbl_folders">Folders</string>
     <string name="lbl_new_playlist">New playlist</string>
+    <string name="lbl_new_folder">New folder</string>
     <string name="lbl_empty_playlist">Empty playlist</string>
+    <string name="lbl_empty_folder">Empty folder</string>
     <string name="lbl_imported_playlist">Imported playlist</string>
     <string name="lbl_import">Import</string>
     <string name="lbl_import_playlist">Import playlist</string>
@@ -215,6 +219,7 @@
     <string name="lng_empty_artists">Your artists will show up here.</string>
     <string name="lng_empty_genres">Your genres will show up here.</string>
     <string name="lng_empty_playlists">Your playlists will show up here.</string>
+    <string name="lng_empty_folders">Your folders will show up here.</string>
     <string name="lng_file_picker">Load music from the folders that you select. Slower, but more reliable. Requires the vanilla file manager app to be installed.</string>
     <string name="lng_system_database">Load music that the Android OS automatically detects. Faster, but less reliable. No support for filesystem-dependent features like cover.jpg.</string>
     <string name="lng_grant_storage_anyway">Granting external storage permissions can fix issues on some devices.</string>

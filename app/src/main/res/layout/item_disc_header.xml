@@ -16,7 +16,7 @@
         android:layout_width="48dp"
         android:layout_height="40dp"
         android:scaleType="center"
-        android:src="@drawable/ic_album_24"
+        android:src="@drawable/ic_song_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

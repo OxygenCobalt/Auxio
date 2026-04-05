@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback
 
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
@@ -80,6 +81,10 @@ sealed interface PlaySong {
      */
     data class FromPlaylist(val which: Playlist) : PlaySong {
         override val intCode = IntegerTable.PLAY_SONG_FROM_PLAYLIST
+    }
+
+    data class FromFolder(val which: Folder) : PlaySong {
+        override val intCode = IntegerTable.PLAY_SONG_FROM_FOLDER
     }
 
     /** Only play the given song, include nothing else in the queue. */

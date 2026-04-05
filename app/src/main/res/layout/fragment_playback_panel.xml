@@ -107,7 +107,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/playback_repeat"
                 app:layout_constraintTop_toTopOf="parent"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small.Narrow" />
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Xsmall.Narrow" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_play_pause"
@@ -122,7 +122,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/playback_skip_prev"
                 app:layout_constraintTop_toTopOf="parent"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Xsmall"
                 tools:icon="@drawable/ic_play_24" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
@@ -137,7 +137,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
                 app:layout_constraintTop_toTopOf="parent"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small.Narrow" />
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Xsmall.Narrow" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_shuffle"

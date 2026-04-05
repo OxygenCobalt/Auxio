@@ -33,6 +33,7 @@ internal data class LibraryImpl(
     override val artists: Set<ArtistImpl>,
     override val genres: Set<GenreImpl>,
     override val playlists: Set<PlaylistImpl>,
+    override val folders: Set<FolderImpl>,
     private val storedPlaylists: StoredPlaylists,
     private val playlistInterpreter: PlaylistInterpreter,
 ) : MutableLibrary {
@@ -43,6 +44,8 @@ internal data class LibraryImpl(
     private val artistUidMap = artists.associateBy { it.uid }
     private val genreUidMap = genres.associateBy { it.uid }
     private val playlistUidMap = playlists.associateBy { it.uid }
+
+    private val folderUidMap = folders.associateBy { it.uid }
 
     override fun empty() = songs.isEmpty()
 
@@ -61,6 +64,10 @@ internal data class LibraryImpl(
     override fun findPlaylist(uid: Music.UID) = playlistUidMap[uid]
 
     override fun findPlaylistByName(name: String) = playlists.find { it.name.raw == name }
+
+    override fun findFolder(uid: Music.UID) = folderUidMap[uid]
+
+    override fun findFolderByName(name: String) = folders.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>): MutableLibrary {
         val handle = storedPlaylists.new(name, songs)

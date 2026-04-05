@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.search.SearchEngine
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Playlist
@@ -127,6 +128,7 @@ private constructor(
             is Genre -> music.toMediaItem(context)
             is Playlist -> music.toMediaItem(context)
             is Song -> music.toMediaItem(context)
+            is Folder -> music.toMediaItem(context)
         }
     }
 
@@ -208,6 +210,7 @@ private constructor(
                     MusicType.ARTISTS -> homeGenerator.artists().map { it.toMediaItem(context) }
                     MusicType.GENRES -> homeGenerator.genres().map { it.toMediaItem(context) }
                     MusicType.PLAYLISTS -> homeGenerator.playlists().map { it.toMediaItem(context) }
+                    MusicType.FOLDERS -> homeGenerator.folders().map { it.toMediaItem(context) }
                 }
         }
 

@@ -315,6 +315,7 @@ constructor(
                 ?: findArtist(uid)
                 ?: findGenre(uid)
                 ?: findPlaylist(uid)
+                ?: findFolder(uid)
         })
 
     override suspend fun createPlaylist(name: String, songs: List<Song>) {

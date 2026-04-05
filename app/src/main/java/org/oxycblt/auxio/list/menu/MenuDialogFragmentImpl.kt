@@ -335,6 +335,63 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
     }
 }
 
+@AndroidEntryPoint
+class FolderMenuDialogFragment : MenuDialogFragment<Menu.ForFolder>() {
+    override val menuModel: MenuViewModel by viewModels()
+    override val listModel: ListViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val args: FolderMenuDialogFragmentArgs by navArgs()
+
+    override val parcel
+        get() = args.parcel
+
+    override fun getDisabledItemIds(menu: Menu.ForFolder) =
+        if (menu.folder.songs.isEmpty()) {
+            // Disable any operations that require some kind of songs to work with, as there won't
+            // be any in an empty folder.
+            setOf(
+                R.id.action_play,
+                R.id.action_shuffle,
+                R.id.action_play_next,
+                R.id.action_queue_add,
+            )
+        } else {
+            setOf()
+        }
+
+    override fun updateMenu(binding: DialogMenuBinding, menu: Menu.ForFolder) {
+        val context = requireContext()
+        binding.menuCover.bind(menu.folder)
+        binding.menuType.text = getString(R.string.lbl_folder)
+        binding.menuName.text = menu.folder.name.resolve(context)
+        binding.menuInfo.text =
+            if (menu.folder.songs.isNotEmpty()) {
+                context.getPlural(R.plurals.fmt_song_count, menu.folder.songs.size)
+            } else {
+                getString(R.string.def_song_count)
+            }
+    }
+
+    override fun onClick(item: MenuItem, menu: Menu.ForFolder) {
+        when (item.itemId) {
+            R.id.action_play -> playbackModel.play(menu.folder)
+            R.id.action_shuffle -> playbackModel.shuffle(menu.folder)
+            R.id.action_detail -> detailModel.showFolder(menu.folder)
+            R.id.action_play_next -> {
+                playbackModel.playNext(menu.folder)
+                requireContext().showToast(R.string.lng_play_next)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(menu.folder)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            else -> error("Unexpected menu item $item")
+        }
+    }
+}
+
 /**
  * [MenuDialogFragment] implementation for a [Song] selection.
  *

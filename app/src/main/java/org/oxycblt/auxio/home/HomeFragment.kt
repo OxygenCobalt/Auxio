@@ -48,6 +48,7 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
+import org.oxycblt.auxio.home.list.FolderListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
@@ -236,6 +237,7 @@ class HomeFragment :
                         MusicType.ARTISTS -> HomeFragmentDirections.sortArtists()
                         MusicType.GENRES -> HomeFragmentDirections.sortGenres()
                         MusicType.PLAYLISTS -> HomeFragmentDirections.sortPlaylists()
+                        MusicType.FOLDERS -> HomeFragmentDirections.sortFolders()
                     }
                 findNavController().navigateSafe(directions)
                 true
@@ -288,6 +290,7 @@ class HomeFragment :
                 MusicType.ARTISTS -> R.id.home_artist_recycler
                 MusicType.GENRES -> R.id.home_genre_recycler
                 MusicType.PLAYLISTS -> R.id.home_playlist_recycler
+                MusicType.FOLDERS -> R.id.home_folder_recycler
             }
     }
 
@@ -456,6 +459,10 @@ class HomeFragment :
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showPlaylist(show.playlist.uid))
             }
+            is Show.FolderDetails -> {
+                L.d("Navigating to ${show.folder}")
+                findNavController().navigateSafe(HomeFragmentDirections.showFolder(show.folder.uid))
+            }
             null -> {}
         }
     }
@@ -469,6 +476,7 @@ class HomeFragment :
                 is Menu.ForArtist -> HomeFragmentDirections.openArtistMenu(menu.parcel)
                 is Menu.ForGenre -> HomeFragmentDirections.openGenreMenu(menu.parcel)
                 is Menu.ForPlaylist -> HomeFragmentDirections.openPlaylistMenu(menu.parcel)
+                is Menu.ForFolder -> HomeFragmentDirections.openFolderMenu(menu.parcel)
                 is Menu.ForSelection -> HomeFragmentDirections.openSelectionMenu(menu.parcel)
             }
         findNavController().navigateSafe(directions)
@@ -510,6 +518,7 @@ class HomeFragment :
                 MusicType.ARTISTS -> ArtistListFragment()
                 MusicType.GENRES -> GenreListFragment()
                 MusicType.PLAYLISTS -> PlaylistListFragment()
+                MusicType.FOLDERS -> FolderListFragment()
             }
     }
 

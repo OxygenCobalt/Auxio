@@ -25,6 +25,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
@@ -61,6 +62,8 @@ interface PlaybackCommand {
 
         fun songFromPlaylist(song: Song, playlist: Playlist, shuffle: ShuffleMode): PlaybackCommand?
 
+        fun songFromFolder(song: Song, folder: Folder, shuffle: ShuffleMode): PlaybackCommand?
+
         fun all(shuffle: ShuffleMode): PlaybackCommand?
 
         fun songs(songs: List<Song>, shuffle: ShuffleMode): PlaybackCommand?
@@ -72,6 +75,8 @@ interface PlaybackCommand {
         fun genre(genre: Genre, shuffle: ShuffleMode): PlaybackCommand?
 
         fun playlist(playlist: Playlist, shuffle: ShuffleMode): PlaybackCommand?
+
+        fun folder(folder: Folder, shuffle: ShuffleMode): PlaybackCommand?
     }
 }
 
@@ -117,6 +122,9 @@ constructor(
     override fun songFromPlaylist(song: Song, playlist: Playlist, shuffle: ShuffleMode) =
         newCommand(song, playlist, playlist.songs, shuffle)
 
+    override fun songFromFolder(song: Song, folder: Folder, shuffle: ShuffleMode) =
+        newCommand(song, folder, folder.songs, shuffle)
+
     override fun all(shuffle: ShuffleMode) = newCommand(null, shuffle)
 
     override fun songs(songs: List<Song>, shuffle: ShuffleMode) =
@@ -133,6 +141,9 @@ constructor(
 
     override fun playlist(playlist: Playlist, shuffle: ShuffleMode) =
         newCommand(null, playlist, playlist.songs, shuffle)
+
+    override fun folder(folder: Folder, shuffle: ShuffleMode) =
+        newCommand(null, folder, folder.songs, shuffle)
 
     private fun <T : MusicParent> newCommand(
         song: Song,

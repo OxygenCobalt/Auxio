@@ -24,12 +24,17 @@ import kotlinx.coroutines.channels.Channel
 import org.oxycblt.musikr.BuildConfig
 import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.Interpretation
+import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MutableLibrary
+import org.oxycblt.musikr.folder.FolderFile
+import org.oxycblt.musikr.folder.SongPointer
+import org.oxycblt.musikr.folder.interpret.FolderInterpreter
 import org.oxycblt.musikr.graph.MusicGraph
 import org.oxycblt.musikr.model.LibraryFactory
 import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.playlist.interpret.PlaylistInterpreter
 import org.oxycblt.musikr.tag.interpret.TagInterpreter
+import org.oxycblt.musikr.util.update
 
 internal interface EvaluateStep {
     suspend fun evaluate(extractedMusic: Channel<Extracted>): MutableLibrary
@@ -40,6 +45,7 @@ internal interface EvaluateStep {
                 context,
                 TagInterpreter.new(interpretation),
                 PlaylistInterpreter.new(interpretation),
+                FolderInterpreter.new(interpretation),
                 config.storage.storedPlaylists,
                 LibraryFactory.new(),
             )
@@ -50,19 +56,54 @@ private class EvaluateStepImpl(
     private val context: Context,
     private val tagInterpreter: TagInterpreter,
     private val playlistInterpreter: PlaylistInterpreter,
+    private val folderInterpreter: FolderInterpreter,
     private val storedPlaylists: StoredPlaylists,
     private val libraryFactory: LibraryFactory,
 ) : EvaluateStep {
     override suspend fun evaluate(extractedMusic: Channel<Extracted>): MutableLibrary {
         val builder = MusicGraph.builder()
+        val songs = mutableListOf<RawSong>()
         for (extracted in extractedMusic) {
             when (extracted) {
-                is RawSong -> builder.add(tagInterpreter.interpret(extracted))
+                is RawSong -> {
+                    songs.add(extracted)
+                    val preSong = tagInterpreter.interpret(extracted)
+                    builder.add(preSong)
+                }
+
                 is RawPlaylist -> builder.add(playlistInterpreter.interpret(extracted.file))
                 is NotAudio -> {}
                 is InvalidSong -> {}
             }
         }
+
+        // Group songs by their directory to create folders
+        val folders =
+            songs
+                .groupBy { it.file.path.directory }
+                .map { (path, folderSongs) ->
+                    val name = path.name ?: "Unknown Folder"
+                    val folderFile =
+                        FolderFile(
+                            name = name,
+                            songPointers =
+                                folderSongs.map {
+                                    val preSong = tagInterpreter.interpret(it)
+                                    SongPointer.UID(preSong.v401Uid)
+                                },
+                            handle =
+                                object : org.oxycblt.musikr.folder.FolderHandle {
+                                    override val uid =
+                                        Music.UID.auxio(Music.UID.Item.FOLDER) {
+                                            update(path.toString())
+                                        }
+                                },
+                        )
+                    folderInterpreter.interpret(folderFile)
+                }
+
+        folders.forEach { builder.add(it) }
+
         val graph = builder.build()
 
         // Render graph to Graphviz in debug mode

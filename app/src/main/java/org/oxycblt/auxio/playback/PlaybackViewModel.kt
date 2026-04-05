@@ -39,6 +39,7 @@ import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
@@ -234,6 +235,7 @@ constructor(
             is PlaySong.FromArtist -> playFromArtistImpl(song, with.which, shuffle)
             is PlaySong.FromGenre -> playFromGenreImpl(song, with.which, shuffle)
             is PlaySong.FromPlaylist -> playFromPlaylistImpl(song, with.which, shuffle)
+            is PlaySong.FromFolder -> playFromFolderImpl(song, with.which, shuffle)
             is PlaySong.ByItself -> playItselfImpl(song, shuffle)
         }
     }
@@ -289,6 +291,11 @@ constructor(
     private fun playFromPlaylistImpl(song: Song, playlist: Playlist, shuffle: ShuffleMode) {
         L.d("Playing $song from $playlist")
         playImpl(commandFactory.songFromPlaylist(song, playlist, shuffle))
+    }
+
+    private fun playFromFolderImpl(song: Song, folder: Folder, shuffle: ShuffleMode) {
+        L.d("Playing $song from $folder")
+        playImpl(commandFactory.songFromFolder(song, folder, shuffle))
     }
 
     private fun startPlaybackDecision(decision: PlaybackDecision) {
@@ -370,6 +377,11 @@ constructor(
         playImpl(commandFactory.playlist(playlist, ShuffleMode.OFF))
     }
 
+    fun play(folder: Folder) {
+        L.d("Playing $folder")
+        playImpl(commandFactory.folder(folder, ShuffleMode.OFF))
+    }
+
     /**
      * Shuffle a [Playlist].
      *
@@ -378,6 +390,11 @@ constructor(
     fun shuffle(playlist: Playlist) {
         L.d("Shuffling $playlist")
         playImpl(commandFactory.playlist(playlist, ShuffleMode.ON))
+    }
+
+    fun shuffle(folder: Folder) {
+        L.d("Shuffling $folder")
+        playImpl(commandFactory.folder(folder, ShuffleMode.ON))
     }
 
     /**
@@ -510,6 +527,11 @@ constructor(
         playbackManager.playNext(playlist.songs)
     }
 
+    fun playNext(folder: Folder) {
+        L.d("Playing $folder next")
+        playbackManager.playNext(folder.songs)
+    }
+
     /**
      * Add [Song]s to the top of the queue.
      *
@@ -568,6 +590,11 @@ constructor(
     fun addToQueue(playlist: Playlist) {
         L.d("Adding $playlist to queue")
         playbackManager.addToQueue(playlist.songs)
+    }
+
+    fun addToQueue(folder: Folder) {
+        L.d("Adding $folder to queue")
+        playbackManager.addToQueue(folder.songs)
     }
 
     /**

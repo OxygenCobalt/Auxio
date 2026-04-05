@@ -91,6 +91,8 @@ object IntegerTable {
     const val MUSIC_MODE_GENRES = 0xA108
     /** MusicMode.PLAYLISTS */
     const val MUSIC_MODE_PLAYLISTS = 0xA107
+    // ** MusicMode.FOLDERS */
+    const val MUSIC_MODE_FOLDERS = 0xA106
     /** Sort.Mode.ByName */
     const val SORT_BY_NAME = 0xA10C
     /** Sort.Mode.ByArtist */
@@ -139,6 +141,8 @@ object IntegerTable {
     const val PLAY_SONG_FROM_GENRE = 0xA122
     /** PlaySong.FromPlaylist */
     const val PLAY_SONG_FROM_PLAYLIST = 0xA123
+    /** PlaySong.FromFolder */
+    const val PLAY_SONG_FROM_FOLDER = 0xA12C
     /** PlaySong.ByItself */
     const val PLAY_SONG_BY_ITSELF = 0xA124
     /** CoverMode.SaveSpace */
@@ -153,4 +157,6 @@ object IntegerTable {
     const val FILTER_MODE_INCLUDE = 0xA129
     /** LocationMode.FileSystem */
     const val FILTER_MODE_EXCLUDE = 0xA12A
+    /** FolderViewHolder */
+    const val VIEW_TYPE_FOLDER = 0xA12B
 }

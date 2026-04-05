@@ -55,10 +55,12 @@
     <string name="set_key_artists_sort" translatable="false">auxio_artists_sort</string>
     <string name="set_key_genres_sort" translatable="false">auxio_genres_sort</string>
     <string name="set_key_playlists_sort" translatable="false">auxio_playlists_sort</string>
+    <string name="set_key_folder_sort" translatable="false">auxio_folder_sort</string>
 
     <string name="set_key_album_songs_sort" translatable="false">auxio_album_sort</string>
     <string name="set_key_artist_songs_sort" translatable="false">auxio_artist_sort</string>
     <string name="set_key_genre_songs_sort" translatable="false">auxio_genre_sort</string>
+    <string name="set_key_folder_songs_sort" translatable="false">auxio_folder_songs_sort</string>
 
     <string name="set_key_library_revision" translatable="false">auxio_library_revision</string>
 

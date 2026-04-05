@@ -21,6 +21,7 @@ package org.oxycblt.musikr.graph
 import android.content.Context
 import java.io.File
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.folder.interpret.PreFolder
 import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreAlbum
@@ -36,11 +37,14 @@ internal data class MusicGraph(
     val artistVertex: List<ArtistVertex>,
     val genreVertex: List<GenreVertex>,
     val playlistVertex: Set<PlaylistVertex>,
+    val folderVertex: Set<FolderVertex>,
 ) {
     interface Builder {
         fun add(preSong: PreSong)
 
         fun add(prePlaylist: PrePlaylist)
+
+        fun add(preFolder: PreFolder)
 
         fun build(): MusicGraph
     }
@@ -164,7 +168,19 @@ internal data class MusicGraph(
                     }
                 }
             }
+            appendLine()
 
+            appendLine("  // Folder -> Song edges")
+            folderVertex.forEachIndexed { folderIndex, folder ->
+                folder.songVertices.forEachIndexed { _, songVertex ->
+                    songVertex?.let {
+                        val songIndex = this@MusicGraph.songVertex.indexOf(it)
+                        if (songIndex >= 0) {
+                            appendLine("  folder_$folderIndex -> song_$songIndex [color=brown];")
+                        }
+                    }
+                }
+            }
             appendLine("}")
         }
 
@@ -184,6 +200,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private val artistVertices = mutableMapOf<PreArtist, ArtistVertex>()
     private val genreVertices = mutableMapOf<PreGenre, GenreVertex>()
     private val playlistVertices = mutableSetOf<PlaylistVertex>()
+    private val folderVertices = mutableSetOf<FolderVertex>()
 
     override fun add(preSong: PreSong) {
         val uid = preSong.v363Uid
@@ -242,6 +259,10 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
 
     override fun add(prePlaylist: PrePlaylist) {
         playlistVertices.add(PlaylistVertex(prePlaylist))
+    }
+
+    override fun add(preFolder: PreFolder) {
+        folderVertices.add(FolderVertex(preFolder))
     }
 
     override fun build(): MusicGraph {
@@ -315,6 +336,17 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 val v401Pointer = SongPointer.UID(entry.value.preSong.v401Uid)
                 it.pointerMap[v401Pointer]?.forEach { index -> it.songVertices[index] = vertex }
             }
+
+            folderVertices.forEach {
+                val v363Pointer = org.oxycblt.musikr.folder.SongPointer.UID(entry.key)
+                it.pointerMap[v363Pointer]?.forEach { index -> it.songVertices[index] = vertex }
+                val v400Pointer =
+                    org.oxycblt.musikr.folder.SongPointer.UID(entry.value.preSong.v400Uid)
+                it.pointerMap[v400Pointer]?.forEach { index -> it.songVertices[index] = vertex }
+                val v401Pointer =
+                    org.oxycblt.musikr.folder.SongPointer.UID(entry.value.preSong.v401Uid)
+                it.pointerMap[v401Pointer]?.forEach { index -> it.songVertices[index] = vertex }
+            }
         }
 
         val graph =
@@ -324,6 +356,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 artistVertices.values.toList(),
                 genreVertices.values.toList(),
                 playlistVertices,
+                folderVertices,
             )
 
         return graph
@@ -573,6 +606,16 @@ internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
     val songVertices = Array<SongVertex?>(prePlaylist.songPointers.size) { null }
     val pointerMap =
         prePlaylist.songPointers
+            .withIndex()
+            .groupBy { it.value }
+            .mapValuesTo(mutableMapOf()) { entry -> entry.value.map { it.index } }
+    val tag: Any? = null
+}
+
+internal class FolderVertex(val preFolder: PreFolder) {
+    val songVertices = Array<SongVertex?>(preFolder.songPointers.size) { null }
+    val pointerMap =
+        preFolder.songPointers
             .withIndex()
             .groupBy { it.value }
             .mapValuesTo(mutableMapOf()) { entry -> entry.value.map { it.index } }

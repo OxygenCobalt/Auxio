@@ -70,6 +70,7 @@ import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
@@ -364,7 +365,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         bindImpl(
             { song.cover },
             context.getString(R.string.desc_album_cover, song.album.name),
-            R.drawable.ic_album_24,
+            R.drawable.ic_song_24,
         )
 
     /**
@@ -386,7 +387,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     ?.firstOrNull()
             },
             context.getString(R.string.desc_album_cover, album.name),
-            R.drawable.ic_album_24,
+            R.drawable.ic_song_24,
         )
     }
 
@@ -457,6 +458,20 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             },
             context.getString(R.string.desc_playlist_image, playlist.name),
             R.drawable.ic_playlist_24,
+        )
+
+    fun bind(folder: Folder) =
+        bindImpl(
+            {
+                StackCoverCollection(
+                    folder.covers,
+                    coverCollectionCornerRatio(),
+                    coverCollectionZOrder(folder.uid.toString().hashCode()),
+                    coverCollectionBackgroundColor(),
+                )
+            },
+            "Folder image for {folder.name}",
+            R.drawable.ic_folder_24,
         )
 
     /**

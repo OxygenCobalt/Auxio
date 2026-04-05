@@ -24,6 +24,7 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Playlist
@@ -51,6 +52,7 @@ sealed interface Menu {
                         is PlaySong.FromArtist -> playWith.which?.uid
                         is PlaySong.FromGenre -> playWith.which?.uid
                         is PlaySong.FromPlaylist -> playWith.which.uid
+                        is PlaySong.FromFolder -> playWith.which.uid
                         is PlaySong.FromAll,
                         is PlaySong.FromAlbum,
                         is PlaySong.ByItself -> null
@@ -98,6 +100,13 @@ sealed interface Menu {
             get() = Parcel(res, playlist.uid)
 
         @Parcelize data class Parcel(val res: Int, val playlistUid: Music.UID) : Menu.Parcel
+    }
+
+    class ForFolder(@MenuRes override val res: Int, val folder: Folder) : Menu {
+        override val parcel
+            get() = Parcel(res, folder.uid)
+
+        @Parcelize data class Parcel(val res: Int, val folderUid: Music.UID) : Menu.Parcel
     }
 
     class ForSelection(@MenuRes override val res: Int, val songs: List<Song>) : Menu {

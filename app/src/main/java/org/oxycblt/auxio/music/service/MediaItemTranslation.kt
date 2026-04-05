@@ -35,6 +35,7 @@ import org.oxycblt.auxio.playback.formatDurationDs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
+import org.oxycblt.musikr.Folder
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Music.UID
@@ -223,6 +224,31 @@ fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
 }
 
 fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
+    val mediaSessionUID = MediaSessionUID.SingleItem(uid)
+    val counts =
+        if (songs.isNotEmpty()) {
+            context.getPlural(R.plurals.fmt_song_count, songs.size)
+        } else {
+            context.getString(R.string.def_song_count)
+        }
+    val extras = makeExtras(context, *sugar)
+    val description =
+        MediaDescriptionCompat.Builder()
+            .setMediaId(mediaSessionUID.toString())
+            .setTitle(name.resolve(context))
+            .setSubtitle(counts)
+            .setDescription(durationMs.formatDurationDs(true))
+            .setIconUri(
+                covers.covers.firstOrNull()?.let {
+                    Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
+                }
+            )
+            .setExtras(extras)
+            .build()
+    return MediaItem(description, MediaItem.FLAG_BROWSABLE)
+}
+
+fun Folder.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
     val mediaSessionUID = MediaSessionUID.SingleItem(uid)
     val counts =
         if (songs.isNotEmpty()) {

@@ -264,7 +264,11 @@ class PlaybackPanelFragment :
     }
 
     private fun updateShuffled(isShuffled: Boolean) {
-        requireBinding().playbackShuffle.isChecked = isShuffled
+        val shuffleButton = requireBinding().playbackShuffle
+        shuffleButton.isChecked = isShuffled
+        shuffleButton.setIconResource(
+            if (isShuffled) R.drawable.ic_shuffle_on_24 else R.drawable.ic_shuffle_off_24
+        )
     }
 
     private fun navigateToCurrentSong() {
