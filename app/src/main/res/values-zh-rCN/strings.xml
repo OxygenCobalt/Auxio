@@ -343,4 +343,6 @@
     <string name="set_task_exit_desc">从最近使用的应用列表删除时停止播放，即使正在播放</string>
     <string name="set_saf_multithread">多线程文件资源管理</string>
     <string name="set_saf_multithread_desc">更快但在一些设备上失败</string>
+    <string name="err_share_too_large">过大无法分享</string>
+    <string name="err_share_failed">无法分享这个</string>
 </resources>
