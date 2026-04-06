@@ -117,6 +117,9 @@ sealed interface Music {
 
             /** @see musicBrainz */
             MUSICBRAINZ("org.musicbrainz", 'm'),
+
+            /** @see acoustid */
+            ACOUSTID("org.acoustid", 'c'),
         }
 
         object TypeConverters {
@@ -194,6 +197,46 @@ sealed interface Music {
             internal fun musicBrainz(item: Item, mbid: UUID) = UID(Format.MUSICBRAINZ, item, mbid)
 
             /**
+             * Creates an AcoustID-style [UID] with a [UUID] derived by SHA-256 hashing the AcoustID
+             * fingerprint string extracted from a file. More stable than any metadata-based UID
+             * because it reflects audio content rather than tags.
+             *
+             * @param item The [Item] that created this [UID].
+             * @param fingerprint The raw AcoustID fingerprint string extracted from the file.
+             * @return A new AcoustID-style [UID].
+             */
+            internal fun acoustid(item: Item, fingerprint: String): UID {
+                val digest =
+                    MessageDigest.getInstance("SHA-256")
+                        .apply { update(fingerprint.toByteArray(Charsets.UTF_8)) }
+                        .digest()
+                val uuid =
+                    UUID(
+                        digest[0]
+                            .toLong()
+                            .shl(56)
+                            .or(digest[1].toLong().and(0xFF).shl(48))
+                            .or(digest[2].toLong().and(0xFF).shl(40))
+                            .or(digest[3].toLong().and(0xFF).shl(32))
+                            .or(digest[4].toLong().and(0xFF).shl(24))
+                            .or(digest[5].toLong().and(0xFF).shl(16))
+                            .or(digest[6].toLong().and(0xFF).shl(8))
+                            .or(digest[7].toLong().and(0xFF)),
+                        digest[8]
+                            .toLong()
+                            .shl(56)
+                            .or(digest[9].toLong().and(0xFF).shl(48))
+                            .or(digest[10].toLong().and(0xFF).shl(40))
+                            .or(digest[11].toLong().and(0xFF).shl(32))
+                            .or(digest[12].toLong().and(0xFF).shl(24))
+                            .or(digest[13].toLong().and(0xFF).shl(16))
+                            .or(digest[14].toLong().and(0xFF).shl(8))
+                            .or(digest[15].toLong().and(0xFF)),
+                    )
+                return UID(Format.ACOUSTID, item, uuid)
+            }
+
+            /**
              * Convert a [UID]'s string representation back into a concrete [UID] instance.
              *
              * @param uid The [UID]'s string representation, formatted as
@@ -208,6 +251,7 @@ sealed interface Music {
                         when (uid.getOrNull(1)) {
                             Format.AUXIO.microNamespace -> Format.AUXIO
                             Format.MUSICBRAINZ.microNamespace -> Format.MUSICBRAINZ
+                            Format.ACOUSTID.microNamespace -> Format.ACOUSTID
                             else -> return null
                         }
                     val microItem =
@@ -235,6 +279,7 @@ sealed interface Music {
                     when (split[0]) {
                         Format.AUXIO.namespace -> Format.AUXIO
                         Format.MUSICBRAINZ.namespace -> Format.MUSICBRAINZ
+                        Format.ACOUSTID.namespace -> Format.ACOUSTID
                         else -> return null
                     }
 

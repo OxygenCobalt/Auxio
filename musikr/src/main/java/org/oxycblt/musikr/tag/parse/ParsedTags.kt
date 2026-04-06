@@ -25,6 +25,8 @@ data class ParsedTags(
     val replayGainTrackAdjustment: Float? = null,
     val replayGainAlbumAdjustment: Float? = null,
     val musicBrainzId: String? = null,
+    val musicBrainzRecordingId: String? = null,
+    val acoustidFingerprint: String? = null,
     val name: String? = null,
     val sortName: String? = null,
     val track: Int? = null,

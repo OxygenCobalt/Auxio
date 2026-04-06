@@ -79,9 +79,11 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         val albumNameOrDir = song.tags.albumName ?: song.file.path.directory.name
 
         val musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull()
+        val musicBrainzRecordingId = song.tags.musicBrainzRecordingId?.toUuidOrNull()
+        val acoustidFingerprint = song.tags.acoustidFingerprint
 
-        // Always compute hash-based UIDs. They become the canonical UIDs when no MusicBrainz ID
-        // is present, and become legacyUids (for playlist migration) when one is present.
+        // Always compute hash-based UIDs. They become the canonical UIDs when no stable ID is
+        // present, and become legacyUids (for playlist migration) when one is present.
         val v363hash =
             Music.UID.auxio(Music.UID.Item.SONG) {
                 update(songNameOrFileWithoutExtCorrect)
@@ -125,19 +127,45 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                 update(song.tags.albumArtistNames)
             }
 
-        val v363uid =
-            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v363hash
-        val v400uid =
-            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v400hash
-        val v401uid =
-            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v401hash
+        // Select the canonical UID by priority: AcoustID (content-based, most stable) >
+        // MusicBrainz recording ID (recording-specific) >
+        // MusicBrainz release track ID (release-specific) >
+        // hash (tag-based, falls back to URI tracking for drift).
+        val stableUid =
+            when {
+                acoustidFingerprint != null ->
+                    Music.UID.acoustid(Music.UID.Item.SONG, acoustidFingerprint)
+                musicBrainzRecordingId != null ->
+                    Music.UID.musicBrainz(Music.UID.Item.SONG, musicBrainzRecordingId)
+                musicBrainzId != null -> Music.UID.musicBrainz(Music.UID.Item.SONG, musicBrainzId)
+                else -> null
+            }
 
-        // Collect the hash UIDs as legacy only when a MusicBrainz ID supersedes them. These are
-        // used during playlist resolution to match playlist entries that were stored under the old
-        // hash UID, and to migrate the DB to the new UID so future runs don't need them.
+        val v363uid = stableUid ?: v363hash
+        val v400uid = stableUid ?: v400hash
+        val v401uid = stableUid ?: v401hash
+
+        // All lower-priority UIDs the song may have been stored under in playlists. These are
+        // used during resolution to match and migrate playlist entries stored under any older UID.
         val legacyUids =
-            if (musicBrainzId != null) listOf(v363hash, v400hash, v401hash).distinct()
-            else emptyList()
+            if (stableUid != null) {
+                buildList {
+                        if (acoustidFingerprint != null) {
+                            musicBrainzRecordingId?.let {
+                                add(Music.UID.musicBrainz(Music.UID.Item.SONG, it))
+                            }
+                            musicBrainzId?.let {
+                                add(Music.UID.musicBrainz(Music.UID.Item.SONG, it))
+                            }
+                        } else if (musicBrainzRecordingId != null) {
+                            musicBrainzId?.let {
+                                add(Music.UID.musicBrainz(Music.UID.Item.SONG, it))
+                            }
+                        }
+                        addAll(listOf(v363hash, v400hash, v401hash))
+                    }
+                    .distinct()
+            } else emptyList()
 
         return PreSong(
             v363Uid = v363uid,
