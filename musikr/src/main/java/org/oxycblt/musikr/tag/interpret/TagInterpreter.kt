@@ -108,8 +108,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
 
                 val artistNames = interpretation.separators.split(song.tags.artistNames)
                 update(artistNames.ifEmpty { listOf(null) })
-                val albumArtistNames =
-                    interpretation.separators.split(song.tags.albumArtistNames)
+                val albumArtistNames = interpretation.separators.split(song.tags.albumArtistNames)
                 update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
             }
 
@@ -126,9 +125,12 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                 update(song.tags.albumArtistNames)
             }
 
-        val v363uid = musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v363hash
-        val v400uid = musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v400hash
-        val v401uid = musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v401hash
+        val v363uid =
+            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v363hash
+        val v400uid =
+            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v400hash
+        val v401uid =
+            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) } ?: v401hash
 
         // Collect the hash UIDs as legacy only when a MusicBrainz ID supersedes them. These are
         // used during playlist resolution to match playlist entries that were stored under the old

@@ -28,6 +28,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import org.oxycblt.musikr.Music
 
 /**
@@ -36,8 +38,14 @@ import org.oxycblt.musikr.Music
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Database(
-    entities = [PlaylistInfo::class, PlaylistSong::class, PlaylistSongCrossRef::class],
-    version = 30,
+    entities =
+        [
+            PlaylistInfo::class,
+            PlaylistSong::class,
+            PlaylistSongCrossRef::class,
+            SongUriRecord::class,
+        ],
+    version = 31,
     exportSchema = false,
 )
 @TypeConverters(Music.UID.TypeConverters::class)
@@ -51,10 +59,21 @@ internal abstract class PlaylistDatabase : RoomDatabase() {
                     PlaylistDatabase::class.java,
                     "user_music.db",
                 )
+                .addMigrations(MIGRATION_30_31)
                 .fallbackToDestructiveMigration(true)
                 .build()
     }
 }
+
+private val MIGRATION_30_31 =
+    object : Migration(30, 31) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `SongUriRecord` " +
+                    "(`uri` TEXT NOT NULL, `songUid` TEXT NOT NULL, PRIMARY KEY(`uri`))"
+            )
+        }
+    }
 
 // TODO: Handle playlist defragmentation? I really don't want dead songs to accumulate in this
 //  database.
@@ -187,4 +206,29 @@ internal abstract class PlaylistDao {
     /** Internal, do not use. */
     @Query("DELETE FROM PlaylistSong WHERE songUid = :songUid")
     abstract suspend fun deleteSong(songUid: Music.UID)
+
+    /**
+     * Read the full URI → UID index recorded after the last index run.
+     *
+     * @return All [SongUriRecord] entries currently stored.
+     */
+    @Query("SELECT * FROM SongUriRecord") abstract suspend fun readUriRecords(): List<SongUriRecord>
+
+    /**
+     * Replace the entire URI → UID index with the current song set.
+     *
+     * @param records The new [SongUriRecord] entries representing every indexed song.
+     */
+    @Transaction
+    open suspend fun replaceUriIndex(records: List<SongUriRecord>) {
+        clearUriRecords()
+        insertUriRecords(records)
+    }
+
+    /** Internal, do not use. */
+    @Query("DELETE FROM SongUriRecord") abstract suspend fun clearUriRecords()
+
+    /** Internal, do not use. */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertUriRecords(records: List<SongUriRecord>)
 }

@@ -36,9 +36,11 @@ internal data class MusicGraph(
     val artistVertex: List<ArtistVertex>,
     val genreVertex: List<GenreVertex>,
     val playlistVertex: Set<PlaylistVertex>,
-    /** Old hash UIDs → new MusicBrainz UIDs for songs that gained a MusicBrainz ID since the last
+    /**
+     * Old hash UIDs → new MusicBrainz UIDs for songs that gained a MusicBrainz ID since the last
      * index run. Populated during playlist resolution whenever a legacy UID matched a stored
-     * playlist entry. Used to update the playlist DB so future runs resolve cleanly. */
+     * playlist entry. Used to update the playlist DB so future runs resolve cleanly.
+     */
     val uidMigrations: Map<Music.UID, Music.UID>,
 ) {
     interface Builder {
