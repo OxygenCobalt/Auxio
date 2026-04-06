@@ -345,4 +345,8 @@
     <string name="fmt_lib_total_size">Общ размер: %s</string>
     <string name="set_task_exit">Винаги излизайте при затваряне</string>
     <string name="set_task_exit_desc">Спиране на възпроизвеждането при премахване от скорошни, дори ако се възпроизвежда</string>
+    <string name="set_saf_multithread">Многонишково изследване на файлове</string>
+    <string name="set_saf_multithread_desc">По-бърз, но не работи на някои устройства</string>
+    <string name="err_share_too_large">Това е твърде голямо за споделяне</string>
+    <string name="err_share_failed">Не може да се сподели това</string>
 </resources>
