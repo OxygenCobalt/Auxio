@@ -43,6 +43,30 @@ internal data class MusicGraph(
      */
     val uidMigrations: Map<Music.UID, Music.UID>,
 ) {
+    /**
+     * Re-resolve playlist vertices for any songs whose UID changed after the graph was built. The
+     * URI-index migrations are computed after [build] returns, so they can't be applied during the
+     * normal resolution pass. Calling this before [org.oxycblt.musikr.model.LibraryFactory.create]
+     * ensures the current rescan reflects the correct playlist contents immediately rather than
+     * requiring a second rescan.
+     *
+     * @param migrations Map of old UID → new UID, as produced by
+     *   [org.oxycblt.musikr.playlist.db.StoredPlaylists.computeUriMigrations].
+     */
+    fun applyMigrations(migrations: Map<Music.UID, Music.UID>) {
+        if (migrations.isEmpty()) return
+        val uidToVertex = songVertex.associateBy { it.preSong.v363Uid }
+        for (playlist in playlistVertex) {
+            for ((oldUid, newUid) in migrations) {
+                val indices = playlist.pointerMap[SongPointer.UID(oldUid)] ?: continue
+                val vertex = uidToVertex[newUid] ?: continue
+                for (index in indices) {
+                    playlist.songVertices[index] = vertex
+                }
+            }
+        }
+    }
+
     interface Builder {
         fun add(preSong: PreSong)
 

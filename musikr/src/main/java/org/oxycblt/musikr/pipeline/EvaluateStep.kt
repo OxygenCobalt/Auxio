@@ -82,6 +82,12 @@ private class EvaluateStepImpl(
         // Persist the current uri → uid mapping so the next run can detect further UID changes.
         storedPlaylists.updateUriIndex(currentUriToUid)
 
+        // Apply URI migrations to the in-memory graph so the current rescan shows correct playlist
+        // contents immediately. The graph was built before migrations were computed (the DB still
+        // had old UIDs when PlaylistVertex.pointerMap was populated), so without this songs whose
+        // UID changed this run would appear missing until a second rescan.
+        graph.applyMigrations(uriMigrations)
+
         // Render graph to Graphviz in debug mode
         if (BuildConfig.DEBUG) {
             try {
