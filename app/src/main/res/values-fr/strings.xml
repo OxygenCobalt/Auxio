@@ -349,4 +349,8 @@
     <string name="fmt_lib_total_size">Taille totale : %s</string>
     <string name="set_task_exit">Toujours quitter à la fermeture</string>
     <string name="set_task_exit_desc">Interrompre la lecture lorsque le lecteur est supprimé des fichiers récents, même s\'il est en cours de lecture</string>
+    <string name="set_saf_multithread">Exploration de fichiers multithread</string>
+    <string name="set_saf_multithread_desc">Plus rapide, mais ne fonctionne pas sur certains appareils</string>
+    <string name="err_share_too_large">Ce fichier est trop volumineux pour être partagé</string>
+    <string name="err_share_failed">Impossible de partager ceci</string>
 </resources>
