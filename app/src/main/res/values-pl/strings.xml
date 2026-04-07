@@ -353,4 +353,8 @@
     <string name="fmt_lib_total_size">Całkowita wielkość: %s</string>
     <string name="set_task_exit">Zawsze wychodź po zamknięciu</string>
     <string name="set_task_exit_desc">Zatrzymaj odtwarzanie po usunięciu aplikacji z pamięci, nawet jeśli jest w trakcie odtwarzania</string>
+    <string name="set_saf_multithread">Wielowątkowe przeglądanie plików</string>
+    <string name="set_saf_multithread_desc">Działa szybciej, ale na niektórych urządzeniach nie działa</string>
+    <string name="err_share_too_large">Ten plik jest zbyt duży, aby go udostępnić</string>
+    <string name="err_share_failed">Nie można tego udostępnić</string>
 </resources>
