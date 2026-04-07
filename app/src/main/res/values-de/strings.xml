@@ -345,4 +345,8 @@
     <string name="fmt_lib_total_size">Gesamte Größe: %s</string>
     <string name="set_task_exit">Beim Schließen immer beenden</string>
     <string name="set_task_exit_desc">Wiedergabe stoppen, wenn App geschlossen wird, auch beim Abspielen</string>
+    <string name="set_saf_multithread">Datei-Erkundung mit mehreren Threads</string>
+    <string name="set_saf_multithread_desc">Schneller, funktioniert aber nicht auf allen Geräte</string>
+    <string name="err_share_too_large">Zu groß zum Teilen</string>
+    <string name="err_share_failed">Konnte nicht geteilt werden</string>
 </resources>
