@@ -341,4 +341,8 @@
     <string name="fmt_lib_total_size">大小總計：%s</string>
     <string name="set_task_exit_desc">無論播放狀態，從「最近」移除時停止執行</string>
     <string name="set_task_exit">離開時一律關閉</string>
+    <string name="set_saf_multithread">多線程檔案瀏覽</string>
+    <string name="set_saf_multithread_desc">更快速，但部分裝置無法運作</string>
+    <string name="err_share_too_large">分享內容過大</string>
+    <string name="err_share_failed">無法分享這些內容</string>
 </resources>
