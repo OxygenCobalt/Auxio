@@ -356,4 +356,6 @@
     <string name="fmt_lib_total_size">الحجم الكلي: %s</string>
     <string name="set_task_exit">أنهي دائمًا عند الإغلاق</string>
     <string name="set_task_exit_desc">أوقف التشغيل عند الإزالة من الحديثة، حتى في حالة التشغيل</string>
+    <string name="err_share_too_large">هذا كبير جدًا للمشاركة</string>
+    <string name="err_share_failed">غير قادر على مشاركة هذا</string>
 </resources>
