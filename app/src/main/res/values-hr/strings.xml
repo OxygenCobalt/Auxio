@@ -60,7 +60,7 @@
     <string name="set_theme_night">Tamna</string>
     <string name="set_accent">Shema boje</string>
     <string name="set_black_mode">Crna tema</string>
-    <string name="set_black_mode_desc">Koristi potpuno tamnu temu</string>
+    <string name="set_black_mode_desc">Koristi potpuno crnu tamnu temu</string>
     <string name="set_display">Prikaz</string>
     <string name="set_lib_tabs">Kartice zbirke</string>
     <string name="set_lib_tabs_desc">Promijeni vidljivost i redoslijed kartica zbirke</string>
@@ -346,4 +346,11 @@
         <item quantity="few">%d sekunde</item>
         <item quantity="other">%d sekundi</item>
     </plurals>
+    <string name="set_task_exit">Uvijek zatvori aplikaciju pri zatvaranju</string>
+    <string name="set_task_exit_desc">Zaustavi reprodukciju kada se ukloni iz popisa nedavnih, čak i ako se reproducira</string>
+    <string name="set_saf_multithread_desc">Brže, ali ne uspijeva na nekim uređajima</string>
+    <string name="err_share_too_large">Ovo je preveliko za dijeljenje</string>
+    <string name="err_share_failed">Ovo nije moguće dijeliti</string>
+    <string name="fmt_lib_total_size">Ukupna veličina: %s</string>
+    <string name="set_saf_multithread">Višeprocesno istraživanje datoteka</string>
 </resources>
