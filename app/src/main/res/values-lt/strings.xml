@@ -353,4 +353,8 @@
     <string name="set_task_exit">Visada išeiti užveriant</string>
     <string name="set_task_exit_desc">Sustabdyti įrašo perklausą, kai pašalinama iš naujausių, net jei leidžiama.</string>
     <string name="fmt_lib_total_size">Bendras dydis: %s</string>
+    <string name="set_saf_multithread">Daugiasriegiškumo failų naršymas</string>
+    <string name="set_saf_multithread_desc">Spartesnis, bet neveikia kai kuriuose įrenginiuose.</string>
+    <string name="err_share_too_large">Tai per didelis, kad bendrinti.</string>
+    <string name="err_share_failed">Nepavyksta bendrinti.</string>
 </resources>
