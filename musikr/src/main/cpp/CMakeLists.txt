@@ -31,7 +31,12 @@ set(taglib_include "${taglib_pkg}/include")
 
 set(taglib_file_name libtag.a)
 set(taglib_file_path ${taglib_lib}/${taglib_file_name})
-set(taglib_lib_name, "taglib")
+
+# Ensure the include directory exists so CMake doesn't complain during sync
+if(NOT EXISTS ${taglib_include})
+    file(MAKE_DIRECTORY ${taglib_include})
+endif()
+
 add_library(
         "taglib"
         STATIC

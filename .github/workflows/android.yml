@@ -15,8 +15,8 @@ jobs:
       run: sudo apt-get install -y ninja-build
     - name: Clone repository
       uses: actions/checkout@v4
-      with:
-        submodules: recursive
+    - name: Clone submodules
+      run: git submodule update --init --recursive --remote
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:

@@ -90,11 +90,11 @@ dependencies {
 
 task assembleTaglib(type: Exec) {
     def jniDir = "$projectDir/src/main/cpp"
-    def libs = new File("$jniDir/taglib/pkg")
-    if (libs.exists()) {
-        commandLine "true"
-        return
-    }
+    def pkgDir = "$jniDir/taglib/pkg"
+    
+    inputs.dir("$jniDir/taglib")
+    outputs.dir(pkgDir)
+
     commandLine "sh", "-c", "$jniDir/build_taglib.sh $jniDir $android.ndkDirectory"
 }
 
