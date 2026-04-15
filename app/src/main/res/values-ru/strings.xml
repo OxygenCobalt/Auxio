@@ -353,4 +353,8 @@
     <string name="fmt_lib_total_size">Общий размер: %s</string>
     <string name="set_task_exit">Всегда выходить при закрытии</string>
     <string name="set_task_exit_desc">Останавливать воспроизведение при удалении из списка недавних, даже если оно активно</string>
+    <string name="set_saf_multithread">Многопоточное сканирование файлов</string>
+    <string name="set_saf_multithread_desc">Быстрее, но может работать некорректно на некоторых устройствах</string>
+    <string name="err_share_too_large">Размер превышает допустимый для отправки</string>
+    <string name="err_share_failed">Не удалось отправить</string>
 </resources>
