@@ -343,4 +343,10 @@
         <item quantity="other">%d sekund</item>
     </plurals>
     <string name="fmt_lib_total_size">Total storleik: %s</string>
+    <string name="set_task_exit">Avslutta alltid på stenging</string>
+    <string name="set_task_exit_desc">Avslutta avspeling når fjerna frå nylege appar, endå om Auxio spelar av musikk</string>
+    <string name="set_saf_multithread">Fleirtrådsfilutforsking</string>
+    <string name="set_saf_multithread_desc">Snøggare, men mislukkast på somme einingar</string>
+    <string name="err_share_too_large">Dette er for stort å dela</string>
+    <string name="err_share_failed">Kan ikkje dela dette</string>
 </resources>
