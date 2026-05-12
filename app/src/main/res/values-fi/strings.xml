@@ -345,4 +345,8 @@
     <string name="fmt_lib_total_size">Koko yhteensä: %s</string>
     <string name="set_task_exit">Sulje aina poistuessa</string>
     <string name="set_task_exit_desc">Lopeta toistaminen kun sovellus poistetaan viimeaikaisista, vaikka musiikkia soitettaisiin</string>
+    <string name="set_saf_multithread">Rinnakkainen Tiedostohaku</string>
+    <string name="set_saf_multithread_desc">Nopeampi, mutta ei toimi kaikilla laitteilla</string>
+    <string name="err_share_too_large">Liian suuri jaettavaksi</string>
+    <string name="err_share_failed">Tätä ei voi jakaa</string>
 </resources>
