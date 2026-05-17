@@ -83,3 +83,8 @@ Every TS18-facing PR must include:
 - unresolved risks/blockers,
 - TS18 runtime checks still required,
 - next recommended one-variable PR.
+
+## 9) Release/signing workflow safety
+- Treat release workflows and signing configuration as security-sensitive.
+- Never print or persist secret values (keystore/passwords/aliases) in logs or committed files.
+- Keep decoded keystores only in runner temp paths and never commit signing artifacts.

@@ -39,3 +39,8 @@ Auxio upstream core
 - `./gradlew test`
 - `./gradlew lint`
 - `find scripts -type f -name '*.sh' -print -exec sh -n {} \;`
+
+## Release/signing safety
+- Treat release/signing workflows as security-sensitive changes.
+- Do not echo or commit secret material (keystore contents, passwords, aliases).
+- Keep decoded keystores in ephemeral runner temp locations only.
