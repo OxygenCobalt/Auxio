@@ -22,7 +22,7 @@ This section avoids taxonomy drift and clarifies where each decision type is aut
 
 - **Execution sequence authority:** `docs/DEVELOPMENT_ROADMAP.md` remains phase sequencing authority; this execution pack defines canonical Phase 1–4 operational gates and stop criteria.
 - **Architecture authority:** `docs/TS18_INTEGRATION_ARCHITECTURE.md` remains detailed architecture authority; this execution pack constrains pre-implementation evidence obligations.
-- **Validation procedure authority:** `docs/TS18_VALIDATION_RUNBOOK.md` remains expanded runtime operator procedure; this execution pack defines canonical scenario IDs, artefact paths, and gate outcomes.
+- **Validation procedure authority:** `docs/TS18_VALIDATION_RUNBOOK.md` remains expanded runtime operator procedure; this execution pack defines canonical scenario IDs, artifact paths, and gate outcomes.
 - **Requirements authority:** `docs/TS18_REQUIREMENTS.md` remains requirement authority; this execution pack maps requirement proof obligations to Phase 1–4 checks.
 - **Native contracts authority:** `docs/TS18_NATIVE_CONTRACTS.md` remains contract catalogue authority; this execution pack maps contract evidence to adapter backlog seeds.
 - **Device facts authority:** `docs/TS18_DEVICE_PROFILE.md` and `docs/TS18_DIAGNOSTICS_INSIGHTS.md` remain fact/evidence authority for observed device properties and known unknowns.
@@ -115,11 +115,11 @@ Conventions:
 
 | Gate ID | Command | Purpose | Owner role | Required artifacts | Pass criteria | Fail criteria | Blocker classification template | Blocks Phase 2 |
 |---|---|---|---|---|---|---|---|---|
-| P1-G01 | `./gradlew tasks` | Validate Gradle/bootstrap task graph. | Codex/Copilot | `reports/ts18/<date>/TS18-P1-BASELINE-001/commands.txt` | Exit code 0; task list rendered. | Non-zero exit; toolchain/bootstrap failure. | `BLOCKER[P1-G01]: env=<...>; symptom=<...>; root_cause=<toolchain/network/jdk/sdk/other>; reproducible=<yes/no>; next_action=<...>` | Yes |
-| P1-G02 | `./gradlew assembleDebug` | Validate debug assembly path. | Codex/Copilot | same + build log ref in `README.md` | APK assembles successfully. | Build failure. | same format | Yes |
-| P1-G03 | `./gradlew test` | Validate baseline unit/integration tests. | Codex/Copilot | same + test report path | Tests pass (or expected skips documented). | Failing tests without accepted baseline rationale. | same format | Yes |
-| P1-G04 | `./gradlew lint` | Validate lint baseline. | Codex/Copilot | same + lint report path | Lint completes; findings triaged/documented. | Lint execution failure or untriaged blocking issues. | same format | Yes |
-| P1-G05 | `find scripts -type f -name '*.sh' -print -exec sh -n {} \;` | Validate shell script syntax. | Codex/Copilot | same + output in `commands.txt` | No syntax errors. | Any syntax errors. | same format | Yes |
+| P1-G01 | `./gradlew tasks` | Validate Gradle/bootstrap task graph. | Codex/Copilot | `reports/ts18/<YYYY-MM-DD>/TS18-P1-BASELINE-002/commands.txt` | Exit code 0; task list rendered. | Non-zero exit; toolchain/bootstrap failure. | `BLOCKER[P1-G01]: env=<...>; symptom=<...>; root_cause=<toolchain/network/jdk/sdk/other>; reproducible=<yes/no>; next_action=<...>` | Yes |
+| P1-G02 | `./gradlew assembleDebug` | Validate debug assembly path. | Codex/Copilot | `reports/ts18/<YYYY-MM-DD>/TS18-P1-BASELINE-003/` | APK assembles successfully. | Build failure. | same format | Yes |
+| P1-G03 | `./gradlew test` | Validate baseline unit/integration tests. | Codex/Copilot | `reports/ts18/<YYYY-MM-DD>/TS18-P1-BASELINE-004/` | Tests pass (or expected skips documented). | Failing tests without accepted baseline rationale. | same format | Yes |
+| P1-G04 | `./gradlew lint` | Validate lint baseline. | Codex/Copilot | `reports/ts18/<YYYY-MM-DD>/TS18-P1-BASELINE-005/` | Lint completes; findings triaged/documented. | Lint execution failure or untriaged blocking issues. | same format | Yes |
+| P1-G05 | `find scripts -type f -name '*.sh' -print -exec sh -n {} \;` | Validate shell script syntax. | Codex/Copilot | `reports/ts18/<YYYY-MM-DD>/TS18-P1-BASELINE-006/` | No syntax errors. | Any syntax errors. | same format | Yes |
 
 Environment blocker handling:
 - If Gradle gates fail due to cloud-agent JDK/SDK/toolchain download constraints, classify as **environment blocker** with reproducible command output.
@@ -135,7 +135,7 @@ Environment blocker handling:
 
 | Scenario ID | Exact command(s) | Before capture | During capture | Timestamp + SHA requirement | Required artifacts | Pass/fail criteria | Confidence label | Porting decision label | Follow-up action |
 |---|---|---|---|---|---|---|---|---|---|
-| TS18-P1-BASELINE-001 | `git rev-parse --abbrev-ref HEAD && git rev-parse HEAD` | Confirm intended branch. | Record output. | Required in `environment.txt`. | `reports/ts18/<date>/TS18-P1-BASELINE-001/environment.txt` | Pass: branch+SHA captured. Fail: missing provenance. | Observed | Directly reusable requirement | Re-run and capture provenance. |
+| TS18-P1-BASELINE-001 | `git rev-parse --abbrev-ref HEAD && git rev-parse HEAD` | Confirm intended branch. | Record output. | Required in `environment.txt`. | `reports/ts18/<YYYY-MM-DD>/TS18-P1-BASELINE-001/environment.txt` | Pass: branch+SHA captured. Fail: missing provenance. | Observed | Directly reusable requirement | Re-run and capture provenance. |
 | TS18-P1-BASELINE-002 | `./gradlew tasks` | Ensure local toolchain configured. | Capture full command output. | Required. | `commands.txt`, `README.md` | Pass: exit 0. Fail: non-zero => blocker record. | Observed/Requires TS18 validation (if blocked) | Directly reusable requirement | Classify blocker or proceed. |
 | TS18-P1-BASELINE-003 | `./gradlew assembleDebug` | Clean working tree for baseline. | Capture output + artifacts. | Required. | `commands.txt`, build output ref | Pass: assemble success. Fail: blocker record. | Observed | Directly reusable requirement | Fix build or classify blocker. |
 | TS18-P1-BASELINE-004 | `./gradlew test` | None. | Capture output. | Required. | `commands.txt`, test report ref | Pass: tests pass or documented baseline status. | Observed | Directly reusable requirement | Triage failures. |
@@ -176,14 +176,14 @@ Environment blocker handling:
 
 | Scenario ID | Stock input path | Auxio input path | Comparison method | Output artifact | Decision | Adapter implication | Stop condition |
 |---|---|---|---|---|---|---|---|
-| TS18-PARITY-001 | `reports/ts18/<date>/TS18-STOCK-002/` | `reports/ts18/<date>/TS18-AUXIO-002/` | `./scripts/ts18_compare_media_sessions.sh <stock_media_session> <auxio_media_session>` | `parity_media_session.md` | Session owner/state/actions/metadata parity? | If no, investigate standard path first. | Missing comparable captures => STOP. |
-| TS18-PARITY-002 | `TS18-STOCK-002/003` | `TS18-AUXIO-004` | Manual + notification dump diff | `parity_notification_controls.md` | Control reliability parity? | Adapter not allowed unless reproducible standard-path gap. | Non-repeatable result => STOP. |
-| TS18-PARITY-003 | `TS18-STOCK-003` | `TS18-AUXIO-004` | Manual launcher/widget A/B matrix | `parity_launcher_widget.md` | Widget metadata/control parity? | Candidate `launcher/widget` adapter only if proven gap. | No launcher scenario reproducibility => STOP. |
-| TS18-PARITY-004 | `TS18-STOCK-004` | `TS18-AUXIO-005` | Key-route classification comparison | `parity_media_keys.md` | Same route class and success profile? | Candidate `broadcast` adapter only with proof. | Route ambiguous => STOP. |
-| TS18-PARITY-005 | `TS18-STOCK-005` | `TS18-AUXIO-007` | Audio focus/nav-mix comparison | `parity_audio_focus_nav.md` | Equivalent duck/mix/recover? | Candidate `service` hook only with proof. | Missing focus traces => STOP. |
-| TS18-PARITY-006 | `TS18-STOCK-*` with ZLink/TLink | `TS18-AUXIO-006` | Idle-vs-active coexistence comparison | `parity_zlink_tlink.md` | Coexistence acceptable? | Candidate `zlink/tlink hooks` only if required. | No active projection evidence => STOP. |
-| TS18-PARITY-007 | `TS18-STOCK-002` | `TS18-AUXIO-003` | FLAC + metadata behavior matrix | `parity_flac_metadata.md` | FLAC and metadata parity acceptable? | No adapter by default; fix standard stack first. | Incomplete FLAC matrix => STOP. |
-| TS18-PARITY-008 | `TS18-STOCK-006` | `TS18-AUXIO-008` | Sleep/resume behavior matrix | `parity_sleep_resume.md` | Resume continuity parity acceptable? | Candidate adapter only if reproducible TS18-specific gap. | No repeated cycle evidence => STOP. |
+| TS18-PARITY-001 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-002/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-002/` | Capture comparator outputs per package (`./scripts/ts18_compare_media_sessions.sh com.tw.music` and `./scripts/ts18_compare_media_sessions.sh org.oxycblt.auxio`) then diff saved outputs. | `parity_media_session.md` | Session owner/state/actions/metadata parity? | If no, investigate standard path first. | Missing comparable captures => STOP. |
+| TS18-PARITY-002 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-002/` + `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-003/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-004/` | Manual + notification dump diff | `parity_notification_controls.md` | Control reliability parity? | Adapter not allowed unless reproducible standard-path gap. | Non-repeatable result => STOP. |
+| TS18-PARITY-003 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-003/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-004/` | Manual launcher/widget A/B matrix | `parity_launcher_widget.md` | Widget metadata/control parity? | Candidate `launcher/widget` adapter only if proven gap. | No launcher scenario reproducibility => STOP. |
+| TS18-PARITY-004 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-004/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-005/` | Key-route classification comparison | `parity_media_keys.md` | Same route class and success profile? | Candidate `broadcast` adapter only with proof. | Route ambiguous => STOP. |
+| TS18-PARITY-005 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-005/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-007/` | Audio focus/nav-mix comparison | `parity_audio_focus_nav.md` | Equivalent duck/mix/recover? | Candidate `service` hook only with proof. | Missing focus traces => STOP. |
+| TS18-PARITY-006 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-001/` + `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-006/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-006/` | Idle-vs-active coexistence comparison | `parity_zlink_tlink.md` | Coexistence acceptable? | Candidate `zlink/tlink hooks` only if required. | No active projection evidence => STOP. |
+| TS18-PARITY-007 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-002/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-003/` | FLAC + metadata behavior matrix | `parity_flac_metadata.md` | FLAC and metadata parity acceptable? | No adapter by default; fix standard stack first. | Incomplete FLAC matrix => STOP. |
+| TS18-PARITY-008 | `reports/ts18/<YYYY-MM-DD>/TS18-STOCK-006/` | `reports/ts18/<YYYY-MM-DD>/TS18-AUXIO-008/` | Sleep/resume behavior matrix | `parity_sleep_resume.md` | Resume continuity parity acceptable? | Candidate adapter only if reproducible TS18-specific gap. | No repeated cycle evidence => STOP. |
 
 **STOP:** Phase 4 incomplete => no compatibility claims, no adapter implementation PR.
 
@@ -225,7 +225,7 @@ Adapter candidates are constrained to:
 | Contract name | Evidence source | Risk | Adapter candidate module | Default state | Required TS18 runtime proof before implementation | Capture phase | Implementation status |
 |---|---|---|---|---|---|---|---|
 | `com.tw.music` package + `android.uid.system` | `docs/TS18_NATIVE_CONTRACTS.md`, diagnostics/profile docs | High | no adapter | off | Demonstrate unavoidable requirement without privileged path alternative (unlikely). | 2/4 | Evidence-only (do not implement) |
-| `com.tw.music.action.cmd|prev|next|pp` | `docs/TS18_NATIVE_CONTRACTS.md` | High | broadcast | off | Reproducible standard media-key/control failure + proven broadcast remediation on TS18. | 2/3/4 | Evidence-only until proven |
+| `com.tw.music.action.cmd\|prev\|next\|pp` | `docs/TS18_NATIVE_CONTRACTS.md` | High | broadcast | off | Reproducible standard media-key/control failure + proven broadcast remediation on TS18. | 2/3/4 | Evidence-only until proven |
 | `com.tw.service` | contracts + diagnostics | High | service | off | Demonstrate reproducible focus/control gap solved only by optional service mediation. | 3/4 | Evidence-only until proven |
 | `com.tw.service.xt` / `CommandService.Bind` | contracts doc | High | service | off | Demonstrate service availability and safe non-privileged integration benefit. | 2/3/4 | Evidence-only until proven |
 | `TWTHEME` / `MusicTheme.apk` | contracts + diagnostics insights | High | theme probe | off | Prove launcher/theme behavior gap and probe-only mitigation. | 2/4 | Evidence-only until proven |
@@ -286,7 +286,7 @@ Too-broad scopes (reject/split):
    **Likely files/modules:** docs/runbook references, build scripts, CI notes.  
    **Non-goals:** TS18 adapters, media behavior changes.  
    **Required preconditions:** none.  
-   **Expected artifacts:** `TS18-P1-BASELINE-00x` outputs under `reports/ts18/<date>/...`  
+   **Expected artifacts:** `TS18-P1-BASELINE-00x` outputs under `reports/ts18/<YYYY-MM-DD>/...`  
    **Stop condition:** unresolved unclassified Gradle blockers.
 
 2) **PR title:** Phase 2 stock `com.tw.music` baseline evidence import  
@@ -340,8 +340,8 @@ Single variable to tackle:
 
 Inspect first:
 1) docs/TS18_EXECUTION_PACK_PHASE1_4.md
-2) reports/ts18/<latest-date>/<scenario-id>/summary.json
-3) reports/ts18/<latest-date>/<scenario-id>/commands.txt
+2) reports/ts18/<YYYY-MM-DD>/<scenario-id>/summary.json
+3) reports/ts18/<YYYY-MM-DD>/<scenario-id>/commands.txt
 4) docs/TS18_NATIVE_CONTRACTS.md
 
 Do not change:
@@ -358,4 +358,3 @@ Stop when:
 - scenario artifacts are complete and reproducible, OR
 - blocker is formally classified with exact command evidence
 ```
-
