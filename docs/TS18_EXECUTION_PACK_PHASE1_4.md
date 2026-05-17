@@ -225,7 +225,7 @@ Adapter candidates are constrained to:
 | Contract name | Evidence source | Risk | Adapter candidate module | Default state | Required TS18 runtime proof before implementation | Capture phase | Implementation status |
 |---|---|---|---|---|---|---|---|
 | `com.tw.music` package + `android.uid.system` | `docs/TS18_NATIVE_CONTRACTS.md`, diagnostics/profile docs | High | no adapter | off | Demonstrate unavoidable requirement without privileged path alternative (unlikely). | 2/4 | Evidence-only (do not implement) |
-| `com.tw.music.action.cmd\|prev\|next\|pp` | `docs/TS18_NATIVE_CONTRACTS.md` | High | broadcast | off | Reproducible standard media-key/control failure + proven broadcast remediation on TS18. | 2/3/4 | Evidence-only until proven |
+| `com.tw.music.action.cmd\|prev\|next\|pp` | `docs/TS18_NATIVE_CONTRACTS.md` | High | broadcast | off | Reproducible standard media-key/control failure + proven broadcast remediation on TS18 (literal actions: `cmd\|prev\|next\|pp`). | 2/3/4 | Evidence-only until proven |
 | `com.tw.service` | contracts + diagnostics | High | service | off | Demonstrate reproducible focus/control gap solved only by optional service mediation. | 3/4 | Evidence-only until proven |
 | `com.tw.service.xt` / `CommandService.Bind` | contracts doc | High | service | off | Demonstrate service availability and safe non-privileged integration benefit. | 2/3/4 | Evidence-only until proven |
 | `TWTHEME` / `MusicTheme.apk` | contracts + diagnostics insights | High | theme probe | off | Prove launcher/theme behavior gap and probe-only mitigation. | 2/4 | Evidence-only until proven |
