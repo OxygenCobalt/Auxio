@@ -94,8 +94,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sed -i -E "0,/^[[:space:]]*versionName \".*\"/s//        versionName \"${{ steps.version.outputs.release_version_name }}\"/" app/build.gradle
-          sed -i -E "0,/^[[:space:]]*versionCode [0-9]+/s//        versionCode ${{ steps.version.outputs.release_version_code }}/" app/build.gradle
+          sed -i -E "0,/^([[:space:]]*)versionName \".*\"/s//\\1versionName \"${{ steps.version.outputs.release_version_name }}\"/" app/build.gradle
+          sed -i -E "0,/^([[:space:]]*)versionCode [0-9]+/s//\\1versionCode ${{ steps.version.outputs.release_version_code }}/" app/build.gradle
 
       - name: Commit and push version metadata
         id: version_commit
@@ -119,6 +119,8 @@ jobs:
         id: tag
         shell: bash
         env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
           RELEASE_COMMIT_SHA: ${{ steps.version_commit.outputs.release_commit_sha }}
         run: |
@@ -212,6 +214,8 @@ jobs:
         id: notes
         shell: bash
         env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           PREVIOUS_TAG: ${{ steps.version.outputs.previous_tag }}
           RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
         run: |
@@ -223,7 +227,13 @@ jobs:
             echo
           } > "${NOTES_FILE}"
 
-          declare -A seen_prs
+          is_value_present() {
+            [[ -n "${1:-}" && "${1}" != "null" ]]
+          }
+
+          CI_COMMIT_PATTERN='^(ci(\(|:)|chore\(ci\)|build\(ci\)|chore\(release\))'
+
+          declare -A included_prs
           if [[ -n "${PREVIOUS_TAG}" ]]; then
             COMMIT_RANGE="${PREVIOUS_TAG}..${RELEASE_TAG}"
           else
@@ -234,29 +244,30 @@ jobs:
 
           for sha in "${COMMITS[@]}"; do
             subject="$(git log -1 --format=%s "${sha}")"
-            if [[ "${subject}" =~ ^(ci(\(|:)|chore\(ci\)|build\(ci\)) ]]; then
+            if [[ "${subject}" =~ ${CI_COMMIT_PATTERN} ]]; then
               continue
             fi
 
             pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number' 2>/dev/null || true)"
-
-            if [[ -n "${pr_number}" && "${pr_number}" != "null" ]]; then
-              if [[ -z "${seen_prs[${pr_number}]+x}" ]]; then
+            if is_value_present "${pr_number}"; then
+              if [[ -z "${included_prs[${pr_number}]+x}" ]]; then
                 pr_title="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.title')"
                 pr_author="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.user.login')"
                 printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
-                seen_prs["${pr_number}"]=1
+                included_prs["${pr_number}"]=1
               fi
             else
-              commit_author="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' || true)"
-              if [[ -z "${commit_author}" || "${commit_author}" == "null" ]]; then
-                commit_author="$(git log -1 --format=%an "${sha}")"
+              commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' || true)"
+              if is_value_present "${commit_author_login}"; then
+                commit_author_display="@${commit_author_login}"
+              else
+                commit_author_display="$(git log -1 --format=%an "${sha}")"
               fi
-              printf -- "- [%s](https://github.com/%s/commit/%s) by @%s\n" "${subject}" "${GITHUB_REPOSITORY}" "${sha}" "${commit_author}" >> "${NOTES_FILE}"
+              printf -- "- [%s](https://github.com/%s/commit/%s) by %s\n" "${subject}" "${GITHUB_REPOSITORY}" "${sha}" "${commit_author_display}" >> "${NOTES_FILE}"
             fi
           done
 
-          if [[ "$(wc -l < "${NOTES_FILE}")" -le 2 ]]; then
+          if ! grep -qE '^- ' "${NOTES_FILE}"; then
             printf -- "- [Initial release](https://github.com/%s/commit/%s) by @github-actions[bot]\n" "${GITHUB_REPOSITORY}" "${{ steps.version_commit.outputs.release_commit_sha }}" >> "${NOTES_FILE}"
           fi
 
@@ -266,6 +277,8 @@ jobs:
         id: release
         shell: bash
         env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
           RELEASE_NOTES_FILE: ${{ steps.notes.outputs.notes_file }}
           APK_PATH: ${{ steps.apk.outputs.apk_path }}
@@ -283,6 +296,7 @@ jobs:
             args+=("--prerelease")
           fi
 
+          # Tag is created/reused in the previous step; --verify-tag enforces safety.
           gh release create "${RELEASE_TAG}" "${APK_PATH}#${APK_NAME}" \
             --title "${RELEASE_TAG}" \
             --notes-file "${RELEASE_NOTES_FILE}" \

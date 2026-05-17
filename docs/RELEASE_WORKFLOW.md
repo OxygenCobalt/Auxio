@@ -15,7 +15,7 @@ Set these repository secrets before running the workflow:
 - `KEY_ALIAS`
 - `KEY_PASSWORD`
 
-The workflow decodes the keystore into `$RUNNER_TEMP/release.keystore` and never commits it.
+The workflow decodes the keystore into `$RUNNER_TEMP/release.keystore` and never commits it. GitHub-hosted runner temp files are ephemeral and are discarded when the job ends.
 
 ## Workflow inputs
 
@@ -54,8 +54,8 @@ The workflow generates:
 ```markdown
 ## What's changed
 
-- [PR title](https://github.com/OWNER/REPO/pull/123) by @author
-- [Commit summary](https://github.com/OWNER/REPO/commit/SHA) by @author
+- [PR title](https://github.com/cbkii/Auxio-TS/pull/<PR_NUMBER>) by @author
+- [Commit summary](https://github.com/cbkii/Auxio-TS/commit/<COMMIT_SHA>) by @author
 ```
 
 - It uses the previous semver tag as the base when available.

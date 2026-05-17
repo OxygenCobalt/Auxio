@@ -45,7 +45,10 @@ android {
     def releaseKeyAlias = providers.gradleProperty("releaseKeyAlias").orNull
     def releaseKeyPassword = providers.gradleProperty("releaseKeyPassword").orNull
     def hasReleaseSigning = [releaseStoreFile, releaseStorePassword, releaseKeyAlias, releaseKeyPassword]
-            .every { it != null && !it.isBlank() }
+            .every {
+                def value = it?.toString()
+                value != null && !value.isBlank()
+            }
 
     if (hasReleaseSigning) {
         signingConfigs {
