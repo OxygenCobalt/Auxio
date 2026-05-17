@@ -1,30 +1,33 @@
 # Codex Task Prompts (Auxio-TS)
 
-Use these prompts as conservative, agent-ready starting points.
+Use these prompts for narrow, reviewable PRs.
 
-## 1) Repo audit prompt
-"Audit Auxio-TS for TS18 readiness without broad feature coding. Inspect build, manifest, media session/service code, notification/media-button path, Auto/media-library support, docs/scripts/workflows. Classify findings as observed/inferred/hypothesis/requires TS18 validation. Propose small PR-safe next steps only."
+## 1) `t-music` corpus import
+"Import `cbkii/t-music` as evidence corpus only. Extract README/AGENTS/docs/scripts/manifest/media-control references and classify each item as directly reusable, evidence-only, obsolete for Auxio architecture, requires TS18 runtime validation, or explicitly avoid. Update docs only; no app feature code."
 
-## 2) Baseline build fix prompt
-"Run `./gradlew tasks assembleDebug test lint` and report failures precisely. Apply minimal, maintainable fixes that preserve upstream Auxio behaviour. Do not add TS18 private hooks or package/permission changes."
+## 2) TW ecosystem source-map expansion
+"Expand `docs/TW_ECOSYSTEM_SOURCE_MAP.md` with additional public TS/TW/TWTHEME projects (GitHub/GitLab/Codeberg). For each source, record what it proves, suggests, and cannot prove. Verify source code before claims."
 
-## 3) TS18 diagnostics review prompt
-"Review diagnostics under `diagnostics/redacted/` plus TS18 docs. Produce a contract table separating proven vs inferred claims. Update docs to remove overstatements and add explicit runtime validation steps."
+## 3) Stock-vs-Auxio media-session comparison
+"Use captured TS18 artifacts to compare stock `com.tw.music` vs Auxio-TS media session, notification, and audio focus behavior. Update comparison docs with observed deltas and risk ranking. No speculative implementation."
 
-## 4) MediaSession proof-of-concept prompt
-"Implement/verify a no-risk MediaSession observability enhancement (logging/debug export) without changing playback semantics. Demonstrate active session state transitions and command handling visibility for TS18 validation runs."
+## 4) TS18 launcher-widget proof-of-concept planning pass
+"Design (but do not fully implement) a minimal TS18 launcher/widget adapter interface behind feature flags. Specify validation cases, stop conditions, and rollback strategy. Keep Auxio core untouched."
 
-## 5) Notification/media-button validation prompt
-"Validate and harden Android-native media notification + media-button routing. Keep changes standard Android/Media3-compliant. Add tests/docs/runbook deltas only as needed. No TW-private integration in this PR."
+## 5) TW broadcast adapter skeleton
+"Create a default-off TW broadcast adapter skeleton in isolated `integration/ts18` package with no-op implementation and tests/docs. No direct vendor contract logic yet; only structure + gating."
 
-## 6) TS18 adapter skeleton prompt
-"Create a minimal TS18 adapter/facade skeleton (default no-op) in isolated package paths. Wire via feature flags/runtime detection points only. Do not alter core queue/playback logic."
+## 6) TWUtil/TWClient investigation
+"Investigate TWUtil/TWClient availability and safe runtime probing strategy. Add docs/tests/diagnostics plan for optional bridge activation. No privileged assumptions and no hard dependency in core playback path."
 
-## 7) Launcher/TWTHEME contract investigation prompt
-"Using fresh TS18 evidence, determine whether launcher/TWTHEME behaviour requires private contracts. Compare stock `com.tw.music`, third-party app(s), and Auxio-TS. Provide recommendation and stop conditions before coding private hooks."
+## 7) ZLink/TLink coexistence validation
+"Run/document TS18 validation scenarios for ZLink/TLink coexistence with Auxio-TS playback. Produce observed behavior matrix and recommendations for adapter hooks only if standard behavior fails."
 
-## 8) FLAC playback validation prompt
-"Validate FLAC scenarios (16/44.1, 16/48, 24/48) on TS18 with evidence capture. Identify regressions and propose minimal fixes. Preserve upstream audio path unless clear device-specific issue is proven."
+## 8) FLAC/audio-quality validation
+"Execute TS18 FLAC/local playback and audio-quality validation (16/44.1, 16/48, 24/48 if available), including focus, notifications, and resume behavior. Update requirements/runbook with results and gaps."
 
-## 9) Release-candidate hardening prompt
-"Prepare release-candidate readiness report with open risks, validated contracts, unresolved hypotheses, and exact rerun commands. Avoid invasive refactors; prioritize reproducibility and documentation quality."
+## 9) Package/signature/coexistence risk analysis
+"Analyze package/signature/privilege constraints for TS18 launchers and stock app coexistence. Produce clear non-goals, escalation criteria, and safe experiments. No package impersonation implementation."
+
+## 10) Release-candidate hardening
+"Prepare release-candidate readiness report with validated contracts, unresolved hypotheses, rerun commands, and blocker list. Keep changes docs/tests/tooling only unless a proven low-risk fix is required."

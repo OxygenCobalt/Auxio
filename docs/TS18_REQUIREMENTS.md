@@ -1,53 +1,59 @@
 # TS18 Requirements for Auxio-TS
 
 ## Scope
-This document defines product requirements for evolving Auxio into a TS18-friendly app without sacrificing upstream maintainability.
+Requirements for making Auxio-TS a credible companion/replacement candidate for stock `com.tw.music` while preserving maintainability.
 
-## A) Android-native requirements
+## 1) Hard requirements (must meet)
 
-### Hard requirements
-- Correct Media3 `MediaSession` lifecycle and transport command handling.
-- Foreground playback service + media notification controls (play/pause/next/prev/seek where supported).
-- Correct audio-focus request/abandon behaviour and noisy-device handling.
-- Reliable local-library indexing/playback from accessible storage.
-- FLAC playback validation on Android 10 / API 29 device target.
+### Android-native media correctness
+1. Correct media session lifecycle and transport control behavior.
+2. Foreground playback service + stable media notification controls.
+3. Reliable media-button handling (headset/hardware key path where available).
+4. Correct audio-focus request/abandon/interruption behavior.
+5. Local-library scanning and playback stability.
+6. FLAC playback support validation for TS18 target.
+7. Android Auto/media-browser compatibility validation using existing Auxio service model.
 
-### Preferred requirements
-- Media browser/library integration for Android Auto clients where baseline supports it.
-- Stable resume behaviour after app backgrounding, screen off/on, and process reclaim.
+### TS18 program requirements
+1. Stock `com.tw.music` baseline capture before compatibility claims.
+2. Reproducible stock-vs-Auxio evidence corpus for sessions/notifications/audio focus.
+3. TS18-specific logic isolated behind adapter/facade boundaries.
+4. No package impersonation (`com.tw.music`) and no privileged/system UID dependency in default install path.
+5. Every TW/TWTHEME claim explicitly labeled observed/inferred/hypothesis/requires-validation.
 
-### Experimental requirements
-- Alternate notification/channel tuning for automotive UX.
+## 2) Preferred requirements (target)
+1. Steering-wheel/hardware media keys work through standard dispatch path.
+2. Launcher/home music widget reflects Auxio-TS metadata/controls.
+3. Coexistence with ZLink/TLink media/control flows.
+4. Smooth sleep/resume and foreground/background continuity.
+5. Coexistence with stock app installation (no destructive replacement required).
 
-## B) TS18-native requirements
+## 3) Experimental requirements (evidence-gated)
+1. Optional TW broadcast adapter (only if standard path fails).
+2. Optional TWUtil/TWClient bridge (only if class availability + behavior are proven).
+3. Optional launcher-specific metadata bridge.
+4. Optional TWTHEME/resource compatibility layer.
 
-### Hard requirements
-- Reproducible baseline comparison: stock `com.tw.music` vs Auxio-TS.
-- Evidence-backed determination of whether launcher/widget/media-key behaviour works through standard Android APIs.
-- TS18 adapter architecture isolated from Auxio core.
+## 4) Non-goals
+1. Ground-up rewrite of Auxio into vendor app clone.
+2. Blind copy of external TW/TOPWAY code or decompiled logic.
+3. Forcing package/signature identity matching to stock app.
+4. Declaring full TS18 compatibility without hardware evidence.
 
-### Preferred requirements
-- Steering-wheel/media-key compatibility without privileged APIs.
-- Coexistence with ZLink/TLink flows when active.
-- Sleep/resume behaviour characterization (ACC-like conditions where safely testable).
+## 5) Unresolved requirements (need evidence)
+1. Whether launcher widget consumes standard MediaSession metadata from third-party apps.
+2. Whether any `com.tw.music.action.*` intents are truly required.
+3. Whether `com.tw.service` mediates behavior that affects third-party media apps.
+4. Whether ZLink/TLink override/suppress third-party metadata/control channels.
+5. Which sleep/resume transitions are controlled by Android vs vendor stack.
 
-### Experimental requirements
-- TW/TWTHEME compatibility adapters (broadcasts, metadata projection, theme coupling) only after proof.
+## 6) Assumptions requiring TS18 validation
+1. TS18 profile in `diagnostics/redacted/ts18_device_profile.json` represents target class but not all firmware variants.
+2. Standard Android APIs should succeed for core playback controls before private hooks.
+3. TW private contracts may exist but are unstable and variant-specific.
 
-## Non-goals
-- Immediate package replacement of `com.tw.music`.
-- Privileged/system UID emulation.
-- Blind porting of decompiled TW app logic.
-- Large UI rewrites before media integration proof.
-
-## Assumptions
-- Target baseline is TS18 Android 10 variant represented by `diagnostics/redacted/ts18_device_profile.json`.
-- TS18 variants may differ; findings are not universally portable.
-- Standard Android media interfaces should be attempted first.
-
-## Open questions (requires TS18 runtime evidence)
-1. Does TS18 launcher/home widget consume standard MediaSession metadata from third-party apps?
-2. Are steering-wheel keys routed via standard media-button dispatch for third-party apps?
-3. Is any private `com.tw.*` contract required for launcher integration?
-4. Does ZLink/TLink consume third-party MediaSession metadata reliably?
-5. Are there TS18-specific audio-priority policies that require adapter behaviour?
+## 7) Risk requirements (must be tracked per PR)
+1. **Package/signature risk:** document if any experiment interacts with signature-sensitive launchers.
+2. **Privilege risk:** reject any requirement needing system UID or privileged permission.
+3. **Compatibility risk:** maintain stock Auxio behavior for non-TS18 users.
+4. **Evidence risk:** no claim should exceed the quality of collected evidence.

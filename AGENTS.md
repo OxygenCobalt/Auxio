@@ -14,10 +14,11 @@ Primary evidence target is `diagnostics/redacted/ts18_device_profile.json`:
 - Observed in captured diagnostics: `com.tw.service` audio-focus ownership; no active media session at capture moment.
 
 When uncertain, classify claims as:
-- **Observed** (in repo diagnostics/runtime captures),
+- **Observed** (repo diagnostics/runtime captures),
 - **Inferred** (reasonable but unproven),
 - **Hypothesis** (weak/unverified),
-- **Requires TS18 validation** (must be tested on hardware).
+- **Requires TS18 validation** (must be tested on hardware),
+- **Unsupported** (should not drive implementation).
 
 ## 3) Development priorities (in order)
 1. Keep upstream Auxio core stable and maintainable.
@@ -26,14 +27,20 @@ When uncertain, classify claims as:
 4. Add TS18 integration adapters behind feature flags and clear boundaries.
 5. Validate FLAC/local-library behaviour on TS18.
 
-## 4) Allowed work
+## 4) Source hierarchy and reuse policy
+1. Android official docs + upstream Auxio source = primary implementation authority.
+2. Repo diagnostics = primary TS18 evidence authority for this hardware.
+3. `cbkii/t-music` = reference/evidence corpus (requirements and validation input), **not** implementation base.
+4. Public TW/Topway projects (`TWUtil`/`TWClient` etc.) = research inputs only; do not copy APIs blindly.
+
+## 5) Allowed work
 - Documentation, runbooks, scripts, and evidence tooling.
 - Small, reviewable refactors that preserve behaviour.
 - Android/Media3 correctness fixes supported by official docs.
 - TS18-specific adapter scaffolding isolated in dedicated packages/modules.
 - Test and logging improvements that do not require privileged/system capabilities.
 
-## 5) Forbidden / high-risk work without explicit human approval
+## 6) Forbidden / high-risk work without explicit human approval
 - Replacing package identity with `com.tw.music`.
 - Requiring `android.uid.system`, privileged/system permissions, or platform signing.
 - Committing proprietary APKs, firmware blobs, raw unredacted diagnostics, serials, personal data.
@@ -41,7 +48,7 @@ When uncertain, classify claims as:
 - Scattering TS18 conditionals through core playback and indexing code.
 - Claiming a TS18 integration works without reproducible evidence.
 
-## 6) One-variable-at-a-time rule
+## 7) One-variable-at-a-time rule
 Each PR should change one primary variable:
 - example: “MediaSession state visibility only”, or
 - “TS18 environment detector only”, or
@@ -49,16 +56,17 @@ Each PR should change one primary variable:
 
 Do not combine major behaviour changes in one PR.
 
-## 7) Evidence requirements
+## 8) Evidence requirements
 Every TS18-facing change must include:
 - exact command(s) and/or manual steps,
 - expected output artifacts,
 - observed results,
-- explicit gap list.
+- explicit gap list,
+- evidence classification for each claim.
 
 If a behaviour is not proven on TS18 hardware, mark it **requires TS18 validation**.
 
-## 8) Validation requirements
+## 9) Validation requirements
 At minimum run (or document why unavailable):
 - `./gradlew tasks`
 - `./gradlew assembleDebug`
@@ -68,7 +76,7 @@ At minimum run (or document why unavailable):
 
 For TS18 runtime work, use `docs/TS18_VALIDATION_RUNBOOK.md` and scripts under `scripts/`.
 
-## 9) Commit / PR expectations
+## 10) Commit / PR expectations
 - Small, evidence-driven commits.
 - Commit message: scope + intent (e.g., `docs(ts18): tighten native contract classification`).
 - PR must include:
@@ -81,14 +89,14 @@ For TS18 runtime work, use `docs/TS18_VALIDATION_RUNBOOK.md` and scripts under `
   - risks/blockers,
   - next recommended task.
 
-## 10) Android / Media3 coding expectations
+## 11) Android / Media3 coding expectations
 - Prefer official Android/AndroidX Media3 guidance.
 - Preserve correct `MediaSession` ownership and lifecycle.
 - Preserve notification transport controls and media-button routing.
 - Preserve audio focus discipline and noisy-device handling.
 - Keep Auto/media browsing behaviour standards-compliant where supported.
 
-## 11) TS18 / TWTHEME caution areas
+## 12) TS18 / TWTHEME caution areas
 Treat TW/TWTHEME integrations as opt-in adapters:
 - launcher widget and home-card metadata paths,
 - steering-wheel key routing,
@@ -98,13 +106,13 @@ Treat TW/TWTHEME integrations as opt-in adapters:
 
 Implement only after evidence shows standard Android APIs are insufficient.
 
-## 12) Diagnostics handling policy
+## 13) Diagnostics handling policy
 - Diagnostics in `diagnostics/redacted/` are reference evidence, not truth for all TS18 variants.
 - Never commit raw private captures.
 - Prefer redacted summaries and reproducible scripts.
 - Keep observed vs inferred clearly separated in docs and code comments.
 
-## 13) Stop conditions (report, do not code)
+## 14) Stop conditions (report, do not code)
 Stop and escalate if a task requires:
 - privileged/system signing or `android.uid.system`,
 - package impersonation/replacement without runtime proof and rollback plan,
