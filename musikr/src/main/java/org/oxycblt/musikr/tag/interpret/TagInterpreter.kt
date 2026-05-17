@@ -210,7 +210,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         parsedTags: ParsedTags,
         interpretation: Interpretation,
     ): List<PreGenre> {
-        val genreNames = parseGenreNames(parsedTags.genreNames, interpretation.separators)
+        val genreNames = parseGenreNames(parsedTags.genreNames)
         return genreNames.map { makePreGenre(it, interpretation) }
     }
 
