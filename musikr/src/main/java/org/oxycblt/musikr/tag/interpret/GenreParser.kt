@@ -44,6 +44,9 @@ private fun splitRawGenreField(raw: String): List<String> {
 
         when {
             char == '\\' && next != null && isGenreDelimiterOrBackslash(next) -> {
+                // Genre metadata in the wild often escapes approved joiners (or uses a double
+                // backslash display separator), but Auxio-TS treats those joiners as delimiters
+                // on purpose so multi-genre values still fan out into distinct memberships.
                 split.addCurrentGenre(current)
                 index += 2
             }
@@ -55,6 +58,8 @@ private fun splitRawGenreField(raw: String): List<String> {
                 next != null &&
                 current.isNotEmpty() &&
                 next.isLetterOrDigit() -> {
+                // A stray single backslash between genre names is treated as a practical
+                // separator, while the following character starts the next genre token.
                 split.addCurrentGenre(current)
                 index++
             }
