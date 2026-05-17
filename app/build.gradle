@@ -40,6 +40,27 @@ android {
         }
     }
 
+    def releaseStoreFile = providers.gradleProperty("releaseStoreFile").orNull
+    def releaseStorePassword = providers.gradleProperty("releaseStorePassword").orNull
+    def releaseKeyAlias = providers.gradleProperty("releaseKeyAlias").orNull
+    def releaseKeyPassword = providers.gradleProperty("releaseKeyPassword").orNull
+    def hasReleaseSigning = [releaseStoreFile, releaseStorePassword, releaseKeyAlias, releaseKeyPassword]
+            .every {
+                def value = it?.toString()
+                value != null && !value.isBlank()
+            }
+
+    if (hasReleaseSigning) {
+        signingConfigs {
+            release {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -49,6 +70,9 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
 
             dependenciesInfo {

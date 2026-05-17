@@ -1,0 +1,324 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: "Release tag, e.g. v1.2.3. Leave blank to auto-increment."
+        required: false
+        type: string
+      draft:
+        description: "Create release as draft"
+        required: true
+        default: true
+        type: boolean
+      prerelease:
+        description: "Mark release as prerelease"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install ninja-build
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          submodules: recursive
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "jetbrains"
+          cache: gradle
+
+      - name: Prepare release version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          INPUT_TAG="${{ github.event.inputs.version_tag }}"
+          INPUT_TAG="$(echo "${INPUT_TAG}" | xargs)"
+
+          CURRENT_VERSION_NAME="$(sed -n -E 's/^[[:space:]]*versionName "([^"]+)".*/\1/p' app/build.gradle | head -n1)"
+          CURRENT_VERSION_CODE="$(sed -n -E 's/^[[:space:]]*versionCode ([0-9]+).*/\1/p' app/build.gradle | head -n1)"
+
+          if [[ -z "${CURRENT_VERSION_NAME}" || -z "${CURRENT_VERSION_CODE}" ]]; then
+            echo "::error::Unable to find current versionName/versionCode in app/build.gradle"
+            exit 1
+          fi
+
+          PREVIOUS_TAG="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1 || true)"
+
+          if [[ -n "${INPUT_TAG}" ]]; then
+            if [[ ! "${INPUT_TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::Invalid version_tag '${INPUT_TAG}'. Expected format vMAJOR.MINOR.PATCH"
+              exit 1
+            fi
+            RELEASE_TAG="${INPUT_TAG}"
+          else
+            if [[ -n "${PREVIOUS_TAG}" ]]; then
+              BASE_VERSION="${PREVIOUS_TAG#v}"
+            elif [[ "${CURRENT_VERSION_NAME}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              BASE_VERSION="${CURRENT_VERSION_NAME}"
+            else
+              BASE_VERSION="0.1.0"
+            fi
+
+            IFS='.' read -r MAJOR MINOR PATCH <<< "${BASE_VERSION}"
+            PATCH="$((PATCH + 1))"
+            RELEASE_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          fi
+
+          RELEASE_VERSION_NAME="${RELEASE_TAG#v}"
+          RELEASE_VERSION_CODE="$((CURRENT_VERSION_CODE + 1))"
+
+          echo "release_tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "release_version_name=${RELEASE_VERSION_NAME}" >> "$GITHUB_OUTPUT"
+          echo "release_version_code=${RELEASE_VERSION_CODE}" >> "$GITHUB_OUTPUT"
+          echo "previous_tag=${PREVIOUS_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Update version metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i -E "0,/^([[:space:]]*)versionName \".*\"/s//\\1versionName \"${{ steps.version.outputs.release_version_name }}\"/" app/build.gradle
+          sed -i -E "0,/^([[:space:]]*)versionCode [0-9]+/s//\\1versionCode ${{ steps.version.outputs.release_version_code }}/" app/build.gradle
+
+      - name: Commit and push version metadata
+        id: version_commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- app/build.gradle; then
+            echo "::error::Version metadata did not change; refusing to continue."
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle
+          git commit -m "chore(release): prepare ${{ steps.version.outputs.release_tag }}"
+          git push origin "${GITHUB_REF_NAME}"
+
+          echo "release_commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Create or reuse release tag safely
+        id: tag
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
+          RELEASE_COMMIT_SHA: ${{ steps.version_commit.outputs.release_commit_sha }}
+        run: |
+          set -euo pipefail
+          git fetch --tags --force
+
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            echo "::error::Release '${RELEASE_TAG}' already exists. Refusing to overwrite."
+            exit 1
+          fi
+
+          if git rev-parse -q --verify "refs/tags/${RELEASE_TAG}" >/dev/null; then
+            TAG_COMMIT_SHA="$(git rev-list -n 1 "${RELEASE_TAG}")"
+            if [[ "${TAG_COMMIT_SHA}" != "${RELEASE_COMMIT_SHA}" ]]; then
+              echo "::error::Tag '${RELEASE_TAG}' already exists on ${TAG_COMMIT_SHA}, expected ${RELEASE_COMMIT_SHA}."
+              exit 1
+            fi
+            echo "tag_reused=true" >> "$GITHUB_OUTPUT"
+          else
+            git tag "${RELEASE_TAG}" "${RELEASE_COMMIT_SHA}"
+            git push origin "refs/tags/${RELEASE_TAG}"
+            echo "tag_reused=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate signing secrets and decode keystore
+        id: signing
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          missing=()
+          [[ -z "${KEYSTORE_BASE64}" ]] && missing+=("KEYSTORE_BASE64")
+          [[ -z "${KEYSTORE_PASSWORD}" ]] && missing+=("KEYSTORE_PASSWORD")
+          [[ -z "${KEY_ALIAS}" ]] && missing+=("KEY_ALIAS")
+          [[ -z "${KEY_PASSWORD}" ]] && missing+=("KEY_PASSWORD")
+
+          if (( ${#missing[@]} > 0 )); then
+            echo "::error::Missing required release signing secrets: ${missing[*]}"
+            exit 1
+          fi
+
+          KEYSTORE_PATH="${RUNNER_TEMP}/release.keystore"
+          printf '%s' "${KEYSTORE_BASE64}" | base64 --decode > "${KEYSTORE_PATH}"
+          echo "keystore_path=${KEYSTORE_PATH}" >> "$GITHUB_OUTPUT"
+
+      - name: Build signed release APK
+        shell: bash
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_PATH: ${{ steps.signing.outputs.keystore_path }}
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          ./gradlew app:assembleRelease \
+            -PreleaseStoreFile="${KEYSTORE_PATH}" \
+            -PreleaseStorePassword="${KEYSTORE_PASSWORD}" \
+            -PreleaseKeyAlias="${KEY_ALIAS}" \
+            -PreleaseKeyPassword="${KEY_PASSWORD}"
+
+      - name: Collect APK asset
+        id: apk
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK_PATH="$(find app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' | head -n1 || true)"
+          if [[ -z "${APK_PATH}" ]]; then
+            echo "::error::Could not find release APK in app/build/outputs/apk/release"
+            exit 1
+          fi
+          ASSET_NAME="Auxio-TS-${{ steps.version.outputs.release_tag }}-release.apk"
+          ASSET_PATH="${RUNNER_TEMP}/${ASSET_NAME}"
+          cp "${APK_PATH}" "${ASSET_PATH}"
+
+          echo "apk_path=${ASSET_PATH}" >> "$GITHUB_OUTPUT"
+          echo "apk_name=${ASSET_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.apk.outputs.apk_name }}
+          path: ${{ steps.apk.outputs.apk_path }}
+
+      - name: Generate release notes
+        id: notes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PREVIOUS_TAG: ${{ steps.version.outputs.previous_tag }}
+          RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          NOTES_FILE="${RUNNER_TEMP}/release-notes.md"
+          {
+            echo "## What's changed"
+            echo
+          } > "${NOTES_FILE}"
+
+          is_value_present() {
+            [[ -n "${1:-}" && "${1}" != "null" ]]
+          }
+
+          CI_COMMIT_PATTERN='^(ci(\(|:)|chore\(ci\)|build\(ci\)|chore\(release\))'
+
+          declare -A included_prs
+          if [[ -n "${PREVIOUS_TAG}" ]]; then
+            COMMIT_RANGE="${PREVIOUS_TAG}..${RELEASE_TAG}"
+          else
+            COMMIT_RANGE="${RELEASE_TAG}"
+          fi
+
+          mapfile -t COMMITS < <(git rev-list --reverse "${COMMIT_RANGE}")
+
+          for sha in "${COMMITS[@]}"; do
+            subject="$(git log -1 --format=%s "${sha}")"
+            if [[ "${subject}" =~ ${CI_COMMIT_PATTERN} ]]; then
+              continue
+            fi
+
+            pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number' 2>/dev/null || true)"
+            if is_value_present "${pr_number}"; then
+              if [[ -z "${included_prs[${pr_number}]+x}" ]]; then
+                pr_title="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.title')"
+                pr_author="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.user.login')"
+                printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
+                included_prs["${pr_number}"]=1
+              fi
+            else
+              commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' || true)"
+              if is_value_present "${commit_author_login}"; then
+                commit_author_display="@${commit_author_login}"
+              else
+                commit_author_display="$(git log -1 --format=%an "${sha}")"
+              fi
+              printf -- "- [%s](https://github.com/%s/commit/%s) by %s\n" "${subject}" "${GITHUB_REPOSITORY}" "${sha}" "${commit_author_display}" >> "${NOTES_FILE}"
+            fi
+          done
+
+          if ! grep -qE '^- ' "${NOTES_FILE}"; then
+            printf -- "- [Initial release](https://github.com/%s/commit/%s) by @github-actions[bot]\n" "${GITHUB_REPOSITORY}" "${{ steps.version_commit.outputs.release_commit_sha }}" >> "${NOTES_FILE}"
+          fi
+
+          echo "notes_file=${NOTES_FILE}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release and upload APK
+        id: release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
+          RELEASE_NOTES_FILE: ${{ steps.notes.outputs.notes_file }}
+          APK_PATH: ${{ steps.apk.outputs.apk_path }}
+          APK_NAME: ${{ steps.apk.outputs.apk_name }}
+          IS_DRAFT: ${{ github.event.inputs.draft }}
+          IS_PRERELEASE: ${{ github.event.inputs.prerelease }}
+        run: |
+          set -euo pipefail
+
+          args=()
+          if [[ "${IS_DRAFT}" == "true" ]]; then
+            args+=("--draft")
+          fi
+          if [[ "${IS_PRERELEASE}" == "true" ]]; then
+            args+=("--prerelease")
+          fi
+
+          # Tag is created/reused in the previous step; --verify-tag enforces safety.
+          gh release create "${RELEASE_TAG}" "${APK_PATH}#${APK_NAME}" \
+            --title "${RELEASE_TAG}" \
+            --notes-file "${RELEASE_NOTES_FILE}" \
+            --verify-tag \
+            "${args[@]}"
+
+          RELEASE_URL="$(gh release view "${RELEASE_TAG}" --json url --jq '.url')"
+          echo "release_url=${RELEASE_URL}" >> "$GITHUB_OUTPUT"
+
+      - name: Write release summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "# Auxio-TS release"
+            echo
+            echo "- Tag: \`${{ steps.version.outputs.release_tag }}\`"
+            echo "- Version name: \`${{ steps.version.outputs.release_version_name }}\`"
+            echo "- Version code: \`${{ steps.version.outputs.release_version_code }}\`"
+            echo "- Draft: \`${{ github.event.inputs.draft }}\`"
+            echo "- Pre-release: \`${{ github.event.inputs.prerelease }}\`"
+            echo "- APK: \`${{ steps.apk.outputs.apk_name }}\`"
+            echo "- Tagged commit: \`${{ steps.version_commit.outputs.release_commit_sha }}\`"
+            echo "- Release: [${{ steps.version.outputs.release_tag }}](${{ steps.release.outputs.release_url }})"
+          } >> "$GITHUB_STEP_SUMMARY"
