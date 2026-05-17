@@ -1,47 +1,41 @@
 # Copilot instructions for Auxio-TS
 
-## What this fork is for
-Auxio-TS extends upstream Auxio toward TS18 head-unit compatibility while keeping Android/Media3 behaviour correct and maintainable.
+## Core stance
+- Auxio-TS is an **Auxio fork**, not a ground-up clone of `com.tw.music`.
+- Preserve upstream playback/library/service design unless evidence requires targeted change.
+- Keep TS18 integration in adapter/facade boundaries.
+- Use `docs/evidence/t-music-snapshot/` as evidence only, not as code to port.
 
-## Core implementation stance
-- This is an **Auxio fork**, not a ground-up replacement player.
-- Preserve upstream playback/library/service architecture unless evidence proves a change is necessary.
-- TS18 support belongs behind isolated adapter/facade boundaries.
-- `cbkii/t-music` is a reference/evidence corpus, not the implementation base.
-- Public TW/Topway repos are research inputs, not APIs to copy blindly.
+## Evidence labeling (required)
+For each TS18/TW/TWTHEME claim, include:
+1) confidence: **Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported**
+2) reuse decision: **directly reusable requirement / reusable validation idea / evidence only / obsolete for Auxio / unsafe to port / explicitly avoid**
 
-## Evidence discipline
-Classify each TS18/TW/TWTHEME claim as one of:
-- **Observed**,
-- **Inferred**,
-- **Hypothesis**,
-- **Requires TS18 validation**,
-- **Unsupported**.
+## Snapshot-specific guardrails
+From `t-music` snapshot:
+- `com.tw.music` + `android.uid.system` are observed in stock manifest.
+- `com.tw.music.action.cmd|prev|next|pp` are observed in stock paths.
+- `com.tw.service.xt.aidl.*`, `com.tw.eq`, `com.tw.radio`, `TWTHEME` coupling are observed in stock evidence.
 
-Never claim TS18 compatibility without reproducible TS18 runtime evidence.
+For Auxio-TS, these imply investigation and validation planning, **not direct adoption**.
 
-## TS18 change approach
-1. Validate baseline Android behaviour first.
-2. Record stock `com.tw.music` vs Auxio-TS evidence.
-3. Add isolated adapter/facade code for TS18-specific behaviour.
-4. Gate TS18 features behind runtime detection/flags.
-5. Validate on TS18 hardware before broad claims.
+## Architectural boundary
+```text
+Auxio upstream core
+  -> Android media integration layer
+  -> Auxio-TS adapter facade
+  -> optional TS18 modules (launcher/TW broadcast/TW service/TWTHEME notes/ZLink-TLink hooks/comparator)
+```
 
-## Preserve from upstream
-- Playback/library architecture.
-- Media3/ExoPlayer lifecycle correctness.
-- MediaSession + notification correctness.
-- Local-library and FLAC support behaviour.
+## Never do in planning/implementation passes
+- Do not change package to `com.tw.music`.
+- Do not add privileged/system UID assumptions.
+- Do not copy decompiled smali into Auxio app code.
+- Do not claim TS18 compatibility without TS18 runtime evidence.
 
-## Checks to run
+## Baseline checks
 - `./gradlew tasks`
 - `./gradlew assembleDebug`
 - `./gradlew test`
 - `./gradlew lint`
 - `find scripts -type f -name '*.sh' -print -exec sh -n {} \;`
-
-## Do not do
-- Do not change package to `com.tw.music`.
-- Do not require privileged/system UID/permissions.
-- Do not commit proprietary APKs/raw diagnostics/PII.
-- Do not bypass evidence classification for TW/TWTHEME claims.

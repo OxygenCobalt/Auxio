@@ -1,50 +1,33 @@
 # Research Sources and Evidence Weighting
 
-## 1) Official Android documentation (authoritative for standard behaviour)
-- Media3 session/control playback docs.
-- Media3 MediaLibraryService/serve-content docs.
-- Android for Cars media app guidance.
-- Android platform and Media3 supported format docs.
+## 1) Android official docs (highest implementation authority)
+- Media3, MediaSession/notification, audio focus, foreground service, Android Auto/cars guidance.
+- Proves standard Android behavior and constraints.
+- Does not prove TW-private contracts.
 
-**Can prove:** expected Android API behaviour, supported integration patterns, compatibility constraints.
-**Cannot prove:** TS18 vendor-private contracts.
+## 2) Upstream Auxio source (highest architecture authority)
+- Proves current maintainable playback/library/service boundaries.
+- Does not prove TS18 vendor behavior.
 
-## 2) Upstream Auxio sources (authoritative for baseline app design)
-- Upstream repo, release notes/changelog, and existing media architecture.
+## 3) TS18 diagnostics in this repo (highest target-device evidence authority)
+- `diagnostics/redacted/ts18_device_profile.json` and related redacted captures.
+- Proves observed package/property/theme ecosystem on captured device.
+- Does not prove all firmware variants.
 
-**Can prove:** intended Auxio design and maintainability boundaries.
-**Cannot prove:** TS18-specific runtime behaviour.
+## 4) `t-music` snapshot corpus (private evidence snapshot)
+- `docs/evidence/t-music-snapshot/*`.
+- Proves stock-app contracts and assumptions in analyzed corpus (manifest, actions, vendor hooks, runbook patterns).
+- Does not prove these contracts are required for Auxio third-party app behavior on this device.
+- Must be paired with Auxio+TS18 runtime comparison before implementation decisions.
 
-## 3) TS18 local diagnostics in this repo (highest authority for this target device)
-- `diagnostics/redacted/ts18_device_profile.json`
-- redacted dumpsys/log summaries and script outputs.
+## 5) Public TW/Topway ecosystem projects + community/manual material
+- Proves available patterns and candidate contracts.
+- Mostly suggests directions; cannot replace direct TS18 runtime evidence.
 
-**Can prove:** observed state on captured device/time.
-**Cannot prove:** behaviour across all TS18 firmware variants or future updates.
+## Mandatory claim format for TS18 docs/PRs
+Each TW/TWTHEME claim must include:
+1. **Confidence label**: Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported
+2. **Porting decision**: directly reusable requirement / reusable validation idea / evidence only / obsolete for Auxio / unsafe to port / explicitly avoid
+3. **Validation reference**: exact command/scenario/artifact path
 
-## 4) TS18 manuals / community material
-- Public TS18 manuals and forum/community notes.
-
-**Can prove:** user-facing descriptions and possible feature surfaces.
-**Cannot prove:** implementation contracts/APIs without runtime/static corroboration.
-
-## 5) TW/TWTHEME reverse-engineering leads
-- Public references mentioning TW utility classes/actions.
-- Decompilation findings (kept private/redacted if proprietary).
-
-**Can prove:** potential contract candidates and investigative directions.
-**Cannot prove:** production-safe integration unless matched with runtime evidence.
-
-## 6) Equivalent open-source projects
-- Other Android head-unit media apps with adapter architectures.
-
-**Can prove:** viable architectural patterns.
-**Cannot prove:** direct compatibility with TS18/TW stack.
-
-## Usage policy
-For any TS18 integration claim, cite at least one of:
-1. observed diagnostics/runtime evidence,
-2. static reference tied to behaviour,
-3. controlled A/B comparison (stock vs third-party vs Auxio-TS).
-
-If evidence is missing, label as **inferred/hypothesis/requires TS18 validation**.
+If validation reference is missing, the claim cannot drive implementation.

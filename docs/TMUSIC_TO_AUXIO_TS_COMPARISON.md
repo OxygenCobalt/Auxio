@@ -1,59 +1,41 @@
-# `t-music` vs `Auxio-TS` comparison (planning baseline)
+# `t-music` vs `Auxio-TS` (snapshot-driven comparison)
 
-> Status: `cbkii/t-music` is currently not accessible from this agent environment (`404`), so this comparison is a **structured placeholder** that captures what to extract and how to classify it once access is restored.
+## Scope
+This comparison is based on `docs/evidence/t-music-snapshot/` (curated private snapshot) and current Auxio-TS docs/source.
 
-## Access status and immediate blocker
-- Attempted source: `https://github.com/cbkii/t-music`
-- Current result: repository not reachable from MCP (`404 Not Found`)
-- Impact: no direct validation of `t-music` contracts yet
-- Required follow-up: provide repo access or sanitized snapshot (see `docs/TW_ECOSYSTEM_SOURCE_MAP.md`)
+## 1) Architectural differences
 
-## Architectural baseline differences (known now)
-
-| Dimension | `t-music` (expected legacy/vendor-integration direction) | `Auxio-TS` (current fork direction) | Decision |
+| Dimension | `t-music` snapshot evidence | Auxio-TS direction | Classification |
 |---|---|---|---|
-| Core media architecture | Likely vendor-contract-heavy/custom control bridge | Upstream Auxio playback + Media3/MediaSession flow preserved | Keep Auxio core; do not import legacy core design blindly |
-| Service model | Unknown until access | `AuxioService` + `PlaybackServiceFragment` + `MusicServiceFragment` split | Reuse existing Auxio seams for adapters |
-| Media session/notification | Unknown until access | Existing MediaSessionCompat + media notification lifecycle in `MediaSessionHolder` | Harden/validate first; avoid rewrites |
-| TW integration style | Potential direct contract assumptions | Planned adapter facade with runtime gating | Keep TW behavior optional and isolated |
-| Package identity strategy | Potential `com.tw.music` assumptions | Explicitly avoid package impersonation unless proven necessary | Maintain current package identity |
+| Core implementation base | Decompiled/smali-first stock `com.tw.music` workspace. | Kotlin/AndroidX upstream Auxio fork. | obsolete due to Auxio architecture (for direct code port) |
+| Package/UID model | `com.tw.music` + `android.uid.system` in stock manifest. | Keep Auxio package identity and non-privileged install path. | unsafe to port / explicitly avoid |
+| Control surface | Broadcast actions `com.tw.music.action.cmd|prev|next|pp` heavily used. | Keep as comparator evidence; implement only if standard path proven insufficient. | requires TS18 runtime validation |
+| Vendor service coupling | `com.tw.service.xt` + AIDL tokens in stock. | Optional, isolated TS18 service adapter only after proof of necessity. | useful as evidence only |
+| Widget/theme coupling | `MusicWidgetProvider`, TW theme/TWTHEME paths in stock. | Validate launcher/TWTHEME behavior first; optional adapter if required. | reusable validation idea |
 
-## Reclassification matrix for future `t-music` import
+## 2) Findings promoted into Auxio-TS requirements/plans
 
-Use this table when corpus is available:
+1. Build a stock-vs-Auxio comparator workflow before TW-private coding.
+2. Track package/signature/UID constraints as risk, not as implementation target.
+3. Keep TW actions/services/theme references in a contract catalog with validation gates.
+4. Use stock manual validation scenarios (keys/widget/navigation mixing/sleep-resume) as runbook inputs.
+5. Keep one-variable-per-PR strategy for TS18 experiments.
 
-| `t-music` finding | Classification options | Porting decision rule |
-|---|---|---|
-| README/AGENTS/process guidance | Directly reusable / evidence-only | Reuse if process-level and architecture-agnostic |
-| `com.tw.music.action.*` action mappings | Evidence-only / requires TS18 runtime validation | Never port blindly as code; first prove via stock-vs-Auxio traces |
-| `com.tw.service` / `com.tw.service.xt` interactions | Evidence-only / requires TS18 runtime validation / avoid | Only implement if standard Android path fails and behavior is reproducible |
-| Launcher/widget hooks | Requires TS18 runtime validation | Add optional launcher adapter module only after reproducible gap |
-| Smali/source shims | Obsolete for Auxio architecture / explicitly avoid | Avoid direct transplant into Auxio core |
-| Manifest privilege assumptions | Explicitly avoid | No privileged UID/system-signing requirements in normal app path |
-| MediaControlBridge-like abstractions | Directly reusable pattern or evidence-only | Reuse only architectural pattern (interface/facade), not vendor-specific logic |
-| Validation scripts/evidence tooling | Directly reusable / needs adaptation | Port script patterns if safe and license-compatible |
+## 3) Findings intentionally not promoted
 
-## What should be ported as requirements (not code)
-1. Any reproducible stock behavior matrix (notification controls, media keys, launcher widget, ZLink/TLink).
-2. Any precise contract claim with capture evidence (action names, expected extras, timing constraints).
-3. Any safety constraints around coexistence with stock `com.tw.music`.
-4. Any TS18 variant caveats and firmware-conditional behavior notes.
+| Snapshot finding | Why not promoted as implementation |
+|---|---|
+| `android.uid.system` / shared UID model | Conflicts with Auxio-TS maintainable third-party app posture; privileged path is high risk. |
+| Package identity `com.tw.music` lock-in | Out of scope and unsafe without explicit human-approved migration strategy. |
+| Smali/source-shim implementation details from stock app | Not compatible with preserving upstream Auxio architecture. |
+| Vendor-token preservation rules from reverse-engineering workflow | Useful for evidence interpretation, not direct Auxio coding rules. |
 
-## What should not be ported as code
-1. Package-identity replacement logic (`com.tw.music`) without hard evidence and rollback plan.
-2. Privileged/system signing assumptions.
-3. Decompiled/vendor app logic copied into Auxio classes.
-4. Cross-cutting TS18 conditionals scattered through playback/indexing core.
+## 4) Reclassification matrix for future agents
 
-## Intentional divergence points for Auxio-TS
-- Preserve upstream Auxio playback/indexing architecture.
-- Keep standard Android media integration as first-class contract.
-- Introduce TS18-specific behavior through facade + optional contract modules only.
-- Require evidence classification (`observed`/`inferred`/`hypothesis`/`requires TS18 validation`) for every TW/TWTHEME claim.
-
-## Next step once access is available
-Run a dedicated “`t-music` corpus import” PR that only:
-1. indexes `t-music` docs/scripts/manifest findings,
-2. fills this comparison with concrete entries,
-3. updates requirements/contracts tables,
-4. adds no app-feature code.
+| Evidence item type | Auxio-TS default classification |
+|---|---|
+| Stock contract strings/actions/services | useful as evidence only + requires TS18 runtime validation |
+| Manual ADB parity steps | reusable validation idea |
+| Privileged/package assumptions | unsafe to port + should be explicitly avoided |
+| Adapter/facade architecture lessons | directly reusable requirement |
+| Decompiled implementation snippets | obsolete due to Auxio architecture |
