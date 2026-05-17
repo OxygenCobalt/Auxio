@@ -1,5 +1,8 @@
 # Auxio-TS Development Roadmap
 
+
+> Canonical Phase 1–4 execution reference: `docs/TS18_EXECUTION_PACK_PHASE1_4.md` (scenario IDs, gate/stop criteria, evidence path convention, and evidence-claim labelling template).
+
 One primary variable per PR.
 
 | Phase | Goal | Likely files touched | Validation | Stop conditions | Human TS18 checks | Expected artifacts |

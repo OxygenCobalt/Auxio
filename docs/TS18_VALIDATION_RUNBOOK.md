@@ -1,5 +1,8 @@
 # TS18 Validation Runbook (human-executed)
 
+
+> Canonical note: `docs/TS18_EXECUTION_PACK_PHASE1_4.md` is the authoritative Phase 1–4 checklist for scenario IDs, evidence folder convention (`reports/ts18/<YYYY-MM-DD>/<scenario-id>/`), gate/stop criteria, and the claim labelling template. Use this runbook for expanded operational steps.
+
 ## 0) Preconditions
 - TS18 target hardware connected via ADB.
 - Private storage for raw evidence; only redacted summaries go in repo.
@@ -16,7 +19,7 @@
 
 ## 2) Stock `com.tw.music` baseline
 1. Start stock playback.
-2. Run: `AUXIO_TS_PACKAGE=com.tw.music ./scripts/ts18_collect_auxio_ts_evidence.sh stock-music-playing`
+2. Run: `AUXIO_TS_PACKAGE=com.tw.music ./scripts/ts18_collect_auxio_ts_evidence.sh stock-playing-local` (canonical scenario: `TS18-STOCK-002`)
 3. Capture:
    - `adb shell dumpsys media_session`
    - `adb shell dumpsys notification`
@@ -31,12 +34,15 @@
 
 ## 3) Auxio-TS baseline
 1. Install/update Auxio-TS and play local media.
-2. Run: `AUXIO_TS_PACKAGE=org.oxycblt.auxio ./scripts/ts18_collect_auxio_ts_evidence.sh auxio-ts-playing`
+2. Run: `AUXIO_TS_PACKAGE=org.oxycblt.auxio ./scripts/ts18_collect_auxio_ts_evidence.sh auxio-mp3-playing` (canonical scenario: `TS18-AUXIO-002`)
 3. Collect the same dumpsys captures and manual observations.
 
 ## 4) Stock-vs-Auxio active session comparison
 1. Use equivalent playback states for both apps.
-2. Run comparator: `./scripts/ts18_compare_media_sessions.sh <stock_dump> <auxio_dump>`
+2. Run comparator per package and diff saved outputs:
+   - `./scripts/ts18_compare_media_sessions.sh com.tw.music > stock_media_session.txt`
+   - `./scripts/ts18_compare_media_sessions.sh org.oxycblt.auxio > auxio_media_session.txt`
+   - `diff -u stock_media_session.txt auxio_media_session.txt`
 3. Compare owner, state/actions, metadata, command path behavior.
 
 ## 5) Notification controls
