@@ -1,110 +1,89 @@
-# TS18 validation runbook
+# TS18 Validation Runbook
 
-## Test matrix
+## 0. Preparation
+- Device: TS18 target (Android 10/API 29 class).
+- Host tools: `adb`, shell, repo scripts.
+- Confirm app package under test (default example: `org.oxycblt.auxio`).
+- Ensure private evidence storage location (do not commit raw captures).
 
-Run each stage against:
+## 1. Install/build prep
+1. Build debug APK from repo.
+2. Install with:
+   - `adb install -r app/build/outputs/apk/debug/*.apk`
+3. Confirm packages:
+   - `adb shell pm list packages | grep -Ei 'auxio|tw|music|zlink|tlink'`
 
-1. Stock `com.tw.music`.
-2. Existing third-party app already on device, preferably Spotify and/or Poweramp if available.
-3. Upstream Auxio if installable.
-4. Auxio-TS debug build.
+## 2. Baseline stock `com.tw.music` capture
+1. Play a local track in stock music app.
+2. Run:
+   - `AUXIO_TS_PACKAGE=com.tw.music ./scripts/ts18_collect_auxio_ts_evidence.sh stock-music-playing`
+3. Record manual observations:
+   - launcher/home widget update,
+   - notification controls,
+   - steering-wheel/media-key behaviour,
+   - audio mixing/navigation prompts,
+   - sleep/resume stability.
 
-## Stage 0 — install and baseline
+## 3. Auxio-TS capture (local MP3)
+1. Play local MP3 in Auxio-TS.
+2. Run:
+   - `AUXIO_TS_PACKAGE=org.oxycblt.auxio ./scripts/ts18_collect_auxio_ts_evidence.sh auxio-ts-mp3-playing`
+3. Validate:
+   - active MediaSession visible,
+   - notification transport controls responsive,
+   - audio focus transitions expected,
+   - launcher/widget behaviour logged.
 
-```sh
-adb install -r app/build/outputs/apk/debug/*.apk
-adb shell pm list packages | grep -Ei 'auxio|music|tw|zlink'
-```
-
-On-device fallback: install APK from file manager if ADB is unavailable.
-
-## Stage 1 — idle capture
-
-Run:
-
-```sh
-AUXIO_TS_PACKAGE=org.oxycblt.auxio ./scripts/ts18_collect_auxio_ts_evidence.sh idle
-```
-
-Expected:
-
-- No active Auxio-TS session.
-- Device/package/profile capture succeeds even if some dumps are denied.
-
-## Stage 2 — stock music baseline
-
-Manually play a local song in stock `com.tw.music`, then capture:
-
-```sh
-AUXIO_TS_PACKAGE=com.tw.music ./scripts/ts18_collect_auxio_ts_evidence.sh stock-music-playing
-```
-
-Record manually:
-
-- Does launcher/home music widget update?
-- Do steering wheel/media keys work?
-- Does ZLink/TLink show metadata?
-- Does notification media control appear?
-- Does audio continue after backgrounding?
-
-## Stage 3 — existing third-party baseline
-
-Play Spotify/Poweramp/another installed media app, then capture with its package name.
-
-Goal: determine whether TS18 launcher/TW surfaces already accept standard third-party MediaSession.
-
-## Stage 4 — Auxio-TS MP3 playback
-
-Play a normal MP3 from local storage.
-
-Acceptance:
-
-- `dumpsys media_session` shows Auxio-TS active session.
-- Media notification controls work.
-- Hardware/media keys work or failure is recorded.
-- `dumpsys audio` shows expected focus ownership.
-- Launcher/widget behaviour is recorded.
-
-## Stage 5 — Auxio-TS FLAC playback
-
+## 4. FLAC validation
 Test at least:
+- 16/44.1 FLAC,
+- 16/48 FLAC,
+- 24/48 FLAC (if available).
 
-- 16-bit/44.1 kHz FLAC.
-- 16-bit/48 kHz FLAC.
-- 24-bit/48 kHz FLAC if available.
+For each, capture evidence and record:
+- startup latency,
+- pause/resume/seek behaviour,
+- metadata/cover display,
+- audible glitches or repeated buffering.
 
-Acceptance:
+## 5. Media-session and notification checks
+- Use `scripts/ts18_compare_media_sessions.sh` where applicable.
+- Manually verify lockscreen/notification control path.
+- Capture `dumpsys media_session`, `dumpsys notification`, `dumpsys audio` during playback.
 
-- Playback starts reliably.
-- Seek/pause/resume works.
-- Metadata/cover art appears.
-- No repeated underrun/buffering errors in logcat.
+## 6. Steering wheel / media key checks
+- Trigger play/pause/next/prev from steering controls if available.
+- Capture input + session traces during actions.
+- Record whether keys reach standard media dispatch or appear vendor-routed.
 
-## Stage 6 — sleep/resume
+## 7. Launcher/widget and TWTHEME checks
+- Compare stock vs Auxio-TS metadata display on launcher/home widget.
+- Note any package-specific behaviour.
+- Do not assume contract; classify as observed/inferred.
 
-While playing and while paused:
+## 8. ZLink/TLink checks
+- With ZLink/TLink active (safe state), play Auxio-TS and compare against stock.
+- Record metadata/control path outcomes and conflicts.
 
-- turn screen off/on if available;
-- simulate ACC/sleep/resume if safely available;
-- leave app backgrounded;
-- resume from notification/media key.
+## 9. Sleep/resume and audio-priority checks
+- Test while playing and paused:
+  - screen off/on,
+  - background/foreground transitions,
+  - ACC-like sleep/resume if safely accessible.
+- Validate continuity, focus reacquisition, and navigation-mixing behaviour.
 
-## Stage 7 — ZLink / Android Auto behaviour
+## 10. Expected output artifacts
+Expected per capture folder:
+- package/device snapshots,
+- `dumpsys media_session`,
+- `dumpsys audio`,
+- notification/appops snippets where available,
+- redacted summary.
 
-Only when safe:
+Bundle naming example:
+- `auxio-ts-evidence_YYYYMMDD_HHMMSS_<scenario>.zip`
 
-- Start ZLink/Android Auto.
-- Play Auxio-TS.
-- Capture metadata/control behaviour.
-- Compare with stock `com.tw.music` and Spotify.
-
-## Required evidence bundle naming
-
-Use names like:
-
-```text
-auxio-ts-evidence_YYYYMMDD_HHMMSS_stock-music-playing.zip
-auxio-ts-evidence_YYYYMMDD_HHMMSS_auxio-ts-flac-playing.zip
-```
-
-Do not commit raw bundles to the public repo. Upload them privately for analysis or commit only redacted summaries.
+## 11. Evidence packaging for agent review
+- Keep raw bundles private.
+- Commit only redacted summaries/scripts.
+- Include scenario label, timestamp, app version/commit SHA, and quick result table.

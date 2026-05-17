@@ -1,58 +1,53 @@
-# TS18 requirements for Auxio-TS
+# TS18 Requirements for Auxio-TS
 
-## Product objective
+## Scope
+This document defines product requirements for evolving Auxio into a TS18-friendly app without sacrificing upstream maintainability.
 
-Auxio-TS is a maintainable Android local music player for the TS18 head-unit ecosystem. It should use Auxio as the player/library/UI base and add a TS18 compatibility layer only where standard Android media APIs are insufficient.
+## A) Android-native requirements
 
-## Primary functional requirements
+### Hard requirements
+- Correct Media3 `MediaSession` lifecycle and transport command handling.
+- Foreground playback service + media notification controls (play/pause/next/prev/seek where supported).
+- Correct audio-focus request/abandon behaviour and noisy-device handling.
+- Reliable local-library indexing/playback from accessible storage.
+- FLAC playback validation on Android 10 / API 29 device target.
 
-### Local music playback
+### Preferred requirements
+- Media browser/library integration for Android Auto clients where baseline supports it.
+- Stable resume behaviour after app backgrounding, screen off/on, and process reclaim.
 
-- Play local music stored on internal storage, SD card, and USB/media-mounted locations where Android storage APIs permit access.
-- Preserve Auxio's library indexing, playlisting, metadata handling, ReplayGain, embedded cover support, and folder-awareness where compatible.
-- Support FLAC playback as a first-class requirement, including testing realistic TS18/Android 10 device behaviour.
-- Support common formats expected from Auxio/Media3/Android platform support: MP3, AAC/M4A, OGG/OPUS, FLAC, WAV where available.
+### Experimental requirements
+- Alternate notification/channel tuning for automotive UX.
 
-### Standard Android media integration
+## B) TS18-native requirements
 
-- Provide a correct MediaSession exposed to external clients.
-- Provide a media notification with play/pause/previous/next/seek where appropriate.
-- Support media-button events from hardware, Bluetooth, headset, and system dispatch.
-- Use correct audio focus handling and noisy-intent behaviour.
-- Keep background playback in an appropriate service.
-- Support Android Auto-style browsing/control where feasible via MediaBrowserService/MediaLibraryService architecture.
+### Hard requirements
+- Reproducible baseline comparison: stock `com.tw.music` vs Auxio-TS.
+- Evidence-backed determination of whether launcher/widget/media-key behaviour works through standard Android APIs.
+- TS18 adapter architecture isolated from Auxio core.
 
-### TS18/TW integration
+### Preferred requirements
+- Steering-wheel/media-key compatibility without privileged APIs.
+- Coexistence with ZLink/TLink flows when active.
+- Sleep/resume behaviour characterization (ACC-like conditions where safely testable).
 
-- Detect TS18/TW environment conservatively using non-sensitive package/property signals.
-- Validate launcher/home music widget behaviour against stock `com.tw.music`.
-- Validate steering wheel/media key behaviour.
-- Validate interaction with `com.tw.service`, audio focus, and volume policy.
-- Validate interaction with ZLink/TLink or Android Auto projection where present.
-- Investigate TWTHEME resource coupling, especially `MusicTheme.apk` and launcher theme APKs.
-- Preserve standard Android behaviour even if TS18-specific hooks are disabled.
+### Experimental requirements
+- TW/TWTHEME compatibility adapters (broadcasts, metadata projection, theme coupling) only after proof.
 
-## Non-functional requirements
+## Non-goals
+- Immediate package replacement of `com.tw.music`.
+- Privileged/system UID emulation.
+- Blind porting of decompiled TW app logic.
+- Large UI rewrites before media integration proof.
 
-- Maintainable by coding agents.
-- Reproducible debug and release builds.
-- Small, reviewable PRs.
-- No proprietary TS18 APKs committed.
-- No raw diagnostics or device serials committed.
-- Clear separation of standard Android code and TS18-specific adapters.
-- Every TS18 feature must have a validation record.
+## Assumptions
+- Target baseline is TS18 Android 10 variant represented by `diagnostics/redacted/ts18_device_profile.json`.
+- TS18 variants may differ; findings are not universally portable.
+- Standard Android media interfaces should be attempted first.
 
-## Acceptance criteria for first working TS18 build
-
-A build is not considered TS18-ready until all of these are recorded:
-
-1. App installs on TS18 Android 10 without replacing stock `com.tw.music`.
-2. Local MP3 and FLAC files play.
-3. `dumpsys media_session` shows an active Auxio-TS session during playback.
-4. Android media notification appears and controls playback.
-5. Hardware/media keys or steering-wheel-equivalent keys are either working or documented as not visible to third-party apps.
-6. TS18 launcher/home media widget behaviour is recorded against stock `com.tw.music` and Auxio-TS.
-7. `dumpsys audio` records expected focus ownership/transitions during playback.
-8. ZLink/TLink/Android Auto metadata/control behaviour is recorded.
-9. Sleep/resume behaviour is tested.
-10. Any behaviour gap is tracked as a TS18 integration issue, not hidden behind UI changes.
+## Open questions (requires TS18 runtime evidence)
+1. Does TS18 launcher/home widget consume standard MediaSession metadata from third-party apps?
+2. Are steering-wheel keys routed via standard media-button dispatch for third-party apps?
+3. Is any private `com.tw.*` contract required for launcher integration?
+4. Does ZLink/TLink consume third-party MediaSession metadata reliably?
+5. Are there TS18-specific audio-priority policies that require adapter behaviour?

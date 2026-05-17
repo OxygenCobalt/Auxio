@@ -1,57 +1,41 @@
-# TS18 native contracts and integration leads
+# TS18 Native Contracts Catalog
 
-This document tracks known and suspected TS18/TW contracts for Auxio-TS.
+## Classification legend
+- **Observed/Proven:** present in repository diagnostics or directly captured runtime evidence.
+- **Likely:** strong inference from observed data, still not fully proven.
+- **Weak hypothesis:** plausible but low-confidence.
+- **Requires TS18 runtime validation:** must be tested on hardware before implementation commitments.
 
-## Proven installed TW packages
+## 1) Observed / Proven
+- `com.tw.music` installed as system app path in diagnostics context.
+- TW package ecosystem present, including: `com.tw.service`, `com.tw.service.xt`, `com.tw.radio`, `com.tw.eq`, `com.tw.bt`, `com.tw.video`, `com.tw.reverse`, `com.tw.net`, `com.tw.core`, `com.tw.coreservice`.
+- TWTHEME asset path includes `Sub/MusicTheme.apk`.
+- `persist.phone_connect_app=com.zjinnova.zlink` observed.
+- Captured audio diagnostics show `com.tw.service` focus/volume involvement.
 
-From diagnostics:
+## 2) Likely contracts
+- Launcher/home media surfaces may have special behaviour for stock `com.tw.music`.
+- `com.tw.service` mediates portions of audio policy and/or source switching.
+- ZLink presence can affect media metadata/control expectations.
 
-- `com.tw.music`
-- `com.tw.service`
-- `com.tw.service.xt`
-- `com.tw.radio`
-- `com.tw.eq`
-- `com.tw.bt`
-- `com.tw.video`
-- `com.tw.reverse`
-- `com.tw.net`
-- `com.tw.core`
-- `com.tw.coreservice`
-- `com.tw.carchoose`
-- `com.tw.carinfoservice`
-- `com.tw.keypad`
-- `com.tw.twfileexplore`
+## 3) Weak hypotheses
+- Private `com.tw.music.action.*` broadcasts are required for third-party launcher metadata.
+- Matching package name alone is sufficient for stock-equivalent integration.
+- TWTHEME resources directly enforce package-level coupling.
 
-## High-priority contracts to investigate
+## 4) Contracts requiring TS18 runtime validation
 
-| Contract | Status | Why it matters | How to verify |
-|---|---|---|---|
-| Android MediaSession | Required standard layer | Needed for notifications, media keys, Android Auto-style clients | `dumpsys media_session` during playback |
-| Media notification controls | Required standard layer | User-visible transport controls | Notification shade/manual test/logcat |
-| Audio focus | Required standard layer + TS18-specific behaviour | `com.tw.service` mediates focus/volume | `dumpsys audio`, logcat before/after |
-| `com.tw.music` package identity | Unknown | Launcher/theme may hard-code it | Static grep decompiled launcher/theme/TW APKs; runtime logs |
-| `android.uid.system` / UID 1000 | High-risk unknown | Stock app has privileged/system context | `pm list packages -U`, package dump from adb/root |
-| `com.tw.music.action.*` broadcasts | Unknown | Could be launcher/control interface | Static grep stock APKs; `cmd activity broadcasts`; logcat |
-| `com.tw.service` / `com.tw.service.xt` APIs | Unknown but important | TW service likely mediates car/audio/key behaviour | Decompiled APKs; service list; binder/service dumps |
-| TWTHEME `MusicTheme.apk` | Unknown | May contain resources/layout assumptions | Extract/decompile theme APK; static refs |
-| ZLink metadata/control | Unknown | Active phone-link system | Compare stock/Auxio-TS playback while ZLink active |
-| Steering wheel/media keys | Unknown | Required vehicle UX | `getevent`, `dumpsys input`, `dumpsys media_session` |
+| Contract candidate | Current status | Required proof |
+|---|---|---|
+| Standard `MediaSession` enough for launcher metadata | Unproven | Stock vs third-party vs Auxio-TS comparison with captures |
+| Steering-wheel keys route via standard media-button flow | Unproven | Input + media_session traces during key presses |
+| `com.tw.service` API/broadcast contract needed | Unproven | Logcat/static references and before/after behaviour |
+| Private `com.tw.music` broadcasts needed | Unproven | Static references and runtime observation |
+| ZLink/TLink metadata interop for Auxio-TS | Unproven | Comparative playback session evidence |
+| Package identity replacement required | High-risk, unproven | Demonstrate standard APIs fail and replacement is feasible/safe |
 
-## Do not assume
-
-- Do not assume TW launcher observes only standard MediaSession.
-- Do not assume TW launcher ignores standard MediaSession.
-- Do not assume `com.tw.music` identity is required.
-- Do not assume `com.tw.music` identity is replaceable.
-- Do not assume ZLink consumes standard metadata.
-- Do not assume package UID 1000 can be reproduced by a user-installed app.
-
-## Evidence needed before private TW hooks
-
-Private TW compatibility code requires at least one of:
-
-- static reference from a TW/launcher/theme APK to a private action/package/class;
-- logcat showing private TW control messages during playback/control;
-- before/after test showing standard MediaSession is insufficient;
-- stock `com.tw.music` decompile evidence showing emitted metadata/control actions;
-- runtime service/broadcast evidence from adb/root-level capture.
+## 5) Integration policy
+Do not implement any TW-private adapter without at least one of:
+1. explicit runtime evidence,
+2. static reference evidence tied to behaviour,
+3. reproducible failure of standard Android path.

@@ -1,63 +1,57 @@
-# Auxio-TS development roadmap
+# Auxio-TS Development Roadmap
 
-## Phase 0 — commit instructions and evidence tooling
+## Phase 0 — Repo/Instruction hardening
+- **Goal:** lock safe agent guidance, requirements taxonomy, and validation workflow.
+- **Likely files:** `AGENTS.md`, `.github/copilot-instructions.md`, `docs/*.md`, `scripts/*.sh` (light touch).
+- **Validation:** docs consistency review, shell syntax checks, baseline gradle commands.
+- **Stop conditions:** conflicting policy, unclear ownership, missing TS18 evidence baseline.
+- **Human TS18 checks:** none required.
 
-Commit this package. No app behaviour changes.
+## Phase 1 — Baseline build and upstream preservation
+- **Goal:** ensure repo builds/tests/lint and identify upstream seams to preserve.
+- **Likely files:** build configs, minimal non-behavioural fixes.
+- **Validation:** `tasks`, `assembleDebug`, `test`, `lint`.
+- **Stop conditions:** changes require invasive architecture rewrites.
+- **Human TS18 checks:** optional install sanity check.
 
-## Phase 1 — baseline evidence
+## Phase 2 — TS18 evidence capture baseline
+- **Goal:** gather reproducible stock vs Auxio-TS evidence with redacted outputs.
+- **Likely files:** scripts/runbook/docs only.
+- **Validation:** capture script dry-runs + real device captures.
+- **Stop conditions:** no reliable capture path or privacy redaction gaps.
+- **Human TS18 checks:** required (device runtime capture).
 
-Use the evidence scripts to compare:
+## Phase 3 — MediaSession/notification validation
+- **Goal:** confirm Android-native media path works on TS18 before TW-private hooks.
+- **Likely files:** media-session/service wiring, tests, diagnostics.
+- **Validation:** runbook stages for session/notification/keys/audio focus.
+- **Stop conditions:** requires privileged APIs.
+- **Human TS18 checks:** required.
 
-- stock `com.tw.music`;
-- existing third-party players;
-- upstream Auxio;
-- Auxio-TS debug build.
+## Phase 4 — TS18 adapter skeleton
+- **Goal:** introduce isolated TS18 adapter interfaces with default no-op behaviour.
+- **Likely files:** new `integration/ts18` package + DI wiring.
+- **Validation:** no regression in standard behaviour; feature flags default-off.
+- **Stop conditions:** adapter leaks into core playback logic.
+- **Human TS18 checks:** recommended.
 
-Decision gate:
+## Phase 5 — Launcher/TWTHEME/TW compatibility experiments
+- **Goal:** test minimal proven adapters where standard path fails.
+- **Likely files:** TS18 bridge implementations, diagnostic toggles, docs.
+- **Validation:** A/B evidence against stock and third-party media apps.
+- **Stop conditions:** unproven private contract, package impersonation pressure.
+- **Human TS18 checks:** mandatory.
 
-- If TS18 launcher/widgets/keys work with standard MediaSession, prioritise normal Auxio/Media3 correctness and UI fit.
-- If TS18 ignores standard sessions but stock `com.tw.music` works, investigate private TW contracts.
-- If only package identity matters, stop and design a safe package/bridge strategy before coding.
+## Phase 6 — FLAC/audio-quality validation
+- **Goal:** verify robust FLAC/local-library playback and TS18 audio policy compatibility.
+- **Likely files:** playback configuration/tuning, diagnostics, tests.
+- **Validation:** format matrix + sleep/resume + navigation-mixing checks.
+- **Stop conditions:** regressions in mainstream formats.
+- **Human TS18 checks:** mandatory.
 
-## Phase 2 — standard media hardening
-
-Likely PRs:
-
-1. Add TS18 debug screen/log export showing MediaSession state, audio focus, package/environment detection.
-2. Add/verify MediaLibraryService/Android Auto compatibility on API 29.
-3. Add TS18-specific validation CI/docs without vendor hooks.
-4. Ensure FLAC test matrix and user-visible failure reporting.
-
-## Phase 3 — TS18 adapter proof-of-concepts
-
-Only if Phase 1 shows gaps.
-
-Possible PRs:
-
-- TS18 environment detector.
-- Passive broadcast logger for TW actions while Auxio-TS runs.
-- Optional compatibility broadcast emitter if stock actions are proven.
-- Metadata projection shim if launcher ignores MediaSession.
-- Source/focus integration shim if `com.tw.service` requires it.
-
-## Phase 4 — package/privilege decisions
-
-Only after proof.
-
-Options:
-
-- normal package remains sufficient;
-- alternate package with intent aliases;
-- companion bridge app;
-- rooted/system install path;
-- same-package replacement.
-
-Same-package/system replacement is last resort.
-
-## Phase 5 — polish
-
-- TS18 landscape UI tuning.
-- Large-touch controls.
-- Theme compatibility.
-- Launcher icon/name/channel polish.
-- Release build signing and reproducibility.
+## Phase 7 — Release/test packaging
+- **Goal:** produce reproducible candidate with clear risk ledger and validation evidence.
+- **Likely files:** release notes, CI/workflow docs, packaging metadata.
+- **Validation:** full regression + documented TS18 evidence summary.
+- **Stop conditions:** unresolved high-risk TS18 contract assumptions.
+- **Human TS18 checks:** final sign-off required.

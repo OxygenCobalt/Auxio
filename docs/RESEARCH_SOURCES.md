@@ -1,50 +1,50 @@
-# Research sources and how to use them
+# Research Sources and Evidence Weighting
 
-## Official Android sources
+## 1) Official Android documentation (authoritative for standard behaviour)
+- Media3 session/control playback docs.
+- Media3 MediaLibraryService/serve-content docs.
+- Android for Cars media app guidance.
+- Android platform and Media3 supported format docs.
 
-- Android Media3 MediaSession docs: https://developer.android.com/media/media3/session/control-playback
-  - Use for how playback is advertised externally and how external commands reach the app.
-- Android Media3 MediaLibraryService docs: https://developer.android.com/media/media3/session/serve-content
-  - Use for Android Auto-style media browsing and library exposure.
-- Android for Cars media overview: https://developer.android.com/training/cars/media
-  - Use for MediaBrowserService/MediaSession requirements for Android Auto/AAOS clients.
-- Android platform supported media formats: https://developer.android.com/media/platform/supported-formats
-  - Use for platform-level format expectations and API-version caveats.
-- Media3 ExoPlayer supported formats: https://developer.android.com/media/media3/exoplayer/supported-formats
-  - Use for ExoPlayer-specific playback support.
+**Can prove:** expected Android API behaviour, supported integration patterns, compatibility constraints.
+**Cannot prove:** TS18 vendor-private contracts.
 
-## Auxio sources
+## 2) Upstream Auxio sources (authoritative for baseline app design)
+- Upstream repo, release notes/changelog, and existing media architecture.
 
-- Upstream Auxio: https://github.com/OxygenCobalt/Auxio
-  - Auxio is a local Android music player built on Media3 ExoPlayer, with Android Auto support, FLAC-related ReplayGain support, widgets, SD-card-aware folder management, and GPLv3-or-later licensing.
-- F-Droid Auxio: https://f-droid.org/packages/org.oxycblt.auxio/
-  - Use as a public release/package reference.
+**Can prove:** intended Auxio design and maintainability boundaries.
+**Cannot prove:** TS18-specific runtime behaviour.
 
-## TS18/TW/TWTHEME sources
-
-- TS18 product manual PDF: https://fcc.report/FCC-ID/2BECX-TS18/7046050.pdf
-  - Confirms TS18 desktop/media surfaces, music app, TLink, and sound settings at a user-manual level.
-- Manuals+ TS18 manual conversion: https://manuals.plus/m/100e1bccacb705c3706092d6bfeeef8c14ca3e25f1f4a6ff99bdfbd99f759348
-  - Convenient text view; verify against the PDF if precision matters.
-
-## TW/Topway community code leads
-
-Treat these as investigation leads, not authoritative docs:
-
-- `ivvlev/CarRadio`: https://github.com/ivvlev/CarRadio
-  - Mentions `android.tw.john.TWUtil` / `TWClient` style integration for compatible firmware.
-- `asb72/dvd-bt`: https://github.com/asb72/dvd-bt
-  - Contains Java references to `android.tw.john.TWUtil` and command writing patterns.
-- `kapi21/OpenRadioFM`: https://github.com/kapi21/OpenRadioFM
-  - Useful precedent for hardware-family adapter architecture across Android head units.
-
-## Local device evidence
-
-The highest authority for TS18 compatibility is still the actual device:
-
+## 3) TS18 local diagnostics in this repo (highest authority for this target device)
 - `diagnostics/redacted/ts18_device_profile.json`
-- fresh `dumpsys media_session`
-- fresh `dumpsys audio`
-- fresh `logcat`
-- stock vs Auxio-TS behavioural comparison
-- decompiled stock APK/static references, when available privately
+- redacted dumpsys/log summaries and script outputs.
+
+**Can prove:** observed state on captured device/time.
+**Cannot prove:** behaviour across all TS18 firmware variants or future updates.
+
+## 4) TS18 manuals / community material
+- Public TS18 manuals and forum/community notes.
+
+**Can prove:** user-facing descriptions and possible feature surfaces.
+**Cannot prove:** implementation contracts/APIs without runtime/static corroboration.
+
+## 5) TW/TWTHEME reverse-engineering leads
+- Public references mentioning TW utility classes/actions.
+- Decompilation findings (kept private/redacted if proprietary).
+
+**Can prove:** potential contract candidates and investigative directions.
+**Cannot prove:** production-safe integration unless matched with runtime evidence.
+
+## 6) Equivalent open-source projects
+- Other Android head-unit media apps with adapter architectures.
+
+**Can prove:** viable architectural patterns.
+**Cannot prove:** direct compatibility with TS18/TW stack.
+
+## Usage policy
+For any TS18 integration claim, cite at least one of:
+1. observed diagnostics/runtime evidence,
+2. static reference tied to behaviour,
+3. controlled A/B comparison (stock vs third-party vs Auxio-TS).
+
+If evidence is missing, label as **inferred/hypothesis/requires TS18 validation**.
