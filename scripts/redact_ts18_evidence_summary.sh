@@ -4,6 +4,14 @@
 set -euo pipefail
 IN="${1:?usage: $0 <raw-evidence-folder>}"
 OUT="${2:-auxio-ts-redacted-evidence-summary}"
+if [ ! -d "$IN" ]; then
+  echo "Input folder does not exist: $IN" >&2
+  exit 1
+fi
+if [ -z "$OUT" ] || [ "$OUT" = "/" ] || [ "$OUT" = "." ]; then
+  echo "Refusing unsafe output path: '$OUT'" >&2
+  exit 1
+fi
 rm -rf "$OUT"
 mkdir -p "$OUT"
 for f in README.txt media_session.txt audio.txt selected_props.txt package_list_relevant.txt package_path.txt input_devices.txt logcat_filtered.txt; do

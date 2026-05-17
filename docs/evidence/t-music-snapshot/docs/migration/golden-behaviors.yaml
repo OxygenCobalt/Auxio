@@ -1,0 +1,72 @@
+version: 1
+profile: ts18-android13
+scenarios:
+  - id: playback-lifecycle
+    priority: p0
+    description: Validate play/pause/stop/seek/next/prev transitions publish expected session state.
+    surfaces:
+      - mediasession
+      - notification
+      - vendor-bridge
+    checks:
+      - state enum is valid for each command edge
+      - position/speed values are monotonic and consistent
+      - com.tw.music.action.prev and com.tw.music.action.next dispatch correctly
+
+  - id: metadata-publication
+    priority: p0
+    description: Validate title/artist/album/duration/artwork URI publication parity.
+    surfaces:
+      - mediasession
+      - launcher-readout
+      - tlink-bridge
+    checks:
+      - metadata keys are present when source values exist
+      - null/partial metadata does not crash or clear unrelated fields
+
+  - id: tw-broadcast-commands
+    priority: p0
+    description: Preserve TW hardware and steering-wheel command broadcast handling.
+    surfaces:
+      - broadcast-receiver
+    inputs:
+      - com.tw.music.action.cmd
+      - com.tw.music.action.prev
+      - com.tw.music.action.next
+      - com.tw.music.action.pp
+    checks:
+      - each action resolves and invokes expected playback command
+
+  - id: widget-provider
+    priority: p0
+    description: Preserve widget update hooks through MusicWidgetProvider resources and intents.
+    surfaces:
+      - appwidget
+    checks:
+      - receiver resolves as com.tw.music.view.MusicWidgetProvider
+      - referenced widget resources exist
+
+  - id: eq-launch-handoff
+    priority: p0
+    description: Preserve EQ launch intent handoff.
+    surfaces:
+      - activity-launch
+    checks:
+      - component resolves as com.tw.eq/.EQActivity
+
+  - id: radio-handoff
+    priority: p0
+    description: Preserve radio handoff intent surfaces.
+    surfaces:
+      - intent-bridge
+    checks:
+      - com.tw.radio.* actions remain routable
+
+  - id: aidl-callback-lifecycle
+    priority: p0
+    description: Preserve TW AIDL callback registration and binder lifecycle tolerance.
+    surfaces:
+      - vendor-aidl
+    checks:
+      - callback register/unregister path remains callable
+      - binder death/failure path does not crash app process

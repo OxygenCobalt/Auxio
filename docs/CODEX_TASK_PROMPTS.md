@@ -1,81 +1,31 @@
-# Agent task prompts
+# Codex Task Prompts (Auxio-TS)
 
-## Prompt 1 — Commit package and inspect Auxio baseline
+## 1) t-music snapshot corpus import refinement
+"Analyze `docs/evidence/t-music-snapshot/` only. Extract manifest/actions/services/theme/widget/media-session findings and classify each as: directly reusable requirement, reusable validation idea, evidence only, obsolete for Auxio architecture, requires TS18 runtime validation, unsafe to port, or explicitly avoid. Update docs only."
 
-```markdown
-You are working on `cbkii/Auxio-TS`, a TS18-focused fork of Auxio.
+## 2) TW ecosystem source-map expansion
+"Expand `docs/TW_ECOSYSTEM_SOURCE_MAP.md` using verified public TS/TW/TWTHEME sources. For each source, record what it proves/suggests/cannot prove and how it changes Auxio-TS planning."
 
-First, read `AGENTS.md`, `docs/TS18_REQUIREMENTS.md`, `docs/TS18_DEVICE_PROFILE.md`, and `docs/TS18_INTEGRATION_ARCHITECTURE.md`.
+## 3) stock-vs-Auxio media-session comparison
+"Using TS18 capture artifacts, update parity docs with observed deltas for session owner/state/actions/metadata/notification/audio focus. No feature implementation."
 
-Do not implement TS18 hooks yet.
+## 4) TS18 launcher/widget proof-of-concept planning
+"Design a default-off launcher/widget adapter interface and validation matrix; keep Auxio core untouched; produce stop conditions and rollback criteria."
 
-Task:
-1. Verify this support package is committed cleanly.
-2. Inspect upstream Auxio's current Media3/MediaSession/MediaLibraryService architecture.
-3. Identify where TS18-specific diagnostics can be added without changing playback behaviour.
-4. Produce a short implementation plan for a first no-risk diagnostics PR.
+## 5) TW broadcast adapter skeleton
+"Create a default-off TS18 TW broadcast adapter skeleton and contract registry wiring in isolated integration package; no vendor-private command logic enabled yet."
 
-Rules:
-- No package rename.
-- No privileged permissions.
-- No replacement of `com.tw.music`.
-- No vendor APKs or raw diagnostics committed.
+## 6) TWUtil/TWClient investigation
+"Design safe runtime probing and fallback strategy for TWUtil/TWClient availability, with diagnostics-first behavior and no hard dependency in core playback path."
 
-Final response:
-- Summary
-- Files inspected
-- Proposed first PR
-- Risks
-- Commands run
-```
+## 7) ZLink/TLink validation pass
+"Run/update runbook scenarios for ZLink/TLink idle-vs-active coexistence and publish evidence-labeled findings and unresolved risks."
 
-## Prompt 2 — Add TS18 passive diagnostics only
+## 8) FLAC/audio-quality validation
+"Execute TS18 FLAC/local playback matrix and document focus, metadata, notification, and resume behavior with evidence labels."
 
-```markdown
-Implement a passive TS18 diagnostics layer for Auxio-TS.
+## 9) package/signature/coexistence analysis
+"Produce a package/signature/privilege risk matrix for stock coexistence vs Auxio-TS, with explicit non-goals and escalation criteria."
 
-Scope:
-- Runtime detect likely TS18 environment using packages/properties only.
-- Add debug/export output for MediaSession state, package identity, device profile, Android version, audio focus-related visible state, and app settings.
-- Do not change playback logic.
-- Do not emit TW broadcasts.
-- Do not add private permissions.
-
-Acceptance:
-- Build passes.
-- Normal Auxio behaviour unchanged when TS18 mode disabled.
-- On TS18, diagnostics can be exported and compared with `scripts/ts18_collect_auxio_ts_evidence.sh`.
-```
-
-## Prompt 3 — Standard MediaSession validation
-
-```markdown
-Verify and harden Auxio-TS standard Android media integration for the TS18 Android 10 target.
-
-Scope:
-- Confirm active MediaSession during playback.
-- Confirm media notification controls.
-- Confirm media-button routing.
-- Confirm audio focus and noisy-intent behaviour.
-- Confirm Android Auto / MediaLibraryService behaviour where supported by Auxio.
-- Add/adjust tests or docs only where safe.
-
-Do not add private TW/TWTHEME hooks yet.
-```
-
-## Prompt 4 — TS18 native contract investigation
-
-```markdown
-Using fresh TS18 evidence bundles, determine whether private TW/TWTHEME hooks are needed.
-
-Compare stock `com.tw.music`, Spotify/Poweramp/other installed third-party player, upstream Auxio, and Auxio-TS.
-
-Determine:
-- Does launcher/home widget respond to standard MediaSession?
-- Do media keys route through Android session dispatch?
-- Does ZLink/TLink consume standard metadata?
-- Is `com.tw.music` identity required?
-- Are private broadcasts or `com.tw.service` APIs visible?
-
-Output a recommendation before coding.
-```
+## 10) release-candidate hardening
+"Prepare release-readiness report: validated contracts, unresolved hypotheses, rerun command results, remaining TS18 runtime checks, and next risk-reduction PR."

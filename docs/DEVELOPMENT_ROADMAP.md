@@ -1,63 +1,20 @@
-# Auxio-TS development roadmap
+# Auxio-TS Development Roadmap
 
-## Phase 0 — commit instructions and evidence tooling
+One primary variable per PR.
 
-Commit this package. No app behaviour changes.
+| Phase | Goal | Likely files touched | Validation | Stop conditions | Human TS18 checks | Expected artifacts |
+|---|---|---|---|---|---|---|
+| 0 | Documentation/source-corpus hardening | `docs/*.md`, `AGENTS.md`, `.github/copilot-instructions.md` | docs review + script syntax | evidence taxonomy contradictions | No | updated source map/contracts/requirements |
+| 1 | Build/install baseline | docs + minimal non-functional fixes | `./gradlew tasks assembleDebug test lint` + script syntax | environment/toolchain blockers | Optional install sanity | baseline build blocker report |
+| 2 | Stock `com.tw.music` baseline capture | runbook/docs/scripts | stock capture completeness | missing reproducibility | Mandatory | stock evidence bundle + summary |
+| 3 | Auxio-TS Android-native validation on TS18 | runbook/docs (+ minimal observability if needed) | session/notification/focus/key checks | Android-native path unstable | Mandatory | Auxio baseline evidence bundle |
+| 4 | Stock vs Auxio comparison | comparison docs/scripts | A/B parity matrix | ambiguous/non-repeatable deltas | Mandatory | ranked gap matrix |
+| 5 | Launcher/widget/TWTHEME evidence capture | source-map/contracts/runbook updates | launcher/widget/theme scenarios | no reproducible launcher scenarios | Mandatory | launcher/TWTHEME report |
+| 6 | TS18 adapter skeleton | isolated adapter package + docs/tests | no behavior change when disabled | leakage into core playback/library | Recommended | default-off facade/registry PR |
+| 7 | Targeted TW contract experiments | one adapter module + diagnostics | pre/post evidence for one contract | privileged requirement or regressions | Mandatory | per-contract experiment report + rollback plan |
+| 8 | FLAC/audio-quality/sleep-resume validation | validation docs/tests + minimal guarded fixes | FLAC matrix + navigation-mixing + sleep/resume checks | mainstream regression risk | Mandatory | pass/fail validation matrix |
+| 9 | Release-candidate hardening | release docs/checklists | full command rerun + latest TS18 evidence replay | unresolved high-risk hypotheses | Final sign-off | release-readiness dossier |
 
-## Phase 1 — baseline evidence
-
-Use the evidence scripts to compare:
-
-- stock `com.tw.music`;
-- existing third-party players;
-- upstream Auxio;
-- Auxio-TS debug build.
-
-Decision gate:
-
-- If TS18 launcher/widgets/keys work with standard MediaSession, prioritise normal Auxio/Media3 correctness and UI fit.
-- If TS18 ignores standard sessions but stock `com.tw.music` works, investigate private TW contracts.
-- If only package identity matters, stop and design a safe package/bridge strategy before coding.
-
-## Phase 2 — standard media hardening
-
-Likely PRs:
-
-1. Add TS18 debug screen/log export showing MediaSession state, audio focus, package/environment detection.
-2. Add/verify MediaLibraryService/Android Auto compatibility on API 29.
-3. Add TS18-specific validation CI/docs without vendor hooks.
-4. Ensure FLAC test matrix and user-visible failure reporting.
-
-## Phase 3 — TS18 adapter proof-of-concepts
-
-Only if Phase 1 shows gaps.
-
-Possible PRs:
-
-- TS18 environment detector.
-- Passive broadcast logger for TW actions while Auxio-TS runs.
-- Optional compatibility broadcast emitter if stock actions are proven.
-- Metadata projection shim if launcher ignores MediaSession.
-- Source/focus integration shim if `com.tw.service` requires it.
-
-## Phase 4 — package/privilege decisions
-
-Only after proof.
-
-Options:
-
-- normal package remains sufficient;
-- alternate package with intent aliases;
-- companion bridge app;
-- rooted/system install path;
-- same-package replacement.
-
-Same-package/system replacement is last resort.
-
-## Phase 5 — polish
-
-- TS18 landscape UI tuning.
-- Large-touch controls.
-- Theme compatibility.
-- Launcher icon/name/channel polish.
-- Release build signing and reproducibility.
+## Snapshot-driven sequencing notes
+- `t-music` snapshot findings are now integrated as evidence for phases 2/4/5/7.
+- Do not start phase 7 until phases 3 and 4 produce clear, reproducible gaps.

@@ -1,0 +1,163 @@
+name: CI
+
+# Always-on guard that runs on every push to main/work and on every PR.
+# Two fast, build-free jobs run in parallel:
+#
+#   vendor-guard   Checks that every protected TW/TWTHEME/vendor integration
+#                  token still exists somewhere in the source tree.  A missing
+#                  token means a compatibility regression.
+#
+#   parity-smoke   Spot-checks that the eight most critical integration strings
+#                  are still present in app/apktool/ (the editable source).
+#
+# Both jobs require no Android SDK, no build, and no secrets.
+
+on:
+  push:
+    branches:
+      - main
+      - work
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_vendor_guard:
+        description: Run vendor token guard job
+        type: boolean
+        default: true
+      run_parity_smoke:
+        description: Run parity smoke checks job
+        type: boolean
+        default: true
+
+jobs:
+  # --------------------------------------------------------------------------
+  # Vendor token guard
+  # Reads protected_tokens.txt and grep-searches the entire source tree.
+  # --------------------------------------------------------------------------
+  vendor-guard:
+    if: github.event_name != 'workflow_dispatch' || inputs.run_vendor_guard
+    name: Vendor token guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan protected vendor tokens
+        run: |
+          set -euo pipefail
+          token_file="tools/vendor-audit/protected_tokens.txt"
+          [[ -f "$token_file" ]] || { echo "Token file not found: $token_file" >&2; exit 1; }
+
+          scan_dirs=("app/apktool" "docs" "scripts")
+          failures=0
+          passes=0
+
+          # Begin summary table
+          {
+            echo "## Vendor Token Guard"
+            echo ""
+            echo "| Token | Status |"
+            echo "|-------|--------|"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          while IFS= read -r token; do
+            [[ -z "$token" || "$token" == \#* ]] && continue
+            found=false
+            for d in "${scan_dirs[@]}"; do
+              if [[ -d "$d" ]] && grep -rF --quiet "$token" "$d" 2>/dev/null; then
+                found=true
+                break
+              fi
+            done
+            if $found; then
+              echo "[PASS] $token"
+              echo "| \`$token\` | ✅ present |" >> "$GITHUB_STEP_SUMMARY"
+              passes=$((passes + 1))
+            else
+              echo "[FAIL] $token" >&2
+              echo "| \`$token\` | ❌ **MISSING** |" >> "$GITHUB_STEP_SUMMARY"
+              failures=$((failures + 1))
+            fi
+          done < "$token_file"
+
+          # Summary footer
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [[ $failures -gt 0 ]]; then
+            echo "**❌ FAILED — $failures token(s) missing, $passes passed**" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "> A missing token means a TW/TWTHEME/vendor compatibility regression." \
+              "Review any recent smali or resource deletions." >> "$GITHUB_STEP_SUMMARY"
+            echo "Vendor token scan FAILED: $failures missing token(s)." >&2
+            exit 1
+          fi
+          echo "**✅ All $passes tokens present**" >> "$GITHUB_STEP_SUMMARY"
+          echo "Vendor token scan passed."
+
+  # --------------------------------------------------------------------------
+  # Parity smoke matrix
+  # Verifies the eight most critical integration tokens in app/apktool/.
+  # --------------------------------------------------------------------------
+
+  parity-smoke:
+    if: github.event_name != 'workflow_dispatch' || inputs.run_parity_smoke
+    name: Parity smoke checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Structural manifest checks
+        run: |
+          set -euo pipefail
+          mf="app/apktool/AndroidManifest.xml"
+          [[ -f "$mf" ]] || { echo "Missing $mf" >&2; exit 1; }
+          grep -Fq 'com.tw.music.view.MusicWidgetProvider' "$mf" || { echo "Missing widget provider in manifest" >&2; exit 1; }
+
+      - name: Check critical integration tokens
+        run: |
+          set -euo pipefail
+          failures=0
+          passes=0
+
+          # Begin summary table
+          {
+            echo "## Parity Smoke Checks"
+            echo ""
+            echo "| Token | Status |"
+            echo "|-------|--------|"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          check() {
+            local token="$1"
+            if grep -rF --quiet "$token" app/apktool 2>/dev/null; then
+              echo "[PASS] $token"
+              echo "| \`$token\` | ✅ present |" >> "$GITHUB_STEP_SUMMARY"
+              passes=$((passes + 1))
+            else
+              echo "[FAIL] token missing: $token" >&2
+              echo "| \`$token\` | ❌ **MISSING** |" >> "$GITHUB_STEP_SUMMARY"
+              failures=$((failures + 1))
+            fi
+          }
+
+          check "com.tw.music.action.cmd"
+          check "com.tw.music.action.prev"
+          check "com.tw.music.action.next"
+          check "com.tw.music.action.pp"
+          check "com.tw.music.view.MusicWidgetProvider"
+          check "com.tw.eq.EQActivity"
+          check "com.tw.radio"
+          check "com.tw.service.xt.aidl.ITWCommandAidl"
+
+          # Summary footer
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [[ $failures -gt 0 ]]; then
+            echo "**❌ FAILED — $failures token(s) missing, $passes passed**" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "> Review recent smali edits for accidental removal of vendor-integration strings." \
+              >> "$GITHUB_STEP_SUMMARY"
+            echo "Parity smoke checks FAILED: $failures missing token(s)." >&2
+            exit 1
+          fi
+          echo "**✅ All $passes tokens present in app/apktool/**" >> "$GITHUB_STEP_SUMMARY"
+          echo "Parity smoke checks passed."

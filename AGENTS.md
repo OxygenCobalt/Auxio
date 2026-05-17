@@ -1,65 +1,85 @@
-# AGENTS.md — Auxio-TS development instructions
+# AGENTS.md — Auxio-TS coding authority
 
-You are working on `cbkii/Auxio-TS`, a TS18-focused fork of Auxio. Treat this as Android media engineering plus automotive head-unit integration, not generic Android app development.
+## 1) Project purpose
+Auxio-TS is a TS18-focused, maintainable fork of Auxio.
 
-## Authoritative device target
+- Keep upstream Auxio architecture and Android media correctness first.
+- Treat TS18/TW/TWTHEME work as adapter-layer compatibility work.
+- Treat `docs/evidence/t-music-snapshot/` as evidence and prior research, not implementation source.
 
-The target device is a TS18 Android head unit captured in `diagnostics/redacted/ts18_device_profile.json`.
+## 2) Evidence + porting classification discipline
+Use **both** labels on TS18 claims:
 
-Known facts from diagnostics:
+### Evidence confidence label
+- **Observed**
+- **Inferred**
+- **Hypothesis**
+- **Requires TS18 validation**
+- **Unsupported**
 
-- Android 10 / API 29.
-- Unisoc/SPRD `uis8581a2h10` / `s9863a1h10_Natv`, arm64-v8a.
-- User/release-keys build, not a normal debug platform.
-- Stock `com.tw.music` is installed under `/system/priv-app` and appears as UID 1000 in package listings.
-- `com.tw.service`, `com.tw.service.xt`, `com.tw.eq`, `com.tw.bt`, `com.tw.video`, `com.tw.reverse`, `com.tw.net`, and related TW packages are present.
-- `com.zjinnova.zlink` is the active phone-link package via `persist.phone_connect_app`.
-- TWTHEME files exist under `/system/etc/theme/default/...`, including `Sub/MusicTheme.apk`.
-- `dumpsys media_session` captured no active sessions at the time of diagnostics.
-- `com.tw.service` owned audio focus and volume changes in the captured audio dump.
+### Porting decision label
+- **Directly reusable requirement**
+- **Reusable validation idea**
+- **Useful as evidence only**
+- **Obsolete due to Auxio architecture**
+- **Requires TS18 runtime validation**
+- **Unsafe to port**
+- **Should be explicitly avoided**
 
-## Working posture
+Do not claim compatibility without reproducible TS18 runtime evidence.
 
-Separate these layers:
+## 3) Source hierarchy
+1. Android official docs + upstream Auxio source (implementation authority)
+2. `diagnostics/redacted/*` (device evidence authority)
+3. `docs/evidence/t-music-snapshot/*` (private corpus snapshot; requirement/validation evidence)
+4. Public TW/Topway repos (`TWUtil`/`TWClient` etc.) (research inputs only)
 
-1. Standard Android media layer: Auxio/Media3/ExoPlayer, MediaSession, MediaLibraryService, notifications, audio focus, media keys.
-2. TS18 native integration layer: TWTHEME, TW services, stock launcher/home music widget, ZLink/TLink, vendor key/audio behaviours.
-3. Evidence/validation layer: dumpsys/logcat/scripts/manual test records.
+## 4) Mandatory architectural separation
+```text
+Auxio upstream core
+        |
+Android media integration layer
+        |
+Auxio-TS adapter/facade layer
+        |
+optional TS18-specific modules:
+  - launcher/media-widget adapter
+  - TW broadcast adapter
+  - TW service adapter
+  - TWTHEME/resource compatibility notes
+  - ZLink/TLink validation hooks
+  - stock com.tw.music comparison harness
+```
 
-Do not mix observations and inferences.
+## 5) Hard constraints
+- Do not change package identity to `com.tw.music`.
+- Do not require `android.uid.system`, privileged UID, platform signing, or private keys.
+- Do not copy decompiled smali into Auxio app implementation.
+- Do not scatter TS18 conditionals through core playback/library code.
+- Do not present TW private contracts as stable unless proven on TS18 hardware.
 
-## Rules for agents
+## 6) Specific findings from `t-music` snapshot to treat as high-risk
+- `AndroidManifest.xml` shows `package="com.tw.music"` + `android:sharedUserId="android.uid.system"`.
+- Snapshot includes explicit TW actions (`com.tw.music.action.cmd|prev|next|pp`).
+- Snapshot includes TW service/AIDL/token surfaces (`com.tw.service.xt.aidl.*`) and TW theme/resource coupling.
 
-- Prefer small, evidence-driven PRs.
-- Preserve upstream Auxio behaviour unless a TS18-specific feature flag gates a change.
-- Keep TS18-specific code isolated behind clear package/module boundaries and runtime detection.
-- Do not make broad rewrites of Auxio core playback, library indexing, or UI without a specific TS18 acceptance requirement.
-- Do not port smali blindly from `com.tw.music` into Auxio.
-- Do not use privileged/system permissions, shared UID, or package-name impersonation unless explicitly proven necessary and separately approved.
-- Do not commit raw TS18 diagnostics, serial numbers, copied APKs, firmware blobs, logs with personal data, or proprietary binaries.
-- Prefer official Android/AndroidX docs for standard media behaviours.
-- Treat public TS/TW/TWTHEME community material as investigation leads, not final proof.
-- Every TS18 feature must have a reproducible validation command or manual runbook.
+These are evidence inputs; they are not direct implementation requirements for Auxio-TS.
 
-## Required response format for coding agents
+## 7) Validation requirements
+At minimum run (or document exact blocker):
+- `./gradlew tasks`
+- `./gradlew assembleDebug`
+- `./gradlew test`
+- `./gradlew lint`
+- `find scripts -type f -name '*.sh' -print -exec sh -n {} \;`
 
-When completing a task, respond with:
+For evidence passes also run:
+- `find docs/evidence/t-music-snapshot -type f \( -iname '*.apk' -o -iname '*.dex' -o -iname '*.zip' -o -iname '*.jar' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.webp' \) -print`
 
-1. Summary.
-2. Files changed.
-3. Behaviour changed.
-4. TS18 assumptions used.
-5. Validation commands run and results.
-6. Remaining TS18 runtime checks.
-7. Risks/blockers.
-8. Next recommended task.
-
-## STOP conditions
-
-Stop and report rather than coding if:
-
-- A change requires privileged/system signing or `android.uid.system`.
-- Package replacement of `com.tw.music` is being proposed without runtime proof.
-- A TS18 native contract is inferred only from names, not logs/static references/runtime behaviour.
-- The implementation would break Android media notifications/MediaSession behaviour.
-- The implementation requires committing proprietary APKs or raw firmware.
+## 8) PR reporting requirements
+Every TS18-facing PR must include:
+- claims + evidence/porting labels,
+- exact commands run and results,
+- unresolved risks/blockers,
+- TS18 runtime checks still required,
+- next recommended one-variable PR.

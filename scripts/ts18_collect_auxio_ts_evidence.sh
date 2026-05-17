@@ -15,6 +15,12 @@ OUT="$OUT_BASE/auxio-ts-evidence_${STAMP}_${SCENARIO}"
 mkdir -p "$OUT" 2>/dev/null || OUT="/sdcard/auxio-ts-evidence_${STAMP}_${SCENARIO}"
 mkdir -p "$OUT" 2>/dev/null || exit 1
 
+if command -v timeout >/dev/null 2>&1; then
+  RUN_TIMEOUT_CMD="timeout 45"
+else
+  RUN_TIMEOUT_CMD=""
+fi
+
 run() {
   name="$1"; shift
   {
@@ -26,7 +32,11 @@ run() {
     echo "Package: $PKG"
     echo "Command: $*"
     echo
-    "$@" 2>&1
+    if [ -n "$RUN_TIMEOUT_CMD" ]; then
+      $RUN_TIMEOUT_CMD "$@" 2>&1
+    else
+      "$@" 2>&1
+    fi
     echo
     echo "Exit code: $?"
   } > "$OUT/$name.txt" 2>&1
@@ -67,8 +77,9 @@ Do not commit raw evidence bundles to a public repo without redaction.
 EOF
 
 if command -v zip >/dev/null 2>&1; then
-  (cd "$OUT_BASE" 2>/dev/null && zip -qr "$(basename "$OUT").zip" "$(basename "$OUT")") || true
+  if (cd "$OUT_BASE" 2>/dev/null && zip -qr "$(basename "$OUT").zip" "$(basename "$OUT")"); then
+    echo "Created zip: $OUT_BASE/$(basename "$OUT").zip"
+  fi
 fi
 
 echo "Created evidence folder: $OUT"
-[ -f "$OUT.zip" ] && echo "Created zip: $OUT.zip"
