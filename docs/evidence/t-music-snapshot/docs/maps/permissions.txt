@@ -1,0 +1,7 @@
+android.permission.BLUETOOTH
+android.permission.BLUETOOTH_ADMIN
+android.permission.BROADCAST_STICKY
+android.permission.RECORD_AUDIO
+android.permission.SYSTEM_ALERT_WINDOW
+android.permission.SYSTEM_OVERLAY_WINDOW
+android.permission.WRITE_EXTERNAL_STORAGE

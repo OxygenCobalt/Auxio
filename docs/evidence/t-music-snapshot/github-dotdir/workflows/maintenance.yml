@@ -1,0 +1,334 @@
+name: Maintenance
+
+# Maintenance tasks that operate on the workspace without requiring a build.
+#
+#  refresh-reports   Regenerate docs/maps/ file inventories, component maps,
+#                    JADX problem reports, and vendor-hook cross-references.
+#                    Run after any significant smali or resource change.
+#                    Outputs are committed back to the repo only when
+#                    allow_push=true (opt-in).
+#
+#  init-mapping-notes  Write the docs/deobf/enigma-notes.md scaffold if the
+#                    file does not already exist.  Safe to run more than once.
+#
+# Both tasks write a $GITHUB_STEP_SUMMARY with counts and results.
+# refresh-reports can optionally commit the generated files back to the branch.
+
+on:
+  workflow_dispatch:
+    inputs:
+      allow_push:
+        description: Allow auto-commit and push when task=refresh-reports (set true only when you intend to commit generated docs)
+        default: false
+        type: boolean
+      upload_artifacts:
+        description: Upload generated outputs as backup artifacts
+        default: true
+        type: boolean
+      artifact_retention_days:
+        description: Retention days for maintenance artifacts
+        default: "14"
+        type: string
+      task:
+        description: Maintenance task to run
+        type: choice
+        options:
+          - refresh-reports
+          - init-mapping-notes
+        default: refresh-reports
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  maintenance:
+    name: Maintenance — ${{ inputs.task }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start plain-English run summary
+        run: |
+          {
+            echo "## 🧰 Maintenance workflow"
+            echo ""
+            echo "- **Task:** \`${{ inputs.task }}\`"
+            echo "- **allow_push:** \`${{ inputs.allow_push }}\`"
+            echo "- **upload_artifacts:** \`${{ inputs.upload_artifacts }}\`"
+            echo ""
+            echo "This summary is updated through the run with outcomes and next steps."
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # TASK: refresh-reports
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Create output directories
+        if: inputs.task == 'refresh-reports'
+        run: mkdir -p docs/maps docs/reports docs/deobf
+
+      - name: File inventories — apktool tree
+        if: inputs.task == 'refresh-reports'
+        run: |
+          set -euo pipefail
+          find app/apktool -type f | sort > docs/maps/all-apktool-files.txt
+          find app/apktool -type f -path '*/smali*/*.smali' | sort \
+            > docs/maps/all-smali-files.txt
+          echo "all-apktool-files.txt: $(wc -l < docs/maps/all-apktool-files.txt) files"
+          echo "all-smali-files.txt:   $(wc -l < docs/maps/all-smali-files.txt) smali files"
+
+      - name: File inventories — JADX reference trees
+        if: inputs.task == 'refresh-reports'
+        run: |
+          set -euo pipefail
+          find reference/jadx-raw -type f 2>/dev/null | sort \
+            > docs/maps/all-jadx-files.txt || true
+          find reference/jadx-aliased -type f 2>/dev/null | sort \
+            > docs/maps/all-jadx-aliased-files.txt || true
+          echo "all-jadx-files.txt:         $(wc -l < docs/maps/all-jadx-files.txt 2>/dev/null || echo 0) files"
+          echo "all-jadx-aliased-files.txt: $(wc -l < docs/maps/all-jadx-aliased-files.txt 2>/dev/null || echo 0) files"
+
+      - name: File inventories — package-specific subsets
+        if: inputs.task == 'refresh-reports'
+        run: |
+          set -euo pipefail
+          find app/apktool -type f -path '*/com/tw/music/*' 2>/dev/null | sort \
+            > docs/maps/app-smali-files.txt || true
+          find app/apktool -type f -path '*/com/eckom/*' 2>/dev/null | sort \
+            > docs/maps/xtlibrary-smali-files.txt || true
+          echo "app-smali-files.txt:       $(wc -l < docs/maps/app-smali-files.txt 2>/dev/null || echo 0)"
+          echo "xtlibrary-smali-files.txt: $(wc -l < docs/maps/xtlibrary-smali-files.txt 2>/dev/null || echo 0)"
+
+      - name: JADX package-level file subsets (ripgrep)
+        if: inputs.task == 'refresh-reports'
+        run: |
+          set -euo pipefail
+          # rg is available on ubuntu-latest runners
+          rg -l '^package\s+.*music;' reference/jadx-raw 2>/dev/null | sort \
+            > docs/maps/app-jadx-files.txt || true
+          rg -l '^package\s+com\.eckom\.' reference/jadx-raw 2>/dev/null | sort \
+            > docs/maps/xtlibrary-jadx-files.txt || true
+          echo "app-jadx-files.txt:       $(wc -l < docs/maps/app-jadx-files.txt 2>/dev/null || echo 0)"
+          echo "xtlibrary-jadx-files.txt: $(wc -l < docs/maps/xtlibrary-jadx-files.txt 2>/dev/null || echo 0)"
+
+      - name: Manifest component extraction (Python)
+        if: inputs.task == 'refresh-reports'
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+
+          manifest = Path("app/apktool/AndroidManifest.xml")
+          if not manifest.exists():
+              print("AndroidManifest.xml not found — skipping component extraction")
+              sys.exit(0)
+
+          m = manifest.read_text(encoding="utf-8", errors="ignore")
+          patterns = {
+              "activities":  r'<activity[^>]*android:name="([^"]+)"',
+              "services":    r'<service[^>]*android:name="([^"]+)"',
+              "receivers":   r'<receiver[^>]*android:name="([^"]+)"',
+              "providers":   r'<provider[^>]*android:name="([^"]+)"',
+              "permissions": r'<uses-permission[^>]*android:name="([^"]+)"',
+          }
+          for name, pat in patterns.items():
+              vals = sorted(set(re.findall(pat, m)))
+              out = Path(f"docs/maps/{name}.txt")
+              out.write_text("\n".join(vals) + ("\n" if vals else ""), encoding="utf-8")
+              print(f"{name}.txt: {len(vals)} entries")
+          PY
+
+      - name: JADX problem report (ripgrep)
+        if: inputs.task == 'refresh-reports'
+        run: |
+          set -euo pipefail
+          rg -n \
+            'Code decompiled incorrectly|JADX ERROR|Method dump skipped|Unsupported multi-entry loop' \
+            reference/jadx-raw \
+            > docs/reports/jadx-problems.txt 2>/dev/null || true
+          echo "jadx-problems.txt: $(wc -l < docs/reports/jadx-problems.txt 2>/dev/null || echo 0) lines"
+
+      - name: Vendor/system hook cross-references (ripgrep)
+        if: inputs.task == 'refresh-reports'
+        run: |
+          set -euo pipefail
+          rg -n \
+            'com\.tw\.service\.xt|com\.tw\.music\.action|com\.tw\.radio|persist\.|EQActivity|VideoActivity' \
+            reference/jadx-raw app/apktool \
+            > docs/reports/vendor-hooks.txt 2>/dev/null || true
+          echo "vendor-hooks.txt: $(wc -l < docs/reports/vendor-hooks.txt 2>/dev/null || echo 0) lines"
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # Auto-commit refreshed reports back to the branch
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Commit refreshed reports
+        if: inputs.task == 'refresh-reports' && inputs.allow_push
+        id: commit
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/maps/ docs/reports/ docs/deobf/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit — docs are already up to date."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          else
+            changed=$(git diff --staged --name-only | wc -l | tr -d ' ')
+            git commit \
+              -m "chore: refresh docs/maps and docs/reports [skip ci]" \
+              -m "Auto-generated by maintenance workflow run ${{ github.run_id }} on ${{ github.ref_name }}"
+            git push
+            echo "Committed $changed file(s) to ${{ github.ref_name }}"
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+            echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Append refresh-reports progress summary
+        if: inputs.task == 'refresh-reports' && always()
+        run: |
+          {
+            echo "### Refresh reports result"
+            echo "- File inventories and reports were regenerated."
+            echo "- If \`allow_push=true\`, commit/push was attempted when changes existed."
+            echo "- Next: review the generated files or download the maintenance artifact."
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # TASK: init-mapping-notes
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Initialise Enigma mapping notes scaffold
+        if: inputs.task == 'init-mapping-notes'
+        id: init_notes
+        run: |
+          set -euo pipefail
+          mkdir -p mappings/manual-enigma docs/deobf
+
+          target="docs/deobf/enigma-notes.md"
+          if [[ -s "$target" ]]; then
+            echo "$target already exists with content — not overwriting."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          cat > "$target" <<'NOTES'
+          # Enigma mapping notes
+
+          Place reviewed semantic renames in `mappings/manual-enigma/` using Enigma format.
+          Get exact raw names and signatures from `app/apktool/smali*/*.smali`.
+
+          ## Minimal example
+
+          ```
+          CLASS com/tw/music/MusicActivity -
+              METHOD a onPlaybackButtonClick (Landroid/view/View;)V
+              FIELD p btnPlay Landroid/widget/ImageView;
+          ```
+
+          Only add entries for classes/methods/fields you actually understand.
+          NOTES
+
+          echo "Initialised: $target"
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+      - name: Append init-mapping-notes progress summary
+        if: inputs.task == 'init-mapping-notes' && always()
+        run: |
+          {
+            echo "### Init mapping notes result"
+            echo "- Checked \`docs/deobf/enigma-notes.md\` and created it when missing."
+            echo "- Next: add reviewed renames to \`mappings/manual-enigma/\`."
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # Job summary
+      # ═══════════════════════════════════════════════════════════════════════
+
+
+      - name: Skip auto-commit notice
+        if: inputs.task == 'refresh-reports' && !inputs.allow_push
+        run: |
+          echo "Auto-commit skipped (allow_push=false)."
+
+      - name: Write job summary (refresh-reports)
+        if: inputs.task == 'refresh-reports' && always()
+        env:
+          COMMITTED: ${{ steps.commit.outputs.committed }}
+          CHANGED: ${{ steps.commit.outputs.changed }}
+          ALLOW_PUSH: ${{ inputs.allow_push }}
+        run: |
+          {
+            echo "## 🔄 Maintenance — Refresh Reports"
+            echo ""
+            echo "| Report | Lines / Entries |"
+            echo "|--------|----------------|"
+            for f in docs/maps/*.txt docs/reports/*.txt; do
+              [[ -f "$f" ]] || continue
+              count=$(wc -l < "$f" | tr -d ' ')
+              echo "| \`$f\` | $count |"
+            done
+            echo ""
+            if [[ "${ALLOW_PUSH:-false}" != "true" ]]; then
+              echo "**ℹ️ Auto-commit disabled** (allow_push=false). Generated files are available in artifacts."
+            elif [[ "${COMMITTED:-false}" == "true" ]]; then
+              echo "**✅ Committed ${CHANGED:-?} file(s) to \`${{ github.ref_name }}\`** \`[skip ci]\`"
+            else
+              echo "**ℹ️ No changes — docs were already up to date.**"
+            fi
+            echo ""
+            echo "### Discoverable report paths"
+            echo "These files are committed to the repo and stable for agent consumption:"
+            echo "- \`docs/maps/\` — file inventories, component lists"
+            echo "- \`docs/reports/\` — JADX problems, vendor-hook cross-references"
+            echo "- \`docs/deobf/\` — mapping notes"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write job summary (init-mapping-notes)
+        if: inputs.task == 'init-mapping-notes' && always()
+        env:
+          CREATED: ${{ steps.init_notes.outputs.created }}
+        run: |
+          {
+            echo "## 📝 Maintenance — Init Mapping Notes"
+            echo ""
+            if [[ "${CREATED:-false}" == "true" ]]; then
+              echo "**✅ Created** \`docs/deobf/enigma-notes.md\`"
+              echo ""
+              echo "Add Enigma-format renames to \`mappings/manual-enigma/\` and then"
+              echo "run **JADX Export** with mode \`aliased\` to see the renamed output."
+            else
+              echo "**ℹ️ Skipped** — \`docs/deobf/enigma-notes.md\` already exists with content."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # Artifacts (backup only — primary output is the auto-commit)
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Upload generated outputs
+        if: inputs.upload_artifacts && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintenance-${{ inputs.task }}-${{ github.run_id }}
+          path: |
+            docs/reports/
+            docs/maps/
+            docs/deobf/enigma-notes.md
+          if-no-files-found: ignore
+          retention-days: ${{ fromJSON(inputs.artifact_retention_days) }}
+
+      - name: Append final next-steps summary
+        if: always()
+        run: |
+          {
+            echo "## ✅ Next steps"
+            echo "- Open generated files directly in the repository: [docs/maps](https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}/docs/maps) and [docs/reports](https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}/docs/reports)."
+            echo "- Re-run this workflow from [Actions → Maintenance](https://github.com/${{ github.repository }}/actions/workflows/maintenance.yml) with different inputs if needed."
+            echo "- Use [README_ACTIONS.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/README_ACTIONS.md) for input guidance."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,633 @@
+name: Sign and Release
+
+# Builds the unsigned APK from app/apktool/, then produces up to five signed/unsigned
+# APK variants.  Failure of any individual variant does NOT abort the others.
+#
+# Variant priority (TS18 system release is the primary target):
+#
+#   V1  ts18-system     sharedUserId=android.uid.system retained
+#                       Signed with KEYSTORE_BASE64 (TS18 platform key)
+#                       v1 + v2 + v3 signing schemes enabled
+#                       ← PRIMARY / highest-priority release asset
+#
+#   V2  signed-uid      sharedUserId=android.uid.system retained
+#                       Signed with KEYSTORE_BASE64 via standard env-var path
+#
+#   V3  signed-no-uid   sharedUserId REMOVED from manifest (portable install)
+#                       Signed with KEYSTORE_BASE64 via standard env-var path
+#                       Requires a separate apktool build of the stripped manifest
+#
+#   V4  pixel9a-compat  sharedUserId REMOVED in temp tree + Pixel shims overlay
+#                       Signed with KEYSTORE_BASE64 via standard env-var path
+#                       Development/runtime-smoke only (non-TS18)
+#
+#   V5  unsigned-debug  Zipaligned only, no signing — debug / inspection reference
+#
+# Required secrets for signing variants V1–V4:
+#   KEYSTORE_BASE64      base64-encoded keystore .jks file
+#   KEYSTORE_PASSWORD    keystore password
+#   KEY_ALIAS            key alias within the keystore
+#   KEY_PASSWORD         key password (falls back to KEYSTORE_PASSWORD if unset)
+#
+# If KEYSTORE_BASE64 is absent or empty, V1–V4 are skipped and only V5 is produced.
+# None of the four variants is mandatory; the workflow succeeds as long as at
+# least one APK is produced.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: >
+          Release tag (e.g. v1.0.0).  Must be strict semver vX.Y.Z.
+          Leave blank to auto-increment the patch from the latest existing tag
+          (or start at v1.0.0 if no tags exist yet).
+        required: false
+        default: ""
+        type: string
+      draft:
+        description: Create the GitHub release as a draft
+        default: false
+        type: boolean
+      apktool_ver:
+        description: Apktool version (blank = resolve latest release)
+        default: ""
+        type: string
+      jadx_ver:
+        description: JADX version (blank = resolve latest release)
+        default: ""
+        type: string
+      create_tag:
+        description: Create/push git tag when missing
+        default: true
+        type: boolean
+      create_release:
+        description: Create GitHub release entry
+        default: true
+        type: boolean
+      upload_artifacts:
+        description: Upload all produced APKs as a workflow artifact bundle
+        default: true
+        type: boolean
+      artifact_retention_days:
+        description: Retention days for the APK artifact bundle
+        default: "90"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  sign-release:
+    name: Sign and release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      # -----------------------------------------------------------------------
+      # Resolve tag — auto-increment patch if input is blank, then validate
+      # -----------------------------------------------------------------------
+      - name: Resolve and validate tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          set -uo pipefail
+
+          if [[ -z "${INPUT_TAG:-}" ]]; then
+            latest=$(git tag --list 'v*' \
+              | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+              | sort -t. -k1.2,1n -k2,2n -k3,3n \
+              | tail -1 || true)
+            if [[ -z "$latest" ]]; then
+              resolved="v1.0.0"
+            else
+              IFS='.' read -r major minor patch <<< "${latest#v}"
+              # Guard against unexpected tag format (should be caught by grep, but be explicit)
+              if [[ -z "$major" || -z "$minor" || -z "$patch" || \
+                    ! "$major" =~ ^[0-9]+$ || ! "$minor" =~ ^[0-9]+$ || ! "$patch" =~ ^[0-9]+$ ]]; then
+                echo "::error::Could not parse semver components from tag '$latest'" >&2
+                exit 1
+              fi
+              resolved="v${major}.${minor}.$((patch + 1))"
+            fi
+            echo "Auto-resolved tag: $resolved (latest was '${latest:-none}')"
+          else
+            resolved="$INPUT_TAG"
+          fi
+
+          if [[ ! "$resolved" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag '$resolved' is not strict semver (vX.Y.Z)" >&2
+            exit 1
+          fi
+
+          normalized="${resolved#v}"
+          echo "tag=$resolved"       >> "$GITHUB_OUTPUT"
+          echo "normalized=$normalized" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: $resolved (normalized: $normalized)"
+
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
+        with:
+          apktool_ver: ${{ inputs.apktool_ver }}
+          jadx_ver: ${{ inputs.jadx_ver }}
+          tool_profile: full
+
+      # -----------------------------------------------------------------------
+      # Locate aapt2
+      # -----------------------------------------------------------------------
+      - name: Locate aapt2 from Android SDK
+        id: aapt2
+        run: |
+          set -uo pipefail
+          aapt2_bin=$(find "$ANDROID_SDK_ROOT/build-tools" \
+            -mindepth 2 -maxdepth 2 -type f -name aapt2 -perm -111 \
+            | sort | tail -1 || true)
+          if [[ -z "$aapt2_bin" || ! -x "$aapt2_bin" ]]; then
+            echo "::error::aapt2 not found under $ANDROID_SDK_ROOT/build-tools" >&2
+            exit 1
+          fi
+          echo "Found aapt2: $aapt2_bin"
+          # Copy to RUNNER_TEMP so all build steps share the same binary path
+          aapt2_tmp="$RUNNER_TEMP/aapt2"
+          cp "$aapt2_bin" "$aapt2_tmp"
+          chmod +x "$aapt2_tmp"
+          echo "path=$aapt2_tmp" >> "$GITHUB_OUTPUT"
+
+      # -----------------------------------------------------------------------
+      # Build — base unsigned APK (sharedUserId=android.uid.system intact)
+      # This is the primary build; failure here aborts the run because all
+      # signing variants depend on a successfully assembled APK.
+      # -----------------------------------------------------------------------
+      - name: Build unsigned APK (base — sharedUserId intact)
+        id: build_base
+        env:
+          AAPT2: ${{ steps.aapt2.outputs.path }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          rm -f dist/com.tw.music-unsigned.apk
+
+          java -Xms256m -Xmx2048m \
+            -jar .tools/apktool.jar build \
+            --aapt "$AAPT2" \
+            app/apktool \
+            -o dist/com.tw.music-unsigned.apk
+
+          [[ -f dist/com.tw.music-unsigned.apk ]] || {
+            echo "::error::apktool exited 0 but base APK not found" >&2
+            exit 1
+          }
+          sz=$(du -h dist/com.tw.music-unsigned.apk | cut -f1)
+          echo "Base unsigned APK: $sz — dist/com.tw.music-unsigned.apk"
+          echo "size=$sz" >> "$GITHUB_OUTPUT"
+
+      # -----------------------------------------------------------------------
+      # Build — no-sharedUserId variant (V3 source)
+      # Failure is non-fatal; V3 will be skipped if this fails.
+      # -----------------------------------------------------------------------
+      - name: Build unsigned APK (no-sharedUserId variant)
+        id: build_no_uid
+        continue-on-error: true
+        env:
+          AAPT2: ${{ steps.aapt2.outputs.path }}
+        run: |
+          set -uo pipefail
+          no_uid_tree="$RUNNER_TEMP/apktool-no-uid"
+          rm -rf "$no_uid_tree"
+          cp -r app/apktool "$no_uid_tree"
+
+          # Strip sharedUserId from the manifest copy
+          sed -i 's/ android:sharedUserId="[^"]*"//g' \
+            "$no_uid_tree/AndroidManifest.xml"
+
+          if grep -q 'sharedUserId' "$no_uid_tree/AndroidManifest.xml"; then
+            echo "::warning::sharedUserId still present after sed strip — check manifest"
+          fi
+
+      - name: Build unsigned APK (Pixel 9a compat no-uid + shim overlay)
+        id: build_pixel
+        continue-on-error: true
+        env:
+          AAPT2: ${{ steps.aapt2.outputs.path }}
+        run: |
+          set -uo pipefail
+          pixel_tree="$RUNNER_TEMP/apktool-pixel9a-compat"
+          rm -rf "$pixel_tree"
+          cp -r app/apktool "$pixel_tree"
+          sed -i 's/ android:sharedUserId="[^"]*"//g' "$pixel_tree/AndroidManifest.xml"
+          cp -r compat/pixel9a/apktool-overlay/. "$pixel_tree/"
+          if grep -q 'sharedUserId' "$pixel_tree/AndroidManifest.xml"; then
+            echo "::warning::sharedUserId still present in Pixel temp manifest"
+          fi
+          rm -f dist/com.tw.music-unsigned-pixel9a-compat-no-uid.apk
+          java -Xms256m -Xmx2048m \
+            -jar .tools/apktool.jar build \
+            --aapt "$AAPT2" \
+            "$pixel_tree" \
+            -o dist/com.tw.music-unsigned-pixel9a-compat-no-uid.apk
+          if [[ -f dist/com.tw.music-unsigned-pixel9a-compat-no-uid.apk ]]; then
+            echo "built=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Pixel compat build produced no output file"
+            echo "built=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          rm -f dist/com.tw.music-unsigned-no-uid.apk
+          java -Xms256m -Xmx2048m \
+            -jar .tools/apktool.jar build \
+            --aapt "$AAPT2" \
+            "$no_uid_tree" \
+            -o dist/com.tw.music-unsigned-no-uid.apk
+
+          if [[ -f dist/com.tw.music-unsigned-no-uid.apk ]]; then
+            sz=$(du -h dist/com.tw.music-unsigned-no-uid.apk | cut -f1)
+            echo "No-uid unsigned APK: $sz — dist/com.tw.music-unsigned-no-uid.apk"
+            echo "built=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::No-uid APK build produced no output file"
+            echo "built=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -----------------------------------------------------------------------
+      # Locate build-tools (zipalign + apksigner)
+      # -----------------------------------------------------------------------
+      - name: Locate Android build-tools
+        id: bt
+        run: |
+          set -uo pipefail
+          bt=$(find "$ANDROID_SDK_ROOT/build-tools" \
+            -mindepth 1 -maxdepth 1 -type d | sort | tail -1 || true)
+          if [[ -z "$bt" || ! -x "$bt/zipalign" ]]; then
+            echo "::error::build-tools not found or zipalign missing" >&2
+            exit 1
+          fi
+          echo "Build tools: $bt"
+          echo "path=$bt" >> "$GITHUB_OUTPUT"
+
+      # -----------------------------------------------------------------------
+      # Decode keystore — written only to RUNNER_TEMP, never to workspace
+      # Non-fatal: if absent, V1–V3 are skipped, only V4 is produced.
+      # -----------------------------------------------------------------------
+      - name: Decode keystore
+        id: ks
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          set -uo pipefail
+          if [[ -z "${KS_B64:-}" ]]; then
+            echo "::warning::KEYSTORE_BASE64 is not set — signing variants (V1/V2/V3) will be skipped"
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "path="           >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          ks_path="$RUNNER_TEMP/release.keystore"
+          printf '%s' "$KS_B64" | base64 --decode > "$ks_path"
+          echo "available=true"  >> "$GITHUB_OUTPUT"
+          echo "path=$ks_path"   >> "$GITHUB_OUTPUT"
+          echo "Keystore decoded to RUNNER_TEMP ($(wc -c < "$ks_path") bytes)"
+
+      # -----------------------------------------------------------------------
+      # V1 — TS18 system variant  [PRIORITY]
+      # sharedUserId=android.uid.system intact; v1+v2+v3 signing enabled
+      # -----------------------------------------------------------------------
+      - name: "[V1] Zipalign + sign — TS18 system (sharedUserId, v1/v2/v3 schemes)"
+        id: v1
+        continue-on-error: true
+        env:
+          BT:               ${{ steps.bt.outputs.path }}
+          KS:               ${{ steps.ks.outputs.path }}
+          KS_AVAILABLE:     ${{ steps.ks.outputs.available }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:        ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:     ${{ secrets.KEY_PASSWORD }}
+          NORM:             ${{ steps.tag.outputs.normalized }}
+        run: |
+          set -uo pipefail
+          if [[ "${KS_AVAILABLE:-false}" != "true" ]]; then
+            echo "Skipping V1: keystore not available"; exit 0
+          fi
+          src="dist/com.tw.music-unsigned.apk"
+          [[ -f "$src" ]] || { echo "::error::Base APK missing for V1" >&2; exit 1; }
+
+          aligned="$RUNNER_TEMP/v1-aligned.apk"
+          out="dist/com.tw.music-ts18-system-v${NORM}.apk"
+
+          "$BT/zipalign" -P 16 -f -v 4 "$src" "$aligned"
+
+          key_pass="${KEY_PASSWORD:-${KEYSTORE_PASSWORD}}"
+          "$BT/apksigner" sign \
+            --ks "$KS" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass  "pass:${KEYSTORE_PASSWORD}" \
+            --key-pass "pass:${key_pass}" \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --v3-signing-enabled true \
+            --out "$out" \
+            "$aligned"
+
+          "$BT/apksigner" verify -v "$out"
+          echo "✅ V1 TS18 system APK: $(ls -lh "$out" | awk '{print $5, $9}')"
+
+      # -----------------------------------------------------------------------
+      # V2 — env-var signed WITH sharedUserId (standard system install path)
+      # -----------------------------------------------------------------------
+      - name: "[V2] Zipalign + sign — env-var, sharedUserId retained"
+        id: v2
+        continue-on-error: true
+        env:
+          BT:               ${{ steps.bt.outputs.path }}
+          KS:               ${{ steps.ks.outputs.path }}
+          KS_AVAILABLE:     ${{ steps.ks.outputs.available }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:        ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:     ${{ secrets.KEY_PASSWORD }}
+          NORM:             ${{ steps.tag.outputs.normalized }}
+        run: |
+          set -uo pipefail
+          if [[ "${KS_AVAILABLE:-false}" != "true" ]]; then
+            echo "Skipping V2: keystore not available"; exit 0
+          fi
+          src="dist/com.tw.music-unsigned.apk"
+          [[ -f "$src" ]] || { echo "::error::Base APK missing for V2" >&2; exit 1; }
+
+          aligned="$RUNNER_TEMP/v2-aligned.apk"
+          out="dist/com.tw.music-signed-uid-v${NORM}.apk"
+
+          "$BT/zipalign" -P 16 -f -v 4 "$src" "$aligned"
+
+          key_pass="${KEY_PASSWORD:-${KEYSTORE_PASSWORD}}"
+          "$BT/apksigner" sign \
+            --ks "$KS" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass  "pass:${KEYSTORE_PASSWORD}" \
+            --key-pass "pass:${key_pass}" \
+            --out "$out" \
+            "$aligned"
+
+          "$BT/apksigner" verify -v "$out"
+          echo "✅ V2 signed+uid APK: $(ls -lh "$out" | awk '{print $5, $9}')"
+
+      # -----------------------------------------------------------------------
+      # V3 — env-var signed WITHOUT sharedUserId (portable / reliable install)
+      # sharedUserId removed → can install without matching platform key
+      # -----------------------------------------------------------------------
+      - name: "[V3] Zipalign + sign — env-var, sharedUserId removed"
+        id: v3
+        continue-on-error: true
+        env:
+          BT:               ${{ steps.bt.outputs.path }}
+          KS:               ${{ steps.ks.outputs.path }}
+          KS_AVAILABLE:     ${{ steps.ks.outputs.available }}
+          NO_UID_BUILT:     ${{ steps.build_no_uid.outputs.built }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:        ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:     ${{ secrets.KEY_PASSWORD }}
+          NORM:             ${{ steps.tag.outputs.normalized }}
+        run: |
+          set -uo pipefail
+          if [[ "${KS_AVAILABLE:-false}" != "true" ]]; then
+            echo "Skipping V3: keystore not available"; exit 0
+          fi
+          if [[ "${NO_UID_BUILT:-false}" != "true" ]]; then
+            echo "Skipping V3: no-uid APK build did not succeed"; exit 0
+          fi
+          src="dist/com.tw.music-unsigned-no-uid.apk"
+          [[ -f "$src" ]] || { echo "::error::No-uid APK missing for V3" >&2; exit 1; }
+
+          aligned="$RUNNER_TEMP/v3-aligned.apk"
+          out="dist/com.tw.music-signed-no-uid-v${NORM}.apk"
+
+          "$BT/zipalign" -P 16 -f -v 4 "$src" "$aligned"
+
+          key_pass="${KEY_PASSWORD:-${KEYSTORE_PASSWORD}}"
+          "$BT/apksigner" sign \
+            --ks "$KS" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass  "pass:${KEYSTORE_PASSWORD}" \
+            --key-pass "pass:${key_pass}" \
+            --out "$out" \
+            "$aligned"
+
+          "$BT/apksigner" verify -v "$out"
+          echo "✅ V3 signed+no-uid APK: $(ls -lh "$out" | awk '{print $5, $9}')"
+
+      # -----------------------------------------------------------------------
+      # V4 — signed Pixel 9a compat variant (no-uid + android.tw.john shims)
+      # -----------------------------------------------------------------------
+      - name: "[V4] Zipalign + sign — Pixel 9a compat (dev/runtime-smoke only)"
+        id: v4
+        continue-on-error: true
+        env:
+          BT:               ${{ steps.bt.outputs.path }}
+          KS:               ${{ steps.ks.outputs.path }}
+          KS_AVAILABLE:     ${{ steps.ks.outputs.available }}
+          PIXEL_BUILT:      ${{ steps.build_pixel.outputs.built }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:        ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:     ${{ secrets.KEY_PASSWORD }}
+          NORM:             ${{ steps.tag.outputs.normalized }}
+        run: |
+          set -uo pipefail
+          if [[ "${KS_AVAILABLE:-false}" != "true" ]]; then
+            echo "Skipping V4: keystore not available"; exit 0
+          fi
+          if [[ "${PIXEL_BUILT:-false}" != "true" ]]; then
+            echo "Skipping V4: Pixel compat unsigned build did not succeed"; exit 0
+          fi
+          src="dist/com.tw.music-unsigned-pixel9a-compat-no-uid.apk"
+          [[ -f "$src" ]] || { echo "::error::Pixel compat APK missing for V4" >&2; exit 1; }
+          aligned="$RUNNER_TEMP/v4-aligned.apk"
+          out="dist/com.tw.music-pixel9a-compat-no-uid-v${NORM}.apk"
+          "$BT/zipalign" -P 16 -f -v 4 "$src" "$aligned"
+          key_pass="${KEY_PASSWORD:-${KEYSTORE_PASSWORD}}"
+          "$BT/apksigner" sign \
+            --ks "$KS" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass  "pass:${KEYSTORE_PASSWORD}" \
+            --key-pass "pass:${key_pass}" \
+            --out "$out" \
+            "$aligned"
+          "$BT/apksigner" verify -v "$out"
+          echo "✅ V4 pixel9a compat APK: $(ls -lh "$out" | awk '{print $5, $9}')"
+
+      # -----------------------------------------------------------------------
+      # V5 — unsigned debug (zipaligned only — debug / sideload reference)
+      # -----------------------------------------------------------------------
+      - name: "[V5] Zipalign — unsigned debug variant"
+        id: v5
+        continue-on-error: true
+        env:
+          BT:   ${{ steps.bt.outputs.path }}
+          NORM: ${{ steps.tag.outputs.normalized }}
+        run: |
+          set -uo pipefail
+          src="dist/com.tw.music-unsigned.apk"
+          [[ -f "$src" ]] || { echo "::error::Base APK missing for V4" >&2; exit 1; }
+
+          out="dist/com.tw.music-debug-unsigned-v${NORM}.apk"
+          "$BT/zipalign" -P 16 -f -v 4 "$src" "$out"
+          echo "✅ V4 debug unsigned APK: $(ls -lh "$out" | awk '{print $5, $9}')"
+
+      # -----------------------------------------------------------------------
+      # Collect available APK assets — fail only if nothing at all was produced
+      # -----------------------------------------------------------------------
+      - name: Collect release assets
+        id: assets
+        env:
+          NORM: ${{ steps.tag.outputs.normalized }}
+        run: |
+          set -uo pipefail
+          files=()
+          for pattern in \
+            "dist/com.tw.music-ts18-system-v${NORM}.apk" \
+            "dist/com.tw.music-signed-uid-v${NORM}.apk" \
+            "dist/com.tw.music-signed-no-uid-v${NORM}.apk" \
+            "dist/com.tw.music-pixel9a-compat-no-uid-v${NORM}.apk" \
+            "dist/com.tw.music-debug-unsigned-v${NORM}.apk"; do
+            [[ -f "$pattern" ]] && files+=("$pattern")
+          done
+
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "::error::No APK assets were produced — cannot create release" >&2
+            echo "dist/ contents:" >&2
+            ls -lh dist/ 2>/dev/null || echo "  (dist/ directory missing or empty)" >&2
+            exit 1
+          fi
+
+          echo "Produced ${#files[@]} APK asset(s):"
+          printf '  %s\n' "${files[@]}"
+
+          # Multiline output for softprops
+          {
+            echo "files<<EOF"
+            printf '%s\n' "${files[@]}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      # -----------------------------------------------------------------------
+      # Tag commit
+      # -----------------------------------------------------------------------
+      - name: Tag commit
+        if: inputs.create_tag
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -uo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          existing_sha="$(git rev-list -n 1 "$TAG" 2>/dev/null || true)"
+          if [[ -n "$existing_sha" ]]; then
+            if [[ "$existing_sha" != "$(git rev-parse HEAD)" ]]; then
+              echo "::error::Tag $TAG already points to $existing_sha (not current HEAD)" >&2
+              exit 1
+            fi
+            echo "Tag $TAG already on HEAD — reusing."
+          else
+            git tag "$TAG"
+            git push origin "refs/tags/$TAG"
+            echo "Created and pushed tag $TAG"
+          fi
+
+      # -----------------------------------------------------------------------
+      # Create GitHub release
+      # -----------------------------------------------------------------------
+      - name: Create GitHub release
+        if: inputs.create_release
+        id: release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          draft: ${{ inputs.draft }}
+          fail_on_unmatched_files: false
+          files: ${{ steps.assets.outputs.files }}
+
+      # -----------------------------------------------------------------------
+      # Upload APK bundle artifact
+      # -----------------------------------------------------------------------
+      - name: Upload APK artifact bundle
+        if: inputs.upload_artifacts
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-bundle-${{ steps.tag.outputs.tag }}-${{ github.run_id }}
+          path: |
+            dist/com.tw.music-ts18-system-v*.apk
+            dist/com.tw.music-signed-uid-v*.apk
+            dist/com.tw.music-signed-no-uid-v*.apk
+            dist/com.tw.music-pixel9a-compat-no-uid-v*.apk
+            dist/com.tw.music-debug-unsigned-v*.apk
+          if-no-files-found: warn
+          retention-days: ${{ fromJSON(inputs.artifact_retention_days) }}
+
+      # -----------------------------------------------------------------------
+      # Job summary
+      # -----------------------------------------------------------------------
+      - name: Write job summary
+        if: always()
+        env:
+          TAG:          ${{ steps.tag.outputs.tag }}
+          NORM:         ${{ steps.tag.outputs.normalized }}
+          DRAFT:        ${{ inputs.draft }}
+          RELEASE_URL:  ${{ steps.release.outputs.url }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          V1_OUT:       ${{ steps.v1.outcome }}
+          V2_OUT:       ${{ steps.v2.outcome }}
+          V3_OUT:       ${{ steps.v3.outcome }}
+          V4_OUT:       ${{ steps.v4.outcome }}
+          V5_OUT:       ${{ steps.v5.outcome }}
+          BUILD_OUT:    ${{ steps.build_base.outcome }}
+          NO_UID_OUT:   ${{ steps.build_no_uid.outcome }}
+          PIXEL_OUT:    ${{ steps.build_pixel.outcome }}
+        run: |
+          norm_tag="${NORM:-unknown}"
+          {
+            echo "## 🚀 Sign and Release — \`${TAG:-unknown}\`"
+            echo ""
+            echo "- **Overall job status:** \`${{ job.status }}\`"
+            echo "- **Trigger:** \`${{ github.event_name }}\`"
+            echo "- **create_tag:** \`${{ inputs.create_tag }}\`  |  **create_release:** \`${{ inputs.create_release }}\`"
+            echo ""
+            echo "### Build steps"
+            echo "| Step | Outcome |"
+            echo "|------|---------|"
+            echo "| Base unsigned APK build | \`${BUILD_OUT:-skipped}\` |"
+            echo "| No-sharedUserId APK build (V3 source) | \`${NO_UID_OUT:-skipped}\` |"
+            echo "| Pixel 9a compat unsigned build (V4 source) | \`${PIXEL_OUT:-skipped}\` |"
+            echo ""
+            echo "### APK variants"
+            echo "| Variant | Outcome | Notes |"
+            echo "|---------|---------|-------|"
+            echo "| **V1** \`ts18-system\` — sharedUserId + v1/v2/v3 signing | \`${V1_OUT:-skipped}\` | ⭐ **Priority TS18 release target** |"
+            echo "| **V2** \`signed-uid\` — sharedUserId retained | \`${V2_OUT:-skipped}\` | Standard system install path |"
+            echo "| **V3** \`signed-no-uid\` — sharedUserId removed | \`${V3_OUT:-skipped}\` | Portable install; no platform key required |"
+            echo "| **V4** \`pixel9a-compat-no-uid\` — sharedUserId removed + Pixel shims | \`${V4_OUT:-skipped}\` | Dev/runtime-smoke only; not TS18 release candidate |"
+            echo "| **V5** \`unsigned-debug\` — aligned only | \`${V5_OUT:-skipped}\` | Inspection / sideload reference |"
+            echo ""
+            echo "### Release info"
+            echo "| Property | Value |"
+            echo "|----------|-------|"
+            echo "| Tag | \`${TAG:-N/A}\` |"
+            echo "| Draft release | \`${DRAFT}\` |"
+            if [[ -n "${RELEASE_URL:-}" ]]; then
+              echo "| GitHub Release | [${TAG}](${RELEASE_URL}) |"
+            fi
+            if [[ -n "${ARTIFACT_URL:-}" ]]; then
+              echo "| Workflow artifact bundle | [apk-bundle-${TAG}-${{ github.run_id }}](${ARTIFACT_URL}) — expires in ${{ inputs.artifact_retention_days }} days |"
+            fi
+            echo ""
+            echo "> ⚠️ **V1 (TS18 system)**: must be signed with the platform key that matches"
+            echo "> \`android.uid.system\` on the target device."
+            echo "> Ensure \`KEYSTORE_BASE64\` contains the correct TS18 platform keystore."
+            echo ">"
+            echo "> **V3 (no sharedUserId)**: can be installed without a matching platform key"
+            echo "> — suitable for testing on non-system-signed environments."
+            echo ""
+            echo "### Next steps"
+            echo "- Validate **V1** on a real TS18 device before wider rollout."
+            echo "- **V4** is unsigned and cannot be installed on production devices."
+          } >> "$GITHUB_STEP_SUMMARY"
