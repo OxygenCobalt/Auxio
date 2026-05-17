@@ -14,6 +14,7 @@ on:
       - 'scripts/**'
       - 'build.gradle'
       - 'settings.gradle'
+      - '.gitmodules'
   pull_request:
     branches:
       - dev
@@ -27,6 +28,7 @@ on:
       - 'scripts/**'
       - 'build.gradle'
       - 'settings.gradle'
+      - '.gitmodules'
 
 permissions:
   contents: read
