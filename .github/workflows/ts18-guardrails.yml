@@ -1,0 +1,124 @@
+name: TS18 Guardrails
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/ts18-guardrails.yml'
+      - '.github/workflows/android.yml'
+      - '.github/workflows/lint.yml'
+      - 'app/**'
+      - 'musikr/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - '.gitmodules'
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/ts18-guardrails.yml'
+      - '.github/workflows/android.yml'
+      - '.github/workflows/lint.yml'
+      - 'app/**'
+      - 'musikr/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - '.gitmodules'
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guardrails:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate repository shell scripts
+        run: find scripts -type f -name '*.sh' -print -exec sh -n {} \;
+
+      - name: Validate canonical TS18 evidence labels
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          confidence_labels=(
+            "Observed"
+            "Inferred"
+            "Hypothesis"
+            "Requires TS18 validation"
+            "Unsupported"
+          )
+
+          porting_labels=(
+            "Directly reusable requirement"
+            "Reusable validation idea"
+            "Useful as evidence only"
+            "Obsolete due to Auxio architecture"
+            "Requires TS18 runtime validation"
+            "Unsafe to port"
+            "Should be explicitly avoided"
+          )
+
+          for label in "${confidence_labels[@]}"; do
+            grep -Fq -- "- **${label}**" docs/TS18_EXECUTION_PACK_PHASE1_4.md
+          done
+
+          for label in "${porting_labels[@]}"; do
+            grep -Fq -- "- **${label}**" docs/TS18_EXECUTION_PACK_PHASE1_4.md
+          done
+
+          grep -Fq 'Canonical Phase 1–4 execution reference' docs/DEVELOPMENT_ROADMAP.md
+          grep -Fq 'Canonical note:' docs/TS18_VALIDATION_RUNBOOK.md
+
+      - name: Enforce Auxio-TS package and privilege guardrails
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ! grep -RInE 'android:sharedUserId=|android\.uid\.system' app/src musikr/src
+          ! grep -RInE 'package="com\.tw\.music"|applicationId[[:space:]]+"com\.tw\.music"|namespace[[:space:]]+"com\.tw\.music"' app/build.gradle app/src/main/AndroidManifest.xml musikr/build.gradle settings.gradle
+
+      - name: Smoke-test TS18 evidence redaction
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tmp_dir="$(mktemp -d)"
+          trap 'rm -rf "${tmp_dir}"' EXIT
+
+          raw_dir="${tmp_dir}/raw"
+          out_dir="${tmp_dir}/redacted"
+          mkdir -p "${raw_dir}"
+
+          cat > "${raw_dir}/README.txt" <<'EOF'
+          Device serial: SERIAL1234567890ABCDEF
+          EOF
+          cat > "${raw_dir}/selected_props.txt" <<'EOF'
+          [ro.boot.serialno]: [SERIAL1234567890ABCDEF]
+          other_id=ABCDEF1234567890ABCDEF1234567890
+          EOF
+          cat > "${raw_dir}/media_session.txt" <<'EOF'
+          session_token=1234567890ABCDEF1234567890ABCDEF
+          EOF
+
+          ./scripts/redact_ts18_evidence_summary.sh "${raw_dir}" "${out_dir}"
+
+          grep -RFn '[REDACTED]' "${out_dir}"
+          grep -RFn '[HEX_OR_ID_REDACTED]' "${out_dir}"
+          ! grep -RInE 'SERIAL1234567890ABCDEF|ABCDEF1234567890ABCDEF1234567890|1234567890ABCDEF1234567890ABCDEF' "${out_dir}"

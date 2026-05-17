@@ -22,13 +22,13 @@ permissions:
   contents: write
   pull-requests: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Install ninja-build
-        run: sudo apt-get update && sudo apt-get install -y ninja-build
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -40,8 +40,17 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: "21"
-          distribution: "jetbrains"
-          cache: gradle
+          distribution: "temurin"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Ensure native build tools are present
+        run: |
+          if ! command -v ninja >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ninja-build
+          fi
 
       - name: Prepare release version
         id: version
@@ -180,8 +189,7 @@ jobs:
           KEYSTORE_PATH: ${{ steps.signing.outputs.keystore_path }}
         run: |
           set -euo pipefail
-          chmod +x gradlew
-          ./gradlew app:assembleRelease \
+          ./gradlew --no-daemon --stacktrace app:assembleRelease \
             -PreleaseStoreFile="${KEYSTORE_PATH}" \
             -PreleaseStorePassword="${KEYSTORE_PASSWORD}" \
             -PreleaseKeyAlias="${KEY_ALIAS}" \
