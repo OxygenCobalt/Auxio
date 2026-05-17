@@ -16,3 +16,4 @@ captures/
 .kotlin
 .aider*
 .env
+/secrets/
