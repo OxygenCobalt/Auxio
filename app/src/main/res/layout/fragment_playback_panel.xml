@@ -52,6 +52,7 @@
             style="@style/Widget.Auxio.TextView.Primary.Compact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Song Name" />
 
         <TextView
@@ -59,6 +60,7 @@
             style="@style/Widget.Auxio.TextView.Secondary.Compact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Artist Name" />
 
     </LinearLayout>

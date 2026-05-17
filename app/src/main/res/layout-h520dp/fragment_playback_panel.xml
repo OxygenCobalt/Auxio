@@ -64,6 +64,7 @@
             style="@style/Widget.Auxio.TextView.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Song Name" />
 
         <TextView
@@ -71,6 +72,7 @@
             style="@style/Widget.Auxio.TextView.Secondary.Marquee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Artist Name" />
 
         <TextView
@@ -78,6 +80,7 @@
             style="@style/Widget.Auxio.TextView.Secondary.Marquee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Album Name" />
 
     </LinearLayout>
