@@ -8,7 +8,7 @@
 - Requires TS18 validation
 - Unsupported
 
-### Porting decision
+### Porting decision label
 - directly reusable requirement
 - reusable validation idea
 - useful as evidence only
@@ -21,7 +21,7 @@
 
 | Contract / identifier | Evidence source | Confidence | Porting decision | Expected behavior | Auxio-TS strategy | Validation method | Risk |
 |---|---|---|---|---|---|---|---|
-| `com.tw.music` package + `android.uid.system` | `docs/evidence/t-music-snapshot/app/apktool/AndroidManifest.xml` | Observed | unsafe to port; should be explicitly avoided | Stock app uses privileged identity. | Track as compatibility risk only. | Install/coexistence matrix on TS18. | High |
+| `com.tw.music` package + `android.uid.system` | `docs/evidence/t-music-snapshot/app/apktool/AndroidManifest.xml` | Observed | should be explicitly avoided | Stock app uses privileged identity. | Track as compatibility risk only. | Install/coexistence matrix on TS18. | High |
 | `com.tw.music.action.cmd` | snapshot `vendor-hooks.txt`, `MusicService.smali`, `MusicWidgetProvider.smali` | Observed (stock) | useful as evidence only; requires TS18 runtime validation | Command ingress path for stock service/widget/receiver. | Optional TW broadcast adapter only if standard media path fails. | A/B broadcast tests (stock vs Auxio) on TS18. | High |
 | `com.tw.music.action.prev` | same | Observed (stock) | useful as evidence only; requires TS18 runtime validation | Previous-track command path. | Same as above. | Same as above. | High |
 | `com.tw.music.action.next` | same | Observed (stock) | useful as evidence only; requires TS18 runtime validation | Next-track command path. | Same as above. | Same as above. | High |

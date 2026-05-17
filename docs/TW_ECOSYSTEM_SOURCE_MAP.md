@@ -6,7 +6,7 @@
 - **Hypothesis**: weak/unverified.
 - **Requires TS18 validation**: must be runtime-tested.
 
-## Porting-decision legend
+## Porting decision label
 - directly reusable requirement
 - reusable validation idea
 - useful as evidence only
@@ -20,9 +20,9 @@
 | Source | URL/path | What it proves | What it suggests only | What it cannot prove | Auxio-TS influence | Porting decision |
 |---|---|---|---|---|---|---|
 | Snapshot root | `docs/evidence/t-music-snapshot/README.md` | Snapshot is curated evidence corpus, not implementation source. | Prior migration ideas may still be useful. | That old implementation strategy fits Auxio architecture. | Keep evidence-first planning. | useful as evidence only |
-| Snapshot AGENTS | `docs/evidence/t-music-snapshot/AGENTS.md` | Stock app assumptions: `com.tw.music`, `android.uid.system`, TW AIDL boundaries. | Vendor contracts may matter for TS18 parity. | That Auxio should replicate package/UID model. | Explicitly separate stock constraints from Auxio goals. | useful as evidence only; unsafe to port (package/UID) |
-| Stock manifest | `docs/evidence/t-music-snapshot/app/apktool/AndroidManifest.xml` | `package="com.tw.music"`, `android:sharedUserId="android.uid.system"`, widget receiver, service/activity surfaces. | Some launcher/theme behaviors may depend on stock identity. | Third-party-app requirements on target TS18. | Add package/signature risk ledger and coexistence checks. | useful as evidence only; should be explicitly avoided for direct adoption |
-| Vendor hook report | `docs/evidence/t-music-snapshot/docs/reports/vendor-hooks.txt` | Explicit actions/services/properties (`com.tw.music.action.*`, `com.tw.service.xt`, `com.tw.radio`, `com.tw.eq`, `persist.tw.*`). | Which subset is mandatory for Auxio. | Runtime behavior on this user TS18 without tests. | Drive contract table + experiment queue. | directly reusable requirement (as investigation targets); requires TS18 runtime validation |
+| Snapshot AGENTS | `docs/evidence/t-music-snapshot/AGENTS.md` | Stock app assumptions: `com.tw.music`, `android.uid.system`, TW AIDL boundaries. | Vendor contracts may matter for TS18 parity. | That Auxio should replicate package/UID model. | Explicitly separate stock constraints from Auxio goals; keep package/UID parity out of Auxio implementation. | useful as evidence only |
+| Stock manifest | `docs/evidence/t-music-snapshot/app/apktool/AndroidManifest.xml` | `package="com.tw.music"`, `android:sharedUserId="android.uid.system"`, widget receiver, service/activity surfaces. | Some launcher/theme behaviors may depend on stock identity. | Third-party-app requirements on target TS18. | Add package/signature risk ledger and coexistence checks. | should be explicitly avoided |
+| Vendor hook report | `docs/evidence/t-music-snapshot/docs/reports/vendor-hooks.txt` | Explicit actions/services/properties (`com.tw.music.action.*`, `com.tw.service.xt`, `com.tw.radio`, `com.tw.eq`, `persist.tw.*`). | Which subset is mandatory for Auxio. | Runtime behavior on this user TS18 without tests. | Drive contract table + experiment queue. | requires TS18 runtime validation |
 | Manual runbook | `docs/evidence/t-music-snapshot/docs/manual-validation-runbook.md` | Practical ADB parity/test procedure exists. | Some steps may need Auxio adaptation. | Direct applicability to API29 Auxio stack without adjustment. | Reuse as validation matrix template. | reusable validation idea |
 
 ## 2) TS18 diagnostics in this repo

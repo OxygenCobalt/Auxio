@@ -8,7 +8,7 @@ This comparison is based on `docs/evidence/t-music-snapshot/` (curated private s
 | Dimension | `t-music` snapshot evidence | Auxio-TS direction | Classification |
 |---|---|---|---|
 | Core implementation base | Decompiled/smali-first stock `com.tw.music` workspace. | Kotlin/AndroidX upstream Auxio fork. | obsolete due to Auxio architecture (for direct code port) |
-| Package/UID model | `com.tw.music` + `android.uid.system` in stock manifest. | Keep Auxio package identity and non-privileged install path. | unsafe to port / explicitly avoid |
+| Package/UID model | `com.tw.music` + `android.uid.system` in stock manifest. | Keep Auxio package identity and non-privileged install path. | should be explicitly avoided |
 | Control surface | Broadcast actions `com.tw.music.action.cmd|prev|next|pp` heavily used. | Keep as comparator evidence; implement only if standard path proven insufficient. | requires TS18 runtime validation |
 | Vendor service coupling | `com.tw.service.xt` + AIDL tokens in stock. | Optional, isolated TS18 service adapter only after proof of necessity. | useful as evidence only |
 | Widget/theme coupling | `MusicWidgetProvider`, TW theme/TWTHEME paths in stock. | Validate launcher/TWTHEME behavior first; optional adapter if required. | reusable validation idea |

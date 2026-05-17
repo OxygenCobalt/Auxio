@@ -9,7 +9,7 @@
 ## Evidence labeling (required)
 For each TS18/TW/TWTHEME claim, include:
 1) confidence: **Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported**
-2) reuse decision: **directly reusable requirement / reusable validation idea / evidence only / obsolete for Auxio / unsafe to port / explicitly avoid**
+2) porting decision label: **directly reusable requirement / reusable validation idea / evidence only / obsolete for Auxio / unsafe to port / explicitly avoid**
 
 ## Snapshot-specific guardrails
 From `t-music` snapshot:

@@ -17,7 +17,7 @@ Use **both** labels on TS18 claims:
 - **Requires TS18 validation**
 - **Unsupported**
 
-### Auxio-TS reuse decision label
+### Porting decision label
 - **Directly reusable requirement**
 - **Reusable validation idea**
 - **Useful as evidence only**
