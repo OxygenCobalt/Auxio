@@ -28,7 +28,6 @@ import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.tag.Placeholder
 import org.oxycblt.musikr.tag.ReleaseType
 import org.oxycblt.musikr.tag.ReplayGainAdjustment
-import org.oxycblt.musikr.tag.format.parseId3GenreNames
 import org.oxycblt.musikr.tag.parse.ParsedTags
 import org.oxycblt.musikr.util.toUuidOrNull
 import org.oxycblt.musikr.util.update
@@ -211,9 +210,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         parsedTags: ParsedTags,
         interpretation: Interpretation,
     ): List<PreGenre> {
-        val genreNames =
-            parsedTags.genreNames.parseId3GenreNames()
-                ?: interpretation.separators.split(parsedTags.genreNames)
+        val genreNames = parseGenreNames(parsedTags.genreNames, interpretation.separators)
         return genreNames.map { makePreGenre(it, interpretation) }
     }
 
