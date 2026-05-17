@@ -1,5 +1,8 @@
 # TS18 Validation Runbook (human-executed)
 
+
+> Canonical note: `docs/TS18_EXECUTION_PACK_PHASE1_4.md` is the authoritative Phase 1–4 checklist for scenario IDs, evidence folder convention (`reports/ts18/<YYYY-MM-DD>/<scenario-id>/`), gate/stop criteria, and the claim labelling template. Use this runbook for expanded operational steps.
+
 ## 0) Preconditions
 - TS18 target hardware connected via ADB.
 - Private storage for raw evidence; only redacted summaries go in repo.
