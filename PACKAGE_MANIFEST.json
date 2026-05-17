@@ -1,0 +1,30 @@
+{
+  "package_name": "auxio-ts-support-package",
+  "created_for": "cbkii/Auxio-TS",
+  "created_at": "2026-05-17",
+  "contents": [
+    ".github/copilot-instructions.md",
+    "AGENTS.md",
+    "README_AUXIO_TS_SUPPORT_PACKAGE.md",
+    "diagnostics/README.md",
+    "diagnostics/redacted/ts18_device_profile.json",
+    "docs/CODEX_TASK_PROMPTS.md",
+    "docs/DEVELOPMENT_ROADMAP.md",
+    "docs/RESEARCH_SOURCES.md",
+    "docs/TS18_DEVICE_PROFILE.md",
+    "docs/TS18_DIAGNOSTICS_INSIGHTS.md",
+    "docs/TS18_INTEGRATION_ARCHITECTURE.md",
+    "docs/TS18_NATIVE_CONTRACTS.md",
+    "docs/TS18_REQUIREMENTS.md",
+    "docs/TS18_VALIDATION_RUNBOOK.md",
+    "docs/templates/TS18_EVIDENCE_REPORT.md",
+    "scripts/redact_ts18_evidence_summary.sh",
+    "scripts/ts18_collect_auxio_ts_evidence.sh",
+    "scripts/ts18_compare_media_sessions.sh"
+  ],
+  "notes": [
+    "Documentation and scripts only; no application source changes.",
+    "No raw diagnostics, APKs, serials, or firmware included.",
+    "Based on supplied TS18 diagnostics and current public Android/Auxio references."
+  ]
+}
