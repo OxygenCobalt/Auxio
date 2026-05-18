@@ -29,3 +29,5 @@
 
 ## 10) release-candidate hardening
 "Prepare release-readiness report: validated contracts, unresolved hypotheses, rerun command results, remaining TS18 runtime checks, and next risk-reduction PR."
+
+- Randomise-by-genre (Pass 1/2): use `docs/RANDOMISE_BY_GENRE_DESIGN.md` as the authoritative implementation checklist before editing playback state/UI.
