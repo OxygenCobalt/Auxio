@@ -30,11 +30,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           fetch-tags: true
           submodules: recursive
+
+      - name: Validate required submodules
+        run: bash ./scripts/check-submodules.sh
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -239,13 +242,25 @@ jobs:
             [[ -n "${1:-}" && "${1}" != "null" ]]
           }
 
+          warn_release_notes() {
+            echo "::warning::Release notes: $1"
+          }
+
           append_commit_note() {
             local sha="$1"
             local subject="$2"
             local commit_author_login
             local commit_author_display
+            local short_sha="${sha:0:12}"
 
-            commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' 2>/dev/null || true)"
+            if [[ ! "${sha}" =~ ^[0-9a-f]{7,40}$ ]]; then
+              warn_release_notes "commit id '${sha}' is not a valid SHA; using commit note fallback author resolution."
+            fi
+
+            if ! commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' 2>/dev/null)"; then
+              warn_release_notes "unable to resolve commit author login for ${short_sha}; falling back to git author name."
+              commit_author_login=""
+            fi
             if is_value_present "${commit_author_login}"; then
               commit_author_display="@${commit_author_login}"
             else
@@ -275,15 +290,24 @@ jobs:
               continue
             fi
 
-            pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
+            if ! pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number // empty' 2>/dev/null)"; then
+              warn_release_notes "unable to map commit ${sha:0:12} to a PR (API lookup failed); using commit note fallback."
+              append_commit_note "${sha}" "${subject}"
+              continue
+            fi
             if is_value_present "${pr_number}"; then
               if [[ -z "${included_prs[${pr_number}]+x}" ]]; then
-                pr_payload="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '[.title // empty, .user.login // empty] | map(gsub("[\t\r\n]+"; " ")) | @tsv' 2>/dev/null || true)"
+                if ! pr_payload="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '[.title // empty, .user.login // empty] | map(gsub("[\t\r\n]+"; " ")) | @tsv' 2>/dev/null)"; then
+                  warn_release_notes "unable to fetch PR #${pr_number} metadata; using commit note fallback."
+                  append_commit_note "${sha}" "${subject}"
+                  continue
+                fi
                 IFS=$'\t' read -r pr_title pr_author <<< "${pr_payload}"
                 if is_value_present "${pr_title}" && is_value_present "${pr_author}"; then
                   printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
                   included_prs["${pr_number}"]=1
                 else
+                  warn_release_notes "PR #${pr_number} title/author metadata was incomplete; using commit note fallback."
                   append_commit_note "${sha}" "${subject}"
                 fi
               fi
