@@ -25,13 +25,14 @@ import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewTreeObserver
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
@@ -39,17 +40,24 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
+import org.oxycblt.auxio.playback.ui.swiper.CarouselTransformer
+import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
+import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
 import org.oxycblt.auxio.playback.ui.stepper.Direction
 import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.dampen
+import org.oxycblt.auxio.util.recycler
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
+import kotlin.math.abs
 import timber.log.Timber as L
 
 /**
@@ -65,13 +73,14 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-    ViewTreeObserver.OnGlobalLayoutListener,
     PlayerFastSeekOverlay.PerformListener {
+    private val coverPagerAdapter = CoverPagerAdapter(this)
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
+    private val queueModel: QueueViewModel by viewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
-    private var lastCoverWidth = 0
+    private var userAwarePagerCallback: UserAwarePagerCallback? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -101,11 +110,27 @@ class PlaybackPanelFragment :
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
         }
 
-        // Disable swipe gestures on cover for now
-        binding.playbackCover.onSwipeListener = null
+        binding.playbackPager?.apply {
+            adapter = coverPagerAdapter
+            userAwarePagerCallback = UserAwarePagerCallback(this) {
+                // Posting the queue goto command prevents the seekbar pos from desyncing
+                // from the song's duration, which creates a visual flicker in the seekbar.
+                post { queueModel.goto(it) }
+            }.also { it.attach() }
+            setPageTransformer(CarouselTransformer())
+            recycler()?.apply {
+                // Make it possible to collapse the bottom sheet from the ViewPager's touch area.
+                isNestedScrollingEnabled = false
+                // Visual effect consistency
+                // TODO: Custom overscroll?
+                overScrollMode = View.OVER_SCROLL_NEVER
+            }
+            // Make it easier to collapse the bottom sheet
+            dampen()
+            offscreenPageLimit = 1
+        }
 
         // Set up fast seek overlay
-        binding.playbackFastSeekOverlay?.performListener = this
         binding.playbackSong.apply {
             isSelected = true
             setOnClickListener { navigateToCurrentSong() }
@@ -150,40 +175,7 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.shuffleScope, ::updateShuffleScope)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
-        requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        requireBinding().root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-    }
-
-    override fun onGlobalLayout() {
-        if (binding == null || lastCoverWidth < 0) {
-            return
-        }
-        // Hacky workaround for cover radius not being preserved in between sizing changes
-        // (i.e split screen or landscape mode)
-        // For some reason ConstraintLayout does several passes on 1:1 elements that causes their
-        // size to radically change, so we wait until it stabilizes and then force an image
-        // reload if needed. Optimistically this is a no-op from coil caching, but when the cover
-        // did accidentally load the wrong image (with weird corner radius intended for bigger
-        // covers) we can force it to reload.
-        // If this breaks, it's fine since we also started a load as we normally did w/state
-        // updates, so the cover will not break.
-        val binding = requireBinding()
-        val coverWidth = binding.playbackCover.width
-        if (lastCoverWidth != coverWidth) {
-            lastCoverWidth = coverWidth
-        } else {
-            playbackModel.song.value?.let { binding.playbackCover.bind(it) }
-            lastCoverWidth = -1
-        }
+        collectImmediately(playbackModel.pagerQueue, ::updatePager)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
@@ -193,6 +185,8 @@ class PlaybackPanelFragment :
         binding.playbackArtist.isSelected = false
         binding.playbackAlbum?.isSelected = false
         binding.playbackToolbar.setOnMenuItemClickListener(null)
+        userAwarePagerCallback?.release()
+        binding.playbackPager?.adapter = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -232,7 +226,6 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         val context = requireContext()
         L.d("Updating song display: $song")
-        binding.playbackCover.bind(song)
         binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)
         binding.playbackAlbum?.text = song.album.name.resolve(context)
@@ -280,6 +273,40 @@ class PlaybackPanelFragment :
                     contentDescription = context.getString(R.string.desc_shuffle_current_genre)
                 }
             }
+        }
+    }
+
+    private fun updatePager(queue: PagerQueue) {
+        val binding = requireBinding()
+
+        val command = playbackModel.pagerCommand.consume()
+        if (command == null) {
+            // This probably shouldn't happen in practice, as QueueViewModel directly
+            // attaches to PlaybackStateManager and will basically always initialize
+            // with a command as a result.
+            //
+            // If it does happen we should just make sure the UI state is aligned. Don't
+            // want broken UI.
+            coverPagerAdapter.update(queue.queue, null)
+            binding.playbackPager.setCurrentItem(queue.index, false)
+            return
+        }
+
+        if (command.update != null) {
+            // queue needs to be updated.
+            coverPagerAdapter.update(queue.queue, command.update)
+        }
+
+        if (command.scroll != null) {
+            // we need to scroll, however the smooth scroll only really looks best
+            // when we are only doing next/prev due to various factors. better to
+            // just not animate on outright gotos or queue updates
+            val delta = binding.playbackPager.currentItem - command.scroll
+            if (delta == 0) {
+                // user scroll, carry on
+                return
+            }
+            binding.playbackPager.setCurrentItem(command.scroll, command.update == null && abs(delta) == 1)
         }
     }
 
