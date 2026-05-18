@@ -76,11 +76,14 @@ When user activates genre shuffle from expanded panel:
 
 ## 10) Persistence/resume decision
 
-- Persist `ShuffleScope` alongside existing queue/payload state in Pass 2.
-- Resume logic:
-  - restore saved queue and mapping as today,
-  - restore saved `ShuffleScope` for UI cycle semantics,
-  - if saved scope is `GENRE` but queue/library is no longer valid, safely degrade to `ALL` or `OFF` (final rule in Pass 2).
+- `ShuffleScope` is persisted alongside queue payload state.
+- Resume logic restores the persisted queue heap + shuffled mapping exactly as saved, then restores
+  persisted `ShuffleScope` with safety normalization:
+  - if restored queue is not shuffled, scope is forced to `OFF`;
+  - if restored queue is shuffled and stored scope is `OFF`, scope is normalized to `ALL`;
+  - if restored queue is shuffled and stored scope is `GENRE`, `GENRE` is preserved.
+- Current implementation restores the previously generated genre queue directly (it does not
+  regenerate from library snapshot on startup).
 
 ## 11) Test plan
 
@@ -110,7 +113,11 @@ Pass 1 added a pure unit-test target (`GenreShuffleQueueSelectorTest`) and Pass 
 
 - Implemented 3-state shuffle cycle in playback controls: `OFF -> ALL -> GENRE -> OFF`.
 - Genre queue generation now uses parsed model relationships (`Song.genres`) and union matching.
+- Genre queue candidate gathering uses `Genre.songs` relationships (plus UID dedupe) to avoid
+  scanning the full library on activation.
 - Added genre shuffle indicator icon variant for expanded panel control and distinct accessibility labels.
+- Persist/restore path now retains `GENRE` as an explicit runtime/source-of-truth scope in
+  `PlaybackStateManager` and mirrors that scope to UI listeners.
 
 ## 14) Manual validation checklist
 
@@ -132,4 +139,7 @@ Pass 1 added a pure unit-test target (`GenreShuffleQueueSelectorTest`) and Pass 
 - **Porting decision:** **Directly reusable requirement** for this feature’s queue selection.
 - **TS18 runtime status:** **Requires TS18 validation** for final UX parity only; core algorithm design is upstream-style and platform-agnostic.
 
-- Add PlaybackViewModel cycle tests for `OFF -> ALL -> GENRE -> OFF` and fallback branches (`no genres`, `<2 eligible`) once Gradle execution is available in CI/dev environments.
+- Added selector tests for deterministic seeded random order and no-match fallback behavior
+  (`current` remains the sole queue item).
+- Playback-state persistence cycle tests are still pending due current lack of lightweight playback
+  state test fixtures in `app` unit tests.

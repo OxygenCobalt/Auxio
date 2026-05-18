@@ -66,6 +66,9 @@ interface PlaybackStateManager {
     /** Whether the queue is shuffled or not. */
     val isShuffled: Boolean
 
+    /** The current app-level shuffle scope. */
+    val shuffleScope: ShuffleScope
+
     /** The audio session ID of the internal player. Null if no internal player exists. */
     val currentAudioSessionId: Int?
 
@@ -114,6 +117,14 @@ interface PlaybackStateManager {
      * @param command The parameters to start playback with.
      */
     fun play(command: PlaybackCommand)
+
+    /**
+     * Start new playback with an explicit app-level [ShuffleScope].
+     *
+     * @param command The parameters to start playback with.
+     * @param shuffleScope The app-level shuffle scope to associate with this playback state.
+     */
+    fun play(command: PlaybackCommand, shuffleScope: ShuffleScope)
 
     /**
      * Go to the next [Song] in the queue. Will go to the first [Song] in the queue if there is no
@@ -343,6 +354,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val queue: List<Song>,
         val index: Int,
         val isShuffled: Boolean,
+        val shuffleScope: ShuffleScope,
         val rawQueue: RawQueue,
     )
 
@@ -357,6 +369,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             queue = emptyList(),
             index = -1,
             isShuffled = false,
+            shuffleScope = ShuffleScope.OFF,
             rawQueue = RawQueue.nil(),
         )
     @Volatile private var stateHolder: PlaybackStateHolder? = null
@@ -383,6 +396,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     override val isShuffled
         get() = stateMirror.isShuffled
+
+    override val shuffleScope
+        get() = stateMirror.shuffleScope
 
     override val currentAudioSessionId: Int?
         get() = stateHolder?.audioSessionId
@@ -449,10 +465,19 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun play(command: PlaybackCommand) {
+        play(command, defaultShuffleScope(command.shuffled))
+    }
+
+    @Synchronized
+    override fun play(command: PlaybackCommand, shuffleScope: ShuffleScope) {
         val stateHolder = stateHolder ?: return
         L.d("Playing $command")
         // Played something, so we are initialized now
         isInitialized = true
+        stateMirror =
+            stateMirror.copy(
+                shuffleScope = normalizedShuffleScope(command.shuffled, shuffleScope),
+            )
         stateHolder.newPlayback(command)
     }
 
@@ -527,6 +552,10 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun shuffled(shuffled: Boolean) {
         val stateHolder = stateHolder ?: return
         L.d("Reordering queue [shuffled=$shuffled]")
+        stateMirror =
+            stateMirror.copy(
+                shuffleScope = defaultShuffleScope(shuffled),
+            )
         stateHolder.shuffled(shuffled)
     }
 
@@ -665,6 +694,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         queue = rawQueue.resolveSongs(),
                         index = rawQueue.resolveIndex(),
                         isShuffled = rawQueue.isShuffled,
+                        shuffleScope =
+                            normalizedShuffleScope(rawQueue.isShuffled, stateMirror.shuffleScope),
                         rawQueue = rawQueue,
                     )
                 listeners.forEach {
@@ -683,6 +714,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         queue = rawQueue.resolveSongs(),
                         index = rawQueue.resolveIndex(),
                         isShuffled = rawQueue.isShuffled,
+                        shuffleScope =
+                            normalizedShuffleScope(rawQueue.isShuffled, stateMirror.shuffleScope),
                         rawQueue = rawQueue,
                     )
                 listeners.forEach {
@@ -721,7 +754,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             shuffledMapping = stateMirror.rawQueue.shuffledMapping,
             index = stateMirror.index,
             songUid = currentSong.uid,
-            shuffleScope = if (stateMirror.isShuffled) ShuffleScope.ALL else ShuffleScope.OFF,
+            shuffleScope = normalizedShuffleScope(stateMirror.isShuffled, stateMirror.shuffleScope),
         )
     }
 
@@ -797,7 +830,13 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         shuffledMapping[index]
                     } else {
                         index
-                    },
+                },
+            )
+
+        stateMirror =
+            stateMirror.copy(
+                shuffleScope =
+                    normalizedShuffleScope(rawQueue.isShuffled, savedState.shuffleScope),
             )
 
         stateHolder.applySavedState(
@@ -810,4 +849,23 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
         isInitialized = true
     }
+
+    private fun defaultShuffleScope(isShuffled: Boolean) =
+        if (isShuffled) {
+            ShuffleScope.ALL
+        } else {
+            ShuffleScope.OFF
+        }
+
+    private fun normalizedShuffleScope(isShuffled: Boolean, scope: ShuffleScope) =
+        if (!isShuffled) {
+            ShuffleScope.OFF
+        } else {
+            when (scope) {
+                ShuffleScope.OFF -> ShuffleScope.ALL
+                ShuffleScope.ALL,
+                ShuffleScope.GENRE,
+                -> scope
+            }
+        }
 }

@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.list.ListSettings
-import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.GenreShuffleQueueSelector
 import org.oxycblt.auxio.playback.state.PlaybackCommand
@@ -63,7 +62,6 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     private val commandFactory: PlaybackCommand.Factory,
     private val listSettings: ListSettings,
-    private val musicRepository: MusicRepository,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
@@ -152,11 +150,7 @@ constructor(
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         L.d("Queue completely changed, updating current song")
         _isShuffled.value = isShuffled
-        if (!isShuffled) {
-            _shuffleScope.value = ShuffleScope.OFF
-        } else if (_shuffleScope.value == ShuffleScope.OFF) {
-            _shuffleScope.value = ShuffleScope.ALL
-        }
+        _shuffleScope.value = playbackManager.shuffleScope
     }
 
     override fun onNewPlayback(
@@ -169,7 +163,7 @@ constructor(
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
-        _shuffleScope.value = if (isShuffled) ShuffleScope.ALL else ShuffleScope.OFF
+        _shuffleScope.value = playbackManager.shuffleScope
     }
 
     override fun onProgressionChanged(progression: Progression) {
@@ -414,8 +408,13 @@ constructor(
         playImpl(commandFactory.songs(songs, ShuffleMode.ON))
     }
 
-    private fun playImpl(command: PlaybackCommand?) {
-        playbackManager.play(requireNotNull(command) { "Invalid playback parameters" })
+    private fun playImpl(command: PlaybackCommand?, shuffleScope: ShuffleScope? = null) {
+        val playbackCommand = requireNotNull(command) { "Invalid playback parameters" }
+        if (shuffleScope != null) {
+            playbackManager.play(playbackCommand, shuffleScope)
+        } else {
+            playbackManager.play(playbackCommand)
+        }
     }
 
     /**
@@ -630,14 +629,18 @@ constructor(
         val currentSong = playbackManager.currentSong ?: return
         val currentGenres = currentSong.genres.toSet()
         if (currentGenres.isEmpty()) {
-            _shuffleScope.value = ShuffleScope.ALL
             return
         }
-        val librarySongs = musicRepository.library?.songs?.toList() ?: return
+        val genreCandidateSongs = LinkedHashMap<Any, Song>()
+        for (genre in currentGenres) {
+            for (song in genre.songs) {
+                genreCandidateSongs[song.uid] = song
+            }
+        }
         val selection =
             GenreShuffleQueueSelector.select(
                 current = currentSong,
-                allSongs = librarySongs,
+                allSongs = genreCandidateSongs.values.toList(),
                 currentGenres = currentGenres,
                 songGenres = { it.genres.toSet() },
                 songId = { it.uid },
@@ -645,13 +648,11 @@ constructor(
             )
 
         if (selection.queue.size < 2) {
-            _shuffleScope.value = ShuffleScope.ALL
             return
         }
         val positionMs = playbackManager.progression.calculateElapsedPositionMs()
-        playImpl(commandFactory.songs(selection.queue, ShuffleMode.ON))
+        playImpl(commandFactory.songs(selection.queue, ShuffleMode.ON), ShuffleScope.GENRE)
         playbackManager.seekTo(positionMs)
-        _shuffleScope.value = ShuffleScope.GENRE
     }
 
     /**

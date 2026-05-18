@@ -19,19 +19,20 @@ object GenreShuffleQueueSelector {
         songId: (T) -> Any,
         random: Random,
     ): Selection<T> {
-        val dedup = LinkedHashMap<Any, T>()
+        val currentId = songId(current)
+        val dedup = LinkedHashMap<Any, T>(allSongs.size)
         for (song in allSongs) {
+            val id = songId(song)
+            if (id == currentId) {
+                continue
+            }
             val genres = songGenres(song)
             if (genres.isNotEmpty() && genres.any { it in currentGenres }) {
-                dedup[songId(song)] = song
+                dedup.putIfAbsent(id, song)
             }
         }
 
-        dedup[songId(current)] = current
-
-        val candidates = dedup.values.toMutableList()
-        val currentId = songId(current)
-        val remainder = candidates.filterNot { songId(it) == currentId }.shuffled(random)
+        val remainder = dedup.values.toMutableList().apply { shuffle(random) }
         val queue = listOf(current) + remainder
         return Selection(queue = queue, currentIndex = 0)
     }

@@ -22,6 +22,6 @@ One primary variable per PR.
 - `t-music` snapshot findings are now integrated as evidence for phases 2/4/5/7.
 - Do not start phase 7 until phases 3 and 4 produce clear, reproducible gaps.
 
-- Pass 1 complete: randomise-by-genre architecture/design documented in `docs/RANDOMISE_BY_GENRE_DESIGN.md`; Pass 2 will implement queue/state/UI integration.
+- Randomise-by-genre pass 2 delivered queue/state/UI integration; follow-up work is limited to optional UI polish and expanded playback-state test coverage.
 
 - Optional UX follow-up: replace current genre-mode dot badge with dedicated "G" glyph badge asset once icon pipeline/visual QA is scheduled.

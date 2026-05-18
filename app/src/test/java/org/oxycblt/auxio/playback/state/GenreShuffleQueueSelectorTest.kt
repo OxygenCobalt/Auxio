@@ -47,4 +47,56 @@ class GenreShuffleQueueSelectorTest {
         assertTrue(ids.contains("rock-only"))
         assertTrue(ids.contains("emo-only"))
     }
+
+    @Test
+    fun select_without_matching_genres_keeps_only_current() {
+        val current = FakeSong("current", setOf("Pop"))
+        val songs = listOf(FakeSong("jazz", setOf("Jazz")), FakeSong("unknown", emptySet()))
+
+        val selection =
+            GenreShuffleQueueSelector.select(
+                current = current,
+                allSongs = songs,
+                currentGenres = current.genres,
+                songGenres = { it.genres },
+                songId = { it.id },
+                random = Random(99),
+            )
+
+        assertEquals(listOf("current"), selection.queue.map { it.id })
+        assertEquals(0, selection.currentIndex)
+    }
+
+    @Test
+    fun select_is_deterministic_for_seeded_random() {
+        val current = FakeSong("current", setOf("Pop", "Rock"))
+        val songs =
+            listOf(
+                current,
+                FakeSong("a", setOf("Pop")),
+                FakeSong("b", setOf("Rock")),
+                FakeSong("c", setOf("Pop", "Rock")),
+            )
+
+        val first =
+            GenreShuffleQueueSelector.select(
+                current = current,
+                allSongs = songs,
+                currentGenres = current.genres,
+                songGenres = { it.genres },
+                songId = { it.id },
+                random = Random(7),
+            )
+        val second =
+            GenreShuffleQueueSelector.select(
+                current = current,
+                allSongs = songs,
+                currentGenres = current.genres,
+                songGenres = { it.genres },
+                songId = { it.id },
+                random = Random(7),
+            )
+
+        assertEquals(first.queue.map { it.id }, second.queue.map { it.id })
+    }
 }
