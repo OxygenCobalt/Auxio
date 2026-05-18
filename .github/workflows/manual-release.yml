@@ -251,11 +251,11 @@ jobs:
             local subject="$2"
             local commit_author_login
             local commit_author_display
-            local short_sha="${sha:0:12}"
 
             if [[ ! "${sha}" =~ ^[0-9a-fA-F]{12,40}$ ]]; then
               warn_release_notes "commit id '${sha}' is not a valid SHA; using commit note fallback author resolution."
             fi
+            local short_sha="${sha:0:12}"
 
             if ! commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' 2>/dev/null)"; then
               warn_release_notes "unable to resolve commit author login for ${short_sha}; falling back to git author name."
