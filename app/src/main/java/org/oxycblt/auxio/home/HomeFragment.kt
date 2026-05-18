@@ -219,12 +219,12 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     private fun updateMetadataShortcuts(songs: List<Song>, genres: List<Genre>, playlists: List<Playlist>) {
         val binding = requireBinding()
         favouritesPlaylist = playlists.firstOrNull { it.name.raw == FAVOURITES_PLAYLIST_NAME }
-        val decades = HeadUnitQuickAccess.deriveDecades(songs.mapNotNull { it.album.dates?.min?.year })
+        val decades = HeadUnitQuickAccess.deriveDecades(homeModel.allSongYears)
         val metadataState =
             HeadUnitQuickAccess.metadataChipState(
                 genreCount = genres.size,
                 decadeCount = decades.size,
-                hasRecent = songs.isNotEmpty(),
+                hasRecent = homeModel.hasAnySongs,
                 hasFolders = true,
                 hasFavourites = favouritesPlaylist?.songs?.isNotEmpty() == true,
             )
@@ -236,9 +236,12 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             })
         }
         if (metadataState.decades) {
-            binding.homeMetadataChips.addView(buildMetaChip(binding, decades.joinToString(" • ") { "${it}s" }) {
-                openTab(MusicType.SONGS)
-            })
+            val activeDecade = homeModel.decadeFilter.value
+            decades.forEach { decade ->
+                binding.homeMetadataChips.addView(
+                    buildDecadeChip(binding, decade, activeDecade)
+                )
+            }
         }
         if (metadataState.recentlyAdded) {
             binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_recently_added)) {
@@ -257,6 +260,33 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         }
         setupHeadUnitQuickAccess(binding)
     }
+
+    private fun buildDecadeChip(
+        binding: FragmentHomeBinding,
+        decade: Int,
+        activeDecade: Int?,
+    ): Chip =
+        Chip(binding.root.context).apply {
+            isCheckable = true
+            isChecked = (decade == activeDecade)
+            text = getString(R.string.lbl_decade_fmt, decade)
+            contentDescription = text
+            setOnClickListener {
+                // Read the current filter value once to avoid any ordering sensitivity between
+                // the read and the update (both are on the main thread, but reading once is cleaner).
+                val currentFilter = homeModel.decadeFilter.value
+                // Toggle: tapping the active decade clears the filter; tapping a new one sets it.
+                val newDecade = if (currentFilter == decade) null else decade
+                // Always apply ByDate sort so that Songs tab order is consistent whether a decade
+                // filter is active or just cleared; clearing the filter keeps date ordering so the
+                // user can still browse chronologically.
+                homeModel.applySongSort(Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING))
+                homeModel.applyDecadeFilter(newDecade)
+                openTab(MusicType.SONGS)
+            }
+        }
+
+    // TODO: Optimise chip rebuild to only update isChecked when decades list is unchanged.
 
     private fun buildMetaChip(binding: FragmentHomeBinding, label: String, onClick: () -> Unit): Chip =
         Chip(binding.root.context).apply {
@@ -309,6 +339,9 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     }
 
     private fun openDecades() {
+        // Clear any active decade filter so all songs are visible, sorted by date so the user
+        // can see and tap individual decade chips in the metadata chip section above.
+        homeModel.applyDecadeFilter(null)
         homeModel.applySongSort(Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING))
         openTab(MusicType.SONGS)
     }
