@@ -141,5 +141,5 @@ Pass 1 added a pure unit-test target (`GenreShuffleQueueSelectorTest`) and Pass 
 
 - Added selector tests for deterministic seeded random order and no-match fallback behavior
   (`current` remains the sole queue item).
-- Playback-state persistence cycle tests are still pending due current lack of lightweight playback
+- Playback-state persistence cycle tests are still pending due to the current lack of lightweight playback
   state test fixtures in `app` unit tests.

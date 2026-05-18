@@ -32,8 +32,8 @@ object GenreShuffleQueueSelector {
             }
         }
 
-        val remainder = dedup.values.toMutableList().apply { shuffle(random) }
-        val queue = listOf(current) + remainder
+        val shuffledCandidates = dedup.values.toMutableList().apply { shuffle(random) }
+        val queue = listOf(current) + shuffledCandidates
         return Selection(queue = queue, currentIndex = 0)
     }
 }
