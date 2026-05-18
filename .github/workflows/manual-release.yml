@@ -253,7 +253,7 @@ jobs:
             local commit_author_display
             local short_sha="${sha:0:12}"
 
-            if [[ ! "${sha}" =~ ^[0-9a-f]{7,40}$ ]]; then
+            if [[ ! "${sha}" =~ ^[0-9a-f]{12,40}$ ]]; then
               warn_release_notes "commit id '${sha}' is not a valid SHA; using commit note fallback author resolution."
             fi
 
@@ -303,6 +303,9 @@ jobs:
                   continue
                 fi
                 IFS=$'\t' read -r pr_title pr_author <<< "${pr_payload}"
+                if [[ "${pr_payload}" == *$'\t'* && (! is_value_present "${pr_title}" || ! is_value_present "${pr_author}") ]]; then
+                  warn_release_notes "PR #${pr_number} metadata parsing was incomplete; using commit note fallback."
+                fi
                 if is_value_present "${pr_title}" && is_value_present "${pr_author}"; then
                   printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
                   included_prs["${pr_number}"]=1

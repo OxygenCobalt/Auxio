@@ -3,7 +3,7 @@ set -euo pipefail
 
 missing=0
 
-require_file() {
+check_required_file() {
   local path="$1"
   if [[ ! -f "${path}" ]]; then
     echo "::error::Missing required file: ${path}"
@@ -11,7 +11,7 @@ require_file() {
   fi
 }
 
-require_dir() {
+check_required_dir() {
   local path="$1"
   if [[ ! -d "${path}" ]]; then
     echo "::error::Missing required directory: ${path}"
@@ -19,9 +19,9 @@ require_dir() {
   fi
 }
 
-require_file "media/core_settings.gradle"
-require_dir "media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg"
-require_dir "musikr/src/main/cpp/taglib"
+check_required_file "media/core_settings.gradle"
+check_required_dir "media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg"
+check_required_dir "musikr/src/main/cpp/taglib"
 
 if [[ "${missing}" -ne 0 ]]; then
   echo "::error::Submodules are not initialized. Do not create missing files manually. Run git submodule update --init --recursive or ensure actions/checkout uses submodules: recursive."
