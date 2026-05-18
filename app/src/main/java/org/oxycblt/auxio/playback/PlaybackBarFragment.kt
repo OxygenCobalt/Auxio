@@ -147,10 +147,16 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 L.d("Using shuffle action")
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
-                        setIconResource(R.drawable.sel_shuffle_state_24)
                         setOnClickListener { playbackModel.cycleShuffleScope() }
                         tag = actionMode
                     }
+                    setIconResource(
+                        if (shuffleScope == ShuffleScope.GENRE) {
+                            R.drawable.ic_shuffle_genre_state_24
+                        } else {
+                            R.drawable.sel_shuffle_state_24
+                        }
+                    )
                     isChecked = shuffleScope != ShuffleScope.OFF
                     contentDescription =
                         when (shuffleScope) {

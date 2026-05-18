@@ -22,11 +22,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.GenreShuffleQueueSelector
@@ -64,6 +66,7 @@ constructor(
     private val listSettings: ListSettings,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
+    private var genreShuffleJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)
     /** The currently playing song. */
@@ -627,32 +630,42 @@ constructor(
 
     private fun applyGenreShuffle() {
         val currentSong = playbackManager.currentSong ?: return
+        val currentSongUid = currentSong.uid
         val currentGenres = currentSong.genres.toSet()
         if (currentGenres.isEmpty()) {
             return
         }
-        val genreCandidateSongs = LinkedHashMap<Any, Song>()
-        for (genre in currentGenres) {
-            for (song in genre.songs) {
-                genreCandidateSongs[song.uid] = song
-            }
-        }
-        val selection =
-            GenreShuffleQueueSelector.select(
-                current = currentSong,
-                allSongs = genreCandidateSongs.values.toList(),
-                currentGenres = currentGenres,
-                songGenres = { it.genres.toSet() },
-                songId = { it.uid },
-                random = kotlin.random.Random.Default,
-            )
+        genreShuffleJob?.cancel()
+        genreShuffleJob =
+            viewModelScope.launch {
+                val selection =
+                    withContext(Dispatchers.Default) {
+                        val genreCandidateSongs = LinkedHashMap<Any, Song>()
+                        for (genre in currentGenres) {
+                            for (song in genre.songs) {
+                                genreCandidateSongs[song.uid] = song
+                            }
+                        }
+                        GenreShuffleQueueSelector.select(
+                            current = currentSong,
+                            allSongs = genreCandidateSongs.values.toList(),
+                            currentGenres = currentGenres,
+                            songGenres = { it.genres.toSet() },
+                            songId = { it.uid },
+                            random = kotlin.random.Random.Default,
+                        )
+                    }
 
-        if (selection.queue.size < 2) {
-            return
-        }
-        val positionMs = playbackManager.progression.calculateElapsedPositionMs()
-        playImpl(commandFactory.songs(selection.queue, ShuffleMode.ON), ShuffleScope.GENRE)
-        playbackManager.seekTo(positionMs)
+                if (playbackManager.currentSong?.uid != currentSongUid) {
+                    return@launch
+                }
+                if (selection.queue.size < 2) {
+                    return@launch
+                }
+                val positionMs = playbackManager.progression.calculateElapsedPositionMs()
+                playImpl(commandFactory.songs(selection.queue, ShuffleMode.ON), ShuffleScope.GENRE)
+                playbackManager.seekTo(positionMs)
+            }
     }
 
     /**

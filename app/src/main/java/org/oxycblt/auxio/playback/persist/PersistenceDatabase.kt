@@ -71,6 +71,10 @@ abstract class PersistenceDatabase : RoomDatabase() {
                 it.execSQL(
                     "ALTER TABLE PlaybackState ADD COLUMN shuffleScope TEXT NOT NULL DEFAULT 'OFF'"
                 )
+                it.execSQL(
+                    "UPDATE PlaybackState SET shuffleScope = 'ALL' " +
+                        "WHERE id = 0 AND EXISTS (SELECT 1 FROM QueueShuffledMappingItem LIMIT 1)"
+                )
             }
     }
 }
