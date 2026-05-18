@@ -20,14 +20,15 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-
-    <org.oxycblt.auxio.playback.ui.ControlledCoverView
-        android:id="@+id/playback_cover"
-        style="@style/Widget.Auxio.Image.Full"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/playback_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginTop="@dimen/spacing_medium"
-        app:enablePlaybackIndicator="false"
-        app:enableSelectionBadge="false"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintDimensionRatio="1"
         app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
@@ -41,11 +42,11 @@
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
+        app:layout_constraintBottom_toBottomOf="@+id/playback_pager"
         app:layout_constraintEnd_toStartOf="@+id/playback_more"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/playback_cover"
-        app:layout_constraintTop_toTopOf="@+id/playback_cover"
+        app:layout_constraintStart_toEndOf="@+id/playback_pager"
+        app:layout_constraintTop_toTopOf="@+id/playback_pager"
         app:layout_constraintVertical_chainStyle="packed">
 
         <TextView
@@ -53,6 +54,7 @@
             style="@style/Widget.Auxio.TextView.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Song Name" />
 
         <TextView
@@ -60,6 +62,7 @@
             style="@style/Widget.Auxio.TextView.Secondary.Marquee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Artist Name" />
 
         <TextView
@@ -67,6 +70,7 @@
             style="@style/Widget.Auxio.TextView.Secondary.Marquee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fallbackLineSpacing="false"
             tools:text="Album Name" />
 
     </LinearLayout>

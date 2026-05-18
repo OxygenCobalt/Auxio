@@ -199,9 +199,9 @@ constructor(
             waveSpeed = 0
             resetPhaseClock()
         } else {
-            transitionToAmplitudeFraction(MIN_VISIBLE_WAVE_FRACTION) { waveSpeed = 0 }
+            waveSpeed = 0
+            transitionToAmplitudeFraction(MIN_VISIBLE_WAVE_FRACTION) { resetPhaseClock() }
         }
-        resetPhaseClock()
         updateActiveTrackSuppression()
         ensurePhaseTickerState()
         markDirty()
