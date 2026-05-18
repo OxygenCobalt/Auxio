@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate repository shell scripts
         run: find scripts -type f -name '*.sh' -print -exec sh -n {} \;
