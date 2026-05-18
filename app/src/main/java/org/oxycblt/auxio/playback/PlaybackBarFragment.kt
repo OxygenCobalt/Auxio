@@ -20,16 +20,21 @@ package org.oxycblt.auxio.playback
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
@@ -42,6 +47,7 @@ import timber.log.Timber as L
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
+    @Inject lateinit var uiSettings: UISettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackBarBinding.inflate(inflater)
@@ -67,7 +73,21 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackInfo.isSelected = true
 
         // Set up actions
-        binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
+        binding.playbackPlayPause.setOnClickListener {
+            playbackModel.togglePlaying()
+            context.showToast(
+                if (playbackModel.isPlaying.value) R.string.msg_playback_pause
+                else R.string.msg_playback_play
+            )
+        }
+        if (uiSettings.largeHeadUnitControls) {
+            val size = resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit)
+            binding.playbackPlayPause.minimumWidth = size
+            binding.playbackPlayPause.minimumHeight = size
+            binding.playbackSecondaryAction.minimumWidth = size
+            binding.playbackSecondaryAction.minimumHeight = size
+        }
+        applyDriverSideLayout(binding)
 
         // -- VIEWMODEL SETUP ---
         collectImmediately(playbackModel.song, ::updateSong)
@@ -154,6 +174,37 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                     isChecked = isShuffled
                 }
             }
+        }
+    }
+
+    private fun applyDriverSideLayout(binding: FragmentPlaybackBarBinding) {
+        if (uiSettings.driverSide != UISettings.DriverSide.RIGHT) {
+            return
+        }
+        val root = binding.root as ConstraintLayout
+        ConstraintSet().apply {
+            clone(root)
+            clear(R.id.playback_cover, ConstraintSet.START)
+            connect(R.id.playback_cover, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+
+            clear(R.id.playback_controls_wrapper, ConstraintSet.END)
+            connect(
+                R.id.playback_controls_wrapper,
+                ConstraintSet.START,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.START,
+            )
+
+            clear(R.id.playback_song, ConstraintSet.START)
+            clear(R.id.playback_song, ConstraintSet.END)
+            connect(R.id.playback_song, ConstraintSet.START, R.id.playback_controls_wrapper, ConstraintSet.END)
+            connect(R.id.playback_song, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+
+            clear(R.id.playback_info, ConstraintSet.START)
+            clear(R.id.playback_info, ConstraintSet.END)
+            connect(R.id.playback_info, ConstraintSet.START, R.id.playback_controls_wrapper, ConstraintSet.END)
+            connect(R.id.playback_info, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+            applyTo(root)
         }
     }
 }

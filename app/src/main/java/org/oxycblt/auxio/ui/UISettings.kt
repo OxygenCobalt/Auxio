@@ -43,6 +43,23 @@ interface UISettings : Settings<UISettings.Listener> {
     var accent: Accent
     /** Whether to round additional UI elements that require album covers to be rounded. */
     val roundMode: Boolean
+    /** Whether head-unit landscape mode should be preferred. */
+    val headUnitLandscapeMode: Boolean
+    /** Preferred side for primary driver controls. */
+    val driverSide: DriverSide
+    /** Whether large controls should be used on playback surfaces. */
+    val largeHeadUnitControls: Boolean
+    /** Whether album art should be shown in head-unit playback view. */
+    val showHeadUnitAlbumArt: Boolean
+
+    enum class DriverSide {
+        RIGHT,
+        LEFT;
+
+        companion object {
+            fun from(value: Int): DriverSide = if (value == 2) LEFT else RIGHT
+        }
+    }
 
     interface Listener {
         /** Called when [roundMode] changes. */
@@ -76,6 +93,19 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
 
     override val roundMode: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_round_mode), true)
+    override val headUnitLandscapeMode: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_mode), true)
+    override val driverSide: UISettings.DriverSide
+        get() =
+            UISettings.DriverSide.from(
+                sharedPreferences.getInt(getString(R.string.set_key_driver_side), 1)
+            )
+    override val largeHeadUnitControls: Boolean
+        get() =
+            sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_large_controls), true)
+    override val showHeadUnitAlbumArt: Boolean
+        get() =
+            sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_album_art), true)
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {

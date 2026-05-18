@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,11 +50,14 @@ import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
+import org.oxycblt.auxio.headunit.HeadUnitQuickAccess
+import org.oxycblt.auxio.headunit.QuickPickAction
 import org.oxycblt.auxio.home.tabs.NamedTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectionFragment
 import org.oxycblt.auxio.list.menu.Menu
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
@@ -69,6 +73,8 @@ import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.Genre
+import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.playlist.m3u.M3U
 import timber.log.Timber as L
@@ -170,6 +176,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         // Further initialization must be done in the function that also handles
         // re-creating the ViewPager.
         setupPager(binding)
+        setupHeadUnitQuickAccess(binding)
 
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
@@ -179,9 +186,125 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
+        collectImmediately(homeModel.songList, homeModel.genreList, ::updateMetadataShortcuts)
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collectImmediately(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
+    }
+
+    private fun setupHeadUnitQuickAccess(binding: FragmentHomeBinding) {
+        val hasLibrary = homeModel.songList.value.isNotEmpty()
+        val hasYearMetadata =
+            homeModel.songList.value.any { it.album.dates?.min?.year != null }
+        binding.homeQuickPicks.removeAllViews()
+        HeadUnitQuickAccess.quickPicks(
+                hasLibraryContent = hasLibrary,
+                hasFolderSupport = true,
+                hasFavouritesSupport = false,
+                hasYearMetadata = hasYearMetadata,
+            )
+            .forEach { item ->
+            val chip = Chip(binding.root.context).apply {
+                isCheckable = false
+                isClickable = true
+                isEnabled = item.enabled
+                text = quickLabel(item.action)
+                contentDescription = text
+                setOnClickListener { handleQuickPick(item.action) }
+            }
+            binding.homeQuickPicks.addView(chip)
+            }
+    }
+
+    private fun updateMetadataShortcuts(songs: List<Song>, genres: List<Genre>) {
+        val binding = requireBinding()
+        val decades = HeadUnitQuickAccess.deriveDecades(songs.mapNotNull { it.album.dates?.min?.year })
+        val metadataState =
+            HeadUnitQuickAccess.metadataChipState(
+                genreCount = genres.size,
+                decadeCount = decades.size,
+                hasRecent = songs.isNotEmpty(),
+                hasFolders = true,
+                hasFavourites = false,
+            )
+
+        binding.homeMetadataChips.removeAllViews()
+        if (metadataState.genres) {
+            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_genres)) {
+                openTab(MusicType.GENRES)
+            })
+        }
+        if (metadataState.decades) {
+            binding.homeMetadataChips.addView(buildMetaChip(binding, decades.joinToString(" • ") { "${it}s" }) {
+                openTab(MusicType.SONGS)
+            })
+        }
+        if (metadataState.recentlyAdded) {
+            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_recently_added)) {
+                openRecentlyAdded()
+            })
+        }
+        if (metadataState.folders) {
+            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_folders)) {
+                homeModel.startChooseMusicLocations()
+            })
+        }
+        setupHeadUnitQuickAccess(binding)
+    }
+
+    private fun buildMetaChip(binding: FragmentHomeBinding, label: String, onClick: () -> Unit): Chip =
+        Chip(binding.root.context).apply {
+            isCheckable = false
+            isClickable = true
+            text = label
+            contentDescription = label
+            setOnClickListener { onClick() }
+        }
+
+    private fun quickLabel(action: QuickPickAction): String =
+        when (action) {
+            QuickPickAction.NOW_PLAYING -> getString(R.string.lbl_playback)
+            QuickPickAction.SHUFFLE_ALL -> getString(R.string.lbl_shuffle)
+            QuickPickAction.GENRES -> getString(R.string.lbl_genres)
+            QuickPickAction.ARTISTS -> getString(R.string.lbl_artists)
+            QuickPickAction.ALBUMS -> getString(R.string.lbl_albums)
+            QuickPickAction.QUEUE -> getString(R.string.lbl_queue)
+            QuickPickAction.RECENTLY_ADDED -> getString(R.string.lbl_recently_added)
+            QuickPickAction.DECADES -> getString(R.string.lbl_decades)
+            QuickPickAction.FOLDERS -> getString(R.string.lbl_folders)
+            QuickPickAction.FAVOURITES -> getString(R.string.lbl_favourites_unavailable)
+        }
+
+    private fun handleQuickPick(action: QuickPickAction) {
+        when (action) {
+            QuickPickAction.NOW_PLAYING -> playbackModel.openPlayback()
+            QuickPickAction.SHUFFLE_ALL -> playbackModel.shuffleAll()
+            QuickPickAction.GENRES -> openTab(MusicType.GENRES)
+            QuickPickAction.ARTISTS -> openTab(MusicType.ARTISTS)
+            QuickPickAction.ALBUMS -> openTab(MusicType.ALBUMS)
+            QuickPickAction.QUEUE -> playbackModel.openQueue()
+            QuickPickAction.RECENTLY_ADDED -> openRecentlyAdded()
+            QuickPickAction.DECADES -> openDecades()
+            QuickPickAction.FOLDERS -> homeModel.startChooseMusicLocations()
+            QuickPickAction.FAVOURITES -> Unit
+        }
+    }
+
+    private fun openTab(type: MusicType) {
+        val index = homeModel.currentTabTypes.indexOf(type)
+        if (index >= 0) {
+            requireBinding().homePager.currentItem = index
+        }
+    }
+
+    private fun openRecentlyAdded() {
+        homeModel.applySongSort(Sort(Sort.Mode.ByDateAdded, Sort.Direction.DESCENDING))
+        openTab(MusicType.SONGS)
+    }
+
+    private fun openDecades() {
+        homeModel.applySongSort(Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING))
+        openTab(MusicType.SONGS)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeBinding) {

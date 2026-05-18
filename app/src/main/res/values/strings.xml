@@ -179,7 +179,12 @@
     <!-- As in copied to the system clipboard -->
     <string name="lbl_copied">Copied</string>
     <!-- As in to report an error -->
-    <string name="lbl_report">Report</string>
+
+    <string name="lbl_recently_added">Recently added</string>
+    <string name="lbl_decades">Decades</string>
+    <string name="lbl_folders_unavailable">Folders (not available here)</string>
+    <string name="lbl_favourites_unavailable">Favourites (not available here)</string>
+<string name="lbl_report">Report</string>
 
     <string name="lbl_author">Author</string>
     <string name="lbl_author_name">Alexander Capehart</string>
@@ -238,6 +243,24 @@
     <string name="set_black_mode_desc">Use a pure black dark theme</string>
     <string name="set_round_mode">Round mode</string>
     <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (requires album covers to be rounded)</string>
+
+    <string name="set_head_unit">Head unit</string>
+    <string name="set_head_unit_mode">Head unit landscape mode</string>
+    <string name="set_head_unit_mode_desc">Prefer landscape orientation for head-unit use</string>
+    <string name="set_driver_side">Driver side</string>
+    <string name="set_driver_side_desc">Place key controls closer to the selected driver side</string>
+    <string name="set_driver_side_right">Right-hand drive</string>
+    <string name="set_driver_side_left">Left-hand drive</string>
+    <string name="set_head_unit_large_controls">Large touch controls</string>
+    <string name="set_head_unit_large_controls_desc">Increase control target sizes for easier in-car tapping</string>
+    <string name="set_head_unit_album_art">Show album art in head-unit playback view</string>
+    <string name="set_head_unit_album_art_desc">Keep album art visible behind playback controls</string>
+    <string name="msg_playback_play">Play</string>
+    <string name="msg_playback_pause">Pause</string>
+    <string name="msg_playback_next">Next track</string>
+    <string name="msg_playback_previous">Previous track</string>
+    <string name="msg_playback_shuffle_on">Shuffle on</string>
+    <string name="msg_playback_shuffle_off">Shuffle off</string>
 
     <string name="set_personalize">Personalize</string>
     <string name="set_personalize_desc">Customize UI controls and behavior</string>

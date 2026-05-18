@@ -26,6 +26,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewTreeObserver
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
@@ -33,6 +35,7 @@ import androidx.core.view.updatePadding
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -43,6 +46,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.stepper.Direction
 import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
@@ -69,6 +73,7 @@ class PlaybackPanelFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
+    @Inject lateinit var uiSettings: UISettings
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
     private var lastCoverWidth = 0
 
@@ -119,11 +124,36 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackSeekBar?.listener = this
+        if (!uiSettings.showHeadUnitAlbumArt) {
+            binding.playbackCover.visibility = android.view.View.GONE
+        }
+        if (uiSettings.largeHeadUnitControls) {
+            val size = resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit)
+            val titleSize = resources.getDimension(R.dimen.text_size_head_unit_title)
+            val subtitleSize = resources.getDimension(R.dimen.text_size_head_unit_subtitle)
+            binding.playbackSong.textSize = titleSize / resources.displayMetrics.scaledDensity
+            binding.playbackArtist.textSize = subtitleSize / resources.displayMetrics.scaledDensity
+            listOf(
+                    binding.playbackRepeat,
+                    binding.playbackSkipPrev,
+                    binding.playbackPlayPause,
+                    binding.playbackSkipNext,
+                    binding.playbackShuffle,
+                )
+                .forEach {
+                    it.minimumWidth = size
+                    it.minimumHeight = size
+                }
+        }
+        applyDriverSideLayout(binding)
 
         // Set up actions
         // TODO: Add better playback button accessibility
         binding.playbackRepeat.setOnClickListener { playbackModel.toggleRepeatMode() }
-        binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
+        binding.playbackSkipPrev.setOnClickListener {
+            playbackModel.prev()
+            requireContext().showToast(R.string.msg_playback_previous)
+        }
         binding.playbackPlayPause.apply {
             @SuppressLint("RestrictedApi")
             setCornerSpringForce(
@@ -134,8 +164,17 @@ class PlaybackPanelFragment :
             )
             setOnClickListener { playbackModel.togglePlaying() }
         }
-        binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
-        binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
+        binding.playbackSkipNext.setOnClickListener {
+            playbackModel.next()
+            requireContext().showToast(R.string.msg_playback_next)
+        }
+        binding.playbackShuffle.setOnClickListener {
+            playbackModel.toggleShuffled()
+            requireContext().showToast(
+                if (playbackModel.isShuffled.value) R.string.msg_playback_shuffle_off
+                else R.string.msg_playback_shuffle_on
+            )
+        }
         binding.playbackMore?.setOnClickListener {
             playbackModel.song.value?.let {
                 listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
@@ -280,6 +319,29 @@ class PlaybackPanelFragment :
         when (direction) {
             Direction.FORWARDS -> playbackModel.stepForward()
             Direction.BACKWARDS -> playbackModel.stepBackwards()
+        }
+    }
+
+    private fun applyDriverSideLayout(binding: FragmentPlaybackPanelBinding) {
+        if (uiSettings.driverSide != UISettings.DriverSide.RIGHT) {
+            return
+        }
+        val root = binding.root as ConstraintLayout
+        ConstraintSet().apply {
+            clone(root)
+            clear(R.id.playback_cover, ConstraintSet.START)
+            connect(R.id.playback_cover, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+
+            clear(R.id.playback_info_container, ConstraintSet.START)
+            clear(R.id.playback_info_container, ConstraintSet.END)
+            connect(R.id.playback_info_container, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(R.id.playback_info_container, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+
+            clear(R.id.playback_controls_wrapper, ConstraintSet.START)
+            clear(R.id.playback_controls_wrapper, ConstraintSet.END)
+            connect(R.id.playback_controls_wrapper, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(R.id.playback_controls_wrapper, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+            applyTo(root)
         }
     }
 }

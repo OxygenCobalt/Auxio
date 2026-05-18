@@ -55,3 +55,17 @@
 2. Core-behavior regression risk outside TS18 scenarios.
 3. Evidence-quality risk (claim exceeds proof).
 4. Vendor-lock-in risk from premature TW-private assumptions.
+
+
+## 8) Head-unit UI/UX requirements (Auxio-TS scope)
+1. Provide head-unit settings for landscape mode, driver side, large controls, and minimal album-art control.
+2. Quick Picks are additive shortcuts only and must not remove deep browse/navigation.
+3. Metadata chips are optional shortcuts only.
+4. Allowed chip categories: genres, decades, folders, recently added, and favourites only when first-class favourites support exists in-app.
+5. Forbidden chip categories: file type, file size, bitrate, codec, sample rate, storage size, and technical file-property filters.
+6. Queue management and advanced navigation features must remain available.
+7. No driving/parked restrictions are implemented in Auxio-TS UI scope.
+8. UI/UX improvements do not prove TS18 native/TWTHEME compatibility; runtime validation is still required.
+
+
+Current branch note: Favourites quick-pick/chip remains intentionally omitted/disabled in Auxio-TS head-unit UI because no first-class favourites/starred model + destination is exposed in the current app layer.

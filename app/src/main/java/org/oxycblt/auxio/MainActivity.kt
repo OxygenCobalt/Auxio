@@ -19,6 +19,7 @@
 package org.oxycblt.auxio
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -58,6 +59,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTheme()
+        if (uiSettings.headUnitLandscapeMode) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
         // Inflate the views after setting up the theme so that the theme attributes are applied.
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

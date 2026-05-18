@@ -53,4 +53,7 @@
 
     <dimen name="outline_small">1dp</dimen>
     <dimen name="outline_large">2dp</dimen>
+    <dimen name="size_touchable_head_unit">64dp</dimen>
+    <dimen name="text_size_head_unit_title">22sp</dimen>
+    <dimen name="text_size_head_unit_subtitle">18sp</dimen>
 </resources>
