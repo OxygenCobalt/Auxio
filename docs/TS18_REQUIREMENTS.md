@@ -68,4 +68,19 @@
 8. UI/UX improvements do not prove TS18 native/TWTHEME compatibility; runtime validation is still required.
 
 
-Current branch note: Favourites quick-pick/chip remains intentionally omitted/disabled in Auxio-TS head-unit UI because no first-class favourites/starred model + destination is exposed in the current app layer.
+## 9) Favourites implementation (current approach)
+Favourites quick-pick and metadata chip are implemented using the existing playlist persistence
+infrastructure. A playlist named **"Favourites"** (see `FAVOURITES_PLAYLIST_NAME` constant) is
+treated as the well-known Favourites destination.
+
+- The Favourites quick-pick only appears when this playlist exists (created via the normal
+  Playlists UI or imported via M3U). It is hidden — not shown as a disabled placeholder —
+  when no such playlist has been created.
+- The Favourites metadata chip only appears when the playlist exists and contains at least one song.
+- Songs are added/removed via the standard "Add to Playlist" context-menu flow.
+- No dedicated per-song heart/star toggle is implemented in this PR; that UX improvement
+  is deferred as a follow-up (see DEVELOPMENT_ROADMAP.md).
+- Limitation: if the user renames the "Favourites" playlist, the quick-pick/chip will disappear
+  until a new playlist with that exact name is created.
+
+TS18 runtime validation is still required; this is a UI-layer feature only.

@@ -1,5 +1,8 @@
 package org.oxycblt.auxio.headunit
 
+/** Well-known name used to identify the persisted Favourites playlist. */
+const val FAVOURITES_PLAYLIST_NAME = "Favourites"
+
 enum class QuickPickAction {
     NOW_PLAYING,
     SHUFFLE_ALL,

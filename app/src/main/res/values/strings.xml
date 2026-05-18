@@ -182,7 +182,9 @@
 
     <string name="lbl_recently_added">Recently added</string>
     <string name="lbl_decades">Decades</string>
+    <string name="lbl_folders">Folders</string>
     <string name="lbl_folders_unavailable">Folders (not available here)</string>
+    <string name="lbl_favourites">Favourites</string>
     <string name="lbl_favourites_unavailable">Favourites (not available here)</string>
 <string name="lbl_report">Report</string>
 

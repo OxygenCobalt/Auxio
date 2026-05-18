@@ -50,6 +50,7 @@ import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
+import org.oxycblt.auxio.headunit.FAVOURITES_PLAYLIST_NAME
 import org.oxycblt.auxio.headunit.HeadUnitQuickAccess
 import org.oxycblt.auxio.headunit.QuickPickAction
 import org.oxycblt.auxio.home.tabs.NamedTabStrategy
@@ -95,6 +96,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     private var getContentLauncher: ActivityResultLauncher<String>? = null
     private var pendingImportTarget: Playlist? = null
+    /** The current Favourites playlist (a playlist named [FAVOURITES_PLAYLIST_NAME]), or null. */
+    private var favouritesPlaylist: Playlist? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,7 +189,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
-        collectImmediately(homeModel.songList, homeModel.genreList, ::updateMetadataShortcuts)
+        collectImmediately(homeModel.songList, homeModel.genreList, homeModel.playlistList, ::updateMetadataShortcuts)
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collectImmediately(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
@@ -200,9 +203,12 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         HeadUnitQuickAccess.quickPicks(
                 hasLibraryContent = hasLibrary,
                 hasFolderSupport = true,
-                hasFavouritesSupport = false,
+                hasFavouritesSupport = favouritesPlaylist != null,
                 hasYearMetadata = hasYearMetadata,
             )
+            // Only show FAVOURITES when it has a real destination; other disabled items
+            // (e.g. SHUFFLE_ALL on an empty library) remain visible so users know they exist.
+            .filter { item -> item.enabled || item.action != QuickPickAction.FAVOURITES }
             .forEach { item ->
             val chip = Chip(binding.root.context).apply {
                 isCheckable = false
@@ -216,8 +222,9 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             }
     }
 
-    private fun updateMetadataShortcuts(songs: List<Song>, genres: List<Genre>) {
+    private fun updateMetadataShortcuts(songs: List<Song>, genres: List<Genre>, playlists: List<Playlist>) {
         val binding = requireBinding()
+        favouritesPlaylist = playlists.firstOrNull { it.name.raw == FAVOURITES_PLAYLIST_NAME }
         val decades = HeadUnitQuickAccess.deriveDecades(songs.mapNotNull { it.album.dates?.min?.year })
         val metadataState =
             HeadUnitQuickAccess.metadataChipState(
@@ -225,7 +232,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 decadeCount = decades.size,
                 hasRecent = songs.isNotEmpty(),
                 hasFolders = true,
-                hasFavourites = false,
+                hasFavourites = favouritesPlaylist?.songs?.isNotEmpty() == true,
             )
 
         binding.homeMetadataChips.removeAllViews()
@@ -247,6 +254,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         if (metadataState.folders) {
             binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_folders)) {
                 homeModel.startChooseMusicLocations()
+            })
+        }
+        if (metadataState.favourites) {
+            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_favourites)) {
+                favouritesPlaylist?.let { detailModel.showPlaylist(it) }
             })
         }
         setupHeadUnitQuickAccess(binding)
@@ -272,7 +284,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             QuickPickAction.RECENTLY_ADDED -> getString(R.string.lbl_recently_added)
             QuickPickAction.DECADES -> getString(R.string.lbl_decades)
             QuickPickAction.FOLDERS -> getString(R.string.lbl_folders)
-            QuickPickAction.FAVOURITES -> getString(R.string.lbl_favourites_unavailable)
+            QuickPickAction.FAVOURITES -> getString(R.string.lbl_favourites)
         }
 
     private fun handleQuickPick(action: QuickPickAction) {
@@ -286,7 +298,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             QuickPickAction.RECENTLY_ADDED -> openRecentlyAdded()
             QuickPickAction.DECADES -> openDecades()
             QuickPickAction.FOLDERS -> homeModel.startChooseMusicLocations()
-            QuickPickAction.FAVOURITES -> Unit
+            QuickPickAction.FAVOURITES -> favouritesPlaylist?.let { detailModel.showPlaylist(it) }
         }
     }
 
@@ -310,6 +322,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
         storagePermissionLauncher = null
+        favouritesPlaylist = null
         binding.homeNormalToolbar.setOnMenuItemClickListener(null)
     }
 

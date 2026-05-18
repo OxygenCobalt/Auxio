@@ -106,7 +106,7 @@ These checks validate Auxio-TS head-unit UX options. They **do not** prove TS18 
 5. Confirm Quick Picks shortcuts (if visible in this build) are actionable and do not remove deep browse paths.
 6. Confirm metadata shortcut chips (if visible in this build) are actionable, metadata-based, and **exclude** file type, file size, bitrate, codec, sample rate, and storage size.
 7. Confirm queue capabilities remain intact (open queue, reorder/drag if available, remove actions if available).
-8. Confirm favourites shortcut/chip is either working against real favourites data or omitted with documented blocker.
+8. Confirm favourites shortcut/chip: appears when a playlist named "Favourites" exists; hidden (not shown as disabled) when no such playlist exists; tapping opens the Favourites playlist detail view. Songs can be added to Favourites via the standard "Add to Playlist" context-menu flow.
 9. Confirm album-art control remains minimal (show/hide behavior only) and controls remain readable.
 10. Confirm playback feedback is visible for user actions and does not spam passively.
 11. Confirm no driving/parked restrictions are present.

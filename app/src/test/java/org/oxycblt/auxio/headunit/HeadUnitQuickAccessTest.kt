@@ -38,6 +38,34 @@ class HeadUnitQuickAccessTest {
     }
 
     @Test
+    fun quickPicks_favourites_enabledWhenSupported() {
+        val picks =
+            HeadUnitQuickAccess.quickPicks(
+                    hasLibraryContent = true,
+                    hasFolderSupport = true,
+                    hasFavouritesSupport = true,
+                    hasYearMetadata = false,
+                )
+                .associateBy { it.action }
+        assertTrue(picks.getValue(QuickPickAction.FAVOURITES).enabled)
+    }
+
+    @Test
+    fun quickPicks_favourites_markedDisabledWhenNoPlaylist() {
+        val picks =
+            HeadUnitQuickAccess.quickPicks(
+                    hasLibraryContent = true,
+                    hasFolderSupport = true,
+                    hasFavouritesSupport = false,
+                    hasYearMetadata = false,
+                )
+                .associateBy { it.action }
+        // The FAVOURITES item is present in the list but disabled; the UI layer filters it from
+        // display so it is never shown as a dead placeholder.
+        assertFalse(picks.getValue(QuickPickAction.FAVOURITES).enabled)
+    }
+
+    @Test
     fun deriveDecades_returnsDistinctSortedDecades() {
         val decades = HeadUnitQuickAccess.deriveDecades(listOf(1999, 2001, 2009, 2013, 1880, 2101, 2001))
         assertEquals(listOf(1990, 2000, 2010), decades)
@@ -51,5 +79,37 @@ class HeadUnitQuickAccessTest {
         assertTrue(state.recentlyAdded)
         assertFalse(state.folders)
         assertFalse(state.favourites)
+        // MetadataChipState has exactly 5 allowed fields: genres, decades, folders, recentlyAdded,
+        // favourites. Forbidden technical categories (file type, bitrate, codec, sample rate,
+        // storage size) do not exist in this data class by design.
+        val fields = MetadataChipState::class.java.declaredFields.map { it.name }
+        assertTrue("genres field present", fields.contains("genres"))
+        assertTrue("decades field present", fields.contains("decades"))
+        assertTrue("folders field present", fields.contains("folders"))
+        assertTrue("recentlyAdded field present", fields.contains("recentlyAdded"))
+        assertTrue("favourites field present", fields.contains("favourites"))
+        // Verify no forbidden categories crept in
+        assertFalse("no fileType field", fields.contains("fileType"))
+        assertFalse("no bitrate field", fields.contains("bitrate"))
+        assertFalse("no codec field", fields.contains("codec"))
+        assertFalse("no sampleRate field", fields.contains("sampleRate"))
+        assertFalse("no fileSize field", fields.contains("fileSize"))
+    }
+
+    @Test
+    fun metadataChipState_showsFavourites_whenHasFavouritesTrue() {
+        val state = HeadUnitQuickAccess.metadataChipState(
+            genreCount = 1,
+            decadeCount = 0,
+            hasRecent = true,
+            hasFolders = true,
+            hasFavourites = true,
+        )
+        assertTrue(state.favourites)
+    }
+
+    @Test
+    fun favouritesPlaylistName_isNonEmpty() {
+        assertTrue(FAVOURITES_PLAYLIST_NAME.isNotEmpty())
     }
 }
