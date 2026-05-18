@@ -46,7 +46,10 @@ class PersistenceRoomModule {
                 "playback_persistence.db",
             )
             .fallbackToDestructiveMigration()
-            .addMigrations(PersistenceDatabase.MIGRATION_27_32)
+            .addMigrations(
+                PersistenceDatabase.MIGRATION_27_32,
+                PersistenceDatabase.MIGRATION_38_39,
+            )
             .build()
 
     @Provides fun playbackStateDao(database: PersistenceDatabase) = database.playbackStateDao()

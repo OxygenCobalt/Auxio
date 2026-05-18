@@ -388,6 +388,9 @@
     <string name="desc_skip_prev">Skip to last song</string>
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
+    <string name="desc_shuffle_off">Shuffle off</string>
+    <string name="desc_shuffle_all_songs">Shuffle all songs</string>
+    <string name="desc_shuffle_current_genre">Shuffle songs matching current genre</string>
     <string name="desc_exit">Stop playback</string>
 
     <string name="desc_remove_song">Remove this song</string>

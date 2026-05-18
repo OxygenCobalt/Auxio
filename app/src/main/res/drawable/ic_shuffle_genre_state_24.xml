@@ -1,0 +1,13 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/sel_shuffle_state_24" />
+    <item
+        android:width="8dp"
+        android:height="8dp"
+        android:gravity="bottom|start"
+        android:left="3dp"
+        android:bottom="3dp">
+        <shape android:shape="oval">
+            <solid android:color="?attr/colorPrimary" />
+        </shape>
+    </item>
+</layer-list>

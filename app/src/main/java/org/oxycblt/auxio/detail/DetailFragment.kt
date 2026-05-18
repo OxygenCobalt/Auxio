@@ -53,9 +53,13 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
     override val playbackModel: PlaybackViewModel by activityViewModels()
 
     private var spacingSmall = 0
+    private var lastHadDualPane = false
+    private var lastWasScrolled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lastHadDualPane = savedInstanceState?.getBoolean(KEY_DUAL_PANE) ?: false
+        lastWasScrolled = savedInstanceState?.getBoolean(KEY_SCROLLED) ?: false
         // Detail transitions are always on the X axis. Shared element transitions are more
         // semantically correct, but are also too buggy to be sensible.
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
@@ -75,6 +79,10 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
+        // The straightforward "lets save the instance state from the view state"
+        // method won't work due to android lifecycle restrictions. Populate in-memory
+        // state as a backup for the saved instance state bundle.
+        saveStateInMemory(binding)
 
         // --- UI SETUP ---
         binding.detailAppbar?.addOnOffsetChangedListener(this)
@@ -118,6 +126,8 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
+        // see onBindingCreated
+        saveStateInMemory(binding)
         super.onDestroyBinding(binding)
         binding.detailAppbar?.removeOnOffsetChangedListener(this)
         binding.detailNormalToolbar.setOnMenuItemClickListener(null)
@@ -126,9 +136,11 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val binding = requireBinding()
-        outState.putBoolean(KEY_DUAL_PANE, binding.detailPane != null)
-        outState.putBoolean(KEY_SCROLLED, binding.detailRecycler.computeVerticalScrollOffset() > 0f)
+        // Update in-memory saved state if we can (binding may be null) and then
+        // save the instance state from that
+        binding?.let(::saveStateInMemory)
+        outState.putBoolean(KEY_DUAL_PANE, lastHadDualPane)
+        outState.putBoolean(KEY_SCROLLED, lastWasScrolled)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -213,6 +225,11 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
         }
         view.alpha = ratio
         view.translationY = spacingSmall * (1 - ratio)
+    }
+
+    private fun saveStateInMemory(binding: FragmentDetailBinding) {
+        lastHadDualPane = binding.detailPane != null
+        lastWasScrolled = binding.detailRecycler.computeVerticalScrollOffset() > 0
     }
 
     protected abstract fun onPlayParent(parent: P)

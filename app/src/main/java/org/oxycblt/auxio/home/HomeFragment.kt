@@ -69,6 +69,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.FadingToolbarOffsetListener
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.dampen
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
@@ -166,14 +167,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             // debug UI performance.
             offscreenPageLimit = Tab.MAX_SEQUENCE_IDX + 1
 
-            // By default, ViewPager2's sensitivity is high enough to result in vertical scroll
-            // events being registered as horizontal scroll events. Reflect into the internal
-            // RecyclerView and change the touch slope so that touch actions will act more as a
-            // scroll than as a swipe. Derived from:
-            // https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
-            val recycler = VP_RECYCLER_FIELD.get(this@apply)
-            val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
-            RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
+            dampen()
         }
 
         // Further initialization must be done in the function that also handles
@@ -634,10 +628,5 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 MusicType.GENRES -> GenreListFragment()
                 MusicType.PLAYLISTS -> PlaylistListFragment()
             }
-    }
-
-    private companion object {
-        val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
-        val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
     }
 }
