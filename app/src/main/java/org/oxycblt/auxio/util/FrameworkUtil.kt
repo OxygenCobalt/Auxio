@@ -36,11 +36,18 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import androidx.viewpager2.widget.ViewPager2
 import java.lang.IllegalArgumentException
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.Spatial
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
+import java.lang.reflect.Field
+import kotlin.math.abs
+import kotlin.math.sign
 import timber.log.Timber as L
 
 /**
@@ -135,6 +142,26 @@ fun AppCompatButton.fixDoubleRipple() {
         set(this@fixDoubleRipple, null)
     }
 }
+
+private val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
+private val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
+
+/**
+ * Dampen a [ViewPager2] so that vertical scrolls can still easily occur.
+ *
+ * By default, ViewPager2's sensitivity is high enough to result in vertical scroll
+ * events being registered as horizontal scroll events. Reflect into the internal
+ * RecyclerView and change the touch slope so that touch actions will act more as a
+ * scroll than as a swipe. Derived from:
+ * https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
+ */
+fun ViewPager2.dampen() {
+    val recycler = recycler()
+    val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
+    RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
+}
+
+fun ViewPager2.recycler() = (VP_RECYCLER_FIELD.get(this) as RecyclerView)
 
 /**
  * Crash-safe wrapped around [NavController.navigate] that will not crash if multiple destinations
