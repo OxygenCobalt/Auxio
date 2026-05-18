@@ -26,6 +26,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
@@ -34,9 +36,11 @@ import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.headunit.HeadUnitUiAdapter
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
@@ -49,6 +53,7 @@ import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
 import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
 import org.oxycblt.auxio.playback.ui.stepper.Direction
 import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
@@ -78,6 +83,7 @@ class PlaybackPanelFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
+    @Inject lateinit var uiSettings: UISettings
     private val queueModel: QueueViewModel by viewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
     private var userAwarePagerCallback: UserAwarePagerCallback? = null
@@ -145,11 +151,35 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackSeekBar?.listener = this
+        if (!uiSettings.showHeadUnitAlbumArt) {
+            binding.playbackCover.visibility = View.GONE
+        }
+        HeadUnitUiAdapter.applyLargeControls(
+            resources,
+            uiSettings.largeHeadUnitControls,
+            listOf(
+                binding.playbackRepeat,
+                binding.playbackSkipPrev,
+                binding.playbackPlayPause,
+                binding.playbackSkipNext,
+                binding.playbackShuffle,
+            ),
+        )
+        HeadUnitUiAdapter.applyLargePlaybackText(
+            resources,
+            uiSettings.largeHeadUnitControls,
+            binding.playbackSong,
+            binding.playbackArtist,
+        )
+        applyDriverSideLayout(binding)
 
         // Set up actions
         // TODO: Add better playback button accessibility
         binding.playbackRepeat.setOnClickListener { playbackModel.toggleRepeatMode() }
-        binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
+        binding.playbackSkipPrev.setOnClickListener {
+            playbackModel.prev()
+            requireContext().showToast(R.string.msg_playback_previous)
+        }
         binding.playbackPlayPause.apply {
             @SuppressLint("RestrictedApi")
             setCornerSpringForce(
@@ -160,7 +190,10 @@ class PlaybackPanelFragment :
             )
             setOnClickListener { playbackModel.togglePlaying() }
         }
-        binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
+        binding.playbackSkipNext.setOnClickListener {
+            playbackModel.next()
+            requireContext().showToast(R.string.msg_playback_next)
+        }
         binding.playbackShuffle.setOnClickListener { playbackModel.cycleShuffleScope() }
         binding.playbackMore?.setOnClickListener {
             playbackModel.song.value?.let {
@@ -326,6 +359,29 @@ class PlaybackPanelFragment :
         when (direction) {
             Direction.FORWARDS -> playbackModel.stepForward()
             Direction.BACKWARDS -> playbackModel.stepBackwards()
+        }
+    }
+
+    private fun applyDriverSideLayout(binding: FragmentPlaybackPanelBinding) {
+        if (uiSettings.driverSide != UISettings.DriverSide.RIGHT) {
+            return
+        }
+        val root = binding.root as ConstraintLayout
+        ConstraintSet().apply {
+            clone(root)
+            clear(R.id.playback_cover, ConstraintSet.START)
+            connect(R.id.playback_cover, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+
+            clear(R.id.playback_info_container, ConstraintSet.START)
+            clear(R.id.playback_info_container, ConstraintSet.END)
+            connect(R.id.playback_info_container, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(R.id.playback_info_container, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+
+            clear(R.id.playback_controls_wrapper, ConstraintSet.START)
+            clear(R.id.playback_controls_wrapper, ConstraintSet.END)
+            connect(R.id.playback_controls_wrapper, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(R.id.playback_controls_wrapper, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+            applyTo(root)
         }
     }
 }

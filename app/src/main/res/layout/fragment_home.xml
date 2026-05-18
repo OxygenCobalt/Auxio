@@ -57,6 +57,31 @@
         android:clipToPadding="false"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
+
+        <LinearLayout
+            android:id="@+id/home_head_unit_shortcuts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_small">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/home_quick_picks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="@dimen/spacing_tiny"
+                app:singleLine="false" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/home_metadata_chips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="@dimen/spacing_tiny"
+                app:singleLine="false" />
+        </LinearLayout>
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/home_pager"
             android:layout_width="match_parent"

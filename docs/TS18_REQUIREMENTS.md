@@ -55,3 +55,32 @@
 2. Core-behavior regression risk outside TS18 scenarios.
 3. Evidence-quality risk (claim exceeds proof).
 4. Vendor-lock-in risk from premature TW-private assumptions.
+
+
+## 8) Head-unit UI/UX requirements (Auxio-TS scope)
+1. Provide head-unit settings for landscape mode, driver side, large controls, and minimal album-art control.
+2. Quick Picks are additive shortcuts only and must not remove deep browse/navigation.
+3. Metadata chips are optional shortcuts only.
+4. Allowed chip categories: genres, decades, folders, recently added, and favourites only when first-class favourites support exists in-app.
+5. Forbidden chip categories: file type, file size, bitrate, codec, sample rate, storage size, and technical file-property filters.
+6. Queue management and advanced navigation features must remain available.
+7. No driving/parked restrictions are implemented in Auxio-TS UI scope.
+8. UI/UX improvements do not prove TS18 native/TWTHEME compatibility; runtime validation is still required.
+
+
+## 9) Favourites implementation (current approach)
+Favourites quick-pick and metadata chip are implemented using the existing playlist persistence
+infrastructure. A playlist named **"Favourites"** (see `FAVOURITES_PLAYLIST_NAME` constant) is
+treated as the well-known Favourites destination.
+
+- The Favourites quick-pick only appears when this playlist exists (created via the normal
+  Playlists UI or imported via M3U). It is hidden — not shown as a disabled placeholder —
+  when no such playlist has been created.
+- The Favourites metadata chip only appears when the playlist exists and contains at least one song.
+- Songs are added/removed via the standard "Add to Playlist" context-menu flow.
+- No dedicated per-song heart/star toggle is implemented in this PR; that UX improvement
+  is deferred as a follow-up (see DEVELOPMENT_ROADMAP.md).
+- Limitation: if the user renames the "Favourites" playlist, the quick-pick/chip will disappear
+  until a new playlist with that exact name is created.
+
+TS18 runtime validation is still required; this is a UI-layer feature only.
