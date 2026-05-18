@@ -251,6 +251,9 @@ jobs:
             else
               commit_author_display="$(git log -1 --format=%an "${sha}")"
             fi
+            if ! is_value_present "${commit_author_display}"; then
+              commit_author_display="unknown author"
+            fi
 
             printf -- "- [%s](https://github.com/%s/commit/%s) by %s\n" "${subject}" "${GITHUB_REPOSITORY}" "${sha}" "${commit_author_display}" >> "${NOTES_FILE}"
           }
@@ -275,8 +278,8 @@ jobs:
             pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
             if is_value_present "${pr_number}"; then
               if [[ -z "${included_prs[${pr_number}]+x}" ]]; then
-                pr_title="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.title // empty' 2>/dev/null || true)"
-                pr_author="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.user.login // empty' 2>/dev/null || true)"
+                pr_payload="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '[.title // empty, .user.login // empty] | map(gsub("[\t\r\n]+"; " ")) | @tsv' 2>/dev/null || true)"
+                IFS=$'\t' read -r pr_title pr_author <<< "${pr_payload}"
                 if is_value_present "${pr_title}" && is_value_present "${pr_author}"; then
                   printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
                   included_prs["${pr_number}"]=1
