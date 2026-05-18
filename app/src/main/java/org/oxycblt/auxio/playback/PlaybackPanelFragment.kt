@@ -40,6 +40,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.headunit.HeadUnitUiAdapter
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
@@ -151,26 +152,25 @@ class PlaybackPanelFragment :
 
         binding.playbackSeekBar?.listener = this
         if (!uiSettings.showHeadUnitAlbumArt) {
-            binding.playbackCover.visibility = android.view.View.GONE
+            binding.playbackCover.visibility = View.GONE
         }
-        if (uiSettings.largeHeadUnitControls) {
-            val size = resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit)
-            val titleSize = resources.getDimension(R.dimen.text_size_head_unit_title)
-            val subtitleSize = resources.getDimension(R.dimen.text_size_head_unit_subtitle)
-            binding.playbackSong.textSize = titleSize / resources.displayMetrics.scaledDensity
-            binding.playbackArtist.textSize = subtitleSize / resources.displayMetrics.scaledDensity
+        HeadUnitUiAdapter.applyLargeControls(
+            resources,
+            uiSettings.largeHeadUnitControls,
             listOf(
-                    binding.playbackRepeat,
-                    binding.playbackSkipPrev,
-                    binding.playbackPlayPause,
-                    binding.playbackSkipNext,
-                    binding.playbackShuffle,
-                )
-                .forEach {
-                    it.minimumWidth = size
-                    it.minimumHeight = size
-                }
-        }
+                binding.playbackRepeat,
+                binding.playbackSkipPrev,
+                binding.playbackPlayPause,
+                binding.playbackSkipNext,
+                binding.playbackShuffle,
+            ),
+        )
+        HeadUnitUiAdapter.applyLargePlaybackText(
+            resources,
+            uiSettings.largeHeadUnitControls,
+            binding.playbackSong,
+            binding.playbackArtist,
+        )
         applyDriverSideLayout(binding)
 
         // Set up actions

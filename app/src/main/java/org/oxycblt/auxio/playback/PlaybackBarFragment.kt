@@ -28,6 +28,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.headunit.HeadUnitUiAdapter
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -77,17 +78,15 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackPlayPause.setOnClickListener {
             playbackModel.togglePlaying()
             context.showToast(
-                if (playbackModel.isPlaying.value) R.string.msg_playback_pause
-                else R.string.msg_playback_play
+                if (playbackModel.isPlaying.value) R.string.msg_playback_play
+                else R.string.msg_playback_pause
             )
         }
-        if (uiSettings.largeHeadUnitControls) {
-            val size = resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit)
-            binding.playbackPlayPause.minimumWidth = size
-            binding.playbackPlayPause.minimumHeight = size
-            binding.playbackSecondaryAction.minimumWidth = size
-            binding.playbackSecondaryAction.minimumHeight = size
-        }
+        HeadUnitUiAdapter.applyLargeControls(
+            resources,
+            uiSettings.largeHeadUnitControls,
+            listOf(binding.playbackPlayPause, binding.playbackSecondaryAction),
+        )
         applyDriverSideLayout(binding)
 
         // -- VIEWMODEL SETUP ---
