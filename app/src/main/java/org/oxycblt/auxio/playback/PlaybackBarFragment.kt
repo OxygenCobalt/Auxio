@@ -28,6 +28,7 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.musikr.Song
@@ -76,7 +77,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         collectImmediately(
             playbackModel.currentBarAction,
             playbackModel.repeatMode,
-            playbackModel.isShuffled,
+            playbackModel.shuffleScope,
             ::updateBarAction,
         )
     }
@@ -114,7 +115,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private fun updateBarAction(
         actionMode: ActionMode,
         repeatMode: RepeatMode,
-        isShuffled: Boolean,
+        shuffleScope: ShuffleScope,
     ) {
         val binding = requireBinding()
         when (actionMode) {
@@ -147,11 +148,16 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         setIconResource(R.drawable.sel_shuffle_state_24)
-                        contentDescription = getString(R.string.desc_shuffle)
-                        setOnClickListener { playbackModel.toggleShuffled() }
+                        setOnClickListener { playbackModel.cycleShuffleScope() }
                         tag = actionMode
                     }
-                    isChecked = isShuffled
+                    isChecked = shuffleScope != ShuffleScope.OFF
+                    contentDescription =
+                        when (shuffleScope) {
+                            ShuffleScope.OFF -> getString(R.string.desc_shuffle_off)
+                            ShuffleScope.ALL -> getString(R.string.desc_shuffle_all_songs)
+                            ShuffleScope.GENRE -> getString(R.string.desc_shuffle_current_genre)
+                        }
                 }
             }
         }

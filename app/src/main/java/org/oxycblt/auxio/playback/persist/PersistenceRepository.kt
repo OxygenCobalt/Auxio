@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback.persist
 import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.musikr.MusicParent
 import timber.log.Timber as L
 
@@ -76,6 +77,7 @@ constructor(
             shuffledMapping = shuffledMapping,
             index = playbackState.index,
             songUid = playbackState.songUid,
+            shuffleScope = playbackState.shuffleScope,
         )
     }
 
@@ -101,6 +103,7 @@ constructor(
                     repeatMode = state.repeatMode,
                     songUid = state.songUid,
                     parentUid = state.parent?.uid,
+                    shuffleScope = state.shuffleScope,
                 )
 
             // Convert the remaining queue information do their database-specific counterparts.

@@ -40,6 +40,7 @@ import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.stepper.Direction
 import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
@@ -135,7 +136,7 @@ class PlaybackPanelFragment :
             setOnClickListener { playbackModel.togglePlaying() }
         }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
-        binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
+        binding.playbackShuffle.setOnClickListener { playbackModel.cycleShuffleScope() }
         binding.playbackMore?.setOnClickListener {
             playbackModel.song.value?.let {
                 listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
@@ -148,7 +149,7 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.positionDs, ::updatePosition)
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
-        collectImmediately(playbackModel.isShuffled, ::updateShuffled)
+        collectImmediately(playbackModel.shuffleScope, ::updateShuffleScope)
     }
 
     override fun onStart() {
@@ -260,8 +261,26 @@ class PlaybackPanelFragment :
         requireBinding().playbackSeekBar?.setWaveEnabled(isPlaying)
     }
 
-    private fun updateShuffled(isShuffled: Boolean) {
-        requireBinding().playbackShuffle.isChecked = isShuffled
+    private fun updateShuffleScope(scope: ShuffleScope) {
+        requireBinding().playbackShuffle.apply {
+            when (scope) {
+                ShuffleScope.OFF -> {
+                    isChecked = false
+                    setIconResource(R.drawable.sel_shuffle_state_24)
+                    contentDescription = context.getString(R.string.desc_shuffle_off)
+                }
+                ShuffleScope.ALL -> {
+                    isChecked = true
+                    setIconResource(R.drawable.sel_shuffle_state_24)
+                    contentDescription = context.getString(R.string.desc_shuffle_all_songs)
+                }
+                ShuffleScope.GENRE -> {
+                    isChecked = true
+                    setIconResource(R.drawable.ic_shuffle_genre_state_24)
+                    contentDescription = context.getString(R.string.desc_shuffle_current_genre)
+                }
+            }
+        }
     }
 
     private fun navigateToCurrentSong() {

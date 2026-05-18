@@ -203,4 +203,6 @@ dependencies {
 
     // Fuzzy search
     implementation 'org.apache.commons:commons-text:1.15.0'
+
+    testImplementation "junit:junit:4.13.2"
 }

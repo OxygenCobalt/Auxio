@@ -28,13 +28,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.state.DeferredPlayback
+import org.oxycblt.auxio.playback.state.GenreShuffleQueueSelector
 import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
+import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.musikr.Album
@@ -60,6 +63,7 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     private val commandFactory: PlaybackCommand.Factory,
     private val listSettings: ListSettings,
+    private val musicRepository: MusicRepository,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
@@ -90,6 +94,10 @@ constructor(
     /** Whether the queue is shuffled or not. */
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
+
+    private val _shuffleScope = MutableStateFlow(ShuffleScope.OFF)
+    val shuffleScope: StateFlow<ShuffleScope>
+        get() = _shuffleScope
 
     private val _currentBarAction = MutableStateFlow(playbackSettings.barAction)
     /** The current secondary action to show alongside the play button in the playback bar. */
@@ -144,6 +152,11 @@ constructor(
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         L.d("Queue completely changed, updating current song")
         _isShuffled.value = isShuffled
+        if (!isShuffled) {
+            _shuffleScope.value = ShuffleScope.OFF
+        } else if (_shuffleScope.value == ShuffleScope.OFF) {
+            _shuffleScope.value = ShuffleScope.ALL
+        }
     }
 
     override fun onNewPlayback(
@@ -156,6 +169,7 @@ constructor(
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
+        _shuffleScope.value = if (isShuffled) ShuffleScope.ALL else ShuffleScope.OFF
     }
 
     override fun onProgressionChanged(progression: Progression) {
@@ -590,8 +604,54 @@ constructor(
 
     /** Toggle [isShuffled] (ex. from on to off) */
     fun toggleShuffled() {
-        L.d("Toggling shuffled state")
-        playbackManager.shuffled(!playbackManager.isShuffled)
+        cycleShuffleScope()
+    }
+
+    fun cycleShuffleScope() {
+        when (_shuffleScope.value) {
+            ShuffleScope.OFF -> {
+                L.d("Cycling shuffle scope: OFF -> ALL")
+                _shuffleScope.value = ShuffleScope.ALL
+                playbackManager.shuffled(true)
+            }
+            ShuffleScope.ALL -> {
+                L.d("Cycling shuffle scope: ALL -> GENRE")
+                applyGenreShuffle()
+            }
+            ShuffleScope.GENRE -> {
+                L.d("Cycling shuffle scope: GENRE -> OFF")
+                _shuffleScope.value = ShuffleScope.OFF
+                playbackManager.shuffled(false)
+            }
+        }
+    }
+
+    private fun applyGenreShuffle() {
+        val currentSong = playbackManager.currentSong ?: return
+        val currentGenres = currentSong.genres.toSet()
+        if (currentGenres.isEmpty()) {
+            _shuffleScope.value = ShuffleScope.ALL
+            return
+        }
+        val librarySongs = musicRepository.library?.songs?.toList() ?: return
+        val selection =
+            GenreShuffleQueueSelector.select(
+                current = currentSong,
+                allSongs = librarySongs,
+                currentGenres = currentGenres,
+                songGenres = { it.genres.toSet() },
+                songId = { it.uid },
+                random = kotlin.random.Random.Default,
+            )
+
+        if (selection.queue.size < 2) {
+            _shuffleScope.value = ShuffleScope.ALL
+            return
+        }
+        val positionMs = playbackManager.progression.calculateElapsedPositionMs()
+        playImpl(commandFactory.songs(selection.queue, ShuffleMode.ON))
+        playbackManager.seekTo(positionMs)
+        _shuffleScope.value = ShuffleScope.GENRE
     }
 
     /**

@@ -331,6 +331,7 @@ interface PlaybackStateManager {
         val shuffledMapping: List<Int>,
         val index: Int,
         val songUid: Music.UID,
+        val shuffleScope: ShuffleScope,
     )
 }
 
@@ -720,6 +721,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             shuffledMapping = stateMirror.rawQueue.shuffledMapping,
             index = stateMirror.index,
             songUid = currentSong.uid,
+            shuffleScope = if (stateMirror.isShuffled) ShuffleScope.ALL else ShuffleScope.OFF,
         )
     }
 

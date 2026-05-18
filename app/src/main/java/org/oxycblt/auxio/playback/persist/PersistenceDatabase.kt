@@ -29,6 +29,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.musikr.Music
 
 /**
@@ -38,7 +39,7 @@ import org.oxycblt.musikr.Music
  */
 @Database(
     entities = [PlaybackState::class, QueueHeapItem::class, QueueShuffledMappingItem::class],
-    version = 38,
+    version = 39,
     exportSchema = false,
 )
 @TypeConverters(Music.UID.TypeConverters::class)
@@ -64,6 +65,12 @@ abstract class PersistenceDatabase : RoomDatabase() {
                 it.execSQL("ALTER TABLE playback_state RENAME TO PlaybackState")
                 it.execSQL("ALTER TABLE queue_heap RENAME TO QueueHeapItem")
                 it.execSQL("ALTER TABLE queue_mapping RENAME TO QueueMappingItem")
+            }
+        val MIGRATION_38_39 =
+            Migration(38, 39) {
+                it.execSQL(
+                    "ALTER TABLE PlaybackState ADD COLUMN shuffleScope TEXT NOT NULL DEFAULT 'OFF'"
+                )
             }
     }
 }
@@ -146,6 +153,7 @@ data class PlaybackState(
     val repeatMode: RepeatMode,
     val songUid: Music.UID,
     val parentUid: Music.UID?,
+    val shuffleScope: ShuffleScope,
 )
 
 @Entity data class QueueHeapItem(@PrimaryKey val id: Int, val uid: Music.UID)

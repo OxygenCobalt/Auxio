@@ -21,3 +21,7 @@ One primary variable per PR.
 ## Snapshot-driven sequencing notes
 - `t-music` snapshot findings are now integrated as evidence for phases 2/4/5/7.
 - Do not start phase 7 until phases 3 and 4 produce clear, reproducible gaps.
+
+- Pass 1 complete: randomise-by-genre architecture/design documented in `docs/RANDOMISE_BY_GENRE_DESIGN.md`; Pass 2 will implement queue/state/UI integration.
+
+- Optional UX follow-up: replace current genre-mode dot badge with dedicated "G" glyph badge asset once icon pipeline/visual QA is scheduled.
