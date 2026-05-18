@@ -156,12 +156,14 @@ private val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class
  * https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
  */
 fun ViewPager2.dampen() {
-    val recycler = recycler()
-    val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
-    RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
+    runCatching {
+        val recycler = recycler() ?: return@runCatching
+        val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
+        RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
+    }
 }
 
-fun ViewPager2.recycler() = (VP_RECYCLER_FIELD.get(this) as RecyclerView)
+fun ViewPager2.recycler(): RecyclerView? = VP_RECYCLER_FIELD.get(this) as? RecyclerView
 
 /**
  * Crash-safe wrapped around [NavController.navigate] that will not crash if multiple destinations

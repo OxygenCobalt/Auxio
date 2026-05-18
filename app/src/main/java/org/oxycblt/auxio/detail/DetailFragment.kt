@@ -229,7 +229,7 @@ abstract class DetailFragment<P : MusicParent, C : Music> :
 
     private fun saveStateInMemory(binding: FragmentDetailBinding) {
         lastHadDualPane = binding.detailPane != null
-        lastWasScrolled = binding.detailRecycler.computeVerticalScrollOffset() > 0f
+        lastWasScrolled = binding.detailRecycler.computeVerticalScrollOffset() > 0
     }
 
     protected abstract fun onPlayParent(parent: P)

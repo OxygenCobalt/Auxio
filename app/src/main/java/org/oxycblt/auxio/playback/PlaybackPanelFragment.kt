@@ -74,14 +74,13 @@ class PlaybackPanelFragment :
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
     PlayerFastSeekOverlay.PerformListener {
-        private val coverPagerAdapter = CoverPagerAdapter(this)
+    private val coverPagerAdapter = CoverPagerAdapter(this)
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
     private val queueModel: QueueViewModel by viewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
     private var userAwarePagerCallback: UserAwarePagerCallback? = null
-    private var currentPagerPosition = 0
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -119,7 +118,7 @@ class PlaybackPanelFragment :
                 post { queueModel.goto(it) }
             }.also { it.attach() }
             setPageTransformer(CarouselTransformer())
-            recycler().apply {
+            recycler()?.apply {
                 // Make it possible to collapse the bottom sheet from the ViewPager's touch area.
                 isNestedScrollingEnabled = false
                 // Visual effect consistency
@@ -175,50 +174,9 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.positionDs, ::updatePosition)
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
-<<<<<<< HEAD
         collectImmediately(playbackModel.shuffleScope, ::updateShuffleScope)
-||||||| b27a09319
-        collectImmediately(playbackModel.isShuffled, ::updateShuffled)
-=======
-        collectImmediately(playbackModel.isShuffled, ::updateShuffled)
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
->>>>>>> 3a1a7ae1c84c9ddfdb839a580583df793057066e
     }
-
-    // FIXME: Old code!! Maybe not necessary anymore?
-//    override fun onStart() {
-//        super.onStart()
-//        playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
-//        requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
-//    }
-
-//    override fun onStop() {
-//        super.onStop()
-//        requireBinding().root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//    }
-
-//    override fun onGlobalLayout() {
-//        if (binding == null || lastCoverWidth < 0) {
-//            return
-//        }
-        // Hacky workaround for cover radius not being preserved in between sizing changes
-        // (i.e split screen or landscape mode)
-        // For some reason ConstraintLayout does several passes on 1:1 elements that causes their
-        // size to radically change, so we wait until it stabilizes and then force an image
-        // reload if needed. Optimistically this is a no-op from coil caching, but when the cover
-        // did accidentally load the wrong image (with weird corner radius intended for bigger
-        // covers) we can force it to reload.
-        // If this breaks, it's fine since we also started a load as we normally did w/state
-        // updates, so the cover will not break.
-//        val binding = requireBinding()
-//        val coverWidth = binding.playbackCover.width
-//        if (lastCoverWidth != coverWidth) {
-//            lastCoverWidth = coverWidth
-//        } else {
-//            playbackModel.song.value?.let { binding.playbackCover.bind(it) }
-//            lastCoverWidth = -1
-//        }
-//    }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
@@ -369,9 +327,5 @@ class PlaybackPanelFragment :
             Direction.FORWARDS -> playbackModel.stepForward()
             Direction.BACKWARDS -> playbackModel.stepBackwards()
         }
-    }
-
-    private companion object {
-
     }
 }

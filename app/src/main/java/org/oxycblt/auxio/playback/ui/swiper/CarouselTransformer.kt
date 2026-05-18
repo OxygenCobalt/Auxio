@@ -5,15 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.carousel.MaskableFrameLayout
-import com.google.android.material.math.MathUtils.lerp
-import kotlin.math.abs
 
 class CarouselTransformer : ViewPager2.PageTransformer {
     override fun transformPage(page: View, position: Float) {
         // drafted by codex mostly due to the insane complexity of abusing a viewpager2
         // into a m3 carousel like thing
         // cleaned/rewritten/documented by me for cognitive ownership
-        val maskable = page as MaskableFrameLayout
+        val maskable = page as? MaskableFrameLayout ?: return
         val width = page.width.toFloat()
         val height = page.height.toFloat()
 
@@ -35,7 +33,7 @@ class CarouselTransformer : ViewPager2.PageTransformer {
                 // so take the opposite end (1f - pos)
                 position > 0f -> 1f - position
                 else -> 0f
-            }
+            }.coerceIn(0f, 1f)
 
         // breakpoints for the gap
         // the thing is that really we have to encode the "gap" an equation such that
