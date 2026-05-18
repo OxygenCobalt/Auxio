@@ -302,15 +302,17 @@ jobs:
                   append_commit_note "${sha}" "${subject}"
                   continue
                 fi
-                IFS=$'\t' read -r pr_title pr_author <<< "${pr_payload}"
-                if [[ "${pr_payload}" == *$'\t'* && (! is_value_present "${pr_title}" || ! is_value_present "${pr_author}") ]]; then
-                  warn_release_notes "PR #${pr_number} metadata parsing was incomplete; using commit note fallback."
+                if [[ "${pr_payload}" != *$'\t'* ]]; then
+                  warn_release_notes "PR #${pr_number} metadata response was not valid TSV; using commit note fallback."
+                  append_commit_note "${sha}" "${subject}"
+                  continue
                 fi
+                IFS=$'\t' read -r pr_title pr_author <<< "${pr_payload}"
                 if is_value_present "${pr_title}" && is_value_present "${pr_author}"; then
                   printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
                   included_prs["${pr_number}"]=1
                 else
-                  warn_release_notes "PR #${pr_number} title/author metadata was incomplete; using commit note fallback."
+                  warn_release_notes "PR #${pr_number} metadata was incomplete (missing title or author); using commit note fallback."
                   append_commit_note "${sha}" "${subject}"
                 fi
               fi
