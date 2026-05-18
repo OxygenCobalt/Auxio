@@ -239,6 +239,22 @@ jobs:
             [[ -n "${1:-}" && "${1}" != "null" ]]
           }
 
+          append_commit_note() {
+            local sha="$1"
+            local subject="$2"
+            local commit_author_login
+            local commit_author_display
+
+            commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' 2>/dev/null || true)"
+            if is_value_present "${commit_author_login}"; then
+              commit_author_display="@${commit_author_login}"
+            else
+              commit_author_display="$(git log -1 --format=%an "${sha}")"
+            fi
+
+            printf -- "- [%s](https://github.com/%s/commit/%s) by %s\n" "${subject}" "${GITHUB_REPOSITORY}" "${sha}" "${commit_author_display}" >> "${NOTES_FILE}"
+          }
+
           CI_COMMIT_PATTERN='^(ci(\(|:)|chore\(ci\)|build\(ci\)|chore\(release\))'
 
           declare -A included_prs
@@ -256,22 +272,20 @@ jobs:
               continue
             fi
 
-            pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number' 2>/dev/null || true)"
+            pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number // empty' 2>/dev/null || true)"
             if is_value_present "${pr_number}"; then
               if [[ -z "${included_prs[${pr_number}]+x}" ]]; then
-                pr_title="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.title')"
-                pr_author="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.user.login')"
-                printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
-                included_prs["${pr_number}"]=1
+                pr_title="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.title // empty' 2>/dev/null || true)"
+                pr_author="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '.user.login // empty' 2>/dev/null || true)"
+                if is_value_present "${pr_title}" && is_value_present "${pr_author}"; then
+                  printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
+                  included_prs["${pr_number}"]=1
+                else
+                  append_commit_note "${sha}" "${subject}"
+                fi
               fi
             else
-              commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' || true)"
-              if is_value_present "${commit_author_login}"; then
-                commit_author_display="@${commit_author_login}"
-              else
-                commit_author_display="$(git log -1 --format=%an "${sha}")"
-              fi
-              printf -- "- [%s](https://github.com/%s/commit/%s) by %s\n" "${subject}" "${GITHUB_REPOSITORY}" "${sha}" "${commit_author_display}" >> "${NOTES_FILE}"
+              append_commit_note "${sha}" "${subject}"
             fi
           done
 
