@@ -1,7 +1,6 @@
 # TW Ecosystem Source Map (supporting index)
 
-This file is a concise map that points to the canonical source corpus in
-`docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
+This file is a concise supporting index. The authoritative source corpus with full classification is in `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
 
 ## Canonical source-of-truth
 - Authoritative source corpus table: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
@@ -24,7 +23,16 @@ Priority 5: New probes/diagnostics (last resort; external only)
 - New sources (DoFun website, iLauncher site, FCC filing, KaierUtils, XDA threads, 4PDA, headunit-desktop, AAGateway, hudiy, head-unit indexes) are added to the canonical corpus table.
 - This file keeps only non-authoritative, maintenance-focused context.
 
-## Supplemental ecosystem context (non-authoritative)
+| Source | Ecosystem role | Confidence | Porting decision |
+|---|---|---|---|
+| DoFun Telegram (`t.me/s/dofun_app`) | TS18.1.2/TS18.2.2 firmware families; iLauncher/TWTHEME conventions; ZLink compatibility notes | Observed | Useful as evidence only |
+| DoFun website (`dofun.cc/car-desktop`) | iLauncher media widget, PiP, split-screen, TWTHEME integration description | Observed | Reusable validation idea |
+| iLauncher.net | Theme APK naming; launcher widget/home integration details | Observed | Requires TS18 runtime validation |
+| FCC TS18 manual | Hardware button layout and MCU interface certification | Observed | Useful as evidence only |
+| KaierUtils (`github.com/d51x/KaierUtils`) | TWUtil usage on KSW/ZXW platforms; volume control via firmware-private API | Observed | Unsafe to port |
+| ZLink5 (`zlink5.com`, `com.zjinnova.zlink`) | Active phone-link app on captured TS18; audio focus competitor | Observed | Requires TS18 runtime validation |
+| XDA TLink versions thread | TLink/ZLink interchangeability; version-specific TS18 compat notes | Observed | Reusable validation idea |
+| XDA iLauncher thread | TS18 v7.5 iLauncher image-display fix; media artwork quirks | Observed | Reusable validation idea |
 
 | Context item | Scope | Confidence | Porting decision | Notes |
 |---|---|---|---|---|
@@ -37,7 +45,7 @@ Priority 5: New probes/diagnostics (last resort; external only)
 ## Current hypotheses (not implementation requirements)
 - Some TS18 launchers may privilege package-targeted metadata pathways.
   Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
-- Some vendor stacks may alter focus/ownership behavior under projection.
+- Some vendor stacks may alter focus/ownership behaviour under projection.
   Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
 - TWTHEME variance may change visual expectations without changing media API requirements.
   Confidence: **Hypothesis**; Porting decision: **Reusable validation idea**.

@@ -1,4 +1,4 @@
-# TS18 Source-Led Integration Strategy (Pivot)
+# TS18 Source-Led Integration Strategy
 
 ## TS18/TW/TWTHEME source-led policy
 
@@ -184,6 +184,14 @@ These prove that TW private framework classes and serial/hardware command patter
 - Not as source code or direct API contract authority.
 - Always pair with confidence labels and porting-decision labels.
 
+## Official Android baseline
+Auxio-TS product work should prioritize:
+- MediaSessionService / MediaLibraryService correctness.
+- External controller and Android Auto compatibility.
+- Notification/media controls and media-button pathways.
+- Audio focus and navigation mixing.
+- Head-unit-safe browse and interaction UX.
+
 ## Integrations to implement first
 1. Android-standard MediaSession + notification hardening.
 2. MediaLibraryService/Android Auto browsing hardening.
@@ -205,3 +213,4 @@ These prove that TW private framework classes and serial/hardware command patter
 - Hidden diagnostics scaffolding in product code — Confidence: **Inferred**; Auxio-TS porting decision: **Should be explicitly avoided**.
 - Vendor binder/service integration without concrete feature design — Confidence: **Inferred**; Auxio-TS porting decision: **Unsafe to port**.
 - Copied decompiled smali/proprietary implementation — Confidence: **Observed**; Auxio-TS porting decision: **Should be explicitly avoided**.
+- `TWUtil`/`TWClient` reflection or import in product code — Confidence: **Observed**; Auxio-TS porting decision: **Unsafe to port**.

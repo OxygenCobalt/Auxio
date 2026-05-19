@@ -1,7 +1,18 @@
 # TS18 Validation Runbook (acceptance testing)
 
 ## Scope
-This runbook validates product behavior on TS18 hardware. It does not depend on in-app probe modules.
+This runbook validates product behaviour on TS18 hardware. It does not depend on in-app probe modules.
+
+Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
+
+## Source-led framing for all scenarios
+
+Each scenario in this runbook is derived from at least one source in the canonical corpus at `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`. When adding new scenarios, identify the source first:
+
+1. Check whether a Priority 1 or 2 source predicts or implies the expected behaviour.
+2. Use local evidence (Priority 3) to refine the scenario.
+3. Design the scenario as an on-device acceptance check, not a product-code probe.
+4. Only add external diagnostic commands when needed to observe the expected behaviour.
 
 Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
 
@@ -47,8 +58,10 @@ Use only these values in evidence rows:
 ### TS18-ACC-005: ZLink/TLink coexistence
 - Compare focus/session/metadata visibility when projection is idle vs active.
 
-### TS18-ACC-006: Launcher widget behavior
-- Compare metadata/control visibility for stock launcher and available alternatives.
+### TS18-ACC-006: Launcher widget behavior (iLauncher / TWTHEME)
+- Source basis: iLauncher.net (Priority 1) + Display-Media-Titles (Priority 2) — both confirm metadata visibility is a first-class surface.
+- Compare metadata/control visibility for stock launcher, iLauncher, and any TWTHEME widget.
+- Record active launcher package and firmware variant in evidence header.
 
 ### TS18-ACC-007: Audio focus + navigation mixing
 - Trigger navigation prompts during playback; verify duck/pause/recover behavior.

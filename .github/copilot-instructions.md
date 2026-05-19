@@ -67,13 +67,15 @@ Canonical source corpus: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 ## Evidence labeling (required)
 For each TS18/TW/TWTHEME claim, include:
 1) confidence: **Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported**
-2) porting decision label: **Directly reusable requirement / Reusable validation idea / Useful as evidence only / Obsolete for Auxio / Requires TS18 runtime validation / Unsafe to port / Should be explicitly avoided**
+2) porting decision label: **Directly reusable requirement / Reusable validation idea / Useful as evidence only / Obsolete due to Auxio architecture / Requires TS18 runtime validation / Unsafe to port / Should be explicitly avoided**
 
 ## Never do
 - Do not change package to `com.tw.music`.
 - Do not assume privileged/system UID.
 - Do not copy decompiled smali into Auxio code.
 - Do not claim TS18 compatibility without TS18 runtime evidence.
+- Do not add TWUtil/TWClient reflection or vendor-service binders to product code.
+- Do not make probe/diagnostics the default approach for TS18 questions.
 
 ## Baseline checks
 - `./gradlew tasks`
