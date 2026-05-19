@@ -87,6 +87,27 @@ jobs:
           grep -Fq '| 6+ | Explicit compatibility features only when justified |' docs/DEVELOPMENT_ROADMAP.md
           grep -Fq '## Related canonical docs' docs/TS18_VALIDATION_RUNBOOK.md
 
+      - name: Validate TS18/TW/TWTHEME source-led policy is in place
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Policy phrase must appear in canonical strategy and in agent instructions
+          grep -Fq 'TS18/TW/TWTHEME source-led policy' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          grep -Fq 'TS18/TW/TWTHEME source-led policy' AGENTS.md
+          grep -Fq 'TS18/TW/TWTHEME source-led policy' .github/copilot-instructions.md
+
+          # Source priority model must exist in strategy doc
+          grep -Fq 'Priority 1' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          grep -Fq 'Priority 5' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+
+          # Core TS18/TW/TWTHEME ecosystem sources must appear in corpus
+          grep -Fq 'Topway' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          grep -Fq 'DoFun' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          grep -Fq 'TWTHEME' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          grep -Fq 'iLauncher' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          grep -Fq 'ZLink' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+
       - name: Enforce Auxio-TS package and privilege guardrails
         shell: bash
         run: |

@@ -1,28 +1,50 @@
 # Research Sources and Evidence Weighting
 
-## 1) Android official docs (highest implementation authority)
-- Media3, MediaSession/notification, audio focus, foreground service, Android Auto/cars guidance.
-- Proves standard Android behavior and constraints.
-- Does not prove TW-private contracts.
+## TS18/TW/TWTHEME source priority model
 
-## 2) Upstream Auxio source (highest architecture authority)
-- Proves current maintainable playback/library/service boundaries.
-- Does not prove TS18 vendor behavior.
+For any TS18-specific question, consult sources in this priority order:
 
-## 3) TS18 diagnostics in this repo (highest target-device evidence authority)
-- `diagnostics/redacted/ts18_device_profile.json` and related redacted captures.
-- Proves observed package/property/theme ecosystem on captured device.
-- Does not prove all firmware variants.
+```text
+Priority 1: TS18/TW/TWTHEME ecosystem sources
+  - Topway / TS10 / TS18 firmware references
+  - DoFun / iLauncher / TWTHEME material
+  - TWUtil / TWClient public references (for classification only; unsafe to port)
+  - ZLink/TLink/carchoose ecosystem clues
+  - TWTHEME theme/window/PiP/launcher behaviour sources
+  (Canonical table: docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md)
 
-## 4) `t-music` snapshot corpus (private evidence snapshot)
-- `docs/evidence/t-music-snapshot/*`.
-- Proves stock-app contracts and assumptions in analyzed corpus (manifest, actions, vendor hooks, runbook patterns).
-- Does not prove these contracts are required for Auxio third-party app behavior on this device.
-- Must be paired with Auxio+TS18 runtime comparison before implementation decisions.
+Priority 2: Battle-tested public head-unit projects
+  - Projects showing working media metadata, hardware-key routing, launcher/widget behaviour
+  (Canonical table: docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md)
 
-## 5) Public TW/Topway ecosystem projects + community/manual material
-- Proves available patterns and candidate contracts.
-- Mostly suggests directions; cannot replace direct TS18 runtime evidence.
+Priority 3: Local repository evidence
+  - docs/evidence/t-music-snapshot/ (vendor hooks, manifest, contracts)
+  - diagnostics/redacted/ts18_device_profile.json
+
+Priority 4: User-provided diagnostics
+  - Fresh TS18 logs, dumpsys, bugreport extracts, package lists
+
+Priority 5: New probes/diagnostics
+  - Allowed only when no reliable source or user-provided evidence exists
+  - Keep external (scripts/runbook); do not add to product code
+```
+
+## Standard authority hierarchy (for implementation decisions)
+
+1. **Android official docs** (Media3, MediaSession, audio focus, car/auto) — implementation baseline.
+2. **Upstream Auxio source** — architecture baseline.
+3. **TS18/TW/TWTHEME corpus** (Priority 1+2 above) — TS18-specific evidence.
+4. **Local evidence** (Priority 3+4 above) — device-specific confirmation.
+
+## Canonical source corpus location
+
+The full source corpus with confidence/porting labels is maintained in:
+
+```text
+docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+```
+
+Do not maintain a second authoritative source table elsewhere.
 
 ## Mandatory claim format for TS18 docs/PRs
 Each TW/TWTHEME claim must include:
