@@ -106,5 +106,5 @@ If a run fails after pushing commit/tag:
 
 1. Check current tags/releases.
 2. Confirm tag points to the intended version commit.
-3. Retry with explicit `version_tag` only if intentionally reusing that exact version.
+3. Retry with explicit `version_tag` only after intentional cleanup of the prior tag/release state; otherwise choose a new unique version.
 4. Prefer retry as draft first.

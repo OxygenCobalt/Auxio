@@ -22,9 +22,6 @@ permissions:
   contents: write
   pull-requests: read
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -403,12 +400,16 @@ jobs:
           if [[ "${IS_PRERELEASE}" == "true" ]]; then
             release_args+=("--prerelease")
           fi
+          release_extra_args=()
+          if (( ${#release_args[@]} > 0 )); then
+            release_extra_args=("${release_args[@]}")
+          fi
 
           gh release create "${RELEASE_TAG}" "${APK_PATH}#${APK_NAME}" \
             --title "${RELEASE_TAG}" \
             --notes-file "${RELEASE_NOTES_FILE}" \
             --verify-tag \
-            "${release_args[@]}"
+            "${release_extra_args[@]}"
 
           RELEASE_URL="$(gh release view "${RELEASE_TAG}" --json url --jq '.url')"
           echo "release_url=${RELEASE_URL}" >> "$GITHUB_OUTPUT"
