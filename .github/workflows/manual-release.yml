@@ -321,10 +321,11 @@ jobs:
             echo "## What's changed"
             echo
             if [[ -n "${GENERATED_BODY}" ]]; then
-              # Strip any leading What's Changed heading to avoid duplication
-              printf '%s\n' "${GENERATED_BODY}" | grep -viE '^## What.s changed'
+              # Strip GitHub's own heading ("## What's Changed") to avoid duplication
+              printf '%s\n' "${GENERATED_BODY}" | grep -viE "^## What's [Cc]hanged"
             else
-              # Fallback: local git log, no API calls, capped at 100 commits
+              # Fallback: local git log, no API calls
+              # When no previous tag exists, cap at 100 commits to keep notes concise
               if [[ -n "${PREVIOUS_TAG}" ]]; then
                 git log --reverse \
                   --pretty=format:"- [%s](https://github.com/${GITHUB_REPOSITORY}/commit/%H) by %an" \
