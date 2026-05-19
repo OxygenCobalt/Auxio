@@ -88,3 +88,5 @@ Every TS18-facing PR must include:
 - Treat release workflows and signing configuration as security-sensitive.
 - Never print or persist secret values (keystore/passwords/aliases) in logs or committed files.
 - Keep decoded keystores only in runner temp paths and never commit signing artifacts.
+- Do not create fake submodule files to satisfy release checks; fix recursive checkout/submodule initialization instead.
+- Keep release workflow changes scoped to manual signed APK release behavior unless a broader change is explicitly requested.

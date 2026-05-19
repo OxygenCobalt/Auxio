@@ -44,3 +44,5 @@ Auxio upstream core
 - Treat release/signing workflows as security-sensitive changes.
 - Do not echo or commit secret material (keystore contents, passwords, aliases).
 - Keep decoded keystores in ephemeral runner temp locations only.
+- Do not create fake submodule files for release checks; fix recursive checkout/submodule initialization.
+- Keep release workflow changes scoped and avoid broad CI rewrites unless explicitly requested.
