@@ -1,53 +1,28 @@
-# TW Ecosystem Source Map (TS18/TW/TWTHEME)
+# TW Ecosystem Source Map (source-led)
 
-## Evidence legend
-- **Observed**: directly present in source or captured diagnostics.
-- **Inferred**: plausible extrapolation, not directly proven.
-- **Hypothesis**: weak/unverified.
-- **Requires TS18 validation**: must be runtime-tested.
+## Source classes
+- **official Android docs**: implementation authority.
+- **public equivalent app/source repo**: architecture/compatibility precedent.
+- **firmware/tooling/community source**: ecosystem context and test-matrix input.
+- **local TS18 diagnostics**: target device evidence.
+- **t-music snapshot**: stock compatibility clues.
+- **hypothesis**: unproven assumptions pending runtime validation.
 
-## Porting decision label
-- directly reusable requirement
-- reusable validation idea
-- useful as evidence only
-- obsolete due to Auxio architecture
-- requires TS18 runtime validation
-- unsafe to port
-- should be explicitly avoided
+## Mapped sources
 
-## 1) `cbkii/t-music` snapshot (in-repo evidence)
-
-| Source | URL/path | What it proves | What it suggests only | What it cannot prove | Auxio-TS influence | Porting decision |
-|---|---|---|---|---|---|---|
-| Snapshot root | `docs/evidence/t-music-snapshot/README.md` | Snapshot is curated evidence corpus, not implementation source. | Prior migration ideas may still be useful. | That old implementation strategy fits Auxio architecture. | Keep evidence-first planning. | useful as evidence only |
-| Snapshot AGENTS | `docs/evidence/t-music-snapshot/AGENTS.md` | Stock app assumptions: `com.tw.music`, `android.uid.system`, TW AIDL boundaries. | Vendor contracts may matter for TS18 parity. | That Auxio should replicate package/UID model. | Explicitly separate stock constraints from Auxio goals; keep package/UID parity out of Auxio implementation. | useful as evidence only |
-| Stock manifest | `docs/evidence/t-music-snapshot/app/apktool/AndroidManifest.xml` | `package="com.tw.music"`, `android:sharedUserId="android.uid.system"`, widget receiver, service/activity surfaces. | Some launcher/theme behaviors may depend on stock identity. | Third-party-app requirements on target TS18. | Add package/signature risk ledger and coexistence checks. | should be explicitly avoided |
-| Vendor hook report | `docs/evidence/t-music-snapshot/docs/reports/vendor-hooks.txt` | Explicit actions/services/properties (`com.tw.music.action.*`, `com.tw.service.xt`, `com.tw.radio`, `com.tw.eq`, `persist.tw.*`). | Which subset is mandatory for Auxio. | Runtime behavior on this user TS18 without tests. | Drive contract table + experiment queue. | requires TS18 runtime validation |
-| Manual runbook | `docs/evidence/t-music-snapshot/docs/manual-validation-runbook.md` | Practical ADB parity/test procedure exists. | Some steps may need Auxio adaptation. | Direct applicability to API29 Auxio stack without adjustment. | Reuse as validation matrix template. | reusable validation idea |
-
-## 2) TS18 diagnostics in this repo
-
-| Source | URL/path | What it proves | What it suggests only | What it cannot prove | Auxio-TS influence |
+| Source | URL/path | Source class | Specific evidence extracted | Limits | Implementation implication |
 |---|---|---|---|---|---|
-| Device profile | `diagnostics/redacted/ts18_device_profile.json` | TS18-class package ecosystem includes `com.tw.music`, `com.tw.service`, `com.tw.service.xt`, `com.tw.eq`, `com.tw.radio`; TWTHEME `MusicTheme.apk`; ZLink property. | TW ecosystem may influence media focus/launcher behavior. | Exact third-party integration requirements. | Define runtime validation priorities and comparator scenarios. |
+| Media3 background/session content + cars + audio focus docs | developer.android.com / source.android.com | official Android docs | Canonical behavior for session, library, controls, car surfaces, focus | No private TW contract guarantees | Prioritize standards-based features in product code |
+| OpenRadioFM | https://github.com/kapi21/OpenRadioFM | public equivalent app/source repo | Multi-platform separation pattern and OEM intent context | Does not prove TS18 requirements for Auxio | Use as architecture precedent only |
+| FytHWOneKey | https://github.com/hvdwolf/FytHWOneKey | public equivalent app/source repo | Hardware-button routing via package/intent/keyevent/default-app flow | Not TS18-specific media-app contract | Strengthen standard media key compatibility/validation |
+| Display-Media-Titles | https://github.com/vasyl91/Display-Media-Titles | public equivalent app/source repo | FYT stock metadata routing can be package-targeted | No generic TS18 API rule | Track package-coupling risk; avoid impersonation |
+| RK3066-headunit-service | https://github.com/petrows/RK3066-headunit-service | public equivalent app/source repo | Legacy HU service/key remap precedent | Legacy platform/version | Historical context only |
+| FET + FYTuis7862BinRepo + topwaytool | GitHub repos | firmware/tooling/community source | Firmware/tooling ecosystem and variance are real | Not direct app API contract proof | Use for validation planning, not app code |
+| DoFun channel + Mekede TS10-TS18 + XDA TS18 thread | Telegram/web/XDA | firmware/tooling/community source | Variant naming/family diversity and deployment reality | Anecdotal/marketing variability | Include firmware/theme variant fields in test evidence |
+| `diagnostics/redacted/ts18_device_profile.json` | local path | local TS18 diagnostics | Target package/theme ecosystem markers | No causality of required integrations | Prioritize acceptance scenarios |
+| `docs/evidence/t-music-snapshot/` | local path | t-music snapshot | Stock-private contracts and behavior clues | Not an implementation template for Auxio | Use as validation/reference-only evidence |
 
-## 3) Android official docs
-
-| Source | URL | What it proves | What it cannot prove | Auxio-TS influence |
-|---|---|---|---|---|
-| Media3/session/notification/audio focus/cars docs | `developer.android.com` media + cars references | Standard Android behavior contracts. | TW private service/launcher contracts. | Keep Android-native path as baseline and first implementation target. |
-
-## 4) Public TW/Topway ecosystem projects
-
-| Source | URL | What it proves | What it suggests only | What it cannot prove | Auxio-TS influence |
-|---|---|---|---|---|---|
-| `ivvlev/CarRadio` | https://github.com/ivvlev/CarRadio | TWUtil/TWClient usage with fallback patterns. | Optional runtime-probed bridge pattern is viable. | Exact TS18 compatibility for Auxio. | Architecture inspiration only. |
-| `asb72/dvd-bt` | https://github.com/asb72/dvd-bt | `twUtil.java` command-channel style TW integration. | Some TW channels may map to key/media events. | Requirement for Auxio integration. | Evidence-only until runtime-proven need. |
-| `d51x/KaierUtils` | https://github.com/d51x/KaierUtils | TW utility wrappers for HU events. | Sleep/volume/focus signals may be available. | Stable API compatibility on user TS18. | Candidate optional adapter experiment target. |
-| `kapi21/OpenRadioFM` | https://github.com/kapi21/OpenRadioFM | Multi-hardware abstraction pattern. | Adapter-per-platform design scales for HU ecosystem. | TW/TWTHEME parity guarantees. | Direct architectural inspiration for Auxio-TS facade/modules. |
-
-## 5) Upstream Auxio source (in this fork)
-
-| Source | Path | What it proves | Auxio-TS influence |
-|---|---|---|---|
-| Playback + service + media session architecture | `app/src/main/java/org/oxycblt/auxio/...` | Existing maintainable Android-native architecture already exists. | Preserve and extend via isolated adapters, not wholesale rewrites. |
+## Current hypotheses (not implementation requirements)
+- Some TS18 launchers may privilege package-targeted metadata pathways.
+- Some vendor stacks may alter focus/ownership behavior under projection.
+- TWTHEME variance may change visual expectations without changing media API requirements.
