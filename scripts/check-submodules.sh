@@ -29,16 +29,16 @@ check_required_dir() {
 
 check_required_file \
   "media/core_settings.gradle" \
-  "Missing media/core_settings.gradle means the media submodule was not initialised. Do not create this file manually. The workflow must checkout submodules recursively."
+  "media submodule is not initialized; run recursive submodule checkout/update."
 check_required_dir \
   "media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg" \
-  "Missing FFmpeg sources usually means nested media submodules were not initialised. Do not create these files manually. The workflow must checkout submodules recursively."
+  "nested media submodules are not initialized; run recursive submodule checkout/update."
 check_required_file \
   "musikr/src/main/cpp/taglib/CMakeLists.txt" \
-  "Missing musikr/src/main/cpp/taglib/CMakeLists.txt means the taglib submodule was not initialised. Do not create this file manually. The workflow must checkout submodules recursively."
+  "taglib submodule is not initialized; run recursive submodule checkout/update."
 
 if [[ "${missing}" -ne 0 ]]; then
-  echo "::error::Submodules are not initialized. Do not create missing files manually. Run git submodule update --init --recursive or ensure actions/checkout uses submodules: recursive."
+  echo "::error::Submodules are not initialized. Run git submodule update --init --recursive or use actions/checkout with submodules: recursive."
   exit 1
 fi
 

@@ -126,11 +126,15 @@ jobs:
           PREVIOUS_TAG="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1 || true)"
 
           if [[ -n "${INPUT_TAG}" ]]; then
-            if [[ ! "${INPUT_TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-              echo "::error::Invalid version_tag '${INPUT_TAG}'. Expected format vMAJOR.MINOR.PATCH."
+            if [[ ! "${INPUT_TAG}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::Invalid version_tag '${INPUT_TAG}'. Expected format MAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH."
               exit 1
             fi
-            RELEASE_TAG="${INPUT_TAG}"
+            if [[ "${INPUT_TAG}" == v* ]]; then
+              RELEASE_TAG="${INPUT_TAG}"
+            else
+              RELEASE_TAG="v${INPUT_TAG}"
+            fi
           else
             if [[ -n "${PREVIOUS_TAG}" ]]; then
               BASE_VERSION="${PREVIOUS_TAG#v}"
@@ -169,7 +173,7 @@ jobs:
           sed -i -E "0,/^([[:space:]]*)versionName \".*\"/s//\1versionName \"${{ steps.version.outputs.release_version_name }}\"/" app/build.gradle
           sed -i -E "0,/^([[:space:]]*)versionCode [0-9]+/s//\1versionCode ${{ steps.version.outputs.release_version_code }}/" app/build.gradle
 
-      - name: Commit version metadata and push tag
+      - name: Commit version metadata locally
         id: version_commit
         shell: bash
         env:
@@ -186,12 +190,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add app/build.gradle
           git commit -m "chore(release): prepare ${RELEASE_TAG}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
 
           RELEASE_COMMIT_SHA="$(git rev-parse HEAD)"
-          git tag "${RELEASE_TAG}" "${RELEASE_COMMIT_SHA}"
-          git push origin "refs/tags/${RELEASE_TAG}"
-
           echo "release_commit_sha=${RELEASE_COMMIT_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Validate signing secrets and decode keystore
@@ -268,6 +268,22 @@ jobs:
 
           echo "apk_path=${ASSET_PATH}" >> "$GITHUB_OUTPUT"
           echo "apk_name=${ASSET_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Push version commit and tag
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git tag "${RELEASE_TAG}" "${{ steps.version_commit.outputs.release_commit_sha }}"
+          git push origin "refs/tags/${RELEASE_TAG}"
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            echo "::error::Release '${RELEASE_TAG}' already exists after tag push; aborting."
+            exit 1
+          fi
 
       - name: Generate release notes
         id: notes
