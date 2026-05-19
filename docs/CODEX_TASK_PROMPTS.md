@@ -1,18 +1,17 @@
 # Codex Task Prompts (source-led TS18 direction)
 
-## Required first step for any TS18/TW/TWTHEME task
+## Required workflow for all TS18/TW/TWTHEME tasks
 
-Before proposing any implementation, validation change, or probe:
+Before proposing any implementation or validation change for TS18/TW/TWTHEME work:
 
-1. Search the canonical source corpus in `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
-2. Check whether the question is already answered by a Priority 1 or Priority 2 source.
-3. Add any newly-found useful sources to the canonical corpus table before starting work.
-4. Assign explicit `Confidence` and `Porting decision` labels to all TS18/TW/TWTHEME claims.
-5. Prefer public equivalent project precedent over speculative probes.
-6. Only use diagnostics if user provides fresh evidence or no source-led path exists.
-7. Do not add speculative product-code probes, adapter skeletons, or vendor-service binders.
+1. **Search the TS18/TW/TWTHEME source corpus first** (`docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md` Priority 1 sources before any diagnostics).
+2. **Update the source table** in `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md` with any new useful sources found.
+3. **Classify each source** with explicit confidence and porting decision labels before proposing implementation.
+4. **Cite public equivalent project precedent** before implementation (Priority 2 projects before custom code).
+5. **Use user-provided diagnostics only when available** (Priority 4); do not default to new probes.
+6. **Do not propose speculative product-code probes**; diagnostics must remain external scripts or runbook steps.
 
-## Accepted task prompts
+## Active task prompts
 
 1. Android MediaSession/notification hardening pass.
 2. MediaLibraryService / Android Auto browsing hardening pass.
@@ -32,4 +31,4 @@ Before proposing any implementation, validation change, or probe:
 - Vendor package probe framework tasks.
 - Default-off adapter skeleton tasks.
 - Hidden diagnostics module tasks inside product code.
-- "Run probes first" as the default starting point for any TS18 question.
+- Probe-first or diagnostics-first TS18 planning tasks.

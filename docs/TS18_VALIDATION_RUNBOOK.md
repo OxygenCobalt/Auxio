@@ -14,6 +14,8 @@ Each scenario in this runbook is derived from at least one source in the canonic
 3. Design the scenario as an on-device acceptance check, not a product-code probe.
 4. Only add external diagnostic commands when needed to observe the expected behaviour.
 
+Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
+
 ## Related canonical docs
 - `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 - `docs/TS18_REQUIREMENTS.md`

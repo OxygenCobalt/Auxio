@@ -20,25 +20,49 @@ Probe/diagnostics-driven work is secondary. It is allowed only when:
 
 Do not add in-app TS18 probe frameworks, default-off vendor adapter skeletons, TWUtil/TWClient reflection scanners, vendor-service binders, package impersonation, `android.uid.system`/`sharedUserId` strategies, copied smali, or hidden diagnostics modules.
 
-## Source priority model for TS18 work
+### Required source priority order for TS18/TW/TWTHEME work
 
-```text
+```
 Priority 1: TS18/TW/TWTHEME ecosystem sources
-  - Topway / TS10 / TS18 firmware references (DoFun, Mekede, FCC)
+  - Topway / TS10 / TS18 firmware references
   - DoFun / iLauncher / TWTHEME material
-  - TWUtil / TWClient public references (CarRadio, KaierUtils, dvd-bt)
+  - TWUtil / TWClient public references
   - ZLink/TLink/carchoose ecosystem clues
+  - TWTHEME theme/window/PiP/launcher behaviour sources
 
 Priority 2: Battle-tested public head-unit projects
-  - OpenRadioFM, Display-Media-Titles, FytHWOneKey, RK3066-headunit-service
+  - Projects showing working Android head-unit integration patterns
+  - Media metadata exposure, hardware-key routing, launcher/widget behaviour,
+    and platform isolation precedents
 
 Priority 3: Local repository evidence
-  - docs/evidence/t-music-snapshot/ + diagnostics/redacted/ts18_device_profile.json
+  - docs/evidence/t-music-snapshot/
+  - diagnostics/redacted/ts18_device_profile.json
+  - Existing Auxio-TS TS18 docs
 
-Priority 4: User-provided diagnostics (fresh logs/dumpsys)
+Priority 4: User-provided diagnostics
+  - Fresh TS18 logs, dumpsys, bugreport extracts, package lists,
+    theme APK listings, launcher behaviour captures
 
-Priority 5: New probes/diagnostics (external scripts only; never product-code scaffolding)
+Priority 5: New probes/diagnostics
+  - Allowed only when no reliable source, public equivalent, or
+    user-provided evidence exists
+  - Prefer external scripts/manual runbook steps
+  - Do not add speculative probe frameworks to product app code
 ```
+
+Canonical source corpus: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+
+### Required agent workflow for TS18/TW/TWTHEME tasks
+
+1. Search the TS18/TW/TWTHEME source corpus first (Priority 1 before Priority 5).
+2. Add any new useful sources to the canonical source map.
+3. Classify source confidence and porting decision before proposing implementation.
+4. Prefer public equivalent projects over speculative probes.
+5. Use diagnostics only when provided by the user or when no source-led path exists.
+6. Keep diagnostics as external scripts/runbook steps unless a later approved feature explicitly requires code.
+7. Avoid TWUtil/TWClient reflection in product code.
+8. Avoid vendor binders and package impersonation.
 
 ## Evidence labeling (required)
 For each TS18/TW/TWTHEME claim, include:

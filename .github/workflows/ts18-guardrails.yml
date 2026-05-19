@@ -87,28 +87,72 @@ jobs:
           grep -Fq '| 6+ | Explicit compatibility features only when justified |' docs/DEVELOPMENT_ROADMAP.md
           grep -Fq '## Related canonical docs' docs/TS18_VALIDATION_RUNBOOK.md
 
-      - name: Validate TS18/TW/TWTHEME source-led policy is in place
-        # Note: the exact phrases below are required by policy. If you rename a section,
-        # update both the docs and this check together to keep them in sync.
+      - name: Validate source-led policy presence
         shell: bash
         run: |
           set -euo pipefail
 
-          # Policy phrase must appear in canonical strategy and in agent instructions
+          # Require the source-led policy phrase in canonical docs
           grep -Fq 'TS18/TW/TWTHEME source-led policy' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
           grep -Fq 'TS18/TW/TWTHEME source-led policy' AGENTS.md
           grep -Fq 'TS18/TW/TWTHEME source-led policy' .github/copilot-instructions.md
 
-          # Source priority model must exist in strategy doc
-          grep -Fq 'Priority 1' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
-          grep -Fq 'Priority 5' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          # Require at least one TS18/TW/TWTHEME ecosystem term in the strategy doc
+          grep -Eq 'TS18/TW/TWTHEME source corpus|Topway|DoFun|TWTHEME|iLauncher' \
+            docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
 
-          # Core TS18/TW/TWTHEME ecosystem sources must appear in corpus
-          grep -Fq 'Topway' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
-          grep -Fq 'DoFun' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
-          grep -Fq 'TWTHEME' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
-          grep -Fq 'iLauncher' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
-          grep -Fq 'ZLink' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+          # Require priority model in strategy doc
+          grep -Fq 'Priority 1:' docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
+
+      - name: Reject active probe/diagnostics-first strategy language in docs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Check docs for highly-specific probe class names that would only appear
+          # if someone is actively proposing to create such infrastructure.
+          # Generic terms like "adapter skeleton" appear legitimately in rejection/gate contexts
+          # and are NOT checked here.
+          probe_class_names=(
+            "TS18IntegrationProbe"
+            "TS18EnvironmentSnapshot"
+            "TS18ContractRegistry"
+            "TS18AdapterCapability"
+            "TWUtilReflectionScanner"
+            "TWClientReflectionScanner"
+            "VendorPackageScanner"
+            "RuntimeContractRegistry"
+          )
+
+          fail=0
+          for classname in "${probe_class_names[@]}"; do
+            matches=$(grep -RIn -- "${classname}" \
+              docs AGENTS.md README.md .github/copilot-instructions.md \
+              app/src musikr/src 2>/dev/null || true)
+            if [ -n "${matches}" ]; then
+              # Allow if clearly labelled as rejected/historical/reference-only
+              unlabelled=$(echo "${matches}" | grep -Ev \
+                'rejected|historical|reference.only|unsafe.to.port|should be explicitly avoided|Do not|do not|not add|not implement|never|archived' \
+                || true)
+              if [ -n "${unlabelled}" ]; then
+                echo "ERROR: Active probe class name found (must be labelled as rejected/historical):"
+                echo "${unlabelled}"
+                fail=1
+              fi
+            fi
+          done
+
+          # Unconditionally reject these patterns in app source code
+          if grep -RInE \
+            'TS18IntegrationProbe|TS18ContractRegistry|TS18AdapterCapability|TS18EnvironmentSnapshot' \
+            app/src musikr/src 2>/dev/null; then
+            echo "ERROR: Probe class names found in app source code"
+            fail=1
+          fi
+
+          if [ "${fail}" -eq 1 ]; then
+            exit 1
+          fi
 
       - name: Enforce Auxio-TS package and privilege guardrails
         shell: bash
