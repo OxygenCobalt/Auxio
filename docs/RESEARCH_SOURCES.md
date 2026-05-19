@@ -27,7 +27,7 @@
 ## Mandatory claim format for TS18 docs/PRs
 Each TW/TWTHEME claim must include:
 1. **Confidence label**: Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported
-2. **Porting decision**: directly reusable requirement / reusable validation idea / evidence only / obsolete for Auxio / unsafe to port / explicitly avoid
+2. **Porting decision**: Directly reusable requirement / Reusable validation idea / Useful as evidence only / Obsolete due to Auxio architecture / Requires TS18 runtime validation / Unsafe to port / Should be explicitly avoided
 3. **Validation reference**: exact command/scenario/artifact path
 
 If validation reference is missing, the claim cannot drive implementation.

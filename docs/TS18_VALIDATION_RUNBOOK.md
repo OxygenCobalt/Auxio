@@ -3,6 +3,31 @@
 ## Scope
 This runbook validates product behavior on TS18 hardware. It does not depend on in-app probe modules.
 
+## Related canonical docs
+- `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+- `docs/TS18_REQUIREMENTS.md`
+- `docs/TS18_INTEGRATION_ARCHITECTURE.md`
+- `docs/TS18_NATIVE_CONTRACTS.md`
+
+## Allowed evidence labels for TS18/TW/TWTHEME claims
+Use only these values in evidence rows:
+
+### Confidence
+- **Observed**
+- **Inferred**
+- **Hypothesis**
+- **Requires TS18 validation**
+- **Unsupported**
+
+### Porting decision
+- **Directly reusable requirement**
+- **Reusable validation idea**
+- **Useful as evidence only**
+- **Obsolete due to Auxio architecture**
+- **Requires TS18 runtime validation**
+- **Unsafe to port**
+- **Should be explicitly avoided**
+
 ## Acceptance scenarios
 
 ### TS18-ACC-001: MediaSession visibility
@@ -41,5 +66,6 @@ Per scenario include:
 - Auxio build SHA/version
 - exact commands run
 - observed result
-- confidence label + porting decision label
+- confidence (must be one of the allowed confidence labels above)
+- porting decision (must be one of the allowed porting decision labels above)
 - unresolved risk and next action

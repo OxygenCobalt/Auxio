@@ -19,11 +19,19 @@ Auxio core
 - TS18 work is feature-driven, not probe-framework-driven.
 - Validation evidence gates feature promotion.
 
+### TS18/TW/TWTHEME claim labels for this architecture
+- Confidence: **Observed** for Android-standard baseline claims; **Requires TS18 validation** for device-specific acceptance claims.
+- Porting decision: **Directly reusable requirement** for Android-standard behavior; **Requires TS18 runtime validation** for TS18-specific acceptance-only expectations.
+
 ## Explicit non-targets in product code
 - No in-app TS18 probe framework.
+  Confidence: **Inferred**; Porting decision: **Should be explicitly avoided**.
 - No TWUtil/TWClient reflective scanner modules.
+  Confidence: **Observed**; Porting decision: **Unsafe to port**.
 - No vendor-service binder scaffolding without a concrete feature.
+  Confidence: **Inferred**; Porting decision: **Unsafe to port**.
 - No package impersonation or privileged UID assumptions.
+  Confidence: **Observed**; Porting decision: **Should be explicitly avoided**.
 
 ## Implementation flow
 1. Harden Android-standard behaviors (session, library browse, notification, buttons, focus).

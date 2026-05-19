@@ -1,28 +1,28 @@
-# TW Ecosystem Source Map (source-led)
+# TW Ecosystem Source Map (supporting index)
 
-## Source classes
-- **official Android docs**: implementation authority.
-- **public equivalent app/source repo**: architecture/compatibility precedent.
-- **firmware/tooling/community source**: ecosystem context and test-matrix input.
-- **local TS18 diagnostics**: target device evidence.
-- **t-music snapshot**: stock compatibility clues.
-- **hypothesis**: unproven assumptions pending runtime validation.
+This file is a concise map that points to the canonical source corpus in
+`docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
 
-## Mapped sources
+## Canonical source-of-truth
+- Authoritative source corpus table: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+- Canonical TS18/TW/TWTHEME label taxonomies are also defined there.
 
-| Source | URL/path | Source class | Specific evidence extracted | Limits | Implementation implication |
-|---|---|---|---|---|---|
-| Media3 background/session content + cars + audio focus docs | developer.android.com / source.android.com | official Android docs | Canonical behavior for session, library, controls, car surfaces, focus | No private TW contract guarantees | Prioritize standards-based features in product code |
-| OpenRadioFM | https://github.com/kapi21/OpenRadioFM | public equivalent app/source repo | Multi-platform separation pattern and OEM intent context | Does not prove TS18 requirements for Auxio | Use as architecture precedent only |
-| FytHWOneKey | https://github.com/hvdwolf/FytHWOneKey | public equivalent app/source repo | Hardware-button routing via package/intent/keyevent/default-app flow | Not TS18-specific media-app contract | Strengthen standard media key compatibility/validation |
-| Display-Media-Titles | https://github.com/vasyl91/Display-Media-Titles | public equivalent app/source repo | FYT stock metadata routing can be package-targeted | No generic TS18 API rule | Track package-coupling risk; avoid impersonation |
-| RK3066-headunit-service | https://github.com/petrows/RK3066-headunit-service | public equivalent app/source repo | Legacy HU service/key remap precedent | Legacy platform/version | Historical context only |
-| FET + FYTuis7862BinRepo + topwaytool | GitHub repos | firmware/tooling/community source | Firmware/tooling ecosystem and variance are real | Not direct app API contract proof | Use for validation planning, not app code |
-| DoFun channel + Mekede TS10-TS18 + XDA TS18 thread | Telegram/web/XDA | firmware/tooling/community source | Variant naming/family diversity and deployment reality | Anecdotal/marketing variability | Include firmware/theme variant fields in test evidence |
-| `diagnostics/redacted/ts18_device_profile.json` | local path | local TS18 diagnostics | Target package/theme ecosystem markers | No causality of required integrations | Prioritize acceptance scenarios |
-| `docs/evidence/t-music-snapshot/` | local path | t-music snapshot | Stock-private contracts and behavior clues | Not an implementation template for Auxio | Use as validation/reference-only evidence |
+## Coverage notes
+- `RK3066-headunit-service` is tracked in the canonical source corpus table and intentionally not duplicated here.
+- This file keeps only non-authoritative, maintenance-focused context.
+
+## Supplemental ecosystem context (non-authoritative)
+
+| Context item | Scope | Confidence | Porting decision | Notes |
+|---|---|---|---|---|
+| Ecosystem sources continue to change quickly (XDA/Telegram/vendor pages). | Validation planning | Observed | Useful as evidence only | Treat as test-matrix context, not implementation authority. |
+| Public TW-private examples (`android.tw.john.TWUtil`, `TWClient`) exist in ecosystem projects. | Risk framing | Observed | Unsafe to port | Do not add reflection/import/binding logic in product code. |
+| Stock contracts (`com.tw.music.action.*`, `com.tw.service*`) can inform acceptance scenarios. | Validation inputs | Observed | Requires TS18 runtime validation | Keep as validation evidence only until a concrete feature gap is proven. |
 
 ## Current hypotheses (not implementation requirements)
 - Some TS18 launchers may privilege package-targeted metadata pathways.
+  Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
 - Some vendor stacks may alter focus/ownership behavior under projection.
+  Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
 - TWTHEME variance may change visual expectations without changing media API requirements.
+  Confidence: **Hypothesis**; Porting decision: **Reusable validation idea**.

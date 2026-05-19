@@ -48,14 +48,14 @@ This PR is docs/planning finalization only.
 
 ## Remaining runtime validation
 TS18 on-device acceptance remains required for:
-- MediaSession visibility,
-- MediaLibrary/Android Auto browsing,
-- notification controls,
-- media-button/steering-wheel behavior,
-- audio-focus/navigation-mixing,
-- ZLink/TLink coexistence,
-- launcher/widget and TWTHEME visual behavior,
-- sleep/resume and FLAC matrix.
+- MediaSession visibility — Confidence: **Requires TS18 validation**; Porting decision: **Requires TS18 runtime validation**.
+- MediaLibrary/Android Auto browsing — Confidence: **Requires TS18 validation**; Porting decision: **Requires TS18 runtime validation**.
+- Notification controls — Confidence: **Requires TS18 validation**; Porting decision: **Requires TS18 runtime validation**.
+- Media-button/steering-wheel behavior — Confidence: **Requires TS18 validation**; Porting decision: **Requires TS18 runtime validation**.
+- Audio-focus/navigation-mixing — Confidence: **Requires TS18 validation**; Porting decision: **Requires TS18 runtime validation**.
+- ZLink/TLink coexistence — Confidence: **Requires TS18 validation**; Porting decision: **Requires TS18 runtime validation**.
+- Launcher/widget and TWTHEME visual behavior — Confidence: **Requires TS18 validation**; Porting decision: **Requires TS18 runtime validation**.
+- Sleep/resume and FLAC matrix — Confidence: **Requires TS18 validation**; Porting decision: **Reusable validation idea**.
 
 ## Recommended next PR
 **Phase 5B only**: Android-standard MediaSession / notification / audio-focus hardening.

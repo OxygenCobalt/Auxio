@@ -76,15 +76,16 @@ jobs:
           )
 
           for label in "${confidence_labels[@]}"; do
-            grep -Fq -- "- **${label}**" docs/TS18_EXECUTION_PACK_PHASE1_4.md
+            grep -Fq -- "- **${label}**" docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
           done
 
           for label in "${porting_labels[@]}"; do
-            grep -Fq -- "- **${label}**" docs/TS18_EXECUTION_PACK_PHASE1_4.md
+            grep -Fq -- "- **${label}**" docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md
           done
 
-          grep -Fq 'Canonical Phase 1–4 execution reference' docs/DEVELOPMENT_ROADMAP.md
-          grep -Fq 'Canonical note:' docs/TS18_VALIDATION_RUNBOOK.md
+          grep -Fq '| 5A | Source-led integration strategy correction |' docs/DEVELOPMENT_ROADMAP.md
+          grep -Fq '| 6+ | Explicit compatibility features only when justified |' docs/DEVELOPMENT_ROADMAP.md
+          grep -Fq '## Related canonical docs' docs/TS18_VALIDATION_RUNBOOK.md
 
       - name: Enforce Auxio-TS package and privilege guardrails
         shell: bash
