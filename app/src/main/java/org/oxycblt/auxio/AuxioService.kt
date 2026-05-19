@@ -61,11 +61,11 @@ class AuxioService :
         //  service, we might need more handling here.
         super.onStartCommand(intent, flags, startId)
         onHandleForeground(intent)
-        // If we die we want to not restart, we will immediately try to foreground in and just
-        // fail to start again since the activity will be dead too. This is not the semantically
-        // "correct" flag (normally you want START_STICKY for playback) but we need this to avoid
-        // weird foreground errors.
-        return START_NOT_STICKY
+        // Playback services are expected to survive process churn when possible so that
+        // MediaSession/controller interactions continue to route to the same service endpoint.
+        // Keep this service sticky and let playback/session state restoration decide whether
+        // playback should resume.
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? {
