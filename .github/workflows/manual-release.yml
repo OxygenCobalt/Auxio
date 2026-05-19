@@ -295,87 +295,55 @@ jobs:
           set -euo pipefail
 
           NOTES_FILE="${RUNNER_TEMP}/release-notes.md"
+          start_seconds="$(date +%s)"
+          echo "Generating release notes for ${RELEASE_TAG} (previous tag: ${PREVIOUS_TAG:-<none>})"
+
+          # Build args for generated-notes API; omit previous_tag_name when absent
+          gh_api_args=(-f tag_name="${RELEASE_TAG}")
+          if [[ -n "${PREVIOUS_TAG}" ]]; then
+            gh_api_args+=(-f "previous_tag_name=${PREVIOUS_TAG}")
+          fi
+
+          # Attempt a single GitHub generated-notes API call
+          GENERATED_BODY=""
+          if GENERATED_BODY="$(gh api --method POST \
+              "/repos/${GITHUB_REPOSITORY}/releases/generate-notes" \
+              "${gh_api_args[@]}" \
+              --jq '.body // empty' 2>/dev/null)" \
+             && [[ -n "${GENERATED_BODY}" ]]; then
+            echo "GitHub generated release notes successfully."
+          else
+            echo "::warning::GitHub generated release notes API returned empty or failed; using git log fallback."
+            GENERATED_BODY=""
+          fi
+
           {
             echo "## What's changed"
             echo
+            if [[ -n "${GENERATED_BODY}" ]]; then
+              # Strip any leading What's Changed heading to avoid duplication
+              printf '%s\n' "${GENERATED_BODY}" | grep -viE '^## What.s changed'
+            else
+              # Fallback: local git log, no API calls, capped at 100 commits
+              if [[ -n "${PREVIOUS_TAG}" ]]; then
+                git log --reverse \
+                  --pretty=format:"- [%s](https://github.com/${GITHUB_REPOSITORY}/commit/%H) by %an" \
+                  "${PREVIOUS_TAG}..${RELEASE_TAG}"
+              else
+                git log --reverse --max-count=100 \
+                  --pretty=format:"- [%s](https://github.com/${GITHUB_REPOSITORY}/commit/%H) by %an" \
+                  "${RELEASE_TAG}"
+              fi
+            fi
           } > "${NOTES_FILE}"
 
-          is_value_present() {
-            [[ -n "${1:-}" && "${1}" != "null" ]]
-          }
-
-          warn_release_notes() {
-            echo "::warning::Release notes: $1"
-          }
-
-          append_commit_note() {
-            local sha="$1"
-            local subject="$2"
-            local commit_author_login=""
-            local commit_author_display=""
-            local short_sha="${sha:0:12}"
-
-            if ! commit_author_login="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${sha}" --jq '.author.login // empty' 2>/dev/null)"; then
-              warn_release_notes "unable to resolve commit author login for ${short_sha}; falling back to git author name."
-            fi
-            if is_value_present "${commit_author_login}"; then
-              commit_author_display="@${commit_author_login}"
-            else
-              commit_author_display="$(git log -1 --format=%an "${sha}")"
-            fi
-            if ! is_value_present "${commit_author_display}"; then
-              commit_author_display="unknown author"
-            fi
-
-            printf -- "- [%s](https://github.com/%s/commit/%s) by %s\n" "${subject}" "${GITHUB_REPOSITORY}" "${sha}" "${commit_author_display}" >> "${NOTES_FILE}"
-          }
-
-          declare -A included_prs
-          if [[ -n "${PREVIOUS_TAG}" ]]; then
-            COMMIT_RANGE="${PREVIOUS_TAG}..${RELEASE_TAG}"
-          else
-            COMMIT_RANGE="${RELEASE_TAG}"
-            echo "No previous semver tag was found; release notes include reachable commits for ${RELEASE_TAG}." >> "${NOTES_FILE}"
-            echo >> "${NOTES_FILE}"
-          fi
-
-          mapfile -t COMMITS < <(git rev-list --reverse "${COMMIT_RANGE}")
-
-          for sha in "${COMMITS[@]}"; do
-            subject="$(git log -1 --format=%s "${sha}")"
-            if [[ "${subject}" =~ ^chore\(release\): ]]; then
-              continue
-            fi
-
-            pr_number=""
-            if pr_number="$(gh api -H "Accept: application/vnd.github+json" "/repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].number // empty' 2>/dev/null)"; then
-              if is_value_present "${pr_number}"; then
-                if [[ -z "${included_prs[${pr_number}]+x}" ]]; then
-                  pr_payload=""
-                  if pr_payload="$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '[.title // empty, .user.login // empty] | map(gsub("[\t\r\n]+"; " ")) | @tsv' 2>/dev/null)" && [[ "${pr_payload}" == *$'\t'* ]]; then
-                    IFS=$'\t' read -r pr_title pr_author <<< "${pr_payload}"
-                    if is_value_present "${pr_title}" && is_value_present "${pr_author}"; then
-                      printf -- "- [%s](https://github.com/%s/pull/%s) by @%s\n" "${pr_title}" "${GITHUB_REPOSITORY}" "${pr_number}" "${pr_author}" >> "${NOTES_FILE}"
-                      included_prs["${pr_number}"]=1
-                      continue
-                    fi
-                  fi
-                  warn_release_notes "unable to fetch complete PR #${pr_number} metadata; using commit note fallback."
-                else
-                  continue
-                fi
-              fi
-            else
-              warn_release_notes "unable to map commit ${sha:0:12} to a PR; using commit note fallback."
-            fi
-
-            append_commit_note "${sha}" "${subject}"
-          done
-
+          # Guarantee at least one bullet when generated notes are empty/absent
           if ! grep -qE '^- ' "${NOTES_FILE}"; then
-            printf -- "- [Release commit](https://github.com/%s/commit/%s) by @github-actions[bot]\n" "${GITHUB_REPOSITORY}" "${RELEASE_COMMIT_SHA}" >> "${NOTES_FILE}"
+            printf -- "- [Release commit](https://github.com/%s/commit/%s) by @github-actions[bot]\n" \
+              "${GITHUB_REPOSITORY}" "${RELEASE_COMMIT_SHA}" >> "${NOTES_FILE}"
           fi
 
+          echo "Release notes generated in $(( $(date +%s) - start_seconds )) seconds"
           echo "notes_file=${NOTES_FILE}" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub release and upload signed APK
