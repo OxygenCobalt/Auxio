@@ -3,6 +3,8 @@
 ## Scope
 This runbook validates product behavior on TS18 hardware. It does not depend on in-app probe modules.
 
+Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
+
 ## Related canonical docs
 - `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 - `docs/TS18_REQUIREMENTS.md`
