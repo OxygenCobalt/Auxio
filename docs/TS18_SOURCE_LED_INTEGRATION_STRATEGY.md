@@ -2,7 +2,7 @@
 
 ## Purpose and scope
 
-This strategy is TS18/TW/TWTHEME-source-led. Official Android/Media3/car/audio documentation is assumed to be accessible and authoritative as an implementation baseline and is not exhaustively repeated here.
+This is a TS18/TW/TWTHEME source-led strategy document. Official Android/Media3/car/audio documentation is assumed to be accessible and authoritative as an implementation baseline and is not exhaustively repeated here.
 
 This document exists because TS18/TW/TWTHEME-specific knowledge is fragmented across public firmware ecosystem pages, DoFun/iLauncher ecosystem material, XDA threads, TWUtil/TWClient public repos, and local `t-music` evidence. That specific knowledge gap is what this document fills.
 

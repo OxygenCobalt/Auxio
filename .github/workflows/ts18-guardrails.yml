@@ -88,6 +88,8 @@ jobs:
           grep -Fq '## Related canonical docs' docs/TS18_VALIDATION_RUNBOOK.md
 
       - name: Validate TS18/TW/TWTHEME source-led policy is in place
+        # Note: the exact phrases below are required by policy. If you rename a section,
+        # update both the docs and this check together to keep them in sync.
         shell: bash
         run: |
           set -euo pipefail
