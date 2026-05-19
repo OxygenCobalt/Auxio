@@ -1,42 +1,28 @@
-# TS18 Native Contracts Catalog
+# TS18 Native Contracts Catalog (source-led classification)
 
-## Classification legend
-### Confidence
-- Observed
-- Inferred
-- Hypothesis
-- Requires TS18 validation
-- Unsupported
-
-### Porting decision label
-- directly reusable requirement
-- reusable validation idea
-- useful as evidence only
-- obsolete due to Auxio architecture
-- requires TS18 runtime validation
-- unsafe to port
-- should be explicitly avoided
+Use canonical labels from `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
 
 ## Contract table
 
-| Contract / identifier | Evidence source | Confidence | Porting decision | Expected behavior | Auxio-TS strategy | Validation method | Risk |
-|---|---|---|---|---|---|---|---|
-| `com.tw.music` package + `android.uid.system` | `docs/evidence/t-music-snapshot/app/apktool/AndroidManifest.xml` | Observed | should be explicitly avoided | Stock app uses privileged identity. | Track as compatibility risk only. | Install/coexistence matrix on TS18. | High |
-| `com.tw.music.action.cmd` | snapshot `vendor-hooks.txt`, `MusicService.smali`, `MusicWidgetProvider.smali` | Observed (stock) | useful as evidence only; requires TS18 runtime validation | Command ingress path for stock service/widget/receiver. | Optional TW broadcast adapter only if standard media path fails. | A/B broadcast tests (stock vs Auxio) on TS18. | High |
-| `com.tw.music.action.prev` | same | Observed (stock) | useful as evidence only; requires TS18 runtime validation | Previous-track command path. | Same as above. | Same as above. | High |
-| `com.tw.music.action.next` | same | Observed (stock) | useful as evidence only; requires TS18 runtime validation | Next-track command path. | Same as above. | Same as above. | High |
-| `com.tw.music.action.pp` | same | Observed (stock) | useful as evidence only; requires TS18 runtime validation | Play/pause command path. | Same as above. | Same as above. | High |
-| `com.tw.service` | `diagnostics/redacted/ts18_device_profile.json` | Observed | useful as evidence only; requires TS18 runtime validation | TW service present in target ecosystem. | Observe first; no direct integration by default. | `dumpsys audio`, process/session/focus capture during playback. | High |
-| `com.tw.service.xt` + `CommandService.Bind` | snapshot `vendor-hooks.txt` + xtlibrary smali | Observed (stock corpus) | useful as evidence only; requires TS18 runtime validation | Vendor command service and AIDL stack likely mediate TW integrations. | Optional TW service adapter module, default off. | Binder/service availability + behavior probes on TS18. | High |
-| `com.tw.radio.*` + `com.tw.radio.theme/state/av` | snapshot hook reports + xtlibrary smali; diagnostics package list | Observed | useful as evidence only; requires TS18 runtime validation | Radio handoff and state signaling in stock ecosystem. | Comparator behavior only unless concrete gap appears. | stock radio/music interaction tests. | Medium |
-| `com.tw.eq.EQActivity` | snapshot `MusicActivity.smali` + diagnostics package list | Observed | useful as evidence only | Stock app launches OEM EQ app. | Validate coexistence; no hard dependency for Auxio core. | manual EQ coexistence scenario. | Medium |
-| `android.tw.john.TWUtil` | snapshot xtlibrary smali + public repos | Observed (ecosystem) | useful as evidence only; requires TS18 runtime validation | Possible low-level TW bridge API. | Probe reflectively in optional adapter only. | class/binder availability and safe no-op fallback tests. | High |
-| `android.tw.john.TWClient` | public repos + snapshot references | Inferred for target device | requires TS18 runtime validation | Command-client API may exist on some firmware. | Optional bridge only after proof. | runtime class/service probing. | High |
-| `TWTHEME` / `MusicTheme.apk` | diagnostics + snapshot docs (`resource-compatibility-map.md`, `target-device-*`) | Observed | reusable validation idea; requires TS18 runtime validation | Theme resources may affect launcher/widget appearance. | Keep as compatibility note; avoid hard-coded coupling. | launcher/theme A/B captures stock vs Auxio. | High |
-| ZLink (`com.zjinnova.zlink`) | diagnostics property/package evidence | Observed | directly reusable requirement (validation coverage) | Phone-link stack may compete for media state/control. | Add explicit coexistence tests in runbook. | ZLink/TLink active-vs-idle comparisons. | High |
-| MediaSession/MediaSessionCompat publication in stock app | snapshot docs + `com/tw/music/media/*` smali | Observed (stock corpus) | useful as evidence only | Stock app exposes media session + notification bridge logic. | Use as parity reference only; keep Auxio Media3 path authoritative. | session/notification comparison captures. | Medium |
-
-## Explicitly rejected/out-of-scope
-1. Package impersonation (`com.tw.music`) as default strategy.
-2. shared UID/system-signature dependency as prerequisite.
-3. Copying stock smali/TW implementation into Auxio core.
+| Contract | Evidence basis | Confidence | Porting decision | Current policy |
+|---|---|---|---|---|
+| Android MediaSession/Media3 session behavior | Android official media docs + existing Auxio architecture | Observed | Directly reusable requirement | Continue hardening standards-based behavior. |
+| MediaLibraryService browse/controller behavior | Android official media docs + Android Auto path | Observed | Directly reusable requirement | Prioritize browse and controller compatibility. |
+| Notification transport controls | Android official media docs | Observed | Directly reusable requirement | Keep as primary control surface. |
+| Standard media buttons / steering-wheel via controller APIs | Android docs + public HU app behavior patterns | Observed | Directly reusable requirement | Validate with hardware keys; implement only standard API improvements. |
+| Audio focus and duck/pause/mix behavior | Android docs + AAOS focus docs | Observed | Directly reusable requirement | Harden focus policy + validate nav coexistence. |
+| `com.tw.music.action.*` | t-music evidence + ecosystem references | Observed | Requires TS18 runtime validation | Record and test as compatibility clue; no direct implementation by default. |
+| `com.tw.service.xt` | diagnostics + t-music evidence | Observed | Useful as evidence only | No binding/integration in product code now. |
+| `android.tw.john.TWUtil` / `TWClient` | public repo evidence (CarRadio, dvd-bt) | Observed | Unsafe to port | No in-app reflection/probe modules. |
+| `android.uid.system` / shared UID model | t-music manifest evidence | Observed | Should be explicitly avoided | Explicitly forbidden in Auxio-TS product code. |
+| `com.tw.music` package identity | diagnostics + t-music manifest | Observed | Should be explicitly avoided | No package impersonation. |
+| `MusicTheme.apk` | diagnostics (`/system/etc/theme/default/Sub/MusicTheme.apk`) | Observed | Requires TS18 runtime validation | Validate visual behavior externally; no direct coupling code yet. |
+| `LauncherTheme.apk` | diagnostics (`/system/etc/theme/default/Launcher/LauncherTheme.apk`) | Observed | Requires TS18 runtime validation | Validate launcher theme behavior externally; no coupling in product code. |
+| `theme_config.json` / TWTHEME config | diagnostics (`/system/etc/theme/theme_config.json`) | Observed | Requires TS18 runtime validation | Reference-only; captures theme routing logic on device. |
+| TWTHEME private resource paths (`/system/etc/theme/`) | diagnostics + DoFun/iLauncher ecosystem | Observed | Requires TS18 runtime validation | Validate visual behavior externally; no path assumptions in product code. |
+| `com.zjinnova.zlink` coexistence | diagnostics + runbook scenarios | Requires TS18 validation | Requires TS18 runtime validation | Validate session/focus coexistence via acceptance tests. |
+| `com.tw.carchoose` / carchoose package | diagnostics ecosystem; ZLink/TLink interaction | Hypothesis | Requires TS18 runtime validation | Record as ecosystem term; validate if and when observed on device. |
+| `com.zjinnova.android.zlink.features.broadcast.MediaButtonReceiver` | diagnostics (restored media button receiver) | Observed | Requires TS18 runtime validation | Known to be active as media button receiver at capture time; validate media key routing via standard APIs first. |
+| iLauncher (`com.cml.ilauncher` or similar) | iLauncher website + XDA iLauncher TS18 fix thread | Hypothesis | Requires TS18 runtime validation | Launcher replacement that may affect widget/image display; validate metadata quality first. |
+| `com.tw.radio` / `com.tw.bt` / `com.tw.eq` / `com.tw.video` | diagnostics (system priv-app packages) | Observed | Useful as evidence only | System app co-tenancy context; no direct coupling to these packages. |
+| Vendor service or TW-private integration | mixed evidence | Inferred | Unsafe to port | Only after repeatable gap + feature design doc. |

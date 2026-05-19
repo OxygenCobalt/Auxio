@@ -1,53 +1,53 @@
-# TW Ecosystem Source Map (TS18/TW/TWTHEME)
+# TW Ecosystem Source Map (supporting index)
 
-## Evidence legend
-- **Observed**: directly present in source or captured diagnostics.
-- **Inferred**: plausible extrapolation, not directly proven.
-- **Hypothesis**: weak/unverified.
-- **Requires TS18 validation**: must be runtime-tested.
+This file is a concise supporting index. The authoritative source corpus with full classification is in `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
 
-## Porting decision label
-- directly reusable requirement
-- reusable validation idea
-- useful as evidence only
-- obsolete due to Auxio architecture
-- requires TS18 runtime validation
-- unsafe to port
-- should be explicitly avoided
+## Canonical source-of-truth
+- Authoritative source corpus table: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+- Canonical TS18/TW/TWTHEME label taxonomies are also defined there.
+- Source priority order (Priority 1–5) is defined in `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+  and mirrored in `AGENTS.md` and `.github/copilot-instructions.md`.
 
-## 1) `cbkii/t-music` snapshot (in-repo evidence)
+## Source priority summary (see canonical doc for full detail)
 
-| Source | URL/path | What it proves | What it suggests only | What it cannot prove | Auxio-TS influence | Porting decision |
-|---|---|---|---|---|---|---|
-| Snapshot root | `docs/evidence/t-music-snapshot/README.md` | Snapshot is curated evidence corpus, not implementation source. | Prior migration ideas may still be useful. | That old implementation strategy fits Auxio architecture. | Keep evidence-first planning. | useful as evidence only |
-| Snapshot AGENTS | `docs/evidence/t-music-snapshot/AGENTS.md` | Stock app assumptions: `com.tw.music`, `android.uid.system`, TW AIDL boundaries. | Vendor contracts may matter for TS18 parity. | That Auxio should replicate package/UID model. | Explicitly separate stock constraints from Auxio goals; keep package/UID parity out of Auxio implementation. | useful as evidence only |
-| Stock manifest | `docs/evidence/t-music-snapshot/app/apktool/AndroidManifest.xml` | `package="com.tw.music"`, `android:sharedUserId="android.uid.system"`, widget receiver, service/activity surfaces. | Some launcher/theme behaviors may depend on stock identity. | Third-party-app requirements on target TS18. | Add package/signature risk ledger and coexistence checks. | should be explicitly avoided |
-| Vendor hook report | `docs/evidence/t-music-snapshot/docs/reports/vendor-hooks.txt` | Explicit actions/services/properties (`com.tw.music.action.*`, `com.tw.service.xt`, `com.tw.radio`, `com.tw.eq`, `persist.tw.*`). | Which subset is mandatory for Auxio. | Runtime behavior on this user TS18 without tests. | Drive contract table + experiment queue. | requires TS18 runtime validation |
-| Manual runbook | `docs/evidence/t-music-snapshot/docs/manual-validation-runbook.md` | Practical ADB parity/test procedure exists. | Some steps may need Auxio adaptation. | Direct applicability to API29 Auxio stack without adjustment. | Reuse as validation matrix template. | reusable validation idea |
+```text
+Priority 1: TS18/TW/TWTHEME ecosystem sources (Topway/DoFun/iLauncher/TWTHEME/ZLink)
+Priority 2: Battle-tested public head-unit projects
+Priority 3: Local repository evidence (t-music-snapshot, ts18_device_profile.json)
+Priority 4: User-provided diagnostics
+Priority 5: New probes/diagnostics (last resort; external only)
+```
 
-## 2) TS18 diagnostics in this repo
+## Coverage notes
+- `RK3066-headunit-service` is tracked in the canonical source corpus table and intentionally not duplicated here.
+- New sources added in the latest corpus pass: DoFun Telegram archive pages (before=26/47/128/135/169), telemetr.io DoFun index, dofun.cc additional product pages (xolio/car-equ/app portal/BBS), XDA TS18 firmware thread (4664566), TS18 manual (manuals.plus), OpenRadioFM/FytHWOneKey release pages, SC98531BinRepo, OpenMobileRadioInterface (EBU), headunit-revived wiki settings, GitHub headunit topic.
+- This file keeps only non-authoritative, maintenance-focused quick-reference context.
 
-| Source | URL/path | What it proves | What it suggests only | What it cannot prove | Auxio-TS influence |
-|---|---|---|---|---|---|
-| Device profile | `diagnostics/redacted/ts18_device_profile.json` | TS18-class package ecosystem includes `com.tw.music`, `com.tw.service`, `com.tw.service.xt`, `com.tw.eq`, `com.tw.radio`; TWTHEME `MusicTheme.apk`; ZLink property. | TW ecosystem may influence media focus/launcher behavior. | Exact third-party integration requirements. | Define runtime validation priorities and comparator scenarios. |
-
-## 3) Android official docs
-
-| Source | URL | What it proves | What it cannot prove | Auxio-TS influence |
-|---|---|---|---|---|
-| Media3/session/notification/audio focus/cars docs | `developer.android.com` media + cars references | Standard Android behavior contracts. | TW private service/launcher contracts. | Keep Android-native path as baseline and first implementation target. |
-
-## 4) Public TW/Topway ecosystem projects
-
-| Source | URL | What it proves | What it suggests only | What it cannot prove | Auxio-TS influence |
-|---|---|---|---|---|---|
-| `ivvlev/CarRadio` | https://github.com/ivvlev/CarRadio | TWUtil/TWClient usage with fallback patterns. | Optional runtime-probed bridge pattern is viable. | Exact TS18 compatibility for Auxio. | Architecture inspiration only. |
-| `asb72/dvd-bt` | https://github.com/asb72/dvd-bt | `twUtil.java` command-channel style TW integration. | Some TW channels may map to key/media events. | Requirement for Auxio integration. | Evidence-only until runtime-proven need. |
-| `d51x/KaierUtils` | https://github.com/d51x/KaierUtils | TW utility wrappers for HU events. | Sleep/volume/focus signals may be available. | Stable API compatibility on user TS18. | Candidate optional adapter experiment target. |
-| `kapi21/OpenRadioFM` | https://github.com/kapi21/OpenRadioFM | Multi-hardware abstraction pattern. | Adapter-per-platform design scales for HU ecosystem. | TW/TWTHEME parity guarantees. | Direct architectural inspiration for Auxio-TS facade/modules. |
-
-## 5) Upstream Auxio source (in this fork)
-
-| Source | Path | What it proves | Auxio-TS influence |
+| Source | Ecosystem role | Confidence | Porting decision |
 |---|---|---|---|
-| Playback + service + media session architecture | `app/src/main/java/org/oxycblt/auxio/...` | Existing maintainable Android-native architecture already exists. | Preserve and extend via isolated adapters, not wholesale rewrites. |
+| DoFun Telegram (`t.me/s/dofun_app`) | TS18.1.2/TS18.2.2 firmware families; iLauncher/TWTHEME conventions; ZLink compatibility notes | Observed | Useful as evidence only |
+| DoFun website (`dofun.cc/car-desktop`) | iLauncher media widget, PiP, split-screen, TWTHEME integration description | Observed | Reusable validation idea |
+| iLauncher.net | Theme APK naming; launcher widget/home integration details | Observed | Requires TS18 runtime validation |
+| FCC TS18 manual | Hardware button layout and MCU interface certification | Observed | Useful as evidence only |
+| KaierUtils (`github.com/d51x/KaierUtils`) | TWUtil usage on KSW/ZXW platforms; volume control via firmware-private API | Observed | Unsafe to port |
+| ZLink5 (`zlink5.com`, `com.zjinnova.zlink`) | Active phone-link app on captured TS18; audio focus competitor | Observed | Requires TS18 runtime validation |
+| XDA TLink versions thread | TLink/ZLink interchangeability; version-specific TS18 compat notes | Observed | Reusable validation idea |
+| XDA iLauncher thread | TS18 v7.5 iLauncher image-display fix; media artwork quirks | Observed | Reusable validation idea |
+
+| Context item | Scope | Confidence | Porting decision | Notes |
+|---|---|---|---|---|
+| Ecosystem sources continue to change quickly (XDA/Telegram/vendor pages). | Validation planning | Observed | Useful as evidence only | Treat as test-matrix context, not implementation authority. |
+| Public TW-private examples (`android.tw.john.TWUtil`, `TWClient`) exist in ecosystem projects. | Risk framing | Observed | Unsafe to port | Do not add reflection/import/binding logic in product code. |
+| Stock contracts (`com.tw.music.action.*`, `com.tw.service*`) can inform acceptance scenarios. | Validation inputs | Observed | Requires TS18 runtime validation | Keep as validation evidence only until a concrete feature gap is proven. |
+| DoFun/iLauncher are active commercial ecosystem players for TS18/TWTHEME. | Ecosystem taxonomy | Observed | Useful as evidence only | Use DoFun/iLauncher material for variant tracking and acceptance scope. |
+| TS18.1.2 (vertical) and TS18.2.2 (horizontal) are separate firmware families. | Device evidence | Observed | Useful as evidence only | Record firmware family in device evidence fingerprints. |
+
+## Current hypotheses (not implementation requirements)
+- Some TS18 launchers may privilege package-targeted metadata pathways.
+  Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
+- Some vendor stacks may alter focus/ownership behaviour under projection.
+  Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
+- TWTHEME variance may change visual expectations without changing media API requirements.
+  Confidence: **Hypothesis**; Porting decision: **Reusable validation idea**.
+- iLauncher may expose widget image-display paths that depend on metadata quality beyond standard MediaSession.
+  Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.

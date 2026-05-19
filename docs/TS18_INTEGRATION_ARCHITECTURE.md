@@ -1,55 +1,40 @@
 # TS18 Integration Architecture
 
-## Required shape
+## Preferred architecture (source-led)
 ```text
-Auxio upstream core
-        |
-Android media integration layer
-        |
-Auxio-TS adapter/facade layer
-        |
-optional TS18-specific modules:
-  - launcher/media-widget adapter
-  - TW broadcast adapter
-  - TW service adapter
-  - TWTHEME/resource compatibility notes
-  - ZLink/TLink validation hooks
-  - stock com.tw.music comparison harness
+Auxio core
+  -> Android-standard media layer
+       -> MediaSession / MediaLibrary / notification / media buttons / audio focus
+  -> car/head-unit UX layer
+       -> large touch targets, landscape assumptions, steering-wheel compatibility via standard APIs
+  -> TS18 validation profile
+       -> expected behaviors + manual acceptance checks
+  -> optional explicit compatibility features
+       -> only when backed by official docs + public precedent + TS18 validation
 ```
 
-## What remains upstream/pure Auxio
-- Playback engine lifecycle and queue/state logic.
-- Library scanning/indexing and baseline local playback behavior.
-- Android-native MediaSession/notification/audio-focus path.
+## Architectural commitments
+- Auxio playback/library core remains upstream-first and vendor-agnostic.
+- Android media contracts are the implementation baseline.
+- TS18 work is feature-driven, not probe-framework-driven.
+- Validation evidence gates feature promotion.
 
-## What becomes Auxio-TS
-- Runtime TS18 environment probing.
-- Contract registry (which TS18 modules are enabled and why).
-- Optional adapter modules above, all default-off.
-- Comparator/evidence capture hooks for stock-vs-Auxio behavior.
+### TS18/TW/TWTHEME claim labels for this architecture
+- Confidence: **Observed** for Android-standard baseline claims; **Requires TS18 validation** for device-specific acceptance claims.
+- Porting decision: **Directly reusable requirement** for Android-standard behavior; **Requires TS18 runtime validation** for TS18-specific acceptance-only expectations.
 
-## Isolation rules
-1. No direct `com.tw.*` references in core playback/library classes.
-2. TS18 logic enters via adapter interfaces and event snapshots.
-3. Each optional module ships as no-op when disabled/unavailable.
-4. No module assumes privileged UID/package identity.
+## Explicit non-targets in product code
+- No in-app TS18 probe framework.
+  Confidence: **Inferred**; Porting decision: **Should be explicitly avoided**.
+- No TWUtil/TWClient reflective scanner modules.
+  Confidence: **Observed**; Porting decision: **Unsafe to port**.
+- No vendor-service binder scaffolding without a concrete feature.
+  Confidence: **Inferred**; Porting decision: **Unsafe to port**.
+- No package impersonation or privileged UID assumptions.
+  Confidence: **Observed**; Porting decision: **Should be explicitly avoided**.
 
-## Compile-time optional vs runtime-detected
-
-### Compile-time optional
-- Adapter packages/modules and diagnostics helpers.
-- Comparator utilities and validation scripts.
-
-### Runtime-detected
-- TW classes/services/package presence (`TWUtil`, `TWClient`, `com.tw.service.xt`, launcher packages).
-- ZLink/TLink active stack conditions.
-- Whether module activation improves observed parity without regressions.
-
-## Evidence from `t-music` snapshot applied here
-- Stock uses command broadcasts and vendor service/AIDL surfaces.
-- Stock has widget/theme integration points and privileged identity.
-- Therefore Auxio-TS must treat TW contracts as optional, test-gated modules, not core rewrites.
-
-## Test split
-- **Off-device:** adapter wiring, contract registry decisions, no-op safety, docs/tooling.
-- **Requires TS18 runtime:** launcher/widget behavior, TW command/service effects, ZLink/TLink coexistence, navigation-mixing, sleep/resume.
+## Implementation flow
+1. Harden Android-standard behaviors (session, library browse, notification, buttons, focus).
+2. Validate on TS18 with runbook scenarios.
+3. If a repeatable gap remains, draft one explicit compatibility feature PR.
+4. Land only the minimal feature needed for that validated gap.

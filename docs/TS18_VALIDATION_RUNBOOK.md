@@ -1,115 +1,86 @@
-# TS18 Validation Runbook (human-executed)
+# TS18 Validation Runbook (acceptance testing)
 
+## Scope
+This runbook validates product behaviour on TS18 hardware. It does not depend on in-app probe modules.
 
-> Canonical note: `docs/TS18_EXECUTION_PACK_PHASE1_4.md` is the authoritative Phase 1–4 checklist for scenario IDs, evidence folder convention (`reports/ts18/<YYYY-MM-DD>/<scenario-id>/`), gate/stop criteria, and the claim labelling template. Use this runbook for expanded operational steps.
+Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
 
-## 0) Preconditions
-- TS18 target hardware connected via ADB.
-- Private storage for raw evidence; only redacted summaries go in repo.
-- Test packages noted:
-  - stock: `com.tw.music`
-  - Auxio-TS: `org.oxycblt.auxio` (or current app id)
+## Source-led framing for all scenarios
 
-## 1) Baseline capture (device + package ecosystem)
-1. `adb devices`
-2. `adb shell getprop ro.build.fingerprint`
-3. `adb shell getprop ro.build.version.release`
-4. `adb shell pm list packages | grep -Ei 'auxio|tw|music|zlink|tlink|launcher|dudu|ilauncher|dofun'`
-5. Save outputs with timestamp and commit SHA.
+Each scenario in this runbook is derived from at least one source in the canonical corpus at `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`. When adding new scenarios, identify the source first:
 
-## 2) Stock `com.tw.music` baseline
-1. Start stock playback.
-2. Run: `AUXIO_TS_PACKAGE=com.tw.music ./scripts/ts18_collect_auxio_ts_evidence.sh stock-playing-local` (canonical scenario: `TS18-STOCK-002`)
-3. Capture:
-   - `adb shell dumpsys media_session`
-   - `adb shell dumpsys notification`
-   - `adb shell dumpsys audio`
-4. Manual observations:
-   - notification transport control behavior
-   - steering-wheel/hardware media keys
-   - launcher/home widget metadata & controls
-   - TWTHEME visual coupling
-   - ZLink/TLink idle vs active behavior
-   - navigation-mixing and sleep/resume
+1. Check whether a Priority 1 or 2 source predicts or implies the expected behaviour.
+2. Use local evidence (Priority 3) to refine the scenario.
+3. Design the scenario as an on-device acceptance check, not a product-code probe.
+4. Only add external diagnostic commands when needed to observe the expected behaviour.
 
-## 3) Auxio-TS baseline
-1. Install/update Auxio-TS and play local media.
-2. Run: `AUXIO_TS_PACKAGE=org.oxycblt.auxio ./scripts/ts18_collect_auxio_ts_evidence.sh auxio-mp3-playing` (canonical scenario: `TS18-AUXIO-002`)
-3. Collect the same dumpsys captures and manual observations.
+Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
 
-## 4) Stock-vs-Auxio active session comparison
-1. Use equivalent playback states for both apps.
-2. Run comparator per package and diff saved outputs:
-   - `./scripts/ts18_compare_media_sessions.sh com.tw.music > stock_media_session.txt`
-   - `./scripts/ts18_compare_media_sessions.sh org.oxycblt.auxio > auxio_media_session.txt`
-   - `diff -u stock_media_session.txt auxio_media_session.txt`
-3. Compare owner, state/actions, metadata, command path behavior.
+## Related canonical docs
+- `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+- `docs/TS18_REQUIREMENTS.md`
+- `docs/TS18_INTEGRATION_ARCHITECTURE.md`
+- `docs/TS18_NATIVE_CONTRACTS.md`
 
-## 5) Notification controls
-For each app: test play/pause/next/prev repeatedly and record latency/failures.
+## Allowed evidence labels for TS18/TW/TWTHEME claims
+Use only these values in evidence rows:
 
-## 6) Media keys / steering wheel
-For each app:
-- trigger hardware key events,
-- capture session/audio traces,
-- classify each event route: standard Android / vendor-routed / undelivered.
+### Confidence
+- **Observed**
+- **Inferred**
+- **Hypothesis**
+- **Requires TS18 validation**
+- **Unsupported**
 
-## 7) Launcher widget and launcher variants
-1. Compare stock vs Auxio on default launcher.
-2. If present, repeat on iLauncher/DUDU/DoFun variants.
-3. Record metadata freshness and control support gaps.
+### Porting decision
+- **Directly reusable requirement**
+- **Reusable validation idea**
+- **Useful as evidence only**
+- **Obsolete due to Auxio architecture**
+- **Requires TS18 runtime validation**
+- **Unsafe to port**
+- **Should be explicitly avoided**
 
-## 8) ZLink/TLink coexistence
-1. Repeat baseline with ZLink/TLink idle.
-2. Repeat with active projection.
-3. Compare focus/session ownership and metadata/control visibility.
+## Acceptance scenarios
 
-## 9) FLAC/local-library matrix
-Test at minimum:
-- 16/44.1
-- 16/48
-- 24/48 (if available)
+### TS18-ACC-001: MediaSession visibility
+- Verify active session owner/state/actions/metadata via `dumpsys media_session` while Auxio plays.
 
-Record scan/index/play/seek/resume behavior and glitches.
+### TS18-ACC-002: MediaLibrary/Android Auto browsing
+- Validate browse tree visibility and playable items from external controller surface.
 
-## 10) Equalizer/audio-effects + sound-priority/navigation-mixing
-- Evaluate with OEM EQ/effects states.
-- Trigger navigation prompts during playback and capture duck/mute/recover behavior.
+### TS18-ACC-003: Notification transport controls
+- Validate play/pause/next/prev from notification repeatedly; record failures/latency.
 
-## 11) Sleep/resume
-- screen off/on, background/foreground, ACC-like sleep/resume (if safe), then compare restoration/focus/session continuity.
+### TS18-ACC-004: Media buttons / steering wheel
+- Trigger hardware keys and confirm standard media key routing reaches Auxio reliably.
 
-## 12) Coexistence and rollback
-- Verify stock+Auxio coexistence, default-player switching, uninstall/reinstall rollback.
+### TS18-ACC-005: ZLink/TLink coexistence
+- Compare focus/session/metadata visibility when projection is idle vs active.
 
-## 13) Evidence packaging format
-Each scenario report must include:
-- timestamp + tested commit SHA,
-- app build/version,
-- commands run,
-- observed results,
-- confidence + porting-decision labels,
-- unresolved gaps and next test.
+### TS18-ACC-006: Launcher widget behavior (iLauncher / TWTHEME)
+- Source basis: iLauncher.net (Priority 1) + Display-Media-Titles (Priority 2) — both confirm metadata visibility is a first-class surface.
+- Compare metadata/control visibility for stock launcher, iLauncher, and any TWTHEME widget.
+- Record active launcher package and firmware variant in evidence header.
 
+### TS18-ACC-007: Audio focus + navigation mixing
+- Trigger navigation prompts during playback; verify duck/pause/recover behavior.
 
-## 14) Head-unit UI/UX validation (TS18-facing, UI-only)
-These checks validate Auxio-TS head-unit UX options. They **do not** prove TS18 native/TW/TWTHEME compatibility.
+### TS18-ACC-008: Sleep/resume continuity
+- Validate session/focus/playback recovery after screen off/on and HU sleep-resume cycle.
 
-1. In Auxio settings, open **Look and feel → Head unit** and verify these options persist after app restart:
-   - Head unit landscape mode
-   - Driver side (Right-hand drive / Left-hand drive)
-   - Large touch controls
-   - Show album art in head-unit playback view
-2. Confirm landscape-first behavior is stable across home, playback panel, queue, and settings.
-3. Toggle driver side and confirm control placement changes on playback panel/bar without changing text direction.
-4. Confirm persistent now-playing access remains available from browse/library flows.
-5. Confirm Quick Picks shortcuts (if visible in this build) are actionable and do not remove deep browse paths.
-6. Confirm metadata shortcut chips (if visible in this build) are actionable, metadata-based, and **exclude** file type, file size, bitrate, codec, sample rate, and storage size.
-7. Confirm queue capabilities remain intact (open queue, reorder/drag if available, remove actions if available).
-8. Confirm favourites shortcut/chip: appears when a playlist named "Favourites" exists; hidden (not shown as disabled) when no such playlist exists; tapping opens the Favourites playlist detail view. Songs can be added to Favourites via the standard "Add to Playlist" context-menu flow.
-9. Confirm album-art control remains minimal (show/hide behavior only) and controls remain readable.
-10. Confirm playback feedback is visible for user actions and does not spam passively.
-11. Confirm no driving/parked restrictions are present.
-12. Record claim labels in report:
-   - Evidence confidence label
-   - Porting decision label
+### TS18-ACC-009: FLAC/local-library matrix
+- Validate scan/index/play/seek/resume for 16/44.1, 16/48, 24/48 samples.
+
+### TS18-ACC-010: TWTHEME visual/layout behavior
+- Capture visual diffs across theme/launcher variants; classify as UI variance vs functional regression.
+
+## Evidence format
+Per scenario include:
+- device fingerprint + firmware/theme variant labels
+- Auxio build SHA/version
+- exact commands run
+- observed result
+- confidence (must be one of the allowed confidence labels above)
+- porting decision (must be one of the allowed porting decision labels above)
+- unresolved risk and next action
