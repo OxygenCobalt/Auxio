@@ -37,7 +37,7 @@ class SquareMaskableFrameLayout @JvmOverloads constructor(
         maskRect.set(0f, 0f, w.toFloat(), h.toFloat())
         shapeDrawable.setBounds(0, 0, w, h)
         maskPath.reset()
-        shapeDrawable.getPathForSize(w.toFloat(), h.toFloat(), maskPath)
+        shapeDrawable.getPathForSize(w, h, maskPath)
     }
 
     override fun dispatchDraw(canvas: Canvas) {
