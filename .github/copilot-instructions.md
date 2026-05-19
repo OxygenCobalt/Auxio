@@ -22,7 +22,7 @@ Do not add in-app TS18 probe frameworks, default-off vendor adapter skeletons, T
 
 ### Required source priority order for TS18/TW/TWTHEME work
 
-```
+```text
 Priority 1: TS18/TW/TWTHEME ecosystem sources
   - Topway / TS10 / TS18 firmware references
   - DoFun / iLauncher / TWTHEME material

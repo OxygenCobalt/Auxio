@@ -10,7 +10,7 @@ This file is a concise supporting index. The authoritative source corpus with fu
 
 ## Source priority summary (see canonical doc for full detail)
 
-```
+```text
 Priority 1: TS18/TW/TWTHEME ecosystem sources (Topway/DoFun/iLauncher/TWTHEME/ZLink)
 Priority 2: Battle-tested public head-unit projects
 Priority 3: Local repository evidence (t-music-snapshot, ts18_device_profile.json)
@@ -20,8 +20,8 @@ Priority 5: New probes/diagnostics (last resort; external only)
 
 ## Coverage notes
 - `RK3066-headunit-service` is tracked in the canonical source corpus table and intentionally not duplicated here.
-- New sources (DoFun website, iLauncher site, FCC filing, KaierUtils, XDA threads, 4PDA, headunit-desktop, AAGateway, hudiy, head-unit indexes) are added to the canonical corpus table.
-- This file keeps only non-authoritative, maintenance-focused context.
+- New sources added in the latest corpus pass: DoFun Telegram archive pages (before=26/47/128/135/169), telemetr.io DoFun index, dofun.cc additional product pages (xolio/car-equ/app portal/BBS), XDA TS18 firmware thread (4664566), TS18 manual (manuals.plus), OpenRadioFM/FytHWOneKey release pages, SC98531BinRepo, OpenMobileRadioInterface (EBU), headunit-revived wiki settings, GitHub headunit topic.
+- This file keeps only non-authoritative, maintenance-focused quick-reference context.
 
 | Source | Ecosystem role | Confidence | Porting decision |
 |---|---|---|---|

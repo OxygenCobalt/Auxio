@@ -6,8 +6,11 @@
 
 ## Scope of this archive
 - Keeps traceability that early TS18 research existed.
+  Confidence: **Observed**; Porting decision: **Useful as evidence only**.
 - Does not maintain an active source list or implementation guidance.
+  Confidence: **Observed**; Porting decision: **Obsolete due to Auxio architecture**.
 - Must not be used to reintroduce probe/default-off adapter direction.
+  Confidence: **Observed**; Porting decision: **Should be explicitly avoided**.
 
 ## Use these active docs instead
 - `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
