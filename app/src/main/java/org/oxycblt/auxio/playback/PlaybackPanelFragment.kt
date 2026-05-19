@@ -152,7 +152,7 @@ class PlaybackPanelFragment :
 
         binding.playbackSeekBar?.listener = this
         if (!uiSettings.showHeadUnitAlbumArt) {
-            binding.playbackCover.visibility = View.GONE
+            binding.playbackPager?.visibility = View.GONE
         }
         HeadUnitUiAdapter.applyLargeControls(
             resources,
@@ -369,18 +369,18 @@ class PlaybackPanelFragment :
         val root = binding.root as ConstraintLayout
         ConstraintSet().apply {
             clone(root)
-            clear(R.id.playback_cover, ConstraintSet.START)
-            connect(R.id.playback_cover, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            clear(R.id.playback_pager, ConstraintSet.START)
+            connect(R.id.playback_pager, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
 
             clear(R.id.playback_info_container, ConstraintSet.START)
             clear(R.id.playback_info_container, ConstraintSet.END)
             connect(R.id.playback_info_container, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(R.id.playback_info_container, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+            connect(R.id.playback_info_container, ConstraintSet.END, R.id.playback_pager, ConstraintSet.START)
 
             clear(R.id.playback_controls_wrapper, ConstraintSet.START)
             clear(R.id.playback_controls_wrapper, ConstraintSet.END)
             connect(R.id.playback_controls_wrapper, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(R.id.playback_controls_wrapper, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
+            connect(R.id.playback_controls_wrapper, ConstraintSet.END, R.id.playback_pager, ConstraintSet.START)
             applyTo(root)
         }
     }

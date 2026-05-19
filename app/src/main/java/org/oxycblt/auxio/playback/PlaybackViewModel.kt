@@ -183,11 +183,7 @@ constructor(
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         L.d("Queue completely changed, updating current song")
         _isShuffled.value = isShuffled
-<<<<<<< HEAD
         _shuffleScope.value = playbackManager.shuffleScope
-||||||| b27a09319
-=======
-
         _pagerCommand.put(
             PagerCommand(
                 update = UpdateInstructions.Replace(0),
@@ -198,7 +194,6 @@ constructor(
             queue = queue,
             index = index
         )
->>>>>>> 3a1a7ae1c84c9ddfdb839a580583df793057066e
     }
 
     override fun onNewPlayback(
@@ -211,11 +206,7 @@ constructor(
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
-<<<<<<< HEAD
         _shuffleScope.value = playbackManager.shuffleScope
-||||||| b27a09319
-=======
-
         _pagerCommand.put(
             PagerCommand(
                 update = UpdateInstructions.Replace(0),
@@ -226,7 +217,6 @@ constructor(
             queue = queue,
             index = index
         )
->>>>>>> 3a1a7ae1c84c9ddfdb839a580583df793057066e
     }
 
     override fun onProgressionChanged(progression: Progression) {
