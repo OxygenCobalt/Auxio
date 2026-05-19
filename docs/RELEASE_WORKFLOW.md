@@ -1,159 +1,110 @@
-# Manual release workflow
+# Manual signed APK release workflow
 
-Auxio-TS provides a manual-only GitHub Actions release workflow at:
+Auxio-TS uses one manual release workflow: `.github/workflows/manual-release.yml` (`Manual Release`).
 
-- `.github/workflows/manual-release.yml`
+## Run a release
 
-It can only be triggered from **Actions → Manual Release → Run workflow** (`workflow_dispatch`).
+1. Open **Actions → Manual Release → Run workflow**.
+2. Select a branch (the workflow requires a branch so it can commit version metadata).
+3. Provide inputs:
+   - `version_tag` (optional): `MAJOR.MINOR.PATCH` or `vMAJOR.MINOR.PATCH`.
+   - `draft`: create a draft release.
+   - `prerelease`: mark as prerelease.
+4. Run the job and open the release link in the job summary.
 
-## Required repository settings
+## Required secrets
 
-- **Actions workflow token permissions** must allow write access sufficient for:
-  - committing `app/build.gradle` version metadata to the branch;
-  - creating/pushing git tags;
-  - creating GitHub releases.
-- Workflow-level permissions in `.github/workflows/manual-release.yml` are:
-  - `contents: write`
-  - `pull-requests: read`
-
-## Required repository secrets
-
-Set these repository secrets before running the workflow:
-
-- `KEYSTORE_BASE64` (base64-encoded keystore file)
+- `KEYSTORE_BASE64`
 - `KEYSTORE_PASSWORD`
 - `KEY_ALIAS`
 - `KEY_PASSWORD`
 
-The workflow decodes the keystore into `$RUNNER_TEMP/release.keystore` and never commits it. GitHub-hosted runner temp files are ephemeral and are discarded when the job ends.
+The keystore is decoded only to `$RUNNER_TEMP/release.keystore`. Secrets are masked and not printed.
 
-## Required submodule setup
+## Required workflow permissions
 
-Release and CI builds require initialized submodules (including nested ones):
+- `contents: write`
+- `pull-requests: read`
 
-- `media/core_settings.gradle`
-- `media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg`
-- `musikr/src/main/cpp/taglib`
+Repository Actions settings must allow workflow write access for commit/tag/release creation.
 
-The workflows enforce this using:
+## Submodule requirement
 
-- `scripts/check-submodules.sh`
-
-If submodules are missing, workflows fail with:
-
-```text
-Submodules are not initialized. Do not create missing files manually. Run git submodule update --init --recursive or ensure actions/checkout uses submodules: recursive.
-```
-
-## Workflow inputs
-
-- `version_tag` (optional): `vMAJOR.MINOR.PATCH` (example: `v4.0.11`)
-- `draft` (required boolean): create release as draft
-- `prerelease` (required boolean): mark release as prerelease
-
-## Version model used in this repository
-
-Primary app version metadata is stored in `app/build.gradle`:
-
-- `defaultConfig.versionName`
-- `defaultConfig.versionCode`
-
-Release workflow behavior:
-
-1. If `version_tag` is provided, it must match `vMAJOR.MINOR.PATCH`.
-2. If `version_tag` is blank:
-   - latest `v*.*.*` tag is discovered and patch is incremented;
-   - if no tag exists, it falls back to `versionName`;
-   - if `versionName` is not semver-like, it uses `v0.1.0`.
-3. `versionName` is synced to the selected tag without `v`.
-4. `versionCode` increments monotonically by `+1`.
-
-To keep releases reproducible, version metadata is committed before tag/release creation so the tag points to the exact release version commit.
-
-## Draft releases
-
-Set `draft: true` to create an unpublished draft release.
-Set `draft: false` to publish immediately.
-
-## Failed-release recovery
-
-When a run fails after creating a version commit and/or tag, recover carefully:
-
-1. Inspect what already exists:
-
-   ```bash
-   git fetch --tags --force
-   git tag --list 'v*.*.*' --sort=-v:refname | head
-   gh release list --limit 20
-   ```
-
-2. Check whether a tag exists without a release:
-   - if a release already exists for the tag, do not reuse it;
-   - if only the tag exists and it points to the intended release commit, rerun with explicit `version_tag` set to that tag.
-
-3. Do **not** rerun with blank `version_tag` if a previous failed run already created a tag and version commit.
-   - Blank rerun auto-increments and may create an unintended next version.
-
-4. Delete an orphaned tag only when you are certain it is incorrect and unused:
-
-   ```bash
-   git push origin :refs/tags/vX.Y.Z
-   ```
-
-5. Prefer rerunning as draft first (`draft: true`), verify artifacts/notes, then publish.
-
-## Release notes format
-
-The workflow generates:
-
-```markdown
-## What's changed
-
-- [PR title](https://github.com/cbkii/Auxio-TS/pull/<PR_NUMBER>) by @author
-- [Commit summary](https://github.com/cbkii/Auxio-TS/commit/<COMMIT_SHA>) by @author
-```
-
-- It uses the previous semver tag as the base when available.
-- It includes non-PR commits as commit links.
-- Missing PR metadata/API lookup failures degrade safely to commit-note entries with concise workflow warnings.
-
-## Troubleshooting signing failures
-
-- Missing secret values fail fast with a clear error.
-- Invalid `KEYSTORE_BASE64` fails during decode.
-- If Gradle signing properties are not supplied, release signing config is not applied.
-- Ensure keystore alias/password values match the keystore contents.
-
-## Local/manual validation commands
-
-Run these before release troubleshooting and after CI/workflow changes:
+The workflow checks out with `submodules: recursive` and then runs:
 
 ```sh
-git submodule sync --recursive
-git submodule update --init --recursive
-test -f media/core_settings.gradle
-test -d media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg
-test -d musikr/src/main/cpp/taglib
-./gradlew tasks
-./gradlew test
-./gradlew assembleDebug
-./gradlew lint
-find scripts -type f -name '*.sh' -print -exec sh -n {} \;
+git submodule status --recursive
+bash scripts/check-submodules.sh
 ```
 
-## Successful release checklist
+Do not create missing submodule files manually.
 
-A successful run should produce:
+## JDK/Android/Gradle requirements
 
-- signed release APK (workflow artifact upload succeeds);
-- GitHub Release for the intended tag;
-- release notes containing `## What's changed` and bullet items;
-- `$GITHUB_STEP_SUMMARY` entry with hyperlink to the created release.
+The workflow uses:
 
-## Verify the APK is signed
+- Temurin JDK 21 (`actions/setup-java@v4`)
+- Gradle setup (`gradle/actions/setup-gradle@v4`)
+- Android SDK setup (`android-actions/setup-android@v3`)
+- `sdkmanager` install of required SDK/build-tools/NDK
+- `apksigner` verification step before release upload
 
-After downloading the APK, verify with Android build tools:
+`local.properties` is not required in the repository.
 
-```bash
-apksigner verify --verbose Auxio-TS-vX.Y.Z-release.apk
-```
+## Version and tag behavior
+
+- If `version_tag` is provided, the workflow normalizes to `vMAJOR.MINOR.PATCH`.
+- If omitted, it auto-increments the latest `vMAJOR.MINOR.PATCH` tag patch.
+- `versionName` is updated to the normalized version without `v`.
+- `versionCode` increments by `+1`.
+- Existing tags/releases are never overwritten.
+- The release tag is created on the commit that updates version metadata.
+
+## Release sequence
+
+1. Checkout + submodule verification.
+2. JDK/Android/Gradle setup.
+3. Version computation and metadata update.
+4. Local version commit.
+5. Signing secret validation.
+6. Signed release APK build.
+7. APK signature verification.
+8. Push version commit.
+9. Push release tag.
+10. Generate release notes.
+11. Create GitHub release and upload APK.
+12. Write summary with clickable release link.
+
+## Release notes behavior
+
+Release body always starts with `## What's changed` and contains bullet points.
+
+- PR metadata is preferred (linked PR title + author).
+- Commit links are used when PR metadata is unavailable.
+- PR lookup failures emit warnings but do not fail release creation.
+
+## Expected release asset
+
+One signed APK asset:
+
+`Auxio-TS-vX.Y.Z-release.apk`
+
+The workflow fails if no signed APK is found, more than one candidate is found, or signature verification fails.
+
+## First safe validation run
+
+Use a manual run with:
+
+- `draft: true`
+- explicit `version_tag` (for predictable validation)
+
+Then verify draft status, release notes, uploaded signed APK, and summary link.
+
+## Failed-release recovery basics
+
+If a run fails after pushing commit/tag:
+
+1. Check current tags/releases.
+2. Confirm tag points to the intended version commit.
+3. Retry with explicit `version_tag` only after intentional cleanup of the prior tag/release state; otherwise choose a new unique version.
+4. Prefer retry as draft first.
