@@ -20,6 +20,8 @@ package org.oxycblt.auxio.playback.service
 
 import android.content.Context
 import android.content.Intent
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.provider.OpenableColumns
 import androidx.annotation.OptIn
@@ -87,6 +89,21 @@ class ExoPlaybackStateHolder(
     private val restoreScope = CoroutineScope(Dispatchers.IO + saveJob)
     private var currentSaveJob: Job? = null
     private var openAudioEffectSession = false
+    private val audioManager = context.getSystemService(AudioManager::class.java)
+    private var audioFocusState = AudioFocusPolicy.State()
+    private var hasAudioFocus = false
+    private val focusChangeListener = AudioManager.OnAudioFocusChangeListener(::onAudioFocusChanged)
+    private val focusRequest: AudioFocusRequest =
+        AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(
+                android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+            .setOnAudioFocusChangeListener(focusChangeListener)
+            .setWillPauseWhenDucked(false)
+            .build()
 
     var sessionOngoing = false
         private set
@@ -108,6 +125,7 @@ class ExoPlaybackStateHolder(
         replayGainProcessor.release()
         imageSettings.unregisterListener(this)
         playbackSettings.unregisterListener(this)
+        abandonAudioFocus()
         player.release()
     }
 
@@ -224,7 +242,17 @@ class ExoPlaybackStateHolder(
     }
 
     override fun playing(playing: Boolean) {
+        if (playing && !requestAudioFocus()) {
+            L.w("Cannot start playback: audio focus request denied")
+            player.playWhenReady = false
+            return
+        }
         player.playWhenReady = playing
+        if (!playing) {
+            player.volume = 1f
+            audioFocusState = audioFocusState.copy(isDucked = false)
+            abandonAudioFocus()
+        }
     }
 
     override fun seekTo(positionMs: Long) {
@@ -446,6 +474,7 @@ class ExoPlaybackStateHolder(
         // This session has ended, so we need to reset this flag for when the next
         // session starts.
         playbackManager.playing(false)
+        abandonAudioFocus()
         save {
             // User could feasibly start playing again if they were fast enough, so
             // we need to avoid stopping the foreground state if that's the case.
@@ -458,6 +487,7 @@ class ExoPlaybackStateHolder(
 
     override fun reset(ack: StateAck.NewPlayback) {
         player.setMediaItems(listOf())
+        abandonAudioFocus()
         playbackManager.ack(this, ack)
         deferSave()
     }
@@ -468,6 +498,7 @@ class ExoPlaybackStateHolder(
         super.onPlayWhenReadyChanged(playWhenReady, reason)
 
         if (player.playWhenReady) {
+            requestAudioFocus()
             // Mark that we have started playing so that the notification can now be posted.
             L.d("Player has started playing")
             sessionOngoing = true
@@ -483,6 +514,10 @@ class ExoPlaybackStateHolder(
             L.d("Closing audio effect session")
             broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
             openAudioEffectSession = false
+        }
+        if (!player.playWhenReady) {
+            player.volume = 1f
+            audioFocusState = audioFocusState.copy(isDucked = false)
         }
     }
 
@@ -537,6 +572,47 @@ class ExoPlaybackStateHolder(
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
                 .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
         )
+    }
+
+    private fun requestAudioFocus(): Boolean {
+        if (hasAudioFocus) return true
+        val result = audioManager.requestAudioFocus(focusRequest)
+        hasAudioFocus = result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        return hasAudioFocus
+    }
+
+    private fun abandonAudioFocus() {
+        if (!hasAudioFocus) return
+        audioManager.abandonAudioFocusRequest(focusRequest)
+        hasAudioFocus = false
+    }
+
+    private fun onAudioFocusChanged(focusChange: Int) {
+        val event =
+            when (focusChange) {
+                AudioManager.AUDIOFOCUS_LOSS -> AudioFocusPolicy.Event.LOSS
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> AudioFocusPolicy.Event.LOSS_TRANSIENT
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ->
+                    AudioFocusPolicy.Event.LOSS_TRANSIENT_CAN_DUCK
+                AudioManager.AUDIOFOCUS_GAIN -> AudioFocusPolicy.Event.GAIN
+                else -> return
+            }
+
+        val decision = AudioFocusPolicy.decide(event, audioFocusState, player.isPlaying)
+        decision.rememberTransientPlayback?.let { remember ->
+            audioFocusState = audioFocusState.copy(wasPlayingBeforeTransientLoss = remember)
+        }
+        if (decision.pause) {
+            playbackManager.playing(false)
+        }
+        player.volume = decision.volume
+        audioFocusState = audioFocusState.copy(isDucked = decision.volume < 1f)
+        if (decision.resume && !player.playWhenReady && sessionOngoing) {
+            playbackManager.playing(true)
+        }
+        if (event == AudioFocusPolicy.Event.LOSS) {
+            abandonAudioFocus()
+        }
     }
 
     // --- MUSICREPOSITORY METHODS ---
@@ -682,7 +758,7 @@ class ExoPlaybackStateHolder(
                             .setUsage(C.USAGE_MEDIA)
                             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                             .build(),
-                        true,
+                        false,
                     )
                     .build()
 

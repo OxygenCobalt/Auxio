@@ -151,6 +151,7 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackSeekBar?.listener = this
+        binding.playbackSeekBar?.setLargeTouchMode(uiSettings.largeHeadUnitControls)
         if (!uiSettings.showHeadUnitAlbumArt) {
             binding.playbackPager?.visibility = View.GONE
         }
@@ -171,6 +172,9 @@ class PlaybackPanelFragment :
             binding.playbackSong,
             binding.playbackArtist,
         )
+        if (uiSettings.largeHeadUnitControls) {
+            binding.playbackInfoContainer.updatePadding(top = 8.dp(), bottom = 8.dp())
+        }
         applyDriverSideLayout(binding)
 
         // Set up actions
@@ -210,6 +214,8 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.shuffleScope, ::updateShuffleScope)
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
     }
+
+    private fun Int.dp(): Int = (this * resources.displayMetrics.density).toInt()
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.core.view.updatePadding
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
@@ -49,6 +50,17 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     /** Enables/disables wavy active-track rendering to match playback state. */
     fun setWaveEnabled(enabled: Boolean) {
         binding.seekBarSlider.setWaveEnabled(enabled)
+    }
+
+    /**
+     * Increases vertical touch comfort for in-car/large-screen use without changing seek logic.
+     */
+    fun setLargeTouchMode(enabled: Boolean) {
+        if (enabled) {
+            val pad = (resources.displayMetrics.density * 8).toInt()
+            minimumHeight = (resources.displayMetrics.density * 64).toInt()
+            binding.seekBarSlider.updatePadding(top = pad, bottom = pad)
+        }
     }
 
     /** The current [Listener] attached to this instance. */

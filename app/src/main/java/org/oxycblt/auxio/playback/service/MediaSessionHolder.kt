@@ -22,6 +22,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -37,6 +38,7 @@ import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
+import org.oxycblt.auxio.image.CoverProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
@@ -238,6 +240,8 @@ private constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, album)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.uid.toString())
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, song.uri.toString())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
                 .putText(
                     PlaybackNotification.KEY_PARENT,
@@ -277,6 +281,21 @@ private constructor(
                     if (bitmap != null) {
                         builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
                         builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
+                    }
+                    song.cover?.let {
+                        val artworkUri = Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
+                        builder.putString(
+                            MediaMetadataCompat.METADATA_KEY_ART_URI,
+                            artworkUri.toString(),
+                        )
+                        builder.putString(
+                            MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,
+                            artworkUri.toString(),
+                        )
+                        builder.putString(
+                            MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI,
+                            artworkUri.toString(),
+                        )
                     }
                     val metadata = builder.build()
                     mediaSession.setMetadata(metadata)
@@ -389,11 +408,21 @@ private class PlaybackNotification(
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))
         addAction(
-            buildAction(context, PlaybackActions.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24)
+            buildAction(
+                context,
+                PlaybackActions.ACTION_SKIP_PREV,
+                R.drawable.ic_skip_prev_24,
+                context.getString(R.string.desc_skip_prev),
+            )
         )
         addAction(buildPlayPauseAction(context, true))
         addAction(
-            buildAction(context, PlaybackActions.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24)
+            buildAction(
+                context,
+                PlaybackActions.ACTION_SKIP_NEXT,
+                R.drawable.ic_skip_next_24,
+                context.getString(R.string.desc_skip_next),
+            )
         )
         addAction(buildShuffleAction(context, false))
 
@@ -469,14 +498,24 @@ private class PlaybackNotification(
             } else {
                 R.drawable.ic_play_24
             }
-        return buildAction(context, PlaybackActions.ACTION_PLAY_PAUSE, drawableRes)
+        return buildAction(
+            context,
+            PlaybackActions.ACTION_PLAY_PAUSE,
+            drawableRes,
+            context.getString(R.string.desc_play_pause),
+        )
     }
 
     private fun buildRepeatAction(
         context: Context,
         repeatMode: RepeatMode,
     ): NotificationCompat.Action {
-        return buildAction(context, PlaybackActions.ACTION_INC_REPEAT_MODE, repeatMode.icon)
+        return buildAction(
+            context,
+            PlaybackActions.ACTION_INC_REPEAT_MODE,
+            repeatMode.icon,
+            context.getString(R.string.desc_change_repeat),
+        )
     }
 
     private fun buildShuffleAction(
@@ -489,13 +528,23 @@ private class PlaybackNotification(
             } else {
                 R.drawable.ic_shuffle_off_24
             }
-        return buildAction(context, PlaybackActions.ACTION_INVERT_SHUFFLE, drawableRes)
+        return buildAction(
+            context,
+            PlaybackActions.ACTION_INVERT_SHUFFLE,
+            drawableRes,
+            context.getString(R.string.desc_shuffle),
+        )
     }
 
-    private fun buildAction(context: Context, actionName: String, @DrawableRes iconRes: Int) =
+    private fun buildAction(
+        context: Context,
+        actionName: String,
+        @DrawableRes iconRes: Int,
+        title: String,
+    ) =
         NotificationCompat.Action.Builder(
                 iconRes,
-                actionName,
+                title,
                 context.newBroadcastPendingIntent(actionName),
             )
             .build()
