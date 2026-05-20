@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.service
 
 import android.content.Context
 import android.support.v4.media.MediaBrowserCompat.MediaItem
+import android.support.v4.media.MediaDescriptionCompat
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -192,7 +193,9 @@ private constructor(
         when (node) {
             is TabNode.Root -> {
                 val tabs = homeGenerator.tabs()
-                if (maxTabs < tabs.size) {
+                if (tabs.isEmpty()) {
+                    listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+                } else if (maxTabs < tabs.size) {
                     tabs.take(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) } +
                         TabNode.More.toMediaItem(context)
                 } else {
@@ -205,11 +208,26 @@ private constructor(
             is TabNode.Home ->
                 // homeGenerator returns emptyLists
                 when (node.type) {
-                    MusicType.SONGS -> homeGenerator.songs().map { it.toMediaItem(context) }
-                    MusicType.ALBUMS -> homeGenerator.albums().map { it.toMediaItem(context) }
-                    MusicType.ARTISTS -> homeGenerator.artists().map { it.toMediaItem(context) }
-                    MusicType.GENRES -> homeGenerator.genres().map { it.toMediaItem(context) }
-                    MusicType.PLAYLISTS -> homeGenerator.playlists().map { it.toMediaItem(context) }
+                    MusicType.SONGS ->
+                        homeGenerator.songs().map { it.toMediaItem(context) }.ifEmpty {
+                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                        }
+                    MusicType.ALBUMS ->
+                        homeGenerator.albums().map { it.toMediaItem(context) }.ifEmpty {
+                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                        }
+                    MusicType.ARTISTS ->
+                        homeGenerator.artists().map { it.toMediaItem(context) }.ifEmpty {
+                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                        }
+                    MusicType.GENRES ->
+                        homeGenerator.genres().map { it.toMediaItem(context) }.ifEmpty {
+                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                        }
+                    MusicType.PLAYLISTS ->
+                        homeGenerator.playlists().map { it.toMediaItem(context) }.ifEmpty {
+                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                        }
                 }
         }
 
@@ -240,4 +258,10 @@ private constructor(
     companion object {
         const val KEY_CHILD_OF = BuildConfig.APPLICATION_ID + ".key.CHILD_OF"
     }
+
+    private fun placeholderItem(title: String): MediaItem =
+        MediaItem(
+            MediaDescriptionCompat.Builder().setMediaId("placeholder:$title").setTitle(title).build(),
+            MediaItem.FLAG_BROWSABLE,
+        )
 }

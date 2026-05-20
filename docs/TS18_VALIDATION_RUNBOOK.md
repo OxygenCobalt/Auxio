@@ -22,6 +22,10 @@ Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources 
 - `docs/TS18_INTEGRATION_ARCHITECTURE.md`
 - `docs/TS18_NATIVE_CONTRACTS.md`
 
+## Optional evidence helper
+- Use `scripts/ts18-capture-media-state.sh [output_dir]` to capture timestamped `adb` snapshots for MediaSession/audio/notification before and after media key events.
+- This helper is external-only validation and does not add in-app probes.
+
 ## Allowed evidence labels for TS18/TW/TWTHEME claims
 Use only these values in evidence rows:
 
@@ -46,7 +50,7 @@ Use only these values in evidence rows:
 ### TS18-STD-001: MediaSession metadata visible
 - **Setup:** Open Auxio, start local playback, keep app foreground once to warm service.
 - **Steps:** Run `adb shell dumpsys media_session | sed -n '/org.oxycblt.auxio/,/state=/p'`.
-- **Expected:** Title/artist/album/duration/actions/queue index reflect current track and update after next/prev.
+- **Expected:** Title/artist/album/duration/actions/queue index reflect current track and update after next/prev. `mediaId`, `mediaUri`, and `artUri/albumArtUri` are present for the current item whenever artwork exists.
 - **Evidence:** command output + lockscreen/launcher capture.
 - **Pass/Fail:** Pass only if metadata updates within one track transition.
 - **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
@@ -70,7 +74,7 @@ Use only these values in evidence rows:
 ### TS18-STD-004: Audio focus duck/restore with navigation
 - **Setup:** Auxio playback + nav app with voice prompts.
 - **Steps:** Start route guidance; capture `adb shell dumpsys audio`.
-- **Expected:** Auxio ducks or pauses based on focus event and restores after prompt.
+- **Expected:** Auxio ducks on transient duck requests, pauses on transient/full loss, and only resumes on gain when playback was active before transient loss. Playback must not unexpectedly auto-start from a fully stopped state after focus returns.
 - **Evidence:** audio dump before/during/after + subjective audio observation.
 - **Pass/Fail:** Fail on non-restoring volume/play state.
 - **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
@@ -86,7 +90,7 @@ Use only these values in evidence rows:
 ### TS18-STD-006: Sleep/resume playback state restoration
 - **Setup:** Start playback, then put head unit display/device into sleep/standby cycle.
 - **Steps:** Wake device, then run `adb shell dumpsys media_session` and verify Auxio session state.
-- **Expected:** Session and transport state are coherent after wake; playback resumes or remains paused consistently with pre-sleep state.
+- **Expected:** Session and transport state are coherent after wake; playback resumes or remains paused consistently with pre-sleep state. Metadata/notification content should refresh to the restored queue item without stale artwork/text.
 - **Evidence:** pre/post `dumpsys media_session` + lockscreen/launcher screenshots.
 - **Pass/Fail:** Fail if state is lost, stale, or mismatched post-resume.
 - **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
@@ -100,9 +104,9 @@ Use only these values in evidence rows:
 - **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
 ### TS18-STD-008: Landscape/head-unit UI readability
-- **Setup:** Use typical TS18 landscape display mode (e.g., 1024x600 class layout).
-- **Steps:** Inspect now playing, queue, transport controls, and metadata readability from driver distance.
-- **Expected:** Critical controls/text remain visible, readable, and touchable without phone-only layout breakage.
+- **Setup:** Enable **Settings → UI → Head unit** options as desired; use a typical TS18 landscape display mode (e.g., 1024x600 class layout).
+- **Steps:** Inspect now playing, queue, transport controls, and metadata readability from driver distance. Repeat once with **Large touch controls** on.
+- **Expected:** Critical controls/text remain visible, readable, and touchable without phone-only layout breakage. Large-controls mode increases practical hit targets for core transport actions.
 - **Evidence:** screenshots/video from launcher + app playback surfaces.
 - **Pass/Fail:** Fail if key controls are clipped, inaccessible, or illegible.
 - **Confidence / Porting decision:** Requires TS18 validation / Reusable validation idea.

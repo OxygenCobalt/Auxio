@@ -12,6 +12,7 @@
     <string name="lbl_indexer">Music loading</string>
     <!-- Is an active task -->
     <string name="lbl_indexing">Loading music</string>
+    <string name="lbl_no_music">No music available</string>
     <!-- Monitoring music library for changes -->
     <string name="lbl_observing">Monitoring music library</string>
     <!-- As in to retry loading music -->
