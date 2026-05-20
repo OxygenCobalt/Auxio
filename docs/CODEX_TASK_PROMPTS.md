@@ -32,3 +32,45 @@ Before proposing any implementation or validation change for TS18/TW/TWTHEME wor
 - Default-off adapter skeleton tasks.
 - Hidden diagnostics module tasks inside product code.
 - Probe-first or diagnostics-first TS18 planning tasks.
+
+
+# Codex environment setup for Auxio-TS
+Use this when starting a Codex cloud task that needs to build, test, lint, or modify CI-sensitive Android code.
+
+## Codex setup command
+Configure the Codex environment setup command as:
+
+```sh
+bash scripts/codex/setup-auxio-ts.sh
+```
+
+The setup script is intentionally best-effort. It initialises toolchains and submodules, warms Gradle where possible, and writes logs under `.codex/logs`.
+
+## Maintenance commands
+
+```sh
+bash scripts/codex/doctor-auxio-ts.sh
+bash scripts/codex/repair-auxio-ts.sh
+bash scripts/codex/run-auxio-ci-local.sh
+```
+
+Use strict mode only when you want a hard failure:
+
+```sh
+CODEX_STRICT_SETUP=1 bash scripts/codex/setup-auxio-ts.sh
+CODEX_DOCTOR_STRICT=1 bash scripts/codex/doctor-auxio-ts.sh
+CODEX_CI_STRICT=1 bash scripts/codex/run-auxio-ci-local.sh
+```
+
+## Expected checks before claiming success
+
+```sh
+bash scripts/check-submodules.sh
+./gradlew assembleDebug
+./gradlew test
+./gradlew lint
+```
+
+If these cannot run inside Codex because of missing remotes, inaccessible submodules, unavailable secrets, or environment/toolchain restrictions, say so explicitly. Do not claim success from partial checks.
+
+GitHub Actions / Copilot in GitHub’s runner context remains the source of truth for final CI reliability.
