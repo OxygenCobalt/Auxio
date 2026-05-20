@@ -2,10 +2,11 @@
 
 ## Project stance
 - Start documentation navigation from `docs/README.md`.
+- Prefer consolidation/removal of stale docs over keeping historical wrappers.
+- Start documentation navigation from `docs/README.md`.
 - Auxio-TS is an Auxio fork; preserve upstream architecture.
 - Keep TS18/TW integration in adapter/facade boundaries.
 - Use `docs/evidence/t-music-snapshot/` as evidence only, not implementation source.
-- Treat `docs/archive/**` as provenance-only historical material, not active guidance.
 
 ## TS18/TW/TWTHEME source-led policy
 

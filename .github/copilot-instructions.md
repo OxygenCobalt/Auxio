@@ -1,6 +1,8 @@
 # Copilot instructions for Auxio-TS
 
 ## Core stance
+- Start documentation navigation from `docs/README.md`.
+- Prefer consolidation/removal of stale docs over keeping historical wrappers.
 - Auxio-TS is an Auxio fork, not a clone of `com.tw.music`.
 - Keep upstream playback/library/service design unless evidence requires targeted change.
 - Keep TS18 integration in adapter/facade boundaries.
