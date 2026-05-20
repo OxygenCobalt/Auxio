@@ -84,6 +84,33 @@ Run or document blockers for:
 - `./gradlew lint`
 - `find scripts -type f -name '*.sh' -print -exec sh -n {} \;`
 
+## CI reliability — known issues and rules
+
+### Submodule quirks
+- `media/libraries/common_ktx/proguard-rules.txt` is **absent** from the `OxygenCobalt/media`
+  submodule (commit `0b01e32`). The `common_library_config.gradle` requires it via
+  `consumerProguardFiles 'proguard-rules.txt'`. Each workflow creates an empty stub file
+  before Gradle runs. If a future submodule bump adds the file, this step becomes a no-op.
+- Full recursive submodule init may fail in this sandbox because the nested ffmpeg submodule
+  resolves from `git.ffmpeg.org`, which is unreachable. Local Gradle builds also fail because
+  JetBrains JDK 21 toolchain downloads from `api.foojay.io` are unreachable.
+
+### Quality workflow scoping
+- `testDebugUnitTest` is scoped to `:app` and `:musikr` only. The media library test files
+  have missing test-utility dependencies (after upstream "trim down module tree" commit) and
+  will fail to compile if the bare `testDebugUnitTest` task is used.
+- `lintDebug` is scoped to `:app` only. `app/build.gradle` sets `lint { checkDependencies = false }`
+  so the app lint report does not aggregate media library lint errors.
+
+### CI audit methodology for agents
+- Fetch **full** job logs, not tails. The root error is always above the Gradle stack trace dump.
+- Separate root causes from cascade errors before fixing anything.
+- Run `./gradlew --no-daemon --stacktrace :app:assembleDebug` (not bare `assembleDebug`) if
+  you want to limit the build to Auxio-TS code and skip media library sub-tasks that are known
+  to fail in this sandbox.
+- Do not claim `test`, `lint`, or `assembleDebug` passed unless the command actually ran
+  and exited 0.
+
 ## Release/signing safety
 - Treat release/signing workflow edits as security-sensitive.
 - Never print secrets or commit keystores/signing artifacts.
