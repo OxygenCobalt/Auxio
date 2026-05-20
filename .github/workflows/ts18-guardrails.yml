@@ -47,6 +47,10 @@ jobs:
 
     steps:
       - name: Checkout repository
+        # Intentionally does NOT use submodules: recursive — this workflow performs
+        # docs/script/policy checks only. No Gradle tasks run, so media/core_settings.gradle
+        # and taglib/ffmpeg submodules are not required. This keeps the job fast and avoids
+        # the git.ffmpeg.org network dependency.
         uses: actions/checkout@v5
 
       - name: Validate repository shell scripts

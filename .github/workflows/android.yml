@@ -59,8 +59,24 @@ jobs:
       with:
         fetch-depth: 0
         submodules: recursive
-    - name: Validate required submodules
-      run: bash ./scripts/check-submodules.sh
+    - name: Verify and validate submodule state
+      shell: bash
+      run: |
+        # Ensure .gitmodules URLs are in sync (safe; no-op if already correct)
+        git submodule sync --recursive
+        # Retry submodule init/update after checkout action — defensive; || true because
+        # git.ffmpeg.org may be unreachable in restricted environments (sandbox/air-gapped).
+        # check-submodules.sh below will fail with SUBMODULE_BLOCKER if ffmpeg is required.
+        git submodule update --init --recursive --jobs 4 || true
+        # Display current state for diagnostics
+        echo "--- git submodule status --recursive ---"
+        git submodule status --recursive
+        echo "--- Key path diagnostics ---"
+        echo "media/core_settings.gradle : $(test -f media/core_settings.gradle && echo PRESENT || echo MISSING)"
+        echo "media ffmpeg/configure     : $(test -f media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg/configure && echo PRESENT || echo MISSING)"
+        echo "musikr/taglib/CMakeLists   : $(test -f musikr/src/main/cpp/taglib/CMakeLists.txt && echo PRESENT || echo MISSING)"
+        # Validate required paths — fails early with SUBMODULE_BLOCKER on missing files
+        bash ./scripts/check-submodules.sh
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:

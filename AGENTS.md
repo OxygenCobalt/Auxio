@@ -86,14 +86,59 @@ Run or document blockers for:
 
 ## CI reliability — known issues and rules
 
-### Submodule quirks
+### Submodule requirements and repair
+
+This repo requires **recursive git submodules** to build. Gradle cannot configure at all if
+`media/core_settings.gradle` is missing (applied unconditionally at `settings.gradle` line 19).
+
+Required submodules:
+
+| Path | Purpose | Remote | Reachable in sandbox? |
+|------|---------|--------|-----------------------|
+| `media/` | Patched Media3/ExoPlayer | `github.com/OxygenCobalt/media` | Yes |
+| `media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg/` | FFmpeg decoder | `git.ffmpeg.org` | **No** (blocked) |
+| `musikr/src/main/cpp/taglib/` | Taglib parser | `github.com/taglib/taglib` | Yes |
+
+**Fresh clone:**
+```
+git clone --recurse-submodules https://github.com/cbkii/Auxio-TS.git
+```
+
+**Existing clone repair:**
+```
+git submodule sync --recursive
+git submodule update --init --recursive --jobs 4
+```
+
+**Validate:**
+```
+bash ./scripts/check-submodules.sh
+```
+
+The script supports `--repair` mode (`bash ./scripts/check-submodules.sh --repair`) which runs
+`git submodule sync/update` before validation.
+
+### Classifying submodule failures vs app build failures
+
+1. Run `bash ./scripts/check-submodules.sh` before any Gradle command.
+2. If it exits non-zero with `SUBMODULE_BLOCKER`: environment/setup issue — not an app code issue.
+3. If no `.git` directory: ZIP/snapshot environment — Gradle validation is impossible.
+4. If submodules pass but Gradle fails: real build issue — inspect the first error above the stack trace.
+
+### ZIP/snapshot environments (Codex, agent, archive-based)
+ZIP snapshots without `.git` cannot run Gradle. Classify as `SUBMODULE_BLOCKER / environment-limited`.
+Do not try to work around this by copying submodule files manually.
+
+### Known submodule quirks
 - `media/libraries/common_ktx/proguard-rules.txt` is **absent** from the `OxygenCobalt/media`
   submodule (commit `0b01e32`). The `common_library_config.gradle` requires it via
-  `consumerProguardFiles 'proguard-rules.txt'`. Each workflow creates an empty stub file
+  `consumerProguardFiles 'proguard-rules.txt'`. Each Gradle workflow creates an empty stub file
   before Gradle runs. If a future submodule bump adds the file, this step becomes a no-op.
-- Full recursive submodule init may fail in this sandbox because the nested ffmpeg submodule
-  resolves from `git.ffmpeg.org`, which is unreachable. Local Gradle builds also fail because
-  JetBrains JDK 21 toolchain downloads from `api.foojay.io` are unreachable.
+- The nested `ffmpeg` submodule resolves from `git.ffmpeg.org`, which is unreachable in this
+  sandbox. `check-submodules.sh` reports this as `SUBMODULE_BLOCKER` with ffmpeg noted as the
+  missing path. GitHub Actions CI handles ffmpeg initialization correctly with `fetch-depth: 0`.
+- Local Gradle builds also fail in this sandbox because JetBrains JDK 21 toolchain downloads
+  from `api.foojay.io` are unreachable (AGP plugin resolution fails).
 
 ### Quality workflow scoping
 - `testDebugUnitTest` is scoped to `:app` and `:musikr` only. The media library test files
@@ -105,9 +150,9 @@ Run or document blockers for:
 ### CI audit methodology for agents
 - Fetch **full** job logs, not tails. The root error is always above the Gradle stack trace dump.
 - Separate root causes from cascade errors before fixing anything.
+- Run `bash ./scripts/check-submodules.sh` first to rule out submodule issues before diagnosing Gradle.
 - Run `./gradlew --no-daemon --stacktrace :app:assembleDebug` (not bare `assembleDebug`) if
-  you want to limit the build to Auxio-TS code and skip media library sub-tasks that are known
-  to fail in this sandbox.
+  you want to limit the build to Auxio-TS code and skip media library sub-tasks.
 - Do not claim `test`, `lint`, or `assembleDebug` passed unless the command actually ran
   and exited 0.
 

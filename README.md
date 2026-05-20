@@ -103,6 +103,43 @@ download the external code.
 3. You are **unable** to build this project on windows, as the custom Media3 build runs shell scripts that
 will only work on unix-based systems.
 
+### Submodule requirements
+
+This repository requires **recursive git submodules** to build. Gradle cannot configure the project at all
+if `media/core_settings.gradle` is missing — this file lives in the `media` submodule.
+
+**Fresh clone (recommended):**
+```bash
+git clone --recurse-submodules https://github.com/cbkii/Auxio-TS.git
+```
+
+**Existing clone (repair missing submodules):**
+```bash
+git submodule sync --recursive
+git submodule update --init --recursive --jobs 4
+```
+
+**Validate submodule state:**
+```bash
+bash ./scripts/check-submodules.sh
+```
+
+> **Note for Codex / Copilot / agent environments:** ZIP snapshots without `.git` cannot run Gradle.
+> If `check-submodules.sh` reports `SUBMODULE_BLOCKER`, that is an environment limitation, not an
+> app code issue. The nested `ffmpeg` submodule (`media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg`)
+> requires `git.ffmpeg.org` to be reachable; in air-gapped environments this submodule will fail to
+> initialize. GitHub Actions CI handles this correctly via `actions/checkout` with `submodules: recursive`
+> and `fetch-depth: 0`.
+
+**Required submodules:**
+
+| Path | Purpose | Remote |
+|------|---------|--------|
+| `media/` | Patched Media3/ExoPlayer | `github.com/OxygenCobalt/media` |
+| `media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg/` | FFmpeg native decoder | `git.ffmpeg.org` (requires network) |
+| `musikr/src/main/cpp/taglib/` | Taglib metadata parser | `github.com/taglib/taglib` |
+
+
 ### Set up Android Studio
 
 #### Install Android Studio.
