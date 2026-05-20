@@ -38,3 +38,4 @@ Start here for all TS18/TW/TWTHEME work.
 ## Agent/developer entry points
 - Repo authority: `../AGENTS.md`
 - Copilot/Codex policy: `../.github/copilot-instructions.md`
+- Codex environment setup/maintenance/validation: `codex/README.md`

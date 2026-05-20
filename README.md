@@ -100,6 +100,8 @@ For TS18/TW/TWTHEME development and validation documentation, start with [`docs/
 
 Canonical policy and source corpus live in [`docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`](docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md).
 
+For Codex cloud environment setup/maintenance/validation flow, use [`docs/codex/README.md`](docs/codex/README.md).
+
 ## Building
 
 Auxio relies on a patched version of Media3 that enables some extra playback features, alongside taglib for metadata
