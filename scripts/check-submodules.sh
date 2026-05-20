@@ -34,8 +34,8 @@ cd "${REPO_ROOT}"
 if [[ ! -e ".git" ]]; then
   echo "::error::SUBMODULE_BLOCKER: This directory has no .git — it appears to be a ZIP/snapshot extract."
   echo "::error::ZIP snapshots cannot run Gradle because settings.gradle requires media/core_settings.gradle from the submodule."
-  echo "::error::Clone the repository properly:"
-  echo "::error::  git clone --recurse-submodules https://github.com/cbkii/Auxio-TS.git"
+  echo "::error::Clone the repository properly with submodules:"
+  echo "::error::  git clone --recurse-submodules <remote-url>"
   exit 1
 fi
 
@@ -113,13 +113,14 @@ check_required_file \
 # ── Result ───────────────────────────────────────────────────────────────────
 
 if [[ "${missing}" -ne 0 ]]; then
+  ORIGIN_URL="$(git config --get remote.origin.url 2>/dev/null || echo "<remote-url>")"
   echo ""
   echo "::error::SUBMODULE_BLOCKER: One or more required submodules are not initialized."
   echo "::error::This is an environment/setup issue — not an app code issue."
   echo "::error::"
   echo "::error::Repair commands:"
   echo "::error::  # For a fresh clone:"
-  echo "::error::  git clone --recurse-submodules https://github.com/cbkii/Auxio-TS.git"
+  echo "::error::  git clone --recurse-submodules ${ORIGIN_URL}"
   echo "::error::"
   echo "::error::  # For an existing clone:"
   echo "::error::  git submodule sync --recursive"
