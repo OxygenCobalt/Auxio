@@ -35,12 +35,9 @@ jobs:
           fetch-tags: true
           submodules: recursive
 
-      - name: Verify submodules before Gradle
+      - name: Prepare CI environment
         shell: bash
-        run: |
-          set -euo pipefail
-          git submodule status --recursive
-          bash scripts/check-submodules.sh
+        run: bash ./scripts/prepare-ci-environment.sh
 
       - name: Verify branch release context
         shell: bash

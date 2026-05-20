@@ -98,6 +98,10 @@
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
+            <!-- Required for Android Auto voice search support (MissingIntentFilterForMediaSearch) -->
+            <intent-filter>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH"/>
+            </intent-filter>
         </service>
 
         <!--
