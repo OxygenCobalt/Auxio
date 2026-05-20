@@ -1,6 +1,8 @@
 # AGENTS.md — Auxio-TS coding authority
 
 ## Project stance
+- Start documentation navigation from `docs/README.md`.
+- Prefer consolidation/removal of stale docs over keeping historical wrappers.
 - Auxio-TS is an Auxio fork; preserve upstream architecture.
 - Keep TS18/TW integration in adapter/facade boundaries.
 - Use `docs/evidence/t-music-snapshot/` as evidence only, not implementation source.
@@ -76,6 +78,9 @@ For TS18/TW/TWTHEME claims, include both labels:
 - Do not spread TS18 conditionals through core playback/library code.
 - Do not claim TS18 compatibility without runtime evidence.
 
+- Inspect full CI logs before proposing build fixes; do not diagnose from summary lines only.
+- Distinguish Codex environment limitations from GitHub Actions/Copilot runner failures.
+- Never claim tasks/build/test/lint success unless commands actually passed in this environment.
 ## Validation baseline
 Run or document blockers for:
 - `./gradlew tasks`

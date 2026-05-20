@@ -1,6 +1,8 @@
 # Copilot instructions for Auxio-TS
 
 ## Core stance
+- Start documentation navigation from `docs/README.md`.
+- Prefer consolidation/removal of stale docs over keeping historical wrappers.
 - Auxio-TS is an Auxio fork, not a clone of `com.tw.music`.
 - Keep upstream playback/library/service design unless evidence requires targeted change.
 - Keep TS18 integration in adapter/facade boundaries.
@@ -77,6 +79,9 @@ For each TS18/TW/TWTHEME claim, include:
 - Do not add TWUtil/TWClient reflection or vendor-service binders to product code.
 - Do not make probe/diagnostics the default approach for TS18 questions.
 
+- Inspect full CI logs before proposing build fixes; do not diagnose from summary lines only.
+- Distinguish Codex environment limitations from GitHub Actions/Copilot runner failures.
+- Never claim tasks/build/test/lint success unless commands actually passed in this environment.
 ## Baseline checks
 - `./gradlew tasks`
 - `./gradlew assembleDebug`

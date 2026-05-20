@@ -1,8 +1,15 @@
-# TS18 Execution Pack — Phase 1–4 (Canonical)
+# TS18 Execution Pack — Phase 1–4 (Historical)
+
+> Status: **Superseded / historical reference**.
+>
+> This document is retained for provenance of Phase 1–4 execution planning. Active TS18/TW/TWTHEME work must follow:
+> `TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`, `TW_ECOSYSTEM_SOURCE_MAP.md`, `TS18_REQUIREMENTS.md`, and `TS18_VALIDATION_RUNBOOK.md`.
+>
+> Do not treat probe/default-off-adapter content here as active implementation guidance.
 
 ## 1) Purpose and scope
 
-This document is the **canonical execution-ready operator/agent guide for Phase 1–4 only**.
+This document is a **historical execution-ready operator/agent guide for Phase 1–4 only**.
 
 Phase scope:
 - **Phase 1:** repo/build baseline.
@@ -16,7 +23,7 @@ This execution pack is self-contained for new contributors running planning, val
 
 ---
 
-## 2) Canonical precedence
+## 2) Historical precedence map
 
 This section avoids taxonomy drift and clarifies where each decision type is authoritative.
 
