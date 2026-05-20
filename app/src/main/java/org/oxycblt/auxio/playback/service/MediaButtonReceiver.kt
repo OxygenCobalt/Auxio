@@ -22,9 +22,9 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.view.KeyEvent
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.AuxioService
@@ -48,13 +48,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
             return
         }
 
-        @Suppress("DEPRECATION")
-        val event =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
-            } else {
-                intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
-            }
+        val event = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
         if (event?.action != KeyEvent.ACTION_DOWN) {
             L.d("Ignoring media button event that is not ACTION_DOWN: $event")
             return
