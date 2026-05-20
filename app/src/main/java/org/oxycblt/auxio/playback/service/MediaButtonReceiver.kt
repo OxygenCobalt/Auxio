@@ -22,7 +22,9 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.view.KeyEvent
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.AuxioService
@@ -42,18 +44,31 @@ class MediaButtonReceiver : BroadcastReceiver() {
 
     // TODO: Figure this out
     override fun onReceive(context: Context, intent: Intent) {
-        if (playbackManager.currentSong != null) {
-            // We have a song, so we can assume that the service will start a foreground state.
-            // At least, I hope. Again, *this is why we don't do this*. I cannot describe how
-            // stupid this is with the state of foreground services on modern android. One
-            // wrong action at the wrong time will result in the app crashing, and there is
-            // nothing I can do about it.
-            // TODO: Think I finally have an alternative with the changes I made to accomodate
-            //  tasker
-            L.d("Delivering media button intent $intent")
-            intent.component = ComponentName(context, AuxioService::class.java)
-            intent.putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_MEDIA_BUTTON)
-            ContextCompat.startForegroundService(context, intent)
+        if (intent.action != Intent.ACTION_MEDIA_BUTTON) {
+            return
         }
+
+        val event = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
+        if (event?.action != KeyEvent.ACTION_DOWN) {
+            L.d("Ignoring media button event that is not ACTION_DOWN: $event")
+            return
+        }
+
+        // If we have no known song and got a "pause/stop" style action, ignore it.
+        // This avoids waking playback from inert state while still allowing "play"
+        // commands to start a restored session from background controllers.
+        if (
+            playbackManager.currentSong == null &&
+                (event.keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE ||
+                    event.keyCode == KeyEvent.KEYCODE_MEDIA_STOP)
+        ) {
+            L.d("Ignoring $event because no session is available to pause/stop")
+            return
+        }
+
+        L.d("Delivering media button intent $intent")
+        intent.component = ComponentName(context, AuxioService::class.java)
+        intent.putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_MEDIA_BUTTON)
+        ContextCompat.startForegroundService(context, intent)
     }
 }

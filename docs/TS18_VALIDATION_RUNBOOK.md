@@ -43,37 +43,77 @@ Use only these values in evidence rows:
 
 ## Acceptance scenarios
 
-### TS18-ACC-001: MediaSession visibility
-- Verify active session owner/state/actions/metadata via `dumpsys media_session` while Auxio plays.
+### TS18-STD-001: MediaSession metadata visible
+- **Setup:** Open Auxio, start local playback, keep app foreground once to warm service.
+- **Steps:** Run `adb shell dumpsys media_session | sed -n '/org.oxycblt.auxio/,/state=/p'`.
+- **Expected:** Title/artist/album/duration/actions/queue index reflect current track and update after next/prev.
+- **Evidence:** command output + lockscreen/launcher capture.
+- **Pass/Fail:** Pass only if metadata updates within one track transition.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
-### TS18-ACC-002: MediaLibrary/Android Auto browsing
-- Validate browse tree visibility and playable items from external controller surface.
+### TS18-STD-002: Notification controls work
+- **Setup:** Playback active, notification permission granted.
+- **Steps:** Trigger notification play/pause/next/prev 3 cycles.
+- **Expected:** Transport buttons remain visible; compact controls map to prev-play/next; state mirrors MediaSession.
+- **Evidence:** screen recording + `adb shell dumpsys notification --noredact`.
+- **Pass/Fail:** Fail on missing controls or stale state after any cycle.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
-### TS18-ACC-003: Notification transport controls
-- Validate play/pause/next/prev from notification repeatedly; record failures/latency.
+### TS18-STD-003: Steering-wheel/media keys route to Auxio
+- **Setup:** Auxio installed as user app; playback paused with prior queue.
+- **Steps:** Send/trigger `KEYCODE_MEDIA_PLAY_PAUSE`, `NEXT`, `PREVIOUS`, `STOP`.
+- **Expected:** Standard keycodes control Auxio session without vendor broadcast dependencies.
+- **Evidence:** steering-wheel capture or `adb shell input keyevent` log + playback state snapshots.
+- **Pass/Fail:** Fail if keys are dropped while service is backgrounded.
+- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
 
-### TS18-ACC-004: Media buttons / steering wheel
-- Trigger hardware keys and confirm standard media key routing reaches Auxio reliably.
+### TS18-STD-004: Audio focus duck/restore with navigation
+- **Setup:** Auxio playback + nav app with voice prompts.
+- **Steps:** Start route guidance; capture `adb shell dumpsys audio`.
+- **Expected:** Auxio ducks or pauses based on focus event and restores after prompt.
+- **Evidence:** audio dump before/during/after + subjective audio observation.
+- **Pass/Fail:** Fail on non-restoring volume/play state.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
-### TS18-ACC-005: ZLink/TLink coexistence
-- Compare focus/session/metadata visibility when projection is idle vs active.
+### TS18-STD-005: ZLink/TLink coexistence smoke test
+- **Setup:** Connect projection stack (ZLink/TLink) if installed.
+- **Steps:** Toggle projection idle/active while Auxio session exists.
+- **Expected:** Auxio session remains discoverable and recovers transport control when projection releases focus.
+- **Evidence:** media_session + audio dumps, brief video.
+- **Pass/Fail:** Fail if Auxio becomes unrecoverable without force-stop.
+- **Confidence / Porting decision:** Inferred / Reusable validation idea.
 
-### TS18-ACC-006: Launcher widget behavior (iLauncher / TWTHEME)
-- Source basis: iLauncher.net (Priority 1) + Display-Media-Titles (Priority 2) — both confirm metadata visibility is a first-class surface.
-- Compare metadata/control visibility for stock launcher, iLauncher, and any TWTHEME widget.
-- Record active launcher package and firmware variant in evidence header.
+### TS18-STD-006: Sleep/resume playback state restoration
+- **Setup:** Start playback, then put head unit display/device into sleep/standby cycle.
+- **Steps:** Wake device, then run `adb shell dumpsys media_session` and verify Auxio session state.
+- **Expected:** Session and transport state are coherent after wake; playback resumes or remains paused consistently with pre-sleep state.
+- **Evidence:** pre/post `dumpsys media_session` + lockscreen/launcher screenshots.
+- **Pass/Fail:** Fail if state is lost, stale, or mismatched post-resume.
+- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
 
-### TS18-ACC-007: Audio focus + navigation mixing
-- Trigger navigation prompts during playback; verify duck/pause/recover behavior.
+### TS18-STD-007: Android Auto / external browser browse tree smoke test
+- **Setup:** Connect external controller (Android Auto or compatible browser controller).
+- **Steps:** Browse root and one child level, then trigger one playable item.
+- **Expected:** Root is browsable, playable items are marked playable, and playback starts from selected item.
+- **Evidence:** controller screenshots + `adb shell dumpsys media_session` output.
+- **Pass/Fail:** Fail if root/children are empty unexpectedly or flags are inconsistent.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
-### TS18-ACC-008: Sleep/resume continuity
-- Validate session/focus/playback recovery after screen off/on and HU sleep-resume cycle.
+### TS18-STD-008: Landscape/head-unit UI readability
+- **Setup:** Use typical TS18 landscape display mode (e.g., 1024x600 class layout).
+- **Steps:** Inspect now playing, queue, transport controls, and metadata readability from driver distance.
+- **Expected:** Critical controls/text remain visible, readable, and touchable without phone-only layout breakage.
+- **Evidence:** screenshots/video from launcher + app playback surfaces.
+- **Pass/Fail:** Fail if key controls are clipped, inaccessible, or illegible.
+- **Confidence / Porting decision:** Requires TS18 validation / Reusable validation idea.
 
-### TS18-ACC-009: FLAC/local-library matrix
-- Validate scan/index/play/seek/resume for 16/44.1, 16/48, 24/48 samples.
-
-### TS18-ACC-010: TWTHEME visual/layout behavior
-- Capture visual diffs across theme/launcher variants; classify as UI variance vs functional regression.
+### TS18-STD-009: FLAC/local-library playback smoke matrix
+- **Setup:** Index local library containing at minimum FLAC 16/44.1, 16/48, and 24/48 samples.
+- **Steps:** Play/seek/pause/resume each sample; verify metadata and transport updates.
+- **Expected:** Each sample plays and seeks correctly; metadata remains stable through transitions.
+- **Evidence:** playback captures + `adb shell dumpsys media_session` snapshots per sample class.
+- **Pass/Fail:** Fail on decode, seek, or metadata regression for any matrix row.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
 ## Evidence format
 Per scenario include:
