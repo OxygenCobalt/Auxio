@@ -1,5 +1,13 @@
 # Codex Task Prompts (source-led TS18 direction)
 
+## Canonical docs to read first
+1. `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+2. `docs/TW_ECOSYSTEM_SOURCE_MAP.md`
+3. `docs/TS18_REQUIREMENTS.md`
+4. `docs/TS18_INTEGRATION_ARCHITECTURE.md`
+5. `docs/TS18_VALIDATION_RUNBOOK.md`
+6. `docs/DEVELOPMENT_ROADMAP.md`
+
 ## Required workflow for all TS18/TW/TWTHEME tasks
 
 Before proposing any implementation or validation change for TS18/TW/TWTHEME work:
@@ -10,6 +18,12 @@ Before proposing any implementation or validation change for TS18/TW/TWTHEME wor
 4. **Cite public equivalent project precedent** before implementation (Priority 2 projects before custom code).
 5. **Use user-provided diagnostics only when available** (Priority 4); do not default to new probes.
 6. **Do not propose speculative product-code probes**; diagnostics must remain external scripts or runbook steps.
+
+
+## Documentation scope guardrails
+- Start TS18/TW/TWTHEME tasks from `docs/README.md`.
+- Treat `docs/evidence/**` and `docs/archive/**` as provenance only, not active implementation guidance.
+- Do not reactivate probe-first/default-off-adapter instructions from archived docs.
 
 ## Active task prompts
 
@@ -26,13 +40,14 @@ Before proposing any implementation or validation change for TS18/TW/TWTHEME wor
 11. Package/signature/privilege risk refresh with explicit non-goals.
 12. One explicit compatibility feature proposal (only after validated gap + source justification).
 
-## De-emphasized / rejected prompt patterns
+## Superseded/rejected prompt patterns (historical only)
 - TWUtil/TWClient reflection probe tasks.
 - Vendor package probe framework tasks.
 - Default-off adapter skeleton tasks.
 - Hidden diagnostics module tasks inside product code.
 - Probe-first or diagnostics-first TS18 planning tasks.
 
+---
 
 # Codex environment setup for Auxio-TS
 Use this when starting a Codex cloud task that needs to build, test, lint, or modify CI-sensitive Android code.

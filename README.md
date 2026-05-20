@@ -93,6 +93,13 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
     And **1** Private Sponsor!
 </p>
 
+
+## Auxio-TS documentation
+
+For TS18/TW/TWTHEME development and validation documentation, start with [`docs/README.md`](docs/README.md).
+
+Canonical policy and source corpus live in [`docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`](docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md).
+
 ## Building
 
 Auxio relies on a patched version of Media3 that enables some extra playback features, alongside taglib for metadata
