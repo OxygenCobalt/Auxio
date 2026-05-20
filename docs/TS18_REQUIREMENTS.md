@@ -31,3 +31,7 @@
 | No copied proprietary/decompiled implementation. | Observed | Should be explicitly avoided |
 | No speculative runtime TW probe framework inside app code. | Inferred | Should be explicitly avoided |
 | No vendor service binding unless a concrete feature is explicitly designed and justified. | Inferred | Unsafe to port |
+
+
+| Launcher shortcuts and deep-link entry points (Now Playing, Shuffle, Queue, library destinations, head-unit settings) must remain package-scoped and vendor-agnostic. | Inferred | Directly reusable requirement |
+| Home-screen/head-unit widget compatibility should be delivered through standard Android AppWidget APIs only. | Inferred | Directly reusable requirement |

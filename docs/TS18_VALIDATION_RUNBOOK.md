@@ -128,3 +128,20 @@ Per scenario include:
 - confidence (must be one of the allowed confidence labels above)
 - porting decision (must be one of the allowed porting decision labels above)
 - unresolved risk and next action
+
+
+### TS18-STD-010: Launcher shortcuts open Auxio entry points
+- **Setup:** Place Auxio on launcher supporting app shortcuts.
+- **Steps:** Long-press Auxio icon; trigger Now Playing/Shuffle/Queue/Genres/Artists/Albums/Favourites/Head-unit settings entries.
+- **Expected:** Each shortcut opens Auxio and routes to a sensible destination or safe fallback without crash.
+- **Evidence:** launcher capture + `adb shell dumpsys shortcut`.
+- **Pass/Fail:** Fail if shortcut is missing unexpectedly or causes crash.
+- **Confidence / Porting decision:** Requires TS18 validation / Reusable validation idea.
+
+### TS18-STD-011: Widget playback controls and metadata parity
+- **Setup:** Place Auxio widget on launcher desktop.
+- **Steps:** Start playback, use widget play/pause/next/prev, compare with notification/session state.
+- **Expected:** Widget transport controls remain functional and metadata stays coherent with session state.
+- **Evidence:** screen recording + `adb shell dumpsys appwidget` + `adb shell dumpsys media_session`.
+- **Pass/Fail:** Fail on stale controls/metadata or app crash.
+- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.

@@ -38,3 +38,11 @@ Auxio core
 2. Validate on TS18 with runbook scenarios.
 3. If a repeatable gap remains, draft one explicit compatibility feature PR.
 4. Land only the minimal feature needed for that validated gap.
+
+
+## Launcher/widget compatibility model (TWTHEME/iLauncher)
+- Auxio treats TWTHEME/iLauncher desktop integration as standard Android launcher compatibility, with AppWidgets, app shortcuts, explicit PendingIntents, and package-scoped deep-link actions.
+- No formal public TWTHEME widget SDK is assumed in product code.
+- Validation focus is whether generic Android entry points are discoverable and usable from TS18/TWTHEME launcher surfaces.
+- Confidence: **Inferred / Requires TS18 validation**.
+- Porting decision: **Directly reusable requirement / Reusable validation idea**.
