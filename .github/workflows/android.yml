@@ -59,20 +59,9 @@ jobs:
       with:
         fetch-depth: 0
         submodules: recursive
-    - name: Verify and validate submodule state
+    - name: Prepare CI environment
       shell: bash
-      run: |
-        # Ensure .gitmodules URLs are in sync (safe; no-op if already correct)
-        git submodule sync --recursive
-        # Retry submodule init/update after checkout action — defensive; || true because
-        # git.ffmpeg.org may be unreachable in restricted environments (sandbox/air-gapped).
-        # check-submodules.sh below will fail with SUBMODULE_BLOCKER if ffmpeg is required.
-        git submodule update --init --recursive --jobs 4 || true
-        # Display current state for CI log diagnostics
-        echo "--- git submodule status --recursive ---"
-        git submodule status --recursive
-        # Validate required paths — fails early with SUBMODULE_BLOCKER on missing files
-        bash ./scripts/check-submodules.sh
+      run: bash ./scripts/prepare-ci-environment.sh
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
@@ -85,17 +74,6 @@ jobs:
         if ! command -v ninja >/dev/null 2>&1; then
           sudo apt-get update
           sudo apt-get install -y ninja-build
-        fi
-    - name: Patch media submodule - create missing proguard-rules.txt files
-      run: |
-        # media/libraries/common_ktx/proguard-rules.txt is required by common_library_config.gradle
-        # (consumerProguardFiles 'proguard-rules.txt') but is absent from the submodule at
-        # commit 0b01e32 ("remove deprecated ndk dir use"). Create an empty stub so Gradle
-        # can merge the consumer proguard config without failing.
-        # See: OxygenCobalt/media common_library_config.gradle line 25
-        if [[ -d media/libraries/common_ktx ]] && [[ ! -f media/libraries/common_ktx/proguard-rules.txt ]]; then
-          touch media/libraries/common_ktx/proguard-rules.txt
-          echo "Created stub media/libraries/common_ktx/proguard-rules.txt"
         fi
     - name: Build debug APK with Gradle
       run: ./gradlew --no-daemon --stacktrace assembleDebug

@@ -113,23 +113,26 @@ if `media/core_settings.gradle` is missing — this file lives in the `media` su
 git clone --recurse-submodules https://github.com/cbkii/Auxio-TS.git
 ```
 
-**Existing clone (repair missing submodules):**
+**Existing clone — one-command setup:**
 ```bash
-git submodule sync --recursive
-git submodule update --init --recursive --jobs 4
+bash ./scripts/prepare-ci-environment.sh
 ```
 
-**Validate submodule state:**
+This script handles everything: submodule sync/update, validation, and the `common_ktx/proguard-rules.txt`
+stub workaround required for the current media submodule pin. It is the same script called by GitHub Actions.
+
+After it exits 0, run Gradle normally:
 ```bash
-bash ./scripts/check-submodules.sh
+./gradlew --no-daemon --stacktrace help
+./gradlew --no-daemon --stacktrace :app:assembleDebug
 ```
 
 > **Note for Codex / Copilot / agent environments:** ZIP snapshots without `.git` cannot run Gradle.
-> If `check-submodules.sh` reports `SUBMODULE_BLOCKER`, that is an environment limitation, not an
-> app code issue. The nested `ffmpeg` submodule (`media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg`)
+> `prepare-ci-environment.sh` will report `SNAPSHOT_LIMITATION` and exit 1.
+> The nested `ffmpeg` submodule (`media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg`)
 > requires `git.ffmpeg.org` to be reachable; in air-gapped environments this submodule will fail to
-> initialize. GitHub Actions CI handles this correctly via `actions/checkout` with `submodules: recursive`
-> and `fetch-depth: 0`.
+> initialize and the script will report `SUBMODULE_BLOCKER`. GitHub Actions CI handles this correctly
+> via `actions/checkout` with `submodules: recursive` and `fetch-depth: 0`.
 
 **Required submodules:**
 

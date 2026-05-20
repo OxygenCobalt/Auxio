@@ -35,21 +35,9 @@ jobs:
           fetch-tags: true
           submodules: recursive
 
-      - name: Verify and validate submodule state
+      - name: Prepare CI environment
         shell: bash
-        run: |
-          set -euo pipefail
-          # Ensure .gitmodules URLs are in sync (safe; no-op if already correct)
-          git submodule sync --recursive
-          # Retry submodule init/update after checkout action — defensive; || true because
-          # git.ffmpeg.org may be unreachable in restricted environments (sandbox/air-gapped).
-          # check-submodules.sh below will fail with SUBMODULE_BLOCKER if ffmpeg is required.
-          git submodule update --init --recursive --jobs 4 || true
-          # Display current state for CI log diagnostics
-          echo "--- git submodule status --recursive ---"
-          git submodule status --recursive
-          # Validate required paths — fails early with SUBMODULE_BLOCKER on missing files
-          bash ./scripts/check-submodules.sh
+        run: bash ./scripts/prepare-ci-environment.sh
 
       - name: Verify branch release context
         shell: bash
@@ -108,17 +96,6 @@ jobs:
           if ! command -v ninja >/dev/null 2>&1; then
             sudo apt-get update
             sudo apt-get install -y ninja-build
-          fi
-
-      - name: Patch media submodule - create missing proguard-rules.txt files
-        shell: bash
-        run: |
-          # media/libraries/common_ktx/proguard-rules.txt is required by common_library_config.gradle
-          # but is absent from the submodule. Create a stub so Gradle does not fail at
-          # mergeReleaseConsumerProguardFiles. See android.yml for full explanation.
-          if [[ -d media/libraries/common_ktx ]] && [[ ! -f media/libraries/common_ktx/proguard-rules.txt ]]; then
-            touch media/libraries/common_ktx/proguard-rules.txt
-            echo "Created stub media/libraries/common_ktx/proguard-rules.txt"
           fi
 
       - name: Compute release version and check collisions
