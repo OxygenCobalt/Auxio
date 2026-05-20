@@ -194,9 +194,8 @@ private constructor(
             is TabNode.Root -> {
                 val tabs = homeGenerator.tabs()
                 if (tabs.isEmpty()) {
-                    return listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
-                }
-                if (maxTabs < tabs.size) {
+                    listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+                } else if (maxTabs < tabs.size) {
                     tabs.take(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) } +
                         TabNode.More.toMediaItem(context)
                 } else {

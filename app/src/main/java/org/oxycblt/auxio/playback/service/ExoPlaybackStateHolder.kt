@@ -20,11 +20,15 @@ package org.oxycblt.auxio.playback.service
 
 import android.content.Context
 import android.content.Intent
-import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import androidx.annotation.OptIn
+import androidx.media.AudioAttributesCompat
+import androidx.media.AudioFocusRequestCompat
+import androidx.media.AudioManagerCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -90,18 +94,20 @@ class ExoPlaybackStateHolder(
     private var currentSaveJob: Job? = null
     private var openAudioEffectSession = false
     private val audioManager = context.getSystemService(AudioManager::class.java)
+    private val mainHandler = Handler(Looper.getMainLooper())
     private var audioFocusState = AudioFocusPolicy.State()
     private var hasAudioFocus = false
+    private var pauseFromAudioFocus = false
     private val focusChangeListener = AudioManager.OnAudioFocusChangeListener(::onAudioFocusChanged)
-    private val focusRequest: AudioFocusRequest =
-        AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+    private val focusRequest: AudioFocusRequestCompat =
+        AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
             .setAudioAttributes(
-                android.media.AudioAttributes.Builder()
-                    .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
-                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
+                AudioAttributesCompat.Builder()
+                    .setUsage(AudioAttributesCompat.USAGE_MEDIA)
+                    .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
                     .build()
             )
-            .setOnAudioFocusChangeListener(focusChangeListener)
+            .setOnAudioFocusChangeListener(focusChangeListener, mainHandler)
             .setWillPauseWhenDucked(false)
             .build()
 
@@ -250,8 +256,18 @@ class ExoPlaybackStateHolder(
         player.playWhenReady = playing
         if (!playing) {
             player.volume = 1f
-            audioFocusState = audioFocusState.copy(isDucked = false)
-            abandonAudioFocus()
+            audioFocusState =
+                audioFocusState.copy(
+                    wasPlayingBeforeTransientLoss =
+                        if (pauseFromAudioFocus) {
+                            audioFocusState.wasPlayingBeforeTransientLoss
+                        } else {
+                            false
+                        }
+                )
+            if (!pauseFromAudioFocus) {
+                abandonAudioFocus()
+            }
         }
     }
 
@@ -498,7 +514,11 @@ class ExoPlaybackStateHolder(
         super.onPlayWhenReadyChanged(playWhenReady, reason)
 
         if (player.playWhenReady) {
-            requestAudioFocus()
+            if (!requestAudioFocus()) {
+                L.w("Cannot continue playback: audio focus request denied")
+                player.pause()
+                return
+            }
             // Mark that we have started playing so that the notification can now be posted.
             L.d("Player has started playing")
             sessionOngoing = true
@@ -517,7 +537,15 @@ class ExoPlaybackStateHolder(
         }
         if (!player.playWhenReady) {
             player.volume = 1f
-            audioFocusState = audioFocusState.copy(isDucked = false)
+            audioFocusState =
+                audioFocusState.copy(
+                    wasPlayingBeforeTransientLoss =
+                        if (pauseFromAudioFocus) {
+                            audioFocusState.wasPlayingBeforeTransientLoss
+                        } else {
+                            false
+                        }
+                )
         }
     }
 
@@ -576,14 +604,14 @@ class ExoPlaybackStateHolder(
 
     private fun requestAudioFocus(): Boolean {
         if (hasAudioFocus) return true
-        val result = audioManager.requestAudioFocus(focusRequest)
+        val result = AudioManagerCompat.requestAudioFocus(audioManager, focusRequest)
         hasAudioFocus = result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
         return hasAudioFocus
     }
 
     private fun abandonAudioFocus() {
         if (!hasAudioFocus) return
-        audioManager.abandonAudioFocusRequest(focusRequest)
+        AudioManagerCompat.abandonAudioFocusRequest(audioManager, focusRequest)
         hasAudioFocus = false
     }
 
@@ -603,10 +631,14 @@ class ExoPlaybackStateHolder(
             audioFocusState = audioFocusState.copy(wasPlayingBeforeTransientLoss = remember)
         }
         if (decision.pause) {
-            playbackManager.playing(false)
+            pauseFromAudioFocus = true
+            try {
+                playbackManager.playing(false)
+            } finally {
+                pauseFromAudioFocus = false
+            }
         }
         player.volume = decision.volume
-        audioFocusState = audioFocusState.copy(isDucked = decision.volume < 1f)
         if (decision.resume && !player.playWhenReady && sessionOngoing) {
             playbackManager.playing(true)
         }

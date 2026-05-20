@@ -9,7 +9,6 @@ object AudioFocusPolicy {
 
     data class State(
         val wasPlayingBeforeTransientLoss: Boolean = false,
-        val isDucked: Boolean = false,
     )
 
     enum class Event {
@@ -61,4 +60,3 @@ object AudioFocusPolicy {
                 )
         }
 }
-
