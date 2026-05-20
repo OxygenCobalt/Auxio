@@ -6,13 +6,38 @@ ROOT="$(repo_root)"; OUT="$ROOT/docs/codex/out"; mkdir -p "$OUT"
 LOG_FILE="$OUT/validate-codex-env.log"; SUMMARY="$OUT/validate-summary.txt"; JSON_SUMMARY="$OUT/validate-summary.json"
 : >"$LOG_FILE"; : >"$SUMMARY"
 
-check(){ local cls="$1"; local name="$2"; shift 2; run_step "$name"; "$@" >>"$LOG_FILE" 2>&1; local rc=$?; if [[ $rc -eq 0 ]]; then echo "OK|$name" >>"$SUMMARY"; pass "$name"; else echo "$cls|$name|exit=$rc" >>"$SUMMARY"; block "$cls: $name"; fi; return 0; }
-quick(){ check SUBMODULE_BLOCKER prepare bash "$ROOT/scripts/prepare-ci-environment.sh"; check SUBMODULE_BLOCKER submodules bash "$ROOT/scripts/check-submodules.sh"; check REAL_BUILD_FAILURE shell-syntax bash -lc 'find "$0/scripts" "$0/docs/codex" -type f -name "*.sh" -print -exec bash -n {} \;' "$ROOT"; check JAVA_GRADLE_COMPAT_BLOCKER gradle-version with_timeout 600 bash -lc 'cd "$0" && ./gradlew --no-daemon --version' "$ROOT"; check ANDROID_SDK_BLOCKER gradle-help with_timeout 900 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace help' "$ROOT"; }
+check() {
+  local cls="$1"
+  local name="$2"
+  shift 2
+  run_step "$name"
+  "$@" >>"$LOG_FILE" 2>&1
+  local rc=$?
+  if [[ $rc -eq 0 ]]; then
+    echo "OK|$name" >>"$SUMMARY"
+    pass "$name"
+  else
+    echo "$cls|$name|exit=$rc" >>"$SUMMARY"
+    block "$cls: $name"
+  fi
+  return 0
+}
+quick(){
+  check SUBMODULE_BLOCKER prepare bash "$ROOT/scripts/prepare-ci-environment.sh"
+  check SUBMODULE_BLOCKER submodules bash "$ROOT/scripts/check-submodules.sh"
+  check REAL_BUILD_FAILURE shell-syntax bash -lc 'find "$0/scripts" "$0/docs/codex" -type f -name "*.sh" -print -exec bash -n {} \;' "$ROOT"
+  check JAVA_GRADLE_COMPAT_BLOCKER gradle-version with_timeout 600 bash -lc 'cd "$0" && ./gradlew --no-daemon --version' "$ROOT"
+  check ANDROID_SDK_BLOCKER gradle-help with_timeout 900 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace help' "$ROOT"
+}
 android(){ check ANDROID_SDK_BLOCKER app-assemble with_timeout 2400 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace :app:assembleDebug' "$ROOT"; }
 docs_mode(){ check REQUIRED_DOC ts18-source-led-doc test -f "$ROOT/docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md"; check REQUIRED_DOC ts18-runbook test -f "$ROOT/docs/TS18_VALIDATION_RUNBOOK.md"; }
 ci_parity(){ check REAL_BUILD_FAILURE ci-parity-check with_timeout 3600 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace --continue spotlessCheck :app:testDebugUnitTest :musikr:testDebugUnitTest :app:lintDebug' "$ROOT"; }
 unexpected_structure(){
-  [[ ! -f "$ROOT/scripts/prepare-ci-environment.sh" ]] || [[ ! -f "$ROOT/scripts/check-submodules.sh" ]] || [[ ! -x "$ROOT/gradlew" ]]
+  local expected=0
+  [[ -f "$ROOT/scripts/prepare-ci-environment.sh" ]] || expected=1
+  [[ -f "$ROOT/scripts/check-submodules.sh" ]] || expected=1
+  [[ -x "$ROOT/gradlew" ]] || expected=1
+  [[ "$expected" -ne 0 ]]
 }
 fallback_canonical(){
   warn "UNEXPECTED_STRUCTURE: falling back to canonical prepare/submodule/gradle-help checks"

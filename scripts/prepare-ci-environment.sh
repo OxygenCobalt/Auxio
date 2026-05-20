@@ -11,7 +11,13 @@ if [[ ! -e ".git" ]]; then
 fi
 
 if [[ -f gradlew ]]; then
-  chmod +x gradlew
+  chmod +x gradlew || {
+    echo "::error::REAL_BUILD_FAILURE: unable to make gradlew executable."
+    exit 1
+  }
+else
+  echo "::error::REAL_BUILD_FAILURE: gradlew is missing from repository root."
+  exit 1
 fi
 
 echo "--- Syncing submodules ---"
