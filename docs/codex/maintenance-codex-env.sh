@@ -6,6 +6,10 @@ run_required SUBMODULE_BLOCKER "Canonical prepare" bash "$ROOT/scripts/prepare-c
 run_required SUBMODULE_BLOCKER "Submodule check" bash "$ROOT/scripts/check-submodules.sh"
 run_optional "Gradle wrapper sanity" with_timeout 600 bash -lc 'cd "$0" && ./gradlew --no-daemon --version' "$ROOT"
 run_optional "Gradle help sanity" with_timeout 900 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace help' "$ROOT"
-[[ "${CODEX_CLEAN:-0}" = "1" ]] && run_optional "Stop gradle daemons" bash -lc 'cd "$0" && ./gradlew --stop' "$ROOT" || skip "No destructive cleanup (CODEX_CLEAN!=1)"
+if [[ "${CODEX_CLEAN:-0}" = "1" ]]; then
+  run_optional "Stop gradle daemons" bash -lc 'cd "$0" && ./gradlew --stop' "$ROOT"
+else
+  skip "No destructive cleanup (CODEX_CLEAN!=1)"
+fi
 write_summary
 [[ $FAILED -eq 0 ]] || exit 1

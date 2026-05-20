@@ -24,15 +24,15 @@ fi
 
 cat >"$ENV_FILE" <<EOT
 # source this in agent phase if needed
-export ANDROID_HOME="
-export ANDROID_SDK_ROOT="
-export JAVA_HOME="
+export ANDROID_HOME="${ANDROID_HOME:-}"
+export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
+export JAVA_HOME="${JAVA_HOME:-}"
 export GRADLE_USER_HOME="\${HOME}/.gradle"
 EOT
 
 run_optional "Gradle help smoke" with_timeout 900 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace help' "$ROOT"
 if [[ "${CODEX_SETUP_FULL_BUILD:-0}" = "1" ]]; then
-  run_optional "Optional full build" with_timeout 2400 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace :app:assembleDebug'
+  run_optional "Optional full build" with_timeout 2400 bash -lc 'cd "$0" && ./gradlew --no-daemon --stacktrace :app:assembleDebug' "$ROOT"
 else
   skip "Full build skipped (set CODEX_SETUP_FULL_BUILD=1 to enable)"
 fi

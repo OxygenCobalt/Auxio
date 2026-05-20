@@ -2,6 +2,7 @@
 
 ## Project stance
 - Start documentation navigation from `docs/README.md`.
+- For Codex environment setup/maintenance/validation flow, use `docs/codex/README.md`.
 - Prefer consolidation/removal of stale docs over keeping historical wrappers.
 - Auxio-TS is an Auxio fork; preserve upstream architecture.
 - Keep TS18/TW integration in adapter/facade boundaries.
