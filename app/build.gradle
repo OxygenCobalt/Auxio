@@ -95,6 +95,12 @@ android {
         viewBinding true
         buildConfig true
     }
+
+    lint {
+        // Do not re-run lint on vendored media library submodule dependencies.
+        // Media library lint issues are upstream concerns; only app sources are checked here.
+        checkDependencies false
+    }
 }
 
 kotlin {

@@ -74,6 +74,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ninja-build
         fi
+    - name: Patch media submodule - create missing proguard-rules.txt files
+      run: |
+        # media/libraries/common_ktx/proguard-rules.txt is required by common_library_config.gradle
+        # (consumerProguardFiles 'proguard-rules.txt') but is absent from the submodule at
+        # commit 0b01e32 ("remove deprecated ndk dir use"). Create an empty stub so Gradle
+        # can merge the consumer proguard config without failing.
+        # See: OxygenCobalt/media common_library_config.gradle line 25
+        if [[ -d media/libraries/common_ktx ]] && [[ ! -f media/libraries/common_ktx/proguard-rules.txt ]]; then
+          touch media/libraries/common_ktx/proguard-rules.txt
+          echo "Created stub media/libraries/common_ktx/proguard-rules.txt"
+        fi
     - name: Build debug APK with Gradle
       run: ./gradlew --no-daemon --stacktrace assembleDebug
     - name: Upload debug APK artifact

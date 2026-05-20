@@ -101,6 +101,17 @@ jobs:
             sudo apt-get install -y ninja-build
           fi
 
+      - name: Patch media submodule - create missing proguard-rules.txt files
+        shell: bash
+        run: |
+          # media/libraries/common_ktx/proguard-rules.txt is required by common_library_config.gradle
+          # but is absent from the submodule. Create a stub so Gradle does not fail at
+          # mergeReleaseConsumerProguardFiles. See android.yml for full explanation.
+          if [[ -d media/libraries/common_ktx ]] && [[ ! -f media/libraries/common_ktx/proguard-rules.txt ]]; then
+            touch media/libraries/common_ktx/proguard-rules.txt
+            echo "Created stub media/libraries/common_ktx/proguard-rules.txt"
+          fi
+
       - name: Compute release version and check collisions
         id: version
         shell: bash
