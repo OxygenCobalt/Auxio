@@ -25,7 +25,7 @@ for f in \
  done
 
 printf '\n%s\n' '== Evidence policy markers =='
-rg -n "evidence only|docs/evidence|active source-of-truth|Routine guardrail scans" docs/README.md || true
+grep -nE "evidence only|docs/evidence|active source-of-truth|Routine guardrail scans" docs/README.md || true
 
 printf '\n%s\n' '== Obsolete-path checks =='
 for p in docs/TS18_EXECUTION_PACK_PHASE1_4.md docs/TS18_PUBLIC_REFERENCE_RESEARCH.md; do
@@ -58,11 +58,24 @@ fi
 printf '%s\n' "$DOC_FILES"
 
 printf '\n%s\n' '== Stale active-strategy terms =='
-PATTERN="probe-first|diagnostics-first|default-off adapter|default-off probe|runtime contract registry|TS18IntegrationProbe|TS18EnvironmentSnapshot|TS18ContractRegistry|TS18AdapterCapability|TWUtil scanner|TWClient scanner|vendor package scanner"
+PATTERN="probe-first|diagnostics-first|default-off[- ]adapter|default-off[- ]probe|runtime contract registry|TS18IntegrationProbe|TS18EnvironmentSnapshot|TS18ContractRegistry|TS18AdapterCapability|TWUtil scanner|TWClient scanner|vendor package scanner"
 MATCHES=""
-if [ -n "$DOC_FILES" ]; then
+filtered_doc_stream() {
+  # Exclude historical/negative-guidance sections so strict mode only flags active usage.
   # shellcheck disable=SC2086
-  MATCHES=$(rg -n "$PATTERN" $DOC_FILES || true)
+  for f in $DOC_FILES; do
+    awk '
+      /^#+[[:space:]]/ {
+        skip = ($0 ~ /^#+[[:space:]](Explicit non-targets|Superseded|Rejected|Historical|Archived|Archive|Obsolete|Deprecated)([[:space:]]|$)/)
+      }
+      !skip {
+        printf "%s:%d:%s\n", FILENAME, FNR, $0
+      }
+    ' "$f"
+  done
+}
+if [ -n "$DOC_FILES" ]; then
+  MATCHES=$(filtered_doc_stream | grep -E "$PATTERN" || true)
 fi
 printf '%s\n' "$MATCHES"
 

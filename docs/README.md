@@ -4,8 +4,8 @@ Start here for all TS18/TW/TWTHEME work.
 
 ## Active precedence (canonical)
 1. TS18/TW/TWTHEME source-led development policy.
-2. Official Android/MediaSession/MediaBrowser/audio-focus APIs as implementation baseline.
-3. Public TS18/Topway/DoFun/TW/TWTHEME/head-unit sources as compatibility/context evidence.
+2. Public TS18/Topway/DoFun/TW/TWTHEME/head-unit sources as compatibility/context evidence.
+3. Official Android/MediaSession/MediaBrowser/audio-focus APIs as implementation baseline.
 4. Local `t-music` and TS18 diagnostics as evidence and validation context.
 5. External validation scripts/runbooks as acceptance evidence.
 6. Probe/diagnostics-driven investigation only as last resort.
