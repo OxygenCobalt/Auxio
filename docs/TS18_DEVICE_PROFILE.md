@@ -71,3 +71,5 @@ Device serials and other direct identifiers are deliberately omitted.
 - The first Auxio-TS implementation should prove standard MediaSession behaviour on-device before adding TW-specific hooks.
 - `com.tw.service` is probably a critical audio/vehicle mediator.
 - Stock `com.tw.music` being system/priv UID 1000 means package replacement/impersonation is high risk and should not be first approach.
+
+> **Tier 0 evidence note:** This device profile is Tier 0 evidence. It defines the parity target and feeds into Tier 2 validation scenarios. It does not justify any Tier 3/4 native contract work until Tier 2 on-device validation confirms a specific parity gap. See [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md).

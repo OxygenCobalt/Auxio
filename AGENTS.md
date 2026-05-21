@@ -4,15 +4,31 @@
 - Start documentation navigation from `docs/README.md`.
 - For Codex environment setup/maintenance/validation flow, use `docs/codex/README.md`.
 - Prefer consolidation/removal of stale docs over keeping historical wrappers.
-- Auxio-TS is an Auxio fork; preserve upstream architecture.
+- **Auxio-TS is a TS18/TW/TWTHEME variant app.** TS18/TW/TWTHEME parity is the product target.
+- Android-standard APIs are the preferred **first implementation layer** (Tier 1), not the final authority.
 - Keep TS18/TW integration in adapter/facade boundaries.
 - Use `docs/evidence/t-music-snapshot/` as evidence only, not implementation source.
+- **Native/private contracts are NOT permanently out of scope.** They require the formal gap-and-promotion process (Tier 2 validated gap → Tier 3 investigation → Tier 4 design PR). Do NOT say "private/native is out of scope" — say "not for production by default; requires formal gap-and-promotion process."
+
+## TS18 Native Parity Tier Model
+
+See canonical definition: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](docs/TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy)
+
+| Tier | Name | Scope |
+|------|------|-------|
+| 0 | Evidence only | t-music snapshot, TWTHEME resources, diagnostics, public repos, firmware notes |
+| 1 | Android-standard implementation | MediaSession, MediaBrowser, notification, audio focus, media buttons, AppWidget, shortcuts |
+| 2 | TS18-aware validation | On-device evidence proving which TS18/TWTHEME surfaces see or ignore Tier 1 behaviour |
+| 3 | Isolated native experiments | External scripts or non-production branches testing specific TW/TWTHEME contracts |
+| 4 | Production native integration | Only via explicit human-approved design PR meeting all 8 production eligibility criteria |
+
+A production native integration (Tier 4) is only eligible after an explicit human-approved design PR proves: product need; evidence-backed contract; no package impersonation; no copied smali; no platform-signature/system-UID dependency; safe fallback; isolated implementation; validation and rollback path.
 
 ## TS18/TW/TWTHEME source-led policy
 
 TS18/TW/TWTHEME work must begin with the curated TS18/Topway/DoFun/TW source corpus and battle-tested public head-unit projects.
 
-Android/Media3 standards remain the baseline implementation authority, but they are not enough to answer TS18/TWTHEME-specific questions. For TS18-specific behaviour, agents must first search and classify TS18/TW/TWTHEME ecosystem sources before proposing implementation or validation changes.
+Android/Media3 standards are the Tier 1 implementation baseline. They are the preferred first implementation path but are not the final authority for TS18/TWTHEME-specific questions. For TS18-specific behaviour, agents must first search and classify TS18/TW/TWTHEME ecosystem sources before proposing implementation or validation changes.
 
 Probe/diagnostics-driven work is secondary. It is allowed only when:
 - the user provides fresh diagnostics;
@@ -72,15 +88,25 @@ For TS18/TW/TWTHEME claims, include both labels:
 - **Evidence confidence**: Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported
 - **Porting decision**: Directly reusable requirement / Reusable validation idea / Useful as evidence only / Obsolete due to Auxio architecture / Requires TS18 runtime validation / Unsafe to port / Should be explicitly avoided
 
+Always distinguish between: product requirement / Android-standard implementation / TS18 runtime validation / native-private investigation / production eligibility.
+
 ## Hard constraints
 - Do not change package identity to `com.tw.music`.
 - Do not require privileged/system UID or platform signing.
 - Do not copy decompiled smali into app code.
 - Do not spread TS18 conditionals through core playback/library code.
 - Do not claim TS18 compatibility without runtime evidence.
+- Do not add in-app probe frameworks or speculative default-off adapters.
+- Do not add TWUtil/TWClient reflection scanners or vendor package scanners.
+- Do not add vendor-service binders without an explicit approved design PR.
+- Do not add product-code calls to `com.tw.music.action.*`.
+- Do not add direct `com.tw.*` or `android.tw.john.*` imports in product code.
+- Do not add TWTHEME private-resource loaders or hidden diagnostics modules.
+- Do not say "private/native is permanently out of scope" — say "not for production by default; requires formal gap-and-promotion process".
 
 - Inspect full CI logs before proposing build fixes; do not diagnose from summary lines only.
 - Distinguish Codex environment limitations from GitHub Actions/Copilot runner failures.
+- Do not treat Codex environment build limitations as final CI proof; GitHub Actions/Copilot CI is the final workflow proof point.
 - Never claim tasks/build/test/lint success unless commands actually passed in this environment.
 ## Validation baseline
 Run or document blockers for:

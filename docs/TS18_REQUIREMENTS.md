@@ -1,6 +1,12 @@
 # TS18 Requirements for Auxio-TS (source-led)
 
-## Phase 1 implementation requirements (product code)
+## Framing
+
+TS18/TW/TWTHEME parity is the product target. Requirements are written as parity acceptance criteria derived from TS18/TW/TWTHEME evidence. Android-standard (Tier 1) implementation is the preferred first path for each requirement; Android-standard success alone does not guarantee TS18-native parity until validated on real hardware (Tier 2). A parity gap confirmed in Tier 2 may trigger Tier 3/4 native investigation.
+
+See canonical tier model: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy)
+
+
 
 | Requirement | Confidence | Porting decision |
 |---|---|---|

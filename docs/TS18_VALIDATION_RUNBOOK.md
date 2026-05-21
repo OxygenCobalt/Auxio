@@ -16,11 +16,29 @@ Each scenario in this runbook is derived from at least one source in the canonic
 
 Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
 
+## Parity gap identification (what triggers Tier 3/4 investigation)
+
+A Tier 2 validation result is classified as a **parity gap** when:
+1. A runbook scenario above fails consistently across multiple test cycles.
+2. A comparable Tier 1 implementation is confirmed complete (i.e. the failure is not a Tier 1 bug).
+3. Comparable third-party apps (Spotify, Poweramp) succeed where Auxio-TS fails, suggesting a TS18/TWTHEME-specific issue.
+4. A plausible private/native contract exists in the Tier 0 evidence corpus that could explain the gap.
+
+When a parity gap is identified:
+- Document the gap in [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md) with observed evidence.
+- Update the "Remaining TS18/TWTHEME validation" and "Native/private investigation needed?" columns.
+- Do **not** add native/private contract code to production without an explicit human-approved design PR (Tier 4).
+
+See [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy) for the full tier model and Tier 4 eligibility criteria.
+
+> **No hardware validation has been completed to date.** All scenario statuses are `Requires TS18 validation` until real-device evidence is captured and linked here.
+
 ## Related canonical docs
 - `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 - `docs/TS18_REQUIREMENTS.md`
 - `docs/TS18_INTEGRATION_ARCHITECTURE.md`
 - `docs/TS18_NATIVE_CONTRACTS.md`
+- `docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`
 
 ## Optional evidence helper
 - Use `scripts/ts18-capture-media-state.sh [output_dir]` to capture timestamped `adb` snapshots for MediaSession/audio/notification before and after media key events.
