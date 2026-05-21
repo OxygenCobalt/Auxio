@@ -66,8 +66,8 @@ object HeadUnitEntryPoints {
     }
 
     private fun dynamicShortcutSpecs(maxShortcutCount: Int): List<ShortcutSpec> {
-        val cappedCount = maxShortcutCount.coerceAtLeast(0)
-        return PRIORITIZED_DYNAMIC_SHORTCUTS.take(cappedCount)
+        val nonNegativeCount = maxShortcutCount.coerceAtLeast(0)
+        return PRIORITIZED_DYNAMIC_SHORTCUTS.take(nonNegativeCount)
     }
 
     private fun shortcut(
