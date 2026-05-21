@@ -376,7 +376,7 @@ class WidgetProvider : AppWidgetProvider() {
         // to disable the ripple animation sadly, as  it will glitch when this is used. The
         // shape change should act as a similar signal.
         val icon = WidgetRenderState.playPauseIcon(state.isPlaying)
-        val background = if (state.isPlaying) R.drawable.ui_remote_fab_container_playing else R.drawable.ui_remote_fab_container_paused
+        val background = WidgetRenderState.playPauseBackground(state.isPlaying)
 
         setImageViewResource(R.id.widget_play_pause, icon)
         setBackgroundResource(R.id.widget_play_pause, background)

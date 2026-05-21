@@ -78,7 +78,7 @@ class Auxio : Application() {
                 ShortcutInfoCompat.Builder(this, SHORTCUT_QUEUE_ID)
                     .setShortLabel(getString(R.string.lbl_queue))
                     .setLongLabel(getString(R.string.lbl_queue))
-                    .setIcon(IconCompat.createWithResource(this, R.drawable.ic_queue_music_24))
+                    .setIcon(IconCompat.createWithResource(this, R.drawable.ic_queue_add_24))
                     .setIntent(Intent(this, MainActivity::class.java).setAction(HeadUnitEntryPoints.ACTION_OPEN_QUEUE))
                     .build(),
             ),
@@ -86,7 +86,6 @@ class Auxio : Application() {
     }
 
     companion object {
-        /** The [Intent] name for the "Shuffle All" shortcut. */
         /** The ID of the "Shuffle All" shortcut. */
         private const val SHORTCUT_SHUFFLE_ID = "shortcut_shuffle"
         /** The ID of the "Queue" shortcut. */

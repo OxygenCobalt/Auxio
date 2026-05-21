@@ -203,16 +203,15 @@ fun Context.newMainPendingIntent(): PendingIntent =
         PendingIntent.FLAG_IMMUTABLE,
     )
 
-
-
 /** Create a [PendingIntent] that will launch the app activity directly to now playing. */
 fun Context.newNowPlayingPendingIntent(): PendingIntent =
     PendingIntent.getActivity(
         this,
-        IntegerTable.REQUEST_CODE + 17,
+        IntegerTable.REQUEST_CODE_NOW_PLAYING,
         Intent(this, MainActivity::class.java).setAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
         PendingIntent.FLAG_IMMUTABLE,
     )
+
 /**
  * Create a [PendingIntent] that will broadcast the specified command when launched.
  *
