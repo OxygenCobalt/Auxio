@@ -31,3 +31,5 @@
 | No copied proprietary/decompiled implementation. | Observed | Should be explicitly avoided |
 | No speculative runtime TW probe framework inside app code. | Inferred | Should be explicitly avoided |
 | No vendor service binding unless a concrete feature is explicitly designed and justified. | Inferred | Unsafe to port |
+
+- Launcher/widget standards validation scenarios TS18-STD-010..017 are defined in `TS18_VALIDATION_RUNBOOK.md` and remain **Requires TS18 validation** until hardware evidence is captured.

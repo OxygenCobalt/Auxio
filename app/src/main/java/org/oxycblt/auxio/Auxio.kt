@@ -25,6 +25,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
+import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -72,19 +73,23 @@ class Auxio : Application() {
                     .setShortLabel(getString(R.string.lbl_shuffle_shortcut_short))
                     .setLongLabel(getString(R.string.lbl_shuffle_shortcut_long))
                     .setIcon(IconCompat.createWithResource(this, R.drawable.ic_shortcut_shuffle_24))
-                    .setIntent(
-                        Intent(this, MainActivity::class.java)
-                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE)
-                    )
-                    .build()
+                    .setIntent(Intent(this, MainActivity::class.java).setAction(HeadUnitEntryPoints.ACTION_SHUFFLE_ALL))
+                    .build(),
+                ShortcutInfoCompat.Builder(this, SHORTCUT_QUEUE_ID)
+                    .setShortLabel(getString(R.string.lbl_queue))
+                    .setLongLabel(getString(R.string.lbl_queue))
+                    .setIcon(IconCompat.createWithResource(this, R.drawable.ic_queue_music_24))
+                    .setIntent(Intent(this, MainActivity::class.java).setAction(HeadUnitEntryPoints.ACTION_OPEN_QUEUE))
+                    .build(),
             ),
         )
     }
 
     companion object {
         /** The [Intent] name for the "Shuffle All" shortcut. */
-        const val INTENT_KEY_SHORTCUT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE_ALL"
         /** The ID of the "Shuffle All" shortcut. */
         private const val SHORTCUT_SHUFFLE_ID = "shortcut_shuffle"
+        /** The ID of the "Queue" shortcut. */
+        private const val SHORTCUT_QUEUE_ID = "shortcut_queue"
     }
 }
