@@ -152,12 +152,17 @@ class MainActivity : AppCompatActivity() {
             return true
         }
 
-        when (HeadUnitEntryPoints.destinationForAction(intent.action)) {
+        val destination = HeadUnitEntryPoints.destinationForAction(intent.action)
+        when (destination) {
             HeadUnitEntryPoints.EntryDestination.NOW_PLAYING -> playbackModel.openPlayback()
             HeadUnitEntryPoints.EntryDestination.QUEUE -> playbackModel.openQueue()
             null -> {
                 L.w("Unexpected intent ${intent.action}")
                 return false
+            }
+            else -> {
+                intent.putExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION, destination.name)
+                L.d("Mapped deep-link action to destination $destination")
             }
         }
         return true

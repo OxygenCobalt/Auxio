@@ -25,4 +25,10 @@ class WidgetRenderStateTest {
         assertEquals(R.drawable.ic_pause_24, WidgetRenderState.playPauseIcon(true))
         assertEquals(R.drawable.ic_play_24, WidgetRenderState.playPauseIcon(false))
     }
+
+    @Test
+    fun playPauseBackground_reflectsPlayingState() {
+        assertEquals(R.drawable.ui_remote_fab_container_playing, WidgetRenderState.playPauseBackground(true))
+        assertEquals(R.drawable.ui_remote_fab_container_paused, WidgetRenderState.playPauseBackground(false))
+    }
 }
