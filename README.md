@@ -235,3 +235,6 @@ published by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
 More information can be found [here](https://github.com/OxygenCobalt/Auxio/wiki/Licenses).
+
+## Tier 0 -> Tier 4 pipeline
+Tier 0 sources/evidence -> Tier 1 Android-standard implementation -> Tier 2 evidence packs -> scenario summarisation -> parity matrix proposal -> Tier 3 native/private candidate drafts -> future human-approved design PR -> possible Tier 4 production integration.

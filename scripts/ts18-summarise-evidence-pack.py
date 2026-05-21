@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+import json
+import sys
+from pathlib import Path
+
+SCENARIOS=[f"TS18-STD-{i:03d}" for i in range(1,18)]
+
+
+def read(p:Path):
+    return p.read_text(errors="ignore") if p.exists() else ""
+
+def has_any(t,*needles):
+    low=t.lower(); return any(n.lower() in low for n in needles)
+
+
+def main():
+    if len(sys.argv)<2:
+        print("usage: ts18-summarise-evidence-pack.py <pack_dir>")
+        return 1
+    pack=Path(sys.argv[1]); raw=pack/"raw"; derived=pack/"derived"; derived.mkdir(exist_ok=True)
+    files={k:raw/f"{k}.txt" for k in ["media_session","notification","audio","appwidget","shortcut","activity"]}
+    text={k:read(v) for k,v in files.items()}
+    missing=[k for k,v in files.items() if not v.exists()]
+
+    signals={
+      "auxio_in_media_session": has_any(text["media_session"],"org.oxycblt.auxio"),
+      "metadata_fields_present": all(has_any(text["media_session"],k) for k in ["title","artist","album"]),
+      "playback_state_present": has_any(text["media_session"],"state=","playbackstate"),
+      "auxio_notification_present": has_any(text["notification"],"org.oxycblt.auxio"),
+      "notification_media_controls_present": has_any(text["notification"],"play","pause","next","previous"),
+      "widget_reference_present": has_any(text["appwidget"],"auxio","widget"),
+      "shortcut_reference_present": has_any(text["shortcut"],"auxio","shortcut"),
+      "audio_focus_reference_present": has_any(text["audio"],"org.oxycblt.auxio","focus"),
+      "open_actions_attempted": (raw/"action_open_now_playing.txt").exists() and (raw/"action_open_queue.txt").exists(),
+    }
+
+    def status(flag): return "pass" if flag else "requires manual review"
+    scenario_results={s:{"status":"not captured","confidence":"Requires TS18 validation","portingDecision":"Requires TS18 runtime validation","nativeInvestigationCandidate":False,"notes":"No scenario-specific parser yet."} for s in SCENARIOS}
+    scenario_results["TS18-STD-001"]["status"]=status(signals["auxio_in_media_session"] and signals["metadata_fields_present"])
+    scenario_results["TS18-STD-002"]["status"]=status(signals["auxio_notification_present"] and signals["notification_media_controls_present"])
+    scenario_results["TS18-STD-003"]["status"]= "blocked" if not signals["open_actions_attempted"] else "requires manual review"
+    scenario_results["TS18-STD-011"]["status"]=status(signals["widget_reference_present"])
+    if (signals["auxio_in_media_session"] and signals["auxio_notification_present"] and not signals["widget_reference_present"]):
+        scenario_results["TS18-STD-011"]["nativeInvestigationCandidate"]=True
+        scenario_results["TS18-STD-011"]["notes"]="Widget signal absent despite core media signals; manual parity investigation candidate."
+
+    (derived/"scenario-results.json").write_text(json.dumps({"missingFiles":missing,"signals":signals,"scenarioResults":scenario_results},indent=2))
+    (derived/"validation-summary.md").write_text("\n".join([
+      "# TS18 Validation Summary",
+      f"- Missing files: {', '.join(missing) if missing else 'none'}",
+      *[f"- {k}: {'Observed' if v else 'Requires manual review'}" for k,v in signals.items()]
+    ]))
+    gaps=[k for k,v in scenario_results.items() if v["status"] in {"fail","blocked","requires manual review","not captured"}]
+    (derived/"parity-gap-candidates.md").write_text("# Parity Gap Candidates\n"+"\n".join([f"- {g}" for g in gaps]))
+    return 0
+
+if __name__=="__main__":
+    raise SystemExit(main())

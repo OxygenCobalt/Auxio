@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TS18 Evidence Manifest",
+  "type": "object",
+  "required": ["deviceLabel","captureTimestampUtc","scenarioIdsAttempted","redactionStatus"],
+  "properties": {
+    "deviceLabel": {"type":"string"},
+    "deviceFingerprint": {"type":"string"},
+    "firmwareThemeLabel": {"type":"string"},
+    "auxioBuild": {"type":"string"},
+    "captureTimestampUtc": {"type":"string"},
+    "scenarioIdsAttempted": {"type":"array","items":{"type":"string","pattern":"^TS18-STD-(00[1-9]|01[0-7])$"}},
+    "redactionStatus": {"type":"string"},
+    "scenarioEvidence": {"type":"array"}
+  }
+}

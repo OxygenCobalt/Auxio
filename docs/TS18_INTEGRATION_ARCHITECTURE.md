@@ -38,3 +38,8 @@ Auxio core
 2. Validate on TS18 with runbook scenarios.
 3. If a repeatable gap remains, draft one explicit compatibility feature PR.
 4. Land only the minimal feature needed for that validated gap.
+
+## Tier 2 -> Tier 3 gate
+Tier 2 evidence import and parity-gap analysis are required before any native/private investigation. Evidence alone does not permit Tier 4 production integration.
+
+Tier pipeline: Tier 0 evidence -> Tier 1 implementation -> Tier 2 evidence pack + summariser -> parity proposal -> Tier 3 candidate drafts (non-production) -> future approved Tier 4 design PR.

@@ -128,3 +128,10 @@ Per scenario include:
 - confidence (must be one of the allowed confidence labels above)
 - porting decision (must be one of the allowed porting decision labels above)
 - unresolved risk and next action
+
+## Evidence-pack workflow (Phase 5G/6A)
+Use `scripts/ts18-create-evidence-pack.sh` to create timestamped packs under `docs/evidence/ts18/`.
+Then run `python3 scripts/ts18-summarise-evidence-pack.py <pack_dir>` and `python3 scripts/ts18-propose-gap-matrix-update.py <pack_dir>`.
+Tier 3 experiments must remain external or isolated until explicitly approved.
+
+Use `bash scripts/ts18-evidence-workflow.sh --help` for end-to-end execution modes.

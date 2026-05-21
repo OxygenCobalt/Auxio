@@ -17,3 +17,11 @@ One primary variable per PR.
 - No in-app runtime TW probe frameworks.
 - No vendor-private bindings without explicit feature design.
 - No package impersonation or privileged UID assumptions.
+
+## Phase 5G/6A evidence workflow
+- Capture evidence packs with `scripts/ts18-create-evidence-pack.sh`.
+- Summarise with `scripts/ts18-summarise-evidence-pack.py`.
+- Generate matrix proposals with `scripts/ts18-propose-gap-matrix-update.py`.
+- Tier 2 validation does not authorize Tier 4 production native/private code.
+
+| 6A | Parity matrix + candidate generation from evidence | Matrix proposal + conservative Tier 3 draft candidates |

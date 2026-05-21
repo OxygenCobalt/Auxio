@@ -39,3 +39,10 @@ Start here for all TS18/TW/TWTHEME work.
 - Repo authority: `../AGENTS.md`
 - Copilot/Codex policy: `../.github/copilot-instructions.md`
 - Codex environment setup/maintenance/validation: `codex/README.md`
+
+- `TS18_NATIVE_PARITY_GAP_MATRIX.md`
+- `TS18_HARDWARE_VALIDATION_CHECKLIST.md`
+
+- `TS18_STOCK_TMUSIC_PARITY_LEDGER.md`
+- `TS18_NATIVE_CONTRACT_INVENTORY.md`
+- `evidence/ts18/README.md`

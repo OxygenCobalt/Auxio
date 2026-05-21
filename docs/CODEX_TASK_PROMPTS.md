@@ -32,3 +32,8 @@ Always start from `docs/README.md`.
 - Vendor-service binder scaffolding without explicit approved design.
 - Package impersonation (`com.tw.music`) or `android.uid.system`/`sharedUserId` assumptions.
 - Copied decompiled smali in product code.
+
+## Phase 5G/6A Codex task scope
+Implement evidence-pack capture, summariser, and parity-gap proposal tooling first. Do not add production private hooks without approved Tier 3 candidate template evidence.
+
+- Use `scripts/ts18-evidence-workflow.sh` as the single orchestration entry point for Phase 5G/6A.
