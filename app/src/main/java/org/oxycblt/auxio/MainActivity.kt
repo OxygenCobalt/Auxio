@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent)
         startIntentAction(intent)
     }
 
@@ -162,6 +163,7 @@ class MainActivity : AppCompatActivity() {
             }
             else -> {
                 intent.putExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION, destination.name)
+                setIntent(intent)
                 L.d("Mapped deep-link action to destination $destination")
             }
         }
