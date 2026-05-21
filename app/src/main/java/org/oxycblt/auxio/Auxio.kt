@@ -19,14 +19,13 @@
 package org.oxycblt.auxio
 
 import android.app.Application
-import android.content.Intent
 import androidx.core.content.pm.ShortcutManagerCompat
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
+import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.CopyleftNoticeTree
 import timber.log.Timber
@@ -62,5 +61,4 @@ class Auxio : Application() {
         homeSettings.migrate()
         ShortcutManagerCompat.setDynamicShortcuts(this, HeadUnitEntryPoints.createDynamicShortcuts(this))
     }
-
 }

@@ -17,3 +17,7 @@ One primary variable per PR.
 - No in-app runtime TW probe frameworks.
 - No vendor-private bindings without explicit feature design.
 - No package impersonation or privileged UID assumptions.
+
+- TS18-STD-010..017 track launcher shortcut + widget routing/readability validation (see TS18_VALIDATION_RUNBOOK).
+
+- Track Tier 1 vs TS18 runtime parity gaps in `TS18_NATIVE_PARITY_GAP_MATRIX.md` before any native-contract promotion.

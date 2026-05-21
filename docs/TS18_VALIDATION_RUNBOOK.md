@@ -20,6 +20,7 @@ Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources 
 - `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 - `docs/TS18_REQUIREMENTS.md`
 - `docs/TS18_INTEGRATION_ARCHITECTURE.md`
+- `docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`
 - `docs/TS18_NATIVE_CONTRACTS.md`
 
 ## Optional evidence helper
@@ -129,19 +130,66 @@ Per scenario include:
 - porting decision (must be one of the allowed porting decision labels above)
 - unresolved risk and next action
 
+### TS18-STD-010: Launcher shortcuts open correct Auxio surfaces
+- **Setup:** Auxio installed, launcher supports app shortcuts.
+- **Steps / commands:** `adb shell dumpsys shortcut`; launch shortcut intents for Shuffle All and Queue.
+- **Expected result:** Shuffle All starts shuffled playback; Queue opens queue surface.
+- **Evidence to capture:** `dumpsys shortcut`, screen capture, `dumpsys media_session`.
+- **Pass/fail criteria:** Fail if shortcut launches wrong surface or no-op.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
-### TS18-STD-010: Launcher shortcuts open Auxio entry points
-- **Setup:** Place Auxio on launcher supporting app shortcuts.
-- **Steps:** Long-press Auxio icon; trigger the published dynamic shortcuts (Now Playing, Shuffle, Queue, Recently added).
-- **Expected:** Each shortcut opens Auxio and routes to a sensible destination or safe fallback without crash.
-- **Evidence:** launcher capture + `adb shell dumpsys shortcut`.
-- **Pass/Fail:** Fail if shortcut is missing unexpectedly or causes crash.
+### TS18-STD-011: Now-playing widget shows metadata and controls playback
+- **Setup:** Place Auxio widget on launcher desktop.
+- **Steps / commands:** Start playback, observe title/artist and press prev/play-pause/next.
+- **Expected result:** Metadata updates and controls affect active MediaSession.
+- **Evidence to capture:** `adb shell dumpsys appwidget`, `adb shell dumpsys media_session`, screen recording.
+- **Pass/fail criteria:** Fail if controls do not change playback state.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
+
+### TS18-STD-012: TWTHEME/iLauncher desktop widget placement smoke test
+- **Setup:** TS18 launcher with widget host (iLauncher/TWTHEME style desktop).
+- **Steps / commands:** Add widget, resize where supported, rotate/restart launcher.
+- **Expected result:** Widget remains visible, readable, and responsive.
+- **Evidence to capture:** before/after screenshots and `adb shell dumpsys appwidget`.
+- **Pass/fail criteria:** Fail on placement crash or unusable render.
+- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
+
+### TS18-STD-013: Shortcut/widget behaviour after sleep/resume
+- **Setup:** Widget and shortcuts configured.
+- **Steps / commands:** Put device to sleep/wake; trigger shortcut and widget controls.
+- **Expected result:** Actions still route correctly and session state refreshes.
+- **Evidence to capture:** pre/post `dumpsys media_session`, `dumpsys notification`, launcher video.
+- **Pass/fail criteria:** Fail on stale or dead controls post-resume.
+- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
+
+### TS18-STD-014: Widget transport actions update MediaSession/notification state
+- **Setup:** Playback active and widget visible.
+- **Steps / commands:** Run `adb shell input keyevent KEYCODE_MEDIA_PLAY_PAUSE`, `KEYCODE_MEDIA_NEXT`, `KEYCODE_MEDIA_PREVIOUS` and use widget controls.
+- **Expected result:** MediaSession state and notification controls mirror widget-triggered actions.
+- **Evidence to capture:** `adb shell dumpsys media_session`, `adb shell dumpsys notification --noredact` before/after.
+- **Pass/fail criteria:** Fail if session/notification lags or diverges.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
+
+### TS18-STD-015: TWTHEME/iLauncher readability at 1024x600-class layouts
+- **Setup:** 1024x600-class display mode.
+- **Steps / commands:** Inspect widget title/artist text and transport hit targets.
+- **Expected result:** Text is legible and controls are touchable from driver distance.
+- **Evidence to capture:** launcher photos/screenshots.
+- **Pass/fail criteria:** Fail if text is clipped/illegible or buttons are too small.
 - **Confidence / Porting decision:** Requires TS18 validation / Reusable validation idea.
 
-### TS18-STD-011: Widget playback controls and metadata parity
-- **Setup:** Place Auxio widget on launcher desktop.
-- **Steps:** Start playback, use widget play/pause/next/prev, compare with notification/session state.
-- **Expected:** Widget transport controls remain functional and metadata stays coherent with session state.
-- **Evidence:** screen recording + `adb shell dumpsys appwidget` + `adb shell dumpsys media_session`.
-- **Pass/Fail:** Fail on stale controls/metadata or app crash.
-- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
+### TS18-STD-016: Warm-start launcher/deep-link routing works through onNewIntent
+- **Setup:** Auxio already running in background.
+- **Steps / commands:** `adb shell am start -n org.oxycblt.auxio/.MainActivity -a org.oxycblt.auxio.action.OPEN_NOW_PLAYING`; repeat with `.action.OPEN_QUEUE`.
+- **Expected result:** Now playing/queue surfaces open immediately without requiring fragment resume cycle.
+- **Evidence to capture:** screen recording + `adb shell dumpsys activity activities` excerpt.
+- **Pass/fail criteria:** Fail if intent accepted but destination not opened.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
+
+### TS18-STD-017: Queue shortcut opens queue, not generic playback surface
+- **Setup:** Queue shortcut published.
+- **Steps / commands:** Trigger queue shortcut from launcher.
+- **Expected result:** Queue view opens (`openQueue` path), not generic playback panel.
+- **Evidence to capture:** UI capture + optional debug logs.
+- **Pass/fail criteria:** Fail if routed to playback panel instead of queue.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
