@@ -88,7 +88,7 @@ jobs:
           done
 
           grep -Fq '| 5A | Source-led integration strategy correction |' docs/DEVELOPMENT_ROADMAP.md
-          grep -Fq '| 6+ | Explicit compatibility features only when justified |' docs/DEVELOPMENT_ROADMAP.md
+          grep -Fq '| 6A | Populate TS18 Native Parity Gap Matrix from hardware evidence' docs/DEVELOPMENT_ROADMAP.md
           grep -Fq '## Related canonical docs' docs/TS18_VALIDATION_RUNBOOK.md
 
       - name: Validate source-led policy presence

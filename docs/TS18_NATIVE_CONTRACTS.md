@@ -2,6 +2,8 @@
 
 Use canonical labels from `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
 
+> **Tier 3/4 framing:** Contracts in this catalog are Tier 0 evidence items. They inform the parity gap matrix and define what native/private investigation would look like at Tier 3/4. **Current production code does not implement any of these contracts.** A contract may only enter production (Tier 4) after an explicit human-approved design PR meeting all 8 eligibility criteria. See [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy).
+
 ## Contract table
 
 | Contract | Evidence basis | Confidence | Porting decision | Current policy |
@@ -25,4 +27,4 @@ Use canonical labels from `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`.
 | `com.zjinnova.android.zlink.features.broadcast.MediaButtonReceiver` | diagnostics (restored media button receiver) | Observed | Requires TS18 runtime validation | Known to be active as media button receiver at capture time; validate media key routing via standard APIs first. |
 | iLauncher (`com.cml.ilauncher` or similar) | iLauncher website + XDA iLauncher TS18 fix thread | Hypothesis | Requires TS18 runtime validation | Launcher replacement that may affect widget/image display; validate metadata quality first. |
 | `com.tw.radio` / `com.tw.bt` / `com.tw.eq` / `com.tw.video` | diagnostics (system priv-app packages) | Observed | Useful as evidence only | System app co-tenancy context; no direct coupling to these packages. |
-| Vendor service or TW-private integration | mixed evidence | Inferred | Unsafe to port | Only after repeatable gap + feature design doc. |
+| Vendor service or TW-private integration | mixed evidence | Inferred | Unsafe to port | Not for production by default. Requires Tier 2 validated parity gap and Tier 4 human-approved design PR before any production use. |

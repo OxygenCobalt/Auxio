@@ -4,9 +4,9 @@
 
 TS18/TW/TWTHEME work must begin with the curated TS18/Topway/DoFun/TW source corpus and battle-tested public head-unit projects.
 
-Android/Media3 standards remain the baseline implementation authority, but they are not enough to answer TS18/TWTHEME-specific questions. For TS18-specific behaviour, agents must first search and classify TS18/TW/TWTHEME ecosystem sources before proposing implementation or validation changes.
+Android/Media3 standards are the Tier 1 implementation baseline. They are the preferred first implementation path but are not the final authority for TS18/TWTHEME-specific questions. For TS18-specific behaviour, agents must first search and classify TS18/TW/TWTHEME ecosystem sources before proposing implementation or validation changes.
 
-This strategy exists because TS18/TW/TWTHEME evidence is fragmented across public repos, firmware/tooling pages, DoFun/iLauncher ecosystem material, XDA threads, and local `t-music` evidence. Official Android/Media3/car/audio docs are the assumed baseline implementation authority and remain available; this document focuses on the harder-to-find TS18/TW/TWTHEME corpus.
+This strategy exists because TS18/TW/TWTHEME evidence is fragmented across public repos, firmware/tooling pages, DoFun/iLauncher ecosystem material, XDA threads, and local `t-music` evidence. Official Android/Media3/car/audio docs are the Tier 1 implementation guidance and remain the preferred first implementation path; this document focuses on the harder-to-find TS18/TW/TWTHEME corpus that defines the actual parity target. Android-standard implementation alone is not assumed to equal TS18-native parity.
 
 Probe/diagnostics-driven work is secondary. It is allowed only when:
 - the user provides fresh diagnostics;
@@ -54,12 +54,15 @@ Priority 5: New probes/diagnostics
 - It weakens long-term maintainability of a clean Auxio fork.
 
 ## Source-led development principles
-1. **Android docs are implementation authority** for media/session/library/car/audio-focus behavior.
-2. **TS18/TW/TWTHEME ecosystem sources are the first resort** for TS18-specific behaviour questions.
+1. **Android docs are Tier 1 implementation guidance** for media/session/library/car/audio-focus behavior. They are the preferred first implementation path, not the final authority. TS18/TWTHEME parity is the acceptance target.
+2. **TS18/TW/TWTHEME ecosystem sources are the first resort** for TS18-specific behaviour questions. They define the parity target.
 3. **Public head-unit projects are architecture references**, not direct implementation templates.
-4. **`t-music` snapshot is evidence**, not app code to port.
-5. **TS18 runtime testing is acceptance validation**, not justification for speculative in-app probes.
+4. **`t-music` snapshot is Tier 0 evidence**, not app code to port.
+5. **TS18 runtime testing is Tier 2 acceptance validation**, not justification for speculative in-app probes. Android-standard success does not automatically equal TS18-native parity.
 6. **One explicit compatibility feature per PR** after source + runtime evidence justifies it.
+7. **Native/private contracts require the formal gap-and-promotion process** (Tier 2 validated gap → Tier 3 investigation → Tier 4 human-approved design PR). They are not permanently out of scope, but they are not production work by default.
+
+See canonical tier model: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy)
 
 ## Canonical evidence taxonomy for TS18/TW/TWTHEME claims
 
@@ -177,9 +180,9 @@ These prove that TW private framework classes and serial/hardware command patter
 | t-music evidence snapshot | `docs/evidence/t-music-snapshot/` | local evidence corpus | Stock/private contracts and behaviors; manifest; actions; vendor hooks; runbook patterns; `com.tw.music.action.*`; `com.tw.service.xt` coupling; UID 1000 model | Private contracts and assumptions used by stock app are documented | Strong source for parity hypotheses and risk matrix | Mandatory third-party Auxio-TS implementation requirements | Use as evidence + validation checklist, not code source; do not port smali | Observed | Useful as evidence only | Proprietary snapshot; do not port smali or copy |
 | Auxio-TS TS18 diagnostics | `diagnostics/redacted/ts18_device_profile.json` | local device evidence | Target package/theme environment markers: `com.tw.*`, `com.zjinnova.zlink`, TWTHEME artifacts; UID 1000 for `com.tw.music`; ZLink as active phone-link app | Target device ecosystem is package-rich and TW-private; diagnostics confirm TWTHEME/iLauncher coexistence | Priorities acceptance scenarios and risk ranking | Causal proof of needed code changes | Use to prioritize test scenarios and feature proposals | Observed | Reusable validation idea | Redacted evidence; no raw identifiers to commit |
 
-### Android standard baseline (assumed authority — secondary for TS18-specific questions)
+### Android standard baseline (Tier 1 implementation — secondary for TS18-specific questions)
 
-> Official Android/Media3/car/audio docs are the assumed baseline implementation authority and remain available. This section is compact and secondary because standard docs are well-known; the TS18/TW/TWTHEME corpus above is the harder-to-find knowledge this document exists to capture.
+> Official Android/Media3/car/audio docs are the Tier 1 implementation guidance and remain available. This section is compact and secondary because standard docs are well-known; the TS18/TW/TWTHEME corpus above is the harder-to-find knowledge this document exists to capture. Completing Tier 1 implementation does not guarantee TS18 parity; on-device Tier 2 validation is required.
 
 | Source name | URL | Source class | What it proves | Auxio-TS implication | Confidence | Porting decision |
 |---|---|---|---|---|---|---|
