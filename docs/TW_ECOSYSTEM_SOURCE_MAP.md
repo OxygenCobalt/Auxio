@@ -78,4 +78,3 @@ Priority 5: New probes/diagnostics (last resort; external only)
   Confidence: **Hypothesis**; Porting decision: **Reusable validation idea**.
 - iLauncher may expose widget image-display paths that depend on metadata quality beyond standard MediaSession.
   Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
-
