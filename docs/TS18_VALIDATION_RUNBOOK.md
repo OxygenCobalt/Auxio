@@ -132,7 +132,7 @@ Per scenario include:
 
 ### TS18-STD-010: Launcher shortcuts open Auxio entry points
 - **Setup:** Place Auxio on launcher supporting app shortcuts.
-- **Steps:** Long-press Auxio icon; trigger Now Playing/Shuffle/Queue/Genres/Artists/Albums/Favourites/Head-unit settings entries.
+- **Steps:** Long-press Auxio icon; trigger the published dynamic shortcuts (Now Playing, Shuffle, Queue, Recently added).
 - **Expected:** Each shortcut opens Auxio and routes to a sensible destination or safe fallback without crash.
 - **Evidence:** launcher capture + `adb shell dumpsys shortcut`.
 - **Pass/Fail:** Fail if shortcut is missing unexpectedly or causes crash.

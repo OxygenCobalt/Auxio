@@ -3,6 +3,7 @@ package org.oxycblt.auxio.headunit
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
@@ -47,32 +48,80 @@ object HeadUnitEntryPoints {
             else -> null
         }
 
+    internal fun publishedDynamicShortcutIds(maxShortcutCount: Int): List<String> =
+        dynamicShortcutSpecs(maxShortcutCount).map { it.id }
+
     fun createDynamicShortcuts(context: Context): List<ShortcutInfoCompat> {
-        val icon = IconCompat.createWithResource(context, R.drawable.ic_auxio_24)
-        return listOf(
-            shortcut(context, "shortcut_now_playing", R.string.lbl_playback, ACTION_OPEN_NOW_PLAYING, icon),
-            shortcut(context, "shortcut_shuffle", R.string.lbl_shuffle_shortcut_long, ACTION_SHUFFLE_ALL, icon),
-            shortcut(context, "shortcut_queue", R.string.lbl_queue, ACTION_OPEN_QUEUE, icon),
-            shortcut(context, "shortcut_recently_added", R.string.lbl_recently_added, ACTION_OPEN_RECENTLY_ADDED, icon),
-            shortcut(context, "shortcut_genres", R.string.lbl_genres, ACTION_OPEN_GENRES, icon),
-            shortcut(context, "shortcut_artists", R.string.lbl_artists, ACTION_OPEN_ARTISTS, icon),
-            shortcut(context, "shortcut_albums", R.string.lbl_albums, ACTION_OPEN_ALBUMS, icon),
-            shortcut(context, "shortcut_favourites", R.string.lbl_favourites, ACTION_OPEN_FAVOURITES, icon),
-            shortcut(context, "shortcut_head_unit_settings", R.string.set_head_unit_title, ACTION_OPEN_HEAD_UNIT_SETTINGS, icon),
-        )
+        val maxShortcutCount = ShortcutManagerCompat.getMaxShortcutCountPerActivity(context)
+        return dynamicShortcutSpecs(maxShortcutCount).map { spec ->
+            shortcut(
+                context = context,
+                id = spec.id,
+                shortLabelRes = spec.shortLabelRes,
+                longLabelRes = spec.longLabelRes,
+                action = spec.action,
+                icon = IconCompat.createWithResource(context, spec.iconRes),
+            )
+        }
+    }
+
+    private fun dynamicShortcutSpecs(maxShortcutCount: Int): List<ShortcutSpec> {
+        val cappedCount = maxShortcutCount.coerceAtLeast(0)
+        return PRIORITIZED_DYNAMIC_SHORTCUTS.take(cappedCount)
     }
 
     private fun shortcut(
         context: Context,
         id: String,
-        labelRes: Int,
+        shortLabelRes: Int,
+        longLabelRes: Int,
         action: String,
         icon: IconCompat,
     ): ShortcutInfoCompat =
         ShortcutInfoCompat.Builder(context, id)
-            .setShortLabel(context.getString(labelRes))
-            .setLongLabel(context.getString(labelRes))
+            .setShortLabel(context.getString(shortLabelRes))
+            .setLongLabel(context.getString(longLabelRes))
             .setIcon(icon)
             .setIntent(Intent(context, MainActivity::class.java).setAction(action))
             .build()
+
+    private data class ShortcutSpec(
+        val id: String,
+        val shortLabelRes: Int,
+        val longLabelRes: Int,
+        val action: String,
+        val iconRes: Int,
+    )
+
+    private val PRIORITIZED_DYNAMIC_SHORTCUTS =
+        listOf(
+            ShortcutSpec(
+                id = "shortcut_now_playing",
+                shortLabelRes = R.string.lbl_playback,
+                longLabelRes = R.string.lbl_playback,
+                action = ACTION_OPEN_NOW_PLAYING,
+                iconRes = R.drawable.ic_play_24,
+            ),
+            ShortcutSpec(
+                id = "shortcut_shuffle",
+                shortLabelRes = R.string.lbl_shuffle_shortcut_short,
+                longLabelRes = R.string.lbl_shuffle_shortcut_long,
+                action = ACTION_SHUFFLE_ALL,
+                iconRes = R.drawable.ic_shortcut_shuffle_24,
+            ),
+            ShortcutSpec(
+                id = "shortcut_queue",
+                shortLabelRes = R.string.lbl_queue,
+                longLabelRes = R.string.lbl_queue,
+                action = ACTION_OPEN_QUEUE,
+                iconRes = R.drawable.ic_queue_add_24,
+            ),
+            ShortcutSpec(
+                id = "shortcut_recently_added",
+                shortLabelRes = R.string.lbl_recently_added,
+                longLabelRes = R.string.lbl_recently_added,
+                action = ACTION_OPEN_RECENTLY_ADDED,
+                iconRes = R.drawable.ic_time_24,
+            ),
+        )
 }

@@ -51,6 +51,7 @@ import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.headunit.FAVOURITES_PLAYLIST_NAME
+import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.headunit.HeadUnitQuickAccess
 import org.oxycblt.auxio.headunit.QuickPickAction
 import org.oxycblt.auxio.home.tabs.NamedTabStrategy
@@ -112,6 +113,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
 
     override fun getSelectionToolbar(binding: FragmentHomeBinding) = binding.homeSelectionToolbar
+
+    override fun onResume() {
+        super.onResume()
+        handleEntryDestination()
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
@@ -214,6 +220,30 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             }
             binding.homeQuickPicks.addView(chip)
             }
+    }
+
+    private fun handleEntryDestination() {
+        val activityIntent = activity?.intent ?: return
+        val destinationName =
+            activityIntent.getStringExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION) ?: return
+        activityIntent.removeExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION)
+
+        val destination =
+            HeadUnitEntryPoints.EntryDestination.entries.firstOrNull {
+                it.name == destinationName
+            } ?: return
+
+        when (destination) {
+            HeadUnitEntryPoints.EntryDestination.NOW_PLAYING -> playbackModel.openPlayback()
+            HeadUnitEntryPoints.EntryDestination.QUEUE -> playbackModel.openPlayback()
+            HeadUnitEntryPoints.EntryDestination.RECENTLY_ADDED -> openRecentlyAdded()
+            HeadUnitEntryPoints.EntryDestination.GENRES -> openTab(MusicType.GENRES)
+            HeadUnitEntryPoints.EntryDestination.ARTISTS -> openTab(MusicType.ARTISTS)
+            HeadUnitEntryPoints.EntryDestination.ALBUMS -> openTab(MusicType.ALBUMS)
+            HeadUnitEntryPoints.EntryDestination.FAVOURITES ->
+                favouritesPlaylist?.let { detailModel.showPlaylist(it) } ?: openTab(MusicType.PLAYLISTS)
+            HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS -> homeModel.showSettings()
+        }
     }
 
     private fun updateMetadataShortcuts(songs: List<Song>, genres: List<Genre>, playlists: List<Playlist>) {
