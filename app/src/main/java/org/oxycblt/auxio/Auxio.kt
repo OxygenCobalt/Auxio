@@ -59,6 +59,9 @@ class Auxio : Application() {
         playbackSettings.migrate()
         uiSettings.migrate()
         homeSettings.migrate()
-        ShortcutManagerCompat.setDynamicShortcuts(this, HeadUnitEntryPoints.createDynamicShortcuts(this))
+        ShortcutManagerCompat.setDynamicShortcuts(
+            this,
+            HeadUnitEntryPoints.createDynamicShortcuts(this),
+        )
     }
 }

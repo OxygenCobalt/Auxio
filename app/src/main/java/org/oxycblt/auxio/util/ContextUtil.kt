@@ -210,7 +210,8 @@ fun Context.newNowPlayingPendingIntent(): PendingIntent =
     PendingIntent.getActivity(
         this,
         IntegerTable.REQUEST_CODE + HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING.hashCode(),
-        Intent(this, MainActivity::class.java).setAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
+        Intent(this, MainActivity::class.java)
+                .setAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
         PendingIntent.FLAG_IMMUTABLE,
     )
 /**
