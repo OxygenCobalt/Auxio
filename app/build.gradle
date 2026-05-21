@@ -100,6 +100,9 @@ android {
         // Do not re-run lint on vendored media library submodule dependencies.
         // Media library lint issues are upstream concerns; only app sources are checked here.
         checkDependencies false
+        // app/lint.xml suppresses lint only for three vendored backport BottomSheet files.
+        // New issues in Auxio-owned source still fail CI.
+        lintConfig file("lint.xml")
     }
 }
 

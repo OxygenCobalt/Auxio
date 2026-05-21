@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lint configuration for the :app module.
+
+  VENDORED SOURCE SUPPRESSIONS
+  ─────────────────────────────
+  The files under app/src/main/java/com/google/android/material/ are vendored
+  backport copies of Google Material components included deliberately to back-
+  port BottomSheet behaviour to older API levels.  They are not Auxio project
+  code and are not expected to be lint-clean against current Android APIs.
+
+  The suppression is narrowed to the three vendored backport files that carry
+  the existing lint debt:
+    - BackportBottomSheetBehavior.java
+    - BackportBottomSheetDialog.java
+    - BackportBottomSheetDialogFragment.java
+  New lint issues outside these files still fail CI.
+
+  When the vendored copy is removed or replaced by an upstream library, this
+  suppression entry should be removed as well.
+-->
+<lint>
+    <issue id="all">
+        <ignore path="**/com/google/android/material/bottomsheet/BackportBottomSheetBehavior.java" />
+        <ignore path="**/com/google/android/material/bottomsheet/BackportBottomSheetDialog.java" />
+        <ignore path="**/com/google/android/material/bottomsheet/BackportBottomSheetDialogFragment.java" />
+    </issue>
+</lint>
