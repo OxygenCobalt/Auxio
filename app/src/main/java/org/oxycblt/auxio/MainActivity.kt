@@ -30,6 +30,7 @@ import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.databinding.ActivityMainBinding
+import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.ui.UISettings
@@ -142,8 +143,17 @@ class MainActivity : AppCompatActivity() {
         val action =
             when (intent.action) {
                 Intent.ACTION_VIEW -> DeferredPlayback.Open(intent.data ?: return false)
-                Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> DeferredPlayback.ShuffleAll
+                HeadUnitEntryPoints.ACTION_SHUFFLE_ALL -> DeferredPlayback.ShuffleAll
                 else -> {
+                    val destination = HeadUnitEntryPoints.destinationForAction(intent.action)
+                    if (destination != null) {
+                        intent.putExtra(
+                            HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION,
+                            destination.name,
+                        )
+                        L.d("Mapped deep-link action to destination $destination")
+                        return true
+                    }
                     L.w("Unexpected intent ${intent.action}")
                     return false
                 }
