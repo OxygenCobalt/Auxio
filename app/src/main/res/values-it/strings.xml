@@ -348,4 +348,5 @@
         <item quantity="many">%d secondi</item>
         <item quantity="other">%d secondi</item>
     </plurals>
+    <string name="set_task_exit">Esci sempre alla chiusura</string>
 </resources>
