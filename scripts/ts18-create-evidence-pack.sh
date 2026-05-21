@@ -12,6 +12,8 @@ DEVICE_LABEL="ts18-device"
 FIRMWARE_LABEL="unknown"
 AUXIO_BUILD="unknown"
 INCLUDE_ECOSYSTEM_CONTEXT="false"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+SCENARIO_MAP="${SCRIPT_DIR}/../docs/templates/TS18_VALIDATION_SCENARIO_MAP.json"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -45,12 +47,12 @@ cat > "${PACK_DIR}/README.md" <<README
 This pack is Tier 2 validation evidence only.
 README
 
-json_array="$(python3 - <<'PY'
+json_array="$(python3 - "$SCENARIO_MAP" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-map_file = Path("docs/templates/TS18_VALIDATION_SCENARIO_MAP.json")
+map_file = Path(sys.argv[1]).resolve()
 expected = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
 scenarios = [item.get("id") for item in json.loads(map_file.read_text()).get("scenarios", [])]
 if len(set(scenarios)) != len(scenarios) or sorted(scenarios) != expected:

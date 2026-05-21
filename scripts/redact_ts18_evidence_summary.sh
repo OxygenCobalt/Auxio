@@ -5,7 +5,7 @@ OUT="${2:-ts18-redacted-pack}"
 [ -d "$IN" ] || { echo "Missing input dir: $IN" >&2; exit 1; }
 rm -rf "$OUT"
 mkdir -p "$OUT"
-cp -R "$IN/." "$OUT"
+(cd "$IN" && tar -cf - .) | (cd "$OUT" && tar -xf -)
 
 python3 - "$OUT" <<'PY'
 import re

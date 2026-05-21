@@ -8,7 +8,12 @@ EXPECTED_SCENARIOS = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
 
 
 def load_scenarios() -> list[str]:
-    data = json.loads(MAP_FILE.read_text())
+    try:
+        data = json.loads(MAP_FILE.read_text())
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Scenario map is invalid JSON: {exc}") from exc
+    if "scenarios" not in data or not isinstance(data["scenarios"], list):
+        raise ValueError("Scenario map must include a 'scenarios' array")
     scenarios = [s["id"] for s in data["scenarios"]]
     if len(set(scenarios)) != len(scenarios):
         raise ValueError("Scenario map contains duplicate scenario IDs")
