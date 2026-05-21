@@ -4,15 +4,31 @@
 - Start documentation navigation from `docs/README.md`.
 - For Codex environment setup/maintenance/validation flow, use `docs/codex/README.md`.
 - Prefer consolidation/removal of stale docs over keeping historical wrappers.
-- Auxio-TS is an Auxio fork; preserve upstream architecture.
+- **Auxio-TS is a TS18/TW/TWTHEME variant app.** TS18/TW/TWTHEME parity is the product target.
+- Android-standard APIs are the preferred **first implementation layer** (Tier 1), not the final authority.
 - Keep TS18/TW integration in adapter/facade boundaries.
 - Use `docs/evidence/t-music-snapshot/` as evidence only, not implementation source.
+- **Native/private contracts are NOT permanently out of scope.** They require the formal gap-and-promotion process (Tier 2 validated gap → Tier 3 investigation → Tier 4 design PR). Do NOT say "private/native is out of scope" — say "not for production by default; requires formal gap-and-promotion process."
+
+## TS18 Native Parity Tier Model
+
+See canonical definition: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](docs/TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy)
+
+| Tier | Name | Scope |
+|------|------|-------|
+| 0 | Evidence only | t-music snapshot, TWTHEME resources, diagnostics, public repos, firmware notes |
+| 1 | Android-standard implementation | MediaSession, MediaBrowser, notification, audio focus, media buttons, AppWidget, shortcuts |
+| 2 | TS18-aware validation | On-device evidence proving which TS18/TWTHEME surfaces see or ignore Tier 1 behaviour |
+| 3 | Isolated native experiments | External scripts or non-production branches testing specific TW/TWTHEME contracts |
+| 4 | Production native integration | Only via explicit human-approved design PR meeting all 8 production eligibility criteria |
+
+A production native integration (Tier 4) is only eligible after an explicit human-approved design PR proves: product need; evidence-backed contract; no package impersonation; no copied smali; no platform-signature/system-UID dependency; safe fallback; isolated implementation; validation and rollback path.
 
 ## TS18/TW/TWTHEME source-led policy
 
 TS18/TW/TWTHEME work must begin with the curated TS18/Topway/DoFun/TW source corpus and battle-tested public head-unit projects.
 
-Android/Media3 standards remain the baseline implementation authority, but they are not enough to answer TS18/TWTHEME-specific questions. For TS18-specific behaviour, agents must first search and classify TS18/TW/TWTHEME ecosystem sources before proposing implementation or validation changes.
+Android/Media3 standards are the Tier 1 implementation baseline. They are the preferred first implementation path but are not the final authority for TS18/TWTHEME-specific questions. For TS18-specific behaviour, agents must first search and classify TS18/TW/TWTHEME ecosystem sources before proposing implementation or validation changes.
 
 Probe/diagnostics-driven work is secondary. It is allowed only when:
 - the user provides fresh diagnostics;
@@ -72,15 +88,25 @@ For TS18/TW/TWTHEME claims, include both labels:
 - **Evidence confidence**: Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported
 - **Porting decision**: Directly reusable requirement / Reusable validation idea / Useful as evidence only / Obsolete due to Auxio architecture / Requires TS18 runtime validation / Unsafe to port / Should be explicitly avoided
 
+Always distinguish between: product requirement / Android-standard implementation / TS18 runtime validation / native-private investigation / production eligibility.
+
 ## Hard constraints
 - Do not change package identity to `com.tw.music`.
 - Do not require privileged/system UID or platform signing.
 - Do not copy decompiled smali into app code.
 - Do not spread TS18 conditionals through core playback/library code.
 - Do not claim TS18 compatibility without runtime evidence.
+- Do not add in-app probe frameworks or speculative default-off adapters.
+- Do not add TWUtil/TWClient reflection scanners or vendor package scanners.
+- Do not add vendor-service binders without an explicit approved design PR.
+- Do not add product-code calls to `com.tw.music.action.*`.
+- Do not add direct `com.tw.*` or `android.tw.john.*` imports in product code.
+- Do not add TWTHEME private-resource loaders or hidden diagnostics modules.
+- Do not say "private/native is permanently out of scope" — say "not for production by default; requires formal gap-and-promotion process".
 
 - Inspect full CI logs before proposing build fixes; do not diagnose from summary lines only.
 - Distinguish Codex environment limitations from GitHub Actions/Copilot runner failures.
+- Do not treat Codex environment build limitations as final CI proof; GitHub Actions/Copilot CI is the final workflow proof point.
 - Never claim tasks/build/test/lint success unless commands actually passed in this environment.
 ## Validation baseline
 Run or document blockers for:
@@ -102,12 +128,13 @@ bash ./scripts/prepare-ci-environment.sh
 
 This script (idempotent, safe to re-run) does everything in one step:
 1. Detects ZIP/snapshot environments and exits with `SNAPSHOT_LIMITATION`
-2. Runs `git submodule sync --recursive`
-3. Runs `git submodule update --init --recursive --jobs 4` (soft-fail for git.ffmpeg.org)
-4. Prints `git submodule status --recursive`
+2. **Fast-path**: if required submodule files are already present (e.g. workflow used
+   `submodules: recursive`), skips expensive `git submodule sync/update`.
+3. Otherwise runs `git submodule sync --recursive` then
+   `git submodule update --init --recursive --jobs 4` (soft-fail for git.ffmpeg.org)
+4. Creates `media/libraries/common_ktx/proguard-rules.txt` stub (`UPSTREAM_MEDIA_QUIRK`)
 5. Calls `bash ./scripts/check-submodules.sh` — validates all required paths
-6. Creates `media/libraries/common_ktx/proguard-rules.txt` stub (`UPSTREAM_MEDIA_QUIRK`)
-7. Verifies all required files exist; exits 0 only when Gradle is ready
+6. Verifies all required files exist; exits 0 only when Gradle is ready
 
 GitHub Actions (`android.yml`, `lint.yml`, `manual-release.yml`) call this script instead of
 duplicating the submodule sync/update/patch logic. Local and Codex builds run the same steps.
@@ -169,15 +196,24 @@ Do not try to work around this by copying submodule files manually.
 - The nested `ffmpeg` submodule resolves from `git.ffmpeg.org`, which is unreachable in this
   sandbox. `check-submodules.sh` reports this as `SUBMODULE_BLOCKER` with ffmpeg noted as the
   missing path. GitHub Actions CI handles ffmpeg initialization correctly with `fetch-depth: 0`.
+  **`fetch-depth: 0` is required** in `android.yml` and `lint.yml` because ffmpeg uses an
+  unadvertised object reference; shallow clones (`fetch-depth: 1`) break recursive submodule
+  init with "unadvertised object" errors.  Do not change `fetch-depth` to 1 for those workflows.
 - Local Gradle builds also fail in this sandbox because JetBrains JDK 21 toolchain downloads
   from `api.foojay.io` are unreachable (AGP plugin resolution fails).
 
 ### Quality workflow scoping
+- `spotlessCheck`, `testDebugUnitTest`, and `lintDebug` run as **separate sequential steps** in
+  `lint.yml` (fail-fast, no `--continue`). Formatting failure stops immediately; unit-test
+  failure stops before lint; lint failure uploads a report artifact.
 - `testDebugUnitTest` is scoped to `:app` and `:musikr` only. The media library test files
   have missing test-utility dependencies (after upstream "trim down module tree" commit) and
   will fail to compile if the bare `testDebugUnitTest` task is used.
-- `lintDebug` is scoped to `:app` only. `app/build.gradle` sets `lint { checkDependencies = false }`
+- `lintDebug` is scoped to `:app` only. `app/build.gradle` sets `checkDependencies = false`
   so the app lint report does not aggregate media library lint errors.
+- `app/lint.xml` suppresses all lint issues for the vendored Google Material backport package
+  (`**/com/google/android/material/**`).  New issues in Auxio-owned source still fail CI.
+- `:musikr lintDebug` can be added once musikr lint issues are resolved or baselined.
 
 ### CI audit methodology for agents
 - Fetch **full** job logs, not tails. The root error is always above the Gradle stack trace dump.

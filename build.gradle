@@ -38,6 +38,10 @@ plugins {
 spotless {
     kotlin {
         target "*/src/**/*.kt"
+        // Exclude vendored/backported third-party sources that are not Auxio project code.
+        // These files are intentionally included verbatim and must not be auto-reformatted.
+        // The same package path is excluded from Android lint via app/lint.xml.
+        targetExclude "**/com/google/android/material/**/*.kt"
         ktfmt().kotlinlangStyle()
         licenseHeaderFile("NOTICE")
     }

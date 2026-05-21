@@ -375,15 +375,8 @@ class WidgetProvider : AppWidgetProvider() {
         // a circular FAB when paused, and a squircle FAB when playing. This does require us
         // to disable the ripple animation sadly, as  it will glitch when this is used. The
         // shape change should act as a similar signal.
-        val icon: Int
-        val background: Int
-        if (state.isPlaying) {
-            icon = R.drawable.ic_pause_24
-            background = R.drawable.ui_remote_fab_container_playing
-        } else {
-            icon = R.drawable.ic_play_24
-            background = R.drawable.ui_remote_fab_container_paused
-        }
+        val icon = WidgetRenderState.playPauseIcon(state.isPlaying)
+        val background = WidgetRenderState.playPauseBackground(state.isPlaying)
 
         setImageViewResource(R.id.widget_play_pause, icon)
         setBackgroundResource(R.id.widget_play_pause, background)

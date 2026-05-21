@@ -16,11 +16,30 @@ Each scenario in this runbook is derived from at least one source in the canonic
 
 Validation starts from expected behaviours derived from TS18/TW/TWTHEME sources and local evidence. Do not design new in-app probes merely because a behaviour lacks fresh runtime proof. Only add external diagnostics when a source-led expectation cannot be validated otherwise.
 
+## Parity gap identification (what triggers Tier 3/4 investigation)
+
+A Tier 2 validation result is classified as a **parity gap** when:
+1. A runbook scenario above fails consistently across multiple test cycles.
+2. A comparable Tier 1 implementation is confirmed complete (i.e. the failure is not a Tier 1 bug).
+3. Comparable third-party apps (Spotify, Poweramp) succeed where Auxio-TS fails, suggesting a TS18/TWTHEME-specific issue.
+4. A plausible private/native contract exists in the Tier 0 evidence corpus that could explain the gap.
+
+When a parity gap is identified:
+- Document the gap in [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md) with observed evidence.
+- Update the "Remaining TS18/TWTHEME validation" and "Native/private investigation needed?" columns.
+- Do **not** add native/private contract code to production without an explicit human-approved design PR (Tier 4).
+
+See [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy) for the full tier model and Tier 4 eligibility criteria.
+
+> **No hardware validation has been completed to date.** All scenario statuses are `Requires TS18 validation` until real-device evidence is captured and linked here.
+
 ## Related canonical docs
 - `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 - `docs/TS18_REQUIREMENTS.md`
 - `docs/TS18_INTEGRATION_ARCHITECTURE.md`
+- `docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`
 - `docs/TS18_NATIVE_CONTRACTS.md`
+- `docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`
 
 ## Optional evidence helper
 - Use `scripts/ts18-capture-media-state.sh [output_dir]` to capture timestamped `adb` snapshots for MediaSession/audio/notification before and after media key events.
@@ -129,9 +148,66 @@ Per scenario include:
 - porting decision (must be one of the allowed porting decision labels above)
 - unresolved risk and next action
 
-## Evidence-pack workflow (Phase 5G/6A)
-Use `scripts/ts18-create-evidence-pack.sh` to create timestamped packs under `docs/evidence/ts18/`.
-Then run `python3 scripts/ts18-summarise-evidence-pack.py <pack_dir>` and `python3 scripts/ts18-propose-gap-matrix-update.py <pack_dir>`.
-Tier 3 experiments must remain external or isolated until explicitly approved.
+### TS18-STD-010: Launcher shortcuts open correct Auxio surfaces
+- **Setup:** Auxio installed, launcher supports app shortcuts.
+- **Steps / commands:** `adb shell dumpsys shortcut`; launch shortcut intents for Shuffle All and Queue.
+- **Expected result:** Shuffle All starts shuffled playback; Queue opens queue surface.
+- **Evidence to capture:** `dumpsys shortcut`, screen capture, `dumpsys media_session`.
+- **Pass/fail criteria:** Fail if shortcut launches wrong surface or no-op.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
-Use `bash scripts/ts18-evidence-workflow.sh --help` for end-to-end execution modes.
+### TS18-STD-011: Now-playing widget shows metadata and controls playback
+- **Setup:** Place Auxio widget on launcher desktop.
+- **Steps / commands:** Start playback, observe title/artist and press prev/play-pause/next.
+- **Expected result:** Metadata updates and controls affect active MediaSession.
+- **Evidence to capture:** `adb shell dumpsys appwidget`, `adb shell dumpsys media_session`, screen recording.
+- **Pass/fail criteria:** Fail if controls do not change playback state.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
+
+### TS18-STD-012: TWTHEME/iLauncher desktop widget placement smoke test
+- **Setup:** TS18 launcher with widget host (iLauncher/TWTHEME style desktop).
+- **Steps / commands:** Add widget, resize where supported, rotate/restart launcher.
+- **Expected result:** Widget remains visible, readable, and responsive.
+- **Evidence to capture:** before/after screenshots and `adb shell dumpsys appwidget`.
+- **Pass/fail criteria:** Fail on placement crash or unusable render.
+- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
+
+### TS18-STD-013: Shortcut/widget behaviour after sleep/resume
+- **Setup:** Widget and shortcuts configured.
+- **Steps / commands:** Put device to sleep/wake; trigger shortcut and widget controls.
+- **Expected result:** Actions still route correctly and session state refreshes.
+- **Evidence to capture:** pre/post `dumpsys media_session`, `dumpsys notification`, launcher video.
+- **Pass/fail criteria:** Fail on stale or dead controls post-resume.
+- **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
+
+### TS18-STD-014: Widget transport actions update MediaSession/notification state
+- **Setup:** Playback active and widget visible.
+- **Steps / commands:** Run `adb shell input keyevent KEYCODE_MEDIA_PLAY_PAUSE`, `KEYCODE_MEDIA_NEXT`, `KEYCODE_MEDIA_PREVIOUS` and use widget controls.
+- **Expected result:** MediaSession state and notification controls mirror widget-triggered actions.
+- **Evidence to capture:** `adb shell dumpsys media_session`, `adb shell dumpsys notification --noredact` before/after.
+- **Pass/fail criteria:** Fail if session/notification lags or diverges.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
+
+### TS18-STD-015: TWTHEME/iLauncher readability at 1024x600-class layouts
+- **Setup:** 1024x600-class display mode.
+- **Steps / commands:** Inspect widget title/artist text and transport hit targets.
+- **Expected result:** Text is legible and controls are touchable from driver distance.
+- **Evidence to capture:** launcher photos/screenshots.
+- **Pass/fail criteria:** Fail if text is clipped/illegible or buttons are too small.
+- **Confidence / Porting decision:** Requires TS18 validation / Reusable validation idea.
+
+### TS18-STD-016: Warm-start launcher/deep-link routing works through onNewIntent
+- **Setup:** Auxio already running in background.
+- **Steps / commands:** `adb shell am start -n org.oxycblt.auxio/.MainActivity -a org.oxycblt.auxio.action.OPEN_NOW_PLAYING`; repeat with `.action.OPEN_QUEUE`.
+- **Expected result:** Now playing/queue surfaces open immediately without requiring fragment resume cycle.
+- **Evidence to capture:** screen recording + `adb shell dumpsys activity activities` excerpt.
+- **Pass/fail criteria:** Fail if intent accepted but destination not opened.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
+
+### TS18-STD-017: Queue shortcut opens queue, not generic playback surface
+- **Setup:** Queue shortcut published.
+- **Steps / commands:** Trigger queue shortcut from launcher.
+- **Expected result:** Queue view opens (`openQueue` path), not generic playback panel.
+- **Evidence to capture:** UI capture + optional debug logs.
+- **Pass/fail criteria:** Fail if routed to playback panel instead of queue.
+- **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.

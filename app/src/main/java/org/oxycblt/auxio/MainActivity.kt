@@ -30,6 +30,7 @@ import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.databinding.ActivityMainBinding
+import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.ui.UISettings
@@ -86,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent)
         startIntentAction(intent)
     }
 
@@ -142,14 +144,29 @@ class MainActivity : AppCompatActivity() {
         val action =
             when (intent.action) {
                 Intent.ACTION_VIEW -> DeferredPlayback.Open(intent.data ?: return false)
-                Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> DeferredPlayback.ShuffleAll
-                else -> {
-                    L.w("Unexpected intent ${intent.action}")
-                    return false
-                }
+                HeadUnitEntryPoints.ACTION_SHUFFLE_ALL -> DeferredPlayback.ShuffleAll
+                else -> null
             }
-        L.d("Translated intent to $action")
-        playbackModel.playDeferred(action)
+        if (action != null) {
+            L.d("Translated intent to $action")
+            playbackModel.playDeferred(action)
+            return true
+        }
+
+        val destination = HeadUnitEntryPoints.destinationForAction(intent.action)
+        when (destination) {
+            HeadUnitEntryPoints.EntryDestination.NOW_PLAYING -> playbackModel.openPlayback()
+            HeadUnitEntryPoints.EntryDestination.QUEUE -> playbackModel.openQueue()
+            null -> {
+                L.w("Unexpected intent ${intent.action}")
+                return false
+            }
+            else -> {
+                intent.putExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION, destination.name)
+                setIntent(intent)
+                L.d("Mapped deep-link action to destination $destination")
+            }
+        }
         return true
     }
 

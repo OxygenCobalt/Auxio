@@ -19,6 +19,8 @@ on:
       - 'gradlew.bat'
       - 'NOTICE'
       - 'eclipse-cdt.xml'
+      - 'scripts/prepare-ci-environment.sh'
+      - 'scripts/check-submodules.sh'
   pull_request:
     branches:
       - dev
@@ -37,11 +39,15 @@ on:
       - 'gradlew.bat'
       - 'NOTICE'
       - 'eclipse-cdt.xml'
+      - 'scripts/prepare-ci-environment.sh'
+      - 'scripts/check-submodules.sh'
 
 permissions:
   contents: read
 
 env:
+  # Force Node.js 20 actions to run on Node.js 24 while upstream action releases
+  # catch up.  Remove once setup-java and setup-gradle natively target Node 24.
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
@@ -57,6 +63,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+        # fetch-depth: 0 (full history) is required here.
+        # The nested ffmpeg submodule resolves from git.ffmpeg.org via an
+        # unadvertised object reference.  Shallow clones (fetch-depth: 1)
+        # cause "unadvertised object" fetch errors during recursive submodule
+        # init.  Full history ensures the referenced commit is always reachable.
         fetch-depth: 0
         submodules: recursive
     - name: Prepare CI environment
@@ -69,6 +80,9 @@ jobs:
         distribution: "temurin"
     - name: Set up Gradle
       uses: gradle/actions/setup-gradle@v4
+      with:
+        # PRs must not write to the shared Gradle cache; pushes to dev may write.
+        cache-read-only: ${{ github.event_name == 'pull_request' }}
     - name: Ensure native build tools are present
       run: |
         if ! command -v ninja >/dev/null 2>&1; then
@@ -78,8 +92,12 @@ jobs:
     - name: Build debug APK with Gradle
       run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
     - name: Upload debug APK artifact
+      # APK artifacts are only uploaded for non-PR runs (push to dev / release).
+      # Uploading on every PR run is wasteful and not needed for PR review.
       if: github.event_name != 'pull_request'
       uses: actions/upload-artifact@v4
       with:
         name: Auxio_Canary
         path: ./app/build/outputs/apk/debug/app-debug.apk
+        if-no-files-found: error
+        retention-days: 7

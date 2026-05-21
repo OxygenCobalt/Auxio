@@ -43,3 +43,5 @@ Use `scripts/ts18_collect_auxio_ts_evidence.sh` while:
 5. Auxio-TS is playing FLAC;
 6. Auxio-TS is paused with notification visible;
 7. ZLink/Android Auto is active if safe to test.
+
+> **Tier 0 evidence note:** This diagnostics file is Tier 0 evidence. It informs Tier 2 validation scenarios and the parity gap matrix. Diagnostics findings do not justify Tier 3/4 native contract work unless Tier 2 hardware validation confirms a specific parity gap. See [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md).

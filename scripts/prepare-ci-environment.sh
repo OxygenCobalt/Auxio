@@ -20,17 +20,34 @@ else
   exit 1
 fi
 
-echo "--- Syncing submodules ---"
-git submodule sync --recursive
+# Fast-path: if the required submodule files are already present (e.g. the
+# workflow checked out with 'submodules: recursive'), skip the expensive
+# git submodule sync/update cycle.  We still create the proguard stub and
+# run check-submodules.sh for final validation.
+_need_submodule_init=0
+for _f in "media/core_settings.gradle" "musikr/src/main/cpp/taglib/CMakeLists.txt"; do
+  if [[ ! -f "$_f" ]]; then
+    _need_submodule_init=1
+    echo "::notice::Missing $_f — submodule init required."
+    break
+  fi
+done
 
-echo "--- Updating submodules ---"
-if ! git submodule update --init --recursive --jobs 4; then
-  echo "::warning::SUBMODULE_BLOCKER: recursive submodule update reported failures."
-  echo "::warning::This is expected in restricted environments when git.ffmpeg.org is unreachable."
+if [[ "$_need_submodule_init" -eq 1 ]]; then
+  echo "--- Syncing submodules ---"
+  git submodule sync --recursive
+
+  echo "--- Updating submodules ---"
+  if ! git submodule update --init --recursive --jobs 4; then
+    echo "::warning::SUBMODULE_BLOCKER: recursive submodule update reported failures."
+    echo "::warning::This is expected in restricted environments when git.ffmpeg.org is unreachable."
+  fi
+
+  echo "--- git submodule status --recursive ---"
+  git submodule status --recursive || true
+else
+  echo "--- Submodule files already present (checkout used submodules: recursive) — skipping sync/update ---"
 fi
-
-echo "--- git submodule status --recursive ---"
-git submodule status --recursive || true
 
 if [[ ! -f media/libraries/common_ktx/proguard-rules.txt ]]; then
   mkdir -p media/libraries/common_ktx

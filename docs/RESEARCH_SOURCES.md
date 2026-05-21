@@ -33,11 +33,11 @@ For TS18/TWTHEME-specific questions, use this priority order:
 - Prefer external scripts/manual runbook steps.
 - Do not add speculative probe frameworks to product app code.
 
-## Android official docs (baseline implementation authority — not sufficient for TS18-specific questions)
+## Android official docs (Tier 1 implementation baseline — not the ceiling for TS18-specific questions)
 - Media3, MediaSession/notification, audio focus, foreground service, Android Auto/cars guidance.
 - Proves standard Android behavior and constraints.
 - Does not prove TW-private contracts.
-- Assumed accessible and authoritative for standard implementation; not the focus of TS18-specific research.
+- Tier 1: preferred first implementation layer; not sufficient alone for TS18/TWTHEME parity — Tier 2 on-device validation is required.
 
 ## Upstream Auxio source (highest architecture authority)
 - Proves current maintainable playback/library/service boundaries.
