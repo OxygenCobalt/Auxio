@@ -1,0 +1,11 @@
+# TS18 Validation Summary
+- Missing files: media_session, audio, appwidget, shortcut, activity
+- auxio_in_media_session: Requires manual review
+- metadata_fields_present: Requires manual review
+- playback_state_present: Requires manual review
+- auxio_notification_present: Observed
+- notification_media_controls_present: Observed
+- widget_reference_present: Requires manual review
+- shortcut_reference_present: Requires manual review
+- audio_focus_reference_present: Requires manual review
+- open_actions_attempted: Requires manual review
