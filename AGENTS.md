@@ -102,12 +102,13 @@ bash ./scripts/prepare-ci-environment.sh
 
 This script (idempotent, safe to re-run) does everything in one step:
 1. Detects ZIP/snapshot environments and exits with `SNAPSHOT_LIMITATION`
-2. Runs `git submodule sync --recursive`
-3. Runs `git submodule update --init --recursive --jobs 4` (soft-fail for git.ffmpeg.org)
-4. Prints `git submodule status --recursive`
+2. **Fast-path**: if required submodule files are already present (e.g. workflow used
+   `submodules: recursive`), skips expensive `git submodule sync/update`.
+3. Otherwise runs `git submodule sync --recursive` then
+   `git submodule update --init --recursive --jobs 4` (soft-fail for git.ffmpeg.org)
+4. Creates `media/libraries/common_ktx/proguard-rules.txt` stub (`UPSTREAM_MEDIA_QUIRK`)
 5. Calls `bash ./scripts/check-submodules.sh` — validates all required paths
-6. Creates `media/libraries/common_ktx/proguard-rules.txt` stub (`UPSTREAM_MEDIA_QUIRK`)
-7. Verifies all required files exist; exits 0 only when Gradle is ready
+6. Verifies all required files exist; exits 0 only when Gradle is ready
 
 GitHub Actions (`android.yml`, `lint.yml`, `manual-release.yml`) call this script instead of
 duplicating the submodule sync/update/patch logic. Local and Codex builds run the same steps.
@@ -169,15 +170,24 @@ Do not try to work around this by copying submodule files manually.
 - The nested `ffmpeg` submodule resolves from `git.ffmpeg.org`, which is unreachable in this
   sandbox. `check-submodules.sh` reports this as `SUBMODULE_BLOCKER` with ffmpeg noted as the
   missing path. GitHub Actions CI handles ffmpeg initialization correctly with `fetch-depth: 0`.
+  **`fetch-depth: 0` is required** in `android.yml` and `lint.yml` because ffmpeg uses an
+  unadvertised object reference; shallow clones (`fetch-depth: 1`) break recursive submodule
+  init with "unadvertised object" errors.  Do not change `fetch-depth` to 1 for those workflows.
 - Local Gradle builds also fail in this sandbox because JetBrains JDK 21 toolchain downloads
   from `api.foojay.io` are unreachable (AGP plugin resolution fails).
 
 ### Quality workflow scoping
+- `spotlessCheck`, `testDebugUnitTest`, and `lintDebug` run as **separate sequential steps** in
+  `lint.yml` (fail-fast, no `--continue`). Formatting failure stops immediately; unit-test
+  failure stops before lint; lint failure uploads a report artifact.
 - `testDebugUnitTest` is scoped to `:app` and `:musikr` only. The media library test files
   have missing test-utility dependencies (after upstream "trim down module tree" commit) and
   will fail to compile if the bare `testDebugUnitTest` task is used.
-- `lintDebug` is scoped to `:app` only. `app/build.gradle` sets `lint { checkDependencies = false }`
+- `lintDebug` is scoped to `:app` only. `app/build.gradle` sets `checkDependencies = false`
   so the app lint report does not aggregate media library lint errors.
+- `app/lint.xml` suppresses all lint issues for the vendored Google Material backport package
+  (`**/com/google/android/material/**`).  New issues in Auxio-owned source still fail CI.
+- `:musikr lintDebug` can be added once musikr lint issues are resolved or baselined.
 
 ### CI audit methodology for agents
 - Fetch **full** job logs, not tails. The root error is always above the Gradle stack trace dump.
