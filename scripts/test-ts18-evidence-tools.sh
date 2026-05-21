@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
+while IFS= read -r script; do
+  first_line="$(head -n 1 "$script" || true)"
+  case "$first_line" in
+    *bash*) bash -n "$script" ;;
+    *sh*) sh -n "$script" ;;
+    *) bash -n "$script" ;;
+  esac
+done < <(find scripts -type f -name '*.sh' | sort)
 python3 -m py_compile scripts/ts18-summarise-evidence-pack.py scripts/ts18-propose-gap-matrix-update.py scripts/ts18-generate-native-candidates.py
 python3 -m json.tool docs/templates/TS18_EVIDENCE_MANIFEST.schema.json >/dev/null
 python3 -m json.tool docs/templates/TS18_EVIDENCE_MANIFEST.example.json >/dev/null

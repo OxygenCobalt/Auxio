@@ -13,7 +13,13 @@ PACK=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --capture) MODE="capture"; shift;;
-    --summarise|--propose-matrix|--generate-candidates|--redact|--fixture) MODE="${1#--}"; PACK="$2"; shift 2;;
+    --summarise|--propose-matrix|--generate-candidates|--redact|--fixture)
+      [ $# -ge 2 ] || { echo "Missing <pack> for $1" >&2; usage; exit 2; }
+      [ -n "${2:-}" ] || { echo "Missing <pack> for $1" >&2; usage; exit 2; }
+      MODE="${1#--}"
+      PACK="$2"
+      shift 2
+      ;;
     --include-ecosystem-context) INCLUDE=true; shift;;
     --dry-run) DRY=true; shift;;
     -h|--help) usage; exit 0;;

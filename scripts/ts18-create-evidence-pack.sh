@@ -15,12 +15,52 @@ INCLUDE_ECOSYSTEM_CONTEXT="false"
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 SCENARIO_MAP="${SCRIPT_DIR}/../docs/templates/TS18_VALIDATION_SCENARIO_MAP.json"
 
+require_value() {
+  local opt="$1"
+  local value="${2:-}"
+  if [ -z "$value" ] || [[ "$value" == -* ]]; then
+    echo "Missing or invalid value for ${opt}" >&2
+    usage
+    exit 1
+  fi
+}
+
+reject_malformed_value() {
+  local opt="$1"
+  local value="$2"
+  if [[ "$value" == *$'\n'* ]] || [[ "$value" == *$'\r'* ]]; then
+    echo "Malformed value for ${opt}: newlines are not allowed" >&2
+    usage
+    exit 1
+  fi
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
-    --base-dir) BASE_DIR="$2"; shift 2 ;;
-    --device-label) DEVICE_LABEL="$2"; shift 2 ;;
-    --firmware-label) FIRMWARE_LABEL="$2"; shift 2 ;;
-    --auxio-build) AUXIO_BUILD="$2"; shift 2 ;;
+    --base-dir)
+      require_value "$1" "${2:-}"
+      reject_malformed_value "$1" "$2"
+      BASE_DIR="$2"
+      shift 2
+      ;;
+    --device-label)
+      require_value "$1" "${2:-}"
+      reject_malformed_value "$1" "$2"
+      DEVICE_LABEL="$2"
+      shift 2
+      ;;
+    --firmware-label)
+      require_value "$1" "${2:-}"
+      reject_malformed_value "$1" "$2"
+      FIRMWARE_LABEL="$2"
+      shift 2
+      ;;
+    --auxio-build)
+      require_value "$1" "${2:-}"
+      reject_malformed_value "$1" "$2"
+      AUXIO_BUILD="$2"
+      shift 2
+      ;;
     --include-ecosystem-context) INCLUDE_ECOSYSTEM_CONTEXT="true"; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown argument: $1" >&2; usage; exit 1 ;;
@@ -47,37 +87,41 @@ cat > "${PACK_DIR}/README.md" <<README
 This pack is Tier 2 validation evidence only.
 README
 
-json_array="$(python3 - "$SCENARIO_MAP" <<'PY'
+DEVICE_LABEL="$DEVICE_LABEL" \
+FIRMWARE_LABEL="$FIRMWARE_LABEL" \
+AUXIO_BUILD="$AUXIO_BUILD" \
+STAMP_FULL="$STAMP_FULL" \
+INCLUDE_ECOSYSTEM_CONTEXT="$INCLUDE_ECOSYSTEM_CONTEXT" \
+python3 - "$SCENARIO_MAP" "$PACK_DIR/evidence-manifest.json" <<'PY'
 import json
+import os
 import sys
 from pathlib import Path
 
 map_file = Path(sys.argv[1]).resolve()
+output = Path(sys.argv[2])
 expected = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
 scenarios = [item.get("id") for item in json.loads(map_file.read_text()).get("scenarios", [])]
 if len(set(scenarios)) != len(scenarios) or sorted(scenarios) != expected:
     print("Scenario map must contain unique IDs TS18-STD-001..017", file=sys.stderr)
     raise SystemExit(1)
-print(json.dumps(scenarios))
-PY
-)"
 
-cat > "${PACK_DIR}/evidence-manifest.json" <<MANIFEST
-{
-  "manifestVersion": "1.0.0",
-  "deviceLabel": "${DEVICE_LABEL}",
-  "deviceFingerprint": "redacted-or-omitted",
-  "firmwareThemeLabel": "${FIRMWARE_LABEL}",
-  "auxioBuild": "${AUXIO_BUILD}",
-  "captureTimestampUtc": "${STAMP_FULL}",
-  "captureScript": "scripts/ts18-create-evidence-pack.sh",
-  "includeEcosystemContext": ${INCLUDE_ECOSYSTEM_CONTEXT},
-  "scenarioIdsAttempted": ${json_array},
-  "redactionStatus": "raw-unredacted",
-  "knownLimitations": [],
-  "evidenceFiles": []
+manifest = {
+    "manifestVersion": "1.0.0",
+    "deviceLabel": os.environ["DEVICE_LABEL"],
+    "deviceFingerprint": "redacted-or-omitted",
+    "firmwareThemeLabel": os.environ["FIRMWARE_LABEL"],
+    "auxioBuild": os.environ["AUXIO_BUILD"],
+    "captureTimestampUtc": os.environ["STAMP_FULL"],
+    "captureScript": "scripts/ts18-create-evidence-pack.sh",
+    "includeEcosystemContext": os.environ["INCLUDE_ECOSYSTEM_CONTEXT"] == "true",
+    "scenarioIdsAttempted": scenarios,
+    "redactionStatus": "raw-unredacted",
+    "knownLimitations": [],
+    "evidenceFiles": [],
 }
-MANIFEST
+output.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+PY
 
 cat > "${RAW_DIR}/screenshots/README.md" <<SS
 Place manual screenshots/videos outside git when large; keep only redacted references here.
