@@ -77,3 +77,10 @@ Auxio core
 - Requirements and constraints: `docs/TS18_REQUIREMENTS.md`
 - Ecosystem/source context map: `docs/TW_ECOSYSTEM_SOURCE_MAP.md`
 - Native parity gap matrix: `docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`
+
+## Launcher/widget compatibility model (TWTHEME/iLauncher)
+- Auxio treats TWTHEME/iLauncher desktop integration as standard Android launcher compatibility, with AppWidgets, app shortcuts, explicit PendingIntents, and package-scoped deep-link actions.
+- No formal public TWTHEME widget SDK is assumed in product code.
+- Validation focus is whether generic Android entry points are discoverable and usable from TS18/TWTHEME launcher surfaces.
+- Confidence: **Inferred / Requires TS18 validation**.
+- Porting decision: **Directly reusable requirement / Reusable validation idea**.

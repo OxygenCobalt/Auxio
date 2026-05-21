@@ -37,7 +37,6 @@ sealed class WidgetRenderState {
 
         @DrawableRes
         fun playPauseBackground(isPlaying: Boolean): Int =
-            if (isPlaying) R.drawable.ui_remote_fab_container_playing
-            else R.drawable.ui_remote_fab_container_paused
+            if (isPlaying) R.drawable.ui_remote_fab_container_playing else R.drawable.ui_remote_fab_container_paused
     }
 }
