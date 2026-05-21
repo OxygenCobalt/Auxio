@@ -52,6 +52,13 @@ run_cmd getprop-release adb shell getprop ro.build.version.release
 run_cmd getprop-sdk adb shell getprop ro.build.version.sdk
 
 run_cmd media-session-list adb shell cmd media_session list-sessions
+
+run_cmd dumpsys-appwidget-before adb shell dumpsys appwidget
+run_cmd dumpsys-shortcut-before adb shell dumpsys shortcut
+run_cmd cmd-shortcut-before adb shell cmd shortcut dump
+run_cmd am-start-shuffle adb shell am start -n org.oxycblt.auxio/.MainActivity -a org.oxycblt.auxio.action.SHUFFLE_ALL
+run_cmd am-start-now-playing adb shell am start -n org.oxycblt.auxio/.MainActivity -a org.oxycblt.auxio.action.OPEN_NOW_PLAYING
+run_cmd am-start-queue adb shell am start -n org.oxycblt.auxio/.MainActivity -a org.oxycblt.auxio.action.OPEN_QUEUE
 run_cmd dumpsys-media-session-before adb shell dumpsys media_session
 run_cmd dumpsys-audio-before adb shell dumpsys audio
 run_cmd dumpsys-notification-before adb shell dumpsys notification --noredact
@@ -64,6 +71,10 @@ run_cmd keyevent-previous adb shell input keyevent KEYCODE_MEDIA_PREVIOUS
 run_cmd dumpsys-media-session-after adb shell dumpsys media_session
 run_cmd dumpsys-audio-after adb shell dumpsys audio
 run_cmd dumpsys-notification-after adb shell dumpsys notification --noredact
+
+run_cmd dumpsys-appwidget-after adb shell dumpsys appwidget
+run_cmd dumpsys-shortcut-after adb shell dumpsys shortcut
+run_cmd cmd-shortcut-after adb shell cmd shortcut dump
 
 echo >> "${SUMMARY}"
 echo "Done." >> "${SUMMARY}"

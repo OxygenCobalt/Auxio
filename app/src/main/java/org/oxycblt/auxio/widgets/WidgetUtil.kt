@@ -28,7 +28,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.util.isLandscape
-import org.oxycblt.auxio.util.newMainPendingIntent
+import org.oxycblt.auxio.util.newNowPlayingPendingIntent
 import timber.log.Timber as L
 
 /**
@@ -41,7 +41,7 @@ import timber.log.Timber as L
  */
 fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
     val views = RemoteViews(context.packageName, layoutRes)
-    views.setOnClickPendingIntent(android.R.id.background, context.newMainPendingIntent())
+    views.setOnClickPendingIntent(android.R.id.background, context.newNowPlayingPendingIntent())
     return views
 }
 

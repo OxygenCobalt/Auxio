@@ -36,6 +36,18 @@ See canonical tier model: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Nati
 6. Docs consolidation/cleanup tasks (prefer removal/merging over historical accumulation).
 7. Copilot pre-merge hardening checks.
 
+## TS18/TWTHEME launcher/widget tasks (baseline)
+- TS18/TW/TWTHEME behavior defines product acceptance criteria.
+- Android APIs are Tier 1 implementation, not a final ceiling.
+- Start from existing `HeadUnitEntryPoints` + `widgets/WidgetProvider` architecture.
+- Do not introduce a parallel widget provider unless a clear architectural blocker is proven.
+- Use Android-standard APIs (`AppWidgetProvider`, `RemoteViews`, explicit `PendingIntent`, launcher shortcuts, MediaSession/service pathways).
+- Treat TWTHEME/iLauncher/DoFun as compatibility and validation context only, not implementation authority.
+- Preserve warm-start `onNewIntent` routing and queue routing to `openQueue()`.
+- Extend evidence via external scripts/runbook updates, not in-app probe modules.
+- If Tier 1 behavior is insufficient on TS18 hosts, log a native parity gap for future investigation instead of assuming work is complete.
+- Report build/test/lint truthfully and separate Codex SDK/environment limits from real app build failures.
+
 ## Explicit non-targets
 - Probe-first or diagnostics-first planning.
 - Default-off vendor adapter skeleton planning.

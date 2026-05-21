@@ -25,6 +25,7 @@ class HeadUnitEntryPointsTest {
     @Test
     fun `destinationForAction returns null for unknown action`() {
         assertNull(HeadUnitEntryPoints.destinationForAction("org.oxycblt.auxio.action.UNKNOWN"))
+        assertNull(HeadUnitEntryPoints.destinationForAction(null))
     }
 
     @Test

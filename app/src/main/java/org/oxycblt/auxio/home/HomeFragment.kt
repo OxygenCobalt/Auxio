@@ -235,7 +235,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
 
         when (destination) {
             HeadUnitEntryPoints.EntryDestination.NOW_PLAYING -> playbackModel.openPlayback()
-            HeadUnitEntryPoints.EntryDestination.QUEUE -> playbackModel.openPlayback()
+            HeadUnitEntryPoints.EntryDestination.QUEUE -> playbackModel.openQueue()
             HeadUnitEntryPoints.EntryDestination.RECENTLY_ADDED -> openRecentlyAdded()
             HeadUnitEntryPoints.EntryDestination.GENRES -> openTab(MusicType.GENRES)
             HeadUnitEntryPoints.EntryDestination.ARTISTS -> openTab(MusicType.ARTISTS)

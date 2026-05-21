@@ -50,6 +50,22 @@ Priority 5: New probes/diagnostics (last resort; external only)
 - New sources added in the latest corpus pass: DoFun Telegram archive pages (before=26/47/128/135/169), telemetr.io DoFun index, dofun.cc additional product pages (xolio/car-equ/app portal/BBS), XDA TS18 firmware thread (4664566), TS18 manual (manuals.plus), OpenRadioFM/FytHWOneKey release pages, SC98531BinRepo, OpenMobileRadioInterface (EBU), headunit-revived wiki settings, GitHub headunit topic.
 - This file keeps only non-authoritative, maintenance-focused quick-reference context.
 
+## Launcher/widget compatibility interpretation (TS18/TWTHEME/iLauncher)
+- Public sources (DoFun/iLauncher ecosystem and public launcher projects like CarWebGuru) support the expectation that head-unit desktops commonly expose music-control/widget-like surfaces.
+- Public sources do **not** establish a formal/public TWTHEME widget SDK contract for third-party apps.
+- Auxio-TS therefore treats compatibility as a **standard Android AppWidget/shortcut/deep-link** problem and validates runtime behavior on TS18 hosts.
+- Implementation authority remains Android docs/APIs; TS18/TW/TWTHEME sources remain evidence/validation context.
+- If Tier 1 Android-standard behavior is insufficient, record the gap in `docs/TS18_NATIVE_PARITY_GAP_MATRIX.md` and evaluate native/private options only through explicit promotion gates.
+
+| Source/context | Interpretation | Confidence | Porting decision |
+|---|---|---|---|
+| DoFun / iLauncher ecosystem pages and channels | Widget-like launcher surfaces are common in ecosystem UX | Observed | Useful as evidence only |
+| CarWebGuru (public launcher/widget precedent) | Public precedent for head-unit launcher/widget interaction models | Inferred | Reusable validation idea |
+| Android `AppWidgetProvider` / `RemoteViews` / shortcuts | Implementation authority for Auxio widget/launcher entry design | Observed | Directly reusable requirement |
+| Auxio `HeadUnitEntryPoints` + `WidgetProvider` | Current Auxio-TS integration anchors for launcher/widget routing | Observed | Directly reusable requirement |
+| TS18/TWTHEME runtime host behavior | Still requires hardware acceptance checks | Requires TS18 validation | Requires TS18 runtime validation |
+| TWUtil/TWClient/private stock-app contracts | Keep as reference-only native-investigation evidence until explicit promotion | Observed | Unsafe to port |
+
 | Source | Ecosystem role | Confidence | Porting decision |
 |---|---|---|---|
 | DoFun Telegram (`t.me/s/dofun_app`) | TS18.1.2/TS18.2.2 firmware families; iLauncher/TWTHEME conventions; ZLink compatibility notes | Observed | Useful as evidence only |
