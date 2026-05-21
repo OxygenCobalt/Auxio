@@ -45,7 +45,20 @@ cat > "${PACK_DIR}/README.md" <<README
 This pack is Tier 2 validation evidence only.
 README
 
-json_array='["TS18-STD-001","TS18-STD-002","TS18-STD-003","TS18-STD-004","TS18-STD-005","TS18-STD-006","TS18-STD-007","TS18-STD-008","TS18-STD-009","TS18-STD-010","TS18-STD-011","TS18-STD-012","TS18-STD-013","TS18-STD-014","TS18-STD-015","TS18-STD-016","TS18-STD-017"]'
+json_array="$(python3 - <<'PY'
+import json
+import sys
+from pathlib import Path
+
+map_file = Path("docs/templates/TS18_VALIDATION_SCENARIO_MAP.json")
+expected = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
+scenarios = [item.get("id") for item in json.loads(map_file.read_text()).get("scenarios", [])]
+if len(set(scenarios)) != len(scenarios) or sorted(scenarios) != expected:
+    print("Scenario map must contain unique IDs TS18-STD-001..017", file=sys.stderr)
+    raise SystemExit(1)
+print(json.dumps(scenarios))
+PY
+)"
 
 cat > "${PACK_DIR}/evidence-manifest.json" <<MANIFEST
 {

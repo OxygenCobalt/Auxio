@@ -13,36 +13,48 @@ PACK=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --capture) MODE="capture"; shift;;
-    --summarise|--propose-matrix|--generate-candidates|--redact|--fixture) MODE="${1#--}"; PACK="$2"; shift 2;;
+    --summarise|--propose-matrix|--generate-candidates|--redact|--fixture)
+      [ $# -ge 2 ] || { echo "Missing pack path for $1" >&2; usage; exit 2; }
+      MODE="${1#--}"; PACK="$2"; shift 2
+      ;;
     --include-ecosystem-context) INCLUDE=true; shift;;
     --dry-run) DRY=true; shift;;
     -h|--help) usage; exit 0;;
     *) echo "Unknown arg: $1" >&2; usage; exit 2;;
   esac
 done
-run(){ echo "+ $*"; $DRY || eval "$*"; }
+run() {
+  echo "+ $*"
+  if [ "$DRY" = true ]; then
+    return 0
+  fi
+  "$@"
+}
 
 case "$MODE" in
   capture)
-    extra=""; $INCLUDE && extra="--include-ecosystem-context"
-    run "bash scripts/ts18-create-evidence-pack.sh $extra"
+    if [ "$INCLUDE" = true ]; then
+      run bash scripts/ts18-create-evidence-pack.sh --include-ecosystem-context
+    else
+      run bash scripts/ts18-create-evidence-pack.sh
+    fi
     ;;
   fixture)
-    run "python3 scripts/ts18-summarise-evidence-pack.py '$PACK'"
-    run "python3 scripts/ts18-propose-gap-matrix-update.py '$PACK'"
-    run "python3 scripts/ts18-generate-native-candidates.py '$PACK'"
+    run python3 scripts/ts18-summarise-evidence-pack.py "$PACK"
+    run python3 scripts/ts18-propose-gap-matrix-update.py "$PACK"
+    run python3 scripts/ts18-generate-native-candidates.py "$PACK"
     ;;
   summarise)
-    run "python3 scripts/ts18-summarise-evidence-pack.py '$PACK'"
+    run python3 scripts/ts18-summarise-evidence-pack.py "$PACK"
     ;;
   propose-matrix)
-    run "python3 scripts/ts18-propose-gap-matrix-update.py '$PACK'"
+    run python3 scripts/ts18-propose-gap-matrix-update.py "$PACK"
     ;;
   generate-candidates)
-    run "python3 scripts/ts18-generate-native-candidates.py '$PACK'"
+    run python3 scripts/ts18-generate-native-candidates.py "$PACK"
     ;;
   redact)
-    run "bash scripts/redact_ts18_evidence_summary.sh '$PACK'"
+    run bash scripts/redact_ts18_evidence_summary.sh "$PACK"
     ;;
   "") usage; exit 2 ;;
   *) echo "Unsupported mode: $MODE"; exit 2;;

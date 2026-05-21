@@ -4,6 +4,26 @@ python3 -m py_compile scripts/ts18-summarise-evidence-pack.py scripts/ts18-propo
 python3 -m json.tool docs/templates/TS18_EVIDENCE_MANIFEST.schema.json >/dev/null
 python3 -m json.tool docs/templates/TS18_EVIDENCE_MANIFEST.example.json >/dev/null
 python3 -m json.tool docs/templates/TS18_VALIDATION_SCENARIO_MAP.json >/dev/null
+python3 - <<'PY'
+import json
+from pathlib import Path
+
+scenario_map = json.loads(Path("docs/templates/TS18_VALIDATION_SCENARIO_MAP.json").read_text())
+scenarios = scenario_map["scenarios"]
+ids = [s["id"] for s in scenarios]
+expected = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
+assert len(scenarios) == 17
+assert len(set(ids)) == 17
+assert sorted(ids) == expected, ids
+required_fields = {
+  "id", "required", "optional", "expectedSignal", "expectedSignals", "knownLimitations",
+  "manualEvidenceRequired", "manualReviewRequired", "parityRows", "nativeTrigger",
+  "nativeTriggerCondition", "severity", "user_impact", "native_investigation_priority"
+}
+for scenario in scenarios:
+  missing = required_fields - set(scenario.keys())
+  assert not missing, (scenario["id"], sorted(missing))
+PY
 
 for PACK in docs/templates/fixtures/pack-minimal-pass docs/templates/fixtures/pack-partial-widget-gap docs/templates/fixtures/pack-missing-evidence; do
   python3 scripts/ts18-summarise-evidence-pack.py "$PACK"
@@ -42,5 +62,12 @@ PY
 bash scripts/redact_ts18_evidence_summary.sh docs/templates/fixtures/pack-minimal-pass /tmp/ts18-redacted-test
 [ -f /tmp/ts18-redacted-test/raw/media_session.txt ]
 bash scripts/ts18-evidence-workflow.sh --help >/dev/null
+bash scripts/ts18-evidence-workflow.sh --fixture docs/templates/fixtures/pack-minimal-pass >/dev/null
+tmp_space_pack="/tmp/pack partial path with spaces"
+rm -rf "$tmp_space_pack"
+cp -R docs/templates/fixtures/pack-minimal-pass "$tmp_space_pack"
+bash scripts/ts18-evidence-workflow.sh --fixture "$tmp_space_pack" >/dev/null
+[ -f "$tmp_space_pack/derived/validation-summary.md" ]
+rm -rf "$tmp_space_pack"
 
 echo "TS18 evidence tooling fixture test passed"
