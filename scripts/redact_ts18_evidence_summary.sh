@@ -1,38 +1,29 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+# Requires GNU sed (Linux/CI). On macOS install gnu-sed and use gsed, or run in a Linux container.
+set -euo pipefail
 IN="${1:?usage: $0 <evidence-pack> [output-dir]}"
 OUT="${2:-ts18-redacted-pack}"
 [ -d "$IN" ] || { echo "Missing input dir: $IN" >&2; exit 1; }
 rm -rf "$OUT"
 mkdir -p "$OUT"
-(cd "$IN" && tar -cf - .) | (cd "$OUT" && tar -xf -)
+# Use "$IN/." to include hidden files and handle directories that may be empty.
+cp -R "$IN/." "$OUT"
 
-python3 - "$OUT" <<'PY'
-import re
-import sys
-from pathlib import Path
+redact_file() {
+  local f="$1"
+  [ -f "$f" ] || return 0
+  # Use a temp file for portability across GNU sed versions; avoids -i '' vs -i '' differences.
+  local tmp
+  tmp="$(mktemp)"
+  sed -E \
+    -e 's/(serial(no)?|fingerprint|android_id|device_id)[^\n]*/\1=[REDACTED]/Ig' \
+    -e 's/(([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2})/[MAC_REDACTED]/g' \
+    -e 's/(ssid|bssid|bluetooth_name)[^\n]*/\1=[REDACTED]/Ig' \
+    -e 's#(/storage/emulated/0/)[^ \t\n]*#\1[REDACTED_PATH]#g' \
+    "$f" > "$tmp" && mv "$tmp" "$f" || { rm -f "$tmp"; return 1; }
+}
 
-out = Path(sys.argv[1])
-text_file_suffixes = {".txt", ".md"}
+find "$OUT" -type f -name '*.txt' -print0 | while IFS= read -r -d '' file; do redact_file "$file"; done
+find "$OUT" -type f -name '*.md' -print0 | while IFS= read -r -d '' file; do redact_file "$file"; done
 
-def redact(content: str) -> str:
-    content = re.sub(r"(?i)(serial(?:no)?|fingerprint|android_id|device_id)[^\n]*", r"\1=[REDACTED]", content)
-    content = re.sub(
-        r"(?i)\b([a-z0-9_.-]*(?:token|id|hash|uuid|session)[a-z0-9_.-]*)\s*[:=]\s*[0-9A-Fa-f]{16,}\b",
-        r"\1=[HEX_OR_ID_REDACTED]",
-        content,
-    )
-    content = re.sub(r"(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}", "[MAC_REDACTED]", content)
-    content = re.sub(r"(?i)(ssid|bssid|bluetooth_name)[^\n]*", r"\1=[REDACTED]", content)
-    content = re.sub(r"/storage/emulated/0/[^\n]*", "/storage/emulated/0/[REDACTED_PATH]", content)
-    return content
-
-for file in out.rglob("*"):
-    if not file.is_file() or file.suffix.lower() not in text_file_suffixes:
-        continue
-    original = file.read_text(encoding="utf-8", errors="ignore")
-    updated = redact(original)
-    if updated != original:
-        file.write_text(updated, encoding="utf-8")
-PY
 echo "Redacted pack created: $OUT"

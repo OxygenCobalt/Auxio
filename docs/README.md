@@ -56,9 +56,11 @@ See [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md) 
 - Copilot/Codex policy: `../.github/copilot-instructions.md`
 - Codex environment setup/maintenance/validation: `codex/README.md`
 
-- `TS18_NATIVE_PARITY_GAP_MATRIX.md`
-- `TS18_HARDWARE_VALIDATION_CHECKLIST.md`
+## TS18 evidence pipeline docs
+- [`TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md) — parity gap tracking matrix (updated from validated evidence packs)
+- [`TS18_HARDWARE_VALIDATION_CHECKLIST.md`](TS18_HARDWARE_VALIDATION_CHECKLIST.md) — step-by-step on-device capture checklist
 
-- `TS18_STOCK_TMUSIC_PARITY_LEDGER.md`
-- `TS18_NATIVE_CONTRACT_INVENTORY.md`
-- `evidence/ts18/README.md`
+## Evidence-only reference docs
+- [`TS18_STOCK_TMUSIC_PARITY_LEDGER.md`](TS18_STOCK_TMUSIC_PARITY_LEDGER.md) — stock/t-music parity ledger (evidence-oriented)
+- [`TS18_NATIVE_CONTRACT_INVENTORY.md`](TS18_NATIVE_CONTRACT_INVENTORY.md) — native/private contract inventory (evidence-only, not production approval)
+- [`evidence/ts18/README.md`](evidence/ts18/README.md) — evidence pack index and registry
