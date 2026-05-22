@@ -133,6 +133,9 @@ private constructor(
                 L.d("Received widget update event")
                 widgetComponent.update()
             }
+            else -> {
+                L.w("Ignoring unsupported playback action: ${intent.action}")
+            }
         }
     }
 

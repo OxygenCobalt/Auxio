@@ -202,6 +202,12 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         val hasYearMetadata =
             homeModel.songList.value.any { it.album.dates?.min?.year != null }
         binding.homeQuickPicks.removeAllViews()
+        binding.homeQuickPicks.setPadding(
+            binding.homeQuickPicks.paddingLeft,
+            binding.homeQuickPicks.paddingTop,
+            binding.homeQuickPicks.paddingRight,
+            resources.getDimensionPixelSize(R.dimen.spacing_small),
+        )
         HeadUnitQuickAccess.quickPicks(
                 hasLibraryContent = hasLibrary,
                 hasFolderSupport = true,

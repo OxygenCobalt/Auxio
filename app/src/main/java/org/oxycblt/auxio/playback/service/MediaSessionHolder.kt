@@ -115,6 +115,9 @@ private constructor(
      * the [PlaybackNotification].
      */
     fun release() {
+        // Clear published state before shutdown so external controllers do not keep stale metadata.
+        mediaSession.setMetadata(emptyMetadata)
+        _notification.updateMetadata(emptyMetadata)
         bitmapProvider.release()
         playbackManager.removeListener(this)
         imageSettings.unregisterListener(this)
@@ -133,6 +136,11 @@ private constructor(
 
     override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
         updateQueue(queue)
+        if (queue.isEmpty()) {
+            updateMediaMetadata(null, null)
+            invalidateSessionState()
+            return
+        }
         when (change.type) {
             // Nothing special to do with mapping changes.
             QueueChange.Type.MAPPING -> {}

@@ -137,6 +137,7 @@ private constructor(
         // cope well with sending no tabs then trying to update with tabs
         // - the downstream code already handles no-library cases
         return getMediaItemList(parentId, maxTabs)
+            ?: listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
     }
 
     suspend fun search(query: String): MutableList<MediaItem> {
@@ -184,7 +185,8 @@ private constructor(
                 getChildMediaItems(mediaSessionUID.uid)
             }
             null -> {
-                return null
+                // Fail safely for controllers that request unknown IDs.
+                return listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
             }
         }
     }
