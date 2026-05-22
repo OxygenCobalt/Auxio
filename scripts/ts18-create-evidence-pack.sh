@@ -33,10 +33,12 @@ reject_malformed_value() {
     usage
     exit 1
   fi
-  if [ "$opt" = "--device-label" ] && { [[ "$value" == *"/"* ]] || [[ "$value" == *".."* ]]; }; then
-    echo "Malformed value for ${opt}: path separators/traversal tokens are not allowed" >&2
-    usage
-    exit 1
+  if [ "$opt" = "--device-label" ]; then
+    if [[ ! "$value" =~ ^[A-Za-z0-9_-]+$ ]]; then
+      echo "Malformed value for ${opt}: only letters, numbers, '_' and '-' are allowed" >&2
+      usage
+      exit 1
+    fi
   fi
 }
 
