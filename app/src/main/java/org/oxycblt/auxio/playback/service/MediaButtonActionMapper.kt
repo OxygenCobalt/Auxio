@@ -23,10 +23,13 @@ object MediaButtonActionMapper {
         keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE || keyCode == KeyEvent.KEYCODE_MEDIA_STOP
 
     private fun isSupportedMediaKey(keyCode: Int): Boolean =
-        keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
-            keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
-            keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE ||
-            keyCode == KeyEvent.KEYCODE_MEDIA_NEXT ||
-            keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS ||
-            keyCode == KeyEvent.KEYCODE_MEDIA_STOP
+        when (keyCode) {
+            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+            KeyEvent.KEYCODE_MEDIA_PLAY,
+            KeyEvent.KEYCODE_MEDIA_PAUSE,
+            KeyEvent.KEYCODE_MEDIA_NEXT,
+            KeyEvent.KEYCODE_MEDIA_PREVIOUS,
+            KeyEvent.KEYCODE_MEDIA_STOP -> true
+            else -> false
+        }
 }

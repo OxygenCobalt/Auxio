@@ -137,7 +137,7 @@ private constructor(
         // cope well with sending no tabs then trying to update with tabs
         // - the downstream code already handles no-library cases
         return getMediaItemList(parentId, maxTabs)
-            ?: listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+            ?: fallbackChildren(context.getString(R.string.lbl_indexing))
     }
 
     suspend fun search(query: String): MutableList<MediaItem> {
@@ -186,7 +186,7 @@ private constructor(
             }
             null -> {
                 // Fail safely for controllers that request unknown IDs.
-                return listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+                return fallbackChildren(context.getString(R.string.lbl_indexing))
             }
         }
     }
@@ -268,6 +268,8 @@ private constructor(
     companion object {
         const val KEY_CHILD_OF = BuildConfig.APPLICATION_ID + ".key.CHILD_OF"
     }
+
+    internal fun fallbackChildren(title: String): List<MediaItem> = listOf(placeholderItem(title))
 
     private fun placeholderItem(title: String): MediaItem =
         MediaItem(
