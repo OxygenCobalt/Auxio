@@ -30,3 +30,4 @@ TS18/TW/TWTHEME parity is the product target. Android-standard (Tier 1) implemen
 - No package impersonation or privileged UID assumptions.
 - No smali copying or com.tw.* imports in product code.
 - Native/private contracts are NOT permanently out of scope — they require Tier 2 gap evidence and Tier 4 human-approved design PR.
+  Evidence confidence: Inferred | Porting decision: Requires TS18 runtime validation

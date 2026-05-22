@@ -229,3 +229,7 @@ Do not try to work around this by copying submodule files manually.
 - Never print secrets or commit keystores/signing artifacts.
 - Keep decoded keystores only in runner temp paths.
 - Initialize submodules recursively before Gradle; do not create fake submodule files.
+
+- Phase 5G/6A requires evidence-pack capture (`scripts/ts18-create-evidence-pack.sh`) and conservative summarisation before any native/private investigation candidate is considered.
+
+- Tier 0->4 flow reminder: evidence and candidate generation are allowed; production private/native integration still requires a future approved design PR.

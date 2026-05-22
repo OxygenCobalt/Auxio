@@ -150,7 +150,9 @@ Auxio-TS development follows these rules:
 6. Avoid package impersonation and privileged-permission strategies.
 7. Add compatibility features only when a specific gap is proven.
 
----
+### Tier 0 -> Tier 4 pipeline
+
+Tier 0 sources/evidence -> Tier 1 Android-standard implementation -> Tier 2 evidence packs -> scenario summarisation -> parity matrix proposal -> Tier 3 native/private candidate drafts -> future human-approved design PR -> possible Tier 4 production integration.
 
 ## Documentation
 
@@ -189,7 +191,6 @@ However, feature additions and major UI changes are less likely to be accepted. 
 Auxio is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 More information can be found [here](https://github.com/OxygenCobalt/Auxio/wiki/Licenses).
-
 
 ---
 

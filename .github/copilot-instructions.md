@@ -117,3 +117,7 @@ Always distinguish between: product requirement / Android-standard implementatio
 - Never print or commit secret material.
 - Keep decoded keystores in runner temp paths only.
 - Initialize submodules recursively before Gradle; never create fake submodule files.
+
+- Phase 5G/6A: use evidence-pack tooling (`scripts/ts18-create-evidence-pack.sh`, `scripts/ts18-summarise-evidence-pack.py`) before proposing native/private investigations; no production private hooks without explicit approval.
+
+- Tier pipeline reminder: Tier 2 evidence + summariser + matrix proposal can generate Tier 3 candidate drafts, but Tier 4 production native/private integration requires a separate approved design PR.

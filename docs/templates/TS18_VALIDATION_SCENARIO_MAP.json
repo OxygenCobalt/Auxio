@@ -1,0 +1,382 @@
+{
+  "scenarios": [
+    {
+      "id": "TS18-STD-001",
+      "required": [
+        "raw/media_session.txt"
+      ],
+      "optional": [
+        "raw/activity.txt"
+      ],
+      "expectedSignal": "Auxio metadata present",
+      "manualEvidenceRequired": false,
+      "parityRows": [
+        "MediaSession metadata"
+      ],
+      "nativeTrigger": "Metadata absent despite active playback.",
+      "severity": "high",
+      "user_impact": "blocks primary music use",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Auxio metadata present"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": false,
+      "nativeTriggerCondition": "Metadata absent despite active playback."
+    },
+    {
+      "id": "TS18-STD-002",
+      "required": [
+        "raw/notification.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Auxio media notification with controls",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Notification transport"
+      ],
+      "nativeTrigger": "Controls missing while MediaSession is healthy.",
+      "severity": "high",
+      "user_impact": "blocks primary music use",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Auxio media notification with controls"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Controls missing while MediaSession is healthy."
+    },
+    {
+      "id": "TS18-STD-003",
+      "required": [
+        "raw/media_session.txt",
+        "raw/activity.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Media keys affect Auxio state",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Hardware key routing"
+      ],
+      "nativeTrigger": "Repeated key drops with healthy focus/session.",
+      "severity": "critical",
+      "user_impact": "blocks primary music use",
+      "native_investigation_priority": "high",
+      "expectedSignals": [
+        "Media keys affect Auxio state"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Repeated key drops with healthy focus/session."
+    },
+    {
+      "id": "TS18-STD-004",
+      "required": [
+        "raw/audio.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Audio focus transitions recorded",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Audio focus"
+      ],
+      "nativeTrigger": "No recoverable behavior from standard focus events.",
+      "severity": "high",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Audio focus transitions recorded"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "No recoverable behavior from standard focus events."
+    },
+    {
+      "id": "TS18-STD-005",
+      "required": [
+        "raw/audio.txt",
+        "raw/media_session.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Projection coexistence stable",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Projection coexistence"
+      ],
+      "nativeTrigger": "Session unrecoverable after projection release.",
+      "severity": "high",
+      "user_impact": "blocks primary music use",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Projection coexistence stable"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Session unrecoverable after projection release."
+    },
+    {
+      "id": "TS18-STD-006",
+      "required": [
+        "raw/media_session.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Post-sleep session coherence",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Sleep/resume"
+      ],
+      "nativeTrigger": "State loss after wake with no app crash.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "low",
+      "expectedSignals": [
+        "Post-sleep session coherence"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "State loss after wake with no app crash."
+    },
+    {
+      "id": "TS18-STD-007",
+      "required": [
+        "raw/media_session.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Browse/play initiated",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "External controller browse"
+      ],
+      "nativeTrigger": "Browsable structure missing unexpectedly.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "low",
+      "expectedSignals": [
+        "Browse/play initiated"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Browsable structure missing unexpectedly."
+    },
+    {
+      "id": "TS18-STD-008",
+      "required": [],
+      "optional": [],
+      "expectedSignal": "Landscape readability acceptable",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Head-unit UX"
+      ],
+      "nativeTrigger": "Controls unreadable/inaccessible.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "low",
+      "expectedSignals": [
+        "Landscape readability acceptable"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Controls unreadable/inaccessible."
+    },
+    {
+      "id": "TS18-STD-009",
+      "required": [
+        "raw/media_session.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "FLAC playback/metadata stable",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Codec playback"
+      ],
+      "nativeTrigger": "Decodes fail despite baseline Android support.",
+      "severity": "high",
+      "user_impact": "blocks primary music use",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "FLAC playback/metadata stable"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Decodes fail despite baseline Android support."
+    },
+    {
+      "id": "TS18-STD-010",
+      "required": [
+        "raw/activity.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Launcher re-entry stable",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Launcher re-entry"
+      ],
+      "nativeTrigger": "Reliable re-entry impossible via standard intents.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "low",
+      "expectedSignals": [
+        "Launcher re-entry stable"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Reliable re-entry impossible via standard intents."
+    },
+    {
+      "id": "TS18-STD-011",
+      "required": [
+        "raw/appwidget.txt",
+        "raw/media_session.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Widget metadata/control updates",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Now-playing widget"
+      ],
+      "nativeTrigger": "Placeable widget never updates with valid MediaSession.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Widget metadata/control updates"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Placeable widget never updates with valid MediaSession."
+    },
+    {
+      "id": "TS18-STD-012",
+      "required": [
+        "raw/shortcut.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Shortcut IDs/actions present",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Shortcuts"
+      ],
+      "nativeTrigger": "Shortcut invocation unavailable despite publication.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "low",
+      "expectedSignals": [
+        "Shortcut IDs/actions present"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Shortcut invocation unavailable despite publication."
+    },
+    {
+      "id": "TS18-STD-013",
+      "required": [
+        "raw/activity.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Queue deep-link works",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Queue intent routing"
+      ],
+      "nativeTrigger": "OPEN_QUEUE consistently ignored.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "low",
+      "expectedSignals": [
+        "Queue deep-link works"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "OPEN_QUEUE consistently ignored."
+    },
+    {
+      "id": "TS18-STD-014",
+      "required": [
+        "raw/activity.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Now-playing deep-link works",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Now-playing intent routing"
+      ],
+      "nativeTrigger": "OPEN_NOW_PLAYING consistently ignored.",
+      "severity": "medium",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "low",
+      "expectedSignals": [
+        "Now-playing deep-link works"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "OPEN_NOW_PLAYING consistently ignored."
+    },
+    {
+      "id": "TS18-STD-015",
+      "required": [
+        "raw/notification.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Notification survives background",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Background persistence"
+      ],
+      "nativeTrigger": "Notification repeatedly suppressed.",
+      "severity": "high",
+      "user_impact": "blocks primary music use",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Notification survives background"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Notification repeatedly suppressed."
+    },
+    {
+      "id": "TS18-STD-016",
+      "required": [
+        "raw/audio.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Focus regain behavior predictable",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "Focus regain"
+      ],
+      "nativeTrigger": "Unexpected auto-start/restore behavior.",
+      "severity": "high",
+      "user_impact": "degrades head-unit UX",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Focus regain behavior predictable"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Unexpected auto-start/restore behavior."
+    },
+    {
+      "id": "TS18-STD-017",
+      "required": [
+        "raw/media_session.txt",
+        "raw/notification.txt"
+      ],
+      "optional": [],
+      "expectedSignal": "Cross-surface state consistency",
+      "manualEvidenceRequired": true,
+      "parityRows": [
+        "State consistency"
+      ],
+      "nativeTrigger": "Persistent mismatch across surfaces.",
+      "severity": "high",
+      "user_impact": "blocks primary music use",
+      "native_investigation_priority": "medium",
+      "expectedSignals": [
+        "Cross-surface state consistency"
+      ],
+      "knownLimitations": [],
+      "manualReviewRequired": true,
+      "nativeTriggerCondition": "Persistent mismatch across surfaces."
+    }
+  ]
+}

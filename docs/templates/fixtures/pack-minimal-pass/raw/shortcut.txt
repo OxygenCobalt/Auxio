@@ -1,0 +1,1 @@
+ShortcutInfo id=open_now_playing package=org.oxycblt.auxio

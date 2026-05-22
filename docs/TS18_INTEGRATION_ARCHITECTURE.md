@@ -9,6 +9,7 @@ Auxio-TS targets TS18/TW/TWTHEME parity. Android-standard APIs are the preferred
 This is the canonical tier model for Auxio-TS TS18/TW/TWTHEME parity work.
 
 ### Tier model
+Tier pipeline: Tier 0 evidence -> Tier 1 implementation -> Tier 2 evidence pack + summariser -> parity proposal -> Tier 3 candidate drafts (non-production) -> future approved Tier 4 design PR.
 
 | Tier | Name | Scope |
 |------|------|-------|

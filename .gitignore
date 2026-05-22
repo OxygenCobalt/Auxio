@@ -17,3 +17,5 @@ captures/
 .aider*
 .env
 /secrets/
+__pycache__/
+*.pyc
