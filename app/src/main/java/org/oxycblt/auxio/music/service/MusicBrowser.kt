@@ -137,6 +137,7 @@ private constructor(
         // cope well with sending no tabs then trying to update with tabs
         // - the downstream code already handles no-library cases
         return getMediaItemList(parentId, maxTabs)
+            ?: fallbackChildren(context.getString(R.string.lbl_indexing))
     }
 
     suspend fun search(query: String): MutableList<MediaItem> {
@@ -184,7 +185,8 @@ private constructor(
                 getChildMediaItems(mediaSessionUID.uid)
             }
             null -> {
-                return null
+                // Fail safely for controllers that request unknown IDs.
+                return fallbackChildren(context.getString(R.string.lbl_indexing))
             }
         }
     }
@@ -195,6 +197,10 @@ private constructor(
                 val tabs = homeGenerator.tabs()
                 if (tabs.isEmpty()) {
                     listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+                } else if (maxTabs <= 0) {
+                    listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+                } else if (maxTabs == 1) {
+                    listOf(TabNode.More.toMediaItem(context))
                 } else if (maxTabs < tabs.size) {
                     tabs.take(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) } +
                         TabNode.More.toMediaItem(context)
@@ -203,7 +209,14 @@ private constructor(
                 }
             }
             is TabNode.More -> {
-                homeGenerator.tabs().drop(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) }
+                if (maxTabs <= 1) {
+                    homeGenerator.tabs().map { TabNode.Home(it).toMediaItem(context) }
+                } else {
+                    homeGenerator
+                        .tabs()
+                        .drop(maxTabs - 1)
+                        .map { TabNode.Home(it).toMediaItem(context) }
+                }
             }
             is TabNode.Home ->
                 // homeGenerator returns emptyLists
@@ -259,9 +272,14 @@ private constructor(
         const val KEY_CHILD_OF = BuildConfig.APPLICATION_ID + ".key.CHILD_OF"
     }
 
+    internal fun fallbackChildren(title: String): List<MediaItem> = listOf(placeholderItem(title))
+
     private fun placeholderItem(title: String): MediaItem =
         MediaItem(
-            MediaDescriptionCompat.Builder().setMediaId("placeholder:$title").setTitle(title).build(),
+            MediaDescriptionCompat.Builder()
+                .setMediaId("placeholder:$title")
+                .setTitle(title)
+                .build(),
             MediaItem.FLAG_BROWSABLE,
         )
 }

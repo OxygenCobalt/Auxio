@@ -48,27 +48,24 @@ class MediaButtonReceiver : BroadcastReceiver() {
             return
         }
 
-        val event = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
-        if (event?.action != KeyEvent.ACTION_DOWN) {
-            L.d("Ignoring media button event that is not ACTION_DOWN: $event")
-            return
-        }
-
-        // If we have no known song and got a "pause/stop" style action, ignore it.
-        // This avoids waking playback from inert state while still allowing "play"
-        // commands to start a restored session from background controllers.
+        val event =
+            IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
         if (
-            playbackManager.currentSong == null &&
-                (event.keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE ||
-                    event.keyCode == KeyEvent.KEYCODE_MEDIA_STOP)
+            !MediaButtonActionMapper.shouldForward(
+                event,
+                hasCurrentSong = playbackManager.currentSong != null,
+            )
         ) {
-            L.d("Ignoring $event because no session is available to pause/stop")
+            L.d("Ignoring media button event after policy evaluation: $event")
             return
         }
 
         L.d("Delivering media button intent $intent")
         intent.component = ComponentName(context, AuxioService::class.java)
-        intent.putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_MEDIA_BUTTON)
+        intent.putExtra(
+            AuxioService.INTENT_KEY_START_ID,
+            IntegerTable.START_ID_MEDIA_BUTTON,
+        )
         ContextCompat.startForegroundService(context, intent)
     }
 }

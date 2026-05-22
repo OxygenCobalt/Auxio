@@ -40,6 +40,7 @@ import kotlin.reflect.KClass
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
+import org.oxycblt.auxio.playback.service.PendingIntentRequestCodePolicy
 import org.oxycblt.auxio.R
 
 /**
@@ -200,19 +201,17 @@ fun Context.newMainPendingIntent(): PendingIntent =
         this,
         IntegerTable.REQUEST_CODE,
         Intent(this, MainActivity::class.java).setAction(Intent.ACTION_MAIN),
-        PendingIntent.FLAG_IMMUTABLE,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
-
-
 
 /** Create a [PendingIntent] that will launch the app activity directly to now playing. */
 fun Context.newNowPlayingPendingIntent(): PendingIntent =
     PendingIntent.getActivity(
         this,
-        IntegerTable.REQUEST_CODE + HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING.hashCode(),
+        PendingIntentRequestCodePolicy.forAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
         Intent(this, MainActivity::class.java)
                 .setAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
-        PendingIntent.FLAG_IMMUTABLE,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 /**
  * Create a [PendingIntent] that will broadcast the specified command when launched.
@@ -222,7 +221,7 @@ fun Context.newNowPlayingPendingIntent(): PendingIntent =
 fun Context.newBroadcastPendingIntent(action: String): PendingIntent =
     PendingIntent.getBroadcast(
         this,
-        IntegerTable.REQUEST_CODE + action.hashCode(),
+        PendingIntentRequestCodePolicy.forAction(action),
         Intent(action).setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY),
-        PendingIntent.FLAG_IMMUTABLE,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )

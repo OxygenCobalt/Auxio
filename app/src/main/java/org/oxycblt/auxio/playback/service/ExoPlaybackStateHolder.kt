@@ -639,7 +639,14 @@ class ExoPlaybackStateHolder(
             }
         }
         player.volume = decision.volume
-        if (decision.resume && !player.playWhenReady && sessionOngoing) {
+        if (
+            AudioFocusPolicy.shouldResumePlayback(
+                decision = decision,
+                playWhenReady = player.playWhenReady,
+                sessionOngoing = sessionOngoing,
+                hasCurrentSong = playbackManager.currentSong != null,
+            )
+        ) {
             playbackManager.playing(true)
         }
         if (event == AudioFocusPolicy.Event.LOSS) {

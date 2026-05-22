@@ -12,10 +12,13 @@ TS18/TW/TWTHEME parity is the product target. Android-standard (Tier 1) implemen
 | 5D | Media buttons / steering-wheel via standard APIs (Tier 1) | Hardware key acceptance pass and targeted standard-API fixes |
 | 5E | Audio focus / navigation-mixing hardening (Tier 1) | Focus-policy and coexistence behavior hardening |
 | 5F | Head-unit UI/UX layout hardening (Tier 1) | Landscape/touch-target/readability improvements |
+
 | 5G | TS18 validation evidence import (Tier 2) | Scenario evidence packs + prioritized gap list |
 | 6A | Populate TS18 Native Parity Gap Matrix from hardware evidence (Tier 2) | Updated `TS18_NATIVE_PARITY_GAP_MATRIX.md` with observed parity gaps |
 | 6B | Investigate specific native/private gaps only where Tier 1 surfaces fail (Tier 3) | External investigation scripts; non-production branch experiments; formal gap documentation |
 | 6C | Promote safe, isolated, non-impersonating native integrations (Tier 4) | One feature per PR via explicit human-approved design PR; meets all Tier 4 eligibility criteria |
+
+Latest app/runtime hardening note: `docs/TS18_TIER1_HARDENING_NOTES.md` (canonical route policy consolidation and queue-routing consistency checks).
 
 ## Roadmap principles
 
