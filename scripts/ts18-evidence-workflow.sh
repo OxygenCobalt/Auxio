@@ -16,6 +16,7 @@ while [ $# -gt 0 ]; do
     --summarise|--propose-matrix|--generate-candidates|--redact|--fixture)
       [ $# -ge 2 ] || { echo "Missing <pack> for $1" >&2; usage; exit 2; }
       [ -n "${2:-}" ] || { echo "Missing <pack> for $1" >&2; usage; exit 2; }
+      [[ "${2:-}" != -* ]] || { echo "Invalid <pack> for $1: ${2:-}" >&2; usage; exit 2; }
       MODE="${1#--}"
       PACK="$2"
       shift 2

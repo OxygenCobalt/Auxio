@@ -33,6 +33,11 @@ reject_malformed_value() {
     usage
     exit 1
   fi
+  if [ "$opt" = "--device-label" ] && { [[ "$value" == *"/"* ]] || [[ "$value" == *".."* ]]; }; then
+    echo "Malformed value for ${opt}: path separators/traversal tokens are not allowed" >&2
+    usage
+    exit 1
+  fi
 }
 
 while [ $# -gt 0 ]; do
@@ -70,6 +75,16 @@ done
 STAMP_DATE="$(date -u +%F)"
 STAMP_FULL="$(date -u +%Y%m%dT%H%M%SZ)"
 PACK_DIR="${BASE_DIR}/${STAMP_DATE}-${DEVICE_LABEL}"
+python3 - "$BASE_DIR" "$PACK_DIR" <<'PY'
+import sys
+from pathlib import Path
+
+base = Path(sys.argv[1]).resolve()
+pack = Path(sys.argv[2]).resolve()
+if base != pack and base not in pack.parents:
+    print(f"Pack directory escapes base dir: {pack} (base: {base})", file=sys.stderr)
+    raise SystemExit(1)
+PY
 RAW_DIR="${PACK_DIR}/raw"
 DERIVED_DIR="${PACK_DIR}/derived"
 CMD_LOG="${RAW_DIR}/commands.log"

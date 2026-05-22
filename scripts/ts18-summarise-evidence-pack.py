@@ -8,14 +8,13 @@ _EXPECTED_SCENARIOS = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
 
 
 def _load_scenarios():
-    if _SCENARIO_MAP.exists():
-        data = json.loads(_SCENARIO_MAP.read_text())
-        ids = [s["id"] for s in data.get("scenarios", [])]
-        if sorted(ids) != _EXPECTED_SCENARIOS or len(set(ids)) != len(ids):
-            raise ValueError("Scenario map must contain unique IDs TS18-STD-001..017")
-        return ids
-    print(f"WARNING: {_SCENARIO_MAP} not found; using generated scenario ID list. Verify sync.", file=sys.stderr)
-    return _EXPECTED_SCENARIOS
+    if not _SCENARIO_MAP.exists():
+        raise FileNotFoundError(f"Missing canonical scenario map: {_SCENARIO_MAP}")
+    data = json.loads(_SCENARIO_MAP.read_text(encoding="utf-8"))
+    ids = [s["id"] for s in data.get("scenarios", [])]
+    if sorted(ids) != _EXPECTED_SCENARIOS or len(set(ids)) != len(ids):
+        raise ValueError("Scenario map must contain unique IDs TS18-STD-001..017")
+    return ids
 
 SCENARIOS = _load_scenarios()
 
@@ -43,7 +42,13 @@ def main():
     pack = Path(sys.argv[1])
     raw = pack / "raw"
     derived = pack / "derived"
-    derived.mkdir(exist_ok=True)
+    if not pack.is_dir():
+        print(f"Missing pack dir: {pack}", file=sys.stderr)
+        return 1
+    if not raw.is_dir():
+        print(f"Missing raw dir: {raw}", file=sys.stderr)
+        return 1
+    derived.mkdir(parents=True, exist_ok=True)
     files = {k: raw / f"{k}.txt" for k in ["media_session", "notification", "audio", "appwidget", "shortcut", "activity"]}
     text = {k: read(v) for k, v in files.items()}
     missing = [k for k, v in files.items() if not v.exists()]
