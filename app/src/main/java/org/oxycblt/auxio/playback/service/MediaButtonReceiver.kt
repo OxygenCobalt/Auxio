@@ -48,15 +48,24 @@ class MediaButtonReceiver : BroadcastReceiver() {
             return
         }
 
-        val event = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
-        if (!MediaButtonActionMapper.shouldForward(event, hasCurrentSong = playbackManager.currentSong != null)) {
+        val event =
+            IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
+        if (
+            !MediaButtonActionMapper.shouldForward(
+                event,
+                hasCurrentSong = playbackManager.currentSong != null,
+            )
+        ) {
             L.d("Ignoring media button event after policy evaluation: $event")
             return
         }
 
         L.d("Delivering media button intent $intent")
         intent.component = ComponentName(context, AuxioService::class.java)
-        intent.putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_MEDIA_BUTTON)
+        intent.putExtra(
+            AuxioService.INTENT_KEY_START_ID,
+            IntegerTable.START_ID_MEDIA_BUTTON,
+        )
         ContextCompat.startForegroundService(context, intent)
     }
 }

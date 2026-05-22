@@ -77,8 +77,11 @@ object AudioFocusPolicy {
                     rememberTransientPlayback = false,
                 )
         }
-
-
-    fun shouldResumePlayback(decision: Decision, playWhenReady: Boolean, sessionOngoing: Boolean, hasCurrentSong: Boolean): Boolean =
+    fun shouldResumePlayback(
+        decision: Decision,
+        playWhenReady: Boolean,
+        sessionOngoing: Boolean,
+        hasCurrentSong: Boolean,
+    ): Boolean =
         decision.resume && !playWhenReady && sessionOngoing && hasCurrentSong
 }

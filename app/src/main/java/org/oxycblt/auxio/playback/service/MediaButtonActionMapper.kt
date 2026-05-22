@@ -25,6 +25,7 @@ object MediaButtonActionMapper {
     private fun isSupportedMediaKey(keyCode: Int): Boolean =
         when (keyCode) {
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+            KeyEvent.KEYCODE_HEADSETHOOK,
             KeyEvent.KEYCODE_MEDIA_PLAY,
             KeyEvent.KEYCODE_MEDIA_PAUSE,
             KeyEvent.KEYCODE_MEDIA_NEXT,

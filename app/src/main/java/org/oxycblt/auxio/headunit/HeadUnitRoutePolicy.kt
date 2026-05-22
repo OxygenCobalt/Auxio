@@ -23,7 +23,8 @@ object HeadUnitRoutePolicy {
             HeadUnitRoute.ARTISTS to HeadUnitEntryPoints.EntryDestination.ARTISTS,
             HeadUnitRoute.ALBUMS to HeadUnitEntryPoints.EntryDestination.ALBUMS,
             HeadUnitRoute.FAVOURITES to HeadUnitEntryPoints.EntryDestination.FAVOURITES,
-            HeadUnitRoute.HEAD_UNIT_SETTINGS to HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS,
+            HeadUnitRoute.HEAD_UNIT_SETTINGS to
+                HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS,
         )
 
     fun routeForAction(action: String?): HeadUnitRoute? =
@@ -40,7 +41,7 @@ object HeadUnitRoutePolicy {
             else -> null
         }
 
-    fun routeForQuickPick(action: QuickPickAction): HeadUnitRoute =
+    fun routeForQuickPick(action: QuickPickAction): HeadUnitRoute? =
         when (action) {
             QuickPickAction.NOW_PLAYING -> HeadUnitRoute.NOW_PLAYING
             QuickPickAction.SHUFFLE_ALL -> HeadUnitRoute.SHUFFLE_ALL
@@ -51,7 +52,7 @@ object HeadUnitRoutePolicy {
             QuickPickAction.RECENTLY_ADDED -> HeadUnitRoute.RECENTLY_ADDED
             QuickPickAction.FAVOURITES -> HeadUnitRoute.FAVOURITES
             QuickPickAction.DECADES,
-            QuickPickAction.FOLDERS -> HeadUnitRoute.HEAD_UNIT_SETTINGS
+            QuickPickAction.FOLDERS -> null
         }
 
     fun entryDestinationForRoute(route: HeadUnitRoute): HeadUnitEntryPoints.EntryDestination? =

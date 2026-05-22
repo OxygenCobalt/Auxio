@@ -80,7 +80,10 @@ private constructor(
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (!isSystemAction(intent.action) && !PlaybackActionPolicy.isSupportedAction(intent.action)) {
+        if (
+            !isSystemAction(intent.action) &&
+                !PlaybackActionPolicy.isSupportedAction(intent.action)
+        ) {
             L.w("Ignoring unsupported playback action: ${intent.action}")
             return
         }
@@ -163,7 +166,8 @@ private constructor(
     }
 
     private fun isSystemAction(action: String?): Boolean =
-        action == AudioManager.ACTION_AUDIO_BECOMING_NOISY || action == AudioManager.ACTION_HEADSET_PLUG
+        action == AudioManager.ACTION_AUDIO_BECOMING_NOISY ||
+            action == AudioManager.ACTION_HEADSET_PLUG
 
     private companion object {
         val INTENT_FILTER =

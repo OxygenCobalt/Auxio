@@ -146,7 +146,8 @@ class MainActivity : AppCompatActivity() {
         val route = HeadUnitRoutePolicy.routeForAction(intent.action)
         val action =
             when {
-                intent.action == Intent.ACTION_VIEW -> DeferredPlayback.Open(intent.data ?: return false)
+                intent.action == Intent.ACTION_VIEW ->
+                    DeferredPlayback.Open(intent.data ?: return false)
                 route == HeadUnitRoute.SHUFFLE_ALL -> DeferredPlayback.ShuffleAll
                 else -> null
             }
@@ -156,7 +157,10 @@ class MainActivity : AppCompatActivity() {
             return true
         }
 
-        val destination = HeadUnitEntryPoints.destinationForAction(intent.action)
+        val destination =
+            route?.let { resolvedRoute ->
+                HeadUnitRoutePolicy.entryDestinationForRoute(resolvedRoute)
+            }
         when (destination) {
             HeadUnitEntryPoints.EntryDestination.NOW_PLAYING -> playbackModel.openPlayback()
             HeadUnitEntryPoints.EntryDestination.QUEUE -> playbackModel.openQueue()

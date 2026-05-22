@@ -191,7 +191,12 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
-        collectImmediately(homeModel.songList, homeModel.genreList, homeModel.playlistList, ::updateMetadataShortcuts)
+        collectImmediately(
+            homeModel.songList,
+            homeModel.genreList,
+            homeModel.playlistList,
+            ::updateMetadataShortcuts,
+        )
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collectImmediately(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
@@ -209,24 +214,25 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             resources.getDimensionPixelSize(R.dimen.spacing_small),
         )
         HeadUnitQuickAccess.quickPicks(
-                hasLibraryContent = hasLibrary,
-                hasFolderSupport = true,
-                hasFavouritesSupport = favouritesPlaylist != null,
-                hasYearMetadata = hasYearMetadata,
-            )
+            hasLibraryContent = hasLibrary,
+            hasFolderSupport = true,
+            hasFavouritesSupport = favouritesPlaylist != null,
+            hasYearMetadata = hasYearMetadata,
+        )
             // Only show FAVOURITES when it has a real destination; other disabled items
             // (e.g. SHUFFLE_ALL on an empty library) remain visible so users know they exist.
             .filter { item -> item.enabled || item.action != QuickPickAction.FAVOURITES }
             .forEach { item ->
-            val chip = Chip(binding.root.context).apply {
-                isCheckable = false
-                isClickable = true
-                isEnabled = item.enabled
-                text = quickLabel(item.action)
-                contentDescription = text
-                setOnClickListener { handleQuickPick(item.action) }
-            }
-            binding.homeQuickPicks.addView(chip)
+                val chip =
+                    Chip(binding.root.context).apply {
+                        isCheckable = false
+                        isClickable = true
+                        isEnabled = item.enabled
+                        text = quickLabel(item.action)
+                        contentDescription = text
+                        setOnClickListener { handleQuickPick(item.action) }
+                    }
+                binding.homeQuickPicks.addView(chip)
             }
     }
 
@@ -249,12 +255,17 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             HeadUnitEntryPoints.EntryDestination.ARTISTS -> openTab(MusicType.ARTISTS)
             HeadUnitEntryPoints.EntryDestination.ALBUMS -> openTab(MusicType.ALBUMS)
             HeadUnitEntryPoints.EntryDestination.FAVOURITES ->
-                favouritesPlaylist?.let { detailModel.showPlaylist(it) } ?: openTab(MusicType.PLAYLISTS)
+                favouritesPlaylist?.let { detailModel.showPlaylist(it) }
+                    ?: openTab(MusicType.PLAYLISTS)
             HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS -> homeModel.showSettings()
         }
     }
 
-    private fun updateMetadataShortcuts(songs: List<Song>, genres: List<Genre>, playlists: List<Playlist>) {
+    private fun updateMetadataShortcuts(
+        songs: List<Song>,
+        genres: List<Genre>,
+        playlists: List<Playlist>,
+    ) {
         val binding = requireBinding()
         favouritesPlaylist = playlists.firstOrNull { it.name.raw == FAVOURITES_PLAYLIST_NAME }
         val decades = HeadUnitQuickAccess.deriveDecades(homeModel.allSongYears)
@@ -269,9 +280,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
 
         binding.homeMetadataChips.removeAllViews()
         if (metadataState.genres) {
-            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_genres)) {
-                openTab(MusicType.GENRES)
-            })
+            binding.homeMetadataChips.addView(
+                buildMetaChip(binding, getString(R.string.lbl_genres)) {
+                    openTab(MusicType.GENRES)
+                }
+            )
         }
         if (metadataState.decades) {
             val activeDecade = homeModel.decadeFilter.value
@@ -282,19 +295,25 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             }
         }
         if (metadataState.recentlyAdded) {
-            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_recently_added)) {
-                openRecentlyAdded()
-            })
+            binding.homeMetadataChips.addView(
+                buildMetaChip(binding, getString(R.string.lbl_recently_added)) {
+                    openRecentlyAdded()
+                }
+            )
         }
         if (metadataState.folders) {
-            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_folders)) {
-                homeModel.startChooseMusicLocations()
-            })
+            binding.homeMetadataChips.addView(
+                buildMetaChip(binding, getString(R.string.lbl_folders)) {
+                    homeModel.startChooseMusicLocations()
+                }
+            )
         }
         if (metadataState.favourites) {
-            binding.homeMetadataChips.addView(buildMetaChip(binding, getString(R.string.lbl_favourites)) {
-                favouritesPlaylist?.let { detailModel.showPlaylist(it) }
-            })
+            binding.homeMetadataChips.addView(
+                buildMetaChip(binding, getString(R.string.lbl_favourites)) {
+                    favouritesPlaylist?.let { detailModel.showPlaylist(it) }
+                }
+            )
         }
         setupHeadUnitQuickAccess(binding)
     }
@@ -311,7 +330,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             contentDescription = text
             setOnClickListener {
                 // Read the current filter value once to avoid any ordering sensitivity between
-                // the read and the update (both are on the main thread, but reading once is cleaner).
+                // the read and the update (both are on the main thread, but reading once is
+                // cleaner).
                 val currentFilter = homeModel.decadeFilter.value
                 // Toggle: tapping the active decade clears the filter; tapping a new one sets it.
                 val newDecade = if (currentFilter == decade) null else decade
@@ -326,7 +346,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
 
     // TODO: Optimise chip rebuild to only update isChecked when decades list is unchanged.
 
-    private fun buildMetaChip(binding: FragmentHomeBinding, label: String, onClick: () -> Unit): Chip =
+    private fun buildMetaChip(
+        binding: FragmentHomeBinding,
+        label: String,
+        onClick: () -> Unit,
+    ): Chip =
         Chip(binding.root.context).apply {
             isCheckable = false
             isClickable = true
@@ -350,10 +374,16 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         }
 
     private fun handleQuickPick(action: QuickPickAction) {
+        val route = HeadUnitRoutePolicy.routeForQuickPick(action)
+        if (route != null) {
+            handleHeadUnitRoute(route)
+            return
+        }
+
         when (action) {
             QuickPickAction.DECADES -> openDecades()
             QuickPickAction.FOLDERS -> homeModel.startChooseMusicLocations()
-            else -> handleHeadUnitRoute(HeadUnitRoutePolicy.routeForQuickPick(action))
+            else -> Unit
         }
     }
 
@@ -367,7 +397,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             HeadUnitRoute.ARTISTS -> openTab(MusicType.ARTISTS)
             HeadUnitRoute.ALBUMS -> openTab(MusicType.ALBUMS)
             HeadUnitRoute.FAVOURITES ->
-                favouritesPlaylist?.let { detailModel.showPlaylist(it) } ?: openTab(MusicType.PLAYLISTS)
+                favouritesPlaylist?.let { detailModel.showPlaylist(it) }
+                    ?: openTab(MusicType.PLAYLISTS)
             HeadUnitRoute.HEAD_UNIT_SETTINGS -> homeModel.showSettings()
         }
     }

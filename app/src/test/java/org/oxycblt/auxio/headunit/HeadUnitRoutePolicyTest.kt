@@ -7,15 +7,27 @@ import org.junit.Test
 class HeadUnitRoutePolicyTest {
     @Test
     fun `routeForAction maps all supported head-unit actions`() {
-        assertEquals(HeadUnitRoute.NOW_PLAYING, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING))
-        assertEquals(HeadUnitRoute.SHUFFLE_ALL, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_SHUFFLE_ALL))
-        assertEquals(HeadUnitRoute.QUEUE, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_QUEUE))
-        assertEquals(HeadUnitRoute.RECENTLY_ADDED, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_RECENTLY_ADDED))
-        assertEquals(HeadUnitRoute.GENRES, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_GENRES))
-        assertEquals(HeadUnitRoute.ARTISTS, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_ARTISTS))
-        assertEquals(HeadUnitRoute.ALBUMS, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_ALBUMS))
-        assertEquals(HeadUnitRoute.FAVOURITES, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_FAVOURITES))
-        assertEquals(HeadUnitRoute.HEAD_UNIT_SETTINGS, HeadUnitRoutePolicy.routeForAction(HeadUnitEntryPoints.ACTION_OPEN_HEAD_UNIT_SETTINGS))
+        val expectedRoutes =
+            mapOf(
+                HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING to HeadUnitRoute.NOW_PLAYING,
+                HeadUnitEntryPoints.ACTION_SHUFFLE_ALL to HeadUnitRoute.SHUFFLE_ALL,
+                HeadUnitEntryPoints.ACTION_OPEN_QUEUE to HeadUnitRoute.QUEUE,
+                HeadUnitEntryPoints.ACTION_OPEN_RECENTLY_ADDED to HeadUnitRoute.RECENTLY_ADDED,
+                HeadUnitEntryPoints.ACTION_OPEN_GENRES to HeadUnitRoute.GENRES,
+                HeadUnitEntryPoints.ACTION_OPEN_ARTISTS to HeadUnitRoute.ARTISTS,
+                HeadUnitEntryPoints.ACTION_OPEN_ALBUMS to HeadUnitRoute.ALBUMS,
+                HeadUnitEntryPoints.ACTION_OPEN_FAVOURITES to HeadUnitRoute.FAVOURITES,
+                HeadUnitEntryPoints.ACTION_OPEN_HEAD_UNIT_SETTINGS to
+                    HeadUnitRoute.HEAD_UNIT_SETTINGS,
+            )
+
+        expectedRoutes.forEach { (action, expectedRoute) ->
+            assertEquals(
+                "Unexpected route for action $action",
+                expectedRoute,
+                HeadUnitRoutePolicy.routeForAction(action),
+            )
+        }
     }
 
     @Test
@@ -25,7 +37,53 @@ class HeadUnitRoutePolicyTest {
     }
 
     @Test
-    fun `queue quick pick always maps to queue route`() {
-        assertEquals(HeadUnitRoute.QUEUE, HeadUnitRoutePolicy.routeForQuickPick(QuickPickAction.QUEUE))
+    fun `routeForQuickPick only maps canonical head-unit routes`() {
+        val expectedRoutes =
+            mapOf(
+                QuickPickAction.NOW_PLAYING to HeadUnitRoute.NOW_PLAYING,
+                QuickPickAction.SHUFFLE_ALL to HeadUnitRoute.SHUFFLE_ALL,
+                QuickPickAction.GENRES to HeadUnitRoute.GENRES,
+                QuickPickAction.ARTISTS to HeadUnitRoute.ARTISTS,
+                QuickPickAction.ALBUMS to HeadUnitRoute.ALBUMS,
+                QuickPickAction.QUEUE to HeadUnitRoute.QUEUE,
+                QuickPickAction.RECENTLY_ADDED to HeadUnitRoute.RECENTLY_ADDED,
+                QuickPickAction.DECADES to null,
+                QuickPickAction.FOLDERS to null,
+                QuickPickAction.FAVOURITES to HeadUnitRoute.FAVOURITES,
+            )
+
+        QuickPickAction.entries.forEach { action ->
+            assertEquals(
+                "Unexpected route for quick pick $action",
+                expectedRoutes[action],
+                HeadUnitRoutePolicy.routeForQuickPick(action),
+            )
+        }
+    }
+
+    @Test
+    fun `entryDestinationForRoute only maps entry destinations`() {
+        val expectedDestinations =
+            mapOf(
+                HeadUnitRoute.NOW_PLAYING to HeadUnitEntryPoints.EntryDestination.NOW_PLAYING,
+                HeadUnitRoute.SHUFFLE_ALL to null,
+                HeadUnitRoute.QUEUE to HeadUnitEntryPoints.EntryDestination.QUEUE,
+                HeadUnitRoute.RECENTLY_ADDED to
+                    HeadUnitEntryPoints.EntryDestination.RECENTLY_ADDED,
+                HeadUnitRoute.GENRES to HeadUnitEntryPoints.EntryDestination.GENRES,
+                HeadUnitRoute.ARTISTS to HeadUnitEntryPoints.EntryDestination.ARTISTS,
+                HeadUnitRoute.ALBUMS to HeadUnitEntryPoints.EntryDestination.ALBUMS,
+                HeadUnitRoute.FAVOURITES to HeadUnitEntryPoints.EntryDestination.FAVOURITES,
+                HeadUnitRoute.HEAD_UNIT_SETTINGS to
+                    HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS,
+            )
+
+        HeadUnitRoute.entries.forEach { route ->
+            assertEquals(
+                "Unexpected destination for route $route",
+                expectedDestinations[route],
+                HeadUnitRoutePolicy.entryDestinationForRoute(route),
+            )
+        }
     }
 }

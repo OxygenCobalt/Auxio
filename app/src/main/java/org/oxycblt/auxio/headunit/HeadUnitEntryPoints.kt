@@ -54,7 +54,9 @@ object HeadUnitEntryPoints {
     }
 
     fun destinationForAction(action: String?): EntryDestination? =
-        HeadUnitRoutePolicy.routeForAction(action)?.let { HeadUnitRoutePolicy.entryDestinationForRoute(it) }
+        HeadUnitRoutePolicy.routeForAction(action)?.let { route ->
+            HeadUnitRoutePolicy.entryDestinationForRoute(route)
+        }
 
     internal fun publishedDynamicShortcutIds(maxShortcutCount: Int): List<String> =
         dynamicShortcutSpecs(maxShortcutCount).map { it.id }

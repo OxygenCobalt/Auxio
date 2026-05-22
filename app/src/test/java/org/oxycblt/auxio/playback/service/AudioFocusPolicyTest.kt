@@ -127,13 +127,21 @@ class AudioFocusPolicyTest {
                 wasPlayingBeforeTransientLoss = afterTransient.rememberTransientPlayback ?: false
             )
         val afterGain =
-            AudioFocusPolicy.decide(AudioFocusPolicy.Event.GAIN, stateAfterTransient, isPlaying = false)
+            AudioFocusPolicy.decide(
+                AudioFocusPolicy.Event.GAIN,
+                stateAfterTransient,
+                isPlaying = false,
+            )
         val stateAfterGain =
             AudioFocusPolicy.State(
                 wasPlayingBeforeTransientLoss = afterGain.rememberTransientPlayback ?: false
             )
         val secondGain =
-            AudioFocusPolicy.decide(AudioFocusPolicy.Event.GAIN, stateAfterGain, isPlaying = false)
+            AudioFocusPolicy.decide(
+                AudioFocusPolicy.Event.GAIN,
+                stateAfterGain,
+                isPlaying = false,
+            )
 
         assertTrue(afterGain.resume)
         assertEquals(false, afterGain.rememberTransientPlayback)
@@ -143,10 +151,38 @@ class AudioFocusPolicyTest {
     @Test
     fun `shouldResumePlayback requires session and current song`() {
         val decision = AudioFocusPolicy.Decision(resume = true)
-        assertFalse(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = false, sessionOngoing = false, hasCurrentSong = true))
-        assertFalse(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = false, sessionOngoing = true, hasCurrentSong = false))
-        assertFalse(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = true, sessionOngoing = true, hasCurrentSong = true))
-        assertTrue(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = false, sessionOngoing = true, hasCurrentSong = true))
+        assertFalse(
+            AudioFocusPolicy.shouldResumePlayback(
+                decision,
+                playWhenReady = false,
+                sessionOngoing = false,
+                hasCurrentSong = true,
+            )
+        )
+        assertFalse(
+            AudioFocusPolicy.shouldResumePlayback(
+                decision,
+                playWhenReady = false,
+                sessionOngoing = true,
+                hasCurrentSong = false,
+            )
+        )
+        assertFalse(
+            AudioFocusPolicy.shouldResumePlayback(
+                decision,
+                playWhenReady = true,
+                sessionOngoing = true,
+                hasCurrentSong = true,
+            )
+        )
+        assertTrue(
+            AudioFocusPolicy.shouldResumePlayback(
+                decision,
+                playWhenReady = false,
+                sessionOngoing = true,
+                hasCurrentSong = true,
+            )
+        )
     }
 
     @Test

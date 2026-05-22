@@ -212,7 +212,10 @@ private constructor(
                 if (maxTabs <= 1) {
                     homeGenerator.tabs().map { TabNode.Home(it).toMediaItem(context) }
                 } else {
-                    homeGenerator.tabs().drop(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) }
+                    homeGenerator
+                        .tabs()
+                        .drop(maxTabs - 1)
+                        .map { TabNode.Home(it).toMediaItem(context) }
                 }
             }
             is TabNode.Home ->
@@ -273,7 +276,10 @@ private constructor(
 
     private fun placeholderItem(title: String): MediaItem =
         MediaItem(
-            MediaDescriptionCompat.Builder().setMediaId("placeholder:$title").setTitle(title).build(),
+            MediaDescriptionCompat.Builder()
+                .setMediaId("placeholder:$title")
+                .setTitle(title)
+                .build(),
             MediaItem.FLAG_BROWSABLE,
         )
 }
