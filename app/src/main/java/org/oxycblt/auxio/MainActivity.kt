@@ -31,6 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
+import org.oxycblt.auxio.headunit.HeadUnitRoute
+import org.oxycblt.auxio.headunit.HeadUnitRoutePolicy
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.ui.UISettings
@@ -141,10 +143,11 @@ class MainActivity : AppCompatActivity() {
         }
         intent.putExtra(KEY_INTENT_USED, true)
 
+        val route = HeadUnitRoutePolicy.routeForAction(intent.action)
         val action =
-            when (intent.action) {
-                Intent.ACTION_VIEW -> DeferredPlayback.Open(intent.data ?: return false)
-                HeadUnitEntryPoints.ACTION_SHUFFLE_ALL -> DeferredPlayback.ShuffleAll
+            when {
+                intent.action == Intent.ACTION_VIEW -> DeferredPlayback.Open(intent.data ?: return false)
+                route == HeadUnitRoute.SHUFFLE_ALL -> DeferredPlayback.ShuffleAll
                 else -> null
             }
         if (action != null) {

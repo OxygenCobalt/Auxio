@@ -53,6 +53,8 @@ import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.headunit.FAVOURITES_PLAYLIST_NAME
 import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.headunit.HeadUnitQuickAccess
+import org.oxycblt.auxio.headunit.HeadUnitRoute
+import org.oxycblt.auxio.headunit.HeadUnitRoutePolicy
 import org.oxycblt.auxio.headunit.QuickPickAction
 import org.oxycblt.auxio.home.tabs.NamedTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
@@ -343,16 +345,24 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
 
     private fun handleQuickPick(action: QuickPickAction) {
         when (action) {
-            QuickPickAction.NOW_PLAYING -> playbackModel.openPlayback()
-            QuickPickAction.SHUFFLE_ALL -> playbackModel.shuffleAll()
-            QuickPickAction.GENRES -> openTab(MusicType.GENRES)
-            QuickPickAction.ARTISTS -> openTab(MusicType.ARTISTS)
-            QuickPickAction.ALBUMS -> openTab(MusicType.ALBUMS)
-            QuickPickAction.QUEUE -> playbackModel.openQueue()
-            QuickPickAction.RECENTLY_ADDED -> openRecentlyAdded()
             QuickPickAction.DECADES -> openDecades()
             QuickPickAction.FOLDERS -> homeModel.startChooseMusicLocations()
-            QuickPickAction.FAVOURITES -> favouritesPlaylist?.let { detailModel.showPlaylist(it) }
+            else -> handleHeadUnitRoute(HeadUnitRoutePolicy.routeForQuickPick(action))
+        }
+    }
+
+    private fun handleHeadUnitRoute(route: HeadUnitRoute) {
+        when (route) {
+            HeadUnitRoute.NOW_PLAYING -> playbackModel.openPlayback()
+            HeadUnitRoute.SHUFFLE_ALL -> playbackModel.shuffleAll()
+            HeadUnitRoute.QUEUE -> playbackModel.openQueue()
+            HeadUnitRoute.RECENTLY_ADDED -> openRecentlyAdded()
+            HeadUnitRoute.GENRES -> openTab(MusicType.GENRES)
+            HeadUnitRoute.ARTISTS -> openTab(MusicType.ARTISTS)
+            HeadUnitRoute.ALBUMS -> openTab(MusicType.ALBUMS)
+            HeadUnitRoute.FAVOURITES ->
+                favouritesPlaylist?.let { detailModel.showPlaylist(it) } ?: openTab(MusicType.PLAYLISTS)
+            HeadUnitRoute.HEAD_UNIT_SETTINGS -> homeModel.showSettings()
         }
     }
 

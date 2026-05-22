@@ -195,6 +195,10 @@ private constructor(
                 val tabs = homeGenerator.tabs()
                 if (tabs.isEmpty()) {
                     listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+                } else if (maxTabs <= 0) {
+                    listOf(placeholderItem(context.getString(R.string.lbl_indexing)))
+                } else if (maxTabs == 1) {
+                    listOf(TabNode.More.toMediaItem(context))
                 } else if (maxTabs < tabs.size) {
                     tabs.take(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) } +
                         TabNode.More.toMediaItem(context)
@@ -203,7 +207,11 @@ private constructor(
                 }
             }
             is TabNode.More -> {
-                homeGenerator.tabs().drop(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) }
+                if (maxTabs <= 1) {
+                    homeGenerator.tabs().map { TabNode.Home(it).toMediaItem(context) }
+                } else {
+                    homeGenerator.tabs().drop(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) }
+                }
             }
             is TabNode.Home ->
                 // homeGenerator returns emptyLists

@@ -54,17 +54,7 @@ object HeadUnitEntryPoints {
     }
 
     fun destinationForAction(action: String?): EntryDestination? =
-        when (action) {
-            ACTION_OPEN_NOW_PLAYING -> EntryDestination.NOW_PLAYING
-            ACTION_OPEN_QUEUE -> EntryDestination.QUEUE
-            ACTION_OPEN_RECENTLY_ADDED -> EntryDestination.RECENTLY_ADDED
-            ACTION_OPEN_GENRES -> EntryDestination.GENRES
-            ACTION_OPEN_ARTISTS -> EntryDestination.ARTISTS
-            ACTION_OPEN_ALBUMS -> EntryDestination.ALBUMS
-            ACTION_OPEN_FAVOURITES -> EntryDestination.FAVOURITES
-            ACTION_OPEN_HEAD_UNIT_SETTINGS -> EntryDestination.HEAD_UNIT_SETTINGS
-            else -> null
-        }
+        HeadUnitRoutePolicy.routeForAction(action)?.let { HeadUnitRoutePolicy.entryDestinationForRoute(it) }
 
     internal fun publishedDynamicShortcutIds(maxShortcutCount: Int): List<String> =
         dynamicShortcutSpecs(maxShortcutCount).map { it.id }

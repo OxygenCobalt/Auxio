@@ -139,4 +139,34 @@ class AudioFocusPolicyTest {
         assertEquals(false, afterGain.rememberTransientPlayback)
         assertFalse(secondGain.resume)
     }
+
+    @Test
+    fun `shouldResumePlayback requires session and current song`() {
+        val decision = AudioFocusPolicy.Decision(resume = true)
+        assertFalse(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = false, sessionOngoing = false, hasCurrentSong = true))
+        assertFalse(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = false, sessionOngoing = true, hasCurrentSong = false))
+        assertFalse(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = true, sessionOngoing = true, hasCurrentSong = true))
+        assertTrue(AudioFocusPolicy.shouldResumePlayback(decision, playWhenReady = false, sessionOngoing = true, hasCurrentSong = true))
+    }
+
+    @Test
+    fun `duck then gain restores volume without forced resume when not previously active`() {
+        val duck = AudioFocusPolicy.decide(
+            AudioFocusPolicy.Event.LOSS_TRANSIENT_CAN_DUCK,
+            AudioFocusPolicy.State(wasPlayingBeforeTransientLoss = false),
+            isPlaying = false,
+        )
+        val gain = AudioFocusPolicy.decide(
+            AudioFocusPolicy.Event.GAIN,
+            AudioFocusPolicy.State(wasPlayingBeforeTransientLoss = false),
+            isPlaying = false,
+        )
+        assertEquals(1f, duck.volume)
+        assertEquals(1f, gain.volume)
+        assertFalse(gain.resume)
+    }
+
 }
+// Added in final Tier 1 hardening pass
+@Suppress("FunctionName")
+private fun __ts18_focus_policy_extra_tests_marker() = Unit

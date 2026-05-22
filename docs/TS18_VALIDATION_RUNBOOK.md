@@ -79,7 +79,7 @@ Use only these values in evidence rows:
 - **Steps:** Trigger notification play/pause/next/prev 3 cycles.
 - **Expected:** Transport buttons remain visible; compact controls map to prev-play/next; state mirrors MediaSession.
 - **Evidence:** screen recording + `adb shell dumpsys notification --noredact`.
-- **Pass/Fail:** Fail on missing controls or stale state after any cycle.
+- **Pass/Fail:** Fail on missing controls, incorrect compact action order (must remain prev/play-pause/next), or stale state after any cycle.
 - **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
 
 ### TS18-STD-003: Steering-wheel/media keys route to Auxio
@@ -109,7 +109,7 @@ Use only these values in evidence rows:
 ### TS18-STD-006: Sleep/resume playback state restoration
 - **Setup:** Start playback, then put head unit display/device into sleep/standby cycle.
 - **Steps:** Wake device, then run `adb shell dumpsys media_session` and verify Auxio session state.
-- **Expected:** Session and transport state are coherent after wake; playback resumes or remains paused consistently with pre-sleep state. Metadata/notification content should refresh to the restored queue item without stale artwork/text.
+- **Expected:** Session and transport state are coherent after wake; playback resumes or remains paused consistently with pre-sleep state. Metadata/notification content should refresh to the restored queue item without stale artwork/text; when playback fully stops, stale metadata must clear.
 - **Evidence:** pre/post `dumpsys media_session` + lockscreen/launcher screenshots.
 - **Pass/Fail:** Fail if state is lost, stale, or mismatched post-resume.
 - **Confidence / Porting decision:** Requires TS18 validation / Requires TS18 runtime validation.
