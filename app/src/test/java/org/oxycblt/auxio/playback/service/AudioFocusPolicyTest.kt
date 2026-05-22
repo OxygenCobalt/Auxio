@@ -167,6 +167,3 @@ class AudioFocusPolicyTest {
     }
 
 }
-// Added in final Tier 1 hardening pass
-@Suppress("FunctionName")
-private fun __ts18_focus_policy_extra_tests_marker() = Unit
