@@ -36,10 +36,17 @@ data class HeadUnitDashboardEntry(
 )
 
 object HeadUnitDashboardPolicy {
-    fun isParityAligned(): Boolean =
-        HeadUnitStockMusicParity.requiredEntryActions().containsAll(
-            setOf(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING, HeadUnitEntryPoints.ACTION_OPEN_QUEUE)
-        )
+    fun isParityAligned(
+        publicActions: Set<String> = HeadUnitEntryPoints.ALL_PUBLIC_ACTIONS,
+        routeForAction: (String) -> HeadUnitRoute? = HeadUnitRoutePolicy::routeForAction,
+        entryDestinationForRoute:
+            (HeadUnitRoute) -> HeadUnitEntryPoints.EntryDestination? =
+            HeadUnitRoutePolicy::entryDestinationForRoute,
+    ): Boolean =
+        HeadUnitStockMusicParity.requiredEntryActions().all { action ->
+            action in publicActions &&
+                routeForAction(action)?.let(entryDestinationForRoute) != null
+        }
 
     fun entries(state: HeadUnitDashboardState): List<HeadUnitDashboardEntry> =
         buildList {

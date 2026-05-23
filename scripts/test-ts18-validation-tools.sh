@@ -23,6 +23,10 @@ python3 scripts/ts18-validate-evidence-pack.py "$sp"
 bash scripts/ts18-validation-workflow.sh --help >/dev/null
 bash scripts/ts18-validation-workflow.sh validate --pack docs/templates/fixtures/fixture-pass-core-media
 bash scripts/ts18-validation-workflow.sh summarise --pack docs/templates/fixtures/fixture-pass-core-media
+if [ -d docs/templates/fixtures/pack-minimal-pass ]; then
+  bash scripts/ts18-validation-workflow.sh summarise --pack docs/templates/fixtures/pack-minimal-pass >/dev/null
+  bash scripts/ts18-validation-workflow.sh propose-matrix --pack docs/templates/fixtures/pack-minimal-pass >/dev/null
+fi
 bash scripts/ts18-capture-validation-pack.sh --out "validation-output test" --label "space" --scenario TS18-STD-001 --single --dry-run --zip >/dev/null
 find "validation-output test" -maxdepth 1 -name '*.zip' -type f | grep -q .
 echo "ts18 validation tool tests passed"

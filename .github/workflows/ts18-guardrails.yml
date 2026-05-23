@@ -411,6 +411,11 @@ jobs:
             exit 0
           fi
 
+          if [ -f scripts/ts18-validate-scenario-map.py ]; then
+            python3 scripts/ts18-validate-scenario-map.py "${map}"
+            exit 0
+          fi
+
           python3 - <<'PY'
           import json
           from pathlib import Path

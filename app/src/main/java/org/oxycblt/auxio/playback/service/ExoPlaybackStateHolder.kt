@@ -114,6 +114,9 @@ class ExoPlaybackStateHolder(
     var sessionOngoing = false
         private set
 
+    override val isAudioFocusHeld: Boolean
+        get() = hasAudioFocus
+
     fun attach() {
         playbackManager.registerStateHolder(this)
         musicRepository.addUpdateListener(this)

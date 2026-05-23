@@ -12,6 +12,47 @@ class HeadUnitDashboardPolicyTest {
     }
 
     @Test
+    fun `dashboard parity fails when a required action is not public`() {
+        assertFalse(
+            HeadUnitDashboardPolicy.isParityAligned(
+                publicActions =
+                    HeadUnitEntryPoints.ALL_PUBLIC_ACTIONS -
+                        HeadUnitEntryPoints.ACTION_OPEN_QUEUE
+            )
+        )
+    }
+
+    @Test
+    fun `dashboard parity fails when a required action is not routable`() {
+        assertFalse(
+            HeadUnitDashboardPolicy.isParityAligned(
+                routeForAction = { action ->
+                    if (action == HeadUnitEntryPoints.ACTION_OPEN_QUEUE) {
+                        null
+                    } else {
+                        HeadUnitRoutePolicy.routeForAction(action)
+                    }
+                }
+            )
+        )
+    }
+
+    @Test
+    fun `dashboard parity fails when a required route has no destination`() {
+        assertFalse(
+            HeadUnitDashboardPolicy.isParityAligned(
+                entryDestinationForRoute = { route ->
+                    if (route == HeadUnitRoute.QUEUE) {
+                        null
+                    } else {
+                        HeadUnitRoutePolicy.entryDestinationForRoute(route)
+                    }
+                }
+            )
+        )
+    }
+
+    @Test
     fun `entries include stable priority order`() {
         val entries =
             HeadUnitDashboardPolicy.entries(

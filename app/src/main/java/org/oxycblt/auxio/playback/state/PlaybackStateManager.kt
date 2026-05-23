@@ -72,6 +72,9 @@ interface PlaybackStateManager {
     /** The audio session ID of the internal player. Null if no internal player exists. */
     val currentAudioSessionId: Int?
 
+    /** Whether the active playback holder currently owns Android audio focus. */
+    val isAudioFocusHeld: Boolean
+
     /**
      * Add a [Listener] to this instance. This can be used to receive changes in the playback state.
      * Will immediately invoke [Listener] methods to initialize the instance with the current state.
@@ -402,6 +405,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     override val currentAudioSessionId: Int?
         get() = stateHolder?.audioSessionId
+
+    override val isAudioFocusHeld: Boolean
+        get() = stateHolder?.isAudioFocusHeld == true
 
     @Synchronized
     override fun addListener(listener: Listener) {
