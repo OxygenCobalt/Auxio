@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.headunit
 
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.headunit.compat.HeadUnitStockMusicParity
 
 data class HeadUnitDashboardState(
     val hasLibraryContent: Boolean,
@@ -35,6 +36,18 @@ data class HeadUnitDashboardEntry(
 )
 
 object HeadUnitDashboardPolicy {
+    fun isParityAligned(
+        publicActions: Set<String> = HeadUnitEntryPoints.ALL_PUBLIC_ACTIONS,
+        routeForAction: (String) -> HeadUnitRoute? = HeadUnitRoutePolicy::routeForAction,
+        entryDestinationForRoute:
+            (HeadUnitRoute) -> HeadUnitEntryPoints.EntryDestination? =
+            HeadUnitRoutePolicy::entryDestinationForRoute,
+    ): Boolean =
+        HeadUnitStockMusicParity.requiredEntryActions().all { action ->
+            action in publicActions &&
+                routeForAction(action)?.let(entryDestinationForRoute) != null
+        }
+
     fun entries(state: HeadUnitDashboardState): List<HeadUnitDashboardEntry> =
         buildList {
             add(entry(QuickPickAction.NOW_PLAYING, R.string.lbl_playback, R.drawable.ic_play_24, true))
@@ -112,12 +125,13 @@ object HeadUnitDashboardPolicy {
         labelRes: Int,
         iconRes: Int,
         enabled: Boolean,
-    ) =
-        HeadUnitDashboardEntry(
-            action,
-            HeadUnitRoutePolicy.routeForQuickPick(action),
-            labelRes,
-            iconRes,
-            enabled,
+    ): HeadUnitDashboardEntry {
+        return HeadUnitDashboardEntry(
+            action = action,
+            route = HeadUnitRoutePolicy.routeForQuickPick(action),
+            labelRes = labelRes,
+            iconRes = iconRes,
+            enabled = enabled,
         )
+    }
 }

@@ -49,3 +49,9 @@ Launcher/widget standards validation scenarios TS18-STD-010..017 are defined in 
 - Warm-start entry routing should preserve intended destination when app process/activity is already alive.
 
 Confidence: Inferred / Requires TS18 validation. Porting decision: Directly reusable requirement.
+
+- Requirement update: no TS18 parity requirement is considered satisfied without imported Tier 2 hardware evidence.
+
+- 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
+
+- Delivery protocol update: large-scope TS18 tasks must deliver runtime-wired outcomes; scaffold-only work is not counted as implemented.

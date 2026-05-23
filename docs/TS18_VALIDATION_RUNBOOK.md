@@ -222,3 +222,7 @@ Per scenario include:
 These checks still require real TS18 hardware evidence; no pass is implied by code changes.
 
 - Dashboard route semantics check: FOLDERS/DECADES are non-route metadata chips; HEAD_UNIT_SETTINGS is explicit and should open settings surface.
+
+- Phase 5G/6A: this runbook now depends on external evidence import scripts and does not auto-promote Tier 3/4.
+- Validation-pack capture/tests use `scripts/ts18-validation-workflow.sh` (capture/validate/summarise/classify/propose-matrix).
+- Phase 5G/6A evidence packs use `scripts/ts18-evidence-workflow.sh` as the canonical summarise/propose entrypoint.

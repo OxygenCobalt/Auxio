@@ -48,6 +48,9 @@ interface PlaybackStateHolder {
      */
     fun resolveQueue(): RawQueue
 
+    /** Whether the player currently holds Android audio focus. */
+    val isAudioFocusHeld: Boolean
+
     /** The current audio session ID of the audio player. */
     val audioSessionId: Int
 

@@ -67,3 +67,7 @@ See canonical tier model: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Nati
 - Warm-start destination preservation for entry routing: **Done (Tier 1)**, **Requires TS18 validation**.
 
 No Tier 3/Tier 4 private/native integration is implied by these rows.
+
+- Phase 5G/6A note: matrix updates are proposal-only until real TS18 evidence is imported.
+
+- 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.

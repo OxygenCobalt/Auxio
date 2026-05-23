@@ -186,6 +186,13 @@ class AudioFocusPolicyTest {
     }
 
     @Test
+    fun `media button handling requires focus and current song`() {
+        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = false, hasCurrentSong = true))
+        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = false))
+        assertTrue(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = true))
+    }
+
+    @Test
     fun `duck then gain restores volume without forced resume when not previously active`() {
         val duck = AudioFocusPolicy.decide(
             AudioFocusPolicy.Event.LOSS_TRANSIENT_CAN_DUCK,

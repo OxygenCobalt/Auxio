@@ -37,3 +37,9 @@ Latest app/runtime hardening note: `docs/TS18_TIER1_HARDENING_NOTES.md` (canonic
 
 ## Current execution note (Head-Unit Experience Mode)
 Latest Tier 1 scope now includes a policy-driven head-unit dashboard model, queue empty-state recovery, playback large-control ergonomics, and routing/shortcut alignment updates. This remains pre-hardware-validation work and feeds Phase 5G/6A validation.
+
+- Phase 5G/6A started: validation execution pack and parity-gap population workflow (Tier 2 only).
+
+- 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
+
+- Delivery protocol update: large-scope TS18 tasks must deliver runtime-wired outcomes; scaffold-only work is not counted as implemented.

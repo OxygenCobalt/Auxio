@@ -93,3 +93,7 @@ Auxio core
 - Remaining parity gaps (e.g. widget image display quality, metadata richness) should be validated on hardware before considering any native path.
 - Confidence: **Inferred / Requires TS18 validation**.
 - Porting decision: **Directly reusable requirement / Reusable validation idea**.
+
+- 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
+
+- Delivery protocol update: large-scope TS18 tasks must deliver runtime-wired outcomes; scaffold-only work is not counted as implemented.

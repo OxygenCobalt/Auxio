@@ -64,3 +64,9 @@ See [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md) 
 - [`TS18_STOCK_TMUSIC_PARITY_LEDGER.md`](TS18_STOCK_TMUSIC_PARITY_LEDGER.md) — stock/t-music parity ledger (evidence-oriented)
 - [`TS18_NATIVE_CONTRACT_INVENTORY.md`](TS18_NATIVE_CONTRACT_INVENTORY.md) — native/private contract inventory (evidence-only, not production approval)
 - [`evidence/ts18/README.md`](evidence/ts18/README.md) — evidence pack index and registry
+
+- Added Phase 5G/6A validation execution tooling (capture/import/classify/propose).
+
+- TS18 validation tooling now includes schema + manifest validation + orchestration CLI.
+
+- 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.

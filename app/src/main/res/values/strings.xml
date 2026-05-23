@@ -264,6 +264,12 @@
     <string name="lbl_head_unit_dashboard">Head-unit dashboard</string>
     <string name="set_head_unit_dashboard_quick_access">Show dashboard quick access</string>
     <string name="set_head_unit_dashboard_quick_access_desc">Show large dashboard chips for playback, queue, browse, and settings</string>
+    <string name="set_head_unit_compat_status">Compatibility status</string>
+    <string name="set_head_unit_compat_status_desc">Current readiness of head-unit compatibility surfaces</string>
+    <string name="set_head_unit_compat_status_summary">Compat: %1$s, fallback: %2$s, widget metadata: %3$s, shortcuts: %4$s, session: %5$s, native/private: %6$s</string>
+    <string name="set_head_unit_compat_native_not_enabled_requires_validation">Not enabled (requires TS18 validation)</string>
+    <string name="lbl_enabled">enabled</string>
+    <string name="lbl_disabled">disabled</string>
 
     <string name="msg_playback_play">Play</string>
     <string name="msg_playback_pause">Pause</string>

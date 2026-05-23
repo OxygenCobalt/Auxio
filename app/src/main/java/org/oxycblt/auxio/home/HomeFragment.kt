@@ -199,7 +199,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             updateIndexerState(it)
             setupHeadUnitQuickAccess(requireBinding())
         }
-        collectImmediately(playbackModel.queue) { setupHeadUnitQuickAccess(requireBinding()) }
+        collectImmediately(playbackModel.pagerQueue) { setupHeadUnitQuickAccess(requireBinding()) }
         collectImmediately(
             homeModel.songList,
             homeModel.genreList,

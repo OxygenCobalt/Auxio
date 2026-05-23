@@ -26,6 +26,7 @@ import androidx.core.graphics.drawable.IconCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.headunit.compat.HeadUnitStockMusicParity
 
 object HeadUnitEntryPoints {
     private const val ACTION_PREFIX = BuildConfig.APPLICATION_ID + ".action."
@@ -43,6 +44,21 @@ object HeadUnitEntryPoints {
 
     const val EXTRA_ENTRY_DESTINATION = ACTION_PREFIX + "ENTRY_DESTINATION"
 
+    /** Explicit public actions for launcher/widget/shortcut integration. */
+    val ALL_PUBLIC_ACTIONS =
+        setOf(
+            ACTION_OPEN_NOW_PLAYING,
+            ACTION_SHUFFLE_ALL,
+            ACTION_OPEN_QUEUE,
+            ACTION_OPEN_RECENTLY_ADDED,
+            ACTION_OPEN_GENRES,
+            ACTION_OPEN_ARTISTS,
+            ACTION_OPEN_ALBUMS,
+            ACTION_OPEN_PLAYLISTS,
+            ACTION_OPEN_FAVOURITES,
+            ACTION_OPEN_HEAD_UNIT_SETTINGS,
+        )
+
     enum class EntryDestination {
         NOW_PLAYING,
         QUEUE,
@@ -54,6 +70,11 @@ object HeadUnitEntryPoints {
         FAVOURITES,
         HEAD_UNIT_SETTINGS,
     }
+
+    fun isParityActionCoverageComplete(): Boolean =
+        HeadUnitStockMusicParity.requiredEntryActions().all { action ->
+            action in ALL_PUBLIC_ACTIONS && HeadUnitRoutePolicy.routeForAction(action) != null
+        }
 
     fun destinationForAction(action: String?): EntryDestination? =
         HeadUnitRoutePolicy.routeForAction(action)?.let { route ->

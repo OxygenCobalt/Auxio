@@ -18,19 +18,21 @@ from pathlib import Path
 
 scenario_map = json.loads(Path("docs/templates/TS18_VALIDATION_SCENARIO_MAP.json").read_text())
 scenarios = scenario_map["scenarios"]
-ids = [s["id"] for s in scenarios]
+ids = [s["scenario_id"] for s in scenarios]
 expected = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
 assert len(scenarios) == 17
 assert len(set(ids)) == 17
 assert sorted(ids) == expected, ids
 required_fields = {
-  "id", "required", "optional", "expectedSignal", "expectedSignals", "knownLimitations",
-  "manualEvidenceRequired", "manualReviewRequired", "parityRows", "nativeTrigger",
-  "nativeTriggerCondition", "severity", "user_impact", "native_investigation_priority"
+  "scenario_id", "surface", "goal", "tier1_implementation", "evidence_required",
+  "adb_commands", "manual_steps", "expected_android_standard_signal",
+  "expected_ts18_surface_signal", "pass_condition", "fail_condition", "partial_condition",
+  "blocked_condition", "matrix_row", "native_investigation_trigger", "confidence_label",
+  "porting_decision_label", "severity", "user_impact", "native_investigation_priority"
 }
 for scenario in scenarios:
   missing = required_fields - set(scenario.keys())
-  assert not missing, (scenario["id"], sorted(missing))
+  assert not missing, (scenario["scenario_id"], sorted(missing))
 PY
 
 for PACK in docs/templates/fixtures/pack-minimal-pass docs/templates/fixtures/pack-partial-widget-gap docs/templates/fixtures/pack-missing-evidence; do
