@@ -67,4 +67,32 @@ class HeadUnitDashboardPolicyTest {
         assertFalse(actions.contains(QuickPickAction.FOLDERS))
         assertFalse(actions.contains(QuickPickAction.DECADES))
     }
+
+    @Test
+    fun `favourites entry hidden when no favourites and present when available`() {
+        val noFavs =
+            HeadUnitDashboardPolicy.entries(
+                HeadUnitDashboardState(
+                    hasLibraryContent = true,
+                    hasFavourites = false,
+                    isIndexing = false,
+                )
+            ).map { it.action }
+        assertFalse(noFavs.contains(QuickPickAction.FAVOURITES))
+        assertEquals(QuickPickAction.HEAD_UNIT_SETTINGS, noFavs.last())
+
+        val withFavsList =
+            HeadUnitDashboardPolicy.entries(
+                HeadUnitDashboardState(
+                    hasLibraryContent = true,
+                    hasFavourites = true,
+                    isIndexing = false,
+                )
+            )
+        val withFavs = withFavsList.associateBy { it.action }
+        assertTrue(withFavs.containsKey(QuickPickAction.FAVOURITES))
+        assertTrue(withFavs.getValue(QuickPickAction.FAVOURITES).enabled)
+        assertEquals(QuickPickAction.FAVOURITES, withFavsList[withFavsList.size - 2].action)
+        assertEquals(QuickPickAction.HEAD_UNIT_SETTINGS, withFavsList.last().action)
+    }
 }
