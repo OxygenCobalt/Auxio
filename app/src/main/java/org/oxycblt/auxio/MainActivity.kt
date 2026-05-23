@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        clearIntentRoutingState(intent)
         setIntent(intent)
         startIntentAction(intent)
     }
@@ -175,6 +176,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+
+
+    private fun clearIntentRoutingState(intent: Intent) {
+        intent.removeExtra(KEY_INTENT_USED)
+        intent.removeExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION)
     }
 
     private companion object {

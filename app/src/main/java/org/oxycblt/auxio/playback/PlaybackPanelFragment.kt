@@ -164,8 +164,9 @@ class PlaybackPanelFragment :
             }
         if (!uiSettings.showHeadUnitAlbumArt) {
             binding.playbackPager?.visibility = View.GONE
-            binding.playbackSong.maxLines = 2
+            binding.playbackSong.maxLines = 3
             binding.playbackArtist.maxLines = 2
+            binding.playbackControlsWrapper?.updatePadding(top = spacingSmall)
         }
         playbackInfoVerticalPadding?.let {
             binding.playbackInfoContainer.updatePadding(top = it, bottom = it)

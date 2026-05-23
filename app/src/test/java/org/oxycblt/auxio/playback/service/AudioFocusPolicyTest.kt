@@ -186,10 +186,11 @@ class AudioFocusPolicyTest {
     }
 
     @Test
-    fun `media button handling requires focus and current song`() {
-        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = false, hasCurrentSong = true))
-        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = false))
-        assertTrue(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = true))
+    fun `media button handling requires focus current song and ongoing session`() {
+        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = true, sessionOngoing = false))
+        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = false, hasCurrentSong = true, sessionOngoing = true))
+        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = false, sessionOngoing = true))
+        assertTrue(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = true, sessionOngoing = true))
     }
 
     @Test

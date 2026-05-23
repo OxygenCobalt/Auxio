@@ -10,6 +10,8 @@
         style="@style/Widget.Auxio.RecyclerView.Linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="@dimen/spacing_large"
+        android:clipToPadding="false"
         tools:listitem="@layout/item_editable_song" />
 
     <com.google.android.material.divider.MaterialDivider
@@ -34,7 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_xlarge"
+        android:minHeight="@dimen/size_touchable_medium"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:text="@string/lbl_shuffle"
         android:visibility="gone" />
 

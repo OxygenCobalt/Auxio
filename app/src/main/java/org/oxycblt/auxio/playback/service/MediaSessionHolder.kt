@@ -50,7 +50,7 @@ import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
-import org.oxycblt.auxio.util.newMainPendingIntent
+import org.oxycblt.auxio.util.newNowPlayingPendingIntent
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
@@ -425,7 +425,7 @@ private class PlaybackNotification(
         setCategory(NotificationCompat.CATEGORY_TRANSPORT)
         setShowWhen(false)
         setSilent(true)
-        setContentIntent(context.newMainPendingIntent())
+        setContentIntent(context.newNowPlayingPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))

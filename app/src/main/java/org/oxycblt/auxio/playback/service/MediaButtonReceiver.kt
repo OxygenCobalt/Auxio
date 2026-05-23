@@ -60,6 +60,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
                     AudioFocusPolicy.shouldHandleMediaButton(
                         isFocusHeld = isFocusHeld,
                         hasCurrentSong = hasCurrentSong,
+                        sessionOngoing = hasCurrentSong,
                     ),
             )
         ) {

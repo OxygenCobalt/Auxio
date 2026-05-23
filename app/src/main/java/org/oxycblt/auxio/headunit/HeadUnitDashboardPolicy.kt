@@ -57,7 +57,7 @@ object HeadUnitDashboardPolicy {
                     QuickPickAction.SHUFFLE_ALL,
                     R.string.lbl_shuffle,
                     R.drawable.ic_shortcut_shuffle_24,
-                    state.hasLibraryContent,
+                    state.hasLibraryContent && !state.isIndexing,
                 )
             )
             add(
@@ -65,7 +65,7 @@ object HeadUnitDashboardPolicy {
                     QuickPickAction.RECENTLY_ADDED,
                     R.string.lbl_recently_added,
                     R.drawable.ic_time_24,
-                    state.hasLibraryContent,
+                    state.hasLibraryContent && !state.isIndexing,
                 )
             )
             add(
@@ -73,7 +73,7 @@ object HeadUnitDashboardPolicy {
                     QuickPickAction.ARTISTS,
                     R.string.lbl_artists,
                     R.drawable.ic_artist_24,
-                    state.hasLibraryContent,
+                    state.hasLibraryContent && !state.isIndexing,
                 )
             )
             add(
@@ -81,7 +81,7 @@ object HeadUnitDashboardPolicy {
                     QuickPickAction.ALBUMS,
                     R.string.lbl_albums,
                     R.drawable.ic_album_24,
-                    state.hasLibraryContent,
+                    state.hasLibraryContent && !state.isIndexing,
                 )
             )
             add(
@@ -89,7 +89,7 @@ object HeadUnitDashboardPolicy {
                     QuickPickAction.GENRES,
                     R.string.lbl_genres,
                     R.drawable.ic_genre_24,
-                    state.hasLibraryContent,
+                    state.hasLibraryContent && !state.isIndexing,
                 )
             )
             add(
@@ -97,7 +97,7 @@ object HeadUnitDashboardPolicy {
                     QuickPickAction.PLAYLISTS,
                     R.string.lbl_playlists,
                     R.drawable.ic_playlist_24,
-                    state.hasLibraryContent,
+                    state.hasLibraryContent && !state.isIndexing,
                 )
             )
             if (state.hasFavourites) {

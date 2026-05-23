@@ -98,7 +98,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                         statusSummary(compatStatus.shortcutCompatReady),
                         statusSummary(compatStatus.sessionCompatReady),
                         nativeStatusSummary,
-                    )
+                    ) + "\n" + uiSettings.headUnitCompatStatusSummary
             }
         }
     }

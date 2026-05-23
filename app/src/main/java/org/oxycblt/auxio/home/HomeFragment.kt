@@ -263,7 +263,15 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         val destination =
             HeadUnitEntryPoints.EntryDestination.entries.firstOrNull {
                 it.name == destinationName
-            } ?: return
+            } ?: HeadUnitEntryPoints.safeDestinationForAction(null)
+
+        if (musicModel.indexingState.value is IndexingState.Indexing &&
+            destination != HeadUnitEntryPoints.EntryDestination.NOW_PLAYING &&
+            destination != HeadUnitEntryPoints.EntryDestination.QUEUE
+        ) {
+            homeModel.synchronizeTabPosition(0)
+            return
+        }
 
         when (destination) {
             HeadUnitEntryPoints.EntryDestination.NOW_PLAYING -> playbackModel.openPlayback()
@@ -405,7 +413,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             HeadUnitRoute.FAVOURITES ->
                 favouritesPlaylist?.let { detailModel.showPlaylist(it) }
                     ?: openTab(MusicType.PLAYLISTS)
-            HeadUnitRoute.HEAD_UNIT_SETTINGS -> homeModel.showSettings()
+            HeadUnitRoute.HEAD_UNIT_SETTINGS -> if (musicModel.indexingState.value !is IndexingState.Indexing) homeModel.showSettings()
         }
     }
 

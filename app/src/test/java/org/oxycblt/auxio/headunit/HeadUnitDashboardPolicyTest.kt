@@ -94,6 +94,9 @@ class HeadUnitDashboardPolicyTest {
                 )
             ).associateBy { it.action }
         assertFalse(entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).enabled)
+        assertFalse(entries.getValue(QuickPickAction.ALBUMS).enabled)
+        assertFalse(entries.getValue(QuickPickAction.ARTISTS).enabled)
+        assertFalse(entries.getValue(QuickPickAction.PLAYLISTS).enabled)
         assertEquals(
             HeadUnitRoute.HEAD_UNIT_SETTINGS,
             entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).route,

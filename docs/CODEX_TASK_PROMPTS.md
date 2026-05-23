@@ -109,3 +109,6 @@ Always report explicitly:
 - which partials are locally fixable and why not fixed,
 - whether output is a review snapshot or complete,
 - why any next scope is truly separate from current acceptance criteria.
+
+
+2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.

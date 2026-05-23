@@ -28,6 +28,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.accent.Accent
 import timber.log.Timber as L
+import org.oxycblt.auxio.headunit.compat.HeadUnitCompatManager
 
 /**
  * User configuration for the general app UI.
@@ -53,6 +54,10 @@ interface UISettings : Settings<UISettings.Listener> {
     val showHeadUnitAlbumArt: Boolean
     /** Whether home dashboard quick access chips should be shown. */
     val showHeadUnitDashboardQuickAccess: Boolean
+
+    /** Read-only concise summary of Tier-1 head-unit compatibility posture. */
+    val headUnitCompatStatusSummary: String
+
 
     enum class DriverSide {
         RIGHT,
@@ -114,6 +119,9 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
                 getString(R.string.set_key_head_unit_dashboard_quick_access),
                 true,
             )
+
+    override val headUnitCompatStatusSummary: String
+        get() = HeadUnitCompatManager.statusSummary(context)
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {
