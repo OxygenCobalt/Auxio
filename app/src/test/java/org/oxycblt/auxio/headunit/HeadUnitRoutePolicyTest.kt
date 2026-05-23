@@ -16,6 +16,7 @@ class HeadUnitRoutePolicyTest {
                 HeadUnitEntryPoints.ACTION_OPEN_GENRES to HeadUnitRoute.GENRES,
                 HeadUnitEntryPoints.ACTION_OPEN_ARTISTS to HeadUnitRoute.ARTISTS,
                 HeadUnitEntryPoints.ACTION_OPEN_ALBUMS to HeadUnitRoute.ALBUMS,
+                HeadUnitEntryPoints.ACTION_OPEN_PLAYLISTS to HeadUnitRoute.PLAYLISTS,
                 HeadUnitEntryPoints.ACTION_OPEN_FAVOURITES to HeadUnitRoute.FAVOURITES,
                 HeadUnitEntryPoints.ACTION_OPEN_HEAD_UNIT_SETTINGS to
                     HeadUnitRoute.HEAD_UNIT_SETTINGS,
@@ -45,8 +46,10 @@ class HeadUnitRoutePolicyTest {
                 QuickPickAction.GENRES to HeadUnitRoute.GENRES,
                 QuickPickAction.ARTISTS to HeadUnitRoute.ARTISTS,
                 QuickPickAction.ALBUMS to HeadUnitRoute.ALBUMS,
+                QuickPickAction.PLAYLISTS to HeadUnitRoute.PLAYLISTS,
                 QuickPickAction.QUEUE to HeadUnitRoute.QUEUE,
                 QuickPickAction.RECENTLY_ADDED to HeadUnitRoute.RECENTLY_ADDED,
+                QuickPickAction.HEAD_UNIT_SETTINGS to HeadUnitRoute.HEAD_UNIT_SETTINGS,
                 QuickPickAction.DECADES to null,
                 QuickPickAction.FOLDERS to null,
                 QuickPickAction.FAVOURITES to HeadUnitRoute.FAVOURITES,
@@ -73,6 +76,7 @@ class HeadUnitRoutePolicyTest {
                 HeadUnitRoute.GENRES to HeadUnitEntryPoints.EntryDestination.GENRES,
                 HeadUnitRoute.ARTISTS to HeadUnitEntryPoints.EntryDestination.ARTISTS,
                 HeadUnitRoute.ALBUMS to HeadUnitEntryPoints.EntryDestination.ALBUMS,
+                HeadUnitRoute.PLAYLISTS to HeadUnitEntryPoints.EntryDestination.PLAYLISTS,
                 HeadUnitRoute.FAVOURITES to HeadUnitEntryPoints.EntryDestination.FAVOURITES,
                 HeadUnitRoute.HEAD_UNIT_SETTINGS to
                     HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS,

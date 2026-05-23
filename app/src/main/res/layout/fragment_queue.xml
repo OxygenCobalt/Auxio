@@ -17,4 +17,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+
+    <TextView
+        android:id="@+id/queue_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/spacing_medium"
+        android:text="@string/lbl_queue_empty_head_unit"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:visibility="gone" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/queue_empty_action"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginTop="@dimen/spacing_extra_large"
+        android:text="@string/lbl_shuffle"
+        android:visibility="gone" />
+
 </FrameLayout>

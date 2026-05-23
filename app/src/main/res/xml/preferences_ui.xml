@@ -57,6 +57,12 @@
             app:key="@string/set_key_head_unit_album_art"
             app:summary="@string/set_head_unit_album_art_desc"
             app:title="@string/set_head_unit_album_art" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/set_key_head_unit_dashboard_quick_access"
+            app:summary="@string/set_head_unit_dashboard_quick_access_desc"
+            app:title="@string/set_head_unit_dashboard_quick_access" />
     </PreferenceCategory>
 
 </PreferenceScreen>

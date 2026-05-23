@@ -154,6 +154,9 @@ class PlaybackPanelFragment :
         binding.playbackSeekBar?.setLargeTouchMode(uiSettings.largeHeadUnitControls)
         if (!uiSettings.showHeadUnitAlbumArt) {
             binding.playbackPager?.visibility = View.GONE
+            binding.playbackInfoContainer.updatePadding(top = 16.dp(), bottom = 16.dp())
+            binding.playbackSong.maxLines = 2
+            binding.playbackArtist.maxLines = 2
         }
         HeadUnitUiAdapter.applyLargeControls(
             resources,
@@ -174,6 +177,16 @@ class PlaybackPanelFragment :
         )
         if (uiSettings.largeHeadUnitControls) {
             binding.playbackInfoContainer.updatePadding(top = 8.dp(), bottom = 8.dp())
+            listOf(
+                    binding.playbackSkipPrev,
+                    binding.playbackPlayPause,
+                    binding.playbackSkipNext,
+                )
+                .forEach {
+                    it.minimumHeight = 56.dp()
+                    it.minimumWidth = 56.dp()
+                }
+            binding.playbackControlsWrapper?.updatePadding(left = 8.dp(), right = 8.dp())
         }
         applyDriverSideLayout(binding)
 

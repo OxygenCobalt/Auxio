@@ -16,3 +16,14 @@
 - All TS18-STD scenarios still require real hardware runtime evidence.
 - No Tier 3/Tier 4 native/private integration was added in this pass.
 - MediaBrowser and session publication behaviors remain Android-standard Tier 1 and require Tier 2 validation on TS18/TWTHEME hardware.
+
+## TS18 Head-Unit Experience Mode batch (current pass)
+- Added `HeadUnitDashboardPolicy` + `HeadUnitDashboardState` to drive head-unit dashboard entries (label/icon/route/enabled state) from one policy layer.
+- Home dashboard chips are now policy-driven and include playback, queue, shuffle, recently added, artists, albums, genres, playlists, favourites, and head-unit settings.
+- Queue UX now includes actionable empty-state recovery (`Shuffle`) and larger list padding when large controls are enabled.
+- Playback panel now scales primary control touch targets when large controls mode is enabled.
+- Routing alignment improved for playlists and head-unit settings route fallback from dashboard.
+
+Status: Tier 1 implementation only. No TS18 hardware validation success is claimed.
+
+- FOLDERS and DECADES remain metadata filters, not dashboard routes; dashboard settings now uses explicit HEAD_UNIT_SETTINGS action semantics.

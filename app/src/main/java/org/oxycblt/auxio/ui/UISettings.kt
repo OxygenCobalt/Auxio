@@ -51,6 +51,8 @@ interface UISettings : Settings<UISettings.Listener> {
     val largeHeadUnitControls: Boolean
     /** Whether album art should be shown in head-unit playback view. */
     val showHeadUnitAlbumArt: Boolean
+    /** Whether home dashboard quick access chips should be shown. */
+    val showHeadUnitDashboardQuickAccess: Boolean
 
     enum class DriverSide {
         RIGHT,
@@ -106,6 +108,12 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     override val showHeadUnitAlbumArt: Boolean
         get() =
             sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_album_art), true)
+    override val showHeadUnitDashboardQuickAccess: Boolean
+        get() =
+            sharedPreferences.getBoolean(
+                getString(R.string.set_key_head_unit_dashboard_quick_access),
+                true,
+            )
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {

@@ -41,6 +41,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -51,6 +52,8 @@ import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.headunit.FAVOURITES_PLAYLIST_NAME
+import org.oxycblt.auxio.headunit.HeadUnitDashboardPolicy
+import org.oxycblt.auxio.headunit.HeadUnitDashboardState
 import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.headunit.HeadUnitQuickAccess
 import org.oxycblt.auxio.headunit.HeadUnitRoute
@@ -70,6 +73,7 @@ import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.FadingToolbarOffsetListener
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
@@ -97,6 +101,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     override val playbackModel: PlaybackViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
+    @Inject lateinit var uiSettings: UISettings
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     private var getContentLauncher: ActivityResultLauncher<String>? = null
     private var pendingImportTarget: Playlist? = null
@@ -203,9 +208,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     }
 
     private fun setupHeadUnitQuickAccess(binding: FragmentHomeBinding) {
+        binding.homeHeadUnitShortcuts.isVisible = uiSettings.showHeadUnitDashboardQuickAccess
+        if (!uiSettings.showHeadUnitDashboardQuickAccess) {
+            return
+        }
         val hasLibrary = homeModel.songList.value.isNotEmpty()
-        val hasYearMetadata =
-            homeModel.songList.value.any { it.album.dates?.min?.year != null }
         binding.homeQuickPicks.removeAllViews()
         binding.homeQuickPicks.setPadding(
             binding.homeQuickPicks.paddingLeft,
@@ -213,27 +220,29 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             binding.homeQuickPicks.paddingRight,
             resources.getDimensionPixelSize(R.dimen.spacing_small),
         )
-        HeadUnitQuickAccess.quickPicks(
-            hasLibraryContent = hasLibrary,
-            hasFolderSupport = true,
-            hasFavouritesSupport = favouritesPlaylist != null,
-            hasYearMetadata = hasYearMetadata,
-        )
-            // Only show FAVOURITES when it has a real destination; other disabled items
-            // (e.g. SHUFFLE_ALL on an empty library) remain visible so users know they exist.
-            .filter { item -> item.enabled || item.action != QuickPickAction.FAVOURITES }
-            .forEach { item ->
+        HeadUnitDashboardPolicy.entries(
+                HeadUnitDashboardState(
+                    hasLibraryContent = hasLibrary,
+                    hasQueue = playbackModel.queue.value.isNotEmpty(),
+                    hasFavourites = favouritesPlaylist?.songs?.isNotEmpty() == true,
+                    isIndexing = musicModel.indexingState.value != IndexingState.Indexed,
+                )
+            )
+            .forEach { entry ->
                 val chip =
                     Chip(binding.root.context).apply {
                         isCheckable = false
                         isClickable = true
-                        isEnabled = item.enabled
-                        text = quickLabel(item.action)
+                        isEnabled = entry.enabled
+                        text = getString(entry.labelRes)
+                        setChipIconResource(entry.iconRes)
+                        isChipIconVisible = true
                         contentDescription = text
-                        setOnClickListener { handleQuickPick(item.action) }
+                        setOnClickListener { handleQuickPick(entry.action) }
                     }
                 binding.homeQuickPicks.addView(chip)
             }
+        binding.homeHeadUnitShortcuts.contentDescription = getString(R.string.lbl_head_unit_dashboard)
     }
 
     private fun handleEntryDestination() {
@@ -254,6 +263,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             HeadUnitEntryPoints.EntryDestination.GENRES -> openTab(MusicType.GENRES)
             HeadUnitEntryPoints.EntryDestination.ARTISTS -> openTab(MusicType.ARTISTS)
             HeadUnitEntryPoints.EntryDestination.ALBUMS -> openTab(MusicType.ALBUMS)
+            HeadUnitEntryPoints.EntryDestination.PLAYLISTS -> openTab(MusicType.PLAYLISTS)
             HeadUnitEntryPoints.EntryDestination.FAVOURITES ->
                 favouritesPlaylist?.let { detailModel.showPlaylist(it) }
                     ?: openTab(MusicType.PLAYLISTS)
@@ -359,20 +369,6 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             setOnClickListener { onClick() }
         }
 
-    private fun quickLabel(action: QuickPickAction): String =
-        when (action) {
-            QuickPickAction.NOW_PLAYING -> getString(R.string.lbl_playback)
-            QuickPickAction.SHUFFLE_ALL -> getString(R.string.lbl_shuffle)
-            QuickPickAction.GENRES -> getString(R.string.lbl_genres)
-            QuickPickAction.ARTISTS -> getString(R.string.lbl_artists)
-            QuickPickAction.ALBUMS -> getString(R.string.lbl_albums)
-            QuickPickAction.QUEUE -> getString(R.string.lbl_queue)
-            QuickPickAction.RECENTLY_ADDED -> getString(R.string.lbl_recently_added)
-            QuickPickAction.DECADES -> getString(R.string.lbl_decades)
-            QuickPickAction.FOLDERS -> getString(R.string.lbl_folders)
-            QuickPickAction.FAVOURITES -> getString(R.string.lbl_favourites)
-        }
-
     private fun handleQuickPick(action: QuickPickAction) {
         val route = HeadUnitRoutePolicy.routeForQuickPick(action)
         if (route != null) {
@@ -396,6 +392,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             HeadUnitRoute.GENRES -> openTab(MusicType.GENRES)
             HeadUnitRoute.ARTISTS -> openTab(MusicType.ARTISTS)
             HeadUnitRoute.ALBUMS -> openTab(MusicType.ALBUMS)
+            HeadUnitRoute.PLAYLISTS -> openTab(MusicType.PLAYLISTS)
             HeadUnitRoute.FAVOURITES ->
                 favouritesPlaylist?.let { detailModel.showPlaylist(it) }
                     ?: openTab(MusicType.PLAYLISTS)

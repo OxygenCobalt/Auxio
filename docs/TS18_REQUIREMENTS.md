@@ -41,3 +41,11 @@ See canonical tier model: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Nati
 | Home-screen/head-unit widget compatibility should be delivered through standard Android AppWidget APIs only. | Inferred | Directly reusable requirement |
 
 Launcher/widget standards validation scenarios TS18-STD-010..017 are defined in `TS18_VALIDATION_RUNBOOK.md` and remain **Requires TS18 validation** until hardware evidence is captured.
+
+## Requirement refinements from Head-Unit Experience Mode batch
+- Dashboard/quick-access entries should be policy-driven (stable route/label/icon/enabled behavior) and avoid dead entries.
+- Queue surface should provide safe empty-state recovery (e.g., shuffle/browse action) in head-unit mode.
+- Large-controls setting should materially change playback control ergonomics at runtime.
+- Warm-start entry routing should preserve intended destination when app process/activity is already alive.
+
+Confidence: Inferred / Requires TS18 validation. Porting decision: Directly reusable requirement.

@@ -21,16 +21,19 @@ package org.oxycblt.auxio.playback.queue
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.musikr.Song
@@ -46,6 +49,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
     private val queueModel: QueueViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val queueAdapter = QueueAdapter(this)
+    @Inject lateinit var uiSettings: UISettings
     private var touchHelper: ItemTouchHelper? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentQueueBinding.inflate(inflater)
@@ -56,11 +60,17 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
         // --- UI SETUP ---
         binding.queueRecycler.apply {
             adapter = queueAdapter
+            clipToPadding = false
+            if (uiSettings.largeHeadUnitControls) {
+                val pad = resources.getDimensionPixelSize(org.oxycblt.auxio.R.dimen.spacing_small)
+                setPadding(paddingLeft, pad, paddingRight, pad)
+            }
             touchHelper =
                 ItemTouchHelper(QueueDragCallback(queueModel)).also {
                     it.attachToRecyclerView(this)
                 }
         }
+        binding.queueEmptyAction.setOnClickListener { playbackModel.shuffleAll() }
 
         // Sometimes the scroll can change without the listener being updated, so we also
         // check for relayout events.
@@ -113,6 +123,10 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
 
         queueAdapter.update(queue, queueModel.queueInstructions.consume())
         queueAdapter.setPosition(index, isPlaying)
+        binding.queueEmpty.isVisible = queue.isEmpty()
+        binding.queueEmptyAction.isVisible = queue.isEmpty()
+        binding.queueRecycler.isVisible = queue.isNotEmpty()
+        binding.queueDivider.isVisible = queue.isNotEmpty()
 
         // If requested, scroll to a new item (occurs when the index moves)
         val scrollTo = queueModel.scrollTo.consume()
