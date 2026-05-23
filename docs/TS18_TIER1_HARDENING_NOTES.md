@@ -20,7 +20,7 @@
 
 ## TS18 Head-Unit Experience Mode batch (current baseline)
 - `HeadUnitDashboardPolicy` + `HeadUnitDashboardState` drive dashboard entries (label/icon/route/enabled state) from one policy layer.
-- Home dashboard chips are policy-driven and include playback, queue, shuffle, recently added, artists, albums, genres, playlists, favourites, and head-unit settings.
+- Home dashboard chips are policy-driven and include playback, queue, shuffle, recently added, artists, albums, genres, playlists, and head-unit settings, with favourites shown only when available.
 - Queue UX includes actionable empty-state recovery (`Shuffle`) and larger list padding when large controls are enabled.
 - Playback panel scales primary control touch targets when large controls mode is enabled.
 - Routing alignment includes playlists and head-unit settings fallback from dashboard.
@@ -30,20 +30,20 @@ Status: Tier 1 implementation only. No TS18 hardware validation success is claim
 
 ## Tier 1 implementation completion matrix (pre-next-phase baseline)
 
-| Surface | Status | Notes |
-|---|---|---|
-| Dashboard/home | Implemented — requires TS18 validation | Policy-driven entries with runtime enabled/disabled state from library/index/favourites state. |
-| Entry routing / warm-start | Implemented — requires TS18 validation | `MainActivity` intent action mapping preserves explicit entry destinations via `EXTRA_ENTRY_DESTINATION`; unknown actions fail safely. |
-| Dynamic shortcuts | Implemented — requires TS18 validation | Dynamic shortcuts are generated from canonical entry points and route through `MainActivity`. |
-| Widget entry/actions | Implemented — requires TS18 validation | Widget root/action intents use deterministic request-code policy and standard app/service intents. |
-| Queue/up-next | Implemented | Queue empty-state recovery and queue route opening are wired and tested. |
-| Playback panel / large controls | Implemented | Large-control mode affects runtime control target sizing/spacing without changing playback semantics. |
-| Settings/runtime preferences | Implemented | Head-unit dashboard visibility and large-control preferences have direct runtime UI effects. |
-| MediaSession/notification | Implemented — requires TS18 validation | Standard publication/clearing behavior present; requires TS18 launcher/widget confirmation on hardware. |
-| MediaBrowser/controller browsing | Implemented — requires TS18 validation | Stable root/common nodes plus placeholder fallback for unknown/malformed IDs. |
-| Media buttons | Implemented — requires TS18 validation | Standard key handling includes headset hook, action-down only, repeat filtering, and safe no-song behavior. |
-| Audio focus | Implemented — requires TS18 validation | Duck/pause/resume policy prevents autoplay on gain when stopped/no-song. |
-| Validation/runbook readiness | Implemented | Runbook + gap matrix can now be used as Tier 2 baseline with no Tier 3/4 production changes. |
+| Surface | Evidence confidence | Porting decision | Notes |
+|---|---|---|---|
+| Dashboard/home | Requires TS18 validation | Requires TS18 runtime validation | Policy-driven entries with runtime enabled/disabled state from library/index/favourites state. |
+| Entry routing / warm-start | Requires TS18 validation | Requires TS18 runtime validation | `MainActivity` intent action mapping preserves explicit entry destinations via `EXTRA_ENTRY_DESTINATION`; unknown actions fail safely. |
+| Dynamic shortcuts | Requires TS18 validation | Requires TS18 runtime validation | Dynamic shortcuts are generated from canonical entry points and route through `MainActivity`. |
+| Widget entry/actions | Requires TS18 validation | Requires TS18 runtime validation | Widget root/action intents use deterministic request-code policy and standard app/service intents. |
+| Queue/up-next | Requires TS18 validation | Requires TS18 runtime validation | Queue empty-state recovery and queue route opening are wired and tested. |
+| Playback panel / large controls | Requires TS18 validation | Requires TS18 runtime validation | Large-control mode affects runtime control target sizing/spacing without changing playback semantics. |
+| Settings/runtime preferences | Requires TS18 validation | Requires TS18 runtime validation | Head-unit dashboard visibility and large-control preferences have direct runtime UI effects. |
+| MediaSession/notification | Requires TS18 validation | Requires TS18 runtime validation | Standard publication/clearing behavior present; requires TS18 launcher/widget confirmation on hardware. |
+| MediaBrowser/controller browsing | Requires TS18 validation | Requires TS18 runtime validation | Stable root/common nodes plus placeholder fallback for unknown/malformed IDs. |
+| Media buttons | Requires TS18 validation | Requires TS18 runtime validation | Standard key handling includes headset hook, action-down only, repeat filtering, and safe no-song behavior. |
+| Audio focus | Requires TS18 validation | Requires TS18 runtime validation | Duck/pause/resume policy prevents autoplay on gain when stopped/no-song. |
+| Validation/runbook readiness | Observed | Directly reusable requirement | Runbook + gap matrix can now be used as Tier 2 baseline with no Tier 3/4 production changes. |
 
 ## Before Tier 3/4 investigation
 - Complete Tier 2 TS18 runtime validation evidence for all `Requires TS18 validation` rows above.

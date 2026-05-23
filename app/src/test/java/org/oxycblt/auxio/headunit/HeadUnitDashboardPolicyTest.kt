@@ -79,16 +79,20 @@ class HeadUnitDashboardPolicyTest {
                 )
             ).map { it.action }
         assertFalse(noFavs.contains(QuickPickAction.FAVOURITES))
+        assertEquals(QuickPickAction.HEAD_UNIT_SETTINGS, noFavs.last())
 
-        val withFavs =
+        val withFavsList =
             HeadUnitDashboardPolicy.entries(
                 HeadUnitDashboardState(
                     hasLibraryContent = true,
                     hasFavourites = true,
                     isIndexing = false,
                 )
-            ).associateBy { it.action }
+            )
+        val withFavs = withFavsList.associateBy { it.action }
         assertTrue(withFavs.containsKey(QuickPickAction.FAVOURITES))
         assertTrue(withFavs.getValue(QuickPickAction.FAVOURITES).enabled)
+        assertEquals(QuickPickAction.FAVOURITES, withFavsList[withFavsList.size - 2].action)
+        assertEquals(QuickPickAction.HEAD_UNIT_SETTINGS, withFavsList.last().action)
     }
 }
