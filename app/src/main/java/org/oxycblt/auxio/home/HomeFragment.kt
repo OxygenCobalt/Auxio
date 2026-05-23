@@ -195,7 +195,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
-        collectImmediately(musicModel.indexingState, ::updateIndexerState)
+        collectImmediately(musicModel.indexingState) {
+            updateIndexerState(it)
+            setupHeadUnitQuickAccess(requireBinding())
+        }
+        collectImmediately(playbackModel.queue) { setupHeadUnitQuickAccess(requireBinding()) }
         collectImmediately(
             homeModel.songList,
             homeModel.genreList,
@@ -213,35 +217,38 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             return
         }
         val hasLibrary = homeModel.songList.value.isNotEmpty()
-        binding.homeQuickPicks.removeAllViews()
         binding.homeQuickPicks.setPadding(
             binding.homeQuickPicks.paddingLeft,
             binding.homeQuickPicks.paddingTop,
             binding.homeQuickPicks.paddingRight,
             resources.getDimensionPixelSize(R.dimen.spacing_small),
         )
-        HeadUnitDashboardPolicy.entries(
+        val entries =
+            HeadUnitDashboardPolicy.entries(
                 HeadUnitDashboardState(
                     hasLibraryContent = hasLibrary,
-                    hasQueue = playbackModel.queue.value.isNotEmpty(),
                     hasFavourites = favouritesPlaylist?.songs?.isNotEmpty() == true,
                     isIndexing = musicModel.indexingState.value is IndexingState.Indexing,
                 )
             )
-            .forEach { entry ->
-                val chip =
-                    Chip(binding.root.context).apply {
-                        isCheckable = false
-                        isClickable = true
-                        isEnabled = entry.enabled
-                        text = getString(entry.labelRes)
-                        setChipIconResource(entry.iconRes)
-                        isChipIconVisible = true
-                        contentDescription = text
-                        setOnClickListener { handleQuickPick(entry.action) }
-                    }
-                binding.homeQuickPicks.addView(chip)
+
+        if (binding.homeQuickPicks.childCount != entries.size) {
+            binding.homeQuickPicks.removeAllViews()
+            entries.forEach { binding.homeQuickPicks.addView(Chip(binding.root.context)) }
+        }
+
+        entries.forEachIndexed { index, entry ->
+            (binding.homeQuickPicks.getChildAt(index) as Chip).apply {
+                isCheckable = false
+                isClickable = true
+                isEnabled = entry.enabled
+                text = getString(entry.labelRes)
+                setChipIconResource(entry.iconRes)
+                isChipIconVisible = true
+                contentDescription = text
+                setOnClickListener { handleQuickPick(entry.action) }
             }
+        }
         binding.homeHeadUnitShortcuts.contentDescription = getString(R.string.lbl_head_unit_dashboard)
     }
 

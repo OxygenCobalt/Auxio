@@ -22,7 +22,7 @@
 - Home dashboard chips are now policy-driven and include playback, queue, shuffle, recently added, artists, albums, genres, playlists, favourites, and head-unit settings.
 - Queue UX now includes actionable empty-state recovery (`Shuffle`) and larger list padding when large controls are enabled.
 - Playback panel now scales primary control touch targets when large controls mode is enabled.
-- Routing alignment improved for playlists and head-unit settings route fallback from dashboard.
+- Routing alignment improved for playlists, and head-unit settings route fallback from dashboard.
 
 Status: Tier 1 implementation only. No TS18 hardware validation success is claimed.
 

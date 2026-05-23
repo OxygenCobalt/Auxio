@@ -12,7 +12,6 @@ class HeadUnitDashboardPolicyTest {
             HeadUnitDashboardPolicy.entries(
                 HeadUnitDashboardState(
                     hasLibraryContent = true,
-                    hasQueue = true,
                     hasFavourites = true,
                     isIndexing = false,
                 )
@@ -28,7 +27,6 @@ class HeadUnitDashboardPolicyTest {
             HeadUnitDashboardPolicy.entries(
                 HeadUnitDashboardState(
                     hasLibraryContent = false,
-                    hasQueue = false,
                     hasFavourites = false,
                     isIndexing = false,
                 )
@@ -45,7 +43,6 @@ class HeadUnitDashboardPolicyTest {
             HeadUnitDashboardPolicy.entries(
                 HeadUnitDashboardState(
                     hasLibraryContent = true,
-                    hasQueue = true,
                     hasFavourites = true,
                     isIndexing = true,
                 )
@@ -63,7 +60,6 @@ class HeadUnitDashboardPolicyTest {
             HeadUnitDashboardPolicy.entries(
                 HeadUnitDashboardState(
                     hasLibraryContent = true,
-                    hasQueue = true,
                     hasFavourites = true,
                     isIndexing = false,
                 )

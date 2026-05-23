@@ -22,7 +22,6 @@ import org.oxycblt.auxio.R
 
 data class HeadUnitDashboardState(
     val hasLibraryContent: Boolean,
-    val hasQueue: Boolean,
     val hasFavourites: Boolean,
     val isIndexing: Boolean,
 )

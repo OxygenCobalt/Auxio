@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_marginTop="@dimen/spacing_extra_large"
+        android:layout_marginTop="@dimen/spacing_large"
         android:text="@string/lbl_shuffle"
         android:visibility="gone" />
 

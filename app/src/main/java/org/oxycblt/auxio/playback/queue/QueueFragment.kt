@@ -63,7 +63,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
             clipToPadding = false
             if (uiSettings.largeHeadUnitControls) {
                 val pad = resources.getDimensionPixelSize(org.oxycblt.auxio.R.dimen.spacing_small)
-                setPadding(paddingLeft, pad, paddingRight, pad)
+                setPaddingRelative(paddingStart, pad, paddingEnd, pad)
             }
             touchHelper =
                 ItemTouchHelper(QueueDragCallback(queueModel)).also {
