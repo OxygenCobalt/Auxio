@@ -125,12 +125,13 @@ object HeadUnitDashboardPolicy {
         labelRes: Int,
         iconRes: Int,
         enabled: Boolean,
-    ) =
-        HeadUnitDashboardEntry(
-            action,
-            HeadUnitRoutePolicy.routeForQuickPick(action),
-            labelRes,
-            iconRes,
-            enabled,
+    ): HeadUnitDashboardEntry {
+        return HeadUnitDashboardEntry(
+            action = action,
+            route = HeadUnitRoutePolicy.routeForQuickPick(action),
+            labelRes = labelRes,
+            iconRes = iconRes,
+            enabled = enabled,
         )
+    }
 }
