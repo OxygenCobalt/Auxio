@@ -49,3 +49,13 @@ Status: Tier 1 implementation only. No TS18 hardware validation success is claim
 - Complete Tier 2 TS18 runtime validation evidence for all `Requires TS18 validation` rows above.
 - Promote only evidence-backed gaps through formal gap-and-promotion process (Tier 2 → Tier 3 → Tier 4 design PR).
 - Keep private/native contracts not for production by default unless explicit human-approved design PR confirms production eligibility criteria.
+
+## Phase 5G/6A status (2026-05-23)
+- Started: Tier 2 execution-pack workflow added.
+- Tier 1 remains pre-hardware-validation.
+- Real TS18 evidence is required before parity claims.
+- Native/private investigation is not for production by default; requires formal gap-and-promotion process.
+
+- 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
+
+- Delivery protocol update: large-scope TS18 tasks must deliver runtime-wired outcomes; scaffold-only work is not counted as implemented.

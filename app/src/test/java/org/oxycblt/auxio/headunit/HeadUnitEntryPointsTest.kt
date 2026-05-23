@@ -69,6 +69,11 @@ class HeadUnitEntryPointsTest {
     }
 
     @Test
+    fun `parity coverage for public actions is complete`() {
+        assertTrue(HeadUnitEntryPoints.isParityActionCoverageComplete())
+    }
+
+    @Test
     fun `publishedDynamicShortcutIds returns empty for non-positive limits`() {
         assertTrue(HeadUnitEntryPoints.publishedDynamicShortcutIds(0).isEmpty())
         assertTrue(HeadUnitEntryPoints.publishedDynamicShortcutIds(-1).isEmpty())

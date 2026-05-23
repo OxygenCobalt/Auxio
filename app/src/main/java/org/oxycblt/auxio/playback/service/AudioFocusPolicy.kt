@@ -84,4 +84,7 @@ object AudioFocusPolicy {
         hasCurrentSong: Boolean,
     ): Boolean =
         decision.resume && !playWhenReady && sessionOngoing && hasCurrentSong
+
+    fun shouldHandleMediaButton(isFocusHeld: Boolean, hasCurrentSong: Boolean): Boolean =
+        isFocusHeld && hasCurrentSong
 }

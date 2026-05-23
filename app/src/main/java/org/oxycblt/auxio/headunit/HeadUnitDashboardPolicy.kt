@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.headunit
 
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.headunit.compat.HeadUnitStockMusicParity
 
 data class HeadUnitDashboardState(
     val hasLibraryContent: Boolean,
@@ -35,6 +36,11 @@ data class HeadUnitDashboardEntry(
 )
 
 object HeadUnitDashboardPolicy {
+    fun isParityAligned(): Boolean =
+        HeadUnitStockMusicParity.requiredEntryActions().containsAll(
+            setOf(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING, HeadUnitEntryPoints.ACTION_OPEN_QUEUE)
+        )
+
     fun entries(state: HeadUnitDashboardState): List<HeadUnitDashboardEntry> =
         buildList {
             add(entry(QuickPickAction.NOW_PLAYING, R.string.lbl_playback, R.drawable.ic_play_24, true))

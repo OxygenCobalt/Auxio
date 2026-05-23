@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["pack_id","pack_kind","device_label","scenario_id","capture_phase","created_at","auxio_package","files","redaction_status","capture_tool_version"],
+  "properties": {
+    "pack_id": {"type":"string"},
+    "pack_kind": {"enum":["fixture","real"]},
+    "device_label": {"type":"string"},
+    "scenario_id": {"type":"string","pattern":"^TS18-STD-(00[1-9]|01[0-7])$"},
+    "capture_phase": {"enum":["before","after","single","combined"]},
+    "created_at": {"type":"string"},
+    "auxio_package": {"type":"string"},
+    "auxio_version": {"type":"string"},
+    "android_build_fingerprint": {"type":"string"},
+    "ts18_profile_hint": {"type":"string"},
+    "files": {"type":"array","items":{"type":"string"},"minItems":1},
+    "redaction_status": {"enum":["raw","redacted","mixed","unknown"]},
+    "capture_tool_version": {"type":"string"}
+  },
+  "additionalProperties": false
+}

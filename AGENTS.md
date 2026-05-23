@@ -233,3 +233,55 @@ Do not try to work around this by copying submodule files manually.
 - Phase 5G/6A requires evidence-pack capture (`scripts/ts18-create-evidence-pack.sh`) and conservative summarisation before any native/private investigation candidate is considered.
 
 - Tier 0->4 flow reminder: evidence and candidate generation are allowed; production private/native integration still requires a future approved design PR.
+
+
+## Large-Scope Implementation Delivery Protocol
+1. Large tasks are delivery contracts, not suggestion lists.
+2. Do not satisfy large tasks by touching many headings shallowly.
+3. "Implemented" means runtime code is wired into real behavior or an executable workflow, not only a model/registry/doc/template/test.
+4. If a task asks for app/runtime work, docs/tests/tooling are supporting work only.
+5. Do not end with "Ready for Draft PR" while any core requested workstream is partial and locally implementable.
+6. Environment blockers do not stop local implementation unless they prevent editing or reasoning about relevant files.
+7. If Gradle cannot run, continue local implementation and static checks; report build proof as pending GitHub/Copilot CI.
+8. Do not list original requested work as "next scope" unless it is genuinely outside the current task.
+9. "Next scope" must include only work after current acceptance criteria are met.
+10. Compatibility model/status/registry additions are not counted as implemented until wired to meaningful runtime call-sites.
+
+## Implementation-status definitions
+- Implemented: runtime code or executable workflow is wired and usable.
+- Implemented — requires TS18 validation: implementation exists; runtime parity still needs TS18 hardware proof.
+- Partially implemented: pieces exist but user-visible behavior or call-site wiring is incomplete.
+- Scaffold only: models/docs/templates exist without runtime integration.
+- Blocked: a specific external dependency prevents implementation; state exact blocker.
+- Deferred: intentionally out of current scope, with reason.
+
+## Ready for Draft PR / Ready for Merge Rules
+- Ready for Draft PR: main implementation goal is complete enough for review.
+- If any core requested workstream is partial and locally fixable, use: Needs another Codex pass.
+- If branch is an early snapshot, use: Ready for Draft PR snapshot.
+- Ready to merge is only for final GitHub/Copilot closure after checks/comments are resolved.
+- Missing SDK/submodules are environment-limited validation, not merge proof and not automatic merge blocker.
+
+## Auxio-TS app/runtime priority rules
+- Auxio-TS is a TS18/TW/TWTHEME variant app; app/runtime behavior is the priority.
+- Source-backed compatibility work should improve real runtime surfaces, not only validation tooling.
+- Evidence/validation tooling is primary only when requested or when implementation cannot proceed safely.
+- For app-feature tasks, implement visible behavior, route/action wiring, settings/runtime effects, metadata/session/widget improvements, or compatibility call-site wiring.
+- Docs/tests/fixtures must not substitute for app code implementation.
+
+## Compatibility-layer wiring rules
+- A headunit/compat feature is not implemented until consumed by at least one meaningful runtime call-site.
+- Registry entries alone do not count as implementation.
+- Status models alone do not count as implementation.
+- Metadata policy is not implemented until used by MediaSession, notification, widget, or another runtime publisher.
+- Parity maps are not implemented until they drive or verify action/route completeness.
+- Settings/status are not implemented until surfaced via existing UI/settings patterns.
+
+## Final response discipline
+Always report explicitly:
+- which areas were wired into runtime code,
+- which areas are scaffold-only,
+- which areas remain partial,
+- which partials are locally fixable and why not fixed,
+- whether output is a review snapshot or complete,
+- why any next scope is truly separate from current acceptance criteria.

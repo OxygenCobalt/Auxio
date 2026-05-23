@@ -29,6 +29,7 @@ import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
@@ -349,8 +350,20 @@ class WidgetProvider : AppWidgetProvider() {
         state: WidgetComponent.PlaybackState,
     ): RemoteViews {
         setupCover(context, state)
-        setTextViewText(R.id.widget_song, state.song.name.resolve(context))
-        setTextViewText(R.id.widget_artist, state.song.artists.resolveNames(context))
+        val policy =
+            HeadUnitMetadataPolicy.fromRaw(
+                title = state.song.name.resolve(context),
+                artist = state.song.artists.resolveNames(context),
+                albumArtist = state.song.album.artists.resolveNames(context),
+                albumTitle = state.song.album.name.resolve(context),
+                durationMs = state.song.durationMs,
+                mediaId = state.song.uid.toString(),
+                mediaUri = state.song.uri.toString(),
+                artworkUri = state.song.cover?.id,
+                hasArtwork = state.song.cover != null,
+            )
+        setTextViewText(R.id.widget_song, policy?.displayTitle ?: context.getString(R.string.lbl_playback))
+        setTextViewText(R.id.widget_artist, policy?.displaySubtitle ?: context.getString(R.string.lbl_all_songs))
         return this
     }
 

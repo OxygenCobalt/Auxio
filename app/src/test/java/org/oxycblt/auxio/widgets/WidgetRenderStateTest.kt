@@ -26,16 +26,17 @@ import org.oxycblt.auxio.R
 class WidgetRenderStateTest {
     @Test
     fun fromPlayback_noTitle_returnsNoSession() {
-        assertTrue(WidgetRenderState.fromPlayback(null, "a", "b", true, false) is WidgetRenderState.NoSession)
+        assertTrue(WidgetRenderState.fromPlayback(title = null, artist = "a", album = "b", isPlaying = true, hasArtwork = false) is WidgetRenderState.NoSession)
     }
 
     @Test
     fun fromPlayback_withTitle_returnsActive() {
-        val state = WidgetRenderState.fromPlayback("Song", "Artist", "Album", false, true)
+        val state = WidgetRenderState.fromPlayback(title = "Song", artist = "Artist", album = "Album", albumArtist = "Album Artist", isPlaying = false, hasArtwork = true)
         assertTrue(state is WidgetRenderState.Active)
         state as WidgetRenderState.Active
         assertEquals("Song", state.title)
         assertEquals("Artist", state.artist)
+        assertTrue(state.subtitle.contains("Artist"))
     }
 
     @Test

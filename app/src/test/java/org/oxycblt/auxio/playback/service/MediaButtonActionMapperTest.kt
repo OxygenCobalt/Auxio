@@ -82,4 +82,14 @@ class MediaButtonActionMapperTest {
             )
         )
     }
+    @Test
+    fun `rejects media keys when focus is not held`() {
+        assertFalse(
+            MediaButtonActionMapper.shouldForward(
+                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT),
+                hasCurrentSong = true,
+                isFocusHeld = false,
+            )
+        )
+    }
 }

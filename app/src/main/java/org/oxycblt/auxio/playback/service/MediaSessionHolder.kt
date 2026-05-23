@@ -38,6 +38,7 @@ import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
+import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
 import org.oxycblt.auxio.image.CoverProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.resolve
@@ -229,28 +230,39 @@ private constructor(
         // several times.
         val title = song.name.resolve(context)
         val artist = song.artists.resolveNames(context)
+        val albumArtist = song.album.artists.resolveNames(context)
         val album = song.album.name.resolve(context)
+        val metadataSnapshot =
+            HeadUnitMetadataPolicy.fromRaw(
+                title = title,
+                artist = artist,
+                albumArtist = albumArtist,
+                albumTitle = album,
+                durationMs = song.durationMs,
+                mediaId = song.uid.toString(),
+                mediaUri = song.uri.toString(),
+                artworkUri = song.cover?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id).toString() },
+                hasArtwork = false,
+            ) ?: run {
+                mediaSession.setMetadata(emptyMetadata)
+                return
+            }
         val builder =
             MediaMetadataCompat.Builder()
-                .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
-                // Note: We would leave the artist field null if it didn't exist and let downstream
-                // consumers handle it, but that would break the notification display.
-                .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
-                .putText(
-                    MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
-                    song.album.artists.resolveNames(context),
-                )
+                .putText(MediaMetadataCompat.METADATA_KEY_TITLE, metadataSnapshot.displayTitle)
+                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, metadataSnapshot.albumTitle)
+                .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, metadataSnapshot.artist)
+                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, metadataSnapshot.albumArtist)
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, album)
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.uid.toString())
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, song.uri.toString())
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, metadataSnapshot.displayTitle)
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, metadataSnapshot.displaySubtitle)
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, metadataSnapshot.displayDescription)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, metadataSnapshot.mediaId)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, metadataSnapshot.mediaUri)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, metadataSnapshot.durationMs)
                 .putText(
                     PlaybackNotification.KEY_PARENT,
                     parent?.name?.resolve(context) ?: context.getString(R.string.lbl_all_songs),
@@ -459,8 +471,8 @@ private class PlaybackNotification(
             // Use a transparent 1x1 bitmap instead.
             setLargeIcon(EMPTY_BITMAP)
         }
-        setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
-        setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
+        setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE))
+        setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE))
         setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
     }
 

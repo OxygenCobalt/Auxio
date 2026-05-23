@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
+import org.oxycblt.auxio.headunit.compat.HeadUnitCompatManager
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
@@ -73,6 +74,15 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
 
                         true
                     }
+            }
+            getString(R.string.set_head_unit_compat_status) -> {
+                val compatStatus =
+                    HeadUnitCompatManager.currentStatus(
+                        widgetMetadataPublishable = uiSettings.showHeadUnitAlbumArt,
+                        sessionCompatReady = uiSettings.headUnitLandscapeMode,
+                    )
+                preference.summary =
+                    "compat=${compatStatus.compatModeEnabled}, fallback=${compatStatus.androidFallbackActive}, widget=${compatStatus.widgetMetadataPublishable}, session=${compatStatus.sessionCompatReady}, native=${compatStatus.nativePrivateIntegrationStatus}"
             }
         }
     }

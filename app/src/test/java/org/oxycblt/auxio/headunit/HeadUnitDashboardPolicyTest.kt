@@ -7,6 +7,11 @@ import org.junit.Test
 
 class HeadUnitDashboardPolicyTest {
     @Test
+    fun `dashboard parity baseline remains aligned`() {
+        assertTrue(HeadUnitDashboardPolicy.isParityAligned())
+    }
+
+    @Test
     fun `entries include stable priority order`() {
         val entries =
             HeadUnitDashboardPolicy.entries(

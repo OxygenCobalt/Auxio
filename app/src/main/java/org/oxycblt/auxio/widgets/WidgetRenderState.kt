@@ -26,7 +26,9 @@ sealed class WidgetRenderState {
 
     data class Active(
         val title: String,
+        val subtitle: String,
         val artist: String,
+        val albumArtist: String?,
         val album: String?,
         val isPlaying: Boolean,
         val hasArtwork: Boolean,
@@ -37,13 +39,16 @@ sealed class WidgetRenderState {
             title: String?,
             artist: String?,
             album: String?,
+            albumArtist: String? = null,
             isPlaying: Boolean,
             hasArtwork: Boolean,
         ): WidgetRenderState {
             if (title.isNullOrBlank()) return NoSession
             return Active(
                 title = title,
+                subtitle = listOfNotNull(artist, albumArtist).filter { it.isNotBlank() }.joinToString(" • ").ifBlank { artist.orEmpty() },
                 artist = artist.orEmpty(),
+                albumArtist = albumArtist,
                 album = album,
                 isPlaying = isPlaying,
                 hasArtwork = hasArtwork,
