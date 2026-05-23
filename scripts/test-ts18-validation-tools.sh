@@ -24,5 +24,5 @@ bash scripts/ts18-validation-workflow.sh --help >/dev/null
 bash scripts/ts18-validation-workflow.sh validate --pack docs/templates/fixtures/fixture-pass-core-media
 bash scripts/ts18-validation-workflow.sh summarise --pack docs/templates/fixtures/fixture-pass-core-media
 bash scripts/ts18-capture-validation-pack.sh --out "validation-output test" --label "space" --scenario TS18-STD-001 --single --dry-run --zip >/dev/null
-[ -f "validation-output test"/*.zip ]
+find "validation-output test" -maxdepth 1 -name '*.zip' -type f | grep -q .
 echo "ts18 validation tool tests passed"

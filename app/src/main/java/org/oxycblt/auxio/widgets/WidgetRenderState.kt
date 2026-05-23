@@ -46,7 +46,13 @@ sealed class WidgetRenderState {
             if (title.isNullOrBlank()) return NoSession
             return Active(
                 title = title,
-                subtitle = listOfNotNull(artist, albumArtist).filter { it.isNotBlank() }.joinToString(" • ").ifBlank { artist.orEmpty() },
+                subtitle =
+                    listOfNotNull(artist, albumArtist)
+                        .map { it.trim() }
+                        .filter { it.isNotBlank() }
+                        .distinct()
+                        .joinToString(" • ")
+                        .ifBlank { artist.orEmpty() },
                 artist = artist.orEmpty(),
                 albumArtist = albumArtist,
                 album = album,

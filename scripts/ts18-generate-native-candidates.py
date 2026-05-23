@@ -17,7 +17,7 @@ def main():
     pack=Path(sys.argv[1]); derived=pack/'derived'
     results=json.loads((derived/'scenario-results.json').read_text())
     smap=json.loads(MAP.read_text())
-    by_id={s['id']:s for s in smap['scenarios']}
+    by_id={s['scenario_id']:s for s in smap['scenarios']}
     out_dir=derived/'native-investigation-candidates'
     out_dir.mkdir(exist_ok=True)
     generated=[]
@@ -25,7 +25,10 @@ def main():
         st=row.get('status','not captured')
         if st in {'pass','not captured'}:
             continue
-        if st in {'blocked'} and any(k in (results.get('missingFiles') or []) for k in ['media_session','notification','audio','appwidget','shortcut','activity']):
+        if st in {'blocked'} and any(
+            k in (results.get('missingFiles') or [])
+            for k in ['media_session.txt','notification.txt','audio.txt','appwidget.txt','shortcut.txt','activity_top.txt']
+        ):
             continue
         if st != 'fail' and not row.get('nativeInvestigationCandidate', False):
             continue
@@ -36,7 +39,7 @@ def main():
             priority='high'
         else:
             priority='low'
-        area=(meta.get('parityRows') or ['unknown-area'])[0]
+        area = meta.get('matrix_row', 'unknown-area')
         fn=out_dir/f"TS18-NATIVE-CANDIDATE-{slug(area)}-{sid}.md"
         txt=f"""# TS18 Native/Private Investigation Candidate
 

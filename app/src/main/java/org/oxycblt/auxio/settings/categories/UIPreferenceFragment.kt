@@ -23,8 +23,9 @@ import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.headunit.compat.HeadUnitCompatManager
+import org.oxycblt.auxio.headunit.compat.NativePrivateIntegrationStatus
+import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
@@ -78,12 +79,30 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
             getString(R.string.set_head_unit_compat_status) -> {
                 val compatStatus =
                     HeadUnitCompatManager.currentStatus(
+                        compatModeEnabled = uiSettings.headUnitLandscapeMode,
                         widgetMetadataPublishable = uiSettings.showHeadUnitAlbumArt,
+                        shortcutCompatReady = uiSettings.showHeadUnitDashboardQuickAccess,
                         sessionCompatReady = uiSettings.headUnitLandscapeMode,
                     )
+                val nativeStatusSummary =
+                    when (compatStatus.nativePrivateIntegrationStatus) {
+                        NativePrivateIntegrationStatus.NOT_ENABLED_REQUIRES_VALIDATION ->
+                            getString(R.string.set_head_unit_compat_native_not_enabled_requires_validation)
+                    }
                 preference.summary =
-                    "compat=${compatStatus.compatModeEnabled}, fallback=${compatStatus.androidFallbackActive}, widget=${compatStatus.widgetMetadataPublishable}, session=${compatStatus.sessionCompatReady}, native=${compatStatus.nativePrivateIntegrationStatus}"
+                    getString(
+                        R.string.set_head_unit_compat_status_summary,
+                        statusSummary(compatStatus.compatModeEnabled),
+                        statusSummary(compatStatus.androidFallbackActive),
+                        statusSummary(compatStatus.widgetMetadataPublishable),
+                        statusSummary(compatStatus.shortcutCompatReady),
+                        statusSummary(compatStatus.sessionCompatReady),
+                        nativeStatusSummary,
+                    )
             }
         }
     }
+
+    private fun statusSummary(status: Boolean): String =
+        if (status) getString(R.string.lbl_enabled) else getString(R.string.lbl_disabled)
 }

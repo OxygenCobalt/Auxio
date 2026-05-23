@@ -63,7 +63,8 @@
             app:key="@string/set_key_head_unit_dashboard_quick_access"
             app:summary="@string/set_head_unit_dashboard_quick_access_desc"
             app:title="@string/set_head_unit_dashboard_quick_access" />
-            <Preference
+
+        <Preference
             app:key="@string/set_head_unit_compat_status"
             app:summary="@string/set_head_unit_compat_status_desc"
             app:title="@string/set_head_unit_compat_status" />

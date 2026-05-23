@@ -31,12 +31,35 @@ class WidgetRenderStateTest {
 
     @Test
     fun fromPlayback_withTitle_returnsActive() {
-        val state = WidgetRenderState.fromPlayback(title = "Song", artist = "Artist", album = "Album", albumArtist = "Album Artist", isPlaying = false, hasArtwork = true)
+        val state =
+            WidgetRenderState.fromPlayback(
+                title = "Song",
+                artist = "Artist",
+                album = "Album",
+                albumArtist = "Album Artist",
+                isPlaying = false,
+                hasArtwork = true,
+            )
         assertTrue(state is WidgetRenderState.Active)
         state as WidgetRenderState.Active
         assertEquals("Song", state.title)
         assertEquals("Artist", state.artist)
         assertTrue(state.subtitle.contains("Artist"))
+    }
+
+    @Test
+    fun fromPlayback_duplicateArtistAndAlbumArtist_deduplicatesSubtitle() {
+        val state =
+            WidgetRenderState.fromPlayback(
+                title = "Song",
+                artist = "Artist",
+                album = "Album",
+                albumArtist = "Artist",
+                isPlaying = false,
+                hasArtwork = true,
+            )
+        state as WidgetRenderState.Active
+        assertEquals("Artist", state.subtitle)
     }
 
     @Test

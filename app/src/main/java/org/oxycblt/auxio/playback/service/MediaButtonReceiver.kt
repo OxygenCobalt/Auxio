@@ -50,10 +50,16 @@ class MediaButtonReceiver : BroadcastReceiver() {
 
         val event =
             IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
+        val hasCurrentSong = playbackManager.currentSong != null
         if (
             !MediaButtonActionMapper.shouldForward(
                 event,
-                hasCurrentSong = playbackManager.currentSong != null,
+                hasCurrentSong = hasCurrentSong,
+                isFocusHeld =
+                    AudioFocusPolicy.shouldHandleMediaButton(
+                        isFocusHeld = hasCurrentSong,
+                        hasCurrentSong = hasCurrentSong,
+                    ),
             )
         ) {
             L.d("Ignoring media button event after policy evaluation: $event")

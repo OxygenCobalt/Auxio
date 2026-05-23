@@ -27,5 +27,9 @@ data class HeadUnitCompatStatus(
     val widgetMetadataPublishable: Boolean,
     val shortcutCompatReady: Boolean,
     val sessionCompatReady: Boolean,
-    val nativePrivateIntegrationStatus: String,
+    val nativePrivateIntegrationStatus: NativePrivateIntegrationStatus,
 )
+
+enum class NativePrivateIntegrationStatus {
+    NOT_ENABLED_REQUIRES_VALIDATION,
+}

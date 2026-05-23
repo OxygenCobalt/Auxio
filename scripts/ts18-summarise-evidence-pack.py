@@ -11,7 +11,7 @@ def _load_scenarios():
     if not _SCENARIO_MAP.exists():
         raise FileNotFoundError(f"Missing canonical scenario map: {_SCENARIO_MAP.resolve()}")
     data = json.loads(_SCENARIO_MAP.read_text(encoding="utf-8"))
-    ids = [s["id"] for s in data.get("scenarios", [])]
+    ids = [s["scenario_id"] for s in data.get("scenarios", [])]
     if sorted(ids) != _EXPECTED_SCENARIOS or len(set(ids)) != len(ids):
         raise ValueError("Scenario map must contain unique IDs TS18-STD-001..017")
     return ids

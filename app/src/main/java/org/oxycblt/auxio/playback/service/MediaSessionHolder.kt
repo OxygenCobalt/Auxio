@@ -223,6 +223,7 @@ private constructor(
             // Nothing playing, reset the MediaSession and close the notification.
             L.d("Nothing playing, resetting media session")
             mediaSession.setMetadata(emptyMetadata)
+            _notification.updateMetadata(emptyMetadata)
             return
         }
 
@@ -242,9 +243,10 @@ private constructor(
                 mediaId = song.uid.toString(),
                 mediaUri = song.uri.toString(),
                 artworkUri = song.cover?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id).toString() },
-                hasArtwork = false,
+                hasArtwork = song.cover != null,
             ) ?: run {
                 mediaSession.setMetadata(emptyMetadata)
+                _notification.updateMetadata(emptyMetadata)
                 return
             }
         val builder =

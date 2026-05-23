@@ -12,13 +12,34 @@ usage:
 H
 }
 pack=""
+require_pack() {
+  if [ -z "$pack" ]; then
+    echo "missing required --pack argument" >&2
+    help
+    exit 1
+  fi
+}
 while [ $# -gt 0 ]; do case "$1" in --pack) pack="$2"; shift 2;; --out|--scenario|--label|--zip|--single|--before|--after|--action|--no-logcat|--logcat-seconds|--dry-run|--verbose) break;; *) shift;; esac; done
 case "$cmd" in
  capture) bash scripts/ts18-capture-validation-pack.sh "$@"; echo "next: validate -> summarise -> classify -> propose-matrix";;
- validate) python3 scripts/ts18-validate-evidence-pack.py "$pack";;
- summarise) python3 scripts/ts18-summarise-validation-pack.py "$pack";;
- classify) python3 scripts/ts18-classify-parity-gaps.py "$pack" docs/templates/TS18_VALIDATION_SCENARIO_MAP.json;;
- propose-matrix) python3 scripts/ts18-propose-matrix-update.py "$pack";;
+ validate) require_pack; python3 scripts/ts18-validate-evidence-pack.py "$pack";;
+ summarise)
+  require_pack
+  if [ -f "$pack/evidence-manifest.json" ]; then
+    python3 scripts/ts18-summarise-evidence-pack.py "$pack"
+  else
+    python3 scripts/ts18-summarise-validation-pack.py "$pack"
+  fi
+  ;;
+ classify) require_pack; python3 scripts/ts18-classify-parity-gaps.py "$pack" docs/templates/TS18_VALIDATION_SCENARIO_MAP.json;;
+ propose-matrix)
+  require_pack
+  if [ -f "$pack/evidence-manifest.json" ]; then
+    python3 scripts/ts18-propose-gap-matrix-update.py "$pack"
+  else
+    python3 scripts/ts18-propose-matrix-update.py "$pack"
+  fi
+  ;;
  fixture-test) bash scripts/test-ts18-validation-tools.sh;;
  help|--help|-h) help;;
  *) help; exit 1;;

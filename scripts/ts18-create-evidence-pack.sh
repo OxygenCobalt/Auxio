@@ -118,7 +118,7 @@ from pathlib import Path
 map_file = Path(sys.argv[1]).resolve()
 output = Path(sys.argv[2])
 expected = [f"TS18-STD-{i:03d}" for i in range(1, 18)]
-scenarios = [item.get("id") for item in json.loads(map_file.read_text()).get("scenarios", [])]
+scenarios = [item.get("scenario_id") for item in json.loads(map_file.read_text()).get("scenarios", [])]
 if len(set(scenarios)) != len(scenarios) or sorted(scenarios) != expected:
     print("Scenario map must contain unique IDs TS18-STD-001..017", file=sys.stderr)
     raise SystemExit(1)

@@ -6,7 +6,7 @@ import android.view.KeyEvent
  * Pure policy for deciding whether a media button key event should be forwarded to playback.
  */
 object MediaButtonActionMapper {
-    fun shouldForward(event: KeyEvent?, hasCurrentSong: Boolean, isFocusHeld: Boolean = true): Boolean {
+    fun shouldForward(event: KeyEvent?, hasCurrentSong: Boolean, isFocusHeld: Boolean): Boolean {
         if (event == null || event.action != KeyEvent.ACTION_DOWN) {
             return false
         }

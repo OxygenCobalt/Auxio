@@ -45,10 +45,19 @@ object HeadUnitEntryPoints {
     const val EXTRA_ENTRY_DESTINATION = ACTION_PREFIX + "ENTRY_DESTINATION"
 
     /** Explicit public actions for launcher/widget/shortcut integration. */
-    val ALL_PUBLIC_ACTIONS = setOf(
-        ACTION_OPEN_NOW_PLAYING, ACTION_SHUFFLE_ALL, ACTION_OPEN_QUEUE, ACTION_OPEN_RECENTLY_ADDED,
-        ACTION_OPEN_GENRES, ACTION_OPEN_ARTISTS, ACTION_OPEN_ALBUMS, ACTION_OPEN_PLAYLISTS, ACTION_OPEN_FAVOURITES, ACTION_OPEN_HEAD_UNIT_SETTINGS
-    )
+    val ALL_PUBLIC_ACTIONS =
+        setOf(
+            ACTION_OPEN_NOW_PLAYING,
+            ACTION_SHUFFLE_ALL,
+            ACTION_OPEN_QUEUE,
+            ACTION_OPEN_RECENTLY_ADDED,
+            ACTION_OPEN_GENRES,
+            ACTION_OPEN_ARTISTS,
+            ACTION_OPEN_ALBUMS,
+            ACTION_OPEN_PLAYLISTS,
+            ACTION_OPEN_FAVOURITES,
+            ACTION_OPEN_HEAD_UNIT_SETTINGS,
+        )
 
     enum class EntryDestination {
         NOW_PLAYING,
@@ -63,7 +72,9 @@ object HeadUnitEntryPoints {
     }
 
     fun isParityActionCoverageComplete(): Boolean =
-        HeadUnitStockMusicParity.hasRequiredActionCoverage(ALL_PUBLIC_ACTIONS)
+        HeadUnitStockMusicParity.requiredEntryActions().all { action ->
+            action in ALL_PUBLIC_ACTIONS && HeadUnitRoutePolicy.routeForAction(action) != null
+        }
 
     fun destinationForAction(action: String?): EntryDestination? =
         HeadUnitRoutePolicy.routeForAction(action)?.let { route ->

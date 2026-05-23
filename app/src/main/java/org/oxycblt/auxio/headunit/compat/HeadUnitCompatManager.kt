@@ -1,14 +1,20 @@
 package org.oxycblt.auxio.headunit.compat
 
 object HeadUnitCompatManager {
-    fun currentStatus(widgetMetadataPublishable: Boolean, sessionCompatReady: Boolean): HeadUnitCompatStatus =
+    fun currentStatus(
+        compatModeEnabled: Boolean,
+        widgetMetadataPublishable: Boolean,
+        shortcutCompatReady: Boolean,
+        sessionCompatReady: Boolean,
+    ): HeadUnitCompatStatus =
         HeadUnitCompatStatus(
-            compatModeEnabled = true,
-            androidFallbackActive = true,
+            compatModeEnabled = compatModeEnabled,
+            androidFallbackActive =
+                !compatModeEnabled || !widgetMetadataPublishable || !shortcutCompatReady || !sessionCompatReady,
             widgetMetadataPublishable = widgetMetadataPublishable,
-            shortcutCompatReady = true,
+            shortcutCompatReady = shortcutCompatReady,
             sessionCompatReady = sessionCompatReady,
-            nativePrivateIntegrationStatus = "not enabled / requires validation",
+            nativePrivateIntegrationStatus = NativePrivateIntegrationStatus.NOT_ENABLED_REQUIRES_VALIDATION,
         )
 
     fun onEvent(event: HeadUnitCompatEvent): HeadUnitCompatResult =
