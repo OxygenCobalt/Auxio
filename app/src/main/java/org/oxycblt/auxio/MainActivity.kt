@@ -82,10 +82,6 @@ class MainActivity : AppCompatActivity() {
         )
 
         if (!startIntentAction(intent)) {
-            if (intent?.hasExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION) == true) {
-                L.d("Pending head-unit destination preserved for HomeFragment")
-                return
-            }
             // No intent action to do, just restore the previously saved state.
             playbackModel.playDeferred(DeferredPlayback.RestoreState(false))
         }

@@ -152,9 +152,12 @@ class PlaybackPanelFragment :
 
         binding.playbackSeekBar?.listener = this
         binding.playbackSeekBar?.setLargeTouchMode(uiSettings.largeHeadUnitControls)
+        val spacingSmall = resources.getDimensionPixelSize(R.dimen.spacing_small)
+        val spacingMedium = resources.getDimensionPixelSize(R.dimen.spacing_medium)
+        val touchTargetMedium = resources.getDimensionPixelSize(R.dimen.size_touchable_medium)
         if (!uiSettings.showHeadUnitAlbumArt) {
             binding.playbackPager?.visibility = View.GONE
-            binding.playbackInfoContainer.updatePadding(top = 16.dp(), bottom = 16.dp())
+            binding.playbackInfoContainer.updatePadding(top = spacingMedium, bottom = spacingMedium)
             binding.playbackSong.maxLines = 2
             binding.playbackArtist.maxLines = 2
         }
@@ -176,17 +179,17 @@ class PlaybackPanelFragment :
             binding.playbackArtist,
         )
         if (uiSettings.largeHeadUnitControls) {
-            binding.playbackInfoContainer.updatePadding(top = 8.dp(), bottom = 8.dp())
+            binding.playbackInfoContainer.updatePadding(top = spacingSmall, bottom = spacingSmall)
             listOf(
                     binding.playbackSkipPrev,
                     binding.playbackPlayPause,
                     binding.playbackSkipNext,
                 )
                 .forEach {
-                    it.minimumHeight = 56.dp()
-                    it.minimumWidth = 56.dp()
+                    it.minimumHeight = touchTargetMedium
+                    it.minimumWidth = touchTargetMedium
                 }
-            binding.playbackControlsWrapper?.updatePadding(left = 8.dp(), right = 8.dp())
+            binding.playbackControlsWrapper?.updatePadding(left = spacingSmall, right = spacingSmall)
         }
         applyDriverSideLayout(binding)
 
@@ -227,8 +230,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.shuffleScope, ::updateShuffleScope)
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
     }
-
-    private fun Int.dp(): Int = (this * resources.displayMetrics.density).toInt()
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null

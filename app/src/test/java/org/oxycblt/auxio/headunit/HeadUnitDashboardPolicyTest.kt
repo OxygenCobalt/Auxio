@@ -51,6 +51,10 @@ class HeadUnitDashboardPolicyTest {
                 )
             ).associateBy { it.action }
         assertFalse(entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).enabled)
+        assertEquals(
+            HeadUnitRoute.HEAD_UNIT_SETTINGS,
+            entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).route,
+        )
     }
 
     @Test

@@ -225,7 +225,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                     hasLibraryContent = hasLibrary,
                     hasQueue = playbackModel.queue.value.isNotEmpty(),
                     hasFavourites = favouritesPlaylist?.songs?.isNotEmpty() == true,
-                    isIndexing = musicModel.indexingState.value != IndexingState.Indexed,
+                    isIndexing = musicModel.indexingState.value is IndexingState.Indexing,
                 )
             )
             .forEach { entry ->
