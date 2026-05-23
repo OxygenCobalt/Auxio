@@ -241,7 +241,7 @@ EOF
 write_repo_doctor() {
   cat > "$CODEX_DIR/env-summary.txt" <<EOF
 Auxio-TS Codex setup summary
-============================
+  ----------------------------
 
 Date: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 Root: $ROOT_DIR
