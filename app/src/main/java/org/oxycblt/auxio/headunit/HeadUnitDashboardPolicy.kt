@@ -36,7 +36,7 @@ data class HeadUnitDashboardEntry(
 
 object HeadUnitDashboardPolicy {
     fun entries(state: HeadUnitDashboardState): List<HeadUnitDashboardEntry> =
-        listOf(
+        buildList {
             entry(
                 QuickPickAction.NOW_PLAYING,
                 R.string.lbl_playback,
@@ -85,19 +85,25 @@ object HeadUnitDashboardPolicy {
                 R.drawable.ic_playlist_24,
                 state.hasLibraryContent,
             ),
-            entry(
-                QuickPickAction.FAVOURITES,
-                R.string.lbl_favourites,
-                R.drawable.ic_playlist_24,
-                state.hasFavourites,
-            ),
-            entry(
-                QuickPickAction.HEAD_UNIT_SETTINGS,
-                R.string.set_head_unit,
-                R.drawable.ic_more_24,
-                !state.isIndexing,
-            ),
-        )
+            if (state.hasFavourites) {
+                add(
+                    entry(
+                        QuickPickAction.FAVOURITES,
+                        R.string.lbl_favourites,
+                        R.drawable.ic_playlist_24,
+                        true,
+                    )
+                )
+            }
+            add(
+                entry(
+                    QuickPickAction.HEAD_UNIT_SETTINGS,
+                    R.string.set_head_unit,
+                    R.drawable.ic_more_24,
+                    !state.isIndexing,
+                )
+            )
+        }
 
     private fun entry(
         action: QuickPickAction,
