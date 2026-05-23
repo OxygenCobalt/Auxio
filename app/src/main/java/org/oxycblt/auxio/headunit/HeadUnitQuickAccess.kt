@@ -27,11 +27,13 @@ enum class QuickPickAction {
     GENRES,
     ARTISTS,
     ALBUMS,
+    PLAYLISTS,
     QUEUE,
     RECENTLY_ADDED,
     DECADES,
     FOLDERS,
     FAVOURITES,
+    HEAD_UNIT_SETTINGS,
 }
 
 data class QuickPickItem(val action: QuickPickAction, val enabled: Boolean)
@@ -57,6 +59,7 @@ object HeadUnitQuickAccess {
             QuickPickItem(QuickPickAction.GENRES, hasLibraryContent),
             QuickPickItem(QuickPickAction.ARTISTS, hasLibraryContent),
             QuickPickItem(QuickPickAction.ALBUMS, hasLibraryContent),
+            QuickPickItem(QuickPickAction.PLAYLISTS, hasLibraryContent),
             QuickPickItem(QuickPickAction.QUEUE, true),
             QuickPickItem(QuickPickAction.RECENTLY_ADDED, hasLibraryContent),
             QuickPickItem(QuickPickAction.DECADES, hasLibraryContent && hasYearMetadata),

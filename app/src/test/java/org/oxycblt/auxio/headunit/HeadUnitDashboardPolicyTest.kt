@@ -1,0 +1,70 @@
+package org.oxycblt.auxio.headunit
+
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class HeadUnitDashboardPolicyTest {
+    @Test
+    fun `entries include stable priority order`() {
+        val entries =
+            HeadUnitDashboardPolicy.entries(
+                HeadUnitDashboardState(
+                    hasLibraryContent = true,
+                    hasFavourites = true,
+                    isIndexing = false,
+                )
+            )
+        assertEquals(QuickPickAction.NOW_PLAYING, entries.first().action)
+        assertEquals(QuickPickAction.QUEUE, entries[1].action)
+        assertEquals(QuickPickAction.SHUFFLE_ALL, entries[2].action)
+    }
+
+    @Test
+    fun `entries disable browse actions when library empty`() {
+        val entries =
+            HeadUnitDashboardPolicy.entries(
+                HeadUnitDashboardState(
+                    hasLibraryContent = false,
+                    hasFavourites = false,
+                    isIndexing = false,
+                )
+            ).associateBy { it.action }
+        assertFalse(entries.getValue(QuickPickAction.ALBUMS).enabled)
+        assertFalse(entries.getValue(QuickPickAction.ARTISTS).enabled)
+        assertFalse(entries.getValue(QuickPickAction.PLAYLISTS).enabled)
+        assertTrue(entries.getValue(QuickPickAction.NOW_PLAYING).enabled)
+    }
+
+    @Test
+    fun `settings entry disabled during indexing`() {
+        val entries =
+            HeadUnitDashboardPolicy.entries(
+                HeadUnitDashboardState(
+                    hasLibraryContent = true,
+                    hasFavourites = true,
+                    isIndexing = true,
+                )
+            ).associateBy { it.action }
+        assertFalse(entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).enabled)
+        assertEquals(
+            HeadUnitRoute.HEAD_UNIT_SETTINGS,
+            entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).route,
+        )
+    }
+
+    @Test
+    fun `dashboard policy does not expose folders or decades as dashboard routes`() {
+        val actions =
+            HeadUnitDashboardPolicy.entries(
+                HeadUnitDashboardState(
+                    hasLibraryContent = true,
+                    hasFavourites = true,
+                    isIndexing = false,
+                )
+            ).map { it.action }
+        assertFalse(actions.contains(QuickPickAction.FOLDERS))
+        assertFalse(actions.contains(QuickPickAction.DECADES))
+    }
+}

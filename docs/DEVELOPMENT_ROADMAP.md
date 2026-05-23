@@ -34,3 +34,6 @@ Latest app/runtime hardening note: `docs/TS18_TIER1_HARDENING_NOTES.md` (canonic
 - No smali copying or com.tw.* imports in product code.
 - Native/private contracts are NOT permanently out of scope — they require Tier 2 gap evidence and Tier 4 human-approved design PR.
   Evidence confidence: Inferred | Porting decision: Requires TS18 runtime validation
+
+## Current execution note (Head-Unit Experience Mode)
+Latest Tier 1 scope now includes a policy-driven head-unit dashboard model, queue empty-state recovery, playback large-control ergonomics, and routing/shortcut alignment updates. This remains pre-hardware-validation work and feeds Phase 5G/6A validation.

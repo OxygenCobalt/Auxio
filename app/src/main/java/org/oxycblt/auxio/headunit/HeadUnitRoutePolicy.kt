@@ -9,6 +9,7 @@ enum class HeadUnitRoute {
     GENRES,
     ARTISTS,
     ALBUMS,
+    PLAYLISTS,
     FAVOURITES,
     HEAD_UNIT_SETTINGS,
 }
@@ -22,6 +23,7 @@ object HeadUnitRoutePolicy {
             HeadUnitRoute.GENRES to HeadUnitEntryPoints.EntryDestination.GENRES,
             HeadUnitRoute.ARTISTS to HeadUnitEntryPoints.EntryDestination.ARTISTS,
             HeadUnitRoute.ALBUMS to HeadUnitEntryPoints.EntryDestination.ALBUMS,
+            HeadUnitRoute.PLAYLISTS to HeadUnitEntryPoints.EntryDestination.PLAYLISTS,
             HeadUnitRoute.FAVOURITES to HeadUnitEntryPoints.EntryDestination.FAVOURITES,
             HeadUnitRoute.HEAD_UNIT_SETTINGS to
                 HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS,
@@ -36,6 +38,7 @@ object HeadUnitRoutePolicy {
             HeadUnitEntryPoints.ACTION_OPEN_GENRES -> HeadUnitRoute.GENRES
             HeadUnitEntryPoints.ACTION_OPEN_ARTISTS -> HeadUnitRoute.ARTISTS
             HeadUnitEntryPoints.ACTION_OPEN_ALBUMS -> HeadUnitRoute.ALBUMS
+            HeadUnitEntryPoints.ACTION_OPEN_PLAYLISTS -> HeadUnitRoute.PLAYLISTS
             HeadUnitEntryPoints.ACTION_OPEN_FAVOURITES -> HeadUnitRoute.FAVOURITES
             HeadUnitEntryPoints.ACTION_OPEN_HEAD_UNIT_SETTINGS -> HeadUnitRoute.HEAD_UNIT_SETTINGS
             else -> null
@@ -48,9 +51,11 @@ object HeadUnitRoutePolicy {
             QuickPickAction.GENRES -> HeadUnitRoute.GENRES
             QuickPickAction.ARTISTS -> HeadUnitRoute.ARTISTS
             QuickPickAction.ALBUMS -> HeadUnitRoute.ALBUMS
+            QuickPickAction.PLAYLISTS -> HeadUnitRoute.PLAYLISTS
             QuickPickAction.QUEUE -> HeadUnitRoute.QUEUE
             QuickPickAction.RECENTLY_ADDED -> HeadUnitRoute.RECENTLY_ADDED
             QuickPickAction.FAVOURITES -> HeadUnitRoute.FAVOURITES
+            QuickPickAction.HEAD_UNIT_SETTINGS -> HeadUnitRoute.HEAD_UNIT_SETTINGS
             QuickPickAction.DECADES,
             QuickPickAction.FOLDERS -> null
         }

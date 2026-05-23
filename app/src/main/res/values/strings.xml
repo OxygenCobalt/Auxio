@@ -260,6 +260,11 @@
     <string name="set_head_unit_large_controls_desc">Increase control target sizes for easier in-car tapping</string>
     <string name="set_head_unit_album_art">Show album art in head-unit playback view</string>
     <string name="set_head_unit_album_art_desc">Keep album art visible behind playback controls</string>
+    <string name="lbl_queue_empty_head_unit">Queue is empty. Start playback from Home quick access.</string>
+    <string name="lbl_head_unit_dashboard">Head-unit dashboard</string>
+    <string name="set_head_unit_dashboard_quick_access">Show dashboard quick access</string>
+    <string name="set_head_unit_dashboard_quick_access_desc">Show large dashboard chips for playback, queue, browse, and settings</string>
+
     <string name="msg_playback_play">Play</string>
     <string name="msg_playback_pause">Pause</string>
     <string name="msg_playback_next">Next track</string>

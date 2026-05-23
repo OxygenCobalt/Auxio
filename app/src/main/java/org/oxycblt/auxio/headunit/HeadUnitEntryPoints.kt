@@ -37,6 +37,7 @@ object HeadUnitEntryPoints {
     const val ACTION_OPEN_GENRES = ACTION_PREFIX + "OPEN_GENRES"
     const val ACTION_OPEN_ARTISTS = ACTION_PREFIX + "OPEN_ARTISTS"
     const val ACTION_OPEN_ALBUMS = ACTION_PREFIX + "OPEN_ALBUMS"
+    const val ACTION_OPEN_PLAYLISTS = ACTION_PREFIX + "OPEN_PLAYLISTS"
     const val ACTION_OPEN_FAVOURITES = ACTION_PREFIX + "OPEN_FAVOURITES"
     const val ACTION_OPEN_HEAD_UNIT_SETTINGS = ACTION_PREFIX + "OPEN_HEAD_UNIT_SETTINGS"
 
@@ -49,6 +50,7 @@ object HeadUnitEntryPoints {
         GENRES,
         ARTISTS,
         ALBUMS,
+        PLAYLISTS,
         FAVOURITES,
         HEAD_UNIT_SETTINGS,
     }
@@ -132,6 +134,13 @@ object HeadUnitEntryPoints {
                 longLabelRes = R.string.lbl_recently_added,
                 action = ACTION_OPEN_RECENTLY_ADDED,
                 iconRes = R.drawable.ic_time_24,
+            ),
+            ShortcutSpec(
+                id = "shortcut_playlists",
+                shortLabelRes = R.string.lbl_playlists,
+                longLabelRes = R.string.lbl_playlists,
+                action = ACTION_OPEN_PLAYLISTS,
+                iconRes = R.drawable.ic_playlist_24,
             ),
         )
 }

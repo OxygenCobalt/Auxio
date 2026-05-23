@@ -38,6 +38,10 @@ class HeadUnitEntryPointsTest {
             HeadUnitEntryPoints.EntryDestination.HEAD_UNIT_SETTINGS,
             HeadUnitEntryPoints.destinationForAction(HeadUnitEntryPoints.ACTION_OPEN_HEAD_UNIT_SETTINGS),
         )
+        assertEquals(
+            HeadUnitEntryPoints.EntryDestination.PLAYLISTS,
+            HeadUnitEntryPoints.destinationForAction(HeadUnitEntryPoints.ACTION_OPEN_PLAYLISTS),
+        )
     }
 
     @Test
@@ -54,8 +58,9 @@ class HeadUnitEntryPointsTest {
                 "shortcut_shuffle",
                 "shortcut_queue",
                 "shortcut_recently_added",
+                "shortcut_playlists",
             ),
-            HeadUnitEntryPoints.publishedDynamicShortcutIds(4),
+            HeadUnitEntryPoints.publishedDynamicShortcutIds(5),
         )
         assertEquals(
             listOf("shortcut_now_playing", "shortcut_shuffle"),

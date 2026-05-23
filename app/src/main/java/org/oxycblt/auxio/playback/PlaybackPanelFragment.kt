@@ -32,6 +32,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -152,8 +153,22 @@ class PlaybackPanelFragment :
 
         binding.playbackSeekBar?.listener = this
         binding.playbackSeekBar?.setLargeTouchMode(uiSettings.largeHeadUnitControls)
+        val spacingSmall = resources.getDimensionPixelSize(R.dimen.spacing_small)
+        val spacingMedium = resources.getDimensionPixelSize(R.dimen.spacing_medium)
+        val touchTargetMedium = resources.getDimensionPixelSize(R.dimen.size_touchable_medium)
+        val playbackInfoVerticalPadding =
+            when {
+                !uiSettings.showHeadUnitAlbumArt -> spacingMedium
+                uiSettings.largeHeadUnitControls -> spacingSmall
+                else -> null
+            }
         if (!uiSettings.showHeadUnitAlbumArt) {
             binding.playbackPager?.visibility = View.GONE
+            binding.playbackSong.maxLines = 2
+            binding.playbackArtist.maxLines = 2
+        }
+        playbackInfoVerticalPadding?.let {
+            binding.playbackInfoContainer.updatePadding(top = it, bottom = it)
         }
         HeadUnitUiAdapter.applyLargeControls(
             resources,
@@ -173,7 +188,19 @@ class PlaybackPanelFragment :
             binding.playbackArtist,
         )
         if (uiSettings.largeHeadUnitControls) {
-            binding.playbackInfoContainer.updatePadding(top = 8.dp(), bottom = 8.dp())
+            listOf(
+                    binding.playbackSkipPrev,
+                    binding.playbackPlayPause,
+                    binding.playbackSkipNext,
+                )
+                .forEach {
+                    it.minimumHeight = touchTargetMedium
+                    it.minimumWidth = touchTargetMedium
+                }
+            binding.playbackControlsWrapper?.updatePaddingRelative(
+                start = spacingSmall,
+                end = spacingSmall,
+            )
         }
         applyDriverSideLayout(binding)
 
@@ -214,8 +241,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.shuffleScope, ::updateShuffleScope)
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
     }
-
-    private fun Int.dp(): Int = (this * resources.displayMetrics.density).toInt()
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null

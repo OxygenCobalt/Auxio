@@ -211,3 +211,14 @@ Per scenario include:
 - **Evidence to capture:** UI capture + optional debug logs.
 - **Pass/fail criteria:** Fail if routed to playback panel instead of queue.
 - **Confidence / Porting decision:** Requires TS18 validation / Directly reusable requirement.
+
+## Added validation focus for Head-Unit Experience Mode (Tier 1 batch)
+- TS18-STD-006 / TS18-STD-010 / TS18-STD-011 should now explicitly verify:
+  - Dashboard policy-driven chips route to intended visible destinations.
+  - Queue empty state offers actionable recovery path (Shuffle) and does not dead-end.
+  - Large controls mode visibly increases playback primary button ergonomics.
+  - Dashboard settings toggle hides/shows quick-access area consistently after warm start.
+
+These checks still require real TS18 hardware evidence; no pass is implied by code changes.
+
+- Dashboard route semantics check: FOLDERS/DECADES are non-route metadata chips; HEAD_UNIT_SETTINGS is explicit and should open settings surface.

@@ -604,26 +604,26 @@ jobs:
           mkdir -p "${raw_dir}/nested"
 
           cat > "${raw_dir}/README.txt" <<'EOF'
-Device serial: SERIAL1234567890ABCDEF
-Bluetooth name: CB Phone
-Wi-Fi SSID: WuTangLAN
-/storage/emulated/0/Music/Private Artist/Private Track.flac
-EOF
+          Device serial: SERIAL1234567890ABCDEF
+          Bluetooth name: CB Phone
+          Wi-Fi SSID: WuTangLAN
+          /storage/emulated/0/Music/Private Artist/Private Track.flac
+          EOF
 
           cat > "${raw_dir}/selected_props.txt" <<'EOF'
-[ro.boot.serialno]: [SERIAL1234567890ABCDEF]
-other_id=ABCDEF1234567890ABCDEF1234567890
-EOF
+          [ro.boot.serialno]: [SERIAL1234567890ABCDEF]
+          other_id=ABCDEF1234567890ABCDEF1234567890
+          EOF
 
           cat > "${raw_dir}/nested/media_session.txt" <<'EOF'
-session_token=1234567890ABCDEF1234567890ABCDEF
-metadata_title=Private Track Name
-metadata_artist=Private Artist Name
-EOF
+          session_token=1234567890ABCDEF1234567890ABCDEF
+          metadata_title=Private Track Name
+          metadata_artist=Private Artist Name
+          EOF
 
           cat > "${raw_dir}/.hidden_info.txt" <<'EOF'
-Hidden serial: SERIAL1234567890ABCDEF
-EOF
+          Hidden serial: SERIAL1234567890ABCDEF
+          EOF
 
           bash scripts/redact_ts18_evidence_summary.sh "${raw_dir}" "${out_dir}"
 

@@ -37,6 +37,7 @@ class HeadUnitQuickAccessTest {
         assertTrue(picks.getValue(QuickPickAction.NOW_PLAYING).enabled)
         assertFalse(picks.getValue(QuickPickAction.SHUFFLE_ALL).enabled)
         assertFalse(picks.getValue(QuickPickAction.GENRES).enabled)
+        assertFalse(picks.getValue(QuickPickAction.PLAYLISTS).enabled)
         assertFalse(picks.getValue(QuickPickAction.RECENTLY_ADDED).enabled)
         assertFalse(picks.getValue(QuickPickAction.DECADES).enabled)
         assertTrue(picks.getValue(QuickPickAction.FOLDERS).enabled)
