@@ -25,19 +25,6 @@ run_cmd() {
   echo "Saved: ${out}" >> "${SUMMARY}"
 }
 
-run_shell() {
-  name="$1"
-  shift
-  out="${OUT_DIR}/${name}.txt"
-  echo "== ${name} ==" >> "${SUMMARY}"
-  if command -v timeout >/dev/null 2>&1; then
-    timeout 20 sh -c "$*" >"${out}" 2>&1 || true
-  else
-    sh -c "$*" >"${out}" 2>&1 || true
-  fi
-  echo "Saved: ${out}" >> "${SUMMARY}"
-}
-
 if ! command -v adb >/dev/null 2>&1; then
   echo "adb is not available in PATH" >> "${SUMMARY}"
   exit 0
@@ -62,7 +49,14 @@ run_cmd am-start-queue adb shell am start -n org.oxycblt.auxio/.MainActivity -a 
 run_cmd dumpsys-media-session-before adb shell dumpsys media_session
 run_cmd dumpsys-audio-before adb shell dumpsys audio
 run_cmd dumpsys-notification-before adb shell dumpsys notification --noredact
-run_shell dumpsys-services-auxio "adb shell dumpsys activity services | grep -i auxio"
+run_cmd dumpsys-services adb shell dumpsys activity services
+if [ -f "${OUT_DIR}/dumpsys-services.txt" ]; then
+  grep -i auxio "${OUT_DIR}/dumpsys-services.txt" > "${OUT_DIR}/dumpsys-services-auxio.txt" 2>/dev/null || true
+  if [ ! -s "${OUT_DIR}/dumpsys-services-auxio.txt" ]; then
+    : > "${OUT_DIR}/dumpsys-services-auxio.txt"
+  fi
+  echo "Saved: ${OUT_DIR}/dumpsys-services-auxio.txt" >> "${SUMMARY}"
+fi
 
 run_cmd keyevent-play-pause adb shell input keyevent KEYCODE_MEDIA_PLAY_PAUSE
 run_cmd keyevent-next adb shell input keyevent KEYCODE_MEDIA_NEXT

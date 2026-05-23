@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.home
 
 import android.annotation.SuppressLint
@@ -208,7 +208,9 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         )
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collectImmediately(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
-        collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
+        collect(playbackModel.playbackDecision.flow) { decision ->
+            handlePlaybackDecision(decision)
+        }
     }
 
     private fun setupHeadUnitQuickAccess(binding: FragmentHomeBinding) {

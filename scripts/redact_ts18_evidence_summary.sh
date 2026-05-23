@@ -29,14 +29,21 @@ redact_file() {
   local tmp
   tmp="$(mktemp)"
   sed -E \
-    -e 's/(serial(no)?|fingerprint|android_id|device_id)[^\n]*/\1=[REDACTED]/Ig' \
+    -e 's/((serial(no)?|fingerprint|android_id|device_id)[[:space:]]*[:=])[^\r\n]*/\1[REDACTED]/Ig' \
+    -e 's/(ro\.boot\.serialno[^\r\n]*\[[[:space:]]*)[^]\r\n]+/\1[REDACTED]/Ig' \
     -e 's/(([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2})/[MAC_REDACTED]/g' \
-    -e 's/(ssid|bssid|bluetooth_name)[^\n]*/\1=[REDACTED]/Ig' \
+    -e 's/((ssid|bssid|bluetooth_name|bluetooth name|wi-?fi ssid)[[:space:]]*[:=])[^\r\n]*/\1[REDACTED]/Ig' \
+    -e 's/((session[_-]?token|other[_-]?id|device[_-]?id|android[_-]?id)[[:space:]]*[:=])[[:space:]]*[A-Za-z0-9._:-]{8,}/\1[HEX_OR_ID_REDACTED]/Ig' \
+    -e 's/\b[0-9A-Fa-f]{16,}\b/[HEX_OR_ID_REDACTED]/g' \
+    -e 's/((metadata_(title|artist)|title|artist)[[:space:]]*[:=])[[:space:]]*Private[^\r\n]*/\1[REDACTED]/Ig' \
+    -e 's/Private[[:space:]]+(Artist|Track)([[:space:]]+Name)?/[PRIVATE_REDACTED]/Ig' \
     -e 's#(/storage/emulated/0/)[^\r\n]*#\1[REDACTED_PATH]#g' \
     "$f" > "$tmp" && mv "$tmp" "$f" || { rm -f "$tmp"; return 1; }
 }
 
 find "$OUT" -type f -name '*.txt' -print0 | while IFS= read -r -d '' file; do redact_file "$file"; done
 find "$OUT" -type f -name '*.md' -print0 | while IFS= read -r -d '' file; do redact_file "$file"; done
+find "$OUT" -type f -name '*.log' -print0 | while IFS= read -r -d '' file; do redact_file "$file"; done
+find "$OUT" -type f -name '*.json' -print0 | while IFS= read -r -d '' file; do redact_file "$file"; done
 
 echo "Redacted pack created: $OUT"

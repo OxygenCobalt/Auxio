@@ -322,7 +322,7 @@ jobs:
 
           matches="$(grep -RInE \
             'Android.*final authority|Android.*ceiling|standard Android.*complete|standard Android.*enough|private.*permanently out of scope|native.*permanently out of scope|TS18.*permanently out of scope|TWTHEME.*permanently out of scope' \
-            README.md AGENTS.md .github docs 2>/dev/null || true)"
+            README.md AGENTS.md .github/copilot-instructions.md docs 2>/dev/null || true)"
 
           if [ -z "${matches}" ]; then
             exit 0

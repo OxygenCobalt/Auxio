@@ -31,7 +31,7 @@
     <string name="lbl_demo">نسخه نمایشی</string>
     <string name="lbl_demos">نسخه های نمایشی</string>
     <string name="lbl_mixes">ترکیب های دی جی</string>
-    <string name="lbl_mix">‭‭‮ترکیب دی جی</string>
+    <string name="lbl_mix">ترکیب دی جی</string>
     <string name="lbl_live_group">زنده</string>
     <string name="lbl_remix_group">بازآمیزی‌ها</string>
     <string name="lbl_appears_on">پدیدار می‌شود در</string>
@@ -122,7 +122,7 @@
     <string name="lng_observing">‌در حال نظارت کتابخانه موسیقی شما برای تغییرات…</string>
     <string name="lng_queue_added">به صف افزوده شد</string>
     <string name="lng_play_next">بعدی پخش خواهد شد</string>
-    <string name="lng_playlist_created">فهرست پخش ساخته‫ شد</string>
+    <string name="lng_playlist_created">فهرست پخش ساخته شد</string>
     <string name="lng_playlist_imported">فهرست پخش وارد شد</string>
     <string name="lng_playlist_renamed">فهرست پخش بازنامگذاری شد</string>
     <string name="lng_playlist_exported">فهرست پخش خارج شد</string>
