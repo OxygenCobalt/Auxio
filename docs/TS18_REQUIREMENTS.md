@@ -58,3 +58,17 @@ Confidence: Inferred / Requires TS18 validation. Porting decision: Directly reus
 
 
 2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.
+
+
+## Topway runtime requirements derived from apktool/JADX (Observed)
+- Runtime package identity is `com.tw.music`; JADX aliases like `com.p060tw.music`/`com.p073tw.music` are artifacts.
+- Widget update path: `MusicWidgetProvider.onUpdate()` starts `MusicService`, sends `com.tw.music.action.cmd` with `cmd=update` and `appWidgetIds`, and updates all instances (event-driven, `updatePeriodMillis=0`).
+- Required compatibility actions/keys (isolated bridge constants only):
+  - `com.tw.music.info`: `musicTitle`, `musicaArtist`, `musicAlbum`, `musicPath`
+  - `com.tw.launcher.music_progress_duration`: `msg_music_progress`, `msg_music_duration`
+  - `com.android.launcher.widget_music_progress`: `music_progress`
+  - `com.tw.music.action.cmd`, `com.tw.music.action.prev`, `com.tw.music.action.next`, `com.tw.music.action.pp`; cmd values `prev`, `next`, `pp`, `update`
+- XT/AIDL (`com.tw.service.xt`, `CommandService`, `ITWCommandAidl`, `IMusicCallBack`) is Observed evidence only and Unsafe to port directly in production by default.
+
+
+2026-05-24 runtime status: Topway decompile-derived broadcast/command/seek contract is now implemented in isolated runtime bridge wiring (no package impersonation, no copied smali, no XT/AIDL production dependency). TS18/iLauncher runtime verification remains pending.

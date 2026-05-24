@@ -59,3 +59,15 @@ Status: Tier 1 implementation only. No TS18 hardware validation success is claim
 - 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
 
 - Delivery protocol update: large-scope TS18 tasks must deliver runtime-wired outcomes; scaffold-only work is not counted as implemented.
+
+
+## Guardrail refinement for Topway bridge constants
+Topway compatibility strings are globally blocked except in:
+- `app/src/main/java/org/oxycblt/auxio/headunit/topway/`
+- `app/src/test/java/org/oxycblt/auxio/headunit/topway/`
+- `docs/` and `docs/topway/`
+
+Allowed constants do **not** permit direct vendor imports, system/shared UID changes, binder execution, scanner/probe frameworks, or package impersonation.
+
+
+2026-05-24 hardening update: isolated Topway bridge wiring now active in runtime pathways (widget/service listener path), while APK cleanliness boundaries remain intact (no in-app probes/scanners/binders).

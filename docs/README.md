@@ -70,3 +70,9 @@ See [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md) 
 - TS18 validation tooling now includes schema + manifest validation + orchestration CLI.
 
 - 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
+
+
+## Topway decompile-driven compatibility baseline
+- Use `docs/topway/README.md` as the primary local source bundle for Topway `com.tw.music` compatibility behavior.
+- Treat JADX alias packages (`com.p060tw.music`, `com.p073tw.music`) as decompiler artifacts; verify runtime names through apktool manifest/smali/resources.
+- For TS18 music compatibility proposals, Topway decompile requirements are mandatory context in addition to Android-standard Tier 1 APIs.

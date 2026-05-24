@@ -46,3 +46,17 @@ Latest Tier 1 scope now includes a policy-driven head-unit dashboard model, queu
 
 
 2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.
+
+
+## Next runtime scope: Topway decompile-driven runtime compatibility bridge
+Planned runtime deliverables (implementation pass, not this docs-only pass):
+- `TopwayMusicContract` constants in `app/src/main/java/org/oxycblt/auxio/headunit/topway/`.
+- Topway metadata broadcast bridge: `com.tw.music.info` (`musicTitle`, `musicaArtist`, `musicAlbum`, `musicPath`).
+- Topway progress/duration bridge: `com.tw.launcher.music_progress_duration` (`msg_music_progress`, `msg_music_duration`).
+- Topway command receiver: `com.tw.music.action.cmd` / `prev` / `next` / `pp` plus `cmd=prev|next|pp|update`.
+- Topway launcher seek receiver: `com.android.launcher.widget_music_progress` with `music_progress`.
+- Topway-like AppWidget/RemoteViews parity and widget update lifecycle parity.
+- MediaSession/notification/widget/Topway metadata unification and isolated-string guardrails/tests.
+
+
+2026-05-24 update: Topway bridge runtime implementation started in isolated package (`headunit/topway`) with contract constants, outgoing metadata/progress broadcasters, incoming command/seek mapping, and service/widget wiring. TS18 hardware parity still requires on-device validation.
