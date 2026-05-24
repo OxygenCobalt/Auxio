@@ -1,6 +1,7 @@
 name: Android Quality
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
@@ -21,6 +22,7 @@ on:
       - 'eclipse-cdt.xml'
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
+      - 'scripts/check-headunit-compat-safety.sh'
   pull_request:
     branches:
       - dev
@@ -41,6 +43,7 @@ on:
       - 'eclipse-cdt.xml'
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
+      - 'scripts/check-headunit-compat-safety.sh'
 
 permissions:
   contents: read
@@ -55,7 +58,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
+  format:
+    name: Formatting
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -78,6 +82,16 @@ jobs:
       with:
         java-version: "21"
         distribution: "temurin"
+    - name: Write local.properties for Android SDK
+      shell: bash
+      run: |
+        set -euo pipefail
+        sdk_dir="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+        if [ -z "${sdk_dir}" ]; then
+          echo "::error::ANDROID_HOME/ANDROID_SDK_ROOT is not set."
+          exit 1
+        fi
+        printf 'sdk.dir=%s\n' "${sdk_dir}" > local.properties
     - name: Set up Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
@@ -89,19 +103,124 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ninja-build
         fi
-    # Steps are intentionally sequential and fail-fast so the PR author gets
-    # the first actionable failure quickly:
-    #   1. Formatting failure stops immediately — no point compiling bad code.
-    #   2. Unit-test failure stops before running the slower lint task.
-    #   3. Lint failure produces a clean report and uploads artifacts.
     - name: Check formatting
       run: ./gradlew --no-daemon --stacktrace spotlessCheck
+    - name: Upload formatting reports
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-quality-format-reports
+        path: |
+          build/reports/problems/**
+        if-no-files-found: ignore
+        retention-days: 7
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        # fetch-depth: 0 (full history) is required here.
+        # The nested ffmpeg submodule resolves from git.ffmpeg.org via an
+        # unadvertised object reference.  Shallow clones (fetch-depth: 1)
+        # cause "unadvertised object" fetch errors during recursive submodule
+        # init.  Full history ensures the referenced commit is always reachable.
+        fetch-depth: 0
+        submodules: recursive
+    - name: Prepare CI environment
+      shell: bash
+      run: bash ./scripts/prepare-ci-environment.sh
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: "21"
+        distribution: "temurin"
+    - name: Write local.properties for Android SDK
+      shell: bash
+      run: |
+        set -euo pipefail
+        sdk_dir="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+        if [ -z "${sdk_dir}" ]; then
+          echo "::error::ANDROID_HOME/ANDROID_SDK_ROOT is not set."
+          exit 1
+        fi
+        printf 'sdk.dir=%s\n' "${sdk_dir}" > local.properties
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-read-only: ${{ github.event_name == 'pull_request' }}
+    - name: Ensure native build tools are present
+      run: |
+        if ! command -v ninja >/dev/null 2>&1; then
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+        fi
     - name: Run unit tests
       # testDebugUnitTest is scoped to :app and :musikr only.
       # The media library test files have missing test-utility dependencies
       # (after upstream "trim down module tree") and will not compile with the
       # bare testDebugUnitTest task.
       run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest :musikr:testDebugUnitTest
+    - name: Upload unit test reports
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-quality-unit-test-reports
+        path: |
+          app/build/reports/tests/**
+          musikr/build/reports/tests/**
+          build/reports/problems/**
+        if-no-files-found: ignore
+        retention-days: 7
+
+  android-lint:
+    name: Android lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        # fetch-depth: 0 (full history) is required here.
+        # The nested ffmpeg submodule resolves from git.ffmpeg.org via an
+        # unadvertised object reference.  Shallow clones (fetch-depth: 1)
+        # cause "unadvertised object" fetch errors during recursive submodule
+        # init.  Full history ensures the referenced commit is always reachable.
+        fetch-depth: 0
+        submodules: recursive
+    - name: Prepare CI environment
+      shell: bash
+      run: bash ./scripts/prepare-ci-environment.sh
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: "21"
+        distribution: "temurin"
+    - name: Write local.properties for Android SDK
+      shell: bash
+      run: |
+        set -euo pipefail
+        sdk_dir="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+        if [ -z "${sdk_dir}" ]; then
+          echo "::error::ANDROID_HOME/ANDROID_SDK_ROOT is not set."
+          exit 1
+        fi
+        printf 'sdk.dir=%s\n' "${sdk_dir}" > local.properties
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-read-only: ${{ github.event_name == 'pull_request' }}
+    - name: Ensure native build tools are present
+      run: |
+        if ! command -v ninja >/dev/null 2>&1; then
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+        fi
     - name: Run Android lint
       # lintDebug is scoped to :app only.
       # app/build.gradle sets checkDependencies=false so media library lint
@@ -109,15 +228,25 @@ jobs:
       # app/lint.xml suppresses lint for vendored Google Material sources.
       # :musikr lintDebug can be added once musikr lint issues are baselined.
       run: ./gradlew --no-daemon --stacktrace :app:lintDebug
-    - name: Upload quality reports
+    - name: Upload Android lint reports
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: android-quality-reports
+        name: android-quality-lint-reports
         path: |
-          app/build/reports/tests/**
-          musikr/build/reports/tests/**
           app/build/reports/lint-results-*
           build/reports/problems/**
         if-no-files-found: ignore
         retention-days: 7
+
+  headunit-safety:
+    name: Head-unit safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Run head-unit compatibility safety checks
+      shell: bash
+      run: bash ./scripts/check-headunit-compat-safety.sh

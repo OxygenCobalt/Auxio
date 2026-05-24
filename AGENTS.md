@@ -213,9 +213,8 @@ Do not try to work around this by copying submodule files manually.
   from `api.foojay.io` are unreachable (AGP plugin resolution fails).
 
 ### Quality workflow scoping
-- `spotlessCheck`, `testDebugUnitTest`, and `lintDebug` run as **separate sequential steps** in
-  `lint.yml` (fail-fast, no `--continue`). Formatting failure stops immediately; unit-test
-  failure stops before lint; lint failure uploads a report artifact.
+- `lint.yml` runs four **independent jobs**: `Formatting`, `Unit tests`, `Android lint`, and
+  `Head-unit safety`. A formatting failure must not hide unit-test or lint status.
 - `testDebugUnitTest` is scoped to `:app` and `:musikr` only. The media library test files
   have missing test-utility dependencies (after upstream "trim down module tree" commit) and
   will fail to compile if the bare `testDebugUnitTest` task is used.
@@ -224,6 +223,8 @@ Do not try to work around this by copying submodule files manually.
 - `app/lint.xml` suppresses all lint issues for the vendored Google Material backport package
   (`**/com/google/android/material/**`).  New issues in Auxio-owned source still fail CI.
 - `:musikr lintDebug` can be added once musikr lint issues are resolved or baselined.
+- `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
+  guardrail used by both Android Quality and TS18 Guardrails.
 
 ### CI audit methodology for agents
 - Fetch **full** job logs, not tails. The root error is always above the Gradle stack trace dump.

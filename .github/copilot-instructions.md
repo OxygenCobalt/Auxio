@@ -127,6 +127,10 @@ Always distinguish between: product requirement / Android-standard implementatio
 - Never print or commit secret material.
 - Keep decoded keystores in runner temp paths only.
 - Initialize submodules recursively before Gradle; never create fake submodule files.
+- `Android Quality` is expected to expose formatting, unit-test, lint, and head-unit safety
+  status independently; do not accept a workflow shape where `spotlessCheck` skips the other gates.
+- `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
+  guardrail; prefer it over duplicating stale inline `grep` logic in workflows.
 
 - Phase 5G/6A: use evidence-pack tooling (`scripts/ts18-create-evidence-pack.sh`, `scripts/ts18-summarise-evidence-pack.py`) before proposing native/private investigations; no production private hooks without explicit approval.
 

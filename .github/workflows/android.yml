@@ -1,6 +1,7 @@
 name: Android Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
@@ -21,6 +22,7 @@ on:
       - 'eclipse-cdt.xml'
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
+      - 'scripts/check-headunit-compat-safety.sh'
   pull_request:
     branches:
       - dev
@@ -41,6 +43,7 @@ on:
       - 'eclipse-cdt.xml'
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
+      - 'scripts/check-headunit-compat-safety.sh'
 
 permissions:
   contents: read
@@ -78,6 +81,16 @@ jobs:
       with:
         java-version: "21"
         distribution: "temurin"
+    - name: Write local.properties for Android SDK
+      shell: bash
+      run: |
+        set -euo pipefail
+        sdk_dir="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+        if [ -z "${sdk_dir}" ]; then
+          echo "::error::ANDROID_HOME/ANDROID_SDK_ROOT is not set."
+          exit 1
+        fi
+        printf 'sdk.dir=%s\n' "${sdk_dir}" > local.properties
     - name: Set up Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
@@ -91,13 +104,21 @@ jobs:
         fi
     - name: Build debug APK with Gradle
       run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
-    - name: Upload debug APK artifact
-      # APK artifacts are only uploaded for non-PR runs (push to dev / release).
-      # Uploading on every PR run is wasteful and not needed for PR review.
-      if: github.event_name != 'pull_request'
+    - name: Upload build reports
+      if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: Auxio_Canary
+        name: android-build-reports
+        path: |
+          app/build/reports/**
+          build/reports/problems/**
+        if-no-files-found: ignore
+        retention-days: 7
+    - name: Upload debug APK artifact
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: auxio-ts-debug-apk
         path: ./app/build/outputs/apk/debug/app-debug.apk
         if-no-files-found: error
         retention-days: 7
