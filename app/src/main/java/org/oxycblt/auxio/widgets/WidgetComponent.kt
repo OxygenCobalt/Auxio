@@ -84,6 +84,7 @@ private constructor(
         val song = playbackManager.currentSong
         if (song == null) {
             L.d("No song, resetting widget")
+            topwayBridge.clear()
             widgetProvider.update(context, uiSettings, null)
             return
         }
@@ -144,7 +145,7 @@ private constructor(
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {
-                    val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
+                    val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled, elapsedMs)
                     L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }
@@ -211,5 +212,6 @@ private constructor(
         val isPlaying: Boolean,
         val repeatMode: RepeatMode,
         val isShuffled: Boolean,
+        val positionMs: Long,
     )
 }

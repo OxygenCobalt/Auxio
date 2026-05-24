@@ -364,6 +364,10 @@ class WidgetProvider : AppWidgetProvider() {
             )
         setTextViewText(R.id.widget_song, policy?.displayTitle ?: context.getString(R.string.lbl_playback))
         setTextViewText(R.id.widget_artist, policy?.displaySubtitle ?: context.getString(R.string.lbl_all_songs))
+        val (durationSeconds, positionSeconds) = WidgetTimeline.clampProgressSeconds(state.positionMs, state.song.durationMs)
+        setTextViewText(R.id.widget_current_time, WidgetTimeline.formatClock(state.positionMs))
+        setTextViewText(R.id.widget_duration, WidgetTimeline.formatClock(state.song.durationMs))
+        setProgressBar(R.id.widget_progress, durationSeconds.coerceAtLeast(1), positionSeconds, false)
         return this
     }
 

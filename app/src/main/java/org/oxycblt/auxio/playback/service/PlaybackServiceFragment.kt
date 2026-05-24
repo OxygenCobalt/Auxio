@@ -31,6 +31,10 @@ import org.oxycblt.auxio.AuxioService.Companion.INTENT_KEY_START_ID
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.headunit.topway.TopwayMappedCommand
+import org.oxycblt.auxio.headunit.topway.TopwayMusicCommandMapper
+import org.oxycblt.auxio.headunit.topway.TopwayMusicContract
+import org.oxycblt.auxio.headunit.topway.TopwayMusicSeekMapper
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -153,6 +157,10 @@ private constructor(
                         null
                     }
                 }
+                IntegerTable.START_ID_TOPWAY -> {
+                    handleTopwayStartIntent(intent)
+                    null
+                }
                 else -> {
                     L.d("Handling non-native start.")
                     if (intent != null && sessionHolder.tryMediaButtonIntent(intent)) {
@@ -167,6 +175,26 @@ private constructor(
             L.d("Initing service fragment using action $action")
             playbackManager.playDeferred(action)
         }
+    }
+
+    private fun handleTopwayStartIntent(intent: Intent?): Boolean {
+        if (intent == null) return false
+        when (TopwayMusicCommandMapper.map(intent.action, intent.getStringExtra(TopwayMusicContract.EXTRA_CMD))) {
+            TopwayMappedCommand.PREV -> playbackManager.prev()
+            TopwayMappedCommand.NEXT -> playbackManager.next()
+            TopwayMappedCommand.PLAY_PAUSE -> if (playbackManager.currentSong != null) playbackManager.playing(!playbackManager.progression.isPlaying)
+            TopwayMappedCommand.UPDATE -> widgetComponent.update()
+            TopwayMappedCommand.UNKNOWN -> {
+                if (intent.action == TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK) {
+                    val rawSeek = intent.extras?.get(TopwayMusicContract.EXTRA_WIDGET_PROGRESS).let { it as? Int ?: (it as? Long)?.toInt() }
+                    val seekTarget = TopwayMusicSeekMapper.mapSeekTargetMs(rawSeek, playbackManager.currentSong?.durationMs) ?: return true
+                    playbackManager.seekTo(seekTarget)
+                    return true
+                }
+                return false
+            }
+        }
+        return true
     }
 
     val notification: ForegroundServiceNotification?

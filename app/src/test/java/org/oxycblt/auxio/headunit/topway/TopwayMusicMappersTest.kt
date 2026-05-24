@@ -12,6 +12,10 @@ class TopwayMusicMappersTest {
         assertEquals(TopwayMappedCommand.PLAY_PAUSE, TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_PLAY_PAUSE, null))
         assertEquals(TopwayMappedCommand.UPDATE, TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_UPDATE))
         assertEquals(TopwayMappedCommand.UNKNOWN, TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, "bad"))
+        assertEquals(TopwayMappedCommand.UNKNOWN, TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, null))
+        assertEquals(TopwayMappedCommand.PREV, TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_PREV))
+        assertEquals(TopwayMappedCommand.NEXT, TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_NEXT))
+        assertEquals(TopwayMappedCommand.PLAY_PAUSE, TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_PLAY_PAUSE))
     }
 
     @Test
@@ -21,5 +25,6 @@ class TopwayMusicMappersTest {
         assertEquals(5000L, TopwayMusicSeekMapper.mapSeekTargetMs(8000, 5000L))
         assertNull(TopwayMusicSeekMapper.mapSeekTargetMs(null, 5000L))
         assertNull(TopwayMusicSeekMapper.mapSeekTargetMs(100, 0L))
+        assertNull(TopwayMusicSeekMapper.mapSeekTargetMs(100, null))
     }
 }
