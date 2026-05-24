@@ -81,6 +81,16 @@ Canonical source corpus: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 7. Avoid TWUtil/TWClient reflection in product code.
 8. Avoid vendor binders and package impersonation.
 
+
+## Topway decompile-driven compatibility rule
+- The official Topway `com.tw.music` apktool/JADX decompile is a primary local compatibility source.
+- Generic Android MediaSession/AppWidget/shortcut compatibility is necessary but not sufficient.
+- Agents must consult `docs/topway/` before proposing Topway/TS18 music compatibility work.
+- JADX alias package names such as `com.p060tw.music` are not runtime package names.
+- Safe Topway broadcast/action/seek/widget compatibility may be implemented only through an isolated bridge package.
+- Existing broad prohibitions against `com.tw.music.action.*` are refined: these strings are forbidden generally, but allowed as constants inside the isolated Topway bridge, tests, and docs.
+- Runtime APK must stay clean and must not include evidence/probe/capture tooling.
+
 ## Evidence labeling (required)
 For each TS18/TW/TWTHEME claim, include:
 1) confidence: **Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported**
@@ -96,7 +106,7 @@ Always distinguish between: product requirement / Android-standard implementatio
 - Do not add TWUtil/TWClient reflection or vendor-service binders to product code.
 - Do not make probe/diagnostics the default approach for TS18 questions.
 - Do not add in-app probe frameworks or speculative default-off adapters.
-- Do not add product-code calls to `com.tw.music.action.*`.
+- Do not add product-code calls to `com.tw.music.action.*` outside the isolated Topway bridge package/test scope.
 - Do not add direct `com.tw.*` or `android.tw.john.*` imports in product code.
 - Do not add TWTHEME private-resource loaders or hidden diagnostics modules in the app.
 - Do not say "private/native is permanently out of scope" — say "not for production by default; requires formal gap-and-promotion process".
@@ -176,3 +186,6 @@ Always report explicitly:
 
 
 2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.
+
+
+2026-05-24 implementation note: isolated Topway bridge runtime wiring now exists; keep Topway strings constrained to approved bridge/test/docs scope and continue blocking private/native binder production paths.

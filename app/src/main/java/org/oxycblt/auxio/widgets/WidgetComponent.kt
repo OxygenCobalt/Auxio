@@ -30,6 +30,10 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.coil.RoundedRectTransformation
 import org.oxycblt.auxio.image.coil.SquareCropTransformation
+import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
+import org.oxycblt.auxio.headunit.topway.TopwayMusicBroadcastBridge
+import org.oxycblt.auxio.music.resolve
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
@@ -67,6 +71,7 @@ private constructor(
     }
 
     private val widgetProvider = WidgetProvider()
+    private val topwayBridge = TopwayMusicBroadcastBridge(context, uiSettings)
 
     fun attach() {
         playbackManager.addListener(this)
@@ -85,8 +90,23 @@ private constructor(
 
         // Note: Store these values here so they remain consistent once the bitmap is loaded.
         val isPlaying = playbackManager.progression.isPlaying
+        val elapsedMs = playbackManager.progression.calculateElapsedPositionMs()
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.isShuffled
+        val metadataSnapshot =
+            HeadUnitMetadataPolicy.fromRaw(
+                title = song.name.resolve(context),
+                artist = song.artists.resolveNames(context),
+                albumArtist = song.album.artists.resolveNames(context),
+                albumTitle = song.album.name.resolve(context),
+                durationMs = song.durationMs,
+                mediaId = song.uid.toString(),
+                mediaUri = song.uri.toString(),
+                artworkUri = null,
+                hasArtwork = false,
+            )
+        topwayBridge.publishMetadata(metadataSnapshot)
+        topwayBridge.publishProgress(elapsedMs, song.durationMs)
 
         L.d("Updating widget with new playback state")
         bitmapProvider.load(
@@ -138,6 +158,7 @@ private constructor(
         imageSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)
+        topwayBridge.clear()
         widgetProvider.reset(context, uiSettings)
     }
 
@@ -161,7 +182,11 @@ private constructor(
         isShuffled: Boolean,
     ) = update()
 
-    override fun onProgressionChanged(progression: Progression) = update()
+    override fun onProgressionChanged(progression: Progression) {
+        update()
+        val duration = playbackManager.currentSong?.durationMs ?: 0L
+        topwayBridge.publishProgress(progression.calculateElapsedPositionMs(), duration)
+    }
 
     override fun onRepeatModeChanged(repeatMode: RepeatMode) = update()
 
