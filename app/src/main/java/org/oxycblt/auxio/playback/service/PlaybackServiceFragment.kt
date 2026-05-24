@@ -31,6 +31,8 @@ import org.oxycblt.auxio.AuxioService.Companion.INTENT_KEY_START_ID
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.headunit.topway.TopwayStartCallbacks
+import org.oxycblt.auxio.headunit.topway.TopwayStartIntentHandler
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -153,6 +155,10 @@ private constructor(
                         null
                     }
                 }
+                IntegerTable.START_ID_TOPWAY -> {
+                    handleTopwayStartIntent(intent)
+                    null
+                }
                 else -> {
                     L.d("Handling non-native start.")
                     if (intent != null && sessionHolder.tryMediaButtonIntent(intent)) {
@@ -167,6 +173,31 @@ private constructor(
             L.d("Initing service fragment using action $action")
             playbackManager.playDeferred(action)
         }
+    }
+
+    private fun handleTopwayStartIntent(intent: Intent?): Boolean {
+        return TopwayStartIntentHandler.handle(
+            intent,
+            object : TopwayStartCallbacks {
+                override val hasCurrentSong: Boolean
+                    get() = playbackManager.currentSong != null
+                override val currentDurationMs: Long?
+                    get() = playbackManager.currentSong?.durationMs
+
+                override fun previous() = playbackManager.prev()
+
+                override fun next() = playbackManager.next()
+
+                override fun playPause() =
+                    playbackManager.playing(!playbackManager.progression.isPlaying)
+
+                override fun widgetUpdate() = widgetComponent.update()
+
+                override fun seekTo(positionMs: Long) = playbackManager.seekTo(positionMs)
+
+                override fun ignore() = L.d("Ignoring unsupported or unsafe Topway start intent")
+            },
+        )
     }
 
     val notification: ForegroundServiceNotification?

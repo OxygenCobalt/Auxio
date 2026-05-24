@@ -19,7 +19,7 @@ if [ -n "$topway_hits" ]; then
     [ -z "$line" ] && continue
     path="${line%%:*}"
     case "$path" in
-      $allowed_topway_main*|$allowed_topway_test*|docs/*) ;;
+      $allowed_topway_main*|$allowed_topway_test*|docs/*|app/src/main/AndroidManifest.xml) ;;
       *)
         echo "$line" >&2
         echo "Topway compatibility strings must stay in isolated topway bridge/test/docs paths" >&2

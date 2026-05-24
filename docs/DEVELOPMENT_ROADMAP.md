@@ -60,3 +60,5 @@ Planned runtime deliverables (implementation pass, not this docs-only pass):
 
 
 2026-05-24 update: Topway bridge runtime implementation started in isolated package (`headunit/topway`) with contract constants, outgoing metadata/progress broadcasters, incoming command/seek mapping, and service/widget wiring. TS18 hardware parity still requires on-device validation.
+
+2026-05-24 Topway bridge closure update: PR runtime branch now has a dedicated Topway service-routing policy, cold bridge receiver path, widget timeline/no-session policy, progress-broadcast lifecycle hardening, and runtime edge-case unit coverage. Remaining validation is CI/build proof and real TS18 hardware behaviour, not further scaffold development.

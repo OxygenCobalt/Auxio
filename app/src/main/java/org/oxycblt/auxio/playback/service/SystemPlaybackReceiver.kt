@@ -25,10 +25,9 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import androidx.core.content.ContextCompat
 import javax.inject.Inject
-import org.oxycblt.auxio.headunit.topway.TopwayMappedCommand
-import org.oxycblt.auxio.headunit.topway.TopwayMusicCommandMapper
 import org.oxycblt.auxio.headunit.topway.TopwayMusicContract
-import org.oxycblt.auxio.headunit.topway.TopwayMusicSeekMapper
+import org.oxycblt.auxio.headunit.topway.TopwayStartCallbacks
+import org.oxycblt.auxio.headunit.topway.TopwayStartIntentHandler
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -149,43 +148,36 @@ private constructor(
             TopwayMusicContract.ACTION_PREV,
             TopwayMusicContract.ACTION_NEXT,
             TopwayMusicContract.ACTION_PLAY_PAUSE,
-            TopwayMusicContract.ACTION_CMD -> {
-                when (
-                    TopwayMusicCommandMapper.map(
-                        intent.action,
-                        intent.getStringExtra(TopwayMusicContract.EXTRA_CMD),
-                    )
-                ) {
-                    TopwayMappedCommand.PREV -> playbackManager.prev()
-                    TopwayMappedCommand.NEXT -> playbackManager.next()
-                    TopwayMappedCommand.PLAY_PAUSE -> {
-                        if (playbackManager.currentSong != null) {
-                            playbackManager.playing(!playbackManager.progression.isPlaying)
-                        } else {
-                            L.d("Ignoring Topway play/pause with no current song")
-                        }
-                    }
-                    TopwayMappedCommand.UPDATE -> {
-                        if (WidgetUtil.hasWidgets(context, WidgetProvider::class.java)) {
-                            widgetComponent.update()
-                        } else {
-                            L.d("Ignoring Topway widget update with no widget instances")
-                        }
-                    }
-                    TopwayMappedCommand.UNKNOWN -> L.w("Ignoring unknown Topway command")
-                }
-            }
+            TopwayMusicContract.ACTION_CMD,
             TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK -> {
-                val rawSeek =
-                    intent.extras?.get(TopwayMusicContract.EXTRA_WIDGET_PROGRESS).let {
-                        it as? Int ?: (it as? Long)?.toInt()
-                    }
-                val seekTarget =
-                    TopwayMusicSeekMapper.mapSeekTargetMs(
-                        rawSeek,
-                        playbackManager.currentSong?.durationMs,
-                    ) ?: return
-                playbackManager.seekTo(seekTarget)
+                TopwayStartIntentHandler.handle(
+                    intent,
+                    object : TopwayStartCallbacks {
+                        override val hasCurrentSong: Boolean
+                            get() = playbackManager.currentSong != null
+                        override val currentDurationMs: Long?
+                            get() = playbackManager.currentSong?.durationMs
+
+                        override fun previous() = playbackManager.prev()
+
+                        override fun next() = playbackManager.next()
+
+                        override fun playPause() =
+                            playbackManager.playing(!playbackManager.progression.isPlaying)
+
+                        override fun widgetUpdate() {
+                            if (WidgetUtil.hasWidgets(context, WidgetProvider::class.java)) {
+                                widgetComponent.update()
+                            } else {
+                                L.d("Ignoring Topway widget update with no widget instances")
+                            }
+                        }
+
+                        override fun seekTo(positionMs: Long) = playbackManager.seekTo(positionMs)
+
+                        override fun ignore() = L.d("Ignoring unsupported or unsafe Topway action")
+                    },
+                )
             }
         }
     }

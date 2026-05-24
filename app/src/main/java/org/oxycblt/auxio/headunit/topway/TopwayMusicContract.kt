@@ -25,4 +25,9 @@ object TopwayMusicContract {
     const val CMD_NEXT = "next"
     const val CMD_PLAY_PAUSE = "pp"
     const val CMD_UPDATE = "update"
+
+    val INCOMING_ACTIONS: Set<String> =
+        setOf(ACTION_CMD, ACTION_PREV, ACTION_NEXT, ACTION_PLAY_PAUSE, ACTION_LAUNCHER_WIDGET_SEEK)
+
+    fun isIncomingAction(action: String?): Boolean = action != null && action in INCOMING_ACTIONS
 }

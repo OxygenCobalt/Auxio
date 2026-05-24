@@ -7,6 +7,7 @@ import org.oxycblt.auxio.ui.UISettings
 
 class TopwayMusicBroadcastBridge(private val context: Context, private val uiSettings: UISettings) {
     private var lastMetadata: HeadUnitMetadataSnapshot? = null
+    private var lastProgress: TopwayProgressSnapshot? = null
     private var lastProgressAtMs = 0L
 
     fun publishMetadata(snapshot: HeadUnitMetadataSnapshot?) {
@@ -16,16 +17,36 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
         lastMetadata = snapshot
     }
 
-    fun publishProgress(progressMs: Long, durationMs: Long, nowMs: Long = SystemClock.elapsedRealtime()) {
+    fun publishProgress(
+        progressMs: Long,
+        durationMs: Long,
+        nowMs: Long = SystemClock.elapsedRealtime(),
+    ) {
         if (!uiSettings.headUnitLandscapeMode) return
-        if (nowMs - lastProgressAtMs < MIN_PROGRESS_INTERVAL_MS) return
-        context.sendBroadcast(TopwayMusicIntentFactory.progressIntent(progressMs, durationMs))
+        val snapshot = TopwayProgressStatePolicy.active(progressMs, durationMs) ?: return
+        if (
+            !TopwayProgressStatePolicy.shouldPublish(
+                snapshot,
+                lastProgress,
+                nowMs,
+                lastProgressAtMs,
+                MIN_PROGRESS_INTERVAL_MS,
+            )
+        ) {
+            return
+        }
+        context.sendBroadcast(TopwayMusicIntentFactory.progressIntent(snapshot.progressMs, snapshot.durationMs))
+        lastProgress = snapshot
         lastProgressAtMs = nowMs
     }
 
     fun clear() {
         lastMetadata = null
-        context.sendBroadcast(TopwayMusicIntentFactory.progressIntent(0L, 0L))
+        if (lastProgress != TopwayProgressStatePolicy.CLEAR) {
+            context.sendBroadcast(TopwayMusicIntentFactory.progressIntent(0L, 0L))
+            lastProgress = TopwayProgressStatePolicy.CLEAR
+            lastProgressAtMs = SystemClock.elapsedRealtime()
+        }
     }
 
     companion object { const val MIN_PROGRESS_INTERVAL_MS = 1000L }

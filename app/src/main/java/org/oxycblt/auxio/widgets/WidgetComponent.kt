@@ -58,6 +58,8 @@ private constructor(
     private val playbackManager: PlaybackStateManager,
     private val uiSettings: UISettings,
 ) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
+    private var lastRenderedIsPlaying: Boolean? = null
+
     class Factory
     @Inject
     constructor(
@@ -84,12 +86,15 @@ private constructor(
         val song = playbackManager.currentSong
         if (song == null) {
             L.d("No song, resetting widget")
+            lastRenderedIsPlaying = null
+            topwayBridge.clear()
             widgetProvider.update(context, uiSettings, null)
             return
         }
 
         // Note: Store these values here so they remain consistent once the bitmap is loaded.
         val isPlaying = playbackManager.progression.isPlaying
+        lastRenderedIsPlaying = isPlaying
         val elapsedMs = playbackManager.progression.calculateElapsedPositionMs()
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.isShuffled
@@ -144,7 +149,7 @@ private constructor(
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {
-                    val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
+                    val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled, elapsedMs)
                     L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }
@@ -183,7 +188,14 @@ private constructor(
     ) = update()
 
     override fun onProgressionChanged(progression: Progression) {
-        update()
+        val shouldRunFullUpdate =
+            lastRenderedIsPlaying != progression.isPlaying ||
+                widgetProvider.hasProgressAwareWidgets(context)
+        if (shouldRunFullUpdate) {
+            update()
+        } else {
+            lastRenderedIsPlaying = progression.isPlaying
+        }
         val duration = playbackManager.currentSong?.durationMs ?: 0L
         topwayBridge.publishProgress(progression.calculateElapsedPositionMs(), duration)
     }
@@ -211,5 +223,6 @@ private constructor(
         val isPlaying: Boolean,
         val repeatMode: RepeatMode,
         val isShuffled: Boolean,
+        val positionMs: Long,
     )
 }

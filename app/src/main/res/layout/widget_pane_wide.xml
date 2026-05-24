@@ -67,6 +67,44 @@
             android:layout_marginEnd="@dimen/spacing_medium"
             tools:text="Artist name" />
 
+        <android.widget.LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <android.widget.TextView
+                android:id="@+id/widget_current_time"
+                style="@style/Widget.Auxio.TextView.Secondary.AppWidget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="0:00" />
+
+            <android.widget.ImageView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <android.widget.TextView
+                android:id="@+id/widget_duration"
+                style="@style/Widget.Auxio.TextView.Secondary.AppWidget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="3:45" />
+        </android.widget.LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/widget_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:max="1"
+            tools:progress="1" />
+
         <!-- See widget_small.xml for an explanation of the view layout -->
 
         <android.widget.LinearLayout
