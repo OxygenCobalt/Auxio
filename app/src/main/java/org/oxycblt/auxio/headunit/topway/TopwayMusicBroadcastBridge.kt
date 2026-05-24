@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.headunit.topway
 
 import android.content.Context
+import android.os.SystemClock
 import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataSnapshot
 import org.oxycblt.auxio.ui.UISettings
 
@@ -15,7 +16,7 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
         lastMetadata = snapshot
     }
 
-    fun publishProgress(progressMs: Long, durationMs: Long, nowMs: Long = System.currentTimeMillis()) {
+    fun publishProgress(progressMs: Long, durationMs: Long, nowMs: Long = SystemClock.elapsedRealtime()) {
         if (!uiSettings.headUnitLandscapeMode) return
         if (nowMs - lastProgressAtMs < MIN_PROGRESS_INTERVAL_MS) return
         context.sendBroadcast(TopwayMusicIntentFactory.progressIntent(progressMs, durationMs))

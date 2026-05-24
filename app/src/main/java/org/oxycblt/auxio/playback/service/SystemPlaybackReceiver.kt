@@ -24,7 +24,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import androidx.core.content.ContextCompat
-import kotlin.math.toIntExact
 import javax.inject.Inject
 import org.oxycblt.auxio.headunit.topway.TopwayMappedCommand
 import org.oxycblt.auxio.headunit.topway.TopwayMusicCommandMapper
@@ -178,17 +177,15 @@ private constructor(
             }
             TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK -> {
                 val rawSeek =
-                    (intent.extras?.get(TopwayMusicContract.EXTRA_WIDGET_PROGRESS) as? Int)
-                        ?: (intent.extras?.get(TopwayMusicContract.EXTRA_WIDGET_PROGRESS) as? Long)
-                            ?.toInt()
+                    intent.extras?.get(TopwayMusicContract.EXTRA_WIDGET_PROGRESS).let {
+                        it as? Int ?: (it as? Long)?.toInt()
+                    }
                 val seekTarget =
                     TopwayMusicSeekMapper.mapSeekTargetMs(
                         rawSeek,
                         playbackManager.currentSong?.durationMs,
                     ) ?: return
-                if (playbackManager.currentSong != null) {
-                    playbackManager.seekTo(seekTarget)
-                }
+                playbackManager.seekTo(seekTarget)
             }
         }
     }
