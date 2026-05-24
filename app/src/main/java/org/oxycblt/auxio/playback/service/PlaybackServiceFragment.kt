@@ -31,10 +31,8 @@ import org.oxycblt.auxio.AuxioService.Companion.INTENT_KEY_START_ID
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.headunit.topway.TopwayMusicContract
-import org.oxycblt.auxio.headunit.topway.TopwayServiceAction
-import org.oxycblt.auxio.headunit.topway.TopwayServiceDecision
-import org.oxycblt.auxio.headunit.topway.TopwayStartRoutingPolicy
+import org.oxycblt.auxio.headunit.topway.TopwayStartCallbacks
+import org.oxycblt.auxio.headunit.topway.TopwayStartIntentHandler
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -178,28 +176,28 @@ private constructor(
     }
 
     private fun handleTopwayStartIntent(intent: Intent?): Boolean {
-        if (intent == null || !TopwayMusicContract.isIncomingAction(intent.action)) return false
-        applyTopwayDecision(
-            TopwayStartRoutingPolicy.decide(
-                action = intent.action,
-                cmd = intent.getStringExtra(TopwayMusicContract.EXTRA_CMD),
-                rawSeek = intent.extras?.get(TopwayMusicContract.EXTRA_WIDGET_PROGRESS),
-                durationMs = playbackManager.currentSong?.durationMs,
-                hasCurrentSong = playbackManager.currentSong != null,
-            ),
-        )
-        return true
-    }
+        return TopwayStartIntentHandler.handle(
+            intent,
+            object : TopwayStartCallbacks {
+                override val hasCurrentSong: Boolean
+                    get() = playbackManager.currentSong != null
+                override val currentDurationMs: Long?
+                    get() = playbackManager.currentSong?.durationMs
 
-    private fun applyTopwayDecision(decision: TopwayServiceDecision) {
-        when (decision.action) {
-            TopwayServiceAction.PREVIOUS -> playbackManager.prev()
-            TopwayServiceAction.NEXT -> playbackManager.next()
-            TopwayServiceAction.PLAY_PAUSE -> playbackManager.playing(!playbackManager.progression.isPlaying)
-            TopwayServiceAction.WIDGET_UPDATE -> widgetComponent.update()
-            TopwayServiceAction.SEEK -> decision.seekTargetMs?.let { playbackManager.seekTo(it) }
-            TopwayServiceAction.IGNORE -> L.d("Ignoring unsupported or unsafe Topway start intent")
-        }
+                override fun previous() = playbackManager.prev()
+
+                override fun next() = playbackManager.next()
+
+                override fun playPause() =
+                    playbackManager.playing(!playbackManager.progression.isPlaying)
+
+                override fun widgetUpdate() = widgetComponent.update()
+
+                override fun seekTo(positionMs: Long) = playbackManager.seekTo(positionMs)
+
+                override fun ignore() = L.d("Ignoring unsupported or unsafe Topway start intent")
+            },
+        )
     }
 
     val notification: ForegroundServiceNotification?

@@ -27,4 +27,11 @@ class WidgetTimelineTest {
         assertEquals(1, state.progressSeconds)
         assertEquals(WidgetTimelineState("0:00", "0:00", 1, 0), WidgetTimeline.NO_SESSION)
     }
+
+    @Test
+    fun `state clamps current time label to the same progress used by the bar`() {
+        val state = WidgetTimeline.state(positionMs = 8_000L, durationMs = 5_000L)
+        assertEquals("0:05", state.currentText)
+        assertEquals(5, state.progressSeconds)
+    }
 }

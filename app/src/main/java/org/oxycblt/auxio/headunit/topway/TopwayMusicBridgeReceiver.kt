@@ -25,8 +25,18 @@ class TopwayMusicBridgeReceiver : BroadcastReceiver() {
         val serviceIntent =
             Intent(context, AuxioService::class.java)
                 .setAction(action)
-                .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_TOPWAY)
-        intent.extras?.let { serviceIntent.putExtras(it) }
+        val extras =
+            TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(
+                intent.extras
+                    ?.keySet()
+                    ?.associateWith { key -> intent.extras?.get(key) }
+                    ?: emptyMap(),
+            )
+        extras.cmd?.let { serviceIntent.putExtra(TopwayMusicContract.EXTRA_CMD, it) }
+        extras.widgetProgress?.let {
+            serviceIntent.putExtra(TopwayMusicContract.EXTRA_WIDGET_PROGRESS, it)
+        }
+        serviceIntent.putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_TOPWAY)
         ContextCompat.startForegroundService(context, serviceIntent)
     }
 }

@@ -13,7 +13,7 @@ object WidgetTimeline {
     fun state(positionMs: Long, durationMs: Long): WidgetTimelineState {
         val (durationSeconds, positionSeconds) = clampProgressSeconds(positionMs, durationMs)
         return WidgetTimelineState(
-            currentText = formatClock(positionMs),
+            currentText = formatClock(positionSeconds * 1000L),
             durationText = formatClock(durationMs),
             maxSeconds = durationSeconds.coerceAtLeast(1),
             progressSeconds = positionSeconds,

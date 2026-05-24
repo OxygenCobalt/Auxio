@@ -37,6 +37,7 @@ import org.oxycblt.auxio.playback.service.PlaybackActions
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.UISettingsImpl
+import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newNowPlayingPendingIntent
 import timber.log.Timber as L
@@ -166,6 +167,26 @@ class WidgetProvider : AppWidgetProvider() {
         val layout = newDefaultLayout(context, uiSettings)
         AppWidgetManager.getInstance(context)
             .updateAppWidget(ComponentName(context, this::class.java), layout)
+    }
+
+    /**
+     * Whether there is at least one pane-sized widget instance that renders timeline/progress.
+     */
+    fun hasProgressAwareWidgets(context: Context): Boolean {
+        val awm = AppWidgetManager.getInstance(context)
+        val component = ComponentName(context, this::class.java)
+        return awm.getAppWidgetIds(component).any { id ->
+            val options = awm.getAppWidgetOptions(id)
+            val (width, height) =
+                if (context.isLandscape) {
+                    options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH) to
+                        options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+                } else {
+                    options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) to
+                        options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+                }
+            width >= 180 && height >= 272
+        }
     }
 
     // --- INTERNAL METHODS ---

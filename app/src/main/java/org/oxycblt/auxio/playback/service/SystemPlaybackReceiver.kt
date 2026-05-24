@@ -26,9 +26,8 @@ import android.media.AudioManager
 import androidx.core.content.ContextCompat
 import javax.inject.Inject
 import org.oxycblt.auxio.headunit.topway.TopwayMusicContract
-import org.oxycblt.auxio.headunit.topway.TopwayServiceAction
-import org.oxycblt.auxio.headunit.topway.TopwayServiceDecision
-import org.oxycblt.auxio.headunit.topway.TopwayStartRoutingPolicy
+import org.oxycblt.auxio.headunit.topway.TopwayStartCallbacks
+import org.oxycblt.auxio.headunit.topway.TopwayStartIntentHandler
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -151,34 +150,35 @@ private constructor(
             TopwayMusicContract.ACTION_PLAY_PAUSE,
             TopwayMusicContract.ACTION_CMD,
             TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK -> {
-                applyTopwayDecision(
-                    TopwayStartRoutingPolicy.decide(
-                        action = intent.action,
-                        cmd = intent.getStringExtra(TopwayMusicContract.EXTRA_CMD),
-                        rawSeek = intent.extras?.get(TopwayMusicContract.EXTRA_WIDGET_PROGRESS),
-                        durationMs = playbackManager.currentSong?.durationMs,
-                        hasCurrentSong = playbackManager.currentSong != null,
-                    ),
+                TopwayStartIntentHandler.handle(
+                    intent,
+                    object : TopwayStartCallbacks {
+                        override val hasCurrentSong: Boolean
+                            get() = playbackManager.currentSong != null
+                        override val currentDurationMs: Long?
+                            get() = playbackManager.currentSong?.durationMs
+
+                        override fun previous() = playbackManager.prev()
+
+                        override fun next() = playbackManager.next()
+
+                        override fun playPause() =
+                            playbackManager.playing(!playbackManager.progression.isPlaying)
+
+                        override fun widgetUpdate() {
+                            if (WidgetUtil.hasWidgets(context, WidgetProvider::class.java)) {
+                                widgetComponent.update()
+                            } else {
+                                L.d("Ignoring Topway widget update with no widget instances")
+                            }
+                        }
+
+                        override fun seekTo(positionMs: Long) = playbackManager.seekTo(positionMs)
+
+                        override fun ignore() = L.d("Ignoring unsupported or unsafe Topway action")
+                    },
                 )
             }
-        }
-    }
-
-
-    private fun applyTopwayDecision(decision: TopwayServiceDecision) {
-        when (decision.action) {
-            TopwayServiceAction.PREVIOUS -> playbackManager.prev()
-            TopwayServiceAction.NEXT -> playbackManager.next()
-            TopwayServiceAction.PLAY_PAUSE -> playbackManager.playing(!playbackManager.progression.isPlaying)
-            TopwayServiceAction.WIDGET_UPDATE -> {
-                if (WidgetUtil.hasWidgets(context, WidgetProvider::class.java)) {
-                    widgetComponent.update()
-                } else {
-                    L.d("Ignoring Topway widget update with no widget instances")
-                }
-            }
-            TopwayServiceAction.SEEK -> decision.seekTargetMs?.let { playbackManager.seekTo(it) }
-            TopwayServiceAction.IGNORE -> L.d("Ignoring unsupported or unsafe Topway action")
         }
     }
 
