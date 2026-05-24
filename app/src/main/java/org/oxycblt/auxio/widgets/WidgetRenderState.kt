@@ -32,6 +32,7 @@ sealed class WidgetRenderState {
         val album: String?,
         val isPlaying: Boolean,
         val hasArtwork: Boolean,
+        val timeline: WidgetTimelineState,
     ) : WidgetRenderState()
 
     companion object {
@@ -42,6 +43,8 @@ sealed class WidgetRenderState {
             albumArtist: String? = null,
             isPlaying: Boolean,
             hasArtwork: Boolean,
+            positionMs: Long = 0L,
+            durationMs: Long = 0L,
         ): WidgetRenderState {
             if (title.isNullOrBlank()) return NoSession
             return Active(
@@ -58,6 +61,7 @@ sealed class WidgetRenderState {
                 album = album,
                 isPlaying = isPlaying,
                 hasArtwork = hasArtwork,
+                timeline = WidgetTimeline.state(positionMs, durationMs),
             )
         }
 

@@ -71,3 +71,10 @@ Allowed constants do **not** permit direct vendor imports, system/shared UID cha
 
 
 2026-05-24 hardening update: isolated Topway bridge wiring now active in runtime pathways (widget/service listener path), while APK cleanliness boundaries remain intact (no in-app probes/scanners/binders).
+
+## 2026-05-24 Topway runtime closure update
+- Cold/inactive Topway bridge routing uses a dedicated `START_ID_TOPWAY` path and shared `TopwayStartRoutingPolicy`, avoiding generic media-button restore/shuffle fallback.
+- Widget timeline policy now centralises seconds-based RemoteViews progress/time/duration rendering and safe no-session values.
+- Topway progress broadcast lifecycle now de-duplicates active updates and emits a single clear/final progress state when playback/session state is cleared.
+- Active playback receiver and cold manifest bridge share the same Topway command/seek decision policy, reducing divergence between foreground and cold-start paths.
+- Remaining proof point is external: GitHub/Copilot CI plus real TS18/iLauncher/TWTHEME runtime validation. No hardware parity success is claimed here.

@@ -1,6 +1,25 @@
 package org.oxycblt.auxio.widgets
 
+data class WidgetTimelineState(
+    val currentText: String,
+    val durationText: String,
+    val maxSeconds: Int,
+    val progressSeconds: Int,
+)
+
 object WidgetTimeline {
+    val NO_SESSION = WidgetTimelineState("0:00", "0:00", 1, 0)
+
+    fun state(positionMs: Long, durationMs: Long): WidgetTimelineState {
+        val (durationSeconds, positionSeconds) = clampProgressSeconds(positionMs, durationMs)
+        return WidgetTimelineState(
+            currentText = formatClock(positionMs),
+            durationText = formatClock(durationMs),
+            maxSeconds = durationSeconds.coerceAtLeast(1),
+            progressSeconds = positionSeconds,
+        )
+    }
+
     fun clampProgressSeconds(positionMs: Long, durationMs: Long): Pair<Int, Int> {
         val safeDuration = durationMs.coerceAtLeast(0L)
         val safePosition = positionMs.coerceIn(0L, safeDuration)

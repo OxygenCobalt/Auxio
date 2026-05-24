@@ -17,4 +17,14 @@ class WidgetTimelineTest {
         assertEquals(5 to 5, WidgetTimeline.clampProgressSeconds(8_000L, 5_000L))
         assertEquals(0 to 0, WidgetTimeline.clampProgressSeconds(100L, -1L))
     }
+
+    @Test
+    fun `state exposes safe render fields`() {
+        val state = WidgetTimeline.state(1_500L, 5_000L)
+        assertEquals("0:01", state.currentText)
+        assertEquals("0:05", state.durationText)
+        assertEquals(5, state.maxSeconds)
+        assertEquals(1, state.progressSeconds)
+        assertEquals(WidgetTimelineState("0:00", "0:00", 1, 0), WidgetTimeline.NO_SESSION)
+    }
 }

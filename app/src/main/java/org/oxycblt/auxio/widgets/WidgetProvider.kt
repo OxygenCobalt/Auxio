@@ -38,6 +38,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.UISettingsImpl
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
+import org.oxycblt.auxio.util.newNowPlayingPendingIntent
 import timber.log.Timber as L
 
 /**
@@ -300,9 +301,10 @@ class WidgetProvider : AppWidgetProvider() {
         context: Context,
         state: WidgetComponent.PlaybackState?,
     ): RemoteViews {
+        setOnClickPendingIntent(R.id.widget_cover, context.newNowPlayingPendingIntent())
         if (state == null) {
             setImageViewBitmap(R.id.widget_cover, null)
-            setContentDescription(R.id.widget_cover, null)
+            setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
             return this
         }
 
@@ -364,10 +366,10 @@ class WidgetProvider : AppWidgetProvider() {
             )
         setTextViewText(R.id.widget_song, policy?.displayTitle ?: context.getString(R.string.lbl_playback))
         setTextViewText(R.id.widget_artist, policy?.displaySubtitle ?: context.getString(R.string.lbl_all_songs))
-        val (durationSeconds, positionSeconds) = WidgetTimeline.clampProgressSeconds(state.positionMs, state.song.durationMs)
-        setTextViewText(R.id.widget_current_time, WidgetTimeline.formatClock(state.positionMs))
-        setTextViewText(R.id.widget_duration, WidgetTimeline.formatClock(state.song.durationMs))
-        setProgressBar(R.id.widget_progress, durationSeconds.coerceAtLeast(1), positionSeconds, false)
+        val timeline = WidgetTimeline.state(state.positionMs, state.song.durationMs)
+        setTextViewText(R.id.widget_current_time, timeline.currentText)
+        setTextViewText(R.id.widget_duration, timeline.durationText)
+        setProgressBar(R.id.widget_progress, timeline.maxSeconds, timeline.progressSeconds, false)
         return this
     }
 

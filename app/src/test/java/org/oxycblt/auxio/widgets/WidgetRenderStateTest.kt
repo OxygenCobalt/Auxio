@@ -39,12 +39,18 @@ class WidgetRenderStateTest {
                 albumArtist = "Album Artist",
                 isPlaying = false,
                 hasArtwork = true,
+                positionMs = 1_000L,
+                durationMs = 5_000L,
             )
         assertTrue(state is WidgetRenderState.Active)
         state as WidgetRenderState.Active
         assertEquals("Song", state.title)
         assertEquals("Artist", state.artist)
         assertTrue(state.subtitle.contains("Artist"))
+        assertEquals("0:01", state.timeline.currentText)
+        assertEquals("0:05", state.timeline.durationText)
+        assertEquals(5, state.timeline.maxSeconds)
+        assertEquals(1, state.timeline.progressSeconds)
     }
 
     @Test
@@ -60,6 +66,25 @@ class WidgetRenderStateTest {
             )
         state as WidgetRenderState.Active
         assertEquals("Artist", state.subtitle)
+    }
+
+    @Test
+    fun fromPlayback_noSession_avoidsStaleTimeline() {
+        assertTrue(
+            WidgetRenderState.fromPlayback(
+                title = " ",
+                artist = "Artist",
+                album = "Album",
+                isPlaying = true,
+                hasArtwork = true,
+                positionMs = 10_000L,
+                durationMs = 20_000L,
+            ) is WidgetRenderState.NoSession,
+        )
+        assertEquals("0:00", WidgetTimeline.NO_SESSION.currentText)
+        assertEquals("0:00", WidgetTimeline.NO_SESSION.durationText)
+        assertEquals(0, WidgetTimeline.NO_SESSION.progressSeconds)
+        assertEquals(1, WidgetTimeline.NO_SESSION.maxSeconds)
     }
 
     @Test
