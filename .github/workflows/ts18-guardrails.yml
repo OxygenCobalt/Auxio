@@ -526,61 +526,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Enforce package and privilege guardrails
+      - name: Run canonical product-code safety guardrail
         shell: bash
         run: |
-          set -euo pipefail
-
-          product_dirs=()
-          [ -d app/src ] && product_dirs+=(app/src)
-          [ -d musikr/src ] && product_dirs+=(musikr/src)
-
-          if [ "${#product_dirs[@]}" -gt 0 ]; then
-            if grep -RInE 'android:sharedUserId=|android\.uid\.system' "${product_dirs[@]}"; then
-              echo "ERROR: shared/system UID usage is not allowed"
-              exit 1
-            fi
-          fi
-
-          files=(
-            app/build.gradle
-            app/src/main/AndroidManifest.xml
-            musikr/build.gradle
-            settings.gradle
-          )
-
-          existing=()
-          for file in "${files[@]}"; do
-            [ -f "${file}" ] && existing+=("${file}")
-          done
-
-          if [ "${#existing[@]}" -gt 0 ]; then
-            if grep -RInE 'package="com\.tw\.music"|applicationId[[:space:]]+"com\.tw\.music"|namespace[[:space:]]+"com\.tw\.music"' "${existing[@]}"; then
-              echo "ERROR: com.tw.music impersonation is not allowed"
-              exit 1
-            fi
-          fi
-
-      - name: Reject private TS18/TW/TWTHEME hooks in product code
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          product_dirs=()
-          [ -d app/src ] && product_dirs+=(app/src)
-          [ -d musikr/src ] && product_dirs+=(musikr/src)
-
-          if [ "${#product_dirs[@]}" -eq 0 ]; then
-            echo "No product source directories found; skipping."
-            exit 0
-          fi
-
-          if grep -RInE \
-            'android\.tw\.john\.TWUtil|android\.tw\.john\.TWClient|Class\.forName\("android\.tw|com\.tw\.service|com\.tw\.service\.xt|com\.tw\.music\.action|TS18IntegrationProbe|TS18EnvironmentSnapshot|TS18ContractRegistry|TS18AdapterCapability|TWUtilReflectionScanner|TWClientReflectionScanner|VendorPackageScanner|RuntimeContractRegistry' \
-            "${product_dirs[@]}"; then
-            echo "ERROR: private TS18/TW/TWTHEME/probe hook found in product code"
-            exit 1
-          fi
+          bash scripts/check-headunit-compat-safety.sh
 
   evidence-redaction:
     name: Evidence redaction smoke test

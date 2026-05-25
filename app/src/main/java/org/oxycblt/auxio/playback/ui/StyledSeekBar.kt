@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.ui
 
 import android.content.Context
@@ -52,9 +52,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         binding.seekBarSlider.setWaveEnabled(enabled)
     }
 
-    /**
-     * Increases vertical touch comfort for in-car/large-screen use without changing seek logic.
-     */
+    /** Increases vertical touch comfort for in-car/large-screen use without changing seek logic. */
     fun setLargeTouchMode(enabled: Boolean) {
         if (enabled) {
             val pad = (resources.displayMetrics.density * 8).toInt()

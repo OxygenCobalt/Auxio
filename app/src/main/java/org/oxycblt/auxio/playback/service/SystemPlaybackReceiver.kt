@@ -15,16 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.service
 
+import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import androidx.core.content.ContextCompat
 import javax.inject.Inject
+import org.oxycblt.auxio.headunit.topway.TopwayMusicContract
+import org.oxycblt.auxio.headunit.topway.TopwayStartCallbacks
+import org.oxycblt.auxio.headunit.topway.TopwayStartIntentHandler
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -81,8 +86,7 @@ private constructor(
 
     override fun onReceive(context: Context, intent: Intent) {
         if (
-            !isSystemAction(intent.action) &&
-                !PlaybackActionPolicy.isSupportedAction(intent.action)
+            !isSystemAction(intent.action) && !PlaybackActionPolicy.isSupportedAction(intent.action)
         ) {
             L.w("Ignoring unsupported playback action: ${intent.action}")
             return
@@ -141,6 +145,43 @@ private constructor(
                 L.d("Received widget update event")
                 widgetComponent.update()
             }
+            TopwayMusicContract.ACTION_PREV,
+            TopwayMusicContract.ACTION_NEXT,
+            TopwayMusicContract.ACTION_PLAY_PAUSE,
+            TopwayMusicContract.ACTION_CMD,
+            TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK -> {
+                TopwayStartIntentHandler.handle(
+                    intent,
+                    object : TopwayStartCallbacks {
+                        override val hasCurrentSong: Boolean
+                            get() = playbackManager.currentSong != null
+
+                        override val currentDurationMs: Long?
+                            get() = playbackManager.currentSong?.durationMs
+
+                        override fun previous() = playbackManager.prev()
+
+                        override fun next() = playbackManager.next()
+
+                        override fun playPause() =
+                            playbackManager.playing(!playbackManager.progression.isPlaying)
+
+                        override fun widgetUpdate() {
+                            val awm = AppWidgetManager.getInstance(context)
+                            val cn = ComponentName(context, WidgetProvider::class.java)
+                            if (awm.getAppWidgetIds(cn).isNotEmpty()) {
+                                widgetComponent.update()
+                            } else {
+                                L.d("Ignoring Topway widget update with no widget instances")
+                            }
+                        }
+
+                        override fun seekTo(positionMs: Long) = playbackManager.seekTo(positionMs)
+
+                        override fun ignore() = L.d("Ignoring unsupported or unsafe Topway action")
+                    },
+                )
+            }
         }
     }
 
@@ -181,6 +222,11 @@ private constructor(
                 addAction(PlaybackActions.ACTION_SKIP_NEXT)
                 addAction(PlaybackActions.ACTION_EXIT)
                 addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
+                addAction(TopwayMusicContract.ACTION_CMD)
+                addAction(TopwayMusicContract.ACTION_PREV)
+                addAction(TopwayMusicContract.ACTION_NEXT)
+                addAction(TopwayMusicContract.ACTION_PLAY_PAUSE)
+                addAction(TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK)
             }
     }
 }

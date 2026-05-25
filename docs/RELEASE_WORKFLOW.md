@@ -49,7 +49,18 @@ The workflow uses:
 - `sdkmanager` install of required SDK/build-tools/NDK
 - `apksigner` verification step before release upload
 
-`local.properties` is not required in the repository.
+`local.properties` is not stored in the repository, but the GitHub Actions Android build/quality workflows now generate an ephemeral `local.properties` with `sdk.dir=$ANDROID_HOME` for runner reliability.
+
+## PR release-readiness workflows
+
+- `Android Build` now runs on `pull_request` to `dev`, `push` to `dev`, and `workflow_dispatch`.
+- Successful PR and push runs upload `app/build/outputs/apk/debug/app-debug.apk` as the `auxio-ts-debug-apk` artifact with 7-day retention.
+- `Android Build` also uploads build reports on failure so missing/debug-APK issues are distinguishable from Gradle failures.
+- `Android Quality` now runs four independent jobs so one failure does not hide the others:
+  - `Formatting` → `./gradlew --no-daemon --stacktrace spotlessCheck`
+  - `Unit tests` → `./gradlew --no-daemon --stacktrace :app:testDebugUnitTest :musikr:testDebugUnitTest`
+  - `Android lint` → `./gradlew --no-daemon --stacktrace :app:lintDebug`
+  - `Head-unit safety` → `bash scripts/check-headunit-compat-safety.sh`
 
 ## Version and tag behavior
 

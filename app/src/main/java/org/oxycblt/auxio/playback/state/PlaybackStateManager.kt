@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.state
 
 import javax.inject.Inject
@@ -481,9 +481,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         // Played something, so we are initialized now
         isInitialized = true
         stateMirror =
-            stateMirror.copy(
-                shuffleScope = normalizedShuffleScope(command.shuffled, shuffleScope),
-            )
+            stateMirror.copy(shuffleScope = normalizedShuffleScope(command.shuffled, shuffleScope))
         stateHolder.newPlayback(command)
     }
 
@@ -558,10 +556,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun shuffled(shuffled: Boolean) {
         val stateHolder = stateHolder ?: return
         L.d("Reordering queue [shuffled=$shuffled]")
-        stateMirror =
-            stateMirror.copy(
-                shuffleScope = defaultShuffleScope(shuffled),
-            )
+        stateMirror = stateMirror.copy(shuffleScope = defaultShuffleScope(shuffled))
         stateHolder.shuffled(shuffled)
     }
 
@@ -836,13 +831,12 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         shuffledMapping[index]
                     } else {
                         index
-                },
+                    },
             )
 
         stateMirror =
             stateMirror.copy(
-                shuffleScope =
-                    normalizedShuffleScope(rawQueue.isShuffled, savedState.shuffleScope),
+                shuffleScope = normalizedShuffleScope(rawQueue.isShuffled, savedState.shuffleScope)
             )
 
         stateHolder.applySavedState(
@@ -870,8 +864,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             when (scope) {
                 ShuffleScope.OFF -> ShuffleScope.ALL
                 ShuffleScope.ALL,
-                ShuffleScope.GENRE,
-                -> scope
+                ShuffleScope.GENRE -> scope
             }
         }
 }

@@ -81,6 +81,9 @@ object HeadUnitEntryPoints {
             HeadUnitRoutePolicy.entryDestinationForRoute(route)
         }
 
+    fun safeDestinationForAction(action: String?): EntryDestination =
+        destinationForAction(action) ?: EntryDestination.NOW_PLAYING
+
     internal fun publishedDynamicShortcutIds(maxShortcutCount: Int): List<String> =
         dynamicShortcutSpecs(maxShortcutCount).map { it.id }
 

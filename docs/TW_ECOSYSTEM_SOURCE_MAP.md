@@ -94,3 +94,16 @@ Priority 5: New probes/diagnostics (last resort; external only)
   Confidence: **Hypothesis**; Porting decision: **Reusable validation idea**.
 - iLauncher may expose widget image-display paths that depend on metadata quality beyond standard MediaSession.
   Confidence: **Hypothesis**; Porting decision: **Requires TS18 runtime validation**.
+
+
+## Topway `com.tw.music` apktool/JADX decompile (primary local source)
+- **source/evidence**: `docs/topway/TOPWAY_APKTOOL_AND_JADX_COMPATIBILITY_ANALYSIS.md`, `docs/topway/TOPWAY_NATIVE_COMPATIBILITY_REQUIREMENTS.md`, `docs/topway/JADX_ALIAS_AND_APKTOOL_USAGE_GUIDE.md`
+- **observed Topway behaviour**: runtime package is `com.tw.music`; widget/provider uses event-driven updates and `com.tw.music.action.cmd` (`cmd=update`) path; metadata/progress/action/seek keys as documented in Topway docs.
+- **safe implementation implication**: implement constants and broadcast/receiver/widget parity only inside isolated Topway bridge package and tests.
+- **blocked/unsafe implementation implication**: XT/AIDL binder path (`com.tw.service.xt`, `ITWCommandAidl`) remains blocked by default for production runtime integration.
+- **confidence label**: Observed
+- **porting decision label**: Directly reusable requirement (broadcast/action/extra strings) + Requires TS18 runtime validation (behavioral parity) + Unsafe to port (XT/AIDL direct binding).
+- **next action**: runtime bridge implementation pass using `TopwayMusicContract` with guardrail enforcement for allowed-path-only string usage.
+
+
+2026-05-24 implementation checkpoint: decompile-derived Topway broadcast/action/seek contract moved from evidence-only to isolated runtime implementation candidate (confidence: Observed; porting decision: Directly reusable requirement + Requires TS18 runtime validation).

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.util
 
 import android.app.PendingIntent
@@ -39,9 +39,9 @@ import androidx.core.content.ContextCompat
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.headunit.HeadUnitEntryPoints
 import org.oxycblt.auxio.playback.service.PendingIntentRequestCodePolicy
-import org.oxycblt.auxio.R
 
 /**
  * Get a [LayoutInflater] instance from this [Context].
@@ -210,9 +210,10 @@ fun Context.newNowPlayingPendingIntent(): PendingIntent =
         this,
         PendingIntentRequestCodePolicy.forAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
         Intent(this, MainActivity::class.java)
-                .setAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
+            .setAction(HeadUnitEntryPoints.ACTION_OPEN_NOW_PLAYING),
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
+
 /**
  * Create a [PendingIntent] that will broadcast the specified command when launched.
  *

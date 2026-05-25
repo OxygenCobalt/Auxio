@@ -137,11 +137,7 @@ class AudioFocusPolicyTest {
                 wasPlayingBeforeTransientLoss = afterGain.rememberTransientPlayback ?: false
             )
         val secondGain =
-            AudioFocusPolicy.decide(
-                AudioFocusPolicy.Event.GAIN,
-                stateAfterGain,
-                isPlaying = false,
-            )
+            AudioFocusPolicy.decide(AudioFocusPolicy.Event.GAIN, stateAfterGain, isPlaying = false)
 
         assertTrue(afterGain.resume)
         assertEquals(false, afterGain.rememberTransientPlayback)
@@ -186,27 +182,53 @@ class AudioFocusPolicyTest {
     }
 
     @Test
-    fun `media button handling requires focus and current song`() {
-        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = false, hasCurrentSong = true))
-        assertFalse(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = false))
-        assertTrue(AudioFocusPolicy.shouldHandleMediaButton(isFocusHeld = true, hasCurrentSong = true))
+    fun `media button handling requires focus current song and ongoing session`() {
+        assertFalse(
+            AudioFocusPolicy.shouldHandleMediaButton(
+                isFocusHeld = true,
+                hasCurrentSong = true,
+                sessionOngoing = false,
+            )
+        )
+        assertFalse(
+            AudioFocusPolicy.shouldHandleMediaButton(
+                isFocusHeld = false,
+                hasCurrentSong = true,
+                sessionOngoing = true,
+            )
+        )
+        assertFalse(
+            AudioFocusPolicy.shouldHandleMediaButton(
+                isFocusHeld = true,
+                hasCurrentSong = false,
+                sessionOngoing = true,
+            )
+        )
+        assertTrue(
+            AudioFocusPolicy.shouldHandleMediaButton(
+                isFocusHeld = true,
+                hasCurrentSong = true,
+                sessionOngoing = true,
+            )
+        )
     }
 
     @Test
     fun `duck then gain restores volume without forced resume when not previously active`() {
-        val duck = AudioFocusPolicy.decide(
-            AudioFocusPolicy.Event.LOSS_TRANSIENT_CAN_DUCK,
-            AudioFocusPolicy.State(wasPlayingBeforeTransientLoss = false),
-            isPlaying = false,
-        )
-        val gain = AudioFocusPolicy.decide(
-            AudioFocusPolicy.Event.GAIN,
-            AudioFocusPolicy.State(wasPlayingBeforeTransientLoss = false),
-            isPlaying = false,
-        )
+        val duck =
+            AudioFocusPolicy.decide(
+                AudioFocusPolicy.Event.LOSS_TRANSIENT_CAN_DUCK,
+                AudioFocusPolicy.State(wasPlayingBeforeTransientLoss = false),
+                isPlaying = false,
+            )
+        val gain =
+            AudioFocusPolicy.decide(
+                AudioFocusPolicy.Event.GAIN,
+                AudioFocusPolicy.State(wasPlayingBeforeTransientLoss = false),
+                isPlaying = false,
+            )
         assertEquals(1f, duck.volume)
         assertEquals(1f, gain.volume)
         assertFalse(gain.resume)
     }
-
 }

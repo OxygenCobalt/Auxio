@@ -82,6 +82,16 @@ Canonical source corpus: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 7. Avoid TWUtil/TWClient reflection in product code.
 8. Avoid vendor binders and package impersonation.
 
+
+## Topway decompile-driven compatibility rule
+- The official Topway `com.tw.music` apktool/JADX decompile is a primary local compatibility source.
+- Generic Android MediaSession/AppWidget/shortcut compatibility is necessary but not sufficient.
+- Agents must consult `docs/topway/` before proposing Topway/TS18 music compatibility work.
+- JADX alias package names such as `com.p060tw.music` are not runtime package names.
+- Safe Topway broadcast/action/seek/widget compatibility may be implemented only through an isolated bridge package.
+- Existing broad prohibitions against `com.tw.music.action.*` are refined: these strings are forbidden generally, but allowed as constants inside the isolated Topway bridge, tests, and docs.
+- Runtime APK must stay clean and must not include evidence/probe/capture tooling.
+
 ## TS18 claim labeling (required)
 For TS18/TW/TWTHEME claims, include both labels:
 
@@ -99,7 +109,7 @@ Always distinguish between: product requirement / Android-standard implementatio
 - Do not add in-app probe frameworks or speculative default-off adapters.
 - Do not add TWUtil/TWClient reflection scanners or vendor package scanners.
 - Do not add vendor-service binders without an explicit approved design PR.
-- Do not add product-code calls to `com.tw.music.action.*`.
+- Do not add product-code calls to `com.tw.music.action.*` outside the isolated Topway bridge package/test scope.
 - Do not add direct `com.tw.*` or `android.tw.john.*` imports in product code.
 - Do not add TWTHEME private-resource loaders or hidden diagnostics modules.
 - Do not say "private/native is permanently out of scope" — say "not for production by default; requires formal gap-and-promotion process".
@@ -203,9 +213,8 @@ Do not try to work around this by copying submodule files manually.
   from `api.foojay.io` are unreachable (AGP plugin resolution fails).
 
 ### Quality workflow scoping
-- `spotlessCheck`, `testDebugUnitTest`, and `lintDebug` run as **separate sequential steps** in
-  `lint.yml` (fail-fast, no `--continue`). Formatting failure stops immediately; unit-test
-  failure stops before lint; lint failure uploads a report artifact.
+- `lint.yml` runs four **independent jobs**: `Formatting`, `Unit tests`, `Android lint`, and
+  `Head-unit safety`. A formatting failure must not hide unit-test or lint status.
 - `testDebugUnitTest` is scoped to `:app` and `:musikr` only. The media library test files
   have missing test-utility dependencies (after upstream "trim down module tree" commit) and
   will fail to compile if the bare `testDebugUnitTest` task is used.
@@ -214,6 +223,8 @@ Do not try to work around this by copying submodule files manually.
 - `app/lint.xml` suppresses all lint issues for the vendored Google Material backport package
   (`**/com/google/android/material/**`).  New issues in Auxio-owned source still fail CI.
 - `:musikr lintDebug` can be added once musikr lint issues are resolved or baselined.
+- `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
+  guardrail used by both Android Quality and TS18 Guardrails.
 
 ### CI audit methodology for agents
 - Fetch **full** job logs, not tails. The root error is always above the Gradle stack trace dump.
@@ -285,3 +296,6 @@ Always report explicitly:
 - which partials are locally fixable and why not fixed,
 - whether output is a review snapshot or complete,
 - why any next scope is truly separate from current acceptance criteria.
+
+
+2026-05-24 implementation note: isolated Topway bridge runtime wiring now exists; keep Topway strings limited to approved bridge/test/docs paths and preserve no-binder/no-impersonation safety boundaries.

@@ -26,8 +26,8 @@ import org.oxycblt.auxio.R
 /**
  * Applies head-unit UI adjustments (large touch targets and enlarged text) to playback views.
  *
- * Fragment-specific concerns (album-art visibility, driver-side ConstraintSet flips) are handled
- * in each fragment; this adapter only owns the shared sizing logic.
+ * Fragment-specific concerns (album-art visibility, driver-side ConstraintSet flips) are handled in
+ * each fragment; this adapter only owns the shared sizing logic.
  */
 object HeadUnitUiAdapter {
 
@@ -45,8 +45,8 @@ object HeadUnitUiAdapter {
     }
 
     /**
-     * Enlarges [songView] and [artistView] text to head-unit readable sizes when
-     * [largeControls] is `true`.
+     * Enlarges [songView] and [artistView] text to head-unit readable sizes when [largeControls] is
+     * `true`.
      */
     fun applyLargePlaybackText(
         resources: Resources,

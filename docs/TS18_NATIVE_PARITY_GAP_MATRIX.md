@@ -71,3 +71,13 @@ No Tier 3/Tier 4 private/native integration is implied by these rows.
 - Phase 5G/6A note: matrix updates are proposal-only until real TS18 evidence is imported.
 
 - 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
+
+
+2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.
+
+
+## Topway decompile bridge gap framing
+Next implementation gap is a decompile-driven runtime bridge (metadata/progress/cmd/seek/widget lifecycle parity) implemented through isolated Topway contract constants and adapter boundaries. This is prioritized above generic widget polish or new validation tooling.
+
+
+2026-05-24 gap update: Topway bridge scaffolding is now runtime-wired for metadata/progress command/seek compatibility; remaining gap is hardware parity validation on TS18/TWTHEME hosts.

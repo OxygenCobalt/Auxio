@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.service
 
 import android.content.Context
@@ -212,35 +212,49 @@ private constructor(
                 if (maxTabs <= 1) {
                     homeGenerator.tabs().map { TabNode.Home(it).toMediaItem(context) }
                 } else {
-                    homeGenerator
-                        .tabs()
-                        .drop(maxTabs - 1)
-                        .map { TabNode.Home(it).toMediaItem(context) }
+                    homeGenerator.tabs().drop(maxTabs - 1).map {
+                        TabNode.Home(it).toMediaItem(context)
+                    }
                 }
             }
             is TabNode.Home ->
                 // homeGenerator returns emptyLists
                 when (node.type) {
                     MusicType.SONGS ->
-                        homeGenerator.songs().map { it.toMediaItem(context) }.ifEmpty {
-                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
-                        }
+                        homeGenerator
+                            .songs()
+                            .map { it.toMediaItem(context) }
+                            .ifEmpty {
+                                listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                            }
                     MusicType.ALBUMS ->
-                        homeGenerator.albums().map { it.toMediaItem(context) }.ifEmpty {
-                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
-                        }
+                        homeGenerator
+                            .albums()
+                            .map { it.toMediaItem(context) }
+                            .ifEmpty {
+                                listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                            }
                     MusicType.ARTISTS ->
-                        homeGenerator.artists().map { it.toMediaItem(context) }.ifEmpty {
-                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
-                        }
+                        homeGenerator
+                            .artists()
+                            .map { it.toMediaItem(context) }
+                            .ifEmpty {
+                                listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                            }
                     MusicType.GENRES ->
-                        homeGenerator.genres().map { it.toMediaItem(context) }.ifEmpty {
-                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
-                        }
+                        homeGenerator
+                            .genres()
+                            .map { it.toMediaItem(context) }
+                            .ifEmpty {
+                                listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                            }
                     MusicType.PLAYLISTS ->
-                        homeGenerator.playlists().map { it.toMediaItem(context) }.ifEmpty {
-                            listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
-                        }
+                        homeGenerator
+                            .playlists()
+                            .map { it.toMediaItem(context) }
+                            .ifEmpty {
+                                listOf(placeholderItem(context.getString(R.string.lbl_no_music)))
+                            }
                 }
         }
 

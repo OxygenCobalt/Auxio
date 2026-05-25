@@ -32,6 +32,7 @@ sealed class WidgetRenderState {
         val album: String?,
         val isPlaying: Boolean,
         val hasArtwork: Boolean,
+        val timeline: WidgetTimelineState,
     ) : WidgetRenderState()
 
     companion object {
@@ -42,6 +43,8 @@ sealed class WidgetRenderState {
             albumArtist: String? = null,
             isPlaying: Boolean,
             hasArtwork: Boolean,
+            positionMs: Long = 0L,
+            durationMs: Long = 0L,
         ): WidgetRenderState {
             if (title.isNullOrBlank()) return NoSession
             return Active(
@@ -58,14 +61,17 @@ sealed class WidgetRenderState {
                 album = album,
                 isPlaying = isPlaying,
                 hasArtwork = hasArtwork,
+                timeline = WidgetTimeline.state(positionMs, durationMs),
             )
         }
 
         @DrawableRes
-        fun playPauseIcon(isPlaying: Boolean): Int = if (isPlaying) R.drawable.ic_pause_24 else R.drawable.ic_play_24
+        fun playPauseIcon(isPlaying: Boolean): Int =
+            if (isPlaying) R.drawable.ic_pause_24 else R.drawable.ic_play_24
 
         @DrawableRes
         fun playPauseBackground(isPlaying: Boolean): Int =
-            if (isPlaying) R.drawable.ui_remote_fab_container_playing else R.drawable.ui_remote_fab_container_paused
+            if (isPlaying) R.drawable.ui_remote_fab_container_playing
+            else R.drawable.ui_remote_fab_container_paused
     }
 }

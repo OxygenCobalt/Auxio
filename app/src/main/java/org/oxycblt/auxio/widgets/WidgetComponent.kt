@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
@@ -26,10 +26,14 @@ import coil3.request.transformations
 import coil3.size.Size
 import javax.inject.Inject
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
+import org.oxycblt.auxio.headunit.topway.TopwayMusicBroadcastBridge
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.coil.RoundedRectTransformation
 import org.oxycblt.auxio.image.coil.SquareCropTransformation
+import org.oxycblt.auxio.music.resolve
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
@@ -54,6 +58,8 @@ private constructor(
     private val playbackManager: PlaybackStateManager,
     private val uiSettings: UISettings,
 ) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
+    private var lastRenderedIsPlaying: Boolean? = null
+
     class Factory
     @Inject
     constructor(
@@ -67,6 +73,7 @@ private constructor(
     }
 
     private val widgetProvider = WidgetProvider()
+    private val topwayBridge = TopwayMusicBroadcastBridge(context, uiSettings)
 
     fun attach() {
         playbackManager.addListener(this)
@@ -79,14 +86,32 @@ private constructor(
         val song = playbackManager.currentSong
         if (song == null) {
             L.d("No song, resetting widget")
+            lastRenderedIsPlaying = null
+            topwayBridge.clear()
             widgetProvider.update(context, uiSettings, null)
             return
         }
 
         // Note: Store these values here so they remain consistent once the bitmap is loaded.
         val isPlaying = playbackManager.progression.isPlaying
+        lastRenderedIsPlaying = isPlaying
+        val elapsedMs = playbackManager.progression.calculateElapsedPositionMs()
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.isShuffled
+        val metadataSnapshot =
+            HeadUnitMetadataPolicy.fromRaw(
+                title = song.name.resolve(context),
+                artist = song.artists.resolveNames(context),
+                albumArtist = song.album.artists.resolveNames(context),
+                albumTitle = song.album.name.resolve(context),
+                durationMs = song.durationMs,
+                mediaId = song.uid.toString(),
+                mediaUri = song.uri.toString(),
+                artworkUri = null,
+                hasArtwork = false,
+            )
+        topwayBridge.publishMetadata(metadataSnapshot)
+        topwayBridge.publishProgress(elapsedMs, song.durationMs)
 
         L.d("Updating widget with new playback state")
         bitmapProvider.load(
@@ -124,7 +149,8 @@ private constructor(
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {
-                    val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
+                    val state =
+                        PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled, elapsedMs)
                     L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }
@@ -138,6 +164,7 @@ private constructor(
         imageSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)
+        topwayBridge.clear()
         widgetProvider.reset(context, uiSettings)
     }
 
@@ -161,7 +188,18 @@ private constructor(
         isShuffled: Boolean,
     ) = update()
 
-    override fun onProgressionChanged(progression: Progression) = update()
+    override fun onProgressionChanged(progression: Progression) {
+        val shouldRunFullUpdate =
+            lastRenderedIsPlaying != progression.isPlaying ||
+                widgetProvider.hasProgressAwareWidgets(context)
+        if (shouldRunFullUpdate) {
+            update()
+        } else {
+            lastRenderedIsPlaying = progression.isPlaying
+        }
+        val duration = playbackManager.currentSong?.durationMs ?: 0L
+        topwayBridge.publishProgress(progression.calculateElapsedPositionMs(), duration)
+    }
 
     override fun onRepeatModeChanged(repeatMode: RepeatMode) = update()
 
@@ -186,5 +224,6 @@ private constructor(
         val isPlaying: Boolean,
         val repeatMode: RepeatMode,
         val isShuffled: Boolean,
+        val positionMs: Long,
     )
 }

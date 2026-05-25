@@ -13,6 +13,16 @@ Always start from `docs/README.md`.
 
 See canonical tier model: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Native Parity Strategy](TS18_INTEGRATION_ARCHITECTURE.md#ts18-native-parity-strategy)
 
+
+## Topway decompile-driven compatibility rule
+- The official Topway `com.tw.music` apktool/JADX decompile is a primary local compatibility source.
+- Generic Android MediaSession/AppWidget/shortcut compatibility is necessary but not sufficient.
+- Agents must consult `docs/topway/` before proposing Topway/TS18 music compatibility work.
+- JADX alias package names such as `com.p060tw.music` are not runtime package names.
+- Safe Topway broadcast/action/seek/widget compatibility may be implemented only through an isolated bridge package.
+- Existing broad prohibitions against `com.tw.music.action.*` are refined: these strings are forbidden generally, but allowed as constants inside the isolated Topway bridge, tests, and docs.
+- Runtime APK must stay clean and must not include evidence/probe/capture tooling.
+
 ## Required TS18/TW/TWTHEME workflow
 1. Read canonical live docs first:
    - `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
@@ -106,3 +116,9 @@ Always report explicitly:
 - which partials are locally fixable and why not fixed,
 - whether output is a review snapshot or complete,
 - why any next scope is truly separate from current acceptance criteria.
+
+
+2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.
+
+
+2026-05-24 prompt note: Topway decompile-driven bridge wiring now exists in isolated runtime paths; next prompts should focus on runtime polish and TS18 device validation, not re-scaffolding constants.

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.service
 
 import android.content.BroadcastReceiver
@@ -60,6 +60,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
                     AudioFocusPolicy.shouldHandleMediaButton(
                         isFocusHeld = isFocusHeld,
                         hasCurrentSong = hasCurrentSong,
+                        sessionOngoing = hasCurrentSong,
                     ),
             )
         ) {
@@ -69,10 +70,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
 
         L.d("Delivering media button intent $intent")
         intent.component = ComponentName(context, AuxioService::class.java)
-        intent.putExtra(
-            AuxioService.INTENT_KEY_START_ID,
-            IntegerTable.START_ID_MEDIA_BUTTON,
-        )
+        intent.putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_MEDIA_BUTTON)
         ContextCompat.startForegroundService(context, intent)
     }
 }

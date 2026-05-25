@@ -26,7 +26,15 @@ import org.oxycblt.auxio.R
 class WidgetRenderStateTest {
     @Test
     fun fromPlayback_noTitle_returnsNoSession() {
-        assertTrue(WidgetRenderState.fromPlayback(title = null, artist = "a", album = "b", isPlaying = true, hasArtwork = false) is WidgetRenderState.NoSession)
+        assertTrue(
+            WidgetRenderState.fromPlayback(
+                title = null,
+                artist = "a",
+                album = "b",
+                isPlaying = true,
+                hasArtwork = false,
+            ) is WidgetRenderState.NoSession
+        )
     }
 
     @Test
@@ -39,12 +47,18 @@ class WidgetRenderStateTest {
                 albumArtist = "Album Artist",
                 isPlaying = false,
                 hasArtwork = true,
+                positionMs = 1_000L,
+                durationMs = 5_000L,
             )
         assertTrue(state is WidgetRenderState.Active)
         state as WidgetRenderState.Active
         assertEquals("Song", state.title)
         assertEquals("Artist", state.artist)
         assertTrue(state.subtitle.contains("Artist"))
+        assertEquals("0:01", state.timeline.currentText)
+        assertEquals("0:05", state.timeline.durationText)
+        assertEquals(5, state.timeline.maxSeconds)
+        assertEquals(1, state.timeline.progressSeconds)
     }
 
     @Test
@@ -63,6 +77,25 @@ class WidgetRenderStateTest {
     }
 
     @Test
+    fun fromPlayback_noSession_avoidsStaleTimeline() {
+        assertTrue(
+            WidgetRenderState.fromPlayback(
+                title = " ",
+                artist = "Artist",
+                album = "Album",
+                isPlaying = true,
+                hasArtwork = true,
+                positionMs = 10_000L,
+                durationMs = 20_000L,
+            ) is WidgetRenderState.NoSession
+        )
+        assertEquals("0:00", WidgetTimeline.NO_SESSION.currentText)
+        assertEquals("0:00", WidgetTimeline.NO_SESSION.durationText)
+        assertEquals(0, WidgetTimeline.NO_SESSION.progressSeconds)
+        assertEquals(1, WidgetTimeline.NO_SESSION.maxSeconds)
+    }
+
+    @Test
     fun playPauseIcon_reflectsPlayingState() {
         assertEquals(R.drawable.ic_pause_24, WidgetRenderState.playPauseIcon(true))
         assertEquals(R.drawable.ic_play_24, WidgetRenderState.playPauseIcon(false))
@@ -70,7 +103,13 @@ class WidgetRenderStateTest {
 
     @Test
     fun playPauseBackground_reflectsPlayingState() {
-        assertEquals(R.drawable.ui_remote_fab_container_playing, WidgetRenderState.playPauseBackground(true))
-        assertEquals(R.drawable.ui_remote_fab_container_paused, WidgetRenderState.playPauseBackground(false))
+        assertEquals(
+            R.drawable.ui_remote_fab_container_playing,
+            WidgetRenderState.playPauseBackground(true),
+        )
+        assertEquals(
+            R.drawable.ui_remote_fab_container_paused,
+            WidgetRenderState.playPauseBackground(false),
+        )
     }
 }

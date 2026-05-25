@@ -18,16 +18,12 @@
 
 package org.oxycblt.auxio.playback.service
 
-/**
- * Pure decision helper for standard Android audio focus transitions.
- */
+/** Pure decision helper for standard Android audio focus transitions. */
 object AudioFocusPolicy {
     private const val DUCKED_VOLUME = 0.2f
     private const val NORMAL_VOLUME = 1f
 
-    data class State(
-        val wasPlayingBeforeTransientLoss: Boolean = false,
-    )
+    data class State(val wasPlayingBeforeTransientLoss: Boolean = false)
 
     enum class Event {
         LOSS,
@@ -46,11 +42,7 @@ object AudioFocusPolicy {
     fun decide(event: Event, state: State, isPlaying: Boolean): Decision =
         when (event) {
             Event.LOSS ->
-                Decision(
-                    pause = true,
-                    volume = NORMAL_VOLUME,
-                    rememberTransientPlayback = false,
-                )
+                Decision(pause = true, volume = NORMAL_VOLUME, rememberTransientPlayback = false)
             Event.LOSS_TRANSIENT ->
                 Decision(
                     pause = true,
@@ -65,10 +57,7 @@ object AudioFocusPolicy {
                         rememberTransientPlayback = true,
                     )
                 } else {
-                    Decision(
-                        pause = false,
-                        volume = NORMAL_VOLUME,
-                    )
+                    Decision(pause = false, volume = NORMAL_VOLUME)
                 }
             Event.GAIN ->
                 Decision(
@@ -77,14 +66,17 @@ object AudioFocusPolicy {
                     rememberTransientPlayback = false,
                 )
         }
+
     fun shouldResumePlayback(
         decision: Decision,
         playWhenReady: Boolean,
         sessionOngoing: Boolean,
         hasCurrentSong: Boolean,
-    ): Boolean =
-        decision.resume && !playWhenReady && sessionOngoing && hasCurrentSong
+    ): Boolean = decision.resume && !playWhenReady && sessionOngoing && hasCurrentSong
 
-    fun shouldHandleMediaButton(isFocusHeld: Boolean, hasCurrentSong: Boolean): Boolean =
-        isFocusHeld && hasCurrentSong
+    fun shouldHandleMediaButton(
+        isFocusHeld: Boolean,
+        hasCurrentSong: Boolean,
+        sessionOngoing: Boolean,
+    ): Boolean = isFocusHeld && hasCurrentSong && sessionOngoing
 }

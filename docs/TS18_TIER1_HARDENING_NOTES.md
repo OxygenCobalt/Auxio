@@ -59,3 +59,22 @@ Status: Tier 1 implementation only. No TS18 hardware validation success is claim
 - 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
 
 - Delivery protocol update: large-scope TS18 tasks must deliver runtime-wired outcomes; scaffold-only work is not counted as implemented.
+
+
+## Guardrail refinement for Topway bridge constants
+Topway compatibility strings are globally blocked except in:
+- `app/src/main/java/org/oxycblt/auxio/headunit/topway/`
+- `app/src/test/java/org/oxycblt/auxio/headunit/topway/`
+- `docs/` and `docs/topway/`
+
+Allowed constants do **not** permit direct vendor imports, system/shared UID changes, binder execution, scanner/probe frameworks, or package impersonation.
+
+
+2026-05-24 hardening update: isolated Topway bridge wiring now active in runtime pathways (widget/service listener path), while APK cleanliness boundaries remain intact (no in-app probes/scanners/binders).
+
+## 2026-05-24 Topway runtime closure update
+- Cold/inactive Topway bridge routing uses a dedicated `START_ID_TOPWAY` path and shared `TopwayStartRoutingPolicy`, avoiding generic media-button restore/shuffle fallback.
+- Widget timeline policy now centralises seconds-based RemoteViews progress/time/duration rendering and safe no-session values.
+- Topway progress broadcast lifecycle now de-duplicates active updates and emits a single clear/final progress state when playback/session state is cleared.
+- Active playback receiver and cold manifest bridge share the same Topway command/seek decision policy, reducing divergence between foreground and cold-start paths.
+- Remaining proof point is external: GitHub/Copilot CI plus real TS18/iLauncher/TWTHEME runtime validation. No hardware parity success is claimed here.

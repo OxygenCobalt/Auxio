@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.home
 
 import androidx.lifecycle.ViewModel
@@ -73,22 +73,20 @@ constructor(
     private var _allSongs: List<Song> = emptyList()
 
     /**
-     * All valid release years in the unfiltered library, for computing available decade chips.
-     * This is always derived from the full library, independent of [decadeFilter].
+     * All valid release years in the unfiltered library, for computing available decade chips. This
+     * is always derived from the full library, independent of [decadeFilter].
      */
     val allSongYears: List<Int>
         get() = _allSongs.mapNotNull { it.album.dates?.min?.year }
 
-    /**
-     * `true` if the library has at least one song, independent of any active [decadeFilter].
-     */
+    /** `true` if the library has at least one song, independent of any active [decadeFilter]. */
     val hasAnySongs: Boolean
         get() = _allSongs.isNotEmpty()
 
     private val _decadeFilter = MutableStateFlow<Int?>(null)
     /**
-     * The currently active decade filter, expressed as the first year of the decade
-     * (e.g. `1990` for the 1990s). `null` means no filter is active.
+     * The currently active decade filter, expressed as the first year of the decade (e.g. `1990`
+     * for the 1990s). `null` means no filter is active.
      */
     val decadeFilter: StateFlow<Int?> = _decadeFilter
 
@@ -249,8 +247,8 @@ constructor(
     /**
      * Apply or clear the decade filter on [songList].
      *
-     * @param decade The first year of the decade to filter to (e.g. `1990`), or `null` to show
-     *   all songs.
+     * @param decade The first year of the decade to filter to (e.g. `1990`), or `null` to show all
+     *   songs.
      */
     fun applyDecadeFilter(decade: Int?) {
         _decadeFilter.value = decade
@@ -262,10 +260,11 @@ constructor(
 
     private fun List<Song>.filteredByDecade(decade: Int?) =
         if (decade == null) this
-        else filter { song ->
-            val year = song.album.dates?.min?.year
-            year != null && year >= decade && year < decade + 10
-        }
+        else
+            filter { song ->
+                val year = song.album.dates?.min?.year
+                year != null && year >= decade && year < decade + 10
+            }
 
     /**
      * Apply a new [Sort] to [albumList].

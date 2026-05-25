@@ -125,6 +125,22 @@
             </intent-filter>
         </receiver>
 
+        <!--
+        Exported by design so external TS18/iLauncher broadcasts can reach Auxio's narrow Topway
+        bridge action allowlist.
+        -->
+        <receiver
+            android:name=".headunit.topway.TopwayMusicBridgeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.tw.music.action.cmd" />
+                <action android:name="com.tw.music.action.prev" />
+                <action android:name="com.tw.music.action.next" />
+                <action android:name="com.tw.music.action.pp" />
+                <action android:name="com.android.launcher.widget_music_progress" />
+            </intent-filter>
+        </receiver>
+
         <!-- Receiver for bluetooth headset events -->
 <!--        <receiver-->
 <!--            android:name=".playback.system.BluetoothConnectReceiver"-->

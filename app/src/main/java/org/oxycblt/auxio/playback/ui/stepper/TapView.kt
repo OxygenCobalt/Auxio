@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.ui.stepper
 
 import android.content.Context
@@ -25,9 +25,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 
-/**
- * Cricle
- */
+/** Cricle */
 class TapView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private var backgroundPaint = Paint()

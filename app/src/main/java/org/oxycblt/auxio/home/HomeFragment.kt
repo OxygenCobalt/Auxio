@@ -32,7 +32,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
@@ -40,17 +39,11 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Field
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.detail.Show
-import org.oxycblt.auxio.home.list.AlbumListFragment
-import org.oxycblt.auxio.home.list.ArtistListFragment
-import org.oxycblt.auxio.home.list.GenreListFragment
-import org.oxycblt.auxio.home.list.PlaylistListFragment
-import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.headunit.FAVOURITES_PLAYLIST_NAME
 import org.oxycblt.auxio.headunit.HeadUnitDashboardPolicy
 import org.oxycblt.auxio.headunit.HeadUnitDashboardState
@@ -59,6 +52,11 @@ import org.oxycblt.auxio.headunit.HeadUnitQuickAccess
 import org.oxycblt.auxio.headunit.HeadUnitRoute
 import org.oxycblt.auxio.headunit.HeadUnitRoutePolicy
 import org.oxycblt.auxio.headunit.QuickPickAction
+import org.oxycblt.auxio.home.list.AlbumListFragment
+import org.oxycblt.auxio.home.list.ArtistListFragment
+import org.oxycblt.auxio.home.list.GenreListFragment
+import org.oxycblt.auxio.home.list.PlaylistListFragment
+import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.NamedTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
@@ -77,14 +75,13 @@ import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
-import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.IndexingProgress
 import org.oxycblt.musikr.Music
-import org.oxycblt.musikr.Genre
-import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.Playlist
+import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.playlist.m3u.M3U
 import timber.log.Timber as L
 
@@ -251,7 +248,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 setOnClickListener { handleQuickPick(entry.action) }
             }
         }
-        binding.homeHeadUnitShortcuts.contentDescription = getString(R.string.lbl_head_unit_dashboard)
+        binding.homeHeadUnitShortcuts.contentDescription =
+            getString(R.string.lbl_head_unit_dashboard)
     }
 
     private fun handleEntryDestination() {
@@ -261,9 +259,17 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         activityIntent.removeExtra(HeadUnitEntryPoints.EXTRA_ENTRY_DESTINATION)
 
         val destination =
-            HeadUnitEntryPoints.EntryDestination.entries.firstOrNull {
-                it.name == destinationName
-            } ?: return
+            HeadUnitEntryPoints.EntryDestination.entries.firstOrNull { it.name == destinationName }
+                ?: HeadUnitEntryPoints.safeDestinationForAction(null)
+
+        if (
+            musicModel.indexingState.value is IndexingState.Indexing &&
+                destination != HeadUnitEntryPoints.EntryDestination.NOW_PLAYING &&
+                destination != HeadUnitEntryPoints.EntryDestination.QUEUE
+        ) {
+            homeModel.synchronizeTabPosition(0)
+            return
+        }
 
         when (destination) {
             HeadUnitEntryPoints.EntryDestination.NOW_PLAYING -> playbackModel.openPlayback()
@@ -300,17 +306,13 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         binding.homeMetadataChips.removeAllViews()
         if (metadataState.genres) {
             binding.homeMetadataChips.addView(
-                buildMetaChip(binding, getString(R.string.lbl_genres)) {
-                    openTab(MusicType.GENRES)
-                }
+                buildMetaChip(binding, getString(R.string.lbl_genres)) { openTab(MusicType.GENRES) }
             )
         }
         if (metadataState.decades) {
             val activeDecade = homeModel.decadeFilter.value
             decades.forEach { decade ->
-                binding.homeMetadataChips.addView(
-                    buildDecadeChip(binding, decade, activeDecade)
-                )
+                binding.homeMetadataChips.addView(buildDecadeChip(binding, decade, activeDecade))
             }
         }
         if (metadataState.recentlyAdded) {
@@ -405,7 +407,9 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             HeadUnitRoute.FAVOURITES ->
                 favouritesPlaylist?.let { detailModel.showPlaylist(it) }
                     ?: openTab(MusicType.PLAYLISTS)
-            HeadUnitRoute.HEAD_UNIT_SETTINGS -> homeModel.showSettings()
+            HeadUnitRoute.HEAD_UNIT_SETTINGS ->
+                if (musicModel.indexingState.value !is IndexingState.Indexing)
+                    homeModel.showSettings()
         }
     }
 

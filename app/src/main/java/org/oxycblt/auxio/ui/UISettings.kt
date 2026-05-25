@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.ui
 
 import android.content.Context
@@ -53,6 +53,9 @@ interface UISettings : Settings<UISettings.Listener> {
     val showHeadUnitAlbumArt: Boolean
     /** Whether home dashboard quick access chips should be shown. */
     val showHeadUnitDashboardQuickAccess: Boolean
+
+    /** Read-only concise summary of Tier-1 head-unit compatibility posture. */
+    val headUnitCompatStatusSummary: String
 
     enum class DriverSide {
         RIGHT,
@@ -95,25 +98,32 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
 
     override val roundMode: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_round_mode), true)
+
     override val headUnitLandscapeMode: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_mode), true)
+
     override val driverSide: UISettings.DriverSide
         get() =
             UISettings.DriverSide.from(
                 sharedPreferences.getInt(getString(R.string.set_key_driver_side), 1)
             )
+
     override val largeHeadUnitControls: Boolean
         get() =
             sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_large_controls), true)
+
     override val showHeadUnitAlbumArt: Boolean
-        get() =
-            sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_album_art), true)
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_album_art), true)
+
     override val showHeadUnitDashboardQuickAccess: Boolean
         get() =
             sharedPreferences.getBoolean(
                 getString(R.string.set_key_head_unit_dashboard_quick_access),
                 true,
             )
+
+    override val headUnitCompatStatusSummary: String
+        get() = "Tier 1 · Android-standard integration"
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {

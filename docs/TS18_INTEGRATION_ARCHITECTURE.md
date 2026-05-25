@@ -97,3 +97,15 @@ Auxio core
 - 2026-05-23: Source-backed TS18/TW/TWTHEME compatibility candidates started in app runtime (app/src/main/java/org/oxycblt/auxio/headunit/compat), with Android Tier 1 fallback still active and native/private production hooks still not enabled.
 
 - Delivery protocol update: large-scope TS18 tasks must deliver runtime-wired outcomes; scaffold-only work is not counted as implemented.
+
+
+2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.
+
+
+## Topway decompile-driven compatibility rule
+The official Topway `com.tw.music` apktool/JADX decompile is a primary local source for TS18/TW compatibility expectations. Android Tier 1 APIs remain the first implementation layer, but are not sufficient by themselves for Topway parity.
+
+Safe compatibility strings may be implemented only inside an isolated bridge package (`app/src/main/java/org/oxycblt/auxio/headunit/topway/`) and corresponding tests/docs. These strings remain forbidden elsewhere in product code.
+
+
+2026-05-24 architecture note: isolated Topway bridge package has been introduced and wired into runtime service/widget update paths. Private/native XT binder route remains non-production and blocked by default.

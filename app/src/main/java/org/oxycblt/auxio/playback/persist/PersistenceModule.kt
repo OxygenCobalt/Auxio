@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.persist
 
 import android.content.Context
@@ -46,10 +46,7 @@ class PersistenceRoomModule {
                 "playback_persistence.db",
             )
             .fallbackToDestructiveMigration()
-            .addMigrations(
-                PersistenceDatabase.MIGRATION_27_32,
-                PersistenceDatabase.MIGRATION_38_39,
-            )
+            .addMigrations(PersistenceDatabase.MIGRATION_27_32, PersistenceDatabase.MIGRATION_38_39)
             .build()
 
     @Provides fun playbackStateDao(database: PersistenceDatabase) = database.playbackStateDao()
