@@ -632,10 +632,16 @@ constructor(
         val nowNanos = System.nanoTime()
         if (lastPhaseFrameNanos != 0L) {
             val deltaSeconds = (nowNanos - lastPhaseFrameNanos) / 1_000_000_000f
-            val delta = deltaSeconds * (effectiveSpeed / configuredWavelengthPx.toFloat())
-            // Move phase forward, take the decimal
-            // All incoming inputs (phase & delta) are not-zero so no need
-            // to care about negative modulo
+            // Use the actual rendered wavelength so that the phase advances in the same
+            // pixel units as the wave drawn on screen. adjustedWavelength is computed
+            // in ensureCachedWavePath (called from onDraw) and may not be ready on the
+            // very first tick, so fall back to the configured value in that case.
+            val wavelengthPx =
+                if (adjustedWavelength > EPSILON) adjustedWavelength
+                else configuredWavelengthPx.toFloat()
+            val delta = deltaSeconds * (effectiveSpeed / wavelengthPx)
+            // Move phase forward, wrap to [0, 1). Inputs are always positive so
+            // Kotlin's % operator produces the correct result here.
             phaseFraction = (phaseFraction + delta) % 1f
         }
         lastPhaseFrameNanos = nowNanos
