@@ -24,14 +24,26 @@ import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataSnapshot
 
 object TopwayMusicIntentFactory {
     fun metadataIntent(snapshot: HeadUnitMetadataSnapshot): Intent =
-        Intent(TopwayMusicContract.ACTION_MUSIC_INFO)
-            .putExtra(TopwayMusicContract.EXTRA_MUSIC_TITLE, snapshot.displayTitle)
-            .putExtra(TopwayMusicContract.EXTRA_MUSIC_ARTIST, snapshot.artist)
-            .putExtra(TopwayMusicContract.EXTRA_MUSIC_ALBUM, snapshot.albumTitle)
-            .putExtra(TopwayMusicContract.EXTRA_MUSIC_PATH, snapshot.mediaUri)
+        Intent(TopwayMusicContract.ACTION_MUSIC_INFO).apply {
+            metadataExtras(snapshot).forEach { (key, value) -> putExtra(key, value) }
+        }
 
     fun progressIntent(progressMs: Long, durationMs: Long): Intent =
-        Intent(TopwayMusicContract.ACTION_PROGRESS_DURATION)
-            .putExtra(TopwayMusicContract.EXTRA_PROGRESS, max(0L, progressMs))
-            .putExtra(TopwayMusicContract.EXTRA_DURATION, max(0L, durationMs))
+        Intent(TopwayMusicContract.ACTION_PROGRESS_DURATION).apply {
+            progressExtras(progressMs, durationMs).forEach { (key, value) -> putExtra(key, value) }
+        }
+
+    internal fun metadataExtras(snapshot: HeadUnitMetadataSnapshot): Map<String, String?> =
+        mapOf(
+            TopwayMusicContract.EXTRA_MUSIC_TITLE to snapshot.displayTitle,
+            TopwayMusicContract.EXTRA_MUSIC_ARTIST to snapshot.artist,
+            TopwayMusicContract.EXTRA_MUSIC_ALBUM to snapshot.albumTitle,
+            TopwayMusicContract.EXTRA_MUSIC_PATH to snapshot.mediaUri,
+        )
+
+    internal fun progressExtras(progressMs: Long, durationMs: Long): Map<String, Long> =
+        mapOf(
+            TopwayMusicContract.EXTRA_PROGRESS to max(0L, progressMs),
+            TopwayMusicContract.EXTRA_DURATION to max(0L, durationMs),
+        )
 }

@@ -43,7 +43,11 @@ object HeadUnitDashboardPolicy {
             HeadUnitRoutePolicy::entryDestinationForRoute,
     ): Boolean =
         HeadUnitStockMusicParity.requiredEntryActions().all { action ->
-            action in publicActions && routeForAction(action)?.let(entryDestinationForRoute) != null
+            action in publicActions &&
+                routeForAction(action)?.let { route ->
+                    entryDestinationForRoute(route) != null ||
+                        HeadUnitRoutePolicy.isImmediateActionRoute(route)
+                } ?: false
         }
 
     fun entries(state: HeadUnitDashboardState): List<HeadUnitDashboardEntry> = buildList {
