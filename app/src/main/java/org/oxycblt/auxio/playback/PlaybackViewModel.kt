@@ -175,23 +175,7 @@ constructor(
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         L.d("Queue completely changed, updating current song")
         _isShuffled.value = isShuffled
-<<<<<<< HEAD
         _shuffleScope.value = playbackManager.shuffleScope
-||||||| 3a1a7ae1c
-
-        _pagerCommand.put(
-            PagerCommand(
-                update = UpdateInstructions.Replace(0),
-                scroll = index
-            )
-        )
-        _pagerQueue.value = PagerQueue(
-            queue = queue,
-            index = index
-        )
-=======
-
->>>>>>> upstream/dev
         _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
         _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }
@@ -206,23 +190,7 @@ constructor(
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
-<<<<<<< HEAD
         _shuffleScope.value = playbackManager.shuffleScope
-||||||| 3a1a7ae1c
-
-        _pagerCommand.put(
-            PagerCommand(
-                update = UpdateInstructions.Replace(0),
-                scroll = index
-            )
-        )
-        _pagerQueue.value = PagerQueue(
-            queue = queue,
-            index = index
-        )
-=======
-
->>>>>>> upstream/dev
         _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
         _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }

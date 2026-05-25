@@ -39,12 +39,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
-<<<<<<< HEAD
 import javax.inject.Inject
-||||||| 3a1a7ae1c
-import java.lang.reflect.Field
-=======
->>>>>>> upstream/dev
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel

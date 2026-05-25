@@ -15,22 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-<<<<<<< HEAD
-
-||||||| 3a1a7ae1c
-=======
- 
->>>>>>> upstream/dev
 package org.oxycblt.auxio.playback.ui.swiper
 
 import android.graphics.RectF
 import android.view.View
-<<<<<<< HEAD
-||||||| 3a1a7ae1c
-import android.view.ViewGroup
-=======
 import androidx.core.view.isInvisible
->>>>>>> upstream/dev
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.carousel.MaskableFrameLayout
 
@@ -46,7 +35,6 @@ class CarouselTransformer : ViewPager2.PageTransformer {
         val height = page.height.toFloat()
 
         if (width <= 0f || height <= 0f) {
-            //
             return
         }
 

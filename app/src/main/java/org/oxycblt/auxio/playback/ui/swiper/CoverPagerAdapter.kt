@@ -15,12 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-<<<<<<< HEAD
-
-||||||| 3a1a7ae1c
-=======
- 
->>>>>>> upstream/dev
 package org.oxycblt.auxio.playback.ui.swiper
 
 import android.view.ViewGroup
@@ -36,27 +30,10 @@ import org.oxycblt.musikr.Song
  * A [FlexibleListAdapter] that hosts [CoverViewHolder]s containing a [Song]'s cover and step
  * gesture overlays.
  *
-<<<<<<< HEAD
- * @param listener The [PlayerFastSeekOverlay.PerformListener] that step gesture events will be
- *   forwarded to
-||||||| 3a1a7ae1c
- * @param listener The [PlayerFastSeekOverlay.PerformListener] that step gesture events will be
- *  forwarded to
- *
-=======
  * @param listener The [StepperOverlay.Listener] that step gesture events will be forwarded to
->>>>>>> upstream/dev
  * @author Alexander Capehart (OxygenCobalt)
  */
-<<<<<<< HEAD
-class CoverPagerAdapter(private val listener: PlayerFastSeekOverlay.PerformListener) :
-||||||| 3a1a7ae1c
-class CoverPagerAdapter(
-    private val listener: PlayerFastSeekOverlay.PerformListener
-) : FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
-=======
 class CoverPagerAdapter(private val listener: StepperOverlay.Listener) :
->>>>>>> upstream/dev
     FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, pos: Int) = CoverViewHolder.from(parent)

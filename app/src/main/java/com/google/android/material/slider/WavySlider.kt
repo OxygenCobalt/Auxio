@@ -645,7 +645,7 @@ constructor(
     private fun shouldDrawWave(): Boolean = waveEnabled || waveTransitionAnimation != null
 
     private fun updateActiveTrackSuppression() {
-        val suppress = true
+        val suppress = shouldDrawWave()
         if (suppress == linearActiveTrackSuppressed) {
             return
         }

@@ -37,11 +37,7 @@ import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-<<<<<<< HEAD
 import javax.inject.Inject
-||||||| 3a1a7ae1c
-=======
->>>>>>> upstream/dev
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
@@ -55,22 +51,11 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.stepper.Direction
-<<<<<<< HEAD
-import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
-||||||| 3a1a7ae1c
-=======
 import org.oxycblt.auxio.playback.ui.stepper.StepperOverlay
->>>>>>> upstream/dev
 import org.oxycblt.auxio.playback.ui.swiper.CarouselTransformer
 import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
 import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
-<<<<<<< HEAD
 import org.oxycblt.auxio.ui.UISettings
-||||||| 3a1a7ae1c
-import org.oxycblt.auxio.playback.ui.stepper.Direction
-import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
-=======
->>>>>>> upstream/dev
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
@@ -94,14 +79,7 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-<<<<<<< HEAD
-    PlayerFastSeekOverlay.PerformListener {
-||||||| 3a1a7ae1c
-    PlayerFastSeekOverlay.PerformListener {
-        private val coverPagerAdapter = CoverPagerAdapter(this)
-=======
     StepperOverlay.Listener {
->>>>>>> upstream/dev
     private val coverPagerAdapter = CoverPagerAdapter(this)
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -263,44 +241,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
     }
 
-<<<<<<< HEAD
-||||||| 3a1a7ae1c
-    // FIXME: Old code!! Maybe not necessary anymore?
-//    override fun onStart() {
-//        super.onStart()
-//        playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
-//        requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
-//    }
-
-//    override fun onStop() {
-//        super.onStop()
-//        requireBinding().root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//    }
-
-//    override fun onGlobalLayout() {
-//        if (binding == null || lastCoverWidth < 0) {
-//            return
-//        }
-        // Hacky workaround for cover radius not being preserved in between sizing changes
-        // (i.e split screen or landscape mode)
-        // For some reason ConstraintLayout does several passes on 1:1 elements that causes their
-        // size to radically change, so we wait until it stabilizes and then force an image
-        // reload if needed. Optimistically this is a no-op from coil caching, but when the cover
-        // did accidentally load the wrong image (with weird corner radius intended for bigger
-        // covers) we can force it to reload.
-        // If this breaks, it's fine since we also started a load as we normally did w/state
-        // updates, so the cover will not break.
-//        val binding = requireBinding()
-//        val coverWidth = binding.playbackCover.width
-//        if (lastCoverWidth != coverWidth) {
-//            lastCoverWidth = coverWidth
-//        } else {
-//            playbackModel.song.value?.let { binding.playbackCover.bind(it) }
-//            lastCoverWidth = -1
-//        }
-//    }
-
-=======
     // FIXME: Old code!! Maybe not necessary anymore?
     //    override fun onStart() {
     //        super.onStart()
@@ -335,8 +275,6 @@ class PlaybackPanelFragment :
     //            lastCoverWidth = -1
     //        }
     //    }
-
->>>>>>> upstream/dev
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
         binding.playbackRepeat.clearPendingIcon()
@@ -491,7 +429,6 @@ class PlaybackPanelFragment :
         }
     }
 
-<<<<<<< HEAD
     private fun applyDriverSideLayout(binding: FragmentPlaybackPanelBinding) {
         if (uiSettings.driverSide != UISettings.DriverSide.RIGHT) {
             return
@@ -539,11 +476,4 @@ class PlaybackPanelFragment :
             applyTo(root)
         }
     }
-||||||| 3a1a7ae1c
-    private companion object {
-
-    }
-=======
-    private companion object {}
->>>>>>> upstream/dev
 }
