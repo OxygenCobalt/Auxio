@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
+        <org.oxycblt.auxio.playback.ui.stepper.StepperOverlay
             android:id="@+id/cover_fast_seek_overlay"
             style="@style/Widget.Auxio.Image.Full"
             android:layout_width="0dp"

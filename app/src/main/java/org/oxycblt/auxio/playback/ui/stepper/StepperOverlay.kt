@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Auxio Project
- * PlayerFastSeekOverlay.kt is part of Auxio.
+ * StepperOverlay.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ enum class Direction {
 }
 
 @AndroidEntryPoint
-class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
+class StepperOverlay(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs), GestureDetector.OnDoubleTapListener {
     private sealed interface OverlayState {
         data object Invisible : OverlayState
@@ -62,14 +62,14 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     private var rightTapView: TapView
     private val gestureDetector: GestureDetector
 
-    var performListener: PerformListener? = null
+    var listener: Listener? = null
 
     private val alphaSpring = Effect.FAST
 
     private var leftOverlayState: OverlayState = OverlayState.Invisible
     private var rightOverlayState: OverlayState = OverlayState.Invisible
 
-    interface PerformListener {
+    interface Listener {
         fun seek(direction: Direction)
     }
 
@@ -282,7 +282,7 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
             }
         }
 
-        performListener?.seek(direction)
+        listener?.seek(direction)
 
         return false
     }
