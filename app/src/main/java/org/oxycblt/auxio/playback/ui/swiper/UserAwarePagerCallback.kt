@@ -15,7 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+<<<<<<< HEAD
 
+||||||| 3a1a7ae1c
+=======
+ 
+>>>>>>> upstream/dev
 package org.oxycblt.auxio.playback.ui.swiper
 
 import androidx.viewpager2.widget.ViewPager2
