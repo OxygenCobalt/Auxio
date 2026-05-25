@@ -97,7 +97,7 @@ constructor(
 
     private var displayedTrackThickness = 0f
     private var displayedCornerRadius = 0f
-    private var displayedInnerCornerRadius = 0f
+    // (no separate inner-corner radius: WavySlider uses a single fully-rounded cap model)
     private var displayedAmplitude = 0f
 
     private var waveRampProgressMin = 0f
@@ -160,19 +160,15 @@ constructor(
             }
         updateActiveTrackSuppression()
 
-        // Easier logic this way (even if a bit non-standard)
-        // The funky tangent stuff was just not my thing
-        if (trackCornerSize < trackHeight) {
+        // WavySlider requires fully rounded corners (radius = trackHeight / 2) because the
+        // custom wave path uses ROUND stroke caps and the rounded-block fallback assumes a
+        // circular cap. Bezier tangent interpolation for non-round corners is not implemented.
+        val fullRoundRadius = trackHeight / 2f
+        if (trackCornerSize < fullRoundRadius) {
             Timber.w(
-                "WavySlider can only be fully rounded. Clamping corner size down to trackHeight / 2"
+                "WavySlider requires fully rounded corners. Clamping trackCornerSize up to trackHeight / 2"
             )
-            trackCornerSize = trackHeight
-        }
-        if (trackInsideCornerSize < trackHeight) {
-            Timber.w(
-                "WavySlider can only be fully rounded. Clamping inner corner size down to trackHeight / 2"
-            )
-            trackInsideCornerSize = trackHeight
+            trackCornerSize = fullRoundRadius
         }
     }
 
@@ -264,7 +260,6 @@ constructor(
         displayedTrackThickness = trackHeight.toFloat()
         displayedCornerRadius =
             min(min(displayedTrackThickness / 2f, trackCornerSize.toFloat()), trackLength / 2f)
-        displayedInnerCornerRadius = displayedCornerRadius
 
         // Calculate the actual wave path or re-use it
         ensureCachedWavePath(trackLength, configuredWavelengthPx)
@@ -377,10 +372,9 @@ constructor(
             return
         }
 
-        if (startBlockCenterX > endBlockCenterX) {
-            // Too small for caps, need to draw a rounded block instead
-            // In this case since start > end we actually need to draw it in
-            // reverse or it'll break
+        if (startBlockCenterX >= endBlockCenterX) {
+            // Caps overlap (or exactly meet): track is too narrow for a stroked path.
+            // Draw a rounded block from the end cap inwards to avoid a zero-length wave segment.
             drawRoundedBlock(
                 canvas = canvas,
                 drawCenter = endPoint,
@@ -421,73 +415,84 @@ constructor(
         clipCenter: PointF,
         clipRight: Boolean,
     ) {
-        // NOTE: Still need to study this more.
+        // Draws a rounded pill that can shrink to an arbitrarily small width.
+        //
+        // The pill is built from three layers (all clipped by roundedRectPath):
+        //   1. patchRect: a square fill that bridges the flat side of the draw cap.
+        //   2. drawRect: a full-diameter round rect producing the fully rounded end cap.
+        //   3. The clip (roundedRectPath) masks the result to the visible progress extent.
+        //
+        // When the progress extent is narrower than two cap radii, the clip boundary
+        // (clipCenter) can intrude into the draw cap region. The leftEdgeDiff / rightEdgeDiff
+        // guards detect this and shift clipCenter outward so the cap is not asymmetrically cut.
 
         // Have to swap paint to fill for a rounded rect
         wavePaint.style = Paint.Style.FILL
         canvas.withSave {
-            // Drawing the "block" is weird since we ideally want one that can go arbitrarily
-            // tiny w/o clipping. This leads to some odd logic.
+            val radius = trackHeight / 2f
             var clipWidth = trackHeight.toFloat()
-            val halfHeight = trackHeight / 2f
-            // Set up a rect that fills in the side that would otherwise get clobbered
-            // if we clipped an already rounded sikde
+
+            // Patch rect fills in the flat inner side of the rounded end cap so there is
+            // no gap between the cap circle and the clip boundary.
             if (clipRight) {
-                val leftEdgeDiff = (clipCenter.x - trackHeight / 2f) - (drawCenter.x - trackHeight)
+                // drawCenter is the left (start) cap; clipCenter is the right clip boundary.
+                val leftEdgeDiff = (clipCenter.x - radius) - (drawCenter.x - radius)
                 if (leftEdgeDiff > 0f) {
                     clipCenter.translate(-leftEdgeDiff / 2f, 0f)
                     clipWidth += leftEdgeDiff
                 }
                 patchRect.set(
                     drawCenter.x,
-                    drawCenter.y - halfHeight,
-                    drawCenter.x + trackHeight / 2f,
-                    drawCenter.y + halfHeight,
+                    drawCenter.y - radius,
+                    drawCenter.x + radius,
+                    drawCenter.y + radius,
                 )
             } else {
-                val rightEdgeDiff = (clipCenter.x + trackHeight / 2f) - (drawCenter.x + trackHeight)
+                // drawCenter is the right (end) cap; clipCenter is the left clip boundary.
+                val rightEdgeDiff = (clipCenter.x + radius) - (drawCenter.x + radius)
                 if (rightEdgeDiff < 0f) {
                     clipCenter.translate(-rightEdgeDiff / 2f, 0f)
                     clipWidth -= rightEdgeDiff
                 }
                 patchRect.set(
-                    drawCenter.x - trackHeight / 2f,
-                    drawCenter.y - halfHeight,
+                    drawCenter.x - radius,
+                    drawCenter.y - radius,
                     drawCenter.x,
-                    drawCenter.y + halfHeight,
+                    drawCenter.y + radius,
                 )
             }
 
-            // Create the mask that applies rounded corners/caps that also adequately shrinks
-            // when extremely thin
+            // Clip mask: a rounded rect centered on clipCenter that defines the
+            // visible extent. Using radius as the corner radius makes it a pill shape
+            // that gracefully collapses to a circle at minimum width.
             val halfClipWidth = clipWidth / 2f
             clipRect.set(
                 clipCenter.x - halfClipWidth,
-                clipCenter.y - halfHeight,
+                clipCenter.y - radius,
                 clipCenter.x + halfClipWidth,
-                clipCenter.y + halfHeight,
+                clipCenter.y + radius,
             )
 
-            // Create the rounded cap rect
+            // Draw cap: a full circle-sized round rect at drawCenter.
             drawRect.set(
-                drawCenter.x - halfHeight,
-                drawCenter.y - halfHeight,
-                drawCenter.x + halfHeight,
-                drawCenter.y + halfHeight,
+                drawCenter.x - radius,
+                drawCenter.y - radius,
+                drawCenter.x + radius,
+                drawCenter.y + radius,
             )
 
-            // Then finally draw the three rects to create the final pill shape.
+            // Apply clip, then draw patch + cap so the result is a correctly rounded pill.
             roundedRectPath.reset()
             roundedRectPath.addRoundRect(
                 clipRect,
-                trackHeight.toFloat(),
-                trackHeight.toFloat(),
+                radius,
+                radius,
                 Path.Direction.CCW,
             )
             clipPath(roundedRectPath)
 
             drawRect(patchRect, wavePaint)
-            drawRoundRect(drawRect, trackHeight.toFloat(), trackHeight.toFloat(), wavePaint)
+            drawRoundRect(drawRect, radius, radius, wavePaint)
         }
     }
 
@@ -538,9 +543,8 @@ constructor(
         waveTransitionAnimation?.cancel()
         waveTransitionAnimation = null
 
-        // Use a standard M3 animation
-        // Not using Auxio anim utils due to this being outside the Auxio pkg
-        // TODO: Could move it inside the pkg honestly
+        // Use a standard M3 spring animation. SpringAnimation is used directly because this
+        // class lives outside the Auxio package and cannot access Auxio animation utilities.
         val springAnimation =
             SpringAnimation(FloatValueHolder(currentAmplitudeFraction)).apply {
                 spring =
@@ -680,8 +684,20 @@ constructor(
     }
 
     private fun invalidateCachedWavePath(trackLength: Float, wavelength: Int) {
-        // NOTE: Going to be honest, this is the part I understand the least.
-        // Need to study it more.
+        // Builds a normalised sinusoidal wave path in a 1-unit-tall coordinate space using
+        // cubic Bézier arcs. Each "cycle" i produces one full sine period by pairing:
+        //   – an upward arc from y=0 to y=1 (half-cycle going up)
+        //   – a downward arc from y=1 to y=0 (half-cycle going down)
+        // The WAVE_SMOOTHNESS value controls how far the Bézier control points are pulled
+        // toward the peak, tuning the visual shape of the wave.
+        //
+        // After the loop, the path is scaled to actual pixel dimensions:
+        //   – X: stretched to fill exactly one adjusted wavelength (trackLength / cycleCount)
+        //   – Y: flipped and scaled to ±amplitude (applied per-frame in calculateDisplayedWavePath)
+        //   – Y offset by +1 to bring the baseline back to y=0 after the Y flip
+        //
+        // The path is then measured via PathMeasure so that sub-segments can be extracted
+        // during each frame to implement the scrolling phase animation.
         cachedWavePath.rewind()
         adjustedWavelength = 0f
         if (trackLength <= 0f || wavelength <= 0) {
@@ -690,13 +706,12 @@ constructor(
         }
 
         val cycleCount = max(1, (trackLength / wavelength).toInt())
-        // toInt rounding errors necessitate us to actually indicate what the
-        // real rendered wavelength is.
+        // Integer truncation means the real per-cycle pixel width differs from the configured
+        // wavelength; store the adjusted value so phase calculations stay in sync.
         adjustedWavelength = trackLength / cycleCount
         for (i in 0..cycleCount) {
-            // To be honest this is math magic but it does draw the two
-            // curves needed for waves. They aren't distinct up/down poitns.
             val cycle = i.toFloat()
+            // Upward half-cycle: 0 → peak (y=1)
             cachedWavePath.cubicTo(
                 2 * cycle + WAVE_SMOOTHNESS,
                 0f,
@@ -705,6 +720,7 @@ constructor(
                 2 * cycle + 1,
                 1f,
             )
+            // Downward half-cycle: peak (y=1) → 0
             cachedWavePath.cubicTo(
                 2 * cycle + 1 + WAVE_SMOOTHNESS,
                 1f,
@@ -715,10 +731,11 @@ constructor(
             )
         }
 
-        // Lay out the actual wave across the seekbar
-        // Without this phase animations won't work and the track will appear "scrunched"
-        // Additionally if I understand right this also helps extend the wave enough to
-        // select parts of it to scroll through.
+        // Scale the normalised path to pixel space.
+        // The X scale maps one normalised unit (2 per cycle) to adjustedWavelength/2 pixels.
+        // The Y scale flips the curve (so the wave leads with an upward arc) and sets unit
+        // amplitude; actual amplitude is applied per-frame via postScale in calculateDisplayedWavePath.
+        // postTranslate shifts the baseline back to y=0 after the Y flip.
         transform.reset()
         transform.setScale(adjustedWavelength / 2f, -2f)
         transform.postTranslate(0f, 1f)

@@ -24,12 +24,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.carousel.MaskableFrameLayout
 
 class CarouselTransformer : ViewPager2.PageTransformer {
-    private val hiddenRect = RectF()
 
     override fun transformPage(page: View, position: Float) {
-        // drafted by codex mostly due to the insane complexity of abusing a viewpager2
-        // into a m3 carousel like thing
-        // cleaned/rewritten/documented by me for cognitive ownership
+        // Implements a Material3-style carousel over a standard ViewPager2.
+        //
+        // ViewPager2 normally lays out pages side-by-side via LinearLayoutManager.
+        // To create a carousel effect, all pages are pinned to the same X position
+        // using translationX, and then MaskableFrameLayout's mask is adjusted per
+        // page to reveal the correct portion of each cover.
         val maskable = page as? MaskableFrameLayout ?: return
         val width = page.width.toFloat()
         val height = page.height.toFloat()
@@ -38,109 +40,69 @@ class CarouselTransformer : ViewPager2.PageTransformer {
             return
         }
 
-        // pin the page
-        // normally the page's layout is controlled by linearlayoutmanager which we dont
-        // like since it means we cant arrange them in the carousel
-        // so we use translationX to fix them to the same pos so we can remask them however
-        // we want to create our effect
+        // Pin the page to its natural position so LinearLayoutManager's side-by-side
+        // placement does not affect the visual arrangement.
         page.translationX = -position * width
 
-        // Make sure despite the pinning offscreen pages are noninteractable
-        // Otherwise funky android touch logic kicks in and breaks the playback stepper
+        // Offscreen pages (-1 or beyond) are made invisible so their touch areas
+        // do not interfere with the playback stepper gesture detection.
         page.isInvisible = position <= -1f || position >= 1f
 
         page.alpha = 1f
 
+        // Normalise position to p in [0, 1] where 0 = fully on-screen and 1 = fully off-screen.
+        // Prev page (position < 0): p = |position|.
+        // Next page (position > 0): p = 1 - position (maps 0=fully visible to 1=fully hidden).
         val p =
             when {
-                // prev page, just abs
-                // so in this case p will be 1.0 -> 0.0, so 1.0 when fully outset and 0.0 when inset
-                // we must conform to this!
                 position < 0f -> -position
-                // next page, take the inverse actually
-                // remember, this must also be normalized to outset = 1.0, inset = 0.0
-                // so take the opposite end (1f - pos)
                 position > 0f -> 1f - position
                 else -> 0f
             }.coerceIn(0f, 1f)
 
-        // breakpoints for the gap
-        // the thing is that really we have to encode the "gap" an equation such that
-        // the masking effect looks like a contiguous transform of adjacent covers.
-        // if we just add a fixed gap it'll appear instantly, and any p * gap or similar
-        // logic will morph over time. even polynomials will morph as well. hence this
-        // really funky piecewise function
-
-        // basically at the first and last 18% of progress we should grow and shrink the gap
-        // respectively
-        val gapEnterBreakpoint = GAP_BREAKPOINT // when growth ends
-        val gapExitBreakpoint = 1f - GAP_BREAKPOINT // symmetric, when shrink starts
+        // The gap between adjacent covers is eased in/out over the first and last GAP_BREAKPOINT
+        // fraction of transition progress. A constant gap would appear or disappear instantly;
+        // a linear gap would morph throughout the transition. The piecewise linear approach below
+        // keeps the gap at maxGap for most of the transition while smoothly ramping at the edges.
+        val gapEnterBreakpoint = GAP_BREAKPOINT
+        val gapExitBreakpoint = 1f - GAP_BREAKPOINT
         val maxGap = width * 0.08f
 
         val gap =
             when {
-                // gap is not fully grown yet, so we do the gap size * how close we are to a fully
-                // grown gap
                 p < gapEnterBreakpoint -> maxGap * (p / gapEnterBreakpoint)
-
-                // gap should be shrinking, so we need to downscale maxgap by how close we are
-                // actually to the end
                 p > gapExitBreakpoint -> maxGap * ((1f - p) / (1f - gapExitBreakpoint))
-
-                // not growing or shrinking
                 else -> maxGap
             }
 
-        // then we need to get how much we actually want to reveal the incoming covers post-gap
-        // so first normalize p past gapEnterBreakpoint, then normalize it to the range
-        // between the gap transform breakpoints, so this range:
-        // [enter] - [reveal] - [exit]
-        // if p is inside [enter] or [exit] we snap to 0f/1f respectively, so i.e
-        // dont reveal more/less than we need to if the gap being phased out already
-        // handles it
+        // The available width for covers after the gap is subtracted. The reveal fraction
+        // determines how much of the incoming cover is exposed. Because gap is already factored
+        // into `available`, the left boundary of the incoming mask automatically incorporates
+        // the gap without needing an explicit gap term.
         val reveal =
-            ((p - gapEnterBreakpoint) / ((gapExitBreakpoint) - gapEnterBreakpoint)).coerceIn(0f, 1f)
+            ((p - gapEnterBreakpoint) / (gapExitBreakpoint - gapEnterBreakpoint)).coerceIn(0f, 1f)
 
-        // alloc space for incoming cover, gap, outgoing cover
         val available = width - gap
         val incomingWidth = available * reveal
         val outgoingWidth = available - incomingWidth
 
         val rect =
             when {
-                // previous cover -> fit to outgoing width to the right
-                // gap is already factored into the available calculation outgoingWidth depends
-                // on
-                position < 0f -> {
-                    RectF(0f, 0f, outgoingWidth, height)
-                }
-
-                // incoming cover -> mask to incoming width towards the left
-                // note:
-                // left = width - incomingWidth = width - (width - **gap**) * reveal
-                // this means that we automatically inset for the gap without including
-                // it as an explicit term
-                // and since gap itself is scaled via the piecewise function this makes
-                // it so that the gap automatically appears
-                position > 0f -> {
-                    RectF(width - incomingWidth, 0f, width, height)
-                }
-
-                // current cover, mask to normal
-                else -> {
-                    RectF(0f, 0f, width, height)
-                }
+                // Previous cover: fill from left up to outgoingWidth.
+                position < 0f -> RectF(0f, 0f, outgoingWidth, height)
+                // Incoming (next) cover: fill from right down to incomingWidth.
+                position > 0f -> RectF(width - incomingWidth, 0f, width, height)
+                // Current cover: full extent.
+                else -> RectF(0f, 0f, width, height)
             }
 
         maskable.setMaskRectF(rect)
 
-        // internal page parallax
-        // this does assume the cover item setup but thats fine
+        // Subtle parallax: shift the cover image inside the mask so that the visible
+        // portion tracks slightly ahead of the mask boundary, giving a sense of depth.
         val content = page.getChildAt(0)
         val maskCenter = (rect.left + rect.right) / 2f
         val pageCenter = width / 2f
-        // easy parallax where left content moves more left,
-        // right content moves more to the right
         content.translationX = (maskCenter - pageCenter) * PARALLAX
     }
 

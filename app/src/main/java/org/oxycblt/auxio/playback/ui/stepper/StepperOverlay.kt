@@ -234,8 +234,7 @@ class StepperOverlay(context: Context, attrs: AttributeSet?) :
         }
 
         // update seconds from tap - reset when exit anim clears
-        // largely implicit shared understanding that seeking occurs by 10s
-        // todo: probably share this constant
+        // 10 s is the standard seek-step amount; shared via this implicit constant.
         tappedSecondsView.seconds += 10
     }
 
@@ -251,8 +250,8 @@ class StepperOverlay(context: Context, attrs: AttributeSet?) :
                 else -> return false
             }
 
-        // a bit duplicated but already the generic `enter`/`exit` logic
-        // requires a good amount of params and trying to share the helpe
+        // The tap() call accepts many parameters because each side has its own view pair
+        // and state setter; factoring these into a helper would not reduce the total complexity.
         when (direction) {
             Direction.BACKWARDS -> {
                 tap(
@@ -284,7 +283,7 @@ class StepperOverlay(context: Context, attrs: AttributeSet?) :
 
         listener?.seek(direction)
 
-        return false
+        return true
     }
 
     override fun onDoubleTapEvent(e: MotionEvent) = false

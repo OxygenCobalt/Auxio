@@ -20,7 +20,7 @@ package org.oxycblt.auxio.playback.ui.swiper
 import androidx.viewpager2.widget.ViewPager2
 
 /**
- * A [ViewPager2.OnPageChangeCallback] that only fires [userCallback] when a user actually enagages
+ * A [ViewPager2.OnPageChangeCallback] that only fires [userCallback] when a user actually engages
  * in a swipe action. [ViewPager2] doesn't normally supply this so we have to do it via a stateful
  * object.
  *

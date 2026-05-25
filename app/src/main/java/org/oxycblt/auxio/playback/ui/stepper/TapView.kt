@@ -25,7 +25,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 
-/** Cricle */
+/** A half-circle overlay drawn over the cover to indicate a seek tap gesture. */
 class TapView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private var backgroundPaint = Paint()
