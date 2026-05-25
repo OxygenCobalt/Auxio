@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 #include "JClassRef.h"
 JClassRef::JClassRef(JNIEnv *env, const char *classpath) : env(env) {
     clazz = env->FindClass(classpath);

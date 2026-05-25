@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 #include "JByteArrayRef.h"
 
 JByteArrayRef::JByteArrayRef(JNIEnv *env, TagLib::ByteVector &data) : env(env) {
