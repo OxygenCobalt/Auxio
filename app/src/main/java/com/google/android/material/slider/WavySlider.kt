@@ -401,8 +401,8 @@ constructor(
             // This includes the phase-scroll logic
             calculateDisplayedWavePath(
                 trackLength = trackLength,
-                    start = startBlockCenterX / trackLength,
-                    end = endBlockCenterX / trackLength,
+                start = startBlockCenterX / trackLength,
+                end = endBlockCenterX / trackLength,
                 phaseFraction = phaseFraction,
                 baseTranslationX = trackSidePadding.toFloat(),
                 baseTranslationY = trackCenterY,
