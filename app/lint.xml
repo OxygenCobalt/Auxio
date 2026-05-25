@@ -25,4 +25,36 @@
         <ignore path="**/com/google/android/material/bottomsheet/BackportBottomSheetDialog.java" />
         <ignore path="**/com/google/android/material/bottomsheet/BackportBottomSheetDialogFragment.java" />
     </issue>
+
+    <!-- Pre-existing upstream Auxio lint issues: targeted suppressions only.
+         These are NOT new issues from Auxio-TS fork code.
+         Remove each entry when the underlying upstream code is fixed. -->
+
+    <!-- WrongConstant: Layout.BREAK_STRATEGY_SIMPLE is correct at runtime but lint
+         expects LineBreaker.BREAK_STRATEGY_SIMPLE typedef annotation. -->
+    <issue id="WrongConstant">
+        <ignore path="**/list/recycler/FastScrollRecyclerView.kt" />
+    </issue>
+
+    <!-- DiffUtilEquals: upstream uses Name/ReleaseType that rely on structural
+         equality via data class delegation; lint cannot see through the wrapper. -->
+    <issue id="DiffUtilEquals">
+        <ignore path="**/detail/list/ArtistDetailListAdapter.kt" />
+        <ignore path="**/playback/decision/ArtistPlaybackChoiceAdapter.kt" />
+        <ignore path="**/detail/decision/ArtistShowChoice.kt" />
+        <ignore path="**/playback/decision/GenrePlaybackChoiceAdapter.kt" />
+        <ignore path="**/list/recycler/ViewHolders.kt" />
+    </issue>
+
+    <!-- RestrictedApi: upstream intentionally uses SupportMenuInflater for custom
+         menu inflation in the bottom-sheet menu dialog. -->
+    <issue id="RestrictedApi">
+        <ignore path="**/list/menu/MenuDialogFragment.kt" />
+    </issue>
+
+    <!-- UnsafeOptInUsageError: upstream ReplayGainAudioProcessor extends Media3
+         BaseAudioProcessor which is @UnstableApi. The usage is intentional. -->
+    <issue id="UnsafeOptInUsageError">
+        <ignore path="**/playback/replaygain/ReplayGainAudioProcessor.kt" />
+    </issue>
 </lint>
