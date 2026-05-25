@@ -70,8 +70,7 @@ constructor(
     private var cachedWavelength = -1
     private var cachedTrackLength = -1f
 
-    private val drawRect =
-        RectF(-trackHeight / 2f, -trackHeight / 2f, trackHeight / 2f, trackHeight / 2f)
+    private val drawRect = RectF()
     private val patchRect = RectF()
     private val clipRect = RectF()
     private val roundedRectPath = Path()
@@ -80,6 +79,7 @@ constructor(
     private val endPoint = PointF()
 
     private val transparentTrackTint = ColorStateList.valueOf(Color.TRANSPARENT)
+    // Necessary due to us clobbering it when we enable the wavy track
     private var tmpTrackTintList: ColorStateList = trackActiveTintList
     private var linearActiveTrackSuppressed = false
 
@@ -148,7 +148,7 @@ constructor(
 
         wavePaint =
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                style = Paint.Style.STROKE
+                // style = is set later
                 strokeCap = Paint.Cap.BUTT
                 strokeWidth = trackHeight.toFloat()
                 isAntiAlias = true
@@ -160,6 +160,8 @@ constructor(
             }
         updateActiveTrackSuppression()
 
+        // Easier logic this way (even if a bit non-standard)
+        // The funky tangent stuff was just not my thing
         if (trackCornerSize < trackHeight) {
             Timber.w(
                 "WavySlider can only be fully rounded. Clamping corner size down to trackHeight / 2"
@@ -218,18 +220,24 @@ constructor(
 
         waveEnabled = enabled
         if (enabled) {
+            // Enabled, start moving / transition to 1f amplitude
             waveSpeed = configuredSpeedPx
             resetPhaseClock()
             transitionToAmplitudeFraction(1f)
         } else if (abs(currentAmplitudeFraction - MIN_VISIBLE_WAVE_FRACTION) < EPSILON) {
+            // No amplitude configured, do nothing
             waveSpeed = 0
             resetPhaseClock()
         } else {
+            // Off, transition to 0 amplitude and stop
             waveSpeed = 0
             transitionToAmplitudeFraction(MIN_VISIBLE_WAVE_FRACTION) { resetPhaseClock() }
         }
+        // Get rid of inactive track if needed
         updateActiveTrackSuppression()
+        // Start doing the actual moving wave animation
         ensurePhaseTickerState()
+        // Start drawing
         markDirty()
         invalidate()
     }
@@ -345,8 +353,8 @@ constructor(
         phaseFraction: Float,
     ) {
         // This logic seems more complex than it should be largely because
-        // we have to gracefully collapse the active track as we scroll to
-        // the minimum
+        // we have to gracefully collapse the active track as we seek
+        // to the end.
         val originX = trackSidePadding.toFloat()
         val trackCenterY = height / 2f
 
@@ -359,6 +367,7 @@ constructor(
         endPoint.translate(endBlockCenterX + originX, trackCenterY)
 
         if (startBound <= 0f && endBlockCenterX < startBlockCenterX) {
+            // Too small for caps, need to draw a rounded block instead
             drawRoundedBlock(
                 canvas = canvas,
                 drawCenter = startPoint,
@@ -369,6 +378,9 @@ constructor(
         }
 
         if (startBlockCenterX > endBlockCenterX) {
+            // Too small for caps, need to draw a rounded block instead
+            // In this case since start > end we actually need to draw it in
+            // reverse or it'll break
             drawRoundedBlock(
                 canvas = canvas,
                 drawCenter = endPoint,
@@ -378,38 +390,29 @@ constructor(
             return
         }
 
+        // Otherwise draw the wavy stroke
+        // Need to configure the paint mode for this
         wavePaint.style = Paint.Style.STROKE
+        // Always fully rounded (easier, albeit not spec compliant)
         wavePaint.strokeCap = Paint.Cap.ROUND
 
         if (amplitudeFraction > 0f) {
+            // Calculate what we should actually display
+            // This includes the phase-scroll logic
             calculateDisplayedWavePath(
                 trackLength = trackLength,
-                start = startBlockCenterX / trackLength,
-                end = endBlockCenterX / trackLength,
+                    start = startBlockCenterX / trackLength,
+                    end = endBlockCenterX / trackLength,
                 phaseFraction = phaseFraction,
-                trackCenterY = trackCenterY,
+                baseTranslationX = trackSidePadding.toFloat(),
+                baseTranslationY = trackCenterY,
             )
+            // Then draw the displayed wave path
             canvas.drawPath(displayedWavePath, wavePaint)
         } else {
+            // No wave, simplify to line
             canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, wavePaint)
         }
-    }
-
-    private fun calculateDisplayedWavePath(
-        trackLength: Float,
-        start: Float,
-        end: Float,
-        phaseFraction: Float,
-        trackCenterY: Float,
-    ) {
-        calculateDisplayedWavePath(
-            trackLength = trackLength,
-            start = start,
-            end = end,
-            phaseFraction = phaseFraction,
-            baseTranslationX = trackSidePadding.toFloat(),
-            baseTranslationY = trackCenterY,
-        )
     }
 
     private fun drawRoundedBlock(
@@ -418,10 +421,17 @@ constructor(
         clipCenter: PointF,
         clipRight: Boolean,
     ) {
+        // NOTE: Still need to study this more.
+
+        // Have to swap paint to fill for a rounded rect
         wavePaint.style = Paint.Style.FILL
         canvas.withSave {
+            // Drawing the "block" is weird since we ideally want one that can go arbitrarily
+            // tiny w/o clipping. This leads to some odd logic.
             var clipWidth = trackHeight.toFloat()
             val halfHeight = trackHeight / 2f
+            // Set up a rect that fills in the side that would otherwise get clobbered
+            // if we clipped an already rounded sikde
             if (clipRight) {
                 val leftEdgeDiff = (clipCenter.x - trackHeight / 2f) - (drawCenter.x - trackHeight)
                 if (leftEdgeDiff > 0f) {
@@ -448,6 +458,8 @@ constructor(
                 )
             }
 
+            // Create the mask that applies rounded corners/caps that also adequately shrinks
+            // when extremely thin
             val halfClipWidth = clipWidth / 2f
             clipRect.set(
                 clipCenter.x - halfClipWidth,
@@ -456,6 +468,7 @@ constructor(
                 clipCenter.y + halfHeight,
             )
 
+            // Create the rounded cap rect
             drawRect.set(
                 drawCenter.x - halfHeight,
                 drawCenter.y - halfHeight,
@@ -463,6 +476,7 @@ constructor(
                 drawCenter.y + halfHeight,
             )
 
+            // Then finally draw the three rects to create the final pill shape.
             roundedRectPath.reset()
             roundedRectPath.addRoundRect(
                 clipRect,
@@ -479,6 +493,7 @@ constructor(
 
     private fun applyStartWaveRamp(amplitudeFraction: Float, startRampFraction: Float): Float {
         if (amplitudeFraction <= 0f) {
+            // Don't care, nothing to ramp
             return 0f
         }
         val easedRamp = applyRampEasing(startRampFraction)
@@ -512,6 +527,7 @@ constructor(
     private fun transitionToAmplitudeFraction(target: Float, onFinished: (() -> Unit)? = null) {
         val clampedTarget = target.coerceIn(MIN_VISIBLE_WAVE_FRACTION, 1f)
         if (abs(currentAmplitudeFraction - clampedTarget) < EPSILON) {
+            // Too little work, nothing to do
             currentAmplitudeFraction = clampedTarget
             updateActiveTrackSuppression()
             ensurePhaseTickerState()
@@ -522,6 +538,9 @@ constructor(
         waveTransitionAnimation?.cancel()
         waveTransitionAnimation = null
 
+        // Use a standard M3 animation
+        // Not using Auxio anim utils due to this being outside the Auxio pkg
+        // TODO: Could move it inside the pkg honestly
         val springAnimation =
             SpringAnimation(FloatValueHolder(currentAmplitudeFraction)).apply {
                 spring =
@@ -631,16 +650,14 @@ constructor(
             return
         }
         if (suppress) {
+            // We can piggyback off of Slider's existing rendering by just
+            // making sure the straight track is disabled when we switch to the
+            // wavy one.
             super.setTrackActiveTintList(transparentTrackTint)
         } else {
             super.setTrackActiveTintList(tmpTrackTintList)
         }
         linearActiveTrackSuppressed = suppress
-    }
-
-    private fun applyRampEasing(fraction: Float): Float {
-        val clamped = fraction.coerceIn(0f, 1f)
-        return clamped * clamped * (3f - 2f * clamped)
     }
 
     private fun markDirty() {
@@ -663,6 +680,8 @@ constructor(
     }
 
     private fun invalidateCachedWavePath(trackLength: Float, wavelength: Int) {
+        // NOTE: Going to be honest, this is the part I understand the least.
+        // Need to study it more.
         cachedWavePath.rewind()
         adjustedWavelength = 0f
         if (trackLength <= 0f || wavelength <= 0) {
@@ -671,8 +690,12 @@ constructor(
         }
 
         val cycleCount = max(1, (trackLength / wavelength).toInt())
+        // toInt rounding errors necessitate us to actually indicate what the
+        // real rendered wavelength is.
         adjustedWavelength = trackLength / cycleCount
         for (i in 0..cycleCount) {
+            // To be honest this is math magic but it does draw the two
+            // curves needed for waves. They aren't distinct up/down poitns.
             val cycle = i.toFloat()
             cachedWavePath.cubicTo(
                 2 * cycle + WAVE_SMOOTHNESS,
@@ -692,6 +715,10 @@ constructor(
             )
         }
 
+        // Lay out the actual wave across the seekbar
+        // Without this phase animations won't work and the track will appear "scrunched"
+        // Additionally if I understand right this also helps extend the wave enough to
+        // select parts of it to scroll through.
         transform.reset()
         transform.setScale(adjustedWavelength / 2f, -2f)
         transform.postTranslate(0f, 1f)
@@ -717,28 +744,35 @@ constructor(
         var resultTranslationX = baseTranslationX
 
         if (adjustedWavelength > EPSILON) {
+            // Viable wavelength, need to cycle it
             val cycleCount = trackLength / adjustedWavelength
             if (cycleCount > EPSILON) {
+                // Viable actual wave count, need to convert phase to a wave segment to draw
                 val phaseFractionInPath = phaseFraction / cycleCount
                 val ratio = cycleCount / (cycleCount + 1f)
                 adjustedStart = (adjustedStart + phaseFractionInPath) * ratio
                 adjustedEnd = (adjustedEnd + phaseFractionInPath) * ratio
             }
+            // Cycle wave backwards by phase
             resultTranslationX -= phaseFraction * adjustedWavelength
         }
 
         adjustedStart = adjustedStart.coerceIn(0f, 1f)
         adjustedEnd = adjustedEnd.coerceIn(0f, 1f)
         if (adjustedEnd <= adjustedStart) {
+            // Nothing to draw
             return false
         }
 
+        // Get the wave segment we are cycling through
         val startDistance = adjustedStart * pathMeasure.length
         val endDistance = adjustedEnd * pathMeasure.length
         pathMeasure.getSegment(startDistance, endDistance, displayedWavePath, true)
-
         transform.reset()
         transform.setTranslate(resultTranslationX, baseTranslationY)
+
+        // Then actually scale the wave by the current amplitude
+        // (which may not be full due to anims)
         val scaleY = displayedAmplitude
         if (scaleY > 0f) {
             transform.postScale(1f, scaleY, resultTranslationX, baseTranslationY)
@@ -746,6 +780,11 @@ constructor(
         displayedWavePath.transform(transform)
 
         return true
+    }
+
+    private fun applyRampEasing(fraction: Float): Float {
+        val clamped = fraction.coerceIn(0f, 1f)
+        return clamped * clamped * (3f - 2f * clamped)
     }
 
     private fun PointF.reset() {
