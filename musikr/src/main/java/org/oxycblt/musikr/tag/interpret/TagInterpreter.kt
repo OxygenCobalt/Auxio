@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.tag.interpret
 
 import org.oxycblt.musikr.Interpretation
@@ -174,8 +174,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             preArtists =
                 PreArtistsFrom.Album(albumPreArtists).takeIf { it.preArtists.isNotEmpty() }
                     ?: PreArtistsFrom.Individual(
-                        individualPreArtists.ifEmpty { listOf(unknownPreArtist()) }
-                    ),
+                        individualPreArtists.ifEmpty { listOf(unknownPreArtist()) }),
         )
     }
 

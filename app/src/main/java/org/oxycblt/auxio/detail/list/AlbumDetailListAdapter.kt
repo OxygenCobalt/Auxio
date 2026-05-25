@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.detail.list
 
 import android.view.ViewGroup
@@ -145,8 +145,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
         fun from(parent: ViewGroup) =
             DiscHeaderViewHolder(
                 // TODO: Get all viewholders to inflate anchored to parent
-                ItemDiscHeaderBinding.inflate(parent.context.inflater, parent, false)
-            )
+                ItemDiscHeaderBinding.inflate(parent.context.inflater, parent, false))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -270,8 +269,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
          */
         fun from(parent: ViewGroup) =
             AlbumSongViewHolder(
-                ItemAlbumSongBinding.inflate(parent.context.inflater, parent, false)
-            )
+                ItemAlbumSongBinding.inflate(parent.context.inflater, parent, false))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

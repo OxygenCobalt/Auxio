@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music
 
 import android.content.Context
@@ -192,8 +192,7 @@ constructor(
                                 importedPlaylist.name,
                                 songs,
                                 PlaylistDecision.Rename.Reason.IMPORT,
-                            )
-                        )
+                            ))
                     } else {
                         musicRepository.rewritePlaylist(target, songs)
                         _playlistMessage.put(PlaylistMessage.ImportSuccess)
@@ -204,8 +203,7 @@ constructor(
                             songs,
                             importedPlaylist.name,
                             PlaylistDecision.New.Reason.IMPORT,
-                        )
-                    )
+                        ))
                 }
             }
         } else {

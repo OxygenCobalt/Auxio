@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.list.adapter
 
 import android.os.Handler
@@ -242,8 +242,7 @@ private class FlexibleListDiffer<T>(
                             }
                             throw AssertionError()
                         }
-                    }
-                )
+                    })
 
             mainThreadExecutor.execute {
                 if (maxScheduledGeneration == runGeneration) {

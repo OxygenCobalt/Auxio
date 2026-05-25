@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.settings.categories
 
 import androidx.navigation.fragment.findNavController
@@ -87,7 +87,9 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                 val nativeStatusSummary =
                     when (compatStatus.nativePrivateIntegrationStatus) {
                         NativePrivateIntegrationStatus.NOT_ENABLED_REQUIRES_VALIDATION ->
-                            getString(R.string.set_head_unit_compat_native_not_enabled_requires_validation)
+                            getString(
+                                R.string
+                                    .set_head_unit_compat_native_not_enabled_requires_validation)
                     }
                 preference.summary =
                     getString(

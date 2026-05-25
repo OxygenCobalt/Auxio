@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.widgets
 
 import android.appwidget.AppWidgetManager
@@ -29,8 +29,8 @@ import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.service.PlaybackActions
@@ -129,11 +129,8 @@ class WidgetProvider : AppWidgetProvider() {
                 return
             } catch (e: IllegalArgumentException) {
                 val msg = e.message ?: return
-                if (
-                    !msg.startsWith(
-                        "RemoteViews for widget update exceeds maximum bitmap memory usage"
-                    )
-                ) {
+                if (!msg.startsWith(
+                    "RemoteViews for widget update exceeds maximum bitmap memory usage")) {
                     throw e
                 }
                 // Some android devices on Android 12-14 suffer from a bug where the maximum bitmap
@@ -169,9 +166,7 @@ class WidgetProvider : AppWidgetProvider() {
             .updateAppWidget(ComponentName(context, this::class.java), layout)
     }
 
-    /**
-     * Whether there is at least one pane-sized widget instance that renders timeline/progress.
-     */
+    /** Whether there is at least one pane-sized widget instance that renders timeline/progress. */
     fun hasProgressAwareWidgets(context: Context): Boolean {
         val awm = AppWidgetManager.getInstance(context)
         val component = ComponentName(context, this::class.java)
@@ -333,7 +328,8 @@ class WidgetProvider : AppWidgetProvider() {
             setImageViewBitmap(R.id.widget_cover, state.cover)
             setContentDescription(
                 R.id.widget_cover,
-                context.getString(R.string.desc_album_cover, state.song.album.name.resolve(context)),
+                context.getString(
+                    R.string.desc_album_cover, state.song.album.name.resolve(context)),
             )
         } else {
             discardCover(context)
@@ -385,8 +381,11 @@ class WidgetProvider : AppWidgetProvider() {
                 artworkUri = state.song.cover?.id,
                 hasArtwork = state.song.cover != null,
             )
-        setTextViewText(R.id.widget_song, policy?.displayTitle ?: context.getString(R.string.lbl_playback))
-        setTextViewText(R.id.widget_artist, policy?.displaySubtitle ?: context.getString(R.string.lbl_all_songs))
+        setTextViewText(
+            R.id.widget_song, policy?.displayTitle ?: context.getString(R.string.lbl_playback))
+        setTextViewText(
+            R.id.widget_artist,
+            policy?.displaySubtitle ?: context.getString(R.string.lbl_all_songs))
         val timeline = WidgetTimeline.state(state.positionMs, state.song.durationMs)
         setTextViewText(R.id.widget_current_time, timeline.currentText)
         setTextViewText(R.id.widget_duration, timeline.durationText)

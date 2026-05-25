@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.graph
 
 import android.content.Context
@@ -158,8 +158,7 @@ internal data class MusicGraph(
                         val songIndex = this@MusicGraph.songVertex.indexOf(it)
                         if (songIndex >= 0) {
                             appendLine(
-                                "  playlist_$playlistIndex -> song_$songIndex [color=orange];"
-                            )
+                                "  playlist_$playlistIndex -> song_$songIndex [color=orange];")
                         }
                     }
                 }
@@ -483,8 +482,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             strippedMbidCluster.map {
                 val noAlbumArtistPreAlbum =
                     it.preAlbum.copy(
-                        preArtists = PreArtistsFrom.Individual(it.preAlbum.preArtists.preArtists)
-                    )
+                        preArtists = PreArtistsFrom.Individual(it.preAlbum.preArtists.preArtists))
                 val simpleAlbumArtistVertex =
                     albumVertices.getOrPut(noAlbumArtistPreAlbum) {
                         AlbumVertex(noAlbumArtistPreAlbum, it.artistVertices.toMutableList())

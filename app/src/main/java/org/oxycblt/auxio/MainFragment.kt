@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio
 
 import android.os.Bundle
@@ -303,8 +303,7 @@ class MainFragment :
         binding.mainSheetScrim.alpha = playbackLastStretchRatio
 
         playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(
-            normalCornerSize * (1 - playbackLastStretchRatio)
-        )
+            normalCornerSize * (1 - playbackLastStretchRatio))
         binding.exploreNavHost.isInvisible = playbackLastStretchRatio == 1f
         binding.playbackSheet.translationZ = (1 - playbackLastStretchRatio) * elevationNormal
 
@@ -463,19 +462,16 @@ class MainFragment :
                         object : FloatingActionButton.OnVisibilityChangedListener() {
                             override fun onHidden(fab: FloatingActionButton) {
                                 super.onHidden(fab)
-                                if (
-                                    shouldHideAllFabs(
-                                        binding,
-                                        homeModel.songList.value,
-                                        homeModel.isFastScrolling.value,
-                                    )
-                                ) {
+                                if (shouldHideAllFabs(
+                                    binding,
+                                    homeModel.songList.value,
+                                    homeModel.isFastScrolling.value,
+                                )) {
                                     return
                                 }
                                 binding.homeShuffleFab.show()
                             }
-                        }
-                    )
+                        })
                 } else {
                     L.d("Showing immediately")
                     binding.homeShuffleFab.show()
@@ -492,19 +488,16 @@ class MainFragment :
                         object : FloatingActionButton.OnVisibilityChangedListener() {
                             override fun onHidden(fab: FloatingActionButton) {
                                 super.onHidden(fab)
-                                if (
-                                    shouldHideAllFabs(
-                                        binding,
-                                        homeModel.songList.value,
-                                        homeModel.isFastScrolling.value,
-                                    )
-                                ) {
+                                if (shouldHideAllFabs(
+                                    binding,
+                                    homeModel.songList.value,
+                                    homeModel.isFastScrolling.value,
+                                )) {
                                     return
                                 }
                                 binding.homeNewPlaylistFab.show()
                             }
-                        }
-                    )
+                        })
                 } else {
                     L.d("Showing immediately")
                     binding.homeNewPlaylistFab.show()
@@ -602,10 +595,8 @@ class MainFragment :
 
         val queueSheetBehavior =
             (binding.queueSheet.coordinatorLayoutBehavior ?: return) as QueueBottomSheetBehavior
-        if (
-            playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
-                queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED
-        ) {
+        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+            queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Queue sheet and playback sheet is expanded, close the queue sheet so the
             // playback panel can shown.
             L.d("Collapsing queue sheet")
@@ -633,10 +624,8 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         val queueSheetBehavior =
             (binding.queueSheet.coordinatorLayoutBehavior ?: return) as QueueBottomSheetBehavior
-        if (
-            playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
-                queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED
-        ) {
+        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+            queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
             // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
             queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
         }

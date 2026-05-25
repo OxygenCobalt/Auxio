@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.ui.swiper
 
 import android.graphics.RectF
 import android.view.View
-import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.carousel.MaskableFrameLayout
 
@@ -70,17 +69,14 @@ class CarouselTransformer : ViewPager2.PageTransformer {
             when {
                 // gap is not fully grown yet, so we do the gap size * how close we are to a fully
                 // grown gap
-                p < gapEnterBreakpoint ->
-                    maxGap * (p / gapEnterBreakpoint)
+                p < gapEnterBreakpoint -> maxGap * (p / gapEnterBreakpoint)
 
                 // gap should be shrinking, so we need to downscale maxgap by how close we are
                 // actually to the end
-                p > gapExitBreakpoint ->
-                    maxGap * ((1f - p) / (1f - gapExitBreakpoint))
+                p > gapExitBreakpoint -> maxGap * ((1f - p) / (1f - gapExitBreakpoint))
 
                 // not growing or shrinking
-                else ->
-                    maxGap
+                else -> maxGap
             }
 
         // then we need to get how much we actually want to reveal the incoming covers post-gap

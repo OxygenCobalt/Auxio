@@ -26,7 +26,10 @@ import org.oxycblt.auxio.R
 class WidgetRenderStateTest {
     @Test
     fun fromPlayback_noTitle_returnsNoSession() {
-        assertTrue(WidgetRenderState.fromPlayback(title = null, artist = "a", album = "b", isPlaying = true, hasArtwork = false) is WidgetRenderState.NoSession)
+        assertTrue(
+            WidgetRenderState.fromPlayback(
+                title = null, artist = "a", album = "b", isPlaying = true, hasArtwork = false)
+                is WidgetRenderState.NoSession)
     }
 
     @Test
@@ -95,7 +98,9 @@ class WidgetRenderStateTest {
 
     @Test
     fun playPauseBackground_reflectsPlayingState() {
-        assertEquals(R.drawable.ui_remote_fab_container_playing, WidgetRenderState.playPauseBackground(true))
-        assertEquals(R.drawable.ui_remote_fab_container_paused, WidgetRenderState.playPauseBackground(false))
+        assertEquals(
+            R.drawable.ui_remote_fab_container_playing, WidgetRenderState.playPauseBackground(true))
+        assertEquals(
+            R.drawable.ui_remote_fab_container_paused, WidgetRenderState.playPauseBackground(false))
     }
 }

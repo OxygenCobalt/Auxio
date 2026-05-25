@@ -20,9 +20,7 @@ package org.oxycblt.auxio.playback.state
 
 import kotlin.random.Random
 
-/**
- * Pure helper for selecting a genre-overlap queue while preserving the current item.
- */
+/** Pure helper for selecting a genre-overlap queue while preserving the current item. */
 object GenreShuffleQueueSelector {
     data class Selection<T>(
         val queue: List<T>,

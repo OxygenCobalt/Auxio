@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.service
 
+import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -32,7 +34,6 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
-import org.oxycblt.auxio.widgets.WidgetUtil
 import timber.log.Timber as L
 
 /**
@@ -84,10 +85,8 @@ private constructor(
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (
-            !isSystemAction(intent.action) &&
-                !PlaybackActionPolicy.isSupportedAction(intent.action)
-        ) {
+        if (!isSystemAction(intent.action) &&
+            !PlaybackActionPolicy.isSupportedAction(intent.action)) {
             L.w("Ignoring unsupported playback action: ${intent.action}")
             return
         }
@@ -155,6 +154,7 @@ private constructor(
                     object : TopwayStartCallbacks {
                         override val hasCurrentSong: Boolean
                             get() = playbackManager.currentSong != null
+
                         override val currentDurationMs: Long?
                             get() = playbackManager.currentSong?.durationMs
 
@@ -166,7 +166,9 @@ private constructor(
                             playbackManager.playing(!playbackManager.progression.isPlaying)
 
                         override fun widgetUpdate() {
-                            if (WidgetUtil.hasWidgets(context, WidgetProvider::class.java)) {
+                            val awm = AppWidgetManager.getInstance(context)
+                            val cn = ComponentName(context, WidgetProvider::class.java)
+                            if (awm.getAppWidgetIds(cn).isNotEmpty()) {
                                 widgetComponent.update()
                             } else {
                                 L.d("Ignoring Topway widget update with no widget instances")
@@ -186,11 +188,9 @@ private constructor(
         // ACTION_HEADSET_PLUG will fire when this BroadcastReceiver is initially attached,
         // which would result in unexpected playback. Work around it by dropping the first
         // call to this function, which should come from that Intent.
-        if (
-            playbackSettings.headsetAutoplay &&
-                playbackManager.currentSong != null &&
-                initialHeadsetPlugEventHandled
-        ) {
+        if (playbackSettings.headsetAutoplay &&
+            playbackManager.currentSong != null &&
+            initialHeadsetPlugEventHandled) {
             L.d("Device connected, resuming")
             playbackManager.playing(true)
         }

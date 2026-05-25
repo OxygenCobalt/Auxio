@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
@@ -26,12 +26,12 @@ import coil3.request.transformations
 import coil3.size.Size
 import javax.inject.Inject
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
+import org.oxycblt.auxio.headunit.topway.TopwayMusicBroadcastBridge
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.coil.RoundedRectTransformation
 import org.oxycblt.auxio.image.coil.SquareCropTransformation
-import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
-import org.oxycblt.auxio.headunit.topway.TopwayMusicBroadcastBridge
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -149,7 +149,8 @@ private constructor(
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {
-                    val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled, elapsedMs)
+                    val state =
+                        PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled, elapsedMs)
                     L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }

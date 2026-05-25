@@ -47,10 +47,18 @@ class HeadUnitQuickAccessTest {
     @Test
     fun quickPicks_decadesRequiresYearMetadata() {
         val noYears =
-            HeadUnitQuickAccess.quickPicks(true, hasFolderSupport = true, hasFavouritesSupport = false, hasYearMetadata = false)
+            HeadUnitQuickAccess.quickPicks(
+                    true,
+                    hasFolderSupport = true,
+                    hasFavouritesSupport = false,
+                    hasYearMetadata = false)
                 .associateBy { it.action }
         val withYears =
-            HeadUnitQuickAccess.quickPicks(true, hasFolderSupport = true, hasFavouritesSupport = false, hasYearMetadata = true)
+            HeadUnitQuickAccess.quickPicks(
+                    true,
+                    hasFolderSupport = true,
+                    hasFavouritesSupport = false,
+                    hasYearMetadata = true)
                 .associateBy { it.action }
         assertFalse(noYears.getValue(QuickPickAction.DECADES).enabled)
         assertTrue(withYears.getValue(QuickPickAction.DECADES).enabled)
@@ -86,13 +94,20 @@ class HeadUnitQuickAccessTest {
 
     @Test
     fun deriveDecades_returnsDistinctSortedDecades() {
-        val decades = HeadUnitQuickAccess.deriveDecades(listOf(1999, 2001, 2009, 2013, 1880, 2101, 2001))
+        val decades =
+            HeadUnitQuickAccess.deriveDecades(listOf(1999, 2001, 2009, 2013, 1880, 2101, 2001))
         assertEquals(listOf(1990, 2000, 2010), decades)
     }
 
     @Test
     fun metadataChipState_excludesForbiddenTechnicalChipsByDesign() {
-        val state = HeadUnitQuickAccess.metadataChipState(genreCount = 2, decadeCount = 1, hasRecent = true, hasFolders = false, hasFavourites = false)
+        val state =
+            HeadUnitQuickAccess.metadataChipState(
+                genreCount = 2,
+                decadeCount = 1,
+                hasRecent = true,
+                hasFolders = false,
+                hasFavourites = false)
         assertTrue(state.genres)
         assertTrue(state.decades)
         assertTrue(state.recentlyAdded)
@@ -117,13 +132,14 @@ class HeadUnitQuickAccessTest {
 
     @Test
     fun metadataChipState_showsFavourites_whenHasFavouritesTrue() {
-        val state = HeadUnitQuickAccess.metadataChipState(
-            genreCount = 1,
-            decadeCount = 0,
-            hasRecent = true,
-            hasFolders = true,
-            hasFavourites = true,
-        )
+        val state =
+            HeadUnitQuickAccess.metadataChipState(
+                genreCount = 1,
+                decadeCount = 0,
+                hasRecent = true,
+                hasFolders = true,
+                hasFavourites = true,
+            )
         assertTrue(state.favourites)
     }
 

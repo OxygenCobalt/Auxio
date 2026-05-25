@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.ui.accent
 
 import android.os.Bundle
@@ -71,8 +71,7 @@ class AccentCustomizeDialog :
                 Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
                 uiSettings.accent
-            }
-        )
+            })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

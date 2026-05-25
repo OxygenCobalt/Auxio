@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.home.tabs
 
 import android.annotation.SuppressLint
@@ -117,8 +117,7 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
                     MusicType.ARTISTS -> R.string.lbl_artists
                     MusicType.GENRES -> R.string.lbl_genres
                     MusicType.PLAYLISTS -> R.string.lbl_playlists
-                }
-            )
+                })
 
             // Unlike in other adapters, we update the checked state alongside
             // the tab data since they are in the same data structure (Tab)

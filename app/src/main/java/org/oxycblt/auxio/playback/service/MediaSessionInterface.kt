@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.service
 
 import android.content.Context
@@ -168,15 +168,13 @@ constructor(
                 PlaybackStateCompat.REPEAT_MODE_GROUP -> RepeatMode.ALL
                 PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.TRACK
                 else -> RepeatMode.NONE
-            }
-        )
+            })
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
         playbackManager.shuffled(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP
-        )
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
 
     override fun onStop() {

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.tag
 
 import org.junit.Assert.assertEquals
@@ -27,8 +27,7 @@ class DateTest {
     fun date_equals_varyingPrecision() {
         assertTrue(
             requireNotNull(Date.from("2016-08-16T00:01:02")) !=
-                requireNotNull(Date.from("2016-08-16"))
-        )
+                requireNotNull(Date.from("2016-08-16")))
     }
 
     @Test

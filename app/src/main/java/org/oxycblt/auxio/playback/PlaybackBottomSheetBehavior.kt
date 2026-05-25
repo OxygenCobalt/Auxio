@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback
 
 import android.content.Context
@@ -87,8 +87,7 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
                     fillColor = sheetBackgroundDrawable.fillColor
                 },
                 sheetBackgroundDrawable,
-            )
-        )
+            ))
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
         super.applyWindowInsets(child, insets)

@@ -15,16 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.ui.stepper
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.provider.Settings
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.core.animation.addListener
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import org.oxycblt.auxio.R
@@ -100,13 +98,24 @@ class SecondsView(context: Context, attrs: AttributeSet?) : LinearLayout(context
     }
 
     // cycle animation for the 3 icons
-    private val cyclicAlpha = floatArrayOf(
-        1.00f, 0.25f, 0.25f,
-        1.00f, 1.00f, 0.25f,
-        0.25f, 1.00f, 1.00f,
-        0.25f, 0.25f, 1.00f,
-        0.25f, 0.25f, 0.25f,
-    )
+    private val cyclicAlpha =
+        floatArrayOf(
+            1.00f,
+            0.25f,
+            0.25f,
+            1.00f,
+            1.00f,
+            0.25f,
+            0.25f,
+            1.00f,
+            1.00f,
+            0.25f,
+            0.25f,
+            1.00f,
+            0.25f,
+            0.25f,
+            0.25f,
+        )
 
     private fun cycle(at: Int = 0) {
         animations.forEach { it.cancel() }
@@ -114,11 +123,12 @@ class SecondsView(context: Context, attrs: AttributeSet?) : LinearLayout(context
         val one = alphaSpring.alpha(binding.icon1, cyclicAlpha[row])
         val two = alphaSpring.alpha(binding.icon2, cyclicAlpha[row + 1])
         val three = alphaSpring.alpha(binding.icon3, cyclicAlpha[row + 2])
-        val endListener = DynamicAnimation.OnAnimationEndListener { _, cancelled, _, _ ->
-            if (!cancelled) {
-                cycle((at + 1) % 5)
+        val endListener =
+            DynamicAnimation.OnAnimationEndListener { _, cancelled, _, _ ->
+                if (!cancelled) {
+                    cycle((at + 1) % 5)
+                }
             }
-        }
         when {
             cyclicAlpha[row] != binding.icon1.alpha -> {
                 one.addEndListener(endListener)
@@ -132,5 +142,4 @@ class SecondsView(context: Context, attrs: AttributeSet?) : LinearLayout(context
         }
         animations = listOf(one, two, three)
     }
-
 }

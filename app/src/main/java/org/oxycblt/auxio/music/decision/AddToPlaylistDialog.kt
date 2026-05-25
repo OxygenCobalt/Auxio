@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.decision
 
 import android.os.Bundle
@@ -103,8 +103,7 @@ class AddToPlaylistDialog :
                     songs.map { it.uid }.toTypedArray(),
                     null,
                     PlaylistDecision.New.Reason.ADD,
-                )
-            )
+                ))
     }
 
     private fun updatePendingSongs(songs: List<Song>?) {

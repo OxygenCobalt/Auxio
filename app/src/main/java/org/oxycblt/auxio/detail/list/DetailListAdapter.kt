@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.detail.list
 
 import android.view.ViewGroup
@@ -147,8 +147,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
          */
         fun from(parent: ViewGroup) =
             SortHeaderViewHolder(
-                ItemSortHeaderBinding.inflate(parent.context.inflater, parent, false)
-            )
+                ItemSortHeaderBinding.inflate(parent.context.inflater, parent, false))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

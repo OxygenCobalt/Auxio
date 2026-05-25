@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback
 
 import android.annotation.SuppressLint
@@ -26,11 +26,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updatePadding
 import androidx.core.view.updatePaddingRelative
 import androidx.dynamicanimation.animation.SpringForce
@@ -38,6 +38,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -49,11 +50,11 @@ import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
+import org.oxycblt.auxio.playback.ui.stepper.Direction
+import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
 import org.oxycblt.auxio.playback.ui.swiper.CarouselTransformer
 import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
 import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
-import org.oxycblt.auxio.playback.ui.stepper.Direction
-import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -63,7 +64,6 @@ import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
-import kotlin.math.abs
 import timber.log.Timber as L
 
 /**
@@ -119,11 +119,13 @@ class PlaybackPanelFragment :
 
         binding.playbackPager?.apply {
             adapter = coverPagerAdapter
-            userAwarePagerCallback = UserAwarePagerCallback(this) {
-                // Posting the queue goto command prevents the seekbar pos from desyncing
-                // from the song's duration, which creates a visual flicker in the seekbar.
-                post { queueModel.goto(it) }
-            }.also { it.attach() }
+            userAwarePagerCallback =
+                UserAwarePagerCallback(this) {
+                        // Posting the queue goto command prevents the seekbar pos from desyncing
+                        // from the song's duration, which creates a visual flicker in the seekbar.
+                        post { queueModel.goto(it) }
+                    }
+                    .also { it.attach() }
             setPageTransformer(CarouselTransformer())
             recycler()?.apply {
                 // Make it possible to collapse the bottom sheet from the ViewPager's touch area.
@@ -218,8 +220,7 @@ class PlaybackPanelFragment :
                 SpringForce().apply {
                     stiffness = 700f
                     dampingRatio = 0.9f
-                }
-            )
+                })
             setOnClickListener { playbackModel.togglePlaying() }
         }
         binding.playbackSkipNext.setOnClickListener {
@@ -371,7 +372,8 @@ class PlaybackPanelFragment :
                 // user scroll, carry on
                 return
             }
-            binding.playbackPager.setCurrentItem(command.scroll, command.update == null && abs(delta) == 1)
+            binding.playbackPager.setCurrentItem(
+                command.scroll, command.update == null && abs(delta) == 1)
         }
     }
 
@@ -402,17 +404,34 @@ class PlaybackPanelFragment :
         ConstraintSet().apply {
             clone(root)
             clear(R.id.playback_pager, ConstraintSet.START)
-            connect(R.id.playback_pager, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(
+                R.id.playback_pager, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
 
             clear(R.id.playback_info_container, ConstraintSet.START)
             clear(R.id.playback_info_container, ConstraintSet.END)
-            connect(R.id.playback_info_container, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(R.id.playback_info_container, ConstraintSet.END, R.id.playback_pager, ConstraintSet.START)
+            connect(
+                R.id.playback_info_container,
+                ConstraintSet.START,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.START)
+            connect(
+                R.id.playback_info_container,
+                ConstraintSet.END,
+                R.id.playback_pager,
+                ConstraintSet.START)
 
             clear(R.id.playback_controls_wrapper, ConstraintSet.START)
             clear(R.id.playback_controls_wrapper, ConstraintSet.END)
-            connect(R.id.playback_controls_wrapper, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(R.id.playback_controls_wrapper, ConstraintSet.END, R.id.playback_pager, ConstraintSet.START)
+            connect(
+                R.id.playback_controls_wrapper,
+                ConstraintSet.START,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.START)
+            connect(
+                R.id.playback_controls_wrapper,
+                ConstraintSet.END,
+                R.id.playback_pager,
+                ConstraintSet.START)
             applyTo(root)
         }
     }

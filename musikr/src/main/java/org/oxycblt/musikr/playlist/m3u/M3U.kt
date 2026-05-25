@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.playlist.m3u
 
 import android.content.Context
@@ -253,11 +253,9 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
         // and them combine them with the correct relative elements to make sure they
         // resolve the same.
         var commonIndex = 0
-        while (
-            commonIndex < components.size &&
-                commonIndex < workingDirectory.components.size &&
-                components[commonIndex] == workingDirectory.components[commonIndex]
-        ) {
+        while (commonIndex < components.size &&
+            commonIndex < workingDirectory.components.size &&
+            components[commonIndex] == workingDirectory.components[commonIndex]) {
             ++commonIndex
         }
 

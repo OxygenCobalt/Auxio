@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.service
 
 import android.content.Context
@@ -95,8 +95,7 @@ private constructor(
             scope.launch {
                 delay(AUTO_STOP_DELAY_MS)
                 L.d(
-                    "Auto-stop timer expired after ${AUTO_STOP_DELAY_MS / 60000} minutes of inactivity"
-                )
+                    "Auto-stop timer expired after ${AUTO_STOP_DELAY_MS / 60000} minutes of inactivity")
                 playbackManager.endSession()
             }
     }
@@ -181,6 +180,7 @@ private constructor(
             object : TopwayStartCallbacks {
                 override val hasCurrentSong: Boolean
                     get() = playbackManager.currentSong != null
+
                 override val currentDurationMs: Long?
                     get() = playbackManager.currentSong?.durationMs
 

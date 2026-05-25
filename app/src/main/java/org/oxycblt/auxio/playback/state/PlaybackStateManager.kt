@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.state
 
 import javax.inject.Inject
@@ -836,13 +836,12 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
                         shuffledMapping[index]
                     } else {
                         index
-                },
+                    },
             )
 
         stateMirror =
             stateMirror.copy(
-                shuffleScope =
-                    normalizedShuffleScope(rawQueue.isShuffled, savedState.shuffleScope),
+                shuffleScope = normalizedShuffleScope(rawQueue.isShuffled, savedState.shuffleScope),
             )
 
         stateHolder.applySavedState(
@@ -870,8 +869,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             when (scope) {
                 ShuffleScope.OFF -> ShuffleScope.ALL
                 ShuffleScope.ALL,
-                ShuffleScope.GENRE,
-                -> scope
+                ShuffleScope.GENRE, -> scope
             }
         }
 }

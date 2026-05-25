@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.ui
 
 import android.content.Context
@@ -129,8 +129,7 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
             avoidUnusableCollapsedState =
                 metrics.heightPixels - metrics.widthPixels <
                     context.getDimenPixels(
-                        com.google.android.material.R.dimen.design_bottom_sheet_peek_height_min
-                    )
+                        com.google.android.material.R.dimen.design_bottom_sheet_peek_height_min)
             behavior.skipCollapsed = avoidUnusableCollapsedState
         }
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.tag
 
 import java.text.CollationKey
@@ -90,10 +90,8 @@ class Token internal constructor(internal val collationKey: CollationKey, intern
 
         // Numeric strings must be ordered by magnitude, thus immediately short-circuit
         // the comparison if the lengths do not match.
-        if (
-            type == Type.NUMERIC &&
-                collationKey.sourceString.length != other.collationKey.sourceString.length
-        ) {
+        if (type == Type.NUMERIC &&
+            collationKey.sourceString.length != other.collationKey.sourceString.length) {
             return collationKey.sourceString.length - other.collationKey.sourceString.length
         }
 

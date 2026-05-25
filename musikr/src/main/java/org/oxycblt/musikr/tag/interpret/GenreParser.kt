@@ -72,10 +72,7 @@ private fun splitRawGenreField(raw: String): List<String> {
                 split.addCurrentGenre(current)
                 index++
             }
-            char == '\\' &&
-                next != null &&
-                current.isNotEmpty() &&
-                next.isLetterOrDigit() -> {
+            char == '\\' && next != null && current.isNotEmpty() && next.isLetterOrDigit() -> {
                 // A stray single backslash between genre names is treated as a practical
                 // separator, while the following character starts the next genre token.
                 split.addCurrentGenre(current)

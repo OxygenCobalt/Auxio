@@ -28,7 +28,9 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 
 /** A square [FrameLayout] that clips its contents to a Material shape. */
-class SquareMaskableFrameLayout @JvmOverloads constructor(
+class SquareMaskableFrameLayout
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,

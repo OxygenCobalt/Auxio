@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.service
 
 import android.content.BroadcastReceiver
@@ -52,18 +52,16 @@ class MediaButtonReceiver : BroadcastReceiver() {
             IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
         val hasCurrentSong = playbackManager.currentSong != null
         val isFocusHeld = playbackManager.isAudioFocusHeld
-        if (
-            !MediaButtonActionMapper.shouldForward(
-                event,
-                hasCurrentSong = hasCurrentSong,
-                isFocusHeld =
-                    AudioFocusPolicy.shouldHandleMediaButton(
-                        isFocusHeld = isFocusHeld,
-                        hasCurrentSong = hasCurrentSong,
-                        sessionOngoing = hasCurrentSong,
-                    ),
-            )
-        ) {
+        if (!MediaButtonActionMapper.shouldForward(
+            event,
+            hasCurrentSong = hasCurrentSong,
+            isFocusHeld =
+                AudioFocusPolicy.shouldHandleMediaButton(
+                    isFocusHeld = isFocusHeld,
+                    hasCurrentSong = hasCurrentSong,
+                    sessionOngoing = hasCurrentSong,
+                ),
+        )) {
             L.d("Ignoring media button event after policy evaluation: $event")
             return
         }

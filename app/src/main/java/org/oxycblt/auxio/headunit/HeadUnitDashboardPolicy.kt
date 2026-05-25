@@ -39,86 +39,75 @@ object HeadUnitDashboardPolicy {
     fun isParityAligned(
         publicActions: Set<String> = HeadUnitEntryPoints.ALL_PUBLIC_ACTIONS,
         routeForAction: (String) -> HeadUnitRoute? = HeadUnitRoutePolicy::routeForAction,
-        entryDestinationForRoute:
-            (HeadUnitRoute) -> HeadUnitEntryPoints.EntryDestination? =
+        entryDestinationForRoute: (HeadUnitRoute) -> HeadUnitEntryPoints.EntryDestination? =
             HeadUnitRoutePolicy::entryDestinationForRoute,
     ): Boolean =
         HeadUnitStockMusicParity.requiredEntryActions().all { action ->
-            action in publicActions &&
-                routeForAction(action)?.let(entryDestinationForRoute) != null
+            action in publicActions && routeForAction(action)?.let(entryDestinationForRoute) != null
         }
 
-    fun entries(state: HeadUnitDashboardState): List<HeadUnitDashboardEntry> =
-        buildList {
-            add(entry(QuickPickAction.NOW_PLAYING, R.string.lbl_playback, R.drawable.ic_play_24, true))
-            add(entry(QuickPickAction.QUEUE, R.string.lbl_queue, R.drawable.ic_queue_add_24, true))
+    fun entries(state: HeadUnitDashboardState): List<HeadUnitDashboardEntry> = buildList {
+        add(entry(QuickPickAction.NOW_PLAYING, R.string.lbl_playback, R.drawable.ic_play_24, true))
+        add(entry(QuickPickAction.QUEUE, R.string.lbl_queue, R.drawable.ic_queue_add_24, true))
+        add(
+            entry(
+                QuickPickAction.SHUFFLE_ALL,
+                R.string.lbl_shuffle,
+                R.drawable.ic_shortcut_shuffle_24,
+                state.hasLibraryContent && !state.isIndexing,
+            ))
+        add(
+            entry(
+                QuickPickAction.RECENTLY_ADDED,
+                R.string.lbl_recently_added,
+                R.drawable.ic_time_24,
+                state.hasLibraryContent && !state.isIndexing,
+            ))
+        add(
+            entry(
+                QuickPickAction.ARTISTS,
+                R.string.lbl_artists,
+                R.drawable.ic_artist_24,
+                state.hasLibraryContent && !state.isIndexing,
+            ))
+        add(
+            entry(
+                QuickPickAction.ALBUMS,
+                R.string.lbl_albums,
+                R.drawable.ic_album_24,
+                state.hasLibraryContent && !state.isIndexing,
+            ))
+        add(
+            entry(
+                QuickPickAction.GENRES,
+                R.string.lbl_genres,
+                R.drawable.ic_genre_24,
+                state.hasLibraryContent && !state.isIndexing,
+            ))
+        add(
+            entry(
+                QuickPickAction.PLAYLISTS,
+                R.string.lbl_playlists,
+                R.drawable.ic_playlist_24,
+                state.hasLibraryContent && !state.isIndexing,
+            ))
+        if (state.hasFavourites) {
             add(
                 entry(
-                    QuickPickAction.SHUFFLE_ALL,
-                    R.string.lbl_shuffle,
-                    R.drawable.ic_shortcut_shuffle_24,
-                    state.hasLibraryContent && !state.isIndexing,
-                )
-            )
-            add(
-                entry(
-                    QuickPickAction.RECENTLY_ADDED,
-                    R.string.lbl_recently_added,
-                    R.drawable.ic_time_24,
-                    state.hasLibraryContent && !state.isIndexing,
-                )
-            )
-            add(
-                entry(
-                    QuickPickAction.ARTISTS,
-                    R.string.lbl_artists,
-                    R.drawable.ic_artist_24,
-                    state.hasLibraryContent && !state.isIndexing,
-                )
-            )
-            add(
-                entry(
-                    QuickPickAction.ALBUMS,
-                    R.string.lbl_albums,
-                    R.drawable.ic_album_24,
-                    state.hasLibraryContent && !state.isIndexing,
-                )
-            )
-            add(
-                entry(
-                    QuickPickAction.GENRES,
-                    R.string.lbl_genres,
-                    R.drawable.ic_genre_24,
-                    state.hasLibraryContent && !state.isIndexing,
-                )
-            )
-            add(
-                entry(
-                    QuickPickAction.PLAYLISTS,
-                    R.string.lbl_playlists,
+                    QuickPickAction.FAVOURITES,
+                    R.string.lbl_favourites,
                     R.drawable.ic_playlist_24,
-                    state.hasLibraryContent && !state.isIndexing,
-                )
-            )
-            if (state.hasFavourites) {
-                add(
-                    entry(
-                        QuickPickAction.FAVOURITES,
-                        R.string.lbl_favourites,
-                        R.drawable.ic_playlist_24,
-                        true,
-                    )
-                )
-            }
-            add(
-                entry(
-                    QuickPickAction.HEAD_UNIT_SETTINGS,
-                    R.string.set_head_unit,
-                    R.drawable.ic_more_24,
-                    !state.isIndexing,
-                )
-            )
+                    true,
+                ))
         }
+        add(
+            entry(
+                QuickPickAction.HEAD_UNIT_SETTINGS,
+                R.string.set_head_unit,
+                R.drawable.ic_more_24,
+                !state.isIndexing,
+            ))
+    }
 
     private fun entry(
         action: QuickPickAction,

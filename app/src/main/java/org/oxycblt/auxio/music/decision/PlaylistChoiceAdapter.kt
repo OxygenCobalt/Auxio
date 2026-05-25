@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.decision
 
 import android.view.View
@@ -37,8 +37,7 @@ import org.oxycblt.auxio.util.inflater
  */
 class PlaylistChoiceAdapter(val listener: ClickableListListener<PlaylistChoice>) :
     FlexibleListAdapter<PlaylistChoice, PlaylistChoiceViewHolder>(
-        PlaylistChoiceViewHolder.DIFF_CALLBACK
-    ) {
+        PlaylistChoiceViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaylistChoiceViewHolder.from(parent)
 

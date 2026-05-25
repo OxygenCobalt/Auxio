@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
@@ -126,8 +126,7 @@ class AlbumListFragment :
             // Duration -> Use compact bucket duration
             is Sort.Mode.ByDuration ->
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    album.durationMs.formatDurationMsPopup()
-                )
+                    album.durationMs.formatDurationMsPopup())
 
             // Count -> Use song count
             is Sort.Mode.ByCount ->
@@ -138,8 +137,7 @@ class AlbumListFragment :
                 val calendar = Calendar.getInstance()
                 calendar.timeInMillis = album.addedMs
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    getString(R.string.fmt_number, calendar.get(Calendar.YEAR))
-                )
+                    getString(R.string.fmt_number, calendar.get(Calendar.YEAR)))
             }
 
             // Unsupported sort, error gracefully

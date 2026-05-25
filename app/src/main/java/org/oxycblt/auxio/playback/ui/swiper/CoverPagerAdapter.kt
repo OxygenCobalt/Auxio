@@ -32,13 +32,11 @@ import org.oxycblt.musikr.Song
  * gesture overlays.
  *
  * @param listener The [PlayerFastSeekOverlay.PerformListener] that step gesture events will be
- *  forwarded to
- *
+ *   forwarded to
  * @author Alexander Capehart (OxygenCobalt)
  */
-class CoverPagerAdapter(
-    private val listener: PlayerFastSeekOverlay.PerformListener
-) : FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
+class CoverPagerAdapter(private val listener: PlayerFastSeekOverlay.PerformListener) :
+    FlexibleListAdapter<Song, CoverViewHolder>(CoverViewHolder.DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, pos: Int) = CoverViewHolder.from(parent)
 
@@ -72,7 +70,8 @@ class CoverViewHolder private constructor(private val binding: ItemCoverBinding)
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: ViewGroup) = CoverViewHolder(ItemCoverBinding.inflate(parent.context.inflater, parent, false))
+        fun from(parent: ViewGroup) =
+            CoverViewHolder(ItemCoverBinding.inflate(parent.context.inflater, parent, false))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

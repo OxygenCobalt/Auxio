@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.covers
 
 import android.os.ParcelFileDescriptor
@@ -171,7 +171,6 @@ class CoverCollection private constructor(val covers: List<Cover>) {
                     .entries
                     .sortedByDescending { it.key }
                     .sortedByDescending { it.value.size }
-                    .map { it.value.first() }
-            )
+                    .map { it.value.first() })
     }
 }

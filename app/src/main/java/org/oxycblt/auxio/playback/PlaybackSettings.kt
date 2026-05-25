@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback
 
 import android.content.Context
@@ -81,8 +81,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
                 sharedPreferences.getInt(
                     getString(R.string.set_key_play_in_list_with),
                     Int.MIN_VALUE,
-                )
-            ) ?: PlaySong.FromAll
+                )) ?: PlaySong.FromAll
 
     override val inParentPlaybackMode: PlaySong?
         get() =
@@ -90,14 +89,13 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
                 sharedPreferences.getInt(
                     getString(R.string.set_key_play_in_parent_with),
                     Int.MIN_VALUE,
-                )
-            )
+                ))
 
     override val barAction: ActionMode
         get() =
             ActionMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_bar_action), Int.MIN_VALUE)
-            ) ?: ActionMode.NEXT
+                sharedPreferences.getInt(getString(R.string.set_key_bar_action), Int.MIN_VALUE))
+                ?: ActionMode.NEXT
 
     override val headsetAutoplay: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_headset_autoplay), false)
@@ -105,8 +103,8 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
     override val replayGainMode: ReplayGainMode
         get() =
             ReplayGainMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_replay_gain), Int.MIN_VALUE)
-            ) ?: ReplayGainMode.DYNAMIC
+                sharedPreferences.getInt(getString(R.string.set_key_replay_gain), Int.MIN_VALUE))
+                ?: ReplayGainMode.DYNAMIC
 
     override var replayGainPreAmp: ReplayGainPreAmp
         get() =

@@ -18,9 +18,7 @@
 
 package org.oxycblt.auxio.playback.service
 
-/**
- * Pure decision helper for standard Android audio focus transitions.
- */
+/** Pure decision helper for standard Android audio focus transitions. */
 object AudioFocusPolicy {
     private const val DUCKED_VOLUME = 0.2f
     private const val NORMAL_VOLUME = 1f
@@ -77,13 +75,13 @@ object AudioFocusPolicy {
                     rememberTransientPlayback = false,
                 )
         }
+
     fun shouldResumePlayback(
         decision: Decision,
         playWhenReady: Boolean,
         sessionOngoing: Boolean,
         hasCurrentSong: Boolean,
-    ): Boolean =
-        decision.resume && !playWhenReady && sessionOngoing && hasCurrentSong
+    ): Boolean = decision.resume && !playWhenReady && sessionOngoing && hasCurrentSong
 
     fun shouldHandleMediaButton(
         isFocusHeld: Boolean,

@@ -39,7 +39,12 @@ class HeadUnitEntryPointsTest {
     @Test
     fun `publishedDynamicShortcutIds uses priority order and cap`() {
         assertEquals(
-            listOf("shortcut_now_playing", "shortcut_shuffle", "shortcut_queue", "shortcut_recently_added", "shortcut_playlists"),
+            listOf(
+                "shortcut_now_playing",
+                "shortcut_shuffle",
+                "shortcut_queue",
+                "shortcut_recently_added",
+                "shortcut_playlists"),
             HeadUnitEntryPoints.publishedDynamicShortcutIds(5),
         )
     }

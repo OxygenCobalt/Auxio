@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio
 
 import android.content.Intent
@@ -78,8 +78,7 @@ class MainActivity : AppCompatActivity() {
         startService(
             Intent(this, AuxioService::class.java)
                 .setAction(AuxioService.ACTION_START)
-                .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_ACTIVITY)
-        )
+                .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_ACTIVITY))
 
         if (!startIntentAction(intent)) {
             // No intent action to do, just restore the previously saved state.
@@ -177,7 +176,6 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
-
 
     private fun clearIntentRoutingState(intent: Intent) {
         intent.removeExtra(KEY_INTENT_USED)

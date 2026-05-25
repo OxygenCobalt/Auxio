@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.decision
 
 import android.view.View
@@ -78,7 +78,6 @@ private constructor(private val binding: ItemNewPlaylistChoiceBinding) :
          */
         fun from(parent: View) =
             NewPlaylistFooterViewHolder(
-                ItemNewPlaylistChoiceBinding.inflate(parent.context.inflater)
-            )
+                ItemNewPlaylistChoiceBinding.inflate(parent.context.inflater))
     }
 }

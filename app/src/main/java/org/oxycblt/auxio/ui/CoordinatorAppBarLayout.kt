@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.ui
 
 import android.content.Context
@@ -131,10 +131,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         private var currentVerticalOffset: Int? = null
 
         override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-            if (
-                verticalOffset == 0 ||
-                    AnimationUtils.currentAnimationTimeMillis() > offsetAnimationMaxEndTime
-            ) {
+            if (verticalOffset == 0 ||
+                AnimationUtils.currentAnimationTimeMillis() > offsetAnimationMaxEndTime) {
                 // AppBarLayout crashes with IndexOutOfBoundsException when a non-last listener
                 // removes itself, so we have to do the removal asynchronously.
                 appBarLayout.postOnAnimation { appBarLayout.removeOnOffsetChangedListener(this) }

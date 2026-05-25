@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.tag
 
 import kotlin.math.max
@@ -109,8 +109,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          */
         private val ISO8601_REGEX by lazy {
             Regex(
-                """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$"""
-            )
+                """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
         }
 
         /**

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.image
 
 import android.content.Context
@@ -96,8 +96,7 @@ constructor(
                     ImageRequest.Builder(context)
                         .data(song.cover)
                         // Use ORIGINAL sizing, as we are not loading into any View-like component.
-                        .size(Size.ORIGINAL)
-                )
+                        .size(Size.ORIGINAL))
                 .target(
                     onSuccess = {
                         synchronized(this) {

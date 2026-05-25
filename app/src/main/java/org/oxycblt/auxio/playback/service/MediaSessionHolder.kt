@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback.service
 
 import android.annotation.SuppressLint
@@ -37,8 +37,8 @@ import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataPolicy
+import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.CoverProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.resolve
@@ -161,8 +161,7 @@ private constructor(
                 PlaybackStateCompat.SHUFFLE_MODE_ALL
             } else {
                 PlaybackStateCompat.SHUFFLE_MODE_NONE
-            }
-        )
+            })
         invalidateNotificationActions()
     }
 
@@ -191,8 +190,7 @@ private constructor(
                 RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
                 RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
                 RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
-            }
-        )
+            })
 
         invalidateNotificationActions()
     }
@@ -242,26 +240,36 @@ private constructor(
                 durationMs = song.durationMs,
                 mediaId = song.uid.toString(),
                 mediaUri = song.uri.toString(),
-                artworkUri = song.cover?.let { Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id).toString() },
+                artworkUri =
+                    song.cover?.let {
+                        Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id).toString()
+                    },
                 hasArtwork = song.cover != null,
-            ) ?: run {
-                mediaSession.setMetadata(emptyMetadata)
-                _notification.updateMetadata(emptyMetadata)
-                return
-            }
+            )
+                ?: run {
+                    mediaSession.setMetadata(emptyMetadata)
+                    _notification.updateMetadata(emptyMetadata)
+                    return
+                }
         val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, metadataSnapshot.displayTitle)
                 .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, metadataSnapshot.albumTitle)
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, metadataSnapshot.artist)
-                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, metadataSnapshot.albumArtist)
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, metadataSnapshot.albumArtist)
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, metadataSnapshot.displayTitle)
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, metadataSnapshot.displaySubtitle)
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, metadataSnapshot.displayDescription)
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, metadataSnapshot.displayTitle)
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE,
+                    metadataSnapshot.displaySubtitle)
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
+                    metadataSnapshot.displayDescription)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, metadataSnapshot.mediaId)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, metadataSnapshot.mediaUri)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, metadataSnapshot.durationMs)
@@ -435,8 +443,7 @@ private class PlaybackNotification(
                 PlaybackActions.ACTION_SKIP_PREV,
                 R.drawable.ic_skip_prev_24,
                 context.getString(R.string.desc_skip_prev),
-            )
-        )
+            ))
         addAction(buildPlayPauseAction(context, true))
         addAction(
             buildAction(
@@ -444,13 +451,11 @@ private class PlaybackNotification(
                 PlaybackActions.ACTION_SKIP_NEXT,
                 R.drawable.ic_skip_next_24,
                 context.getString(R.string.desc_skip_next),
-            )
-        )
+            ))
         addAction(buildShuffleAction(context, false))
 
         setStyle(
-            MediaStyle(this).setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3)
-        )
+            MediaStyle(this).setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
     }
 
     override val code: Int

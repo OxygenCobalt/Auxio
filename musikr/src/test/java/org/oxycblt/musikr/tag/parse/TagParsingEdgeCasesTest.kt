@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.tag.parse
 
 import org.junit.Assert.assertEquals
@@ -67,8 +67,7 @@ class TagParsingEdgeCasesTest {
                         "TPOS" to listOf("also-not-a-number"),
                         "TYER" to listOf("invalid-year"),
                         "REPLAYGAIN_TRACK_GAIN" to listOf("not-a-float dB"),
-                    )
-            )
+                    ))
         val parsedTags = tagParser.parse(metadata)
 
         // Verify all numeric fields are null when given invalid values
@@ -108,12 +107,11 @@ class TagParsingEdgeCasesTest {
                     mapOf(
                         "©nam" to listOf("MP4 Title")
                         // No album in MP4
-                    ),
+                        ),
                 xiphTags =
                     mapOf(
                         // No title in Xiph
-                        "ALBUM" to listOf("Xiph Album")
-                    ),
+                        "ALBUM" to listOf("Xiph Album")),
             )
 
         // Individual field extraction
@@ -139,8 +137,7 @@ class TagParsingEdgeCasesTest {
         // Case 2: Compilation flag with explicit album artist
         metadata =
             createTestMetadata(
-                id3v2Tags = mapOf("TCMP" to listOf("1"), "TPE2" to listOf("Custom Album Artist"))
-            )
+                id3v2Tags = mapOf("TCMP" to listOf("1"), "TPE2" to listOf("Custom Album Artist")))
         tags = tagParser.parse(metadata)
         assertEquals(listOf("Custom Album Artist"), tags.albumArtistNames)
         assertEquals(listOf("compilation"), tags.releaseTypes)
@@ -148,8 +145,8 @@ class TagParsingEdgeCasesTest {
         // Case 3: Compilation flag with explicit release type
         metadata =
             createTestMetadata(
-                id3v2Tags = mapOf("TCMP" to listOf("1"), "TXXX:RELEASETYPE" to listOf("soundtrack"))
-            )
+                id3v2Tags =
+                    mapOf("TCMP" to listOf("1"), "TXXX:RELEASETYPE" to listOf("soundtrack")))
         tags = tagParser.parse(metadata)
         assertEquals(listOf("Various Artists"), tags.albumArtistNames)
         assertEquals(listOf("soundtrack"), tags.releaseTypes)
@@ -162,8 +159,7 @@ class TagParsingEdgeCasesTest {
         // Non-numeric characters filtered out
         var metadata =
             createTestMetadata(
-                xiphTags = mapOf("REPLAYGAIN_TRACK_GAIN" to listOf("+2.5 dB some text"))
-            )
+                xiphTags = mapOf("REPLAYGAIN_TRACK_GAIN" to listOf("+2.5 dB some text")))
         assertEquals(2.5f, metadata.replayGainTrackAdjustment())
 
         // Zero values filtered
@@ -195,8 +191,7 @@ class TagParsingEdgeCasesTest {
                     mapOf(
                         "TYER" to listOf("2018"),
                         "TDAT" to listOf("0315"), // March 15
-                    )
-            )
+                    ))
         assertEquals("2018-03-15", metadata.date().toString())
 
         // Year, date and time
@@ -207,8 +202,7 @@ class TagParsingEdgeCasesTest {
                         "TYER" to listOf("2018"),
                         "TDAT" to listOf("0315"), // March 15
                         "TIME" to listOf("1422"), // 14:22
-                    )
-            )
+                    ))
         assertEquals("2018-03-15T14:22Z", metadata.date().toString())
 
         // Original year
@@ -223,8 +217,7 @@ class TagParsingEdgeCasesTest {
                         "TYER" to listOf("2018"),
                         "TDAT" to listOf("invalid"),
                         "TIME" to listOf("invalid"),
-                    )
-            )
+                    ))
         assertEquals("2018", metadata.date().toString())
 
         // Non-numeric date components

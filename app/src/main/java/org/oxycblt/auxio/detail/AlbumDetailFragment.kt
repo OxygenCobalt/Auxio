@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
@@ -259,8 +259,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     AlbumDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray()
-                    )
+                        decision.songs.map { it.uid }.toTypedArray())
                 }
                 is PlaylistDecision.New,
                 is PlaylistDecision.Import,

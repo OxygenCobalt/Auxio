@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.home
 
 import android.content.Context
@@ -57,8 +57,7 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
                 sharedPreferences.getInt(
                     getString(R.string.set_key_home_tabs),
                     Tab.SEQUENCE_DEFAULT,
-                )
-            ) ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
+                )) ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(value))

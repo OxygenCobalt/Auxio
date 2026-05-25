@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
@@ -114,8 +114,7 @@ private class ExtractStepImpl(
                                 // it's slow hacky workaround that we must accommodate
                                 // here.)
                                 item.newSong.file.addedMs.resolve() ?: addingMs,
-                            )
-                        )
+                            ))
                     }
                 }
             }

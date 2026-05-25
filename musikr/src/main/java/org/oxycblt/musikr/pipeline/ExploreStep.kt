@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.musikr.pipeline
 
 import android.content.Context
@@ -55,13 +55,11 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
         val classified = Channel<Classified>(Channel.UNLIMITED)
         val classifiedTask =
             scope.mapParallel(PARALLELISM, files, classified, Dispatchers.IO) { file ->
-                if (
-                    file.mimeType == M3U.MIME_TYPE ||
-                        (!file.mimeType.startsWith("audio/") &&
-                            file.mimeType != "application/ogg" &&
-                            file.mimeType != "application/x-ogg" &&
-                            file.mimeType != "application/octet-stream")
-                ) {
+                if (file.mimeType == M3U.MIME_TYPE ||
+                    (!file.mimeType.startsWith("audio/") &&
+                        file.mimeType != "application/ogg" &&
+                        file.mimeType != "application/x-ogg" &&
+                        file.mimeType != "application/octet-stream")) {
                     return@mapParallel Finalized(NotAudio)
                 }
                 when (val cacheResult = storage.cache.read(file)) {
@@ -79,9 +77,8 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
                     is NeedsHydration -> {
                         val audio = item.cachedFile.audio ?: return@mapParallel Finalized(NotAudio)
                         val coverId =
-                            when (
-                                val result = audio.coverId?.let { id -> storage.covers.obtain(id) }
-                            ) {
+                            when (val result =
+                                audio.coverId?.let { id -> storage.covers.obtain(id) }) {
                                 is CoverResult.Hit -> result.cover
                                 is CoverResult.Miss ->
                                     return@mapParallel Finalized(NewSong(item.cachedFile.file))
@@ -95,8 +92,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
                                 audio.tags,
                                 coverId,
                                 item.cachedFile.addedMs,
-                            )
-                        )
+                            ))
                     }
                 }
             }

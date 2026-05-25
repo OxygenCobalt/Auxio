@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.detail.list
 
 import android.text.format.Formatter
@@ -46,8 +46,7 @@ import org.oxycblt.musikr.tag.Date
  */
 class SongPropertyAdapter :
     FlexibleListAdapter<SongProperty, SongPropertyViewHolder>(
-        SongPropertyViewHolder.DIFF_CALLBACK
-    ) {
+        SongPropertyViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SongPropertyViewHolder.from(parent)
 
@@ -116,8 +115,7 @@ class SongPropertyViewHolder private constructor(private val binding: ItemSongPr
                         context.getString(R.string.fmt_zipped_names, value, subtitle)
                     } else {
                         value
-                    }
-                )
+                    })
             }
             is SongProperty.Value.ItemDate -> {
                 val date = property.value.date

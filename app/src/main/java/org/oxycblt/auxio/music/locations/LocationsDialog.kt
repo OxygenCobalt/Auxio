@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.locations
 
 import android.Manifest
@@ -399,11 +399,9 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 // File Picker mode - use secondary colors
                 setCardBackgroundColor(context.getAttrColorCompat(MR.attr.colorSecondaryContainer))
                 binding.locationsPermsDesc.setTextColor(
-                    context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                )
+                    context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer))
                 binding.locationsPermsSubtitle.setTextColor(
-                    context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                )
+                    context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer))
                 binding.locationsPermsOpen.imageTintList =
                     context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
             } else {
@@ -412,24 +410,19 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 if (hasStoragePermission) {
                     // Has permission - use secondary colors
                     setCardBackgroundColor(
-                        context.getAttrColorCompat(MR.attr.colorSecondaryContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorSecondaryContainer))
                     binding.locationsPermsDesc.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer))
                     binding.locationsPermsSubtitle.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer))
                     binding.locationsPermsOpen.imageTintList =
                         context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
                 } else {
                     setCardBackgroundColor(context.getAttrColorCompat(MR.attr.colorErrorContainer))
                     binding.locationsPermsDesc.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnErrorContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorOnErrorContainer))
                     binding.locationsPermsSubtitle.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnErrorContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorOnErrorContainer))
                     binding.locationsPermsOpen.imageTintList =
                         context.getAttrColorCompat(MR.attr.colorOnErrorContainer)
                 }

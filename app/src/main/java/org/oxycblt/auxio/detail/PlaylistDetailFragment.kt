@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
@@ -313,8 +313,7 @@ class PlaylistDetailFragment :
                 L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(
-                        PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid)
-                    )
+                        PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.PlaylistDetails -> {
                 L.d("Navigated to this playlist")
@@ -387,8 +386,7 @@ class PlaylistDetailFragment :
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     PlaylistDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray()
-                    )
+                        decision.songs.map { it.uid }.toTypedArray())
                 }
                 is PlaylistDecision.New -> error("Unexpected playlist decision $decision")
             }

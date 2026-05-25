@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.home.tabs
 
 import org.oxycblt.auxio.music.MusicType
@@ -87,8 +87,7 @@ sealed class Tab(open val type: MusicType) {
             val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
                 L.w(
-                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]"
-                )
+                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
             }
 
             var sequence = 0
@@ -135,8 +134,7 @@ sealed class Tab(open val type: MusicType) {
             val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
                 L.w(
-                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]"
-                )
+                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
             }
 
             // For safety, return null if we have an empty or larger-than-expected tab array.

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.ui
 
 import android.annotation.SuppressLint
@@ -115,8 +115,7 @@ constructor(
                 toolbarAttrs.getResourceId(
                     AR.styleable.Toolbar_titleTextAppearance,
                     MR.attr.textAppearanceDisplaySmallEmphasized,
-                )
-            )
+                ))
         }
 
         val subtitleCentered =
@@ -137,8 +136,7 @@ constructor(
                 toolbarAttrs.getResourceId(
                     AR.styleable.Toolbar_subtitleTextAppearance,
                     MR.attr.textAppearanceTitleLarge,
-                )
-            )
+                ))
         }
         binding.toolbarNavigationButton.apply {
             icon = toolbarAttrs.getDrawable(AR.styleable.Toolbar_navigationIcon)

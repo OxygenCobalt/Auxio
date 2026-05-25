@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
@@ -116,8 +116,7 @@ class PlaylistListFragment :
             // Duration -> Use compact bucket duration
             is Sort.Mode.ByDuration ->
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    playlist.durationMs.formatDurationMsPopup()
-                )
+                    playlist.durationMs.formatDurationMsPopup())
 
             // Count -> Use song count
             is Sort.Mode.ByCount ->
