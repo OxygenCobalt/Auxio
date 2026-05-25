@@ -32,7 +32,7 @@ class TopwayBridgeExtrasPolicyTest {
                     TopwayMusicContract.EXTRA_CMD to TopwayMusicContract.CMD_UPDATE,
                     TopwayMusicContract.EXTRA_WIDGET_PROGRESS to 1234,
                     "ignored" to "payload",
-                ),
+                )
             )
 
         assertEquals(TopwayMusicContract.CMD_UPDATE, extras.cmd)
@@ -43,13 +43,13 @@ class TopwayBridgeExtrasPolicyTest {
     fun `sanitizer rejects unknown command types and long payloads`() {
         val badType =
             TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(
-                mapOf(TopwayMusicContract.EXTRA_CMD to 123),
+                mapOf(TopwayMusicContract.EXTRA_CMD to 123)
             )
         assertNull(badType.cmd)
 
         val tooLong =
             TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(
-                mapOf(TopwayMusicContract.EXTRA_CMD to "this-command-is-definitely-too-long"),
+                mapOf(TopwayMusicContract.EXTRA_CMD to "this-command-is-definitely-too-long")
             )
         assertNull(tooLong.cmd)
     }
@@ -61,7 +61,7 @@ class TopwayBridgeExtrasPolicyTest {
                 mapOf(
                     AuxioService.INTENT_KEY_START_ID to -999,
                     TopwayMusicContract.EXTRA_CMD to TopwayMusicContract.CMD_PREV,
-                ),
+                )
             )
         assertEquals(TopwayMusicContract.CMD_PREV, extras.cmd)
         assertNull(extras.widgetProgress)

@@ -71,7 +71,8 @@ constructor(
         entries = prefAttrs.getTextArrayOrThrow(R.styleable.IntListPreference_entries)
         values =
             context.resources.getIntArray(
-                prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues))
+                prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues)
+            )
 
         // entryIcons defines an additional set of icons to use for each entry.
         val iconsId = prefAttrs.getResourceId(R.styleable.IntListPreference_entryIcons, -1)

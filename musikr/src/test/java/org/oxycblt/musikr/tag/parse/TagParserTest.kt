@@ -46,7 +46,8 @@ class TagParserTest {
                         "TRCK" to listOf("1/10"),
                         "TPOS" to listOf("1/2"),
                         "TCON" to listOf("Rock", "Electronic"),
-                    ))
+                    )
+            )
 
         val tags = tagParser.parse(metadata)
 
@@ -93,8 +94,8 @@ class TagParserTest {
         // Test compilation album with explicit release type
         val metadata =
             createTestMetadata(
-                id3v2Tags =
-                    mapOf("TCMP" to listOf("1"), "TXXX:RELEASETYPE" to listOf("soundtrack")))
+                id3v2Tags = mapOf("TCMP" to listOf("1"), "TXXX:RELEASETYPE" to listOf("soundtrack"))
+            )
 
         val tags = tagParser.parse(metadata)
 
@@ -123,7 +124,8 @@ class TagParserTest {
                         "TXXX:MUSICBRAINZ ALBUM ID" to listOf("album-id-456"),
                         "TXXX:MUSICBRAINZ ARTIST ID" to listOf("artist-id-789"),
                         "TXXX:MUSICBRAINZ ALBUM ARTIST ID" to listOf("album-artist-id-012"),
-                    ))
+                    )
+            )
 
         val tags = tagParser.parse(metadata)
 
@@ -141,7 +143,8 @@ class TagParserTest {
                     mapOf(
                         "REPLAYGAIN_TRACK_GAIN" to listOf("-3.5 dB"),
                         "REPLAYGAIN_ALBUM_GAIN" to listOf("-2.1 dB"),
-                    ))
+                    )
+            )
 
         val tags = tagParser.parse(metadata)
 
@@ -158,7 +161,8 @@ class TagParserTest {
                         "TCOM" to listOf("Composer Artist"),
                         "TSOC" to listOf("Composer Artist Sort"),
                         "TXXX:MUSICBRAINZ COMPOSER ID" to listOf("composer-artist-mbid"),
-                    ))
+                    )
+            )
 
         val tags = tagParser.parse(metadata)
 

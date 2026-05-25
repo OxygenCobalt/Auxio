@@ -287,7 +287,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 override fun onDraw(canvas: Canvas, parent: RecyclerView, state: State) {
                     onPreDraw()
                 }
-            })
+            }
+        )
 
         // We use a listener instead of overriding onTouchEvent so that we don't conflict with
         // RecyclerView touch events.
@@ -303,7 +304,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 ): Boolean {
                     return onItemTouch(event)
                 }
-            })
+            }
+        )
     }
 
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
@@ -412,7 +414,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             (thumbTop + thumbAnchorY - popupAnchorY)
                 .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
                 .coerceAtMost(
-                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight
+                )
 
         popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
     }
@@ -484,9 +487,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 }
             }
             MotionEvent.ACTION_MOVE -> {
-                if (!dragging &&
-                    thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
-                    abs(eventY - downY) > touchSlop) {
+                if (
+                    !dragging &&
+                        thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
+                        abs(eventY - downY) > touchSlop
+                ) {
                     if (thumbView.isUnder(downX, downY, minTouchTargetSize)) {
                         dragStartY = lastY
                         dragStartThumbOffset = thumbOffset
@@ -714,7 +719,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 HapticFeedbackConstants.TEXT_HANDLE_MOVE
             } else {
                 HapticFeedbackConstants.KEYBOARD_TAP
-            })
+            }
+        )
     }
 
     // --- LAYOUT STATE ---

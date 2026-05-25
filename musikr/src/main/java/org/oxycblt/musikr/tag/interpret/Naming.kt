@@ -104,8 +104,10 @@ private data class IntelligentKnownName(override val raw: String, override val s
                 }
 
         // Transliterate to latin if available
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            Transliterator.getAvailableIDs().toList().contains("Any-Latin")) {
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                Transliterator.getAvailableIDs().toList().contains("Any-Latin")
+        ) {
             stripped = Transliterator.getInstance("Any-Latin;").transliterate(stripped)
         }
 

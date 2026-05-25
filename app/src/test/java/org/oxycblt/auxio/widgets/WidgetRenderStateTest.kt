@@ -28,8 +28,13 @@ class WidgetRenderStateTest {
     fun fromPlayback_noTitle_returnsNoSession() {
         assertTrue(
             WidgetRenderState.fromPlayback(
-                title = null, artist = "a", album = "b", isPlaying = true, hasArtwork = false)
-                is WidgetRenderState.NoSession)
+                title = null,
+                artist = "a",
+                album = "b",
+                isPlaying = true,
+                hasArtwork = false,
+            ) is WidgetRenderState.NoSession
+        )
     }
 
     @Test
@@ -82,7 +87,7 @@ class WidgetRenderStateTest {
                 hasArtwork = true,
                 positionMs = 10_000L,
                 durationMs = 20_000L,
-            ) is WidgetRenderState.NoSession,
+            ) is WidgetRenderState.NoSession
         )
         assertEquals("0:00", WidgetTimeline.NO_SESSION.currentText)
         assertEquals("0:00", WidgetTimeline.NO_SESSION.durationText)
@@ -99,8 +104,12 @@ class WidgetRenderStateTest {
     @Test
     fun playPauseBackground_reflectsPlayingState() {
         assertEquals(
-            R.drawable.ui_remote_fab_container_playing, WidgetRenderState.playPauseBackground(true))
+            R.drawable.ui_remote_fab_container_playing,
+            WidgetRenderState.playPauseBackground(true),
+        )
         assertEquals(
-            R.drawable.ui_remote_fab_container_paused, WidgetRenderState.playPauseBackground(false))
+            R.drawable.ui_remote_fab_container_paused,
+            WidgetRenderState.playPauseBackground(false),
+        )
     }
 }

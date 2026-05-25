@@ -96,7 +96,8 @@ constructor(
                     ImageRequest.Builder(context)
                         .data(song.cover)
                         // Use ORIGINAL sizing, as we are not loading into any View-like component.
-                        .size(Size.ORIGINAL))
+                        .size(Size.ORIGINAL)
+                )
                 .target(
                     onSuccess = {
                         synchronized(this) {

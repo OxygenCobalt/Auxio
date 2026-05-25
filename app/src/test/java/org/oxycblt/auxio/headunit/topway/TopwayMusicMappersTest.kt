@@ -27,35 +27,52 @@ class TopwayMusicMappersTest {
     fun `maps direct and cmd actions`() {
         assertEquals(
             TopwayMappedCommand.PREV,
-            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_PREV, null))
+            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_PREV, null),
+        )
         assertEquals(
             TopwayMappedCommand.NEXT,
-            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_NEXT, null))
+            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_NEXT, null),
+        )
         assertEquals(
             TopwayMappedCommand.PLAY_PAUSE,
-            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_PLAY_PAUSE, null))
+            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_PLAY_PAUSE, null),
+        )
         assertEquals(
             TopwayMappedCommand.UPDATE,
             TopwayMusicCommandMapper.map(
-                TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_UPDATE))
+                TopwayMusicContract.ACTION_CMD,
+                TopwayMusicContract.CMD_UPDATE,
+            ),
+        )
         assertEquals(
             TopwayMappedCommand.UNKNOWN,
-            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, "bad"))
+            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, "bad"),
+        )
         assertEquals(
             TopwayMappedCommand.UNKNOWN,
-            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, null))
+            TopwayMusicCommandMapper.map(TopwayMusicContract.ACTION_CMD, null),
+        )
         assertEquals(
             TopwayMappedCommand.PREV,
             TopwayMusicCommandMapper.map(
-                TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_PREV))
+                TopwayMusicContract.ACTION_CMD,
+                TopwayMusicContract.CMD_PREV,
+            ),
+        )
         assertEquals(
             TopwayMappedCommand.NEXT,
             TopwayMusicCommandMapper.map(
-                TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_NEXT))
+                TopwayMusicContract.ACTION_CMD,
+                TopwayMusicContract.CMD_NEXT,
+            ),
+        )
         assertEquals(
             TopwayMappedCommand.PLAY_PAUSE,
             TopwayMusicCommandMapper.map(
-                TopwayMusicContract.ACTION_CMD, TopwayMusicContract.CMD_PLAY_PAUSE))
+                TopwayMusicContract.ACTION_CMD,
+                TopwayMusicContract.CMD_PLAY_PAUSE,
+            ),
+        )
     }
 
     @Test

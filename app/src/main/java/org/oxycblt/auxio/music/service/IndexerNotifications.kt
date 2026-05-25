@@ -83,7 +83,8 @@ class IndexingNotification(private val context: Context) :
                 lastUpdateTime = SystemClock.elapsedRealtime()
                 L.d("Updating state to $progress")
                 setContentText(
-                    context.getString(R.string.fmt_indexing, progress.loaded, progress.explored))
+                    context.getString(R.string.fmt_indexing, progress.loaded, progress.explored)
+                )
                 setProgress(progress.loaded, progress.explored, false)
                 return true
             }

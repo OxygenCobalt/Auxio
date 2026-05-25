@@ -129,8 +129,11 @@ class WidgetProvider : AppWidgetProvider() {
                 return
             } catch (e: IllegalArgumentException) {
                 val msg = e.message ?: return
-                if (!msg.startsWith(
-                    "RemoteViews for widget update exceeds maximum bitmap memory usage")) {
+                if (
+                    !msg.startsWith(
+                        "RemoteViews for widget update exceeds maximum bitmap memory usage"
+                    )
+                ) {
                     throw e
                 }
                 // Some android devices on Android 12-14 suffer from a bug where the maximum bitmap
@@ -328,8 +331,7 @@ class WidgetProvider : AppWidgetProvider() {
             setImageViewBitmap(R.id.widget_cover, state.cover)
             setContentDescription(
                 R.id.widget_cover,
-                context.getString(
-                    R.string.desc_album_cover, state.song.album.name.resolve(context)),
+                context.getString(R.string.desc_album_cover, state.song.album.name.resolve(context)),
             )
         } else {
             discardCover(context)
@@ -382,10 +384,13 @@ class WidgetProvider : AppWidgetProvider() {
                 hasArtwork = state.song.cover != null,
             )
         setTextViewText(
-            R.id.widget_song, policy?.displayTitle ?: context.getString(R.string.lbl_playback))
+            R.id.widget_song,
+            policy?.displayTitle ?: context.getString(R.string.lbl_playback),
+        )
         setTextViewText(
             R.id.widget_artist,
-            policy?.displaySubtitle ?: context.getString(R.string.lbl_all_songs))
+            policy?.displaySubtitle ?: context.getString(R.string.lbl_all_songs),
+        )
         val timeline = WidgetTimeline.state(state.positionMs, state.song.durationMs)
         setTextViewText(R.id.widget_current_time, timeline.currentText)
         setTextViewText(R.id.widget_duration, timeline.durationText)

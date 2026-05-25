@@ -48,16 +48,18 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
     override val coverMode: CoverMode
         get() =
             CoverMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE))
-                ?: CoverMode.BALANCED
+                sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE)
+            ) ?: CoverMode.BALANCED
 
     override val forceSquareCovers: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_square_covers), false)
 
     override fun migrate() {
         // Show album covers and Ignore MediaStore covers were unified in 3.0.0
-        if (sharedPreferences.contains(OLD_KEY_SHOW_COVERS) ||
-            sharedPreferences.contains(OLD_KEY_QUALITY_COVERS)) {
+        if (
+            sharedPreferences.contains(OLD_KEY_SHOW_COVERS) ||
+                sharedPreferences.contains(OLD_KEY_QUALITY_COVERS)
+        ) {
             L.d("Migrating cover settings")
 
             val mode =
@@ -95,8 +97,10 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
     }
 
     override fun onSettingChanged(key: String, listener: ImageSettings.Listener) {
-        if (key == getString(R.string.set_key_cover_mode) ||
-            key == getString(R.string.set_key_square_covers)) {
+        if (
+            key == getString(R.string.set_key_cover_mode) ||
+                key == getString(R.string.set_key_square_covers)
+        ) {
             L.d("Dispatching image setting change")
             listener.onImageSettingsChanged()
         }

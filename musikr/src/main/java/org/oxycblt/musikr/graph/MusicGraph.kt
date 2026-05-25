@@ -158,7 +158,8 @@ internal data class MusicGraph(
                         val songIndex = this@MusicGraph.songVertex.indexOf(it)
                         if (songIndex >= 0) {
                             appendLine(
-                                "  playlist_$playlistIndex -> song_$songIndex [color=orange];")
+                                "  playlist_$playlistIndex -> song_$songIndex [color=orange];"
+                            )
                         }
                     }
                 }
@@ -482,7 +483,8 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             strippedMbidCluster.map {
                 val noAlbumArtistPreAlbum =
                     it.preAlbum.copy(
-                        preArtists = PreArtistsFrom.Individual(it.preAlbum.preArtists.preArtists))
+                        preArtists = PreArtistsFrom.Individual(it.preAlbum.preArtists.preArtists)
+                    )
                 val simpleAlbumArtistVertex =
                     albumVertices.getOrPut(noAlbumArtistPreAlbum) {
                         AlbumVertex(noAlbumArtistPreAlbum, it.artistVertices.toMutableList())

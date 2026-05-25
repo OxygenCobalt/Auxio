@@ -115,7 +115,8 @@ class GenreListFragment :
             // Duration -> Use compact bucket duration
             is Sort.Mode.ByDuration ->
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    genre.durationMs.formatDurationMsPopup())
+                    genre.durationMs.formatDurationMsPopup()
+                )
 
             // Count -> Use song count
             is Sort.Mode.ByCount ->

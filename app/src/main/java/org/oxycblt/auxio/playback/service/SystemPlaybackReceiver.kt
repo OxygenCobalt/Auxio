@@ -85,8 +85,9 @@ private constructor(
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (!isSystemAction(intent.action) &&
-            !PlaybackActionPolicy.isSupportedAction(intent.action)) {
+        if (
+            !isSystemAction(intent.action) && !PlaybackActionPolicy.isSupportedAction(intent.action)
+        ) {
             L.w("Ignoring unsupported playback action: ${intent.action}")
             return
         }
@@ -188,9 +189,11 @@ private constructor(
         // ACTION_HEADSET_PLUG will fire when this BroadcastReceiver is initially attached,
         // which would result in unexpected playback. Work around it by dropping the first
         // call to this function, which should come from that Intent.
-        if (playbackSettings.headsetAutoplay &&
-            playbackManager.currentSong != null &&
-            initialHeadsetPlugEventHandled) {
+        if (
+            playbackSettings.headsetAutoplay &&
+                playbackManager.currentSong != null &&
+                initialHeadsetPlugEventHandled
+        ) {
             L.d("Device connected, resuming")
             playbackManager.playing(true)
         }

@@ -105,7 +105,8 @@ class ExoPlaybackStateHolder(
                 AudioAttributesCompat.Builder()
                     .setUsage(AudioAttributesCompat.USAGE_MEDIA)
                     .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
-                    .build())
+                    .build()
+            )
             .setOnAudioFocusChangeListener(focusChangeListener, mainHandler)
             .setWillPauseWhenDucked(false)
             .build()
@@ -207,7 +208,8 @@ class ExoPlaybackStateHolder(
                 playbackManager.play(
                     requireNotNull(commandFactory.all(ShuffleMode.ON)) {
                         "Invalid playback parameters"
-                    })
+                    }
+                )
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is DeferredPlayback.Open -> {
@@ -234,9 +236,10 @@ class ExoPlaybackStateHolder(
                             if (song != null) {
                                 val command =
                                     requireNotNull(
-                                        commandFactory.songFromAll(song, ShuffleMode.IMPLICIT)) {
-                                            "Invalid playback command"
-                                        }
+                                        commandFactory.songFromAll(song, ShuffleMode.IMPLICIT)
+                                    ) {
+                                        "Invalid playback command"
+                                    }
                                 playbackManager.play(command)
                             }
                         }
@@ -263,7 +266,8 @@ class ExoPlaybackStateHolder(
                             audioFocusState.wasPlayingBeforeTransientLoss
                         } else {
                             false
-                        })
+                        }
+                )
             if (!pauseFromAudioFocus) {
                 abandonAudioFocus()
             }
@@ -312,7 +316,8 @@ class ExoPlaybackStateHolder(
         if (player.shuffleModeEnabled) {
             // Have to manually refresh the shuffle seed and anchor it to the new current songs
             player.setShuffleOrder(
-                BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex))
+                BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex)
+            )
         }
         playbackManager.ack(this, StateAck.QueueReordered)
         deferSave()
@@ -542,7 +547,8 @@ class ExoPlaybackStateHolder(
                             audioFocusState.wasPlayingBeforeTransientLoss
                         } else {
                             false
-                        })
+                        }
+                )
         }
     }
 
@@ -568,11 +574,13 @@ class ExoPlaybackStateHolder(
 
         // So many actions trigger progression changes that it becomes easier just to handle it
         // in an ExoPlayer callback anyway. This doesn't really cause issues anywhere.
-        if (events.containsAny(
-            Player.EVENT_PLAY_WHEN_READY_CHANGED,
-            Player.EVENT_IS_PLAYING_CHANGED,
-            Player.EVENT_POSITION_DISCONTINUITY,
-        )) {
+        if (
+            events.containsAny(
+                Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                Player.EVENT_IS_PLAYING_CHANGED,
+                Player.EVENT_POSITION_DISCONTINUITY,
+            )
+        ) {
             L.d("Player state changed, must synchronize state")
             playbackManager.ack(this, StateAck.ProgressionChanged)
         }
@@ -593,7 +601,8 @@ class ExoPlaybackStateHolder(
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
+                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+        )
     }
 
     private fun requestAudioFocus(): Boolean {
@@ -633,12 +642,14 @@ class ExoPlaybackStateHolder(
             }
         }
         player.volume = decision.volume
-        if (AudioFocusPolicy.shouldResumePlayback(
-            decision = decision,
-            playWhenReady = player.playWhenReady,
-            sessionOngoing = sessionOngoing,
-            hasCurrentSong = playbackManager.currentSong != null,
-        )) {
+        if (
+            AudioFocusPolicy.shouldResumePlayback(
+                decision = decision,
+                playWhenReady = player.playWhenReady,
+                sessionOngoing = sessionOngoing,
+                hasCurrentSong = playbackManager.currentSong != null,
+            )
+        ) {
             playbackManager.playing(true)
         }
         if (event == AudioFocusPolicy.Event.LOSS) {

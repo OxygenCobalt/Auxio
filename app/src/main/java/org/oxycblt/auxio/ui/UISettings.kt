@@ -87,7 +87,8 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     override var accent: Accent
         get() =
             Accent.from(
-                sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT))
+                sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT)
+            )
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_accent), value.index)
@@ -104,7 +105,8 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     override val driverSide: UISettings.DriverSide
         get() =
             UISettings.DriverSide.from(
-                sharedPreferences.getInt(getString(R.string.set_key_driver_side), 1))
+                sharedPreferences.getInt(getString(R.string.set_key_driver_side), 1)
+            )
 
     override val largeHeadUnitControls: Boolean
         get() =

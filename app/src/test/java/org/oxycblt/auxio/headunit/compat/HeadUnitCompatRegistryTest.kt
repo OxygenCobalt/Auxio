@@ -30,7 +30,8 @@ class HeadUnitCompatRegistryTest {
         assertTrue(
             HeadUnitCompatRegistry.candidates.any {
                 it.feature == HeadUnitCompatFeature.TWTHEME_WIDGET_METADATA
-            })
+            }
+        )
     }
 
     @Test

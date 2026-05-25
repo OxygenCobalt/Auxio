@@ -44,7 +44,8 @@ class HeadUnitEntryPointsTest {
                 "shortcut_shuffle",
                 "shortcut_queue",
                 "shortcut_recently_added",
-                "shortcut_playlists"),
+                "shortcut_playlists",
+            ),
             HeadUnitEntryPoints.publishedDynamicShortcutIds(5),
         )
     }

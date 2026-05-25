@@ -171,6 +171,7 @@ class CoverCollection private constructor(val covers: List<Cover>) {
                     .entries
                     .sortedByDescending { it.key }
                     .sortedByDescending { it.value.size }
-                    .map { it.value.first() })
+                    .map { it.value.first() }
+            )
     }
 }

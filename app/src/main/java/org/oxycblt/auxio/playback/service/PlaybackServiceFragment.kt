@@ -95,7 +95,8 @@ private constructor(
             scope.launch {
                 delay(AUTO_STOP_DELAY_MS)
                 L.d(
-                    "Auto-stop timer expired after ${AUTO_STOP_DELAY_MS / 60000} minutes of inactivity")
+                    "Auto-stop timer expired after ${AUTO_STOP_DELAY_MS / 60000} minutes of inactivity"
+                )
                 playbackManager.endSession()
             }
     }

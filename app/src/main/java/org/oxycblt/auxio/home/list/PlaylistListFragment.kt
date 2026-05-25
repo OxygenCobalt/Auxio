@@ -116,7 +116,8 @@ class PlaylistListFragment :
             // Duration -> Use compact bucket duration
             is Sort.Mode.ByDuration ->
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    playlist.durationMs.formatDurationMsPopup())
+                    playlist.durationMs.formatDurationMsPopup()
+                )
 
             // Count -> Use song count
             is Sort.Mode.ByCount ->

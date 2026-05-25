@@ -115,7 +115,8 @@ constructor(
                 toolbarAttrs.getResourceId(
                     AR.styleable.Toolbar_titleTextAppearance,
                     MR.attr.textAppearanceDisplaySmallEmphasized,
-                ))
+                )
+            )
         }
 
         val subtitleCentered =
@@ -136,7 +137,8 @@ constructor(
                 toolbarAttrs.getResourceId(
                     AR.styleable.Toolbar_subtitleTextAppearance,
                     MR.attr.textAppearanceTitleLarge,
-                ))
+                )
+            )
         }
         binding.toolbarNavigationButton.apply {
             icon = toolbarAttrs.getDrawable(AR.styleable.Toolbar_navigationIcon)

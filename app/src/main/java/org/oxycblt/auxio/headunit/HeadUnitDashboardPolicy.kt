@@ -55,42 +55,48 @@ object HeadUnitDashboardPolicy {
                 R.string.lbl_shuffle,
                 R.drawable.ic_shortcut_shuffle_24,
                 state.hasLibraryContent && !state.isIndexing,
-            ))
+            )
+        )
         add(
             entry(
                 QuickPickAction.RECENTLY_ADDED,
                 R.string.lbl_recently_added,
                 R.drawable.ic_time_24,
                 state.hasLibraryContent && !state.isIndexing,
-            ))
+            )
+        )
         add(
             entry(
                 QuickPickAction.ARTISTS,
                 R.string.lbl_artists,
                 R.drawable.ic_artist_24,
                 state.hasLibraryContent && !state.isIndexing,
-            ))
+            )
+        )
         add(
             entry(
                 QuickPickAction.ALBUMS,
                 R.string.lbl_albums,
                 R.drawable.ic_album_24,
                 state.hasLibraryContent && !state.isIndexing,
-            ))
+            )
+        )
         add(
             entry(
                 QuickPickAction.GENRES,
                 R.string.lbl_genres,
                 R.drawable.ic_genre_24,
                 state.hasLibraryContent && !state.isIndexing,
-            ))
+            )
+        )
         add(
             entry(
                 QuickPickAction.PLAYLISTS,
                 R.string.lbl_playlists,
                 R.drawable.ic_playlist_24,
                 state.hasLibraryContent && !state.isIndexing,
-            ))
+            )
+        )
         if (state.hasFavourites) {
             add(
                 entry(
@@ -98,7 +104,8 @@ object HeadUnitDashboardPolicy {
                     R.string.lbl_favourites,
                     R.drawable.ic_playlist_24,
                     true,
-                ))
+                )
+            )
         }
         add(
             entry(
@@ -106,7 +113,8 @@ object HeadUnitDashboardPolicy {
                 R.string.set_head_unit,
                 R.drawable.ic_more_24,
                 !state.isIndexing,
-            ))
+            )
+        )
     }
 
     private fun entry(

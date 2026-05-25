@@ -87,7 +87,8 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
                     fillColor = sheetBackgroundDrawable.fillColor
                 },
                 sheetBackgroundDrawable,
-            ))
+            )
+        )
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
         super.applyWindowInsets(child, insets)

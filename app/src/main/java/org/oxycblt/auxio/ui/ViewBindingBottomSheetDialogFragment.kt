@@ -129,7 +129,8 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
             avoidUnusableCollapsedState =
                 metrics.heightPixels - metrics.widthPixels <
                     context.getDimenPixels(
-                        com.google.android.material.R.dimen.design_bottom_sheet_peek_height_min)
+                        com.google.android.material.R.dimen.design_bottom_sheet_peek_height_min
+                    )
             behavior.skipCollapsed = avoidUnusableCollapsedState
         }
 

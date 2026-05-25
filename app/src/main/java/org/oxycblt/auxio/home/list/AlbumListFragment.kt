@@ -126,7 +126,8 @@ class AlbumListFragment :
             // Duration -> Use compact bucket duration
             is Sort.Mode.ByDuration ->
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    album.durationMs.formatDurationMsPopup())
+                    album.durationMs.formatDurationMsPopup()
+                )
 
             // Count -> Use song count
             is Sort.Mode.ByCount ->
@@ -137,7 +138,8 @@ class AlbumListFragment :
                 val calendar = Calendar.getInstance()
                 calendar.timeInMillis = album.addedMs
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    getString(R.string.fmt_number, calendar.get(Calendar.YEAR)))
+                    getString(R.string.fmt_number, calendar.get(Calendar.YEAR))
+                )
             }
 
             // Unsupported sort, error gracefully

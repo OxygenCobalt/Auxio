@@ -133,14 +133,17 @@ class ThemedSpeedDialView : SpeedDialView {
                     mainFab.backgroundTintList =
                         ColorStateList.valueOf(
                             if (isOpen) mainFabClosedBackgroundColor
-                            else mainFabOpenedBackgroundColor)
+                            else mainFabOpenedBackgroundColor
+                        )
                     mainFab.imageTintList =
                         ColorStateList.valueOf(
-                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor)
+                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor
+                        )
                     mainFabAnimation = createMainFabAnimation(isOpen).apply { start() }
                     innerChangeListener?.invoke(isOpen)
                 }
-            })
+            }
+        )
     }
 
     private fun createMainFabAnimation(isOpen: Boolean): MainFabAnimation {
@@ -175,9 +178,10 @@ class ThemedSpeedDialView : SpeedDialView {
             }
 
         return MainFabAnimation(
-            listOf(backgroundTintAnimation, imageTintAnimation, rotationAnimation)) {
-                mainFabAnimation = null
-            }
+            listOf(backgroundTintAnimation, imageTintAnimation, rotationAnimation)
+        ) {
+            mainFabAnimation = null
+        }
     }
 
     private fun createColorSpringAnimation(
@@ -301,7 +305,8 @@ class ThemedSpeedDialView : SpeedDialView {
                     TextViewCompat.setTextAppearance(
                         this,
                         context.getAttrResourceId(
-                            com.google.android.material.R.attr.textAppearanceLabelLargeEmphasized),
+                            com.google.android.material.R.attr.textAppearanceLabelLargeEmphasized
+                        ),
                     )
                 }
             }

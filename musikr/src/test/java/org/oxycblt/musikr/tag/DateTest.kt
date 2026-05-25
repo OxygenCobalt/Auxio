@@ -27,7 +27,8 @@ class DateTest {
     fun date_equals_varyingPrecision() {
         assertTrue(
             requireNotNull(Date.from("2016-08-16T00:01:02")) !=
-                requireNotNull(Date.from("2016-08-16")))
+                requireNotNull(Date.from("2016-08-16"))
+        )
     }
 
     @Test

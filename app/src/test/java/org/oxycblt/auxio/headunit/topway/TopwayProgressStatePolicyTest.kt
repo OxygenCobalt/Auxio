@@ -28,10 +28,13 @@ class TopwayProgressStatePolicyTest {
     @Test
     fun `active progress clamps values and rejects unknown duration`() {
         assertEquals(
-            TopwayProgressSnapshot(0L, 5_000L), TopwayProgressStatePolicy.active(-1L, 5_000L))
+            TopwayProgressSnapshot(0L, 5_000L),
+            TopwayProgressStatePolicy.active(-1L, 5_000L),
+        )
         assertEquals(
             TopwayProgressSnapshot(5_000L, 5_000L),
-            TopwayProgressStatePolicy.active(9_000L, 5_000L))
+            TopwayProgressStatePolicy.active(9_000L, 5_000L),
+        )
         assertNull(TopwayProgressStatePolicy.active(1_000L, 0L))
         assertNull(TopwayProgressStatePolicy.active(1_000L, -1L))
     }

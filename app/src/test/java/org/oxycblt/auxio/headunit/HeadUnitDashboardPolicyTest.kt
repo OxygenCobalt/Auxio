@@ -34,7 +34,9 @@ class HeadUnitDashboardPolicyTest {
         assertFalse(
             HeadUnitDashboardPolicy.isParityAligned(
                 publicActions =
-                    HeadUnitEntryPoints.ALL_PUBLIC_ACTIONS - HeadUnitEntryPoints.ACTION_OPEN_QUEUE))
+                    HeadUnitEntryPoints.ALL_PUBLIC_ACTIONS - HeadUnitEntryPoints.ACTION_OPEN_QUEUE
+            )
+        )
     }
 
     @Test
@@ -47,7 +49,9 @@ class HeadUnitDashboardPolicyTest {
                     } else {
                         HeadUnitRoutePolicy.routeForAction(action)
                     }
-                }))
+                }
+            )
+        )
     }
 
     @Test
@@ -60,7 +64,9 @@ class HeadUnitDashboardPolicyTest {
                     } else {
                         HeadUnitRoutePolicy.entryDestinationForRoute(route)
                     }
-                }))
+                }
+            )
+        )
     }
 
     @Test
@@ -71,7 +77,8 @@ class HeadUnitDashboardPolicyTest {
                     hasLibraryContent = true,
                     hasFavourites = true,
                     isIndexing = false,
-                ))
+                )
+            )
         assertEquals(QuickPickAction.NOW_PLAYING, entries.first().action)
         assertEquals(QuickPickAction.QUEUE, entries[1].action)
         assertEquals(QuickPickAction.SHUFFLE_ALL, entries[2].action)
@@ -85,7 +92,8 @@ class HeadUnitDashboardPolicyTest {
                         hasLibraryContent = false,
                         hasFavourites = false,
                         isIndexing = false,
-                    ))
+                    )
+                )
                 .associateBy { it.action }
         assertFalse(entries.getValue(QuickPickAction.ALBUMS).enabled)
         assertFalse(entries.getValue(QuickPickAction.ARTISTS).enabled)
@@ -101,7 +109,8 @@ class HeadUnitDashboardPolicyTest {
                         hasLibraryContent = true,
                         hasFavourites = true,
                         isIndexing = true,
-                    ))
+                    )
+                )
                 .associateBy { it.action }
         assertFalse(entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).enabled)
         assertFalse(entries.getValue(QuickPickAction.ALBUMS).enabled)
@@ -121,7 +130,8 @@ class HeadUnitDashboardPolicyTest {
                         hasLibraryContent = true,
                         hasFavourites = true,
                         isIndexing = false,
-                    ))
+                    )
+                )
                 .map { it.action }
         assertFalse(actions.contains(QuickPickAction.FOLDERS))
         assertFalse(actions.contains(QuickPickAction.DECADES))
@@ -135,7 +145,8 @@ class HeadUnitDashboardPolicyTest {
                         hasLibraryContent = true,
                         hasFavourites = false,
                         isIndexing = false,
-                    ))
+                    )
+                )
                 .map { it.action }
         assertFalse(noFavs.contains(QuickPickAction.FAVOURITES))
         assertEquals(QuickPickAction.HEAD_UNIT_SETTINGS, noFavs.last())
@@ -146,7 +157,8 @@ class HeadUnitDashboardPolicyTest {
                     hasLibraryContent = true,
                     hasFavourites = true,
                     isIndexing = false,
-                ))
+                )
+            )
         val withFavs = withFavsList.associateBy { it.action }
         assertTrue(withFavs.containsKey(QuickPickAction.FAVOURITES))
         assertTrue(withFavs.getValue(QuickPickAction.FAVOURITES).enabled)

@@ -38,7 +38,8 @@ import org.oxycblt.musikr.Artist
  */
 class ArtistPlaybackChoiceAdapter(private val listener: ClickableListListener<Artist>) :
     FlexibleListAdapter<Artist, ArtistPlaybackChoiceViewHolder>(
-        ArtistPlaybackChoiceViewHolder.DIFF_CALLBACK) {
+        ArtistPlaybackChoiceViewHolder.DIFF_CALLBACK
+    ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ArtistPlaybackChoiceViewHolder.from(parent)
 

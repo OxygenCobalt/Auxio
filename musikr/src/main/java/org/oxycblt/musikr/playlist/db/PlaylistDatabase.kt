@@ -90,7 +90,8 @@ internal abstract class PlaylistDao {
                     playlistUid = rawPlaylist.playlistInfo.playlistUid,
                     songUid = it.songUid,
                 )
-            })
+            }
+        )
     }
 
     /**
@@ -125,7 +126,8 @@ internal abstract class PlaylistDao {
     open suspend fun insertPlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
         insertSongs(songs)
         insertRefs(
-            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) })
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) }
+        )
     }
 
     /**
@@ -140,7 +142,8 @@ internal abstract class PlaylistDao {
         deleteRefs(playlistUid)
         insertSongs(songs)
         insertRefs(
-            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) })
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) }
+        )
     }
 
     /** Internal, do not use. */

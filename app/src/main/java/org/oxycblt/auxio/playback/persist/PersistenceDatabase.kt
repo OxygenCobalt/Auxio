@@ -69,10 +69,12 @@ abstract class PersistenceDatabase : RoomDatabase() {
         val MIGRATION_38_39 =
             Migration(38, 39) {
                 it.execSQL(
-                    "ALTER TABLE PlaybackState ADD COLUMN shuffleScope TEXT NOT NULL DEFAULT 'OFF'")
+                    "ALTER TABLE PlaybackState ADD COLUMN shuffleScope TEXT NOT NULL DEFAULT 'OFF'"
+                )
                 it.execSQL(
                     "UPDATE PlaybackState SET shuffleScope = 'ALL' " +
-                        "WHERE id = 0 AND EXISTS (SELECT 1 FROM QueueShuffledMappingItem LIMIT 1)")
+                        "WHERE id = 0 AND EXISTS (SELECT 1 FROM QueueShuffledMappingItem LIMIT 1)"
+                )
             }
     }
 }

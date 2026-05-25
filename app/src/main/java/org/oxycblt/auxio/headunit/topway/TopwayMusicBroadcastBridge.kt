@@ -42,17 +42,20 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
     ) {
         if (!uiSettings.headUnitLandscapeMode) return
         val snapshot = TopwayProgressStatePolicy.active(progressMs, durationMs) ?: return
-        if (!TopwayProgressStatePolicy.shouldPublish(
-            snapshot,
-            lastProgress,
-            nowMs,
-            lastProgressAtMs,
-            MIN_PROGRESS_INTERVAL_MS,
-        )) {
+        if (
+            !TopwayProgressStatePolicy.shouldPublish(
+                snapshot,
+                lastProgress,
+                nowMs,
+                lastProgressAtMs,
+                MIN_PROGRESS_INTERVAL_MS,
+            )
+        ) {
             return
         }
         context.sendBroadcast(
-            TopwayMusicIntentFactory.progressIntent(snapshot.progressMs, snapshot.durationMs))
+            TopwayMusicIntentFactory.progressIntent(snapshot.progressMs, snapshot.durationMs)
+        )
         lastProgress = snapshot
         lastProgressAtMs = nowMs
     }

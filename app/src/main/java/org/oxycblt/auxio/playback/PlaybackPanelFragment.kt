@@ -191,11 +191,7 @@ class PlaybackPanelFragment :
             binding.playbackArtist,
         )
         if (uiSettings.largeHeadUnitControls) {
-            listOf(
-                    binding.playbackSkipPrev,
-                    binding.playbackPlayPause,
-                    binding.playbackSkipNext,
-                )
+            listOf(binding.playbackSkipPrev, binding.playbackPlayPause, binding.playbackSkipNext)
                 .forEach {
                     it.minimumHeight = touchTargetMedium
                     it.minimumWidth = touchTargetMedium
@@ -220,7 +216,8 @@ class PlaybackPanelFragment :
                 SpringForce().apply {
                     stiffness = 700f
                     dampingRatio = 0.9f
-                })
+                }
+            )
             setOnClickListener { playbackModel.togglePlaying() }
         }
         binding.playbackSkipNext.setOnClickListener {
@@ -373,7 +370,9 @@ class PlaybackPanelFragment :
                 return
             }
             binding.playbackPager.setCurrentItem(
-                command.scroll, command.update == null && abs(delta) == 1)
+                command.scroll,
+                command.update == null && abs(delta) == 1,
+            )
         }
     }
 
@@ -405,7 +404,11 @@ class PlaybackPanelFragment :
             clone(root)
             clear(R.id.playback_pager, ConstraintSet.START)
             connect(
-                R.id.playback_pager, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                R.id.playback_pager,
+                ConstraintSet.END,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.END,
+            )
 
             clear(R.id.playback_info_container, ConstraintSet.START)
             clear(R.id.playback_info_container, ConstraintSet.END)
@@ -413,12 +416,14 @@ class PlaybackPanelFragment :
                 R.id.playback_info_container,
                 ConstraintSet.START,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.START)
+                ConstraintSet.START,
+            )
             connect(
                 R.id.playback_info_container,
                 ConstraintSet.END,
                 R.id.playback_pager,
-                ConstraintSet.START)
+                ConstraintSet.START,
+            )
 
             clear(R.id.playback_controls_wrapper, ConstraintSet.START)
             clear(R.id.playback_controls_wrapper, ConstraintSet.END)
@@ -426,12 +431,14 @@ class PlaybackPanelFragment :
                 R.id.playback_controls_wrapper,
                 ConstraintSet.START,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.START)
+                ConstraintSet.START,
+            )
             connect(
                 R.id.playback_controls_wrapper,
                 ConstraintSet.END,
                 R.id.playback_pager,
-                ConstraintSet.START)
+                ConstraintSet.START,
+            )
             applyTo(root)
         }
     }

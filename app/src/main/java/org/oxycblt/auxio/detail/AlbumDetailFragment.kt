@@ -259,7 +259,8 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     AlbumDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
+                        decision.songs.map { it.uid }.toTypedArray()
+                    )
                 }
                 is PlaylistDecision.New,
                 is PlaylistDecision.Import,

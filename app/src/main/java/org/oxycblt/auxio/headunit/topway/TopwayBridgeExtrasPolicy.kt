@@ -18,10 +18,7 @@
 
 package org.oxycblt.auxio.headunit.topway
 
-data class TopwayBridgeExtras(
-    val cmd: String?,
-    val widgetProgress: Int?,
-)
+data class TopwayBridgeExtras(val cmd: String?, val widgetProgress: Int?)
 
 /** Allowlist-only bridge payload sanitizer for exported Topway receiver intents. */
 object TopwayBridgeExtrasPolicy {

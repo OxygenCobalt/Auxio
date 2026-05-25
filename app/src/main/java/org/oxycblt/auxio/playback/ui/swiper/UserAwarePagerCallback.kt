@@ -31,7 +31,7 @@ import androidx.viewpager2.widget.ViewPager2
  */
 class UserAwarePagerCallback(
     private val viewPager: ViewPager2,
-    private val userCallback: (Int) -> Unit
+    private val userCallback: (Int) -> Unit,
 ) : ViewPager2.OnPageChangeCallback() {
     private var user = false
 

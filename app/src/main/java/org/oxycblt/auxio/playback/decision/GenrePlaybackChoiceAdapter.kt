@@ -38,7 +38,8 @@ import org.oxycblt.musikr.Genre
  */
 class GenrePlaybackChoiceAdapter(private val listener: ClickableListListener<Genre>) :
     FlexibleListAdapter<Genre, GenrePlaybackChoiceViewHolder>(
-        GenrePlaybackChoiceViewHolder.DIFF_CALLBACK) {
+        GenrePlaybackChoiceViewHolder.DIFF_CALLBACK
+    ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         GenrePlaybackChoiceViewHolder.from(parent)
 

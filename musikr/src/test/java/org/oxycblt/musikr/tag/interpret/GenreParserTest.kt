@@ -24,34 +24,16 @@ import org.junit.Test
 class GenreParserTest {
     @Test
     fun parseGenreNames_splitsApprovedGenreDelimiters() {
-        assertGenres(
-            listOf("Pop", "Rock", "Pop-punk", "Emo"),
-            "Pop, Rock, Pop-punk, Emo",
-        )
-        assertGenres(
-            listOf("Pop", "Rock", "Pop-punk", "Emo"),
-            "Pop; Rock; Pop-punk; Emo",
-        )
-        assertGenres(
-            listOf("Pop", "Rock", "Pop-punk", "Emo"),
-            "Pop/Rock/Pop-punk/Emo",
-        )
-        assertGenres(
-            listOf("Pop", "Rock", "Pop-punk", "Emo"),
-            "Pop | Rock | Pop-punk | Emo",
-        )
-        assertGenres(
-            listOf("Pop", "Rock", "Pop-punk", "Emo"),
-            "Pop\\Rock\\Pop-punk\\Emo",
-        )
+        assertGenres(listOf("Pop", "Rock", "Pop-punk", "Emo"), "Pop, Rock, Pop-punk, Emo")
+        assertGenres(listOf("Pop", "Rock", "Pop-punk", "Emo"), "Pop; Rock; Pop-punk; Emo")
+        assertGenres(listOf("Pop", "Rock", "Pop-punk", "Emo"), "Pop/Rock/Pop-punk/Emo")
+        assertGenres(listOf("Pop", "Rock", "Pop-punk", "Emo"), "Pop | Rock | Pop-punk | Emo")
+        assertGenres(listOf("Pop", "Rock", "Pop-punk", "Emo"), "Pop\\Rock\\Pop-punk\\Emo")
         assertGenres(
             listOf("Pop", "Rock", "Pop-punk", "Emo", "Indie"),
             "Pop, Rock/Pop-punk; Emo | Indie",
         )
-        assertGenres(
-            listOf("Pop", "Rock", "Pop-punk", "Emo"),
-            " Pop,  Rock / Pop-punk ; Emo ",
-        )
+        assertGenres(listOf("Pop", "Rock", "Pop-punk", "Emo"), " Pop,  Rock / Pop-punk ; Emo ")
     }
 
     @Test
@@ -92,12 +74,7 @@ class GenreParserTest {
             "R&B/Soul",
             "Pop-punk",
         )
-        assertGenres(
-            listOf("Post-Rock", "Shoegaze", "R&B", "Soul"),
-            "176",
-            "178",
-            "R&B/Soul",
-        )
+        assertGenres(listOf("Post-Rock", "Shoegaze", "R&B", "Soul"), "176", "178", "R&B/Soul")
     }
 
     @Test

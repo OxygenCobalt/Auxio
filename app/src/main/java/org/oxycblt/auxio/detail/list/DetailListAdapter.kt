@@ -147,7 +147,8 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
          */
         fun from(parent: ViewGroup) =
             SortHeaderViewHolder(
-                ItemSortHeaderBinding.inflate(parent.context.inflater, parent, false))
+                ItemSortHeaderBinding.inflate(parent.context.inflater, parent, false)
+            )
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

@@ -109,7 +109,8 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          */
         private val ISO8601_REGEX by lazy {
             Regex(
-                """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
+                """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$"""
+            )
         }
 
         /**

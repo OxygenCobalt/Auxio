@@ -27,22 +27,28 @@ class TopwayStartRoutingPolicyTest {
     fun `known commands map only when a current song exists`() {
         assertEquals(
             TopwayServiceAction.PREVIOUS,
-            decide(TopwayMusicContract.ACTION_PREV, hasSong = true).action)
+            decide(TopwayMusicContract.ACTION_PREV, hasSong = true).action,
+        )
         assertEquals(
             TopwayServiceAction.NEXT,
-            decide(TopwayMusicContract.ACTION_NEXT, hasSong = true).action)
+            decide(TopwayMusicContract.ACTION_NEXT, hasSong = true).action,
+        )
         assertEquals(
             TopwayServiceAction.PLAY_PAUSE,
-            decide(TopwayMusicContract.ACTION_PLAY_PAUSE, hasSong = true).action)
+            decide(TopwayMusicContract.ACTION_PLAY_PAUSE, hasSong = true).action,
+        )
         assertEquals(
             TopwayServiceAction.IGNORE,
-            decide(TopwayMusicContract.ACTION_PREV, hasSong = false).action)
+            decide(TopwayMusicContract.ACTION_PREV, hasSong = false).action,
+        )
         assertEquals(
             TopwayServiceAction.IGNORE,
-            decide(TopwayMusicContract.ACTION_NEXT, hasSong = false).action)
+            decide(TopwayMusicContract.ACTION_NEXT, hasSong = false).action,
+        )
         assertEquals(
             TopwayServiceAction.IGNORE,
-            decide(TopwayMusicContract.ACTION_PLAY_PAUSE, hasSong = false).action)
+            decide(TopwayMusicContract.ACTION_PLAY_PAUSE, hasSong = false).action,
+        )
     }
 
     @Test
@@ -57,10 +63,12 @@ class TopwayStartRoutingPolicyTest {
     fun `unknown commands no-op and cannot imply fallback playback`() {
         assertEquals(
             TopwayServiceAction.IGNORE,
-            decide(TopwayMusicContract.ACTION_CMD, "bad", hasSong = true).action)
+            decide(TopwayMusicContract.ACTION_CMD, "bad", hasSong = true).action,
+        )
         assertEquals(
             TopwayServiceAction.IGNORE,
-            decide(TopwayMusicContract.ACTION_CMD, null, hasSong = true).action)
+            decide(TopwayMusicContract.ACTION_CMD, null, hasSong = true).action,
+        )
         assertEquals(TopwayServiceAction.IGNORE, decide("bad.action", null, hasSong = true).action)
     }
 
@@ -71,7 +79,8 @@ class TopwayStartRoutingPolicyTest {
                 TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK,
                 rawSeek = 2500,
                 durationMs = 5_000L,
-                hasSong = true)
+                hasSong = true,
+            )
         assertEquals(TopwayServiceAction.SEEK, valid.action)
         assertEquals(2500L, valid.seekTargetMs)
 
@@ -80,7 +89,8 @@ class TopwayStartRoutingPolicyTest {
                 TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK,
                 rawSeek = -1,
                 durationMs = 5_000L,
-                hasSong = true)
+                hasSong = true,
+            )
         assertEquals(0L, negative.seekTargetMs)
 
         val beyond =
@@ -88,7 +98,8 @@ class TopwayStartRoutingPolicyTest {
                 TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK,
                 rawSeek = 8_000L,
                 durationMs = 5_000L,
-                hasSong = true)
+                hasSong = true,
+            )
         assertEquals(5_000L, beyond.seekTargetMs)
     }
 
@@ -100,32 +111,40 @@ class TopwayStartRoutingPolicyTest {
                     TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK,
                     rawSeek = 100,
                     durationMs = null,
-                    hasSong = true)
-                .action)
+                    hasSong = true,
+                )
+                .action,
+        )
         assertEquals(
             TopwayServiceAction.IGNORE,
             decide(
                     TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK,
                     rawSeek = 100,
                     durationMs = 0L,
-                    hasSong = true)
-                .action)
+                    hasSong = true,
+                )
+                .action,
+        )
         assertEquals(
             TopwayServiceAction.IGNORE,
             decide(
                     TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK,
                     rawSeek = "bad",
                     durationMs = 5_000L,
-                    hasSong = true)
-                .action)
+                    hasSong = true,
+                )
+                .action,
+        )
         assertEquals(
             TopwayServiceAction.IGNORE,
             decide(
                     TopwayMusicContract.ACTION_LAUNCHER_WIDGET_SEEK,
                     rawSeek = 100,
                     durationMs = 5_000L,
-                    hasSong = false)
-                .action)
+                    hasSong = false,
+                )
+                .action,
+        )
     }
 
     private fun decide(

@@ -44,7 +44,7 @@ class TopwayMusicBridgeReceiver : BroadcastReceiver() {
         val extras =
             TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(
                 intent.extras?.keySet()?.associateWith { key -> intent.extras?.get(key) }
-                    ?: emptyMap(),
+                    ?: emptyMap()
             )
         extras.cmd?.let { serviceIntent.putExtra(TopwayMusicContract.EXTRA_CMD, it) }
         extras.widgetProgress?.let {

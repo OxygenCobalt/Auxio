@@ -38,7 +38,7 @@ import org.oxycblt.auxio.ui.UISettings
 
 enum class Direction {
     FORWARDS,
-    BACKWARDS
+    BACKWARDS,
 }
 
 @AndroidEntryPoint
@@ -81,7 +81,8 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
             val shapeAppearanceRes =
                 getResourceId(
                     R.styleable.PlayerFastSeekOverlay_shapeAppearance,
-                    com.google.android.material.R.style.ShapeAppearance_Material3_Corner_Medium)
+                    com.google.android.material.R.style.ShapeAppearance_Material3_Corner_Medium,
+                )
 
             background =
                 MaterialShapeDrawable().apply {
@@ -140,7 +141,7 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     private fun enter(
         secondsView: SecondsView,
         tapView: TapView,
-        overlayState: (OverlayState) -> Unit
+        overlayState: (OverlayState) -> Unit,
     ) {
         // start animating the seconds icon
         secondsView.startAnimation()
@@ -160,7 +161,7 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     private fun exit(
         secondsView: SecondsView,
         tapView: TapView,
-        overlayState: (OverlayState) -> Unit
+        overlayState: (OverlayState) -> Unit,
     ) {
         val secondsOut = alphaSpring.alpha(secondsView, 0.0f)
         val tapOut = alphaSpring.alpha(tapView, 0.0f)
@@ -262,7 +263,8 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
                     rightSecondsView,
                     rightTapView,
                     rightOverlayState,
-                    { rightOverlayState = it })
+                    { rightOverlayState = it },
+                )
             }
 
             Direction.FORWARDS -> {

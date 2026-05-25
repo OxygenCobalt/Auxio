@@ -22,10 +22,7 @@ import kotlin.random.Random
 
 /** Pure helper for selecting a genre-overlap queue while preserving the current item. */
 object GenreShuffleQueueSelector {
-    data class Selection<T>(
-        val queue: List<T>,
-        val currentIndex: Int,
-    )
+    data class Selection<T>(val queue: List<T>, val currentIndex: Int)
 
     fun <T, K> select(
         current: T,

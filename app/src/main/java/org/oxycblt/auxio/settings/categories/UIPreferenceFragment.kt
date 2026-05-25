@@ -88,8 +88,8 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                     when (compatStatus.nativePrivateIntegrationStatus) {
                         NativePrivateIntegrationStatus.NOT_ENABLED_REQUIRES_VALIDATION ->
                             getString(
-                                R.string
-                                    .set_head_unit_compat_native_not_enabled_requires_validation)
+                                R.string.set_head_unit_compat_native_not_enabled_requires_validation
+                            )
                     }
                 preference.summary =
                     getString(

@@ -79,7 +79,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             playbackModel.togglePlaying()
             context.showToast(
                 if (playbackModel.isPlaying.value) R.string.msg_playback_play
-                else R.string.msg_playback_pause)
+                else R.string.msg_playback_pause
+            )
         }
         HeadUnitUiAdapter.applyLargeControls(
             resources,
@@ -173,7 +174,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                             R.drawable.ic_shuffle_genre_state_24
                         } else {
                             R.drawable.sel_shuffle_state_24
-                        })
+                        }
+                    )
                     isChecked = shuffleScope != ShuffleScope.OFF
                     contentDescription =
                         when (shuffleScope) {
@@ -195,7 +197,11 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             clone(root)
             clear(R.id.playback_cover, ConstraintSet.START)
             connect(
-                R.id.playback_cover, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                R.id.playback_cover,
+                ConstraintSet.END,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.END,
+            )
 
             clear(R.id.playback_controls_wrapper, ConstraintSet.END)
             connect(
@@ -211,7 +217,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 R.id.playback_song,
                 ConstraintSet.START,
                 R.id.playback_controls_wrapper,
-                ConstraintSet.END)
+                ConstraintSet.END,
+            )
             connect(R.id.playback_song, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
 
             clear(R.id.playback_info, ConstraintSet.START)
@@ -220,7 +227,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 R.id.playback_info,
                 ConstraintSet.START,
                 R.id.playback_controls_wrapper,
-                ConstraintSet.END)
+                ConstraintSet.END,
+            )
             connect(R.id.playback_info, ConstraintSet.END, R.id.playback_cover, ConstraintSet.START)
             applyTo(root)
         }

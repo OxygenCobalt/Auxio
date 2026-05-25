@@ -49,5 +49,5 @@ data class HeadUnitCompatStatus(
 )
 
 enum class NativePrivateIntegrationStatus {
-    NOT_ENABLED_REQUIRES_VALIDATION,
+    NOT_ENABLED_REQUIRES_VALIDATION
 }

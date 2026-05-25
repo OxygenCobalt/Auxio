@@ -147,7 +147,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         // --- UI SETUP ---
 
         binding.homeAppbar.addOnOffsetChangedListener(
-            FadingToolbarOffsetListener(binding.homeToolbar, binding.homeContent))
+            FadingToolbarOffsetListener(binding.homeToolbar, binding.homeContent)
+        )
         binding.homeNormalToolbar.apply {
             setOnMenuItemClickListener(this@HomeFragment)
             MenuCompat.setGroupDividerEnabled(menu, true)
@@ -162,7 +163,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                     override fun onPageSelected(position: Int) {
                         homeModel.synchronizeTabPosition(position)
                     }
-                })
+                }
+            )
 
             // ViewPager2 will nominally consume window insets, which will then break the window
             // insets applied to the indexing view before API 30. Fix this by overriding the
@@ -226,7 +228,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                     hasLibraryContent = hasLibrary,
                     hasFavourites = favouritesPlaylist?.songs?.isNotEmpty() == true,
                     isIndexing = musicModel.indexingState.value is IndexingState.Indexing,
-                ))
+                )
+            )
 
         if (binding.homeQuickPicks.childCount != entries.size) {
             binding.homeQuickPicks.removeAllViews()
@@ -259,9 +262,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             HeadUnitEntryPoints.EntryDestination.entries.firstOrNull { it.name == destinationName }
                 ?: HeadUnitEntryPoints.safeDestinationForAction(null)
 
-        if (musicModel.indexingState.value is IndexingState.Indexing &&
-            destination != HeadUnitEntryPoints.EntryDestination.NOW_PLAYING &&
-            destination != HeadUnitEntryPoints.EntryDestination.QUEUE) {
+        if (
+            musicModel.indexingState.value is IndexingState.Indexing &&
+                destination != HeadUnitEntryPoints.EntryDestination.NOW_PLAYING &&
+                destination != HeadUnitEntryPoints.EntryDestination.QUEUE
+        ) {
             homeModel.synchronizeTabPosition(0)
             return
         }
@@ -301,9 +306,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         binding.homeMetadataChips.removeAllViews()
         if (metadataState.genres) {
             binding.homeMetadataChips.addView(
-                buildMetaChip(binding, getString(R.string.lbl_genres)) {
-                    openTab(MusicType.GENRES)
-                })
+                buildMetaChip(binding, getString(R.string.lbl_genres)) { openTab(MusicType.GENRES) }
+            )
         }
         if (metadataState.decades) {
             val activeDecade = homeModel.decadeFilter.value
@@ -315,19 +319,22 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             binding.homeMetadataChips.addView(
                 buildMetaChip(binding, getString(R.string.lbl_recently_added)) {
                     openRecentlyAdded()
-                })
+                }
+            )
         }
         if (metadataState.folders) {
             binding.homeMetadataChips.addView(
                 buildMetaChip(binding, getString(R.string.lbl_folders)) {
                     homeModel.startChooseMusicLocations()
-                })
+                }
+            )
         }
         if (metadataState.favourites) {
             binding.homeMetadataChips.addView(
                 buildMetaChip(binding, getString(R.string.lbl_favourites)) {
                     favouritesPlaylist?.let { detailModel.showPlaylist(it) }
-                })
+                }
+            )
         }
         setupHeadUnitQuickAccess(binding)
     }
@@ -621,7 +628,8 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} to a playlist")
                     HomeFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
+                        decision.songs.map { it.uid }.toTypedArray()
+                    )
                 }
             }
         findNavController().navigateSafe(directions)

@@ -145,7 +145,8 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
         fun from(parent: ViewGroup) =
             DiscHeaderViewHolder(
                 // TODO: Get all viewholders to inflate anchored to parent
-                ItemDiscHeaderBinding.inflate(parent.context.inflater, parent, false))
+                ItemDiscHeaderBinding.inflate(parent.context.inflater, parent, false)
+            )
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -269,7 +270,8 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
          */
         fun from(parent: ViewGroup) =
             AlbumSongViewHolder(
-                ItemAlbumSongBinding.inflate(parent.context.inflater, parent, false))
+                ItemAlbumSongBinding.inflate(parent.context.inflater, parent, false)
+            )
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

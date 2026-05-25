@@ -133,15 +133,16 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() {
             val locations =
                 unlikelyToBeNull(
-                        sharedPreferences.getString(
-                            getString(R.string.set_key_music_locations), ""))
+                        sharedPreferences.getString(getString(R.string.set_key_music_locations), "")
+                    )
                     .toOpenedLocations()
             val excludedLocations =
                 unlikelyToBeNull(
                         sharedPreferences.getString(
                             getString(R.string.set_key_excluded_locations),
                             "",
-                        ))
+                        )
+                    )
                     .toUnopenedLocations()
             val withHidden =
                 sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
@@ -176,7 +177,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                         sharedPreferences.getString(
                             getString(R.string.set_key_filtered_locations),
                             "",
-                        ))
+                        )
+                    )
                     .toUnopenedLocations()
             val excludeNonMusic =
                 sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)

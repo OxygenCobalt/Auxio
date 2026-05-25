@@ -51,14 +51,16 @@ class HeadUnitQuickAccessTest {
                     true,
                     hasFolderSupport = true,
                     hasFavouritesSupport = false,
-                    hasYearMetadata = false)
+                    hasYearMetadata = false,
+                )
                 .associateBy { it.action }
         val withYears =
             HeadUnitQuickAccess.quickPicks(
                     true,
                     hasFolderSupport = true,
                     hasFavouritesSupport = false,
-                    hasYearMetadata = true)
+                    hasYearMetadata = true,
+                )
                 .associateBy { it.action }
         assertFalse(noYears.getValue(QuickPickAction.DECADES).enabled)
         assertTrue(withYears.getValue(QuickPickAction.DECADES).enabled)
@@ -107,7 +109,8 @@ class HeadUnitQuickAccessTest {
                 decadeCount = 1,
                 hasRecent = true,
                 hasFolders = false,
-                hasFavourites = false)
+                hasFavourites = false,
+            )
         assertTrue(state.genres)
         assertTrue(state.decades)
         assertTrue(state.recentlyAdded)

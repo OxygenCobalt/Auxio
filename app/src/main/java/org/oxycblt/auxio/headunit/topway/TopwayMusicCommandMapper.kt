@@ -23,7 +23,7 @@ enum class TopwayMappedCommand {
     NEXT,
     PLAY_PAUSE,
     UPDATE,
-    UNKNOWN
+    UNKNOWN,
 }
 
 object TopwayMusicCommandMapper {

@@ -30,11 +30,8 @@ import com.google.android.material.shape.ShapeAppearanceModel
 /** A square [FrameLayout] that clips its contents to a Material shape. */
 class SquareMaskableFrameLayout
 @JvmOverloads
-constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-) : FrameLayout(context, attrs, defStyleAttr) {
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
     private val shapeDrawable = MaterialShapeDrawable()
     private val maskPath = Path()
     private val maskRect = RectF()

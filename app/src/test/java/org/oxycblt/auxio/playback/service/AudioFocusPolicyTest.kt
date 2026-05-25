@@ -124,7 +124,8 @@ class AudioFocusPolicyTest {
             )
         val stateAfterTransient =
             AudioFocusPolicy.State(
-                wasPlayingBeforeTransientLoss = afterTransient.rememberTransientPlayback ?: false)
+                wasPlayingBeforeTransientLoss = afterTransient.rememberTransientPlayback ?: false
+            )
         val afterGain =
             AudioFocusPolicy.decide(
                 AudioFocusPolicy.Event.GAIN,
@@ -133,13 +134,10 @@ class AudioFocusPolicyTest {
             )
         val stateAfterGain =
             AudioFocusPolicy.State(
-                wasPlayingBeforeTransientLoss = afterGain.rememberTransientPlayback ?: false)
-        val secondGain =
-            AudioFocusPolicy.decide(
-                AudioFocusPolicy.Event.GAIN,
-                stateAfterGain,
-                isPlaying = false,
+                wasPlayingBeforeTransientLoss = afterGain.rememberTransientPlayback ?: false
             )
+        val secondGain =
+            AudioFocusPolicy.decide(AudioFocusPolicy.Event.GAIN, stateAfterGain, isPlaying = false)
 
         assertTrue(afterGain.resume)
         assertEquals(false, afterGain.rememberTransientPlayback)
@@ -155,44 +153,64 @@ class AudioFocusPolicyTest {
                 playWhenReady = false,
                 sessionOngoing = false,
                 hasCurrentSong = true,
-            ))
+            )
+        )
         assertFalse(
             AudioFocusPolicy.shouldResumePlayback(
                 decision,
                 playWhenReady = false,
                 sessionOngoing = true,
                 hasCurrentSong = false,
-            ))
+            )
+        )
         assertFalse(
             AudioFocusPolicy.shouldResumePlayback(
                 decision,
                 playWhenReady = true,
                 sessionOngoing = true,
                 hasCurrentSong = true,
-            ))
+            )
+        )
         assertTrue(
             AudioFocusPolicy.shouldResumePlayback(
                 decision,
                 playWhenReady = false,
                 sessionOngoing = true,
                 hasCurrentSong = true,
-            ))
+            )
+        )
     }
 
     @Test
     fun `media button handling requires focus current song and ongoing session`() {
         assertFalse(
             AudioFocusPolicy.shouldHandleMediaButton(
-                isFocusHeld = true, hasCurrentSong = true, sessionOngoing = false))
+                isFocusHeld = true,
+                hasCurrentSong = true,
+                sessionOngoing = false,
+            )
+        )
         assertFalse(
             AudioFocusPolicy.shouldHandleMediaButton(
-                isFocusHeld = false, hasCurrentSong = true, sessionOngoing = true))
+                isFocusHeld = false,
+                hasCurrentSong = true,
+                sessionOngoing = true,
+            )
+        )
         assertFalse(
             AudioFocusPolicy.shouldHandleMediaButton(
-                isFocusHeld = true, hasCurrentSong = false, sessionOngoing = true))
+                isFocusHeld = true,
+                hasCurrentSong = false,
+                sessionOngoing = true,
+            )
+        )
         assertTrue(
             AudioFocusPolicy.shouldHandleMediaButton(
-                isFocusHeld = true, hasCurrentSong = true, sessionOngoing = true))
+                isFocusHeld = true,
+                hasCurrentSong = true,
+                sessionOngoing = true,
+            )
+        )
     }
 
     @Test

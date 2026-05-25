@@ -24,13 +24,10 @@ enum class TopwayServiceAction {
     PLAY_PAUSE,
     WIDGET_UPDATE,
     SEEK,
-    IGNORE
+    IGNORE,
 }
 
-data class TopwayServiceDecision(
-    val action: TopwayServiceAction,
-    val seekTargetMs: Long? = null,
-)
+data class TopwayServiceDecision(val action: TopwayServiceAction, val seekTargetMs: Long? = null)
 
 /** Pure routing policy used by both the cold manifest bridge and active playback receiver. */
 object TopwayStartRoutingPolicy {

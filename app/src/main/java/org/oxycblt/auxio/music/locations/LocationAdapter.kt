@@ -134,7 +134,8 @@ class LocationViewHolder<T : Location>(private val binding: ItemMusicLocationBin
          */
         fun <T : Location> from(parent: ViewGroup) =
             LocationViewHolder<T>(
-                ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false))
+                ItemMusicLocationBinding.inflate(parent.context.inflater, parent, false)
+            )
     }
 }
 
@@ -154,6 +155,7 @@ class EmptyLocationViewHolder(private val binding: ItemNoLocationsBinding) :
          */
         fun from(parent: ViewGroup) =
             EmptyLocationViewHolder(
-                ItemNoLocationsBinding.inflate(parent.context.inflater, parent, false))
+                ItemNoLocationsBinding.inflate(parent.context.inflater, parent, false)
+            )
     }
 }

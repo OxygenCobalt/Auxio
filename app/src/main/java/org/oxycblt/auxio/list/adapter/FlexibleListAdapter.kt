@@ -242,7 +242,8 @@ private class FlexibleListDiffer<T>(
                             }
                             throw AssertionError()
                         }
-                    })
+                    }
+                )
 
             mainThreadExecutor.execute {
                 if (maxScheduledGeneration == runGeneration) {

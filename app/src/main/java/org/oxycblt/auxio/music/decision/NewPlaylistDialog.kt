@@ -58,7 +58,8 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
                     PlaylistDecision.New.Reason.NEW,
                     PlaylistDecision.New.Reason.ADD -> R.string.lbl_new_playlist
                     PlaylistDecision.New.Reason.IMPORT -> R.string.lbl_import_playlist
-                })
+                }
+            )
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 val pendingPlaylist = unlikelyToBeNull(pickerModel.currentPendingNewPlaylist.value)
                 val name =
