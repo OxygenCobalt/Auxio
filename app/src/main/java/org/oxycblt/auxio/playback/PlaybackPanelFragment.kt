@@ -34,6 +34,7 @@ import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -43,11 +44,11 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
+import org.oxycblt.auxio.playback.ui.stepper.Direction
+import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
 import org.oxycblt.auxio.playback.ui.swiper.CarouselTransformer
 import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
 import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
-import org.oxycblt.auxio.playback.ui.stepper.Direction
-import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
@@ -56,7 +57,6 @@ import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
-import kotlin.math.abs
 import timber.log.Timber as L
 
 /**
@@ -73,7 +73,7 @@ class PlaybackPanelFragment :
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
     PlayerFastSeekOverlay.PerformListener {
-        private val coverPagerAdapter = CoverPagerAdapter(this)
+    private val coverPagerAdapter = CoverPagerAdapter(this)
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
@@ -112,11 +112,13 @@ class PlaybackPanelFragment :
 
         binding.playbackPager?.apply {
             adapter = coverPagerAdapter
-            userAwarePagerCallback = UserAwarePagerCallback(this) {
-                // Posting the queue goto command prevents the seekbar pos from desyncing
-                // from the song's duration, which creates a visual flicker in the seekbar.
-                post { queueModel.goto(it) }
-            }.also { it.attach() }
+            userAwarePagerCallback =
+                UserAwarePagerCallback(this) {
+                        // Posting the queue goto command prevents the seekbar pos from desyncing
+                        // from the song's duration, which creates a visual flicker in the seekbar.
+                        post { queueModel.goto(it) }
+                    }
+                    .also { it.attach() }
             setPageTransformer(CarouselTransformer())
             recycler().apply {
                 // Make it possible to collapse the bottom sheet from the ViewPager's touch area.
@@ -179,39 +181,39 @@ class PlaybackPanelFragment :
     }
 
     // FIXME: Old code!! Maybe not necessary anymore?
-//    override fun onStart() {
-//        super.onStart()
-//        playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
-//        requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
-//    }
+    //    override fun onStart() {
+    //        super.onStart()
+    //        playbackModel.song.value?.let { requireBinding().playbackCover.bind(it) }
+    //        requireBinding().root.viewTreeObserver.addOnGlobalLayoutListener(this)
+    //    }
 
-//    override fun onStop() {
-//        super.onStop()
-//        requireBinding().root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//    }
+    //    override fun onStop() {
+    //        super.onStop()
+    //        requireBinding().root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+    //    }
 
-//    override fun onGlobalLayout() {
-//        if (binding == null || lastCoverWidth < 0) {
-//            return
-//        }
-        // Hacky workaround for cover radius not being preserved in between sizing changes
-        // (i.e split screen or landscape mode)
-        // For some reason ConstraintLayout does several passes on 1:1 elements that causes their
-        // size to radically change, so we wait until it stabilizes and then force an image
-        // reload if needed. Optimistically this is a no-op from coil caching, but when the cover
-        // did accidentally load the wrong image (with weird corner radius intended for bigger
-        // covers) we can force it to reload.
-        // If this breaks, it's fine since we also started a load as we normally did w/state
-        // updates, so the cover will not break.
-//        val binding = requireBinding()
-//        val coverWidth = binding.playbackCover.width
-//        if (lastCoverWidth != coverWidth) {
-//            lastCoverWidth = coverWidth
-//        } else {
-//            playbackModel.song.value?.let { binding.playbackCover.bind(it) }
-//            lastCoverWidth = -1
-//        }
-//    }
+    //    override fun onGlobalLayout() {
+    //        if (binding == null || lastCoverWidth < 0) {
+    //            return
+    //        }
+    // Hacky workaround for cover radius not being preserved in between sizing changes
+    // (i.e split screen or landscape mode)
+    // For some reason ConstraintLayout does several passes on 1:1 elements that causes their
+    // size to radically change, so we wait until it stabilizes and then force an image
+    // reload if needed. Optimistically this is a no-op from coil caching, but when the cover
+    // did accidentally load the wrong image (with weird corner radius intended for bigger
+    // covers) we can force it to reload.
+    // If this breaks, it's fine since we also started a load as we normally did w/state
+    // updates, so the cover will not break.
+    //        val binding = requireBinding()
+    //        val coverWidth = binding.playbackCover.width
+    //        if (lastCoverWidth != coverWidth) {
+    //            lastCoverWidth = coverWidth
+    //        } else {
+    //            playbackModel.song.value?.let { binding.playbackCover.bind(it) }
+    //            lastCoverWidth = -1
+    //        }
+    //    }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
@@ -323,7 +325,10 @@ class PlaybackPanelFragment :
                 // user scroll, carry on
                 return
             }
-            binding.playbackPager.setCurrentItem(command.scroll, command.update == null && abs(delta) == 1)
+            binding.playbackPager.setCurrentItem(
+                command.scroll,
+                command.update == null && abs(delta) == 1,
+            )
         }
     }
 
@@ -346,7 +351,5 @@ class PlaybackPanelFragment :
         }
     }
 
-    private companion object {
-
-    }
+    private companion object {}
 }

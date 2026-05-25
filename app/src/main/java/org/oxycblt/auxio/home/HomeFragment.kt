@@ -32,14 +32,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -65,7 +63,6 @@ import org.oxycblt.auxio.ui.FadingToolbarOffsetListener
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
-import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.IndexingProgress

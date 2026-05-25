@@ -38,14 +38,13 @@ import androidx.core.graphics.withSave
 import androidx.core.view.isVisible
 import androidx.dynamicanimation.animation.FloatValueHolder
 import androidx.dynamicanimation.animation.SpringAnimation
+import com.google.android.material.R as MR
 import com.google.android.material.motion.MotionUtils
-import org.oxycblt.auxio.R
-import timber.log.Timber
 import kotlin.math.abs
-import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
-import com.google.android.material.R as MR
+import org.oxycblt.auxio.R
+import timber.log.Timber
 
 /**
  * Slider with active-track wave rendering that ports MDC LinearProgressIndicator's wavy draw
@@ -153,19 +152,24 @@ constructor(
                 strokeCap = Paint.Cap.BUTT
                 strokeWidth = trackHeight.toFloat()
                 isAntiAlias = true
-                color = trackActiveTintList.getColorForState(
-                    drawableState,
-                    trackActiveTintList.defaultColor
-                )
+                color =
+                    trackActiveTintList.getColorForState(
+                        drawableState,
+                        trackActiveTintList.defaultColor,
+                    )
             }
         updateActiveTrackSuppression()
 
         if (trackCornerSize < trackHeight) {
-            Timber.w("WavySlider can only be fully rounded. Clamping corner size down to trackHeight / 2")
+            Timber.w(
+                "WavySlider can only be fully rounded. Clamping corner size down to trackHeight / 2"
+            )
             trackCornerSize = trackHeight
         }
         if (trackInsideCornerSize < trackHeight) {
-            Timber.w("WavySlider can only be fully rounded. Clamping inner corner size down to trackHeight / 2")
+            Timber.w(
+                "WavySlider can only be fully rounded. Clamping inner corner size down to trackHeight / 2"
+            )
             trackInsideCornerSize = trackHeight
         }
     }
@@ -251,10 +255,7 @@ constructor(
 
         displayedTrackThickness = trackHeight.toFloat()
         displayedCornerRadius =
-            min(
-                min(displayedTrackThickness / 2f, trackCornerSize.toFloat()),
-                trackLength / 2f,
-            )
+            min(min(displayedTrackThickness / 2f, trackCornerSize.toFloat()), trackLength / 2f)
         displayedInnerCornerRadius = displayedCornerRadius
 
         // Calculate the actual wave path or re-use it
@@ -357,9 +358,7 @@ constructor(
         startPoint.translate(startBlockCenterX + originX, trackCenterY)
         endPoint.translate(endBlockCenterX + originX, trackCenterY)
 
-        if (
-            startBound <= 0f && endBlockCenterX < startBlockCenterX
-        ) {
+        if (startBound <= 0f && endBlockCenterX < startBlockCenterX) {
             drawRoundedBlock(
                 canvas = canvas,
                 drawCenter = startPoint,
@@ -392,13 +391,7 @@ constructor(
             )
             canvas.drawPath(displayedWavePath, wavePaint)
         } else {
-            canvas.drawLine(
-                startPoint.x,
-                startPoint.y,
-                endPoint.x,
-                endPoint.y,
-                wavePaint,
-            )
+            canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, wavePaint)
         }
     }
 
@@ -423,15 +416,14 @@ constructor(
         canvas: Canvas,
         drawCenter: PointF,
         clipCenter: PointF,
-        clipRight: Boolean
+        clipRight: Boolean,
     ) {
         wavePaint.style = Paint.Style.FILL
         canvas.withSave {
             var clipWidth = trackHeight.toFloat()
             val halfHeight = trackHeight / 2f
             if (clipRight) {
-                val leftEdgeDiff =
-                    (clipCenter.x - trackHeight / 2f) - (drawCenter.x - trackHeight)
+                val leftEdgeDiff = (clipCenter.x - trackHeight / 2f) - (drawCenter.x - trackHeight)
                 if (leftEdgeDiff > 0f) {
                     clipCenter.translate(-leftEdgeDiff / 2f, 0f)
                     clipWidth += leftEdgeDiff
@@ -443,8 +435,7 @@ constructor(
                     drawCenter.y + halfHeight,
                 )
             } else {
-                val rightEdgeDiff =
-                    (clipCenter.x + trackHeight / 2f) - (drawCenter.x + trackHeight)
+                val rightEdgeDiff = (clipCenter.x + trackHeight / 2f) - (drawCenter.x + trackHeight)
                 if (rightEdgeDiff < 0f) {
                     clipCenter.translate(-rightEdgeDiff / 2f, 0f)
                     clipWidth -= rightEdgeDiff
@@ -477,7 +468,7 @@ constructor(
                 clipRect,
                 trackHeight.toFloat(),
                 trackHeight.toFloat(),
-                Path.Direction.CCW
+                Path.Direction.CCW,
             )
             clipPath(roundedRectPath)
 

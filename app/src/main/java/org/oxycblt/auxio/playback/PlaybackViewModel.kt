@@ -143,12 +143,7 @@ constructor(
         _positionDs.value = playbackManager.progression.calculateElapsedPositionMs().msToDs()
         _song.value = playbackManager.currentSong
 
-        _pagerCommand.put(
-            PagerCommand(
-                update = null,
-                scroll = index
-            )
-        )
+        _pagerCommand.put(PagerCommand(update = null, scroll = index))
         _pagerQueue.value = _pagerQueue.value.copy(index = index)
     }
 
@@ -162,29 +157,18 @@ constructor(
         _pagerCommand.put(
             PagerCommand(
                 update = change.instructions,
-                scroll = index.takeIf { change.type != QueueChange.Type.MAPPING }
+                scroll = index.takeIf { change.type != QueueChange.Type.MAPPING },
             )
         )
-        _pagerQueue.value = PagerQueue(
-            queue = queue,
-            index = index
-        )
+        _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }
 
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         L.d("Queue completely changed, updating current song")
         _isShuffled.value = isShuffled
 
-        _pagerCommand.put(
-            PagerCommand(
-                update = UpdateInstructions.Replace(0),
-                scroll = index
-            )
-        )
-        _pagerQueue.value = PagerQueue(
-            queue = queue,
-            index = index
-        )
+        _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
+        _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }
 
     override fun onNewPlayback(
@@ -198,16 +182,8 @@ constructor(
         _parent.value = parent
         _isShuffled.value = isShuffled
 
-        _pagerCommand.put(
-            PagerCommand(
-                update = UpdateInstructions.Replace(0),
-                scroll = index
-            )
-        )
-        _pagerQueue.value = PagerQueue(
-            queue = queue,
-            index = index
-        )
+        _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
+        _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }
 
     override fun onProgressionChanged(progression: Progression) {
@@ -493,7 +469,8 @@ constructor(
         val currentPositionMs = playbackManager.progression.calculateElapsedPositionMs()
         val currentSong = playbackManager.currentSong
         if (currentSong != null) {
-            val newPositionMs = (currentPositionMs + STEP_INCREMENT).coerceAtMost(currentSong.durationMs)
+            val newPositionMs =
+                (currentPositionMs + STEP_INCREMENT).coerceAtMost(currentSong.durationMs)
             playbackManager.seekTo(newPositionMs)
         }
     }
@@ -684,16 +661,9 @@ constructor(
     }
 }
 
+data class PagerQueue(val queue: List<Song>, val index: Int)
 
-data class PagerQueue(
-    val queue: List<Song>,
-    val index: Int
-)
-
-data class PagerCommand(
-    val update: UpdateInstructions?,
-    val scroll: Int?
-)
+data class PagerCommand(val update: UpdateInstructions?, val scroll: Int?)
 
 /**
  * Command for controlling the main playback panel UI.
