@@ -33,6 +33,8 @@
         <item name="tickVisible">false</item>
         <item name="trackStopIndicatorSize">0dp</item>
         <item name="trackHeight">@dimen/slider_track_height</item>
+        <item name="trackCornerSize">@dimen/slider_track_height</item>
+        <item name="trackInsideCornerSize">@dimen/slider_track_height</item>
         <item name="thumbHeight">@dimen/slider_thumb_height</item>
     </style>
 

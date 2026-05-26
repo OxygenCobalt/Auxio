@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Auxio Project
- * PlayerFastSeekOverlay.kt is part of Auxio.
+ * StepperOverlay.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ enum class Direction {
 }
 
 @AndroidEntryPoint
-class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
+class StepperOverlay(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs), GestureDetector.OnDoubleTapListener {
     private sealed interface OverlayState {
         data object Invisible : OverlayState
@@ -62,14 +62,14 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
     private var rightTapView: TapView
     private val gestureDetector: GestureDetector
 
-    var performListener: PerformListener? = null
+    var listener: Listener? = null
 
     private val alphaSpring = Effect.FAST
 
     private var leftOverlayState: OverlayState = OverlayState.Invisible
     private var rightOverlayState: OverlayState = OverlayState.Invisible
 
-    interface PerformListener {
+    interface Listener {
         fun seek(direction: Direction)
     }
 
@@ -234,8 +234,7 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
         }
 
         // update seconds from tap - reset when exit anim clears
-        // largely implicit shared understanding that seeking occurs by 10s
-        // todo: probably share this constant
+        // 10 s is the standard seek-step amount; shared via this implicit constant.
         tappedSecondsView.seconds += 10
     }
 
@@ -251,8 +250,8 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
                 else -> return false
             }
 
-        // a bit duplicated but already the generic `enter`/`exit` logic
-        // requires a good amount of params and trying to share the helpe
+        // The tap() call accepts many parameters because each side has its own view pair
+        // and state setter; factoring these into a helper would not reduce the total complexity.
         when (direction) {
             Direction.BACKWARDS -> {
                 tap(
@@ -282,9 +281,9 @@ class PlayerFastSeekOverlay(context: Context, attrs: AttributeSet?) :
             }
         }
 
-        performListener?.seek(direction)
+        listener?.seek(direction)
 
-        return false
+        return true
     }
 
     override fun onDoubleTapEvent(e: MotionEvent) = false

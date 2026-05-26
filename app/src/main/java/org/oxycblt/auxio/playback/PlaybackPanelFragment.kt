@@ -51,7 +51,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleScope
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.stepper.Direction
-import org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
+import org.oxycblt.auxio.playback.ui.stepper.StepperOverlay
 import org.oxycblt.auxio.playback.ui.swiper.CarouselTransformer
 import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
 import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
@@ -79,7 +79,7 @@ class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener,
-    PlayerFastSeekOverlay.PerformListener {
+    StepperOverlay.Listener {
     private val coverPagerAdapter = CoverPagerAdapter(this)
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()

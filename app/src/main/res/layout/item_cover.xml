@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.ui.SquareMaskableFrameLayout
+<com.google.android.material.carousel.MaskableFrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <org.oxycblt.auxio.playback.ui.stepper.PlayerFastSeekOverlay
+        <org.oxycblt.auxio.playback.ui.stepper.StepperOverlay
             android:id="@+id/cover_fast_seek_overlay"
             style="@style/Widget.Auxio.Image.Full"
             android:layout_width="0dp"
@@ -34,4 +34,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</org.oxycblt.auxio.ui.SquareMaskableFrameLayout>
+</com.google.android.material.carousel.MaskableFrameLayout>
