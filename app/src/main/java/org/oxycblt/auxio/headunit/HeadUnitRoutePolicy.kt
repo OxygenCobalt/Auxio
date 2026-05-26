@@ -80,4 +80,12 @@ object HeadUnitRoutePolicy {
 
     fun entryDestinationForRoute(route: HeadUnitRoute): HeadUnitEntryPoints.EntryDestination? =
         entryDestinationByRoute[route]
+
+    /**
+     * Returns true if the given route is an immediate playback action (e.g. shuffle all) that does
+     * not navigate to an [HeadUnitEntryPoints.EntryDestination] but is still a valid head-unit
+     * entry point handled by [org.oxycblt.auxio.MainActivity.startIntentAction].
+     */
+    fun isImmediateActionRoute(route: HeadUnitRoute): Boolean =
+        route == HeadUnitRoute.SHUFFLE_ALL
 }

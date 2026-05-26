@@ -48,11 +48,6 @@ on:
 permissions:
   contents: read
 
-env:
-  # Force Node.js 20 actions to run on Node.js 24 while upstream action releases
-  # catch up.  Remove once setup-java and setup-gradle natively target Node 24.
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true

@@ -39,17 +39,17 @@ class TopwayMusicIntentFactoryTest {
                 false,
                 null,
             )
-        val intent = TopwayMusicIntentFactory.metadataIntent(snapshot)
-        assertEquals(TopwayMusicContract.ACTION_MUSIC_INFO, intent.action)
-        assertEquals("t", intent.getStringExtra(TopwayMusicContract.EXTRA_MUSIC_TITLE))
-        assertEquals("a", intent.getStringExtra(TopwayMusicContract.EXTRA_MUSIC_ARTIST))
+        val extras = TopwayMusicIntentFactory.metadataExtras(snapshot)
+        assertEquals("t", extras[TopwayMusicContract.EXTRA_MUSIC_TITLE])
+        assertEquals("a", extras[TopwayMusicContract.EXTRA_MUSIC_ARTIST])
+        assertEquals("al", extras[TopwayMusicContract.EXTRA_MUSIC_ALBUM])
+        assertEquals("uri", extras[TopwayMusicContract.EXTRA_MUSIC_PATH])
     }
 
     @Test
     fun `progress intent clamps negative values and keeps milliseconds`() {
-        val intent = TopwayMusicIntentFactory.progressIntent(-1L, 5_000L)
-        assertEquals(TopwayMusicContract.ACTION_PROGRESS_DURATION, intent.action)
-        assertEquals(0L, intent.getLongExtra(TopwayMusicContract.EXTRA_PROGRESS, -1L))
-        assertEquals(5_000L, intent.getLongExtra(TopwayMusicContract.EXTRA_DURATION, -1L))
+        val extras = TopwayMusicIntentFactory.progressExtras(-1L, 5_000L)
+        assertEquals(0L, extras[TopwayMusicContract.EXTRA_PROGRESS])
+        assertEquals(5_000L, extras[TopwayMusicContract.EXTRA_DURATION])
     }
 }

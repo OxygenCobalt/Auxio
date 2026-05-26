@@ -67,6 +67,6 @@ object HeadUnitStockMusicParity {
 
     fun hasUnexpectedActionLeak(): Boolean =
         parityMap.values.any {
-            it.contains(".action") && !it.startsWith("org.oxycblt.auxio.action")
+            it.contains(".action") && it !in HeadUnitEntryPoints.ALL_PUBLIC_ACTIONS
         }
 }

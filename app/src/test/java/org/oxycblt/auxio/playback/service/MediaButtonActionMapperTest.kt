@@ -28,21 +28,27 @@ class MediaButtonActionMapperTest {
     fun `forwards supported key down events`() {
         assertTrue(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+                repeatCount = 0,
                 hasCurrentSong = true,
                 isFocusHeld = true,
             )
         )
         assertTrue(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_MEDIA_NEXT,
+                repeatCount = 0,
                 hasCurrentSong = true,
                 isFocusHeld = true,
             )
         )
         assertTrue(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_HEADSETHOOK,
+                repeatCount = 0,
                 hasCurrentSong = true,
                 isFocusHeld = true,
             )
@@ -51,39 +57,47 @@ class MediaButtonActionMapperTest {
 
     @Test
     fun `rejects non down repeated and unsupported keys`() {
-        val repeated = KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT, 2)
         assertFalse(
             MediaButtonActionMapper.shouldForward(
-                repeated,
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_MEDIA_NEXT,
+                repeatCount = 2,
                 hasCurrentSong = true,
                 isFocusHeld = true,
             )
         )
         assertFalse(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT),
+                action = KeyEvent.ACTION_UP,
+                keyCode = KeyEvent.KEYCODE_MEDIA_NEXT,
+                repeatCount = 0,
                 hasCurrentSong = true,
                 isFocusHeld = true,
             )
         )
         assertFalse(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_UP),
-                hasCurrentSong = true,
-                isFocusHeld = true,
-            )
-        )
-        val repeatedHook = KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK, 1)
-        assertFalse(
-            MediaButtonActionMapper.shouldForward(
-                repeatedHook,
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_VOLUME_UP,
+                repeatCount = 0,
                 hasCurrentSong = true,
                 isFocusHeld = true,
             )
         )
         assertFalse(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_HEADSETHOOK,
+                repeatCount = 1,
+                hasCurrentSong = true,
+                isFocusHeld = true,
+            )
+        )
+        assertFalse(
+            MediaButtonActionMapper.shouldForward(
+                action = KeyEvent.ACTION_UP,
+                keyCode = KeyEvent.KEYCODE_HEADSETHOOK,
+                repeatCount = 0,
                 hasCurrentSong = true,
                 isFocusHeld = true,
             )
@@ -94,28 +108,36 @@ class MediaButtonActionMapperTest {
     fun `pause and stop are ignored when queue is inert but toggle actions still forward`() {
         assertFalse(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_MEDIA_PAUSE,
+                repeatCount = 0,
                 hasCurrentSong = false,
                 isFocusHeld = true,
             )
         )
         assertFalse(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_MEDIA_STOP,
+                repeatCount = 0,
                 hasCurrentSong = false,
                 isFocusHeld = true,
             )
         )
         assertTrue(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_MEDIA_PLAY,
+                repeatCount = 0,
                 hasCurrentSong = false,
                 isFocusHeld = true,
             )
         )
         assertTrue(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_HEADSETHOOK,
+                repeatCount = 0,
                 hasCurrentSong = false,
                 isFocusHeld = true,
             )
@@ -126,7 +148,9 @@ class MediaButtonActionMapperTest {
     fun `rejects media keys when focus is not held`() {
         assertFalse(
             MediaButtonActionMapper.shouldForward(
-                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT),
+                action = KeyEvent.ACTION_DOWN,
+                keyCode = KeyEvent.KEYCODE_MEDIA_NEXT,
+                repeatCount = 0,
                 hasCurrentSong = true,
                 isFocusHeld = false,
             )

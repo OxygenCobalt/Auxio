@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef AUXIO_JMETADATABUILDER_H
 #define AUXIO_JMETADATABUILDER_H
 
