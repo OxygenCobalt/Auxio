@@ -308,4 +308,16 @@
     <string name="lbl_email">전자우편을 전송합니다</string>
     <string name="lbl_github">깃허브에 문제를 제기합니다</string>
     <string name="lbl_feedback">응답</string>
+    <string name="lng_play_next">다음 재생 곡</string>
+    <string name="lng_empty_songs">추가한 노래가 여기에 표시됩니다.</string>
+    <string name="lng_empty_albums">추가한 앨범이 여기에 표시됩니다.</string>
+    <string name="lng_empty_artists">추가한 아티스트가 여기에 표시됩니다.</string>
+    <string name="lng_empty_genres">추가한 장르가 여기에 표시됩니다.</string>
+    <string name="lng_empty_playlists">추가한 재생목록이 여기에 표시됩니다.</string>
+    <string name="lng_file_picker">선택한 폴더에서 음악을 불러옵니다. 속도는 느리지만 안정적입니다. 기본 파일 관리자 앱이 설치되어 있어야 합니다.</string>
+    <string name="lng_system_database">안드로이드가 감지한 음악을 불러옵니다. 빠르지만 불안정합니다. cover.jpg와 같은 파일 시스템 의존 기능을 지원하지 않습니다.</string>
+    <string name="lng_grant_storage_anyway">외부 저장소 권한을 허용하여 일부 기기에서의 문제를 해결할 수 있습니다.</string>
+    <string name="lng_grant_storage_required">이 옵션을 활성화하려면 외부 저장소 권한을 허용해 주세요.</string>
+    <string name="lng_include_folders">선택하지 않은 폴더의 음악은 불러오지 않습니다.</string>
+    <string name="lng_exclude_folders">선택한 폴더의 음악은 불러오지 않습니다.</string>
 </resources>
