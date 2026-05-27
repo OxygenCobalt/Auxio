@@ -51,7 +51,7 @@
             android:allowCrossUidActivitySwitchFromBelow="false"
             android:roundIcon="@mipmap/ic_launcher"
             android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="sensorLandscape">
+            android:screenOrientation="unspecified">
 
             <intent-filter>
                 <!-- Expose that we are a music player. -->

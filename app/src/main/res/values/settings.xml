@@ -190,16 +190,6 @@
     <integer name="cover_mode_balanced">0xA11D</integer>
     <integer name="cover_mode_high_quality">0xA11E</integer>
     <integer name="cover_mode_as_is">0xA126</integer>
-    <string-array name="entries_driver_side">
-        <item>@string/set_driver_side_right</item>
-        <item>@string/set_driver_side_left</item>
-    </string-array>
-
-    <integer-array name="values_driver_side">
-        <item>@integer/driver_side_right</item>
-        <item>@integer/driver_side_left</item>
-    </integer-array>
-
     <integer name="driver_side_right">1</integer>
     <integer name="driver_side_left">2</integer>
 </resources>

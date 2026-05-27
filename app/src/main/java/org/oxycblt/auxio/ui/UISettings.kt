@@ -103,12 +103,26 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_mode), true)
 
     override val driverSide: UISettings.DriverSide
-        get() =
-            when (val persisted = sharedPreferences.all[getString(R.string.set_key_driver_side)]) {
-                is Boolean -> if (persisted) UISettings.DriverSide.LEFT else UISettings.DriverSide.RIGHT
-                is Int -> UISettings.DriverSide.from(persisted)
-                else -> UISettings.DriverSide.RIGHT
+        get() {
+            val key = getString(R.string.set_key_driver_side)
+            return try {
+                if (sharedPreferences.getBoolean(key, false)) {
+                    UISettings.DriverSide.LEFT
+                } else {
+                    UISettings.DriverSide.RIGHT
+                }
+            } catch (e: ClassCastException) {
+                val oldVal =
+                    try {
+                        sharedPreferences.getInt(key, 1)
+                    } catch (e2: ClassCastException) {
+                        1
+                    }
+                val side = UISettings.DriverSide.from(oldVal)
+                sharedPreferences.edit { putBoolean(key, side == UISettings.DriverSide.LEFT) }
+                side
             }
+        }
 
     override val largeHeadUnitControls: Boolean
         get() =

@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         setupTheme()
         if (uiSettings.headUnitLandscapeMode) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
         // Inflate the views after setting up the theme so that the theme attributes are applied.
         val binding = ActivityMainBinding.inflate(layoutInflater)

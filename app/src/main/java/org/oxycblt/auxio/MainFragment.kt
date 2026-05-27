@@ -257,7 +257,10 @@ class MainFragment :
 
     private fun applyHeadUnitDriverSideLayout(binding: FragmentMainBinding) {
         val dualPaneRoot = binding.playbackPanelFragment.parent
-        if (dualPaneRoot !is ConstraintLayout || uiSettings.driverSide != UISettings.DriverSide.RIGHT) {
+        if (
+            dualPaneRoot !is ConstraintLayout ||
+                uiSettings.driverSide != UISettings.DriverSide.RIGHT
+        ) {
             return
         }
         ConstraintSet().apply {
@@ -278,8 +281,18 @@ class MainFragment :
             )
             clear(R.id.queue_sheet, ConstraintSet.START)
             clear(R.id.queue_sheet, ConstraintSet.END)
-            connect(R.id.queue_sheet, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(R.id.queue_sheet, ConstraintSet.END, R.id.playback_panel_fragment, ConstraintSet.START)
+            connect(
+                R.id.queue_sheet,
+                ConstraintSet.START,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.START,
+            )
+            connect(
+                R.id.queue_sheet,
+                ConstraintSet.END,
+                R.id.playback_panel_fragment,
+                ConstraintSet.START,
+            )
             applyTo(dualPaneRoot)
         }
     }

@@ -648,6 +648,7 @@ constructor(
             }
             ShuffleScope.GENRE -> {
                 L.d("Cycling shuffle scope: GENRE -> OFF")
+                genreShuffleJob?.cancel()
                 rebuildQueueFromPlaybackContext(ShuffleMode.OFF, ShuffleScope.OFF)
             }
         }
@@ -656,20 +657,14 @@ constructor(
     private fun rebuildQueueFromPlaybackContext(shuffle: ShuffleMode, shuffleScope: ShuffleScope) {
         val currentSong = playbackManager.currentSong
         val currentPositionMs = playbackManager.progression.calculateElapsedPositionMs()
+        val parent = _parent.value
         val command =
             when {
                 currentSong == null -> commandFactory.all(shuffle)
-                _parent.value is Album -> commandFactory.songFromAlbum(currentSong, shuffle)
-                _parent.value is Artist ->
-                    commandFactory.songFromArtist(currentSong, _parent.value as Artist, shuffle)
-                _parent.value is Genre ->
-                    commandFactory.songFromGenre(currentSong, _parent.value as Genre, shuffle)
-                _parent.value is Playlist ->
-                    commandFactory.songFromPlaylist(
-                        currentSong,
-                        _parent.value as Playlist,
-                        shuffle,
-                    )
+                parent is Album -> commandFactory.songFromAlbum(currentSong, shuffle)
+                parent is Artist -> commandFactory.songFromArtist(currentSong, parent, shuffle)
+                parent is Genre -> commandFactory.songFromGenre(currentSong, parent, shuffle)
+                parent is Playlist -> commandFactory.songFromPlaylist(currentSong, parent, shuffle)
                 else -> commandFactory.songFromAll(currentSong, shuffle)
             } ?: commandFactory.all(shuffle)
 
