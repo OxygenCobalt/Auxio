@@ -95,14 +95,13 @@ class HeadUnitDashboardPolicyTest {
                     )
                 )
                 .associateBy { it.action }
-        assertFalse(entries.getValue(QuickPickAction.ALBUMS).enabled)
-        assertFalse(entries.getValue(QuickPickAction.ARTISTS).enabled)
-        assertFalse(entries.getValue(QuickPickAction.PLAYLISTS).enabled)
+        assertFalse(entries.getValue(QuickPickAction.SHUFFLE_ALL).enabled)
+        assertFalse(entries.getValue(QuickPickAction.RECENTLY_ADDED).enabled)
         assertTrue(entries.getValue(QuickPickAction.NOW_PLAYING).enabled)
     }
 
     @Test
-    fun `settings entry disabled during indexing`() {
+    fun `content entries disabled during indexing`() {
         val entries =
             HeadUnitDashboardPolicy.entries(
                     HeadUnitDashboardState(
@@ -112,14 +111,8 @@ class HeadUnitDashboardPolicyTest {
                     )
                 )
                 .associateBy { it.action }
-        assertFalse(entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).enabled)
-        assertFalse(entries.getValue(QuickPickAction.ALBUMS).enabled)
-        assertFalse(entries.getValue(QuickPickAction.ARTISTS).enabled)
-        assertFalse(entries.getValue(QuickPickAction.PLAYLISTS).enabled)
-        assertEquals(
-            HeadUnitRoute.HEAD_UNIT_SETTINGS,
-            entries.getValue(QuickPickAction.HEAD_UNIT_SETTINGS).route,
-        )
+        assertFalse(entries.getValue(QuickPickAction.SHUFFLE_ALL).enabled)
+        assertFalse(entries.getValue(QuickPickAction.RECENTLY_ADDED).enabled)
     }
 
     @Test
@@ -149,7 +142,7 @@ class HeadUnitDashboardPolicyTest {
                 )
                 .map { it.action }
         assertFalse(noFavs.contains(QuickPickAction.FAVOURITES))
-        assertEquals(QuickPickAction.HEAD_UNIT_SETTINGS, noFavs.last())
+        assertEquals(QuickPickAction.RECENTLY_ADDED, noFavs.last())
 
         val withFavsList =
             HeadUnitDashboardPolicy.entries(
@@ -162,7 +155,6 @@ class HeadUnitDashboardPolicyTest {
         val withFavs = withFavsList.associateBy { it.action }
         assertTrue(withFavs.containsKey(QuickPickAction.FAVOURITES))
         assertTrue(withFavs.getValue(QuickPickAction.FAVOURITES).enabled)
-        assertEquals(QuickPickAction.FAVOURITES, withFavsList[withFavsList.size - 2].action)
-        assertEquals(QuickPickAction.HEAD_UNIT_SETTINGS, withFavsList.last().action)
+        assertEquals(QuickPickAction.FAVOURITES, withFavsList.last().action)
     }
 }

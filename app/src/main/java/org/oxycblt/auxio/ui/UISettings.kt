@@ -103,10 +103,30 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_head_unit_mode), true)
 
     override val driverSide: UISettings.DriverSide
-        get() =
-            UISettings.DriverSide.from(
-                sharedPreferences.getInt(getString(R.string.set_key_driver_side), 1)
-            )
+        get() {
+            val key = getString(R.string.set_key_driver_side)
+            return try {
+                // false (default) → RIGHT (right-hand drive / steering wheel on left)
+                if (sharedPreferences.getBoolean(key, false)) {
+                    UISettings.DriverSide.LEFT
+                } else {
+                    UISettings.DriverSide.RIGHT
+                }
+            } catch (e: ClassCastException) {
+                // Migrate from old integer-encoded preference to boolean.
+                val oldVal =
+                    try {
+                        sharedPreferences.getInt(key, 1)
+                    } catch (e2: ClassCastException) {
+                        L.d("Unexpected type for $key during migration; defaulting RIGHT")
+                        1
+                    }
+                val side = UISettings.DriverSide.from(oldVal)
+                L.d("Migrating driver-side pref $key: $oldVal -> $side (boolean)")
+                sharedPreferences.edit { putBoolean(key, side == UISettings.DriverSide.LEFT) }
+                side
+            }
+        }
 
     override val largeHeadUnitControls: Boolean
         get() =

@@ -252,10 +252,8 @@
     <string name="set_head_unit">Head unit</string>
     <string name="set_head_unit_mode">Head unit landscape mode</string>
     <string name="set_head_unit_mode_desc">Prefer landscape orientation for head-unit use</string>
-    <string name="set_driver_side">Driver side</string>
-    <string name="set_driver_side_desc">Place key controls closer to the selected driver side</string>
-    <string name="set_driver_side_right">Right-hand drive</string>
-    <string name="set_driver_side_left">Left-hand drive</string>
+    <string name="set_driver_side">Left-hand drive layout</string>
+    <string name="set_driver_side_desc">Off uses right-hand drive (default). Turn on for left-hand drive layout.</string>
     <string name="set_head_unit_large_controls">Large touch controls</string>
     <string name="set_head_unit_large_controls_desc">Increase control target sizes for easier in-car tapping</string>
     <string name="set_head_unit_album_art">Show album art in head-unit playback view</string>

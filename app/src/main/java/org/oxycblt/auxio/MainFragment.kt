@@ -24,6 +24,8 @@ import android.view.ViewTreeObserver
 import android.view.WindowInsets
 import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -177,6 +179,7 @@ class MainFragment :
                         fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
                     }
             }
+            applyHeadUnitDriverSideLayout(binding)
         }
 
         normalCornerSize = playbackSheetBehavior.sheetBackgroundDrawable.topLeftCornerResolvedSize
@@ -250,6 +253,48 @@ class MainFragment :
         requireNotNull(navigationListener) { "NavigationListener was not available" }
             .release(binding.exploreNavHost.findNavController())
         binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
+    }
+
+    private fun applyHeadUnitDriverSideLayout(binding: FragmentMainBinding) {
+        val dualPaneRoot = binding.playbackPanelFragment.parent
+        if (
+            dualPaneRoot !is ConstraintLayout ||
+                uiSettings.driverSide != UISettings.DriverSide.RIGHT
+        ) {
+            return
+        }
+        ConstraintSet().apply {
+            clone(dualPaneRoot)
+            clear(R.id.playback_panel_fragment, ConstraintSet.START)
+            clear(R.id.playback_panel_fragment, ConstraintSet.END)
+            connect(
+                R.id.playback_panel_fragment,
+                ConstraintSet.START,
+                R.id.queue_sheet,
+                ConstraintSet.END,
+            )
+            connect(
+                R.id.playback_panel_fragment,
+                ConstraintSet.END,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.END,
+            )
+            clear(R.id.queue_sheet, ConstraintSet.START)
+            clear(R.id.queue_sheet, ConstraintSet.END)
+            connect(
+                R.id.queue_sheet,
+                ConstraintSet.START,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.START,
+            )
+            connect(
+                R.id.queue_sheet,
+                ConstraintSet.END,
+                R.id.playback_panel_fragment,
+                ConstraintSet.START,
+            )
+            applyTo(dualPaneRoot)
+        }
     }
 
     override fun onDestroyBinding(binding: FragmentMainBinding) {

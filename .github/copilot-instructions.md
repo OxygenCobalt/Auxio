@@ -115,6 +115,7 @@ Always distinguish between: product requirement / Android-standard implementatio
 - Distinguish Codex environment limitations from GitHub Actions/Copilot runner failures.
 - Do not treat Codex environment build limitations as final CI proof; GitHub Actions/Copilot CI is the final workflow proof point.
 - Never claim tasks/build/test/lint success unless commands actually passed in this environment.
+
 ## Baseline checks
 - `./gradlew tasks`
 - `./gradlew assembleDebug`
@@ -178,6 +179,29 @@ Always distinguish between: product requirement / Android-standard implementatio
 - Metadata policy is not implemented until used by MediaSession, notification, widget, or another runtime publisher.
 - Parity maps are not implemented until they drive or verify action/route completeness.
 - Settings/status are not implemented until surfaced via existing UI/settings patterns.
+
+## UI screenshot workflow
+
+For UI/UX tasks, do not rely only on code inspection. When runtime visual behaviour matters, use the manual screenshot workflow:
+
+- Workflow: `Manual UI Screenshots`
+- Run branch/ref selector on `dev`
+- Set `target_ref` to the PR branch or commit SHA
+- Use `scenario=all` unless a narrower scenario is sufficient
+- Download and inspect artifact `auxio-ts-ui-screenshots`
+
+Screenshot tooling must remain development-only. Do not add screenshot probes, ADB logic, or visual-test fixtures to the production runtime path unless explicitly approved.
+
+For TS18/head-unit UI work, screenshots must include or approximate:
+
+- 1280x720 landscape
+- LHD and RHD driver-side layouts where applicable
+- playback controls
+- queue panel
+- shuffle/genre-random button state
+- home/dashboard quick-access chips if touched
+
+If the agent environment cannot run an emulator, it must still update the workflow/scripts so GitHub Actions can produce the screenshot artifacts.
 
 ## Final response discipline
 Always report explicitly:

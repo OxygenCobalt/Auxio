@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -154,10 +155,16 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackSeekBar?.listener = this
-        binding.playbackSeekBar?.setLargeTouchMode(uiSettings.largeHeadUnitControls)
         val spacingSmall = resources.getDimensionPixelSize(R.dimen.spacing_small)
         val spacingMedium = resources.getDimensionPixelSize(R.dimen.spacing_medium)
-        val touchTargetMedium = resources.getDimensionPixelSize(R.dimen.size_touchable_medium)
+        val touchTargetPrimary =
+            resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit_primary)
+        val touchTargetSecondary =
+            resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit_secondary)
+        val forceLargeLandscapeControls =
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val useLargeControls = uiSettings.largeHeadUnitControls || forceLargeLandscapeControls
+        binding.playbackSeekBar?.setLargeTouchMode(useLargeControls)
         val playbackInfoVerticalPadding =
             when {
                 !uiSettings.showHeadUnitAlbumArt -> spacingMedium
@@ -190,16 +197,20 @@ class PlaybackPanelFragment :
             binding.playbackSong,
             binding.playbackArtist,
         )
-        if (uiSettings.largeHeadUnitControls) {
-            listOf(binding.playbackSkipPrev, binding.playbackPlayPause, binding.playbackSkipNext)
+        if (useLargeControls) {
+            binding.playbackPlayPause.minimumHeight = touchTargetPrimary
+            binding.playbackPlayPause.minimumWidth = touchTargetPrimary
+            listOf(
+                    binding.playbackSkipPrev,
+                    binding.playbackSkipNext,
+                    binding.playbackRepeat,
+                    binding.playbackShuffle,
+                )
                 .forEach {
-                    it.minimumHeight = touchTargetMedium
-                    it.minimumWidth = touchTargetMedium
+                    it.minimumHeight = touchTargetSecondary
+                    it.minimumWidth = touchTargetSecondary
                 }
-            binding.playbackControlsWrapper?.updatePaddingRelative(
-                start = spacingSmall,
-                end = spacingSmall,
-            )
+            binding.playbackControlsWrapper?.updatePaddingRelative(start = 0, end = 0)
         }
         applyDriverSideLayout(binding)
 

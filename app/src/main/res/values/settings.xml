@@ -48,6 +48,7 @@
     <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
     <string name="set_key_head_unit_mode" translatable="false">auxio_head_unit_mode</string>
     <string name="set_key_driver_side" translatable="false">auxio_driver_side</string>
+    <string name="set_key_left_hand_drive" translatable="false">auxio_left_hand_drive</string>
     <string name="set_key_head_unit_album_art" translatable="false">auxio_head_unit_album_art</string>
     <string name="set_key_head_unit_dashboard_quick_access" translatable="false">auxio_head_unit_dashboard_quick_access</string>
     <string name="set_key_head_unit_large_controls" translatable="false">auxio_head_unit_large_controls</string>
@@ -189,16 +190,6 @@
     <integer name="cover_mode_balanced">0xA11D</integer>
     <integer name="cover_mode_high_quality">0xA11E</integer>
     <integer name="cover_mode_as_is">0xA126</integer>
-    <string-array name="entries_driver_side">
-        <item>@string/set_driver_side_right</item>
-        <item>@string/set_driver_side_left</item>
-    </string-array>
-
-    <integer-array name="values_driver_side">
-        <item>@integer/driver_side_right</item>
-        <item>@integer/driver_side_left</item>
-    </integer-array>
-
     <integer name="driver_side_right">1</integer>
     <integer name="driver_side_left">2</integer>
 </resources>

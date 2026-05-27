@@ -33,15 +33,7 @@
         app:title="@string/set_head_unit">
 
         <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="@string/set_key_head_unit_mode"
-            app:summary="@string/set_head_unit_mode_desc"
-            app:title="@string/set_head_unit_mode" />
-
-        <org.oxycblt.auxio.settings.ui.IntListPreference
-            app:defaultValue="@integer/driver_side_right"
-            app:entries="@array/entries_driver_side"
-            app:entryValues="@array/values_driver_side"
+            app:defaultValue="false"
             app:key="@string/set_key_driver_side"
             app:summary="@string/set_driver_side_desc"
             app:title="@string/set_driver_side" />
