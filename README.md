@@ -1,4 +1,4 @@
-<p align="center"><img src="fastlane/metadata/android/en-US/images/icon.png" width="150"></p>
+<p align="center"><img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width="150"></p>
 <h1 align="center"><b>Auxio-TS</b></h1>
 <h4 align="center">A simple, rational music player for Android Car Headunits.</h4>
 <p align="center">
