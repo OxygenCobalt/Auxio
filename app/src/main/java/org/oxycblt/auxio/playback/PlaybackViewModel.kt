@@ -640,8 +640,7 @@ constructor(
         when (_shuffleScope.value) {
             ShuffleScope.OFF -> {
                 L.d("Cycling shuffle scope: OFF -> ALL")
-                _shuffleScope.value = ShuffleScope.ALL
-                playbackManager.shuffled(true)
+                rebuildQueueFromPlaybackContext(ShuffleMode.ON, ShuffleScope.ALL)
             }
             ShuffleScope.ALL -> {
                 L.d("Cycling shuffle scope: ALL -> GENRE")
@@ -649,10 +648,33 @@ constructor(
             }
             ShuffleScope.GENRE -> {
                 L.d("Cycling shuffle scope: GENRE -> OFF")
-                _shuffleScope.value = ShuffleScope.OFF
-                playbackManager.shuffled(false)
+                rebuildQueueFromPlaybackContext(ShuffleMode.OFF, ShuffleScope.OFF)
             }
         }
+    }
+
+    private fun rebuildQueueFromPlaybackContext(shuffle: ShuffleMode, shuffleScope: ShuffleScope) {
+        val currentSong = playbackManager.currentSong
+        val currentPositionMs = playbackManager.progression.calculateElapsedPositionMs()
+        val command =
+            when {
+                currentSong == null -> commandFactory.all(shuffle)
+                _parent.value is Album -> commandFactory.songFromAlbum(currentSong, shuffle)
+                _parent.value is Artist ->
+                    commandFactory.songFromArtist(currentSong, _parent.value as Artist, shuffle)
+                _parent.value is Genre ->
+                    commandFactory.songFromGenre(currentSong, _parent.value as Genre, shuffle)
+                _parent.value is Playlist ->
+                    commandFactory.songFromPlaylist(
+                        currentSong,
+                        _parent.value as Playlist,
+                        shuffle,
+                    )
+                else -> commandFactory.songFromAll(currentSong, shuffle)
+            } ?: commandFactory.all(shuffle)
+
+        playImpl(command, shuffleScope)
+        playbackManager.seekTo(currentPositionMs)
     }
 
     private fun applyGenreShuffle() {

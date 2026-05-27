@@ -38,8 +38,8 @@
         android:id="@+id/playback_info_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_small"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
         app:layout_constraintEnd_toStartOf="@+id/playback_more"
@@ -101,14 +101,14 @@
         android:id="@+id/playback_controls_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_small"
         android:layout_marginBottom="@dimen/spacing_medium"
         app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_max="400dp">
+        >
 
         <com.google.android.material.button.MaterialButtonGroup
             android:layout_width="match_parent"

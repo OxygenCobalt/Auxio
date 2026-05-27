@@ -48,6 +48,7 @@
     <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
     <string name="set_key_head_unit_mode" translatable="false">auxio_head_unit_mode</string>
     <string name="set_key_driver_side" translatable="false">auxio_driver_side</string>
+    <string name="set_key_left_hand_drive" translatable="false">auxio_left_hand_drive</string>
     <string name="set_key_head_unit_album_art" translatable="false">auxio_head_unit_album_art</string>
     <string name="set_key_head_unit_dashboard_quick_access" translatable="false">auxio_head_unit_dashboard_quick_access</string>
     <string name="set_key_head_unit_large_controls" translatable="false">auxio_head_unit_large_controls</string>

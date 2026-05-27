@@ -94,6 +94,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/playback_panel_fragment"
+                app:layout_constraintHorizontal_weight="3"
                 android:name="org.oxycblt.auxio.playback.PlaybackPanelFragment"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -102,6 +103,7 @@
 
             <LinearLayout
                 android:id="@+id/queue_sheet"
+                app:layout_constraintHorizontal_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"

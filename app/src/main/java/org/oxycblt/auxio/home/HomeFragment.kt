@@ -299,16 +299,11 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 genreCount = genres.size,
                 decadeCount = decades.size,
                 hasRecent = homeModel.hasAnySongs,
-                hasFolders = true,
+                hasFolders = false,
                 hasFavourites = favouritesPlaylist?.songs?.isNotEmpty() == true,
             )
 
         binding.homeMetadataChips.removeAllViews()
-        if (metadataState.genres) {
-            binding.homeMetadataChips.addView(
-                buildMetaChip(binding, getString(R.string.lbl_genres)) { openTab(MusicType.GENRES) }
-            )
-        }
         if (metadataState.decades) {
             val activeDecade = homeModel.decadeFilter.value
             decades.forEach { decade ->
@@ -319,13 +314,6 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
             binding.homeMetadataChips.addView(
                 buildMetaChip(binding, getString(R.string.lbl_recently_added)) {
                     openRecentlyAdded()
-                }
-            )
-        }
-        if (metadataState.folders) {
-            binding.homeMetadataChips.addView(
-                buildMetaChip(binding, getString(R.string.lbl_folders)) {
-                    homeModel.startChooseMusicLocations()
                 }
             )
         }

@@ -104,9 +104,11 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
 
     override val driverSide: UISettings.DriverSide
         get() =
-            UISettings.DriverSide.from(
-                sharedPreferences.getInt(getString(R.string.set_key_driver_side), 1)
-            )
+            when (val persisted = sharedPreferences.all[getString(R.string.set_key_driver_side)]) {
+                is Boolean -> if (persisted) UISettings.DriverSide.LEFT else UISettings.DriverSide.RIGHT
+                is Int -> UISettings.DriverSide.from(persisted)
+                else -> UISettings.DriverSide.RIGHT
+            }
 
     override val largeHeadUnitControls: Boolean
         get() =
