@@ -86,6 +86,5 @@ object HeadUnitRoutePolicy {
      * not navigate to an [HeadUnitEntryPoints.EntryDestination] but is still a valid head-unit
      * entry point handled by [org.oxycblt.auxio.MainActivity.startIntentAction].
      */
-    fun isImmediateActionRoute(route: HeadUnitRoute): Boolean =
-        route == HeadUnitRoute.SHUFFLE_ALL
+    fun isImmediateActionRoute(route: HeadUnitRoute): Boolean = route == HeadUnitRoute.SHUFFLE_ALL
 }

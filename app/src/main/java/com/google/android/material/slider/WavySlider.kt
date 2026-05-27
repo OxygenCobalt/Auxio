@@ -163,7 +163,7 @@ constructor(
         // WavySlider requires fully rounded corners (radius = trackHeight / 2) because the
         // custom wave path uses ROUND stroke caps and the rounded-block fallback assumes a
         // circular cap. Bezier tangent interpolation for non-round corners is not implemented.
-        val fullRoundRadius = trackHeight / 2f
+        val fullRoundRadius = trackHeight / 2
         if (trackCornerSize < fullRoundRadius) {
             Timber.w(
                 "WavySlider requires fully rounded corners. Clamping trackCornerSize up to trackHeight / 2"
