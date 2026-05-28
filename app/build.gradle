@@ -6,6 +6,7 @@ plugins {
     id "kotlin-parcelize"
     id "dagger.hilt.android.plugin"
     id "com.google.devtools.ksp"
+    id "io.github.takahirom.roborazzi"
 }
 
 android {
@@ -94,6 +95,14 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+    }
+
+
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 
     lint {
@@ -215,4 +224,12 @@ dependencies {
 
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "org.robolectric:robolectric:4.16"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi:1.49.0"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi-junit-rule:1.49.0"
 }
+
+
+// Roborazzi tasks (recordRoborazziDebug, verifyRoborazziDebug, compareRoborazziDebug,
+// verifyAndRecordRoborazziDebug) are automatically registered by the Roborazzi Gradle plugin
+// applied in the plugins block above.
