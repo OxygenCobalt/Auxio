@@ -239,6 +239,8 @@ Do not try to work around this by copying submodule files manually.
 
 For UI/UX tasks, do not rely only on code inspection. When runtime visual behaviour matters, use the manual screenshot workflow:
 
+Agents should use the screenshot workflow when visual validation matters.
+
 - Workflow: `Manual UI Screenshots`
 - Run branch/ref selector on `dev`
 - Set `target_ref` to the PR branch or commit SHA

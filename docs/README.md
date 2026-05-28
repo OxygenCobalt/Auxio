@@ -36,6 +36,7 @@ See [`docs/TS18_NATIVE_PARITY_GAP_MATRIX.md`](TS18_NATIVE_PARITY_GAP_MATRIX.md) 
 - `DEVELOPMENT_ROADMAP.md`
 - `CODEX_TASK_PROMPTS.md`
 - `RESEARCH_SOURCES.md`
+- `UI_SCREENSHOT_WORKFLOW.md` (manual emulator screenshots + manual Roborazzi guidance)
 
 ## Other current docs (supporting)
 - `TS18_DEVICE_PROFILE.md`

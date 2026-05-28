@@ -1,0 +1,153 @@
+name: Manual Roborazzi
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: Branch, tag, or commit SHA to run Roborazzi from
+        required: true
+        default: dev
+      roborazzi_task:
+        description: Roborazzi operation
+        required: true
+        default: verify
+        type: choice
+        options:
+          - record
+          - verify
+          - compare
+          - verify_and_record
+      pr_number:
+        description: Optional PR number for sticky artifact comment
+        required: false
+        default: ""
+      comment_on_pr:
+        description: Post or update sticky PR artifact comment
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  roborazzi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Write local.properties
+        run: |
+          if [[ -n "${ANDROID_HOME:-}" ]]; then
+            printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
+          fi
+
+      - name: Map roborazzi task
+        id: map_task
+        run: |
+          case "${{ inputs.roborazzi_task }}" in
+            record) echo "task=recordRoborazziDebug" >> "$GITHUB_OUTPUT" ;;
+            verify) echo "task=verifyRoborazziDebug" >> "$GITHUB_OUTPUT" ;;
+            compare) echo "task=compareRoborazziDebug" >> "$GITHUB_OUTPUT" ;;
+            verify_and_record) echo "task=verifyAndRecordRoborazziDebug" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Run Roborazzi
+        run: ./gradlew --no-daemon --stacktrace :app:${{ steps.map_task.outputs.task }}
+
+      - name: Upload Roborazzi reports
+        id: upload_reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-roborazzi-reports
+          path: app/build/reports/roborazzi
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Upload Roborazzi outputs
+        id: upload_outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-roborazzi-outputs
+          path: app/build/outputs/roborazzi
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Resolve PR number
+        id: resolve_pr
+        if: ${{ inputs.comment_on_pr }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_input='${{ inputs.pr_number }}'
+          pr_number="${pr_input// /}"
+          if [[ -z "$pr_number" ]]; then
+            pr_number=$(gh pr list --state open --head "${{ github.repository_owner }}:${{ inputs.target_ref }}" --json number --jq '.[0].number' || true)
+          fi
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+
+      - name: Write workflow summary
+        env:
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPORT_URL: ${{ steps.upload_reports.outputs.artifact-url }}
+          OUTPUT_URL: ${{ steps.upload_outputs.outputs.artifact-url }}
+        run: |
+          {
+            echo "## Auxio-TS Roborazzi Artifacts"
+            echo
+            echo "- Target ref: \\`${{ inputs.target_ref }}\\`"
+            echo "- Roborazzi task: \\`${{ steps.map_task.outputs.task }}\\`"
+            echo "- Run: ${RUN_URL}"
+            echo
+            echo "| Artifact | Link | Contents | Retention |"
+            echo "|---|---|---|---|"
+            echo "| auxio-ts-roborazzi-reports | ${REPORT_URL:-not available} | HTML reports under app/build/reports/roborazzi | 20 days |"
+            echo "| auxio-ts-roborazzi-outputs | ${OUTPUT_URL:-not available} | PNG outputs under app/build/outputs/roborazzi | 20 days |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upsert PR comment
+        if: ${{ inputs.comment_on_pr && steps.resolve_pr.outputs.pr_number != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.resolve_pr.outputs.pr_number }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPORT_URL: ${{ steps.upload_reports.outputs.artifact-url }}
+          OUTPUT_URL: ${{ steps.upload_outputs.outputs.artifact-url }}
+        run: |
+          marker='<!-- auxio-ts-roborazzi -->'
+          body_file="$(mktemp)"
+          {
+            echo "$marker"
+            echo "## Auxio-TS Roborazzi Artifacts"
+            echo
+            echo "- Target ref: \\`${{ inputs.target_ref }}\\`"
+            echo "- Roborazzi task: \\`${{ steps.map_task.outputs.task }}\\`"
+            echo "- Run: ${RUN_URL}"
+            echo
+            echo "| Artifact | Link | Contents | Retention |"
+            echo "|---|---|---|---|"
+            echo "| auxio-ts-roborazzi-reports | ${REPORT_URL:-not available} | HTML reports under app/build/reports/roborazzi | 20 days |"
+            echo "| auxio-ts-roborazzi-outputs | ${OUTPUT_URL:-not available} | PNG outputs under app/build/outputs/roborazzi | 20 days |"
+          } > "$body_file"
+          comment_id=$(gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" --jq '.[] | select(.body | contains("<!-- auxio-ts-roborazzi -->")) | .id' | head -n1 || true)
+          if [[ -n "$comment_id" ]]; then
+            gh api --method PATCH "repos/${{ github.repository }}/issues/comments/${comment_id}" -f "body=@${body_file}" >/dev/null
+          else
+            gh pr comment "$PR_NUMBER" --body-file "$body_file" >/dev/null
+          fi

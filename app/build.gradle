@@ -96,6 +96,14 @@ android {
         buildConfig true
     }
 
+
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
     lint {
         // Do not re-run lint on vendored media library submodule dependencies.
         // Media library lint issues are upstream concerns; only app sources are checked here.
@@ -215,4 +223,56 @@ dependencies {
 
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "org.robolectric:robolectric:4.16"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi:1.49.0"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi-junit-rule:1.49.0"
+}
+
+
+// Development-only Roborazzi helper tasks (manual/advisory workflow use)
+def roborazziDebugTestTask = [":app:testDebugUnitTest"]
+
+tasks.register("recordRoborazziDebug", GradleBuild) {
+    group = "verification"
+    description = "Record Roborazzi snapshots for debug JVM tests"
+    tasks = roborazziDebugTestTask
+    startParameter.systemPropertiesArgs = [
+            "roborazzi.test.record": "true",
+            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
+            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
+    ]
+}
+
+tasks.register("verifyRoborazziDebug", GradleBuild) {
+    group = "verification"
+    description = "Verify Roborazzi snapshots for debug JVM tests"
+    tasks = roborazziDebugTestTask
+    startParameter.systemPropertiesArgs = [
+            "roborazzi.test.verify": "true",
+            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
+            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
+    ]
+}
+
+tasks.register("compareRoborazziDebug", GradleBuild) {
+    group = "verification"
+    description = "Compare Roborazzi snapshots for debug JVM tests"
+    tasks = roborazziDebugTestTask
+    startParameter.systemPropertiesArgs = [
+            "roborazzi.test.compare": "true",
+            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
+            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
+    ]
+}
+
+tasks.register("verifyAndRecordRoborazziDebug", GradleBuild) {
+    group = "verification"
+    description = "Verify and record Roborazzi snapshots for debug JVM tests"
+    tasks = roborazziDebugTestTask
+    startParameter.systemPropertiesArgs = [
+            "roborazzi.test.verify": "true",
+            "roborazzi.test.record": "true",
+            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
+            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
+    ]
 }
