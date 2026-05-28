@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.target_ref }}
           fetch-depth: 0
@@ -61,6 +61,13 @@ jobs:
             printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
           fi
 
+      - name: Ensure native build tools are present
+        run: |
+          if ! command -v ninja >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ninja-build
+          fi
+
       - name: Map roborazzi task
         id: map_task
         run: |
@@ -76,6 +83,7 @@ jobs:
 
       - name: Upload Roborazzi reports
         id: upload_reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: auxio-ts-roborazzi-reports
@@ -85,6 +93,7 @@ jobs:
 
       - name: Upload Roborazzi outputs
         id: upload_outputs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: auxio-ts-roborazzi-outputs

@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: Checkout target ref
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.target_ref }}
           fetch-depth: 0
@@ -101,20 +101,22 @@ jobs:
 
       - name: Upload screenshots
         id: upload_screens
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: auxio-ts-ui-screenshots
           path: artifacts/ui-screenshots/*.png
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 20
 
       - name: Upload screenshot logs
         id: upload_logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: auxio-ts-ui-screenshot-logs
           path: artifacts/ui-screenshots/*.txt
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 20
 
       - name: Upload debug APK
