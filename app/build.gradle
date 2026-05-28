@@ -6,6 +6,7 @@ plugins {
     id "kotlin-parcelize"
     id "dagger.hilt.android.plugin"
     id "com.google.devtools.ksp"
+    id "io.github.takahirom.roborazzi"
 }
 
 android {
@@ -229,50 +230,6 @@ dependencies {
 }
 
 
-// Development-only Roborazzi helper tasks (manual/advisory workflow use)
-def roborazziDebugTestTask = [":app:testDebugUnitTest"]
-
-tasks.register("recordRoborazziDebug", GradleBuild) {
-    group = "verification"
-    description = "Record Roborazzi snapshots for debug JVM tests"
-    tasks = roborazziDebugTestTask
-    startParameter.systemPropertiesArgs = [
-            "roborazzi.test.record": "true",
-            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
-            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
-    ]
-}
-
-tasks.register("verifyRoborazziDebug", GradleBuild) {
-    group = "verification"
-    description = "Verify Roborazzi snapshots for debug JVM tests"
-    tasks = roborazziDebugTestTask
-    startParameter.systemPropertiesArgs = [
-            "roborazzi.test.verify": "true",
-            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
-            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
-    ]
-}
-
-tasks.register("compareRoborazziDebug", GradleBuild) {
-    group = "verification"
-    description = "Compare Roborazzi snapshots for debug JVM tests"
-    tasks = roborazziDebugTestTask
-    startParameter.systemPropertiesArgs = [
-            "roborazzi.test.compare": "true",
-            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
-            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
-    ]
-}
-
-tasks.register("verifyAndRecordRoborazziDebug", GradleBuild) {
-    group = "verification"
-    description = "Verify and record Roborazzi snapshots for debug JVM tests"
-    tasks = roborazziDebugTestTask
-    startParameter.systemPropertiesArgs = [
-            "roborazzi.test.verify": "true",
-            "roborazzi.test.record": "true",
-            "roborazzi.output.dir" : "$buildDir/outputs/roborazzi",
-            "roborazzi.compare.output.dir": "$buildDir/reports/roborazzi",
-    ]
-}
+// Roborazzi tasks (recordRoborazziDebug, verifyRoborazziDebug, compareRoborazziDebug,
+// verifyAndRecordRoborazziDebug) are automatically registered by the Roborazzi Gradle plugin
+// applied in the plugins block above.

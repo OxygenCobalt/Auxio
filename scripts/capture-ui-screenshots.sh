@@ -122,9 +122,17 @@ run_scenario() {
   esac
 }
 
+cleanup() {
+  echo "Restoring device display settings..."
+  adb shell wm size reset || true
+  adb shell wm density reset || true
+  adb shell settings put system accelerometer_rotation 1 || true
+}
+
 main() {
   require_cmd adb
   prepare_device
+  trap cleanup EXIT
   write_metadata
   adb logcat -c || true
   run_scenario

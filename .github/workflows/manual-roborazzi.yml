@@ -52,6 +52,9 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Prepare CI environment
+        run: bash ./scripts/prepare-ci-environment.sh
+
       - name: Write local.properties
         run: |
           if [[ -n "${ANDROID_HOME:-}" ]]; then
@@ -147,7 +150,8 @@ jobs:
           } > "$body_file"
           comment_id=$(gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" --jq '.[] | select(.body | contains("<!-- auxio-ts-roborazzi -->")) | .id' | head -n1 || true)
           if [[ -n "$comment_id" ]]; then
-            gh api --method PATCH "repos/${{ github.repository }}/issues/comments/${comment_id}" -f "body=@${body_file}" >/dev/null
+            jq -n --rawfile body "$body_file" '{"body": $body}' | \
+              gh api --method PATCH "repos/${{ github.repository }}/issues/comments/${comment_id}" --input - >/dev/null
           else
             gh pr comment "$PR_NUMBER" --body-file "$body_file" >/dev/null
           fi

@@ -89,6 +89,29 @@ gh workflow run manual-roborazzi.yml \
 - They do **not** prove TS18 hardware parity or private/native TW/TWTHEME behavior.
 - TS18 parity still requires Tier 2 hardware validation evidence workflows.
 
+## TS18 claim classification
+
+This workflow produces development-only visual evidence. All claims must be mapped to confidence levels and porting decisions before referencing in TS18 evidence.
+
+| Claim | Evidence confidence | Porting decision | Runtime wiring status |
+|---|---|---|---|
+| Playback-bar renders at 1280×720 landscape | Inferred (emulator/JVM, not hardware) | Needs hardware validation | Scaffold-only |
+| Queue panel renders at 1280×720 landscape | Inferred (emulator/JVM, not hardware) | Needs hardware validation | Scaffold-only |
+| Home screen layout is correct at target density | Inferred (emulator/JVM, not hardware) | Needs hardware validation | Scaffold-only |
+
+**Template for new claims:**
+
+```
+| <Claim description> | Observed / Inferred / Hypothesis | Directly reusable / Needs hardware validation / Rejected | Runtime / Scaffold-only / Partial |
+```
+
+_(Column order: Claim → Evidence confidence → Porting decision → Runtime wiring status)_
+
+- **Wired into runtime code:** None — all screenshot tooling is test/scaffold only (see Runtime APK cleanliness boundary below).
+- **Scaffold-only:** All Roborazzi and emulator screenshot captures.
+- **Partial:** None currently.
+- **Output type:** Review snapshot — artifacts are developer-only visual aids, not TS18 compliance evidence.
+
 ## Agent usage guidance
 
 For UI/UX tasks, agents should:
