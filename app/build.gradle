@@ -225,8 +225,8 @@ dependencies {
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testImplementation "org.robolectric:robolectric:4.16"
-    testImplementation "io.github.takahirom.roborazzi:roborazzi:1.49.0"
-    testImplementation "io.github.takahirom.roborazzi:roborazzi-junit-rule:1.49.0"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi:1.63.0"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi-junit-rule:1.63.0"
 }
 
 

@@ -34,7 +34,7 @@ plugins {
     // We use spotless in the root build.gradle to apply to all modules.
     id "com.diffplug.spotless" version "8.4.0" apply true
     // Roborazzi plugin registers recordRoborazziDebug/verifyRoborazziDebug/etc tasks.
-    id "io.github.takahirom.roborazzi" version "1.49.0" apply false
+    id "io.github.takahirom.roborazzi" version "1.63.0" apply false
 }
 
 spotless {
