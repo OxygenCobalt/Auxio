@@ -99,6 +99,14 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
             addedMs = addedMs,
         )
 
+    /**
+     * Build a synthetic [File] from cached data without exploring storage.
+     *
+     * Best-effort metadata only:
+     * - [File.path] is derived from the URI and may not correspond to a real filesystem path.
+     * - [File.size] is unknown (set to 0); callers must not treat this as authoritative.
+     * - [File.parent] is unknown (null); callers must not rely on it for folder navigation.
+     */
     private fun CachedFileData.toSyntheticFile(): File {
         val pathText = uri.path ?: uri.lastPathSegment ?: uri.toString()
         return File(

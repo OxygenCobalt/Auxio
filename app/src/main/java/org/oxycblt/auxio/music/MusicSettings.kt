@@ -108,7 +108,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         set(value) {
             sharedPreferences.edit {
                 putString(getString(R.string.set_key_library_state), value.name)
-                apply()
             }
         }
 
@@ -121,7 +120,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         set(value) {
             sharedPreferences.edit {
                 putBoolean(getString(R.string.set_key_library_last_scan_failed), value)
-                apply()
             }
         }
 

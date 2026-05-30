@@ -373,32 +373,34 @@ constructor(
         val start = System.currentTimeMillis()
         val priorState = musicSettings.libraryState
         L.i("Startup library load begins [state=$priorState]")
+        var state = priorState
         if (library == null) {
             try {
                 val cached = loadCachedLibrary()
                 emitLibrary(cached)
-                musicSettings.libraryState =
+                state =
                     when {
                         cached.songs.isNotEmpty() -> LibraryState.USABLE
                         priorState == LibraryState.EMPTY -> LibraryState.EMPTY
                         priorState == LibraryState.USABLE -> LibraryState.EMPTY
                         else -> priorState
                     }
+                musicSettings.libraryState = state
                 L.i(
                     "Startup library available in ${System.currentTimeMillis() - start}ms " +
                         "[songs=${cached.songs.size}]"
                 )
             } catch (e: Exception) {
                 L.w(e, "Unable to load cached library during startup")
-                if (musicSettings.libraryState != LibraryState.USABLE) {
-                    musicSettings.libraryState = LibraryState.RECOVERY
+                if (priorState != LibraryState.USABLE) {
+                    state = LibraryState.RECOVERY
+                    musicSettings.libraryState = state
                 }
             }
         } else {
             L.d("Startup library already in memory; skipping cached load")
         }
 
-        val state = musicSettings.libraryState
         val shouldAutoScan = state == LibraryState.NEVER && !musicSettings.lastScanFailed
         if (shouldAutoScan) {
             L.i("Scheduling first library scan after startup [state=$state]")

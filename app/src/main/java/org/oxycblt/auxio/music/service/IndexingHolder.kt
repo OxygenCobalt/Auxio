@@ -104,6 +104,7 @@ private constructor(
         musicSettings.unregisterListener(this)
     }
 
+    @Synchronized
     fun start() {
         if (startupJob?.isActive == true) {
             L.d("Startup library load already running; ignoring duplicate start")
@@ -134,6 +135,7 @@ private constructor(
         }
     }
 
+    @Synchronized
     override fun requestIndex(withCache: Boolean) {
         if (currentIndexJob?.isActive == true) {
             L.i("Ignoring duplicate indexing request while scan is running [cache=$withCache]")
@@ -145,7 +147,9 @@ private constructor(
                 try {
                     musicRepository.index(this@IndexingHolder, withCache)
                 } finally {
-                    currentIndexJob = null
+                    synchronized(this@IndexingHolder) {
+                        currentIndexJob = null
+                    }
                 }
             }
     }
