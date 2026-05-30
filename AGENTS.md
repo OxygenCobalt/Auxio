@@ -42,8 +42,8 @@ Do not add in-app TS18 probe frameworks, default-off vendor adapter skeletons, T
 
 ```text
 Priority 1: TS18/TW/TWTHEME ecosystem sources
+  - DoFun / DoFun Variety / iLauncher / TWTHEME material
   - Topway / TS10 / TS18 firmware references
-  - DoFun / iLauncher / TWTHEME material
   - TWUtil / TWClient public references
   - ZLink/TLink/carchoose ecosystem clues
   - TWTHEME theme/window/PiP/launcher behaviour sources
@@ -70,6 +70,26 @@ Priority 5: New probes/diagnostics
 ```
 
 Canonical source corpus: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
+
+### Auxio-TS DoFun/Variety compatibility developer bundle
+
+This bundle contains top-prioirty TS18 laucher compatibility documentation, extracted reference evidence, templates, and validation tooling for implementing Auxio-TS compatibility with the DoFun/Variety launcher/theme package `com.dofun.variety`.
+Main guide:
+
+- `docs/DOFUN_VARIETY_COMPATIBILITY.md`
+
+Reference material:
+
+- `docs/topway-dofun-variety/reference/dofun-variety/`
+- `docs/topway-dofun-variety/reference/auxio/`
+
+Implementation templates:
+
+- `docs/topway-dofun-variety/templates/topwayTwMusic/`
+
+Validation helper:
+
+- `scripts/check-dofun-topway-compat.sh`
 
 ### Required agent workflow for TS18/TW/TWTHEME tasks
 

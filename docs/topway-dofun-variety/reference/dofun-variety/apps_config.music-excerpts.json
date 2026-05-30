@@ -1,0 +1,204 @@
+{
+  "source": "assets/apps_config.json",
+  "music_related_entries": [
+    {
+      "source_index": 3,
+      "compare_name": "com.amazon.mp3",
+      "image_name": "app_amazon_music",
+      "link_image_name": "link_icon_amazon_music",
+      "name": "amazon music"
+    },
+    {
+      "source_index": 8,
+      "compare_name": "com.google.android.apps.youtube.music",
+      "image_name": "app_youtube_music",
+      "link_image_name": "link_icon_youtube_music",
+      "name": "YouTube Music"
+    },
+    {
+      "source_index": 16,
+      "compare_name": "com.netease.golive",
+      "image_name": "app_look",
+      "link_image_name": "link_icon_look",
+      "name": "look直播"
+    },
+    {
+      "source_index": 17,
+      "compare_name": "com.netease.cloudmusic.iot",
+      "image_name": "app_neteasecloudmusic",
+      "link_image_name": "link_icon_neteasecloudmusic",
+      "name": "网易云音乐"
+    },
+    {
+      "source_index": 18,
+      "compare_name": "com.netease.cloudmusic.car",
+      "image_name": "app_neteasecloudmusic_car",
+      "link_image_name": "link_icon_neteasecloudmusic",
+      "name": "网易云音乐_FV"
+    },
+    {
+      "source_index": 19,
+      "compare_name": "com.tencent.qqmusiccar",
+      "image_name": "app_qqmusic",
+      "link_image_name": "link_icon_qqmusic",
+      "name": "QQ音乐"
+    },
+    {
+      "source_index": 28,
+      "compare_name": "com.spotify.music",
+      "image_name": "app_spotify",
+      "link_image_name": "link_icon_spotify",
+      "name": "spotify-海外"
+    },
+    {
+      "source_index": 63,
+      "compare_name": "com.tencent.qqmusiccar",
+      "image_name": "app_qqmusic",
+      "link_image_name": "link_icon_qqmusic",
+      "name": "qq音乐"
+    },
+    {
+      "source_index": 85,
+      "compare_name": "com.hongfans.rearview",
+      "image_name": "app_cyb",
+      "link_image_name": "link_icon_carmedia",
+      "name": "车悦宝"
+    },
+    {
+      "source_index": 112,
+      "compare_name": "com.tw.fcam",
+      "image_name": "app_frontview",
+      "link_image_name": "link_icon_carmedia",
+      "name": "frontview"
+    },
+    {
+      "source_index": 114,
+      "compare_name": "cn.kuwo.kwmusiccar",
+      "image_name": "app_kuwo",
+      "link_image_name": "link_icon_kw",
+      "name": "酷我音乐"
+    },
+    {
+      "source_index": 116,
+      "compare_name": "com.google.android.apps.youtube.music",
+      "image_name": "app_youtubemusic",
+      "link_image_name": "link_icon_youtubemusic",
+      "name": "YouTubeMusic"
+    },
+    {
+      "source_index": 117,
+      "compare_name": "com.apple.android.music",
+      "image_name": "app_applemusic",
+      "link_image_name": "link_icon_applemusic",
+      "name": "AppleMusic"
+    },
+    {
+      "source_index": 132,
+      "package_name": "com.tw.media",
+      "compare_name": "com.tw.video.VideoActivity",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "source_index": 147,
+      "compare_name": "cn.cardoor.dofunmusic",
+      "image_name": "app_dofunmusic",
+      "link_image_name": "link_icon_music",
+      "name": "DoFunMusic"
+    },
+    {
+      "source_index": 148,
+      "compare_name": "com.tw.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "source_index": 149,
+      "package_name": "com.tw.media",
+      "compare_name": "com.tw.music.MusicActivity",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "source_index": 150,
+      "package_name": "com.hcn.AutoMediaPlayer",
+      "compare_name": "com.hcn.AutoMediaActivity.MusicPlayerUiActivity",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "source_index": 151,
+      "compare_name": "com.syu.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "source_index": 152,
+      "compare_name": "android.car.app.media",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "source_index": 153,
+      "compare_name": "com.acloud.stub.newoninemusic",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "网络音乐"
+    },
+    {
+      "source_index": 154,
+      "compare_name": "com.acloud.stub.newonlinemusic",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "网络音乐"
+    },
+    {
+      "source_index": 155,
+      "compare_name": "com.acloud.stub.localmusic",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "本地音乐"
+    },
+    {
+      "source_index": 156,
+      "compare_name": "com.autoai.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_carmedia",
+      "name": "本地音乐"
+    },
+    {
+      "source_index": 157,
+      "compare_name": "com.wits.xzc.media",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_carmedia",
+      "name": "铁将军音乐"
+    },
+    {
+      "source_index": 178,
+      "compare_name": "com.tw.bt.ATA2dpActivity",
+      "image_name": "app_btmusic",
+      "link_image_name": "link_icon_btmusic",
+      "name": "TS20蓝牙音乐"
+    },
+    {
+      "source_index": 180,
+      "compare_name": "com.wits.xzc.bt.BtMusicActivity",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "铁将军蓝牙音乐"
+    },
+    {
+      "source_index": 269,
+      "compare_name": "music_set",
+      "image_name": "app_music_set",
+      "link_image_name": "link_icon_music_set",
+      "name": "音乐合集"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Match DoFun/Variety compare_soft_name: 音乐, 音樂, Music -->
+    <string name="info_app_name" translatable="false">Music</string>
+
+    <!-- Keep CoverProvider authority coherent with applicationId for the Topway variant. -->
+    <string name="pkg_authority_cover" translatable="false">com.tw.music.image.CoverProvider</string>
+</resources>

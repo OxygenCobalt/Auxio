@@ -1,0 +1,1649 @@
+{
+  "config": [
+    {
+      "compare_name": "com.lql.nativecar",
+      "image_name": "app_huantu",
+      "link_image_name": "link_icon_huantu",
+      "name": "欢兔"
+    },
+    {
+      "compare_name": "com.flyview.airadio",
+      "image_name": "app_airadio",
+      "link_image_name": "link_icon_airadio",
+      "name": "AIradio"
+    },
+    {
+      "compare_name": "com.tw.airadio",
+      "image_name": "app_airadio",
+      "link_image_name": "link_icon_airadio",
+      "name": "AIradio"
+    },
+    {
+      "compare_name": "com.amazon.mp3",
+      "image_name": "app_amazon_music",
+      "link_image_name": "link_icon_amazon_music",
+      "name": "amazon music"
+    },
+    {
+      "compare_name": "deezer.android.app",
+      "image_name": "app_deezer",
+      "link_image_name": "link_icon_deezer",
+      "name": "deezer"
+    },
+    {
+      "compare_name": "com.clearchannel.iheartradio.controller",
+      "image_name": "app_iheart_radio",
+      "link_image_name": "link_icon_iheart_radio",
+      "name": "iheartradio"
+    },
+    {
+      "compare_name": "com.shazam.android",
+      "image_name": "app_shazam",
+      "link_image_name": "link_icon_shazam",
+      "name": "shazam"
+    },
+    {
+      "compare_name": "tunein.player",
+      "image_name": "app_tunein",
+      "link_image_name": "link_icon_tunein",
+      "name": "tunein"
+    },
+    {
+      "compare_name": "com.google.android.apps.youtube.music",
+      "image_name": "app_youtube_music",
+      "link_image_name": "link_icon_youtube_music",
+      "name": "YouTube Music"
+    },
+    {
+      "compare_name": "com.dailyfm.star.reading",
+      "image_name": "app_dailyfm",
+      "link_image_name": "link_icon_dailyfm",
+      "name": "dailyfm"
+    },
+    {
+      "compare_name": "cn.cardoor.cardashboard",
+      "image_name": "app_cardashboard",
+      "link_image_name": "link_icon_cardashboard",
+      "name": "超级仪表"
+    },
+    {
+      "compare_name": "com.ununai.car.dj",
+      "image_name": "app_dj",
+      "link_image_name": "link_icon_dj",
+      "name": "嗨吧dj"
+    },
+    {
+      "compare_name": "com.autohome.automotive",
+      "image_name": "app_autohome",
+      "link_image_name": "",
+      "name": "汽车之家"
+    },
+    {
+      "compare_name": "com.tencent.mm",
+      "image_name": "app_wechat",
+      "link_image_name": "link_icon_wechet",
+      "name": "微信"
+    },
+    {
+      "compare_name": "com.tencent.minihd.qq",
+      "image_name": "app_qq",
+      "link_image_name": "link_icon_qq",
+      "name": "qq"
+    },
+    {
+      "compare_name": "cn.cardoor.travel",
+      "image_name": "app_dofunapp",
+      "link_image_name": "link_icon_dofunapp",
+      "name": "我的设备"
+    },
+    {
+      "compare_name": "com.netease.golive",
+      "image_name": "app_look",
+      "link_image_name": "link_icon_look",
+      "name": "look直播"
+    },
+    {
+      "compare_name": "com.netease.cloudmusic.iot",
+      "image_name": "app_neteasecloudmusic",
+      "link_image_name": "link_icon_neteasecloudmusic",
+      "name": "网易云音乐"
+    },
+    {
+      "compare_name": "com.netease.cloudmusic.car",
+      "image_name": "app_neteasecloudmusic_car",
+      "link_image_name": "link_icon_neteasecloudmusic",
+      "name": "网易云音乐_FV"
+    },
+    {
+      "compare_name": "com.tencent.qqmusiccar",
+      "image_name": "app_qqmusic",
+      "link_image_name": "link_icon_qqmusic",
+      "name": "QQ音乐"
+    },
+    {
+      "compare_name": "com.lizhi.smartlife.lzbk.car",
+      "image_name": "app_lizhi",
+      "link_image_name": "link_icon_lizhi",
+      "name": "荔枝播客"
+    },
+    {
+      "compare_name": "com.nng.igoprimoisrael.javaclient",
+      "image_name": "app_igo",
+      "link_image_name": "link_icon_igo",
+      "name": "igo"
+    },
+    {
+      "compare_name": "com.nng.igo.primong.igoworld",
+      "image_name": "app_igo",
+      "link_image_name": "link_icon_igo",
+      "name": "igo-海外"
+    },
+    {
+      "compare_name": "com.example.servicepoint",
+      "image_name": "app_igo",
+      "link_image_name": "link_icon_igo",
+      "name": "igo"
+    },
+    {
+      "compare_name": "cn.manstepk.phonemirrorBox",
+      "image_name": "app_kplay",
+      "link_image_name": "link_icon_kplay",
+      "name": "KPlay-海外"
+    },
+    {
+      "compare_name": "com.ex.dabplayer.pad",
+      "image_name": "app_dap",
+      "link_image_name": "link_icon_dap",
+      "name": "DAB+海外"
+    },
+    {
+      "package_name": "com.teamviewer.quicksupport.market",
+      "compare_name": "com.teamviewer.quicksupport.ui.QSActivity",
+      "image_name": "app_qs",
+      "link_image_name": "link_icon_qs",
+      "name": "QuickSupport-海外"
+    },
+    {
+      "compare_name": "org.prowl.torque",
+      "image_name": "app_obd",
+      "link_image_name": "link_icon_obd",
+      "name": "Torque-海外"
+    },
+    {
+      "compare_name": "com.spotify.music",
+      "image_name": "app_spotify",
+      "link_image_name": "link_icon_spotify",
+      "name": "spotify-海外"
+    },
+    {
+      "compare_name": "com.netflix.mediaclient",
+      "image_name": "app_netflix",
+      "link_image_name": "link_icon_netflix",
+      "name": "netflix"
+    },
+    {
+      "compare_name": "com.cloudtv",
+      "image_name": "app_newtv",
+      "link_image_name": "link_icon_tv",
+      "name": "NEWTV-海外"
+    },
+    {
+      "compare_name": "com.tw.tv.TVActivity",
+      "image_name": "app_tv",
+      "link_image_name": "link_icon_tv",
+      "name": "TQ919_tv"
+    },
+    {
+      "compare_name": "com.tw.tv",
+      "image_name": "app_tv",
+      "link_image_name": "link_icon_tv",
+      "name": "tv"
+    },
+    {
+      "compare_name": "com.syu.tv",
+      "image_name": "app_tv",
+      "link_image_name": "link_icon_tv",
+      "name": "电视"
+    },
+    {
+      "compare_name": "com.wits.tv",
+      "image_name": "app_tv",
+      "link_image_name": "link_icon_tv",
+      "name": "铁将军电视"
+    },
+    {
+      "compare_name": "com.dianshijia.newlive",
+      "image_name": "app_tv_home",
+      "link_image_name": "link_icon_tv",
+      "name": "电视家"
+    },
+    {
+      "compare_name": "com.tima.carnet.vt",
+      "image_name": "app_phonelink",
+      "link_image_name": "link_icon_phonelink",
+      "name": "phonelink-钛马星"
+    },
+    {
+      "compare_name": "com.android.car.carsupervisor",
+      "image_name": "app_acgj",
+      "link_image_name": "",
+      "name": "爱车管家"
+    },
+    {
+      "compare_name": "com.ecar.assistantnew.register.SplashActivity",
+      "image_name": "app_czfw",
+      "link_image_name": "",
+      "name": "车主服务"
+    },
+    {
+      "compare_name": "com.sj.sweet",
+      "image_name": "app_sweet",
+      "link_image_name": "",
+      "name": "驾车伴侣"
+    },
+    {
+      "compare_name": "com.tw.car.MainActivity",
+      "image_name": "app_recorder",
+      "link_image_name": "link_icon_360",
+      "name": "TS9竖屏系统全景360"
+    },
+    {
+      "compare_name": "cn.cardoor.zt360",
+      "image_name": "app_360safety",
+      "link_image_name": "link_icon_360",
+      "name": "360全景卫士"
+    },
+    {
+      "compare_name":"cn.cardoor.zt360.ui.activity.TXRecordActivity",
+      "image_name": "app_recorder",
+      "link_image_name": "link_icon_360",
+      "position":6,
+      "name":"360农用机"
+    },
+    {
+      "compare_name": "com.percherry.roundadas",
+      "image_name": "app_recorder",
+      "link_image_name": "link_icon_360",
+      "name": "普杰利"
+    },
+    {
+      "compare_name": "com.baony.tw360",
+      "image_name": "app_recorder",
+      "link_image_name": "link_icon_360",
+      "name": "灵动飞扬"
+    },
+    {
+      "compare_name": "com.softwinner.dvr.ui.activity.RecordAliasActivity",
+      "package_name": "com.softwinner.dvr",
+      "image_name": "app_truck360",
+      "link_image_name": "link_icon_truck360",
+      "name": "货车360"
+    },
+    {
+      "compare_name": "com.softwinner.dvr.ui.activity.RecordActivity",
+      "package_name": "com.softwinner.dvr",
+      "image_name": "app_dualdvr",
+      "link_image_name": "link_icon_dualdvr",
+      "name": "前后双路DVR"
+    },
+    {
+      "compare_name": "com.tw.dvr",
+      "image_name": "app_twdvr",
+      "link_image_name": "link_icon_twdvr",
+      "name": "TS系列双摄四摄"
+    },
+    {
+      "compare_name": "com.xinzhihui.mydvr",
+      "image_name": "app_airecorder",
+      "link_image_name": "link_icon_airecorder",
+      "name": "AI·记录仪"
+    },
+    {
+      "compare_name": "com.autochips.android.backcar",
+      "image_name": "app_recorder",
+      "link_image_name": "link_icon_360",
+      "name": "360全景"
+    },
+    {
+      "compare_name": "com.pve.xy360view",
+      "image_name": "app_recorder",
+      "link_image_name": "link_icon_360",
+      "name": "360全景"
+    },
+    {
+      "compare_name": "cn.cardoor.hicar",
+      "image_name": "app_hicar",
+      "link_image_name": "link_icon_hicar",
+      "name": "HUAWEI HiCar"
+    },
+    {
+      "compare_name": "com.tw.keypad",
+      "image_name": "app_keypad",
+      "link_image_name": "link_icon_steeringwheel",
+      "name": "方向盘按键"
+    },
+    {
+      "compare_name": "com.android.settings.KeypadActivity",
+      "image_name": "app_keypad",
+      "link_image_name": "link_icon_steeringwheel",
+      "name": "方向盘按键"
+    },
+    {
+      "compare_name": "com.android.settings.keypad2.KeyPad2Activity",
+      "image_name": "app_keypad",
+      "link_image_name": "link_icon_steeringwheel",
+      "name": "方向盘按键"
+    },
+    {
+      "compare_name": "com.hcn.swc",
+      "image_name": "app_keypad",
+      "link_image_name": "link_icon_steeringwheel",
+      "name": "SWC"
+    },
+    {
+      "compare_name": "com.syu.steer",
+      "image_name": "app_keypad",
+      "link_image_name": "link_icon_steeringwheel",
+      "name": "方向盘学习"
+    },
+    {
+      "compare_name": "com.wits.xzc.fk",
+      "image_name": "app_keypad",
+      "link_image_name": "link_icon_steeringwheel",
+      "name": "铁将军方向盘"
+    },
+    {
+      "compare_name": "com.dofun.carsetting.activity.apkinstall.InstallActivity",
+      "image_name": "app_apk",
+      "link_image_name": "link_icon_apk_installer",
+      "name": "APK安装器-TS8"
+    },
+    {
+      "compare_name": "com.tw.apkinstall",
+      "image_name": "app_apk",
+      "link_image_name": "link_icon_apk_installer",
+      "name": "APK安装器"
+    },
+    {
+      "compare_name": "com.android.settings.InstallActivity",
+      "image_name": "app_apk",
+      "link_image_name": "link_icon_apk_installer",
+      "name": "APK安装器"
+    },
+    {
+      "compare_name": "com.wits.apk",
+      "image_name": "app_apk",
+      "link_image_name": "link_icon_apk_installer",
+      "name": "铁将军APK安装器"
+    },
+    {
+      "compare_name": "com.tencent.wecarnews",
+      "image_name": "app_qqradio",
+      "name": "qq电台"
+    },
+    {
+      "compare_name": "com.tencent.qqmusiccar",
+      "image_name": "app_qqmusic",
+      "link_image_name": "link_icon_qqmusic",
+      "name": "qq音乐"
+    },
+    {
+      "compare_name": "com.android.browser",
+      "image_name": "app_browser",
+      "link_image_name": "link_icon_explorer",
+      "name": "浏览器"
+    },
+    {
+      "compare_name": "com.android.settings.Settings",
+      "image_name": "app_set",
+      "link_image_name": "link_icon_setting",
+      "name": "设置"
+    },
+    {
+      "compare_name": "com.syu.settings",
+      "image_name": "app_set",
+      "link_image_name": "link_icon_setting",
+      "name": "设置"
+    },
+    {
+      "compare_name": "com.dofun.variety",
+      "image_name": "app_theme",
+      "link_image_name": "link_icon_theme",
+      "name": "百变主题"
+    },
+    {
+      "compare_name": "cn.cardoor.auto3d",
+      "image_name": "app_phantom",
+      "link_image_name": "link_icon_phantom",
+      "name": "车影"
+    },
+    {
+      "compare_name": "cn.cardoor.d3dview",
+      "image_name": "app_d3dview",
+      "link_image_name": "link_icon_d3dview",
+      "name": "D3Dview"
+    },
+    {
+      "compare_name": "cn.cardoor.auto3d.gyroscope.LauncherAliasHidden",
+      "image_name": "app_gyroscope",
+      "link_image_name": "link_icon_gyroscope",
+      "name": "陀螺仪"
+    },
+    {
+      "compare_name": "android.car.app.gps",
+      "image_name": "app_map",
+      "link_image_name": "link_icon_map",
+      "name": "导航"
+    },
+    {
+      "compare_name": "com.syu.onekeynavi",
+      "image_name": "app_map",
+      "link_image_name": "link_icon_map",
+      "name": "导航"
+    },
+    {
+      "compare_name": "com.pve.naviguide",
+      "image_name": "app_map",
+      "link_image_name": "link_icon_map",
+      "name": "网络导航"
+    },
+    {
+      "compare_name": "com.wits.widget",
+      "image_name": "app_map",
+      "link_image_name": "link_icon_map",
+      "name": "铁将军导航"
+    },
+    {
+      "compare_name": "com.dofun.carassistant.car",
+      "image_name": "app_carmate",
+      "link_image_name": "link_icon_carmate",
+      "name": "carmate"
+    },
+    {
+      "compare_name": "com.ximalaya.ting.android.dingwei",
+      "image_name": "app_ximalaya_ting_car",
+      "link_image_name": "link_icon_ximalaya",
+      "name": "喜马拉雅"
+    },
+    {
+      "compare_name": "com.ximalaya.ting.android.car",
+      "image_name": "app_ximalaya_ting_car",
+      "link_image_name": "link_icon_ximalaya",
+      "name": "喜马拉雅"
+    },
+    {
+      "package_name": "com.android.chrome",
+      "compare_name": "com.google.android.apps.chrome.Main",
+      "image_name": "app_ggbrowser",
+      "link_image_name": "link_icon_googleexplorer",
+      "name": "谷歌浏览器"
+    },
+    {
+      "package_name": "com.google.android.googlequicksearchbox",
+      "compare_name": "com.google.android.googlequicksearchbox.SearchActivity",
+      "image_name": "app_google",
+      "link_image_name": "link_icon_google",
+      "name": "google"
+    },
+    {
+      "compare_name": "com.android.vending",
+      "image_name": "app_ggmarket",
+      "link_image_name": "link_icon_googleplay",
+      "name": "谷歌商店"
+    },
+    {
+      "compare_name": "com.google.android.apps.maps",
+      "image_name": "app_ggmaps",
+      "link_image_name": "link_icon_ggmaps",
+      "name": "谷歌地图"
+    },
+    {
+      "compare_name": "com.edog.car",
+      "image_name": "app_kaola",
+      "link_image_name": "link_icon_kaola",
+      "name": "考拉"
+    },
+    {
+      "compare_name": "com.tw.color",
+      "image_name": "app_color",
+      "link_image_name": "link_icon_qisedeng",
+      "name": "多色灯-七彩灯"
+    },
+    {
+      "compare_name": "com.qiyi.video.pad",
+      "image_name": "app_aqy_video",
+      "link_image_name": "link_icon_aiqiyi",
+      "name": "爱奇艺"
+    },
+    {
+      "compare_name": "com.hongfans.rearview",
+      "image_name": "app_cyb",
+      "link_image_name": "link_icon_carmedia",
+      "name": "车悦宝"
+    },
+    {
+      "compare_name": "com.baidu.BaiduMap",
+      "image_name": "app_bdmap",
+      "link_image_name": "link_icon_bdmap",
+      "name": "百度地图"
+    },
+    {
+      "compare_name": "com.baidu.naviauto",
+      "image_name": "app_bdmap",
+      "link_image_name": "link_icon_bdmap",
+      "name": "百度地图"
+    },
+    {
+      "compare_name": "com.tencent.wecarnavi",
+      "image_name": "app_tenxun_map",
+      "link_image_name": "link_icon_map",
+      "name": "腾讯地图"
+    },
+    {
+      "compare_name": "com.tw.dvd",
+      "image_name": "app_dvd",
+      "link_image_name": "link_icon_dis",
+      "name": "碟片"
+    },
+    {
+      "compare_name": "com.tw.carapps.CX4CDActivit",
+      "image_name": "app_dvd",
+      "link_image_name": "link_icon_dis",
+      "name": "cd-TS18"
+    },
+    {
+      "compare_name": "com.acloud.stub.cdplay",
+      "image_name": "app_dvd",
+      "link_image_name": "link_icon_dis",
+      "name": "超级CD"
+    },
+    {
+      "compare_name": "com.dofun.dofunweather.main",
+      "image_name": "app_weather",
+      "link_image_name": "link_icon_weather",
+      "name": "天气"
+    },
+    {
+      "package_name": "net.qihoo.launcher.widget.clockweather",
+      "compare_name": "com.qihoo.weather.splash.EntryActivity",
+      "image_name": "app_weather",
+      "link_image_name": "link_icon_weather",
+      "name": "360天气"
+    },
+    {
+      "compare_name": "com.autoai.weather",
+      "image_name": "app_weather",
+      "link_image_name": "link_icon_weather",
+      "name": "天气"
+    },
+    {
+      "compare_name": "com.youku.car",
+      "image_name": "app_youku",
+      "link_image_name": "link_icon_youku",
+      "name": "优酷"
+    },
+    {
+      "compare_name": "com.android.providers.downloads.ui",
+      "image_name": "app_download",
+      "link_image_name": "link_icon_down",
+      "name": "下载"
+    },
+    {
+      "compare_name": "com.alensw.PicFolder",
+      "image_name": "app_gallery",
+      "link_image_name": "link_icon_tuku",
+      "name": "快图浏览"
+    },
+    {
+      "compare_name": "com.hcn.gallery",
+      "image_name": "app_gallery",
+      "link_image_name": "link_icon_tuku",
+      "name": "图片浏览"
+    },
+    {
+      "compare_name": "com.syu.gallery",
+      "image_name": "app_gallery",
+      "link_image_name": "link_icon_tuku",
+      "name": "图片浏览"
+    },
+    {
+      "compare_name": "com.android.gallery3d",
+      "image_name": "app_gallery",
+      "link_image_name": "link_icon_tuku",
+      "name": "图库"
+    },
+    {
+      "compare_name": "com.kallaitr.picture",
+      "image_name": "app_gallery",
+      "link_image_name": "link_icon_tuku",
+      "name": "图库"
+    },
+    {
+      "compare_name": "com.wits.witsimageviewer",
+      "image_name": "app_gallery",
+      "link_image_name": "link_icon_tuku",
+      "name": "铁将军图库"
+    },
+    {
+      "compare_name": "com.dofun.tpms",
+      "image_name": "app_tire_pressure",
+      "link_image_name": "link_icon_tpms",
+      "name": "兜风胎压"
+    },
+    {
+      "compare_name": "com.dofun.recorder",
+      "image_name": "app_dvr",
+      "link_image_name": "link_icon_dvr",
+      "name": "兜风记录仪1080P"
+    },
+    {
+      "compare_name": "com.tw.recorder",
+      "image_name": "app_dvr",
+      "link_image_name": "link_icon_dvr",
+      "name": "记录仪"
+    },
+    {
+      "compare_name": "com.dofun.xxscrecorder",
+      "image_name": "app_dvr",
+      "link_image_name": "link_icon_dvr",
+      "name": "记录仪"
+    },
+    {
+      "package_name": "com.dofun.recorder.standard",
+      "compare_name": "com.fvision.camera.MainActivity",
+      "image_name": "app_dvr",
+      "link_image_name": "link_icon_dvr",
+      "name": "记录仪720p"
+    },
+    {
+      "compare_name": "android.car.app.dvr_selector",
+      "image_name": "app_dvrother",
+      "link_image_name": "link_icon_dvr",
+      "name": "记录仪选择器-紫祺"
+    },
+    {
+      "compare_name": "com.fvsm.camera",
+      "image_name": "app_dvrother",
+      "link_image_name": "link_icon_dvr",
+      "name": "合作公版记录仪"
+    },
+    {
+      "compare_name": "android.car.app.video",
+      "image_name": "app_frontview",
+      "link_image_name": "link_icon_frontview",
+      "name": "前视"
+    },
+    {
+      "compare_name": "com.yuncar.extend",
+      "image_name": "app_frontview",
+      "link_image_name": "link_icon_frontview",
+      "name": "前视盲区监测"
+    },
+    {
+      "compare_name": "com.tw.fcam",
+      "image_name": "app_frontview",
+      "link_image_name": "link_icon_carmedia",
+      "name": "frontview"
+    },
+    {
+      "compare_name": "cn.cardoor.kugou",
+      "image_name": "app_kugou",
+      "link_image_name": "link_icon_kugou",
+      "name": "兜风酷狗音乐"
+    },
+    {
+      "compare_name": "cn.kuwo.kwmusiccar",
+      "image_name": "app_kuwo",
+      "link_image_name": "link_icon_kw",
+      "name": "酷我音乐"
+    },
+    {
+      "compare_name": "cn.kuwo.tingshucar",
+      "image_name": "app_tingshucar",
+      "link_image_name": "link_icon_tingshucar",
+      "name": "酷我畅听"
+    },
+    {
+      "compare_name": "com.google.android.apps.youtube.music",
+      "image_name": "app_youtubemusic",
+      "link_image_name": "link_icon_youtubemusic",
+      "name": "YouTubeMusic"
+    },
+    {
+      "compare_name": "com.apple.android.music",
+      "image_name": "app_applemusic",
+      "link_image_name": "link_icon_applemusic",
+      "name": "AppleMusic"
+    },
+    {
+      "compare_name": "vn.nct.car",
+      "image_name": "app_nct_car_vn",
+      "link_image_name": "link_icon_nct_car_vn",
+      "name": "Nct_For_Car"
+    },
+    {
+      "compare_name": "com.bilibili.bilithings",
+      "image_name": "app_bilibili",
+      "link_image_name": "link_icon_bilibili",
+      "name": "哔哩哔哩"
+    },
+    {
+      "compare_name": "com.autonavi.amapauto",
+      "image_name": "app_gdmap",
+      "link_image_name": "link_icon_map",
+      "name": "高德地图"
+    },
+    {
+      "compare_name": "com.dofun.dofunassistant.main",
+      "image_name": "app_assistant",
+      "link_image_name": "link_icon_travel",
+      "name": "出行服务"
+    },
+    {
+      "compare_name": "com.wits.autocan",
+      "image_name": "app_assistant",
+      "link_image_name": "link_icon_travel",
+      "name": "铁将军原车信息"
+    },
+    {
+      "compare_name": "com.dofun.dofuncarhelp.main.MainActivity",
+      "image_name": "app_dofuncarhelp",
+      "link_image_name": "link_icon_assistant",
+      "name": "车机助手"
+    },
+    {
+      "compare_name": "com.dofun.dofuncarhelp.main.showIcon",
+      "image_name": "app_alibaoka",
+      "link_image_name": "link_icon_alibaoka",
+      "name": "阿里宝卡"
+    },
+    {
+      "compare_name": "com.dofun.dofuncarhelp.main.FlowHelpActivity",
+      "image_name": "app_dofuncarhelp",
+      "link_image_name": "link_icon_assistant",
+      "name": "流量助手"
+    },
+    {
+      "compare_name": "com.dofun.market",
+      "image_name": "app_duobeiappstore",
+      "link_image_name": "link_icon_dofunappsmarket",
+      "name": "车必装"
+    },
+    {
+      "compare_name": "cn.carslink.duobei.appstore",
+      "image_name": "app_duobeiappstore",
+      "link_image_name": "link_icon_dofunappsmarket",
+      "name": "多备车载"
+    },
+    {
+      "compare_name": "com.acloud.stub.store",
+      "image_name": "app_apkstore",
+      "link_image_name": "link_icon_dofunappsmarket",
+      "name": "应用市场-卓永航"
+    },
+    {
+      "compare_name": "com.autoai.appstore",
+      "image_name": "app_apkstore",
+      "link_image_name": "link_icon_dofunappsmarket",
+      "name": "应用商店"
+    },
+    {
+      "compare_name": "com.tw.bootanimation",
+      "image_name": "app_bootanimation",
+      "link_image_name": "link_icon_bootanimation",
+      "name": "开机动画"
+    },
+    {
+      "compare_name": "com.tw.video",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "package_name": "com.tw.media",
+      "compare_name": "com.tw.video.VideoActivity",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "compare_name": "com.hcn.AutoMediaPlayer",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "compare_name": "com.syu.video",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频播放器"
+    },
+    {
+      "compare_name": "android.car.app.mp4",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "compare_name": "com.acloud.stub.video",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "compare_name": "com.autoai.video",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频播放器"
+    },
+    {
+      "compare_name": "com.wits.xzc.video",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "compare_name": "com.mxtech.videoplayer.pro",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "MXPiayer"
+    },
+    {
+      "compare_name": "com.tw.radio",
+      "image_name": "app_radio",
+      "link_image_name": "link_icon_radio",
+      "name": "收音机"
+    },
+    {
+      "compare_name": "com.syu.radio",
+      "image_name": "app_radio",
+      "link_image_name": "link_icon_radio",
+      "name": "收音机"
+    },
+    {
+      "compare_name": "android.car.app.radio",
+      "image_name": "app_radio",
+      "link_image_name": "link_icon_radio",
+      "name": "收音机"
+    },
+    {
+      "compare_name": "com.acloud.stub.localradio",
+      "image_name": "app_radio",
+      "link_image_name": "link_icon_radio",
+      "name": "收音机"
+    },
+    {
+      "compare_name": "com.autoai.radio",
+      "image_name": "app_radio",
+      "link_image_name": "link_icon_radio",
+      "name": "收音机"
+    },
+    {
+      "compare_name": "com.hcn.autoradio",
+      "image_name": "app_radio",
+      "link_image_name": "link_icon_radio",
+      "name": "收音机"
+    },
+    {
+      "compare_name": "com.wits.csp.radio",
+      "image_name": "app_radio",
+      "link_image_name": "link_icon_radio",
+      "name": "铁将军收音机"
+    },
+    {
+      "compare_name": "cn.cardoor.dofunmusic",
+      "image_name": "app_dofunmusic",
+      "link_image_name": "link_icon_music",
+      "name": "DoFunMusic"
+    },
+    {
+      "compare_name": "com.tw.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "package_name": "com.tw.media",
+      "compare_name": "com.tw.music.MusicActivity",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "package_name": "com.hcn.AutoMediaPlayer",
+      "compare_name": "com.hcn.AutoMediaActivity.MusicPlayerUiActivity",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "compare_name": "com.syu.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "compare_name": "android.car.app.media",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "compare_name": "com.acloud.stub.newoninemusic",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "网络音乐"
+    },
+    {
+      "compare_name": "com.acloud.stub.newonlinemusic",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "网络音乐"
+    },
+    {
+      "compare_name": "com.acloud.stub.localmusic",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "本地音乐"
+    },
+    {
+      "compare_name": "com.autoai.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_carmedia",
+      "name": "本地音乐"
+    },
+    {
+      "compare_name": "com.wits.xzc.media",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_carmedia",
+      "name": "铁将军音乐"
+    },
+    {
+      "compare_name": "com.estrongs.android.pop",
+      "image_name": "app_estrongs",
+      "link_image_name": "link_icon_es",
+      "name": "ES文件浏览器"
+    },
+    {
+      "compare_name": "com.zjinnova.zlink",
+      "image_name": "app_twlink",
+      "link_image_name": "link_icon_twlink",
+      "name": "Tlink5"
+    },
+    {
+      "compare_name": "com.zjinnova.android.zlink.features.launcher.MirrorActivity",
+      "image_name": "app_mirroring",
+      "link_image_name": "link_icon_mirroring",
+      "name": "ZLINK-镜像投屏"
+    },
+    {
+      "compare_name": "com.zjinnova.android.zlink.features.launcher.CarPlayActivity",
+      "image_name": "app_carplay",
+      "link_image_name": "link_icon_carplay",
+      "name": "ZLINK-carplay"
+    },
+    {
+      "compare_name": "com.zjinnova.android.zlink.features.launcher.AutoActivity",
+      "image_name": "app_androidauto",
+      "link_image_name": "link_icon_androidauto",
+      "name": "ZLINK-Android_Auto"
+    },
+    {
+      "compare_name": "com.zjinnova.android.zlink.features.launcher.HiCarActivity",
+      "image_name": "app_hicar",
+      "link_image_name": "link_icon_hicar",
+      "name": "ZLINK-HiCar"
+    },
+    {
+      "compare_name": "com.zjinnova.zlink.main.view.SplashActivity",
+      "image_name": "app_zlink",
+      "link_image_name": "link_icon_zlink",
+      "name": "TLINK"
+    },
+    {
+      "compare_name": "com.suding.speedplay.ui.MainActivity",
+      "image_name": "app_zlink",
+      "link_image_name": "link_icon_zlink",
+      "name": "TLINK"
+    },
+    {
+      "compare_name": "com.zjinnova.android.zlink.features.main.MainActivity",
+      "image_name": "app_zlink",
+      "link_image_name": "link_icon_zlink",
+      "name": "TLINK"
+    },
+    {
+      "compare_name": "net.easyconn",
+      "image_name": "app_yilian",
+      "link_image_name": "link_icon_yilian",
+      "name": "亿联"
+    },
+    {
+      "package_name": "com.androits.gps.test.pro",
+      "compare_name": "com.androits.gps.test.ui.SkyActivity",
+      "image_name": "app_gpstest",
+      "link_image_name": "link_icon_gpstest",
+      "name": "GPStest"
+    },
+    {
+      "compare_name": "com.androits.gps.test.GpsTest",
+      "image_name": "app_gpstest",
+      "link_image_name": "link_icon_gpstest",
+      "name": "GPS"
+    },
+    {
+      "compare_name": "com.chartcross.gpstestplus",
+      "image_name": "app_gpstest",
+      "link_image_name": "link_icon_gpstest",
+      "name": "GPS"
+    },
+    {
+      "compare_name": "com.tw.ac.AirConditionActivity",
+      "image_name": "app_aircon",
+      "link_image_name": "link_icon_kongtiao",
+      "name": "空调"
+    },
+    {
+      "compare_name": "com.wits.witsfan",
+      "image_name": "app_aircon",
+      "link_image_name": "link_icon_kongtiao",
+      "name": "铁将军风扇"
+    },
+    {
+      "compare_name": "com.waze.FreeMapAppActivity",
+      "image_name": "app_waze",
+      "link_image_name": "link_icon_waze",
+      "name": "位智"
+    },
+    {
+      "compare_name": "com.lehu.mystyle.boardktv",
+      "image_name": "app_ktv",
+      "link_image_name": "link_icon_ktv",
+      "name": "车载KTV"
+    },
+    {
+      "compare_name": "com.thunder.ktvlite",
+      "image_name": "app_ktvlite",
+      "link_image_name": "link_icon_ktv",
+      "name": "雷石KTV"
+    },
+    {
+      "compare_name": "com.tw.bt",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "蓝牙"
+    },
+    {
+      "compare_name": "com.aotochips.bluetooth",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "蓝牙"
+    },
+    {
+      "compare_name": "com.tw.bt.ATA2dpActivity",
+      "image_name": "app_btmusic",
+      "link_image_name": "link_icon_btmusic",
+      "name": "TS20蓝牙音乐"
+    },
+    {
+      "compare_name": "com.aotochips.bluetooth",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "蓝牙音乐"
+    },
+    {
+      "compare_name": "com.wits.xzc.bt.BtMusicActivity",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "铁将军蓝牙音乐"
+    },
+    {
+      "compare_name": "com.syu.bt",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "蓝牙"
+    },
+    {
+      "compare_name": "android.car.app.bt",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "蓝牙"
+    },
+    {
+      "compare_name": "com.autochips.bluetooth",
+      "image_name": "app_bt",
+      "link_image_name": "link_icon_bt",
+      "name": "蓝牙-卓永航"
+    },
+    {
+      "compare_name": "com.android.dialer.app.DialtactsActivity",
+      "image_name": "app_call",
+      "link_image_name": "link_icon_call",
+      "name": "电话-卓永航"
+    },
+    {
+      "compare_name": "com.android.dialer.main.impl.MainActivity",
+      "image_name": "app_call",
+      "link_image_name": "link_icon_call",
+      "name": "电话-TS18-TS10"
+    },
+    {
+      "compare_name": "com.wits.xzc.bt.StartActivity",
+      "image_name": "app_call",
+      "link_image_name": "link_icon_call",
+      "name": "铁将军电话"
+    },
+    {
+      "compare_name": "com.android.contacts",
+      "image_name": "app_contacts",
+      "link_image_name": "link_icon_telephone",
+      "name": "通讯录-卓永航"
+    },
+    {
+      "compare_name": "com.android.dialer.app.calllog.CallLogActivity",
+      "image_name": "app_contacts",
+      "link_image_name": "link_icon_telephone",
+      "name": "通讯记录-TS18"
+    },
+    {
+      "compare_name": "com.dofun.carsetting.ui.MainActivity",
+      "image_name": "app_carsetting",
+      "link_image_name": "link_icon_autoset",
+      "name": "车辆设置"
+    },
+    {
+      "compare_name": "com.xyauto.Settings",
+      "image_name": "app_carsetting",
+      "link_image_name": "link_icon_autoset",
+      "name": "车载设置"
+    },
+    {
+      "compare_name": "com.hcn.autosetting",
+      "image_name": "app_carsetting",
+      "link_image_name": "link_icon_autoset",
+      "name": "车载设置"
+    },
+    {
+      "compare_name": "com.tw.carsettings.CarSettingsActivity",
+      "image_name": "app_carsetting",
+      "link_image_name": "link_icon_autoset",
+      "name": "车辆设置"
+    },
+    {
+      "compare_name": "android.car.app.apk",
+      "image_name": "app_carsetting",
+      "link_image_name": "link_icon_autoset",
+      "name": "车机小帮手-紫祺"
+    },
+    {
+      "compare_name": "com.ATCSetting.mainui.MainActivity",
+      "image_name": "app_carsetting",
+      "link_image_name": "link_icon_autoset",
+      "name": "车机设置"
+    },
+    {
+      "compare_name": "com.syu.canbus",
+      "image_name": "app_autoinformation",
+      "link_image_name": "link_icon_original_car",
+      "name": "车辆信息"
+    },
+    {
+      "compare_name": "com.autoai.canui",
+      "image_name": "app_autoinformation",
+      "link_image_name": "link_icon_original_car",
+      "name": "原车信息"
+    },
+    {
+      "compare_name": "com.xygala.canbus.MainActivity",
+      "image_name": "app_autoset",
+      "link_image_name": "link_icon_autosetting",
+      "name": "原车设置-卓永航"
+    },
+    {
+      "compare_name": "cn.cardoor.integral",
+      "image_name": "app_traffic_light",
+      "link_image_name": "link_icon_traffic_light",
+      "name": "抢油_修改为红绿灯"
+    },
+    {
+      "compare_name": "com.tima.carnet.lottery",
+      "image_name": "app_oilconsumption",
+      "link_image_name": "link_icon_oilconsumption",
+      "name": "抢油"
+    },
+    {
+      "compare_name": "com.tw.car.Fuel2Activity",
+      "image_name": "app_oilconsumption",
+      "link_image_name": "link_icon_oilconsumption",
+      "name": "油耗-TS8"
+    },
+    {
+      "compare_name": "com.tw.carapps.CX4Fuel",
+      "image_name": "app_oilconsumption",
+      "link_image_name": "link_icon_oilconsumption",
+      "name": "油耗-TS18"
+    },
+    {
+      "compare_name": "com.tw.carapps.Xph_Mazda_MaintenanceActivity",
+      "image_name": "app_maintain",
+      "link_image_name": "link_icon_maintain",
+      "name": "保养-TS18"
+    },
+    {
+      "compare_name": "com.android.soundrecorder",
+      "image_name": "app_soundrecorder",
+      "link_image_name": "link_icon_soundrecorder",
+      "name": "录音机"
+    },
+    {
+      "compare_name": "com.aispeech.lyra.view",
+      "image_name": "app_lyraview",
+      "link_image_name": "link_icon_lyraview",
+      "name": "戈途语音"
+    },
+    {
+      "compare_name": "com.dofun.aios.voice",
+      "image_name": "app_dofunvoice",
+      "link_image_name": "link_icon_dofun_voice",
+      "name": "兜风语音"
+    },
+    {
+      "compare_name": "com.dofun.bridge",
+      "image_name": "app_dofunvoice",
+      "link_image_name": "link_icon_dofun_voice",
+      "name": "天琴语音"
+    },
+    {
+      "compare_name": "com.dofun.overseasvoice",
+      "image_name": "app_dofunvoice",
+      "link_image_name": "link_icon_dofun_voice",
+      "name": "兜风海外语音"
+    },
+    {
+      "compare_name": "com.txznet.txzsetting",
+      "image_name": "app_voice",
+      "link_image_name": "link_icon_voice",
+      "name": "语音设置"
+    },
+    {
+      "compare_name": "com.hcn.voicesystem",
+      "image_name": "app_voice",
+      "link_image_name": "link_icon_voice",
+      "name": "语音助手"
+    },
+    {
+      "compare_name": "com.google.android.googlequicksearchbox",
+      "image_name": "app_googlevoice",
+      "link_image_name": "link_icon_voice",
+      "name": "语音搜索"
+    },
+    {
+      "compare_name": "com.syu.voice",
+      "image_name": "app_voice",
+      "link_image_name": "link_icon_voice",
+      "name": "车助理小芳"
+    },
+    {
+      "compare_name": "com.acloud.stub.speech",
+      "image_name": "app_voice",
+      "link_image_name": "link_icon_voice",
+      "name": "智能机器人"
+    },
+    {
+      "compare_name": "com.google.android.apps.googleassistant",
+      "image_name": "app_googleassistant",
+      "link_image_name": "link_icon_voice",
+      "name": "智能助理"
+    },
+    {
+      "compare_name": "com.sprd.fileexplorer",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理器"
+    },
+    {
+      "compare_name": "com.tw.twfileexplore",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理"
+    },
+    {
+      "compare_name": "com.mediatek.filemanager",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理"
+    },
+    {
+      "compare_name": "com.syu.filemanager",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理"
+    },
+    {
+      "package_name": "android.car.app.carfilemanager",
+      "compare_name": "android.car.app.file_manager.MainActivity",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理"
+    },
+    {
+      "compare_name": "com.mediatek.filemanager",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理"
+    },
+    {
+      "compare_name": "com.smartauto.chleon.filemanager",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理"
+    },
+    {
+      "compare_name": "com.wits.filemanager",
+      "image_name": "app_strongs",
+      "link_image_name": "link_icon_file",
+      "name": "文件管理"
+    },
+    {
+      "compare_name": "com.google.android.youtube",
+      "image_name": "app_youtube",
+      "link_image_name": "link_icon_youtube",
+      "name": "YouTube"
+    },
+    {
+      "compare_name": "com.twitter.android",
+      "image_name": "app_twitter",
+      "link_image_name": "link_icon_twitter",
+      "name": "twitter"
+    },
+    {
+      "compare_name": "com.facebook.katana",
+      "image_name": "app_facebook",
+      "link_image_name": "link_icon_facebook",
+      "name": "facebook"
+    },
+    {
+      "compare_name": "com.android.email",
+      "image_name": "app_email",
+      "link_image_name": "link_icon_email",
+      "name": "电子邮件"
+    },
+    {
+      "compare_name": "com.tw.eq",
+      "image_name": "app_equalizer",
+      "link_image_name": "link_icon_eq",
+      "name": "均衡器"
+    },
+    {
+      "compare_name": "com.syu.eq",
+      "image_name": "app_equalizer",
+      "link_image_name": "link_icon_eq",
+      "name": "均衡器"
+    },
+    {
+      "compare_name": "android.car.app.audio_setting",
+      "image_name": "app_equalizer",
+      "link_image_name": "link_icon_eq",
+      "name": "音频设置"
+    },
+    {
+      "compare_name": "com.hzh.eqer",
+      "image_name": "app_equalizer",
+      "link_image_name": "link_icon_eq",
+      "name": "DSP调音台"
+    },
+    {
+      "compare_name": "com.xyauto.dspSetting",
+      "image_name": "app_equalizer",
+      "link_image_name": "link_icon_eq",
+      "name": "DSP设置"
+    },
+    {
+      "compare_name": "com.wits.csp.eq",
+      "image_name": "app_equalizer",
+      "link_image_name": "link_icon_eq",
+      "name": "铁将军eq"
+    },
+    {
+      "compare_name": "com.tw.auxin",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "AUX"
+    },
+    {
+      "compare_name": "com.auto.hcamera",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "后置输入"
+    },
+    {
+      "compare_name": "com.syu.av",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "AUX"
+    },
+    {
+      "compare_name": "android.car.app.video",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "AUX"
+    },
+    {
+      "compare_name": "com.autochips.android.backcar",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "外接输入"
+    },
+    {
+      "compare_name": "com.autochips.dvrmipi2",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "外接输入-卓永航"
+    },
+    {
+      "package_name": "android.car.app.video",
+      "compare_name": "com.autoai.aux.ui.AuxinActivity",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "AUX"
+    },
+    {
+      "compare_name": "com.wits.avin",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "铁将军AUX"
+    },
+    {
+      "compare_name": "com.tw.auxin.AuxInActivity",
+      "image_name": "app_aux",
+      "link_image_name": "link_icon_aux",
+      "name": "TQ919_AUX"
+    },
+    {
+      "compare_name": "com.tw.hdmi.HDMIActivity",
+      "image_name": "app_hdmi",
+      "link_image_name": "link_icon_hdmi",
+      "name": "TQ919_HDMI"
+    },
+    {
+      "compare_name": "com.syu.guide",
+      "image_name": "app_mspecification",
+      "link_image_name": "link_icon_instructions",
+      "name": "操作指南"
+    },
+    {
+      "compare_name": "com.dofun.instruction",
+      "image_name": "app_mspecification",
+      "link_image_name": "link_icon_instructions",
+      "name": "说明书"
+    },
+    {
+      "compare_name": "com.artifex.mupdf",
+      "image_name": "app_mspecification",
+      "link_image_name": "link_icon_instructions",
+      "name": "说明书"
+    },
+    {
+      "compare_name": "com.tw.mspecification",
+      "image_name": "app_mspecification",
+      "link_image_name": "link_icon_instructions",
+      "name": "说明书"
+    },
+    {
+      "compare_name": "com.hcn.autouserguide",
+      "image_name": "app_mspecification",
+      "link_image_name": "link_icon_instructions",
+      "name": "使用说明"
+    },
+    {
+      "compare_name": "com.autoai.instruction",
+      "image_name": "app_mspecification",
+      "link_image_name": "link_icon_instructions",
+      "name": "使用说明"
+    },
+    {
+      "compare_name": "com.acloud.stub.manual",
+      "image_name": "app_mspecification",
+      "link_image_name": "link_icon_instructions",
+      "name": "说明书"
+    },
+    {
+      "compare_name": "com.iflytek.inputmethod",
+      "image_name": "app_ifly",
+      "link_image_name": "link_icon_ifly",
+      "name": "讯飞输入法"
+    },
+    {
+      "compare_name": "com.iflytek.inputmethod.pad",
+      "image_name": "app_ifly",
+      "link_image_name": "link_icon_ifly",
+      "name": "讯飞输入法-卓永航"
+    },
+    {
+      "compare_name": "com.sohu.inputmethod.sogou",
+      "image_name": "app_sogou_input",
+      "link_image_name": "link_icon_sgou",
+      "name": "搜狗输入法"
+    },
+    {
+      "compare_name": "com.calendar.hcncalendar",
+      "image_name": "app_loftcalendar",
+      "link_image_name": "link_icon_calendar",
+      "name": "万年历"
+    },
+    {
+      "compare_name": "com.youloft.calendar.car",
+      "image_name": "app_loftcalendar",
+      "link_image_name": "link_icon_calendar",
+      "name": "万年历"
+    },
+    {
+      "compare_name": "com.android.calendar",
+      "image_name": "app_calendar",
+      "link_image_name": "link_icon_calendar",
+      "name": "日历"
+    },
+    {
+      "compare_name": "com.android.calculator2",
+      "image_name": "app_calculator",
+      "link_image_name": "link_icon_calculator",
+      "name": "计算器"
+    },
+    {
+      "compare_name": "com.dofun.roadshop",
+      "image_name": "app_roadshop",
+      "link_image_name": "",
+      "name": "兜风严选"
+    },
+    {
+      "compare_name": "com.android.messaging",
+      "image_name": "app_messaging",
+      "link_image_name": "link_icon_messaging",
+      "name": "短信-卓永航"
+    },
+    {
+      "compare_name": "com.tencent.qqlive.audiobox",
+      "image_name": "app_texunvideo",
+      "link_image_name": "link_icon_texunvideo",
+      "name": "腾讯视频"
+    },
+    {
+      "compare_name": "hdpfans.com",
+      "image_name": "app_hdp",
+      "link_image_name": "link_icon_play",
+      "name": "HDP直播"
+    },
+    {
+      "compare_name": "com.sohu.tv",
+      "image_name": "app_sohutv",
+      "link_image_name": "link_icon_play",
+      "name": "搜狐视频HD"
+    },
+    {
+      "compare_name": "air.tv.douyu.android",
+      "image_name": "app_douyu",
+      "link_image_name": "link_icon_play",
+      "name": "斗鱼直播"
+    },
+    {
+      "compare_name": "com.qiyi.video.child",
+      "image_name": "app_aiqiyichild",
+      "link_image_name": "link_icon_play",
+      "name": "爱奇艺奇巴布"
+    },
+    {
+      "compare_name": "com.duoduo.child.story",
+      "image_name": "app_ergeduoduo",
+      "link_image_name": "link_icon_play",
+      "name": "儿歌多多"
+    },
+    {
+      "compare_name": "com.ss.android.ugc.aweme",
+      "image_name": "app_douyin",
+      "link_image_name": "",
+      "name": "抖音短视频"
+    },
+    {
+      "compare_name": "apps",
+      "image_name": "app_apps",
+      "link_image_name": "link_icon_apps",
+      "name": "应用页入口"
+    },
+    {
+      "compare_name": "tw_navi",
+      "image_name": "app_map",
+      "link_image_name": "link_icon_map",
+      "name": "导航"
+    },
+    {
+      "compare_name": "tw_link",
+      "image_name": "app_twlink",
+      "link_image_name": "link_icon_twlink",
+      "name": "车机互联"
+    },
+    {
+      "compare_name": "night_mode",
+      "image_name": "app_night_mode_switcher",
+      "link_image_name": "link_icon_night_mode_switcher",
+      "name": "日夜模式切换"
+    },
+    {
+      "compare_name": "music_set",
+      "image_name": "app_music_set",
+      "link_image_name": "link_icon_music_set",
+      "name": "音乐合集"
+    },
+    {
+      "compare_name": "program",
+      "image_name": "app_program",
+      "link_image_name": "link_icon_program",
+      "name": "节目合集"
+    },
+    {
+      "compare_name": "desktop_setting",
+      "image_name": "app_desktop_setting",
+      "link_image_name": "link_icon_desktop_setting",
+      "name": "HMI桌面设置"
+    }
+  ]
+}

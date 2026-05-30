@@ -1,0 +1,385 @@
+<!-- lines 1-9 from decoded AndroidManifest.xml -->
+<manifest package="com.dofun.variety" platformBuildVersionCode="34" platformBuildVersionName="14" android:installLocation="367" android:versionName="V9.7.2.367.260312" android:compileSdkVersion="34" android:compileSdkVersionCodename="14">
+  <uses-sdk android:glEsVersion="16" android:targetSdkVersion="24">
+  </uses-sdk>
+  <supports-screens android:appCategory="true" android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:resizeable="true">
+  </supports-screens>
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION">
+  </uses-permission>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION">
+  </uses-permission>
+
+<!-- lines 54-66 from decoded AndroidManifest.xml -->
+  <permission android:name="com.dofun.variety.permission.provider.exported.WRITE_KV_CONFIG" android:protectionLevel="0x0">
+  </permission>
+  <uses-permission android:name="android.permission.BLUETOOTH">
+  </uses-permission>
+  <queries>
+    <intent>
+      <action android:name="cn.cardoor.intent.action.VEHICLE3D_BRIDGE_SERVER">
+      </action>
+    </intent>
+    <intent>
+      <action android:name="cn.cardoor.intent.action.VEHICLE3D_BRIDGE_APP_LAUNCHED">
+      </action>
+    </intent>
+
+<!-- lines 70-82 from decoded AndroidManifest.xml -->
+      <action android:name="cn.cardoor.intent.action.VEHICLE3D_ATTITUDE_SERVER">
+      </action>
+    </intent>
+    <intent>
+      <action android:name="cn.cardoor.libs.media.RemoteMediaService">
+      </action>
+    </intent>
+    <package android:name="com.spotify.music">
+    </package>
+    <package android:name="com.spotify.music.debug">
+    </package>
+    <package android:name="com.spotify.music.canary">
+    </package>
+
+<!-- lines 73-85 from decoded AndroidManifest.xml -->
+    <intent>
+      <action android:name="cn.cardoor.libs.media.RemoteMediaService">
+      </action>
+    </intent>
+    <package android:name="com.spotify.music">
+    </package>
+    <package android:name="com.spotify.music.debug">
+    </package>
+    <package android:name="com.spotify.music.canary">
+    </package>
+    <package android:name="com.spotify.music.partners">
+    </package>
+  </queries>
+
+<!-- lines 75-87 from decoded AndroidManifest.xml -->
+      </action>
+    </intent>
+    <package android:name="com.spotify.music">
+    </package>
+    <package android:name="com.spotify.music.debug">
+    </package>
+    <package android:name="com.spotify.music.canary">
+    </package>
+    <package android:name="com.spotify.music.partners">
+    </package>
+  </queries>
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES">
+  </uses-permission>
+
+<!-- lines 77-89 from decoded AndroidManifest.xml -->
+    <package android:name="com.spotify.music">
+    </package>
+    <package android:name="com.spotify.music.debug">
+    </package>
+    <package android:name="com.spotify.music.canary">
+    </package>
+    <package android:name="com.spotify.music.partners">
+    </package>
+  </queries>
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES">
+  </uses-permission>
+  <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL">
+  </uses-permission>
+
+<!-- lines 79-91 from decoded AndroidManifest.xml -->
+    <package android:name="com.spotify.music.debug">
+    </package>
+    <package android:name="com.spotify.music.canary">
+    </package>
+    <package android:name="com.spotify.music.partners">
+    </package>
+  </queries>
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES">
+  </uses-permission>
+  <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL">
+  </uses-permission>
+  <uses-permission android:name="com.tencent.wecarflow.PLAY_CONTROL">
+  </uses-permission>
+
+<!-- lines 81-93 from decoded AndroidManifest.xml -->
+    <package android:name="com.spotify.music.canary">
+    </package>
+    <package android:name="com.spotify.music.partners">
+    </package>
+  </queries>
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES">
+  </uses-permission>
+  <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL">
+  </uses-permission>
+  <uses-permission android:name="com.tencent.wecarflow.PLAY_CONTROL">
+  </uses-permission>
+  <uses-permission android:name="com.android.providers.media.MediaProvider">
+  </uses-permission>
+
+<!-- lines 84-96 from decoded AndroidManifest.xml -->
+    </package>
+  </queries>
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES">
+  </uses-permission>
+  <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL">
+  </uses-permission>
+  <uses-permission android:name="com.tencent.wecarflow.PLAY_CONTROL">
+  </uses-permission>
+  <uses-permission android:name="com.android.providers.media.MediaProvider">
+  </uses-permission>
+  <uses-permission android:name="android.permission.CAMERA">
+  </uses-permission>
+  <permission android:name="com.dofun.variety.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="0x2">
+
+<!-- lines 161-173 from decoded AndroidManifest.xml -->
+        <category android:name="android.intent.category.LAUNCHER">
+        </category>
+      </intent-filter>
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/category/one">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/category/two">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/online/theme">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+
+<!-- lines 163-175 from decoded AndroidManifest.xml -->
+      </intent-filter>
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/category/one">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/category/two">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/online/theme">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+
+<!-- lines 165-177 from decoded AndroidManifest.xml -->
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/category/one">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/category/two">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/online/theme">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 181-193 from decoded AndroidManifest.xml -->
+    <activity-alias android:name="com.dofun.overseasvariety.activity.ThemeOneCategoryActivity" android:exported="true" android:targetActivity="com.dofun.variety.online.DomesticOnlineActivity">
+    </activity-alias>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.theme.details.ThemeDetailsActivity" android:exported="true" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/category/details">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 193-205 from decoded AndroidManifest.xml -->
+      </intent-filter>
+    </activity>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.screensaver.details.ScreensaverDetailsActivity" android:exported="true" android:configChanges="2" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/screensaver/category/details">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 219-231 from decoded AndroidManifest.xml -->
+    <service android:name="com.dofun.variety.VarietyBackgroundService" android:exported="false">
+    </service>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.designer.DesignerActivity" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/designer/details">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 231-243 from decoded AndroidManifest.xml -->
+      </intent-filter>
+    </activity>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.mine.favorite.FavoriteActivity" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/favorite/details">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 243-255 from decoded AndroidManifest.xml -->
+      </intent-filter>
+    </activity>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.online.search.SearchActivity" android:configChanges="0x200" android:required="0x2">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/theme/search">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 263-275 from decoded AndroidManifest.xml -->
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+        <data android:scheme="launcher" android:host="variety" android:path="/setting">
+        </data>
+      </intent-filter>
+    </activity>
+    <activity android:theme="@0x7f11011e" android:name="com.dofun.variety.img_picker.ChooseMoreActivity" android:configChanges="0x200">
+    </activity>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.marketing.coupon.CouponActivity" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/marketing/coupon">
+
+<!-- lines 271-283 from decoded AndroidManifest.xml -->
+    <activity android:theme="@0x7f11011e" android:name="com.dofun.variety.img_picker.ChooseMoreActivity" android:configChanges="0x200">
+    </activity>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.marketing.coupon.CouponActivity" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/marketing/coupon">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 283-295 from decoded AndroidManifest.xml -->
+      </intent-filter>
+    </activity>
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.marketing.subject.SubjectActivity" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/marketing/subject">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/marketing/probation">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+
+<!-- lines 285-297 from decoded AndroidManifest.xml -->
+    <activity android:theme="@0x7f110137" android:name="com.dofun.variety.marketing.subject.SubjectActivity" android:configChanges="0x200">
+      <intent-filter>
+        <data android:scheme="launcher" android:host="variety" android:path="/marketing/subject">
+        </data>
+        <data android:scheme="launcher" android:host="variety" android:path="/marketing/probation">
+        </data>
+        <category android:name="android.intent.category.DEFAULT">
+        </category>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.BROWSABLE">
+        </category>
+      </intent-filter>
+
+<!-- lines 297-309 from decoded AndroidManifest.xml -->
+      </intent-filter>
+    </activity>
+    <activity android:theme="@0x7f110270" android:name="com.dofun.variety.catchexception.CatchExceptionDialogActivity" android:exported="false" android:process=":exception">
+    </activity>
+    <activity android:name="com.dofun.variety.module.launcher.activity.HomeHelpActivity" android:enabled="false">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN">
+        </action>
+        <action android:name="android.intent.action.VIEW">
+        </action>
+        <category android:name="android.intent.category.HOME">
+        </category>
+        <category android:name="android.intent.category.DEFAULT">
+
+<!-- lines 339-351 from decoded AndroidManifest.xml -->
+    <activity android:theme="@0x7f110119" android:name="cn.cardoor.variety.base.n" android:excludeFromRecents="true" android:configChanges="0x200" android:required="0x2">
+    </activity>
+    <activity android:theme="@0x01030010" android:name="cn.cardoor.variety.base.t" android:excludeFromRecents="true" android:required="0x2">
+    </activity>
+    <provider android:name="cn.cardoor.variety.base.config.export.ExportedProvider" android:writePermission="com.dofun.variety.permission.provider.exported.WRITE_KV_CONFIG" android:exported="true" android:authorities="com.dofun.variety.ExportedProvider">
+    </provider>
+    <service android:name="cn.cardoor.user.account.AccountService" android:exported="true">
+      <intent-filter>
+        <action android:name="cn.cardoor.account.service">
+        </action>
+      </intent-filter>
+    </service>
+    <service android:name="cn.cardoor.user.account.OsAccountService" android:exported="true">
+
+<!-- lines 361-373 from decoded AndroidManifest.xml -->
+    <activity android:theme="@0x01030006" android:name="cn.cardoor.user.view.LogoutActivity" android:configChanges="1">
+    </activity>
+    <meta-data android:name="cn.cardoor.account.android.version" android:authorities="2.0.0">
+    </meta-data>
+    <service android:name="cn.cardoor.basic.media.NotifyService" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+      <intent-filter>
+        <action android:name="android.service.notification.NotificationListenerService">
+        </action>
+      </intent-filter>
+    </service>
+    <service android:name="cn.cardoor.libs.media.impl.MediaSourceService" android:exported="true">
+      <intent-filter>
+        <action android:name="cn.cardoor.libs.media.RemoteMediaService">
+
+<!-- lines 367-379 from decoded AndroidManifest.xml -->
+        <action android:name="android.service.notification.NotificationListenerService">
+        </action>
+      </intent-filter>
+    </service>
+    <service android:name="cn.cardoor.libs.media.impl.MediaSourceService" android:exported="true">
+      <intent-filter>
+        <action android:name="cn.cardoor.libs.media.RemoteMediaService">
+        </action>
+      </intent-filter>
+    </service>
+    <activity android:theme="@0x01030011" android:name="com.dofun.bases.ad.i">
+    </activity>
+    <provider android:name="com.dofun.bases.android.FileProvider" android:exported="false" android:authorities="com.dofun.variety.FileProvider" android:screenOrientation="true">
+
+<!-- lines 369-381 from decoded AndroidManifest.xml -->
+      </intent-filter>
+    </service>
+    <service android:name="cn.cardoor.libs.media.impl.MediaSourceService" android:exported="true">
+      <intent-filter>
+        <action android:name="cn.cardoor.libs.media.RemoteMediaService">
+        </action>
+      </intent-filter>
+    </service>
+    <activity android:theme="@0x01030011" android:name="com.dofun.bases.ad.i">
+    </activity>
+    <provider android:name="com.dofun.bases.android.FileProvider" android:exported="false" android:authorities="com.dofun.variety.FileProvider" android:screenOrientation="true">
+      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@0x7f130002">
+      </meta-data>

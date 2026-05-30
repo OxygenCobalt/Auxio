@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    Use this as a source-set example if the topwayTwMusic debug variant keeps
+    applicationIdSuffix ".debug". The exact path may need to be:
+      app/src/topwayTwMusicDebug/res/values/donottranslate.xml
+    depending on the final flavour/build-type source-set structure.
+    -->
+    <string name="pkg_authority_cover" translatable="false">com.tw.music.debug.image.CoverProvider</string>
+</resources>

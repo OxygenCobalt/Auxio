@@ -1,0 +1,64 @@
+{
+  "source": "assets/apps_match_config.json",
+  "music_related_entries": [
+    {
+      "source_index": 1,
+      "soft_name": "hotseat_app_music",
+      "icon_name": "link_icon_music",
+      "compare_soft_name": "音乐,音樂,Music",
+      "more_packages": [
+        {
+          "package_name": "com.tw.media",
+          "class_name": "com.tw.music.MusicActivity"
+        },
+        {
+          "package_name": "com.tw.music",
+          "class_name": "com.tw.music.MusicActivity"
+        }
+      ],
+      "function": "music_set",
+      "behavior": [
+        "fixed"
+      ]
+    },
+    {
+      "source_index": 14,
+      "soft_name": "hotseat_app_music",
+      "icon_name": "link_icon_music",
+      "compare_soft_name": "音乐,音樂,Music",
+      "more_packages": [
+        {
+          "package_name": "com.tw.media",
+          "class_name": "com.tw.music.MusicActivity"
+        },
+        {
+          "package_name": "com.tw.music",
+          "class_name": "com.tw.music.MusicActivity"
+        }
+      ]
+    },
+    {
+      "source_index": 15,
+      "soft_name": "hotseat_app_video",
+      "icon_name": "link_icon_video",
+      "compare_soft_name": "视频,視頻,Video",
+      "more_packages": [
+        {
+          "package_name": "com.tw.video",
+          "class_name": "com.tw.video.VideoActivity"
+        },
+        {
+          "package_name": "com.tw.media",
+          "class_name": "com.tw.video.VideoActivity"
+        }
+      ]
+    },
+    {
+      "source_index": 19,
+      "soft_name": "hotseat_app_spotify",
+      "icon_name": "link_icon_spotify",
+      "compare_name": "com.spotify.music",
+      "compare_soft_name": "spotify"
+    }
+  ]
+}

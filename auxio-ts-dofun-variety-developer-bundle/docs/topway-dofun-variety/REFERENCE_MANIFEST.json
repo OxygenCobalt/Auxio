@@ -1,0 +1,166 @@
+{
+  "created_utc": "2026-05-30T04:44:06Z",
+  "source_inputs": {
+    "auxio_zip": "Auxio-TS-dev.zip",
+    "dofun_apk": "com.dofun.variety_V9.7.2.367.260312.apk",
+    "dofun_apk_package": "com.dofun.variety",
+    "dofun_apk_version": "V9.7.2.367.260312"
+  },
+  "files": [
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/current-source/app__build.gradle",
+      "bytes": 8013,
+      "sha256": "e3dcf77a7d449b8a1521cf344384af36b95b6bbed8652ab530dd7eb97e3c2f99"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/current-source/app__src__debug__res__values__donottranslate.xml",
+      "bytes": 230,
+      "sha256": "2e43045cb11562fae401d69dc070e377aa49e3734a3526f56b05316a08e792f2"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/current-source/app__src__main__AndroidManifest.xml",
+      "bytes": 7758,
+      "sha256": "a1f0c819fdc5f067dcad15709afbc1a1bc2fa6405c5c512fc434e4a0e68ee84b"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/current-source/app__src__main__java__org__oxycblt__auxio__Auxio.kt",
+      "bytes": 2331,
+      "sha256": "57ece54fb085327fcefa0322e12ecc595bcaf6f4e5106300cb7cfa25beafc4b5"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/current-source/app__src__main__res__values__donottranslate.xml",
+      "bytes": 1075,
+      "sha256": "2c18b509c6572335389846b14884824539616e5fddcd51f5917bcffd9263009c"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayBridgeExtrasPolicy.kt",
+      "bytes": 1986,
+      "sha256": "658fef3bf20521e1f43d9ecc7bfd6ff0a61e7f41d4f3cf2adc5ce83296463d8c"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayMusicBridgeReceiver.kt",
+      "bytes": 2446,
+      "sha256": "7e34cccaa0386062edf8d68922de32bb7f1c9c7ef519fd05c299ba5f9f7f708c"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayMusicBroadcastBridge.kt",
+      "bytes": 2698,
+      "sha256": "5c8cf6282a234b3345f47671ea5ddf73c2ba2b2ff0c7c00e5e78f7463c5018eb"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayMusicCommandMapper.kt",
+      "bytes": 1768,
+      "sha256": "e68724828513adf20a4e8a3c75f09178fb356eb9d48addd07b1d875c909eacaa"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayMusicContract.kt",
+      "bytes": 2108,
+      "sha256": "dafb4aa65b4b19ebae17ab5402d3295afca36c45770f583a4f9e6edf40ec0103"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayMusicIntentFactory.kt",
+      "bytes": 2085,
+      "sha256": "47ced91ccec4045994c855e1266eee1c08213ff0d07a8866870780cd2e49ab69"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayMusicSeekMapper.kt",
+      "bytes": 1311,
+      "sha256": "8851dba0ff99aed6cd51fad195e64a8cfff65750d5cb3a9b5ed21cf923ad48d6"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayProgressStatePolicy.kt",
+      "bytes": 1406,
+      "sha256": "d4f03bc787f213713c388e1657305360ccbbd7ef1942fbe890b854dc7ac0e587"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayStartIntentHandler.kt",
+      "bytes": 2188,
+      "sha256": "5b1ddb1c6ecdc885b28a7f8488e44c614253092301f6081b0c609758ef0acc9d"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/TopwayStartRoutingPolicy.kt",
+      "bytes": 2585,
+      "sha256": "9fd86fe8940f4b672cc35f93d87c3d1752e6c9cb0cfe8d874121db5d28d8e424"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/compat__HeadUnitCompatManager.kt",
+      "bytes": 1964,
+      "sha256": "3c5a982c09da905eee2b49d8946f75cc6fca5644ae0bcb7b6ba830cf7049f34b"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/compat__HeadUnitCompatModels.kt",
+      "bytes": 1583,
+      "sha256": "d3ef57e0a5829903193bfb71ee1e018288f35fc0fb6e029e0793ccbbf09c2c83"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/compat__HeadUnitCompatRegistry.kt",
+      "bytes": 3395,
+      "sha256": "25c9985a843fdaf8df450488513672925bbfce06fa240374570de7d8f9c96eae"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/compat__HeadUnitMetadataPolicy.kt",
+      "bytes": 2540,
+      "sha256": "c34480b098478f1dab68fdab178fe8c0479868f7dae8280e53b3dbe9190b9b04"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/auxio/topway-bridge/compat__HeadUnitStockMusicParity.kt",
+      "bytes": 2906,
+      "sha256": "b330469b0f2855729697b34ce40dc74106646d5394a83c0a3150324d76fc3772"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/AndroidManifest.decoded.xml",
+      "bytes": 87441,
+      "sha256": "860dd3e7678a7676a6f3a27e1b60e64cb5e76dda3f8c255d4e3315687a8e39a2"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/AndroidManifest.filtered-relevant.xml",
+      "bytes": 17630,
+      "sha256": "94e8cdabbaa2458c99c372521bff8d5a780f206579df16911cb653eebc9d343c"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/apps_config.full.json",
+      "bytes": 48573,
+      "sha256": "9bb99da0b4bd90fb34e2ef63f27057bfb7bf899790174e30bd3c207afda8eeec"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/apps_config.music-excerpts.json",
+      "bytes": 5755,
+      "sha256": "46398cc75ff631704e12f51f8941973904c674cc930b0de30c4df340ce18b900"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/apps_match_config.full.json",
+      "bytes": 10672,
+      "sha256": "4b3f061e04fbf33001dced6a9d252218af8d2e9cdc8d9ecf932ff0de9ce9ce2e"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/apps_match_config.music-excerpts.json",
+      "bytes": 1650,
+      "sha256": "859b904b6cf68f776d414b996ad3fa5e203a31707ed98024cdee523a48fb6d98"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/classes.string-hits.filtered.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/kp-plugin-AndroidManifest.decoded.xml",
+      "bytes": 1107,
+      "sha256": "5c7c15c7e796b6ff5fd404da845c54c6f684bd18060fc21167499da44feec519"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/kp.classes.string-hits.filtered.txt",
+      "bytes": 87,
+      "sha256": "3bcec0fefee105145d35a504013a40add039b20f3b62c6d23201c05c3cd26208"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/link_icon_config.full.json",
+      "bytes": 3119,
+      "sha256": "b891a85d534e6f51c7ab91c80242f2c0967a4d49fd9823902dffb225490ee46c"
+    },
+    {
+      "path": "docs/topway-dofun-variety/reference/dofun-variety/plugins-builtin.json",
+      "bytes": 124,
+      "sha256": "f8d9b82dfe5936d2380b6f4aed251a11f64947b2aed9dccb7665ef1fbdc6ae38"
+    }
+  ]
+}

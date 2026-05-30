@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application>
+
+        <!--
+        DoFun/Variety compatibility identity.
+
+        The observed DoFun/Variety hotseat music config recognises:
+        - package: com.tw.music
+        - class:   com.tw.music.MusicActivity
+
+        Keep this as an alias to the real Auxio activity. Do not duplicate activity logic.
+        -->
+        <activity-alias
+            android:name="com.tw.music.MusicActivity"
+            android:targetActivity="org.oxycblt.auxio.MainActivity"
+            android:exported="true"
+            android:enabled="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher"
+            android:label="@string/info_app_name">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MUSIC_PLAYER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.APP_MUSIC" />
+            </intent-filter>
+        </activity-alias>
+
+        <!--
+        If the base MainActivity launcher filter causes duplicate icons in this variant,
+        add a flavour-specific manifest merger override here rather than changing the
+        standard Auxio-TS manifest globally.
+        -->
+
+    </application>
+</manifest>
