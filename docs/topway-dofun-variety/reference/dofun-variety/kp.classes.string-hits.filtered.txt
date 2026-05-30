@@ -1,5 +1,0 @@
-# Filtered strings from assets/plugins/kp.jar/classes.dex.
-# These support that the bundled launcher plugin contains hotseat music/icon resource identifiers.
-1635:hotseat_app_music
-1739: launcher.variety.theme.plugin.kp
-1899:link_icon_music_set

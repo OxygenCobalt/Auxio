@@ -1,5 +1,0 @@
-# No high-signal music/widget identity strings were found in the protected main classes.dex string dump using the bundle filter.
-# The stronger evidence is in APK assets and decoded manifest:
-# - assets/apps_match_config.json
-# - assets/apps_config.json
-# - AndroidManifest.decoded.xml

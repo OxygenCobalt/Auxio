@@ -1,2 +1,0 @@
-com.tw.music.AudioPreview
-com.tw.music.MusicActivity

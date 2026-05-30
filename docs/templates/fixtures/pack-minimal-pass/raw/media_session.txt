@@ -1,2 +1,0 @@
-Sessions Stack - org.oxycblt.auxio state=PlaybackState {state=3}
-metadata: title=Song artist=Artist album=Album

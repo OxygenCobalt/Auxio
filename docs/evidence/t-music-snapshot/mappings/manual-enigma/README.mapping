@@ -1,7 +1,0 @@
-# Enigma mapping placeholder for com.tw.music
-#
-# Keep one logical rename per commit chunk where possible.
-# Record only human-reviewed/confirmed mappings.
-#
-# Example (illustrative only):
-# CLASS com/tw/music/a com/tw/music/MusicCommandDispatcher
