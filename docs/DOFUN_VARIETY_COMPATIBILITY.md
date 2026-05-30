@@ -16,14 +16,14 @@ The implementation deliberately does **not** add a fake `cn.cardoor.libs.media.R
 
 Verification status from the current implementation pass:
 
-| Area | Status | Evidence |
-| --- | --- | --- |
-| Source implementation | Implemented | `app/build.gradle`, the `topwayTwMusic` source set, and the isolated Topway bridge are wired in product source. |
-| Build verification | Build-verified | `:app:assembleStandardDebug`, `:app:assembleTopwayTwMusicDebug`, and `:app:assembleTopwayTwMusicRelease` completed successfully in a prepared Android SDK/JDK 21 environment. |
-| Merged-manifest verification | Manifest-verified | Generated merged manifests confirm standard debug remains `org.oxycblt.auxio.debug`, Topway debug is `com.tw.music.debug`, and Topway release is `com.tw.music`. |
-| APK manifest verification | APK-verified | `apkanalyzer` confirmed the release APK application ID is `com.tw.music`, the alias is `com.tw.music.MusicActivity`, and the CoverProvider authority is `com.tw.music.image.CoverProvider`. |
-| Device install | Pending TS18 validation | No Android/TS18 device was attached in the verification environment. Use `docs/DOFUN_VARIETY_RUNTIME_VALIDATION.md`. |
-| DoFun widget recognition/control | Pending TS18 validation | Requires a head unit running `com.dofun.variety`; do not claim full runtime compatibility until the checklist passes. |
+| Area | Status | TS18 Confidence | Evidence |
+| --- | --- | --- | --- |
+| Source implementation | Implemented | Observed | `app/build.gradle`, the `topwayTwMusic` source set, and the isolated Topway bridge are wired in product source. |
+| Build verification | Build-verified | Observed | `:app:assembleStandardDebug`, `:app:assembleTopwayTwMusicDebug`, and `:app:assembleTopwayTwMusicRelease` completed successfully in a prepared Android SDK/JDK 21 environment. |
+| Merged-manifest verification | Manifest-verified | Observed | Generated merged manifests confirm standard debug remains `org.oxycblt.auxio.debug`, Topway debug is `com.tw.music.debug`, and Topway release is `com.tw.music`. |
+| APK manifest verification | APK-verified | Observed | `apkanalyzer` confirmed the release APK application ID is `com.tw.music`, the alias is `com.tw.music.MusicActivity`, and the CoverProvider authority is `com.tw.music.image.CoverProvider`. |
+| Device install | Requires TS18 validation | Requires TS18 validation | No Android/TS18 device was attached in the verification environment. Use `docs/DOFUN_VARIETY_RUNTIME_VALIDATION.md`. |
+| DoFun widget recognition/control | Requires TS18 validation | Requires TS18 validation | Requires a head unit running `com.dofun.variety`; do not claim full runtime compatibility until the checklist passes. |
 
 ## Purpose
 
@@ -195,6 +195,7 @@ docs/topway-dofun-variety/templates/topwayTwMusic/gradle/product-flavour-snippet
 Expected Gradle behaviour:
 
 ```sh
+bash ./scripts/prepare-ci-environment.sh
 ./gradlew :app:assembleStandardDebug
 ./gradlew :app:assembleStandardRelease
 ./gradlew :app:assembleTopwayTwMusicDebug
@@ -354,6 +355,7 @@ Do not mutate package names only inside GitHub Actions. GitHub Actions proves an
 Build/install commands:
 
 ```sh
+bash ./scripts/prepare-ci-environment.sh
 ./gradlew :app:assembleStandardDebug
 ./gradlew :app:assembleTopwayTwMusicDebug
 ./gradlew :app:assembleTopwayTwMusicRelease

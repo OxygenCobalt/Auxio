@@ -7,7 +7,7 @@ Use this checklist on a TS18/Topway head unit running the DoFun/Variety launcher
 | Field | Value |
 | --- | --- |
 | Auxio-TS commit SHA |  |
-| APK file | `app/build/outputs/apk/topwayTwMusic/release/*.apk` |
+| APK file | `app/build/outputs/apk/topwayTwMusic/release/app-topwayTwMusic-release.apk` |
 | Expected package | `com.tw.music` |
 | Expected launcher component | `com.tw.music/.MusicActivity` |
 | Head unit model/firmware |  |
@@ -35,7 +35,7 @@ Notes:
 ## Install exact-package compatibility APK
 
 ```sh
-adb install -r app/build/outputs/apk/topwayTwMusic/release/*.apk
+adb install -r app/build/outputs/apk/topwayTwMusic/release/app-topwayTwMusic-release.apk
 ```
 
 If installation fails with a signature conflict against stock `com.tw.music`, record the exact error and stop unless the operator explicitly approves a safe temporary package-disable/removal procedure.

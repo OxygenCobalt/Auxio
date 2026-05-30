@@ -103,6 +103,8 @@ jobs:
       run: ./gradlew --no-daemon --stacktrace :app:assembleStandardDebug
     - name: Build Topway/DoFun debug APK with Gradle
       run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicDebug
+    - name: Build Topway/DoFun release APK with Gradle
+      run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicRelease
     - name: Validate DoFun/Topway compatibility sources
       run: bash ./scripts/check-dofun-topway-compat.sh
     - name: Upload build reports

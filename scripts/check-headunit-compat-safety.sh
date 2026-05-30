@@ -38,6 +38,11 @@ allowed_topway_identity_files=(
   'app/src/topwayTwMusicDebug/res/values/donottranslate.xml'
 )
 
+identity_scan_files=("${identity_files[@]}")
+for path in "${allowed_topway_identity_files[@]}"; do
+  [ -f "${path}" ] && identity_scan_files+=("${path}")
+done
+
 if [ "${#product_sources[@]}" -eq 0 ] && [ "${#identity_files[@]}" -eq 0 ]; then
   echo "No product sources found; skipping headunit compat safety checks."
   exit 0
@@ -50,7 +55,7 @@ if [ -n "${forbidden_hits}" ]; then
   exit 1
 fi
 
-impersonation_hits="$(search_matches 'package="com\\.tw\\.music"|applicationId[[:space:]]+"com\\.tw\\.music"|namespace[[:space:]]+"com\\.tw\\.music"' "${identity_files[@]}")"
+impersonation_hits="$(search_matches 'package="com\\.tw\\.music"|applicationId[[:space:]]+"com\\.tw\\.music"|namespace[[:space:]]+"com\\.tw\\.music"' "${identity_scan_files[@]}")"
 if [ -n "${impersonation_hits}" ]; then
   while IFS= read -r line; do
     [ -z "${line}" ] && continue
@@ -104,7 +109,7 @@ if [ "${#manifest_scan_paths[@]}" -gt 0 ]; then
     while IFS= read -r line; do
       [ -z "${line}" ] && continue
       case "${line}" in
-        *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.MusicActivity"*) ;;
+        *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.MusicActivity"*|*"com.tw.music"*|*"com.tw.media"*) ;;
         *)
           echo "${line}" >&2
           echo "Manifest com.tw.* entries must be limited to approved Topway bridge actions or the isolated topwayTwMusic alias" >&2

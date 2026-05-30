@@ -32,7 +32,8 @@ find_merged_manifest() {
 find_apk() {
   local variant_dir="$1"
   local build_type="$2"
-  find "app/build/outputs/apk/${variant_dir}/${build_type}" -maxdepth 1 -type f -name '*.apk' -print 2>/dev/null | sort | head -n 1
+  find "app/build/outputs/apk/${variant_dir}/${build_type}" \
+    -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned*' -print 2>/dev/null | sort | head -n 1
 }
 
 check_apk_manifest() {
