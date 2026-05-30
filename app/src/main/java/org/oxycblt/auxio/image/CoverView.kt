@@ -52,8 +52,10 @@ import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.RelativeCornerSize
 import com.google.android.material.shape.ShapeAppearanceModel
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlin.math.min
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.coil.GalleryCoverCollection
@@ -84,14 +86,30 @@ import org.oxycblt.musikr.covers.CoverCollection
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-@AndroidEntryPoint
 open class CoverView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    @Inject lateinit var imageLoader: ImageLoader
-    @Inject lateinit var uiSettings: UISettings
-    @Inject lateinit var imageSettings: ImageSettings
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface CoverViewEntryPoint {
+        fun imageLoader(): ImageLoader
+        fun uiSettings(): UISettings
+        fun imageSettings(): ImageSettings
+    }
+
+    private val imageLoader: ImageLoader by lazy {
+        EntryPointAccessors.fromApplication<CoverViewEntryPoint>(context.applicationContext)
+            .imageLoader()
+    }
+    private val uiSettings: UISettings by lazy {
+        EntryPointAccessors.fromApplication<CoverViewEntryPoint>(context.applicationContext)
+            .uiSettings()
+    }
+    private val imageSettings: ImageSettings by lazy {
+        EntryPointAccessors.fromApplication<CoverViewEntryPoint>(context.applicationContext)
+            .imageSettings()
+    }
 
     private val image: ImageView
 
@@ -127,13 +145,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 MR.style.ShapeAppearance_Material3_Corner_Medium,
             )
         squareishShapeAppearance =
-            if (::uiSettings.isInitialized && uiSettings.roundMode) {
+            if (uiSettings.roundMode) {
                 ShapeAppearanceModel.builder(context, shapeAppearanceRes, -1).build()
             } else {
                 ShapeAppearanceModel.builder().build()
             }
         circularShapeAppearance =
-            if (::uiSettings.isInitialized && uiSettings.roundMode) {
+            if (uiSettings.roundMode) {
                 ShapeAppearanceModel.builder().setAllCornerSizes(RelativeCornerSize(0.5f)).build()
             } else {
                 ShapeAppearanceModel.builder().build()

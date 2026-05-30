@@ -82,6 +82,13 @@ if [ -n "${vendor_hits}" ]; then
     path="${line%%:*}"
     case "${path}" in
       ${allowed_topway_main}*|${allowed_topway_test}*)
+        # Extract the source content (strip path:linenum: prefix) to allow comment-only lines
+        _after_path="${line#"${path}":}"
+        _content="${_after_path#*:}"
+        # KDoc/line comments in isolated paths are safe documentation – skip inner check
+        if printf '%s' "${_content}" | grep -qE '^\s*/[/*]'; then
+          continue
+        fi
         case "${line}" in
           *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.info"*|*"com.tw.launcher.music_progress_duration"*|*"com.android.launcher.widget_music_progress"*) ;;
           *)
