@@ -48,7 +48,7 @@ if [ "${#product_sources[@]}" -eq 0 ] && [ "${#identity_files[@]}" -eq 0 ]; then
   exit 0
 fi
 
-forbidden_hits="$(search_matches 'android\\.tw\\.john|com\\.tw\\.service\\.xt|ITWCommandAidl|cn\\.cardoor\\.libs\\.media\\.RemoteMediaService|android:sharedUserId=|android\\.uid\\.system' "${product_sources[@]}" "${identity_files[@]}")"
+forbidden_hits="$(search_matches 'android\.tw\.john|com\.tw\.service\.xt|ITWCommandAidl|cn\.cardoor\.libs\.media\.RemoteMediaService|android:sharedUserId=|android\.uid\.system' "${product_sources[@]}" "${identity_files[@]}")"
 if [ -n "${forbidden_hits}" ]; then
   echo "${forbidden_hits}" >&2
   echo "Forbidden private/vendor hooks found in product code" >&2
