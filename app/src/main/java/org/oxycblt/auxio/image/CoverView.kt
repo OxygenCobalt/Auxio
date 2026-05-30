@@ -98,18 +98,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         fun imageSettings(): ImageSettings
     }
 
-    private val imageLoader: ImageLoader by lazy {
+    private val coverViewEntryPoint: CoverViewEntryPoint by lazy {
         EntryPointAccessors.fromApplication<CoverViewEntryPoint>(context.applicationContext)
-            .imageLoader()
     }
-    private val uiSettings: UISettings by lazy {
-        EntryPointAccessors.fromApplication<CoverViewEntryPoint>(context.applicationContext)
-            .uiSettings()
-    }
-    private val imageSettings: ImageSettings by lazy {
-        EntryPointAccessors.fromApplication<CoverViewEntryPoint>(context.applicationContext)
-            .imageSettings()
-    }
+    private val imageLoader: ImageLoader by lazy { coverViewEntryPoint.imageLoader() }
+    private val uiSettings: UISettings by lazy { coverViewEntryPoint.uiSettings() }
+    private val imageSettings: ImageSettings by lazy { coverViewEntryPoint.imageSettings() }
 
     private val image: ImageView
 

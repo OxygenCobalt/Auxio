@@ -86,7 +86,7 @@ if [ -n "${vendor_hits}" ]; then
         _after_path="${line#"${path}":}"
         _content="${_after_path#*:}"
         # KDoc/line comments in isolated paths are safe documentation – skip inner check
-        if printf '%s' "${_content}" | grep -qE '^\s*/[/*]'; then
+        if printf '%s' "${_content}" | grep -qE '^\s*(//|/\*)'; then
           continue
         fi
         case "${line}" in
