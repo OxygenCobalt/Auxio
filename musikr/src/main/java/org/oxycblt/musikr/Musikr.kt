@@ -23,11 +23,15 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import org.oxycblt.musikr.cache.CachedFile
+import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.Explored
 import org.oxycblt.musikr.pipeline.ExtractStep
 import org.oxycblt.musikr.pipeline.Extracted
+import org.oxycblt.musikr.pipeline.RawPlaylist
+import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.util.merge
 import org.oxycblt.musikr.util.tryAsyncWith
 
@@ -72,6 +76,34 @@ interface Musikr {
                 ExtractStep.from(context, config),
                 EvaluateStep.new(context, config, config.interpretation),
             )
+
+        /**
+         * Rebuild the last indexed library from persisted cache rows without exploring storage.
+         *
+         * This gives callers a fast startup path: the returned library can be displayed and used by
+         * media/session code immediately while any explicit or first-run scan happens later.
+         */
+        suspend fun loadCached(context: Context, config: Config): MutableLibrary {
+            val extracted = Channel<Extracted>(Channel.UNLIMITED)
+            for (cachedFile in config.storage.cache.snapshot()) {
+                cachedFile.toRawSong(config.storage)?.let { extracted.send(it) }
+            }
+            for (playlist in config.storage.storedPlaylists.read()) {
+                extracted.send(RawPlaylist(playlist))
+            }
+            extracted.close()
+            return EvaluateStep.new(context, config, config.interpretation).evaluate(extracted)
+        }
+
+        private suspend fun CachedFile.toRawSong(storage: Storage): RawSong? {
+            val audio = audio ?: return null
+            val cover =
+                when (val result = audio.coverId?.let { storage.covers.obtain(it) }) {
+                    is CoverResult.Hit -> result.cover
+                    else -> null
+                }
+            return RawSong(file, audio.properties, audio.tags, cover, addedMs)
+        }
     }
 }
 

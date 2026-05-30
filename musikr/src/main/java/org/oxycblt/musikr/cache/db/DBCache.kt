@@ -27,7 +27,11 @@ import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedFile
 import org.oxycblt.musikr.cache.MutableCache
+import org.oxycblt.musikr.fs.AddedMs
+import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.File
+import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.fs.Volume
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
@@ -49,46 +53,74 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
         if (dbSong.modifiedMs != file.modifiedMs) {
             return CacheResult.Stale(file, dbSong.addedMs)
         }
-        val song =
-            CachedFile(
-                file,
-                dbSong.mimeType?.let {
-                    Audio(
-                        Properties(
-                            dbSong.mimeType,
-                            dbSong.durationMs!!,
-                            dbSong.bitrateKbps!!,
-                            dbSong.sampleRateHz!!,
-                        ),
-                        ParsedTags(
-                            musicBrainzId = dbSong.musicBrainzId,
-                            name = dbSong.name,
-                            sortName = dbSong.sortName,
-                            durationMs = dbSong.durationMs,
-                            track = dbSong.track,
-                            disc = dbSong.disc,
-                            subtitle = dbSong.subtitle,
-                            date = dbSong.date,
-                            albumMusicBrainzId = dbSong.albumMusicBrainzId,
-                            albumName = dbSong.albumName,
-                            albumSortName = dbSong.albumSortName,
-                            releaseTypes = dbSong.releaseTypes!!,
-                            artistMusicBrainzIds = dbSong.artistMusicBrainzIds!!,
-                            artistNames = dbSong.artistNames!!,
-                            artistSortNames = dbSong.artistSortNames!!,
-                            albumArtistMusicBrainzIds = dbSong.albumArtistMusicBrainzIds!!,
-                            albumArtistNames = dbSong.albumArtistNames!!,
-                            albumArtistSortNames = dbSong.albumArtistSortNames!!,
-                            genreNames = dbSong.genreNames!!,
-                            replayGainTrackAdjustment = dbSong.replayGainTrackAdjustment,
-                            replayGainAlbumAdjustment = dbSong.replayGainAlbumAdjustment,
-                        ),
-                        coverId = dbSong.coverId,
-                    )
+        return CacheResult.Hit(dbSong.toCachedFile(file))
+    }
+
+    override suspend fun snapshot(): List<CachedFile> =
+        readDao.selectAllSongs().map { it.toCachedFile(it.toSyntheticFile()) }
+
+    private fun CachedFileData.toCachedFile(file: File) =
+        CachedFile(
+            file,
+            mimeType?.let {
+                Audio(
+                    Properties(
+                        mimeType,
+                        durationMs!!,
+                        bitrateKbps!!,
+                        sampleRateHz!!,
+                    ),
+                    ParsedTags(
+                        musicBrainzId = musicBrainzId,
+                        name = name,
+                        sortName = sortName,
+                        durationMs = durationMs,
+                        track = track,
+                        disc = disc,
+                        subtitle = subtitle,
+                        date = date,
+                        albumMusicBrainzId = albumMusicBrainzId,
+                        albumName = albumName,
+                        albumSortName = albumSortName,
+                        releaseTypes = releaseTypes!!,
+                        artistMusicBrainzIds = artistMusicBrainzIds!!,
+                        artistNames = artistNames!!,
+                        artistSortNames = artistSortNames!!,
+                        albumArtistMusicBrainzIds = albumArtistMusicBrainzIds!!,
+                        albumArtistNames = albumArtistNames!!,
+                        albumArtistSortNames = albumArtistSortNames!!,
+                        genreNames = genreNames!!,
+                        replayGainTrackAdjustment = replayGainTrackAdjustment,
+                        replayGainAlbumAdjustment = replayGainAlbumAdjustment,
+                    ),
+                    coverId = coverId,
+                )
+            },
+            addedMs = addedMs,
+        )
+
+    /**
+     * Build a synthetic [File] from cached data without exploring storage.
+     *
+     * Best-effort metadata only:
+     * - [File.path] is derived from the URI and may not correspond to a real filesystem path.
+     * - [File.size] is unknown (set to 0); callers must not treat this as authoritative.
+     * - [File.parent] is unknown (null); callers must not rely on it for folder navigation.
+     */
+    private fun CachedFileData.toSyntheticFile(): File {
+        val pathText = uri.path ?: uri.lastPathSegment ?: uri.toString()
+        return File(
+            uri = uri,
+            path = Path(Volume.ThirdParty(uri), Components.parseUnix(pathText)),
+            addedMs =
+                object : AddedMs {
+                    override suspend fun resolve() = addedMs
                 },
-                addedMs = dbSong.addedMs,
-            )
-        return CacheResult.Hit(song)
+            modifiedMs = modifiedMs,
+            mimeType = mimeType ?: "application/octet-stream",
+            size = 0L,
+            parent = null,
+        )
     }
 
     companion object {
@@ -116,6 +148,8 @@ class MutableDBCache
 private constructor(private val inner: DBCache, private val writeDao: CacheWriteDao) :
     MutableCache {
     override suspend fun read(file: File) = inner.read(file)
+
+    override suspend fun snapshot() = inner.snapshot()
 
     override suspend fun write(cachedFile: CachedFile) {
         val dbSong =

@@ -42,6 +42,15 @@ scripts/                      CI/validation scripts
 docs/                         Minimal focused documentation
 ```
 
+
+## Startup library loading and scans
+
+Auxio-TS startup must expose the existing library, playback queue, MediaSession, and MediaBrowser surfaces before any slow storage scan. Normal launches rebuild the in-memory library from the persisted Musikr cache/database first and skip automatic rescans when a usable or known-empty library state is already recorded.
+
+Filesystem scans are reserved for first install/no-library startup, explicit user refresh actions (**Refresh music** / **Rescan music** in settings or the home retry action), or recovery cases where persisted library data cannot be used. Manual refreshes run in the background and keep the currently visible library/playback surfaces alive until replacement data is ready.
+
+For Topway/DoFun validation, confirm the `AuxioService` creates its MediaSession and MediaBrowser root promptly and that `TopwayMusicBridgeReceiver` commands still route while any scan notification/progress is active. Static/build validation is not a substitute for real TS18 head-unit widget testing.
+
 ## Compatibility check scripts
 
 ```sh

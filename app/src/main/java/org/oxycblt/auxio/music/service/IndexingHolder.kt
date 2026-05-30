@@ -75,6 +75,7 @@ private constructor(
     private val indexJob = Job()
     private val indexScope = CoroutineScope(indexJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
+    private var startupJob: Job? = null
     private val indexingNotification = IndexingNotification(workerContext)
     private val observingNotification = ObservingNotification(workerContext)
     private val wakeLock =
@@ -95,6 +96,7 @@ private constructor(
     }
 
     fun release() {
+        startupJob?.cancel()
         stopTracking()
         musicRepository.unregisterWorker(this)
         musicRepository.removeIndexingListener(this)
@@ -102,10 +104,13 @@ private constructor(
         musicSettings.unregisterListener(this)
     }
 
+    @Synchronized
     fun start() {
-        if (musicRepository.indexingState == null) {
-            requestIndex(true)
+        if (startupJob?.isActive == true) {
+            L.d("Startup library load already running; ignoring duplicate start")
+            return
         }
+        startupJob = indexScope.launch { musicRepository.startup(this@IndexingHolder) }
     }
 
     fun createNotification(post: (ForegroundServiceNotification?) -> Unit) {
@@ -130,13 +135,23 @@ private constructor(
         }
     }
 
+    @Synchronized
     override fun requestIndex(withCache: Boolean) {
-        L.d("Starting new indexing job (previous=${currentIndexJob?.hashCode()})")
-        // Cancel the previous music loading job.
-        currentIndexJob?.cancel()
-        // Start a new music loading job on a co-routine.
+        if (currentIndexJob?.isActive == true) {
+            L.i("Ignoring duplicate indexing request while scan is running [cache=$withCache]")
+            return
+        }
+        L.i("Starting new indexing job [cache=$withCache]")
         currentIndexJob =
-            indexScope.launch { musicRepository.index(this@IndexingHolder, withCache) }
+            indexScope.launch {
+                try {
+                    musicRepository.index(this@IndexingHolder, withCache)
+                } finally {
+                    synchronized(this@IndexingHolder) {
+                        currentIndexJob = null
+                    }
+                }
+            }
     }
 
     override fun onIndexingStateChanged() {
@@ -177,7 +192,17 @@ private constructor(
                     MediaStore.from(workerContext, musicSettings.mediaStoreQuery)
                 LocationMode.SAF -> SAF.from(workerContext, musicSettings.safQuery)
             }
-        trackingJob = indexScope.launch { fs.track().collect { requestIndex(true) } }
+        trackingJob =
+            indexScope.launch {
+                fs.track().collect {
+                    if (musicRepository.library == null) {
+                        L.i("Ignoring storage change before cached/startup library is available")
+                    } else {
+                        L.i("Storage change observed; refreshing library with cache")
+                        requestIndex(true)
+                    }
+                }
+            }
     }
 
     private fun stopTracking() {

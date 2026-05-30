@@ -68,6 +68,8 @@
     <string name="set_key_genre_songs_sort" translatable="false">auxio_genre_sort</string>
 
     <string name="set_key_library_revision" translatable="false">auxio_library_revision</string>
+    <string name="set_key_library_state" translatable="false">auxio_library_state</string>
+    <string name="set_key_library_last_scan_failed" translatable="false">auxio_library_last_scan_failed</string>
 
     <string name="set_key_force_reload_workaround" translatable="false">auxio_force_reload</string>
 
