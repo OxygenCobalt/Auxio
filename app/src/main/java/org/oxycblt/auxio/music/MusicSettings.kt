@@ -43,6 +43,12 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     /** The current library revision. */
     var revision: UUID?
 
+    /** Persisted knowledge about whether a usable library has existed before. */
+    var libraryState: LibraryState
+
+    /** Whether the last scan attempt failed. Used to avoid startup scan storms. */
+    var lastScanFailed: Boolean
+
     /** The mode for loading music locations (SAF or System database). */
     var locationMode: LocationMode
 
@@ -89,6 +95,32 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         set(value) {
             sharedPreferences.edit {
                 putString(getString(R.string.set_key_library_revision), value.toString())
+                apply()
+            }
+        }
+
+    override var libraryState: LibraryState
+        get() =
+            LibraryState.fromName(
+                sharedPreferences.getString(getString(R.string.set_key_library_state), null)
+            )
+                ?: if (revision != null) LibraryState.USABLE else LibraryState.NEVER
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_library_state), value.name)
+                apply()
+            }
+        }
+
+    override var lastScanFailed: Boolean
+        get() =
+            sharedPreferences.getBoolean(
+                getString(R.string.set_key_library_last_scan_failed),
+                false,
+            )
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(getString(R.string.set_key_library_last_scan_failed), value)
                 apply()
             }
         }
@@ -293,5 +325,21 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         }
 
         return split
+    }
+}
+
+/** Persisted startup state for the indexed music library. */
+enum class LibraryState {
+    /** No successful library scan has ever been recorded. */
+    NEVER,
+    /** A non-empty cached/indexed library exists and can be shown before scanning. */
+    USABLE,
+    /** A scan completed successfully, but no music was found. */
+    EMPTY,
+    /** Cached data could not be used or the previous startup scan failed. */
+    RECOVERY;
+
+    companion object {
+        fun fromName(name: String?) = entries.firstOrNull { it.name == name }
     }
 }

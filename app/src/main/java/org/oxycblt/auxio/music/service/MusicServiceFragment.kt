@@ -30,7 +30,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
-import org.oxycblt.auxio.music.MusicRepository
 import timber.log.Timber as L
 
 class MusicServiceFragment
@@ -41,7 +40,6 @@ constructor(
     private val invalidator: Invalidator,
     indexingHolderFactory: IndexingHolder.Factory,
     musicBrowserFactory: MusicBrowser.Factory,
-    private val musicRepository: MusicRepository,
 ) : MusicBrowser.Invalidator {
     private val indexer = indexingHolderFactory.create(context, foregroundListener)
     private val musicBrowser = musicBrowserFactory.create(context, this)
@@ -53,7 +51,6 @@ constructor(
     constructor(
         private val indexingHolderFactory: IndexingHolder.Factory,
         private val musicBrowserFactory: MusicBrowser.Factory,
-        private val musicRepository: MusicRepository,
     ) {
         fun create(
             context: Context,
@@ -66,7 +63,6 @@ constructor(
                 invalidator,
                 indexingHolderFactory,
                 musicBrowserFactory,
-                musicRepository,
             )
     }
 
@@ -90,10 +86,8 @@ constructor(
     }
 
     fun start() {
-        if (musicRepository.indexingState == null) {
-            L.d("Requesting index")
-            musicRepository.requestIndex(true)
-        }
+        L.d("Starting music service fragment without forcing a scan")
+        indexer.start()
     }
 
     fun createNotification(post: (ForegroundServiceNotification?) -> Unit) {

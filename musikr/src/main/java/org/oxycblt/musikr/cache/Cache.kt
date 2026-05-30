@@ -41,6 +41,15 @@ interface Cache {
      * @return a [CacheResult] representing the result of the operation.
      */
     suspend fun read(file: File): CacheResult
+
+    /**
+     * Read every cached file without exploring storage.
+     *
+     * This is used to rebuild the last indexed library quickly during app startup, before any
+     * potentially slow filesystem scan is requested. Implementations may return cached metadata
+     * that is later validated by a full scan.
+     */
+    suspend fun snapshot(): List<CachedFile>
 }
 
 /**

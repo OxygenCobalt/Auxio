@@ -171,6 +171,12 @@ interface MusicRepository {
     fun requestIndex(withCache: Boolean)
 
     /**
+     * Load any persisted library immediately and schedule an initial scan only when no prior
+     * usable/empty library has ever been recorded.
+     */
+    suspend fun startup(worker: IndexingWorker)
+
+    /**
      * Load the music library. Any prior loads will be canceled.
      *
      * @param worker The [IndexingWorker] to perform the work with.
@@ -363,8 +369,50 @@ constructor(
         indexingWorker?.requestIndex(withCache)
     }
 
+    override suspend fun startup(worker: IndexingWorker) {
+        val start = System.currentTimeMillis()
+        val priorState = musicSettings.libraryState
+        L.i("Startup library load begins [state=$priorState]")
+        if (library == null) {
+            try {
+                val cached = loadCachedLibrary()
+                emitLibrary(cached)
+                musicSettings.libraryState =
+                    when {
+                        cached.songs.isNotEmpty() -> LibraryState.USABLE
+                        priorState == LibraryState.EMPTY -> LibraryState.EMPTY
+                        priorState == LibraryState.USABLE -> LibraryState.EMPTY
+                        else -> priorState
+                    }
+                L.i(
+                    "Startup library available in ${System.currentTimeMillis() - start}ms " +
+                        "[songs=${cached.songs.size}]"
+                )
+            } catch (e: Exception) {
+                L.w(e, "Unable to load cached library during startup")
+                if (musicSettings.libraryState != LibraryState.USABLE) {
+                    musicSettings.libraryState = LibraryState.RECOVERY
+                }
+            }
+        } else {
+            L.d("Startup library already in memory; skipping cached load")
+        }
+
+        val state = musicSettings.libraryState
+        val shouldAutoScan = state == LibraryState.NEVER && !musicSettings.lastScanFailed
+        if (shouldAutoScan) {
+            L.i("Scheduling first library scan after startup [state=$state]")
+            worker.requestIndex(withCache = true)
+        } else {
+            L.i(
+                "Skipping startup scan [state=$state, " +
+                    "lastScanFailed=${musicSettings.lastScanFailed}]"
+            )
+        }
+    }
+
     override suspend fun index(worker: IndexingWorker, withCache: Boolean) {
-        L.d("Begin index [cache=$withCache]")
+        L.i("Begin index [cache=$withCache]")
         try {
             indexImpl(withCache)
         } catch (e: CancellationException) {
@@ -375,38 +423,20 @@ constructor(
             // Music loading process failed due to something we have not handled.
             L.e("Music indexing failed")
             L.e(e.stackTraceToString())
+            musicSettings.lastScanFailed = true
+            if (musicSettings.libraryState == LibraryState.NEVER) {
+                musicSettings.libraryState = LibraryState.RECOVERY
+            }
             emitIndexingCompletion(e)
         }
     }
 
     private suspend fun indexImpl(withCache: Boolean) {
         L.d("Index requested, initializing")
-        // Obtain configuration information
-        val separators = Separators.from(musicSettings.separators)
-        L.d("Separators: $separators")
-        val nameFactory =
-            if (musicSettings.intelligentSorting) {
-                Naming.intelligent()
-            } else {
-                Naming.simple()
-            }
-        L.d("Names: $nameFactory")
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
-        L.d("Revisions: cur=$currentRevision, new=$newRevision")
-        val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
-        L.d("Cache: $cache")
-        val covers = settingCovers.mutate(context, newRevision)
-        L.d("Covers: $covers")
-        val fs =
-            when (musicSettings.locationMode) {
-                LocationMode.SAF -> SAF.from(context, musicSettings.safQuery)
-                LocationMode.MEDIA_STORE -> MediaStore.from(context, musicSettings.mediaStoreQuery)
-            }
-        L.d("FS: $fs")
-        val storage = Storage(cache, covers, storedPlaylists)
-        val interpretation = Interpretation(nameFactory, separators)
-        val config = Config(fs, storage, interpretation)
+        val config =
+            createConfig(newRevision, if (withCache) cache else WriteOnlyMutableCache(cache))
         L.d("Running index...")
         val start = System.currentTimeMillis()
         val result = Musikr.new(context, config).run(::emitIndexingProgress)
@@ -424,8 +454,41 @@ constructor(
         L.d("Cleanup")
         result.cleanup()
         // Finish up loading.
-        L.d("Indexing complete")
+        musicSettings.libraryState =
+            if (result.library.songs.isEmpty()) LibraryState.EMPTY else LibraryState.USABLE
+        musicSettings.lastScanFailed = false
+        L.i("Indexing complete [state=${musicSettings.libraryState}]")
         emitIndexingCompletion(null)
+    }
+
+    private suspend fun loadCachedLibrary(): MutableLibrary {
+        val revision = musicSettings.revision ?: UUID.randomUUID()
+        val config = createConfig(revision, cache)
+        val start = System.currentTimeMillis()
+        return Musikr.loadCached(context, config).also {
+            L.d("Cached library loaded in ${System.currentTimeMillis() - start}ms")
+        }
+    }
+
+    private fun createConfig(revision: UUID, cache: MutableCache): Config {
+        val separators = Separators.from(musicSettings.separators)
+        val nameFactory =
+            if (musicSettings.intelligentSorting) {
+                Naming.intelligent()
+            } else {
+                Naming.simple()
+            }
+        val covers = settingCovers.mutate(context, revision)
+        val fs =
+            when (musicSettings.locationMode) {
+                LocationMode.SAF -> SAF.from(context, musicSettings.safQuery)
+                LocationMode.MEDIA_STORE -> MediaStore.from(context, musicSettings.mediaStoreQuery)
+            }
+        return Config(
+            fs,
+            Storage(cache, covers, storedPlaylists),
+            Interpretation(nameFactory, separators),
+        )
     }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {
