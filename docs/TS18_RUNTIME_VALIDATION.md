@@ -42,12 +42,11 @@ adb install -r app/build/outputs/apk/topwayTwMusic/release/app-topwayTwMusic-rel
 
 ```sh
 # Confirm com.tw.music resolves to Auxio-TS
-adb shell cmd package resolve-activity --brief com.tw.music
 adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -p com.tw.music
 # Expected: com.tw.music/com.tw.music.MusicActivity
 
 # APP_MUSIC category
-adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.APP_MUSIC
+adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.APP_MUSIC -p com.tw.music
 # Expected: com.tw.music/com.tw.music.MusicActivity
 
 # Manifest/service/provider detail

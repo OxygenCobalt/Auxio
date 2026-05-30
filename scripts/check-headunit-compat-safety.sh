@@ -55,7 +55,7 @@ if [ -n "${forbidden_hits}" ]; then
   exit 1
 fi
 
-impersonation_hits="$(search_matches 'package="com\\.tw\\.music"|applicationId[[:space:]]+"com\\.tw\\.music"|namespace[[:space:]]+"com\\.tw\\.music"' "${identity_scan_files[@]}")"
+impersonation_hits="$(search_matches 'package="com\.tw\.music"|applicationId[[:space:]]+"com\.tw\.music"|namespace[[:space:]]+"com\.tw\.music"' "${identity_scan_files[@]}")"
 if [ -n "${impersonation_hits}" ]; then
   while IFS= read -r line; do
     [ -z "${line}" ] && continue
@@ -75,7 +75,7 @@ if [ -n "${impersonation_hits}" ]; then
   done <<< "${impersonation_hits}"
 fi
 
-vendor_hits="$(search_matches 'com\\.tw\\.[A-Za-z0-9_.]+|com\\.android\\.launcher\\.widget_music_progress' "${product_code_sources[@]}")"
+vendor_hits="$(search_matches 'com\.tw\.[A-Za-z0-9_.]+|com\.android\.launcher\.widget_music_progress' "${product_code_sources[@]}")"
 if [ -n "${vendor_hits}" ]; then
   while IFS= read -r line; do
     [ -z "${line}" ] && continue
@@ -104,7 +104,7 @@ manifest_scan_paths=()
 [ -f "${manifest_path}" ] && manifest_scan_paths+=("${manifest_path}")
 [ -f "${topway_manifest_path}" ] && manifest_scan_paths+=("${topway_manifest_path}")
 if [ "${#manifest_scan_paths[@]}" -gt 0 ]; then
-  manifest_tw_hits="$(search_matches 'com\\.tw\\.[A-Za-z0-9_.]+' "${manifest_scan_paths[@]}")"
+  manifest_tw_hits="$(search_matches 'com\.tw\.[A-Za-z0-9_.]+' "${manifest_scan_paths[@]}")"
   if [ -n "${manifest_tw_hits}" ]; then
     while IFS= read -r line; do
       [ -z "${line}" ] && continue
