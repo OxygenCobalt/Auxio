@@ -127,13 +127,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 MR.style.ShapeAppearance_Material3_Corner_Medium,
             )
         squareishShapeAppearance =
-            if (uiSettings.roundMode) {
+            if (::uiSettings.isInitialized && uiSettings.roundMode) {
                 ShapeAppearanceModel.builder(context, shapeAppearanceRes, -1).build()
             } else {
                 ShapeAppearanceModel.builder().build()
             }
         circularShapeAppearance =
-            if (uiSettings.roundMode) {
+            if (::uiSettings.isInitialized && uiSettings.roundMode) {
                 ShapeAppearanceModel.builder().setAllCornerSizes(RelativeCornerSize(0.5f)).build()
             } else {
                 ShapeAppearanceModel.builder().build()

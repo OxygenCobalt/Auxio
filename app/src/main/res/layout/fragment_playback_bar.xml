@@ -73,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_change_repeat"
                 app:icon="@drawable/ic_repeat_off_24"
+                app:iconTint="@color/sel_activatable_icon"
                 app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
@@ -111,8 +112,8 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_shuffle"
                 app:icon="@drawable/sel_shuffle_state_24"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
-                app:tint="@color/sel_activatable_icon" />
+                app:iconTint="@color/sel_activatable_icon"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
         </com.google.android.material.button.MaterialButtonGroup>
 
     </org.oxycblt.auxio.playback.ui.ForcedLTRFrameLayout>
