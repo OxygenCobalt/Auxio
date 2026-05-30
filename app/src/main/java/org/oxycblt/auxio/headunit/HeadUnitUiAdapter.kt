@@ -21,6 +21,7 @@ package org.oxycblt.auxio.headunit
 import android.content.res.Resources
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.updateLayoutParams
 import org.oxycblt.auxio.R
 
 /**
@@ -41,6 +42,40 @@ object HeadUnitUiAdapter {
         buttons.forEach { view ->
             view.minimumWidth = size
             view.minimumHeight = size
+        }
+    }
+
+    /**
+     * Sizes media controls as rounded-square targets. The explicit layout dimensions keep repeat,
+     * skip, and shuffle visually consistent while allowing the primary play/pause target to remain
+     * larger and more prominent.
+     */
+    fun applyUniformMediaControls(
+        resources: Resources,
+        largeControls: Boolean,
+        buttons: List<View>,
+        compact: Boolean = false,
+        primaryButton: View? = null,
+    ) {
+        if (!largeControls) return
+        val size =
+            resources.getDimensionPixelSize(
+                if (compact) R.dimen.size_touchable_head_unit_media_compact
+                else R.dimen.size_touchable_head_unit_media
+            )
+        val primarySize =
+            resources.getDimensionPixelSize(
+                if (compact) R.dimen.size_touchable_head_unit_media_compact_primary
+                else R.dimen.size_touchable_head_unit_media_primary
+            )
+        buttons.forEach { view ->
+            val buttonSize = if (view == primaryButton) primarySize else size
+            view.minimumWidth = buttonSize
+            view.minimumHeight = buttonSize
+            view.updateLayoutParams {
+                width = buttonSize
+                height = buttonSize
+            }
         }
     }
 

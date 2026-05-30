@@ -157,10 +157,6 @@ class PlaybackPanelFragment :
         binding.playbackSeekBar?.listener = this
         val spacingSmall = resources.getDimensionPixelSize(R.dimen.spacing_small)
         val spacingMedium = resources.getDimensionPixelSize(R.dimen.spacing_medium)
-        val touchTargetPrimary =
-            resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit_primary)
-        val touchTargetSecondary =
-            resources.getDimensionPixelSize(R.dimen.size_touchable_head_unit_secondary)
         val forceLargeLandscapeControls =
             resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val useLargeControls = uiSettings.largeHeadUnitControls || forceLargeLandscapeControls
@@ -180,9 +176,9 @@ class PlaybackPanelFragment :
         playbackInfoVerticalPadding?.let {
             binding.playbackInfoContainer.updatePadding(top = it, bottom = it)
         }
-        HeadUnitUiAdapter.applyLargeControls(
+        HeadUnitUiAdapter.applyUniformMediaControls(
             resources,
-            uiSettings.largeHeadUnitControls,
+            useLargeControls,
             listOf(
                 binding.playbackRepeat,
                 binding.playbackSkipPrev,
@@ -190,26 +186,15 @@ class PlaybackPanelFragment :
                 binding.playbackSkipNext,
                 binding.playbackShuffle,
             ),
+            primaryButton = binding.playbackPlayPause,
         )
         HeadUnitUiAdapter.applyLargePlaybackText(
             resources,
-            uiSettings.largeHeadUnitControls,
+            useLargeControls,
             binding.playbackSong,
             binding.playbackArtist,
         )
         if (useLargeControls) {
-            binding.playbackPlayPause.minimumHeight = touchTargetPrimary
-            binding.playbackPlayPause.minimumWidth = touchTargetPrimary
-            listOf(
-                    binding.playbackSkipPrev,
-                    binding.playbackSkipNext,
-                    binding.playbackRepeat,
-                    binding.playbackShuffle,
-                )
-                .forEach {
-                    it.minimumHeight = touchTargetSecondary
-                    it.minimumWidth = touchTargetSecondary
-                }
             binding.playbackControlsWrapper?.updatePaddingRelative(start = 0, end = 0)
         }
         applyDriverSideLayout(binding)
@@ -407,7 +392,7 @@ class PlaybackPanelFragment :
     }
 
     private fun applyDriverSideLayout(binding: FragmentPlaybackPanelBinding) {
-        if (uiSettings.driverSide != UISettings.DriverSide.RIGHT) {
+        if (uiSettings.driverSide != UISettings.DriverSide.LEFT) {
             return
         }
         val root = binding.root as ConstraintLayout

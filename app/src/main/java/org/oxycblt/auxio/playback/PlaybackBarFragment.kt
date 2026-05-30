@@ -18,6 +18,7 @@
 
 package org.oxycblt.auxio.playback
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +39,6 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.Song
-import timber.log.Timber as L
 
 /**
  * A [ViewBindingFragment] that shows the current playback state in a compact manner.
@@ -75,6 +75,11 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackInfo.isSelected = true
 
         // Set up actions
+        binding.playbackRepeat.setOnClickListener { playbackModel.toggleRepeatMode() }
+        binding.playbackSkipPrev.setOnClickListener {
+            playbackModel.prev()
+            context.showToast(R.string.msg_playback_previous)
+        }
         binding.playbackPlayPause.setOnClickListener {
             playbackModel.togglePlaying()
             context.showToast(
@@ -82,10 +87,33 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 else R.string.msg_playback_pause
             )
         }
-        HeadUnitUiAdapter.applyLargeControls(
+        binding.playbackSkipNext.setOnClickListener {
+            playbackModel.next()
+            context.showToast(R.string.msg_playback_next)
+        }
+        binding.playbackShuffle.setOnClickListener { playbackModel.cycleShuffleScope() }
+
+        val useLargeControls =
+            uiSettings.largeHeadUnitControls ||
+                resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        HeadUnitUiAdapter.applyUniformMediaControls(
             resources,
-            uiSettings.largeHeadUnitControls,
-            listOf(binding.playbackPlayPause, binding.playbackSecondaryAction),
+            useLargeControls,
+            listOf(
+                binding.playbackRepeat,
+                binding.playbackSkipPrev,
+                binding.playbackPlayPause,
+                binding.playbackSkipNext,
+                binding.playbackShuffle,
+            ),
+            compact = true,
+            primaryButton = binding.playbackPlayPause,
+        )
+        HeadUnitUiAdapter.applyLargePlaybackText(
+            resources,
+            useLargeControls,
+            binding.playbackSong,
+            binding.playbackInfo,
         )
         applyDriverSideLayout(binding)
 
@@ -93,17 +121,13 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.positionDs, ::updatePosition)
-        collectImmediately(
-            playbackModel.currentBarAction,
-            playbackModel.repeatMode,
-            playbackModel.shuffleScope,
-            ::updateBarAction,
-        )
+        collectImmediately(playbackModel.repeatMode, ::updateRepeat)
+        collectImmediately(playbackModel.shuffleScope, ::updateShuffleScope)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
         super.onDestroyBinding(binding)
-        binding.playbackSecondaryAction.clearPendingIcon()
+        binding.playbackRepeat.clearPendingIcon()
         // Marquee elements leak if they are not disabled when the views are destroyed.
         binding.playbackSong.isSelected = false
         binding.playbackInfo.isSelected = false
@@ -131,65 +155,37 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         requireBinding().playbackProgressBar.progress = positionDs.toInt()
     }
 
-    private fun updateBarAction(
-        actionMode: ActionMode,
-        repeatMode: RepeatMode,
-        shuffleScope: ShuffleScope,
-    ) {
-        val binding = requireBinding()
-        when (actionMode) {
-            ActionMode.NEXT -> {
-                L.d("Using skip next action")
-                binding.playbackSecondaryAction.apply {
-                    if (tag != actionMode) {
-                        setIconResource(R.drawable.ic_skip_next_24)
-                        contentDescription = getString(R.string.desc_skip_next)
-                        setOnClickListener { playbackModel.next() }
-                        isChecked = false
-                        tag = actionMode
-                    }
+    private fun updateRepeat(repeatMode: RepeatMode) {
+        requireBinding().playbackRepeat.apply {
+            isChecked = repeatMode != RepeatMode.NONE
+            setIconResource(repeatMode.icon)
+        }
+    }
+
+    private fun updateShuffleScope(scope: ShuffleScope) {
+        requireBinding().playbackShuffle.apply {
+            when (scope) {
+                ShuffleScope.OFF -> {
+                    isChecked = false
+                    setIconResource(R.drawable.sel_shuffle_state_24)
+                    contentDescription = context.getString(R.string.desc_shuffle_off)
                 }
-            }
-            ActionMode.REPEAT -> {
-                L.d("Using repeat mode action")
-                binding.playbackSecondaryAction.apply {
-                    if (tag != actionMode) {
-                        contentDescription = getString(R.string.desc_change_repeat)
-                        setOnClickListener { playbackModel.toggleRepeatMode() }
-                        tag = actionMode
-                    }
-                    setIconResource(repeatMode.icon)
-                    isChecked = repeatMode != RepeatMode.NONE
+                ShuffleScope.ALL -> {
+                    isChecked = true
+                    setIconResource(R.drawable.sel_shuffle_state_24)
+                    contentDescription = context.getString(R.string.desc_shuffle_all_songs)
                 }
-            }
-            ActionMode.SHUFFLE -> {
-                L.d("Using shuffle action")
-                binding.playbackSecondaryAction.apply {
-                    if (tag != actionMode) {
-                        setOnClickListener { playbackModel.cycleShuffleScope() }
-                        tag = actionMode
-                    }
-                    setIconResource(
-                        if (shuffleScope == ShuffleScope.GENRE) {
-                            R.drawable.ic_shuffle_genre_state_24
-                        } else {
-                            R.drawable.sel_shuffle_state_24
-                        }
-                    )
-                    isChecked = shuffleScope != ShuffleScope.OFF
-                    contentDescription =
-                        when (shuffleScope) {
-                            ShuffleScope.OFF -> getString(R.string.desc_shuffle_off)
-                            ShuffleScope.ALL -> getString(R.string.desc_shuffle_all_songs)
-                            ShuffleScope.GENRE -> getString(R.string.desc_shuffle_current_genre)
-                        }
+                ShuffleScope.GENRE -> {
+                    isChecked = true
+                    setIconResource(R.drawable.ic_shuffle_genre_state_24)
+                    contentDescription = context.getString(R.string.desc_shuffle_current_genre)
                 }
             }
         }
     }
 
     private fun applyDriverSideLayout(binding: FragmentPlaybackBarBinding) {
-        if (uiSettings.driverSide != UISettings.DriverSide.RIGHT) {
+        if (uiSettings.driverSide != UISettings.DriverSide.LEFT) {
             return
         }
         val root = binding.root as ConstraintLayout

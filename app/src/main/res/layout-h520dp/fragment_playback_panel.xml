@@ -113,7 +113,7 @@
         <com.google.android.material.button.MaterialButtonGroup
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:spacing="@dimen/spacing_small">
+            android:spacing="@dimen/spacing_mid_medium">
 
             <org.oxycblt.auxio.ui.WidthFixMaterialButton
                 android:id="@+id/playback_repeat"
