@@ -228,40 +228,62 @@ jobs:
           ORG_GRADLE_PROJECT_releaseKeyPassword: ${{ secrets.KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          ./gradlew --no-daemon --stacktrace :app:assembleRelease
+          ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease
 
-      - name: Locate, verify, and rename signed APK
-        id: apk
+      - name: Locate, verify, and rename signed APKs
+        id: apks
         shell: bash
         run: |
           set -euo pipefail
 
-          mapfile -t APKS < <(find app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned*' | sort)
-          if (( ${#APKS[@]} == 0 )); then
-            echo "::error::Could not find a signed release APK in app/build/outputs/apk/release."
-            exit 1
-          fi
-          if (( ${#APKS[@]} > 1 )); then
-            printf '::error::Found multiple plausible signed release APKs; refusing to choose automatically:\n'
-            printf '%s\n' "${APKS[@]}"
-            exit 1
-          fi
+          declare -A variant_dirs=(
+            [standard]="app/build/outputs/apk/standard/release"
+            [topway_twmusic]="app/build/outputs/apk/topwayTwMusic/release"
+          )
+          declare -A asset_names=(
+            [standard]="Auxio-TS-${{ steps.version.outputs.release_tag }}-standard-release.apk"
+            [topway_twmusic]="Auxio-TS-${{ steps.version.outputs.release_tag }}-topway-twmusic-release.apk"
+          )
 
-          APK_PATH="${APKS[0]}"
-          BUILD_TOOLS_DIR="$(find "${ANDROID_HOME}/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n1)"
+          BUILD_TOOLS_DIR="$(find "${ANDROID_HOME}"/build-tools -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n1)"
           APKSIGNER="${BUILD_TOOLS_DIR}/apksigner"
           if [[ ! -x "${APKSIGNER}" ]]; then
             echo "::error::apksigner was not found under ANDROID_HOME build-tools."
             exit 1
           fi
-          "${APKSIGNER}" verify --verbose "${APK_PATH}"
 
-          ASSET_NAME="Auxio-TS-${{ steps.version.outputs.release_tag }}-release.apk"
-          ASSET_PATH="${RUNNER_TEMP}/${ASSET_NAME}"
-          cp "${APK_PATH}" "${ASSET_PATH}"
+          asset_paths=()
+          asset_names_out=()
+          for variant in standard topway_twmusic; do
+            apk_dir="${variant_dirs[$variant]}"
+            mapfile -t APKS < <(find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned*' | sort)
+            if (( ${#APKS[@]} == 0 )); then
+              echo "::error::Could not find a signed ${variant} release APK in ${apk_dir}."
+              exit 1
+            fi
+            if (( ${#APKS[@]} > 1 )); then
+              printf '::error::Found multiple plausible signed %s release APKs; refusing to choose automatically:\n' "${variant}"
+              printf '%s\n' "${APKS[@]}"
+              exit 1
+            fi
 
-          echo "apk_path=${ASSET_PATH}" >> "$GITHUB_OUTPUT"
-          echo "apk_name=${ASSET_NAME}" >> "$GITHUB_OUTPUT"
+            apk_path="${APKS[0]}"
+            "${APKSIGNER}" verify --verbose "${apk_path}"
+            asset_name="${asset_names[$variant]}"
+            asset_path="${RUNNER_TEMP}/${asset_name}"
+            cp "${apk_path}" "${asset_path}"
+            asset_paths+=("${asset_path}")
+            asset_names_out+=("${asset_name}")
+          done
+
+          {
+            printf 'apk_paths<<EOF\n'
+            printf '%s\n' "${asset_paths[@]}"
+            printf 'EOF\n'
+            printf 'apk_names<<EOF\n'
+            printf '%s\n' "${asset_names_out[@]}"
+            printf 'EOF\n'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Push version commit and tag
         shell: bash
@@ -341,6 +363,14 @@ jobs:
               "${GITHUB_REPOSITORY}" "${RELEASE_COMMIT_SHA}" >> "${NOTES_FILE}"
           fi
 
+          {
+            echo
+            echo "## APK variants"
+            echo
+            echo "- `Auxio-TS-${RELEASE_TAG}-standard-release.apk` keeps the normal Auxio-TS package identity (`org.oxycblt.auxio`)."
+            echo "- `Auxio-TS-${RELEASE_TAG}-topway-twmusic-release.apk` is the Topway/DoFun compatibility APK and installs as `com.tw.music`; it may conflict with a stock `com.tw.music` package already installed on a head unit."
+          } >> "${NOTES_FILE}"
+
           echo "Release notes generated in $(( $(date +%s) - start_seconds )) seconds"
           echo "notes_file=${NOTES_FILE}" >> "$GITHUB_OUTPUT"
 
@@ -352,8 +382,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
           RELEASE_NOTES_FILE: ${{ steps.notes.outputs.notes_file }}
-          APK_PATH: ${{ steps.apk.outputs.apk_path }}
-          APK_NAME: ${{ steps.apk.outputs.apk_name }}
+          APK_PATHS: ${{ steps.apks.outputs.apk_paths }}
+          APK_NAMES: ${{ steps.apks.outputs.apk_names }}
           IS_DRAFT: ${{ inputs.draft }}
           IS_PRERELEASE: ${{ inputs.prerelease }}
         run: |
@@ -371,7 +401,14 @@ jobs:
             release_extra_args=("${release_args[@]}")
           fi
 
-          gh release create "${RELEASE_TAG}" "${APK_PATH}#${APK_NAME}" \
+          mapfile -t asset_paths <<< "${APK_PATHS}"
+          mapfile -t asset_names <<< "${APK_NAMES}"
+          release_assets=()
+          for i in "${!asset_paths[@]}"; do
+            release_assets+=("${asset_paths[$i]}#${asset_names[$i]}")
+          done
+
+          gh release create "${RELEASE_TAG}" "${release_assets[@]}" \
             --title "${RELEASE_TAG}" \
             --notes-file "${RELEASE_NOTES_FILE}" \
             --verify-tag \
@@ -392,6 +429,9 @@ jobs:
             echo "- Version code: \`${{ steps.version.outputs.release_version_code }}\`"
             echo "- Draft: \`${{ inputs.draft }}\`"
             echo "- Prerelease: \`${{ inputs.prerelease }}\`"
-            echo "- APK: \`${{ steps.apk.outputs.apk_name }}\`"
+            echo "- APKs:"
+            while IFS= read -r apk_name; do
+              [ -n "${apk_name}" ] && echo "  - \`${apk_name}\`"
+            done <<< "${{ steps.apks.outputs.apk_names }}"
             echo "- Release: [${{ steps.version.outputs.release_tag }}](${{ steps.release.outputs.release_url }})"
           } >> "$GITHUB_STEP_SUMMARY"

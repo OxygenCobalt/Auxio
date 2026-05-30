@@ -1,5 +1,30 @@
 # Auxio-TS compatibility with DoFun/Variety launcher music widgets
 
+## Implementation status
+
+Implemented in source as a real Android product flavour named `topwayTwMusic`. The normal/standard flavour keeps the Auxio package identity, while the Topway/DoFun flavour builds a separate APK with `applicationId = com.tw.music` and exposes `com.tw.music.MusicActivity` as a launcher/music `activity-alias` targeting `org.oxycblt.auxio.MainActivity`.
+
+Variant identities:
+
+| Variant | Package/application ID | Launcher activity | Label | Purpose |
+| --- | --- | --- | --- | --- |
+| `standardDebug` / `standardRelease` | `org.oxycblt.auxio` (`.debug` for debug) | `org.oxycblt.auxio.MainActivity` | `Auxio` / `Auxio Debug` | Normal Auxio-TS build. |
+| `topwayTwMusicRelease` | `com.tw.music` | `com.tw.music.MusicActivity` alias → `org.oxycblt.auxio.MainActivity` | `Music` | DoFun/Variety fixed stock-music identity compatibility. |
+| `topwayTwMusicDebug` | `com.tw.music.debug` | `com.tw.music.debug/com.tw.music.MusicActivity` alias → `org.oxycblt.auxio.MainActivity` | `Music` | Debug validation build; release is the exact `com.tw.music` identity DoFun matching expects. |
+
+The implementation deliberately does **not** add a fake `cn.cardoor.libs.media.RemoteMediaService`; the extracted APK evidence shows the action exists but does not establish the binder/service protocol.
+
+Verification status from the current implementation pass:
+
+| Area | Status | TS18 Confidence | Evidence |
+| --- | --- | --- | --- |
+| Source implementation | Implemented | Observed | `app/build.gradle`, the `topwayTwMusic` source set, and the isolated Topway bridge are wired in product source. |
+| Build verification | Build-verified | Observed | `:app:assembleStandardDebug`, `:app:assembleTopwayTwMusicDebug`, and `:app:assembleTopwayTwMusicRelease` completed successfully in a prepared Android SDK/JDK 21 environment. |
+| Merged-manifest verification | Manifest-verified | Observed | Generated merged manifests confirm standard debug remains `org.oxycblt.auxio.debug`, Topway debug is `com.tw.music.debug`, and Topway release is `com.tw.music`. |
+| APK manifest verification | APK-verified | Observed | `apkanalyzer` confirmed the release APK application ID is `com.tw.music`, the alias is `com.tw.music.MusicActivity`, and the CoverProvider authority is `com.tw.music.image.CoverProvider`. |
+| Device install | Requires TS18 validation | Requires TS18 validation | No Android/TS18 device was attached in the verification environment. Use `docs/DOFUN_VARIETY_RUNTIME_VALIDATION.md`. |
+| DoFun widget recognition/control | Requires TS18 validation | Requires TS18 validation | Requires a head unit running `com.dofun.variety`; do not claim full runtime compatibility until the checklist passes. |
+
 ## Purpose
 
 This document is a developer/agent guide for implementing Auxio-TS compatibility with the DoFun/Variety launcher/theme package `com.dofun.variety` on Topway/TS18-style Android head units.
@@ -170,12 +195,14 @@ docs/topway-dofun-variety/templates/topwayTwMusic/gradle/product-flavour-snippet
 Expected Gradle behaviour:
 
 ```sh
-./gradlew :app:assembleDebug
+bash ./scripts/prepare-ci-environment.sh
+./gradlew :app:assembleStandardDebug
+./gradlew :app:assembleStandardRelease
 ./gradlew :app:assembleTopwayTwMusicDebug
 ./gradlew :app:assembleTopwayTwMusicRelease
 ```
 
-Exact task names may vary if the repo already introduces other flavour dimensions. Agents must inspect the final Gradle variant list rather than guessing.
+Because the app now has a `distribution` flavour dimension, bare `:app:assembleDebug` assembles all debug variants. Use the explicit standard/topway task when validating one APK identity.
 
 ### 2. Add `com.tw.music.MusicActivity` as an activity alias
 
@@ -233,7 +260,16 @@ If the variant also has a debug application ID suffix, ensure the debug authorit
 <string name="pkg_authority_cover">com.tw.music.debug.image.CoverProvider</string>
 ```
 
-The source of truth should be either manifest placeholders or carefully scoped source-set resources. Avoid stale hard-coded authorities.
+The production manifest uses the `${applicationId}.image.CoverProvider` placeholder, so the provider authority follows the actual variant application ID:
+
+| Variant | CoverProvider authority |
+| --- | --- |
+| `standardRelease` | `org.oxycblt.auxio.image.CoverProvider` |
+| `standardDebug` | `org.oxycblt.auxio.debug.image.CoverProvider` |
+| `topwayTwMusicRelease` | `com.tw.music.image.CoverProvider` |
+| `topwayTwMusicDebug` | `com.tw.music.debug.image.CoverProvider` |
+
+The source-set string overrides remain as documented compatibility breadcrumbs, but runtime URI generation uses `BuildConfig.APPLICATION_ID` in `CoverProvider`, matching the manifest placeholder. Avoid stale hard-coded authorities.
 
 ### 4. Audit `BuildConfig.APPLICATION_ID` assumptions
 
@@ -305,16 +341,29 @@ Reason: DoFun’s APK exposes and queries this action, but the actual protocol i
 
 ## Release/CI requirements
 
-CI should build and publish the Topway-compatible APK as a separate artefact. Suggested asset names:
+CI builds and publishes the Topway-compatible APK as a separate artefact. Manual releases upload two signed APKs:
 
 ```text
-Auxio-TS-standard-release.apk
-Auxio-TS-topway-twmusic-release.apk
+Auxio-TS-vX.Y.Z-standard-release.apk
+Auxio-TS-vX.Y.Z-topway-twmusic-release.apk
 ```
 
-Do not mutate package names only inside GitHub Actions. GitHub Actions should prove and package the variant defined in source.
+Do not mutate package names only inside GitHub Actions. GitHub Actions proves and packages the variant defined in source.
 
 ## Local validation commands
+
+Build/install commands:
+
+```sh
+bash ./scripts/prepare-ci-environment.sh
+./gradlew :app:assembleStandardDebug
+./gradlew :app:assembleTopwayTwMusicDebug
+./gradlew :app:assembleTopwayTwMusicRelease
+adb install -r app/build/outputs/apk/standard/debug/app-standard-debug.apk
+adb install -r app/build/outputs/apk/topwayTwMusic/debug/app-topwayTwMusic-debug.apk
+```
+
+For exact DoFun fixed-identity validation, install the signed/release `topwayTwMusicRelease` APK so the package name is exactly `com.tw.music`; the debug APK package is `com.tw.music.debug` because of the global debug suffix. Use the operator checklist in `docs/DOFUN_VARIETY_RUNTIME_VALIDATION.md` for device/head-unit validation.
 
 Before installing the compatibility build:
 
@@ -381,7 +430,7 @@ After implementation, use:
 bash scripts/check-dofun-topway-compat.sh
 ```
 
-The helper checks source-level expectations and, when possible, merged manifest/APK evidence.
+The helper checks source-level expectations, runtime bridge wiring, variant authority configuration, release asset naming, and generated merged manifest/APK evidence when build outputs exist. It falls back to source checks with warnings when outputs are absent. It is also run by the head-unit safety job alongside `scripts/check-headunit-compat-safety.sh`.
 
 ## Agent finish criteria
 
@@ -401,4 +450,4 @@ An implementation PR should finish only after confirming:
 
 - The DoFun APK is protected/obfuscated with a stub application, so public assets/manifests/strings are stronger evidence than decompiled control flow here.
 - DoFun’s private `cn.cardoor.libs.media.RemoteMediaService` protocol is not recovered in this bundle.
-- Actual launcher-widget behaviour still requires TS18/head-unit runtime validation because DoFun may combine package matching, notification listening, media-session inspection, and private services.
+- Actual launcher-widget behaviour still requires TS18/head-unit runtime validation because DoFun may combine package matching, notification listening, media-session inspection, and private services. Track the manual results in `docs/DOFUN_VARIETY_RUNTIME_VALIDATION.md`.

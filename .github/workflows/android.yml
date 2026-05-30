@@ -23,6 +23,7 @@ on:
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
       - 'scripts/check-headunit-compat-safety.sh'
+      - 'scripts/check-dofun-topway-compat.sh'
   pull_request:
     branches:
       - dev
@@ -44,6 +45,7 @@ on:
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
       - 'scripts/check-headunit-compat-safety.sh'
+      - 'scripts/check-dofun-topway-compat.sh'
 
 permissions:
   contents: read
@@ -97,8 +99,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ninja-build
         fi
-    - name: Build debug APK with Gradle
-      run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
+    - name: Build standard debug APK with Gradle
+      run: ./gradlew --no-daemon --stacktrace :app:assembleStandardDebug
+    - name: Build Topway/DoFun debug APK with Gradle
+      run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicDebug
+    - name: Build Topway/DoFun release APK with Gradle
+      run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicRelease
+    - name: Validate DoFun/Topway compatibility sources
+      run: bash ./scripts/check-dofun-topway-compat.sh
     - name: Upload build reports
       if: failure()
       uses: actions/upload-artifact@v4
@@ -113,7 +121,9 @@ jobs:
       if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: auxio-ts-debug-apk
-        path: ./app/build/outputs/apk/debug/app-debug.apk
+        name: auxio-ts-debug-apks
+        path: |
+          ./app/build/outputs/apk/standard/debug/*.apk
+          ./app/build/outputs/apk/topwayTwMusic/debug/*.apk
         if-no-files-found: error
         retention-days: 7

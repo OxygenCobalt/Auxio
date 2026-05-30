@@ -23,6 +23,7 @@ on:
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
       - 'scripts/check-headunit-compat-safety.sh'
+      - 'scripts/check-dofun-topway-compat.sh'
   pull_request:
     branches:
       - dev
@@ -44,6 +45,7 @@ on:
       - 'scripts/prepare-ci-environment.sh'
       - 'scripts/check-submodules.sh'
       - 'scripts/check-headunit-compat-safety.sh'
+      - 'scripts/check-dofun-topway-compat.sh'
 
 permissions:
   contents: read
@@ -159,7 +161,7 @@ jobs:
       # The media library test files have missing test-utility dependencies
       # (after upstream "trim down module tree") and will not compile with the
       # bare testDebugUnitTest task.
-      run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest :musikr:testDebugUnitTest
+      run: ./gradlew --no-daemon --stacktrace :app:testStandardDebugUnitTest :musikr:testDebugUnitTest
     - name: Upload unit test reports
       if: failure()
       uses: actions/upload-artifact@v4
@@ -222,7 +224,7 @@ jobs:
       # errors are not aggregated into the app report.
       # app/lint.xml suppresses lint for vendored Google Material sources.
       # :musikr lintDebug can be added once musikr lint issues are baselined.
-      run: ./gradlew --no-daemon --stacktrace :app:lintDebug
+      run: ./gradlew --no-daemon --stacktrace :app:lintStandardDebug
     - name: Upload Android lint reports
       if: failure()
       uses: actions/upload-artifact@v4
@@ -244,4 +246,6 @@ jobs:
       uses: actions/checkout@v5
     - name: Run head-unit compatibility safety checks
       shell: bash
-      run: bash ./scripts/check-headunit-compat-safety.sh
+      run: |
+        bash ./scripts/check-headunit-compat-safety.sh
+        bash ./scripts/check-dofun-topway-compat.sh

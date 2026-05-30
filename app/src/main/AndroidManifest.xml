@@ -110,7 +110,7 @@
         -->
         <provider
             android:name=".image.CoverProvider"
-            android:authorities="@string/pkg_authority_cover"
+            android:authorities="${applicationId}.image.CoverProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 

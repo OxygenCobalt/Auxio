@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="info_topway_music_app_name" translatable="false">Music</string>
+    <string name="pkg_authority_cover" translatable="false">com.tw.music.image.CoverProvider</string>
+</resources>
