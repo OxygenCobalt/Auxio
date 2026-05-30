@@ -1,9 +1,0 @@
-- Redesigned the detail UIs
-- Navigation is much more fluid and straightforward
-- Search has been moved to a dedicated tab
-- Added search filtering
-- Fixed issue where audio focus would resume playback when it shouldn't
-- Fixed crashes with song selection/startup
-- Fixed issue where keyboard wouldn't disappear on search
-- Fixed issue where rewinding wouldn't cause playback to start again
-- Artist play button now works again

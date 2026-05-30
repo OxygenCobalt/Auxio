@@ -1,1 +1,0 @@
-package:org.oxycblt.auxio versionName=1.0

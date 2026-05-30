@@ -1,1 +1,0 @@
-Provider org.oxycblt.auxio/.NowPlayingWidgetProvider
