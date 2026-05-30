@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="@dimen/size_touchable_head_unit_media_compact"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <org.oxycblt.auxio.image.CoverView
         android:id="@+id/playback_cover"
-        style="@style/Widget.Auxio.Image.Small"
-        android:layout_margin="@dimen/spacing_small"
+        style="@style/Widget.Auxio.Image.Medium"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
         app:enablePlaybackIndicator="false"
         app:enableSelectionBadge="false"
         app:layout_constraintBottom_toTopOf="@+id/playback_progress_container"
@@ -49,7 +52,7 @@
         android:id="@+id/playback_controls_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_tiny"
+        android:layout_marginEnd="@dimen/spacing_small"
         app:layout_constraintBottom_toTopOf="@+id/playback_progress_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -60,8 +63,26 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"
-            android:spacing="0dp"
+            android:spacing="@dimen/spacing_tiny"
             app:buttonSizeChange="@xml/safe_button_group_size_change">
+
+            <org.oxycblt.auxio.ui.WidthFixMaterialButton
+                android:id="@+id/playback_repeat"
+                style="@style/Widget.Auxio.Button.Playback.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_change_repeat"
+                app:icon="@drawable/ic_repeat_off_24"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
+
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                android:id="@+id/playback_skip_prev"
+                style="@style/Widget.Auxio.Button.Playback.Skip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_skip_prev"
+                app:icon="@drawable/ic_skip_prev_24"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_play_pause"
@@ -70,21 +91,28 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:contentDescription="@string/desc_play_pause"
+                app:icon="@drawable/sel_playing_state_24"
                 app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
-                app:icon="@drawable/sel_playing_state_24" />
+                tools:icon="@drawable/ic_play_24" />
 
-            <org.oxycblt.auxio.ui.WidthFixMaterialButton
-                android:id="@+id/playback_secondary_action"
-                style="@style/Widget.Material3Expressive.Button.IconButton.Outlined"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                android:id="@+id/playback_skip_next"
+                style="@style/Widget.Auxio.Button.Playback.Skip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checkable="true"
-                app:toggleCheckedStateOnClick="false"
-                app:backgroundTint="?attr/colorSurfaceContainerLow"
-                app:iconTint="@color/sel_checkable_icon"
-                app:strokeColor="@color/sel_checkable_outline"
-                tools:icon="@drawable/ic_skip_next_24" />
+                android:contentDescription="@string/desc_skip_next"
+                app:icon="@drawable/ic_skip_next_24"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
+
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                android:id="@+id/playback_shuffle"
+                style="@style/Widget.Auxio.Button.Playback.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_shuffle"
+                app:icon="@drawable/sel_shuffle_state_24"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
+                app:tint="@color/sel_activatable_icon" />
         </com.google.android.material.button.MaterialButtonGroup>
 
     </org.oxycblt.auxio.playback.ui.ForcedLTRFrameLayout>

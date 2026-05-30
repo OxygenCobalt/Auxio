@@ -56,6 +56,10 @@
     <dimen name="size_touchable_head_unit">64dp</dimen>
     <dimen name="size_touchable_head_unit_primary">84dp</dimen>
     <dimen name="size_touchable_head_unit_secondary">72dp</dimen>
+    <dimen name="size_touchable_head_unit_media">104dp</dimen>
+    <dimen name="size_touchable_head_unit_media_primary">116dp</dimen>
+    <dimen name="size_touchable_head_unit_media_compact">88dp</dimen>
+    <dimen name="size_touchable_head_unit_media_compact_primary">100dp</dimen>
     <dimen name="text_size_head_unit_title">22sp</dimen>
     <dimen name="text_size_head_unit_subtitle">18sp</dimen>
 </resources>

@@ -79,7 +79,7 @@
     <com.google.android.material.button.MaterialButtonGroup
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:spacing="@dimen/spacing_tiny">
+        android:spacing="@dimen/spacing_small">
 
 
             <org.oxycblt.auxio.ui.WidthFixMaterialButton
