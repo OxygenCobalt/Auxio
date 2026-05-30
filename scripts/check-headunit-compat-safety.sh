@@ -48,14 +48,14 @@ if [ "${#product_sources[@]}" -eq 0 ] && [ "${#identity_files[@]}" -eq 0 ]; then
   exit 0
 fi
 
-forbidden_hits="$(search_matches 'android\\.tw\\.john|com\\.tw\\.service\\.xt|ITWCommandAidl|android:sharedUserId=|android\\.uid\\.system' "${product_sources[@]}" "${identity_files[@]}")"
+forbidden_hits="$(search_matches 'android\.tw\.john|com\.tw\.service\.xt|ITWCommandAidl|cn\.cardoor\.libs\.media\.RemoteMediaService|android:sharedUserId=|android\.uid\.system' "${product_sources[@]}" "${identity_files[@]}")"
 if [ -n "${forbidden_hits}" ]; then
   echo "${forbidden_hits}" >&2
   echo "Forbidden private/vendor hooks found in product code" >&2
   exit 1
 fi
 
-impersonation_hits="$(search_matches 'package="com\\.tw\\.music"|applicationId[[:space:]]+"com\\.tw\\.music"|namespace[[:space:]]+"com\\.tw\\.music"' "${identity_scan_files[@]}")"
+impersonation_hits="$(search_matches 'package="com\.tw\.music"|applicationId[[:space:]]+"com\.tw\.music"|namespace[[:space:]]+"com\.tw\.music"' "${identity_scan_files[@]}")"
 if [ -n "${impersonation_hits}" ]; then
   while IFS= read -r line; do
     [ -z "${line}" ] && continue
@@ -75,13 +75,20 @@ if [ -n "${impersonation_hits}" ]; then
   done <<< "${impersonation_hits}"
 fi
 
-vendor_hits="$(search_matches 'com\\.tw\\.[A-Za-z0-9_.]+|com\\.android\\.launcher\\.widget_music_progress' "${product_code_sources[@]}")"
+vendor_hits="$(search_matches 'com\.tw\.[A-Za-z0-9_.]+|com\.android\.launcher\.widget_music_progress' "${product_code_sources[@]}")"
 if [ -n "${vendor_hits}" ]; then
   while IFS= read -r line; do
     [ -z "${line}" ] && continue
     path="${line%%:*}"
     case "${path}" in
       ${allowed_topway_main}*|${allowed_topway_test}*)
+        # Extract the source content (strip path:linenum: prefix) to allow comment-only lines
+        _after_path="${line#"${path}":}"
+        _content="${_after_path#*:}"
+        # KDoc/line comments in isolated paths are safe documentation – skip inner check
+        if printf '%s' "${_content}" | grep -qE '^\s*(//|/\*)'; then
+          continue
+        fi
         case "${line}" in
           *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.info"*|*"com.tw.launcher.music_progress_duration"*|*"com.android.launcher.widget_music_progress"*) ;;
           *)
@@ -104,7 +111,7 @@ manifest_scan_paths=()
 [ -f "${manifest_path}" ] && manifest_scan_paths+=("${manifest_path}")
 [ -f "${topway_manifest_path}" ] && manifest_scan_paths+=("${topway_manifest_path}")
 if [ "${#manifest_scan_paths[@]}" -gt 0 ]; then
-  manifest_tw_hits="$(search_matches 'com\\.tw\\.[A-Za-z0-9_.]+' "${manifest_scan_paths[@]}")"
+  manifest_tw_hits="$(search_matches 'com\.tw\.[A-Za-z0-9_.]+' "${manifest_scan_paths[@]}")"
   if [ -n "${manifest_tw_hits}" ]; then
     while IFS= read -r line; do
       [ -z "${line}" ] && continue

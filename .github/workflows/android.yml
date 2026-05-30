@@ -8,6 +8,8 @@ on:
     paths:
       - '.github/workflows/android.yml'
       - '.github/workflows/lint.yml'
+      - '.github/workflows/manual-release.yml'
+      - '.github/workflows/ui-screenshots.yml'
       - 'app/**'
       - 'musikr/**'
       - 'media'
@@ -24,12 +26,17 @@ on:
       - 'scripts/check-submodules.sh'
       - 'scripts/check-headunit-compat-safety.sh'
       - 'scripts/check-dofun-topway-compat.sh'
+      - 'AGENTS.md'
+      - 'README.md'
+      - 'docs/**'
   pull_request:
     branches:
       - dev
     paths:
       - '.github/workflows/android.yml'
       - '.github/workflows/lint.yml'
+      - '.github/workflows/manual-release.yml'
+      - '.github/workflows/ui-screenshots.yml'
       - 'app/**'
       - 'musikr/**'
       - 'media'
@@ -46,6 +53,9 @@ on:
       - 'scripts/check-submodules.sh'
       - 'scripts/check-headunit-compat-safety.sh'
       - 'scripts/check-dofun-topway-compat.sh'
+      - 'AGENTS.md'
+      - 'README.md'
+      - 'docs/**'
 
 permissions:
   contents: read

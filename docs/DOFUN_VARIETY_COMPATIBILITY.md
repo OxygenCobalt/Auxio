@@ -82,7 +82,7 @@ DoFun queries `cn.cardoor.libs.media.RemoteMediaService` but its binder protocol
 bash scripts/check-dofun-topway-compat.sh
 
 # Package resolution on device
-adb shell cmd package resolve-activity --brief com.tw.music
-adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.APP_MUSIC
+adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -p com.tw.music
+adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.APP_MUSIC -p com.tw.music
 adb shell cmd package query-intent-services -a android.media.browse.MediaBrowserService
 ```

@@ -9,7 +9,9 @@ Auxio-TS is a TS18/Topway/DoFun Variety-compatible variant of Auxio. Its primary
 1. **DoFun Variety compatibility** (`com.dofun.variety`) is the highest priority. The launcher/theme must recognise the app, open it from the music panel/widget, display playback state, and route music controls.
 2. **Stock `twmusic` replacement contract** — the app installs as `com.tw.music` with component `com.tw.music.MusicActivity`.
 3. **Auxio upstream** is the runtime base, not the product focus. Keep upstream source required to compile; do not add generic Auxio docs.
-4. **Historical research** is out of scope. Do not add investigation archives, evidence packs, Codex prompts, or broad TS18 research.
+4. **UI development and visual validation** are in scope when they support active Auxio-TS app/UI work (Roborazzi/Robolectric preferred).
+5. **CI/release/developer reliability** should stay concise and operational.
+6. **Historical research** is out of scope. Do not add investigation archives, evidence packs, Codex prompts, or broad TS18 research.
 
 ## Critical constraints
 
@@ -18,6 +20,7 @@ Auxio-TS is a TS18/Topway/DoFun Variety-compatible variant of Auxio. Its primary
 - Standard Auxio identity (`org.oxycblt.auxio`) **must not** be accidentally broken.
 - **Do not modify DoFun Theme** or any third-party APK.
 - **Do not fake** `cn.cardoor.libs.media.RemoteMediaService` without a proven binder protocol.
+- **Do not overclaim** TS18/DoFun runtime compatibility from static checks, emulator runs, or Roborazzi. Full launcher/widget parity requires real head-unit validation.
 - **Do not add** broad research docs, evidence packs, prompt archives, or speculative TS18 research.
 - **Do not add** screenshot/evidence-pack workflows that serve only old TS18 research archives.
 - **UI regression workflows** (Roborazzi, layout screenshots) are allowed when they support active Auxio-TS app/UI development.
@@ -95,5 +98,6 @@ Keep docs minimal and operational:
 8. The Topway bridge must remain isolated — no vendor strings outside the bridge path.
 9. Run Gradle builds when the environment supports it.
 10. Keep the standard variant functional as a development baseline.
-11. Do not delete `ui-screenshots.yml` or Roborazzi test files — UI regression coverage is in scope for Auxio-TS active development.
-12. Do not delete evidence-pack or old TS18 research workflows if they are already absent; do not re-add them.
+11. Report clearly when a result is static/build-only versus TS18 hardware-validated; never present unvalidated DoFun widget behavior as proven.
+12. Do not delete `ui-screenshots.yml` or Roborazzi test files — UI regression coverage is in scope for Auxio-TS active development.
+13. Do not delete evidence-pack or old TS18 research workflows if they are already absent; do not re-add them.
