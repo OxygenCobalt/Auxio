@@ -57,3 +57,40 @@ The app has a `distribution` flavour dimension:
 - **`topwayTwMusic`** — DoFun/Topway identity (`com.tw.music`)
 
 The Topway bridge code lives in `app/src/main/java/org/oxycblt/auxio/headunit/topway/` and is shared by all variants. The `topwayTwMusic` flavour adds only the manifest alias and resource overrides needed for package identity matching.
+
+## UI development and Roborazzi screenshots
+
+Roborazzi is wired into the Gradle build (`build.gradle` plugin + `app/build.gradle` dependencies).
+Test file: `app/src/test/java/org/oxycblt/auxio/ui/RoborazziSmokeScreenshotTest.kt`.
+
+| Gradle task | Description |
+|-------------|-------------|
+| `:app:recordRoborazziDebug` | Capture new PNG baselines |
+| `:app:verifyRoborazziDebug` | Verify against committed baselines |
+| `:app:compareRoborazziDebug` | Produce diff report without failing |
+| `:app:verifyAndRecordRoborazziDebug` | Verify then record changed baselines |
+
+Roborazzi uses Robolectric — no emulator or device required.
+
+Use the **UI Screenshots** (`ui-screenshots.yml`) workflow to trigger these tasks manually on any branch/PR and retrieve PNG + HTML report artifacts. Trigger with `record` first to establish baselines, then use `verify` to detect regressions.
+
+Baseline PNGs live adjacent to the test source (committed to the repo). They are generated at 1280×720 to match TS18/head-unit landscape resolution.
+
+## CI and workflow coverage
+
+| Workflow | Trigger | Responsibility |
+|----------|---------|----------------|
+| `android.yml` | push/PR to dev, app/build paths | Standard + Topway debug builds; DoFun compat checks; APK artifacts |
+| `lint.yml` | push/PR to dev, app/build paths | Formatting (spotless); unit tests; Android lint; head-unit safety + DoFun compat scripts |
+| `manual-release.yml` | manual dispatch | Signed standard + Topway release APKs; package identity verification |
+| `ui-screenshots.yml` | manual dispatch | Roborazzi UI regression screenshots; PNG + HTML report artifacts |
+
+### Why deleted workflows are not retained
+
+| Removed workflow | Reason |
+|------------------|--------|
+| `ts18-guardrails.yml` | Validated deleted research tooling (evidence scripts, scenario maps, fixture packs). The only still-relevant check (`check-headunit-compat-safety.sh`) is covered by the `headunit-safety` job in `lint.yml`. |
+| `ts18-validation-tools.yml` | Validated deleted TS18 Python scripts and scenario map JSON. All referenced files are removed. Relevant headunit-safety check covered in `lint.yml`. |
+| `manual-roborazzi.yml` | **Replaced** by `ui-screenshots.yml`. Functionality preserved and focused on current app UI needs. |
+| `manual-ui-screenshots.yml` | Depended on deleted `scripts/capture-ui-screenshots.sh` and a brittle Android emulator setup. Superseded by the emulator-free Roborazzi approach in `ui-screenshots.yml`. |
+

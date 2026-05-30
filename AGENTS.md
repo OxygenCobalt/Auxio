@@ -18,7 +18,9 @@ Auxio-TS is a TS18/Topway/DoFun Variety-compatible variant of Auxio. Its primary
 - Standard Auxio identity (`org.oxycblt.auxio`) **must not** be accidentally broken.
 - **Do not modify DoFun Theme** or any third-party APK.
 - **Do not fake** `cn.cardoor.libs.media.RemoteMediaService` without a proven binder protocol.
-- **Do not add** broad research docs, evidence packs, prompt archives, screenshot workflows, or speculative TS18 research.
+- **Do not add** broad research docs, evidence packs, prompt archives, or speculative TS18 research.
+- **Do not add** screenshot/evidence-pack workflows that serve only old TS18 research archives.
+- **UI regression workflows** (Roborazzi, layout screenshots) are allowed when they support active Auxio-TS app/UI development.
 
 ## Forbidden in product code
 
@@ -63,9 +65,14 @@ Always run both compatibility scripts before finishing a PR.
 
 | Workflow | Purpose |
 |----------|---------|
-| `android.yml` | Build standard + Topway debug APKs |
+| `android.yml` | Build standard + Topway debug APKs, DoFun compatibility checks |
 | `lint.yml` | Formatting, unit tests, lint, head-unit safety checks |
 | `manual-release.yml` | Signed release with both APK variants |
+| `ui-screenshots.yml` | Manual Roborazzi UI regression screenshots (no emulator required) |
+
+UI development is in scope. Do not delete `ui-screenshots.yml` or Roborazzi test files
+merely because they mention screenshots. Roborazzi runs via Robolectric — no emulator
+or device needed. Artifacts (PNG outputs, HTML reports) are uploaded to GitHub Actions.
 
 ## Documentation
 
@@ -88,3 +95,5 @@ Keep docs minimal and operational:
 8. The Topway bridge must remain isolated — no vendor strings outside the bridge path.
 9. Run Gradle builds when the environment supports it.
 10. Keep the standard variant functional as a development baseline.
+11. Do not delete `ui-screenshots.yml` or Roborazzi test files — UI regression coverage is in scope for Auxio-TS active development.
+12. Do not delete evidence-pack or old TS18 research workflows if they are already absent; do not re-add them.
