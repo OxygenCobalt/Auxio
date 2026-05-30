@@ -13,7 +13,9 @@ bash scripts/prepare-ci-environment.sh   # init submodules, validate, create stu
 ./gradlew :app:assembleStandardDebug     # verify build
 ```
 
-`prepare-ci-environment.sh` handles submodule init/update and the `common_ktx` proguard stub. Run it once after clone or submodule changes.
+`prepare-ci-environment.sh` handles submodule init/update and the `common_ktx` proguard stub. Run it once after clone or submodule changes. A ZIP/snapshot checkout is insufficient because Gradle needs the `media` submodule, nested ffmpeg sources, and `musikr` taglib sources.
+
+For Codex or a fresh Linux environment, `bash scripts/setup-codex-android-env.sh` can bootstrap/verify Android command-line tools, SDK platform/build tools, CMake, NDK, submodules, and a Gradle smoke test.
 
 ## Key Gradle tasks
 
