@@ -23,7 +23,7 @@ Auxio-TS is a Topway/TS-series head-unit focused variant of [Auxio](https://gith
 
 The goal is not to create a generic Android music player fork. The goal is to preserve Auxio’s clean local-music architecture while adapting the app for practical use on Topway-style Android head units: landscape screens, launcher integration, media buttons, steering-wheel controls, persistent playback controls, and reliable local-library playback in a car environment.
 
-Auxio-TS remains an ordinary Android app. It does **not** impersonate `com.tw.music`, does **not** require system UID or platform signing, and does **not** copy proprietary Topway/TW smali code.
+Auxio-TS remains an ordinary Android app. The standard APK keeps the normal `org.oxycblt.auxio` identity; the separate `topwayTwMusic` compatibility APK intentionally installs as `com.tw.music` for DoFun/Variety launcher matching. Neither APK requires system UID/platform signing or copies proprietary Topway/TW smali code.
 
 ## Screenshots
 [coming soon]

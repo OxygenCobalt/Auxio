@@ -4,6 +4,7 @@ set -euo pipefail
 allowed_topway_main='app/src/main/java/org/oxycblt/auxio/headunit/topway/'
 allowed_topway_test='app/src/test/java/org/oxycblt/auxio/headunit/topway/'
 manifest_path='app/src/main/AndroidManifest.xml'
+topway_manifest_path='app/src/topwayTwMusic/AndroidManifest.xml'
 
 search_matches() {
   local pattern="$1"
@@ -30,6 +31,13 @@ for path in app/build.gradle "${manifest_path}" musikr/build.gradle settings.gra
   [ -f "${path}" ] && identity_files+=("${path}")
 done
 
+allowed_topway_identity_files=(
+  'app/build.gradle'
+  'app/src/topwayTwMusic/AndroidManifest.xml'
+  'app/src/topwayTwMusic/res/values/donottranslate.xml'
+  'app/src/topwayTwMusicDebug/res/values/donottranslate.xml'
+)
+
 if [ "${#product_sources[@]}" -eq 0 ] && [ "${#identity_files[@]}" -eq 0 ]; then
   echo "No product sources found; skipping headunit compat safety checks."
   exit 0
@@ -42,11 +50,24 @@ if [ -n "${forbidden_hits}" ]; then
   exit 1
 fi
 
-impersonation_hits="$(search_matches 'package=\"com\\.tw\\.music\"|applicationId[[:space:]]+\"com\\.tw\\.music\"|namespace[[:space:]]+\"com\\.tw\\.music\"' "${identity_files[@]}")"
+impersonation_hits="$(search_matches 'package="com\\.tw\\.music"|applicationId[[:space:]]+"com\\.tw\\.music"|namespace[[:space:]]+"com\\.tw\\.music"' "${identity_files[@]}")"
 if [ -n "${impersonation_hits}" ]; then
-  echo "${impersonation_hits}" >&2
-  echo "Package impersonation as com.tw.music is not allowed" >&2
-  exit 1
+  while IFS= read -r line; do
+    [ -z "${line}" ] && continue
+    path="${line%%:*}"
+    allowed="false"
+    for allowed_path in "${allowed_topway_identity_files[@]}"; do
+      if [ "${path}" = "${allowed_path}" ]; then
+        allowed="true"
+        break
+      fi
+    done
+    if [ "${allowed}" != "true" ]; then
+      echo "${line}" >&2
+      echo "Package identity com.tw.music is only allowed in the isolated topwayTwMusic flavour" >&2
+      exit 1
+    fi
+  done <<< "${impersonation_hits}"
 fi
 
 vendor_hits="$(search_matches 'com\\.tw\\.[A-Za-z0-9_.]+|com\\.android\\.launcher\\.widget_music_progress' "${product_code_sources[@]}")"
@@ -74,16 +95,19 @@ if [ -n "${vendor_hits}" ]; then
   done <<< "${vendor_hits}"
 fi
 
-if [ -f "${manifest_path}" ]; then
-  manifest_tw_hits="$(search_matches 'com\\.tw\\.[A-Za-z0-9_.]+' "${manifest_path}")"
+manifest_scan_paths=()
+[ -f "${manifest_path}" ] && manifest_scan_paths+=("${manifest_path}")
+[ -f "${topway_manifest_path}" ] && manifest_scan_paths+=("${topway_manifest_path}")
+if [ "${#manifest_scan_paths[@]}" -gt 0 ]; then
+  manifest_tw_hits="$(search_matches 'com\\.tw\\.[A-Za-z0-9_.]+' "${manifest_scan_paths[@]}")"
   if [ -n "${manifest_tw_hits}" ]; then
     while IFS= read -r line; do
       [ -z "${line}" ] && continue
       case "${line}" in
-        *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*) ;;
+        *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.MusicActivity"*) ;;
         *)
           echo "${line}" >&2
-          echo "Manifest com.tw.* intent filters must be limited to the approved Topway actions" >&2
+          echo "Manifest com.tw.* entries must be limited to approved Topway bridge actions or the isolated topwayTwMusic alias" >&2
           exit 1
           ;;
       esac

@@ -29,6 +29,19 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        standard {
+            dimension "distribution"
+        }
+
+        topwayTwMusic {
+            dimension "distribution"
+            applicationId "com.tw.music"
+        }
+    }
+
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_21

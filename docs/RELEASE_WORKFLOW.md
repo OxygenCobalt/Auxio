@@ -54,13 +54,13 @@ The workflow uses:
 ## PR release-readiness workflows
 
 - `Android Build` now runs on `pull_request` to `dev`, `push` to `dev`, and `workflow_dispatch`.
-- Successful PR and push runs upload `app/build/outputs/apk/debug/app-debug.apk` as the `auxio-ts-debug-apk` artifact with 7-day retention.
+- Successful PR and push runs build both `:app:assembleStandardDebug` and `:app:assembleTopwayTwMusicDebug`, then upload the standard and Topway/DoFun debug APKs as the `auxio-ts-debug-apks` artifact with 7-day retention.
 - `Android Build` also uploads build reports on failure so missing/debug-APK issues are distinguishable from Gradle failures.
 - `Android Quality` now runs four independent jobs so one failure does not hide the others:
   - `Formatting` → `./gradlew --no-daemon --stacktrace spotlessCheck`
-  - `Unit tests` → `./gradlew --no-daemon --stacktrace :app:testDebugUnitTest :musikr:testDebugUnitTest`
-  - `Android lint` → `./gradlew --no-daemon --stacktrace :app:lintDebug`
-  - `Head-unit safety` → `bash scripts/check-headunit-compat-safety.sh`
+  - `Unit tests` → `./gradlew --no-daemon --stacktrace :app:testStandardDebugUnitTest :musikr:testDebugUnitTest`
+  - `Android lint` → `./gradlew --no-daemon --stacktrace :app:lintStandardDebug`
+  - `Head-unit safety` → `bash scripts/check-headunit-compat-safety.sh` and `bash scripts/check-dofun-topway-compat.sh`
 
 ## Version and tag behavior
 
@@ -78,13 +78,13 @@ The workflow uses:
 3. Version computation and metadata update.
 4. Local version commit.
 5. Signing secret validation.
-6. Signed release APK build.
+6. Signed standard and Topway/DoFun release APK builds (`:app:assembleStandardRelease` and `:app:assembleTopwayTwMusicRelease`).
 7. APK signature verification.
 8. Push version commit.
 9. Push release tag.
 10. Generate release notes.
-11. Create GitHub release and upload APK.
-12. Write summary with clickable release link.
+11. Create GitHub release and upload both APKs.
+12. Write summary with clickable release link and both APK names.
 
 ## Release notes behavior
 
@@ -94,13 +94,14 @@ Release body always starts with `## What's changed` and contains bullet points.
 - Commit links are used when PR metadata is unavailable.
 - PR lookup failures emit warnings but do not fail release creation.
 
-## Expected release asset
+## Expected release assets
 
-One signed APK asset:
+Two signed APK assets are uploaded for each release:
 
-`Auxio-TS-vX.Y.Z-release.apk`
+- `Auxio-TS-vX.Y.Z-standard-release.apk` — normal Auxio-TS identity (`org.oxycblt.auxio`).
+- `Auxio-TS-vX.Y.Z-topway-twmusic-release.apk` — DoFun/Topway-compatible identity (`com.tw.music`). This APK is intentionally separate from the standard APK and may conflict with a stock `com.tw.music` package on Topway/TS18 units.
 
-The workflow fails if no signed APK is found, more than one candidate is found, or signature verification fails.
+The workflow fails if either signed APK is missing, a variant has more than one candidate, or signature verification fails. Generated release notes also include an APK-variant warning so users do not mistake the Topway/DoFun compatibility APK for the standard Auxio-TS package.
 
 ## First safe validation run
 
