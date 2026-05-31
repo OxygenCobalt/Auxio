@@ -30,7 +30,7 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
     private var lastProgressAtMs = 0L
 
     private val bridgeEnabled: Boolean
-        get() = BuildConfig.APPLICATION_ID == TOPWAY_RELEASE_PACKAGE || uiSettings.headUnitLandscapeMode
+        get() = BuildConfig.TOPWAY_TWMUSIC_FLAVOR || uiSettings.headUnitLandscapeMode
 
     fun publishMetadata(snapshot: HeadUnitMetadataSnapshot?) {
         if (!bridgeEnabled || snapshot == null) return
@@ -74,7 +74,6 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
     }
 
     private companion object {
-        const val TOPWAY_RELEASE_PACKAGE = "com.tw.music"
         const val MIN_PROGRESS_INTERVAL_MS = 1000L
     }
 }

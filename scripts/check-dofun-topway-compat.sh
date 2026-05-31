@@ -131,9 +131,13 @@ for contract_string in \
 done
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishMetadata" "runtime Topway metadata publisher"
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishProgress" "runtime Topway progress publisher"
-require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicBroadcastBridge.kt" 'BuildConfig.APPLICATION_ID == TOPWAY_RELEASE_PACKAGE' "Topway release bridge always enabled"
+require_file_contains "app/build.gradle" 'buildConfigField "boolean", "TOPWAY_TWMUSIC_FLAVOR", "true"' "Topway flavour build flag"
+require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicBroadcastBridge.kt" 'BuildConfig.TOPWAY_TWMUSIC_FLAVOR' "Topway flavour bridge always enabled"
+require_file_contains "app/src/topwayTwMusic/java/com/tw/music/MusicService.kt" "AndroidEntryPoint" "Topway MusicService Hilt entry point"
 require_file_contains "app/src/topwayTwMusic/java/com/tw/music/MusicService.kt" "AuxioService" "Topway MusicService delegates to AuxioService"
 require_file_contains "app/src/topwayTwMusic/java/com/tw/music/view/MusicWidgetProvider.kt" "CMD_UPDATE" "Topway MusicWidgetProvider update fallback"
+require_file_contains "app/src/topwayTwMusic/java/com/tw/music/view/MusicWidgetProvider.kt" "safelyExtractIncomingExtras" "Topway MusicWidgetProvider safe extras extraction"
+require_file_contains "app/src/topwayTwMusic/java/com/tw/music/view/MusicWidgetProvider.kt" "AppWidgetManager.ACTION_APPWIDGET_UPDATE" "Topway MusicWidgetProvider single appwidget update path"
 require_file_contains ".github/workflows/manual-release.yml" "assembleTopwayTwMusicRelease" "manual release builds Topway release"
 require_file_contains ".github/workflows/manual-release.yml" "topway-twmusic-release.apk" "manual release names Topway APK asset"
 

@@ -12,6 +12,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.BadParcelableException
 import androidx.core.content.ContextCompat
 import com.tw.music.MusicService
 import org.oxycblt.auxio.AuxioService
@@ -22,8 +23,21 @@ import timber.log.Timber as L
 
 class MusicWidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent?) {
+        val action = intent?.action
+        if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
+            // AppWidgetProvider.super.onReceive() dispatches this to onUpdate(). Keep forwarding in
+            // exactly one place to avoid duplicate foreground-service starts for the same update.
+            super.onReceive(context, intent)
+            return
+        }
+
         super.onReceive(context, intent)
-        forwardTopwayIntent(context, intent)
+
+        if (TopwayMusicContract.isIncomingAction(action)) {
+            forwardTopwayIntent(context, intent)
+        } else {
+            L.d("Ignoring unsupported Topway widget/provider action: $action")
+        }
     }
 
     override fun onUpdate(
@@ -40,9 +54,7 @@ class MusicWidgetProvider : AppWidgetProvider() {
             incomingAction?.takeIf { TopwayMusicContract.isIncomingAction(it) }
                 ?: TopwayMusicContract.ACTION_CMD
 
-        val incoming =
-            intent?.extras?.keySet()?.associateWith { key -> intent.extras?.get(key) } ?: emptyMap()
-        val extras = TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(incoming)
+        val extras = TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(safelyExtractIncomingExtras(intent))
 
         val serviceIntent =
             Intent(context, MusicService::class.java)
@@ -64,8 +76,24 @@ class MusicWidgetProvider : AppWidgetProvider() {
 
         try {
             ContextCompat.startForegroundService(context, serviceIntent)
-        } catch (e: Exception) {
-            L.w("Unable to forward Topway widget/provider intent: $e")
+        } catch (e: IllegalStateException) {
+            L.w(e, "Unable to forward Topway widget/provider intent due to service state")
+        } catch (e: SecurityException) {
+            L.w(e, "Unable to forward Topway widget/provider intent due to security policy")
+        }
+    }
+
+    private fun safelyExtractIncomingExtras(intent: Intent?): Map<String, Any?> {
+        val extras = intent?.extras ?: return emptyMap()
+        return try {
+            extras.classLoader = javaClass.classLoader
+            extras.keySet().associateWith { key -> extras.get(key) }
+        } catch (e: BadParcelableException) {
+            L.w(e, "Ignoring malformed extras from untrusted Topway widget/provider intent")
+            emptyMap()
+        } catch (e: RuntimeException) {
+            L.w(e, "Ignoring unreadable extras from untrusted Topway widget/provider intent")
+            emptyMap()
         }
     }
 }

@@ -9,4 +9,7 @@
 
 package com.tw.music
 
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class MusicService : org.oxycblt.auxio.AuxioService()
