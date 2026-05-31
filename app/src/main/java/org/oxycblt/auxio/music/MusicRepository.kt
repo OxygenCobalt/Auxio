@@ -472,7 +472,7 @@ constructor(
         }
     }
 
-    private fun createConfig(revision: UUID, cache: MutableCache): Config {
+    private suspend fun createConfig(revision: UUID, cache: MutableCache): Config {
         val separators = Separators.from(musicSettings.separators)
         val nameFactory =
             if (musicSettings.intelligentSorting) {
