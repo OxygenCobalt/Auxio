@@ -29,11 +29,6 @@
             android:label="@string/info_topway_music_app_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.tw.music.action.cmd" />
-                <action android:name="com.tw.music.action.prev" />
-                <action android:name="com.tw.music.action.next" />
-                <action android:name="com.tw.music.action.pp" />
-                <action android:name="com.android.launcher.widget_music_progress" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

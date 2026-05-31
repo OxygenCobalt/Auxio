@@ -24,6 +24,21 @@ require_file_contains() {
   fi
 }
 
+require_file_not_contains() {
+  local file="$1"
+  local pattern="$2"
+  local desc="$3"
+  if [[ ! -f "$file" ]]; then
+    fail "missing ${desc}: ${file}"
+    return
+  fi
+  if grep -Fq -- "$pattern" "$file"; then
+    fail "${desc} unexpectedly contains ${pattern}: ${file}"
+  else
+    pass "${desc} does not contain ${pattern}"
+  fi
+}
+
 find_merged_manifest() {
   local variant="$1"
   find app/build/intermediates/merged_manifests -path "*${variant}*AndroidManifest.xml" -print 2>/dev/null | sort | head -n 1
@@ -103,6 +118,11 @@ else
   require_file_contains "$flavour_manifest" "android.intent.category.LAUNCHER" "Topway alias launcher category"
   require_file_contains "$flavour_manifest" "android.intent.category.DEFAULT" "Topway alias default category"
   require_file_contains "$flavour_manifest" "android.intent.category.APP_MUSIC" "Topway alias app music category"
+  require_file_not_contains "$flavour_manifest" "com.tw.music.action.cmd" "Topway flavour fallback provider must not duplicate command receiver"
+  require_file_not_contains "$flavour_manifest" "com.tw.music.action.prev" "Topway flavour fallback provider must not duplicate previous receiver"
+  require_file_not_contains "$flavour_manifest" "com.tw.music.action.next" "Topway flavour fallback provider must not duplicate next receiver"
+  require_file_not_contains "$flavour_manifest" "com.tw.music.action.pp" "Topway flavour fallback provider must not duplicate play-pause receiver"
+  require_file_not_contains "$flavour_manifest" "com.android.launcher.widget_music_progress" "Topway flavour fallback provider must not duplicate widget progress receiver"
 fi
 
 require_file_contains "app/src/main/AndroidManifest.xml" '${applicationId}.image.CoverProvider' "manifest applicationId-scoped CoverProvider authority"
@@ -216,21 +236,31 @@ def require_topway_receiver(application, label):
         "com.tw.music.action.pp",
         "com.android.launcher.widget_music_progress",
     }
+    command_receivers = []
     for receiver in application.findall("receiver"):
-        if attr(receiver, "name") != "org.oxycblt.auxio.headunit.topway.TopwayMusicBridgeReceiver":
-            continue
         actions = set()
         for intent_filter in receiver.findall("intent-filter"):
             actions.update(attr(action_el, "name") for action_el in intent_filter.findall("action"))
-        missing = expected - actions
-        if attr(receiver, "exported") != "true":
-            fail(f"{label} Topway receiver is not exported=true")
-        elif missing:
-            fail(f"{label} Topway receiver missing actions: {sorted(missing)}")
-        else:
-            ok(f"{label} Topway receiver exposes expected command actions")
+        if expected & actions:
+            command_receivers.append((receiver, actions))
+
+    if len(command_receivers) != 1:
+        names = [attr(receiver, "name") for receiver, _actions in command_receivers]
+        fail(f"{label} expected exactly one Topway command receiver, got {names}")
         return
-    fail(f"{label} lacks Topway bridge receiver")
+
+    receiver, actions = command_receivers[0]
+    if attr(receiver, "name") != "org.oxycblt.auxio.headunit.topway.TopwayMusicBridgeReceiver":
+        fail(f"{label} Topway command receiver is {attr(receiver, 'name')!r}")
+        return
+
+    missing = expected - actions
+    if attr(receiver, "exported") != "true":
+        fail(f"{label} Topway receiver is not exported=true")
+    elif missing:
+        fail(f"{label} Topway receiver missing actions: {sorted(missing)}")
+    else:
+        ok(f"{label} Topway receiver exposes expected command actions")
 
 def require_single_launcher(application, expected_name, label):
     matches = components_with_filter(application, "activity", "android.intent.action.MAIN", "android.intent.category.LAUNCHER")

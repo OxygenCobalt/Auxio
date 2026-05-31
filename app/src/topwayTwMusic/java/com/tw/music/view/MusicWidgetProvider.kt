@@ -23,7 +23,12 @@ import timber.log.Timber as L
 
 class MusicWidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent?) {
-        val action = intent?.action
+        if (intent == null) {
+            L.d("Ignoring null Topway widget/provider intent")
+            return
+        }
+
+        val action = intent.action
         if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
             // AppWidgetProvider.super.onReceive() dispatches this to onUpdate(). Keep forwarding in
             // exactly one place to avoid duplicate foreground-service starts for the same update.

@@ -24,7 +24,7 @@ import kotlin.test.assertNull
 
 class TopwayStartRoutingPolicyTest {
     @Test
-    fun `previous and next require current song but play pause can restore cold start` {
+    fun `previous and next require current song but play pause can restore cold start`() {
         assertEquals(
             TopwayServiceAction.PREVIOUS,
             decide(TopwayMusicContract.ACTION_PREV, hasSong = true).action,
