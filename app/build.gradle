@@ -243,6 +243,15 @@ dependencies {
 }
 
 
-// Roborazzi tasks (recordRoborazziDebug, verifyRoborazziDebug, compareRoborazziDebug,
-// verifyAndRecordRoborazziDebug) are automatically registered by the Roborazzi Gradle plugin
-// applied in the plugins block above.
+tasks.withType(Test).configureEach { testTask ->
+    // Keep regular unit-test CI independent from Roborazzi's runtime android-all downloads.
+    // Manual UI coverage is provided by record/verify/compareRoborazzi* tasks and
+    // .github/workflows/ui-screenshots.yml for both standard and Topway variants.
+    if (testTask.name.startsWith("test")) {
+        exclude "**/RoborazziSmokeScreenshotTest*"
+    }
+}
+
+// Roborazzi tasks (record/verify/compareRoborazziStandardDebug and
+// record/verify/compareRoborazziTopwayTwMusicDebug) are automatically registered by the
+// Roborazzi Gradle plugin applied in the plugins block above.

@@ -37,7 +37,7 @@ Each release publishes two signed APKs:
 
 ## Running a release
 
-1. Open **Actions → Manual Release → Run workflow**.
+1. Open **Actions → Manual Release → Run workflow** from the `dev` branch. The workflow refuses tag refs and non-`dev` branches so version metadata, tag, and release assets are produced from the protected/default line.
 2. Provide `version_tag` (e.g. `1.2.3`) or leave blank for auto-increment.
 3. Optionally set `draft: true` for validation.
-4. The workflow builds both variants, signs, verifies signatures, creates a GitHub release, and uploads both APKs.
+4. The workflow validates signing secrets before building, builds both variants, runs the DoFun/Topway compatibility contract check against produced outputs, verifies APK signatures, creates a GitHub release, and uploads both APKs.

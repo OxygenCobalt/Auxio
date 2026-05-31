@@ -6,10 +6,7 @@ on:
     branches:
       - dev
     paths:
-      - '.github/workflows/android.yml'
-      - '.github/workflows/lint.yml'
-      - '.github/workflows/manual-release.yml'
-      - '.github/workflows/ui-screenshots.yml'
+      - '.github/workflows/**'
       - 'app/**'
       - 'musikr/**'
       - 'media'
@@ -33,10 +30,7 @@ on:
     branches:
       - dev
     paths:
-      - '.github/workflows/android.yml'
-      - '.github/workflows/lint.yml'
-      - '.github/workflows/manual-release.yml'
-      - '.github/workflows/ui-screenshots.yml'
+      - '.github/workflows/**'
       - 'app/**'
       - 'musikr/**'
       - 'media'

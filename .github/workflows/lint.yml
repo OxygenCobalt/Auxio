@@ -6,10 +6,7 @@ on:
     branches:
       - dev
     paths:
-      - '.github/workflows/android.yml'
-      - '.github/workflows/lint.yml'
-      - '.github/workflows/manual-release.yml'
-      - '.github/workflows/ui-screenshots.yml'
+      - '.github/workflows/**'
       - 'app/**'
       - 'musikr/**'
       - 'media'
@@ -22,10 +19,7 @@ on:
       - 'gradlew.bat'
       - 'NOTICE'
       - 'eclipse-cdt.xml'
-      - 'scripts/prepare-ci-environment.sh'
-      - 'scripts/check-submodules.sh'
-      - 'scripts/check-headunit-compat-safety.sh'
-      - 'scripts/check-dofun-topway-compat.sh'
+      - 'scripts/**'
       - 'AGENTS.md'
       - 'README.md'
       - 'docs/**'
@@ -33,10 +27,7 @@ on:
     branches:
       - dev
     paths:
-      - '.github/workflows/android.yml'
-      - '.github/workflows/lint.yml'
-      - '.github/workflows/manual-release.yml'
-      - '.github/workflows/ui-screenshots.yml'
+      - '.github/workflows/**'
       - 'app/**'
       - 'musikr/**'
       - 'media'
@@ -49,10 +40,7 @@ on:
       - 'gradlew.bat'
       - 'NOTICE'
       - 'eclipse-cdt.xml'
-      - 'scripts/prepare-ci-environment.sh'
-      - 'scripts/check-submodules.sh'
-      - 'scripts/check-headunit-compat-safety.sh'
-      - 'scripts/check-dofun-topway-compat.sh'
+      - 'scripts/**'
       - 'AGENTS.md'
       - 'README.md'
       - 'docs/**'
@@ -65,6 +53,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  workflow-syntax:
+    name: Workflow/script syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Validate workflow YAML
+      shell: bash
+      run: ruby -e 'require "yaml"; ARGV.each { |f| YAML.load_file(f); puts "OK #{f}" }' .github/workflows/*.yml
+    - name: Validate shell script syntax
+      shell: bash
+      run: find scripts -type f -name '*.sh' -print -exec bash -n {} \;
+
   format:
     name: Formatting
     runs-on: ubuntu-latest

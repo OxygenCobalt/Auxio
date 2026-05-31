@@ -64,12 +64,7 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
             file,
             mimeType?.let {
                 Audio(
-                    Properties(
-                        mimeType,
-                        durationMs!!,
-                        bitrateKbps!!,
-                        sampleRateHz!!,
-                    ),
+                    Properties(mimeType, durationMs!!, bitrateKbps!!, sampleRateHz!!),
                     ParsedTags(
                         musicBrainzId = musicBrainzId,
                         name = name,

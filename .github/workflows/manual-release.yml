@@ -47,6 +47,10 @@ jobs:
             echo "::error::Manual releases must run from a branch so the workflow can commit version metadata before tagging."
             exit 1
           fi
+          if [[ "${GITHUB_REF_NAME}" != "dev" ]]; then
+            echo "::error::Manual releases must run from the protected/default dev branch, not '${GITHUB_REF_NAME}'."
+            exit 1
+          fi
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -229,6 +233,10 @@ jobs:
         run: |
           set -euo pipefail
           ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease
+
+      - name: Validate release APK compatibility contracts
+        shell: bash
+        run: bash ./scripts/check-dofun-topway-compat.sh
 
       - name: Locate, verify, and rename signed APKs
         id: apks
