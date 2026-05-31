@@ -261,6 +261,8 @@ Do not try to work around this by copying submodule files manually.
 - `app/lint.xml` suppresses all lint issues for the vendored Google Material backport package
   (`**/com/google/android/material/**`).  New issues in Auxio-owned source still fail CI.
 - `:musikr lintDebug` can be added once musikr lint issues are resolved or baselined.
+
+- `scripts/check-ts18-apk-reference-contracts.sh` is the compact APK-reference baseline check. Run it with the DoFun and head-unit safety checks whenever workflows, package identity, Topway broadcasts, or APK-reference docs change.
 - `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
   guardrail used by both Android Quality and TS18 Guardrails.
 

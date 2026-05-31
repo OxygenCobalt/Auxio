@@ -54,11 +54,12 @@ For Topway/DoFun validation, confirm the `AuxioService` creates its MediaSession
 ## Compatibility check scripts
 
 ```sh
+bash scripts/check-ts18-apk-reference-contracts.sh # TS18 APK reference evidence/contract baseline
 bash scripts/check-dofun-topway-compat.sh       # DoFun/Topway source+manifest validation
 bash scripts/check-headunit-compat-safety.sh     # Safety guardrails (forbidden hooks, isolation)
 ```
 
-Both are run by CI on every PR (`lint.yml` → Head-unit safety job).
+All three are run by CI on every PR (`android.yml` and/or `lint.yml` guardrail jobs).
 
 ## Product flavours
 

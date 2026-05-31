@@ -245,9 +245,12 @@ dependencies {
 
 tasks.withType(Test).configureEach { testTask ->
     // Keep regular unit-test CI independent from Roborazzi's runtime android-all downloads.
-    // Manual UI coverage is provided by record/verify/compareRoborazzi* tasks and
-    // .github/workflows/ui-screenshots.yml for both standard and Topway variants.
-    if (testTask.name.startsWith("test")) {
+    // Do not apply this exclusion during explicit Roborazzi runs: record/verify/compare
+    // tasks delegate to variant unit-test tasks and must still execute screenshot tests.
+    def isRoborazziRun = gradle.startParameter.taskNames.any { taskName ->
+        taskName.toLowerCase(Locale.ROOT).contains("roborazzi")
+    }
+    if (!isRoborazziRun && testTask.name.startsWith("test")) {
         exclude "**/RoborazziSmokeScreenshotTest*"
     }
 }

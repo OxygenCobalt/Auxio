@@ -32,8 +32,14 @@ find_merged_manifest() {
 find_apk() {
   local variant_dir="$1"
   local build_type="$2"
-  find "app/build/outputs/apk/${variant_dir}/${build_type}" \
-    -maxdepth 1 -type f -name '*.apk' -print 2>/dev/null | sort | head -n 1
+  local apk_dir="app/build/outputs/apk/${variant_dir}/${build_type}"
+  local signed_apk
+  signed_apk="$(find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned*' -print 2>/dev/null | sort | head -n 1)"
+  if [[ -n "${signed_apk}" ]]; then
+    printf '%s\n' "${signed_apk}"
+    return
+  fi
+  find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' -print 2>/dev/null | sort | head -n 1
 }
 
 check_apk_manifest() {
@@ -117,7 +123,7 @@ for contract_string in \
   "msg_music_progress" \
   "msg_music_duration" \
   "music_progress"; do
-  require_file_contains "$topway_contract" "$contract_string" "Topway contract string"
+  require_file_contains "$topway_contract" "$contract_string" "Missing Topway contract string: $contract_string"
 done
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishMetadata" "runtime Topway metadata publisher"
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishProgress" "runtime Topway progress publisher"

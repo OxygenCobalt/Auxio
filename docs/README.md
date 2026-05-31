@@ -1,6 +1,8 @@
 # Auxio-TS Documentation Index
 
-Auxio-TS is a TS18/Topway/DoFun Variety-compatible Auxio variant. Start here for current product, CI, release, and compatibility guidance.
+Auxio-TS is a TS18/Topway/DoFun Variety-targeted Auxio variant for the observed DoFun/Topway stock-music contract. Start here for current product, CI, release, and compatibility guidance.
+
+[Evidence confidence: Requires TS18 validation] [Porting decision: Requires TS18 runtime validation]
 
 ## Current docs
 
@@ -15,9 +17,13 @@ Auxio-TS is a TS18/Topway/DoFun Variety-compatible Auxio variant. Start here for
 
 Use the APK reference docs before changing package identity, Topway broadcasts, media/session wiring, release workflows, or guardrail scripts.
 
+[Evidence confidence: Observed APK/reference evidence] [Porting decision: Directly reusable as compatibility requirements and guardrails]
+
 Primary compatibility target:
 
 - DoFun Variety Theme: `com.dofun.variety`
+
+[Evidence confidence: Observed in DoFun APK metadata/config] [Porting decision: Primary launcher/theme target]
 
 Primary replacement contract:
 
@@ -26,7 +32,11 @@ Primary replacement contract:
 - launcher/activity component: `com.tw.music.MusicActivity`
 - release variant: `topwayTwMusicRelease`
 
+[Evidence confidence: Observed in DoFun APK config and stock twmusic APK references] [Porting decision: Directly reusable replacement contract]
+
 Observed Cardoor/private services and vendor hooks are evidence only, not production implementation. They are not for production by default and require the formal gap-and-promotion process before any native/private investigation can become product code.
+
+[Evidence confidence: Observed APK/string evidence] [Porting decision: Evidence only; do not implement without proven protocol]
 
 ## CI entry points
 
@@ -39,8 +49,9 @@ Local preflight:
 
 ```sh
 bash scripts/prepare-ci-environment.sh
+bash scripts/check-ts18-apk-reference-contracts.sh
 bash scripts/check-dofun-topway-compat.sh
 bash scripts/check-headunit-compat-safety.sh
 find scripts -type f -name '*.sh' -print -exec bash -n {} \;
-ruby -e 'require "yaml"; ARGV.each { |f| YAML.load_file(f); puts "OK #{f}" }' .github/workflows/*.yml
+ruby -e 'require "yaml"; ARGV.each { |f| Psych.safe_load(File.read(f), permitted_classes: [], permitted_symbols: [], aliases: false); puts "OK #{f}" }' .github/workflows/*.yml
 ```

@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -233,6 +233,10 @@ jobs:
         run: |
           set -euo pipefail
           ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease
+
+      - name: Validate TS18 APK reference contracts
+        shell: bash
+        run: bash ./scripts/check-ts18-apk-reference-contracts.sh
 
       - name: Validate release APK compatibility contracts
         shell: bash
