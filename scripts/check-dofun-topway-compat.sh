@@ -316,8 +316,17 @@ if [[ -n "$standard_release_apk" || -n "$topway_release_apk" ]]; then
 fi
 
 if (( debug_outputs_present )); then
-  [[ -n "$standard_debug_apk" ]] && pass "found standard debug APK: ${standard_debug_apk}" || fail "standard debug APK missing while debug APK outputs are present"
-  [[ -n "$topway_debug_apk" ]] && pass "found Topway debug APK: ${topway_debug_apk}" || fail "Topway debug APK missing while debug APK outputs are present"
+  if [[ -n "$standard_debug_apk" ]]; then
+    pass "found standard debug APK: ${standard_debug_apk}"
+  else
+    fail "standard debug APK missing while debug APK outputs are present"
+  fi
+
+  if [[ -n "$topway_debug_apk" ]]; then
+    pass "found Topway debug APK: ${topway_debug_apk}"
+  else
+    fail "Topway debug APK missing while debug APK outputs are present"
+  fi
 else
   if (( ! release_outputs_present )); then
     warn "debug APKs not found; run ./gradlew :app:assembleStandardDebug :app:assembleTopwayTwMusicDebug"
@@ -325,8 +334,17 @@ else
 fi
 
 if (( release_outputs_present )); then
-  [[ -n "$standard_release_apk" ]] && pass "found standard release APK: ${standard_release_apk}" || fail "standard release APK missing while release APK outputs are present"
-  [[ -n "$topway_release_apk" ]] && pass "found Topway release APK: ${topway_release_apk}" || fail "Topway release APK missing while release APK outputs are present"
+  if [[ -n "$standard_release_apk" ]]; then
+    pass "found standard release APK: ${standard_release_apk}"
+  else
+    fail "standard release APK missing while release APK outputs are present"
+  fi
+
+  if [[ -n "$topway_release_apk" ]]; then
+    pass "found Topway release APK: ${topway_release_apk}"
+  else
+    fail "Topway release APK missing while release APK outputs are present"
+  fi
 else
   if (( ! debug_outputs_present )); then
     warn "release APKs not found; run ./gradlew :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease"
