@@ -54,11 +54,12 @@ For Topway/DoFun validation, confirm the `AuxioService` creates its MediaSession
 ## Compatibility check scripts
 
 ```sh
+bash scripts/check-ts18-apk-reference-contracts.sh # TS18 APK reference evidence/contract baseline
 bash scripts/check-dofun-topway-compat.sh       # DoFun/Topway source+manifest validation
 bash scripts/check-headunit-compat-safety.sh     # Safety guardrails (forbidden hooks, isolation)
 ```
 
-Both are run by CI on every PR (`lint.yml` → Head-unit safety job).
+All three are run by CI on every PR (`android.yml` and/or `lint.yml` guardrail jobs).
 
 ## Product flavours
 
@@ -76,14 +77,14 @@ Test file: `app/src/test/java/org/oxycblt/auxio/ui/RoborazziSmokeScreenshotTest.
 
 | Gradle task | Description |
 |-------------|-------------|
-| `:app:recordRoborazziDebug` | Capture new PNG baselines |
-| `:app:verifyRoborazziDebug` | Verify against committed baselines |
-| `:app:compareRoborazziDebug` | Produce diff report without failing |
-| `:app:verifyAndRecordRoborazziDebug` | Verify then record changed baselines |
+| `:app:recordRoborazziStandardDebug / :app:recordRoborazziTopwayTwMusicDebug` | Capture new PNG baselines |
+| `:app:verifyRoborazziStandardDebug / :app:verifyRoborazziTopwayTwMusicDebug` | Verify against committed baselines |
+| `:app:compareRoborazziStandardDebug / :app:compareRoborazziTopwayTwMusicDebug` | Produce diff report without failing |
+| `:app:verifyAndRecordRoborazziStandardDebug / :app:verifyAndRecordRoborazziTopwayTwMusicDebug` | Verify then record changed baselines |
 
-Roborazzi uses Robolectric — no emulator or device required.
+Roborazzi uses Robolectric — no emulator or device required. Regular `test*UnitTest` tasks intentionally exclude `RoborazziSmokeScreenshotTest` so the PR unit-test job is not coupled to Roborazzi runtime artifact downloads; use the Roborazzi tasks/workflow for visual coverage.
 
-Use the **UI Screenshots** (`ui-screenshots.yml`) workflow to trigger these tasks manually on any branch/PR and retrieve PNG + HTML report artifacts. Trigger with `record` first to establish baselines, then use `verify` to detect regressions.
+Use the **UI Screenshots** (`ui-screenshots.yml`) workflow to trigger these tasks manually on any branch/PR and retrieve PNG + HTML report artifacts. Select `variant=standard` for normal Auxio-TS UI or `variant=topway_twmusic` for the DoFun/Topway package-identity variant. Trigger with `record` first to establish baselines, then use `verify` to detect regressions.
 
 Baseline PNGs live adjacent to the test source (committed to the repo). They are generated at 1280×720 to match TS18/head-unit landscape resolution.
 
@@ -92,9 +93,23 @@ Baseline PNGs live adjacent to the test source (committed to the repo). They are
 | Workflow | Trigger | Responsibility |
 |----------|---------|----------------|
 | `android.yml` | push/PR to dev, app/build paths | Standard + Topway debug builds; DoFun compat checks; APK artifacts |
-| `lint.yml` | push/PR to dev, app/build paths | Formatting (spotless); unit tests; Android lint; head-unit safety + DoFun compat scripts |
+| `lint.yml` | push/PR to dev, app/build/scripts/docs/workflow paths | Workflow YAML syntax; shell script syntax; formatting (spotless); unit tests; Android lint; head-unit safety + DoFun compat scripts |
 | `manual-release.yml` | manual dispatch | Signed standard + Topway release APKs; package identity verification |
 | `ui-screenshots.yml` | manual dispatch | Roborazzi UI regression screenshots; PNG + HTML report artifacts |
+
+
+### Branch protection / required checks
+
+If GitHub branch protection is enabled, required status checks should match the current job names:
+
+- `Android Build / build`
+- `Android Quality / Workflow/script syntax`
+- `Android Quality / Formatting`
+- `Android Quality / Unit tests`
+- `Android Quality / Android lint`
+- `Android Quality / Head-unit safety`
+
+Remove stale required checks for deleted workflows such as `Manual Roborazzi`, `Manual UI Screenshots`, `ts18-guardrails`, or `ts18-validation-tools`; their active coverage is replaced by `ui-screenshots.yml` and the Android Quality guardrail jobs above.
 
 ### Why deleted workflows are not retained
 

@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -45,6 +45,10 @@ jobs:
           set -euo pipefail
           if [[ "${GITHUB_REF_TYPE}" != "branch" ]]; then
             echo "::error::Manual releases must run from a branch so the workflow can commit version metadata before tagging."
+            exit 1
+          fi
+          if [[ "${GITHUB_REF_NAME}" != "dev" ]]; then
+            echo "::error::Manual releases must run from the protected/default dev branch, not '${GITHUB_REF_NAME}'."
             exit 1
           fi
 
@@ -229,6 +233,14 @@ jobs:
         run: |
           set -euo pipefail
           ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease
+
+      - name: Validate TS18 APK reference contracts
+        shell: bash
+        run: bash ./scripts/check-ts18-apk-reference-contracts.sh
+
+      - name: Validate release APK compatibility contracts
+        shell: bash
+        run: bash ./scripts/check-dofun-topway-compat.sh
 
       - name: Locate, verify, and rename signed APKs
         id: apks

@@ -94,7 +94,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     @InstallIn(SingletonComponent::class)
     interface CoverViewEntryPoint {
         fun imageLoader(): ImageLoader
+
         fun uiSettings(): UISettings
+
         fun imageSettings(): ImageSettings
     }
 

@@ -32,8 +32,14 @@ find_merged_manifest() {
 find_apk() {
   local variant_dir="$1"
   local build_type="$2"
-  find "app/build/outputs/apk/${variant_dir}/${build_type}" \
-    -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned*' -print 2>/dev/null | sort | head -n 1
+  local apk_dir="app/build/outputs/apk/${variant_dir}/${build_type}"
+  local signed_apk
+  signed_apk="$(find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned*' -print 2>/dev/null | sort | head -n 1)"
+  if [[ -n "${signed_apk}" ]]; then
+    printf '%s\n' "${signed_apk}"
+    return
+  fi
+  find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' -print 2>/dev/null | sort | head -n 1
 }
 
 check_apk_manifest() {
@@ -101,9 +107,24 @@ require_file_contains "app/src/main/AndroidManifest.xml" ".headunit.topway.Topwa
 require_file_contains "app/src/topwayTwMusic/res/values/donottranslate.xml" "com.tw.music.image.CoverProvider" "Topway CoverProvider authority resource"
 require_file_contains "app/src/topwayTwMusic/res/values/donottranslate.xml" ">Music<" "Topway label resource"
 require_file_contains "app/src/topwayTwMusicDebug/res/values/donottranslate.xml" "com.tw.music.debug.image.CoverProvider" "Topway debug CoverProvider authority resource"
-require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicContract.kt" "com.tw.music.info" "Topway metadata broadcast contract"
-require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicContract.kt" "com.tw.launcher.music_progress_duration" "Topway progress broadcast contract"
-require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicContract.kt" "com.tw.music.action.pp" "Topway play/pause action contract"
+topway_contract="app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicContract.kt"
+for contract_string in \
+  "com.tw.music.info" \
+  "com.tw.launcher.music_progress_duration" \
+  "com.tw.music.action.cmd" \
+  "com.tw.music.action.prev" \
+  "com.tw.music.action.next" \
+  "com.tw.music.action.pp" \
+  "com.android.launcher.widget_music_progress" \
+  "musicTitle" \
+  "musicaArtist" \
+  "musicAlbum" \
+  "musicPath" \
+  "msg_music_progress" \
+  "msg_music_duration" \
+  "music_progress"; do
+  require_file_contains "$topway_contract" "$contract_string" "Missing Topway contract string: $contract_string"
+done
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishMetadata" "runtime Topway metadata publisher"
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishProgress" "runtime Topway progress publisher"
 require_file_contains ".github/workflows/manual-release.yml" "assembleTopwayTwMusicRelease" "manual release builds Topway release"
@@ -281,6 +302,7 @@ fi
 
 printf '\nChecking built APK presence when present...\n'
 standard_debug_apk="$(find_apk standard debug || true)"
+standard_release_apk="$(find_apk standard release || true)"
 topway_debug_apk="$(find_apk topwayTwMusic debug || true)"
 topway_release_apk="$(find_apk topwayTwMusic release || true)"
 
@@ -288,6 +310,11 @@ if [[ -n "$standard_debug_apk" ]]; then
   pass "found standard debug APK: ${standard_debug_apk}"
 else
   warn "standard debug APK not found; run ./gradlew :app:assembleStandardDebug"
+fi
+if [[ -n "$standard_release_apk" ]]; then
+  pass "found standard release APK: ${standard_release_apk}"
+else
+  warn "standard release APK not found; run ./gradlew :app:assembleStandardRelease"
 fi
 if [[ -n "$topway_debug_apk" ]]; then
   pass "found Topway debug APK: ${topway_debug_apk}"
@@ -302,6 +329,9 @@ fi
 
 if [[ -n "$standard_debug_apk" ]]; then
   check_apk_manifest "$standard_debug_apk" "org.oxycblt.auxio.debug" "standardDebug"
+fi
+if [[ -n "$standard_release_apk" ]]; then
+  check_apk_manifest "$standard_release_apk" "org.oxycblt.auxio" "standardRelease"
 fi
 if [[ -n "$topway_debug_apk" ]]; then
   check_apk_manifest "$topway_debug_apk" "com.tw.music.debug" "topwayTwMusicDebug"

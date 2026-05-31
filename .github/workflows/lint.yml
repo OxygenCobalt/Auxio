@@ -6,10 +6,7 @@ on:
     branches:
       - dev
     paths:
-      - '.github/workflows/android.yml'
-      - '.github/workflows/lint.yml'
-      - '.github/workflows/manual-release.yml'
-      - '.github/workflows/ui-screenshots.yml'
+      - '.github/workflows/**'
       - 'app/**'
       - 'musikr/**'
       - 'media'
@@ -22,10 +19,7 @@ on:
       - 'gradlew.bat'
       - 'NOTICE'
       - 'eclipse-cdt.xml'
-      - 'scripts/prepare-ci-environment.sh'
-      - 'scripts/check-submodules.sh'
-      - 'scripts/check-headunit-compat-safety.sh'
-      - 'scripts/check-dofun-topway-compat.sh'
+      - 'scripts/**'
       - 'AGENTS.md'
       - 'README.md'
       - 'docs/**'
@@ -33,10 +27,7 @@ on:
     branches:
       - dev
     paths:
-      - '.github/workflows/android.yml'
-      - '.github/workflows/lint.yml'
-      - '.github/workflows/manual-release.yml'
-      - '.github/workflows/ui-screenshots.yml'
+      - '.github/workflows/**'
       - 'app/**'
       - 'musikr/**'
       - 'media'
@@ -49,10 +40,7 @@ on:
       - 'gradlew.bat'
       - 'NOTICE'
       - 'eclipse-cdt.xml'
-      - 'scripts/prepare-ci-environment.sh'
-      - 'scripts/check-submodules.sh'
-      - 'scripts/check-headunit-compat-safety.sh'
-      - 'scripts/check-dofun-topway-compat.sh'
+      - 'scripts/**'
       - 'AGENTS.md'
       - 'README.md'
       - 'docs/**'
@@ -65,6 +53,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  workflow-syntax:
+    name: Workflow/script syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+    - name: Validate workflow YAML
+      shell: bash
+      run: |
+        ruby -e 'require "yaml"; ARGV.each { |f| Psych.safe_load(File.read(f), permitted_classes: [], permitted_symbols: [], aliases: false); puts "OK #{f}" }' .github/workflows/*.yml
+    - name: Validate shell script syntax
+      shell: bash
+      run: find scripts -type f -name '*.sh' -print -exec bash -n {} \;
+
   format:
     name: Formatting
     runs-on: ubuntu-latest
@@ -72,7 +79,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
       with:
         # fetch-depth: 0 (full history) is required here.
         # The nested ffmpeg submodule resolves from git.ffmpeg.org via an
@@ -81,6 +88,7 @@ jobs:
         # init.  Full history ensures the referenced commit is always reachable.
         fetch-depth: 0
         submodules: recursive
+        persist-credentials: false
     - name: Prepare CI environment
       shell: bash
       run: bash ./scripts/prepare-ci-environment.sh
@@ -129,7 +137,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
       with:
         # fetch-depth: 0 (full history) is required here.
         # The nested ffmpeg submodule resolves from git.ffmpeg.org via an
@@ -138,6 +146,7 @@ jobs:
         # init.  Full history ensures the referenced commit is always reachable.
         fetch-depth: 0
         submodules: recursive
+        persist-credentials: false
     - name: Prepare CI environment
       shell: bash
       run: bash ./scripts/prepare-ci-environment.sh
@@ -191,7 +200,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
       with:
         # fetch-depth: 0 (full history) is required here.
         # The nested ffmpeg submodule resolves from git.ffmpeg.org via an
@@ -200,6 +209,7 @@ jobs:
         # init.  Full history ensures the referenced commit is always reachable.
         fetch-depth: 0
         submodules: recursive
+        persist-credentials: false
     - name: Prepare CI environment
       shell: bash
       run: bash ./scripts/prepare-ci-environment.sh
@@ -253,9 +263,13 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        fetch-depth: 0
+        persist-credentials: false
     - name: Run head-unit compatibility safety checks
       shell: bash
       run: |
+        bash ./scripts/check-ts18-apk-reference-contracts.sh
         bash ./scripts/check-headunit-compat-safety.sh
         bash ./scripts/check-dofun-topway-compat.sh

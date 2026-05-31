@@ -168,6 +168,7 @@ Always distinguish between: product requirement / Android-standard implementatio
 - Initialize submodules recursively before Gradle; never create fake submodule files.
 - `Android Quality` is expected to expose formatting, unit-test, lint, and head-unit safety
   status independently; do not accept a workflow shape where `spotlessCheck` skips the other gates.
+- `scripts/check-ts18-apk-reference-contracts.sh` is the compact APK-reference baseline check. Run it with the DoFun and head-unit safety checks whenever workflows, package identity, Topway broadcasts, or APK-reference docs change.
 - `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
   guardrail; prefer it over duplicating stale inline `grep` logic in workflows.
 

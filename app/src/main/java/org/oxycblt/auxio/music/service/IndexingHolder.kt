@@ -147,9 +147,7 @@ private constructor(
                 try {
                     musicRepository.index(this@IndexingHolder, withCache)
                 } finally {
-                    synchronized(this@IndexingHolder) {
-                        currentIndexJob = null
-                    }
+                    synchronized(this@IndexingHolder) { currentIndexJob = null }
                 }
             }
     }

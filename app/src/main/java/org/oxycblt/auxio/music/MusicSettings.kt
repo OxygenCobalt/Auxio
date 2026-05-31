@@ -103,8 +103,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() =
             LibraryState.fromName(
                 sharedPreferences.getString(getString(R.string.set_key_library_state), null)
-            )
-                ?: if (revision != null) LibraryState.USABLE else LibraryState.NEVER
+            ) ?: if (revision != null) LibraryState.USABLE else LibraryState.NEVER
         set(value) {
             sharedPreferences.edit {
                 putString(getString(R.string.set_key_library_state), value.name)

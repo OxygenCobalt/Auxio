@@ -2,7 +2,7 @@
 
 ## Project stance
 - Start documentation navigation from `docs/README.md`.
-- For Codex environment setup/maintenance/validation flow, use `docs/codex/README.md`.
+- For Codex/environment setup and validation flow, use `docs/DEVELOPMENT.md`.
 - Prefer consolidation/removal of stale docs over keeping historical wrappers.
 - **Auxio-TS is a TS18/TW/TWTHEME variant app.** TS18/TW/TWTHEME parity is the product target.
 - Android-standard APIs are the preferred **first implementation layer** (Tier 1), not the final authority.
@@ -261,6 +261,8 @@ Do not try to work around this by copying submodule files manually.
 - `app/lint.xml` suppresses all lint issues for the vendored Google Material backport package
   (`**/com/google/android/material/**`).  New issues in Auxio-owned source still fail CI.
 - `:musikr lintDebug` can be added once musikr lint issues are resolved or baselined.
+
+- `scripts/check-ts18-apk-reference-contracts.sh` is the compact APK-reference baseline check. Run it with the DoFun and head-unit safety checks whenever workflows, package identity, Topway broadcasts, or APK-reference docs change.
 - `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
   guardrail used by both Android Quality and TS18 Guardrails.
 
@@ -279,11 +281,11 @@ For UI/UX tasks, do not rely only on code inspection. When runtime visual behavi
 
 Agents should use the screenshot workflow when visual validation matters.
 
-- Workflow: `Manual UI Screenshots`
+- Workflow: `UI Screenshots (Roborazzi)` (`.github/workflows/ui-screenshots.yml`)
 - Run branch/ref selector on `dev`
 - Set `target_ref` to the PR branch or commit SHA
-- Use `scenario=all` unless a narrower scenario is sufficient
-- Download and inspect artifact `auxio-ts-ui-screenshots`
+- Use `variant=standard` or `variant=topway_twmusic`; use `roborazzi_task=record` for review artifacts, or `verify`/`compare` for regression checks
+- Download and inspect artifacts `auxio-ts-roborazzi-outputs` and `auxio-ts-roborazzi-reports`
 
 Screenshot tooling must remain development-only. Do not add screenshot probes, ADB logic, or visual-test fixtures to the production runtime path unless explicitly approved.
 
@@ -296,7 +298,7 @@ For TS18/head-unit UI work, screenshots must include or approximate:
 - shuffle/genre-random button state
 - home/dashboard quick-access chips if touched
 
-If the agent environment cannot run an emulator, it must still update the workflow/scripts so GitHub Actions can produce the screenshot artifacts.
+Roborazzi runs through Robolectric and does not require an emulator. If additional emulator screenshots are needed later, keep that tooling development-only and document the workflow/script path explicitly.
 
 ## Release/signing safety
 - Treat release/signing workflow edits as security-sensitive.
