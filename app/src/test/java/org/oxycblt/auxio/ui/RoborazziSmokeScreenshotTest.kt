@@ -18,11 +18,9 @@
 
 package org.oxycblt.auxio.ui
 
-import android.graphics.Color
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.test.core.app.ApplicationProvider
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -31,32 +29,21 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oxycblt.auxio.R
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "land")
 class RoborazziSmokeScreenshotTest {
     @Test
     fun capturePlaybackBarLayout() {
         val base = ApplicationProvider.getApplicationContext<android.content.Context>()
         val themed = ContextThemeWrapper(base, R.style.Theme_Auxio)
 
-        val parent =
-            FrameLayout(themed).apply {
-                setBackgroundColor(Color.TRANSPARENT)
-                layoutParams =
-                    ViewGroup.LayoutParams(SCREEN_WIDTH_PX, ViewGroup.LayoutParams.WRAP_CONTENT)
-            }
-
-        val view =
-            LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
-        parent.addView(
-            view,
-            FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-            ),
-        )
+        val parent = FrameLayout(themed)
+        val view = LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
+        parent.addView(view)
 
         parent.measure(
             View.MeasureSpec.makeMeasureSpec(SCREEN_WIDTH_PX, View.MeasureSpec.EXACTLY),

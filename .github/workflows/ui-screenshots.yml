@@ -11,7 +11,7 @@ name: UI Screenshots (Roborazzi)
 #   workflow_dispatch → choose a roborazzi_task and optionally a target_ref.
 #   variant=standard runs record/verify/compareRoborazziStandardDebug.
 #   variant=topway_twmusic runs the matching TopwayTwMusicDebug task.
-#   record   — capture new baseline screenshots (commit the outputs to the repo afterwards).
+#   record   — capture screenshots for UI review (default; download the output artifact).
 #   verify   — compare against committed baselines; fails on visual regression.
 #   compare  — produce side-by-side diff report without failing.
 #   verify_and_record — verify then record any changed baseline.
@@ -38,7 +38,7 @@ on:
       roborazzi_task:
         description: "Roborazzi operation"
         required: true
-        default: verify
+        default: record
         type: choice
         options:
           - record
@@ -60,6 +60,11 @@ permissions:
   actions: read
   issues: write
   pull-requests: write
+
+env:
+  # Mirrors the Roborazzi upstream CI examples: screenshot tests are JVM/Robolectric
+  # tasks, but native graphics and Android resource processing need a larger heap.
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx6g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 
 concurrency:
   group: ui-screenshots-${{ inputs.target_ref }}
@@ -141,6 +146,7 @@ jobs:
           path: |
             app/build/reports/roborazzi/**
             app/build/reports/tests/**
+            app/build/test-results/**
             build/reports/problems/**
           if-no-files-found: warn
           retention-days: 20
