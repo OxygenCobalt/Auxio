@@ -55,7 +55,7 @@ jobs:
             echo "::error::Manual releases must run from the protected/default dev branch, not '${GITHUB_REF_NAME}'."
             exit 1
           fi
-          git fetch origin "${GITHUB_REF_NAME}" --tags
+          git fetch --tags origin "${GITHUB_REF_NAME}"
           LOCAL_HEAD="$(git rev-parse HEAD)"
           REMOTE_HEAD="$(git rev-parse "origin/${GITHUB_REF_NAME}")"
           if [[ "${LOCAL_HEAD}" != "${REMOTE_HEAD}" ]]; then
@@ -126,7 +126,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          git fetch origin "${GITHUB_REF_NAME}" --tags
+          git fetch --tags origin "${GITHUB_REF_NAME}"
           INPUT_TAG="$(printf '%s' "${INPUT_VERSION_TAG}" | xargs)"
           CURRENT_VERSION_NAME="$(sed -n -E 's/^[[:space:]]*versionName "([^"]+)".*/\1/p' app/build.gradle | head -n1)"
           CURRENT_VERSION_CODE="$(sed -n -E 's/^[[:space:]]*versionCode ([0-9]+).*/\1/p' app/build.gradle | head -n1)"
@@ -215,7 +215,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          git fetch origin "${GITHUB_REF_NAME}" --tags
+          git fetch --tags origin "${GITHUB_REF_NAME}"
           REMOTE_HEAD="$(git rev-parse "origin/${GITHUB_REF_NAME}")"
           RELEASE_PARENT_SHA="$(git rev-parse "${RELEASE_COMMIT_SHA}^")"
 
@@ -353,7 +353,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          git fetch origin --tags
+          git fetch --tags origin
           if git rev-parse -q --verify "refs/tags/${RELEASE_TAG}" >/dev/null; then
             echo "::error::Local tag '${RELEASE_TAG}' already exists. Refusing to overwrite it."
             exit 1
