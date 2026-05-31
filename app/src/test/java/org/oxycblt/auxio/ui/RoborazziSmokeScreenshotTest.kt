@@ -44,10 +44,12 @@ class RoborazziSmokeScreenshotTest {
         val parent =
             FrameLayout(themed).apply {
                 setBackgroundColor(Color.TRANSPARENT)
-                layoutParams = ViewGroup.LayoutParams(SCREEN_WIDTH_PX, ViewGroup.LayoutParams.WRAP_CONTENT)
+                layoutParams =
+                    ViewGroup.LayoutParams(SCREEN_WIDTH_PX, ViewGroup.LayoutParams.WRAP_CONTENT)
             }
 
-        val view = LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
+        val view =
+            LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
         parent.addView(
             view,
             FrameLayout.LayoutParams(

@@ -176,6 +176,7 @@ jobs:
           -e "s|\${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}|g" \
           "${body}"
 
+        comment_body="$(cat "${body}")"
         existing_id="$(
           gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
             --jq ".[] | select(.body | contains(\"${marker}\")) | .id" | tail -n 1
@@ -185,12 +186,12 @@ jobs:
           gh api \
             --method PATCH \
             "repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
-            -f body@"${body}"
+            --raw-field "body=${comment_body}"
         else
           gh api \
             --method POST \
             "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
-            -f body@"${body}"
+            --raw-field "body=${comment_body}"
         fi
 
 
