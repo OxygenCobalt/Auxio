@@ -57,6 +57,19 @@ find_apk() {
   find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' -print 2>/dev/null | sort | head -n 1
 }
 
+require_manifest_dump_contains() {
+  local manifest_dump="$1"
+  local pattern="$2"
+  local pass_message="$3"
+  local fail_message="$4"
+
+  if grep -Fq -- "$pattern" "$manifest_dump"; then
+    pass "$pass_message"
+  else
+    fail "$fail_message"
+  fi
+}
+
 check_apk_manifest() {
   local apk="$1"
   local expected_package="$2"
@@ -82,17 +95,17 @@ check_apk_manifest() {
   manifest_dump="$(mktemp)"
   "$apkanalyzer_bin" manifest print "$apk" > "$manifest_dump"
   if [[ "$label" == topwayTwMusicRelease ]]; then
-    grep -Fq 'android:name="com.tw.music.MusicActivity"' "$manifest_dump" && pass "${label} APK manifest has com.tw.music.MusicActivity" || fail "${label} APK manifest lacks com.tw.music.MusicActivity"
-    grep -Fq 'android:targetActivity="org.oxycblt.auxio.MainActivity"' "$manifest_dump" && pass "${label} APK alias targets MainActivity" || fail "${label} APK alias target mismatch"
-    grep -Fq 'android:name="android.intent.action.MAIN"' "$manifest_dump" && pass "${label} APK alias has MAIN action" || fail "${label} APK alias lacks MAIN action"
-    grep -Fq 'android:name="android.intent.action.MUSIC_PLAYER"' "$manifest_dump" && pass "${label} APK alias has MUSIC_PLAYER action" || fail "${label} APK alias lacks MUSIC_PLAYER action"
-    grep -Fq 'android:name="android.intent.category.DEFAULT"' "$manifest_dump" && pass "${label} APK alias has DEFAULT category" || fail "${label} APK alias lacks DEFAULT category"
-    grep -Fq 'android:name="android.intent.category.LAUNCHER"' "$manifest_dump" && pass "${label} APK alias has LAUNCHER category" || fail "${label} APK alias lacks LAUNCHER category"
-    grep -Fq 'android:name="android.intent.category.APP_MUSIC"' "$manifest_dump" && pass "${label} APK alias has APP_MUSIC category" || fail "${label} APK alias lacks APP_MUSIC category"
-    grep -Fq 'android:name="android.media.browse.MediaBrowserService"' "$manifest_dump" && pass "${label} APK manifest has MediaBrowserService" || fail "${label} APK manifest lacks MediaBrowserService"
-    grep -Fq 'android:authorities="com.tw.music.image.CoverProvider"' "$manifest_dump" && pass "${label} APK manifest has Topway CoverProvider authority" || fail "${label} APK manifest lacks Topway CoverProvider authority"
-    grep -Fq 'android:name="com.tw.music.MusicService"' "$manifest_dump" && pass "${label} APK manifest has com.tw.music.MusicService fallback" || fail "${label} APK manifest lacks com.tw.music.MusicService fallback"
-    grep -Fq 'android:name="com.tw.music.view.MusicWidgetProvider"' "$manifest_dump" && pass "${label} APK manifest has com.tw.music.view.MusicWidgetProvider fallback" || fail "${label} APK manifest lacks com.tw.music.view.MusicWidgetProvider fallback"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.MusicActivity"' "${label} APK manifest has com.tw.music.MusicActivity" "${label} APK manifest lacks com.tw.music.MusicActivity"
+    require_manifest_dump_contains "$manifest_dump" 'android:targetActivity="org.oxycblt.auxio.MainActivity"' "${label} APK alias targets MainActivity" "${label} APK alias target mismatch"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.action.MAIN"' "${label} APK alias has MAIN action" "${label} APK alias lacks MAIN action"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.action.MUSIC_PLAYER"' "${label} APK alias has MUSIC_PLAYER action" "${label} APK alias lacks MUSIC_PLAYER action"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.DEFAULT"' "${label} APK alias has DEFAULT category" "${label} APK alias lacks DEFAULT category"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.LAUNCHER"' "${label} APK alias has LAUNCHER category" "${label} APK alias lacks LAUNCHER category"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.APP_MUSIC"' "${label} APK alias has APP_MUSIC category" "${label} APK alias lacks APP_MUSIC category"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="android.media.browse.MediaBrowserService"' "${label} APK manifest has MediaBrowserService" "${label} APK manifest lacks MediaBrowserService"
+    require_manifest_dump_contains "$manifest_dump" 'android:authorities="com.tw.music.image.CoverProvider"' "${label} APK manifest has Topway CoverProvider authority" "${label} APK manifest lacks Topway CoverProvider authority"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.MusicService"' "${label} APK manifest has com.tw.music.MusicService fallback" "${label} APK manifest lacks com.tw.music.MusicService fallback"
+    require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.view.MusicWidgetProvider"' "${label} APK manifest has com.tw.music.view.MusicWidgetProvider fallback" "${label} APK manifest lacks com.tw.music.view.MusicWidgetProvider fallback"
   fi
   rm -f "$manifest_dump"
 }
@@ -125,7 +138,7 @@ else
   require_file_not_contains "$flavour_manifest" "com.android.launcher.widget_music_progress" "Topway flavour fallback provider must not duplicate widget progress receiver"
 fi
 
-require_file_contains "app/src/main/AndroidManifest.xml" '${applicationId}.image.CoverProvider' "manifest applicationId-scoped CoverProvider authority"
+require_file_contains "app/src/main/AndroidManifest.xml" "\${applicationId}.image.CoverProvider" "manifest applicationId-scoped CoverProvider authority"
 require_file_contains "app/src/main/AndroidManifest.xml" "android.media.browse.MediaBrowserService" "base media browser service"
 require_file_contains "app/src/main/AndroidManifest.xml" ".headunit.topway.TopwayMusicBridgeReceiver" "base Topway command receiver"
 require_file_contains "app/src/topwayTwMusic/res/values/donottranslate.xml" "com.tw.music.image.CoverProvider" "Topway CoverProvider authority resource"
