@@ -308,8 +308,12 @@ topway_release_apk="$(find_apk topwayTwMusic release || true)"
 
 debug_outputs_present=0
 release_outputs_present=0
-[[ -n "$standard_debug_apk" || -n "$topway_debug_apk" ]] && debug_outputs_present=1
-[[ -n "$standard_release_apk" || -n "$topway_release_apk" ]] && release_outputs_present=1
+if [[ -n "$standard_debug_apk" || -n "$topway_debug_apk" ]]; then
+  debug_outputs_present=1
+fi
+if [[ -n "$standard_release_apk" || -n "$topway_release_apk" ]]; then
+  release_outputs_present=1
+fi
 
 if (( debug_outputs_present )); then
   [[ -n "$standard_debug_apk" ]] && pass "found standard debug APK: ${standard_debug_apk}" || fail "standard debug APK missing while debug APK outputs are present"
