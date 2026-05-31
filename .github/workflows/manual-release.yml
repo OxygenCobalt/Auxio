@@ -179,6 +179,37 @@ jobs:
           echo "release_version_code=${RELEASE_VERSION_CODE}" >> "$GITHUB_OUTPUT"
           echo "previous_tag=${PREVIOUS_TAG}" >> "$GITHUB_OUTPUT"
 
+      - name: Validate signing secrets and decode keystore
+        id: signing
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          missing=()
+          [[ -z "${KEYSTORE_BASE64}" ]] && missing+=("KEYSTORE_BASE64")
+          [[ -z "${KEYSTORE_PASSWORD}" ]] && missing+=("KEYSTORE_PASSWORD")
+          [[ -z "${KEY_ALIAS}" ]] && missing+=("KEY_ALIAS")
+          [[ -z "${KEY_PASSWORD}" ]] && missing+=("KEY_PASSWORD")
+
+          if (( ${#missing[@]} > 0 )); then
+            echo "::error::Missing required release signing secrets: ${missing[*]}"
+            exit 1
+          fi
+
+          echo "::add-mask::${KEYSTORE_PASSWORD}"
+          echo "::add-mask::${KEY_ALIAS}"
+          echo "::add-mask::${KEY_PASSWORD}"
+
+          KEYSTORE_PATH="${RUNNER_TEMP}/release.keystore"
+          printf '%s' "${KEYSTORE_BASE64}" | base64 --decode > "${KEYSTORE_PATH}"
+          chmod 600 "${KEYSTORE_PATH}"
+          echo "keystore_path=${KEYSTORE_PATH}" >> "$GITHUB_OUTPUT"
+
       - name: Update Android version metadata
         shell: bash
         run: |
@@ -239,37 +270,6 @@ jobs:
           fi
 
           echo "Release version commit pushed to ${GITHUB_REF_NAME}: ${RELEASE_COMMIT_SHA}"
-      - name: Validate signing secrets and decode keystore
-        id: signing
-        shell: bash
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          set -euo pipefail
-
-          missing=()
-          [[ -z "${KEYSTORE_BASE64}" ]] && missing+=("KEYSTORE_BASE64")
-          [[ -z "${KEYSTORE_PASSWORD}" ]] && missing+=("KEYSTORE_PASSWORD")
-          [[ -z "${KEY_ALIAS}" ]] && missing+=("KEY_ALIAS")
-          [[ -z "${KEY_PASSWORD}" ]] && missing+=("KEY_PASSWORD")
-
-          if (( ${#missing[@]} > 0 )); then
-            echo "::error::Missing required release signing secrets: ${missing[*]}"
-            exit 1
-          fi
-
-          echo "::add-mask::${KEYSTORE_PASSWORD}"
-          echo "::add-mask::${KEY_ALIAS}"
-          echo "::add-mask::${KEY_PASSWORD}"
-
-          KEYSTORE_PATH="${RUNNER_TEMP}/release.keystore"
-          printf '%s' "${KEYSTORE_BASE64}" | base64 --decode > "${KEYSTORE_PATH}"
-          chmod 600 "${KEYSTORE_PATH}"
-          echo "keystore_path=${KEYSTORE_PATH}" >> "$GITHUB_OUTPUT"
-
       - name: Build signed release APK
         shell: bash
         env:
@@ -344,7 +344,16 @@ jobs:
             printf 'EOF\n'
           } >> "$GITHUB_OUTPUT"
 
+      - name: Upload signed APK workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Auxio-TS-${{ steps.version.outputs.release_tag }}-signed-apks
+          path: ${{ runner.temp }}/Auxio-TS-${{ steps.version.outputs.release_tag }}-*-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Push release tag
+        id: tag_push
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -365,6 +374,7 @@ jobs:
 
           git tag "${RELEASE_TAG}" "${{ steps.version_commit.outputs.release_commit_sha }}"
           git push origin "refs/tags/${RELEASE_TAG}"
+          echo "tag_pushed=true" >> "$GITHUB_OUTPUT"
           if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
             echo "::error::Release '${RELEASE_TAG}' already exists after tag push; aborting."
             exit 1
@@ -410,7 +420,7 @@ jobs:
             echo
             if [[ -n "${GENERATED_BODY}" ]]; then
               # Strip GitHub's own heading ("## What's Changed") to avoid duplication
-              printf '%s\n' "${GENERATED_BODY}" | grep -viE "^## What's [Cc]hanged"
+              printf '%s\n' "${GENERATED_BODY}" | grep -viE "^## What's [Cc]hanged" || true
             else
               # Fallback: local git log, no API calls
               # When no previous tag exists, cap at 100 commits to keep notes concise
@@ -485,6 +495,63 @@ jobs:
 
           RELEASE_URL="$(gh release view "${RELEASE_TAG}" --json url --jq '.url')"
           echo "release_url=${RELEASE_URL}" >> "$GITHUB_OUTPUT"
+
+      - name: Cleanup release tag after failed release creation
+        if: ${{ failure() && steps.tag_push.outputs.tag_pushed == 'true' && steps.release.outcome != 'success' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
+          RELEASE_COMMIT_SHA: ${{ steps.version_commit.outputs.release_commit_sha }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            echo "Release ${RELEASE_TAG} exists; keeping remote tag."
+            exit 0
+          fi
+
+          remote_tag_sha="$(git ls-remote --tags origin "refs/tags/${RELEASE_TAG}" | awk '{print $1}' || true)"
+          if [[ -z "${remote_tag_sha}" ]]; then
+            echo "Remote tag ${RELEASE_TAG} is already absent."
+            exit 0
+          fi
+
+          if [[ "${remote_tag_sha}" != "${RELEASE_COMMIT_SHA}" ]]; then
+            echo "::warning::Remote tag ${RELEASE_TAG} does not point at this workflow's release commit; refusing cleanup."
+            echo "::warning::Remote tag SHA: ${remote_tag_sha}"
+            echo "::warning::Release commit: ${RELEASE_COMMIT_SHA}"
+            exit 0
+          fi
+
+          echo "Deleting workflow-created remote tag ${RELEASE_TAG} because release creation did not complete."
+          git push origin ":refs/tags/${RELEASE_TAG}" || true
+
+      - name: Verify GitHub release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          expected_assets=(
+            "Auxio-TS-${RELEASE_TAG}-standard-release.apk"
+            "Auxio-TS-${RELEASE_TAG}-topway-twmusic-release.apk"
+          )
+
+          gh release view "${RELEASE_TAG}" --json tagName,isDraft,isPrerelease,url,assets
+
+          for asset in "${expected_assets[@]}"; do
+            if gh release view "${RELEASE_TAG}" --json assets --jq '.assets[].name' | grep -Fx -- "${asset}" >/dev/null; then
+              echo "Verified release asset: ${asset}"
+            else
+              echo "::error::Release ${RELEASE_TAG} is missing expected asset: ${asset}"
+              exit 1
+            fi
+          done
 
       - name: Write release summary
         shell: bash
