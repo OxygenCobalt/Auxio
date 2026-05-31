@@ -1,0 +1,111 @@
+name: Format PR branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to format
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: format-pr-branch-${{ inputs.branch }}
+  cancel-in-progress: false
+
+jobs:
+  spotless-apply:
+    name: Run Spotless apply when needed
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+    - name: Refuse protected/default branch names
+      shell: bash
+      run: |
+        set -euo pipefail
+        case "${{ inputs.branch }}" in
+          dev|main|master)
+            echo "::error::Refusing to auto-format protected/default branch: ${{ inputs.branch }}"
+            exit 1
+            ;;
+        esac
+
+    - name: Checkout branch
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        ref: ${{ inputs.branch }}
+        fetch-depth: 0
+        submodules: recursive
+        token: ${{ github.token }}
+
+    - name: Prepare CI environment
+      shell: bash
+      run: bash ./scripts/prepare-ci-environment.sh
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: "21"
+        distribution: "temurin"
+
+    - name: Write local.properties for Android SDK
+      shell: bash
+      run: |
+        set -euo pipefail
+        sdk_dir="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+        if [ -z "${sdk_dir}" ]; then
+          echo "::error::ANDROID_HOME/ANDROID_SDK_ROOT is not set."
+          exit 1
+        fi
+        printf 'sdk.dir=%s\n' "${sdk_dir}" > local.properties
+
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-read-only: true
+
+    - name: Ensure native build tools are present
+      shell: bash
+      run: |
+        if ! command -v ninja >/dev/null 2>&1; then
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+        fi
+
+    - name: Check formatting
+      id: spotless_check
+      continue-on-error: true
+      run: ./gradlew --no-daemon --stacktrace spotlessCheck
+
+    - name: Stop when formatting is already clean
+      if: steps.spotless_check.outcome == 'success'
+      run: echo "Formatting already clean; no changes needed."
+
+    - name: Apply formatting
+      if: steps.spotless_check.outcome == 'failure'
+      run: ./gradlew --no-daemon --stacktrace spotlessApply
+
+    - name: Verify formatting after apply
+      if: steps.spotless_check.outcome == 'failure'
+      run: ./gradlew --no-daemon --stacktrace spotlessCheck
+
+    - name: Commit and push formatting changes
+      if: steps.spotless_check.outcome == 'failure'
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        if git diff --quiet; then
+          echo "::error::spotlessApply was expected to change files, but git diff is empty."
+          exit 1
+        fi
+
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+        git add -A
+        git commit -m "Apply Spotless formatting"
+        git push origin "HEAD:${{ inputs.branch }}"

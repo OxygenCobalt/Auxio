@@ -47,6 +47,8 @@ on:
 
 permissions:
   contents: read
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -129,6 +131,68 @@ jobs:
           build/reports/problems/**
         if-no-files-found: ignore
         retention-days: 7
+    - name: Comment with manual formatter workflow link
+      if: failure() && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/workflows/format-pr-branch.yml
+      run: |
+        set -euo pipefail
+
+        marker='<!-- auxio-ts-format-pr-branch-help -->'
+        body="$(mktemp)"
+        cat > "${body}" <<'EOF'
+        <!-- auxio-ts-format-pr-branch-help -->
+        ### Formatting check failed
+
+        The Android Quality / Formatting job failed because Spotless found formatting drift.
+
+        Use the manual formatter workflow to apply `spotlessApply` on this PR branch:
+
+        [Run **Format PR branch**](${WORKFLOW_URL})
+
+        Workflow input:
+
+        ```text
+        branch=${PR_BRANCH}
+        ```
+
+        Or run from a machine with GitHub CLI:
+
+        ```sh
+        gh workflow run format-pr-branch.yml --repo ${GITHUB_REPOSITORY} -f branch=${PR_BRANCH}
+        ```
+
+        The workflow checks formatting first. If formatting is already clean, it exits without committing. If formatting is dirty, it runs `spotlessApply`, commits the formatter changes, and pushes them back to the PR branch.
+        EOF
+
+        # Expand only the intended shell variables after preserving markdown literally.
+        sed -i \
+          -e "s|\${WORKFLOW_URL}|${WORKFLOW_URL}|g" \
+          -e "s|\${PR_BRANCH}|${PR_BRANCH}|g" \
+          -e "s|\${GITHUB_REPOSITORY}|${GITHUB_REPOSITORY}|g" \
+          "${body}"
+
+        existing_id="$(
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --jq ".[] | select(.body | contains(\"${marker}\")) | .id" | tail -n 1
+        )"
+
+        if [[ -n "${existing_id}" ]]; then
+          gh api \
+            --method PATCH \
+            "repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
+            -f body@"${body}"
+        else
+          gh api \
+            --method POST \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            -f body@"${body}"
+        fi
+
 
   unit-tests:
     name: Unit tests
