@@ -3,6 +3,7 @@ set -euo pipefail
 
 allowed_topway_main='app/src/main/java/org/oxycblt/auxio/headunit/topway/'
 allowed_topway_test='app/src/test/java/org/oxycblt/auxio/headunit/topway/'
+allowed_topway_flavour='app/src/topwayTwMusic/java/com/tw/music/'
 manifest_path='app/src/main/AndroidManifest.xml'
 topway_flavour_manifest='app/src/topwayTwMusic/AndroidManifest.xml'
 
@@ -20,12 +21,12 @@ search_matches() {
 }
 
 product_sources=()
-for path in app/src/main app/src/test app/src/androidTest musikr/src; do
+for path in app/src/main app/src/topwayTwMusic app/src/test app/src/androidTest musikr/src; do
   [ -e "${path}" ] && product_sources+=("${path}")
 done
 
 product_code_sources=()
-for path in app/src/main/java app/src/test app/src/androidTest musikr/src; do
+for path in app/src/main/java app/src/topwayTwMusic/java app/src/test app/src/androidTest musikr/src; do
   [ -e "${path}" ] && product_code_sources+=("${path}")
 done
 
@@ -77,7 +78,7 @@ if [ -n "${vendor_hits}" ]; then
     [ -z "${line}" ] && continue
     path="${line%%:*}"
     case "${path}" in
-      ${allowed_topway_main}*|${allowed_topway_test}*)
+      ${allowed_topway_main}*|${allowed_topway_test}*|${allowed_topway_flavour}*)
         case "${line}" in
           *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.info"*|*"com.tw.launcher.music_progress_duration"*|*"com.android.launcher.widget_music_progress"*|*"com.tw.music.MusicActivity"*) ;;
           *)
@@ -124,6 +125,8 @@ if [ -f "${topway_flavour_manifest}" ]; then
   }
   require_topway_identity 'com.tw.music.MusicActivity' 'Topway activity alias'
   require_topway_identity 'org.oxycblt.auxio.MainActivity' 'Auxio alias target'
+  require_topway_identity 'com.tw.music.MusicService' 'Topway MusicService fallback'
+  require_topway_identity 'com.tw.music.view.MusicWidgetProvider' 'Topway MusicWidgetProvider fallback'
   require_topway_identity 'android.intent.action.MAIN' 'MAIN action'
   require_topway_identity 'android.intent.action.MUSIC_PLAYER' 'MUSIC_PLAYER action'
   require_topway_identity 'android.intent.category.LAUNCHER' 'LAUNCHER category'

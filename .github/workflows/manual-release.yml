@@ -174,10 +174,12 @@ jobs:
           RELEASE_VERSION_NAME="${RELEASE_TAG#v}"
           RELEASE_VERSION_CODE="$((CURRENT_VERSION_CODE + 1))"
 
-          echo "release_tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
-          echo "release_version_name=${RELEASE_VERSION_NAME}" >> "$GITHUB_OUTPUT"
-          echo "release_version_code=${RELEASE_VERSION_CODE}" >> "$GITHUB_OUTPUT"
-          echo "previous_tag=${PREVIOUS_TAG}" >> "$GITHUB_OUTPUT"
+          {
+            echo "release_tag=${RELEASE_TAG}"
+            echo "release_version_name=${RELEASE_VERSION_NAME}"
+            echo "release_version_code=${RELEASE_VERSION_CODE}"
+            echo "previous_tag=${PREVIOUS_TAG}"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Validate signing secrets and decode keystore
         id: signing
@@ -446,8 +448,10 @@ jobs:
             echo
             echo "## APK variants"
             echo
-            echo "- `Auxio-TS-${RELEASE_TAG}-standard-release.apk` keeps the normal Auxio-TS package identity (`org.oxycblt.auxio`)."
-            echo "- `Auxio-TS-${RELEASE_TAG}-topway-twmusic-release.apk` is the Topway/DoFun compatibility APK and installs as `com.tw.music`; it may conflict with a stock `com.tw.music` package already installed on a head unit."
+            printf -- "- \`%s\` keeps the normal Auxio-TS package identity (\`org.oxycblt.auxio\`).\n" \
+              "Auxio-TS-${RELEASE_TAG}-standard-release.apk"
+            printf -- "- \`%s\` is the Topway/DoFun compatibility APK and installs as \`com.tw.music\`; it may conflict with a stock \`com.tw.music\` package already installed on a head unit.\n" \
+              "Auxio-TS-${RELEASE_TAG}-topway-twmusic-release.apk"
           } >> "${NOTES_FILE}"
 
           echo "Release notes generated in $(( $(date +%s) - start_seconds )) seconds"

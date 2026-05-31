@@ -49,7 +49,7 @@ require_contains docs/reference/ts18-apk/reference-contracts.json '"android.tw.j
 require_contains docs/reference/ts18-apk/reference-contracts.json '"com.tw.service.xt.aidl.ITWCommandAidl"' 'forbidden ITWCommandAidl reference'
 
 require_contains AGENTS.md 'DoFun Variety / stock twmusic compatibility authority' 'agent DoFun/twmusic authority section'
-require_contains AGENTS.md 'only a dedicated, clearly named Topway/DoFun compatibility variant may install as `com.tw.music`' 'agent package-identity exception'
+require_contains AGENTS.md "only a dedicated, clearly named Topway/DoFun compatibility variant may install as \`com.tw.music\`" "agent package-identity exception"
 require_contains .github/copilot-instructions.md 'DoFun Variety / stock twmusic compatibility authority' 'Copilot DoFun/twmusic authority section'
 require_contains docs/README.md 'DoFun Variety / TS18 APK reference baseline' 'docs index reference section'
 

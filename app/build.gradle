@@ -34,11 +34,13 @@ android {
     productFlavors {
         standard {
             dimension "distribution"
+            buildConfigField "boolean", "TOPWAY_TWMUSIC_FLAVOR", "false"
         }
 
         topwayTwMusic {
             dimension "distribution"
             applicationId "com.tw.music"
+            buildConfigField "boolean", "TOPWAY_TWMUSIC_FLAVOR", "true"
         }
     }
 

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.headunit.topway
 
 import android.content.Context
 import android.os.SystemClock
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.headunit.compat.HeadUnitMetadataSnapshot
 import org.oxycblt.auxio.ui.UISettings
 
@@ -28,8 +29,11 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
     private var lastProgress: TopwayProgressSnapshot? = null
     private var lastProgressAtMs = 0L
 
+    private val bridgeEnabled: Boolean
+        get() = BuildConfig.TOPWAY_TWMUSIC_FLAVOR || uiSettings.headUnitLandscapeMode
+
     fun publishMetadata(snapshot: HeadUnitMetadataSnapshot?) {
-        if (!uiSettings.headUnitLandscapeMode || snapshot == null) return
+        if (!bridgeEnabled || snapshot == null) return
         if (snapshot == lastMetadata) return
         context.sendBroadcast(TopwayMusicIntentFactory.metadataIntent(snapshot))
         lastMetadata = snapshot
@@ -40,7 +44,7 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
         durationMs: Long,
         nowMs: Long = SystemClock.elapsedRealtime(),
     ) {
-        if (!uiSettings.headUnitLandscapeMode) return
+        if (!bridgeEnabled) return
         val snapshot = TopwayProgressStatePolicy.active(progressMs, durationMs) ?: return
         if (
             !TopwayProgressStatePolicy.shouldPublish(
@@ -69,7 +73,7 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
         }
     }
 
-    companion object {
+    private companion object {
         const val MIN_PROGRESS_INTERVAL_MS = 1000L
     }
 }

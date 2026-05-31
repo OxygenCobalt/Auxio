@@ -38,7 +38,7 @@ import org.oxycblt.auxio.playback.service.PlaybackServiceFragment
 import timber.log.Timber
 
 @AndroidEntryPoint
-class AuxioService :
+open class AuxioService :
     MediaBrowserServiceCompat(), ForegroundListener, MusicServiceFragment.Invalidator {
     @Inject lateinit var playbackFragmentFactory: PlaybackServiceFragment.Factory
     private lateinit var playbackFragment: PlaybackServiceFragment

@@ -18,10 +18,15 @@
 
 package org.oxycblt.auxio.ui
 
+import android.graphics.Color
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.test.core.app.ApplicationProvider
 import com.github.takahirom.roborazzi.captureRoboImage
+import java.io.File
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oxycblt.auxio.R
@@ -35,18 +40,39 @@ class RoborazziSmokeScreenshotTest {
     fun capturePlaybackBarLayout() {
         val base = ApplicationProvider.getApplicationContext<android.content.Context>()
         val themed = ContextThemeWrapper(base, R.style.Theme_Auxio)
-        val view = LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, null, false)
-        view.measure(
-            android.view.View.MeasureSpec.makeMeasureSpec(
-                1280,
-                android.view.View.MeasureSpec.EXACTLY,
-            ),
-            android.view.View.MeasureSpec.makeMeasureSpec(
-                720,
-                android.view.View.MeasureSpec.AT_MOST,
+
+        val parent =
+            FrameLayout(themed).apply {
+                setBackgroundColor(Color.TRANSPARENT)
+                layoutParams =
+                    ViewGroup.LayoutParams(SCREEN_WIDTH_PX, ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
+
+        val view =
+            LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
+        parent.addView(
+            view,
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
             ),
         )
-        view.layout(0, 0, view.measuredWidth, view.measuredHeight)
-        view.captureRoboImage("playback-bar-landscape")
+
+        parent.measure(
+            View.MeasureSpec.makeMeasureSpec(SCREEN_WIDTH_PX, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(SCREEN_HEIGHT_LIMIT_PX, View.MeasureSpec.AT_MOST),
+        )
+
+        val measuredHeight = parent.measuredHeight.coerceAtLeast(1)
+        parent.layout(0, 0, SCREEN_WIDTH_PX, measuredHeight)
+
+        val output = File("build/outputs/roborazzi/playback-bar-landscape.png")
+        requireNotNull(output.parentFile).mkdirs()
+        parent.captureRoboImage(output.path)
+    }
+
+    private companion object {
+        const val SCREEN_WIDTH_PX = 1280
+        const val SCREEN_HEIGHT_LIMIT_PX = 720
     }
 }

@@ -54,9 +54,10 @@ object TopwayStartRoutingPolicy {
             TopwayMappedCommand.NEXT ->
                 if (hasCurrentSong) TopwayServiceDecision(TopwayServiceAction.NEXT)
                 else TopwayServiceDecision(TopwayServiceAction.IGNORE)
-            TopwayMappedCommand.PLAY_PAUSE ->
-                if (hasCurrentSong) TopwayServiceDecision(TopwayServiceAction.PLAY_PAUSE)
-                else TopwayServiceDecision(TopwayServiceAction.IGNORE)
+            // A DoFun/Topway widget play/pause command can be the first cold-start signal after
+            // process death or boot. Let playback restore from saved state instead of dropping it
+            // merely because the in-memory current song has not been rehydrated yet.
+            TopwayMappedCommand.PLAY_PAUSE -> TopwayServiceDecision(TopwayServiceAction.PLAY_PAUSE)
             TopwayMappedCommand.UPDATE -> TopwayServiceDecision(TopwayServiceAction.WIDGET_UPDATE)
             TopwayMappedCommand.UNKNOWN -> TopwayServiceDecision(TopwayServiceAction.IGNORE)
         }
