@@ -110,8 +110,8 @@ jobs:
       run: ./gradlew --no-daemon --stacktrace :app:assembleStandardDebug
     - name: Build Topway/DoFun debug APK with Gradle
       run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicDebug
-    - name: Build Topway/DoFun release APK with Gradle
-      run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicRelease
+    - name: Build release APKs with Gradle
+      run: ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease
     - name: Validate TS18 APK reference contracts
       run: bash ./scripts/check-ts18-apk-reference-contracts.sh
     - name: Validate DoFun/Topway compatibility sources
