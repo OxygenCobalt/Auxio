@@ -194,7 +194,9 @@ private constructor(
                     if (currentSong != null) {
                         playbackManager.playing(!playbackManager.progression.isPlaying)
                     } else {
-                        L.i("Topway play/pause received with no current song; restoring saved playback")
+                        L.i(
+                            "Topway play/pause received with no current song; restoring saved playback"
+                        )
                         playbackManager.playDeferred(
                             DeferredPlayback.RestoreState(
                                 play = true,

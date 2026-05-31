@@ -1,15 +1,24 @@
 /*
- * Topway/DoFun stock-component compatibility shim.
+ * Copyright (c) 2026 Auxio Project
+ * MusicService.kt is part of Auxio.
  *
- * DoFun/Topway launchers are known to recognise com.tw.music / com.tw.music.MusicActivity,
- * and stock twmusic also exposes com.tw.music.MusicService. Android has no service-alias
- * mechanism, so the Topway flavour provides this narrow class-name shim and inherits the
- * real Auxio media/browser/playback service implementation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 
 package com.tw.music
 
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class MusicService : org.oxycblt.auxio.AuxioService()
+@AndroidEntryPoint class MusicService : org.oxycblt.auxio.AuxioService()

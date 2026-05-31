@@ -1,10 +1,21 @@
 /*
- * Topway/DoFun stock-component compatibility shim.
+ * Copyright (c) 2026 Auxio Project
+ * MusicWidgetProvider.kt is part of Auxio.
  *
- * Stock twmusic exposes com.tw.music.view.MusicWidgetProvider. Some Topway/DoFun builds may
- * address that component explicitly. This wrapper does not implement private vendor APIs; it
- * forwards safe observed Topway widget/control broadcasts into Auxio's existing Topway bridge.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 
 package com.tw.music.view
 
@@ -59,7 +70,8 @@ class MusicWidgetProvider : AppWidgetProvider() {
             incomingAction?.takeIf { TopwayMusicContract.isIncomingAction(it) }
                 ?: TopwayMusicContract.ACTION_CMD
 
-        val extras = TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(safelyExtractIncomingExtras(intent))
+        val extras =
+            TopwayBridgeExtrasPolicy.sanitizeIncomingExtras(safelyExtractIncomingExtras(intent))
 
         val serviceIntent =
             Intent(context, MusicService::class.java)
