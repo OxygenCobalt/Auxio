@@ -42,7 +42,8 @@ class RoborazziSmokeScreenshotTest {
         val themed = ContextThemeWrapper(base, R.style.Theme_Auxio)
 
         val parent = FrameLayout(themed)
-        val view = LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
+        val view =
+            LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
         parent.addView(view)
 
         parent.measure(
