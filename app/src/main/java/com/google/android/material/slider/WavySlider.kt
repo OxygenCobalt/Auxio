@@ -176,6 +176,8 @@ constructor(
         }
     }
 
+    // State reset handling
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         ensurePhaseTickerState()
@@ -203,6 +205,8 @@ constructor(
     override fun setTrackActiveTintList(trackColor: ColorStateList) {
         tmpTrackTintList = trackColor
         if (!linearActiveTrackSuppressed) {
+            // Only forward to the superclass if we aren't overriding it
+            // If we are overriding it we store in tmpTrackTintList for later
             super.setTrackActiveTintList(trackColor)
         }
     }
@@ -525,7 +529,7 @@ constructor(
 
     @SuppressLint("PrivateResource")
     private fun transitionToAmplitudeFraction(target: Float, onFinished: (() -> Unit)? = null) {
-        val clampedTarget = target.coerceIn(MIN_VISIBLE_WAVE_FRACTION, 1f)
+        val clampedTarget = target
         if (abs(currentAmplitudeFraction - clampedTarget) < EPSILON) {
             // Too little work, nothing to do
             currentAmplitudeFraction = clampedTarget
@@ -552,20 +556,12 @@ constructor(
                 setStartValue(currentAmplitudeFraction)
                 setMinimumVisibleChange(MIN_SPRING_VISIBLE_CHANGE)
                 addUpdateListener { _, value, _ ->
-                    currentAmplitudeFraction = value.coerceIn(MIN_VISIBLE_WAVE_FRACTION, 1f)
+                    currentAmplitudeFraction = value
                     ensurePhaseTickerState()
                     invalidate()
                 }
                 addEndListener { _, canceled, value, _ ->
-                    if (waveTransitionAnimation === this) {
-                        waveTransitionAnimation = null
-                    }
-                    currentAmplitudeFraction =
-                        if (canceled) {
-                            value.coerceIn(MIN_VISIBLE_WAVE_FRACTION, 1f)
-                        } else {
-                            clampedTarget
-                        }
+                    currentAmplitudeFraction = value
                     updateActiveTrackSuppression()
                     ensurePhaseTickerState()
                     invalidate()
