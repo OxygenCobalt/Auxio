@@ -189,8 +189,20 @@ private constructor(
 
                 override fun next() = playbackManager.next()
 
-                override fun playPause() =
-                    playbackManager.playing(!playbackManager.progression.isPlaying)
+                override fun playPause() {
+                    val currentSong = playbackManager.currentSong
+                    if (currentSong != null) {
+                        playbackManager.playing(!playbackManager.progression.isPlaying)
+                    } else {
+                        L.i("Topway play/pause received with no current song; restoring saved playback")
+                        playbackManager.playDeferred(
+                            DeferredPlayback.RestoreState(
+                                play = true,
+                                fallback = DeferredPlayback.ShuffleAll,
+                            )
+                        )
+                    }
+                }
 
                 override fun widgetUpdate() = widgetComponent.update()
 

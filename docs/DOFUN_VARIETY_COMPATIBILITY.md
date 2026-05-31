@@ -111,6 +111,27 @@ com.tw.service.xt.aidl.ITWCommandCallbackAidl
 
 These must not be copied into Auxio-TS product code. Use Android-standard APIs and the isolated Topway bridge instead.
 
+
+## Runtime fallback posture
+
+Auxio-TS implements the highest-confidence DoFun/Topway fallbacks without copying private
+vendor APIs:
+
+- the release APK installs as `com.tw.music`;
+- `com.tw.music.MusicActivity` aliases to Auxio's real activity;
+- `com.tw.music.MusicService` is provided in the Topway flavour as a stock-name wrapper over
+  Auxio's real media/browser/playback service;
+- `com.tw.music.view.MusicWidgetProvider` is provided in the Topway flavour as a stock-name
+  wrapper that forwards safe observed Topway widget/control broadcasts into Auxio's bridge;
+- Topway metadata/progress broadcasts are always enabled in the real `com.tw.music` release
+  variant, regardless of the head-unit UI layout preference;
+- cold-start Topway play/pause commands restore saved playback state instead of being dropped
+  when no current song is yet loaded in memory.
+
+Auxio-TS still deliberately avoids fake `cn.cardoor.libs.media.RemoteMediaService`,
+`android.tw.john.TWUtil`, and `com.tw.service.xt.aidl.*` implementations because the available
+evidence identifies names but not a safe public protocol.
+
 ## Validation commands
 
 Package/component checks:

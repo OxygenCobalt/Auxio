@@ -76,6 +76,8 @@ check_apk_manifest() {
     grep -Fq 'android:name="android.intent.category.APP_MUSIC"' "$manifest_dump" && pass "${label} APK alias has APP_MUSIC category" || fail "${label} APK alias lacks APP_MUSIC category"
     grep -Fq 'android:name="android.media.browse.MediaBrowserService"' "$manifest_dump" && pass "${label} APK manifest has MediaBrowserService" || fail "${label} APK manifest lacks MediaBrowserService"
     grep -Fq 'android:authorities="com.tw.music.image.CoverProvider"' "$manifest_dump" && pass "${label} APK manifest has Topway CoverProvider authority" || fail "${label} APK manifest lacks Topway CoverProvider authority"
+    grep -Fq 'android:name="com.tw.music.MusicService"' "$manifest_dump" && pass "${label} APK manifest has com.tw.music.MusicService fallback" || fail "${label} APK manifest lacks com.tw.music.MusicService fallback"
+    grep -Fq 'android:name="com.tw.music.view.MusicWidgetProvider"' "$manifest_dump" && pass "${label} APK manifest has com.tw.music.view.MusicWidgetProvider fallback" || fail "${label} APK manifest lacks com.tw.music.view.MusicWidgetProvider fallback"
   fi
   rm -f "$manifest_dump"
 }
@@ -94,6 +96,8 @@ else
   pass "found flavour manifest: ${flavour_manifest}"
   require_file_contains "$flavour_manifest" "com.tw.music.MusicActivity" "Topway activity alias"
   require_file_contains "$flavour_manifest" "org.oxycblt.auxio.MainActivity" "Topway alias target"
+  require_file_contains "$flavour_manifest" "com.tw.music.MusicService" "Topway MusicService component fallback"
+  require_file_contains "$flavour_manifest" "com.tw.music.view.MusicWidgetProvider" "Topway MusicWidgetProvider component fallback"
   require_file_contains "$flavour_manifest" "android.intent.action.MAIN" "Topway alias main action"
   require_file_contains "$flavour_manifest" "android.intent.action.MUSIC_PLAYER" "Topway alias music action"
   require_file_contains "$flavour_manifest" "android.intent.category.LAUNCHER" "Topway alias launcher category"
@@ -127,6 +131,9 @@ for contract_string in \
 done
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishMetadata" "runtime Topway metadata publisher"
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishProgress" "runtime Topway progress publisher"
+require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicBroadcastBridge.kt" 'BuildConfig.APPLICATION_ID == TOPWAY_RELEASE_PACKAGE' "Topway release bridge always enabled"
+require_file_contains "app/src/topwayTwMusic/java/com/tw/music/MusicService.kt" "AuxioService" "Topway MusicService delegates to AuxioService"
+require_file_contains "app/src/topwayTwMusic/java/com/tw/music/view/MusicWidgetProvider.kt" "CMD_UPDATE" "Topway MusicWidgetProvider update fallback"
 require_file_contains ".github/workflows/manual-release.yml" "assembleTopwayTwMusicRelease" "manual release builds Topway release"
 require_file_contains ".github/workflows/manual-release.yml" "topway-twmusic-release.apk" "manual release names Topway APK asset"
 

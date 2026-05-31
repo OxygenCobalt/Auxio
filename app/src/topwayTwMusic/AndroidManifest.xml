@@ -4,6 +4,43 @@
 
     <application>
         <!--
+        Stock-component fallbacks for Topway/DoFun integrations that address stock twmusic
+        components explicitly. These are Topway-flavour only and delegate to Auxio's real service
+        and widget/control bridge; they do not implement private Cardoor/vendor APIs.
+        -->
+        <service
+            android:name="com.tw.music.MusicService"
+            android:foregroundServiceType="mediaPlayback"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="com.tw.music.view.MusicWidgetProvider"
+            android:exported="true"
+            android:label="@string/info_topway_music_app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.tw.music.action.cmd" />
+                <action android:name="com.tw.music.action.prev" />
+                <action android:name="com.tw.music.action.next" />
+                <action android:name="com.tw.music.action.pp" />
+                <action android:name="com.android.launcher.widget_music_progress" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <!--
         DoFun/Variety's extracted apps_match_config.json fixes the local music hotseat to
         com.tw.music/.MusicActivity (or com.tw.media with the same class).  Expose that stock
         Topway-compatible identity only in the topwayTwMusic flavour while targeting Auxio's real
