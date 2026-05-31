@@ -1,0 +1,8 @@
+%com.tw.music.view.MusicWidgetProvider
+android.uid.system
+com.tw.music
+com.tw.music.AudioPreview
+com.tw.music.MusicActivity
+com.tw.music.MusicApplication
+com.tw.music.MusicService
+sharedUserId

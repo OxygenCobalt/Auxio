@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "purpose": "Concise reference contract extracted from the user-provided DoFun Variety and stock Topway music APKs. This is evidence for Auxio-TS development, not code to port verbatim.",
+  "apks": {
+    "dofun_variety": {
+      "filename": "com.dofun.variety_V9.7.2.367.260312.apk",
+      "sha256": "75e7ea9b46d68754253aa385e6ac750aae957a5b72196fec5449ccf2782c60b1",
+      "package": "com.dofun.variety",
+      "evidence": [
+        "assets/apps_match_config.json",
+        "assets/apps_config.json",
+        "AndroidManifest.xml UTF-16 string pool"
+      ],
+      "music_hotseat_identities": [
+        {"package_name": "com.tw.media", "class_name": "com.tw.music.MusicActivity"},
+        {"package_name": "com.tw.music", "class_name": "com.tw.music.MusicActivity"}
+      ],
+      "observed_private_surfaces": [
+        "cn.cardoor.libs.media.RemoteMediaService",
+        "cn.cardoor.basic.media.NotifyService",
+        "cn.cardoor.libs.media.impl.MediaSourceService"
+      ]
+    },
+    "stock_twmusic": {
+      "filename": "com.tw.music_TW_THEME.20240715.apk",
+      "sha256": "4f5495e270a7c86bab232e2b7ee2ecd2d71f3450f6f20ed5f36feaa4229c1518",
+      "package": "com.tw.music",
+      "launcher_activity": "com.tw.music.MusicActivity",
+      "observed_manifest_strings": [
+        "com.tw.music.MusicActivity",
+        "com.tw.music.MusicService",
+        "com.tw.music.view.MusicWidgetProvider",
+        "android.uid.system",
+        "sharedUserId"
+      ],
+      "safe_public_broadcast_surface": {
+        "outgoing": {
+          "com.tw.music.info": ["musicTitle", "musicaArtist", "musicAlbum", "musicPath"],
+          "com.tw.launcher.music_progress_duration": ["msg_music_progress", "msg_music_duration"]
+        },
+        "incoming": [
+          "com.tw.music.action.cmd",
+          "com.tw.music.action.prev",
+          "com.tw.music.action.next",
+          "com.tw.music.action.pp",
+          "com.android.launcher.widget_music_progress"
+        ]
+      },
+      "forbidden_vendor_private_surfaces": [
+        "android.uid.system",
+        "android.tw.john.TWUtil",
+        "com.tw.service.xt.aidl.ITWCommandAidl",
+        "com.tw.service.xt.aidl.ITWCommandCallbackAidl"
+      ]
+    }
+  },
+  "implementation_guidance": {
+    "directly_reusable_requirements": [
+      "Dedicated Topway/DoFun APK identity must present com.tw.music and com.tw.music.MusicActivity.",
+      "Expose Android MediaSession/MediaBrowserService quickly and reliably.",
+      "Maintain isolated Topway broadcast bridge constants for observed safe public actions/extras."
+    ],
+    "should_be_avoided": [
+      "Do not copy stock twmusic smali or vendor implementation code.",
+      "Do not require android.uid.system, sharedUserId, platform signing, TWUtil, or ITWCommandAidl.",
+      "Do not fake Cardoor RemoteMediaService without a proven binder/AIDL protocol."
+    ]
+  }
+}

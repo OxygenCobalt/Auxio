@@ -1,0 +1,56 @@
+{
+  "source": "com.dofun.variety assets/apps_config.json",
+  "entries": [
+    {
+      "package_name": "com.tw.media",
+      "compare_name": "com.tw.video.VideoActivity",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "compare_name": "com.hcn.AutoMediaPlayer",
+      "image_name": "app_video",
+      "link_image_name": "link_icon_video",
+      "name": "视频"
+    },
+    {
+      "compare_name": "cn.cardoor.dofunmusic",
+      "image_name": "app_dofunmusic",
+      "link_image_name": "link_icon_music",
+      "name": "DoFunMusic"
+    },
+    {
+      "compare_name": "com.tw.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "package_name": "com.tw.media",
+      "compare_name": "com.tw.music.MusicActivity",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "package_name": "com.hcn.AutoMediaPlayer",
+      "compare_name": "com.hcn.AutoMediaActivity.MusicPlayerUiActivity",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "compare_name": "com.syu.music",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    },
+    {
+      "compare_name": "android.car.app.media",
+      "image_name": "app_music",
+      "link_image_name": "link_icon_music",
+      "name": "音乐"
+    }
+  ]
+}

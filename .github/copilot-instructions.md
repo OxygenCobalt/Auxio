@@ -1,14 +1,15 @@
-# AGENTS.md — Auxio-TS coding authority
+# Copilot instructions for Auxio-TS
 
-## Project stance
+## Core stance
 - Start documentation navigation from `docs/README.md`.
-- For Codex environment setup/maintenance/validation flow, use `docs/codex/README.md`.
 - Prefer consolidation/removal of stale docs over keeping historical wrappers.
 - **Auxio-TS is a TS18/TW/TWTHEME variant app.** TS18/TW/TWTHEME parity is the product target.
+- Auxio-TS is an Auxio fork, not a clone of `com.tw.music`.
+- Keep upstream playback/library/service design unless evidence requires targeted change.
 - Android-standard APIs are the preferred **first implementation layer** (Tier 1), not the final authority.
-- Keep TS18/TW integration in adapter/facade boundaries.
-- Use `docs/evidence/t-music-snapshot/` as evidence only, not implementation source.
-- **Native/private contracts are NOT permanently out of scope.** They require the formal gap-and-promotion process (Tier 2 validated gap → Tier 3 investigation → Tier 4 design PR). Do NOT say "private/native is out of scope" — say "not for production by default; requires formal gap-and-promotion process."
+- Keep TS18 integration in adapter/facade boundaries.
+- Treat `docs/evidence/t-music-snapshot/` as evidence, not code to port.
+- **Native/private contracts are NOT permanently out of scope.** They require the formal gap-and-promotion process (Tier 2 → Tier 3 → Tier 4). Do NOT say "private/native is out of scope" — say "not for production by default; requires formal gap-and-promotion process."
 
 
 
@@ -60,13 +61,11 @@ See canonical definition: [`docs/TS18_INTEGRATION_ARCHITECTURE.md` — TS18 Nati
 | 3 | Isolated native experiments | External scripts or non-production branches testing specific TW/TWTHEME contracts |
 | 4 | Production native integration | Only via explicit human-approved design PR meeting all 8 production eligibility criteria |
 
-A production native integration (Tier 4) is only eligible after an explicit human-approved design PR proves: product need; evidence-backed contract; no package impersonation; no copied smali; no platform-signature/system-UID dependency; safe fallback; isolated implementation; validation and rollback path.
-
 ## TS18/TW/TWTHEME source-led policy
 
 TS18/TW/TWTHEME work must begin with the curated TS18/Topway/DoFun/TW source corpus and battle-tested public head-unit projects.
 
-Android/Media3 standards are the Tier 1 implementation baseline. They are the preferred first implementation path but are not the final authority for TS18/TWTHEME-specific questions. For TS18-specific behaviour, agents must first search and classify TS18/TW/TWTHEME ecosystem sources before proposing implementation or validation changes.
+Android/Media3 standards are the Tier 1 implementation baseline. They are the preferred first implementation path but are not the final authority for TS18/TWTHEME-specific questions. Native parity gap investigation is allowed through the formal gap-and-promotion process. Production safety rules remain intact.
 
 Probe/diagnostics-driven work is secondary. It is allowed only when:
 - the user provides fresh diagnostics;
@@ -112,7 +111,7 @@ Canonical source corpus: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 ### Required agent workflow for TS18/TW/TWTHEME tasks
 
 1. Search the TS18/TW/TWTHEME source corpus first (Priority 1 before Priority 5).
-2. Add any new useful sources to the canonical source map (`docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`).
+2. Add any new useful sources to the canonical source map.
 3. Classify source confidence and porting decision before proposing implementation.
 4. Prefer public equivalent projects over speculative probes.
 5. Use diagnostics only when provided by the user or when no source-led path exists.
@@ -130,183 +129,51 @@ Canonical source corpus: `docs/TS18_SOURCE_LED_INTEGRATION_STRATEGY.md`
 - Existing broad prohibitions against `com.tw.music.action.*` are refined: these strings are forbidden generally, but allowed as constants inside the isolated Topway bridge, tests, and docs.
 - Runtime APK must stay clean and must not include evidence/probe/capture tooling.
 
-## TS18 claim labeling (required)
-For TS18/TW/TWTHEME claims, include both labels:
-
-- **Evidence confidence**: Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported
-- **Porting decision**: Directly reusable requirement / Reusable validation idea / Useful as evidence only / Obsolete due to Auxio architecture / Requires TS18 runtime validation / Unsafe to port / Should be explicitly avoided
+## Evidence labeling (required)
+For each TS18/TW/TWTHEME claim, include:
+1) confidence: **Observed / Inferred / Hypothesis / Requires TS18 validation / Unsupported**
+2) porting decision label: **Directly reusable requirement / Reusable validation idea / Useful as evidence only / Obsolete due to Auxio architecture / Requires TS18 runtime validation / Unsafe to port / Should be explicitly avoided**
 
 Always distinguish between: product requirement / Android-standard implementation / TS18 runtime validation / native-private investigation / production eligibility.
 
-## Hard constraints
-- Do not change the standard Auxio/Auxio-TS package identity to `com.tw.music`; only a dedicated, clearly named Topway/DoFun compatibility variant may install as `com.tw.music`.
-- Do not require privileged/system UID or platform signing.
-- Do not copy decompiled smali into app code.
-- Do not spread TS18 conditionals through core playback/library code.
-- Do not claim TS18 compatibility without runtime evidence.
+## Never do
+- Do not change the standard Auxio/Auxio-TS package to `com.tw.music`; only a dedicated, clearly named Topway/DoFun compatibility variant may install as `com.tw.music`.
+- Do not assume privileged/system UID.
+- Do not copy decompiled smali into Auxio code.
+- Do not claim TS18 compatibility without TS18 runtime evidence.
+- Do not add TWUtil/TWClient reflection or vendor-service binders to product code.
+- Do not make probe/diagnostics the default approach for TS18 questions.
 - Do not add in-app probe frameworks or speculative default-off adapters.
-- Do not add TWUtil/TWClient reflection scanners or vendor package scanners.
-- Do not add vendor-service binders or fake Cardoor media services without an explicit approved design PR and proven binder/AIDL protocol.
 - Do not add product-code calls to `com.tw.music.action.*` outside the isolated Topway bridge package/test scope.
 - Do not add direct `com.tw.*` or `android.tw.john.*` imports in product code.
-- Do not add TWTHEME private-resource loaders or hidden diagnostics modules.
+- Do not add TWTHEME private-resource loaders or hidden diagnostics modules in the app.
 - Do not say "private/native is permanently out of scope" — say "not for production by default; requires formal gap-and-promotion process".
 
 - Inspect full CI logs before proposing build fixes; do not diagnose from summary lines only.
 - Distinguish Codex environment limitations from GitHub Actions/Copilot runner failures.
 - Do not treat Codex environment build limitations as final CI proof; GitHub Actions/Copilot CI is the final workflow proof point.
 - Never claim tasks/build/test/lint success unless commands actually passed in this environment.
-## Validation baseline
-Run or document blockers for:
+
+## Baseline checks
 - `./gradlew tasks`
 - `./gradlew assembleDebug`
 - `./gradlew test`
 - `./gradlew lint`
 - `find scripts -type f -name '*.sh' -print -exec sh -n {} \;`
 
-## CI reliability — known issues and rules
-
-### Pre-Gradle preparation: one command for all environments
-
-Run this before any Gradle command in any environment (local, CI, Codex, agent):
-
-```bash
-bash ./scripts/prepare-ci-environment.sh
-```
-
-This script (idempotent, safe to re-run) does everything in one step:
-1. Detects ZIP/snapshot environments and exits with `SNAPSHOT_LIMITATION`
-2. **Fast-path**: if required submodule files are already present (e.g. workflow used
-   `submodules: recursive`), skips expensive `git submodule sync/update`.
-3. Otherwise runs `git submodule sync --recursive` then
-   `git submodule update --init --recursive --jobs 4` (soft-fail for git.ffmpeg.org)
-4. Creates `media/libraries/common_ktx/proguard-rules.txt` stub (`UPSTREAM_MEDIA_QUIRK`)
-5. Calls `bash ./scripts/check-submodules.sh` — validates all required paths
-6. Verifies all required files exist; exits 0 only when Gradle is ready
-
-GitHub Actions (`android.yml`, `lint.yml`, `manual-release.yml`) call this script instead of
-duplicating the submodule sync/update/patch logic. Local and Codex builds run the same steps.
-
-**Outcome classification used by the script:**
-
-| Label | Meaning |
-|-------|---------|
-| `SNAPSHOT_LIMITATION` | No `.git` — ZIP/snapshot; Gradle cannot run |
-| `SUBMODULE_BLOCKER` | `.git` present but required submodule files are missing |
-| `UPSTREAM_MEDIA_QUIRK` | media submodule present but `common_ktx/proguard-rules.txt` absent; fixed by stub |
-| `REAL_BUILD_FAILURE` | Prep passed; Gradle itself failed — real app/build issue |
-
-### Submodule requirements and repair
-
-This repo requires **recursive git submodules** to build. Gradle cannot configure at all if
-`media/core_settings.gradle` is missing (applied unconditionally at `settings.gradle` line 19).
-
-Required submodules:
-
-| Path | Purpose | Remote | Reachable in sandbox? |
-|------|---------|--------|-----------------------|
-| `media/` | Patched Media3/ExoPlayer | `github.com/OxygenCobalt/media` | Yes |
-| `media/libraries/decoder_ffmpeg/src/main/jni/ffmpeg/` | FFmpeg decoder | `git.ffmpeg.org` | **No** (blocked) |
-| `musikr/src/main/cpp/taglib/` | Taglib parser | `github.com/taglib/taglib` | Yes |
-
-**Fresh clone:**
-```
-git clone --recurse-submodules https://github.com/cbkii/Auxio-TS.git
-```
-
-**Existing clone — one-command prep:**
-```
-bash ./scripts/prepare-ci-environment.sh
-```
-
-**Then run Gradle:**
-```
-./gradlew --no-daemon --stacktrace help
-```
-
-### Classifying submodule failures vs app build failures
-
-1. Run `bash ./scripts/prepare-ci-environment.sh` before any Gradle command.
-2. If it exits non-zero with `SNAPSHOT_LIMITATION`: ZIP/snapshot environment — Gradle validation impossible.
-3. If it exits non-zero with `SUBMODULE_BLOCKER`: environment/setup issue — not an app code issue.
-4. If it exits 0 but Gradle fails: classify as `REAL_BUILD_FAILURE` — inspect the first error above the stack trace.
-
-### ZIP/snapshot environments (Codex, agent, archive-based)
-ZIP snapshots without `.git` cannot run Gradle. Classify as `SNAPSHOT_LIMITATION`.
-Do not try to work around this by copying submodule files manually.
-
-### Known submodule quirks
-- `media/libraries/common_ktx/proguard-rules.txt` is **absent** from the `OxygenCobalt/media`
-  submodule (commit `0b01e32`). The `common_library_config.gradle` requires it via
-  `consumerProguardFiles 'proguard-rules.txt'`. `prepare-ci-environment.sh` creates an empty
-  stub file before Gradle runs (`UPSTREAM_MEDIA_QUIRK`). If a future submodule bump adds the
-  file, this step becomes a no-op.
-- The nested `ffmpeg` submodule resolves from `git.ffmpeg.org`, which is unreachable in this
-  sandbox. `check-submodules.sh` reports this as `SUBMODULE_BLOCKER` with ffmpeg noted as the
-  missing path. GitHub Actions CI handles ffmpeg initialization correctly with `fetch-depth: 0`.
-  **`fetch-depth: 0` is required** in `android.yml` and `lint.yml` because ffmpeg uses an
-  unadvertised object reference; shallow clones (`fetch-depth: 1`) break recursive submodule
-  init with "unadvertised object" errors.  Do not change `fetch-depth` to 1 for those workflows.
-- Local Gradle builds also fail in this sandbox because JetBrains JDK 21 toolchain downloads
-  from `api.foojay.io` are unreachable (AGP plugin resolution fails).
-
-### Quality workflow scoping
-- `lint.yml` runs four **independent jobs**: `Formatting`, `Unit tests`, `Android lint`, and
-  `Head-unit safety`. A formatting failure must not hide unit-test or lint status.
-- `testDebugUnitTest` is scoped to `:app` and `:musikr` only. The media library test files
-  have missing test-utility dependencies (after upstream "trim down module tree" commit) and
-  will fail to compile if the bare `testDebugUnitTest` task is used.
-- `lintDebug` is scoped to `:app` only. `app/build.gradle` sets `checkDependencies = false`
-  so the app lint report does not aggregate media library lint errors.
-- `app/lint.xml` suppresses all lint issues for the vendored Google Material backport package
-  (`**/com/google/android/material/**`).  New issues in Auxio-owned source still fail CI.
-- `:musikr lintDebug` can be added once musikr lint issues are resolved or baselined.
-- `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
-  guardrail used by both Android Quality and TS18 Guardrails.
-
-### CI audit methodology for agents
-- Fetch **full** job logs, not tails. The root error is always above the Gradle stack trace dump.
-- Separate root causes from cascade errors before fixing anything.
-- Run `bash ./scripts/check-submodules.sh` first to rule out submodule issues before diagnosing Gradle.
-- Run `./gradlew --no-daemon --stacktrace :app:assembleDebug` (not bare `assembleDebug`) if
-  you want to limit the build to Auxio-TS code and skip media library sub-tasks.
-- Do not claim `test`, `lint`, or `assembleDebug` passed unless the command actually ran
-  and exited 0.
-
-## UI screenshot workflow
-
-For UI/UX tasks, do not rely only on code inspection. When runtime visual behaviour matters, use the manual screenshot workflow:
-
-Agents should use the screenshot workflow when visual validation matters.
-
-- Workflow: `Manual UI Screenshots`
-- Run branch/ref selector on `dev`
-- Set `target_ref` to the PR branch or commit SHA
-- Use `scenario=all` unless a narrower scenario is sufficient
-- Download and inspect artifact `auxio-ts-ui-screenshots`
-
-Screenshot tooling must remain development-only. Do not add screenshot probes, ADB logic, or visual-test fixtures to the production runtime path unless explicitly approved.
-
-For TS18/head-unit UI work, screenshots must include or approximate:
-
-- 1280x720 landscape
-- LHD and RHD driver-side layouts where applicable
-- playback controls
-- queue panel
-- shuffle/genre-random button state
-- home/dashboard quick-access chips if touched
-
-If the agent environment cannot run an emulator, it must still update the workflow/scripts so GitHub Actions can produce the screenshot artifacts.
-
 ## Release/signing safety
 - Treat release/signing workflow edits as security-sensitive.
-- Never print secrets or commit keystores/signing artifacts.
-- Keep decoded keystores only in runner temp paths.
-- Initialize submodules recursively before Gradle; do not create fake submodule files.
+- Never print or commit secret material.
+- Keep decoded keystores in runner temp paths only.
+- Initialize submodules recursively before Gradle; never create fake submodule files.
+- `Android Quality` is expected to expose formatting, unit-test, lint, and head-unit safety
+  status independently; do not accept a workflow shape where `spotlessCheck` skips the other gates.
+- `scripts/check-headunit-compat-safety.sh` is the canonical product-code TS18/Topway safety
+  guardrail; prefer it over duplicating stale inline `grep` logic in workflows.
 
-- Phase 5G/6A requires evidence-pack capture (`scripts/ts18-create-evidence-pack.sh`) and conservative summarisation before any native/private investigation candidate is considered.
+- Phase 5G/6A: use evidence-pack tooling (`scripts/ts18-create-evidence-pack.sh`, `scripts/ts18-summarise-evidence-pack.py`) before proposing native/private investigations; no production private hooks without explicit approval.
 
-- Tier 0->4 flow reminder: evidence and candidate generation are allowed; production private/native integration still requires a future approved design PR.
+- Tier pipeline reminder: Tier 2 evidence + summariser + matrix proposal can generate Tier 3 candidate drafts, but Tier 4 production native/private integration requires a separate approved design PR.
 
 
 ## Large-Scope Implementation Delivery Protocol
@@ -351,6 +218,31 @@ If the agent environment cannot run an emulator, it must still update the workfl
 - Parity maps are not implemented until they drive or verify action/route completeness.
 - Settings/status are not implemented until surfaced via existing UI/settings patterns.
 
+## UI screenshot workflow
+
+For UI/UX tasks, do not rely only on code inspection. When runtime visual behaviour matters, use the manual screenshot workflow:
+
+Agents should use the screenshot workflow when visual validation matters.
+
+- Workflow: `Manual UI Screenshots`
+- Run branch/ref selector on `dev`
+- Set `target_ref` to the PR branch or commit SHA
+- Use `scenario=all` unless a narrower scenario is sufficient
+- Download and inspect artifact `auxio-ts-ui-screenshots`
+
+Screenshot tooling must remain development-only. Do not add screenshot probes, ADB logic, or visual-test fixtures to the production runtime path unless explicitly approved.
+
+For TS18/head-unit UI work, screenshots must include or approximate:
+
+- 1280x720 landscape
+- LHD and RHD driver-side layouts where applicable
+- playback controls
+- queue panel
+- shuffle/genre-random button state
+- home/dashboard quick-access chips if touched
+
+If the agent environment cannot run an emulator, it must still update the workflow/scripts so GitHub Actions can produce the screenshot artifacts.
+
 ## Final response discipline
 Always report explicitly:
 - which areas were wired into runtime code,
@@ -361,4 +253,7 @@ Always report explicitly:
 - why any next scope is truly separate from current acceptance criteria.
 
 
-2026-05-24 implementation note: isolated Topway bridge runtime wiring now exists; keep Topway strings limited to approved bridge/test/docs paths and preserve no-binder/no-impersonation safety boundaries.
+2026-05-23 runtime release-readiness update: Metadata/session/widget/notification consistency and head-unit route/action safety were hardened in app runtime code; validation tooling remains external to APK; no TS18 hardware parity success claimed; no Tier 4 private/native integration performed.
+
+
+2026-05-24 implementation note: isolated Topway bridge runtime wiring now exists; keep Topway strings constrained to approved bridge/test/docs scope and continue blocking private/native binder production paths.
