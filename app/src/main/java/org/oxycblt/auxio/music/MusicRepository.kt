@@ -372,43 +372,40 @@ constructor(
     override suspend fun startup(worker: IndexingWorker) {
         val start = System.currentTimeMillis()
         val priorState = musicSettings.libraryState
-        L.i("Startup library load begins [state=$priorState]")
-        var state = priorState
-        if (library == null) {
-            try {
-                val cached = loadCachedLibrary()
-                emitLibrary(cached)
-                state =
-                    when {
-                        cached.songs.isNotEmpty() -> LibraryState.USABLE
-                        priorState == LibraryState.EMPTY -> LibraryState.EMPTY
-                        priorState == LibraryState.USABLE -> LibraryState.EMPTY
-                        else -> priorState
-                    }
-                musicSettings.libraryState = state
-                L.i(
-                    "Startup library available in ${System.currentTimeMillis() - start}ms " +
-                        "[songs=${cached.songs.size}]"
-                )
-            } catch (e: Exception) {
-                L.w(e, "Unable to load cached library during startup")
-                if (priorState != LibraryState.USABLE) {
-                    state = LibraryState.RECOVERY
-                    musicSettings.libraryState = state
-                }
-            }
-        } else {
-            L.d("Startup library already in memory; skipping cached load")
-        }
+        val revisionKnown = musicSettings.revision != null
+        L.i("Startup library load begins [state=$priorState, revisionKnown=$revisionKnown]")
+        val decision =
+            StartupLibraryStartup.run(
+                hasInMemoryLibrary = library != null,
+                revisionKnown = revisionKnown,
+                priorState = priorState,
+                lastScanFailed = { musicSettings.lastScanFailed },
+                loadCachedLibrary = { loadCachedLibrary() },
+                cachedSongCount = { it.songs.size },
+                emitCachedLibrary = {
+                    emitLibrary(it)
+                    L.i(
+                        "Startup library available in " +
+                            "${System.currentTimeMillis() - start}ms " +
+                            "[songs=${it.songs.size}]"
+                    )
+                },
+                emitCachedLoadFailure = {
+                    L.w(it, "Unable to load cached library during startup")
+                    emitIndexingCompletion(it)
+                },
+                setLibraryState = { musicSettings.libraryState = it },
+                requestIndex = { worker.requestIndex(withCache = it) },
+            )
 
-        val shouldAutoScan = state == LibraryState.NEVER && !musicSettings.lastScanFailed
-        if (shouldAutoScan) {
-            L.i("Scheduling first library scan after startup [state=$state]")
-            worker.requestIndex(withCache = true)
+        if (decision.requestScan) {
+            L.i(
+                "Scheduling startup library scan [state=${decision.libraryState}, reason=${decision.reason}]"
+            )
         } else {
             L.i(
-                "Skipping startup scan [state=$state, " +
-                    "lastScanFailed=${musicSettings.lastScanFailed}]"
+                "Skipping startup scan [state=${decision.libraryState}, " +
+                    "lastScanFailed=${musicSettings.lastScanFailed}, reason=${decision.reason}]"
             )
         }
     }
@@ -426,9 +423,8 @@ constructor(
             L.e("Music indexing failed")
             L.e(e.stackTraceToString())
             musicSettings.lastScanFailed = true
-            if (musicSettings.libraryState == LibraryState.NEVER) {
-                musicSettings.libraryState = LibraryState.RECOVERY
-            }
+            musicSettings.libraryState =
+                StartupLibraryPolicy.onIndexFailed(musicSettings.libraryState)
             emitIndexingCompletion(e)
         }
     }

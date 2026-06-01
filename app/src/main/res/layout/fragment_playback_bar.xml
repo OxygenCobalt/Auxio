@@ -69,51 +69,51 @@
             <org.oxycblt.auxio.ui.WidthFixMaterialButton
                 android:id="@+id/playback_repeat"
                 style="@style/Widget.Auxio.Button.Playback.Toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/size_playback_button_small"
+                android:layout_height="@dimen/size_playback_button_small"
                 android:contentDescription="@string/desc_change_repeat"
                 app:icon="@drawable/ic_repeat_off_24"
                 app:iconTint="@color/sel_activatable_icon"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
+                app:materialSizeOverlay="@style/SizeOverlay.Auxio.Button.Playback.Control.Small" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_prev"
                 style="@style/Widget.Auxio.Button.Playback.Skip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/size_playback_button_small"
+                android:layout_height="@dimen/size_playback_button_small"
                 android:contentDescription="@string/desc_skip_prev"
                 app:icon="@drawable/ic_skip_prev_24"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
+                app:materialSizeOverlay="@style/SizeOverlay.Auxio.Button.Playback.Control.Small" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_play_pause"
                 style="@style/Widget.Auxio.Button.Playback.PlayPause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/size_playback_button_small"
+                android:layout_height="@dimen/size_playback_button_small"
                 android:checkable="true"
                 android:contentDescription="@string/desc_play_pause"
                 app:icon="@drawable/sel_playing_state_24"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
+                app:materialSizeOverlay="@style/SizeOverlay.Auxio.Button.Playback.Control.Small"
                 tools:icon="@drawable/ic_play_24" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_next"
                 style="@style/Widget.Auxio.Button.Playback.Skip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/size_playback_button_small"
+                android:layout_height="@dimen/size_playback_button_small"
                 android:contentDescription="@string/desc_skip_next"
                 app:icon="@drawable/ic_skip_next_24"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
+                app:materialSizeOverlay="@style/SizeOverlay.Auxio.Button.Playback.Control.Small" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_shuffle"
                 style="@style/Widget.Auxio.Button.Playback.Toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/size_playback_button_small"
+                android:layout_height="@dimen/size_playback_button_small"
                 android:contentDescription="@string/desc_shuffle"
                 app:icon="@drawable/sel_shuffle_state_24"
                 app:iconTint="@color/sel_activatable_icon"
-                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
+                app:materialSizeOverlay="@style/SizeOverlay.Auxio.Button.Playback.Control.Small" />
         </com.google.android.material.button.MaterialButtonGroup>
 
     </org.oxycblt.auxio.playback.ui.ForcedLTRFrameLayout>
