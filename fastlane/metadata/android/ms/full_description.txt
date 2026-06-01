@@ -1,0 +1,24 @@
+Auxio ialah pemain muzik luar talian dengan UI/UX yang pantas serta boleh dipercayai, tanpa fungsi tidak berguna yang sering ada pada pemain muzik lain. Dibina berasaskan pustaka main balik media yang moden, Auxio menawarkan sokongan pustaka dan kualiti pendengaran yang lebih unggul berbanding aplikasi lain yang menggunakan fungsi Android yang lapuk. Ringkasnya, ia hanya memainkan muzik.
+
+Ciri-ciri
+
+- Main balik berasaskan Media3 ExoPlayer
+- UI yang tangkas berasaskan panduan Reka Bentuk Material terkini
+- UX khusus yang mengutamakan kemudahan penggunaan berbanding kes-kes terpencil
+- Tingkah laku aplikasi yang boleh disesuaikan
+- Sokongan untuk nombor cakera, pelbagai artis, jenis pengeluaran, tarikh tepat/asal, tag isihan, dan banyak lagi
+- Sistem artis lanjutan yang menyatukan lagu artis dan album artis
+- Pengurusan folder yang mengesan Kad SD
+- Fungsi senarai main yang boleh dipercayai
+- Pengekalan status main balik (apl ingat minit terakhir lagu dimainkan)
+- Sokongan Android Auto
+- Main balik tanpa sela secara automatik
+- Sokongan penuh ReplayGain (Pada fail MP3, FLAC, OGG, OPUS, dan MP4)
+- Sokongan penyama (equalizer) luaran (cth. Wavelet)
+- Paparan skrin penuh
+- Sokongan hiasan kulit album
+- Fungsi carian
+- Main automatik apabila fon kepala disambungkan
+- Widget bergaya yang menyesuaikan saiznya secara automatik
+- Sepenuhnya peribadi dan luar talian
+- Tiada bucu bulat pada kulit album (jika anda mahukannya)
