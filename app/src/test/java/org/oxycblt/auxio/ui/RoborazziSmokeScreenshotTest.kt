@@ -18,16 +18,17 @@
 
 package org.oxycblt.auxio.ui
 
+import android.app.Activity
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.test.core.app.ApplicationProvider
 import com.github.takahirom.roborazzi.captureRoboImage
-import java.io.File
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oxycblt.auxio.R
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
@@ -38,13 +39,21 @@ import org.robolectric.annotation.GraphicsMode
 class RoborazziSmokeScreenshotTest {
     @Test
     fun capturePlaybackBarLayout() {
-        val base = ApplicationProvider.getApplicationContext<android.content.Context>()
-        val themed = ContextThemeWrapper(base, R.style.Theme_Auxio)
+        val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
+        val themed = ContextThemeWrapper(activity, R.style.Theme_Auxio)
 
         val parent = FrameLayout(themed)
+        activity.setContentView(parent)
+
         val view =
             LayoutInflater.from(themed).inflate(R.layout.fragment_playback_bar, parent, false)
-        parent.addView(view)
+        parent.addView(
+            view,
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            ),
+        )
 
         parent.measure(
             View.MeasureSpec.makeMeasureSpec(SCREEN_WIDTH_PX, View.MeasureSpec.EXACTLY),
@@ -54,9 +63,7 @@ class RoborazziSmokeScreenshotTest {
         val measuredHeight = parent.measuredHeight.coerceAtLeast(1)
         parent.layout(0, 0, SCREEN_WIDTH_PX, measuredHeight)
 
-        val output = File("build/outputs/roborazzi/playback-bar-landscape.png")
-        requireNotNull(output.parentFile).mkdirs()
-        parent.captureRoboImage(output.path)
+        parent.captureRoboImage("playback-bar-landscape.png")
     }
 
     private companion object {
