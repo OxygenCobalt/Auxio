@@ -358,9 +358,11 @@ jobs:
             printf '| auxio-ts-%s-roborazzi-outputs | ' "${VARIANT}"; write_link "${OUTPUT_URL}"; echo ' | All PNG screenshots | 20 days |'
           } > "$body_file"
 
-          comment_id=$(gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
-            --jq '.[] | select(.body | contains("<!-- auxio-ts-roborazzi:")) | .id' \
-            | head -n1 || true)
+          comment_id="$(
+            gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" |
+              jq -r --arg marker "${marker}" '.[] | select(.body | contains($marker)) | .id' |
+              head -n1
+          )"
           if [[ -n "$comment_id" ]]; then
             jq -n --rawfile body "$body_file" '{"body": $body}' | \
               gh api --method PATCH \
