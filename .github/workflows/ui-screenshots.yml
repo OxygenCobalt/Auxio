@@ -8,17 +8,13 @@ name: UI Screenshots (Roborazzi)
 #   app/build/reports/roborazzi/   — HTML comparison reports
 #
 # Usage:
-#   workflow_dispatch → choose a roborazzi_task and optionally a target_ref.
-#   variant=standard runs record/verify/compareRoborazziStandardDebug.
-#   variant=topway_twmusic runs the matching TopwayTwMusicDebug task.
-#   record   — capture new baseline screenshots (commit the outputs to the repo afterwards).
+#   workflow_dispatch → choose a target_ref, variant, and Roborazzi task.
+#   variant=topway_twmusic runs record/verify/compareRoborazziTopwayTwMusicDebug.
+#   variant=standard runs the matching StandardDebug task.
+#   record   — capture screenshots for UI review (default; download the output artifacts).
 #   verify   — compare against committed baselines; fails on visual regression.
 #   compare  — produce side-by-side diff report without failing.
 #   verify_and_record — verify then record any changed baseline.
-#
-# To reintroduce screenshot baselines: run with record, download the
-# auxio-ts-roborazzi-outputs artifact, place the PNGs under
-# app/src/test/java/org/oxycblt/auxio/ui/ (next to the test), and commit them.
 
 on:
   workflow_dispatch:
@@ -30,15 +26,15 @@ on:
       variant:
         description: "App variant to render"
         required: true
-        default: standard
+        default: topway_twmusic
         type: choice
         options:
-          - standard
           - topway_twmusic
+          - standard
       roborazzi_task:
         description: "Roborazzi operation"
         required: true
-        default: verify
+        default: record
         type: choice
         options:
           - record
@@ -52,7 +48,7 @@ on:
       comment_on_pr:
         description: "Post or update sticky PR artifact comment"
         required: true
-        default: false
+        default: true
         type: boolean
 
 permissions:
@@ -61,8 +57,13 @@ permissions:
   issues: write
   pull-requests: write
 
+env:
+  # Mirrors the Roborazzi upstream CI examples: screenshot tests are JVM/Robolectric
+  # tasks, but native graphics and Android resource processing need a larger heap.
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx6g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+
 concurrency:
-  group: ui-screenshots-${{ inputs.target_ref }}
+  group: ui-screenshots-${{ inputs.target_ref }}-${{ inputs.variant }}-${{ inputs.roborazzi_task }}
   cancel-in-progress: true
 
 jobs:
@@ -111,19 +112,22 @@ jobs:
 
       - name: Map Roborazzi task
         id: map_task
+        env:
+          VARIANT: ${{ inputs.variant }}
+          ROBORAZZI_TASK: ${{ inputs.roborazzi_task }}
         run: |
           set -euo pipefail
-          case "${{ inputs.variant }}" in
+          case "${VARIANT}" in
             standard) suffix="StandardDebug" ;;
             topway_twmusic) suffix="TopwayTwMusicDebug" ;;
-            *) echo "::error::Unknown variant: ${{ inputs.variant }}"; exit 1 ;;
+            *) echo "::error::Unknown variant: ${VARIANT}"; exit 1 ;;
           esac
-          case "${{ inputs.roborazzi_task }}" in
+          case "${ROBORAZZI_TASK}" in
             record)            prefix="recordRoborazzi" ;;
             verify)            prefix="verifyRoborazzi" ;;
             compare)           prefix="compareRoborazzi" ;;
             verify_and_record) prefix="verifyAndRecordRoborazzi" ;;
-            *) echo "::error::Unknown roborazzi_task: ${{ inputs.roborazzi_task }}"; exit 1 ;;
+            *) echo "::error::Unknown roborazzi_task: ${ROBORAZZI_TASK}"; exit 1 ;;
           esac
           echo "task=${prefix}${suffix}" >> "$GITHUB_OUTPUT"
 
@@ -137,24 +141,85 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: auxio-ts-roborazzi-reports
+          name: auxio-ts-${{ inputs.variant }}-roborazzi-reports
           path: |
             app/build/reports/roborazzi/**
             app/build/reports/tests/**
+            app/build/test-results/**
             build/reports/problems/**
           if-no-files-found: warn
           retention-days: 20
 
-      - name: Upload Roborazzi outputs
+      - name: Upload all Roborazzi PNG outputs
         id: upload_outputs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: auxio-ts-roborazzi-outputs
+          name: auxio-ts-${{ inputs.variant }}-roborazzi-outputs
           path: |
-            app/build/outputs/roborazzi/**
+            app/build/outputs/roborazzi/**/*.png
             app/src/test/**/roborazzi/**/*.png
             app/src/test/**/*.png
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Upload PNG - main launch landscape
+        id: upload_png_main_launch_landscape
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-${{ inputs.variant }}-main-launch-landscape.png
+          path: app/build/outputs/roborazzi/main-launch-landscape.png
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Upload PNG - main launch portrait
+        id: upload_png_main_launch_portrait
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-${{ inputs.variant }}-main-launch-portrait.png
+          path: app/build/outputs/roborazzi/main-launch-portrait.png
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Upload PNG - playback shuffle off landscape
+        id: upload_png_playback_shuffle_off_landscape
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-${{ inputs.variant }}-playback-page-shuffle-off-landscape.png
+          path: app/build/outputs/roborazzi/playback-page-shuffle-off-landscape.png
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Upload PNG - playback shuffle on landscape
+        id: upload_png_playback_shuffle_on_landscape
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-${{ inputs.variant }}-playback-page-shuffle-on-landscape.png
+          path: app/build/outputs/roborazzi/playback-page-shuffle-on-landscape.png
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Upload PNG - playback shuffle off portrait
+        id: upload_png_playback_shuffle_off_portrait
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-${{ inputs.variant }}-playback-page-shuffle-off-portrait.png
+          path: app/build/outputs/roborazzi/playback-page-shuffle-off-portrait.png
+          if-no-files-found: warn
+          retention-days: 20
+
+      - name: Upload PNG - playback shuffle on portrait
+        id: upload_png_playback_shuffle_on_portrait
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auxio-ts-${{ inputs.variant }}-playback-page-shuffle-on-portrait.png
+          path: app/build/outputs/roborazzi/playback-page-shuffle-on-portrait.png
           if-no-files-found: warn
           retention-days: 20
 
@@ -163,37 +228,74 @@ jobs:
         if: ${{ always() && inputs.comment_on_pr }}
         env:
           GH_TOKEN: ${{ github.token }}
+          TARGET_REF: ${{ inputs.target_ref }}
+          PR_NUMBER_INPUT: ${{ inputs.pr_number }}
         run: |
-          pr_input='${{ inputs.pr_number }}'
-          pr_number="${pr_input// /}"
-          if [[ -z "$pr_number" ]]; then
+          set -euo pipefail
+          pr_number="${PR_NUMBER_INPUT// /}"
+          if [[ -z "${pr_number}" ]]; then
             pr_number=$(gh pr list --state open \
-              --head "${{ github.repository_owner }}:${{ inputs.target_ref }}" \
+              --head "${{ github.repository_owner }}:${TARGET_REF}" \
               --json number --jq '.[0].number' || true)
           fi
-          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+          if [[ -z "${pr_number}" ]]; then
+            echo "::warning::No PR number resolved. Pass pr_number explicitly to post screenshot links on a PR."
+          fi
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
 
       - name: Write workflow summary
         if: always()
         env:
+          TARGET_REF: ${{ inputs.target_ref }}
+          VARIANT: ${{ inputs.variant }}
+          RUN_TASK: ${{ steps.map_task.outputs.task }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ROBORAZZI_STATUS: ${{ steps.run_roborazzi.outcome }}
           REPORT_URL: ${{ steps.upload_reports.outputs.artifact-url }}
           OUTPUT_URL: ${{ steps.upload_outputs.outputs.artifact-url }}
+          MAIN_LANDSCAPE_URL: ${{ steps.upload_png_main_launch_landscape.outputs.artifact-url }}
+          MAIN_PORTRAIT_URL: ${{ steps.upload_png_main_launch_portrait.outputs.artifact-url }}
+          PLAYBACK_OFF_LANDSCAPE_URL: ${{ steps.upload_png_playback_shuffle_off_landscape.outputs.artifact-url }}
+          PLAYBACK_ON_LANDSCAPE_URL: ${{ steps.upload_png_playback_shuffle_on_landscape.outputs.artifact-url }}
+          PLAYBACK_OFF_PORTRAIT_URL: ${{ steps.upload_png_playback_shuffle_off_portrait.outputs.artifact-url }}
+          PLAYBACK_ON_PORTRAIT_URL: ${{ steps.upload_png_playback_shuffle_on_portrait.outputs.artifact-url }}
         run: |
+          set -euo pipefail
+          write_link() {
+            local url="$1"
+            if [[ -n "${url}" ]]; then
+              printf '[download](%s)' "${url}"
+            else
+              printf 'not available'
+            fi
+          }
+
           {
             echo "## Auxio-TS Roborazzi Artifacts"
             echo
-            echo "- Target ref: \`${{ inputs.target_ref }}\`"
-            echo "- Variant: \`${{ inputs.variant }}\`"
-            echo "- Task: \`${{ steps.map_task.outputs.task }}\`"
-            echo "- Result: \`${ROBORAZZI_STATUS}\`"
-            echo "- Run: ${RUN_URL}"
+            printf -- "- Target ref: \`%s\`\n" "${TARGET_REF}"
+            printf -- "- Variant: \`%s\`\n" "${VARIANT}"
+            printf -- "- Task: \`%s\`\n" "${RUN_TASK}"
+            printf -- "- Result: \`%s\`\n" "${ROBORAZZI_STATUS}"
+            printf -- "- Run: %s\n" "${RUN_URL}"
+            echo
+            echo "### PNG screenshots"
+            echo
+            echo "| Screenshot | Artifact |"
+            echo "|---|---|"
+            printf '| `%s` | ' 'main-launch-landscape.png'; write_link "${MAIN_LANDSCAPE_URL}"; echo ' |'
+            printf '| `%s` | ' 'main-launch-portrait.png'; write_link "${MAIN_PORTRAIT_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-off-landscape.png'; write_link "${PLAYBACK_OFF_LANDSCAPE_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-on-landscape.png'; write_link "${PLAYBACK_ON_LANDSCAPE_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-off-portrait.png'; write_link "${PLAYBACK_OFF_PORTRAIT_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-on-portrait.png'; write_link "${PLAYBACK_ON_PORTRAIT_URL}"; echo ' |'
+            echo
+            echo "### Bundles"
             echo
             echo "| Artifact | Link | Contents | Retention |"
             echo "|---|---|---|---|"
-            echo "| auxio-ts-roborazzi-reports | ${REPORT_URL:-not available} | HTML diff reports | 20 days |"
-            echo "| auxio-ts-roborazzi-outputs | ${OUTPUT_URL:-not available} | PNG screenshots | 20 days |"
+            printf '| auxio-ts-%s-roborazzi-reports | ' "${VARIANT}"; write_link "${REPORT_URL}"; echo ' | HTML diff reports and test results | 20 days |'
+            printf '| auxio-ts-%s-roborazzi-outputs | ' "${VARIANT}"; write_link "${OUTPUT_URL}"; echo ' | All PNG screenshots | 20 days |'
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upsert PR comment
@@ -201,31 +303,66 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.resolve_pr.outputs.pr_number }}
+          TARGET_REF: ${{ inputs.target_ref }}
+          VARIANT: ${{ inputs.variant }}
+          RUN_TASK: ${{ steps.map_task.outputs.task }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ROBORAZZI_STATUS: ${{ steps.run_roborazzi.outcome }}
           REPORT_URL: ${{ steps.upload_reports.outputs.artifact-url }}
           OUTPUT_URL: ${{ steps.upload_outputs.outputs.artifact-url }}
+          MAIN_LANDSCAPE_URL: ${{ steps.upload_png_main_launch_landscape.outputs.artifact-url }}
+          MAIN_PORTRAIT_URL: ${{ steps.upload_png_main_launch_portrait.outputs.artifact-url }}
+          PLAYBACK_OFF_LANDSCAPE_URL: ${{ steps.upload_png_playback_shuffle_off_landscape.outputs.artifact-url }}
+          PLAYBACK_ON_LANDSCAPE_URL: ${{ steps.upload_png_playback_shuffle_on_landscape.outputs.artifact-url }}
+          PLAYBACK_OFF_PORTRAIT_URL: ${{ steps.upload_png_playback_shuffle_off_portrait.outputs.artifact-url }}
+          PLAYBACK_ON_PORTRAIT_URL: ${{ steps.upload_png_playback_shuffle_on_portrait.outputs.artifact-url }}
         run: |
-          marker='<!-- auxio-ts-roborazzi -->'
+          set -euo pipefail
+          marker="<!-- auxio-ts-roborazzi:${VARIANT}:${RUN_TASK} -->"
           body_file="$(mktemp)"
+          write_link() {
+            local url="$1"
+            if [[ -n "${url}" ]]; then
+              printf '[download](%s)' "${url}"
+            else
+              printf 'not available'
+            fi
+          }
+
           {
             echo "$marker"
             echo "## Auxio-TS Roborazzi Artifacts"
             echo
-            echo "- Target ref: \`${{ inputs.target_ref }}\`"
-            echo "- Variant: \`${{ inputs.variant }}\`"
-            echo "- Task: \`${{ steps.map_task.outputs.task }}\`"
-            echo "- Result: \`${ROBORAZZI_STATUS}\`"
-            echo "- Run: ${RUN_URL}"
+            printf -- "- Target ref: \`%s\`\n" "${TARGET_REF}"
+            printf -- "- Variant: \`%s\`\n" "${VARIANT}"
+            printf -- "- Task: \`%s\`\n" "${RUN_TASK}"
+            printf -- "- Result: \`%s\`\n" "${ROBORAZZI_STATUS}"
+            printf -- "- Run: %s\n" "${RUN_URL}"
+            echo
+            echo "### PNG screenshots"
+            echo
+            echo "| Screenshot | Artifact |"
+            echo "|---|---|"
+            printf '| `%s` | ' 'main-launch-landscape.png'; write_link "${MAIN_LANDSCAPE_URL}"; echo ' |'
+            printf '| `%s` | ' 'main-launch-portrait.png'; write_link "${MAIN_PORTRAIT_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-off-landscape.png'; write_link "${PLAYBACK_OFF_LANDSCAPE_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-on-landscape.png'; write_link "${PLAYBACK_ON_LANDSCAPE_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-off-portrait.png'; write_link "${PLAYBACK_OFF_PORTRAIT_URL}"; echo ' |'
+            printf '| `%s` | ' 'playback-page-shuffle-on-portrait.png'; write_link "${PLAYBACK_ON_PORTRAIT_URL}"; echo ' |'
+            echo
+            echo "### Bundles"
             echo
             echo "| Artifact | Link | Contents | Retention |"
             echo "|---|---|---|---|"
-            echo "| auxio-ts-roborazzi-reports | ${REPORT_URL:-not available} | HTML diff reports | 20 days |"
-            echo "| auxio-ts-roborazzi-outputs | ${OUTPUT_URL:-not available} | PNG screenshots | 20 days |"
+            printf '| auxio-ts-%s-roborazzi-reports | ' "${VARIANT}"; write_link "${REPORT_URL}"; echo ' | HTML diff reports and test results | 20 days |'
+            printf '| auxio-ts-%s-roborazzi-outputs | ' "${VARIANT}"; write_link "${OUTPUT_URL}"; echo ' | All PNG screenshots | 20 days |'
           } > "$body_file"
-          comment_id=$(gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
-            --jq '.[] | select(.body | contains("<!-- auxio-ts-roborazzi -->")) | .id' \
-            | head -n1 || true)
+
+          comment_id="$(
+            gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" |
+              jq -r --arg marker "${marker}" '.[] | select(.body | contains($marker)) | .id' |
+              head -n1
+          )"
           if [[ -n "$comment_id" ]]; then
             jq -n --rawfile body "$body_file" '{"body": $body}' | \
               gh api --method PATCH \
