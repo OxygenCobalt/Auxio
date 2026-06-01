@@ -32,8 +32,12 @@ object StartupLibraryPolicy {
         val reason: String,
     )
 
-    fun shouldAttemptCachedLoad(hasInMemoryLibrary: Boolean, revisionKnown: Boolean): Boolean =
-        !hasInMemoryLibrary && revisionKnown
+    fun shouldAttemptCachedLoad(
+        hasInMemoryLibrary: Boolean,
+        revisionKnown: Boolean,
+        priorState: LibraryState,
+    ): Boolean =
+        !hasInMemoryLibrary && (revisionKnown || priorState == LibraryState.USABLE || priorState == LibraryState.EMPTY)
 
     fun onNoCachedRevision(priorState: LibraryState, lastScanFailed: Boolean): Decision =
         when (priorState) {
@@ -153,7 +157,7 @@ object StartupLibraryStartup {
         requestIndex: (withCache: Boolean) -> Unit,
     ): StartupLibraryPolicy.Decision {
         val decision =
-            if (StartupLibraryPolicy.shouldAttemptCachedLoad(hasInMemoryLibrary, revisionKnown)) {
+            if (StartupLibraryPolicy.shouldAttemptCachedLoad(hasInMemoryLibrary, revisionKnown, priorState)) {
                 try {
                     val cached = loadCachedLibrary()
                     val songCount = cachedSongCount(cached)

@@ -116,6 +116,40 @@ class StartupLibraryPolicyTest {
             StartupLibraryPolicy.shouldAttemptCachedLoad(
                 hasInMemoryLibrary = true,
                 revisionKnown = true,
+                priorState = LibraryState.USABLE,
+            )
+        )
+    }
+
+    @Test
+    fun `usable state without revision still attempts cached load`() {
+        assertTrue(
+            StartupLibraryPolicy.shouldAttemptCachedLoad(
+                hasInMemoryLibrary = false,
+                revisionKnown = false,
+                priorState = LibraryState.USABLE,
+            )
+        )
+    }
+
+    @Test
+    fun `empty state without revision still attempts cached load`() {
+        assertTrue(
+            StartupLibraryPolicy.shouldAttemptCachedLoad(
+                hasInMemoryLibrary = false,
+                revisionKnown = false,
+                priorState = LibraryState.EMPTY,
+            )
+        )
+    }
+
+    @Test
+    fun `never state without revision does not attempt cached load`() {
+        assertFalse(
+            StartupLibraryPolicy.shouldAttemptCachedLoad(
+                hasInMemoryLibrary = false,
+                revisionKnown = false,
+                priorState = LibraryState.NEVER,
             )
         )
     }
@@ -200,6 +234,129 @@ class StartupLibraryPolicyTest {
             assertEquals(null, harness.emittedSongCount)
             assertEquals(emptyList<Boolean>(), harness.scanRequests)
         }
+
+    // --- Integration-style tests proving production wiring after process death ---
+
+    @Test
+    fun `force-stop relaunch with persisted USABLE and revision loads cache without scan`() =
+        runBlocking {
+            // Simulates: scan succeeded (USABLE + revision), then force-stop, then relaunch
+            val harness = StartupHarness(priorState = LibraryState.USABLE, revisionKnown = true)
+
+            val decision = harness.run(cachedSongCount = 150)
+
+            // Library loaded from cache
+            assertEquals(150, harness.emittedSongCount)
+            assertEquals(1, harness.cachedLoadAttempts)
+            // No scan requested
+            assertEquals(emptyList<Boolean>(), harness.scanRequests)
+            // State remains USABLE
+            assertEquals(LibraryState.USABLE, decision.libraryState)
+            assertEquals(LibraryState.USABLE, harness.persistedState)
+        }
+
+    @Test
+    fun `force-stop relaunch with lost revision but USABLE state still loads from cache`() =
+        runBlocking {
+            // Simulates: SharedPreferences revision corrupted, but Room DB cache still valid
+            val harness = StartupHarness(priorState = LibraryState.USABLE, revisionKnown = false)
+
+            val decision = harness.run(cachedSongCount = 42)
+
+            // Cache was still attempted because state is USABLE
+            assertEquals(1, harness.cachedLoadAttempts)
+            // Library was emitted from cache
+            assertEquals(42, harness.emittedSongCount)
+            // State stays USABLE because songs were found
+            assertEquals(LibraryState.USABLE, decision.libraryState)
+            // No scan needed since cache was usable
+            assertFalse(decision.requestScan)
+        }
+
+    @Test
+    fun `scan failure does not erase previously saved library`() = runBlocking {
+        // First verify a successful startup
+        val harness1 = StartupHarness(priorState = LibraryState.USABLE, revisionKnown = true)
+        val decision1 = harness1.run(cachedSongCount = 80)
+        assertEquals(LibraryState.USABLE, decision1.libraryState)
+        assertEquals(80, harness1.emittedSongCount)
+
+        // Now simulate: after that startup, a subsequent scan fails.
+        // The policy preserves USABLE state.
+        val stateAfterFailure = StartupLibraryPolicy.onIndexFailed(LibraryState.USABLE)
+        assertEquals(LibraryState.USABLE, stateAfterFailure)
+
+        // On next relaunch after the failed scan, cache is still loaded
+        val harness2 = StartupHarness(priorState = stateAfterFailure, revisionKnown = true)
+        val decision2 = harness2.run(cachedSongCount = 80)
+        assertEquals(LibraryState.USABLE, decision2.libraryState)
+        assertEquals(80, harness2.emittedSongCount)
+        assertEquals(emptyList<Boolean>(), harness2.scanRequests)
+    }
+
+    @Test
+    fun `duplicate service start does not enqueue duplicate scans or cache loads`() = runBlocking {
+        // First start loads the cache
+        val harness = StartupHarness(priorState = LibraryState.USABLE, hasInMemoryLibrary = false)
+        harness.run(cachedSongCount = 20)
+        assertEquals(1, harness.cachedLoadAttempts)
+        assertEquals(emptyList<Boolean>(), harness.scanRequests)
+
+        // Second start finds library already in memory
+        val harness2 = StartupHarness(priorState = LibraryState.USABLE, hasInMemoryLibrary = true)
+        harness2.run(cachedSongCount = 20)
+        assertEquals(0, harness2.cachedLoadAttempts)
+        assertEquals(emptyList<Boolean>(), harness2.scanRequests)
+    }
+
+    @Test
+    fun `recovery with corrupt cache requests exactly one scan`() = runBlocking {
+        // Cache load throws an exception
+        val harness =
+            StartupHarness(
+                priorState = LibraryState.USABLE,
+                revisionKnown = true,
+                lastScanFailed = false,
+            )
+
+        val decision = harness.run(loadFailure = IllegalStateException("DB corrupt"))
+
+        assertEquals(LibraryState.RECOVERY, decision.libraryState)
+        // Exactly one recovery scan requested
+        assertEquals(listOf(MusicScanRequestMode.REFRESH_WITH_CACHE), harness.scanRequests)
+        // No library emitted (cache failed)
+        assertEquals(null, harness.emittedSongCount)
+        assertEquals(1, harness.cachedLoadFailures)
+    }
+
+    @Test
+    fun `recovery after failed scan does not loop`() = runBlocking {
+        // Prior scan failed, and now cache also fails
+        val harness =
+            StartupHarness(
+                priorState = LibraryState.USABLE,
+                revisionKnown = true,
+                lastScanFailed = true,
+            )
+
+        val decision = harness.run(loadFailure = IllegalStateException("DB corrupt"))
+
+        assertEquals(LibraryState.RECOVERY, decision.libraryState)
+        // No scan requested because lastScanFailed is true (anti-storm)
+        assertEquals(emptyList<Boolean>(), harness.scanRequests)
+    }
+
+    @Test
+    fun `empty cache on USABLE state with lost revision enters recovery`() = runBlocking {
+        // Corrupt scenario: USABLE state, no revision, cache returns 0 songs
+        val harness = StartupHarness(priorState = LibraryState.USABLE, revisionKnown = false)
+
+        val decision = harness.run(cachedSongCount = 0)
+
+        // This is treated as corruption, not intentional empty
+        assertEquals(LibraryState.RECOVERY, decision.libraryState)
+        assertTrue(decision.requestScan)
+    }
 
     private class StartupHarness(
         private val priorState: LibraryState,
