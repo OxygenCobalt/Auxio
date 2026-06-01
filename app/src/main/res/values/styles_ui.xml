@@ -28,6 +28,10 @@
         <item name="tabTextAppearance">?attr/textAppearanceTitleSmallEmphasized</item>
     </style>
 
+    <style name="Widget.Auxio.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="android:textAppearance">?attr/textAppearanceTitleSmallEmphasized</item>
+    </style>
+
     <style name="Widget.Auxio.Slider" parent="Widget.Material3.Slider">
         <item name="labelBehavior">gone</item>
         <item name="tickVisible">false</item>

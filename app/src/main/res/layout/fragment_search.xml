@@ -66,6 +66,7 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/search_filter_songs"
+                    style="@style/Widget.Auxio.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -75,6 +76,7 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/search_filter_albums"
+                    style="@style/Widget.Auxio.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
@@ -83,6 +85,7 @@
                     android:text="@string/lbl_albums" />
 
                 <com.google.android.material.chip.Chip
+                    style="@style/Widget.Auxio.Chip.Filter"
                     android:id="@+id/search_filter_artists"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,6 +95,7 @@
                     android:text="@string/lbl_artists" />
 
                 <com.google.android.material.chip.Chip
+                    style="@style/Widget.Auxio.Chip.Filter"
                     android:id="@+id/search_filter_genres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,6 +105,7 @@
                     android:text="@string/lbl_genres" />
 
                 <com.google.android.material.chip.Chip
+                    style="@style/Widget.Auxio.Chip.Filter"
                     android:id="@+id/search_filter_playlists"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
