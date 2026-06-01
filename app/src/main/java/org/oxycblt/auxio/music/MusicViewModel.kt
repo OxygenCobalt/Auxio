@@ -113,13 +113,13 @@ constructor(
     /** Requests that the music library should be re-loaded while leveraging the cache. */
     fun refresh() {
         L.d("Refreshing library")
-        musicRepository.requestIndex(true)
+        musicRepository.requestIndex(MusicScanRequestMode.REFRESH_WITH_CACHE)
     }
 
     /** Requests that the music library be re-loaded without the cache. */
     fun rescan() {
         L.d("Rescanning library")
-        musicRepository.requestIndex(false)
+        musicRepository.requestIndex(MusicScanRequestMode.RESCAN_WITH_CACHE)
     }
 
     /**
