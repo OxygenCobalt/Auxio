@@ -47,9 +47,17 @@ object TopwayWidgetProviderPolicy {
     }
 
     fun hasAnyWidgetInstances(context: Context): Boolean {
-        val awm = AppWidgetManager.getInstance(context)
-        return providerComponents(context).any { component ->
-            awm.getAppWidgetIds(component).isNotEmpty()
+        // AppWidgetManager can be null on stripped/custom automotive ROMs that remove the
+        // AppWidget subsystem entirely. Return false rather than crashing.
+        @Suppress("SENSELESS_COMPARISON")
+        val awm = AppWidgetManager.getInstance(context) ?: return false
+        return try {
+            providerComponents(context).any { component ->
+                awm.getAppWidgetIds(component).isNotEmpty()
+            }
+        } catch (e: Exception) {
+            // Defensive: some custom ROMs throw when querying widget IDs.
+            false
         }
     }
 

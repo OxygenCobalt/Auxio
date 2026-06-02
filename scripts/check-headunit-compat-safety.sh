@@ -130,8 +130,14 @@ if [ -f "${topway_flavour_manifest}" ]; then
   require_topway_identity 'com.tw.music.MusicService' 'Topway MusicService fallback'
   require_topway_identity 'org.oxycblt.auxio.AuxioService' 'Topway base service override'
   require_topway_identity 'tools:node="remove"' 'Topway base service browse-filter removal'
-  if grep -Fq 'android:foregroundServiceType="specialUse"' "${topway_flavour_manifest}" || grep -Fq 'FOREGROUND_SERVICE_SPECIAL_USE' "${topway_flavour_manifest}"; then
-    echo "Topway overlay manifest must not hard-code API34-only specialUse on Android 10 target" >&2
+  # Manifest MUST declare modern specialUse compatibility for the overlay service (required by
+  # Android 14+; safely ignored on Android 10). Runtime code API-gates the constant to API 34+.
+  if ! grep -Fq 'android:foregroundServiceType="specialUse"' "${topway_flavour_manifest}"; then
+    echo "Topway overlay manifest must declare foregroundServiceType=\"specialUse\" for API 34+ forward compatibility" >&2
+    exit 1
+  fi
+  if ! grep -Fq 'FOREGROUND_SERVICE_SPECIAL_USE' "${topway_flavour_manifest}"; then
+    echo "Topway overlay manifest must declare FOREGROUND_SERVICE_SPECIAL_USE permission for API 34+ forward compatibility" >&2
     exit 1
   fi
   require_topway_identity 'com.tw.music.view.MusicWidgetProvider' 'Topway MusicWidgetProvider fallback'

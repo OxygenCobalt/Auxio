@@ -104,7 +104,7 @@ check_apk_manifest() {
       require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.LAUNCHER"' "${label} APK alias has LAUNCHER category" "${label} APK alias lacks LAUNCHER category"
       require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.APP_MUSIC"' "${label} APK alias has APP_MUSIC category" "${label} APK alias lacks APP_MUSIC category"
       require_manifest_dump_contains "$manifest_dump" 'android:name="android.media.browse.MediaBrowserService"' "${label} APK manifest has MediaBrowserService" "${label} APK manifest lacks MediaBrowserService"
-      require_manifest_dump_contains "$manifest_dump" "android:authorities="${expected_package}.image.CoverProvider"" "${label} APK manifest has applicationId CoverProvider authority" "${label} APK manifest lacks applicationId CoverProvider authority"
+      require_manifest_dump_contains "$manifest_dump" "android:authorities=\"${expected_package}.image.CoverProvider\"" "${label} APK manifest has applicationId CoverProvider authority" "${label} APK manifest lacks applicationId CoverProvider authority"
       require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.MusicService"' "${label} APK manifest has com.tw.music.MusicService fallback" "${label} APK manifest lacks com.tw.music.MusicService fallback"
       require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.view.MusicWidgetProvider"' "${label} APK manifest has com.tw.music.view.MusicWidgetProvider fallback" "${label} APK manifest lacks com.tw.music.view.MusicWidgetProvider fallback"
       ;;
@@ -183,8 +183,10 @@ require_file_contains "app/src/main/java/org/oxycblt/auxio/playback/service/Syst
 require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicBridgeReceiver.kt" "safelyExtractIncomingExtras" "Topway bridge receiver sanitises malformed extras"
 require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "Build.VERSION_CODES.UPSIDE_DOWN_CAKE" "overlay special-use API gate"
 require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE" "overlay special-use foreground type"
-require_file_not_contains "$flavour_manifest" 'android:foregroundServiceType="specialUse"' "overlay manifest must not hard-code API34-only specialUse type"
-require_file_not_contains "$flavour_manifest" "FOREGROUND_SERVICE_SPECIAL_USE" "overlay manifest must not require API34-only specialUse permission on Android 10 target"
+# Manifest MUST declare modern specialUse compatibility for the overlay service (required by
+# Android 14+; safely ignored on Android 10). Runtime code API-gates the constant to API 34+.
+require_file_contains "$flavour_manifest" 'android:foregroundServiceType="specialUse"' "overlay manifest declares specialUse for API 34+ forward compatibility"
+require_file_contains "$flavour_manifest" "FOREGROUND_SERVICE_SPECIAL_USE" "overlay manifest declares FOREGROUND_SERVICE_SPECIAL_USE for API 34+ forward compatibility"
 require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "STATUS_BAR_INSET_PX = 55" "overlay TS18 top inset clamp"
 require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "NAV_BAR_INSET_PX = 55" "overlay TS18 right inset clamp"
 require_file_contains "app/src/test/java/org/oxycblt/auxio/car/overlay/CarOverlayForegroundServiceTypePolicyTest.kt" "foregroundServiceTypeForApi(29)" "overlay API 29 foreground-service type test"

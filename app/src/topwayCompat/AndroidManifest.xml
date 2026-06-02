@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Android 14+ requires this permission when using FOREGROUND_SERVICE_TYPE_SPECIAL_USE.
+         Android 10 safely ignores this declaration. Runtime code API-gates the service type. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application>
         <!--
@@ -90,11 +93,19 @@
             </intent-filter>
         </activity-alias>
 
-        <!-- Car Floating Controls overlay service -->
+        <!-- Car Floating Controls overlay service.
+             foregroundServiceType="specialUse" is required by Android 14+ for the overlay use case.
+             Android 10 ignores this attribute. Runtime code API-gates the actual service type
+             constant so Android 10 receives 0 (legacy behaviour) and never sees API 34 constants. -->
         <service
             android:name="org.oxycblt.auxio.car.overlay.CarFloatingControlsService"
             android:exported="false"
-            tools:ignore="ForegroundServicePermission" />
+            android:foregroundServiceType="specialUse"
+            tools:ignore="ForegroundServicePermission">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Car floating playback controls overlay for head-unit displays" />
+        </service>
 
         <!-- Car Floating Controls overlay permission activity -->
         <activity
