@@ -35,12 +35,24 @@ android {
         standard {
             dimension "distribution"
             buildConfigField "boolean", "TOPWAY_TWMUSIC_FLAVOR", "false"
+            buildConfigField "boolean", "TOPWAY_TWMEDIA_FLAVOR", "false"
+            buildConfigField "boolean", "TOPWAY_COMPAT_FLAVOR", "false"
         }
 
         topwayTwMusic {
             dimension "distribution"
             applicationId "com.tw.music"
             buildConfigField "boolean", "TOPWAY_TWMUSIC_FLAVOR", "true"
+            buildConfigField "boolean", "TOPWAY_TWMEDIA_FLAVOR", "false"
+            buildConfigField "boolean", "TOPWAY_COMPAT_FLAVOR", "true"
+        }
+
+        topwayTwMedia {
+            dimension "distribution"
+            applicationId "com.tw.media"
+            buildConfigField "boolean", "TOPWAY_TWMUSIC_FLAVOR", "false"
+            buildConfigField "boolean", "TOPWAY_TWMEDIA_FLAVOR", "true"
+            buildConfigField "boolean", "TOPWAY_COMPAT_FLAVOR", "true"
         }
     }
 
@@ -117,6 +129,23 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+        }
+    }
+
+
+    sourceSets {
+        // Reuse the same thin Topway/DoFun wrapper source set for both fixed DoFun entries.
+        // The active applicationId supplies either com.tw.music or com.tw.media while the
+        // exported class remains com.tw.music.MusicActivity.
+        topwayTwMusic {
+            manifest.srcFile "src/topwayCompat/AndroidManifest.xml"
+            java.srcDirs += ["src/topwayCompat/java"]
+            res.srcDirs += ["src/topwayCompat/res"]
+        }
+        topwayTwMedia {
+            manifest.srcFile "src/topwayCompat/AndroidManifest.xml"
+            java.srcDirs += ["src/topwayCompat/java"]
+            res.srcDirs += ["src/topwayCompat/res"]
         }
     }
 

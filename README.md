@@ -49,27 +49,29 @@ Auxio-TS keeps Auxio as the runtime music player base and adds TS18/Topway/DoFun
 | Upstream base | [OxygenCobalt/Auxio](https://github.com/OxygenCobalt/Auxio) |
 | Primary compatibility target | DoFun Variety Theme / `com.dofun.variety` |
 | Stock app replacement contract | `twmusic` / `com.tw.music` |
-| Topway release package | `com.tw.music` |
+| Topway music release package | `com.tw.music` |
+| Topway media alternate package | `com.tw.media` |
 | Topway launcher/activity component | `com.tw.music.MusicActivity` |
-| Topway release variant | `topwayTwMusicRelease` |
+| Topway release variants | `topwayTwMusicRelease`, `topwayTwMediaRelease` |
 | Standard development variant | `org.oxycblt.auxio` |
 
 ### Variant model
 
-Auxio-TS has two separate identities:
+Auxio-TS has three release identities:
 
 | Variant | Package identity | Purpose |
 | --- | --- | --- |
 | `standard` | `org.oxycblt.auxio` | Normal Auxio-derived development/upstream baseline |
-| `topwayTwMusic` | `com.tw.music` | TS18/Topway/DoFun-compatible APK intended to stand in for stock `twmusic` |
+| `topwayTwMusic` | `com.tw.music` | Exact TS18/Topway/DoFun stock `twmusic` replacement identity; stock system priv-app conflicts must be managed |
+| `topwayTwMedia` | `com.tw.media` | DoFun alternate fixed entry exposing `com.tw.media/com.tw.music.MusicActivity`; not a universal no-root bypass |
 
-Only the dedicated Topway/DoFun compatibility variant uses the `com.tw.music` package identity.
+Only dedicated Topway/DoFun compatibility variants use stock-style identities. The standard variant remains `org.oxycblt.auxio`; `topwayTwMusicRelease` is `com.tw.music`, and `topwayTwMediaRelease` is `com.tw.media`.
 
 ## Compatibility scope
 
 Auxio-TS targets compatibility surfaces needed by DoFun Variety and TS18/Topway launchers, such as:
 
-- `com.tw.music` package identity for the compatibility APK
+- `com.tw.music` and `com.tw.media` package identities for dedicated compatibility APKs
 - `com.tw.music.MusicActivity` launcher/activity alias
 - Android `MediaSession` / `MediaBrowserService`
 - Topway-style metadata/progress broadcasts
@@ -95,7 +97,7 @@ Initial setup:
 ```sh
 git submodule update --init --recursive
 bash scripts/prepare-ci-environment.sh
-````
+```
 
 Build the standard development APK:
 
@@ -107,6 +109,7 @@ Build the TS18/Topway/DoFun compatibility APK:
 
 ```sh
 ./gradlew :app:assembleTopwayTwMusicRelease
+./gradlew :app:assembleTopwayTwMediaRelease
 ```
 
 For CI-equivalent local checks:

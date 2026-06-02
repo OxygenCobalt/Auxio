@@ -65,7 +65,7 @@ class Auxio : Application() {
         )
 
         // Register car floating controls visibility hooks for the Topway/TS18 variant.
-        if (BuildConfig.TOPWAY_TWMUSIC_FLAVOR) {
+        if (BuildConfig.TOPWAY_COMPAT_FLAVOR) {
             try {
                 val companionClass =
                     Class.forName(

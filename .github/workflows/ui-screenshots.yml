@@ -10,6 +10,7 @@ name: UI Screenshots (Roborazzi)
 # Usage:
 #   workflow_dispatch → choose a target_ref, variant, and Roborazzi task.
 #   variant=topway_twmusic runs record/verify/compareRoborazziTopwayTwMusicDebug.
+#   variant=topway_twmedia runs record/verify/compareRoborazziTopwayTwMediaDebug.
 #   variant=standard runs the matching StandardDebug task.
 #   record   — capture screenshots for UI review (default; download the output artifacts).
 #   verify   — compare against committed baselines; fails on visual regression.
@@ -30,6 +31,7 @@ on:
         type: choice
         options:
           - topway_twmusic
+          - topway_twmedia
           - standard
       roborazzi_task:
         description: "Roborazzi operation"
@@ -120,6 +122,7 @@ jobs:
           case "${VARIANT}" in
             standard) suffix="StandardDebug" ;;
             topway_twmusic) suffix="TopwayTwMusicDebug" ;;
+            topway_twmedia) suffix="TopwayTwMediaDebug" ;;
             *) echo "::error::Unknown variant: ${VARIANT}"; exit 1 ;;
           esac
           case "${ROBORAZZI_TASK}" in

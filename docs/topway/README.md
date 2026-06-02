@@ -13,7 +13,7 @@ Use these files before prompting or implementing TS18/TWTHEME music compatibilit
 
 The decompile shows **concrete Topway compatibility contracts**. Generic Android MediaSession/AppWidget compatibility is still necessary, but it is no longer sufficient for Auxio-TS compatibility goals.
 
-The safe implementation target is an isolated Auxio-TS Topway bridge that mirrors the observable contract without copying smali, impersonating `com.tw.music`, using `android.uid.system`, or binding to `com.tw.service.xt` as a production dependency.
+The safe implementation target is an isolated Auxio-TS Topway bridge that mirrors the observable contract without copying smali, requiring `android.uid.system`, or binding to `com.tw.service.xt` as a production dependency. Dedicated Topway/DoFun release variants may intentionally use stock-compatible public package identities (`com.tw.music` or `com.tw.media`) only through the documented thin wrapper boundary.
 
 
 ## Related DoFun/TS18 APK reference
@@ -24,4 +24,4 @@ For the current DoFun Variety launcher/theme target and the stock `twmusic` repl
 - [`../TS18_APK_REFERENCE.md`](../TS18_APK_REFERENCE.md)
 - [`../reference/ts18-apk/`](../reference/ts18-apk/)
 
-The DoFun APK fixes the music hotseat to `com.tw.music` / `com.tw.music.MusicActivity`; this is now the primary compatibility requirement for the Topway/DoFun release variant.
+The DoFun APK fixes music entries to `com.tw.music/com.tw.music.MusicActivity` and `com.tw.media/com.tw.music.MusicActivity`; these are the package/component compatibility requirements for the dedicated Topway/DoFun release variants.

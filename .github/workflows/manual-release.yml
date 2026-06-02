@@ -281,7 +281,7 @@ jobs:
           ORG_GRADLE_PROJECT_releaseKeyPassword: ${{ secrets.KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease
+          ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease :app:assembleTopwayTwMediaRelease
 
       - name: Validate TS18 APK reference contracts
         shell: bash
@@ -300,10 +300,12 @@ jobs:
           declare -A variant_dirs=(
             [standard]="app/build/outputs/apk/standard/release"
             [topway_twmusic]="app/build/outputs/apk/topwayTwMusic/release"
+            [topway_twmedia]="app/build/outputs/apk/topwayTwMedia/release"
           )
           declare -A asset_names=(
             [standard]="Auxio-TS-${{ steps.version.outputs.release_tag }}-standard-release.apk"
             [topway_twmusic]="Auxio-TS-${{ steps.version.outputs.release_tag }}-topway-twmusic-release.apk"
+            [topway_twmedia]="Auxio-TS-${{ steps.version.outputs.release_tag }}-topway-twmedia-release.apk"
           )
 
           BUILD_TOOLS_DIR="$(find "${ANDROID_HOME}"/build-tools -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n1)"
@@ -315,7 +317,7 @@ jobs:
 
           asset_paths=()
           asset_names_out=()
-          for variant in standard topway_twmusic; do
+          for variant in standard topway_twmusic topway_twmedia; do
             apk_dir="${variant_dirs[$variant]}"
             mapfile -t APKS < <(find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned*' | sort)
             if (( ${#APKS[@]} == 0 )); then
@@ -448,10 +450,12 @@ jobs:
             echo
             echo "## APK variants"
             echo
-            printf -- "- \`%s\` keeps the normal Auxio-TS package identity (\`org.oxycblt.auxio\`).\n" \
+            printf -- '- `%s` keeps the normal Auxio-TS package identity (`org.oxycblt.auxio`).\n' \
               "Auxio-TS-${RELEASE_TAG}-standard-release.apk"
-            printf -- "- \`%s\` is the Topway/DoFun compatibility APK and installs as \`com.tw.music\`; it may conflict with a stock \`com.tw.music\` package already installed on a head unit.\n" \
+            printf -- '- `%s` is the exact Topway/DoFun stock replacement identity and installs as `com.tw.music`; it conflicts with locked stock system priv-app installs unless package state/signing is managed.\n' \
               "Auxio-TS-${RELEASE_TAG}-topway-twmusic-release.apk"
+            printf -- '- `%s` targets DoFun'\''s alternate fixed entry and installs as `com.tw.media` while exposing `com.tw.music.MusicActivity`; it is not a universal no-root bypass and may conflict on some firmware.\n' \
+              "Auxio-TS-${RELEASE_TAG}-topway-twmedia-release.apk"
           } >> "${NOTES_FILE}"
 
           echo "Release notes generated in $(( $(date +%s) - start_seconds )) seconds"
@@ -544,6 +548,7 @@ jobs:
           expected_assets=(
             "Auxio-TS-${RELEASE_TAG}-standard-release.apk"
             "Auxio-TS-${RELEASE_TAG}-topway-twmusic-release.apk"
+            "Auxio-TS-${RELEASE_TAG}-topway-twmedia-release.apk"
           )
 
           gh release view "${RELEASE_TAG}" --json tagName,isDraft,isPrerelease,url,assets

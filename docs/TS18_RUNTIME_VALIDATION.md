@@ -153,3 +153,60 @@ Keep runtime evidence outside the repository unless a maintainer explicitly asks
 | Process restart recovers | ☐ | ☐ | |
 | Launcher restart stable | ☐ | ☐ | |
 | Reboot stable | ☐ | ☐ | |
+
+## Exact-device post-PR#53 validation addendum
+
+Use `docs/CODEX_TS18_DEVICE_CONTEXT.md` and `docs/TS18_INSTALLATION_CONSTRAINTS.md` as the starting point for the `s9863a1h10` Android 10 device.
+
+### Static or ADB-shell component checks
+
+```sh
+adb shell cmd package resolve-activity --brief com.tw.music/com.tw.music.MusicActivity
+adb shell cmd package resolve-activity --brief com.tw.media/com.tw.music.MusicActivity
+adb shell dumpsys package com.tw.music | sed -n '/Package \[com.tw.music\]/,/User 0/p'
+adb shell dumpsys package com.tw.media | sed -n '/Package \[com.tw.media\]/,/User 0/p'
+```
+
+### Package-management lanes
+
+- TermOne/normal app UID can validate app-visible storage, overlay permission flow, and local diagnostics, but cannot disable or remove stock system packages.
+- ADB shell or Shizuku can manage user package state when available.
+- Root, firmware/system-image control, or matching OEM signature is required for deeper system priv-app replacement assumptions.
+- Prefer reversible disable before uninstall-for-user:
+
+```sh
+adb shell pm disable-user --user 0 com.tw.music
+adb shell pm enable com.tw.music
+adb shell cmd package install-existing --user 0 com.tw.music
+```
+
+
+### Expected package/service resolution
+
+```sh
+adb shell cmd package resolve-service --brief -a android.media.browse.MediaBrowserService com.tw.music
+adb shell cmd package resolve-service --brief -a android.media.browse.MediaBrowserService com.tw.media
+```
+
+Expected for release variants: `com.tw.music/com.tw.music.MusicService` for `topwayTwMusicRelease` and `com.tw.media/com.tw.music.MusicService` for `topwayTwMediaRelease`. If `org.oxycblt.auxio.AuxioService` also resolves as an exported browse service in either Topway-compatible release, treat it as a duplicate-service failure and roll back to the previous APK or re-enable the stock package with the recovery commands in `docs/TS18_INSTALLATION_CONSTRAINTS.md`.
+
+
+### Android 10 storage and USB/UDisk checks
+
+```sh
+adb shell cmd media_session list-sessions 2>/dev/null || true
+adb shell content query --uri content://media/external/audio/media --projection _id:_display_name:relative_path:volume_name --where "is_music=1" | head -50
+adb shell find /sdcard/Music /storage/emulated/0/Music /storage/usbdisk0 -maxdepth 2 -type f 2>/dev/null | head -50
+```
+
+Expected: songs copied to local `/sdcard/Music` and to `/storage/usbdisk0` appear either in MediaStore query output or in the filesystem probe. Failure interpretation: if `/storage/usbdisk0` files exist but do not appear in MediaStore after a media rescan/reboot, the app may need a user-selected SAF folder lane for that firmware; do not add broad storage permissions without a separate evidence-backed design.
+
+### Runtime checks that require the real TS18 unit
+
+- Installability of `topwayTwMusicRelease` over or alongside the stock `/system/priv-app/com.tw.music_a41e/com.tw.music_a41e.apk` state.
+- Whether `topwayTwMediaRelease` avoids conflicts on a given firmware; do not assume it is a no-root workaround.
+- DoFun hotseat/widget launch for both `com.tw.music/com.tw.music.MusicActivity` and `com.tw.media/com.tw.music.MusicActivity`.
+- Duplicate media-session/service behaviour: inspect `adb shell dumpsys media_session`, start playback from DoFun/widget, and verify only one active Auxio playback session controls audio. Expected: the Topway-compatible APK exposes `com.tw.music.MusicService` as the external browse component; `org.oxycblt.auxio.AuxioService` should not appear as an additional external browse-service resolution in Topway variants.
+- Duplicate service lifecycle/notification behaviour: inspect `adb shell dumpsys activity services | grep -E 'AuxioService|MusicService'` and `adb shell dumpsys notification | grep -E 'Auxio|com.tw.music|com.tw.media'` before and after DoFun/widget actions. Failure interpretation: two simultaneous foreground playback services or duplicate media notifications means the wrapper/base-service routing needs another implementation pass.
+- Music-library visibility for `/sdcard/Music`, `/storage/usbdisk0`, and USB/UDisk scanning on Android 10.
+- Overlay permission grant/revoke, 1280x720 bounds with about 55px top/right system bars, background-start behaviour, boot completed, and ACC wake/restore.

@@ -109,9 +109,9 @@ jobs:
     - name: Build standard debug APK with Gradle
       run: ./gradlew --no-daemon --stacktrace :app:assembleStandardDebug
     - name: Build Topway/DoFun debug APK with Gradle
-      run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicDebug
+      run: ./gradlew --no-daemon --stacktrace :app:assembleTopwayTwMusicDebug :app:assembleTopwayTwMediaDebug
     - name: Build release APKs with Gradle
-      run: ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease
+      run: ./gradlew --no-daemon --stacktrace :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease :app:assembleTopwayTwMediaRelease
     - name: Validate TS18 APK reference contracts
       run: bash ./scripts/check-ts18-apk-reference-contracts.sh
     - name: Validate DoFun/Topway compatibility sources
@@ -134,5 +134,6 @@ jobs:
         path: |
           ./app/build/outputs/apk/standard/debug/*.apk
           ./app/build/outputs/apk/topwayTwMusic/debug/*.apk
+          ./app/build/outputs/apk/topwayTwMedia/debug/*.apk
         if-no-files-found: error
         retention-days: 7

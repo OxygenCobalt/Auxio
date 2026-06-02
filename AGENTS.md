@@ -139,7 +139,7 @@ For TS18/TW/TWTHEME claims, include both labels:
 Always distinguish between: product requirement / Android-standard implementation / TS18 runtime validation / native-private investigation / production eligibility.
 
 ## Hard constraints
-- Do not change the standard Auxio/Auxio-TS package identity to `com.tw.music`; only a dedicated, clearly named Topway/DoFun compatibility variant may install as `com.tw.music`.
+- Do not change the standard Auxio/Auxio-TS package identity to `com.tw.music` or `com.tw.media`; only dedicated, clearly named Topway/DoFun compatibility variants may install as those package IDs.
 - Do not require privileged/system UID or platform signing.
 - Do not copy decompiled smali into app code.
 - Do not spread TS18 conditionals through core playback/library code.
@@ -284,7 +284,7 @@ Agents should use the screenshot workflow when visual validation matters.
 - Workflow: `UI Screenshots (Roborazzi)` (`.github/workflows/ui-screenshots.yml`)
 - Run branch/ref selector on `dev`
 - Set `target_ref` to the PR branch or commit SHA
-- Use `variant=standard` or `variant=topway_twmusic`; use `roborazzi_task=record` for review artifacts, or `verify`/`compare` for regression checks
+- Use `variant=standard`, `variant=topway_twmusic`, or `variant=topway_twmedia`; use `roborazzi_task=record` for review artifacts, or `verify`/`compare` for regression checks
 - Download and inspect artifacts `auxio-ts-roborazzi-outputs` and `auxio-ts-roborazzi-reports`
 
 Screenshot tooling must remain development-only. Do not add screenshot probes, ADB logic, or visual-test fixtures to the production runtime path unless explicitly approved.
@@ -364,3 +364,15 @@ Always report explicitly:
 
 
 2026-05-24 implementation note: isolated Topway bridge runtime wiring now exists; keep Topway strings limited to approved bridge/test/docs paths and preserve no-binder/no-impersonation safety boundaries.
+
+## Seeded TS18 exact-device context
+
+Agents must read these concise, redacted context files before exact-device TS18 install/runtime work:
+
+- `docs/CODEX_TS18_DEVICE_CONTEXT.md`
+- `docs/TS18_INSTALLATION_CONSTRAINTS.md`
+- `docs/evidence/ts18-device-profile/s9863a1h10-android10-termone-2026-05-17.md`
+
+Direct dependencies on external/vendor `com.tw.*` APIs remain forbidden in production code. Thin compatibility wrapper classes under approved Topway/DoFun source sets are allowed only to expose stock-compatible package/class/component names and delegate into Auxio-owned code. Approved wrapper areas include `app/src/topwayCompat/java/com/tw/music/**` (and any future explicitly shared Topway/DoFun wrapper equivalent).
+
+`com.tw.media` is an alternate DoFun fixed-entry variant, not a general no-root bypass. It may conflict on some firmware and still requires real-device validation. Private/native integration remains not for production by default and requires the evidence-gated tier process. Runtime APKs must not include diagnostics/probe/capture tooling.
