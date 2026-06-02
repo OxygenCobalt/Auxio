@@ -25,32 +25,44 @@ import timber.log.Timber as L
 
 /**
  * Application-level activity lifecycle callbacks that automatically hide/show the car floating
- * overlay when Auxio's activity enters/leaves the foreground. Only sends signals when the feature
- * is enabled to avoid unnecessary service starts.
+ * overlay when Auxio's activities transition between foreground/background. Uses a started-activity
+ * counter to detect app-level foreground/background transitions (0→1 and 1→0) rather than
+ * individual activity pauses/resumes, avoiding brief overlay flickers during in-app navigation.
  */
 class CarOverlayVisibilityHooks : Application.ActivityLifecycleCallbacks {
 
-    override fun onActivityResumed(activity: Activity) {
-        val prefs = CarOverlayPrefs.from(activity)
-        if (prefs.enabled) {
-            L.d("Auxio activity resumed, signalling overlay to hide")
-            CarFloatingControlsService.setAuxioForeground(activity, true)
+    private var startedActivityCount = 0
+
+    override fun onActivityStarted(activity: Activity) {
+        val previous = startedActivityCount
+        startedActivityCount++
+        if (previous == 0) {
+            // App entered foreground (0→1 transition).
+            val prefs = CarOverlayPrefs.from(activity)
+            if (prefs.enabled) {
+                L.d("Auxio entered foreground, signalling overlay to hide")
+                CarFloatingControlsService.setAuxioForeground(activity, true)
+            }
         }
     }
 
-    override fun onActivityPaused(activity: Activity) {
-        val prefs = CarOverlayPrefs.from(activity)
-        if (prefs.enabled) {
-            L.d("Auxio activity paused, signalling overlay to show")
-            CarFloatingControlsService.setAuxioForeground(activity, false)
+    override fun onActivityStopped(activity: Activity) {
+        startedActivityCount = (startedActivityCount - 1).coerceAtLeast(0)
+        if (startedActivityCount == 0) {
+            // App entered background (1→0 transition).
+            val prefs = CarOverlayPrefs.from(activity)
+            if (prefs.enabled) {
+                L.d("Auxio entered background, signalling overlay to show")
+                CarFloatingControlsService.setAuxioForeground(activity, false)
+            }
         }
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
 
-    override fun onActivityStarted(activity: Activity) {}
+    override fun onActivityResumed(activity: Activity) {}
 
-    override fun onActivityStopped(activity: Activity) {}
+    override fun onActivityPaused(activity: Activity) {}
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 

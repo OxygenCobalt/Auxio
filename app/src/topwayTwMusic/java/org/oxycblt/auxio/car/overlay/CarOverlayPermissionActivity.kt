@@ -31,7 +31,7 @@ import org.oxycblt.auxio.R
 
 /**
  * Simple activity to guide users through the overlay permission setup. Checks permission on resume
- * and starts the overlay service when granted.
+ * and, if a pending-enable flag is set, enables and starts the overlay service when granted.
  */
 class CarOverlayPermissionActivity : AppCompatActivity() {
 
@@ -40,30 +40,32 @@ class CarOverlayPermissionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val density = resources.displayMetrics.density
+        val padPx = (PADDING_DP * density).toInt()
+        val marginPx = (MARGIN_DP * density).toInt()
+
         val layout =
             LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                val pad = (24 * resources.displayMetrics.density).toInt()
-                setPadding(pad, pad, pad, pad)
+                setPadding(padPx, padPx, padPx, padPx)
             }
 
         val title =
             TextView(this).apply {
                 text = getString(R.string.car_overlay_permission_title)
-                textSize = 20f
+                setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, TITLE_TEXT_SP)
             }
         layout.addView(title)
 
         statusText =
             TextView(this).apply {
-                textSize = 16f
-                val topMargin = (16 * resources.displayMetrics.density).toInt()
+                setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, BODY_TEXT_SP)
                 layoutParams =
                     LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                         )
-                        .apply { setMargins(0, topMargin, 0, topMargin) }
+                        .apply { setMargins(0, marginPx, 0, marginPx) }
             }
         layout.addView(statusText)
 
@@ -86,10 +88,13 @@ class CarOverlayPermissionActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val prefs = CarOverlayPrefs.from(this)
         if (Settings.canDrawOverlays(this)) {
             statusText.text = getString(R.string.car_overlay_permission_granted)
-            val prefs = CarOverlayPrefs.from(this)
-            if (prefs.enabled) {
+            // Complete the pending-enable flow if permission was just granted.
+            if (prefs.pendingEnable) {
+                prefs.pendingEnable = false
+                prefs.enabled = true
                 CarFloatingControlsService.start(this)
             }
         } else {
@@ -101,6 +106,13 @@ class CarOverlayPermissionActivity : AppCompatActivity() {
         val intent =
             Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
         startActivity(intent)
+    }
+
+    private companion object {
+        const val PADDING_DP = 24f
+        const val MARGIN_DP = 16f
+        const val TITLE_TEXT_SP = 20f
+        const val BODY_TEXT_SP = 16f
     }
 
     companion object {

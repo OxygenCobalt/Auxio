@@ -25,8 +25,12 @@ import android.provider.Settings
 import timber.log.Timber as L
 
 /**
- * Restores the car floating controls overlay after device boot or ACC wake if the feature is
- * enabled and overlay permission is still granted.
+ * Restores the car floating controls overlay after system boot (`ACTION_BOOT_COMPLETED`) if the
+ * feature is enabled and overlay permission is still granted.
+ *
+ * Note: This receiver only handles standard Android boot. ACC sleep/wake events on TS18/Topway
+ * devices are handled by Android's standard lifecycle (the service uses `START_NOT_STICKY` and the
+ * boot receiver restores state on full system boot).
  */
 class CarOverlayBootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

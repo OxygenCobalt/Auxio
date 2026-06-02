@@ -21,16 +21,26 @@ package org.oxycblt.auxio.car.overlay
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 
 /**
  * SharedPreferences wrapper for car floating controls overlay configuration. Manages enablement,
  * position, opacity, and visibility settings.
+ *
+ * Uses [PreferenceManager.getDefaultSharedPreferences] so that the `car_overlay_enabled` key is
+ * shared with the AndroidX `SwitchPreferenceCompat` declared in `preferences_ui.xml`. This avoids
+ * split-brain between the preference UI and runtime state.
  */
 class CarOverlayPrefs private constructor(private val prefs: SharedPreferences) {
 
     var enabled: Boolean
         get() = prefs.getBoolean(KEY_ENABLED, false)
         set(value) = prefs.edit { putBoolean(KEY_ENABLED, value) }
+
+    /** Pending-enable flag: permission activity sets this when permission is being requested. */
+    var pendingEnable: Boolean
+        get() = prefs.getBoolean(KEY_PENDING_ENABLE, false)
+        set(value) = prefs.edit { putBoolean(KEY_PENDING_ENABLE, value) }
 
     var hideWhileAuxioForeground: Boolean
         get() = prefs.getBoolean(KEY_HIDE_WHILE_AUXIO_FG, true)
@@ -56,21 +66,23 @@ class CarOverlayPrefs private constructor(private val prefs: SharedPreferences) 
     }
 
     companion object {
-        private const val PREFS_NAME = "auxio_car_overlay"
-        private const val KEY_ENABLED = "car_overlay_enabled"
+        const val KEY_ENABLED = "car_overlay_enabled"
+        private const val KEY_PENDING_ENABLE = "car_overlay_pending_enable"
         private const val KEY_HIDE_WHILE_AUXIO_FG = "car_overlay_hide_auxio_fg"
         private const val KEY_POSITION_X = "car_overlay_x"
         private const val KEY_POSITION_Y = "car_overlay_y"
         private const val KEY_OPACITY = "car_overlay_opacity"
 
-        const val DEFAULT_X = 24
-        const val DEFAULT_Y = 320
+        // Top-center anchor for TS18 (1280x720, 55px status bar, 55px right nav).
+        // Usable width = 1280 - 55 = 1225; center = (1225 - ~350 overlay) / 2 ≈ 437.
+        const val DEFAULT_X = 437
+        const val DEFAULT_Y = 55
         const val DEFAULT_OPACITY = 90
         const val MIN_OPACITY = 30
         const val MAX_OPACITY = 100
 
         fun from(context: Context): CarOverlayPrefs {
-            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
             return CarOverlayPrefs(prefs)
         }
     }

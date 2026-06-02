@@ -36,31 +36,41 @@ object CarOverlaySettings {
      * Enables or disables the car floating controls. When enabling, checks overlay permission and
      * launches the permission activity if not granted. When disabling, stops the overlay service.
      *
-     * @return true if the operation completed, false if permission is needed (activity launched)
+     * @return true if the operation completed immediately (enable succeeded or disable completed),
+     *   false if permission is needed (activity launched, switch should revert to unchecked)
      */
     fun setEnabled(context: Context, enabled: Boolean): Boolean {
         val prefs = CarOverlayPrefs.from(context)
 
         if (enabled) {
             if (!Settings.canDrawOverlays(context)) {
-                // Launch permission activity - don't enable until permission is granted
+                // Mark pending-enable so PermissionActivity knows to enable after grant.
+                prefs.pendingEnable = true
                 context.startActivity(CarOverlayPermissionActivity.intent(context))
+                // Return false: switch should NOT remain enabled until permission is granted.
                 return false
             }
             prefs.enabled = true
+            prefs.pendingEnable = false
             CarFloatingControlsService.start(context)
         } else {
             prefs.enabled = false
+            prefs.pendingEnable = false
             CarFloatingControlsService.stop(context)
         }
         return true
     }
 
+    /**
+     * Resets overlay position to default. Updates prefs unconditionally. Only sends a position
+     * update to the service if it is enabled and running (does not cold-start the service).
+     */
     fun resetPosition(context: Context) {
         val prefs = CarOverlayPrefs.from(context)
         prefs.resetPosition()
+        // Only notify a running service — do not cold-start via startService.
         if (prefs.enabled && Settings.canDrawOverlays(context)) {
-            CarFloatingControlsService.resetPosition(context)
+            CarFloatingControlsService.resetPositionIfRunning(context)
         }
     }
 

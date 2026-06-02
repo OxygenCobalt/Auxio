@@ -23,6 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.graphics.PixelFormat
+import android.graphics.Point
+import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.view.Gravity
@@ -64,7 +66,7 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null) {
             // Null intent: system restarted the service after process death.
-            // Re-establish the overlay if still enabled and permitted.
+            // Re-establish the overlay if still enabled and permitted; otherwise stop cleanly.
             if (!prefs.enabled || !Settings.canDrawOverlays(this)) {
                 stopSelfCleanly()
                 return START_NOT_STICKY
@@ -92,13 +94,12 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
                 if (isOverlayAttached) hideOverlay() else showOverlayIfAllowed()
             }
             ACTION_RESET_POSITION -> {
-                prefs.resetPosition()
+                // Only reposition a live overlay. Position prefs are already updated by caller.
                 if (isOverlayAttached) {
-                    updateOverlayPosition(prefs.positionX, prefs.positionY)
-                }
-                // Don't keep the service running just for a position reset
-                if (!prefs.enabled) {
-                    stopSelfCleanly()
+                    val (cx, cy) = clampPosition(prefs.positionX, prefs.positionY)
+                    prefs.positionX = cx
+                    prefs.positionY = cy
+                    updateOverlayPosition(cx, cy)
                 }
             }
             ACTION_AUXIO_FOREGROUND_CHANGED -> {
@@ -109,7 +110,10 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
                     showOverlayIfAllowed()
                 }
             }
-            else -> L.w("Unknown action: ${intent.action}")
+            else -> {
+                L.w("Unknown action: ${intent.action}, stopping idle service")
+                stopSelfCleanly()
+            }
         }
         return START_NOT_STICKY
     }
@@ -125,7 +129,11 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
     // --- Overlay lifecycle ---
 
     private fun startOverlayRuntime() {
-        promoteForeground()
+        if (!promoteForeground()) {
+            // Foreground promotion failed — stop cleanly.
+            stopSelfCleanly()
+            return
+        }
         if (!isOverlayAttached) {
             showOverlayIfAllowed()
         }
@@ -137,7 +145,9 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
 
     private fun showOverlayIfAllowed() {
         if (!Settings.canDrawOverlays(this)) {
-            L.w("Cannot show overlay: permission revoked")
+            L.w("Cannot show overlay: permission revoked, stopping")
+            removeOverlay()
+            stopSelfCleanly()
             return
         }
         if (isOverlayAttached) return
@@ -147,13 +157,23 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
         view.applyOpacity(prefs.opacityPercent)
 
         val params = createLayoutParams()
-        params.x = prefs.positionX
-        params.y = prefs.positionY
+        val (cx, cy) = clampPosition(prefs.positionX, prefs.positionY)
+        params.x = cx
+        params.y = cy
+        // Persist clamped position in case old prefs were out-of-bounds.
+        prefs.positionX = cx
+        prefs.positionY = cy
 
-        windowManager?.addView(view, params)
+        try {
+            windowManager?.addView(view, params)
+        } catch (e: Exception) {
+            L.e(e, "Failed to add overlay view, stopping")
+            stopSelfCleanly()
+            return
+        }
         overlayView = view
         isOverlayAttached = true
-        L.d("Overlay attached at (${params.x}, ${params.y})")
+        L.d("Overlay attached at ($cx, $cy)")
     }
 
     private fun hideOverlay() {
@@ -167,6 +187,8 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
                 windowManager?.removeView(view)
             } catch (e: IllegalArgumentException) {
                 L.w("View already removed from window")
+            } catch (e: Exception) {
+                L.w(e, "Unexpected error removing overlay view")
             }
         }
         overlayView = null
@@ -182,6 +204,8 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
             windowManager?.updateViewLayout(view, params)
         } catch (e: IllegalArgumentException) {
             L.w("Cannot update layout: view not attached")
+        } catch (e: Exception) {
+            L.w(e, "Unexpected error updating overlay position")
         }
     }
 
@@ -190,16 +214,41 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT,
             )
             .apply { gravity = Gravity.TOP or Gravity.START }
     }
 
+    // --- Position clamping ---
+
+    /**
+     * Clamps overlay coordinates to the visible usable area, accounting for TS18-style system bars.
+     * On Android 10 fallback, uses display size minus known TS18 bar insets.
+     */
+    private fun clampPosition(x: Int, y: Int): Pair<Int, Int> {
+        val display = windowManager?.defaultDisplay
+        val size = Point()
+        display?.getSize(size)
+        val screenW = if (size.x > 0) size.x else DEFAULT_SCREEN_WIDTH
+        val screenH = if (size.y > 0) size.y else DEFAULT_SCREEN_HEIGHT
+
+        // Approximate usable area accounting for system bars.
+        val minX = 0
+        val minY = STATUS_BAR_INSET_PX
+        val maxX = (screenW - NAV_BAR_INSET_PX - OVERLAY_ESTIMATED_WIDTH_PX).coerceAtLeast(minX)
+        val maxY = (screenH - OVERLAY_ESTIMATED_HEIGHT_PX).coerceAtLeast(minY)
+
+        return x.coerceIn(minX, maxX) to y.coerceIn(minY, maxY)
+    }
+
     // --- Foreground notification ---
 
-    private fun promoteForeground() {
+    /**
+     * Promotes the service to foreground. Returns true on success, false if foreground promotion
+     * failed (e.g., on Android 10 where specialUse is not supported but manifest declares it).
+     */
+    private fun promoteForeground(): Boolean {
         val nm = NotificationManagerCompat.from(this)
         val channel =
             NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
@@ -219,12 +268,14 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build()
 
-        ServiceCompat.startForeground(
-            this,
-            NOTIFICATION_ID,
-            notification,
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
-        )
+        return try {
+            val serviceType = foregroundServiceType()
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, serviceType)
+            true
+        } catch (e: Exception) {
+            L.e(e, "Failed to promote to foreground")
+            false
+        }
     }
 
     private fun stopSelfCleanly() {
@@ -249,8 +300,14 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
     override fun onDragFinished(x: Int, y: Int) {
         val view = overlayView ?: return
         val params = view.layoutParams as? WindowManager.LayoutParams ?: return
-        prefs.positionX = params.x
-        prefs.positionY = params.y
+        val (cx, cy) = clampPosition(params.x, params.y)
+        params.x = cx
+        params.y = cy
+        try {
+            windowManager?.updateViewLayout(view, params)
+        } catch (_: Exception) {}
+        prefs.positionX = cx
+        prefs.positionY = cy
     }
 
     override fun onPrevious() {
@@ -292,6 +349,14 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
         private const val CHANNEL_ID = "auxio_car_overlay_channel"
         private const val NOTIFICATION_ID = 42
 
+        // TS18-specific defaults for position clamping.
+        private const val DEFAULT_SCREEN_WIDTH = 1280
+        private const val DEFAULT_SCREEN_HEIGHT = 720
+        private const val STATUS_BAR_INSET_PX = 55
+        private const val NAV_BAR_INSET_PX = 55
+        private const val OVERLAY_ESTIMATED_WIDTH_PX = 350
+        private const val OVERLAY_ESTIMATED_HEIGHT_PX = 80
+
         const val ACTION_START = BuildConfig.APPLICATION_ID + ".car.overlay.START"
         const val ACTION_STOP = BuildConfig.APPLICATION_ID + ".car.overlay.STOP"
         const val ACTION_SHOW = BuildConfig.APPLICATION_ID + ".car.overlay.SHOW"
@@ -301,6 +366,19 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
         const val ACTION_AUXIO_FOREGROUND_CHANGED =
             BuildConfig.APPLICATION_ID + ".car.overlay.AUXIO_FG_CHANGED"
         const val EXTRA_AUXIO_FOREGROUND = "extra_auxio_foreground"
+
+        /**
+         * Returns the appropriate foreground service type for the current API level.
+         * `FOREGROUND_SERVICE_TYPE_SPECIAL_USE` is only valid on API 34+. On older APIs, use 0
+         * (none) which is the legacy behaviour and is accepted by ServiceCompat.
+         */
+        fun foregroundServiceType(): Int {
+            return if (Build.VERSION.SDK_INT >= 34) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            } else {
+                0
+            }
+        }
 
         fun start(context: Context) {
             if (!Settings.canDrawOverlays(context)) return
@@ -313,19 +391,42 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
             context.stopService(Intent(context, CarFloatingControlsService::class.java))
         }
 
+        /**
+         * Signals foreground/background change to a running service. Does NOT cold-start the
+         * service. If the service is not running, startService with a non-start action on a
+         * non-running service is safe (it will trigger onCreate + onStartCommand, which will detect
+         * the service is not in foreground mode and stop itself).
+         */
         fun setAuxioForeground(context: Context, isForeground: Boolean) {
             val prefs = CarOverlayPrefs.from(context)
             if (!prefs.enabled) return
+            if (!Settings.canDrawOverlays(context)) return
             val intent = Intent(context, CarFloatingControlsService::class.java)
             intent.action = ACTION_AUXIO_FOREGROUND_CHANGED
             intent.putExtra(EXTRA_AUXIO_FOREGROUND, isForeground)
-            context.startService(intent)
+            // Use startService (not startForegroundService) since the service should already be
+            // in foreground. If it isn't running, this is a no-op on API 26+ when the app is in
+            // background. That's acceptable — we only want to signal a running service.
+            try {
+                context.startService(intent)
+            } catch (e: IllegalStateException) {
+                // App is in background and service is not running — expected on API 26+.
+                L.d("Cannot signal foreground change: service not running")
+            }
         }
 
-        fun resetPosition(context: Context) {
+        /**
+         * Sends a position-reset command to an already-running service. Does NOT cold-start the
+         * service. Position prefs are already updated by the caller.
+         */
+        fun resetPositionIfRunning(context: Context) {
             val intent = Intent(context, CarFloatingControlsService::class.java)
             intent.action = ACTION_RESET_POSITION
-            context.startService(intent)
+            try {
+                context.startService(intent)
+            } catch (e: IllegalStateException) {
+                L.d("Cannot reset position: service not running")
+            }
         }
     }
 }

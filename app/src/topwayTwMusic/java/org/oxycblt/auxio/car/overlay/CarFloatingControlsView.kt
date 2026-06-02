@@ -26,6 +26,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.widget.LinearLayout
 import android.widget.TextView
 
@@ -59,11 +60,16 @@ class CarFloatingControlsView(context: Context, private val callbacks: Callbacks
     private var dragging = false
     private var lastTapTime = 0L
     private var tapCount = 0
+    private val dragThresholdSq: Int
 
     init {
         val density = context.resources.displayMetrics.density
         buttonSizePx = (BUTTON_SIZE_DP * density).toInt()
         val paddingPx = (PADDING_DP * density).toInt()
+
+        // Use system touch slop for density-aware drag threshold.
+        val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        dragThresholdSq = touchSlop * touchSlop
 
         orientation = HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
@@ -96,6 +102,11 @@ class CarFloatingControlsView(context: Context, private val callbacks: Callbacks
         tv.setTextColor(Color.WHITE)
         tv.layoutParams = LayoutParams(buttonSizePx, buttonSizePx)
         tv.contentDescription = DESC_DRAG
+        tv.isFocusable = true
+        tv.isClickable = true
+
+        // Normal click path for accessibility/keyboard users — same triple-tap behaviour.
+        tv.setOnClickListener { handleDragHandleTap() }
 
         tv.setOnTouchListener { v, event ->
             when (event.actionMasked) {
@@ -108,8 +119,7 @@ class CarFloatingControlsView(context: Context, private val callbacks: Callbacks
                 MotionEvent.ACTION_MOVE -> {
                     val dx = (event.rawX - dragStartX).toInt()
                     val dy = (event.rawY - dragStartY).toInt()
-                    // Compare squared distance to avoid sqrt; threshold is 10px
-                    if (!dragging && (dx * dx + dy * dy > DRAG_THRESHOLD_SQ)) {
+                    if (!dragging && (dx * dx + dy * dy > dragThresholdSq)) {
                         dragging = true
                     }
                     if (dragging) {
@@ -123,8 +133,8 @@ class CarFloatingControlsView(context: Context, private val callbacks: Callbacks
                     if (dragging) {
                         callbacks.onDragFinished(event.rawX.toInt(), event.rawY.toInt())
                     } else {
+                        // Trigger accessibility click which routes to setOnClickListener above.
                         v.performClick()
-                        handleDragHandleTap()
                     }
                     dragging = false
                     true
@@ -174,7 +184,6 @@ class CarFloatingControlsView(context: Context, private val callbacks: Callbacks
         const val CORNER_RADIUS_DP = 12f
         const val BUTTON_TEXT_SP = 24f
         const val BG_COLOR = 0xCC1B1B1B.toInt()
-        const val DRAG_THRESHOLD_SQ = 100 // 10px squared
         const val TRIPLE_TAP_WINDOW_MS = 600L
         const val TRIPLE_TAP_COUNT = 3
 
@@ -184,7 +193,7 @@ class CarFloatingControlsView(context: Context, private val callbacks: Callbacks
         const val LABEL_NEXT = "\u23ED"
         const val LABEL_OPEN = "\u266A"
 
-        const val DESC_DRAG = "Drag to move, triple-tap to dismiss"
+        const val DESC_DRAG = "Drag to move overlay, triple-tap to dismiss"
         const val DESC_PREV = "Previous track"
         const val DESC_PLAY_PAUSE = "Play or pause"
         const val DESC_NEXT = "Next track"

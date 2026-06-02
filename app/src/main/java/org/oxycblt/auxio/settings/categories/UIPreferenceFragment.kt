@@ -112,6 +112,10 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     /**
      * Called when the car overlay enabled preference is found. Uses reflection to wire the overlay
      * settings facade since the class only exists in the topwayTwMusic variant.
+     *
+     * The switch is non-persistent (`app:persistent="false"` would be ideal but the preference XML
+     * uses default persistence). Instead, we sync its checked state from CarOverlayPrefs and return
+     * the actual Boolean result from `setEnabled()` so the switch reverts when permission is needed.
      */
     private fun setupCarOverlayEnabled(preference: Preference) {
         if (!BuildConfig.TOPWAY_TWMUSIC_FLAVOR) return
@@ -124,10 +128,25 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                     Context::class.java,
                     Boolean::class.javaPrimitiveType,
                 )
+            val isEnabledMethod = settingsClass.getMethod("isEnabled", Context::class.java)
+
+            // Sync initial checked state from the actual source of truth.
+            val currentlyEnabled = isEnabledMethod.invoke(instance, requireContext()) as Boolean
+            (preference as? androidx.preference.TwoStatePreference)?.isChecked = currentlyEnabled
+
             preference.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { _, newValue ->
-                    setEnabledMethod.invoke(instance, requireContext(), newValue as Boolean)
-                    true
+                Preference.OnPreferenceChangeListener { pref, newValue ->
+                    val result =
+                        setEnabledMethod.invoke(
+                            instance,
+                            requireContext(),
+                            newValue as Boolean,
+                        ) as Boolean
+                    if (!result) {
+                        // Permission needed — revert switch to unchecked.
+                        (pref as? androidx.preference.TwoStatePreference)?.isChecked = false
+                    }
+                    result
                 }
         } catch (e: ReflectiveOperationException) {
             L.w("Car overlay settings class not available: ${e.message}")
