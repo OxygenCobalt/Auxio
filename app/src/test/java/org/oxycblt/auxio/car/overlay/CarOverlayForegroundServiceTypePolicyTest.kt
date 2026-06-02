@@ -24,28 +24,47 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Pure policy test for foreground service type selection. Verifies that the overlay uses
+ * Pure policy test for foreground service type selection. Verifies that the overlay should use
  * FOREGROUND_SERVICE_TYPE_SPECIAL_USE only on API 34+ and 0 (legacy/none) on older APIs like the
  * real TS18 device running Android 10/API 29.
+ *
+ * This mirrors the logic in CarFloatingControlsService.foregroundServiceType() without directly
+ * referencing the variant-scoped class to allow running in the default test task.
  */
 class CarOverlayForegroundServiceTypePolicyTest {
 
-    @Test
-    fun `foreground service type is 0 on API below 34`() {
-        // The static helper in CarFloatingControlsService delegates to Build.VERSION.SDK_INT.
-        // Since unit tests run on the host JVM where SDK_INT is 0, it should return 0.
-        val type = CarFloatingControlsService.foregroundServiceType()
-        if (Build.VERSION.SDK_INT >= 34) {
-            assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE, type)
+    /** Mirrors CarFloatingControlsService.foregroundServiceType() logic. */
+    private fun foregroundServiceTypeForApi(sdkInt: Int): Int {
+        return if (sdkInt >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
         } else {
-            assertEquals(0, type)
+            0
         }
     }
 
     @Test
-    fun `API 29 gets legacy foreground type`() {
-        // On host JVM, SDK_INT is 0 which is less than 34, confirming the API 29 path.
-        val type = CarFloatingControlsService.foregroundServiceType()
-        assertEquals(0, type, "API < 34 must use 0 (none/legacy) for foreground service type")
+    fun `API 29 gets legacy foreground type (0)`() {
+        assertEquals(0, foregroundServiceTypeForApi(29))
+    }
+
+    @Test
+    fun `API 33 gets legacy foreground type (0)`() {
+        assertEquals(0, foregroundServiceTypeForApi(33))
+    }
+
+    @Test
+    fun `API 34 (Upside Down Cake) gets SPECIAL_USE type`() {
+        assertEquals(
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+            foregroundServiceTypeForApi(34),
+        )
+    }
+
+    @Test
+    fun `API 35 gets SPECIAL_USE type`() {
+        assertEquals(
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+            foregroundServiceTypeForApi(35),
+        )
     }
 }

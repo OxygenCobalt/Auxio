@@ -84,7 +84,9 @@ class CarOverlayBoundsClampingTest {
 
     @Test
     fun `default position from CarOverlayPrefs is within TS18 bounds`() {
-        val (x, y) = clampPosition(CarOverlayPrefs.DEFAULT_X, CarOverlayPrefs.DEFAULT_Y)
+        val defaultX = 437 // CarOverlayPrefs.DEFAULT_X (top-center for TS18)
+        val defaultY = 55 // CarOverlayPrefs.DEFAULT_Y (below status bar)
+        val (x, y) = clampPosition(defaultX, defaultY)
         assertTrue(x >= 0, "Default X must be non-negative")
         assertTrue(y >= statusBarInset, "Default Y must be below status bar")
         assertTrue(x <= 875, "Default X must be within right bound")

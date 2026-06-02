@@ -272,8 +272,14 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
             val serviceType = foregroundServiceType()
             ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, serviceType)
             true
+        } catch (e: IllegalStateException) {
+            L.e(e, "Failed to promote to foreground (IllegalState)")
+            false
+        } catch (e: SecurityException) {
+            L.e(e, "Failed to promote to foreground (Security)")
+            false
         } catch (e: Exception) {
-            L.e(e, "Failed to promote to foreground")
+            L.e(e, "Failed to promote to foreground (unexpected)")
             false
         }
     }
@@ -305,7 +311,9 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
         params.y = cy
         try {
             windowManager?.updateViewLayout(view, params)
-        } catch (_: Exception) {}
+        } catch (_: IllegalArgumentException) {
+            // View may have been detached between clamp and update — safe to ignore.
+        }
         prefs.positionX = cx
         prefs.positionY = cy
     }
@@ -369,11 +377,11 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
 
         /**
          * Returns the appropriate foreground service type for the current API level.
-         * `FOREGROUND_SERVICE_TYPE_SPECIAL_USE` is only valid on API 34+. On older APIs, use 0
-         * (none) which is the legacy behaviour and is accepted by ServiceCompat.
+         * `FOREGROUND_SERVICE_TYPE_SPECIAL_USE` is only valid on API 34+ (Upside Down Cake). On
+         * older APIs, use 0 (none) which is the legacy behaviour and is accepted by ServiceCompat.
          */
         fun foregroundServiceType(): Int {
-            return if (Build.VERSION.SDK_INT >= 34) {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
             } else {
                 0
