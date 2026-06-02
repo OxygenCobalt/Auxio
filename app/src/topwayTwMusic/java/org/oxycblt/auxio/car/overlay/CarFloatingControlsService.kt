@@ -21,6 +21,7 @@ package org.oxycblt.auxio.car.overlay
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.PixelFormat
 import android.os.IBinder
 import android.provider.Settings
@@ -30,6 +31,7 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
+import androidx.core.content.ContextCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.service.PlaybackActions
@@ -221,7 +223,7 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
             this,
             NOTIFICATION_ID,
             notification,
-            0 // No specific foreground service type needed for overlay-only service
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
         )
     }
 
@@ -283,9 +285,7 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
      * exported intent filter and dispatches directly to PlaybackStateManager.
      */
     private fun sendPlaybackBroadcast(action: String) {
-        val intent = Intent(action)
-        intent.setPackage(packageName)
-        sendBroadcast(intent)
+        sendBroadcast(Intent(action).apply { setPackage(packageName) })
     }
 
     companion object {
@@ -307,7 +307,7 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
             if (!Settings.canDrawOverlays(context)) return
             val intent = Intent(context, CarFloatingControlsService::class.java)
             intent.action = ACTION_START
-            context.startForegroundService(intent)
+            ContextCompat.startForegroundService(context, intent)
         }
 
         fun stop(context: Context) {

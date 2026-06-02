@@ -102,6 +102,7 @@ class CarFloatingControlsView(
                 MotionEvent.ACTION_MOVE -> {
                     val dx = (event.rawX - dragStartX).toInt()
                     val dy = (event.rawY - dragStartY).toInt()
+                    // Compare squared distance to avoid sqrt; threshold is 10px
                     if (!dragging && (dx * dx + dy * dy > DRAG_THRESHOLD_SQ)) {
                         dragging = true
                     }

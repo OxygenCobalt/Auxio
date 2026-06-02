@@ -94,7 +94,7 @@
         <!-- Boot receiver to restore overlay after reboot/ACC wake -->
         <receiver
             android:name="org.oxycblt.auxio.car.overlay.CarOverlayBootReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
