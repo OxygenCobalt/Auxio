@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:title="@string/set_ui">
+
+    <org.oxycblt.auxio.settings.ui.IntListPreference
+        app:defaultValue="@integer/theme_auto"
+        app:entries="@array/entries_theme"
+        app:entryIcons="@array/icons_theme"
+        app:entryValues="@array/values_theme"
+        app:icon="@drawable/ic_light_24"
+        app:key="@string/set_key_theme"
+        app:title="@string/set_theme" />
+
+    <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+        app:icon="@drawable/ic_accent_dynamic_24"
+        app:key="@string/set_key_accent"
+        app:title="@string/set_accent" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="@string/set_key_black_theme"
+        app:summary="@string/set_black_mode_desc"
+        app:title="@string/set_black_mode" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="@string/set_key_round_mode"
+        app:summary="@string/set_round_mode_desc"
+        app:title="@string/set_round_mode" />
+
+
+    <PreferenceCategory
+        app:title="@string/set_head_unit">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="@string/set_key_driver_side"
+            app:summary="@string/set_driver_side_desc"
+            app:title="@string/set_driver_side" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/set_key_head_unit_large_controls"
+            app:summary="@string/set_head_unit_large_controls_desc"
+            app:title="@string/set_head_unit_large_controls" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/set_key_head_unit_album_art"
+            app:summary="@string/set_head_unit_album_art_desc"
+            app:title="@string/set_head_unit_album_art" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/set_key_head_unit_dashboard_quick_access"
+            app:summary="@string/set_head_unit_dashboard_quick_access_desc"
+            app:title="@string/set_head_unit_dashboard_quick_access" />
+
+        <Preference
+            app:key="@string/set_head_unit_compat_status"
+            app:summary="@string/set_head_unit_compat_status_desc"
+            app:title="@string/set_head_unit_compat_status" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/car_overlay_setting_title">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="car_overlay_enabled"
+            app:summary="@string/car_overlay_setting_summary"
+            app:title="@string/car_overlay_setting_title" />
+
+        <Preference
+            app:key="car_overlay_reset_position"
+            app:title="@string/car_overlay_reset_position"
+            app:dependency="car_overlay_enabled" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
