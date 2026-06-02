@@ -63,7 +63,8 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null) {
-            // Null intent means system restarted a sticky service. Check if still enabled.
+            // Null intent: system restarted the service after process death.
+            // Re-establish the overlay if still enabled and permitted.
             if (!prefs.enabled || !Settings.canDrawOverlays(this)) {
                 stopSelfCleanly()
                 return START_NOT_STICKY

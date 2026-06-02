@@ -128,7 +128,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                     setEnabledMethod.invoke(instance, requireContext(), newValue as Boolean)
                     true
                 }
-        } catch (e: Exception) {
+        } catch (e: ReflectiveOperationException) {
             L.w("Car overlay settings class not available: ${e.message}")
         }
     }
@@ -147,7 +147,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                 resetMethod.invoke(instance, requireContext())
                 true
             }
-        } catch (e: Exception) {
+        } catch (e: ReflectiveOperationException) {
             L.w("Car overlay settings class not available: ${e.message}")
         }
     }

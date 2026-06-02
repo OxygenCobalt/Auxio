@@ -78,7 +78,7 @@ class Auxio : Application() {
                     "register", Application::class.java
                 )
                 registerMethod.invoke(companion, this)
-            } catch (e: Exception) {
+            } catch (e: ReflectiveOperationException) {
                 Timber.w(e, "Car overlay visibility hooks not available")
             }
         }
