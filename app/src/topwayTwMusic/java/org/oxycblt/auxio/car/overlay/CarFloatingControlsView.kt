@@ -34,18 +34,22 @@ import android.widget.TextView
  * touch targets. No XML or Compose dependency for overlay-safe usage.
  */
 @SuppressLint("ViewConstructor")
-class CarFloatingControlsView(
-    context: Context,
-    private val callbacks: Callbacks,
-) : LinearLayout(context) {
+class CarFloatingControlsView(context: Context, private val callbacks: Callbacks) :
+    LinearLayout(context) {
 
     interface Callbacks {
         fun onDrag(deltaX: Int, deltaY: Int)
+
         fun onDragFinished(x: Int, y: Int)
+
         fun onPrevious()
+
         fun onPlayPause()
+
         fun onNext()
+
         fun onOpenAuxio()
+
         fun onStopRequested()
     }
 
@@ -72,7 +76,9 @@ class CarFloatingControlsView(
 
         addView(createDragHandle(context))
         addView(createButton(context, LABEL_PREV, DESC_PREV) { callbacks.onPrevious() })
-        addView(createButton(context, LABEL_PLAY_PAUSE, DESC_PLAY_PAUSE) { callbacks.onPlayPause() })
+        addView(
+            createButton(context, LABEL_PLAY_PAUSE, DESC_PLAY_PAUSE) { callbacks.onPlayPause() }
+        )
         addView(createButton(context, LABEL_NEXT, DESC_NEXT) { callbacks.onNext() })
         addView(createButton(context, LABEL_OPEN, DESC_OPEN) { callbacks.onOpenAuxio() })
     }
@@ -115,10 +121,7 @@ class CarFloatingControlsView(
                 }
                 MotionEvent.ACTION_UP -> {
                     if (dragging) {
-                        callbacks.onDragFinished(
-                            event.rawX.toInt(),
-                            event.rawY.toInt()
-                        )
+                        callbacks.onDragFinished(event.rawX.toInt(), event.rawY.toInt())
                     } else {
                         v.performClick()
                         handleDragHandleTap()

@@ -70,8 +70,7 @@ class CarOverlayPrefs private constructor(private val prefs: SharedPreferences) 
         const val MAX_OPACITY = 100
 
         fun from(context: Context): CarOverlayPrefs {
-            val prefs =
-                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             return CarOverlayPrefs(prefs)
         }
     }

@@ -40,38 +40,45 @@ class CarOverlayPermissionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            val pad = (24 * resources.displayMetrics.density).toInt()
-            setPadding(pad, pad, pad, pad)
-        }
+        val layout =
+            LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                val pad = (24 * resources.displayMetrics.density).toInt()
+                setPadding(pad, pad, pad, pad)
+            }
 
-        val title = TextView(this).apply {
-            text = getString(R.string.car_overlay_permission_title)
-            textSize = 20f
-        }
+        val title =
+            TextView(this).apply {
+                text = getString(R.string.car_overlay_permission_title)
+                textSize = 20f
+            }
         layout.addView(title)
 
-        statusText = TextView(this).apply {
-            textSize = 16f
-            val topMargin = (16 * resources.displayMetrics.density).toInt()
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { setMargins(0, topMargin, 0, topMargin) }
-        }
+        statusText =
+            TextView(this).apply {
+                textSize = 16f
+                val topMargin = (16 * resources.displayMetrics.density).toInt()
+                layoutParams =
+                    LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                        )
+                        .apply { setMargins(0, topMargin, 0, topMargin) }
+            }
         layout.addView(statusText)
 
-        val grantButton = Button(this).apply {
-            text = getString(R.string.car_overlay_permission_grant_button)
-            setOnClickListener { openOverlaySettings() }
-        }
+        val grantButton =
+            Button(this).apply {
+                text = getString(R.string.car_overlay_permission_grant_button)
+                setOnClickListener { openOverlaySettings() }
+            }
         layout.addView(grantButton)
 
-        val doneButton = Button(this).apply {
-            text = getString(R.string.car_overlay_permission_done_button)
-            setOnClickListener { finish() }
-        }
+        val doneButton =
+            Button(this).apply {
+                text = getString(R.string.car_overlay_permission_done_button)
+                setOnClickListener { finish() }
+            }
         layout.addView(doneButton)
 
         setContentView(layout)
@@ -91,10 +98,8 @@ class CarOverlayPermissionActivity : AppCompatActivity() {
     }
 
     private fun openOverlaySettings() {
-        val intent = Intent(
-            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-            Uri.parse("package:$packageName")
-        )
+        val intent =
+            Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
         startActivity(intent)
     }
 

@@ -110,19 +110,20 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     }
 
     /**
-     * Called when the car overlay enabled preference is found. Uses reflection to wire the
-     * overlay settings facade since the class only exists in the topwayTwMusic variant.
+     * Called when the car overlay enabled preference is found. Uses reflection to wire the overlay
+     * settings facade since the class only exists in the topwayTwMusic variant.
      */
     private fun setupCarOverlayEnabled(preference: Preference) {
         if (!BuildConfig.TOPWAY_TWMUSIC_FLAVOR) return
         try {
-            val settingsClass = Class.forName(
-                "org.oxycblt.auxio.car.overlay.CarOverlaySettings"
-            )
+            val settingsClass = Class.forName("org.oxycblt.auxio.car.overlay.CarOverlaySettings")
             val instance = settingsClass.getDeclaredField("INSTANCE").get(null)
-            val setEnabledMethod = settingsClass.getMethod(
-                "setEnabled", Context::class.java, Boolean::class.javaPrimitiveType
-            )
+            val setEnabledMethod =
+                settingsClass.getMethod(
+                    "setEnabled",
+                    Context::class.java,
+                    Boolean::class.javaPrimitiveType,
+                )
             preference.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, newValue ->
                     setEnabledMethod.invoke(instance, requireContext(), newValue as Boolean)
@@ -136,13 +137,9 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     private fun setupCarOverlayReset(preference: Preference) {
         if (!BuildConfig.TOPWAY_TWMUSIC_FLAVOR) return
         try {
-            val settingsClass = Class.forName(
-                "org.oxycblt.auxio.car.overlay.CarOverlaySettings"
-            )
+            val settingsClass = Class.forName("org.oxycblt.auxio.car.overlay.CarOverlaySettings")
             val instance = settingsClass.getDeclaredField("INSTANCE").get(null)
-            val resetMethod = settingsClass.getMethod(
-                "resetPosition", Context::class.java
-            )
+            val resetMethod = settingsClass.getMethod("resetPosition", Context::class.java)
             preference.setOnPreferenceClickListener {
                 resetMethod.invoke(instance, requireContext())
                 true

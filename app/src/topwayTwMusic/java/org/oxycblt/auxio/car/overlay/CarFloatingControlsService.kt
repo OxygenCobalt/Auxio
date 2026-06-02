@@ -187,15 +187,14 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
 
     private fun createLayoutParams(): WindowManager.LayoutParams {
         return WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-        }
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.TRANSLUCENT,
+            )
+            .apply { gravity = Gravity.TOP or Gravity.START }
     }
 
     // --- Foreground notification ---
@@ -224,7 +223,7 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
             this,
             NOTIFICATION_ID,
             notification,
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
         )
     }
 
@@ -298,8 +297,7 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
         const val ACTION_SHOW = BuildConfig.APPLICATION_ID + ".car.overlay.SHOW"
         const val ACTION_HIDE = BuildConfig.APPLICATION_ID + ".car.overlay.HIDE"
         const val ACTION_TOGGLE = BuildConfig.APPLICATION_ID + ".car.overlay.TOGGLE"
-        const val ACTION_RESET_POSITION =
-            BuildConfig.APPLICATION_ID + ".car.overlay.RESET_POSITION"
+        const val ACTION_RESET_POSITION = BuildConfig.APPLICATION_ID + ".car.overlay.RESET_POSITION"
         const val ACTION_AUXIO_FOREGROUND_CHANGED =
             BuildConfig.APPLICATION_ID + ".car.overlay.AUXIO_FG_CHANGED"
         const val EXTRA_AUXIO_FOREGROUND = "extra_auxio_foreground"
