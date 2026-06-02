@@ -23,6 +23,7 @@ import android.content.ComponentName
 import android.content.Context
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.widgets.WidgetProvider
+import timber.log.Timber as L
 
 /**
  * Chooses widget-provider components for Topway/DoFun update gating.
@@ -57,6 +58,7 @@ object TopwayWidgetProviderPolicy {
             }
         } catch (e: Exception) {
             // Defensive: some custom ROMs throw when querying widget IDs.
+            L.w(e, "AppWidgetManager query failed on this ROM; assuming no widget instances")
             false
         }
     }
