@@ -18,6 +18,7 @@
 
 package org.oxycblt.auxio.settings.categories
 
+import android.content.Context
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
@@ -103,28 +104,51 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                         nativeStatusSummary,
                     ) + "\n" + uiSettings.headUnitCompatStatusSummary
             }
-            KEY_CAR_OVERLAY_ENABLED -> {
-                if (BuildConfig.TOPWAY_TWMUSIC_FLAVOR) {
-                    preference.onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { _, newValue ->
-                            val enabled = newValue as Boolean
-                            org.oxycblt.auxio.car.overlay.CarOverlaySettings.setEnabled(
-                                requireContext(), enabled
-                            )
-                            true
-                        }
+            KEY_CAR_OVERLAY_ENABLED -> setupCarOverlayEnabled(preference)
+            KEY_CAR_OVERLAY_RESET_POSITION -> setupCarOverlayReset(preference)
+        }
+    }
+
+    /**
+     * Called when the car overlay enabled preference is found. Uses reflection to wire the
+     * overlay settings facade since the class only exists in the topwayTwMusic variant.
+     */
+    private fun setupCarOverlayEnabled(preference: Preference) {
+        if (!BuildConfig.TOPWAY_TWMUSIC_FLAVOR) return
+        try {
+            val settingsClass = Class.forName(
+                "org.oxycblt.auxio.car.overlay.CarOverlaySettings"
+            )
+            val instance = settingsClass.getDeclaredField("INSTANCE").get(null)
+            val setEnabledMethod = settingsClass.getMethod(
+                "setEnabled", Context::class.java, Boolean::class.javaPrimitiveType
+            )
+            preference.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    setEnabledMethod.invoke(instance, requireContext(), newValue as Boolean)
+                    true
                 }
+        } catch (e: Exception) {
+            L.w("Car overlay settings class not available: ${e.message}")
+        }
+    }
+
+    private fun setupCarOverlayReset(preference: Preference) {
+        if (!BuildConfig.TOPWAY_TWMUSIC_FLAVOR) return
+        try {
+            val settingsClass = Class.forName(
+                "org.oxycblt.auxio.car.overlay.CarOverlaySettings"
+            )
+            val instance = settingsClass.getDeclaredField("INSTANCE").get(null)
+            val resetMethod = settingsClass.getMethod(
+                "resetPosition", Context::class.java
+            )
+            preference.setOnPreferenceClickListener {
+                resetMethod.invoke(instance, requireContext())
+                true
             }
-            KEY_CAR_OVERLAY_RESET_POSITION -> {
-                if (BuildConfig.TOPWAY_TWMUSIC_FLAVOR) {
-                    preference.setOnPreferenceClickListener {
-                        org.oxycblt.auxio.car.overlay.CarOverlaySettings.resetPosition(
-                            requireContext()
-                        )
-                        true
-                    }
-                }
-            }
+        } catch (e: Exception) {
+            L.w("Car overlay settings class not available: ${e.message}")
         }
     }
 

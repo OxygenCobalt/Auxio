@@ -66,7 +66,21 @@ class Auxio : Application() {
 
         // Register car floating controls visibility hooks for the Topway/TS18 variant.
         if (BuildConfig.TOPWAY_TWMUSIC_FLAVOR) {
-            org.oxycblt.auxio.car.overlay.CarOverlayVisibilityHooks.register(this)
+            try {
+                val companionClass = Class.forName(
+                    "org.oxycblt.auxio.car.overlay.CarOverlayVisibilityHooks\$Companion"
+                )
+                val hooksClass = Class.forName(
+                    "org.oxycblt.auxio.car.overlay.CarOverlayVisibilityHooks"
+                )
+                val companion = hooksClass.getDeclaredField("Companion").get(null)
+                val registerMethod = companionClass.getMethod(
+                    "register", Application::class.java
+                )
+                registerMethod.invoke(companion, this)
+            } catch (e: Exception) {
+                Timber.w(e, "Car overlay visibility hooks not available")
+            }
         }
     }
 }
