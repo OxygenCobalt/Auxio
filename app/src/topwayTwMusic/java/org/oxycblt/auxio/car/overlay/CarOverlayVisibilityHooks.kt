@@ -47,9 +47,14 @@ class CarOverlayVisibilityHooks : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStopped(activity: Activity) {
+        // Ignore stops caused by configuration changes (rotation, locale change, etc.)
+        // to avoid briefly signalling background during activity recreation.
+        if (activity.isChangingConfigurations) return
+
+        val previous = startedActivityCount
         startedActivityCount = (startedActivityCount - 1).coerceAtLeast(0)
-        if (startedActivityCount == 0) {
-            // App entered background (1→0 transition).
+        if (previous == 1 && startedActivityCount == 0) {
+            // App entered background (true 1→0 transition).
             val prefs = CarOverlayPrefs.from(activity)
             if (prefs.enabled) {
                 L.d("Auxio entered background, signalling overlay to show")

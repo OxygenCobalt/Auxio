@@ -425,9 +425,13 @@ class CarFloatingControlsService : Service(), CarFloatingControlsView.Callbacks 
 
         /**
          * Sends a position-reset command to an already-running service. Does NOT cold-start the
-         * service. Position prefs are already updated by the caller.
+         * service. Checks enabled + permission before sending to avoid waking a stopped service.
+         * Position prefs are already updated by the caller.
          */
         fun resetPositionIfRunning(context: Context) {
+            val prefs = CarOverlayPrefs.from(context)
+            if (!prefs.enabled) return
+            if (!Settings.canDrawOverlays(context)) return
             val intent = Intent(context, CarFloatingControlsService::class.java)
             intent.action = ACTION_RESET_POSITION
             try {

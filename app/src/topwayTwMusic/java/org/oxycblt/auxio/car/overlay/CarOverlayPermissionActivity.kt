@@ -108,14 +108,12 @@ class CarOverlayPermissionActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private companion object {
-        const val PADDING_DP = 24f
-        const val MARGIN_DP = 16f
-        const val TITLE_TEXT_SP = 20f
-        const val BODY_TEXT_SP = 16f
-    }
-
     companion object {
+        private const val PADDING_DP = 24f
+        private const val MARGIN_DP = 16f
+        private const val TITLE_TEXT_SP = 20f
+        private const val BODY_TEXT_SP = 16f
+
         fun intent(context: Context): Intent {
             return Intent(context, CarOverlayPermissionActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

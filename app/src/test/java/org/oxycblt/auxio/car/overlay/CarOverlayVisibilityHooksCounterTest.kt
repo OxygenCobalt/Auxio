@@ -45,9 +45,15 @@ class CarOverlayVisibilityHooksCounterTest {
             if (previous == 0) foregroundTransitions++
         }
 
-        fun onActivityStopped() {
+        /**
+         * @param isChangingConfigurations simulates Activity.isChangingConfigurations. When true,
+         *   the stop is ignored entirely (configuration-change recreation should not count).
+         */
+        fun onActivityStopped(isChangingConfigurations: Boolean = false) {
+            if (isChangingConfigurations) return
+            val previous = count
             count = (count - 1).coerceAtLeast(0)
-            if (count == 0) backgroundTransitions++
+            if (previous == 1 && count == 0) backgroundTransitions++
         }
     }
 
@@ -84,14 +90,12 @@ class CarOverlayVisibilityHooksCounterTest {
     }
 
     @Test
-    fun `counter cannot go negative`() {
+    fun `extra stop at zero does not produce background transition`() {
         val model = CounterModel()
-        // Defensive: stopped without started should not crash or go negative
+        // Defensive: stopped without started should not crash or count as background.
         model.onActivityStopped()
         assertEquals(0, model.count)
-        // This counts as a background transition because count transitions to 0,
-        // but it was already 0 — the defensive clamp handles this.
-        assertEquals(1, model.backgroundTransitions)
+        assertEquals(0, model.backgroundTransitions)
     }
 
     @Test
@@ -104,5 +108,17 @@ class CarOverlayVisibilityHooksCounterTest {
         assertEquals(3, model.foregroundTransitions)
         assertEquals(3, model.backgroundTransitions)
         assertEquals(0, model.count)
+    }
+
+    @Test
+    fun `configuration change stop does not signal background`() {
+        val model = CounterModel()
+        model.onActivityStarted()
+        assertEquals(1, model.foregroundTransitions)
+
+        // Activity is being recreated due to configuration change.
+        model.onActivityStopped(isChangingConfigurations = true)
+        assertEquals(0, model.backgroundTransitions)
+        assertEquals(1, model.count) // Counter unchanged
     }
 }
