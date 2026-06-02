@@ -33,7 +33,7 @@ Priority order for music-widget/package-identity work:
 
 Observed directly reusable requirements:
 - DoFun music hotseat matching expects `com.tw.media` / `com.tw.music.MusicActivity` or `com.tw.music` / `com.tw.music.MusicActivity`.
-- A dedicated Topway/DoFun release variant may intentionally install as exact package `com.tw.music` and expose `com.tw.music.MusicActivity`.
+- Dedicated Topway/DoFun release variants may intentionally install as exact package `com.tw.music` or alternate fixed-entry package `com.tw.media` and expose `com.tw.music.MusicActivity`.
 - The standard Auxio/Auxio-TS variant must keep its normal `org.oxycblt.auxio` identity.
 - Topway bridge strings are allowed only inside the isolated bridge package/tests/docs.
 
@@ -73,7 +73,7 @@ Probe/diagnostics-driven work is secondary. It is allowed only when:
 - no reliable public TS18/TW/TWTHEME or equivalent head-unit source exists;
 - the output remains an external validation/runbook step, not speculative product-code scaffolding.
 
-Do not add in-app TS18 probe frameworks, default-off vendor adapter skeletons, TWUtil/TWClient reflection scanners, vendor-service binders, package impersonation, `android.uid.system`/`sharedUserId` strategies, copied smali, or hidden diagnostics modules.
+Do not add in-app TS18 probe frameworks, default-off vendor adapter skeletons, TWUtil/TWClient reflection scanners, vendor-service binders, unapproved package impersonation, `android.uid.system`/`sharedUserId` strategies, copied smali, or hidden diagnostics modules. Dedicated `com.tw.music`/`com.tw.media` wrapper variants are the approved public package-identity exceptions.
 
 ### Required source priority order for TS18/TW/TWTHEME work
 
@@ -137,7 +137,7 @@ For each TS18/TW/TWTHEME claim, include:
 Always distinguish between: product requirement / Android-standard implementation / TS18 runtime validation / native-private investigation / production eligibility.
 
 ## Never do
-- Do not change the standard Auxio/Auxio-TS package to `com.tw.music`; only a dedicated, clearly named Topway/DoFun compatibility variant may install as `com.tw.music`.
+- Do not change the standard Auxio/Auxio-TS package to `com.tw.music` or `com.tw.media`; only dedicated, clearly named Topway/DoFun compatibility variants may install as those package IDs.
 - Do not assume privileged/system UID.
 - Do not copy decompiled smali into Auxio code.
 - Do not claim TS18 compatibility without TS18 runtime evidence.
@@ -258,3 +258,14 @@ Always report explicitly:
 
 
 2026-05-24 implementation note: isolated Topway bridge runtime wiring now exists; keep Topway strings constrained to approved bridge/test/docs scope and continue blocking private/native binder production paths.
+
+
+## Seeded TS18 exact-device context
+
+Read these concise, redacted context files before exact-device TS18 install/runtime work:
+
+- `docs/CODEX_TS18_DEVICE_CONTEXT.md`
+- `docs/TS18_INSTALLATION_CONSTRAINTS.md`
+- `docs/evidence/ts18-device-profile/s9863a1h10-android10-termone-2026-05-17.md`
+
+Thin compatibility wrapper classes under approved Topway/DoFun source sets such as `app/src/topwayCompat/java/com/tw/music/**` are allowed only to expose stock-compatible package/class/component names and delegate into Auxio-owned code. `com.tw.media` is an alternate DoFun fixed-entry variant, not a general no-root bypass.

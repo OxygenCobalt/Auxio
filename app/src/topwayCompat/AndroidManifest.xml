@@ -4,12 +4,28 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application>
         <!--
+        Topway-compatible APKs keep Auxio's normal service for explicit in-app starts only. External
+        MediaBrowser clients should see the stock-name wrapper below as the canonical browse service
+        to avoid split TS18 sessions across two exported service component names.
+        -->
+        <service
+            android:name="org.oxycblt.auxio.AuxioService"
+            android:exported="false"
+            tools:node="merge">
+            <intent-filter tools:node="remove">
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+            <intent-filter tools:node="remove">
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+            </intent-filter>
+        </service>
+
+        <!--
         Stock-component fallbacks for Topway/DoFun integrations that address stock twmusic
-        components explicitly. These are Topway-flavour only and delegate to Auxio's real service
+        components explicitly. These are Topway-compatible flavour only and delegate to Auxio's real service
         and widget/control bridge; they do not implement private Cardoor/vendor APIs.
         -->
         <service
@@ -42,7 +58,7 @@
         <!--
         DoFun/Variety's extracted apps_match_config.json fixes the local music hotseat to
         com.tw.music/.MusicActivity (or com.tw.media with the same class).  Expose that stock
-        Topway-compatible identity only in the topwayTwMusic flavour while targeting Auxio's real
+        Topway-compatible identity only in the Topway-compatible flavours while targeting Auxio's real
         activity implementation.
         -->
         <activity
@@ -78,12 +94,7 @@
         <service
             android:name="org.oxycblt.auxio.car.overlay.CarFloatingControlsService"
             android:exported="false"
-            android:foregroundServiceType="specialUse"
-            tools:ignore="ForegroundServicePermission">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Persistent floating media controls overlay for head-unit use" />
-        </service>
+            tools:ignore="ForegroundServicePermission" />
 
         <!-- Car Floating Controls overlay permission activity -->
         <activity

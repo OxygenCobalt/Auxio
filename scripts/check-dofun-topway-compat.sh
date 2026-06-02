@@ -94,30 +94,36 @@ check_apk_manifest() {
   local manifest_dump
   manifest_dump="$(mktemp)"
   "$apkanalyzer_bin" manifest print "$apk" > "$manifest_dump"
-  if [[ "$label" == topwayTwMusicRelease ]]; then
-    require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.MusicActivity"' "${label} APK manifest has com.tw.music.MusicActivity" "${label} APK manifest lacks com.tw.music.MusicActivity"
-    require_manifest_dump_contains "$manifest_dump" 'android:targetActivity="org.oxycblt.auxio.MainActivity"' "${label} APK alias targets MainActivity" "${label} APK alias target mismatch"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.action.MAIN"' "${label} APK alias has MAIN action" "${label} APK alias lacks MAIN action"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.action.MUSIC_PLAYER"' "${label} APK alias has MUSIC_PLAYER action" "${label} APK alias lacks MUSIC_PLAYER action"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.DEFAULT"' "${label} APK alias has DEFAULT category" "${label} APK alias lacks DEFAULT category"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.LAUNCHER"' "${label} APK alias has LAUNCHER category" "${label} APK alias lacks LAUNCHER category"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.APP_MUSIC"' "${label} APK alias has APP_MUSIC category" "${label} APK alias lacks APP_MUSIC category"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="android.media.browse.MediaBrowserService"' "${label} APK manifest has MediaBrowserService" "${label} APK manifest lacks MediaBrowserService"
-    require_manifest_dump_contains "$manifest_dump" 'android:authorities="com.tw.music.image.CoverProvider"' "${label} APK manifest has Topway CoverProvider authority" "${label} APK manifest lacks Topway CoverProvider authority"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.MusicService"' "${label} APK manifest has com.tw.music.MusicService fallback" "${label} APK manifest lacks com.tw.music.MusicService fallback"
-    require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.view.MusicWidgetProvider"' "${label} APK manifest has com.tw.music.view.MusicWidgetProvider fallback" "${label} APK manifest lacks com.tw.music.view.MusicWidgetProvider fallback"
-  fi
+  case "$label" in
+    topwayTwMusicRelease|topwayTwMediaRelease|topwayTwMusicDebug|topwayTwMediaDebug)
+      require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.MusicActivity"' "${label} APK manifest has com.tw.music.MusicActivity" "${label} APK manifest lacks com.tw.music.MusicActivity"
+      require_manifest_dump_contains "$manifest_dump" 'android:targetActivity="org.oxycblt.auxio.MainActivity"' "${label} APK alias targets MainActivity" "${label} APK alias target mismatch"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.action.MAIN"' "${label} APK alias has MAIN action" "${label} APK alias lacks MAIN action"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.action.MUSIC_PLAYER"' "${label} APK alias has MUSIC_PLAYER action" "${label} APK alias lacks MUSIC_PLAYER action"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.DEFAULT"' "${label} APK alias has DEFAULT category" "${label} APK alias lacks DEFAULT category"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.LAUNCHER"' "${label} APK alias has LAUNCHER category" "${label} APK alias lacks LAUNCHER category"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="android.intent.category.APP_MUSIC"' "${label} APK alias has APP_MUSIC category" "${label} APK alias lacks APP_MUSIC category"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="android.media.browse.MediaBrowserService"' "${label} APK manifest has MediaBrowserService" "${label} APK manifest lacks MediaBrowserService"
+      require_manifest_dump_contains "$manifest_dump" "android:authorities="${expected_package}.image.CoverProvider"" "${label} APK manifest has applicationId CoverProvider authority" "${label} APK manifest lacks applicationId CoverProvider authority"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.MusicService"' "${label} APK manifest has com.tw.music.MusicService fallback" "${label} APK manifest lacks com.tw.music.MusicService fallback"
+      require_manifest_dump_contains "$manifest_dump" 'android:name="com.tw.music.view.MusicWidgetProvider"' "${label} APK manifest has com.tw.music.view.MusicWidgetProvider fallback" "${label} APK manifest lacks com.tw.music.view.MusicWidgetProvider fallback"
+      ;;
+  esac
   rm -f "$manifest_dump"
 }
 
 printf 'Checking source-level DoFun/Topway compatibility expectations...\n\n'
 
 require_file_contains "app/build.gradle" "standard" "Gradle standard product flavour"
-require_file_contains "app/build.gradle" "topwayTwMusic" "Gradle product flavour"
+require_file_contains "app/build.gradle" "topwayTwMusic" "Gradle topwayTwMusic product flavour"
+require_file_contains "app/build.gradle" "topwayTwMedia" "Gradle topwayTwMedia product flavour"
 require_file_contains "app/build.gradle" "applicationId namespace" "Gradle standard applicationId"
-require_file_contains "app/build.gradle" "applicationId \"com.tw.music\"" "Gradle Topway applicationId"
+require_file_contains "app/build.gradle" "applicationId \"com.tw.music\"" "Gradle topwayTwMusic applicationId"
+require_file_contains "app/build.gradle" "applicationId \"com.tw.media\"" "Gradle topwayTwMedia applicationId"
+require_file_contains "app/build.gradle" "src/topwayCompat/java" "Gradle topwayTwMedia shared Java source set"
+require_file_contains "app/build.gradle" "src/topwayCompat/AndroidManifest.xml" "Gradle topwayTwMedia shared manifest"
 
-flavour_manifest="app/src/topwayTwMusic/AndroidManifest.xml"
+flavour_manifest="app/src/topwayCompat/AndroidManifest.xml"
 if [[ ! -f "$flavour_manifest" ]]; then
   fail "missing topwayTwMusic flavour AndroidManifest.xml under app/src/"
 else
@@ -125,6 +131,8 @@ else
   require_file_contains "$flavour_manifest" "com.tw.music.MusicActivity" "Topway activity alias"
   require_file_contains "$flavour_manifest" "org.oxycblt.auxio.MainActivity" "Topway alias target"
   require_file_contains "$flavour_manifest" "com.tw.music.MusicService" "Topway MusicService component fallback"
+  require_file_contains "$flavour_manifest" "org.oxycblt.auxio.AuxioService" "Topway canonical external service override"
+  require_file_contains "$flavour_manifest" 'tools:node="remove"' "Topway base service browser filters removed"
   require_file_contains "$flavour_manifest" "com.tw.music.view.MusicWidgetProvider" "Topway MusicWidgetProvider component fallback"
   require_file_contains "$flavour_manifest" "android.intent.action.MAIN" "Topway alias main action"
   require_file_contains "$flavour_manifest" "android.intent.action.MUSIC_PLAYER" "Topway alias music action"
@@ -142,8 +150,10 @@ require_file_contains "app/src/main/AndroidManifest.xml" "\${applicationId}.imag
 require_file_contains "app/src/main/AndroidManifest.xml" "android.media.browse.MediaBrowserService" "base media browser service"
 require_file_contains "app/src/main/AndroidManifest.xml" ".headunit.topway.TopwayMusicBridgeReceiver" "base Topway command receiver"
 require_file_contains "app/src/topwayTwMusic/res/values/donottranslate.xml" "com.tw.music.image.CoverProvider" "Topway CoverProvider authority resource"
-require_file_contains "app/src/topwayTwMusic/res/values/donottranslate.xml" ">Music<" "Topway label resource"
+require_file_contains "app/src/topwayCompat/res/values/donottranslate.xml" ">Music<" "Topway shared label resource"
 require_file_contains "app/src/topwayTwMusicDebug/res/values/donottranslate.xml" "com.tw.music.debug.image.CoverProvider" "Topway debug CoverProvider authority resource"
+require_file_contains "app/src/topwayTwMedia/res/values/donottranslate.xml" "com.tw.media.image.CoverProvider" "Topway media CoverProvider authority resource"
+require_file_contains "app/src/topwayTwMediaDebug/res/values/donottranslate.xml" "com.tw.media.debug.image.CoverProvider" "Topway media debug CoverProvider authority resource"
 topway_contract="app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicContract.kt"
 for contract_string in \
   "com.tw.music.info" \
@@ -165,24 +175,42 @@ done
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishMetadata" "runtime Topway metadata publisher"
 require_file_contains "app/src/main/java/org/oxycblt/auxio/widgets/WidgetComponent.kt" "topwayBridge.publishProgress" "runtime Topway progress publisher"
 require_file_contains "app/build.gradle" 'buildConfigField "boolean", "TOPWAY_TWMUSIC_FLAVOR", "true"' "Topway flavour build flag"
-require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicBroadcastBridge.kt" 'BuildConfig.TOPWAY_TWMUSIC_FLAVOR' "Topway flavour bridge always enabled"
-require_file_contains "app/src/topwayTwMusic/java/com/tw/music/MusicService.kt" "AndroidEntryPoint" "Topway MusicService Hilt entry point"
-require_file_contains "app/src/topwayTwMusic/java/com/tw/music/MusicService.kt" "AuxioService" "Topway MusicService delegates to AuxioService"
-require_file_contains "app/src/topwayTwMusic/java/com/tw/music/view/MusicWidgetProvider.kt" "CMD_UPDATE" "Topway MusicWidgetProvider update fallback"
-require_file_contains "app/src/topwayTwMusic/java/com/tw/music/view/MusicWidgetProvider.kt" "safelyExtractIncomingExtras" "Topway MusicWidgetProvider safe extras extraction"
-require_file_contains "app/src/topwayTwMusic/java/com/tw/music/view/MusicWidgetProvider.kt" "AppWidgetManager.ACTION_APPWIDGET_UPDATE" "Topway MusicWidgetProvider single appwidget update path"
-require_file_contains ".github/workflows/manual-release.yml" "assembleTopwayTwMusicRelease" "manual release builds Topway release"
-require_file_contains ".github/workflows/manual-release.yml" "topway-twmusic-release.apk" "manual release names Topway APK asset"
+require_file_contains "app/build.gradle" 'buildConfigField "boolean", "TOPWAY_TWMEDIA_FLAVOR", "true"' "Topway media flavour build flag"
+require_file_contains "app/build.gradle" 'buildConfigField "boolean", "TOPWAY_COMPAT_FLAVOR", "true"' "Topway shared compat build flag"
+require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicBroadcastBridge.kt" 'BuildConfig.TOPWAY_COMPAT_FLAVOR' "Topway compatible bridge always enabled"
+require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayWidgetProviderPolicy.kt" "com.tw.music.view.MusicWidgetProvider" "Topway widget provider wrapper policy"
+require_file_contains "app/src/main/java/org/oxycblt/auxio/playback/service/SystemPlaybackReceiver.kt" "TopwayWidgetProviderPolicy.shouldHandleTopwayUpdate" "System receiver handles Topway widget updates"
+require_file_contains "app/src/main/java/org/oxycblt/auxio/headunit/topway/TopwayMusicBridgeReceiver.kt" "safelyExtractIncomingExtras" "Topway bridge receiver sanitises malformed extras"
+require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "Build.VERSION_CODES.UPSIDE_DOWN_CAKE" "overlay special-use API gate"
+require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE" "overlay special-use foreground type"
+require_file_not_contains "$flavour_manifest" 'android:foregroundServiceType="specialUse"' "overlay manifest must not hard-code API34-only specialUse type"
+require_file_not_contains "$flavour_manifest" "FOREGROUND_SERVICE_SPECIAL_USE" "overlay manifest must not require API34-only specialUse permission on Android 10 target"
+require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "STATUS_BAR_INSET_PX = 55" "overlay TS18 top inset clamp"
+require_file_contains "app/src/topwayCompat/java/org/oxycblt/auxio/car/overlay/CarFloatingControlsService.kt" "NAV_BAR_INSET_PX = 55" "overlay TS18 right inset clamp"
+require_file_contains "app/src/test/java/org/oxycblt/auxio/car/overlay/CarOverlayForegroundServiceTypePolicyTest.kt" "foregroundServiceTypeForApi(29)" "overlay API 29 foreground-service type test"
+require_file_contains "app/src/test/java/org/oxycblt/auxio/car/overlay/CarOverlayBoundsClampingTest.kt" "screenW: Int = 1280" "overlay 1280x720 bounds test"
+require_file_contains "app/src/topwayCompat/java/com/tw/music/MusicService.kt" "AndroidEntryPoint" "Topway MusicService Hilt entry point"
+require_file_contains "app/src/topwayCompat/java/com/tw/music/MusicService.kt" "AuxioService" "Topway MusicService delegates to AuxioService"
+require_file_contains "app/src/topwayCompat/java/com/tw/music/view/MusicWidgetProvider.kt" "CMD_UPDATE" "Topway MusicWidgetProvider update fallback"
+require_file_contains "app/src/topwayCompat/java/com/tw/music/view/MusicWidgetProvider.kt" "safelyExtractIncomingExtras" "Topway MusicWidgetProvider safe extras extraction"
+require_file_contains "app/src/topwayCompat/java/com/tw/music/view/MusicWidgetProvider.kt" "AppWidgetManager.ACTION_APPWIDGET_UPDATE" "Topway MusicWidgetProvider single appwidget update path"
+require_file_contains "app/src/test/java/org/oxycblt/auxio/headunit/topway/TopwayWidgetProviderPolicyTest.kt" "topwayVariantsServeUpdateEvenWithoutNormalAppWidgetInstance" "Topway update bypasses AppWidget-only gate"
+require_file_contains ".github/workflows/manual-release.yml" "assembleTopwayTwMusicRelease" "manual release builds Topway music release"
+require_file_contains ".github/workflows/manual-release.yml" "assembleTopwayTwMediaRelease" "manual release builds Topway media release"
+require_file_contains ".github/workflows/manual-release.yml" "topway-twmusic-release.apk" "manual release names Topway music APK asset"
+require_file_contains ".github/workflows/manual-release.yml" "topway-twmedia-release.apk" "manual release names Topway media APK asset"
 
 printf '\nChecking generated merged manifests when present...\n'
 standard_debug_manifest="$(find_merged_manifest standardDebug || true)"
 topway_debug_manifest="$(find_merged_manifest topwayTwMusicDebug || true)"
 topway_release_manifest="$(find_merged_manifest topwayTwMusicRelease || true)"
+topway_media_debug_manifest="$(find_merged_manifest topwayTwMediaDebug || true)"
+topway_media_release_manifest="$(find_merged_manifest topwayTwMediaRelease || true)"
 
-if [[ -z "$standard_debug_manifest" || -z "$topway_debug_manifest" || -z "$topway_release_manifest" ]]; then
-  warn "one or more merged manifests are absent; run ./gradlew :app:processStandardDebugMainManifest :app:processTopwayTwMusicDebugMainManifest :app:processTopwayTwMusicReleaseMainManifest for output-level checks"
+if [[ -z "$standard_debug_manifest" || -z "$topway_debug_manifest" || -z "$topway_release_manifest" || -z "$topway_media_debug_manifest" || -z "$topway_media_release_manifest" ]]; then
+  warn "one or more merged manifests are absent; run ./gradlew :app:processStandardDebugMainManifest :app:processTopwayTwMusicDebugMainManifest :app:processTopwayTwMusicReleaseMainManifest :app:processTopwayTwMediaDebugMainManifest :app:processTopwayTwMediaReleaseMainManifest for output-level checks"
 else
-  if ! python3 - "$standard_debug_manifest" "$topway_debug_manifest" "$topway_release_manifest" <<'PY'
+  if ! python3 - "$standard_debug_manifest" "$topway_debug_manifest" "$topway_release_manifest" "$topway_media_debug_manifest" "$topway_media_release_manifest" <<'PY'
 import sys
 import xml.etree.ElementTree as ET
 
@@ -229,17 +257,26 @@ def require_provider(application, authority, label):
         fail(f"{label} lacks CoverProvider authority {authority}")
 
 def require_media_browser(application, label):
+    media_browser_services = []
     for service in application.findall("service"):
         for intent_filter in service.findall("intent-filter"):
             actions = {attr(action_el, "name") for action_el in intent_filter.findall("action")}
             if "android.media.browse.MediaBrowserService" in actions:
-                ok(f"{label} has MediaBrowserService intent-filter")
-                if attr(service, "exported") == "true":
-                    ok(f"{label} MediaBrowserService is exported")
-                else:
-                    fail(f"{label} MediaBrowserService is not exported=true")
-                return
-    fail(f"{label} lacks MediaBrowserService intent-filter")
+                media_browser_services.append(service)
+    if not media_browser_services:
+        fail(f"{label} lacks MediaBrowserService intent-filter")
+        return
+    expected_name = "com.tw.music.MusicService" if label.startswith("topway") else "org.oxycblt.auxio.AuxioService"
+    names = [attr(service, "name") for service in media_browser_services]
+    if names != [expected_name]:
+        fail(f"{label} MediaBrowserService components expected [{expected_name}], got {names}")
+        return
+    service = media_browser_services[0]
+    ok(f"{label} has canonical MediaBrowserService {expected_name}")
+    if attr(service, "exported") == "true":
+        ok(f"{label} MediaBrowserService is exported")
+    else:
+        fail(f"{label} MediaBrowserService is not exported=true")
 
 def require_topway_receiver(application, label):
     expected = {
@@ -318,10 +355,12 @@ def require_topway_alias(application, label, debug=False):
         else:
             fail(f"{label} alias lacks category {category_name}")
 
-standard, topway_debug, topway_release = [parse(path) for path in sys.argv[1:4]]
+standard, topway_debug, topway_release, topway_media_debug, topway_media_release = [parse(path) for path in sys.argv[1:6]]
 standard_app = standard.find("application")
 topway_debug_app = topway_debug.find("application")
 topway_release_app = topway_release.find("application")
+topway_media_debug_app = topway_media_debug.find("application")
+topway_media_release_app = topway_media_release.find("application")
 
 require_package(standard, "org.oxycblt.auxio.debug", "standardDebug")
 require_single_launcher(standard_app, "org.oxycblt.auxio.MainActivity", "standardDebug")
@@ -347,6 +386,20 @@ require_provider(topway_release_app, "com.tw.music.image.CoverProvider", "topway
 require_media_browser(topway_release_app, "topwayTwMusicRelease")
 require_topway_receiver(topway_release_app, "topwayTwMusicRelease")
 
+require_package(topway_media_debug, "com.tw.media.debug", "topwayTwMediaDebug")
+require_single_launcher(topway_media_debug_app, "com.tw.music.MusicActivity", "topwayTwMediaDebug")
+require_topway_alias(topway_media_debug_app, "topwayTwMediaDebug", debug=True)
+require_provider(topway_media_debug_app, "com.tw.media.debug.image.CoverProvider", "topwayTwMediaDebug")
+require_media_browser(topway_media_debug_app, "topwayTwMediaDebug")
+require_topway_receiver(topway_media_debug_app, "topwayTwMediaDebug")
+
+require_package(topway_media_release, "com.tw.media", "topwayTwMediaRelease")
+require_single_launcher(topway_media_release_app, "com.tw.music.MusicActivity", "topwayTwMediaRelease")
+require_topway_alias(topway_media_release_app, "topwayTwMediaRelease")
+require_provider(topway_media_release_app, "com.tw.media.image.CoverProvider", "topwayTwMediaRelease")
+require_media_browser(topway_media_release_app, "topwayTwMediaRelease")
+require_topway_receiver(topway_media_release_app, "topwayTwMediaRelease")
+
 sys.exit(1 if failures else 0)
 PY
   then
@@ -359,13 +412,15 @@ standard_debug_apk="$(find_apk standard debug || true)"
 standard_release_apk="$(find_apk standard release || true)"
 topway_debug_apk="$(find_apk topwayTwMusic debug || true)"
 topway_release_apk="$(find_apk topwayTwMusic release || true)"
+topway_media_debug_apk="$(find_apk topwayTwMedia debug || true)"
+topway_media_release_apk="$(find_apk topwayTwMedia release || true)"
 
 debug_outputs_present=0
 release_outputs_present=0
-if [[ -n "$standard_debug_apk" || -n "$topway_debug_apk" ]]; then
+if [[ -n "$standard_debug_apk" || -n "$topway_debug_apk" || -n "$topway_media_debug_apk" ]]; then
   debug_outputs_present=1
 fi
-if [[ -n "$standard_release_apk" || -n "$topway_release_apk" ]]; then
+if [[ -n "$standard_release_apk" || -n "$topway_release_apk" || -n "$topway_media_release_apk" ]]; then
   release_outputs_present=1
 fi
 
@@ -377,13 +432,19 @@ if (( debug_outputs_present )); then
   fi
 
   if [[ -n "$topway_debug_apk" ]]; then
-    pass "found Topway debug APK: ${topway_debug_apk}"
+    pass "found Topway music debug APK: ${topway_debug_apk}"
   else
-    fail "Topway debug APK missing while debug APK outputs are present"
+    fail "Topway music debug APK missing while debug APK outputs are present"
+  fi
+
+  if [[ -n "$topway_media_debug_apk" ]]; then
+    pass "found Topway media debug APK: ${topway_media_debug_apk}"
+  else
+    fail "Topway media debug APK missing while debug APK outputs are present"
   fi
 else
   if (( ! release_outputs_present )); then
-    warn "debug APKs not found; run ./gradlew :app:assembleStandardDebug :app:assembleTopwayTwMusicDebug"
+    warn "debug APKs not found; run ./gradlew :app:assembleStandardDebug :app:assembleTopwayTwMusicDebug :app:assembleTopwayTwMediaDebug"
   fi
 fi
 
@@ -395,13 +456,19 @@ if (( release_outputs_present )); then
   fi
 
   if [[ -n "$topway_release_apk" ]]; then
-    pass "found Topway release APK: ${topway_release_apk}"
+    pass "found Topway music release APK: ${topway_release_apk}"
   else
-    fail "Topway release APK missing while release APK outputs are present"
+    fail "Topway music release APK missing while release APK outputs are present"
+  fi
+
+  if [[ -n "$topway_media_release_apk" ]]; then
+    pass "found Topway media release APK: ${topway_media_release_apk}"
+  else
+    fail "Topway media release APK missing while release APK outputs are present"
   fi
 else
   if (( ! debug_outputs_present )); then
-    warn "release APKs not found; run ./gradlew :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease"
+    warn "release APKs not found; run ./gradlew :app:assembleStandardRelease :app:assembleTopwayTwMusicRelease :app:assembleTopwayTwMediaRelease"
   fi
 fi
 
@@ -416,6 +483,12 @@ if [[ -n "$topway_debug_apk" ]]; then
 fi
 if [[ -n "$topway_release_apk" ]]; then
   check_apk_manifest "$topway_release_apk" "com.tw.music" "topwayTwMusicRelease"
+fi
+if [[ -n "$topway_media_debug_apk" ]]; then
+  check_apk_manifest "$topway_media_debug_apk" "com.tw.media.debug" "topwayTwMediaDebug"
+fi
+if [[ -n "$topway_media_release_apk" ]]; then
+  check_apk_manifest "$topway_media_release_apk" "com.tw.media" "topwayTwMediaRelease"
 fi
 
 printf '\nResult: '

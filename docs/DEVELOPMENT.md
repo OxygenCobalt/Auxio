@@ -23,7 +23,9 @@ For Codex or a fresh Linux environment, `bash scripts/setup-codex-android-env.sh
 |------|-------------|
 | `:app:assembleStandardDebug` | Standard Auxio-TS debug APK |
 | `:app:assembleTopwayTwMusicDebug` | DoFun-compatible debug APK (`com.tw.music.debug`) |
-| `:app:assembleTopwayTwMusicRelease` | DoFun-compatible release APK (`com.tw.music`) |
+| `:app:assembleTopwayTwMusicRelease` | Exact DoFun/Topway replacement release APK (`com.tw.music`) |
+| `:app:assembleTopwayTwMediaDebug` | DoFun alternate-entry debug APK (`com.tw.media.debug`) |
+| `:app:assembleTopwayTwMediaRelease` | DoFun alternate-entry release APK (`com.tw.media`) |
 | `:app:testStandardDebugUnitTest` | Unit tests |
 | `:app:lintStandardDebug` | Android lint |
 | `spotlessCheck` | Code formatting check |
@@ -33,8 +35,11 @@ For Codex or a fresh Linux environment, `bash scripts/setup-codex-android-env.sh
 ```
 app/                          Android app module
   src/main/                   Shared source (all variants)
-  src/topwayTwMusic/          Topway variant manifest + resources
-  src/topwayTwMusicDebug/     Topway debug resources
+  src/topwayCompat/           Shared Topway wrapper manifest/code/resources for com.tw.music and com.tw.media
+  src/topwayTwMusic/          Topway music release resources
+  src/topwayTwMusicDebug/     Topway music debug resources
+  src/topwayTwMedia/          Topway media release resources
+  src/topwayTwMediaDebug/     Topway media debug resources
 musikr/                       Music indexing library
 media/                        Media playback submodule
 gradle/                       Gradle wrapper
@@ -66,9 +71,10 @@ All three are run by CI on every PR (`android.yml` and/or `lint.yml` guardrail j
 The app has a `distribution` flavour dimension:
 
 - **`standard`** — normal Auxio identity (`org.oxycblt.auxio`)
-- **`topwayTwMusic`** — DoFun/Topway identity (`com.tw.music`)
+- **`topwayTwMusic`** — exact DoFun/Topway stock replacement identity (`com.tw.music`)
+- **`topwayTwMedia`** — DoFun alternate fixed-entry identity (`com.tw.media`)
 
-The Topway bridge code lives in `app/src/main/java/org/oxycblt/auxio/headunit/topway/` and is shared by all variants. The `topwayTwMusic` flavour adds only the manifest alias and resource overrides needed for package identity matching.
+The Topway bridge code lives in `app/src/main/java/org/oxycblt/auxio/headunit/topway/` and is shared by all variants. The `topwayCompat` source set adds the thin stock-name wrappers and overlay resources; `topwayTwMusic` and `topwayTwMedia` both reuse that source set while their flavor application IDs supply `com.tw.music` or `com.tw.media`.
 
 ## UI development and Roborazzi screenshots
 
@@ -84,7 +90,7 @@ Test file: `app/src/test/java/org/oxycblt/auxio/ui/RoborazziSmokeScreenshotTest.
 
 Roborazzi uses Robolectric — no emulator or device required. Regular `test*UnitTest` tasks intentionally exclude `RoborazziSmokeScreenshotTest` so the PR unit-test job is not coupled to Roborazzi runtime artifact downloads; use the Roborazzi tasks/workflow for visual coverage.
 
-Use the **UI Screenshots** (`ui-screenshots.yml`) workflow to trigger these tasks manually on any branch/PR and retrieve PNG + HTML report artifacts. Select `variant=standard` for normal Auxio-TS UI or `variant=topway_twmusic` for the DoFun/Topway package-identity variant. Trigger with `record` first to establish baselines, then use `verify` to detect regressions.
+Use the **UI Screenshots** (`ui-screenshots.yml`) workflow to trigger these tasks manually on any branch/PR and retrieve PNG + HTML report artifacts. Select `variant=standard` for normal Auxio-TS UI, `variant=topway_twmusic` for the exact `com.tw.music` package-identity variant, or `variant=topway_twmedia` for the alternate `com.tw.media` variant. Trigger with `record` first to establish baselines, then use `verify` to detect regressions.
 
 Baseline PNGs live adjacent to the test source (committed to the repo). They are generated at 1280×720 to match TS18/head-unit landscape resolution.
 
@@ -92,9 +98,9 @@ Baseline PNGs live adjacent to the test source (committed to the repo). They are
 
 | Workflow | Trigger | Responsibility |
 |----------|---------|----------------|
-| `android.yml` | push/PR to dev, app/build paths | Standard + Topway debug builds; DoFun compat checks; APK artifacts |
+| `android.yml` | push/PR to dev, app/build paths | Standard + `topwayTwMusic` + `topwayTwMedia` debug/release builds; DoFun compat checks; APK artifacts |
 | `lint.yml` | push/PR to dev, app/build/scripts/docs/workflow paths | Workflow YAML syntax; shell script syntax; formatting (spotless); unit tests; Android lint; head-unit safety + DoFun compat scripts |
-| `manual-release.yml` | manual dispatch | Signed standard + Topway release APKs; package identity verification |
+| `manual-release.yml` | manual dispatch | Signed standard, `topwayTwMusic`, and `topwayTwMedia` release APKs; package identity verification |
 | `ui-screenshots.yml` | manual dispatch | Roborazzi UI regression screenshots; PNG + HTML report artifacts |
 
 

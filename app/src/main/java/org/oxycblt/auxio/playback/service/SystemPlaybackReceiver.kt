@@ -18,9 +18,7 @@
 
 package org.oxycblt.auxio.playback.service
 
-import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -30,6 +28,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.headunit.topway.TopwayMusicContract
 import org.oxycblt.auxio.headunit.topway.TopwayStartCallbacks
 import org.oxycblt.auxio.headunit.topway.TopwayStartIntentHandler
+import org.oxycblt.auxio.headunit.topway.TopwayWidgetProviderPolicy
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -167,9 +166,7 @@ private constructor(
                             playbackManager.playing(!playbackManager.progression.isPlaying)
 
                         override fun widgetUpdate() {
-                            val awm = AppWidgetManager.getInstance(context)
-                            val cn = ComponentName(context, WidgetProvider::class.java)
-                            if (awm.getAppWidgetIds(cn).isNotEmpty()) {
+                            if (TopwayWidgetProviderPolicy.shouldHandleTopwayUpdate(context)) {
                                 widgetComponent.update()
                             } else {
                                 L.d("Ignoring Topway widget update with no widget instances")

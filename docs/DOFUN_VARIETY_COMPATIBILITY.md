@@ -171,7 +171,7 @@ adb shell am broadcast -a com.tw.launcher.music_progress_duration   --el msg_mus
 CI should protect:
 
 - standard variant identity remains intact;
-- Topway release variant installs as exact `com.tw.music`;
+- Topway release variants install as exact `com.tw.music` and alternate `com.tw.media` identities;
 - `com.tw.music.MusicActivity` alias exists;
 - `MediaBrowserService` remains declared/exported as intended;
 - provider authorities follow the variant application ID;
@@ -185,3 +185,18 @@ bash scripts/check-headunit-compat-safety.sh
 ```
 
 Add or keep a more specific DoFun/Topway manifest/APK check when the flavour is implemented.
+
+## Post-PR#53 exact-device hardening notes
+
+**Evidence confidence:** Observed. **Porting decision:** Directly reusable requirement. The redacted `s9863a1h10` Android 10 profile confirms DoFun fixed entries for both `com.tw.music/com.tw.music.MusicActivity` and `com.tw.media/com.tw.music.MusicActivity`.
+
+Auxio-TS now provides two Topway-compatible release identities:
+
+| Variant | Package | DoFun component | Install constraint |
+| --- | --- | --- | --- |
+| `topwayTwMusicRelease` | `com.tw.music` | `com.tw.music/com.tw.music.MusicActivity` | Exact stock replacement; conflicts with stock system priv-app unless package state/signing is managed |
+| `topwayTwMediaRelease` | `com.tw.media` | `com.tw.media/com.tw.music.MusicActivity` | Alternate DoFun fixed entry; not a universal no-root bypass and may conflict on some firmware |
+
+Both variants reuse the same thin wrapper source set (`com.tw.music.MusicActivity`, `com.tw.music.MusicService`, and `com.tw.music.view.MusicWidgetProvider`) and delegate into Auxio-owned code. The wrapper exposes stock-compatible package/class/component names only; it does not add private Cardoor services, TWUtil reflection, vendor binders, system UID, `sharedUserId`, copied smali, or platform-signature requirements.
+
+Topway-compatible variants use `com.tw.music.MusicService` as the canonical exported external MediaBrowserService. The base Auxio `org.oxycblt.auxio.AuxioService` remains available for explicit in-app starts, but its inherited browse/search intent filters are removed in the Topway wrapper manifest so external TS18/DoFun clients do not split across two service component names. **Evidence confidence:** Inferred from manifest design. **Porting decision:** Requires TS18 runtime validation. Runtime validation must still check for duplicate active sessions, duplicate foreground services, and duplicate lifecycle starts before claiming final TS18 parity.

@@ -30,7 +30,7 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
     private var lastProgressAtMs = 0L
 
     private val bridgeEnabled: Boolean
-        get() = BuildConfig.TOPWAY_TWMUSIC_FLAVOR || uiSettings.headUnitLandscapeMode
+        get() = BuildConfig.TOPWAY_COMPAT_FLAVOR || uiSettings.headUnitLandscapeMode
 
     fun publishMetadata(snapshot: HeadUnitMetadataSnapshot?) {
         if (!bridgeEnabled || snapshot == null) return
@@ -66,6 +66,7 @@ class TopwayMusicBroadcastBridge(private val context: Context, private val uiSet
 
     fun clear() {
         lastMetadata = null
+        if (!bridgeEnabled) return
         if (lastProgress != TopwayProgressStatePolicy.CLEAR) {
             context.sendBroadcast(TopwayMusicIntentFactory.progressIntent(0L, 0L))
             lastProgress = TopwayProgressStatePolicy.CLEAR

@@ -3,9 +3,11 @@ set -euo pipefail
 
 allowed_topway_main='app/src/main/java/org/oxycblt/auxio/headunit/topway/'
 allowed_topway_test='app/src/test/java/org/oxycblt/auxio/headunit/topway/'
-allowed_topway_flavour='app/src/topwayTwMusic/java/com/tw/music/'
+allowed_topway_flavour='app/src/topwayCompat/java/com/tw/music/'
 manifest_path='app/src/main/AndroidManifest.xml'
-topway_flavour_manifest='app/src/topwayTwMusic/AndroidManifest.xml'
+topway_flavour_manifest='app/src/topwayCompat/AndroidManifest.xml'
+topway_media_res='app/src/topwayTwMedia/res/values/donottranslate.xml'
+topway_media_debug_res='app/src/topwayTwMediaDebug/res/values/donottranslate.xml'
 
 search_matches() {
   local pattern="$1"
@@ -21,17 +23,17 @@ search_matches() {
 }
 
 product_sources=()
-for path in app/src/main app/src/topwayTwMusic app/src/test app/src/androidTest musikr/src; do
+for path in app/src/main app/src/topwayCompat app/src/topwayTwMusic app/src/topwayTwMedia app/src/topwayTwMediaDebug app/src/test app/src/androidTest musikr/src; do
   [ -e "${path}" ] && product_sources+=("${path}")
 done
 
 product_code_sources=()
-for path in app/src/main/java app/src/topwayTwMusic/java app/src/test app/src/androidTest musikr/src; do
+for path in app/src/main/java app/src/topwayCompat/java app/src/test app/src/androidTest musikr/src; do
   [ -e "${path}" ] && product_code_sources+=("${path}")
 done
 
 identity_files=()
-for path in app/build.gradle "${manifest_path}" "${topway_flavour_manifest}" app/src/topwayTwMusic/res/values/donottranslate.xml app/src/topwayTwMusicDebug/res/values/donottranslate.xml musikr/build.gradle settings.gradle; do
+for path in app/build.gradle "${manifest_path}" "${topway_flavour_manifest}" app/src/topwayCompat/res/values/donottranslate.xml app/src/topwayTwMusic/res/values/donottranslate.xml app/src/topwayTwMusicDebug/res/values/donottranslate.xml "${topway_media_res}" "${topway_media_debug_res}" musikr/build.gradle settings.gradle; do
   [ -f "${path}" ] && identity_files+=("${path}")
 done
 
@@ -49,20 +51,20 @@ if [ -n "${forbidden_hits}" ]; then
   exit 1
 fi
 
-# Standard package identity must not be replaced. A dedicated topwayTwMusic flavour is
-# allowed to install as com.tw.music because DoFun Variety uses fixed stock music matching.
-identity_hits="$(search_matches 'package="com\\.tw\\.music"|applicationId[[:space:]]+"com\\.tw\\.music"|namespace[[:space:]]+"com\\.tw\\.music"' "${identity_files[@]}")"
+# Standard package identity must not be replaced. Dedicated Topway/DoFun flavours are
+# allowed to install as com.tw.music or com.tw.media because DoFun Variety uses fixed entries.
+identity_hits="$(search_matches 'package="com\\.tw\\.(music|media)"|applicationId[[:space:]]+"com\\.tw\\.(music|media)"|namespace[[:space:]]+"com\\.tw\\.(music|media)"' "${identity_files[@]}")"
 if [ -n "${identity_hits}" ]; then
   while IFS= read -r line; do
     [ -z "${line}" ] && continue
     path="${line%%:*}"
     case "${path}" in
       app/build.gradle)
-        if grep -Fq 'topwayTwMusic' app/build.gradle && grep -Fq 'applicationId "com.tw.music"' app/build.gradle; then
+        if grep -Fq 'topwayTwMusic' app/build.gradle && grep -Fq 'applicationId "com.tw.music"' app/build.gradle && grep -Fq 'topwayTwMedia' app/build.gradle && grep -Fq 'applicationId "com.tw.media"' app/build.gradle; then
           continue
         fi
         ;;
-      app/src/topwayTwMusic/*|app/src/topwayTwMusicDebug/*)
+      app/src/topwayCompat/*|app/src/topwayTwMusic/*|app/src/topwayTwMusicDebug/*|app/src/topwayTwMedia/*|app/src/topwayTwMediaDebug/*)
         continue
         ;;
     esac
@@ -80,7 +82,7 @@ if [ -n "${vendor_hits}" ]; then
     case "${path}" in
       ${allowed_topway_main}*|${allowed_topway_test}*|${allowed_topway_flavour}*)
         case "${line}" in
-          *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.info"*|*"com.tw.launcher.music_progress_duration"*|*"com.android.launcher.widget_music_progress"*|*"com.tw.music.MusicActivity"*) ;;
+          *"com.tw.music.action.cmd"*|*"com.tw.music.action.prev"*|*"com.tw.music.action.next"*|*"com.tw.music.action.pp"*|*"com.tw.music.info"*|*"com.tw.launcher.music_progress_duration"*|*"com.android.launcher.widget_music_progress"*|*"com.tw.music.MusicActivity"*|*"com.tw.music.view.MusicWidgetProvider"*) ;;
           *)
             echo "${line}" >&2
             echo "Unexpected vendor string in isolated Topway bridge/test path" >&2
@@ -126,6 +128,12 @@ if [ -f "${topway_flavour_manifest}" ]; then
   require_topway_identity 'com.tw.music.MusicActivity' 'Topway activity alias'
   require_topway_identity 'org.oxycblt.auxio.MainActivity' 'Auxio alias target'
   require_topway_identity 'com.tw.music.MusicService' 'Topway MusicService fallback'
+  require_topway_identity 'org.oxycblt.auxio.AuxioService' 'Topway base service override'
+  require_topway_identity 'tools:node="remove"' 'Topway base service browse-filter removal'
+  if grep -Fq 'android:foregroundServiceType="specialUse"' "${topway_flavour_manifest}" || grep -Fq 'FOREGROUND_SERVICE_SPECIAL_USE' "${topway_flavour_manifest}"; then
+    echo "Topway overlay manifest must not hard-code API34-only specialUse on Android 10 target" >&2
+    exit 1
+  fi
   require_topway_identity 'com.tw.music.view.MusicWidgetProvider' 'Topway MusicWidgetProvider fallback'
   require_topway_identity 'android.intent.action.MAIN' 'MAIN action'
   require_topway_identity 'android.intent.action.MUSIC_PLAYER' 'MUSIC_PLAYER action'
