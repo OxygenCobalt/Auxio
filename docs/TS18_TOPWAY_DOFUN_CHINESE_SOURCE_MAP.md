@@ -1,6 +1,6 @@
 # TS18 / Topway / DoFun Chinese Source Map for Auxio-TS Developers and Agents
 
-**Intended repo path:** `docs/research/TS18_TOPWAY_DOFUN_CHINESE_SOURCE_MAP.md`  
+**Intended repo path:** `docs/TS18_TOPWAY_DOFUN_CHINESE_SOURCE_MAP.md`  
 **Prepared for:** Auxio-TS TS18 / Topway / DoFun integration work  
 **Research date:** 2026-06-02  
 **Primary language focus:** Chinese-language and Chinese-developer sources, with official Android docs used as implementation authority  

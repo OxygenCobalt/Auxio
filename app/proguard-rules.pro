@@ -34,3 +34,9 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+
+# Topway/TS18 car overlay classes accessed via reflection in Auxio.kt.
+# -dontobfuscate prevents renaming but R8 can still strip unreachable code;
+# keep these so the reflective registration path always finds them.
+-keep class org.oxycblt.auxio.car.overlay.CarOverlayVisibilityHooks { *; }
+-keep class org.oxycblt.auxio.car.overlay.CarOverlaySettings { *; }

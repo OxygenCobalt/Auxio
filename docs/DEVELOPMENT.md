@@ -74,7 +74,7 @@ The app has a `distribution` flavour dimension:
 - **`topwayTwMusic`** — exact DoFun/Topway stock replacement identity (`com.tw.music`)
 - **`topwayTwMedia`** — DoFun alternate fixed-entry identity (`com.tw.media`)
 
-The Topway bridge code lives in `app/src/main/java/org/oxycblt/auxio/headunit/topway/` and is shared by all variants. The `topwayCompat` source set adds the thin stock-name wrappers and overlay resources; `topwayTwMusic` and `topwayTwMedia` both reuse that source set while their flavor application IDs supply `com.tw.music` or `com.tw.media`.
+The Topway bridge code lives in `app/src/main/java/org/oxycblt/auxio/headunit/topway/` and is shared by all variants. The `topwayCompat` source set adds the thin stock-name wrappers and overlay resources; `topwayTwMusic` and `topwayTwMedia` both reuse that source set while their flavour application IDs supply `com.tw.music` or `com.tw.media`.
 
 ## UI development and Roborazzi screenshots
 

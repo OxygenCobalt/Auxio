@@ -450,11 +450,11 @@ jobs:
             echo
             echo "## APK variants"
             echo
-            printf -- "- `%s` keeps the normal Auxio-TS package identity (`org.oxycblt.auxio`).\n" \
+            printf -- '- `%s` keeps the normal Auxio-TS package identity (`org.oxycblt.auxio`).\n' \
               "Auxio-TS-${RELEASE_TAG}-standard-release.apk"
-            printf -- "- `%s` is the exact Topway/DoFun stock replacement identity and installs as `com.tw.music`; it conflicts with locked stock system priv-app installs unless package state/signing is managed.\n" \
+            printf -- '- `%s` is the exact Topway/DoFun stock replacement identity and installs as `com.tw.music`; it conflicts with locked stock system priv-app installs unless package state/signing is managed.\n' \
               "Auxio-TS-${RELEASE_TAG}-topway-twmusic-release.apk"
-            printf -- "- `%s` targets DoFun's alternate fixed entry and installs as `com.tw.media` while exposing `com.tw.music.MusicActivity`; it is not a universal no-root bypass and may conflict on some firmware.\n" \
+            printf -- '- `%s` targets DoFun'\''s alternate fixed entry and installs as `com.tw.media` while exposing `com.tw.music.MusicActivity`; it is not a universal no-root bypass and may conflict on some firmware.\n' \
               "Auxio-TS-${RELEASE_TAG}-topway-twmedia-release.apk"
           } >> "${NOTES_FILE}"
 
