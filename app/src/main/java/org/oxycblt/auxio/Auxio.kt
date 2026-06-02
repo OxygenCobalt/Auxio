@@ -63,5 +63,10 @@ class Auxio : Application() {
             this,
             HeadUnitEntryPoints.createDynamicShortcuts(this),
         )
+
+        // Register car floating controls visibility hooks for the Topway/TS18 variant.
+        if (BuildConfig.TOPWAY_TWMUSIC_FLAVOR) {
+            org.oxycblt.auxio.car.overlay.CarOverlayVisibilityHooks.register(this)
+        }
     }
 }

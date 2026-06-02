@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.headunit.compat.HeadUnitCompatManager
 import org.oxycblt.auxio.headunit.compat.NativePrivateIntegrationStatus
@@ -102,9 +103,36 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                         nativeStatusSummary,
                     ) + "\n" + uiSettings.headUnitCompatStatusSummary
             }
+            KEY_CAR_OVERLAY_ENABLED -> {
+                if (BuildConfig.TOPWAY_TWMUSIC_FLAVOR) {
+                    preference.onPreferenceChangeListener =
+                        Preference.OnPreferenceChangeListener { _, newValue ->
+                            val enabled = newValue as Boolean
+                            org.oxycblt.auxio.car.overlay.CarOverlaySettings.setEnabled(
+                                requireContext(), enabled
+                            )
+                            true
+                        }
+                }
+            }
+            KEY_CAR_OVERLAY_RESET_POSITION -> {
+                if (BuildConfig.TOPWAY_TWMUSIC_FLAVOR) {
+                    preference.setOnPreferenceClickListener {
+                        org.oxycblt.auxio.car.overlay.CarOverlaySettings.resetPosition(
+                            requireContext()
+                        )
+                        true
+                    }
+                }
+            }
         }
     }
 
     private fun statusSummary(status: Boolean): String =
         if (status) getString(R.string.lbl_enabled) else getString(R.string.lbl_disabled)
+
+    private companion object {
+        const val KEY_CAR_OVERLAY_ENABLED = "car_overlay_enabled"
+        const val KEY_CAR_OVERLAY_RESET_POSITION = "car_overlay_reset_position"
+    }
 }

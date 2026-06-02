@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="car_overlay_notification_channel" translatable="false">Car Floating Controls</string>
+    <string name="car_overlay_notification_title" translatable="false">Floating controls active</string>
+    <string name="car_overlay_notification_text" translatable="false">Music controls overlay is showing</string>
+    <string name="car_overlay_permission_title" translatable="false">Overlay Permission Required</string>
+    <string name="car_overlay_permission_not_granted" translatable="false">Auxio needs permission to display over other apps to show floating controls.</string>
+    <string name="car_overlay_permission_granted" translatable="false">Permission granted. Floating controls are ready.</string>
+    <string name="car_overlay_permission_grant_button" translatable="false">Open Permission Settings</string>
+    <string name="car_overlay_permission_done_button" translatable="false">Done</string>
+    <string name="car_overlay_setting_title" translatable="false">Car Floating Controls</string>
+    <string name="car_overlay_setting_summary" translatable="false">Show persistent media controls over other apps</string>
+    <string name="car_overlay_reset_position" translatable="false">Reset overlay position</string>
+</resources>

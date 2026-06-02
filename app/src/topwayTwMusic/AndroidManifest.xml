@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
     <application>
         <!--
         Stock-component fallbacks for Topway/DoFun integrations that address stock twmusic
@@ -69,5 +73,31 @@
                 <category android:name="android.intent.category.APP_MUSIC" />
             </intent-filter>
         </activity-alias>
+
+        <!-- Car Floating Controls overlay service -->
+        <service
+            android:name="org.oxycblt.auxio.car.overlay.CarFloatingControlsService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            tools:ignore="ForegroundServicePermission">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Persistent floating media controls overlay for head-unit use" />
+        </service>
+
+        <!-- Car Floating Controls overlay permission activity -->
+        <activity
+            android:name="org.oxycblt.auxio.car.overlay.CarOverlayPermissionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Auxio.App" />
+
+        <!-- Boot receiver to restore overlay after reboot/ACC wake -->
+        <receiver
+            android:name="org.oxycblt.auxio.car.overlay.CarOverlayBootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

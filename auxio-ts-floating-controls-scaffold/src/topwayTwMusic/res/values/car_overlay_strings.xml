@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="car_overlay_title">Floating controls</string>
-    <string name="car_overlay_permission_title">Display over other apps</string>
-    <string name="car_overlay_permission_body">Auxio needs this permission to keep car media controls visible over launcher, navigation, and radio screens.</string>
-    <string name="car_overlay_stop">Stop</string>
-    <string name="car_overlay_open_permission">Open overlay permission</string>
-    <string name="car_overlay_done">Done</string>
-</resources>
