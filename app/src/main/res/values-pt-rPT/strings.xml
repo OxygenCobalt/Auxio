@@ -209,7 +209,7 @@
     <string name="lbl_reset">Repor</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lng_widget">Vêr e controlar a reprodução da música</string>
-    <string name="set_black_mode_desc">Utilizar tema preto puro</string>
+    <string name="set_black_mode_desc">Utilizar tema preto escuro puro</string>
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
     <string name="set_replay_gain_mode_track">Preferir faixa</string>
     <string name="set_pre_amp">Pré-amplificação da normalização de volume</string>
