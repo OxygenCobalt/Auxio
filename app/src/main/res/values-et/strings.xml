@@ -107,7 +107,7 @@
     <string name="lbl_rename_playlist">Muuda esitusloendi nime</string>
     <string name="lbl_import">Impordi</string>
     <string name="lbl_export">Ekspordi</string>
-    <string name="lbl_confirm_delete_playlist">Kas kustutame esitusloendi?</string>
+    <string name="lbl_confirm_delete_playlist">Kas kustutad esitusloendi?</string>
     <string name="lbl_edit">Muuda</string>
     <string name="lbl_filter">Filtreeri</string>
     <string name="lbl_duration">Kestus</string>
@@ -279,7 +279,7 @@
     <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_lib_song_count">Laaditud palasid: %d</string>
-    <string name="fmt_deletion_info">Kas kustutame %s? Seda tegevust ei saa tagasi pöörata.</string>
+    <string name="fmt_deletion_info">Kas kustutad %s? Seda tegevust ei saa tagasi pöörata.</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d pala</item>
         <item quantity="other">%d pala</item>
