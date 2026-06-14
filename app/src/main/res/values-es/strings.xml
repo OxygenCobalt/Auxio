@@ -347,8 +347,8 @@
         <item quantity="other">%d segundos</item>
     </plurals>
     <string name="fmt_lib_total_size">Tamaño total: %s</string>
-    <string name="set_saf_multithread">Exploración de archivos de varios hilos</string>
+    <string name="set_saf_multithread">Exploración de archivos multihilo</string>
     <string name="set_saf_multithread_desc">Más rápido, pero falla en algunos dispositivos</string>
-    <string name="err_share_too_large">Esto es demasiado grande de compartir</string>
+    <string name="err_share_too_large">Demasiado grande para compartir</string>
     <string name="err_share_failed">Incapaz de compartir esto</string>
 </resources>
