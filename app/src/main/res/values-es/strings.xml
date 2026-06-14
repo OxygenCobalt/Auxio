@@ -219,7 +219,7 @@
     </plurals>
     <string name="set_rescan_desc">Borrar la caché de las etiquetas y recargar completamente la biblioteca musical (más lento, pero más completo)</string>
     <string name="set_rescan">Volver a escanear la música</string>
-    <string name="fmt_selected">%d seleccionado</string>
+    <string name="fmt_selected">%d seleccionados</string>
     <string name="set_play_song_from_genre">Reproducir desde el género</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
@@ -334,16 +334,21 @@
     <string name="set_grant_storage">Requerido el acceso al almacenamiento</string>
     <string name="set_folders_to_load">Carpetas para cargar</string>
     <string name="set_folders_to_ignore">Carpetas para ignorar</string>
-    <string name="set_filtered_folders">Carpetas Filtrados</string>
-    <string name="set_filter_mode">Modo de Filtración</string>
+    <string name="set_filtered_folders">Carpetas de filtrados</string>
+    <string name="set_filter_mode">Modo de filtración</string>
     <string name="set_include">Incluir</string>
     <string name="set_exclude">Excluir</string>
     <string name="set_extra_settings">Más Configuraciones</string>
-    <string name="lbl_no_folders">No hay ningún carpeta</string>
-    <string name="desc_add_folder">Agregar Carpeta</string>
+    <string name="lbl_no_folders">Sin carpetas</string>
+    <string name="desc_add_folder">Agregar carpeta</string>
     <plurals name="fmt_seconds">
         <item quantity="one">%d segundo</item>
         <item quantity="many">%d segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
+    <string name="fmt_lib_total_size">Tamaño total: %s</string>
+    <string name="set_saf_multithread">Exploración de archivos de varios hilos</string>
+    <string name="set_saf_multithread_desc">Más rápido, pero falla en algunos dispositivos</string>
+    <string name="err_share_too_large">Esto es demasiado grande de compartir</string>
+    <string name="err_share_failed">Incapaz de compartir esto</string>
 </resources>
