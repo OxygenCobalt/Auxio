@@ -97,8 +97,8 @@ class WidgetProvider : AppWidgetProvider() {
             mapOf(
                 SizeF(180f, 48f) to newThinStickLayout(context, state),
                 SizeF(304f, 48f) to newWideStickLayout(context, state),
-                SizeF(180f, 100f) to newThinWaferLayout(context, uiSettings, state),
-                SizeF(304f, 100f) to newWideWaferLayout(context, uiSettings, state),
+                SizeF(180f, 80f) to newThinWaferLayout(context, uiSettings, state),
+                SizeF(304f, 80f) to newWideWaferLayout(context, uiSettings, state),
                 SizeF(180f, 152f) to defaultLayout,
                 SizeF(304f, 152f) to newWideDockedLayout(context, uiSettings, state),
                 SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state),
