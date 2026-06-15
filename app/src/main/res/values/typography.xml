@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-    Typography is derived from Inter and it's size-dependent spacing calculation.
+    Typography is derived from Inter and it's size-dependent spacing calculation. Auxio does not
+    completely adhere to the typography system, sometimes having two variants of a given style in
+    order to bypass the restrictive nature of the default typography.
     -->
 
     <!--
     Display styles are not used in Auxio.
     -->
     <style name="TextAppearance.Auxio.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.0162807018</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.DisplayLarge.Emphasized" parent="TextAppearance.Material3.DisplayLarge.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
@@ -23,27 +18,13 @@
 
     <style name="TextAppearance.Auxio.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
         <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
         <item name="android:letterSpacing">-0.0192222222</item>
     </style>
 
-    <style name="TextAppearance.Auxio.DisplayMedium.Emphasized" parent="TextAppearance.Material3.DisplayMedium.Emphasized">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.0222222222</item>
-    </style>
-
     <style name="TextAppearance.Auxio.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
         <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">-0.0159444444</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.DisplaySmall.Emphasized" parent="TextAppearance.Material3.DisplaySmall.Emphasized">
-        <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
         <item name="android:letterSpacing">-0.0189444444</item>
@@ -53,13 +34,6 @@
     Headline styles are similar to title styles, but are not used as often.
     -->
     <style name="TextAppearance.Auxio.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">-0.0155625</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.HeadlineLarge.Emphasized" parent="TextAppearance.Material3.HeadlineLarge.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
@@ -67,13 +41,6 @@
     </style>
 
     <style name="TextAppearance.Auxio.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">-0.0150714286</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.HeadlineMedium.Emphasized" parent="TextAppearance.Material3.HeadlineMedium.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
@@ -81,13 +48,6 @@
     </style>
 
     <style name="TextAppearance.Auxio.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">-0.0135833333</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.HeadlineSmall.Emphasized" parent="TextAppearance.Material3.HeadlineSmall.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
@@ -98,17 +58,17 @@
     Title styles are often used for headers, dividing elements, and items.
     -->
     <style name="TextAppearance.Auxio.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01518181818</item>
+    </style>
+
+    <style name="TextAppearance.Auxio.TitleLargeLowEmphasis" parent="TextAppearance.Material3.TitleLarge">
         <item name="fontFamily">@font/inter_regular</item>
         <item name="android:fontFamily">@font/inter_regular</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">-0.01818181818</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.TitleLarge.Emphasized" parent="TextAppearance.Material3.TitleLarge.Emphasized">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.02118181818</item>
     </style>
 
     <style name="TextAppearance.Auxio.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
@@ -118,7 +78,7 @@
         <item name="android:letterSpacing">-0.01125</item>
     </style>
 
-    <style name="TextAppearance.Auxio.TitleMedium.Emphasized" parent="TextAppearance.Material3.TitleMedium.Emphasized">
+    <style name="TextAppearance.Auxio.TitleMediumEmphasis" parent="TextAppearance.Material3.TitleMedium">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
@@ -126,13 +86,6 @@
     </style>
 
     <style name="TextAppearance.Auxio.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.000</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.TitleSmall.Emphasized" parent="TextAppearance.Material3.TitleSmall.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
@@ -141,13 +94,6 @@
 
     <!-- Label styles are used for elements that can be interacted with. -->
     <style name="TextAppearance.Auxio.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.000</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.LabelLarge.Emphasized" parent="TextAppearance.Material3.LabelLarge.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
@@ -155,13 +101,6 @@
     </style>
 
     <style name="TextAppearance.Auxio.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.006</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.LabelMedium.Emphasized" parent="TextAppearance.Material3.LabelMedium.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">normal</item>
@@ -169,13 +108,6 @@
     </style>
 
     <style name="TextAppearance.Auxio.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.0105454545</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.LabelSmall.Emphasized" parent="TextAppearance.Material3.LabelSmall.Emphasized">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">normal</item>
@@ -192,13 +124,6 @@
         <item name="android:letterSpacing">-0.01125</item>
     </style>
 
-    <style name="TextAppearance.Auxio.BodyLarge.Emphasized" parent="TextAppearance.Material3.BodyLarge.Emphasized">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.01425</item>
-    </style>
-
     <style name="TextAppearance.Auxio.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
         <item name="fontFamily">@font/inter_regular</item>
         <item name="android:fontFamily">@font/inter_regular</item>
@@ -206,25 +131,11 @@
         <item name="android:letterSpacing">-0.0064285714</item>
     </style>
 
-    <style name="TextAppearance.Auxio.BodyMedium.Emphasized" parent="TextAppearance.Material3.BodyMedium.Emphasized">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.0094285714</item>
-    </style>
-
     <style name="TextAppearance.Auxio.BodySmall" parent="TextAppearance.Material3.BodySmall">
         <item name="fontFamily">@font/inter_regular</item>
         <item name="android:fontFamily">@font/inter_regular</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0.0008333333</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.BodySmall.Emphasized" parent="TextAppearance.Material3.BodySmall.Emphasized">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.0021666667</item>
     </style>
 
 </resources>

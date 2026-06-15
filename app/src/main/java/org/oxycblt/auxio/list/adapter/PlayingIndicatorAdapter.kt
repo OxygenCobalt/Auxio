@@ -51,7 +51,6 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
             onBindViewHolder(holder, position)
         }
     }
-
     /**
      * Update the currently playing item in the list.
      *

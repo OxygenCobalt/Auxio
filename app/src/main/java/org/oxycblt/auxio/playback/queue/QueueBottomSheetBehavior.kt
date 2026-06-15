@@ -53,33 +53,16 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
     override fun getIdealBarHeight(context: Context) =
         context.getDimenPixels(R.dimen.size_touchable_large)
 
-    override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        // Pre-calculate expandedOffset before the sheet is positioned by super.onLayoutChild().
-        // This ensures the sheet uses the correct offset during configuration changes like
-        // split-screen resize, where layout happens before insets are re-applied.
-        val effectiveBarHeight = if (barHeight > 0) barHeight else getIdealBarHeight(child.context)
-        expandedOffset = effectiveBarHeight + barSpacing
-        return super.onLayoutChild(parent, child, layoutDirection)
-    }
-
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View) =
         dependency.id == R.id.playback_bar_fragment
 
     override fun onDependentViewChanged(
         parent: CoordinatorLayout,
         child: V,
-        dependency: View,
+        dependency: View
     ): Boolean {
-        val oldHeight = barHeight
         barHeight = dependency.height
-        // If bar height changed, force insets to be recalculated with the new value
-        // and signal that the child needs to be re-laid out. This handles cases where
-        // the sheet was positioned before the bar was measured or during configuration
-        // changes (e.g., split-screen resize) where layout order causes stale values.
-        if (oldHeight != barHeight && barHeight > 0) {
-            child.requestApplyInsets()
-            return true
-        }
+        // No change, just grabbed the height
         return false
     }
 
@@ -92,8 +75,7 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
                     ShapeAppearanceModel.builder(
                             context,
                             R.style.ShapeAppearance_Auxio_BottomSheet,
-                            MR.style.ShapeAppearanceOverlay_Material3_Corner_Top,
-                        )
+                            MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
                         .build()
             }
         }
@@ -101,16 +83,10 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
         super.applyWindowInsets(child, insets)
         // Offset our expanded panel by the size of the playback bar, as that is shown when
-        // we slide up the panel. Use ideal bar height as fallback when the bar hasn't been
-        // measured yet (can occur when window insets are applied before onDependentViewChanged).
+        // we slide up the panel.
         val bars = insets.systemBarInsetsCompat
-        val effectiveBarHeight = if (barHeight > 0) barHeight else getIdealBarHeight(child.context)
-        expandedOffset = effectiveBarHeight + barSpacing
+        expandedOffset = barHeight + barSpacing
         return insets.replaceSystemBarInsetsCompat(
-            bars.left,
-            bars.top,
-            bars.right,
-            expandedOffset + bars.bottom,
-        )
+            bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
     }
 }

@@ -50,9 +50,8 @@
             android:text="@string/lbl_sort_direction"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButtonGroup
+        <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/sort_direction_group"
-            style="@style/Widget.Material3Expressive.MaterialButtonGroup.Connected"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_medium"
@@ -65,38 +64,37 @@
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/sort_direction_asc"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/lbl_sort_asc"
-                android:checkable="true"
                 tools:icon="@drawable/ic_check_24" />
 
             <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/sort_direction_dsc"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:checkable="true"
                 android:text="@string/lbl_sort_dsc" />
 
-        </com.google.android.material.button.MaterialButtonGroup>
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <org.oxycblt.auxio.ui.RippleFixMaterialButton
             android:id="@+id/sort_cancel"
-            style="@style/Widget.Auxio.Button.TextButton.Dialog"
+            style="@style/Widget.Material3.Button.TextButton.Dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@string/lbl_cancel"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.Small"
             app:layout_constraintBottom_toBottomOf="@+id/sort_save"
             app:layout_constraintEnd_toStartOf="@+id/sort_save"
             app:layout_constraintTop_toTopOf="@+id/sort_save" />
 
         <org.oxycblt.auxio.ui.RippleFixMaterialButton
             android:id="@+id/sort_save"
-            style="@style/Widget.Auxio.Button.TextButton.Dialog"
+            style="@style/Widget.Material3.Button.TextButton.Dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_mid_medium"

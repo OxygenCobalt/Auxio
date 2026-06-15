@@ -13,7 +13,6 @@
     <dimen name="size_touchable_medium">56dp</dimen>
     <dimen name="size_touchable_large">64dp</dimen>
     <dimen name="size_touchable_huge">80dp</dimen>
-    <dimen name="size_fast_scroll_popup">96dp</dimen>
 
     <dimen name="size_hero_small">128dp</dimen>
     <dimen name="size_hero_medium">192dp</dimen>
@@ -32,25 +31,13 @@
     <dimen name="text_size_track_number_min">14sp</dimen>
     <dimen name="text_size_track_number_max">22sp</dimen>
     <dimen name="text_size_track_number_step">2sp</dimen>
-    <dimen name="text_size_fast_scroll_popup_min">1sp</dimen>
-    <dimen name="text_size_fast_scroll_popup_max">32sp</dimen>
-    <dimen name="text_size_fast_scroll_popup_step">1px</dimen>
-    <dimen name="padding_fast_scroll_popup_horizontal">24dp</dimen>
-    <dimen name="padding_fast_scroll_popup_vertical">20dp</dimen>
 
-    <dimen name="slider_track_height">4dp</dimen>
+    <dimen name="slider_track_height">10dp</dimen>
     <dimen name="slider_thumb_height">24dp</dimen>
-<!--    <dimen name="progress_stable_height">10.5dp</dimen>-->
-    <dimen name="progress_amplitude">3dp</dimen>
-    <dimen name="progress_wavelength">40dp</dimen>
-    <dimen name="progress_wave_speed">20dp</dimen>
 
     <dimen name="recycler_fab_space_normal">88dp</dimen>
     <dimen name="recycler_fab_space_large">128dp</dimen>
 
     <dimen name="widget_def_width">180dp</dimen>
     <dimen name="widget_def_height">100dp</dimen>
-
-    <dimen name="outline_small">1dp</dimen>
-    <dimen name="outline_large">2dp</dimen>
 </resources>

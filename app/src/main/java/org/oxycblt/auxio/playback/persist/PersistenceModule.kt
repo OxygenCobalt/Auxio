@@ -43,8 +43,7 @@ class PersistenceRoomModule {
         Room.databaseBuilder(
                 context.applicationContext,
                 PersistenceDatabase::class.java,
-                "playback_persistence.db",
-            )
+                "playback_persistence.db")
             .fallbackToDestructiveMigration()
             .addMigrations(PersistenceDatabase.MIGRATION_27_32)
             .build()

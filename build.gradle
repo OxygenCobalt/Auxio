@@ -1,12 +1,12 @@
 buildscript {
     ext {
-        agp_version = '9.2.1'
-        kotlin_version = '2.3.10'
+        agp_version = '8.11.1'
+        kotlin_version = '2.2.0'
         kotlin_coroutines_version = '1.10.2'
-        navigation_version = "2.9.7"
-        hilt_version = '2.59.2'
-        room_version = '2.8.4'
-        core_version = '1.18.0'
+        navigation_version = "2.9.2"
+        hilt_version = '2.57'
+        room_version = '2.7.2'
+        core_version = '1.16.0'
         desugaring_version = '2.1.3'
 
         min_sdk = 24
@@ -18,7 +18,7 @@ buildscript {
     dependencies {
         // Hilt isn't compatible with the new plugin syntax yet.
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:2.2.0"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
     }
 }
 
@@ -29,16 +29,16 @@ plugins {
     id "androidx.navigation.safeargs.kotlin" version "$navigation_version" apply false
     //noinspection GradlePluginVersion
     id 'com.android.library' version "$agp_version" apply false
-    id "org.jetbrains.kotlin.plugin.parcelize" version "$kotlin_version" apply false
-    id "com.google.devtools.ksp" version '2.3.6' apply false
+    id "org.jetbrains.kotlin.android" version "$kotlin_version" apply false
+    id "com.google.devtools.ksp" version '2.2.0-2.0.2' apply false
     // We use spotless in the root build.gradle to apply to all modules.
-    id "com.diffplug.spotless" version "8.4.0" apply true
+    id "com.diffplug.spotless" version "6.25.0" apply true
 }
 
 spotless {
     kotlin {
         target "*/src/**/*.kt"
-        ktfmt().kotlinlangStyle()
+        ktfmt().dropboxStyle()
         licenseHeaderFile("NOTICE")
     }
 

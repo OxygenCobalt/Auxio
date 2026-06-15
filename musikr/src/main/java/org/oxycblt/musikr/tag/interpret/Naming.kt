@@ -18,8 +18,6 @@
  
 package org.oxycblt.musikr.tag.interpret
 
-import android.icu.text.Transliterator
-import android.os.Build
 import java.text.CollationKey
 import java.text.Collator
 import org.oxycblt.musikr.tag.Name
@@ -86,12 +84,12 @@ private data class IntelligentKnownName(override val raw: String, override val s
     private fun parseTokens(name: String): List<Token> {
         // TODO: This routine is consuming much of the song building runtime, find a way to
         //  optimize it
-        var stripped =
+        val stripped =
             name
-                // Replace punctuation with spaces to create token boundaries, improving
-                // sorting of names like "15-9" vs "15-10".
-                .replace(punctRegex, " ")
-                .let { if (it.isBlank()) name else it }
+                // Remove excess punctuation from the string, as those usually aren't
+                // considered in sorting.
+                .replace(punctRegex, "")
+                .ifEmpty { name }
                 .run {
                     // Strip any english articles like "the" or "an" from the start, as music
                     // sorting should ignore such when possible.
@@ -102,14 +100,6 @@ private data class IntelligentKnownName(override val raw: String, override val s
                         else -> this
                     }
                 }
-
-        // Transliterate to latin if available
-        if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                Transliterator.getAvailableIDs().toList().contains("Any-Latin")
-        ) {
-            stripped = Transliterator.getInstance("Any-Latin;").transliterate(stripped)
-        }
 
         // To properly compare numeric components in names, we have to split them up into
         // individual lexicographic and numeric tokens and then individually compare them

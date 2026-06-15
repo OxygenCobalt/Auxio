@@ -35,7 +35,7 @@ internal data class MusicGraph(
     val albumVertex: List<AlbumVertex>,
     val artistVertex: List<ArtistVertex>,
     val genreVertex: List<GenreVertex>,
-    val playlistVertex: Set<PlaylistVertex>,
+    val playlistVertex: Set<PlaylistVertex>
 ) {
     interface Builder {
         fun add(preSong: PreSong)
@@ -158,8 +158,7 @@ internal data class MusicGraph(
                         val songIndex = this@MusicGraph.songVertex.indexOf(it)
                         if (songIndex >= 0) {
                             appendLine(
-                                "  playlist_$playlistIndex -> song_$songIndex [color=orange];"
-                            )
+                                "  playlist_$playlistIndex -> song_$songIndex [color=orange];")
                         }
                     }
                 }
@@ -222,8 +221,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 preSong,
                 albumVertex,
                 songArtistVertices.toMutableList(),
-                songGenreVertices.toMutableList(),
-            )
+                songGenreVertices.toMutableList())
         albumVertex.songVertices.add(songVertex)
 
         songArtistVertices.forEach { artistVertex ->
@@ -323,8 +321,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 albumVertices.values.toList(),
                 artistVertices.values.toList(),
                 genreVertices.values.toList(),
-                playlistVertices,
-            )
+                playlistVertices)
 
         return graph
     }
@@ -483,8 +480,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
             strippedMbidCluster.map {
                 val noAlbumArtistPreAlbum =
                     it.preAlbum.copy(
-                        preArtists = PreArtistsFrom.Individual(it.preAlbum.preArtists.preArtists)
-                    )
+                        preArtists = PreArtistsFrom.Individual(it.preAlbum.preArtists.preArtists))
                 val simpleAlbumArtistVertex =
                     albumVertices.getOrPut(noAlbumArtistPreAlbum) {
                         AlbumVertex(noAlbumArtistPreAlbum, it.artistVertices.toMutableList())
@@ -537,7 +533,7 @@ internal class SongVertex(
     val preSong: PreSong,
     var albumVertex: AlbumVertex,
     var artistVertices: MutableList<ArtistVertex>,
-    var genreVertices: MutableList<GenreVertex>,
+    var genreVertices: MutableList<GenreVertex>
 ) : Vertex {
     override var tag: Any? = null
 
@@ -552,7 +548,9 @@ internal class AlbumVertex(val preAlbum: PreAlbum, var artistVertices: MutableLi
     override fun toString() = "AlbumVertex(preAlbum=$preAlbum)"
 }
 
-internal class ArtistVertex(val preArtist: PreArtist) : Vertex {
+internal class ArtistVertex(
+    val preArtist: PreArtist,
+) : Vertex {
     val songVertices = mutableSetOf<SongVertex>()
     val albumVertices = mutableSetOf<AlbumVertex>()
     val genreVertices = mutableSetOf<GenreVertex>()

@@ -26,7 +26,8 @@ import kotlinx.coroutines.channels.Channel
 import org.oxycblt.musikr.Config
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CacheResult
-import org.oxycblt.musikr.cache.CachedFile
+import org.oxycblt.musikr.cache.CachedSong
+import org.oxycblt.musikr.covers.Cover
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.File
@@ -47,7 +48,7 @@ internal interface ExploreStep {
 private class ExploreStepImpl(private val fs: FS, private val storage: Storage) : ExploreStep {
     override suspend fun explore(
         scope: CoroutineScope,
-        explored: Channel<Explored>,
+        explored: Channel<Explored>
     ): Deferred<Result<Unit>> {
         val files = Channel<File>(Channel.UNLIMITED)
         val filesTask = fs.explore(files)
@@ -55,17 +56,12 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
         val classified = Channel<Classified>(Channel.UNLIMITED)
         val classifiedTask =
             scope.mapParallel(PARALLELISM, files, classified, Dispatchers.IO) { file ->
-                if (
-                    file.mimeType == M3U.MIME_TYPE ||
-                        (!file.mimeType.startsWith("audio/") &&
-                            file.mimeType != "application/ogg" &&
-                            file.mimeType != "application/x-ogg" &&
-                            file.mimeType != "application/octet-stream")
-                ) {
-                    return@mapParallel Finalized(NotAudio)
+                if (!file.mimeType.startsWith("audio/") && file.mimeType != M3U.MIME_TYPE) {
+                    return@mapParallel null
                 }
-                when (val cacheResult = storage.cache.read(file)) {
-                    is CacheResult.Hit -> NeedsHydration(cacheResult.file)
+                val cacheResult = storage.cache.read(file)
+                when (cacheResult) {
+                    is CacheResult.Hit -> NeedsCover(cacheResult.song)
                     is CacheResult.Stale -> Finalized(NewSong(cacheResult.file))
                     is CacheResult.Miss -> Finalized(NewSong(cacheResult.file))
                 }
@@ -76,27 +72,14 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
             scope.mapParallel(PARALLELISM, classified, finalized, Dispatchers.IO) { item ->
                 when (item) {
                     is Finalized -> item
-                    is NeedsHydration -> {
-                        val audio = item.cachedFile.audio ?: return@mapParallel Finalized(NotAudio)
-                        val coverId =
-                            when (
-                                val result = audio.coverId?.let { id -> storage.covers.obtain(id) }
-                            ) {
-                                is CoverResult.Hit -> result.cover
-                                is CoverResult.Miss ->
-                                    return@mapParallel Finalized(NewSong(item.cachedFile.file))
-                                null -> null
-                            }
-
-                        Finalized(
-                            RawSong(
-                                item.cachedFile.file,
-                                audio.properties,
-                                audio.tags,
-                                coverId,
-                                item.cachedFile.addedMs,
-                            )
-                        )
+                    is NeedsCover -> {
+                        when (val coverResult =
+                            item.cachedSong.coverId?.let { id -> storage.covers.obtain(id) }) {
+                            is CoverResult.Hit ->
+                                Finalized(item.cachedSong.toRawSong(coverResult.cover))
+                            null -> Finalized(item.cachedSong.toRawSong(null))
+                            else -> Finalized(NewSong(item.cachedSong.file))
+                        }
                     }
                 }
             }
@@ -124,9 +107,12 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
 
     private sealed interface Classified
 
-    private data class NeedsHydration(val cachedFile: CachedFile) : Classified
+    private data class NeedsCover(val cachedSong: CachedSong) : Classified
 
     private data class Finalized(val explored: Explored) : Classified
+
+    private fun CachedSong.toRawSong(cover: Cover?) =
+        RawSong(file, properties, tags, cover, addedMs)
 
     private companion object {
         const val PARALLELISM = 8

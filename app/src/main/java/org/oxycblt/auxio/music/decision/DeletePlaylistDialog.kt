@@ -58,9 +58,7 @@ class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlayl
                 findNavController().navigateUp()
                 // Now we can delete the playlist for-real this time.
                 musicModel.deletePlaylist(
-                    unlikelyToBeNull(pickerModel.currentPlaylistToDelete.value),
-                    rude = true,
-                )
+                    unlikelyToBeNull(pickerModel.currentPlaylistToDelete.value), rude = true)
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
@@ -70,7 +68,7 @@ class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlayl
 
     override fun onBindingCreated(
         binding: DialogDeletePlaylistBinding,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ) {
         super.onBindingCreated(binding, savedInstanceState)
 

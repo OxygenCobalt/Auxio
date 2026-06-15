@@ -168,15 +168,13 @@ constructor(
                 PlaybackStateCompat.REPEAT_MODE_GROUP -> RepeatMode.ALL
                 PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.TRACK
                 else -> RepeatMode.NONE
-            }
-        )
+            })
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
         playbackManager.shuffled(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP
-        )
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
 
     override fun onStop() {
@@ -193,7 +191,7 @@ constructor(
 
     private fun expandUidIntoCommand(
         uid: MediaSessionUID,
-        parentUid: MediaSessionUID?,
+        parentUid: MediaSessionUID?
     ): PlaybackCommand? {
         val unwrappedUid = (uid as? MediaSessionUID.SingleItem)?.uid ?: return null
         val unwrappedParentUid = (parentUid as? MediaSessionUID.SingleItem)?.uid
@@ -206,7 +204,7 @@ constructor(
     private fun expandSearchInfoCommand(
         query: String?,
         extras: Bundle,
-        library: Library,
+        library: Library
     ): PlaybackCommand? {
         if (query == null) {
             // User just wanted to 'play some music', shuffle all

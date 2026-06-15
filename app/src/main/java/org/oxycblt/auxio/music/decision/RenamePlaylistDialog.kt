@@ -61,8 +61,7 @@ class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNam
                     pendingRenamePlaylist.playlist,
                     chosenName.value,
                     pendingRenamePlaylist.applySongs,
-                    pendingRenamePlaylist.reason,
-                )
+                    pendingRenamePlaylist.reason)
                 findNavController().navigateUp()
             }
             .setNegativeButton(R.string.lbl_cancel, null)
@@ -80,11 +79,7 @@ class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNam
         // --- VIEWMODEL SETUP ---
         musicModel.playlistDecision.consume()
         pickerModel.setPlaylistToRename(
-            args.playlistUid,
-            args.applySongUids,
-            args.template,
-            args.reason,
-        )
+            args.playlistUid, args.applySongUids, args.template, args.reason)
         collectImmediately(pickerModel.currentPendingRenamePlaylist, ::updatePlaylistToRename)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
     }

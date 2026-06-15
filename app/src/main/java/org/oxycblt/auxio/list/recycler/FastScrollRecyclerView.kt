@@ -18,22 +18,14 @@
  
 package org.oxycblt.auxio.list.recycler
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.ColorFilter
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PathMeasure
-import android.graphics.PixelFormat
 import android.graphics.Rect
-import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import android.os.Build
-import android.text.Layout
+import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -47,29 +39,20 @@ import androidx.core.view.isEmpty
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePaddingRelative
 import androidx.core.widget.TextViewCompat
-import androidx.dynamicanimation.animation.FloatValueHolder
-import androidx.dynamicanimation.animation.SpringAnimation
-import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.R as MR
-import com.google.android.material.motion.MotionUtils
 import com.google.android.material.textview.MaterialTextView
 import kotlin.math.abs
-import kotlin.math.hypot
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.Effect
-import org.oxycblt.auxio.ui.ExpressiveShapes
-import org.oxycblt.auxio.ui.Spatial
+import org.oxycblt.auxio.ui.MaterialFadingSlider
+import org.oxycblt.auxio.ui.MaterialSlider
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getAttrResourceId
 import org.oxycblt.auxio.util.getDimenPixels
+import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
-import org.oxycblt.auxio.util.scale
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -96,8 +79,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Added documentation
  * - Completely new design
  * - New scroll position backend
- * - M3 (Expressive) Redesign
- * - Dynamic popups
  *
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  */
@@ -108,21 +89,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     // Thumb
     private val thumbWidth = context.getDimenPixels(R.dimen.spacing_mid_medium)
     private val thumbHeight = context.getDimenPixels(R.dimen.size_touchable_medium)
-    private var thumbAnimator: SpringAnimation? = null
+    private val thumbSlider = MaterialSlider.small(context, thumbWidth)
+    private var thumbAnimator: Animator? = null
 
     @SuppressLint("InflateParams")
     private val thumbView =
         context.inflater.inflate(R.layout.view_scroll_thumb, null).apply {
-            translationX = thumbWidth.toFloat()
+            thumbSlider.jumpOut(this)
         }
     private val thumbPadding = Rect(0, 0, 0, 0)
     private var thumbOffset = 0
-
-    private val thumbTranslateInSpring = Spatial.DEFAULT
-    private val thumbTranslateOutSpring = Spatial.FAST
-
-    private val popupScaleSpring = Spatial.DEFAULT
-    private val popupAlphaSpring = Effect.DEFAULT
 
     private var showingThumb = false
     private val hideThumbRunnable = Runnable {
@@ -130,95 +106,40 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             hideThumb()
         }
     }
-    private val popupContainerSize = context.getDimenPixels(R.dimen.size_fast_scroll_popup)
-    private val popupTextAutoScaleMinSize =
-        context.getDimenPixels(R.dimen.text_size_fast_scroll_popup_min)
-    private val popupTextAutoScaleMaxSize =
-        context.getDimenPixels(R.dimen.text_size_fast_scroll_popup_max)
-    private val popupTextAutoScaleStepGranularity =
-        context.getDimenPixels(R.dimen.text_size_fast_scroll_popup_step)
-    private val popupTextAutoScaleMinSizePx = popupTextAutoScaleMinSize.coerceAtLeast(1)
-    private val popupTextAutoScaleMaxSizePx =
-        popupTextAutoScaleMaxSize.coerceAtLeast(popupTextAutoScaleMinSizePx)
-    private val popupTextAutoScaleStepGranularityPx =
-        popupTextAutoScaleStepGranularity.coerceAtLeast(1)
-    private var popupTextAutoScaleCeilingPx = popupTextAutoScaleMaxSizePx
-    private var popupTextAutoScaleKey: PopupTextAutoScaleKey? = null
 
-    private val popupTextView =
-        createPopupTextView(context).apply {
-            setTextColor(context.getAttrColorCompat(MR.attr.colorOnSecondary))
-            maxLines = POPUP_TEXT_SINGLE_LINE_COUNT
-            TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
-                this,
-                popupTextAutoScaleMinSizePx,
-                popupTextAutoScaleCeilingPx,
-                popupTextAutoScaleStepGranularityPx,
-                TypedValue.COMPLEX_UNIT_PX,
-            )
-        }
-    private val popupTextMeasurementView = createPopupTextView(context)
-    private val popupTextWidestDigit: Char = run {
-        val paint = popupTextMeasurementView.paint
-        ('0'..'9').maxByOrNull { paint.measureText(it.toString()) } ?: '0'
-    }
-    private val popupBackgroundDrawable = SoftBurstPopupDrawable(context)
     private val popupView =
-        FrameLayout(context).apply {
-            elevation = context.getDimenPixels(MR.dimen.m3_sys_elevation_level1).toFloat()
-            background = popupBackgroundDrawable
-            minimumWidth = popupContainerSize
-            minimumHeight = popupContainerSize
+        MaterialTextView(context).apply {
+            minimumWidth = context.getDimenPixels(R.dimen.size_touchable_large)
+            minimumHeight = context.getDimenPixels(R.dimen.size_touchable_small)
 
-            val paddingHorizontal =
-                context.getDimenPixels(R.dimen.padding_fast_scroll_popup_horizontal)
-            val paddingVertical = context.getDimenPixels(R.dimen.padding_fast_scroll_popup_vertical)
-            updatePaddingRelative(
-                start = paddingHorizontal,
-                top = paddingVertical,
-                end = paddingHorizontal,
-                bottom = paddingVertical,
-            )
-            addView(
-                popupTextView,
-                FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    Gravity.CENTER,
-                ),
-            )
+            TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineMedium)
+            setTextColor(
+                context.getAttrColorCompat(com.google.android.material.R.attr.colorOnSecondary))
+            ellipsize = TextUtils.TruncateAt.MIDDLE
+            gravity = Gravity.CENTER
+            includeFontPadding = false
+
+            elevation =
+                context
+                    .getDimenPixels(com.google.android.material.R.dimen.m3_sys_elevation_level1)
+                    .toFloat()
+            background = context.getDrawableCompat(R.drawable.ui_popup)
+            val paddingStart = context.getDimenPixels(R.dimen.spacing_medium)
+            val paddingEnd = paddingStart + context.getDimenPixels(R.dimen.spacing_tiny) / 2
+            updatePaddingRelative(start = paddingStart, end = paddingEnd)
             layoutParams =
-                FrameLayout.LayoutParams(popupContainerSize, popupContainerSize).apply {
-                    marginEnd = context.getDimenPixels(R.dimen.size_touchable_small)
-                    gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                }
-            scale = 0.5f
-            alpha = 0.0f
+                FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    .apply {
+                        marginEnd = context.getDimenPixels(R.dimen.size_touchable_small)
+                        gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                    }
         }
-    private val popupTextStaggerDelayMillis =
-        MotionUtils.resolveThemeDuration(context, MR.attr.motionDurationShort2, 100).toLong()
-    private val popupSpatialSpring =
-        MotionUtils.resolveThemeSpringForce(
-            context,
-            MR.attr.motionSpringFastSpatial,
-            MR.style.Motion_Material3_Spring_Standard_Fast_Spatial,
-        )
-    private val popupEffectsSpring =
-        MotionUtils.resolveThemeSpringForce(
-            context,
-            MR.attr.motionSpringDefaultEffects,
-            MR.style.Motion_Material3_Spring_Standard_Default_Effects,
-        )
-    private var popupShapeScaleAnimation: SpringAnimation? = null
-    private var popupShapeAlphaAnimation: SpringAnimation? = null
-    private var popupTextScaleAnimation: SpringAnimation? = null
-    private var popupTextAlphaAnimation: SpringAnimation? = null
-    private val popupTextRevealRunnable = Runnable {
-        if (showingPopup) {
-            popupShapeScaleAnimation?.cancel()
-            popupShapeScaleAnimation = popupScaleSpring.scale(popupView, 0f)
+    private val popupSlider =
+        MaterialFadingSlider(MaterialSlider.large(context, popupView.minimumWidth / 2)).apply {
+            jumpOut(popupView)
         }
-    }
+    private var popupAnimator: Animator? = null
     private var showingPopup = false
 
     // Touch
@@ -287,8 +208,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 override fun onDraw(canvas: Canvas, parent: RecyclerView, state: State) {
                     onPreDraw()
                 }
-            }
-        )
+            })
 
         // We use a listener instead of overriding onTouchEvent so that we don't conflict with
         // RecyclerView touch events.
@@ -300,12 +220,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
                 override fun onInterceptTouchEvent(
                     recyclerView: RecyclerView,
-                    event: MotionEvent,
+                    event: MotionEvent
                 ): Boolean {
                     return onItemTouch(event)
                 }
-            }
-        )
+            })
     }
 
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
@@ -313,20 +232,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private fun onPreDraw() {
         updateThumbState()
 
-        val thumbRange = thumbOffsetRange
-        val scrollFraction =
-            if (thumbRange > 0) {
-                (thumbOffset / thumbRange.toFloat()).coerceIn(0f, 1f)
-            } else {
-                0f
-            }
-        popupBackgroundDrawable.scrollRotationDegrees = scrollFraction * 360f
-
         thumbView.layoutDirection = layoutDirection
         thumbView.measure(
             MeasureSpec.makeMeasureSpec(thumbWidth, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(thumbHeight, MeasureSpec.EXACTLY),
-        )
+            MeasureSpec.makeMeasureSpec(thumbHeight, MeasureSpec.EXACTLY))
         val thumbTop = thumbPadding.top + thumbOffset
         val thumbLeft =
             if (isRtl) {
@@ -345,61 +254,49 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 NO_POSITION
             }
 
-        val provider = popupProvider
-        val hasPopupProvider = firstAdapterPos != NO_POSITION && provider != null
-        val popupData =
-            if (hasPopupProvider) {
-                provider.getPopupData(firstAdapterPos)
-            } else {
-                null
-            }
         val popupText: String
-        if (hasPopupProvider) {
+        val provider = popupProvider
+        if (firstAdapterPos != NO_POSITION && provider != null) {
             popupView.isInvisible = false
             // Get the popup text. If there is none, we default to "?".
-            popupText = popupData?.text ?: "?"
+            popupText = provider.getPopup(firstAdapterPos) ?: "?"
         } else {
             // No valid position or provider, do not show the popup.
-            popupView.isInvisible = true
+            popupView.isInvisible = false
             popupText = ""
         }
         val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
 
-        val popupMaxWidth =
-            width -
-                thumbPadding.left -
-                thumbPadding.right -
-                thumbWidth -
-                popupLayoutParams.leftMargin -
-                popupLayoutParams.rightMargin
-        val popupMaxHeight =
-            height -
-                thumbPadding.top -
-                thumbPadding.bottom -
-                popupLayoutParams.topMargin -
-                popupLayoutParams.bottomMargin
+        if (popupView.text != popupText) {
+            popupView.text = popupText
 
-        val maxPopupSize = min(popupMaxWidth, popupMaxHeight).coerceAtLeast(0)
-        val popupSize =
-            if (maxPopupSize > 0) {
-                popupContainerSize.coerceAtMost(maxPopupSize)
-            } else {
-                0
-            }
-        updatePopupTextAutoScaleConfigFor(popupText, popupSize)
-        if (popupTextView.text != popupText) {
-            popupTextView.text = popupText
+            val widthMeasureSpec =
+                ViewGroup.getChildMeasureSpec(
+                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                    thumbPadding.left +
+                        thumbPadding.right +
+                        thumbWidth +
+                        popupLayoutParams.leftMargin +
+                        popupLayoutParams.rightMargin,
+                    popupLayoutParams.width)
+
+            val heightMeasureSpec =
+                ViewGroup.getChildMeasureSpec(
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+                    thumbPadding.top +
+                        thumbPadding.bottom +
+                        popupLayoutParams.topMargin +
+                        popupLayoutParams.bottomMargin,
+                    popupLayoutParams.height)
+
+            popupView.measure(widthMeasureSpec, heightMeasureSpec)
             if (showingPopup) {
                 doPopupVibration()
             }
         }
-        popupView.measure(
-            MeasureSpec.makeMeasureSpec(popupSize, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(popupSize, MeasureSpec.EXACTLY),
-        )
 
-        val popupWidth = popupSize
-        val popupHeight = popupSize
+        val popupWidth = popupView.measuredWidth
+        val popupHeight = popupView.measuredHeight
         val popupLeft =
             if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
                 thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin
@@ -414,8 +311,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             (thumbTop + thumbAnchorY - popupAnchorY)
                 .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
                 .coerceAtMost(
-                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight
-                )
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
 
         popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
     }
@@ -487,11 +383,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 }
             }
             MotionEvent.ACTION_MOVE -> {
-                if (
-                    !dragging &&
-                        thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
-                        abs(eventY - downY) > touchSlop
-                ) {
+                if (!dragging &&
+                    thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
+                    abs(eventY - downY) > touchSlop) {
                     if (thumbView.isUnder(downX, downY, minTouchTargetSize)) {
                         dragStartY = lastY
                         dragStartThumbOffset = thumbOffset
@@ -551,7 +445,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         showingThumb = true
         thumbAnimator?.cancel()
-        thumbAnimator = thumbTranslateInSpring.translateX(thumbView, 0f)
+        thumbAnimator = thumbSlider.slideIn(thumbView).also { it.start() }
     }
 
     private fun hideThumb() {
@@ -561,7 +455,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         showingThumb = false
         thumbAnimator?.cancel()
-        thumbAnimator = thumbTranslateOutSpring.translateX(thumbView, thumbWidth.toFloat())
+        thumbAnimator = thumbSlider.slideOut(thumbView).also { it.start() }
     }
 
     private fun showPopup() {
@@ -573,11 +467,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingPopup = true
-        resetPopupTextAutoScaleConfig()
-        popupShapeScaleAnimation?.cancel()
-        popupShapeAlphaAnimation?.cancel()
-        popupShapeScaleAnimation = popupScaleSpring.scale(popupView, 1f)
-        popupShapeAlphaAnimation = popupAlphaSpring.alpha(popupView, 1f)
+        popupAnimator?.cancel()
+        popupAnimator = popupSlider.slideIn(popupView).also { it.start() }
     }
 
     private fun hidePopup() {
@@ -586,131 +477,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingPopup = false
-        popupShapeScaleAnimation?.cancel()
-        popupShapeAlphaAnimation?.cancel()
-        popupShapeScaleAnimation = popupScaleSpring.scale(popupView, 0.5f)
-        popupShapeAlphaAnimation = popupAlphaSpring.alpha(popupView, 0f)
-    }
-
-    private fun createPopupTextView(context: Context): MaterialTextView =
-        MaterialTextView(context).apply {
-            TextViewCompat.setTextAppearance(
-                this,
-                context.getAttrResourceId(MR.attr.textAppearanceHeadlineMediumEmphasized),
-            )
-            ellipsize = null
-            gravity = Gravity.CENTER
-            textAlignment = View.TEXT_ALIGNMENT_CENTER
-            includeFontPadding = false
-            setHorizontallyScrolling(false)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                breakStrategy = Layout.BREAK_STRATEGY_SIMPLE
-                hyphenationFrequency = Layout.HYPHENATION_FREQUENCY_NONE
-            }
-        }
-
-    private fun resetPopupTextAutoScaleConfig() {
-        popupTextAutoScaleKey = null
-        applyPopupTextAutoScaleConfig(popupTextAutoScaleMaxSizePx)
-    }
-
-    private fun updatePopupTextAutoScaleConfigFor(text: String, popupSize: Int) {
-        if (popupSize <= 0) {
-            resetPopupTextAutoScaleConfig()
-            return
-        }
-
-        val exemplar = normalizeToExemplar(text)
-        val key = PopupTextAutoScaleKey(exemplar = exemplar, popupSize = popupSize)
-        if (popupTextAutoScaleKey == key) {
-            return
-        }
-        popupTextAutoScaleKey = key
-
-        if (exemplar == null) {
-            applyPopupTextAutoScaleConfig(popupTextAutoScaleMaxSizePx)
-            return
-        }
-
-        val textWidth =
-            (popupSize - popupView.paddingLeft - popupView.paddingRight).coerceAtLeast(1)
-        val textHeight =
-            (popupSize - popupView.paddingTop - popupView.paddingBottom).coerceAtLeast(1)
-        val ceilingPx = measurePopupTextCeiling(exemplar, textWidth, textHeight)
-        applyPopupTextAutoScaleConfig(ceilingPx)
-    }
-
-    private fun normalizeToExemplar(text: String): String? {
-        if (text.length <= 1) return null
-        return buildString(text.length) {
-            for (c in text) {
-                append(if (c.isDigit()) popupTextWidestDigit else c)
-            }
-        }
-    }
-
-    private fun measurePopupTextCeiling(
-        exemplar: String,
-        availableWidth: Int,
-        availableHeight: Int,
-    ): Int {
-        val paint = popupTextMeasurementView.paint
-        val savedSize = paint.textSize
-        var bestSize = popupTextAutoScaleMinSizePx
-        for (sizePx in
-            popupTextAutoScaleMaxSizePx downTo
-                popupTextAutoScaleMinSizePx step
-                popupTextAutoScaleStepGranularityPx) {
-            paint.textSize = sizePx.toFloat()
-            val w = paint.measureText(exemplar)
-            val metrics = paint.fontMetrics
-            val h = metrics.descent - metrics.ascent
-            if (w <= availableWidth && h <= availableHeight) {
-                bestSize = sizePx
-                break
-            }
-        }
-        paint.textSize = savedSize
-        return bestSize
-    }
-
-    private fun applyPopupTextAutoScaleConfig(maxSizePx: Int) {
-        popupTextAutoScaleCeilingPx =
-            maxSizePx.coerceIn(popupTextAutoScaleMinSizePx, popupTextAutoScaleMaxSizePx)
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
-            popupTextView,
-            popupTextAutoScaleMinSizePx,
-            popupTextAutoScaleCeilingPx,
-            popupTextAutoScaleStepGranularityPx,
-            TypedValue.COMPLEX_UNIT_PX,
-        )
-    }
-
-    private fun springTo(
-        startValue: Float,
-        finalValue: Float,
-        springTemplate: SpringForce,
-        minimumVisibleChange: Float,
-        dampingOverride: Float? = null,
-        update: (Float) -> Unit,
-    ): SpringAnimation {
-        val animation =
-            SpringAnimation(FloatValueHolder(startValue)).apply {
-                spring =
-                    SpringForce().apply {
-                        dampingRatio = dampingOverride ?: springTemplate.dampingRatio
-                        stiffness = springTemplate.stiffness
-                        finalPosition = finalValue
-                    }
-                setStartValue(startValue)
-                setMinimumVisibleChange(minimumVisibleChange)
-                addUpdateListener { _, value, _ -> update(value) }
-                addEndListener { _, canceled, value, _ ->
-                    update(if (canceled) value else finalValue)
-                }
-            }
-        animation.animateToFinalPosition(finalValue)
-        return animation
+        popupAnimator?.cancel()
+        popupAnimator = popupSlider.slideOut(popupView).also { it.start() }
     }
 
     private fun doPopupVibration() {
@@ -719,8 +487,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 HapticFeedbackConstants.TEXT_HANDLE_MOVE
             } else {
                 HapticFeedbackConstants.KEYBOARD_TAP
-            }
-        )
+            })
     }
 
     // --- LAYOUT STATE ---
@@ -733,15 +500,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     /** An interface to provide text to use in the popup when fast-scrolling. */
     interface PopupProvider {
         /**
-         * Get popup metadata at the specified position.
+         * Get text to use in the popup at the specified position.
          *
          * @param pos The position in the list.
-         * @return A [PopupData] to use in the popup. Null if there is no applicable text for the
-         *   popup at [pos].
+         * @return A [String] to use in the popup. Null if there is no applicable text for the popup
+         *   at [pos].
          */
-        fun getPopupData(pos: Int): PopupData?
-
-        data class PopupData(val text: String)
+        fun getPopup(pos: Int): String?
     }
 
     /** A listener for fast scroller interactions. */
@@ -756,151 +521,5 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private companion object {
         const val AUTO_HIDE_SCROLLBAR_DELAY_MILLIS = 500
-        const val POPUP_SHAPE_HIDDEN_SCALE = 0.62f
-        const val POPUP_TEXT_HIDDEN_SCALE = 0.78f
-        const val POPUP_TEXT_SINGLE_LINE_COUNT = 1
-    }
-
-    private data class PopupTextAutoScaleKey(val exemplar: String?, val popupSize: Int)
-}
-
-private class SoftBurstPopupDrawable(context: Context) : Drawable() {
-    private val baseRotationDegrees = 14f
-    private val pathPosition = FloatArray(2)
-    private val pathMatrix = Matrix()
-    private val pathBounds = RectF()
-    private val paint =
-        Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color =
-                context
-                    .getAttrColorCompat(com.google.android.material.R.attr.colorSecondary)
-                    .defaultColor
-            style = Paint.Style.FILL
-        }
-
-    private var fittedPath = Path()
-    private var shapeAlpha = 255
-    var revealScale = 1f
-        set(value) {
-            val clampedValue = value.coerceAtLeast(0f)
-            if (field == clampedValue) {
-                return
-            }
-
-            field = clampedValue
-            invalidateSelf()
-        }
-
-    var revealAlpha = 1f
-        set(value) {
-            val clampedValue = value.coerceIn(0f, 1f)
-            if (field == clampedValue) {
-                return
-            }
-
-            field = clampedValue
-            updatePaintAlpha()
-        }
-
-    var scrollRotationDegrees = 0f
-        set(value) {
-            if (field == value) {
-                return
-            }
-
-            field = value
-            invalidateSelf()
-        }
-
-    override fun onBoundsChange(bounds: Rect) {
-        super.onBoundsChange(bounds)
-        rebuildPath()
-    }
-
-    private fun rebuildPath() {
-        val drawableBounds = bounds
-        if (drawableBounds.isEmpty) {
-            fittedPath = Path()
-            return
-        }
-
-        val size = min(drawableBounds.width(), drawableBounds.height()).toFloat()
-        val left = drawableBounds.exactCenterX() - size / 2f
-        val top = drawableBounds.exactCenterY() - size / 2f
-        pathBounds.set(left, top, left + size, top + size)
-
-        fittedPath = ExpressiveShapes.getSoftBurst(pathBounds)
-        val maxRadius = computeMaxRadius(fittedPath, pathBounds.centerX(), pathBounds.centerY())
-        if (maxRadius > 0f) {
-            val targetRadius = size / 2f
-            val uniformScale = targetRadius / maxRadius
-            pathMatrix.reset()
-            pathMatrix.setScale(
-                uniformScale,
-                uniformScale,
-                pathBounds.centerX(),
-                pathBounds.centerY(),
-            )
-            fittedPath.transform(pathMatrix)
-        }
-    }
-
-    override fun draw(canvas: Canvas) {
-        if (fittedPath.isEmpty) {
-            return
-        }
-
-        val checkpoint = canvas.save()
-        canvas.scale(revealScale, revealScale, pathBounds.centerX(), pathBounds.centerY())
-        canvas.rotate(
-            baseRotationDegrees + scrollRotationDegrees,
-            pathBounds.centerX(),
-            pathBounds.centerY(),
-        )
-        canvas.drawPath(fittedPath, paint)
-        canvas.restoreToCount(checkpoint)
-    }
-
-    override fun setAlpha(alpha: Int) {
-        shapeAlpha = alpha.coerceIn(0, 255)
-        updatePaintAlpha()
-    }
-
-    override fun setColorFilter(colorFilter: ColorFilter?) {
-        paint.colorFilter = colorFilter
-        invalidateSelf()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun getOpacity(): Int {
-        return PixelFormat.TRANSLUCENT
-    }
-
-    private fun computeMaxRadius(source: Path, centerX: Float, centerY: Float): Float {
-        val measure = PathMeasure(source, false)
-        var maxRadius = 0f
-
-        do {
-            val length = measure.length
-            if (length <= 0f) {
-                continue
-            }
-
-            val sampleCount = max((length / 1f).roundToInt(), 1)
-            for (sample in 0..sampleCount) {
-                val distance = length * sample / sampleCount
-                if (measure.getPosTan(distance, pathPosition, null)) {
-                    maxRadius =
-                        max(maxRadius, hypot(pathPosition[0] - centerX, pathPosition[1] - centerY))
-                }
-            }
-        } while (measure.nextContour())
-
-        return maxRadius
-    }
-
-    private fun updatePaintAlpha() {
-        paint.alpha = (shapeAlpha * revealAlpha).roundToInt().coerceIn(0, 255)
-        invalidateSelf()
     }
 }

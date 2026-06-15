@@ -37,8 +37,7 @@ import org.oxycblt.auxio.util.inflater
  */
 class PlaylistChoiceAdapter(val listener: ClickableListListener<PlaylistChoice>) :
     FlexibleListAdapter<PlaylistChoice, PlaylistChoiceViewHolder>(
-        PlaylistChoiceViewHolder.DIFF_CALLBACK
-    ) {
+        PlaylistChoiceViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaylistChoiceViewHolder.from(parent)
 

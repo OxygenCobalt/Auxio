@@ -79,6 +79,7 @@
     <string name="set_personalize_desc">התאמת רכיבי והתנהגות הממשק</string>
     <string name="set_display">תצוגה</string>
     <string name="set_lib_tabs">לשוניות ספרייה</string>
+    <string name="set_notif_action">פעולת התראות מותאמת אישית</string>
     <string name="set_action_mode_next">דילוג לבא</string>
     <string name="set_action_mode_repeat">מצב חזרה</string>
     <string name="set_behavior">התנהגות</string>
@@ -159,7 +160,7 @@
     <string name="lbl_delete">מחיקה</string>
     <string name="lbl_rename">שינוי שם</string>
     <string name="lbl_rename_playlist">שינוי שם רשימת השמעה</string>
-    <string name="lbl_confirm_delete_playlist">למחוק את רשימת ההשמעה?</string>
+    <string name="lbl_confirm_delete_playlist">למחוק את רשימת ההשמעה\?</string>
     <string name="lbl_edit">עריכה</string>
     <string name="clr_orange">כתום</string>
     <string name="set_locations">תיקיות מוזיקה</string>
@@ -234,7 +235,7 @@
     <string name="def_disc">אין דיסק</string>
     <string name="clr_deep_green">ירוק עמוק</string>
     <string name="clr_yellow">צהוב</string>
-    <string name="fmt_deletion_info">למחוק את %s? פעולה זו לא ניתן לביטול.</string>
+    <string name="fmt_deletion_info">למחוק את %s\? פעולה זו לא ניתן לביטול.</string>
     <string name="lbl_song">שיר</string>
     <string name="set_intelligent_sorting">מיון חכם</string>
     <string name="lbl_parent_detail">הצגה</string>

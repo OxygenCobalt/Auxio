@@ -113,7 +113,7 @@
     <string name="set_intelligent_sorting">Intelligent sortering</string>
     <string name="lbl_rename">Gi nytt navn</string>
     <string name="lbl_rename_playlist">Gi spillelisten nytt navn</string>
-    <string name="lbl_confirm_delete_playlist">Slett spilleliste?</string>
+    <string name="lbl_confirm_delete_playlist">Slett spilleliste\?</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_version">Versjon</string>
     <string name="lbl_wiki">Wiki</string>
@@ -192,6 +192,7 @@
     <string name="lng_playlist_deleted">Spilleliste slettet</string>
     <string name="lng_playlist_added">Lagt til i spilleliste</string>
     <string name="set_action_mode_next">Hopp til neste</string>
+    <string name="set_notif_action">Egendefinert varslingshandling</string>
     <string name="set_replay_gain_mode_track">Foretrekk spor</string>
     <string name="set_repeat_pause_desc">Pause når et spor gjentas</string>
     <string name="set_rewind_prev">Spol tilbake før spor hoppes over</string>

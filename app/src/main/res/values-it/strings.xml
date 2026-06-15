@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Info namespace | App labels -->
+
     <string name="info_app_desc">Un lettore musicale semplice ed intuitivo per Android.</string>
     <string name="lng_widget">Visualizza e gestisci la riproduzione musicale</string>
+
     <string name="lbl_retry">Riprova</string>
     <string name="lbl_genres">Generi</string>
     <string name="lbl_artists">Artisti</string>
@@ -37,6 +38,7 @@
     <string name="lbl_licenses">Licenze</string>
     <string name="lbl_author_name">Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiche della libreria</string>
+
     <string name="set_root_title">Impostazioni</string>
     <string name="set_ui">Aspetto</string>
     <string name="set_theme">Tema</string>
@@ -51,6 +53,7 @@
     <string name="set_lib_tabs_desc">Cambia la visibilità e l\'ordine delle schede della libreria</string>
     <string name="set_round_mode">Copertine arrotondate</string>
     <string name="set_round_mode_desc">Abilita gli angoli arrotondati su ulteriori elementi dell\'interfaccia (richiede che le copertine degli album siano arrotondate)</string>
+    <string name="set_notif_action">Personalizza azione notifica</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Riproduzione automatica</string>
     <string name="set_headset_autoplay_desc">Inizia la riproduzione ogni volta che vengono connesse delle cuffie (potrebbe non funzionare su tutti i dispositivi)</string>
@@ -69,10 +72,13 @@
     <string name="set_content">Contenuti</string>
     <string name="set_reindex">Aggiorna libreria</string>
     <string name="set_reindex_desc">Ricarica la libreria musicale, usando i tag nella cache quando possibile</string>
+
     <string name="err_index_failed">Caricamento musica fallito</string>
     <string name="err_no_app">Nessuna app può completare questa azione</string>
     <string name="err_bad_location">Questa cartella non è supportata</string>
+
     <string name="lng_search_library">Cerca nella libreria…</string>
+
     <string name="desc_track_number">Traccia %d</string>
     <string name="desc_play_pause">Riproduci o metti in pausa</string>
     <string name="desc_skip_next">Passa al brano successivo</string>
@@ -89,11 +95,13 @@
     <string name="desc_album_cover">Copertina album di %s</string>
     <string name="desc_artist_image">Immagine artista per %s</string>
     <string name="desc_genre_image">Immagine genere per %s</string>
+
     <string name="def_artist">Artista sconosciuto</string>
     <string name="def_genre">Genere sconosciuto</string>
     <string name="def_date">Data sconosciuta</string>
     <string name="def_track">Nessuna traccia</string>
     <string name="def_playback">Nessun brano in riproduzione</string>
+
     <string name="clr_red">Rosso</string>
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Viola</string>
@@ -110,6 +118,7 @@
     <string name="clr_orange">Arancione</string>
     <string name="clr_brown">Marrone</string>
     <string name="clr_grey">Grigio</string>
+
     <string name="fmt_lib_song_count">Brani trovati: %d</string>
     <string name="fmt_lib_album_count">Album trovati: %d</string>
     <string name="fmt_lib_artist_count">Artisti trovati: %d</string>
@@ -248,11 +257,11 @@
     <string name="def_song_count">Nessun brano</string>
     <string name="fmt_def_playlist">Playlist %d</string>
     <string name="lbl_delete">Elimina</string>
-    <string name="lbl_confirm_delete_playlist">Eliminare la playlist?</string>
+    <string name="lbl_confirm_delete_playlist">Eliminare la playlist\?</string>
     <string name="lbl_rename">Rinomina</string>
     <string name="lbl_rename_playlist">Rinomina playlist</string>
     <string name="lbl_edit">Modifica</string>
-    <string name="fmt_deletion_info">Eliminare %s? L\'operazione non può essere annullata.</string>
+    <string name="fmt_deletion_info">Eliminare %s\? L\'operazione non può essere annullata.</string>
     <string name="lng_playlist_deleted">Playlist eliminata</string>
     <string name="lng_playlist_renamed">Playlist rinominata</string>
     <string name="lbl_share">Condividi</string>
@@ -342,10 +351,4 @@
     <string name="lng_play_next">Prossimo brano in riproduzione</string>
     <string name="set_filtered_folders">Cartelle con filtro</string>
     <string name="set_filter_mode">Tipo di filtro</string>
-    <string name="fmt_lib_total_size">Dimensione: %s</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d secondo</item>
-        <item quantity="many">%d secondi</item>
-        <item quantity="other">%d secondi</item>
-    </plurals>
 </resources>

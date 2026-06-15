@@ -31,12 +31,10 @@ class PlaylistDragCallback(private val detailModel: DetailViewModel) : MaterialD
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
     ) =
         detailModel.movePlaylistSongs(
-            viewHolder.bindingAdapterPosition,
-            target.bindingAdapterPosition,
-        )
+            viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         detailModel.removePlaylistSong(viewHolder.bindingAdapterPosition)

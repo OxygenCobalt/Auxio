@@ -36,7 +36,7 @@ import org.oxycblt.musikr.tag.Date
 import org.oxycblt.musikr.util.correctWhitespace
 import org.oxycblt.musikr.util.splitEscaped
 
-@Database(entities = [CachedFileData::class], version = 70, exportSchema = false)
+@Database(entities = [CachedSongData::class], version = 67, exportSchema = false)
 internal abstract class CacheDatabase : RoomDatabase() {
     abstract fun readDao(): CacheReadDao
 
@@ -45,23 +45,20 @@ internal abstract class CacheDatabase : RoomDatabase() {
     companion object {
         fun from(context: Context) =
             Room.databaseBuilder(
-                    context.applicationContext,
-                    CacheDatabase::class.java,
-                    "music_cache.db",
-                )
-                .fallbackToDestructiveMigration(true)
+                    context.applicationContext, CacheDatabase::class.java, "music_cache.db")
+                .fallbackToDestructiveMigration()
                 .build()
     }
 }
 
 @Dao
 internal interface CacheReadDao {
-    @Query("SELECT * FROM CachedFileData") suspend fun selectAllSongs(): List<CachedFileData>
+    @Query("SELECT * FROM CachedSongData") suspend fun selectAllSongs(): List<CachedSongData>
 }
 
 @Dao
 internal interface CacheWriteDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(data: CachedFileData)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(data: CachedSongData)
 
     @Transaction
     suspend fun deleteExcludingUris(uris: Set<String>) {
@@ -71,22 +68,22 @@ internal interface CacheWriteDao {
         }
     }
 
-    @Query("SELECT uri FROM CachedFileData") suspend fun selectAllUris(): List<String>
+    @Query("SELECT uri FROM CachedSongData") suspend fun selectAllUris(): List<String>
 
-    @Query("DELETE FROM CachedFileData WHERE uri IN (:uris)")
+    @Query("DELETE FROM CachedSongData WHERE uri IN (:uris)")
     suspend fun deleteExcludingUriChunk(uris: List<String>)
 }
 
 @Entity
-@TypeConverters(CachedFileData.Converters::class)
-internal data class CachedFileData(
+@TypeConverters(CachedSongData.Converters::class)
+internal data class CachedSongData(
     @PrimaryKey val uri: Uri,
     val modifiedMs: Long,
     val addedMs: Long,
-    val mimeType: String?,
-    val durationMs: Long?,
-    val bitrateKbps: Int?,
-    val sampleRateHz: Int?,
+    val mimeType: String,
+    val durationMs: Long,
+    val bitrateKbps: Int,
+    val sampleRateHz: Int,
     val musicBrainzId: String?,
     val name: String?,
     val sortName: String?,
@@ -97,14 +94,14 @@ internal data class CachedFileData(
     val albumMusicBrainzId: String?,
     val albumName: String?,
     val albumSortName: String?,
-    val releaseTypes: List<String>?,
-    val artistMusicBrainzIds: List<String>?,
-    val artistNames: List<String>?,
-    val artistSortNames: List<String>?,
-    val albumArtistMusicBrainzIds: List<String>?,
-    val albumArtistNames: List<String>?,
-    val albumArtistSortNames: List<String>?,
-    val genreNames: List<String>?,
+    val releaseTypes: List<String>,
+    val artistMusicBrainzIds: List<String>,
+    val artistNames: List<String>,
+    val artistSortNames: List<String>,
+    val albumArtistMusicBrainzIds: List<String>,
+    val albumArtistNames: List<String>,
+    val albumArtistSortNames: List<String>,
+    val genreNames: List<String>,
     val replayGainTrackAdjustment: Float?,
     val replayGainAlbumAdjustment: Float?,
     val coverId: String?,

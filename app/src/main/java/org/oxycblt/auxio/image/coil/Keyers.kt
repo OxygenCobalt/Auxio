@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2026 Auxio Project
- * CookieImageView.kt is part of Auxio.
+ * Copyright (c) 2021 Auxio Project
+ * Keyers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,22 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.home.list
+package org.oxycblt.auxio.image.coil
 
-import android.content.Context
-import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatImageView
+import coil3.key.Keyer
+import coil3.request.Options
+import javax.inject.Inject
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverCollection
 
-/**
- * A placeholder [androidx.appcompat.widget.AppCompatImageView] with a 6-sided cookie expressive
- * background shape.
- */
-class CookieImageView
-@JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-    AppCompatImageView(context, attrs, defStyleAttr) {
-    init {
-        background = CookieShapeDrawable(context)
-        scaleType = ScaleType.CENTER_INSIDE
-    }
+class CoverKeyer @Inject constructor() : Keyer<Cover> {
+    override fun key(data: Cover, options: Options) = "${data.id}&${options.size}"
+}
+
+class CoverCollectionKeyer @Inject constructor() : Keyer<CoverCollection> {
+    override fun key(data: CoverCollection, options: Options) =
+        "multi:${data.hashCode()}&${options.size}"
 }

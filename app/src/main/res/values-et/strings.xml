@@ -136,7 +136,7 @@
     <string name="set_theme_day">Hele kujundus</string>
     <string name="set_black_mode">Must kujundus</string>
     <string name="set_theme_night">Tume kujundus</string>
-    <string name="set_black_mode_desc">Tumeda kujunduse puhul kasuta süsimusta kujundust</string>
+    <string name="set_black_mode_desc">Tumeda kujunduse puhul kasuta päris musta kujundust</string>
     <string name="set_accent">Värviteema</string>
     <string name="clr_purple">Purpurpunane</string>
     <string name="clr_deep_purple">Sügav purpurpunane</string>
@@ -160,13 +160,15 @@
     <string name="clr_dynamic">Dünaamiline värv</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="fmt_selected">%d on valitud</string>
+    <string name="fmt_selected">%d valitud</string>
     <string name="fmt_editing">Muudame esitusloendit %s</string>
     <string name="fmt_disc_no">%d. plaat</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Laadime sinu muusikakogu… (%1$d/%2$d)</string>
-    <string name="lng_tasker_start">Auxio käivitub varem salvestatud olekus. Kui sellist olekut ei leidu, siis segatakse kõikide lugude järjekord ning taasesitus algab koheselt. \n \nHOIATUS: Ole selle teenuse kasutamisel hoolikas - kui sa ta sulged ja siis proovid uuesti kasutada, siis rakendus ilmselt jookseb kokku.</string>
+    <string name="lng_tasker_start">Auxio käivitub varem salvestatud olekus. Kui sellist olekut ei leidu, siis segatakse kõikide lugude järjekord ning taasesitus algab koheselt.
+\n
+\nHOIATUS: Ole selle teenuse kasutamisel hoolikas - kui sa ta sulged ja siis proovid uuesti kasutada, siis rakendus ilmselt jookseb kokku.</string>
     <string name="set_personalize">Kohanda endale sobivaks</string>
     <string name="set_personalize_desc">Seadista kasutajaliidese juhtnuppe ning käitumist</string>
     <string name="set_display">Ekraan</string>
@@ -197,6 +199,7 @@
     <string name="set_replay_gain_mode_album">Eelista albumikohast esitusvaljuse tundlikkust</string>
     <string name="set_replay_gain_mode_dynamic">Kui album juba on esitamisel, siis eelista albumikohast esitusvaljuse tundlikkust</string>
     <string name="set_pre_amp">Esitusvaljuse tundlikkuse eelvõimendus</string>
+    <string name="set_notif_action">Kohandatud toimingud teavitusel</string>
     <string name="set_bar_action">Kohandatud toimingud taasesitusribal</string>
     <string name="set_play_in_list_with">Esitamisel muusikakogust</string>
     <string name="set_play_song_none">Esita näidatud palast</string>
@@ -338,15 +341,4 @@
     <string name="set_extra_settings">Lisaseadistused</string>
     <string name="lbl_no_folders">Kaustu pole määratud</string>
     <string name="desc_add_folder">Lisa kaust</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d sekund</item>
-        <item quantity="other">%d sekundit</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Maht kokku: %s</string>
-    <string name="set_task_exit">Sulgemisel alati lõpeta rakenduse töö</string>
-    <string name="set_task_exit_desc">Viimatikasutatud rakenduste loendist eemaldamisel lõpeta taasesitus, seda ka siis kui just on kuulamine pooleli</string>
-    <string name="set_saf_multithread">Mitmelõimeline failide analüüs</string>
-    <string name="set_saf_multithread_desc">Kiirem, aga ei pruugi mõnes seadmes toimida</string>
-    <string name="err_share_too_large">See on jagamiseks liiga mahukas</string>
-    <string name="err_share_failed">Seda pole võimalik jagada</string>
 </resources>

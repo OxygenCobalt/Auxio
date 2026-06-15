@@ -2,46 +2,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- ANDROID COMPONENT-SPECIFIC STYLES.-->
 
-    <style name="Theme.Auxio.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-        <item name="materialAlertDialogTitleTextStyle">@style/TextStyle.Auxio.Dialog</item>
-        <item name="android:checkedTextViewStyle">@style/Widget.Auxio.Dialog.CheckedTextView</item>
-        <item name="materialButtonStyle">@style/Widget.Auxio.Button</item>
-        <item name="materialButtonTonalStyle">@style/Widget.Auxio.Button.TonalButton</item>
-        <item name="materialButtonOutlinedStyle">@style/Widget.Auxio.Button.OutlinedButton</item>
-        <item name="materialButtonElevatedStyle">@style/Widget.Auxio.Button.ElevatedButton</item>
-        <item name="borderlessButtonStyle">@style/Widget.Auxio.Button.TextButton</item>
-        <item name="snackbarButtonStyle">@style/Widget.Auxio.Button.TextButton.Snackbar</item>
-        <item name="materialIconButtonStyle">@style/Widget.Auxio.Button.Icon.Base</item>
-        <item name="materialIconButtonOutlinedStyle">
-            @style/Widget.Material3Expressive.Button.IconButton.Outlined
-        </item>
-        <item name="materialIconButtonFilledStyle">
-            @style/Widget.Material3Expressive.Button.IconButton.Filled
-        </item>
-        <item name="materialIconButtonFilledTonalStyle">
-            @style/Widget.Material3Expressive.Button.IconButton.Tonal
-        </item>
-        <item name="materialSplitButtonStyle">@style/Widget.Auxio.SplitButton</item>
-        <item name="materialSplitButtonLeadingFilledStyle">
-            @style/Widget.Auxio.SplitButton.LeadingButton.Filled
-        </item>
-        <item name="materialSplitButtonLeadingFilledTonalStyle">
-            @style/Widget.Auxio.SplitButton.LeadingButton.Filled.Tonal
-        </item>
-        <item name="materialSplitButtonIconFilledStyle">
-            @style/Widget.Auxio.SplitButton.IconButton.Filled
-        </item>
-        <item name="materialSplitButtonIconFilledTonalStyle">
-            @style/Widget.Auxio.SplitButton.IconButton.Filled.Tonal
-        </item>
-        <item name="buttonBarButtonStyle">@style/Widget.Auxio.Button.TextButton.Dialog</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.Auxio.Button.TextButton.Dialog</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.Auxio.Button.TextButton.Dialog</item>
-        <item name="buttonBarNeutralButtonStyle">@style/Widget.Auxio.Button.TextButton.Dialog.Flush</item>
+    <!--
+    Hacks around the incorrectly-sized navigation icon in the Toolbar, changing it from
+    56dp to 48dp.
+    -->
+    <style name="Widget.Auxio.Toolbar.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
     </style>
 
-    <style name="TextStyle.Auxio.Dialog" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.HeadlineSmall.Emphasized</item>
+    <!--
+    Hacks around the old overflow button that was deliberately downsized to 36dp
+    (presumably for compat with older devices)
+    -->
+    <style name="Widget.Auxio.Button.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:minWidth">@dimen/size_touchable_small</item>
+        <item name="android:minHeight">@dimen/size_touchable_small</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+    <style name="Theme.Auxio.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:checkedTextViewStyle">@style/Widget.Auxio.Dialog.CheckedTextView</item>
     </style>
 
     <!-- The style for the checked text view in the custom dialog -->

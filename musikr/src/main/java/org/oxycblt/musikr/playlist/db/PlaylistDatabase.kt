@@ -38,8 +38,7 @@ import org.oxycblt.musikr.Music
 @Database(
     entities = [PlaylistInfo::class, PlaylistSong::class, PlaylistSongCrossRef::class],
     version = 30,
-    exportSchema = false,
-)
+    exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
 internal abstract class PlaylistDatabase : RoomDatabase() {
     abstract fun playlistDao(): PlaylistDao
@@ -47,11 +46,8 @@ internal abstract class PlaylistDatabase : RoomDatabase() {
     companion object {
         fun from(context: Context) =
             Room.databaseBuilder(
-                    context.applicationContext,
-                    PlaylistDatabase::class.java,
-                    "user_music.db",
-                )
-                .fallbackToDestructiveMigration(true)
+                    context.applicationContext, PlaylistDatabase::class.java, "user_music.db")
+                .fallbackToDestructiveMigration()
                 .build()
     }
 }
@@ -87,11 +83,8 @@ internal abstract class PlaylistDao {
         insertRefs(
             rawPlaylist.songs.map {
                 PlaylistSongCrossRef(
-                    playlistUid = rawPlaylist.playlistInfo.playlistUid,
-                    songUid = it.songUid,
-                )
-            }
-        )
+                    playlistUid = rawPlaylist.playlistInfo.playlistUid, songUid = it.songUid)
+            })
     }
 
     /**
@@ -126,8 +119,7 @@ internal abstract class PlaylistDao {
     open suspend fun insertPlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
         insertSongs(songs)
         insertRefs(
-            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) }
-        )
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) })
     }
 
     /**
@@ -142,8 +134,7 @@ internal abstract class PlaylistDao {
         deleteRefs(playlistUid)
         insertSongs(songs)
         insertRefs(
-            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) }
-        )
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) })
     }
 
     /** Internal, do not use. */

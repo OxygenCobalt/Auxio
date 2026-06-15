@@ -64,10 +64,7 @@ class SettingCoversImpl @Inject constructor(private val imageSettings: ImageSett
         val revisionedTranscoding = RevisionedTranscoding(revision, transcoding)
         val storedCovers =
             MutableStoredCovers(
-                EmbeddedCovers(CoverIdentifier.md5()),
-                coverStorage,
-                revisionedTranscoding,
-            )
+                EmbeddedCovers(CoverIdentifier.md5()), coverStorage, revisionedTranscoding)
         val fsCovers = MutableFSCovers(context)
         return MutableChainedCovers(storedCovers, fsCovers)
     }

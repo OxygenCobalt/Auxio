@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationChannelCompat
@@ -93,7 +94,7 @@ class AuxioService :
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
-        rootHints: Bundle?,
+        rootHints: Bundle?
     ): BrowserRoot {
         return musicFragment.getRoot()
     }
@@ -104,27 +105,32 @@ class AuxioService :
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
         val maximumRootChildLimit = getRootChildrenLimit()
-        musicFragment.getChildren(parentId, maximumRootChildLimit, result)
+        musicFragment.getChildren(parentId, maximumRootChildLimit, result, null)
     }
 
     override fun onLoadChildren(
         parentId: String,
         result: Result<MutableList<MediaItem>>,
-        options: Bundle,
+        options: Bundle
     ) {
         val maximumRootChildLimit = getRootChildrenLimit()
-        musicFragment.getChildren(parentId, maximumRootChildLimit, result)
+        musicFragment.getChildren(parentId, maximumRootChildLimit, result, options.getPage())
     }
 
     override fun onSearch(query: String, extras: Bundle?, result: Result<MutableList<MediaItem>>) {
-        musicFragment.search(query, result)
+        musicFragment.search(query, result, extras?.getPage())
     }
 
     private fun getRootChildrenLimit(): Int {
         return browserRootHints?.getInt(
-            MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT,
-            4,
-        ) ?: 4
+            MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT, 4) ?: 4
+    }
+
+    private fun Bundle.getPage(): MusicServiceFragment.Page? {
+        val page = getInt(MediaBrowserCompat.EXTRA_PAGE, -1).takeIf { it >= 0 } ?: return null
+        val pageSize =
+            getInt(MediaBrowserCompat.EXTRA_PAGE_SIZE, -1).takeIf { it > 0 } ?: return null
+        return MusicServiceFragment.Page(page, pageSize)
     }
 
     override fun updateForeground(change: ForegroundListener.Change) {
@@ -169,7 +175,7 @@ interface ForegroundListener {
 
     enum class Change {
         MEDIA_SESSION,
-        INDEXER,
+        INDEXER
     }
 }
 

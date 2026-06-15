@@ -23,7 +23,6 @@ import android.net.Uri
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.Path
-import org.oxycblt.musikr.fs.Volume
 import org.oxycblt.musikr.fs.path.DocumentPathFactory
 import org.oxycblt.musikr.fs.saf.contentResolverSafe
 import org.oxycblt.musikr.playlist.m3u.M3U
@@ -58,10 +57,7 @@ interface ExternalPlaylistManager {
     companion object {
         fun from(context: Context): ExternalPlaylistManager =
             ExternalPlaylistManagerImpl(
-                context,
-                DocumentPathFactory.from(context),
-                M3U.from(context),
-            )
+                context, DocumentPathFactory.from(context), M3U.from(context))
     }
 }
 
@@ -91,12 +87,10 @@ typealias PossiblePaths = List<Path>
 private class ExternalPlaylistManagerImpl(
     private val context: Context,
     private val documentPathFactory: DocumentPathFactory,
-    private val m3u: M3U,
+    private val m3u: M3U
 ) : ExternalPlaylistManager {
     override suspend fun import(uri: Uri): ImportedPlaylist? {
-        val filePath =
-            documentPathFactory.unpackDocumentUri(uri)
-                ?: Path(Volume.ThirdParty(uri), Components.root())
+        val filePath = documentPathFactory.unpackDocumentUri(uri) ?: return null
 
         return try {
             context.contentResolverSafe.openInputStream(uri)?.use {
@@ -121,9 +115,7 @@ private class ExternalPlaylistManagerImpl(
     }
 
     override suspend fun export(playlist: Playlist, uri: Uri, config: ExportConfig): Boolean {
-        val filePath =
-            documentPathFactory.unpackDocumentUri(uri)
-                ?: Path(Volume.ThirdParty(uri), Components.root())
+        val filePath = documentPathFactory.unpackDocumentUri(uri) ?: return false
         val workingDirectory =
             if (config.absolute) {
                 Path(filePath.volume, Components.parseUnix("/"))

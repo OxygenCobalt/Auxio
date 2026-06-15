@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:ns0="http://schemas.android.com/tools" ns0:ignore="MissingTranslation">
+
     <string name="info_app_desc">一款简洁、克制的 Android 音乐播放器。</string>
     <string name="lng_widget">查看并控制音乐播放</string>
+
     <string name="lbl_retry">重试</string>
     <string name="lbl_genres">流派</string>
     <string name="lbl_artists">艺术家</string>
@@ -35,6 +37,7 @@
     <string name="lbl_code">源代码</string>
     <string name="lbl_licenses">许可证</string>
     <string name="lbl_author_name">由 Alexander Capehart 开发</string>
+
     <string name="set_root_title">设置</string>
     <string name="set_ui">外观和感觉</string>
     <string name="set_theme">主题</string>
@@ -49,6 +52,7 @@
     <string name="set_lib_tabs_desc">更改媒体库标签页面的可见性和顺序</string>
     <string name="set_round_mode">专辑封面圆角</string>
     <string name="set_round_mode_desc">在其他 UI 元素上启用圆角（需要圆角专辑封面）</string>
+    <string name="set_notif_action">使用替代通知操作方案</string>
     <string name="set_audio">音频</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>
@@ -67,10 +71,13 @@
     <string name="set_content">内容</string>
     <string name="set_reindex">刷新音乐</string>
     <string name="set_reindex_desc">重新加载音乐库，如有可能使用缓存的标签</string>
+
     <string name="err_index_failed">加载音乐失败</string>
     <string name="err_no_app">未找到可以处理此任务的应用</string>
     <string name="err_bad_location">该目录不受支持</string>
+
     <string name="lng_search_library">在曲库中搜索…</string>
+
     <string name="desc_track_number">第 %d 首曲目</string>
     <string name="desc_play_pause">播放或暂停</string>
     <string name="desc_skip_next">切换到下一首歌</string>
@@ -87,11 +94,13 @@
     <string name="desc_album_cover">%s 的专辑封面</string>
     <string name="desc_artist_image">%s 的艺术家图像</string>
     <string name="desc_genre_image">%s 的流派图像</string>
+
     <string name="def_artist">未知艺术家</string>
     <string name="def_genre">未知流派</string>
     <string name="def_date">没有日期</string>
     <string name="def_track">无曲目</string>
     <string name="def_playback">未播放音乐</string>
+
     <string name="clr_red">红色</string>
     <string name="clr_pink">粉色</string>
     <string name="clr_purple">紫色</string>
@@ -108,6 +117,7 @@
     <string name="clr_orange">橙色</string>
     <string name="clr_brown">棕色</string>
     <string name="clr_grey">灰色</string>
+
     <string name="fmt_lib_song_count">已加载 %d 首曲目</string>
     <plurals name="fmt_song_count">
         <item quantity="other">%d 首歌曲</item>
@@ -155,7 +165,7 @@
     <string name="lbl_size">大小</string>
     <string name="lbl_bitrate">比特率</string>
     <string name="lbl_sample_rate">采样率</string>
-    <string name="lbl_ok">确定</string>
+    <string name="lbl_ok">好的</string>
     <string name="lbl_cancel">取消</string>
     <string name="set_observing">自动重载</string>
     <string name="set_observing_desc">只要发生更改就重新加载曲库（需要持久性通知）</string>
@@ -213,7 +223,7 @@
     </plurals>
     <string name="set_rescan">重新扫描音乐</string>
     <string name="set_rescan_desc">清除标签缓存并完全重新加载音乐库（更慢，但更完整）</string>
-    <string name="fmt_selected">选中了 %d 项</string>
+    <string name="fmt_selected">选中了 %d 首</string>
     <string name="set_play_song_from_genre">按流派播放</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
@@ -269,7 +279,7 @@
     <string name="lbl_demos">样曲</string>
     <string name="lbl_imported_playlist">导入了播放列表</string>
     <string name="lbl_path">路径</string>
-    <string name="lbl_empty_playlist">新建播放列表</string>
+    <string name="lbl_empty_playlist">清空播放列表</string>
     <string name="err_import_failed">无法从此文件导入播放列表</string>
     <string name="lbl_path_style_absolute">绝对</string>
     <string name="lbl_import">导入</string>
@@ -292,7 +302,9 @@
     <string name="set_remember_pause">记住暂停状态</string>
     <string name="set_replay_gain_mode_off">关闭</string>
     <string name="lbl_start_playback">开始播放</string>
-    <string name="lng_tasker_start">使用之前使用的状态启动 Auxio。如果没有可用的已保存状态，将打乱所有歌曲的顺序。播放将立刻开始。 \n \n警告：请小心控制此服务，如果将其关闭然后试图再次使用可能造成应用崩溃。</string>
+    <string name="lng_tasker_start">使用之前使用的状态启动 Auxio。如果没有可用的已保存状态，将打乱所有歌曲的顺序。播放将立刻开始。
+\n
+\n警告：请小心控制此服务，如果将其关闭然后试图再次使用可能造成应用崩溃。</string>
     <string name="lbl_more">更多</string>
     <string name="lbl_github">在 GithHub 上开 issue</string>
     <string name="lbl_email">发送电子邮件</string>
@@ -335,14 +347,4 @@
     <string name="lbl_no_folders">无文件夹</string>
     <string name="desc_add_folder">添加文件夹</string>
     <string name="lng_play_next">下一首播放的歌曲</string>
-    <plurals name="fmt_seconds">
-        <item quantity="other">%d 秒</item>
-    </plurals>
-    <string name="fmt_lib_total_size">总大小：%s</string>
-    <string name="set_task_exit">关闭时始终退出</string>
-    <string name="set_task_exit_desc">从最近使用的应用列表删除时停止播放，即使正在播放</string>
-    <string name="set_saf_multithread">多线程文件资源管理</string>
-    <string name="set_saf_multithread_desc">更快但在一些设备上失败</string>
-    <string name="err_share_too_large">过大无法分享</string>
-    <string name="err_share_failed">无法分享这个</string>
 </resources>

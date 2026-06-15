@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.detail.decision
 
+import android.view.View
 import android.view.ViewGroup
 import org.oxycblt.auxio.databinding.ItemPickerChoiceBinding
 import org.oxycblt.auxio.list.ClickableListListener
@@ -37,8 +38,7 @@ import org.oxycblt.musikr.Artist
  */
 class ArtistShowChoice(private val listener: ClickableListListener<Artist>) :
     FlexibleListAdapter<Artist, ArtistNavigationChoiceViewHolder>(
-        ArtistNavigationChoiceViewHolder.DIFF_CALLBACK
-    ) {
+        ArtistNavigationChoiceViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ArtistNavigationChoiceViewHolder.from(parent)
 
@@ -76,10 +76,9 @@ private constructor(private val binding: ItemPickerChoiceBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: ViewGroup) =
+        fun from(parent: View) =
             ArtistNavigationChoiceViewHolder(
-                ItemPickerChoiceBinding.inflate(parent.context.inflater, parent, false)
-            )
+                ItemPickerChoiceBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

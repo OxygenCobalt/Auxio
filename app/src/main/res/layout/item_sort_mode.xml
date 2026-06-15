@@ -21,7 +21,7 @@
         android:focusable="false"
         android:paddingStart="@dimen/spacing_medium"
         android:textAlignment="viewStart"
-        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
         tools:ignore="RtlSymmetry,contentDescription"
         tools:text="Name" />
 

@@ -33,7 +33,7 @@ import org.oxycblt.musikr.tag.Date
 
 fun CoroutineScope.tryAsync(
     context: CoroutineContext,
-    block: suspend () -> Unit,
+    block: suspend () -> Unit
 ): Deferred<Result<Unit>> = async {
     try {
         block()
@@ -79,7 +79,7 @@ fun <T, R> CoroutineScope.mapParallel(
     input: Channel<T>,
     output: Channel<R>,
     context: CoroutineContext = Dispatchers.Default,
-    block: suspend (T) -> R,
+    block: suspend (T) -> R?,
 ): Deferred<Result<Unit>> {
     return tryAsync(context) {
         val deferreds = ArrayList<Deferred<Result<Unit>>>()
@@ -87,13 +87,14 @@ fun <T, R> CoroutineScope.mapParallel(
             val deferred =
                 tryAsync(context) {
                     for (item in input) {
-                        block(item).let { output.send(it) }
+                        block(item)?.let { output.send(it) }
                     }
                 }
             deferreds.add(deferred)
         }
         deferreds.tryAwaitAll()
         output.close()
+        Unit
     }
 }
 

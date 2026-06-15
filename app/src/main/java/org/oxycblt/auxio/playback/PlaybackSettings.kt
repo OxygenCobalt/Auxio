@@ -37,6 +37,8 @@ import timber.log.Timber as L
 interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
     /** The action to display on the playback bar. */
     val barAction: ActionMode
+    /** The action to display in the playback notification. */
+    val notificationAction: ActionMode
     /** Whether to start playback when a headset is plugged in. */
     val headsetAutoplay: Boolean
     /** The current ReplayGain configuration. */
@@ -58,16 +60,14 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
     val pauseOnRepeat: Boolean
     /** Whether to maintain the play/pause state when skipping or editing the queue */
     val rememberPause: Boolean
-    /** Whether to always exit when task is removed, even if playing. */
-    val exitOnTaskRemoval: Boolean
 
     interface Listener {
         /** Called when one of the ReplayGain configurations have changed. */
         fun onReplayGainSettingsChanged() {}
-
+        /** Called when [notificationAction] has changed. */
+        fun onNotificationActionChanged() {}
         /** Called when [barAction] has changed. */
         fun onBarActionChanged() {}
-
         /** Called when [pauseOnRepeat] has changed. */
         fun onPauseOnRepeatChanged() {}
     }
@@ -79,25 +79,26 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
         get() =
             PlaySong.fromIntCode(
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_play_in_list_with),
-                    Int.MIN_VALUE,
-                )
-            ) ?: PlaySong.FromAll
+                    getString(R.string.set_key_play_in_list_with), Int.MIN_VALUE))
+                ?: PlaySong.FromAll
 
     override val inParentPlaybackMode: PlaySong?
         get() =
             PlaySong.fromIntCode(
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_play_in_parent_with),
-                    Int.MIN_VALUE,
-                )
-            )
+                    getString(R.string.set_key_play_in_parent_with), Int.MIN_VALUE))
 
     override val barAction: ActionMode
         get() =
             ActionMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_bar_action), Int.MIN_VALUE)
-            ) ?: ActionMode.NEXT
+                sharedPreferences.getInt(getString(R.string.set_key_bar_action), Int.MIN_VALUE))
+                ?: ActionMode.NEXT
+
+    override val notificationAction: ActionMode
+        get() =
+            ActionMode.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_notif_action), Int.MIN_VALUE))
+                ?: ActionMode.REPEAT
 
     override val headsetAutoplay: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_headset_autoplay), false)
@@ -105,15 +106,14 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
     override val replayGainMode: ReplayGainMode
         get() =
             ReplayGainMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_replay_gain), Int.MIN_VALUE)
-            ) ?: ReplayGainMode.DYNAMIC
+                sharedPreferences.getInt(getString(R.string.set_key_replay_gain), Int.MIN_VALUE))
+                ?: ReplayGainMode.DYNAMIC
 
     override var replayGainPreAmp: ReplayGainPreAmp
         get() =
             ReplayGainPreAmp(
                 sharedPreferences.getFloat(getString(R.string.set_key_pre_amp_with), 0f),
-                sharedPreferences.getFloat(getString(R.string.set_key_pre_amp_without), 0f),
-            )
+                sharedPreferences.getFloat(getString(R.string.set_key_pre_amp_without), 0f))
         set(value) {
             sharedPreferences.edit {
                 putFloat(getString(R.string.set_key_pre_amp_with), value.with)
@@ -133,9 +133,6 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
 
     override val rememberPause: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_remember_pause), false)
-
-    override val exitOnTaskRemoval: Boolean
-        get() = sharedPreferences.getBoolean(getString(R.string.set_key_task_exit), false)
 
     override fun migrate() {
         // MusicMode was converted to PlaySong in 3.2.0
@@ -158,9 +155,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
 
             sharedPreferences.edit {
                 putInt(
-                    getString(R.string.set_key_play_in_list_with),
-                    mode?.intCode ?: Int.MIN_VALUE,
-                )
+                    getString(R.string.set_key_play_in_list_with), mode?.intCode ?: Int.MIN_VALUE)
                 remove(OLD_KEY_LIB_MUSIC_PLAYBACK_MODE)
                 apply()
             }
@@ -176,9 +171,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
 
             sharedPreferences.edit {
                 putInt(
-                    getString(R.string.set_key_play_in_parent_with),
-                    mode?.intCode ?: Int.MIN_VALUE,
-                )
+                    getString(R.string.set_key_play_in_parent_with), mode?.intCode ?: Int.MIN_VALUE)
                 remove(OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE)
                 apply()
             }
@@ -192,6 +185,10 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
             getString(R.string.set_key_pre_amp_without) -> {
                 L.d("Dispatching ReplayGain setting change")
                 listener.onReplayGainSettingsChanged()
+            }
+            getString(R.string.set_key_notif_action) -> {
+                L.d("Dispatching notification setting change")
+                listener.onNotificationActionChanged()
             }
             getString(R.string.set_key_bar_action) -> {
                 L.d("Dispatching bar action change")

@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.detail.list
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
@@ -28,18 +29,13 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
-import org.oxycblt.auxio.detail.list.AlbumSongViewHolder.Companion.from
-import org.oxycblt.auxio.detail.list.DiscDividerViewHolder.Companion.from
-import org.oxycblt.auxio.detail.list.DiscHeaderViewHolder.Companion.from
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
-import org.oxycblt.auxio.music.areNamesTheSame
 import org.oxycblt.auxio.music.resolve
-import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
@@ -142,11 +138,8 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: ViewGroup) =
-            DiscHeaderViewHolder(
-                // TODO: Get all viewholders to inflate anchored to parent
-                ItemDiscHeaderBinding.inflate(parent.context.inflater, parent, false)
-            )
+        fun from(parent: View) =
+            DiscHeaderViewHolder(ItemDiscHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -182,7 +175,7 @@ class DiscDividerViewHolder private constructor(divider: MaterialDivider) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: ViewGroup) = DiscDividerViewHolder(MaterialDivider(parent.context))
+        fun from(parent: View) = DiscDividerViewHolder(MaterialDivider(parent.context))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -230,23 +223,8 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         }
 
         binding.songName.text = song.name.resolve(binding.context)
-        // Show duration, and include featured artists when they differ from the album artists.
-        val duration = song.durationMs.formatDurationMs(false)
-        val albumArtists = song.album.artists
-        val featuredArtists =
-            song.artists.filterNot { songArtist ->
-                albumArtists.any { albumArtist -> albumArtist.uid == songArtist.uid }
-            }
-        binding.songDuration.text =
-            if (featuredArtists.isNotEmpty()) {
-                binding.context.getString(
-                    R.string.fmt_two,
-                    duration,
-                    featuredArtists.resolveNames(binding.context),
-                )
-            } else {
-                duration
-            }
+        // Use duration instead of album or artist for each song to be more contextually relevant.
+        binding.songDuration.text = song.durationMs.formatDurationMs(false)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -268,19 +246,14 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: ViewGroup) =
-            AlbumSongViewHolder(
-                ItemAlbumSongBinding.inflate(parent.context.inflater, parent, false)
-            )
+        fun from(parent: View) =
+            AlbumSongViewHolder(ItemAlbumSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.name == newItem.name &&
-                        oldItem.durationMs == newItem.durationMs &&
-                        oldItem.artists.areNamesTheSame(newItem.artists) &&
-                        oldItem.album.artists.areNamesTheSame(newItem.album.artists)
+                    oldItem.name == newItem.name && oldItem.durationMs == newItem.durationMs
             }
     }
 }

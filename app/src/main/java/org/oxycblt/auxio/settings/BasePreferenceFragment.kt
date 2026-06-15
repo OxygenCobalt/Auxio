@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.XmlRes
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
@@ -36,7 +37,6 @@ import org.oxycblt.auxio.settings.ui.IntListPreference
 import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
 import org.oxycblt.auxio.settings.ui.PreferenceHeaderItemDecoration
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.ui.AuxioToolbar
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import timber.log.Timber as L
 
@@ -74,7 +74,7 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
 
         view.findViewById<AppBarLayout>(R.id.preferences_appbar).liftOnScrollTargetViewId =
             androidx.preference.R.id.recycler_view
-        view.findViewById<AuxioToolbar>(R.id.preferences_toolbar).apply {
+        view.findViewById<Toolbar>(R.id.preferences_toolbar).apply {
             title = preferenceScreen.title
             setNavigationOnClickListener { findNavController().navigateUp() }
         }
@@ -88,7 +88,7 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
     override fun onCreateRecyclerView(
         inflater: LayoutInflater,
         parent: ViewGroup,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ) =
         super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
             clipToPadding = false

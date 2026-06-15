@@ -39,11 +39,9 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
     @Suppress("LeakingThis") private val differ = FlexibleListDiffer(this, diffCallback)
 
     final override fun getItemCount() = differ.currentList.size
-
     /** The current list stored by the adapter's differ instance. */
     val currentList: List<T>
         get() = differ.currentList
-
     /** @see currentList */
     fun getItem(at: Int) = differ.currentList[at]
 
@@ -57,7 +55,7 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
     fun update(
         newList: List<T>,
         instructions: UpdateInstructions?,
-        callback: (() -> Unit)? = null,
+        callback: (() -> Unit)? = null
     ) {
         L.d("Updating list to ${newList.size} items with $instructions")
         differ.update(newList, instructions, callback)
@@ -113,7 +111,7 @@ sealed interface UpdateInstructions {
  */
 private class FlexibleListDiffer<T>(
     adapter: RecyclerView.Adapter<*>,
-    diffCallback: DiffUtil.ItemCallback<T>,
+    diffCallback: DiffUtil.ItemCallback<T>
 ) {
     private val updateCallback = AdapterListUpdateCallback(adapter)
     private val config = AsyncDifferConfig.Builder(diffCallback).build()
@@ -169,7 +167,7 @@ private class FlexibleListDiffer<T>(
         oldList: List<T>,
         newList: List<T>,
         runGeneration: Int,
-        callback: (() -> Unit)?,
+        callback: (() -> Unit)?
     ) {
         // fast simple remove all
         if (newList.isEmpty()) {
@@ -206,7 +204,7 @@ private class FlexibleListDiffer<T>(
 
                         override fun areItemsTheSame(
                             oldItemPosition: Int,
-                            newItemPosition: Int,
+                            newItemPosition: Int
                         ): Boolean {
                             val oldItem: T? = oldList[oldItemPosition]
                             val newItem: T? = newList[newItemPosition]
@@ -218,7 +216,7 @@ private class FlexibleListDiffer<T>(
 
                         override fun areContentsTheSame(
                             oldItemPosition: Int,
-                            newItemPosition: Int,
+                            newItemPosition: Int
                         ): Boolean {
                             val oldItem: T? = oldList[oldItemPosition]
                             val newItem: T? = newList[newItemPosition]
@@ -233,7 +231,7 @@ private class FlexibleListDiffer<T>(
 
                         override fun getChangePayload(
                             oldItemPosition: Int,
-                            newItemPosition: Int,
+                            newItemPosition: Int
                         ): Any? {
                             val oldItem: T? = oldList[oldItemPosition]
                             val newItem: T? = newList[newItemPosition]
@@ -242,8 +240,7 @@ private class FlexibleListDiffer<T>(
                             }
                             throw AssertionError()
                         }
-                    }
-                )
+                    })
 
             mainThreadExecutor.execute {
                 if (maxScheduledGeneration == runGeneration) {

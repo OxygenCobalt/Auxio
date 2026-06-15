@@ -129,22 +129,6 @@ fun Context.getAttrColorCompat(@AttrRes attrRes: Int): ColorStateList {
 }
 
 /**
- * Get a resource ID pointed to by an attribute.
- *
- * @param attrRes An attribute resource ID.
- * @return The resource ID the requested attribute points to.
- */
-fun Context.getAttrResourceId(@AttrRes attrRes: Int): Int {
-    val resolvedAttr = TypedValue()
-    check(theme.resolveAttribute(attrRes, resolvedAttr, true)) {
-        "Invalid attribute: 0x${attrRes.toString(16)}"
-    }
-    return requireNotNull(resolvedAttr.resourceId.takeIf { it != 0 }) {
-        "Attribute 0x${attrRes.toString(16)} does not reference a resource"
-    }
-}
-
-/**
  * Get a Drawable.
  *
  * @param drawableRes The Drawable resource ID.
@@ -199,8 +183,7 @@ fun Context.newMainPendingIntent(): PendingIntent =
         this,
         IntegerTable.REQUEST_CODE,
         Intent(this, MainActivity::class.java).setAction(Intent.ACTION_MAIN),
-        PendingIntent.FLAG_IMMUTABLE,
-    )
+        PendingIntent.FLAG_IMMUTABLE)
 
 /**
  * Create a [PendingIntent] that will broadcast the specified command when launched.
@@ -212,5 +195,4 @@ fun Context.newBroadcastPendingIntent(action: String): PendingIntent =
         this,
         IntegerTable.REQUEST_CODE,
         Intent(action).setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY),
-        PendingIntent.FLAG_IMMUTABLE,
-    )
+        PendingIntent.FLAG_IMMUTABLE)

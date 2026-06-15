@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_small"
-            android:textAppearance="?attr/textAppearanceLabelMediumEmphasized"
+            android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
             android:textColor="?attr/colorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/menu_name"
             app:layout_constraintEnd_toEndOf="parent"

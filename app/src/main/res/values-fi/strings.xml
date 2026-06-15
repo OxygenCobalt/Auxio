@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="info_app_desc">Yksinkertainen ja rationaalinen musiikkisoitin Androidille.</string>
     <string name="lbl_indexer">Musiikki latautuu</string>
@@ -157,7 +157,7 @@
     <string name="lbl_about">Tietoja</string>
     <string name="lbl_library_counts">Kirjaston tilastot</string>
     <string name="lng_queue_added">Lisätty jonoon</string>
-    <string name="set_black_mode_desc">Käytä täysin mustaa tummaa teemaa</string>
+    <string name="set_black_mode_desc">Käytä mustaa teemaa</string>
     <string name="set_round_mode">Pyöristetty tila</string>
     <string name="lbl_soundtracks">Elokuvamusiikit</string>
     <string name="lbl_mixes">DJ-mixaukset</string>
@@ -222,7 +222,7 @@
     <string name="lbl_delete">Poista</string>
     <string name="lbl_rename">Nimeä uudelleen</string>
     <string name="lbl_rename_playlist">Nimeä soittolista uudelleen</string>
-    <string name="lbl_confirm_delete_playlist">Poistetaanko soittolista?</string>
+    <string name="lbl_confirm_delete_playlist">Poistetaanko soittolista\?</string>
     <string name="fmt_editing">Muokataan %s</string>
     <string name="lbl_edit">Muokkaa</string>
     <string name="desc_remove_song">Poista tämä kappale</string>
@@ -235,7 +235,7 @@
     <string name="lng_widget">Näytä ja hallinnoi musiikin toistoa</string>
     <string name="desc_song_handle">Siirrä tämä kappale</string>
     <string name="def_disc">Ei levyä</string>
-    <string name="fmt_deletion_info">Poistetaanko %s? Tätä toimenpidettä ei voi perua.</string>
+    <string name="fmt_deletion_info">Poistetaanko %s\? Tätä toimenpidettä ei voi perua.</string>
     <string name="set_square_covers">Pakota neliömäiset albumikannet</string>
     <string name="set_reindex_desc">Lataa musiikkikirjasto uudelleen, käytä välimuistissa olevia tunnisteita kun mahdollista</string>
     <string name="set_square_covers_desc">Rajaa kaikki albumikannet 1:1-suhteeseen</string>
@@ -265,6 +265,7 @@
     <string name="lbl_path_style_absolute">Absoluuttinen</string>
     <string name="lbl_path_style_relative">Suhteellinen</string>
     <string name="lbl_windows_paths">Käytä Windows-yhteensopivia polkuja</string>
+    <string name="set_notif_action">Mukautettu ilmoituksen toiminto</string>
     <string name="lbl_replaygain_track">ReplayGain-kappalesäätö</string>
     <string name="set_remember_pause">Muista keskeytys</string>
     <string name="lbl_replaygain_album">ReplayGain-albumisäätö</string>
@@ -338,15 +339,4 @@
     <string name="set_grant_storage">Ulkoisen tallennustilan käyttöoikeus vaaditaan</string>
     <string name="set_fs_cache">Käytä tiedostojärjestelmän välimuistia</string>
     <string name="set_fs_cache_desc">Parantaa latausaikoja, mutta saattaa estää uuden musiikin lisäämisen kirjastoon</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d sekunti</item>
-        <item quantity="other">%d sekuntia</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Koko yhteensä: %s</string>
-    <string name="set_task_exit">Sulje aina poistuessa</string>
-    <string name="set_task_exit_desc">Lopeta toistaminen kun sovellus poistetaan viimeaikaisista, vaikka musiikkia soitettaisiin</string>
-    <string name="set_saf_multithread">Rinnakkainen Tiedostohaku</string>
-    <string name="set_saf_multithread_desc">Nopeampi, mutta ei toimi kaikilla laitteilla</string>
-    <string name="err_share_too_large">Liian suuri jaettavaksi</string>
-    <string name="err_share_failed">Tätä ei voi jakaa</string>
 </resources>

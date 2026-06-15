@@ -73,8 +73,7 @@ sealed class Tab(open val type: MusicType) {
                 MusicType.ALBUMS,
                 MusicType.ARTISTS,
                 MusicType.GENRES,
-                MusicType.PLAYLISTS,
-            )
+                MusicType.PLAYLISTS)
 
         /**
          * Convert an array of [Tab]s into it's integer representation.
@@ -87,8 +86,7 @@ sealed class Tab(open val type: MusicType) {
             val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
                 L.w(
-                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]"
-                )
+                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
             }
 
             var sequence = 0
@@ -135,8 +133,7 @@ sealed class Tab(open val type: MusicType) {
             val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
                 L.w(
-                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]"
-                )
+                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
             }
 
             // For safety, return null if we have an empty or larger-than-expected tab array.

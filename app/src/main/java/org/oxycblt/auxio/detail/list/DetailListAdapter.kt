@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.detail.list
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.TooltipCompat
@@ -48,7 +49,7 @@ import org.oxycblt.musikr.Music
  */
 abstract class DetailListAdapter(
     private val listener: Listener<*>,
-    private val diffCallback: DiffUtil.ItemCallback<Item>,
+    private val diffCallback: DiffUtil.ItemCallback<Item>
 ) : SelectionIndicatorAdapter<Item, RecyclerView.ViewHolder>(diffCallback) {
 
     override fun getItemViewType(position: Int) =
@@ -145,10 +146,8 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: ViewGroup) =
-            SortHeaderViewHolder(
-                ItemSortHeaderBinding.inflate(parent.context.inflater, parent, false)
-            )
+        fun from(parent: View) =
+            SortHeaderViewHolder(ItemSortHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

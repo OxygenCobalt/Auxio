@@ -49,7 +49,7 @@ class WidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray,
+        appWidgetIds: IntArray
     ) {
         requestUpdate(context)
         // Revert to the default layout for now until we get a response from WidgetComponent.
@@ -61,7 +61,7 @@ class WidgetProvider : AppWidgetProvider() {
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
-        newOptions: Bundle?,
+        newOptions: Bundle?
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
         // Another adaptive layout backport for API 21+: We are unable to immediately update
@@ -97,13 +97,12 @@ class WidgetProvider : AppWidgetProvider() {
             mapOf(
                 SizeF(180f, 48f) to newThinStickLayout(context, state),
                 SizeF(304f, 48f) to newWideStickLayout(context, state),
-                SizeF(180f, 80f) to newThinWaferLayout(context, uiSettings, state),
-                SizeF(304f, 80f) to newWideWaferLayout(context, uiSettings, state),
+                SizeF(180f, 100f) to newThinWaferLayout(context, uiSettings, state),
+                SizeF(304f, 100f) to newWideWaferLayout(context, uiSettings, state),
                 SizeF(180f, 152f) to defaultLayout,
                 SizeF(304f, 152f) to newWideDockedLayout(context, uiSettings, state),
                 SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state),
-                SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state),
-            )
+                SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state))
 
         // This is the order in which we will disable cover art layouts if they exceed the
         // maximum bitmap memory usage. (See the comment in the loop below for more info.)
@@ -126,11 +125,8 @@ class WidgetProvider : AppWidgetProvider() {
                 return
             } catch (e: IllegalArgumentException) {
                 val msg = e.message ?: return
-                if (
-                    !msg.startsWith(
-                        "RemoteViews for widget update exceeds maximum bitmap memory usage"
-                    )
-                ) {
+                if (!msg.startsWith(
+                    "RemoteViews for widget update exceeds maximum bitmap memory usage")) {
                     throw e
                 }
                 // Some android devices on Android 12-14 suffer from a bug where the maximum bitmap
@@ -195,10 +191,12 @@ class WidgetProvider : AppWidgetProvider() {
     private fun newThinWaferLayout(
         context: Context,
         uiSettings: UISettings,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ) =
         newRemoteViews(context, R.layout.widget_wafer_thin)
-            .setupBackground(uiSettings)
+            .setupBackground(
+                uiSettings,
+            )
             .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
             .setupFillingCover(uiSettings)
             .setupTimelineControls(context, state)
@@ -206,10 +204,12 @@ class WidgetProvider : AppWidgetProvider() {
     private fun newWideWaferLayout(
         context: Context,
         uiSettings: UISettings,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ) =
         newRemoteViews(context, R.layout.widget_wafer_wide)
-            .setupBackground(uiSettings)
+            .setupBackground(
+                uiSettings,
+            )
             .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
             .setupFillingCover(uiSettings)
             .setupFullControls(context, state)
@@ -217,40 +217,48 @@ class WidgetProvider : AppWidgetProvider() {
     private fun newThinDockedLayout(
         context: Context,
         uiSettings: UISettings,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ) =
         newRemoteViews(context, R.layout.widget_docked_thin)
-            .setupBar(uiSettings)
+            .setupBar(
+                uiSettings,
+            )
             .setupCover(context, state)
             .setupTimelineControls(context, state)
 
     private fun newWideDockedLayout(
         context: Context,
         uiSettings: UISettings,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ) =
         newRemoteViews(context, R.layout.widget_docked_wide)
-            .setupBar(uiSettings)
+            .setupBar(
+                uiSettings,
+            )
             .setupCover(context, state)
             .setupFullControls(context, state)
 
     private fun newThinPaneLayout(
         context: Context,
         uiSettings: UISettings,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ) =
         newRemoteViews(context, R.layout.widget_pane_thin)
-            .setupBackground(uiSettings)
+            .setupBackground(
+                uiSettings,
+            )
             .setupPlaybackState(context, state)
             .setupTimelineControls(context, state)
 
     private fun newWidePaneLayout(
         context: Context,
         uiSettings: UISettings,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ) =
         newRemoteViews(context, R.layout.widget_pane_wide)
-            .setupBackground(uiSettings)
+            .setupBackground(
+                uiSettings,
+            )
             .setupPlaybackState(context, state)
             .setupFullControls(context, state)
 
@@ -258,7 +266,9 @@ class WidgetProvider : AppWidgetProvider() {
      * Set up the control bar in a [RemoteViews] layout that contains one. This is a kind of
      * "floating" drawable that sits in front of the cover and contains the controls.
      */
-    private fun RemoteViews.setupBar(uiSettings: UISettings): RemoteViews {
+    private fun RemoteViews.setupBar(
+        uiSettings: UISettings,
+    ): RemoteViews {
         // Below API 31, enable a rounded bar only if round mode is enabled.
         // On API 31+, the bar should always be round in order to fit in with other widgets.
         val background =
@@ -275,7 +285,9 @@ class WidgetProvider : AppWidgetProvider() {
      * Set up the background in a [RemoteViews] layout that contains one. This is largely
      * self-explanatory, being a solid-color background that sits behind the cover and controls.
      */
-    private fun RemoteViews.setupBackground(uiSettings: UISettings): RemoteViews {
+    private fun RemoteViews.setupBackground(
+        uiSettings: UISettings,
+    ): RemoteViews {
         // Below API 31, enable a rounded background only if round mode is enabled.
         // On API 31+, the background should always be round in order to fit in with other
         // widgets.
@@ -297,7 +309,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun RemoteViews.setupCover(
         context: Context,
-        state: WidgetComponent.PlaybackState?,
+        state: WidgetComponent.PlaybackState?
     ): RemoteViews {
         if (state == null) {
             setImageViewBitmap(R.id.widget_cover, null)
@@ -309,8 +321,8 @@ class WidgetProvider : AppWidgetProvider() {
             setImageViewBitmap(R.id.widget_cover, state.cover)
             setContentDescription(
                 R.id.widget_cover,
-                context.getString(R.string.desc_album_cover, state.song.album.name.resolve(context)),
-            )
+                context.getString(
+                    R.string.desc_album_cover, state.song.album.name.resolve(context)))
         } else {
             discardCover(context)
         }
@@ -346,7 +358,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun RemoteViews.setupPlaybackState(
         context: Context,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ): RemoteViews {
         setupCover(context, state)
         setTextViewText(R.id.widget_song, state.song.name.resolve(context))
@@ -362,14 +374,13 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun RemoteViews.setupBasicControls(
         context: Context,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ): RemoteViews {
         // Hook the play/pause button to the play/pause broadcast that will be recognized
         // by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_play_pause,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_PLAY_PAUSE),
-        )
+            context.newBroadcastPendingIntent(PlaybackActions.ACTION_PLAY_PAUSE))
 
         // Set up the play/pause button appearance. Like the Android 13 media controls, use
         // a circular FAB when paused, and a squircle FAB when playing. This does require us
@@ -400,7 +411,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun RemoteViews.setupTimelineControls(
         context: Context,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ): RemoteViews {
         // Timeline controls contain the basic controls, set those up
         setupBasicControls(context, state)
@@ -410,12 +421,10 @@ class WidgetProvider : AppWidgetProvider() {
         // by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_skip_prev,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_SKIP_PREV),
-        )
+            context.newBroadcastPendingIntent(PlaybackActions.ACTION_SKIP_PREV))
         setOnClickPendingIntent(
             R.id.widget_skip_next,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_SKIP_NEXT),
-        )
+            context.newBroadcastPendingIntent(PlaybackActions.ACTION_SKIP_NEXT))
         return this
     }
 
@@ -428,7 +437,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun RemoteViews.setupFullControls(
         context: Context,
-        state: WidgetComponent.PlaybackState,
+        state: WidgetComponent.PlaybackState
     ): RemoteViews {
         // Full controls contain timeline controls, make are set those.
         setupTimelineControls(context, state)
@@ -437,12 +446,10 @@ class WidgetProvider : AppWidgetProvider() {
         // be recognized by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_repeat,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_INC_REPEAT_MODE),
-        )
+            context.newBroadcastPendingIntent(PlaybackActions.ACTION_INC_REPEAT_MODE))
         setOnClickPendingIntent(
             R.id.widget_shuffle,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_INVERT_SHUFFLE),
-        )
+            context.newBroadcastPendingIntent(PlaybackActions.ACTION_INVERT_SHUFFLE))
 
         // Set up the repeat/shuffle buttons. When working with RemoteViews, we will
         // need to hard-code different accent tinting configurations, as stateful drawables

@@ -66,7 +66,7 @@ abstract class M3U {
         playlist: Playlist,
         outputStream: OutputStream,
         workingDirectory: Path,
-        config: ExportConfig,
+        config: ExportConfig
     )
 
     companion object {
@@ -143,14 +143,13 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
             else ->
                 listOf(
                     InterpretedPath(Components.parseUnix(path), false),
-                    InterpretedPath(Components.parseWindows(path), true),
-                )
+                    InterpretedPath(Components.parseWindows(path), true))
         }
 
     private fun expandInterpretation(
         path: InterpretedPath,
         workingDirectory: Path,
-        volumes: List<Volume>,
+        volumes: List<Volume>
     ): List<Path> {
         val absoluteInterpretation = Path(workingDirectory.volume, path.components)
         val relativeInterpretation =
@@ -173,7 +172,7 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
         playlist: Playlist,
         outputStream: OutputStream,
         workingDirectory: Path,
-        config: ExportConfig,
+        config: ExportConfig
     ) {
         val writer = outputStream.bufferedWriter()
         // Try to be as compliant to the spec as possible while also cramming it full of extensions
@@ -208,9 +207,9 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
                     if (config.windowsPaths) {
                         // Assume the plain windows C volume, since that's probably where most music
                         // libraries are on a windows PC.
-                        "C:\\\\${song.path.volume.components?.let { it.windowsString + "\\" } ?: ""}${song.path.components.windowsString}"
+                        "C:\\\\${song.path.components.windowsString}"
                     } else {
-                        "/${song.path.volume.components?.let { it.unixString + "/" } ?: ""}${song.path.components.unixString}"
+                        "/${song.path.components.unixString}"
                     }
                 } else {
                     // First need to make this path relative to the working directory of the M3U
@@ -253,11 +252,9 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
         // and them combine them with the correct relative elements to make sure they
         // resolve the same.
         var commonIndex = 0
-        while (
-            commonIndex < components.size &&
-                commonIndex < workingDirectory.components.size &&
-                components[commonIndex] == workingDirectory.components[commonIndex]
-        ) {
+        while (commonIndex < components.size &&
+            commonIndex < workingDirectory.components.size &&
+            components[commonIndex] == workingDirectory.components[commonIndex]) {
             ++commonIndex
         }
 
@@ -270,7 +267,7 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
             }
             commonIndex == components.size -> {
                 // The working directory is deeper in the path, backtrack.
-                for (i in 0..<workingDirectory.components.size - commonIndex) {
+                for (i in 0 ..< workingDirectory.components.size - commonIndex) {
                     relativeComponents = relativeComponents.child("..")
                 }
             }
@@ -281,7 +278,7 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
             }
             else -> {
                 // The paths are siblings. Backtrack and append as needed.
-                for (i in 0..<workingDirectory.components.size - commonIndex) {
+                for (i in 0 ..< workingDirectory.components.size - commonIndex) {
                     relativeComponents = relativeComponents.child("..")
                 }
                 relativeComponents = relativeComponents.child(depth(commonIndex))

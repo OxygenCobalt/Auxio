@@ -120,7 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/lbl_queue"
-                    android:textAppearance="?attr/textAppearanceLabelLargeEmphasized"
+                    android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="@+id/queue_handle"
                     app:layout_constraintEnd_toEndOf="@+id/queue_handle"

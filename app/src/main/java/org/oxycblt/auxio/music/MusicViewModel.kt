@@ -53,7 +53,7 @@ class MusicViewModel
 constructor(
     @ApplicationContext context: Context,
     private val listSettings: ListSettings,
-    private val musicRepository: MusicRepository,
+    private val musicRepository: MusicRepository
 ) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
     private val externalPlaylistManager = ExternalPlaylistManager.from(context)
 
@@ -100,9 +100,7 @@ constructor(
                 library.albums.size,
                 library.artists.size,
                 library.genres.size,
-                library.songs.sumOf { it.durationMs },
-                library.songs.sumOf { it.size },
-            )
+                library.songs.sumOf { it.durationMs })
         L.d("Updated statistics: ${_statistics.value}")
     }
 
@@ -133,7 +131,7 @@ constructor(
     fun createPlaylist(
         name: String? = null,
         songs: List<Song> = listOf(),
-        reason: PlaylistDecision.New.Reason = PlaylistDecision.New.Reason.NEW,
+        reason: PlaylistDecision.New.Reason = PlaylistDecision.New.Reason.NEW
     ) {
         if (name != null) {
             L.d("Creating $name with ${songs.size} songs]")
@@ -191,9 +189,7 @@ constructor(
                                 target,
                                 importedPlaylist.name,
                                 songs,
-                                PlaylistDecision.Rename.Reason.IMPORT,
-                            )
-                        )
+                                PlaylistDecision.Rename.Reason.IMPORT))
                     } else {
                         musicRepository.rewritePlaylist(target, songs)
                         _playlistMessage.put(PlaylistMessage.ImportSuccess)
@@ -201,11 +197,7 @@ constructor(
                 } else {
                     _playlistDecision.put(
                         PlaylistDecision.New(
-                            songs,
-                            importedPlaylist.name,
-                            PlaylistDecision.New.Reason.IMPORT,
-                        )
-                    )
+                            songs, importedPlaylist.name, PlaylistDecision.New.Reason.IMPORT))
                 }
             }
         } else {
@@ -250,7 +242,7 @@ constructor(
         playlist: Playlist,
         name: String? = null,
         applySongs: List<Song> = listOf(),
-        reason: PlaylistDecision.Rename.Reason = PlaylistDecision.Rename.Reason.ACTION,
+        reason: PlaylistDecision.Rename.Reason = PlaylistDecision.Rename.Reason.ACTION
     ) {
         if (name != null) {
             L.d("Renaming $playlist to $name")
@@ -370,8 +362,7 @@ constructor(
         val albums: Int,
         val artists: Int,
         val genres: Int,
-        val durationMs: Long,
-        val totalSizeBytes: Long,
+        val durationMs: Long
     )
 }
 
@@ -395,7 +386,7 @@ sealed interface PlaylistDecision {
         enum class Reason {
             NEW,
             ADD,
-            IMPORT,
+            IMPORT
         }
     }
 
@@ -416,11 +407,11 @@ sealed interface PlaylistDecision {
         val playlist: Playlist,
         val template: String?,
         val applySongs: List<Song>,
-        val reason: Reason,
+        val reason: Reason
     ) : PlaylistDecision {
         enum class Reason {
             ACTION,
-            IMPORT,
+            IMPORT
         }
     }
 

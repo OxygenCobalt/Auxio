@@ -47,7 +47,7 @@ class RoundedRectTransformation(
     @Px private val topLeft: Float = 0f,
     @Px private val topRight: Float = 0f,
     @Px private val bottomLeft: Float = 0f,
-    @Px private val bottomRight: Float = 0f,
+    @Px private val bottomRight: Float = 0f
 ) : Transformation() {
 
     constructor(@Px radius: Float) : this(radius, radius, radius, radius)
@@ -69,8 +69,7 @@ class RoundedRectTransformation(
             createBitmap(
                 outputWidth,
                 outputHeight,
-                requireNotNull(input.config) { "unsupported bitmap format" },
-            )
+                requireNotNull(input.config) { "unsupported bitmap format" })
         output.applyCanvas {
             drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
@@ -81,8 +80,7 @@ class RoundedRectTransformation(
                         srcHeight = input.height,
                         dstWidth = outputWidth,
                         dstHeight = outputHeight,
-                        scale = Scale.FILL,
-                    )
+                        scale = Scale.FILL)
                     .toFloat()
             val dx = (outputWidth - multiplier * input.width) / 2
             val dy = (outputHeight - multiplier * input.height) / 2
@@ -123,8 +121,7 @@ class RoundedRectTransformation(
                 srcHeight = input.height,
                 dstWidth = size.width.pxOrElse { Int.MIN_VALUE },
                 dstHeight = size.height.pxOrElse { Int.MIN_VALUE },
-                scale = Scale.FIT,
-            )
+                scale = Scale.FIT)
         val outputWidth = (multiplier * input.width).roundToInt()
         val outputHeight = (multiplier * input.height).roundToInt()
         return outputWidth to outputHeight

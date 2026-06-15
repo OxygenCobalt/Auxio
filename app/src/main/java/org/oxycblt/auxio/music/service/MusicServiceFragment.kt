@@ -41,24 +41,26 @@ constructor(
     private val invalidator: Invalidator,
     indexingHolderFactory: IndexingHolder.Factory,
     musicBrowserFactory: MusicBrowser.Factory,
-    private val musicRepository: MusicRepository,
+    private val musicRepository: MusicRepository
 ) : MusicBrowser.Invalidator {
     private val indexer = indexingHolderFactory.create(context, foregroundListener)
     private val musicBrowser = musicBrowserFactory.create(context, this)
     private val dispatchJob = Job()
     private val dispatchScope = CoroutineScope(dispatchJob + Dispatchers.Default)
 
+    data class Page(val num: Int, val size: Int)
+
     class Factory
     @Inject
     constructor(
         private val indexingHolderFactory: IndexingHolder.Factory,
         private val musicBrowserFactory: MusicBrowser.Factory,
-        private val musicRepository: MusicRepository,
+        private val musicRepository: MusicRepository
     ) {
         fun create(
             context: Context,
             foregroundListener: ForegroundListener,
-            invalidator: Invalidator,
+            invalidator: Invalidator
         ): MusicServiceFragment =
             MusicServiceFragment(
                 context,
@@ -66,8 +68,7 @@ constructor(
                 invalidator,
                 indexingHolderFactory,
                 musicBrowserFactory,
-                musicRepository,
-            )
+                musicRepository)
     }
 
     interface Invalidator {
@@ -103,13 +104,21 @@ constructor(
     fun getRoot() = BrowserRoot(MediaSessionUID.Tab(TabNode.Root).toString(), Bundle())
 
     fun getItem(mediaId: String, result: Result<MediaItem>) =
-        result.dispatch { musicBrowser.getItem(mediaId) }
+        result.dispatch {
+            musicBrowser.getItem(
+                mediaId,
+            )
+        }
 
-    fun getChildren(mediaId: String, maxTabs: Int, result: Result<MutableList<MediaItem>>) =
-        result.dispatch { musicBrowser.getChildren(mediaId, maxTabs)?.toMutableList() }
+    fun getChildren(
+        mediaId: String,
+        maxTabs: Int,
+        result: Result<MutableList<MediaItem>>,
+        page: Page?
+    ) = result.dispatch { musicBrowser.getChildren(mediaId, maxTabs)?.expose(page) }
 
-    fun search(query: String, result: Result<MutableList<MediaItem>>) =
-        result.dispatchAsync { musicBrowser.search(query) }
+    fun search(query: String, result: Result<MutableList<MediaItem>>, page: Page?) =
+        result.dispatchAsync { musicBrowser.search(query).expose(page) }
 
     private fun <T> Result<T>.dispatch(body: () -> T?) {
         try {
@@ -137,6 +146,17 @@ constructor(
                 L.d("Error while dispatching: $e")
                 sendResult(null)
             }
+        }
+    }
+
+    private fun <T> List<T>.expose(page: Page?): MutableList<T> {
+        if (page == null) return toMutableList()
+        val start = page.num * page.size
+        val end = start + page.size
+        return if (start >= size) {
+            mutableListOf()
+        } else {
+            subList(start, end.coerceAtMost(size)).toMutableList()
         }
     }
 }
