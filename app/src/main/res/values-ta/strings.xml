@@ -10,7 +10,7 @@
     <string name="lbl_track">மின்தடம்</string>
     <string name="lbl_reset">மீட்டமை</string>
     <string name="set_root_title">அமைப்புகள்</string>
-    <string name="set_ui">பாருங்கள் மற்றும் உணருங்கள்</string>
+    <string name="set_ui">பார்த்து உணருங்கள்</string>
     <string name="set_theme_night">இருண்ட</string>
     <string name="set_personalize_desc">இடைமுகம் கட்டுப்பாடுகள் மற்றும் நடத்தை தனிப்பயனாக்கவும்</string>
     <string name="set_action_mode_next">அடுத்து செல்லவும்</string>
@@ -123,8 +123,8 @@
     <string name="lbl_size">அளவு</string>
     <string name="lbl_bitrate">துகள் வீதம்</string>
     <string name="lbl_sample_rate">மாதிரி வீதம்</string>
-    <string name="lbl_replaygain_track">Replaygain மின்தடம் சரிசெய்தல்</string>
-    <string name="lbl_replaygain_album">மறுபதிப்பு ஆல்பம் சரிசெய்தல்</string>
+    <string name="lbl_replaygain_track">ReplayGain டிராக் சரிசெய்தல்</string>
+    <string name="lbl_replaygain_album">ReplayGain ஆல்பம் சரிசெய்தல்</string>
     <string name="lbl_shuffle_shortcut_short">கலக்கு</string>
     <string name="lbl_shuffle_shortcut_long">அனைத்தையும் மாற்றவும்</string>
     <string name="lbl_start_playback">பிளேபேக்கைத் தொடங்குங்கள்</string>
@@ -172,7 +172,7 @@
     <string name="set_theme_day">ஒளி</string>
     <string name="set_accent">வண்ணத் திட்டம்</string>
     <string name="set_black_mode">கருப்பு கருப்பொருள்</string>
-    <string name="set_black_mode_desc">தூய-கருப்பு இருண்ட கருப்பொருளைப் பயன்படுத்தவும்</string>
+    <string name="set_black_mode_desc">தூய கருப்பு இருண்ட கருப்பொருள் பயன்படுத்தவும்</string>
     <string name="set_round_mode">சுற்று பயன்முறை</string>
     <string name="set_round_mode_desc">கூடுதல் இடைமுகம் கூறுகளில் வட்டமான மூலைகளை இயக்கவும் (ஆல்பம் கவர்கள் வட்டமிட வேண்டும்)</string>
     <string name="set_personalize">தனிப்பயனாக்கு</string>
@@ -233,7 +233,7 @@
     <string name="set_pre_amp_without">குறிச்சொற்கள் இல்லாமல் சரிசெய்தல்</string>
     <string name="set_pre_amp_warning">எச்சரிக்கை: முன் ஆம்பை அதிக நேர்மறையான மதிப்புக்கு மாற்றுவது சில ஆடியோ தடங்களில் உயர்ந்தது.</string>
     <string name="set_library">நூலகம்</string>
-    <string name="set_locations">இசை கோப்புறைகள்</string>
+    <string name="set_locations">இசை ஆதாரங்கள்</string>
     <string name="set_locations_desc">இசையை எங்கிருந்து ஏற்ற வேண்டும் என்பதை நிர்வகிக்கவும்</string>
     <string name="set_reindex">இசையைப் புதுப்பிக்கவும்</string>
     <string name="set_repeat_pause">மீண்டும்இயக்கையில் இடைநிறுத்தம்</string>
@@ -270,7 +270,7 @@
     <string name="def_playback">இசை இல்லை</string>
     <string name="cdc_mp3">MPEG-1 ஆடியோ</string>
     <string name="cdc_mp4">MPEG-4 ஆடியோ</string>
-    <string name="cdc_ogg">OGG ஆடியோ</string>
+    <string name="cdc_ogg">ஒசிசி ஒலி</string>
     <string name="cdc_aac">மேம்பட்ட ஆடியோ குறியீட்டு முறை (AAC)</string>
     <string name="cdc_flac">இலவச இழப்பு இல்லாத ஆடியோ கோடெக் (FLAC)</string>
     <string name="clr_red">சிவப்பு</string>
@@ -328,13 +328,25 @@
     <string name="set_grant_storage">சேமிப்பக அணுகல் அவசியம்</string>
     <string name="set_folders_to_load">ஏற்ற வேண்டிய கோப்புறைகள்</string>
     <string name="set_folders_to_ignore">புறக்கணிக்க வேண்டிய கோப்புறைகள்</string>
-    <string name="set_filtered_folders">வடிகட்டிய கோப்புறைகள்</string>
-    <string name="set_filter_mode">வடிகட்டும் முறைகள்</string>
+    <string name="set_filtered_folders">வடிகட்டப்பட்ட கோப்புறைகள்</string>
+    <string name="set_filter_mode">வடிகட்டி முறை</string>
     <string name="set_include">சேர்க்க</string>
     <string name="set_exclude">புறக்கணிக்க</string>
     <string name="set_extra_settings">மேலும் அமைப்புகள்</string>
     <string name="set_fs_cache">கோப்பு முறைமை கேஷே(cache) பயன்படுத்துக</string>
     <string name="set_fs_cache_desc">ஏற்றும் நேரத்தை மேம்படுத்தும், ஆனால் புதிய இசைகள் சேர்வதை தடுக்கலாம்</string>
-    <string name="lbl_no_folders">கோப்புறை இல்லை</string>
-    <string name="desc_add_folder">கோப்புறை சேர்க்கவும்</string>
+    <string name="lbl_no_folders">கோப்புறைகள் இல்லை</string>
+    <string name="desc_add_folder">கோப்புறையைச் சேர்</string>
+    <string name="set_task_exit">எப்போதும் நெருக்கமாக வெளியேறவும்</string>
+    <string name="set_task_exit_desc">விளையாடினாலும், சமீபத்தியவற்றிலிருந்து அகற்றப்படும்போது பிளேபேக்கை நிறுத்துங்கள்</string>
+    <string name="set_saf_multithread">மல்டித்ரெட் கோப்பு ஆய்வு</string>
+    <string name="set_saf_multithread_desc">வேகமானது, ஆனால் சில சாதனங்களில் தோல்வியடையும்</string>
+    <string name="err_share_too_large">இது பகிர முடியாத அளவுக்கு அதிகமாக உள்ளது</string>
+    <string name="err_share_failed">இதைப் பகிர முடியவில்லை</string>
+    <string name="cdc_alac">ஆப்பிள் லாச்லெச் ஆடியோ கோடெக் (ALAC)</string>
+    <string name="fmt_lib_total_size">மொத்த அளவு: %s</string>
+    <plurals name="fmt_seconds">
+        <item quantity="one">%d நொடி</item>
+        <item quantity="other">%d வினாடிகள்</item>
+    </plurals>
 </resources>
