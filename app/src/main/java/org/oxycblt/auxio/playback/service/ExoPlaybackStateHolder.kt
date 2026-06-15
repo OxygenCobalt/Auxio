@@ -500,6 +500,7 @@ class ExoPlaybackStateHolder(
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
             playbackManager.ack(this, StateAck.IndexMoved)
+            deferSave()
         }
     }
 
