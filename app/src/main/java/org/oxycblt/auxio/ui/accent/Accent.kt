@@ -40,7 +40,8 @@ private val accentNames =
         R.string.clr_orange,
         R.string.clr_brown,
         R.string.clr_grey,
-        R.string.clr_dynamic)
+        R.string.clr_dynamic,
+    )
 
 private val accentThemes =
     intArrayOf(
@@ -60,8 +61,8 @@ private val accentThemes =
         R.style.Theme_Auxio_Orange,
         R.style.Theme_Auxio_Brown,
         R.style.Theme_Auxio_Grey,
-        R.style.Theme_Auxio_App // Dynamic colors are on the base theme
-        )
+        R.style.Theme_Auxio_App, // Dynamic colors are on the base theme
+    )
 
 private val accentBlackThemes =
     intArrayOf(
@@ -81,8 +82,8 @@ private val accentBlackThemes =
         R.style.Theme_Auxio_Orange_Black,
         R.style.Theme_Auxio_Brown_Black,
         R.style.Theme_Auxio_Grey_Black,
-        R.style.Theme_Auxio_Black // Dynamic colors are on the base theme
-        )
+        R.style.Theme_Auxio_Black, // Dynamic colors are on the base theme
+    )
 
 private val accentPrimaryColors =
     intArrayOf(
@@ -102,7 +103,8 @@ private val accentPrimaryColors =
         R.color.orange_primary,
         R.color.brown_primary,
         R.color.grey_primary,
-        R.color.dynamic_primary)
+        R.color.dynamic_primary,
+    )
 
 /**
  * The data object for a colored theme to use in the UI. This can be nominally used to gleam some
@@ -116,14 +118,17 @@ class Accent private constructor(val index: Int) {
     /** The name of this [Accent]. */
     val name: Int
         get() = accentNames[index]
+
     /** The theme resource for this accent. */
     val theme: Int
         get() = accentThemes[index]
+
     /**
      * The black theme resource for this accent. Identical to [theme], but with a black background.
      */
     val blackTheme: Int
         get() = accentBlackThemes[index]
+
     /** The accent's primary color. */
     val primary: Int
         get() = accentPrimaryColors[index]

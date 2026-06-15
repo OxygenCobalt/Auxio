@@ -12,7 +12,7 @@ body:
   - type: textarea
     id: desc
     attributes:
-      label: Describe the Bug/Crash
+      label: Describe the bug/crash
       description: Provide a clear and concise description of the issue alongside steps to reproduce it.
       placeholder: |
         1. Go to X
@@ -32,7 +32,7 @@ body:
   - type: dropdown
     id: android-version
     attributes:
-      label: What android version do you use?
+      label: What Android version do you use?
       options:
         - Android 16
         - Android 15

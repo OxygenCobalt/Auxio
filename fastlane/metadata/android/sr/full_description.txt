@@ -1,0 +1,24 @@
+Auxio je lokalni plejer za muziku sa brzim i pouzdanim UI/UX-om, bez mnogih beskorisnih funkcija koje se nalaze u drugim plejerima. Izgrađen na modernim bibliotekama za reprodukciju medija, Auxio ima superiornu podršku za biblioteku i kvalitet slušanja u poređenju sa drugim aplikacijama koje koriste zastarelu Android funkcionalnost. Ukratko, <b>Reprodukuje muziku.</b>
+
+<b>Funkcije</b>
+
+- Reprodukcija zasnovana na Media3 ExoPlayer-u
+- Brz UI izveden iz najnovijih smernica Material Design-a
+- UX koji favorizuje jednostavnost korišćenja nad rubnim slučajevima
+- Prilagodljivo ponašanje
+- Podrška za brojeve diskova, više izvođača, tipove izdanja, precizne/originalne datume, sort tegle i još mnogo toga
+- Napredni sistem izvođača koji ujedinjuje izvođače i album izvođače
+- Upravljanje fasciklama sa podrškom za SD karticu
+- Pouzdana funkcionalnost plejlista
+- Očuvanje stanja reprodukcije
+- Podrška za Android Auto
+- Automatska reprodukcija bez prekida
+- Puna ReplayGain podrška (za MP3, FLAC, OGG, OPUS i MP4 fajlove)
+- Podrška za spoljašnji ekvilajzer (npr. Wavelet)
+- Od ivice do ivice dizajn
+- Podrška za ugrađene omote albuma
+- Funkcija pretrage
+- Automatska reprodukcija sa slušalicama
+- Stilizovani vidžeti koji se automatski prilagođavaju veličini
+- Potpuno privatno i offline
+- Nema zaobljenih omota albuma (ako želite)

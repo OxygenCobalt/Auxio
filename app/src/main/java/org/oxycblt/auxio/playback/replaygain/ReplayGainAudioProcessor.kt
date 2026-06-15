@@ -48,7 +48,7 @@ class ReplayGainAudioProcessor
 @Inject
 constructor(
     private val playbackManager: PlaybackStateManager,
-    private val playbackSettings: PlaybackSettings
+    private val playbackSettings: PlaybackSettings,
 ) : BaseAudioProcessor(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var volume = 1f
         set(value) {
@@ -86,7 +86,7 @@ constructor(
         parent: MusicParent?,
         queue: List<Song>,
         index: Int,
-        isShuffled: Boolean
+        isShuffled: Boolean,
     ) {
         L.d("New playback started, updating playback information")
         applyReplayGain(playbackManager.currentSong)

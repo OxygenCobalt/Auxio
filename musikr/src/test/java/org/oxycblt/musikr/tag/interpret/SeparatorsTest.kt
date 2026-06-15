@@ -36,12 +36,15 @@ class SeparatorsTest {
     fun separators_split_withString_withMultipleChar() {
         assertEquals(
             listOf("a", "b", "c", "d", "e", "f"),
-            Separators.from(",;/+&").split(listOf("a,b;c/d+e&f")))
+            Separators.from(",;/+&").split(listOf("a,b;c/d+e&f")),
+        )
     }
 
     @Test
     fun separators_split_withList_withMultipleChar() {
         assertEquals(
-            listOf("a,b;c/d", "e&f"), Separators.from(",;/+&").split(listOf("a,b;c/d", "e&f")))
+            listOf("a,b;c/d", "e&f"),
+            Separators.from(",;/+&").split(listOf("a,b;c/d", "e&f")),
+        )
     }
 }

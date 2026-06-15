@@ -35,7 +35,7 @@ class AccentGridLayoutManager(
     context: Context,
     attrs: AttributeSet,
     defStyleAttr: Int,
-    defStyleRes: Int
+    defStyleRes: Int,
 ) : GridLayoutManager(context, attrs, defStyleAttr, defStyleRes) {
     // We use 56dp here since that's the rough size of the accent item.
     // This will need to be modified if this is used beyond the accent dialog.

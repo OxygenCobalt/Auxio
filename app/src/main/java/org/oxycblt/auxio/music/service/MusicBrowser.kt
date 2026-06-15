@@ -45,7 +45,7 @@ private constructor(
     private val musicRepository: MusicRepository,
     private val searchEngine: SearchEngine,
     homeGeneratorFactory: HomeGenerator.Factory,
-    detailGeneratorFactory: DetailGenerator.Factory
+    detailGeneratorFactory: DetailGenerator.Factory,
 ) : HomeGenerator.Invalidator, DetailGenerator.Invalidator {
 
     class Factory
@@ -54,7 +54,7 @@ private constructor(
         private val musicRepository: MusicRepository,
         private val searchEngine: SearchEngine,
         private val homeGeneratorFactory: HomeGenerator.Factory,
-        private val detailGeneratorFactory: DetailGenerator.Factory
+        private val detailGeneratorFactory: DetailGenerator.Factory,
     ) {
         fun create(context: Context, invalidator: Invalidator): MusicBrowser =
             MusicBrowser(
@@ -63,7 +63,8 @@ private constructor(
                 musicRepository,
                 searchEngine,
                 homeGeneratorFactory,
-                detailGeneratorFactory)
+                detailGeneratorFactory,
+            )
     }
 
     interface Invalidator {
@@ -130,9 +131,10 @@ private constructor(
     }
 
     fun getChildren(parentId: String, maxTabs: Int): List<MediaItem>? {
-        if (musicRepository.library == null) {
-            return listOf()
-        }
+        // we do not gate by library here since either
+        // - we are loading tabs, which we want to always load in since some head units dont
+        // cope well with sending no tabs then trying to update with tabs
+        // - the downstream code already handles no-library cases
         return getMediaItemList(parentId, maxTabs)
     }
 
@@ -143,7 +145,12 @@ private constructor(
         val library = musicRepository.library ?: return mutableListOf()
         val items =
             SearchEngine.Items(
-                library.songs, library.albums, library.artists, library.genres, library.playlists)
+                library.songs,
+                library.albums,
+                library.artists,
+                library.genres,
+                library.playlists,
+            )
         return searchEngine.search(items, query).toMediaItems()
     }
 
@@ -196,6 +203,7 @@ private constructor(
                 homeGenerator.tabs().drop(maxTabs - 1).map { TabNode.Home(it).toMediaItem(context) }
             }
             is TabNode.Home ->
+                // homeGenerator returns emptyLists
                 when (node.type) {
                     MusicType.SONGS -> homeGenerator.songs().map { it.toMediaItem(context) }
                     MusicType.ALBUMS -> homeGenerator.albums().map { it.toMediaItem(context) }

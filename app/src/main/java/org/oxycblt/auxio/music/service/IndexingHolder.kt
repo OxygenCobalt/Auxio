@@ -47,7 +47,7 @@ private constructor(
     private val playbackManager: PlaybackStateManager,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
 ) :
     MusicRepository.IndexingWorker,
     MusicRepository.IndexingListener,
@@ -59,11 +59,17 @@ private constructor(
         private val playbackManager: PlaybackStateManager,
         private val musicRepository: MusicRepository,
         private val musicSettings: MusicSettings,
-        private val imageLoader: ImageLoader
+        private val imageLoader: ImageLoader,
     ) {
         fun create(context: Context, listener: ForegroundListener) =
             IndexingHolder(
-                context, listener, playbackManager, musicRepository, musicSettings, imageLoader)
+                context,
+                listener,
+                playbackManager,
+                musicRepository,
+                musicSettings,
+                imageLoader,
+            )
     }
 
     private val indexJob = Job()
@@ -75,7 +81,9 @@ private constructor(
         workerContext
             .getSystemServiceCompat(PowerManager::class)
             .newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexingComponent")
+                PowerManager.PARTIAL_WAKE_LOCK,
+                BuildConfig.APPLICATION_ID + ":IndexingComponent",
+            )
     private var trackingJob: Job? = null
 
     fun attach() {
@@ -154,8 +162,10 @@ private constructor(
                 savedState.copy(
                     parent =
                         savedState.parent?.let { musicRepository.find(it.uid) as? MusicParent? },
-                    heap = savedState.heap.map { song -> song?.let { library.findSong(it.uid) } }),
-                true)
+                    heap = savedState.heap.map { song -> song?.let { library.findSong(it.uid) } },
+                ),
+                true,
+            )
         }
     }
 

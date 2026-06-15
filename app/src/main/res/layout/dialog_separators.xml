@@ -21,7 +21,7 @@
             android:paddingStart="@dimen/spacing_medium"
             android:text="@string/set_separators_comma"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:ignore="RtlSymmetry" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
@@ -33,7 +33,7 @@
             android:paddingStart="@dimen/spacing_medium"
             android:text="@string/set_separators_semicolon"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:ignore="RtlSymmetry" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
@@ -45,7 +45,7 @@
             android:paddingStart="@dimen/spacing_medium"
             android:text="@string/set_separators_slash"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:ignore="RtlSymmetry" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
@@ -57,7 +57,7 @@
             android:paddingStart="@dimen/spacing_medium"
             android:text="@string/set_separators_plus"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:ignore="RtlSymmetry" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
@@ -69,7 +69,7 @@
             android:paddingStart="@dimen/spacing_medium"
             android:text="@string/set_separators_and"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:ignore="RtlSymmetry" />
 
         <TextView
@@ -79,7 +79,7 @@
             android:layout_marginTop="@dimen/spacing_mid_large"
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:text="@string/set_separators_warning"
-            android:textAppearance="@style/TextAppearance.Auxio.BodySmall" />
+            android:textAppearance="?attr/textAppearanceBodySmall" />
     </LinearLayout>
 
 

@@ -39,7 +39,8 @@ import org.oxycblt.musikr.Music
 @Database(
     entities = [PlaybackState::class, QueueHeapItem::class, QueueShuffledMappingItem::class],
     version = 38,
-    exportSchema = false)
+    exportSchema = false,
+)
 @TypeConverters(Music.UID.TypeConverters::class)
 abstract class PersistenceDatabase : RoomDatabase() {
     /**
@@ -144,7 +145,7 @@ data class PlaybackState(
     val positionMs: Long,
     val repeatMode: RepeatMode,
     val songUid: Music.UID,
-    val parentUid: Music.UID?
+    val parentUid: Music.UID?,
 )
 
 @Entity data class QueueHeapItem(@PrimaryKey val id: Int, val uid: Music.UID)

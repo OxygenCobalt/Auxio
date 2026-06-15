@@ -21,4 +21,4 @@ Auxio è un lettore musicale locale veloce, con un'interfaccia utente intuitiva 
 - Riproduzione automatica con le cuffie
 - Widget eleganti che si adattano automaticamente alle loro dimensioni
 - Completamente privato e offline
-- Nessuna copertura arrotondata degli album (se non desiderato)
+- Copertine degli album non arrotondate (se non le desiderate)

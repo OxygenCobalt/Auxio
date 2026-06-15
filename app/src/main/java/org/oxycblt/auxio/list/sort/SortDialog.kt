@@ -22,8 +22,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButtonToggleGroup
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSortBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
@@ -31,9 +29,7 @@ import org.oxycblt.auxio.ui.ViewBindingBottomSheetDialogFragment
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 abstract class SortDialog :
-    ViewBindingBottomSheetDialogFragment<DialogSortBinding>(),
-    ClickableListListener<Sort.Mode>,
-    MaterialButtonToggleGroup.OnButtonCheckedListener {
+    ViewBindingBottomSheetDialogFragment<DialogSortBinding>(), ClickableListListener<Sort.Mode> {
     private val modeAdapter = SortModeAdapter(@Suppress("LeakingThis") this)
 
     abstract fun getInitialSort(): Sort?
@@ -53,12 +49,13 @@ abstract class SortDialog :
             insets
         }
         binding.sortModeRecycler.adapter = modeAdapter
-        binding.sortDirectionGroup.addOnButtonCheckedListener(this)
         binding.sortCancel.setOnClickListener { dismiss() }
         binding.sortSave.setOnClickListener {
             applyChosenSort(requireNotNull(getCurrentSort()))
             dismiss()
         }
+        binding.sortDirectionAsc.setOnClickListener { updateDirection(Sort.Direction.ASCENDING) }
+        binding.sortDirectionDsc.setOnClickListener { updateDirection(Sort.Direction.DESCENDING) }
 
         // --- STATE SETUP ---
         modeAdapter.update(getModeChoices(), UpdateInstructions.Diff)
@@ -66,19 +63,9 @@ abstract class SortDialog :
         val initial = getInitialSort()
         if (initial != null) {
             modeAdapter.setSelected(initial.mode)
-            val directionId =
-                when (initial.direction) {
-                    Sort.Direction.ASCENDING -> R.id.sort_direction_asc
-                    Sort.Direction.DESCENDING -> R.id.sort_direction_dsc
-                }
-            binding.sortDirectionGroup.check(directionId)
+            updateDirection(initial.direction)
         }
         updateButtons()
-    }
-
-    override fun onDestroyBinding(binding: DialogSortBinding) {
-        super.onDestroyBinding(binding)
-        binding.sortDirectionGroup.removeOnButtonCheckedListener(this)
     }
 
     override fun onClick(item: Sort.Mode, viewHolder: RecyclerView.ViewHolder) {
@@ -86,11 +73,10 @@ abstract class SortDialog :
         updateButtons()
     }
 
-    override fun onButtonChecked(
-        group: MaterialButtonToggleGroup?,
-        checkedId: Int,
-        isChecked: Boolean
-    ) {
+    private fun updateDirection(direction: Sort.Direction) {
+        val binding = requireBinding()
+        binding.sortDirectionAsc.isChecked = direction == Sort.Direction.ASCENDING
+        binding.sortDirectionDsc.isChecked = direction == Sort.Direction.DESCENDING
         updateButtons()
     }
 
@@ -100,14 +86,12 @@ abstract class SortDialog :
     }
 
     private fun getCurrentSort(): Sort? {
+        val binding = requireBinding()
         val initial = getInitialSort()
         val mode = modeAdapter.currentMode ?: return null
         val direction =
-            when (requireBinding().sortDirectionGroup.checkedButtonId) {
-                R.id.sort_direction_asc -> Sort.Direction.ASCENDING
-                R.id.sort_direction_dsc -> Sort.Direction.DESCENDING
-                else -> return null
-            }
+            if (binding.sortDirectionAsc.isChecked) Sort.Direction.ASCENDING
+            else Sort.Direction.DESCENDING
         return Sort(mode, direction)
     }
 }

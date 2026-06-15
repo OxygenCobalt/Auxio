@@ -54,7 +54,8 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
                         ShapeAppearanceModel.builder(
                                 context,
                                 R.style.ShapeAppearance_Auxio_BottomSheet,
-                                MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                                MR.style.ShapeAppearanceOverlay_Material3_Corner_Top,
+                            )
                             .build()
                     } else {
                         ShapeAppearanceModel.Builder().build()
@@ -85,7 +86,9 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
                 MaterialShapeDrawable(sheetBackgroundDrawable.shapeAppearanceModel).apply {
                     fillColor = sheetBackgroundDrawable.fillColor
                 },
-                sheetBackgroundDrawable))
+                sheetBackgroundDrawable,
+            )
+        )
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
         super.applyWindowInsets(child, insets)
@@ -94,6 +97,10 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
         val bars = insets.systemBarInsetsCompat
         expandedOffset = bars.top
         return insets.replaceSystemBarInsetsCompat(
-            bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
+            bars.left,
+            bars.top,
+            bars.right,
+            expandedOffset + bars.bottom,
+        )
     }
 }

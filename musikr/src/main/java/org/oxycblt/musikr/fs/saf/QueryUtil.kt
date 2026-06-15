@@ -46,7 +46,7 @@ internal fun ContentResolver.safeQuery(
     uri: Uri,
     projection: Array<out String>,
     selector: String? = null,
-    args: Array<String>? = null
+    args: Array<String>? = null,
 ) = requireNotNull(query(uri, projection, selector, args, null)) { "ContentResolver query failed" }
 
 /**
@@ -68,5 +68,5 @@ internal inline fun <reified R> ContentResolver.useQuery(
     projection: Array<out String>,
     selector: String? = null,
     args: Array<String>? = null,
-    block: (Cursor) -> R
+    block: (Cursor) -> R,
 ) = safeQuery(uri, projection, selector, args).use(block)

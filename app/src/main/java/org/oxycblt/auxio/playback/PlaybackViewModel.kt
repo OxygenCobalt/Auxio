@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.list.ListSettings
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackCommand
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -104,6 +105,15 @@ constructor(
     val openPanel: Event<OpenPanel>
         get() = _openPanel
 
+    private val _pagerQueue = MutableStateFlow(PagerQueue(listOf(), 0))
+    /** The current queue in a special bundled format suitable for the cover ViewPager2. */
+    val pagerQueue: StateFlow<PagerQueue> = _pagerQueue
+
+    private val _pagerCommand = MutableEvent<PagerCommand>()
+    /** Specialized ViewPager2-friendly queue commands */
+    val pagerCommand: Event<PagerCommand>
+        get() = _pagerCommand
+
     private val _playbackDecision = MutableEvent<PlaybackDecision>()
     /**
      * A [PlaybackDecision] command that is awaiting a view capable of responding to it. Null if
@@ -130,7 +140,11 @@ constructor(
 
     override fun onIndexMoved(index: Int) {
         L.d("Index moved, updating current song")
+        _positionDs.value = playbackManager.progression.calculateElapsedPositionMs().msToDs()
         _song.value = playbackManager.currentSong
+
+        _pagerCommand.put(PagerCommand(update = null, scroll = index))
+        _pagerQueue.value = _pagerQueue.value.copy(index = index)
     }
 
     override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
@@ -139,23 +153,37 @@ constructor(
             L.d("Queue changed, updating current song")
             _song.value = playbackManager.currentSong
         }
+
+        _pagerCommand.put(
+            PagerCommand(
+                update = change.instructions,
+                scroll = index.takeIf { change.type != QueueChange.Type.MAPPING },
+            )
+        )
+        _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }
 
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
         L.d("Queue completely changed, updating current song")
         _isShuffled.value = isShuffled
+
+        _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
+        _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }
 
     override fun onNewPlayback(
         parent: MusicParent?,
         queue: List<Song>,
         index: Int,
-        isShuffled: Boolean
+        isShuffled: Boolean,
     ) {
         L.d("New playback started, updating playback information")
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
+
+        _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
+        _pagerQueue.value = PagerQueue(queue = queue, index = index)
     }
 
     override fun onProgressionChanged(progression: Progression) {
@@ -242,7 +270,8 @@ constructor(
         playbackManager.play(
             requireNotNull(commandFactory.song(song, shuffle)) {
                 "Invalid playback parameters [$song $shuffle]"
-            })
+            }
+        )
     }
 
     private fun playFromAllImpl(song: Song?, shuffle: ShuffleMode) {
@@ -268,7 +297,8 @@ constructor(
             return
         }
         L.d(
-            "Cannot use given artist parameter for $song [$artist from ${song.artists}], showing choice dialog")
+            "Cannot use given artist parameter for $song [$artist from ${song.artists}], showing choice dialog"
+        )
         startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
     }
 
@@ -279,7 +309,8 @@ constructor(
             return
         }
         L.d(
-            "Cannot use given genre parameter for $song [$genre from ${song.genres}], showing choice dialog")
+            "Cannot use given genre parameter for $song [$genre from ${song.genres}], showing choice dialog"
+        )
         startPlaybackDecision(PlaybackDecision.PlayFromArtist(song))
     }
 
@@ -425,7 +456,7 @@ constructor(
     }
 
     /** Step back by 10 seconds in the current song. */
-    fun stepBack() {
+    fun stepBackwards() {
         L.d("Stepping back 10 seconds")
         val currentPositionMs = playbackManager.progression.calculateElapsedPositionMs()
         val newPositionMs = (currentPositionMs - 10000).coerceAtLeast(0)
@@ -438,7 +469,8 @@ constructor(
         val currentPositionMs = playbackManager.progression.calculateElapsedPositionMs()
         val currentSong = playbackManager.currentSong
         if (currentSong != null) {
-            val newPositionMs = (currentPositionMs + 10000).coerceAtMost(currentSong.durationMs)
+            val newPositionMs =
+                (currentPositionMs + STEP_INCREMENT).coerceAtMost(currentSong.durationMs)
             playbackManager.seekTo(newPositionMs)
         }
     }
@@ -623,7 +655,15 @@ constructor(
         }
         _openPanel.put(panel)
     }
+
+    private companion object {
+        private const val STEP_INCREMENT = 10000 // ms
+    }
 }
+
+data class PagerQueue(val queue: List<Song>, val index: Int)
+
+data class PagerCommand(val update: UpdateInstructions?, val scroll: Int?)
 
 /**
  * Command for controlling the main playback panel UI.
@@ -639,7 +679,7 @@ enum class OpenPanel {
      * Open the queue panel, assuming that it exists in the current layout, is collapsed, and with
      * the playback panel already being expanded. Do nothing if these conditions are not met.
      */
-    QUEUE
+    QUEUE,
 }
 
 /**
@@ -650,8 +690,10 @@ enum class OpenPanel {
 sealed interface PlaybackDecision {
     /** The [Song] currently attempting to be played from. */
     val song: Song
+
     /** Navigate to a dialog to determine which [Artist] a [Song] should be played from. */
     class PlayFromArtist(override val song: Song) : PlaybackDecision
+
     /** Navigate to a dialog to determine which [Genre] a [Song] should be played from. */
     class PlayFromGenre(override val song: Song) : PlaybackDecision
 }

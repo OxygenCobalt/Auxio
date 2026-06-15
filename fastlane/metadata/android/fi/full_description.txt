@@ -1,4 +1,4 @@
-Auxio on paikallinen musiikkisoitin, jossa on nopea ja luotettava käyttöliittymä/UX ilman monia hyödyttömiä ominaisuuksia, joita muissa musiikkisoittimissa on. Nykyaikaisista mediatoistokirjastoista rakennetussa Auxiossa on ylivertainen kirjastotuki ja kuuntelulaatu verrattuna muihin sovelluksiin, jotka käyttävät vanhentuneita Android-toimintoja. Lyhyesti sanottuna <b>Se soittaa musiikkia.</b>
+Auxio on paikallinen musiikkisoitin, jossa on nopea ja luotettava käyttöliittymä/UX ilman monia hyödyttömiä ominaisuuksia, joita muissa musiikkisoittimissa on. Nykyaikaisista mediatoistokirjastoista rakennetussa Auxiossa on ylivertainen kirjastotuki ja kuuntelulaatu verrattuna muihin sovelluksiin, jotka käyttävät vanhentuneita Android-toimintoja. Lyhyesti sanottuna, <b>se soittaa musiikkia.</b>
 
 <b>Ominaisuudet</b>
 
@@ -6,12 +6,12 @@ Auxio on paikallinen musiikkisoitin, jossa on nopea ja luotettava käyttöliitty
 - Näppärä käyttöliittymä, joka on johdettu uusimmista materiaalisuunnittelun ohjeista
 - Mielipiteen mukainen UX, joka asettaa helppokäyttöisyyden etusijalle reunakoteloiden sijaan
 - Muokattava käyttäytyminen
-- Tuki levynumeroille, useille esittäjille, julkaisutyypeille, tarkille/alkuperäisille päivämäärille, lajittelutunnisteille ja muille
-- Kehittynyt artistijärjestelmä, joka yhdistää artistit ja albumin artistit
+- Tuki levynumeroille, useille esittäjille, julkaisutyypeille, tarkoille/alkuperäisille päivämäärille, lajittelutunnisteille ja muille ominaisuuksille
+- Kehittynyt artistijärjestelmä, joka yhdistää kappaleiden sekä albumeiden artistit
 - SD-korttitietoinen kansionhallinta
 - Luotettava soittolistatoiminto
 - Toistotilan pysyvyys
-- Android automaattinen tuki
+- Android Auto -tuki
 - Automaattinen välitön toisto
 - Täysi ReplayGain-tuki (MP3-, FLAC-, OGG-, OPUS- ja MP4-tiedostoissa)
 - Ulkoisen taajuuskorjaimen tuki (esim. Wavelet)
@@ -20,5 +20,5 @@ Auxio on paikallinen musiikkisoitin, jossa on nopea ja luotettava käyttöliitty
 - Hakutoiminto
 - Kuulokkeiden automaattinen toisto
 - Tyylikkäät vimpaimet, jotka mukautuvat automaattisesti kokoonsa
-- Täysin yksityinen ja ei-verkkotilassa
+- Täysin yksityinen ja toimii täysin offline-tilassa
 - Ei pyöristettyjä albumin kansia (jos haluat ne)

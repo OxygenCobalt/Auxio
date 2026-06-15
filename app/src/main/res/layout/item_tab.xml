@@ -22,7 +22,7 @@
         android:focusable="false"
         android:paddingStart="@dimen/spacing_medium"
         android:textAlignment="viewStart"
-        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
         tools:ignore="RtlSymmetry,contentDescription"
         tools:text="Artists" />
 

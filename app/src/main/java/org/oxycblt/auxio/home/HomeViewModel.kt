@@ -50,7 +50,7 @@ class HomeViewModel
 constructor(
     private val listSettings: ListSettings,
     private val playbackSettings: PlaybackSettings,
-    homeGeneratorFactory: HomeGenerator.Factory
+    homeGeneratorFactory: HomeGenerator.Factory,
 ) : ViewModel(), HomeGenerator.Invalidator {
     private val _songList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */

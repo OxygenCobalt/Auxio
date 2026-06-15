@@ -23,6 +23,7 @@ import org.oxycblt.auxio.music.MusicType
 
 sealed class TabNode {
     abstract val id: String
+    abstract val microId: String
     abstract val nameRes: Int
     abstract val bitmapRes: Int?
 
@@ -30,6 +31,7 @@ sealed class TabNode {
 
     data object Root : TabNode() {
         override val id = "root"
+        override val microId: String = "tt"
         override val nameRes = R.string.info_app_name
         override val bitmapRes = null
 
@@ -38,12 +40,22 @@ sealed class TabNode {
 
     data object More : TabNode() {
         override val id = "more"
+        override val microId: String = "tm"
         override val nameRes = R.string.lbl_more
         override val bitmapRes = R.drawable.ic_more_bitmap_24
     }
 
     data class Home(val type: MusicType) : TabNode() {
         override val id = "$ID/${type.intCode}"
+        override val microId: String =
+            "t${
+            when (type) {
+                MusicType.SONGS -> 's'
+                MusicType.ALBUMS -> 'a'
+                MusicType.ARTISTS -> 'r'
+                MusicType.GENRES -> 'g'
+                MusicType.PLAYLISTS -> 'p'
+            }}"
         override val bitmapRes: Int
             get() =
                 when (type) {
@@ -63,6 +75,19 @@ sealed class TabNode {
 
     companion object {
         fun fromString(str: String): TabNode? {
+            if (str.startsWith("t")) {
+                // new compressed id format
+                return when (str.getOrNull(1)) {
+                    't' -> Root
+                    'm' -> More
+                    's' -> Home(MusicType.SONGS)
+                    'a' -> Home(MusicType.ALBUMS)
+                    'r' -> Home(MusicType.ARTISTS)
+                    'g' -> Home(MusicType.GENRES)
+                    'p' -> Home(MusicType.PLAYLISTS)
+                    else -> null
+                }
+            }
             return when {
                 str == Root.id -> Root
                 str == More.id -> More

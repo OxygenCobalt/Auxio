@@ -93,7 +93,7 @@ interface Settings<Listener> {
 
         final override fun onSharedPreferenceChanged(
             sharedPreferences: SharedPreferences,
-            key: String?
+            key: String?,
         ) {
             // FIXME: Settings initialization firing the listener.
             L.d("Dispatching settings change $key")

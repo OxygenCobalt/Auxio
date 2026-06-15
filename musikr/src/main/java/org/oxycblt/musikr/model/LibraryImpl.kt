@@ -34,7 +34,7 @@ internal data class LibraryImpl(
     override val genres: Set<GenreImpl>,
     override val playlists: Set<PlaylistImpl>,
     private val storedPlaylists: StoredPlaylists,
-    private val playlistInterpreter: PlaylistInterpreter
+    private val playlistInterpreter: PlaylistInterpreter,
 ) : MutableLibrary {
     private val songUidMap = songs.associateBy { it.uid }
     private val v400SongUidMap = songs.associateBy { it.v400Uid }
@@ -116,6 +116,6 @@ internal data class LibraryImpl(
 
     private class NewPlaylistCore(
         override val prePlaylist: PrePlaylistInfo,
-        override val songs: List<Song>
+        override val songs: List<Song>,
     ) : PlaylistCore
 }

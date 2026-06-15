@@ -40,7 +40,8 @@ private constructor(
     private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
-    private val widgetComponent: WidgetComponent
+    private val widgetComponent: WidgetComponent,
+    private val onExitRequested: () -> Unit,
 ) : BroadcastReceiver() {
     private var initialHeadsetPlugEventHandled = false
 
@@ -48,16 +49,30 @@ private constructor(
     @Inject
     constructor(
         private val playbackManager: PlaybackStateManager,
-        private val playbackSettings: PlaybackSettings
+        private val playbackSettings: PlaybackSettings,
     ) {
-        fun create(context: Context, widgetComponent: WidgetComponent) =
-            SystemPlaybackReceiver(context, playbackManager, playbackSettings, widgetComponent)
+        fun create(
+            context: Context,
+            widgetComponent: WidgetComponent,
+            onExitRequested: () -> Unit,
+        ) =
+            SystemPlaybackReceiver(
+                context,
+                playbackManager,
+                playbackSettings,
+                widgetComponent,
+                onExitRequested,
+            )
     }
 
     @Suppress("WrongConstant")
     fun attach() {
         ContextCompat.registerReceiver(
-            context, this, INTENT_FILTER, ContextCompat.RECEIVER_EXPORTED)
+            context,
+            this,
+            INTENT_FILTER,
+            ContextCompat.RECEIVER_EXPORTED,
+        )
     }
 
     fun release() {
@@ -112,7 +127,7 @@ private constructor(
             }
             PlaybackActions.ACTION_EXIT -> {
                 L.d("Received exit event")
-                playbackManager.endSession()
+                onExitRequested()
             }
             WidgetProvider.ACTION_WIDGET_UPDATE -> {
                 L.d("Received widget update event")
@@ -125,9 +140,11 @@ private constructor(
         // ACTION_HEADSET_PLUG will fire when this BroadcastReceiver is initially attached,
         // which would result in unexpected playback. Work around it by dropping the first
         // call to this function, which should come from that Intent.
-        if (playbackSettings.headsetAutoplay &&
-            playbackManager.currentSong != null &&
-            initialHeadsetPlugEventHandled) {
+        if (
+            playbackSettings.headsetAutoplay &&
+                playbackManager.currentSong != null &&
+                initialHeadsetPlugEventHandled
+        ) {
             L.d("Device connected, resuming")
             playbackManager.playing(true)
         }

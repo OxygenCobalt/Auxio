@@ -17,13 +17,6 @@
             app:key="@string/set_key_bar_action"
             app:title="@string/set_bar_action" />
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
-            app:defaultValue="@integer/action_mode_repeat"
-            app:entries="@array/entries_notif_action"
-            app:entryValues="@array/values_notif_action"
-            app:key="@string/set_key_notif_action"
-            app:title="@string/set_notif_action" />
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/set_behavior">
@@ -49,6 +42,12 @@
             app:key="@string/set_key_keep_shuffle"
             app:summary="@string/set_keep_shuffle_desc"
             app:title="@string/set_keep_shuffle" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="@string/set_key_task_exit"
+            app:summary="@string/set_task_exit_desc"
+            app:title="@string/set_task_exit" />
 
     </PreferenceCategory>
 

@@ -70,7 +70,8 @@ interface Musikr {
                 config,
                 ExploreStep.from(context, config),
                 ExtractStep.from(context, config),
-                EvaluateStep.new(context, config, config.interpretation))
+                EvaluateStep.new(context, config, config.interpretation),
+            )
     }
 }
 
@@ -110,7 +111,7 @@ private class MusikrImpl(
     private val config: Config,
     private val exploreStep: ExploreStep,
     private val extractStep: ExtractStep,
-    private val evaluateStep: EvaluateStep
+    private val evaluateStep: EvaluateStep,
 ) : Musikr {
     override suspend fun run(onProgress: suspend (IndexingProgress) -> Unit) = coroutineScope {
         onProgress(IndexingProgress.Songs(0, 0))

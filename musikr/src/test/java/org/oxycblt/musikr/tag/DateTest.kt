@@ -27,7 +27,8 @@ class DateTest {
     fun date_equals_varyingPrecision() {
         assertTrue(
             requireNotNull(Date.from("2016-08-16T00:01:02")) !=
-                requireNotNull(Date.from("2016-08-16")))
+                requireNotNull(Date.from("2016-08-16"))
+        )
     }
 
     @Test
@@ -48,10 +49,7 @@ class DateTest {
     fun date_compareTo_varyingPrecision() {
         val a = requireNotNull(Date.from("2016-08-16T00:01:02"))
         val b = requireNotNull(Date.from("2016-08-16"))
-        assertEquals(
-            1,
-            a.compareTo(b),
-        )
+        assertEquals(1, a.compareTo(b))
     }
 
     @Test

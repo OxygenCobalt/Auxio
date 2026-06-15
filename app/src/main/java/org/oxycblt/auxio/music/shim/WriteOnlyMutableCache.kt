@@ -19,23 +19,23 @@
 package org.oxycblt.auxio.music.shim
 
 import org.oxycblt.musikr.cache.CacheResult
-import org.oxycblt.musikr.cache.CachedSong
+import org.oxycblt.musikr.cache.CachedFile
 import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.fs.File
 
 class WriteOnlyMutableCache(private val inner: MutableCache) : MutableCache {
     override suspend fun read(file: File): CacheResult {
         return when (val result = inner.read(file)) {
-            is CacheResult.Hit -> CacheResult.Stale(file, result.song.addedMs)
+            is CacheResult.Hit -> CacheResult.Stale(file, result.file.addedMs)
             else -> result
         }
     }
 
-    override suspend fun write(cachedSong: CachedSong) {
-        inner.write(cachedSong)
+    override suspend fun write(cachedFile: CachedFile) {
+        inner.write(cachedFile)
     }
 
-    override suspend fun cleanup(excluding: List<CachedSong>) {
+    override suspend fun cleanup(excluding: List<CachedFile>) {
         inner.cleanup(excluding)
     }
 }

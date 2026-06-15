@@ -71,7 +71,7 @@ constructor(private val listSettings: ListSettings, private val musicRepository:
 private class DetailGeneratorImpl(
     private val invalidator: DetailGenerator.Invalidator,
     private val listSettings: ListSettings,
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
 ) : DetailGenerator, MusicRepository.UpdateListener, ListSettings.Listener {
     override fun attach() {
         listSettings.registerListener(this)
@@ -225,7 +225,7 @@ sealed interface DetailSection {
             DEMOS(R.string.lbl_demos),
             APPEARANCES(R.string.lbl_appears_on),
             LIVE(R.string.lbl_live_group),
-            REMIXES(R.string.lbl_remix_group)
+            REMIXES(R.string.lbl_remix_group),
         }
     }
 

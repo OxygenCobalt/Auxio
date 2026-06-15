@@ -38,7 +38,6 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
@@ -60,6 +59,8 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
 
     override fun getDetailListAdapter() = genreListAdapter
 
+    override fun getToolbarParent() = detailModel.currentGenre.value
+
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
@@ -74,7 +75,11 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback,
+        )
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
@@ -83,6 +88,14 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.genreSongInstructions.consume()
+    }
+
+    override fun onPlayParent(parent: Genre) {
+        playbackModel.play(parent)
+    }
+
+    override fun onShuffleParent(parent: Genre) {
+        playbackModel.shuffle(parent)
     }
 
     override fun onRealClick(item: Music) {
@@ -94,7 +107,8 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
     }
 
     override fun onOpenParentMenu() {
-        listModel.openMenu(R.menu.detail_parent, unlikelyToBeNull(detailModel.currentGenre.value))
+        val genre = detailModel.currentGenre.value ?: return
+        listModel.openMenu(R.menu.detail_parent, genre)
     }
 
     override fun onOpenMenu(item: Music) {
@@ -118,7 +132,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
         val binding = requireBinding()
         val context = requireContext()
         val name = genre.name.resolve(context)
-        binding.detailToolbarTitle.text = name
+        binding.detailNormalToolbar.title = name
         binding.detailCover.bind(genre)
         binding.detailType.text = context.getString(R.string.lbl_genre)
         binding.detailName.text = genre.name.resolve(context)
@@ -129,21 +143,16 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
             context.getString(
                 R.string.fmt_two,
                 context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
-                context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
-        binding.detailPlayButton?.setOnClickListener {
-            playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
-        }
-        binding.detailToolbarPlay.setOnClickListener {
-            playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
-        }
-        binding.detailShuffleButton?.setOnClickListener {
-            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
-        }
-        binding.detailToolbarShuffle.setOnClickListener {
-            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
-        }
+                context.getPlural(R.plurals.fmt_song_count, genre.songs.size),
+            )
+        binding.detailPlayButton?.setOnClickListener { playbackModel.play(genre) }
+        binding.detailShuffleButton?.setOnClickListener { playbackModel.shuffle(genre) }
+        setToolbarPlaybackButtonsEnabled(true)
         updatePlayback(
-            playbackModel.song.value, playbackModel.parent.value, playbackModel.isPlaying.value)
+            playbackModel.song.value,
+            playbackModel.parent.value,
+            playbackModel.isPlaying.value,
+        )
     }
 
     private fun updateList(list: List<Item>) {
@@ -234,7 +243,8 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     GenreDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
+                        decision.songs.map { it.uid }.toTypedArray()
+                    )
                 }
                 is PlaylistDecision.New,
                 is PlaylistDecision.Import,
@@ -252,7 +262,7 @@ class GenreDetailFragment : DetailFragment<Genre, Music>() {
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        val currentGenre = unlikelyToBeNull(detailModel.currentGenre.value)
+        val currentGenre = detailModel.currentGenre.value ?: return
         val playingItem =
             when (parent) {
                 // Always highlight a playing artist if it's from this genre, and if the currently

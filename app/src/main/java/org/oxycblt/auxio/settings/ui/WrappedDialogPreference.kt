@@ -34,5 +34,5 @@ constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = androidx.preference.R.attr.dialogPreferenceStyle,
-    defStyleRes: Int = 0
+    defStyleRes: Int = 0,
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes)

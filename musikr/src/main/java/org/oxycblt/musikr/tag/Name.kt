@@ -90,8 +90,10 @@ class Token internal constructor(internal val collationKey: CollationKey, intern
 
         // Numeric strings must be ordered by magnitude, thus immediately short-circuit
         // the comparison if the lengths do not match.
-        if (type == Type.NUMERIC &&
-            collationKey.sourceString.length != other.collationKey.sourceString.length) {
+        if (
+            type == Type.NUMERIC &&
+                collationKey.sourceString.length != other.collationKey.sourceString.length
+        ) {
             return collationKey.sourceString.length - other.collationKey.sourceString.length
         }
 
@@ -103,12 +105,12 @@ class Token internal constructor(internal val collationKey: CollationKey, intern
         /** Compare as a digit string, like "65". */
         NUMERIC,
         /** Compare as a standard alphanumeric string, like "65daysofstatic" */
-        LEXICOGRAPHIC
+        LEXICOGRAPHIC,
     }
 }
 
 enum class Placeholder {
     ALBUM,
     ARTIST,
-    GENRE
+    GENRE,
 }

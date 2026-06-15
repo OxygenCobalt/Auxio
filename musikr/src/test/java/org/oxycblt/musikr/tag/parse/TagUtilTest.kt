@@ -73,7 +73,9 @@ class TagUtilTest {
     @Test
     fun correctWhitespace_listOopsAllWhitespace() {
         assertEquals(
-            listOf("tcp phagocyte"), listOf("      ", "", "  tcp phagocyte").correctWhitespace())
+            listOf("tcp phagocyte"),
+            listOf("      ", "", "  tcp phagocyte").correctWhitespace(),
+        )
     }
 
     @Test
@@ -117,14 +119,16 @@ class TagUtilTest {
     fun parseId3v2Genre_multi() {
         assertEquals(
             listOf("Post-Rock", "Shoegaze", "Glitch"),
-            listOf("Post-Rock", "Shoegaze", "Glitch").parseId3GenreNames())
+            listOf("Post-Rock", "Shoegaze", "Glitch").parseId3GenreNames(),
+        )
     }
 
     @Test
     fun parseId3v2Genre_multiId3v1() {
         assertEquals(
             listOf("Post-Rock", "Shoegaze", "Glitch"),
-            listOf("176", "178", "Glitch").parseId3GenreNames())
+            listOf("176", "178", "Glitch").parseId3GenreNames(),
+        )
     }
 
     @Test
@@ -136,7 +140,8 @@ class TagUtilTest {
     fun parseId3v2Genre_singleId3v23() {
         assertEquals(
             listOf("Post-Rock", "Shoegaze", "Remix", "Cover", "Glitch"),
-            listOf("(176)(178)(RX)(CR)Glitch").parseId3GenreNames())
+            listOf("(176)(178)(RX)(CR)Glitch").parseId3GenreNames(),
+        )
     }
 
     @Test

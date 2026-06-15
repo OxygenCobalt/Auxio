@@ -117,7 +117,9 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() {
             val mode =
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_locations_mode), IntegerTable.LOCATION_MODE_SAF)
+                    getString(R.string.set_key_locations_mode),
+                    IntegerTable.LOCATION_MODE_SAF,
+                )
             return LocationMode.fromInt(mode) ?: LocationMode.SAF
         }
         set(value) {
@@ -131,24 +133,34 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() {
             val locations =
                 unlikelyToBeNull(
-                        sharedPreferences.getString(
-                            getString(R.string.set_key_music_locations), ""))
+                        sharedPreferences.getString(getString(R.string.set_key_music_locations), "")
+                    )
                     .toOpenedLocations()
             val excludedLocations =
                 unlikelyToBeNull(
                         sharedPreferences.getString(
-                            getString(R.string.set_key_excluded_locations), ""))
+                            getString(R.string.set_key_excluded_locations),
+                            "",
+                        )
+                    )
                     .toUnopenedLocations()
             val withHidden =
                 sharedPreferences.getBoolean(getString(R.string.set_key_with_hidden), false)
+            val multithread =
+                sharedPreferences.getBoolean(getString(R.string.set_key_saf_multithread), true)
             return SAF.Query(
-                source = locations, exclude = excludedLocations, withHidden = withHidden)
+                source = locations,
+                exclude = excludedLocations,
+                withHidden = withHidden,
+                multithread = multithread,
+            )
         }
         set(value) {
             sharedPreferences.edit {
                 putString(getString(R.string.set_key_music_locations), value.source.stringify())
                 putString(getString(R.string.set_key_excluded_locations), value.exclude.stringify())
                 putBoolean(getString(R.string.set_key_with_hidden), value.withHidden)
+                putBoolean(context.getString(R.string.set_key_saf_multithread), value.multithread)
                 apply()
             }
         }
@@ -157,11 +169,16 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
         get() {
             val filterMode =
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_filter_mode), IntegerTable.FILTER_MODE_EXCLUDE)
+                    getString(R.string.set_key_filter_mode),
+                    IntegerTable.FILTER_MODE_EXCLUDE,
+                )
             val filteredLocations =
                 unlikelyToBeNull(
                         sharedPreferences.getString(
-                            getString(R.string.set_key_filtered_locations), ""))
+                            getString(R.string.set_key_filtered_locations),
+                            "",
+                        )
+                    )
                     .toUnopenedLocations()
             val excludeNonMusic =
                 sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
@@ -173,7 +190,8 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                         else -> MediaStore.FilterMode.EXCLUDE
                     },
                 filtered = filteredLocations,
-                excludeNonMusic = excludeNonMusic)
+                excludeNonMusic = excludeNonMusic,
+            )
         }
         set(value) {
             sharedPreferences.edit {
@@ -184,7 +202,9 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
                     }
                 putInt(getString(R.string.set_key_filter_mode), filterMode)
                 putString(
-                    getString(R.string.set_key_filtered_locations), value.filtered.stringify())
+                    getString(R.string.set_key_filtered_locations),
+                    value.filtered.stringify(),
+                )
                 putBoolean(getString(R.string.set_key_exclude_non_music), value.excludeNonMusic)
                 apply()
             }
@@ -211,11 +231,12 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             }
             getString(R.string.set_key_excluded_locations),
             getString(R.string.set_key_with_hidden),
+            context.getString(R.string.set_key_saf_multithread),
             getString(R.string.set_key_filter_mode),
             getString(R.string.set_key_filtered_locations),
             getString(R.string.set_key_exclude_non_music),
             getString(R.string.set_key_separators),
-            getString(R.string.set_key_auto_sort_names), -> {
+            getString(R.string.set_key_auto_sort_names) -> {
                 L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()
             }

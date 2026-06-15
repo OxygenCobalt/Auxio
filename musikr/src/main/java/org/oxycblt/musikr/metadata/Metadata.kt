@@ -23,7 +23,7 @@ data class Metadata(
     val xiph: Map<String, List<String>>,
     val mp4: Map<String, List<String>>,
     val cover: ByteArray?,
-    val properties: Properties
+    val properties: Properties,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

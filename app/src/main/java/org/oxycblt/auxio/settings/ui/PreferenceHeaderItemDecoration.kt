@@ -40,7 +40,7 @@ constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = R.attr.materialDividerStyle,
-    orientation: Int = LinearLayoutManager.VERTICAL
+    orientation: Int = LinearLayoutManager.VERTICAL,
 ) : MaterialDividerItemDecoration(context, attributeSet, defStyleAttr, orientation) {
     @SuppressLint("RestrictedApi")
     override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?) =

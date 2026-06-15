@@ -92,7 +92,7 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
         parent: MusicParent?,
         queue: List<Song>,
         index: Int,
-        isShuffled: Boolean
+        isShuffled: Boolean,
     ) {
         // Entirely new queue -> Replace queue, update index
         L.d("New playback, replacing queue and position")

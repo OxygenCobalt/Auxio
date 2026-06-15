@@ -78,7 +78,7 @@ interface PlaybackCommand {
 enum class ShuffleMode {
     ON,
     OFF,
-    IMPLICIT
+    IMPLICIT,
 }
 
 class PlaybackCommandFactoryImpl
@@ -87,13 +87,13 @@ constructor(
     val playbackManager: PlaybackStateManager,
     val playbackSettings: PlaybackSettings,
     val listSettings: ListSettings,
-    val musicRepository: MusicRepository
+    val musicRepository: MusicRepository,
 ) : PlaybackCommand.Factory {
     data class PlaybackCommandImpl(
         override val song: Song?,
         override val parent: MusicParent?,
         override val queue: List<Song>,
-        override val shuffled: Boolean
+        override val shuffled: Boolean,
     ) : PlaybackCommand {
         // Only show queue count to reduce memory use
         override fun toString() =
@@ -139,7 +139,7 @@ constructor(
         parent: T?,
         parents: List<T>,
         sort: Sort,
-        shuffle: ShuffleMode
+        shuffle: ShuffleMode,
     ): PlaybackCommand? {
         return if (parent != null) {
             newCommand(song, parent, sort, shuffle)
@@ -159,7 +159,7 @@ constructor(
         song: Song?,
         parent: MusicParent,
         sort: Sort,
-        shuffle: ShuffleMode
+        shuffle: ShuffleMode,
     ): PlaybackCommand? {
         val songs = sort.songs(parent.songs)
         return newCommand(song, parent, songs, sort, shuffle)
@@ -170,7 +170,7 @@ constructor(
         parent: MusicParent?,
         queue: Collection<Song>,
         sort: Sort,
-        shuffle: ShuffleMode
+        shuffle: ShuffleMode,
     ): PlaybackCommand? {
         if (queue.isEmpty() || (song != null && song !in queue)) {
             return null
@@ -182,7 +182,7 @@ constructor(
         song: Song?,
         parent: MusicParent?,
         queue: List<Song>,
-        shuffle: ShuffleMode
+        shuffle: ShuffleMode,
     ): PlaybackCommand {
         return PlaybackCommandImpl(song, parent, queue, isShuffled(shuffle))
     }

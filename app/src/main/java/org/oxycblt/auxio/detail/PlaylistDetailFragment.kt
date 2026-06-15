@@ -47,7 +47,6 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Playlist
@@ -73,6 +72,8 @@ class PlaylistDetailFragment :
     private var pendingImportTarget: Playlist? = null
 
     override fun getDetailListAdapter() = playlistListAdapter
+
+    override fun getToolbarParent() = detailModel.currentPlaylist.value
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -106,7 +107,10 @@ class PlaylistDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setPlaylist(args.playlistUid)
         collectImmediately(
-            detailModel.currentPlaylist, detailModel.editedPlaylist, ::updatePlaylist)
+            detailModel.currentPlaylist,
+            detailModel.editedPlaylist,
+            ::updatePlaylist,
+        )
         collectImmediately(detailModel.playlistSongList, ::updateList)
         collectImmediately(detailModel.editedPlaylist, ::updateEditedList)
         collect(detailModel.toShow.flow, ::handleShow)
@@ -115,7 +119,11 @@ class PlaylistDetailFragment :
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback,
+        )
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
@@ -157,6 +165,14 @@ class PlaylistDetailFragment :
         editNavigationListener = null
     }
 
+    override fun onPlayParent(parent: Playlist) {
+        playbackModel.play(parent)
+    }
+
+    override fun onShuffleParent(parent: Playlist) {
+        playbackModel.shuffle(parent)
+    }
+
     override fun onRealClick(item: Song) {
         playbackModel.play(item, detailModel.playInPlaylistWith)
     }
@@ -170,8 +186,8 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenParentMenu() {
-        listModel.openMenu(
-            R.menu.detail_playlist, unlikelyToBeNull(detailModel.currentPlaylist.value))
+        val currentPlaylist = detailModel.currentPlaylist.value ?: return
+        listModel.openMenu(R.menu.detail_playlist, currentPlaylist)
     }
 
     override fun onOpenMenu(item: Song) {
@@ -189,7 +205,7 @@ class PlaylistDetailFragment :
             return
         }
         val binding = requireBinding()
-        binding.detailToolbarTitle.text = playlist.name.resolve(requireContext())
+        binding.detailNormalToolbar.title = playlist.name.resolve(requireContext())
         binding.detailEditToolbar.title =
             getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
 
@@ -198,7 +214,9 @@ class PlaylistDetailFragment :
             binding.detailCover.bind(
                 editedPlaylist,
                 binding.context.getString(R.string.desc_playlist_image, playlist.name),
-                R.drawable.ic_playlist_24)
+                R.drawable.ic_playlist_24,
+                playlist.uid.toString().hashCode(),
+            )
         } else {
             binding.detailCover.bind(playlist)
         }
@@ -216,7 +234,8 @@ class PlaylistDetailFragment :
                 binding.context.getString(
                     R.string.fmt_two,
                     binding.context.getPlural(R.plurals.fmt_song_count, songs.size),
-                    durationMs.formatDurationMs(true))
+                    durationMs.formatDurationMs(true),
+                )
             } else {
                 binding.context.getString(R.string.def_song_count)
             }
@@ -228,30 +247,18 @@ class PlaylistDetailFragment :
 
         binding.detailPlayButton?.apply {
             isEnabled = playable
-            setOnClickListener {
-                playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
-            }
-        }
-        binding.detailToolbarPlay.apply {
-            isEnabled = playable
-            setOnClickListener {
-                playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
-            }
+            setOnClickListener { playbackModel.play(playlist) }
         }
         binding.detailShuffleButton?.apply {
             isEnabled = playable
-            setOnClickListener {
-                playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
-            }
+            setOnClickListener { playbackModel.shuffle(playlist) }
         }
-        binding.detailToolbarShuffle.apply {
-            isEnabled = playable
-            setOnClickListener {
-                playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
-            }
-        }
+        setToolbarPlaybackButtonsEnabled(playable)
         updatePlayback(
-            playbackModel.song.value, playbackModel.parent.value, playbackModel.isPlaying.value)
+            playbackModel.song.value,
+            playbackModel.parent.value,
+            playbackModel.isPlaying.value,
+        )
     }
 
     private fun updateList(list: List<Item>) {
@@ -264,9 +271,12 @@ class PlaylistDetailFragment :
 
         if (editedPlaylist != null) {
             L.d("Updating save button state")
-            requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).apply {
-                isEnabled = editedPlaylist != detailModel.currentPlaylist.value?.songs
-            }
+            requireBinding()
+                .detailEditToolbar
+                .setMenuItemEnabled(
+                    R.id.action_save,
+                    editedPlaylist != detailModel.currentPlaylist.value?.songs,
+                )
         }
 
         updateMultiToolbar()
@@ -303,7 +313,8 @@ class PlaylistDetailFragment :
                 L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(
-                        PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid))
+                        PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid)
+                    )
             }
             is Show.PlaylistDetails -> {
                 L.d("Navigated to this playlist")
@@ -362,7 +373,8 @@ class PlaylistDetailFragment :
                         decision.playlist.uid,
                         decision.template,
                         decision.applySongs.map { it.uid }.toTypedArray(),
-                        decision.reason)
+                        decision.reason,
+                    )
                 }
                 is PlaylistDecision.Export -> {
                     L.d("Exporting ${decision.playlist}")
@@ -375,7 +387,8 @@ class PlaylistDetailFragment :
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     PlaylistDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
+                        decision.songs.map { it.uid }.toTypedArray()
+                    )
                 }
                 is PlaylistDecision.New -> error("Unexpected playlist decision $decision")
             }
@@ -391,7 +404,9 @@ class PlaylistDetailFragment :
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         // Prefer songs that are playing from this playlist.
         playlistListAdapter.setPlaying(
-            song.takeIf { parent == detailModel.currentPlaylist.value }, isPlaying)
+            song.takeIf { parent == detailModel.currentPlaylist.value },
+            isPlaying,
+        )
     }
 
     private fun handlePlaybackDecision(decision: PlaybackDecision?) {

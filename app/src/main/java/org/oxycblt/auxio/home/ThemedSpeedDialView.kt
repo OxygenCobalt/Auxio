@@ -18,20 +18,18 @@
  
 package org.oxycblt.auxio.home
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
+import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.PixelFormat
+import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.RotateDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Property
-import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.FloatRange
@@ -39,6 +37,11 @@ import androidx.core.os.BundleCompat
 import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
+import androidx.dynamicanimation.animation.FloatValueHolder
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
+import com.google.android.material.R as MR
+import com.google.android.material.motion.MotionUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.leinardi.android.speeddial.FabWithLabelView
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -46,8 +49,8 @@ import com.leinardi.android.speeddial.SpeedDialView
 import kotlin.math.roundToInt
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.AnimConfig
 import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getAttrResourceId
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
 
@@ -64,9 +67,23 @@ import org.oxycblt.auxio.util.getDimenPixels
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  */
 class ThemedSpeedDialView : SpeedDialView {
-    private var mainFabAnimator: Animator? = null
+    private var mainFabAnimation: MainFabAnimation? = null
     private val spacingSmall = context.getDimenPixels(R.dimen.spacing_small)
     private var innerChangeListener: ((Boolean) -> Unit)? = null
+    private val mainFabDrawable = RotatingDrawable(checkNotNull(mainFab.drawable).mutate())
+    private val mainFabSpatialSpring =
+        MotionUtils.resolveThemeSpringForce(
+            context,
+            MR.attr.motionSpringFastSpatial,
+            MR.style.Motion_Material3_Spring_Standard_Fast_Spatial,
+        )
+    private val mainFabEffectsSpring =
+        MotionUtils.resolveThemeSpringForce(
+            context,
+            MR.attr.motionSpringFastEffects,
+            MR.style.Motion_Material3_Spring_Standard_Fast_Effects,
+        )
+    private val argbEvaluator = ArgbEvaluator()
 
     constructor(context: Context) : super(context)
 
@@ -75,10 +92,8 @@ class ThemedSpeedDialView : SpeedDialView {
     constructor(
         context: Context,
         attrs: AttributeSet?,
-        @AttrRes defStyleAttr: Int
+        @AttrRes defStyleAttr: Int,
     ) : super(context, attrs, defStyleAttr)
-
-    private val stationaryConfig = AnimConfig.of(context, AnimConfig.STANDARD, AnimConfig.MEDIUM2)
 
     init {
         // Work around ripple bug on Android 12 when useCompatPadding = true.
@@ -106,79 +121,105 @@ class ThemedSpeedDialView : SpeedDialView {
                 .defaultColor
 
         // Always use our own animation to fix the library issue that ripple is rotated as well.
-        val mainFabDrawable =
-            RotateDrawable().apply {
-                drawable = mainFab.drawable
-                toDegrees = 45f + 90f
-            }
         mainFabAnimationRotateAngle = 0f
         setMainFabClosedDrawable(mainFabDrawable)
+        setMainFabOpenedDrawable(null)
         setOnChangeListener(
             object : OnChangeListener {
                 override fun onMainActionSelected(): Boolean = false
 
                 override fun onToggleChanged(isOpen: Boolean) {
+                    mainFabAnimation?.cancel()
                     mainFab.backgroundTintList =
                         ColorStateList.valueOf(
                             if (isOpen) mainFabClosedBackgroundColor
-                            else mainFabOpenedBackgroundColor)
+                            else mainFabOpenedBackgroundColor
+                        )
                     mainFab.imageTintList =
                         ColorStateList.valueOf(
-                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor)
-                    mainFabAnimator?.cancel()
-                    mainFabAnimator =
-                        createMainFabAnimator(isOpen).apply {
-                            addListener(
-                                object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator) {
-                                        mainFabAnimator = null
-                                    }
-                                })
-                            start()
-                        }
+                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor
+                        )
+                    mainFabAnimation = createMainFabAnimation(isOpen).apply { start() }
                     innerChangeListener?.invoke(isOpen)
                 }
-            })
-    }
-
-    private fun createMainFabAnimator(isOpen: Boolean): Animator {
-        val totalDuration = stationaryConfig.duration
-        val partialDuration = totalDuration / 2 // This is half of the total duration
-        val delay = totalDuration / 4 // This is one fourth of the total duration
-
-        val backgroundTintAnimator =
-            ObjectAnimator.ofArgb(
-                    mainFab,
-                    VIEW_PROPERTY_BACKGROUND_TINT,
-                    if (isOpen) mainFabOpenedBackgroundColor else mainFabClosedBackgroundColor)
-                .apply {
-                    startDelay = delay
-                    duration = partialDuration
-                }
-
-        val imageTintAnimator =
-            ObjectAnimator.ofArgb(
-                    mainFab,
-                    IMAGE_VIEW_PROPERTY_IMAGE_TINT,
-                    if (isOpen) mainFabOpenedIconColor else mainFabClosedIconColor)
-                .apply {
-                    startDelay = delay
-                    duration = partialDuration
-                }
-
-        val levelAnimator =
-            ObjectAnimator.ofInt(
-                    mainFab.drawable, DRAWABLE_PROPERTY_LEVEL, if (isOpen) 10000 else 0)
-                .apply { duration = totalDuration }
-
-        val animatorSet =
-            AnimatorSet().apply {
-                playTogether(backgroundTintAnimator, imageTintAnimator, levelAnimator)
-                interpolator = stationaryConfig.interpolator
             }
-        animatorSet.start()
-        return animatorSet
+        )
     }
+
+    private fun createMainFabAnimation(isOpen: Boolean): MainFabAnimation {
+        val targetBackgroundTint =
+            if (isOpen) mainFabOpenedBackgroundColor else mainFabClosedBackgroundColor
+        val targetImageTint = if (isOpen) mainFabOpenedIconColor else mainFabClosedIconColor
+
+        val backgroundTintAnimation =
+            createColorSpringAnimation(
+                startColor =
+                    if (isOpen) mainFabClosedBackgroundColor else mainFabOpenedBackgroundColor,
+                endColor = targetBackgroundTint,
+            ) {
+                mainFab.backgroundTintList = ColorStateList.valueOf(it)
+            }
+        val imageTintAnimation =
+            createColorSpringAnimation(
+                startColor = if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor,
+                endColor = targetImageTint,
+            ) {
+                mainFab.imageTintList = ColorStateList.valueOf(it)
+            }
+        val rotationAnimation =
+            createSpringAnimation(
+                startValue = mainFabDrawable.rotationDegrees,
+                finalValue = if (isOpen) MAIN_FAB_OPEN_ROTATION_DEGREES else 0f,
+                springTemplate = mainFabSpatialSpring,
+                minimumVisibleChange = MAIN_FAB_ROTATION_MIN_VISIBLE_CHANGE,
+                dampingRatioOverride = MAIN_FAB_ROTATION_DAMPING_RATIO_OVERRIDE,
+            ) {
+                mainFabDrawable.rotationDegrees = it
+            }
+
+        return MainFabAnimation(
+            listOf(backgroundTintAnimation, imageTintAnimation, rotationAnimation)
+        ) {
+            mainFabAnimation = null
+        }
+    }
+
+    private fun createColorSpringAnimation(
+        startColor: Int,
+        endColor: Int,
+        update: (Int) -> Unit,
+    ): SpringAnimation =
+        createSpringAnimation(
+            startValue = 0f,
+            finalValue = 1f,
+            springTemplate = mainFabEffectsSpring,
+            minimumVisibleChange = MAIN_FAB_COLOR_PROGRESS_MIN_VISIBLE_CHANGE,
+        ) { progress ->
+            val color =
+                argbEvaluator.evaluate(progress.coerceIn(0f, 1f), startColor, endColor) as Int
+            update(color)
+        }
+
+    private fun createSpringAnimation(
+        startValue: Float,
+        finalValue: Float,
+        springTemplate: SpringForce,
+        minimumVisibleChange: Float,
+        dampingRatioOverride: Float? = null,
+        update: (Float) -> Unit,
+    ): SpringAnimation =
+        SpringAnimation(FloatValueHolder(startValue)).apply {
+            spring =
+                SpringForce().apply {
+                    dampingRatio = dampingRatioOverride ?: springTemplate.dampingRatio
+                    stiffness = springTemplate.stiffness
+                    finalPosition = finalValue
+                }
+            setStartValue(startValue)
+            setMinimumVisibleChange(minimumVisibleChange)
+            addUpdateListener { _, value, _ -> update(value) }
+            addEndListener { _, canceled, value, _ -> update(if (canceled) value else finalValue) }
+        }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -204,7 +245,7 @@ class ThemedSpeedDialView : SpeedDialView {
     override fun addActionItem(
         actionItem: SpeedDialActionItem,
         position: Int,
-        animate: Boolean
+        animate: Boolean,
     ): FabWithLabelView? {
         val context = context
         val fabImageTintColor = context.getAttrColorCompat(androidx.appcompat.R.attr.colorPrimary)
@@ -220,7 +261,8 @@ class ThemedSpeedDialView : SpeedDialView {
             SpeedDialActionItem.Builder(
                     actionItem.id,
                     // Should not be a resource, pass null to fail fast.
-                    actionItem.getFabImageDrawable(null))
+                    actionItem.getFabImageDrawable(null),
+                )
                 .setLabel(actionItem.getLabel(context))
                 .setFabImageTintColor(fabImageTintColor.defaultColor)
                 .setFabBackgroundColor(fabBackgroundColor.defaultColor)
@@ -260,7 +302,12 @@ class ThemedSpeedDialView : SpeedDialView {
                     }
                 foreground = null
                 (getChildAt(0) as TextView).apply {
-                    TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_LabelLarge)
+                    TextViewCompat.setTextAppearance(
+                        this,
+                        context.getAttrResourceId(
+                            com.google.android.material.R.attr.textAppearanceLabelLargeEmphasized
+                        ),
+                    )
                 }
             }
         }
@@ -269,7 +316,10 @@ class ThemedSpeedDialView : SpeedDialView {
     override fun onSaveInstanceState(): Parcelable {
         val superState =
             BundleCompat.getParcelable(
-                super.onSaveInstanceState() as Bundle, "superState", Parcelable::class.java)
+                super.onSaveInstanceState() as Bundle,
+                "superState",
+                Parcelable::class.java,
+            )
         return State(superState, isOpen)
     }
 
@@ -285,34 +335,137 @@ class ThemedSpeedDialView : SpeedDialView {
         innerChangeListener = listener
     }
 
-    companion object {
-        private val VIEW_PROPERTY_BACKGROUND_TINT =
-            object : Property<View, Int>(Int::class.java, "backgroundTint") {
-                override fun get(view: View): Int = view.backgroundTintList!!.defaultColor
+    @Parcelize private class State(val superState: Parcelable?, val isOpen: Boolean) : Parcelable
 
-                override fun set(view: View, value: Int?) {
-                    view.backgroundTintList = ColorStateList.valueOf(value!!)
+    private class MainFabAnimation(
+        private val animations: List<SpringAnimation>,
+        private val onEnd: () -> Unit,
+    ) {
+        private var remainingAnimations = animations.size
+        private var finished = false
+
+        init {
+            animations.forEach { animation ->
+                animation.addEndListener { _, _, _, _ ->
+                    if (finished) {
+                        return@addEndListener
+                    }
+                    remainingAnimations -= 1
+                    if (remainingAnimations == 0) {
+                        finished = true
+                        onEnd()
+                    }
                 }
             }
+        }
 
-        private val IMAGE_VIEW_PROPERTY_IMAGE_TINT =
-            object : Property<ImageView, Int>(Int::class.java, "imageTint") {
-                override fun get(view: ImageView): Int = view.imageTintList!!.defaultColor
-
-                override fun set(view: ImageView, value: Int?) {
-                    view.imageTintList = ColorStateList.valueOf(value!!)
-                }
+        fun start() {
+            animations.forEach { animation ->
+                animation.animateToFinalPosition(animation.spring.finalPosition)
             }
+        }
 
-        private val DRAWABLE_PROPERTY_LEVEL =
-            object : Property<Drawable, Int>(Int::class.java, "level") {
-                override fun get(drawable: Drawable): Int = drawable.level
-
-                override fun set(drawable: Drawable, value: Int?) {
-                    drawable.level = value!!
-                }
+        fun cancel() {
+            if (finished) {
+                return
             }
+            finished = true
+            animations.forEach { it.cancel() }
+            onEnd()
+        }
+    }
+}
+
+private class RotatingDrawable(drawable: Drawable) : Drawable(), Drawable.Callback {
+    private var wrappedDrawable = drawable
+
+    var rotationDegrees = 0f
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            invalidateSelf()
+        }
+
+    init {
+        wrappedDrawable.callback = this
     }
 
-    @Parcelize private class State(val superState: Parcelable?, val isOpen: Boolean) : Parcelable
+    override fun draw(canvas: Canvas) {
+        if (bounds.isEmpty) {
+            return
+        }
+
+        val saveCount = canvas.save()
+        canvas.rotate(rotationDegrees, bounds.exactCenterX(), bounds.exactCenterY())
+        wrappedDrawable.draw(canvas)
+        canvas.restoreToCount(saveCount)
+    }
+
+    override fun onBoundsChange(bounds: Rect) {
+        wrappedDrawable.bounds = bounds
+    }
+
+    override fun onStateChange(state: IntArray): Boolean {
+        val changed = wrappedDrawable.setState(state)
+        if (changed) {
+            invalidateSelf()
+        }
+        return changed
+    }
+
+    override fun isStateful(): Boolean = wrappedDrawable.isStateful
+
+    override fun getPadding(padding: Rect): Boolean = wrappedDrawable.getPadding(padding)
+
+    override fun getIntrinsicWidth(): Int = wrappedDrawable.intrinsicWidth
+
+    override fun getIntrinsicHeight(): Int = wrappedDrawable.intrinsicHeight
+
+    override fun setAlpha(alpha: Int) {
+        wrappedDrawable.alpha = alpha
+    }
+
+    override fun getAlpha(): Int = wrappedDrawable.alpha
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        wrappedDrawable.colorFilter = colorFilter
+    }
+
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+    override fun setTint(tintColor: Int) {
+        wrappedDrawable.setTint(tintColor)
+    }
+
+    override fun setTintList(tint: ColorStateList?) {
+        wrappedDrawable.setTintList(tint)
+    }
+
+    override fun setTintMode(tintMode: PorterDuff.Mode?) {
+        wrappedDrawable.setTintMode(tintMode)
+    }
+
+    override fun setVisible(visible: Boolean, restart: Boolean): Boolean =
+        super.setVisible(visible, restart) || wrappedDrawable.setVisible(visible, restart)
+
+    override fun onLevelChange(level: Int): Boolean = wrappedDrawable.setLevel(level)
+
+    override fun invalidateDrawable(who: Drawable) {
+        invalidateSelf()
+    }
+
+    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+        scheduleSelf(what, `when`)
+    }
+
+    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+        unscheduleSelf(what)
+    }
 }
+
+private const val MAIN_FAB_OPEN_ROTATION_DEGREES = 135f
+private const val MAIN_FAB_ROTATION_MIN_VISIBLE_CHANGE = 0.1f
+private const val MAIN_FAB_ROTATION_DAMPING_RATIO_OVERRIDE = 0.6f
+private const val MAIN_FAB_COLOR_PROGRESS_MIN_VISIBLE_CHANGE = 1f / 255f

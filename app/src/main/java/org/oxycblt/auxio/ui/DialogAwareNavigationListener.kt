@@ -61,7 +61,7 @@ class DialogAwareNavigationListener(private val callback: () -> Unit) :
     override fun onDestinationChanged(
         controller: NavController,
         destination: NavDestination,
-        arguments: Bundle?
+        arguments: Bundle?,
     ) {
         // Drop the initial call by NavController that simply provides us with the current
         // destination. This would cause the selection state to be lost every time the device

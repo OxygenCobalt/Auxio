@@ -39,7 +39,7 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.playback.formatDurationMsPopup
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.musikr.Genre
 import org.oxycblt.musikr.Music
@@ -88,7 +88,11 @@ class GenreListFragment :
         collectImmediately(homeModel.empty, musicModel.indexingState, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback,
+        )
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -100,18 +104,23 @@ class GenreListFragment :
         }
     }
 
-    override fun getPopup(pos: Int): String? {
+    override fun getPopupData(pos: Int): FastScrollRecyclerView.PopupProvider.PopupData? {
         val genre = homeModel.genreList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.genreSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> genre.name.thumb()
+            is Sort.Mode.ByName ->
+                FastScrollRecyclerView.PopupProvider.PopupData(genre.name.thumb() ?: "?")
 
-            // Duration -> Use formatted duration
-            is Sort.Mode.ByDuration -> genre.durationMs.formatDurationMs(false)
+            // Duration -> Use compact bucket duration
+            is Sort.Mode.ByDuration ->
+                FastScrollRecyclerView.PopupProvider.PopupData(
+                    genre.durationMs.formatDurationMsPopup()
+                )
 
             // Count -> Use song count
-            is Sort.Mode.ByCount -> genre.songs.size.toString()
+            is Sort.Mode.ByCount ->
+                FastScrollRecyclerView.PopupProvider.PopupData(genre.songs.size.toString())
 
             // Unsupported sort, error gracefully
             else -> null

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_indexer">गाणे लोड होत आहे</string>
+    <string name="lbl_indexing">गाणे लोड करत आहे</string>
+    <string name="lbl_retry">पुन्हा प्रयत्न करा</string>
+    <string name="lbl_songs">गाणी</string>
+    <string name="lbl_song">गाणे</string>
+    <string name="lbl_all_songs">सर्व गाणी</string>
+    <string name="lbl_albums">अल्बम्स</string>
+    <string name="lbl_album">अल्बम</string>
+</resources>

@@ -47,8 +47,10 @@ class Auxio : Application() {
     override fun onCreate() {
         super.onCreate()
         @Suppress("KotlinConstantConditions")
-        if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
-            BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
+        if (
+            BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
+                BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug"
+        ) {
             Timber.plant(CopyleftNoticeTree())
         } else if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
@@ -72,8 +74,11 @@ class Auxio : Application() {
                     .setIcon(IconCompat.createWithResource(this, R.drawable.ic_shortcut_shuffle_24))
                     .setIntent(
                         Intent(this, MainActivity::class.java)
-                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE))
-                    .build()))
+                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE)
+                    )
+                    .build()
+            ),
+        )
     }
 
     companion object {

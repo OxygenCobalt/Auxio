@@ -2,6 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_play"
+        android:icon="@drawable/ic_play_24"
+        android:title="@string/lbl_play"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_shuffle"
+        android:icon="@drawable/ic_shuffle_off_24"
+        android:title="@string/lbl_shuffle"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/placeholder"
         android:title=""
         app:showAsAction="never" />

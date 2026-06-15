@@ -73,7 +73,6 @@
     <string name="lng_indexing">Cargando a túa biblioteca de música…</string>
     <string name="set_black_mode_desc">Utiliza un tema completamente negro</string>
     <string name="set_observing_desc">Recarga a biblioteca de música cando cambia (require unha notificación persistente)</string>
-    <string name="set_notif_action">Acción da notificación personalizada</string>
     <string name="set_action_mode_next">Saltar ao seguinte</string>
     <string name="set_play_song_from_genre">Reproducir dende xénero</string>
     <string name="set_keep_shuffle_desc">Manter a mestura ao reproducir unha canción nova</string>

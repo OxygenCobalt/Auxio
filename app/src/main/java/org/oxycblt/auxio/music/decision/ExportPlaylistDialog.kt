@@ -66,7 +66,7 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
 
     override fun onBindingCreated(
         binding: DialogPlaylistExportBinding,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ) {
         // --- UI SETUP ---
         createDocumentLauncher =
@@ -89,12 +89,8 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
                 findNavController().navigateUp()
             }
 
-        binding.exportPathsGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            if (!isChecked) return@addOnButtonCheckedListener
-            val current = pickerModel.currentExportConfig.value
-            pickerModel.setExportConfig(
-                current.copy(absolute = checkedId == R.id.export_absolute_paths))
-        }
+        binding.exportRelativePaths.setOnClickListener { updatePathStyle(absolute = false) }
+        binding.exportAbsolutePaths.setOnClickListener { updatePathStyle(absolute = true) }
 
         binding.exportWindowsPaths.setOnClickListener { _ ->
             val current = pickerModel.currentExportConfig.value
@@ -135,14 +131,20 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
         }
     }
 
+    private fun updatePathStyle(absolute: Boolean) {
+        // Keep the UI in a valid state even if the config doesn't change (no emission).
+        val current = pickerModel.currentExportConfig.value
+        val updated = current.copy(absolute = absolute)
+        updateExportConfig(updated)
+        if (updated != current) {
+            pickerModel.setExportConfig(updated)
+        }
+    }
+
     private fun updateExportConfig(config: ExportConfig) {
         val binding = requireBinding()
-        binding.exportPathsGroup.check(
-            if (config.absolute) {
-                R.id.export_absolute_paths
-            } else {
-                R.id.export_relative_paths
-            })
+        binding.exportRelativePaths.isChecked = !config.absolute
+        binding.exportAbsolutePaths.isChecked = config.absolute
         if (config.absolute) {
             binding.exportRelativePaths.icon = null
             binding.exportAbsolutePaths.setIconResource(R.drawable.ic_check_24)

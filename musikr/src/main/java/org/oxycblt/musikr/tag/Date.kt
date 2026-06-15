@@ -89,7 +89,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         /** The earliest [Date] in the range. */
         val min: Date,
         /** the latest [Date] in the range. May be the same as [min]. ] */
-        val max: Date
+        val max: Date,
     ) : Comparable<Range> {
         init {
             check(min <= max) { "Min date must be <= max date" }
@@ -109,7 +109,8 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          */
         private val ISO8601_REGEX by lazy {
             Regex(
-                """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
+                """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$"""
+            )
         }
 
         /**
@@ -126,7 +127,8 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
                 from(
                     stringYear.substring(0..3).toInt(),
                     stringYear.substring(4..5).toInt(),
-                    stringYear.substring(6..7).toInt())
+                    stringYear.substring(6..7).toInt(),
+                )
             } else {
                 fromTokens(listOf(year))
             }

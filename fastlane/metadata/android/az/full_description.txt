@@ -1,0 +1,24 @@
+Auxio local musiqi pleyeridir və digər musiqi pleyerlərində olan bir çox lazımsız xüsusiyyət olmadan sürətli və etibarlı istifadəçi interfeysi və təcrübəsi təmin edir. Müasir media pleyer kitabxanalarına əsaslanan Auxio, köhnəlmiş Android funksionallığından istifadə edən digər tətbiqlərə nisbətən üstün kitabxana dəstəyi və dinləmə keyfiyyəti təqdim edir. Qısaca, <b>Musiqi ifa edir.</b>
+
+<b>Xüsusiyyətlər</b>
+
+- Media3 ExoPlayer əsasında səsləndirmə
+- Son Material Design qaydalarına uyğun sürətli istifadəçi interfeysi
+- Asan istifadəni ön plana çıxaran, lakin kənar halları çox düşünməyən istifadəçi təcrübəsi
+- Fərdiləşdirilə bilən davranış
+- Disk nömrələri, çoxsaylı ifaçılar, buraxılış növləri, dəqiq/original tarixlər, sort teqləri və daha çox şey üçün dəstək
+- İfaçılar və albom ifaçılarını birləşdirən inkişaf etmiş ifaçı sistemi
+- SD kartdan xəbəri olan qovluq idarəsi
+- Etibarlı pleylist funksionallığı
+- Səsləndirmə vəziyyətinin saxlanması
+- Android Auto dəstəyi
+- Avtomatik fasiləsiz səsləndirmə
+- Tam ReplayGain dəstəyi (MP3, FLAC, OGG, OPUS və MP4 fayllarında)
+- Xarici ekvalayzer dəstəyi (məs. Wavelet)
+- Kənardan kənara dizayn
+- Əlavə edilmiş albom qapaqları dəstəyi
+- Axtarış funksionallığı
+- Qulaqcıq ilə avtomatik oynatma
+- Ölçüyə uyğunlaşan stilizə edilmiş vidjetlər
+- Tamamilə şəxsi və oflayn
+- Dairəvi albom qapaqlarını yığışdırmaq (əgər istəsəniz)

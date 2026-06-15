@@ -62,7 +62,8 @@ class StartActionRunner : TaskerPluginRunnerActionNoOutputOrInput() {
             context,
             Intent(context, AuxioService::class.java)
                 .setAction(AuxioService.ACTION_START)
-                .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_TASKER))
+                .putExtra(AuxioService.INTENT_KEY_START_ID, IntegerTable.START_ID_TASKER),
+        )
         while (!AuxioService.isForeground) {
             Thread.sleep(100)
         }

@@ -61,7 +61,7 @@ interface SearchEngine {
         val albums: Collection<Album>? = null,
         val artists: Collection<Artist>? = null,
         val genres: Collection<Genre>? = null,
-        val playlists: Collection<Playlist>? = null
+        val playlists: Collection<Playlist>? = null,
     )
 }
 
@@ -77,7 +77,8 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
             albums = items.albums?.searchListImpl(query),
             artists = items.artists?.searchListImpl(query),
             genres = items.genres?.searchListImpl(query),
-            playlists = items.playlists?.searchListImpl(query))
+            playlists = items.playlists?.searchListImpl(query),
+        )
     }
 
     /**
@@ -91,7 +92,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
      */
     private inline fun <T : Music> Collection<T>.searchListImpl(
         query: String,
-        fallback: (String, T) -> Boolean = { _, _ -> false }
+        fallback: (String, T) -> Boolean = { _, _ -> false },
     ) =
         filter {
                 // See if the plain resolved name matches the query. This works for most
@@ -119,7 +120,9 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
                 // could make it match the query.
                 val normalizedName =
                     NORMALIZE_POST_PROCESSING_REGEX.replace(
-                        Normalizer.normalize(resolvedName, Normalizer.Form.NFKD), "")
+                        Normalizer.normalize(resolvedName, Normalizer.Form.NFKD),
+                        "",
+                    )
                 if (normalizedName.contains(query, ignoreCase = true)) {
                     return@filter true
                 }

@@ -38,7 +38,7 @@ internal interface LibraryFactory {
     fun create(
         graph: MusicGraph,
         storedPlaylists: StoredPlaylists,
-        playlistInterpreter: PlaylistInterpreter
+        playlistInterpreter: PlaylistInterpreter,
     ): MutableLibrary
 
     companion object {
@@ -50,7 +50,7 @@ private class LibraryFactoryImpl() : LibraryFactory {
     override fun create(
         graph: MusicGraph,
         storedPlaylists: StoredPlaylists,
-        playlistInterpreter: PlaylistInterpreter
+        playlistInterpreter: PlaylistInterpreter,
     ): MutableLibrary {
         val songs =
             graph.songVertex.mapTo(mutableSetOf()) { vertex ->
@@ -73,7 +73,14 @@ private class LibraryFactoryImpl() : LibraryFactory {
                 PlaylistImpl(PlaylistVertexCore(vertex))
             }
         return LibraryImpl(
-            songs, albums, artists, genres, playlists, storedPlaylists, playlistInterpreter)
+            songs,
+            albums,
+            artists,
+            genres,
+            playlists,
+            storedPlaylists,
+            playlistInterpreter,
+        )
     }
 
     private class SongVertexCore(private val vertex: SongVertex) : SongCore {

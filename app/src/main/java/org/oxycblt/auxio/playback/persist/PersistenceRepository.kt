@@ -46,7 +46,7 @@ class PersistenceRepositoryImpl
 constructor(
     private val playbackStateDao: PlaybackStateDao,
     private val queueDao: QueueDao,
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
 ) : PersistenceRepository {
 
     override suspend fun readState(): PlaybackStateManager.SavedState? {
@@ -75,7 +75,8 @@ constructor(
             heap = heap,
             shuffledMapping = shuffledMapping,
             index = playbackState.index,
-            songUid = playbackState.songUid)
+            songUid = playbackState.songUid,
+        )
     }
 
     override suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean {
@@ -99,7 +100,8 @@ constructor(
                     positionMs = state.positionMs,
                     repeatMode = state.repeatMode,
                     songUid = state.songUid,
-                    parentUid = state.parent?.uid)
+                    parentUid = state.parent?.uid,
+                )
 
             // Convert the remaining queue information do their database-specific counterparts.
             val heap =
